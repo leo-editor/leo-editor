@@ -8233,8 +8233,9 @@ class Commands (object):
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged (self,changedFlag):
-
-        trace = False and not g.unitTesting
+        '''Set or clear the marker that indicates that the .leo file has been changed.'''
+        trace = False and not g.unitTesting # and changedFlag
+        if trace: g.trace(g.callers())
         c = self
         if not c.frame:
             return
@@ -8257,16 +8258,16 @@ class Commands (object):
             # Call LeoTabbedTopLevel.setChanged.
             master.setChanged(c,changedFlag)
         s = c.frame.getTitle()
-        if trace: g.trace(changedFlag,repr(s))
+        # if trace: g.trace(changedFlag,repr(s))
         if len(s) > 2:
             if changedFlag:
                 if s [0] != '*':
                     c.frame.setTitle("* " + s)
-                    if trace: g.trace('(c)',"* " + s)
+                    # if trace: g.trace('(c)',"* " + s)
             else:
                 if s[0:2]=="* ":
                     c.frame.setTitle(s[2:])
-                    if trace: g.trace('(c)',s[2:])
+                    # if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 

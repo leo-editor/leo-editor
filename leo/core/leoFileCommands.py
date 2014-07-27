@@ -2215,11 +2215,8 @@ class BaseFileCommands:
         theFile.close()
     #@+node:ekr.20031218072017.2012: *3* fc.writeAtFileNodes
     def writeAtFileNodes (self,event=None):
-
         '''Write all @file nodes in the selected outline.'''
-
         c = self.c
-
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')

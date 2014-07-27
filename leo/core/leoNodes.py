@@ -838,8 +838,9 @@ class Position (object):
     #@+node:ekr.20040305162628: *4* p.Dirty bits
     #@+node:ekr.20040311113514: *5* p.clearDirty
     def clearDirty (self):
-
+        '''(p) Set p.v dirty.'''
         p = self
+        # g.trace(p.h)
         p.v.clearDirty()
     #@+node:ekr.20040318125934: *5* p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
@@ -2228,9 +2229,9 @@ class VNode (BaseVnode):
     #@+node:ekr.20090830051712.6151: *4*  v.Dirty bits
     #@+node:ekr.20031218072017.3390: *5* v.clearDirty
     def clearDirty (self):
-
+        '''Clear the vnode dirty bit.'''
         v = self
-        # g.trace(v,g.callers())
+        # g.trace(v.h,g.callers())
         v.statusBits &= ~ v.dirtyBit
 
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
@@ -2284,8 +2285,9 @@ class VNode (BaseVnode):
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty (self):
+        '''Set the vnode dirty bit.'''
         # if self.h.startswith('@auto'):
-            # g.trace('(v) %5s %30s' % (self.isDirty(),self.h),g.callers())
+        # g.trace('(v) %5s %30s' % (self.isDirty(),self.h),g.callers())
         self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit

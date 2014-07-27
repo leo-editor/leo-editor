@@ -3131,15 +3131,13 @@ class AtFile:
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName) 
-    #@+node:ekr.20041005105605.147: *4* at.writeAll & helper
+    #@+node:ekr.20041005105605.147: *4* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
         toString=False
     ):
-
         """Write @file nodes in all or part of the outline"""
-
         trace = False and not g.unitTesting
         at = self ; c = at.c
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
@@ -3153,11 +3151,13 @@ class AtFile:
         if writeAtFileNodesFlag:
             # The Write @<file> Nodes command.
             # Write all nodes in the selected tree.
+            root = c.p
             p = c.p
             after = p.nodeAfterTree()
         else:
             # Write dirty nodes in the entire outline.
-            p =  c.rootPosition()
+            root = c.rootPosition()
+            p = c.rootPosition()
             after = c.nullPosition()
         at.clearAllOrphanBits(p)
         while p and p != after:
@@ -3167,7 +3167,7 @@ class AtFile:
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+                self.writeAllHelper(p,root,force,toString,writeAtFileNodesFlag,writtenFiles)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -3182,10 +3182,14 @@ class AtFile:
                 if len(writtenFiles) > 0:
                     g.es("finished")
                 elif writeAtFileNodesFlag:
-                    g.es("no @<file> nodes in the selected tree")
+                    g.warning("no @<file> nodes in the selected tree")
+                    # g.es("to write an unchanged @auto node,\nselect it directly.")
                 else:
                     g.es("no dirty @<file> nodes")
         #@-<< say the command is finished >>
+        if c.isChanged():
+            # Save the outline if only persistence data nodes are dirty.
+            self.saveOutlineIfPossible()
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
@@ -3202,13 +3206,17 @@ class AtFile:
                 else:
                     p2.clearOrphan()
     #@+node:ekr.20041005105605.149: *5* at.writeAllHelper
-    def writeAllHelper (self,p,
+    def writeAllHelper (self,p,root,
         force,toString,writeAtFileNodesFlag,writtenFiles
     ):
-
+        '''
+        Write one file for the at.writeAll.
+        Do *not* write @auto files unless p == root.
+        This prevents the write-all command from needlessly updating
+        the @persistence data, thereby annoyingly changing the .leo file.
+        '''
         trace = False and not g.unitTesting
         at = self ; c = at.c
-
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:
@@ -3242,9 +3250,10 @@ class AtFile:
                 writtenFiles.append(p.v)
             elif p.isAtIgnoreNode():
                 pass # Handled in caller.
-            elif p.isAtAutoNode():
+            elif p.isAtAutoNode(): ### and (p.isDirty() or p == root):
                 at.writeOneAtAutoNode(p,toString=toString,force=force)
                 writtenFiles.append(p.v)
+                # Do *not* clear the dirty bits the entries in @persistence tree here!
             elif p.isAtEditNode():
                 at.writeOneAtEditNode(p,toString=toString)
                 writtenFiles.append(p.v)
@@ -3261,6 +3270,29 @@ class AtFile:
                 # Write old @file nodes using @thin format.
                 at.write(p,kind='@file',thinFile=True,toString=toString)
                 writtenFiles.append(p.v)
+            if p.v in writtenFiles:
+                # Clear the dirty bits in all descendant nodes.
+                # However, persistence data may still have to be written.
+                # This can not be helped.
+                if trace: g.trace('clearing',p.h)
+                for p2 in p.self_and_subtree():
+                    p2.v.clearDirty()
+    #@+node:ekr.20140727075002.18108: *5* at.saveOutlineIfPossible
+    def saveOutlineIfPossible(self):
+        '''Save the outline if only persistence data nodes are dirty.'''
+        trace = False and not g.unitTesting
+        at,c = self,self.c
+        changed_positions = [p.copy() for p in c.all_unique_positions() if p.v.isDirty()]
+        at_persistence = c.persistenceController.has_at_persistence_node()
+        if at_persistence:
+            changed_positions = [p for p in changed_positions
+                if not at_persistence.isAncestorOf(p)]
+        if changed_positions:
+            if trace: g.trace('still changed',[p.h for p in changed_positions])
+        else:
+            # g.warning('auto-saving @persistence tree.')
+            c.setChanged(False)
+            c.redraw()
     #@+node:ekr.20140726091031.18070: *4* at.writeAtAutoMarkdownFile
     def writeAtAutoMarkdownFile (self,root):
         """Write all the *descendants* of an @auto-markdown node."""

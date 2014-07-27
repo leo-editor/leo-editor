@@ -223,6 +223,20 @@ class PersistenceDataController:
                     g.es_print('deleting:',p.h)
                 c.deletePositionsInList(delete_list)
                 c.redraw()
+    #@+node:ekr.20140727064254.18111: *4* pd.clear_dirty (not used)
+    # This would be very dangerous.
+    # We must write the persistence data if it has been changed.
+
+    # def clear_dirty(pd,p):
+        # '''
+        # A kludge for the write-at-file-nodes command:
+        # clear the dirty bits for all the persistence entries corresponding to p.
+        # '''
+        # g.trace(p.h,g.callers())
+        # at_data = pd.has_at_data_node(p)
+        # if at_data:
+            # for p2 in at_data.self_and_subtree():
+                # p2.v.clearDirty()
     #@+node:ekr.20140711111623.17794: *4* pd.convert_at_file_to_at_auto
     def convert_at_file_to_at_auto(pd,root):
         if root.isAtFileNode():
@@ -263,8 +277,10 @@ class PersistenceDataController:
                 p2.h = '@ua:' + p.v.gnx
                 p2.b = 'unl:%s\nua:%s' % (
                     pd.relative_unl(p,root),pd.pickle(p))
-        if trace:
-            g.es_print('updated @data:%s ' % (root.h))
+        # This is no longer necessary because of at.saveOutlineIfPossible.
+        if False and not g.app.initing and not g.unitTesting:
+            # Explain why the .leo file has become dirty.
+            g.es_print('updated: @data:%s ' % (root.h))
         return at_data # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(pd,at_data,root):
