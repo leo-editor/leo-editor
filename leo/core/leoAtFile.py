@@ -20,6 +20,8 @@ allow_cloned_sibs = True
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
+import glob
+import importlib
 import os
 import sys
 import time
@@ -108,35 +110,85 @@ class AtFile:
     #@-<< define sentinelDict >>
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3*  at.ctor
+    #@+node:ekr.20041005105605.8: *3*  at.ctor & helpers
     # Note: g.getScript also call the at.__init__ and at.finishCreate().
 
     def __init__(self,c):
-
+        '''ctor for atFile class.'''
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c = c
         self.fileCommands = c.fileCommands
         self.errors = 0 # Make sure at.error() works even when not inited.
-
         # **Only** at.writeAll manages these flags.
         # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-
+        # Dicts for writers plugins
+        self.atAutoWritersDict = {}
+        self.writersDispatchDict = {}
         # User options.
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write',default=True)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
-
         self.dispatch_dict = self.defineDispatchDict()
             # Define the dispatch dictionary used by scanText4.
-    #@+node:ekr.20041005105605.9: *3* at.defineDispatchDict
+        self.createWritersData()
+            # Create atAutoWritersDict and writersDispatchDict
+    #@+node:ekr.20140728040812.17990: *4* at.createWritersData & helper
+    def createWritersData(self):
+        '''Create the data structures describing writer plugins.'''
+        at = self
+        at.writersDispatchDict = {}
+        at.atAutoWritersDict = {}
+        pattern = g.os_path_finalize_join(g.app.loadDir,'..','plugins','writers','*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            if sfn != '__init__.py':
+                try:
+                    # Important: use importlib to give imported modules their fully qualified names.
+                    m = importlib.import_module('leo.plugins.writers.%s' % sfn[:-3])
+                    at.parse_importer_dict(sfn,m)
+                except ImportError:
+                    g.warning('can not import leo.plugins.writers.%s' % sfn)
+    #@+node:ekr.20140728040812.17991: *5* at.parse_importer_dict
+    def parse_importer_dict(self,sfn,m):
+        '''
+        Set entries in writersDispatchDict and atAutoWritersDict ivars using entries
+        in m.writers_dict.
+        '''
+        at = self
+        d = getattr(m,'writer_dict',None)
+        if d:
+            at_auto = d.get('@auto',[])
+            scanner_class = d.get('class',None)
+            extensions = d.get('extensions',[])
+            if at_auto:
+                # Make entries for each @auto type.
+                d = self.atAutoWritersDict
+                for s in at_auto:
+                    aClass = d.get(s)
+                    if aClass:
+                        g.trace('%s: duplicate %s classes:' % (sfn,s),
+                            aClass,scanner_class)
+                    else:
+                        d[s] = scanner_class
+            if extensions:
+                # Make entries for each extension.
+                d = self.writersDispatchDict
+                for ext in extensions:
+                    aClass = d.get(ext)
+                    if aClass:
+                        g.trace('%s: duplicate %s class' % (sfn,ext),
+                            aClass,scanner_class)
+                    else:
+                        d[ext] = scanner_class
+        elif sfn not in ('basewriter.py',):
+            g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
+    #@+node:ekr.20041005105605.9: *4* at.defineDispatchDict
     def defineDispatchDict(self):
-
         '''Return the dispatch dictionary used by scanText4.'''
-
         return  {
             # Plain line.
             self.noSentinel: self.readNormalLine,
@@ -3293,22 +3345,6 @@ class AtFile:
             # g.warning('auto-saving @persistence tree.')
             c.setChanged(False)
             c.redraw()
-    #@+node:ekr.20140726091031.18070: *4* at.writeAtAutoMarkdownFile
-    def writeAtAutoMarkdownFile (self,root):
-        """Write all the *descendants* of an @auto-markdown node."""
-        at = self
-        def put(s):
-            '''Take care with output newlines.'''
-            at.os(s[:-1] if s.endswith('\n') else s)
-            at.onl()
-        root_level = root.level()
-        for p in root.subtree():
-            indent = p.level()-root_level
-            put('%s%s' % ('#'*indent,p.h))
-            for s in p.b.splitlines(False):
-                put(s)
-        root.setVisited()
-        return True
     #@+node:ekr.20070806105859: *4* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     def writeAtAutoNodes (self,event=None):
 
@@ -3354,7 +3390,7 @@ class AtFile:
                 g.es("no dirty @auto nodes in the selected tree")
             else:
                 g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode (generalize)
+    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self,p,toString,force,trialWrite=False):
         '''
         Write p, an @auto node.
@@ -3387,28 +3423,42 @@ class AtFile:
                 c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            isAtAutoMarkdown= root.isAtAutoMarkdownNode()
-            isAtAutoOrgMode = root.isAtAutoOrgModeNode()
-            isAtAutoOtl     = root.isAtAutoOtlNode()
-            isAtAutoRst     = root.isAtAutoRstNode()
-            if isAtAutoMarkdown:
-                ok2 = at.writeAtAutoMarkdownFile(root)
-                if not ok2: at.errors += 1
-            elif isAtAutoRst:
+            # Dispatch the proper writer.
+            junk,ext = g.os_path_splitext(fileName)
+            writer = at.dispatch(ext,root)
+            if writer:
+                writer(root)
+            elif root.isAtAutoRstNode():
+                # An escape hatch...
+                # Use theRst writer if there is not rst writer plugin.
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
-                if not ok2: at.errors += 1
-            elif isAtAutoOrgMode:
-                ok2 = at.writeAtAutoOrgModeFile(root)
-                if not ok2: at.errors += 1
-            elif isAtAutoOtl:
-                ok2 = at.writeAtAutoOtlFile(root)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
+            ### Old Static code
+                # isAtAutoMarkdown= root.isAtAutoMarkdownNode()
+                # isAtAutoOrgMode = root.isAtAutoOrgModeNode()
+                # isAtAutoOtl     = root.isAtAutoOtlNode()
+                # isAtAutoRst     = root.isAtAutoRstNode()
+                # if isAtAutoMarkdown:
+                    # ok2 = at.writeAtAutoMarkdownFile(root)
+                    # if not ok2: at.errors += 1
+                # elif isAtAutoRst:
+                    # ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
+                    # if not ok2: at.errors += 1
+                # elif isAtAutoOrgMode:
+                    # ok2 = at.writeAtAutoOrgModeFile(root)
+                    # if not ok2: at.errors += 1
+                # elif isAtAutoOtl:
+                    # ok2 = at.writeAtAutoOtlFile(root)
+                    # if not ok2: at.errors += 1
+                # else:
+                    # at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile()
                 # Sets stringOutput if toString is True.
             if at.errors == 0:
                 # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
+                isAtAutoRst = root.isAtAutoRstNode()
                 at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                     # Sets/clears dirty and orphan bits.
             else:
@@ -3420,41 +3470,35 @@ class AtFile:
             root.setOrphan() # 2010/10/22.
             g.es("not written:",fileName)
         return ok
-    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile
-    def writeAtAutoOrgModeFile (self,root):
-        """Write all the *descendants* of an @auto-org-mode node."""
+    #@+node:ekr.20140728040812.17993: *6* at.dispatch & helpers
+    def dispatch(self,ext,p):
+        '''Return the correct writer function for p, an @auto node.'''
         at = self
-        def put(s):
-            '''Take care with output newlines.'''
-            at.os(s[:-1] if s.endswith('\n') else s)
-            at.onl()
-        root_level = root.level()
-        for p in root.subtree():
-            indent = p.level()-root_level
-            put('%s %s' % ('*'*indent,p.h))
-            for s in p.b.splitlines(False):
-                put(s)
-        root.setVisited()
-        return True
-    #@+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
-    def writeAtAutoOtlFile (self,root):
-        """Write all the *descendants* of an @auto-otl node."""
+        # Match @auto type before matching extension.
+        return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
+    #@+node:ekr.20140728040812.17995: *7* at.writer_for_at_auto
+    def writer_for_at_auto(self,root):
+        '''A factory returning a writer function for the given kind of @auto directive.'''
         at = self
-
-        def put(s):
-            '''Take care with output newlines.'''
-            at.os(s[:-1] if s.endswith('\n') else s)
-            at.onl()
-
-        for child in root.children():
-            n = child.level()
-            for p in child.self_and_subtree():
-                indent = '\t'*(p.level()-n)
-                put('%s%s' % (indent,p.h))
-                for s in p.b.splitlines(False):
-                    put('%s: %s' % (indent,s))
-        root.setVisited()
-        return True
+        d = at.atAutoWritersDict
+        for key in d.keys():
+            aClass = d.get(key)
+            if aClass and g.match_word(root.h,0,key):
+                def writer_for_at_auto_cb(root):
+                    return aClass(at.c).write(root)
+                return writer_for_at_auto_cb
+        return None
+    #@+node:ekr.20140728040812.17997: *7* at.writer_for_ext
+    def writer_for_ext(self,ext):
+        '''A factory returning a writer function for the given file extension.'''
+        at = self
+        aClass = at.writersDispatchDict.get(ext)
+        if aClass:
+            def writer_for_ext_cb(root):
+                return aClass(at.c).write(root)
+            return writer_for_ext_cb
+        else:
+            return None
     #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     def writeAtShadowNodes (self,event=None):
 

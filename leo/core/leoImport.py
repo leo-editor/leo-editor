@@ -595,17 +595,34 @@ class LeoImportCommands:
                 p.initHeadString(fileName)
             u.afterInsertNode(p,'Import',undoData)
         return p
-    #@+node:ekr.20140724064952.18038: *5* ic.dispatch
+    #@+node:ekr.20140724064952.18038: *5* ic.dispatch & helpers
     def dispatch(self,ext,p):
-        '''Return the correct scanner function for p.'''
+        '''Return the correct scanner function for p, an @auto node.'''
+        # Match the @auto type first, then the file extension.
+        return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+    #@+node:ekr.20140727180847.17985: *6* ic.scanner_for_at_auto
+    def scanner_for_at_auto(self,p):
+        '''A factory returning a scanner function for p, an @auto node.'''
         d = self.atAutoDict
-        # First, try to match @auto type.
         for key in d.keys():
-            if g.match_word(p.h,0,key):
-                scanner = self.scanner_for_at_auto(key)
-                if scanner: return scanner
-        # Second, match file extension.
-        return self.scanner_for_ext(ext)
+            aClass = self.atAutoDict.get(key)
+            if aClass and g.match_word(p.h,0,key):
+                def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
+                    scanner = aClass(importCommands=self,atAuto=atAuto)
+                    return scanner.run(s,parent,prepass=prepass)
+                return scanner_for_at_auto_cb
+        return None
+    #@+node:ekr.20140130172810.15471: *6* ic.scanner_for_ext
+    def scanner_for_ext(self,ext):
+        '''A factory returning a scanner function for the given file extension.'''
+        aClass = self.classDispatchDict.get(ext)
+        if aClass:
+            def scanner_for_ext_cb(atAuto,parent,s,prepass=False):
+                scanner = aClass(importCommands=self,atAuto=atAuto)
+                return scanner.run(s,parent,prepass=prepass)
+            return scanner_for_ext_cb
+        else:
+            return None
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self,fileName,parent):
         '''Return the absolute path of the file and set .default_directory.'''
@@ -1198,45 +1215,7 @@ class LeoImportCommands:
                     found = True ; result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20071127175948.1: *3* ic.Import scanners
-    #@+node:ekr.20080811174246.1: *4* ic.languageForExtension
-    def languageForExtension (self,ext):
-        '''Return the language corresponding to the extension ext.'''
-        unknown = 'unknown_language'
-        if ext.startswith('.'): ext = ext[1:]
-        if ext:
-            z = g.app.extra_extension_dict.get(ext)
-            if z not in (None,'none','None'):
-                language = z
-            else:
-                language = g.app.extension_dict.get(ext)
-            if language in (None,'none','None'):
-                language = unknown
-        else:
-            language = unknown
-        # g.trace(ext,repr(language))
-        # Return the language even if there is no colorizer mode for it.
-        return language
-    #@+node:ekr.20140727180847.17985: *4* ic.scanner_for_at_auto
-    def scanner_for_at_auto(self,atAuto):
-        '''A factory returning a scanner function for the given kind of @auto directive.'''
-        aClass = self.atAutoDict.get(atAuto)
-        if aClass:
-            def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
-                scanner = aClass(importCommands=self,atAuto=atAuto)
-                return scanner.run(s,parent,prepass=prepass)
-            return scanner_for_at_auto_cb
-        else:
-            return None
-    #@+node:ekr.20140130172810.15471: *4* ic.scanner_for_ext
-    def scanner_for_ext(self,ext):
-        '''A factory returning a scanner function for the given file extension.'''
-        aClass = ext and self.classDispatchDict.get(ext)
-        def scanner_for_ext_cb(atAuto,parent,s,prepass=False):
-            scanner = aClass(importCommands=self,atAuto=atAuto)
-            return scanner.run(s,parent,prepass=prepass)
-        return scanner_for_ext_cb if aClass else None
-    #@+node:ekr.20070713075352: *4* ic.scanUnknownFileType (default scanner) & helper
+    #@+node:ekr.20070713075352: *3* ic.scanUnknownFileType & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
         '''Scan the text of an unknown file type.'''
         c = self.c
@@ -1255,6 +1234,24 @@ class LeoImportCommands:
                 c.setChanged(False)
         g.app.unitTestDict = {'result':True}
         return True
+    #@+node:ekr.20080811174246.1: *4* ic.languageForExtension
+    def languageForExtension (self,ext):
+        '''Return the language corresponding to the extension ext.'''
+        unknown = 'unknown_language'
+        if ext.startswith('.'): ext = ext[1:]
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
+        # g.trace(ext,repr(language))
+        # Return the language even if there is no colorizer mode for it.
+        return language
     #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
     def parse_body(self,p):
         '''The parse-body command.'''

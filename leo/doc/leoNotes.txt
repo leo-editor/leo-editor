@@ -17322,24 +17322,59 @@ class GeneralTest: ### (StcTest):
     '''A general test class.'''
     
     @others
-.. @+node:ekr.20140727180847.17986: *3* unused special-case scanners
-.. @+node:ekr.20140720065949.17751: *4* ic.scanOrgModeText (@auto-org)
-def scanOrgModeText(self,s,parent,atAuto=False):
-    '''Scan org-mode text.'''
-    import leo.plugins.importers.org as org
-    scanner = org.OrgModeScanner(importCommands=self,atAuto=atAuto)
-    return scanner.run(s,parent)
-.. @+node:ekr.20090501095634.48: *4* ic.scanRstText (@auto-rst)
-def scanRstText (self,s,parent,atAuto=False):
-    '''Scan reStructuredText.'''
-    import leo.plugins.importers.rst as rst
-    scanner = rst.RstScanner(importCommands=self,atAuto=atAuto)
-    return scanner.run(s,parent)
-.. @+node:ekr.20120517155536.10124: *4* ic.scanVimoutlinerText (@auto-otl)
-def scanVimoutlinerText(self,s,parent,atAuto=False):
-    '''Scan vim outliner text.'''
-    import leo.plugins.importers.otl as otl
-    scanner = otl.VimoutlinerScanner(importCommands=self,atAuto=atAuto)
-    return scanner.run(s,parent)
+.. @+node:ekr.20140728040812.17998: *3* Writing (top level) moved to writer plugins
+if 0:
+    @others
+.. @+node:ekr.20140726091031.18070: *4* at.writeAtAutoMarkdownFile
+def writeAtAutoMarkdownFile (self,root):
+    """Write all the *descendants* of an @auto-markdown node."""
+    at = self
+    def put(s):
+        '''Take care with output newlines.'''
+        at.os(s[:-1] if s.endswith('\n') else s)
+        at.onl()
+    root_level = root.level()
+    for p in root.subtree():
+        indent = p.level()-root_level
+        put('%s%s' % ('#'*indent,p.h))
+        for s in p.b.splitlines(False):
+            put(s)
+    root.setVisited()
+    return True
+.. @+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile
+def writeAtAutoOrgModeFile (self,root):
+    """Write all the *descendants* of an @auto-org-mode node."""
+    at = self
+    def put(s):
+        '''Take care with output newlines.'''
+        at.os(s[:-1] if s.endswith('\n') else s)
+        at.onl()
+    root_level = root.level()
+    for p in root.subtree():
+        indent = p.level()-root_level
+        put('%s %s' % ('*'*indent,p.h))
+        for s in p.b.splitlines(False):
+            put(s)
+    root.setVisited()
+    return True
+.. @+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
+def writeAtAutoOtlFile (self,root):
+    """Write all the *descendants* of an @auto-otl node."""
+    at = self
+
+    def put(s):
+        '''Take care with output newlines.'''
+        at.os(s[:-1] if s.endswith('\n') else s)
+        at.onl()
+
+    for child in root.children():
+        n = child.level()
+        for p in child.self_and_subtree():
+            indent = '\t'*(p.level()-n)
+            put('%s%s' % (indent,p.h))
+            for s in p.b.splitlines(False):
+                put('%s: %s' % (indent,s))
+    root.setVisited()
+    return True
 .. @-all
 .. @-leo

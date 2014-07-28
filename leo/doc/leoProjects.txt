@@ -366,6 +366,20 @@ Done:
   The only tests are against '@root' and '@file'.
   
 - For now, the unit-tests wrappers are hard-coded.
+.. @+node:ekr.20140723120730.17921: *4* The @auto write code now uses writer plugins
+@language rest
+
+What I did:
+- at.createWritersData inits tables using the writers_dict in each plugin.
+- at.writeOnAtAutoNode calls at.dispatch to find writers.
+  An important escape hatch: at.writeOnAtAutoNode calls the *existing* rst.writer
+  if the user deletes plugins/writers/rst.py.
+
+Won't do:
+- at.writeAllHelper has lots of special-case code, but that probably can't be helped.
+- It would be way too dangerous to refactor the write code for @file, @shadow, etc.
+    
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
