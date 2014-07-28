@@ -1,8 +1,8 @@
-leo/plugins/importers/readme.txt
+leo/plugins/importers/howto.txt
 
 This is the "howto" file for Leo's importers in the leo/plugins/importers folder.
 
-This file tells how to write an importer.
+This file tells how to write your own @auto importer for a new language.
 
 ===== Overview
 

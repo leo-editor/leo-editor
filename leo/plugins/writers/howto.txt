@@ -1,8 +1,8 @@
-leo/plugins/writers/readme.txt
+leo/plugins/writers/howto.txt
 
 This is the "howto" file for Leo's writers in the leo/plugins/writers folder.
 
-This file tells how to write a writer.
+This file tells how to create your own writer for @auto trees.
 
 ===== Overview
 
@@ -25,6 +25,10 @@ In contrast, we only need writers for languages that define their own
 outline structures: we can use the "default" @auto write code for all other
 language, because the default @auto write code needs to know only the
 language delims in effect for the language.
+
+===== Getting help
+
+Feel free to ask questions at https://groups.google.com/forum/#!forum/leo-editor
 
 ===== Interface: the writer_dict
 
