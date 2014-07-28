@@ -353,6 +353,19 @@ Done:
 - Create at.writeOneOrgModeNode, called from at.writeOneAtAutoNode
 
 @language python
+.. @+node:ekr.20140727180847.17989: *4* Completed generalization of importers
+@language rest
+
+- ic.createOutline and its helper, ic.dispatch, now use tables
+  created by ic.createImporterData and its helper.
+
+- Eliminated odious special cases involving self.treeType in
+  ic.create_top_node and ic.init_import.
+  
+- self.treeType is used only in a limited way in the scanner classes:
+  The only tests are against '@root' and '@file'.
+  
+- For now, the unit-tests wrappers are hard-coded.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

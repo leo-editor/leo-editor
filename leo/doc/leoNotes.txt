@@ -17322,5 +17322,24 @@ class GeneralTest: ### (StcTest):
     '''A general test class.'''
     
     @others
+.. @+node:ekr.20140727180847.17986: *3* unused special-case scanners
+.. @+node:ekr.20140720065949.17751: *4* ic.scanOrgModeText (@auto-org)
+def scanOrgModeText(self,s,parent,atAuto=False):
+    '''Scan org-mode text.'''
+    import leo.plugins.importers.org as org
+    scanner = org.OrgModeScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20090501095634.48: *4* ic.scanRstText (@auto-rst)
+def scanRstText (self,s,parent,atAuto=False):
+    '''Scan reStructuredText.'''
+    import leo.plugins.importers.rst as rst
+    scanner = rst.RstScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20120517155536.10124: *4* ic.scanVimoutlinerText (@auto-otl)
+def scanVimoutlinerText(self,s,parent,atAuto=False):
+    '''Scan vim outliner text.'''
+    import leo.plugins.importers.otl as otl
+    scanner = otl.VimoutlinerScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
 .. @-all
 .. @-leo

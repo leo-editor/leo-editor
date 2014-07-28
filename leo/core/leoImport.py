@@ -121,6 +121,8 @@ class LeoImportCommands:
     def __init__ (self,c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
+        self.atAutoDict = {}
+        self.classDispatchDict = {}
         self.default_directory = None # For @path logic.
         self.encoding = 'utf-8'
         self.errors = 0
@@ -135,6 +137,7 @@ class LeoImportCommands:
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
         self.createImporterData()
+            # Create self.atAutoDict and self.classDispatchDict
     #@+node:ekr.20140724064952.18037: *4* ic.createImporterData
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
@@ -661,8 +664,11 @@ class LeoImportCommands:
             p = parent.insertAsLastChild()
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
-            elif self.treeType == "@auto-otl":
-                p.initHeadString("@auto-otl " + fileName)
+            ### These special cases don't seem to be needed.
+            # elif self.treeType == "@auto-org":
+                # p.initHeadString("@auto-org " + fileName)
+            # elif self.treeType == "@auto-otl":
+                # p.initHeadString("@auto-otl " + fileName)
             elif self.treeType is None:
                 # 2010/09/29: by convention, we use the short file name.
                 p.initHeadString(g.shortFileName(fileName))
@@ -674,20 +680,13 @@ class LeoImportCommands:
     def dispatch(self,ext,p):
         '''Return the correct scanner function for p.'''
         d = self.atAutoDict
+        # First, try to match @auto type.
         for key in d.keys():
             if g.match_word(p.h,0,key):
-                aClass = d.get(key)
-                if aClass:
-                    def scanner_for_class_cb(atAuto,parent,s,prepass=False):
-                        scanner = aClass(importCommands=self,atAuto=atAuto)
-                        # print('******** ic.dispatch',aClass.__name__)
-                        return scanner.run(s,parent,prepass=prepass)
-                    scanner = scanner_for_class_cb
-                    break
-        else:
-            scanner = self.scanner_for_ext(ext)
-            # if not scanner: g.trace('**** no scanner for',ext)
-        return scanner
+                scanner = self.scanner_for_at_auto(key)
+                if scanner: return scanner
+        # Second, match file extension.
+        return self.scanner_for_ext(ext)
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self,fileName,parent):
         '''Return the absolute path of the file and set .default_directory.'''
@@ -711,14 +710,16 @@ class LeoImportCommands:
                 # Kind is used only for messages.
             if s is None: return None,None
             if e: self.encoding = e
-        if ext == '.otl':
-            self.treeType = '@auto-otl'
-        if ext == '.org':
-            self.treeType = '@auto-org'
+        ### These don't seem to be needed...
+        # if ext == '.otl':
+            # self.treeType = '@auto-otl'
+        # if ext == '.org':
+            # self.treeType = '@auto-org'
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
+        # g.trace(atAuto,self.treeType,fileName)
         return ext,s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
@@ -1279,14 +1280,6 @@ class LeoImportCommands:
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20071127175948.1: *3* ic.Import scanners
-    #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
-    def body_parser_for_ext(self,ext):
-        '''A factory returning a body parser function for the given file extension.'''
-        aClass = ext and self.classDispatchDict.get(ext)
-        def body_parser_for_class(parent,s):
-            obj = aClass(importCommands=self,atAuto=True)
-            return obj.run(s,parent,parse_body=True)
-        return body_parser_for_class if aClass else None
     #@+node:ekr.20080811174246.1: *4* ic.languageForExtension
     def languageForExtension (self,ext):
         '''Return the language corresponding to the extension ext.'''
@@ -1305,23 +1298,17 @@ class LeoImportCommands:
         # g.trace(ext,repr(language))
         # Return the language even if there is no colorizer mode for it.
         return language
-    #@+node:ekr.20140531104908.18833: *4* ic.parse_body
-    def parse_body(self,p):
-        '''The parse-body command.'''
-        if not p: return
-        c,ic = self.c,self
-        language = g.scanForAtLanguage(c,p)
-        ext = '.' + g.app.language_extension_dict.get(language)
-        parser = self.body_parser_for_ext(ext)
-        # g.trace(language,ext,parser)
-        if parser:
-            bunch = c.undoer.beforeChangeTree(p)
-            s = p.b
-            p.b = ''
-            parser(p,s)
-            c.undoer.afterChangeTree(p,'parse-body',bunch)
-            p.expand()
-            c.redraw()
+    #@+node:ekr.20140727180847.17985: *4* ic.scanner_for_at_auto
+    def scanner_for_at_auto(self,atAuto):
+        '''A factory returning a scanner function for the given kind of @auto directive.'''
+        aClass = self.atAutoDict.get(atAuto)
+        if aClass:
+            def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
+                scanner = aClass(importCommands=self,atAuto=atAuto)
+                return scanner.run(s,parent,prepass=prepass)
+            return scanner_for_at_auto_cb
+        else:
+            return None
     #@+node:ekr.20140130172810.15471: *4* ic.scanner_for_ext
     def scanner_for_ext(self,ext):
         '''A factory returning a scanner function for the given file extension.'''
@@ -1330,18 +1317,6 @@ class LeoImportCommands:
             scanner = aClass(importCommands=self,atAuto=atAuto)
             return scanner.run(s,parent,prepass=prepass)
         return scanner_for_ext_cb if aClass else None
-    #@+node:ekr.20140720065949.17751: *4* ic.scanOrgModeText
-    def scanOrgModeText(self,s,parent,atAuto=False):
-        '''Scan org-mode text.'''
-        import leo.plugins.importers.org as org
-        scanner = org.OrgModeScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20090501095634.48: *4* ic.scanRstText
-    def scanRstText (self,s,parent,atAuto=False):
-        '''Scan reStructuredText.'''
-        import leo.plugins.importers.rst as rst
-        scanner = rst.RstScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
     #@+node:ekr.20070713075352: *4* ic.scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
         '''Scan the text of an unknown file type.'''
@@ -1361,12 +1336,31 @@ class LeoImportCommands:
                 c.setChanged(False)
         g.app.unitTestDict = {'result':True}
         return True
-    #@+node:ekr.20120517155536.10124: *4* ic.scanVimoutlinerText
-    def scanVimoutlinerText(self,s,parent,atAuto=False):
-        '''Scan vim outliner text.'''
-        import leo.plugins.importers.otl as otl
-        scanner = otl.VimoutlinerScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
+    def parse_body(self,p):
+        '''The parse-body command.'''
+        if not p: return
+        c,ic = self.c,self
+        language = g.scanForAtLanguage(c,p)
+        ext = '.' + g.app.language_extension_dict.get(language)
+        parser = self.body_parser_for_ext(ext)
+        # g.trace(language,ext,parser)
+        if parser:
+            bunch = c.undoer.beforeChangeTree(p)
+            s = p.b
+            p.b = ''
+            parser(p,s)
+            c.undoer.afterChangeTree(p,'parse-body',bunch)
+            p.expand()
+            c.redraw()
+    #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
+    def body_parser_for_ext(self,ext):
+        '''A factory returning a body parser function for the given file extension.'''
+        aClass = ext and self.classDispatchDict.get(ext)
+        def body_parser_for_class(parent,s):
+            obj = aClass(importCommands=self,atAuto=True)
+            return obj.run(s,parent,parse_body=True)
+        return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
