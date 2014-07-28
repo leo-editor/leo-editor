@@ -3354,7 +3354,7 @@ class AtFile:
                 g.es("no dirty @auto nodes in the selected tree")
             else:
                 g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode
+    #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode (generalize)
     def writeOneAtAutoNode(self,p,toString,force,trialWrite=False):
         '''
         Write p, an @auto node.

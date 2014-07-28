@@ -7,92 +7,6 @@
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
-#@+<< how to write a new importer >>
-#@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
-#@@nocolor-node
-#@+at
-# 
-# This discussion is adapted from a thread on the leo-editor group:
-# http://groups.google.com/group/leo-editor-users/msg/b148d8fb3338e6a9
-# of January 22, 2010.  Feel free to ask more questions there.
-# 
-# leoImport.py contains a set of "importers" all based on the
-# BaseScanner class. You can define your own importer by creating a
-# subclass. With luck, your subclass might be very simple, as with class
-# CScanner. In other words, BaseScanner is supposed to do almost all the
-# work.
-# 
-# **Important**  As I write this, I realize that I remember very little
-# about the code, but I do remember its general organization and the
-# process of creating a new importer. Here is all I remember, and it
-# should be all you need to write any importer.
-# 
-# This base class has two main parts:
-# 
-# 1. The "parser" that recognizes where nodes begin and end.
-# 
-# 2. The "code generator" the actually creates the imported nodes.
-# 
-# You should never have to change the code generators.  Confine your
-# attention to the parser.
-# 
-# The parser thinks it is looking for classes, and within classes,
-# method definitions.  Your job is to tell the parser how to do this.
-# Let's look at the ctor for BaseScanner for clues:
-# 
-#     # May be overridden in subclasses.
-#     self.anonymousClasses = [] # For Delphi Pascal interfaces.
-#     self.blockCommentDelim1 = None
-#     self.blockCommentDelim2 = None
-#     self.blockCommentDelim1_2 = None
-#     self.blockCommentDelim2_2 = None
-#     self.blockDelim1 = '{'
-#     self.blockDelim2 = '}'
-#     self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
-#     self.classTags = ['class',] # tags that start a tag.
-#     self.functionTags = []
-#     self.hasClasses = True
-#     self.hasFunctions = True
-#     self.lineCommentDelim = None
-#     self.lineCommentDelim2 = None
-#     self.outerBlockDelim1 = None
-#     self.outerBlockDelim2 = None
-#     self.outerBlockEndsDecls = True
-#     self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
-#     self.sigFailTokens = []
-#         # A list of strings that abort a signature when seen in a tail.
-#         # For example, ';' and '=' in C.
-# 
-#     self.strict = False # True if leading whitespace is very significant.
-# 
-# Yes, this looks like gibberish at first. I do *not* remember what all
-# these things do in detail, although obviously the names mean
-# something. What I *do* remember is that these ivars control the
-# operation of the startsFunction and startsClass methods and their
-# helpers (children) *especially startsHelper* and the methods that call
-# them, scan and scanHelper. Oh, and one more thing. You may want to set
-# hasClasses = False.
-# 
-# Most of these methods have a trace var that will enable tracing during
-# importing. The high-level strategy is simple: study startsHelper in
-# detail, set the ivars above to make startsHelper do what you want, and
-# trace until things work as you want :-)
-# 
-# There is one more part of this high-level strategy. Sometimes the
-# ivars above are not sufficient to make startsHelper work properly. In
-# that case, subclasses will override various methods of the parser, but
-# *not* the code generator.
-# 
-# For example, if indentation affects parsing, you will want to look at
-# the Python importer to see how it works--it overrides skipCodeBlock, a
-# helper of startsHelper. Others common overrides redefine what a
-# comment or string is. For more details, look at the various scanners
-# to see the kinds of tricks they use.
-# 
-# That's it. It would be pointless to give you more details, because
-# those details would lead you *away* from the process you need to
-# follow.  It's this process/strategy that is important.
-#@-<< how to write a new importer >>
 #@+<< imports >>
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
@@ -115,7 +29,12 @@ import time
 #@+others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
 class LeoImportCommands:
-
+    '''
+    A class implementing all of Leo's import/export code. This class
+    uses **importers** in the leo/plugins/importers folder.
+    
+    For more information, see leo/plugins/importers/howto.txt.
+    '''
     #@+others
     #@+node:ekr.20031218072017.3207: *3* ic.__init__ & helpers
     def __init__ (self,c):
