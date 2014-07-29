@@ -67,11 +67,12 @@ class LeoImportCommands:
             sfn = g.shortFileName(fn)
             if sfn != '__init__.py':
                 try:
+                    module_name = sfn[:-3]
                     # Important: use importlib to give imported modules their fully qualified names.
-                    m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+                    m = importlib.import_module('leo.plugins.importers.%s' % module_name)
                     self.parse_importer_dict(sfn,m)
-                except ImportError:
-                    g.warning('can not import leo.plugins,importers.%s' % sfn)
+                except Exception:
+                    g.warning('can not import leo.plugins.importers.%s' % module_name)
     #@+node:ekr.20140723140445.18076: *4* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
@@ -608,8 +609,12 @@ class LeoImportCommands:
             aClass = self.atAutoDict.get(key)
             if aClass and g.match_word(p.h,0,key):
                 def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
-                    scanner = aClass(importCommands=self,atAuto=atAuto)
-                    return scanner.run(s,parent,prepass=prepass)
+                    try:
+                        scanner = aClass(importCommands=self,atAuto=atAuto)
+                        return scanner.run(s,parent,prepass=prepass)
+                    except Exception:
+                        g.es_exception()
+                        return None
                 return scanner_for_at_auto_cb
         return None
     #@+node:ekr.20140130172810.15471: *6* ic.scanner_for_ext
@@ -618,8 +623,12 @@ class LeoImportCommands:
         aClass = self.classDispatchDict.get(ext)
         if aClass:
             def scanner_for_ext_cb(atAuto,parent,s,prepass=False):
-                scanner = aClass(importCommands=self,atAuto=atAuto)
-                return scanner.run(s,parent,prepass=prepass)
+                try:
+                    scanner = aClass(importCommands=self,atAuto=atAuto)
+                    return scanner.run(s,parent,prepass=prepass)
+                except Exception:
+                    g.es_exception()
+                    return None
             return scanner_for_ext_cb
         else:
             return None

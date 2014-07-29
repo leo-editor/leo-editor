@@ -3365,13 +3365,10 @@ class AtFile:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806140208: *5* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self,toString=False,writeDirtyOnly=True):
-
         """Write @auto nodes in the selected outline"""
-
         at = self ; c = at.c
         p = c.p ; after = p.nodeAfterTree()
         found = False
-
         while p and p != after:
             if p.isAtAutoNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
                 ok = at.writeOneAtAutoNode(p,toString=toString,force=True)
@@ -3382,7 +3379,6 @@ class AtFile:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-
         if not g.unitTesting:
             if found:
                 g.es("finished")
@@ -3396,10 +3392,12 @@ class AtFile:
         Write p, an @auto node.
         File indices *must* have already been assigned.
         '''
+        trace = False and not g.unitTesting
         at,c = self,self.c
         root = p.copy()
         fileName = p.atAutoNodeName()
         if not fileName and not toString:
+            if trace: g.trace('not an @auto node',p.h)
             return False
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
@@ -3485,7 +3483,11 @@ class AtFile:
             aClass = d.get(key)
             if aClass and g.match_word(root.h,0,key):
                 def writer_for_at_auto_cb(root):
-                    return aClass(at.c).write(root)
+                    try:
+                        return aClass(at.c).write(root)
+                    except Exception:
+                        g.es_exception()
+                        return None
                 return writer_for_at_auto_cb
         return None
     #@+node:ekr.20140728040812.17997: *7* at.writer_for_ext
@@ -3495,7 +3497,11 @@ class AtFile:
         aClass = at.writersDispatchDict.get(ext)
         if aClass:
             def writer_for_ext_cb(root):
-                return aClass(at.c).write(root)
+                try:
+                    return aClass(at.c).write(root)
+                except Exception:
+                    g.es_exception()
+                    return None
             return writer_for_ext_cb
         else:
             return None
