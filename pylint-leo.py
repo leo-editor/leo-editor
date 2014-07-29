@@ -228,7 +228,7 @@ def getTable(scope):
             (externalList,'external'),
         ),
         'file': (
-            ([g_option_fn],'core'), # Default is a core file.
+            ([g_option_fn],''), # Default directory is the leo directory (was leo/core)
         ),
         'gui': (
             (guiPluginsList,'plugins'),
