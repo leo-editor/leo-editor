@@ -141,7 +141,6 @@ class ViewController:
                 root = cc.root
                 language = g.scanForAtLanguage(c,root) 
                 ext = '.'+g.app.language_extension_dict.get(language)
-                ### scanner = ic.importDispatchDict.get(ext)
                 scanner = ic.scanner_for_ext(ext)
                 # g.trace(language,ext,scanner.__name__)
                 p = root.insertAfter()

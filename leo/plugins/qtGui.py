@@ -6228,13 +6228,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         
     #@+node:ekr.20110605121601.18377: *10* isAutoFile
     def isAutoFile (self,fn):
-
-        '''Return true if the file whose name is fn
-        can be parsed with an @auto parser.
-        '''
-
+        '''Return true if fn (a file name) can be parsed with an @auto parser.'''
         c = self.c
-        d = c.importCommands.importDispatchDict
+        d = c.importCommands.classDispatchDict
         junk,ext = g.os_path_splitext(fn)
         return d.get(ext)
     #@+node:ekr.20120309075544.9881: *10* isBinaryFile
@@ -11594,9 +11590,7 @@ class JEditColorizer:
                     i += 1
     #@+node:ekr.20110605121601.18638: *4* mainLoop & restart
     def mainLoop(self,n,s):
-
         '''Colorize a *single* line s, starting in state n.'''
-
         trace = False and not g.unitTesting
         traceMatch = True
         traceFail = True
