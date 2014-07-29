@@ -11596,7 +11596,7 @@ fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shells
 errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print(s)
-if 1: # A a list of files.
+if 0: # A a list of files.
     files = [r'%s\%s.xml' % (theDir,s) for s in ('clojure',)] # 'rest','perl','scala',
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))

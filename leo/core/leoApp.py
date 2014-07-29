@@ -351,6 +351,7 @@ class LeoApp:
             "xml"                : "<!-- -->",
             "xsl"                : "<!-- -->",
             "xslt"               : "<!-- -->",
+            "yaml"               : "#",
             "zpt"                : "<!-- -->",
 
             # These aren't real languages, or have no delims...
@@ -506,6 +507,7 @@ class LeoApp:
             "xml"           : "xml",
             "xsl"           : "xsl",
             "xslt"          : "xsl",
+            "yaml"          : "yaml",
             "zpt"           : "zpt",
         }
 
@@ -658,6 +660,7 @@ class LeoApp:
             "xml":      "xml",
             "xom":      "omnimark",
             "xsl":      "xsl",
+            "yaml":     "yaml",
             "zpt":      "zpt",
         }
 
