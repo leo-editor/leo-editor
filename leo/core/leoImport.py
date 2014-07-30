@@ -77,10 +77,11 @@ class LeoImportCommands:
     #@+node:ekr.20140723140445.18076: *4* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
-        Set entries in self.classDispatchDict, self.atAutoDict and
+        Set entries in ic.classDispatchDict, ic.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
         '''
         trace = False and not g.unitTesting
+        ic = self
         importer_d = getattr(m,'importer_dict',None)
         if importer_d:
             at_auto       = importer_d.get('@auto',[])
@@ -88,21 +89,22 @@ class LeoImportCommands:
             extensions    = importer_d.get('extensions',[])
             if at_auto:
                 # Make entries for each @auto type.
-                d = self.atAutoDict
+                d = ic.atAutoDict
                 for s in at_auto:
                     aClass = d.get(s)
                     if aClass:
                         g.trace('%s: duplicate %s classes:' % (sfn,s),
                            aClass,scanner_class)
-                        # g.trace('duplicate @auto name (%s) in %s' % (s,sfn))
                     else:
                         d[s] = scanner_class
-                        self.atAutoDict[s] = scanner_class
+                        ic.atAutoDict[s] = scanner_class
                         g.app.atAutoNames.add(s)
-                        if trace: g.trace('found scanner for %20s in %s: %s' % (s,sfn,scanner_class))
+                        if trace: g.trace(
+                            'found scanner for %20s in %s: %s' % (
+                                s,sfn,scanner_class))
             if extensions:
                 # Make entries for each extension.
-                d = self.classDispatchDict
+                d = ic.classDispatchDict
                 for ext in extensions:
                     aClass = d.get(ext)
                     if aClass:
@@ -559,10 +561,12 @@ class LeoImportCommands:
         if s is None:
             if trace: g.trace('read failed',fileName)
             return
+        if trace and not s:
+            g.trace('empty file: not calling importer',fileName)
+            return
         # Create the top-level headline.
         p = self.create_top_node(atAuto,fileName,parent)
         # Get the scanning function.
-        # if p.h.startswith('@auto-test'): g.pdb()
         func = self.dispatch(ext,p)
         if trace: g.trace(ext,p.h,func)
         # Call the scanning function.
@@ -596,13 +600,8 @@ class LeoImportCommands:
             p = parent.insertAsLastChild()
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
-            ### These special cases don't seem to be needed.
-            # elif self.treeType == "@auto-org":
-                # p.initHeadString("@auto-org " + fileName)
-            # elif self.treeType == "@auto-otl":
-                # p.initHeadString("@auto-otl " + fileName)
             elif self.treeType is None:
-                # 2010/09/29: by convention, we use the short file name.
+                # By convention, we use the short file name.
                 p.initHeadString(g.shortFileName(fileName))
             else:
                 p.initHeadString(fileName)
@@ -617,7 +616,7 @@ class LeoImportCommands:
     def scanner_for_at_auto(self,p):
         '''A factory returning a scanner function for p, an @auto node.'''
         d = self.atAutoDict
-        trace = False and not g.unitTesting # p.h.startswith('@auto-test')
+        trace = False and not g.unitTesting # and p.h.startswith('@auto-test')
         for key in d.keys():
             aClass = d.get(key)
             if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
@@ -670,14 +669,8 @@ class LeoImportCommands:
             s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
                 # Kind is used only for messages.
             if s is None:
-                # g.trace('read failed:',fileName)
                 return None,None
             if e: self.encoding = e
-        ### These don't seem to be needed...
-        # if ext == '.otl':
-            # self.treeType = '@auto-otl'
-        # if ext == '.org':
-            # self.treeType = '@auto-org'
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:

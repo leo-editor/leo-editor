@@ -380,6 +380,25 @@ Won't do:
 - It would be way too dangerous to refactor the write code for @file, @shadow, etc.
     
 @language python
+.. @+node:ekr.20140729162415.18088: *4* Leo now supports dynamic @auto names
+@language rest
+
+The leo/plugins/importers folders now contains importer plugins.
+
+The leo/plugins/writers folders now contain writer plugins.
+
+Both importer and writer plugins can defined new kinds of @auto nodes.
+
+What I did:
+
+- atFile.ctor sets two sets of spellings of @auto names: g.app.atAutoNames
+  & g.app.atFileNames
+
+- Loading importer & writer plugins updates g.app.atAutoNames:
+    - at.parse_writer_dict sets at.atAutoWritersDict & at.writersDispatchDict
+    - ic.parse_importer_dict sets ic.atAutoDict and ic.classDispatchDict
+
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

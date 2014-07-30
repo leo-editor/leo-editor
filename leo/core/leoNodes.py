@@ -410,16 +410,12 @@ class Position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
-    def isAtAutoMarkdownNode    (self): return self.v.isAtAutoMarkdownNode()
-    def isAtAutoOrgModeNode     (self): return self.v.isAtAutoOrgModeNode()
-    def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
     def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
-    # def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
     def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
@@ -1934,29 +1930,11 @@ class VNode (BaseVnode):
     # Return the the empty string if v is not an @xxx node.
 
     def atAutoNodeName (self,h=None):
-        # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
-        # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        # names = (
-            # "@auto",
-            # "@auto-org","@auto-org-mode", # synonyms
-            # "@auto-otl","@auto-vim-outline", # synonyms
-            # "@auto-rst",
-        # )
-        # return self.findAtFileName(names,h=h)
         return self.findAtFileName(g.app.atAutoNames,h=h)
-        
-    def atAutoMarkdownNodeName(self,h=None):
-        names = ("@auto-markdown",)
-        return self.findAtFileName(names,h=h)
-        
-    def atAutoOrgModeNodeName (self,h=None):
-        names = ("@auto-org-mode","@auto-org",)
-        return self.findAtFileName(names,h=h)
 
-    def atAutoOtlNodeName (self,h=None):
-        names = ("@auto-otl","@auto-vim-outline",)
-        return self.findAtFileName(names,h=h)
-
+    # Retain this special case as part of the "escape hatch".
+    # That is, we fall back on code in leoRst.py if no 
+    # importer or writer for reStructuredText exists.
     def atAutoRstNodeName (self,h=None):
         names = ("@auto-rst",)
         return self.findAtFileName(names,h=h)
@@ -2008,15 +1986,6 @@ class VNode (BaseVnode):
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
-        
-    def isAtAutoMarkdownNode (self):
-        return True if self.atAutoMarkdownNodeName() else False
-        
-    def isAtAutoOrgModeNode (self):
-        return True if self.atAutoOrgModeNodeName() else False
-
-    def isAtAutoOtlNode (self):
-        return True if self.atAutoOtlNodeName() else False
 
     def isAtAutoRstNode (self):
         return True if self.atAutoRstNodeName() else False

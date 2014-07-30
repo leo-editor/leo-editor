@@ -156,8 +156,8 @@ class AtFile:
     #@+node:ekr.20140728040812.17991: *5* at.parse_writer_dict
     def parse_writer_dict(self,sfn,m):
         '''
-        Set entries in writersDispatchDict and atAutoWritersDict ivars using entries
-        in m.writers_dict.
+        Set entries in at.writersDispatchDict and at.atAutoWritersDict using
+        entries in m.writers_dict.
         '''
         at = self
         writer_d = getattr(m,'writer_dict',None)
@@ -787,12 +787,9 @@ class AtFile:
             return not isThin
     #@+node:ekr.20041005105605.26: *4* at.readAll
     def readAll(self,root,partialFlag=False):
-
-        """Scan vnodes, looking for @<file> nodes to read."""
-
+        """Scan positions, looking for @<file> nodes to read."""
         use_tracer = False
         if use_tracer: tt = g.startTracer()
-
         at = self ; c = at.c
         force = partialFlag
         if partialFlag:
@@ -804,10 +801,6 @@ class AtFile:
         scanned_tnodes = set()
         c.init_error_dialogs()
         after = p.nodeAfterTree() if partialFlag else c.nullPosition()
-        # if partialFlag:
-            # after = p.nodeAfterTree()    
-        # else:
-            # after = c.nullPosition()
         while p and p != after:
             gnx = p.gnx
             #skip clones
@@ -907,6 +900,10 @@ class AtFile:
             ic.createOutline(fileName,parent=p.copy(),atAuto=True)
         except AssertionError:
             ic.errors += 1
+        except Exception:
+            ic.errors += 1
+            g.es_print('Unexpected exception importing',fileName)
+            g.es_exception()
         if ic.errors:
             # Read the entire file into the node.
             g.error('errors inhibited read @auto %s' % (fileName))
@@ -3299,7 +3296,7 @@ class AtFile:
                 writtenFiles.append(p.v)
             elif p.isAtIgnoreNode():
                 pass # Handled in caller.
-            elif p.isAtAutoNode(): ### and (p.isDirty() or p == root):
+            elif p.isAtAutoNode():
                 at.writeOneAtAutoNode(p,toString=toString,force=force)
                 writtenFiles.append(p.v)
                 # Do *not* clear the dirty bits the entries in @persistence tree here!
@@ -3424,31 +3421,12 @@ class AtFile:
             if writer:
                 writer(root)
             elif root.isAtAutoRstNode():
-                # An escape hatch...
-                # Use theRst writer if there is not rst writer plugin.
+                # An escape hatch: fall back to the theRst writer
+                # if there is no rst writer plugin.
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
-            ### Old Static code
-                # isAtAutoMarkdown= root.isAtAutoMarkdownNode()
-                # isAtAutoOrgMode = root.isAtAutoOrgModeNode()
-                # isAtAutoOtl     = root.isAtAutoOtlNode()
-                # isAtAutoRst     = root.isAtAutoRstNode()
-                # if isAtAutoMarkdown:
-                    # ok2 = at.writeAtAutoMarkdownFile(root)
-                    # if not ok2: at.errors += 1
-                # elif isAtAutoRst:
-                    # ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
-                    # if not ok2: at.errors += 1
-                # elif isAtAutoOrgMode:
-                    # ok2 = at.writeAtAutoOrgModeFile(root)
-                    # if not ok2: at.errors += 1
-                # elif isAtAutoOtl:
-                    # ok2 = at.writeAtAutoOtlFile(root)
-                    # if not ok2: at.errors += 1
-                # else:
-                    # at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile()
                 # Sets stringOutput if toString is True.
             if at.errors == 0:
