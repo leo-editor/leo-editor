@@ -13,7 +13,7 @@ class MarkdownScanner (basescanner.BaseScanner):
 
         # Init the base class.
         basescanner.BaseScanner.__init__(self,importCommands,
-            atAuto=atAuto,language='markdown')
+            atAuto=atAuto,language='md')
         # Scanner overrides
         self.atAutoWarnsAboutLeadingWhitespace = True
         self.blockDelim1 = self.blockDelim2 = None

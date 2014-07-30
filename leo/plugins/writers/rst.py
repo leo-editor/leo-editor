@@ -14,8 +14,8 @@ class RstWriter(basewriter.BaseWriter):
     The writer class for @auto-rst and other reStructuredText nodes.
     This is *very* different from rst3 command's write code.
     '''
-    def __init__(self,c):
-        basewriter.BaseWriter.__init__(self,c)
+    # def __init__(self,c):
+        # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char (todo: check for root.uA)
     def underline_char(self,p,root_level):

@@ -8,8 +8,8 @@ import leo.plugins.writers.basewriter as basewriter
 #@+node:ekr.20140726091031.18155: ** class OrgModeWriter
 class OrgModeWriter(basewriter.BaseWriter):
     '''The writer class for markdown files.'''
-    def __init__(self,c):
-        basewriter.BaseWriter.__init__(self,c)
+    # def __init__(self,c):
+        # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18154: *3* orgw.write
     def write (self,root):
