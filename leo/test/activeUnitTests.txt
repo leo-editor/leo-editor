@@ -13849,63 +13849,51 @@ def __init__(self):
 def spam(self):
     pass
 #@+node:ekr.20100131180007.5393: *5* @test ic.reportMismatch
-import leo.plugins.importers.rst as rst
+import leo.plugins.importers.leo_rst as leo_rst
 ic = c.importCommands
-scanner = rst.RstScanner(importCommands=ic,atAuto=True)
+scanner = leo_rst.RstScanner(importCommands=ic,atAuto=True)
 scanner.root = p
 s1 = ["abc","xyz",]
 s2 = ["xyz",]
-
 scanner.reportMismatch(s1,s2,1,1)
-
 s1 = ["xyz",]
 s2 = ["abc","xyz",]
-
 scanner.reportMismatch(s1,s2,1,1)
 #@+node:ekr.20111105065243.3837: *5* @test ic.RstScanner.removeBlankLinesTokens (rst)
 # Important: at present only the RstScanner sets ignoreBlankLines == True
-import leo.plugins.importers.rst as rst
-sc = rst.RstScanner(importCommands=c.importCommands,atAuto=True)
+import leo.plugins.importers.leo_rst as leo_rst
+sc = leo_rst.RstScanner(importCommands=c.importCommands,atAuto=True)
 assert sc.ignoreBlankLines,'fail0'
-
 def strip(tokens):
     '''Remove the line number item from all tokens.'''
     return [(kind,val) for kind,val,n in tokens]
-    
 table = (
     ('a\n\nb',          'a\nb'),
     ('a\n \t\nb',       'a\nb'),
     ('a\n \n\t\n\n\nb', 'a\nb'),
     ('a\nb\n',          'a\nb\n'),
 )
-
 for s,expected in table:
-
     tokens = sc.tokenize(s)
     s2 = ''.join([val for (kind,val,n) in tokens])
     assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
         repr(s),repr(s2))
-    
     # A: Remove tokens for blank lines from tokens.
     tokens2 = sc.removeBlankLinesTokens(tokens)
-    
     # B: Remove blank lines first, then tokenize.
     lines = g.splitLines(s)
     lines2 = [z for z in lines if z.strip()]
     s2 = ''.join(lines2)
     tokens3 = sc.tokenize(s2)
-    
     if 0:
         for kind,val,n in tokens3:
             print('%3s %7s %s' % (n,kind,repr(val)))
-    
     # A and B should give the same result: just like abstract algebra diagrams.
     if 0:
         if strip(tokens2) != strip(tokens3):
             sc.compareTokens(tokens2,tokens3,trace=True)
     assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
         strip(tokens3),strip(tokens2))
-    
     # C: Removing blank tokens from already-compressed tokens should have no effect.
     tokens4 = sc.removeBlankLinesTokens(tokens3)
     assert tokens4 == tokens3,'fail3'
