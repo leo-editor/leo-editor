@@ -319,7 +319,19 @@ def pylint_command(event):
             if not found:
                 for p in root.parents():
                     if self.check(p,rc_fn):
+                        found = True
                         break
+            # If still not found, expand the search if root is a clone.
+            if not found:
+                isCloned = any([p.isCloned() for p in root.self_and_parents()])
+                # g.trace(isCloned,root.h)
+                if isCloned:
+                    for p in c.all_positions():
+                        if p.isAnyAtFileNode():
+                            isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                            # g.trace(isAncestor,p.h)
+                            if isAncestor and self.check(p,rc_fn):
+                                break
             if self.wait:
                 g.es_print('pylint: done')
         #@+node:ekr.20140718105559.17741: *5* run_pylint
