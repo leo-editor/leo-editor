@@ -562,8 +562,7 @@ class LeoImportCommands:
             if trace: g.trace('read failed',fileName)
             return
         if trace and not s:
-            g.trace('empty file: not calling importer',fileName)
-            return
+            g.trace('empty file: but calling importer',fileName)
         # Create the top-level headline.
         p = self.create_top_node(atAuto,fileName,parent)
         # Get the scanning function.
