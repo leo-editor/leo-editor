@@ -53,7 +53,7 @@ class LeoImportCommands:
         self.web_st = [] # noweb symbol table.
         self.createImporterData()
             # update g.app.atAutoNames and self.classDispatchDict
-    #@+node:ekr.20140724064952.18037: *4* ic.createImporterData
+    #@+node:ekr.20140724064952.18037: *4* ic.createImporterData & helper
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
         trace = False and not g.unitTesting
@@ -100,7 +100,7 @@ class LeoImportCommands:
                 # except Exception:
                     # g.es_exception()
                     # g.warning('can not import leo.plugins.importers.%s' % module_name)
-    #@+node:ekr.20140723140445.18076: *4* ic.parse_importer_dict
+    #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
         Set entries in ic.classDispatchDict, ic.atAutoDict and

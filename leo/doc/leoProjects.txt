@@ -488,6 +488,42 @@ What I did:
     - ic.parse_importer_dict sets ic.atAutoDict and ic.classDispatchDict
 
 @language python
+.. @+node:ekr.20140730072544.17981: *4* Leo imports importers & writers from home/.leo
+@language rest
+
+Leo now imports from ~/.leo/plugins before importing from leo/plugins.
+
+The new code is in at.createWritersData & helper and ic.at.createImportersData & their helpers.
+.. @+node:ekr.20140730081842.17990: *5*  demo script
+'''Load each plugins ~/.leo/plugins if possible, then from leo/plugins.'''
+import glob
+def report(message,kind,folder,name):
+    g.trace('%7s: %5s %9s %s' % (message,kind,folder,name))
+g.cls()
+plugins1 = g.os_path_finalize_join(g.app.homeDir,'.leo','plugins')
+plugins2 = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+seen = set() # set of (folder,sfn)
+for kind,plugins in (('home',plugins1),('leo',plugins2)):
+    if g.os_path_exists(plugins):
+        for folder in ('importers','writers'):
+            path = g.os_path_finalize_join(plugins,folder)
+            pattern = g.os_path_finalize_join(plugins,folder,'*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if g.os_path_exists(fn) and sfn != '__init__.py':
+                    moduleName = sfn[:-3]
+                    if moduleName:
+                        data = (folder,sfn)
+                        if data in seen:
+                            report('seen',kind,folder,sfn)
+                        else:
+                            m = g.importFromPath(moduleName,path) # Uses imp.
+                            if m:
+                                seen.add(data)
+                                report('loaded',kind,folder,m.__name__)
+                            else:
+                                report('error',kind,folder,sfn)
+                # else: report('skipped',kind,folder,sfn)
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
