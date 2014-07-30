@@ -90,6 +90,8 @@ class LeoApp:
         self.machineDir = None      # The machine-specific directory.
 
         # Global data...
+        self.atAutoNames = set()        # The set of all @auto spellings.
+        self.atFileNames = set()        # The set of all built-in @<file> spellings.
         self.globalKillBuffer = []      # The global kill buffer.
         self.globalRegisters = {}       # The global register list.
         self.leoID = None               # The id part of gnx's.
@@ -176,7 +178,9 @@ class LeoApp:
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
 
-        # Define all global data.        
+        # Define all global data.
+        self.init_at_auto_names()
+        self.init_at_file_names()  
         self.define_global_constants()
         self.define_language_delims_dict()
         self.define_language_extension_dict()
@@ -184,6 +188,26 @@ class LeoApp:
         self.global_commands_dict = {}
 
         self.ipk = None   # python kernel instance
+    #@+node:ekr.20140729162415.18086: *4* app.init_at_auto_names
+    def init_at_auto_names(self):
+        '''Init the app.atAutoNames set.'''
+        self.atAutoNames = set([
+            "@auto-rst","@auto",
+        ])
+    #@+node:ekr.20140729162415.18091: *4* app.init_at_file_names
+    def init_at_file_names(self):
+        '''Init the app.atFileNames set.'''
+        self.atFileNames = set([
+            "@asis",
+            "@edit",
+            "@file-asis","@file-thin","@file-nosent","@file",
+            "@nosent",
+            # "@nosentinelsfile",
+            # "@silentfile",
+            "@shadow",
+            # "@thinfile", 
+            "@thin", 
+        ])
     #@+node:ekr.20031218072017.1417: *4* app.define_global_constants
     def define_global_constants(self):
 

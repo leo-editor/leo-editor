@@ -2223,14 +2223,12 @@ class EditCommandsClass (BaseEditCommandsClass):
             return False
         #@+node:ekr.20121016093159.10293: *7* match_word
         def match_word (self,s,i,pat):
-
-            '''Return True if s[i:] word matches the pat string.
+            '''
+            Return True if s[i:] word matches the pat string.
 
             We can't use g.match_word because s is usually a list
             and g.match_word uses s.find.
-
             '''
-
             if self.match(s,i,pat):
                 j = i + len(pat)
                 if j >= len(s):

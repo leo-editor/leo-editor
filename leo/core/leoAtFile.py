@@ -149,21 +149,22 @@ class AtFile:
                 try:
                     # Important: use importlib to give imported modules their fully qualified names.
                     m = importlib.import_module('leo.plugins.writers.%s' % sfn[:-3])
-                    at.parse_importer_dict(sfn,m)
-                except ImportError:
+                    at.parse_writer_dict(sfn,m)
+                except Exception:
+                    g.es_exception()
                     g.warning('can not import leo.plugins.writers.%s' % sfn)
-    #@+node:ekr.20140728040812.17991: *5* at.parse_importer_dict
-    def parse_importer_dict(self,sfn,m):
+    #@+node:ekr.20140728040812.17991: *5* at.parse_writer_dict
+    def parse_writer_dict(self,sfn,m):
         '''
         Set entries in writersDispatchDict and atAutoWritersDict ivars using entries
         in m.writers_dict.
         '''
         at = self
-        d = getattr(m,'writer_dict',None)
-        if d:
-            at_auto = d.get('@auto',[])
-            scanner_class = d.get('class',None)
-            extensions = d.get('extensions',[])
+        writer_d = getattr(m,'writer_dict',None)
+        if writer_d:
+            at_auto         = writer_d.get('@auto',[])
+            scanner_class   = writer_d.get('class',None)
+            extensions      = writer_d.get('extensions',[])
             if at_auto:
                 # Make entries for each @auto type.
                 d = self.atAutoWritersDict
@@ -174,6 +175,7 @@ class AtFile:
                             aClass,scanner_class)
                     else:
                         d[s] = scanner_class
+                        g.app.atAutoNames.add(s)
             if extensions:
                 # Make entries for each extension.
                 d = self.writersDispatchDict
@@ -799,13 +801,13 @@ class AtFile:
             c.endEditing() 
         anyRead = False
         p = root.copy()
-
         scanned_tnodes = set()
         c.init_error_dialogs()
-
-        if partialFlag: after = p.nodeAfterTree()    
-        else: after = c.nullPosition()
-
+        after = p.nodeAfterTree() if partialFlag else c.nullPosition()
+        # if partialFlag:
+            # after = p.nodeAfterTree()    
+        # else:
+            # after = c.nullPosition()
         while p and p != after:
             gnx = p.gnx
             #skip clones
@@ -813,7 +815,6 @@ class AtFile:
                 p.moveToNodeAfterTree()
                 continue
             scanned_tnodes.add(gnx)
-
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
@@ -852,16 +853,12 @@ class AtFile:
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                     at.rememberReadPath(at.fullPath(p),p)
                 p.moveToThreadNext()
-
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
         #for v in c.all_unique_nodes():
         #    v.clearOrphan()
-
         if partialFlag and not anyRead and not g.unitTesting:
             g.es("no @<file> nodes in the selected tree")
-
         if use_tracer: tt.stop()
-
         c.raise_error_dialogs()  # 2011/12/17
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):

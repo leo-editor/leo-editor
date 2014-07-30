@@ -1909,16 +1909,12 @@ class VNode (BaseVnode):
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName (self,names,h=''):
-
-        """Return the name following one of the names in nameList.
-        Return an empty string."""
-
+        '''Return the name following one of the names in nameList or ""'''
         # Allow h argument for unit testing.
         if not h: h = self.headString()
-
+        # if h.startswith('@auto-test'): g.trace(h,'@auto-test' in names)
         if not g.match(h,0,'@'):
             return ""
-
         i = g.skip_id(h,1,'-')
         word = h[:i]
         if word in names and g.match_word(h,0,word):
@@ -1927,43 +1923,27 @@ class VNode (BaseVnode):
             return name
         else:
             return ""
-    #@+node:ekr.20031218072017.3350: *4* anyAtFileNodeName
+    #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
     def anyAtFileNodeName (self):
-
         """Return the file name following an @file node or an empty string."""
-
-        names = (
-            # longer prefixes must preceded shorter.
-            "@asis",   
-            "@auto-org-mode", "@auto-org",
-            "@auto-otl", "@auto-vim-outline",
-            "@auto-rst",
-            "@auto",
-            "@edit",
-            "@file-asis","@file-thin","@file-nosent",
-            "@file",
-            "@nosent",
-            # "@nosentinelsfile",
-            # "@silentfile",
-            "@shadow",
-            # "@thinfile", 
-            "@thin", 
-            )
-        return self.findAtFileName(names)
-    #@+node:ekr.20031218072017.3348: *4* at...FileNodeName
+        return (
+            self.findAtFileName(g.app.atAutoNames) or
+            self.findAtFileName(g.app.atFileNames))
+    #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
     def atAutoNodeName (self,h=None):
         # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        names = (
-            "@auto",
-            "@auto-org","@auto-org-mode", # synonyms
-            "@auto-otl","@auto-vim-outline", # synonyms
-            "@auto-rst",
-        )
-        return self.findAtFileName(names,h=h)
+        # names = (
+            # "@auto",
+            # "@auto-org","@auto-org-mode", # synonyms
+            # "@auto-otl","@auto-vim-outline", # synonyms
+            # "@auto-rst",
+        # )
+        # return self.findAtFileName(names,h=h)
+        return self.findAtFileName(g.app.atAutoNames,h=h)
         
     def atAutoMarkdownNodeName(self,h=None):
         names = ("@auto-markdown",)
@@ -2008,14 +1988,14 @@ class VNode (BaseVnode):
     # New names, less confusing
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
-    #@+node:EKR.20040430152000: *4* isAtAllNode
+    #@+node:EKR.20040430152000: *4* v.isAtAllNode
     def isAtAllNode (self):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""
 
         flag, i = g.is_special(self._bodyString,0,"@all")
         return flag
-    #@+node:ekr.20040326031436: *4* isAnyAtFileNode
+    #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode (self):
 
         """Return True if v is any kind of @file or related node."""
@@ -2025,7 +2005,7 @@ class VNode (BaseVnode):
 
         h = self.headString()
         return h and h[0] == '@' and self.anyAtFileNodeName()
-    #@+node:ekr.20040325073709: *4* isAt...FileNode (VNode)
+    #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
         
@@ -2062,7 +2042,7 @@ class VNode (BaseVnode):
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
     isAtAsisFileNode   = isAtSilentFileNode
-    #@+node:ekr.20031218072017.3351: *4* isAtIgnoreNode
+    #@+node:ekr.20031218072017.3351: *4* v.isAtIgnoreNode
     def isAtIgnoreNode (self):
 
         """Returns True if the receiver contains @ignore in its body at the start of a line.
@@ -2077,7 +2057,7 @@ class VNode (BaseVnode):
         else:
             flag, i = g.is_special(self._bodyString, 0,"@ignore")
             return flag
-    #@+node:ekr.20031218072017.3352: *4* isAtOthersNode
+    #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
     def isAtOthersNode (self):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""

@@ -40,7 +40,7 @@ class LeoImportCommands:
     def __init__ (self,c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
-        self.atAutoDict = {}
+        self.atAutoDict = {} # Keys are @auto names, values are scanner classes.
         self.classDispatchDict = {}
         self.default_directory = None # For @path logic.
         self.encoding = 'utf-8'
@@ -56,7 +56,7 @@ class LeoImportCommands:
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
         self.createImporterData()
-            # Create self.atAutoDict and self.classDispatchDict
+            # update g.app.atAutoNames and self.classDispatchDict
     #@+node:ekr.20140724064952.18037: *4* ic.createImporterData
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
@@ -72,18 +72,20 @@ class LeoImportCommands:
                     m = importlib.import_module('leo.plugins.importers.%s' % module_name)
                     self.parse_importer_dict(sfn,m)
                 except Exception:
+                    g.es_exception()
                     g.warning('can not import leo.plugins.importers.%s' % module_name)
     #@+node:ekr.20140723140445.18076: *4* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
-        Set entries in self.classDispatchDict and self.atAutoDict using entries
-        in m.importer_dict.
+        Set entries in self.classDispatchDict, self.atAutoDict and
+        g.app.atAutoNames using entries in m.importer_dict.
         '''
-        d = getattr(m,'importer_dict',None)
-        if d:
-            at_auto = d.get('@auto',[])
-            scanner_class = d.get('class',None)
-            extensions = d.get('extensions',[])
+        trace = False and not g.unitTesting
+        importer_d = getattr(m,'importer_dict',None)
+        if importer_d:
+            at_auto       = importer_d.get('@auto',[])
+            scanner_class = importer_d.get('class',None)
+            extensions    = importer_d.get('extensions',[])
             if at_auto:
                 # Make entries for each @auto type.
                 d = self.atAutoDict
@@ -91,9 +93,13 @@ class LeoImportCommands:
                     aClass = d.get(s)
                     if aClass:
                         g.trace('%s: duplicate %s classes:' % (sfn,s),
-                            aClass,scanner_class)
+                           aClass,scanner_class)
+                        # g.trace('duplicate @auto name (%s) in %s' % (s,sfn))
                     else:
                         d[s] = scanner_class
+                        self.atAutoDict[s] = scanner_class
+                        g.app.atAutoNames.add(s)
+                        if trace: g.trace('found scanner for %20s in %s: %s' % (s,sfn,scanner_class))
             if extensions:
                 # Make entries for each extension.
                 d = self.classDispatchDict
@@ -552,6 +558,7 @@ class LeoImportCommands:
         # Create the top-level headline.
         p = self.create_top_node(atAuto,fileName,parent)
         # Get the scanning function.
+        # if p.h.startswith('@auto-test'): g.pdb()
         func = self.dispatch(ext,p)
         # Call the scanning function.
         if g.unitTesting:
@@ -605,8 +612,10 @@ class LeoImportCommands:
     def scanner_for_at_auto(self,p):
         '''A factory returning a scanner function for p, an @auto node.'''
         d = self.atAutoDict
+        # trace = p.h.startswith('@auto-test')
         for key in d.keys():
-            aClass = self.atAutoDict.get(key)
+            aClass = d.get(key)
+            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h,0,key):
                 def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
                     try:
@@ -615,7 +624,9 @@ class LeoImportCommands:
                     except Exception:
                         g.es_exception()
                         return None
+                # if trace: g.trace('found',p.h)
                 return scanner_for_at_auto_cb
+        # if trace: g.trace('not found',p.h,sorted(d.keys()))
         return None
     #@+node:ekr.20140130172810.15471: *6* ic.scanner_for_ext
     def scanner_for_ext(self,ext):
