@@ -15,7 +15,7 @@ class BaseScanner:
     '''The base class for all import scanner classes.'''
     #@+others
     #@+node:ekr.20140727075002.18188: ** BaseScanner.ctor
-    def __init__ (self,importCommands,atAuto,language,alternate_language=None):
+    def __init__ (self,importCommands,atAuto,language='unnamed',alternate_language=None):
         '''ctor for BaseScanner.'''
         ic = importCommands
         self.atAuto = atAuto
