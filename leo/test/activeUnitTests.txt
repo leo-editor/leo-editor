@@ -16205,9 +16205,9 @@ except ImportError:
 
 if docutils:
     path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-    module = g.importFromPath(name = 'leo_pdf.py',
+    module = g.importFromPath(
+        moduleName='leo_pdf',
         path=path,
-        pluginName = 'leo_pdf',
         verbose = False)
 
     assert module
@@ -16215,6 +16215,8 @@ if docutils:
     result = c.rstCommands.writeToDocutils(s,'.pdf')
     # print(result)
     assert result,result
+elif 0:
+    print('no docutils')
 #@+node:ekr.20100131180007.5459: *4* @test rst.initAtAutoWrite
 rst = c.rstCommands
 rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
