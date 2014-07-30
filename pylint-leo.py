@@ -1,8 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
 '''
-This file is deprecated: it runs pylint on given lists.
-Instead, Leo's new pylint command runs pylint on all Python @<file> nodes in a given tree.
+This file runs pylint on predefined lists of files.
+
+The -r option no longer exists. Instead, use Leo's pylint command to run
+pylint on all Python @<file> nodes in a given tree.
+
+On windows, the following .bat file runs this file::
+    python27 pylint-leo.py %*
+
+On Ubuntu, the following alias runs this file::
+    pylint="python27 pylint-leo.py"
 '''
 #@@language python
 # pylint: disable=invalid-name
