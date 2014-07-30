@@ -10,7 +10,7 @@ class MarkdownScanner (basescanner.BaseScanner):
     #@+others
     #@+node:ekr.20140725190808.18068: *3* mds.__init__  (test)
     def __init__ (self,importCommands,atAuto):
-
+        '''ctor for MarkdownScanner class.'''
         # Init the base class.
         basescanner.BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,language='md')
@@ -19,9 +19,9 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
         self.escapeSectionRefs = False
-        ### self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
+        self.hasDecls = False
         self.ignoreBlankLines = True
         self.isRst = False
         self.lineCommentDelim = '..'
@@ -72,25 +72,17 @@ class MarkdownScanner (basescanner.BaseScanner):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
         # Never indent any text; discard the entire signature.
-        body1 = s[start:sigStart]
-        body2 = s[self.sigEnd+1:codeEnd]
+        body1 = '' # s[start:sigStart]
+        body2 = s[self.sigEnd:codeEnd]
         body2 = g.removeLeadingBlankLines(body2) 
         body = body1 + body2
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body1,body2
-    #@+node:ekr.20140725190808.18072: *3* mds.createDeclsNode (to be deleted)
-    # def createDeclsNode (self,parent,s):
-        # '''Create a child node of parent containing s.'''
-        # headline = '@rst-no-head %s declarations' % self.methodName
-        # body = self.undentBody(s)
-        # self.createHeadline(parent,body,headline)
     #@+node:ekr.20140725190808.18073: *3* mds.endGen
     def endGen (self,s):
         '''End code generation.'''
-        # Unlike, rST, there is no need to remember underlining characters.
-        # Append a warning to the root node.
-        warning = '\nWarning: this node is ignored when writing this file.'
+        warning = '\nWarning: this node is ignored when writing this file.\n\n'
         self.root.b = self.root.b + warning
     #@+node:ekr.20140725190808.18074: *3* mds.isUnderline
     def isUnderline(self,s):
@@ -119,14 +111,13 @@ class MarkdownScanner (basescanner.BaseScanner):
 
     def startsString (self,s,i):
         return False
-    #@+node:ekr.20140725190808.18076: *3* mds.startsHelper (test)
+    #@+node:ekr.20140725190808.18076: *3* mds.startsHelper
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''
         return True if s[i:] starts an markdown section.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.
         '''
         trace = False and not g.unitTesting
-        verbose = True
         level,name,i = self.startsSection(s,i)
         if level == 0:
             return False
@@ -136,7 +127,6 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.sigEnd = i
         self.sigId = name
         i += 1
-        if trace: g.trace('sigId',self.sigId,'next',next)
         while i < len(s):
             progress = i
             i,j = g.getLine(s,i)
@@ -145,13 +135,10 @@ class MarkdownScanner (basescanner.BaseScanner):
             else: i = j
             assert i > progress
         self.codeEnd = i
-        if trace:
-            if verbose:
-                g.trace('found...\n%s' % s[self.sigStart:self.codeEnd])
-            else:
-                g.trace('level %s %s' % (self.sectionLevel,self.sigId))
+        if trace: g.trace('found %s...\n%s' % (
+            self.sigId,s[self.sigStart:self.codeEnd]))
         return True
-    #@+node:ekr.20140725190808.18077: *3* mds.startsSection & helper (test)
+    #@+node:ekr.20140725190808.18077: *3* mds.startsSection & helper
     def startsSection (self,s,i):
         '''
         Scan one or two lines looking for the start of a section.
