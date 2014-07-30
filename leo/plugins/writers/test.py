@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140729162415.18090: * @file writers/test.py
 '''The @auto writer for .xyzzy files and @auto-test nodes.'''
-
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 trace = False and not g.unitTesting

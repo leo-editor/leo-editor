@@ -543,6 +543,7 @@ class LeoImportCommands:
         atAuto=False,atShadow=False,s=None,ext=None
     ):
         '''Create an outline by importing a file or string.'''
+        trace = False and not g.unitTesting
         c = self.c
         fileName = self.get_import_filename(fileName,parent)
         if g.is_binary_external_file(fileName):
@@ -550,16 +551,20 @@ class LeoImportCommands:
             # Create an @url node.
             p = parent.insertAsLastChild()
             p.h = '@url file://%s' % fileName
+            if trace: g.trace('binary file:',fileName)
             return
         # Init ivars.
         self.setEncoding(p=parent,atAuto=atAuto)
         ext,s = self.init_import(atAuto,atShadow,ext,fileName,s)
-        if not s: return
+        if s is None:
+            if trace: g.trace('read failed',fileName)
+            return
         # Create the top-level headline.
         p = self.create_top_node(atAuto,fileName,parent)
         # Get the scanning function.
         # if p.h.startswith('@auto-test'): g.pdb()
         func = self.dispatch(ext,p)
+        if trace: g.trace(ext,p.h,func)
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.w','.xxx'),(ext,p.h)
@@ -612,10 +617,10 @@ class LeoImportCommands:
     def scanner_for_at_auto(self,p):
         '''A factory returning a scanner function for p, an @auto node.'''
         d = self.atAutoDict
-        # trace = p.h.startswith('@auto-test')
+        trace = False and not g.unitTesting # p.h.startswith('@auto-test')
         for key in d.keys():
             aClass = d.get(key)
-            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
+            if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h,0,key):
                 def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
                     try:
@@ -624,9 +629,9 @@ class LeoImportCommands:
                     except Exception:
                         g.es_exception()
                         return None
-                # if trace: g.trace('found',p.h)
+                if trace: g.trace('found',p.h)
                 return scanner_for_at_auto_cb
-        # if trace: g.trace('not found',p.h,sorted(d.keys()))
+        if trace: g.trace('not found',p.h,sorted(d.keys()))
         return None
     #@+node:ekr.20140130172810.15471: *6* ic.scanner_for_ext
     def scanner_for_ext(self,ext):
@@ -664,7 +669,9 @@ class LeoImportCommands:
             else: kind = ''
             s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
                 # Kind is used only for messages.
-            if s is None: return None,None
+            if s is None:
+                # g.trace('read failed:',fileName)
+                return None,None
             if e: self.encoding = e
         ### These don't seem to be needed...
         # if ext == '.otl':
