@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140728153944.18079: *3* * search in home directory for importers & writers
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
@@ -1575,46 +1574,6 @@ import rope.base.project as project
 print(project)
 
 # myproject = project.Project('/path/to/myproject')
-.. @+node:ekr.20140729055228.17976: *3* Fix modes/md.py & modes/moin.py
-import glob
-pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-for fn in glob.glob(pattern):
-    sfn = g.shortFileName(fn)
-    f = open(fn)
-    s = f.read()
-    f.close()
-    if s.find(r'regexp="\\') > -1:
-        g.es(sfn)
-
-@
-
-Possible automatic computation of First sets:
-http://stackoverflow.com/questions/787134/can-i-determine-the-set-of-first-chars-matched-by-regex-pattern
-http://www.cs.uky.edu/~lewis/texts/theory/automata/reg-sets.pdf
-
-found: Rules indicated are dubious or broken
-
-md.py:
-    disabled: 6,7,
-    changed: 8,12,20,21,23,24,25,47
-    [ \t]   leadins: 8,20,24,25,50,51
-    space   leadins: 23,46,49
-    [=-]    leadins: 21,47
-    [\\_]   leadins: 54,55
-    other   leadins: 12,19,53
-
-moin.py:
-    [ \t]           rule 3.
-    single-quote    rule 6.
-
-erlang.py:  no obvious problem.
-lilypond.py:no obvious problem.
-perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
-rest.py:    no obvious problem.
-rtf.py:     no obvious problem.
-scala.py:   no obvious problem.
-yaml.py:    fixed
 .. @+node:ekr.20140711071454.17640: ** Next
 .. @+node:ekr.20130806072439.21203: *3* Recent wishlist
 @language rest

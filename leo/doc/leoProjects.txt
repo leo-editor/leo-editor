@@ -186,6 +186,46 @@ at.saveOutlineIfPossible makes the following hacks unnecessary:
   it with the write-at-files-nodes command.
 
 @language python
+.. @+node:ekr.20140729055228.17976: *4* Fixed modes/md.py
+import glob
+pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    f = open(fn)
+    s = f.read()
+    f.close()
+    if s.find(r'regexp="\\') > -1:
+        g.es(sfn)
+
+@
+
+Possible automatic computation of First sets:
+http://stackoverflow.com/questions/787134/can-i-determine-the-set-of-first-chars-matched-by-regex-pattern
+http://www.cs.uky.edu/~lewis/texts/theory/automata/reg-sets.pdf
+
+found: Rules indicated are dubious or broken
+
+md.py:
+    disabled: 6,7,
+    changed: 8,12,20,21,23,24,25,47
+    [ \t]   leadins: 8,20,24,25,50,51
+    space   leadins: 23,46,49
+    [=-]    leadins: 21,47
+    [\\_]   leadins: 54,55
+    other   leadins: 12,19,53
+
+moin.py:
+    [ \t]           rule 3.
+    single-quote    rule 6.
+
+erlang.py:  no obvious problem.
+lilypond.py:no obvious problem.
+perl.py:    no obvious problem.
+pl1.py:     no obvious problm.
+rest.py:    no obvious problem.
+rtf.py:     no obvious problem.
+scala.py:   no obvious problem.
+yaml.py:    fixed
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
@@ -341,7 +381,49 @@ so you specify the color with:
 .. @+node:ekr.20140402091953.16865: *4* Added pylint command
 @language rest
 
-It checks all the @<file> nodes in the selected tree.
+When pylint is available on your machine, Leo's pylint
+command will execute run pylint on all @<file> nodes in the
+selected tree. This command is now available from the popup
+menus created by the contextmenu plugin.
+
+This command is a dynamic way of selecting files to check
+with pylint. It is *much* easier to use than the old pylint
+-r option in pylint-leo.py. There is no longer any need to
+update a list of "recent" files. Hooray.
+
+The command has significantly changed my work flow. I use
+pylint much more often.
+
+The details of the search process are as follows:
+
+1. The command looks down the tree of the selected node,
+   looking for @<file> nodes.
+2. If now @<file> nodes are found, it looks up the tree,
+   looking for @<file> nodes.
+3. If the selected node is a clone, and no @<file> nodes
+   have yet been found, it expands the search to all
+   ancestors of all positions cloned to the selected node.
+
+This means that you can check a file by selecting any
+(possibly clone) node of the file.
+
+**Important**: running pylint-leo.py is still often very
+useful. In particular, I often run python pylint-leo.py -a
+to check all files. Here is the recently improved docstring
+for pylint-leo.py::
+
+    '''
+    This file runs pylint on predefined lists of files.
+    
+    The -r option no longer exists. Instead, use Leo's pylint command to run
+    pylint on all Python @<file> nodes in a given tree.
+    
+    On windows, the following .bat file runs this file::
+        python27 pylint-leo.py %*
+    
+    On Ubuntu, the following alias runs this file::
+        pylint="python27 pylint-leo.py"
+    '''
 .. @+node:ekr.20140720065949.17739: *4* Created @auto-org-mode
 @language rest
 
@@ -388,6 +470,13 @@ The leo/plugins/importers folders now contains importer plugins.
 The leo/plugins/writers folders now contain writer plugins.
 
 Both importer and writer plugins can defined new kinds of @auto nodes.
+
+Importers and writers can register either @auto-names or
+file extensions. I have just verified that @auto x.xyzzy
+will use both the importer and the writer for the .xyzzy
+extension, that is, importers/test.py and writers/test.py.
+So, for *unique* extensions, there is no need to use a
+separate @auto name, you can just use @auto.
 
 What I did:
 
