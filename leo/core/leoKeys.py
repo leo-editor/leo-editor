@@ -1661,11 +1661,11 @@ class KeyHandlerClass:
             except Exception:
                 g.es_exception()
                 g.trace(repr(name),repr(f),g.callers())
-    #@+node:ekr.20061101071425: *4* oops
+    #@+node:ekr.20061101071425: *4* k.oops
     def oops (self):
 
         g.trace('Should be defined in subclass:',g.callers(4))
-    #@+node:ekr.20110209093958.15413: *4* setDefaultEditingKeyAction (New)
+    #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
     def setDefaultEditingAction (self):
 
         k = self ; c = k.c
@@ -1678,7 +1678,7 @@ class KeyHandlerClass:
             action = 'insert'
 
         self.defaultEditingAction = action
-    #@+node:ekr.20061031131434.82: *4* setDefaultUnboundKeyAction
+    #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction (self,allowCommandState=True):
 
         k = self ; c = k.c
@@ -2043,13 +2043,11 @@ class KeyHandlerClass:
                 aList.append(w)
                 k.masterGuiBindingsDict [stroke] = aList
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
-    #@+node:ekr.20061031131434.111: *4* fullCommand (alt-x) & helper
+    #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
-
         '''Handle 'full-command' (alt-x) mode.'''
-
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         k = self ; c = k.c
         recording = c.macroCommands.recordingMacro
         state = k.getState('full-command')
@@ -2058,7 +2056,8 @@ class KeyHandlerClass:
         ch = char = event and event.char or ''
         stroke = event and event.stroke or None
         if trace and verbose: g.trace(g.callers())
-        if trace: g.trace('recording',recording,'state',state,char)
+        if trace:
+            g.trace('recording',recording,'state',state,char)
         if recording:
             c.macroCommands.startRecordingMacro(event)
         if state > 0:
@@ -2067,6 +2066,7 @@ class KeyHandlerClass:
             k.mb_event = event # Save the full event for later.
             k.setState('full-command',1,handler=k.fullCommand)
             prompt = helpPrompt if help else k.altX_prompt
+            # g.trace('prompt:',prompt)
             k.setLabelBlue('%s' % (prompt),protect=True)
             # Init mb_ ivars. This prevents problems with an initial backspace.
             k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
@@ -2168,7 +2168,7 @@ class KeyHandlerClass:
                 # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
     #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
-    #@+node:ekr.20061031131434.115: *4* digitArgument & universalArgument
+    #@+node:ekr.20061031131434.115: *4* k.digitArgument & universalArgument
     def universalArgument (self,event):
 
         '''Prompt for a universal argument.'''
@@ -2187,7 +2187,7 @@ class KeyHandlerClass:
 
         # This method must exist, but it never gets called.
         pass 
-    #@+node:ekr.20061031131434.117: *4* negativeArgument (redo?)
+    #@+node:ekr.20061031131434.117: *4* k.negativeArgument (redo?)
     def negativeArgument (self,event):
 
         '''Prompt for a negative digit argument.'''
@@ -2205,7 +2205,7 @@ class KeyHandlerClass:
             # func = k.negArgFunctions.get(k.stroke)
             # if func:
                 # func(event)
-    #@+node:ekr.20061031131434.118: *4* numberCommand
+    #@+node:ekr.20061031131434.118: *4* k.numberCommand
     def numberCommand (self,event,stroke,number):
 
         '''Enter a number prefix for commands.'''
@@ -2424,7 +2424,7 @@ class KeyHandlerClass:
         else:
             # g.trace('oops')
             return k.keyboardQuit()
-    #@+node:ekr.20061031131434.123: *4* set-xxx-State
+    #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
     def setCommandState (self,event):
         '''Enter the 'command' editing state.'''
         # g.trace(g.callers())
@@ -2451,7 +2451,7 @@ class KeyHandlerClass:
         # This command is also valid in headlines.
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.124: *4* toggle-input-state
+    #@+node:ekr.20061031131434.124: *4* k.toggle-input-state
     def toggleInputState (self,event=None):
 
         '''The toggle-input-state command.'''
@@ -2564,44 +2564,39 @@ class KeyHandlerClass:
             k.mb_tabListPrefix = k.getLabel()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
+        '''
+        This method clears the state and the minibuffer label.
 
-        '''This method clears the state and the minibuffer label.
-
-        k.endCommand handles all other end-of-command chores.'''
-
+        k.endCommand handles all other end-of-command chores.
+        '''
         trace = False and not g.unitTesting
         k = self ; c = k.c
         if trace: g.trace(g.callers())
-
         if g.app.quitting:
             return
-
         # 2011/05/30: We may be called from Qt event handlers.
         # Make sure to end editing!
         c.endEditing() 
-
         # Completely clear the mode.
         if setFocus:
             c.frame.log.deleteTab('Mode')
             c.frame.log.hideTab('Completion')
-
         if k.inputModeName:
             k.endMode()
-
         # Complete clear the state.
         k.state.kind = None
         k.state.n = None
-
         k.clearState()
         k.resetLabel()
-
         if setFocus:
             c.bodyWantsFocus()
-
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
         # This was what caused the unwanted scrolling.
-        k.showStateAndMode(setFocus=setFocus)
+        if c.vim_mode:
+            c.vimCommands.done()
+        else:
+            k.showStateAndMode(setFocus=setFocus)
     #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName (self,w,commandName):
 
@@ -2936,13 +2931,19 @@ class KeyHandlerClass:
                 k.masterCommand(commandName='keyboard-quit',
                     event=event,func=k.keyboardQuit,stroke=stroke)
             return
-        if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.do_key(event)
-            if ok: return
+        ### Old way. Vim takes control first.
+        # if c.vim_mode and c.vimCommands:
+            # ok = c.vimCommands.do_key(event)
+            # if ok: return
+        # New way: handle modes the same, regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state,stroke))
             done = k.doMode(event,state,stroke)
             if done: return
+        ### New way: handle vim keys only if not in a state.
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.do_key(event)
+            if ok: return
         if traceGC: g.printNewObjects('masterKey 2')
         # 2011/02/08: An important simplification.
         if isPlain and k.unboundKeyAction != 'command':
@@ -3005,12 +3006,6 @@ class KeyHandlerClass:
             if k.handleMiniBindings(event,state,stroke):
                 return True
         # Second, honor general modes.
-        # Handle vim mode.
-        ### if k.c.vim_mode and state in ('full-command','vim-mode'):
-            ### if trace: g.trace('vim-mode',state)
-            ### k.getVimArg(event)
-            ### return True
-        ### el
         if state == 'getArg':
             k.getArg(event,stroke=stroke)
             return True
@@ -3273,18 +3268,18 @@ class KeyHandlerClass:
             k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
-
-        trace = (False or g.trace_minibuffer) and not g.app.unitTesting
-        k = self
-        w = k.w
-        if not w: return
-
-        if trace: g.trace(repr(s),w)
-        w.setAllText(s)
-        n = len(s)
-        w.setSelectionRange(n,n,insert=n)
-        if protect:
-            k.mb_prefix = s
+        '''Set the label of the minibuffer.'''
+        trace = False and not g.app.unitTesting
+        k,w = self,self.w
+        if w:
+            if trace: g.trace(repr(s),g.callers())
+            w.setAllText(s)
+            n = len(s)
+            w.setSelectionRange(n,n,insert=n)
+            if protect:
+                k.mb_prefix = s
+        elif trace:
+            g.trace('*** no w ***')
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
     def extendLabel(self,s,select=False,protect=False):
 
@@ -3317,14 +3312,16 @@ class KeyHandlerClass:
 
     #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
     def setLabelBlue (self,label=None,protect=False):
-
+        '''Set the minibuffer label.'''
+        trace = False and not g.unitTesting
         k = self ; w = k.w
-        if not w: return
-
-        w.setStyleClass('')  # normal state, not warning or error
-
-        if label is not None:
-            k.setLabel(label,protect)
+        if trace: g.trace('label:',label,g.callers())
+        if w:
+            w.setStyleClass('')  # normal state, not warning or error
+            if label is not None:
+                k.setLabel(label,protect)
+        elif trace:
+            g.trace('*** no w ***')
     #@+node:ekr.20061031170011.11: *4* k.setLabelGrey
     def setLabelGrey (self,label=None):
 
@@ -3791,7 +3788,6 @@ class KeyHandlerClass:
             w.setSelectionRange(i,i,insert=ins)
         # Step 2: compute completions.
         if not completion: return
-        if k.c.vim_mode: return
         k.mb_tabListPrefix = w.getAllText()
         k.computeCompletionList(defaultCompletionList,backspace=True)
     #@+node:ekr.20061031131434.178: *4* k.doTabCompletion
@@ -4246,29 +4242,29 @@ class KeyHandlerClass:
         if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
         return val
     #@+node:ekr.20061031131434.193: *3* k.States
-    #@+node:ekr.20061031131434.194: *4* clearState
+    #@+node:ekr.20061031131434.194: *4* k.clearState
     def clearState (self):
-
+        '''Clear the key handler state.'''
         k = self
         k.state.kind = None
         k.state.n = None
         k.state.handler = None
-    #@+node:ekr.20061031131434.196: *4* getState
+    #@+node:ekr.20061031131434.196: *4* k.getState
     def getState (self,kind):
 
         k = self
         val = k.state.n if k.state.kind == kind else 0
         # g.trace(state,'returns',val)
         return val
-    #@+node:ekr.20061031131434.195: *4* getStateHandler
+    #@+node:ekr.20061031131434.195: *4* k.getStateHandler
     def getStateHandler (self):
 
         return self.state.handler
-    #@+node:ekr.20061031131434.197: *4* getStateKind
+    #@+node:ekr.20061031131434.197: *4* k.getStateKind
     def getStateKind (self):
 
         return self.state.kind
-    #@+node:ekr.20061031131434.198: *4* inState
+    #@+node:ekr.20061031131434.198: *4* k.inState
     def inState (self,kind=None):
 
         k = self
@@ -4277,7 +4273,7 @@ class KeyHandlerClass:
             return k.state.kind == kind and k.state.n != None
         else:
             return k.state.kind and k.state.n != None
-    #@+node:ekr.20080511122507.4: *4* setDefaultInputState
+    #@+node:ekr.20080511122507.4: *4* k.setDefaultInputState
     def setDefaultInputState (self):
 
         k = self ; state = k.defaultUnboundKeyAction
@@ -4285,7 +4281,7 @@ class KeyHandlerClass:
         # g.trace(state)
 
         k.setInputState(state)
-    #@+node:ekr.20110209093958.15411: *4* setEditingState
+    #@+node:ekr.20110209093958.15411: *4* k.setEditingState
     def setEditingState (self):
 
         k = self ; state = k.defaultEditingAction
@@ -4293,7 +4289,7 @@ class KeyHandlerClass:
         # g.trace(state)
 
         k.setInputState(state)
-    #@+node:ekr.20061031131434.133: *4* setInputState
+    #@+node:ekr.20061031131434.133: *4* k.setInputState
     def setInputState (self,state,set_border=False):
 
         c,k = self.c,self
@@ -4343,8 +4339,7 @@ class KeyHandlerClass:
                 else: w2 = w
                 w = c.frame.tree.getWrapper(w2,item=None)
                 isText = bool(w) # A benign hack.
-        if trace: g.trace('state: %s, text?: %s, w: %s' % (
-            state,isText,w))
+        # if trace: g.trace('state: %s, text?: %s, w: %s' % (state,isText,w))
         if mode:
             if mode in ('getArg','getFileName','full-command'):
                 s = None
@@ -4355,17 +4350,21 @@ class KeyHandlerClass:
                 if mode.endswith('-mode'):
                     mode = mode[:-5]
                 s = '%s Mode' % mode.capitalize()
+        elif c.vim_mode:
+            c.vimCommands.show_status()
+            return
         else:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-        if trace: g.trace('w',w,'s',s)
+        # if trace: g.trace('w',w,'s',s)
+        if trace: g.trace(g.callers())
         if s:
             k.setLabelBlue(label=s,protect=True)
         if w and isText:
             k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
-    #@+node:ekr.20080512115455.1: *4* k.showStateColors (changed)
+    #@+node:ekr.20080512115455.1: *4* k.showStateColors
     def showStateColors (self,inOutline,w):
 
         trace = False and not g.unitTesting
@@ -4408,7 +4407,7 @@ class KeyHandlerClass:
                 w.configure(bg=bg,fg=fg)
             except Exception:
                 pass # g.es_exception()
-    #@+node:ekr.20110202111105.15439: *4* showStateCursor
+    #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor (self,state,w):
 
         # g.trace(state,w)
