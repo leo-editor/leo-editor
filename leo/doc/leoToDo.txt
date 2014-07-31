@@ -30,6 +30,16 @@ Later:
 - Simulate a box cursor by always selecting one character.
 
 @language python
+.. @+node:ekr.20140730175636.17982: *4* Vim problems
+@language rest
+
+- Return in headline should act as always:
+    - Put focus in body and enter normal mode.
+- self.w in begin_insert_mode may not be a text widget.
+- Most Leo control characters should act as always:
+    Shift-Ctrl-X
+    Ctrl-S
+- The minibuffer should act as always after : or Alt-x.
 .. @+node:ekr.20140218130540.18726: *4* vim notes (do not delete)
 @language rest
 
