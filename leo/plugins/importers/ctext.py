@@ -1,7 +1,14 @@
+#@+leo-ver=5-thin
+#@+node:tbrown.20140801105909.47549: * @file importers/ctext.py
+#@@language python
+#@@tabwidth -4
+#@+others
+#@+node:tbrown.20140801105909.47550: ** ctext declarations
 import time
-import leo.core.leoGlobals as g
-from basescanner import BaseScanner
+# import leo.core.leoGlobals as g
+from leo.plugins.importers.basescanner import BaseScanner
 
+#@+node:tbrown.20140801105909.47551: ** class CTextScanner
 class CTextScanner(BaseScanner):
     """
     Read/Write simple text files with hierarchy embedded in headlines::
@@ -28,12 +35,15 @@ class CTextScanner(BaseScanner):
     are used in place of '#' for SQL and JavaScript.
         
     """
-    
+    #@+others
+    #@+node:tbrown.20140801105909.47552: *3* write_lines
+
     def write_lines(self, node, lines):
         """write the body lines to body normalizing whitespace"""
         node.b = '\n'.join(lines).strip('\n')+'\n'
         lines[:] = []
-    
+
+    #@+node:tbrown.20140801105909.47553: *3* run
     def run(self,s,parent,parse_body=False,prepass=False):
         
         cchar = '#'
@@ -72,7 +82,10 @@ class CTextScanner(BaseScanner):
 
         return True
 
+    #@-others
+#@-others
 importer_dict = {
     '@auto': ['@auto-ctext',],
     'class': CTextScanner,
 }
+#@-leo
