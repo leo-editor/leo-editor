@@ -56,6 +56,8 @@ class VimCommands:
             # The repeat counts.
         vc.next_func = None
             # The continuation of a multi-character command.
+        vc.p = None
+            # The position of the presviously-visited node.
         vc.register_d = {}
             # Keys are letters; values are strings.
         vc.repeat_list = []
@@ -379,7 +381,7 @@ class VimCommands:
         vc.ch = ch = event and event.char or ''
         vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
-        w = event and event.w
+        w = event and event.w      
         # Dispatch an internal state handler if one is active.
         # Esc and Ctrl-j *always* abort state.
         if trace: g.trace('**** stroke: <%s>, event: %s' % (stroke,event))
@@ -407,17 +409,11 @@ class VimCommands:
             val = vc.do_outer_command()
         # Always show status.
         vc.show_status()
+        # Always update the widget if it has changed.
+        vc.update_widget(w)
         # Beep if we will ignore the key.
-        if not val:
-            if k.isPlainKey(stroke):
-                if vc.state is 'insert':
-                    pass # Not an error
-                else:
-                    if trace: g.trace('ignoring',stroke)
-                    vc.beep()
-            else:
-                # Save the body text before doing any control key.
-                vc.update_widget(w)
+        if not val and k.isPlainKey(stroke) and vc.state is not 'insert':
+            vc.beep()
         if trace: g.trace('returns: %s isPlain: %s stroke: <%s>' % (
             val,k.isPlainKey(stroke),stroke))
         return val
@@ -440,36 +436,26 @@ class VimCommands:
     #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
     def do_insert_mode(vc):
         '''
-        Handle keys in insert mode.
+        Handle special keys in insert mode.
         Set vc.next_func if we remain in this mode.
         Return True if this code completely handles the character.
         '''
         trace = False and not g.unitTesting
-        c,k = vc.c,vc.c.k
-        n = vc.command_n
-        vc.state = 'insert'
-        w = vc.event.w
-        vc.next_func = vc.do_insert_mode # By default, stay in this state.
         if trace: g.trace(n,vc.stroke,vc.event)
-        if w != vc.command_w:
-            g.trace('widget changed')
-            return True
-        # Expand abbreviations.
-        if k.abbrevOn:
-            ks = g.KeyStroke(vc.stroke)
-            expanded = c.abbrevCommands.expandAbbrev(vc.event,ks)
-            if expanded: return True
-        # Now dispatch on characters...
+        # Test for vim-special characters.
         if vc.stroke == 'Escape':
-            vc.done()
+            vc.done() # Clears vc.next_func
             return True
-        elif vc.ch == '\n' and g.app.gui.widget_name(w).startswith('head'):
+        elif vc.ch == '\n' and g.app.gui.widget_name(vc.event.w).startswith('head'):
             # End headline editing and enter normal mode.
-            c.endEditing()
-            vc.done()
+            vc.c.endEditing()
+            vc.done() # Clears vc.next_func
             return True
         else:
-            # Let k.masterMasterKeyHandler deal with the character!
+            # Let k.masterMasterKeyHandler deal with the character as always!
+            # This expands abbreviations, does all default plain-key handling.
+            vc.state = 'insert'
+            vc.next_func = vc.do_insert_mode
             return False
         
     #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
