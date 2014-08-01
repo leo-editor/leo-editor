@@ -19,7 +19,7 @@ class VimCommands:
     # pylint: disable=no-self-argument
     # The first argument is vc.
     #@+others
-    #@+node:ekr.20131109170017.16507: *3* vc.ctor & helper
+    #@+node:ekr.20131109170017.16507: *3* vc.ctor & helpers
     def __init__(vc,c):
         '''The ctor for the VimCommands class.'''
         # Constants...
@@ -375,14 +375,14 @@ class VimCommands:
         '''
         trace = False and not g.unitTesting
         # Set up the state ivars.
-        c = vc.c
+        c,k = vc.c,vc.c.k
         vc.ch = ch = event and event.char or ''
         vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
         w = event and event.w
         # Dispatch an internal state handler if one is active.
         # Esc and Ctrl-j *always* abort state.
-        if trace: g.trace('**** stroke',stroke)
+        if trace: g.trace('**** stroke: <%s>' % stroke)
         if stroke == 'Escape':
             # k.masterKeyHandler handles Ctrl-G.
             vc.done()
@@ -395,8 +395,7 @@ class VimCommands:
             if val is None: val = True
             if trace: g.trace(
                 'old next_func',f.__name__,
-                'new next_func:',vc.next_func and vc.next_func.__name__,
-                'returns',val)
+                'new next_func:',vc.next_func and vc.next_func.__name__)
             if not vc.next_func and not vc.in_motion:
                 vc.done()
         # Finally, dispatch depending on state.
@@ -410,12 +409,14 @@ class VimCommands:
         vc.show_status()
         # Beep if we will ignore the key.
         if not val:
-            if c.k.isPlainKey(stroke):
+            if k.isPlainKey(stroke):
                 if trace: g.trace('ignoring',stroke)
                 vc.beep()
             else:
                 # Save the body text before doing any control key.
                 vc.update_widget(w)
+        if trace: g.trace('returns: %s isPlain: %s stroke: <%s>' % (
+            val,k.isPlainKey(stroke),stroke))
         return val
     #@+node:ekr.20140222064735.16711: *5* vc.do_inner_motion (test)
     def do_inner_motion(vc):
@@ -433,7 +434,7 @@ class VimCommands:
         else:
             if trace: g.trace('not found',vc.stroke)
             return k.isPlainKey(vc.stroke)
-    #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
+    #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode (Revise)
     def do_insert_mode(vc):
         '''
         Handle keys in insert mode.
@@ -441,7 +442,7 @@ class VimCommands:
         Return True if this code completely handles the character.
         '''
         trace = False and not g.unitTesting
-        k = vc.c.k
+        c,k = vc.c,vc.c.k
         n = vc.command_n
         vc.state = 'insert'
         w = vc.event.w
@@ -451,24 +452,22 @@ class VimCommands:
             g.trace('widget changed')
             return True
         elif vc.stroke == 'Escape':
-            # Huh??
-            # if n > 1:
-                # s  = w.getAllText()
-                # i1 = vc.command_i
-                # i2 = w.getInsertPoint()
-                # s2 = s[i1:i2]
-                # if trace: g.trace(n,s2)
-                # for z in range(n-1):
-                    # w.insert(i2,s2)
-                    # i2 = w.getInsertPoint()
-                # vc.update_widget(w)
             vc.done()
             return True
         elif vc.stroke == 'BackSpace':
             i = w.getInsertPoint()
             if i > 0: w.delete(i-1,i)
             return True
-        elif vc.ch == '\n' or k.isPlainKey(vc.stroke):
+        elif vc.ch == '\n':
+            if g.app.gui.widget_name(w).startswith('head'):
+                # End headline editing and enter normal mode.
+                c.endEditing()
+                vc.done()
+            else:
+                i = w.getInsertPoint()
+                w.insert(i,vc.ch)
+            return True
+        elif k.isPlainKey(vc.stroke):
             i = w.getInsertPoint()
             w.insert(i,vc.ch)
             return True

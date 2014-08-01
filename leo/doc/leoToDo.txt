@@ -9,18 +9,22 @@
 @language rest
 
 Easy:
-- Return in headline should put focus in body and enter normal mode.
+* Add helper functions. eol, bol, on_same_line, etc.
 - Letters in insert-mode should replace selection.
 - Support repeat counts in i,a,A,o,O commands.
 - Handle <count>d<motion> properly
 - Always recompute vim state when vc.do_keys returns False.
     - This may have to be done in k.masterKeyHandler.
-- Test leading motions, like 2j.
 - Expand abbreviations in vim-insert mode.
+- Changing nodes should end insert mode (Like Alt-Up-Arrow).
 
 Gui:
 * Show partial commands in the status area: d or 2d or 3.
 * Change cursor to indicate mode.
+
+Done:
+- <Return> in headline put focus enters normal mode.
+- <Return> in outline pane puts focus in body.
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
