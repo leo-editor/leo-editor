@@ -7,18 +7,12 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
-Easy:
+
 - Support repeat counts in i,a,A,o,O commands.
 - Handle <count>d<motion> properly
-- Enter insert mode in headlines if text is selected.
-Gui:
+
 * Show partial commands in the status area: d or 2d or 3.
 * Change cursor to indicate mode.
-Maybe:
-- Add helper functions. eol, bol, on_same_line, etc.
-- Always recompute vim state when vc.do_keys returns False?
-    - This may have to be done in k.masterKeyHandler.
-- Always enter insert mode in headlines?
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
 - Limit h & l commands to the present line.
 - vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
@@ -29,6 +23,15 @@ Maybe:
 - Keys in insert-mode replace selection.
 - <Return> in headline put focus enters normal mode.
 - <Return> in outline pane puts focus in body.
+.. @+node:ekr.20140801121720.18066: *4* Maybe
+- Enter insert mode in headlines if text is selected.
+    This won't be so important if we can change the cursor in the headline.
+    ks = c.k.getShortcutForCommandName('edit-headline')
+    stroke = ks and ks.s or None
+- Add helper functions. eol, bol, on_same_line, etc.
+- Always recompute vim state when vc.do_keys returns False?
+    - This may have to be done in k.masterKeyHandler.
+- Always enter insert mode in headlines?
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
