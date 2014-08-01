@@ -2592,10 +2592,10 @@ class KeyHandlerClass:
             c.bodyWantsFocus()
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
-        # This was what caused the unwanted scrolling.
         if c.vim_mode:
             c.vimCommands.done()
         else:
+            # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)
     #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName (self,w,commandName):
@@ -2760,7 +2760,6 @@ class KeyHandlerClass:
         All commands and keystrokes pass through here.
         This returns None, but may set k.funcReturn.
         '''
-
         k = self ; c = k.c
         trace = False and not g.unitTesting
         traceGC = False
@@ -2825,7 +2824,9 @@ class KeyHandlerClass:
                 k.funcReturn = k.funcReturn or val # For unit tests.
             else:
                 # Call c.doCommand directly
-                if trace: g.trace('calling command directly',commandName)
+                if trace:
+                    g.trace('calling command directly',commandName)
+                    g.trace(g.callers())
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(commandName)
@@ -2931,18 +2932,15 @@ class KeyHandlerClass:
                 k.masterCommand(commandName='keyboard-quit',
                     event=event,func=k.keyboardQuit,stroke=stroke)
             return
-        ### Old way. Vim takes control first.
-        # if c.vim_mode and c.vimCommands:
-            # ok = c.vimCommands.do_key(event)
-            # if ok: return
-        # New way: handle modes the same, regardless of vim.
+        # Always handle modes regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state,stroke))
             done = k.doMode(event,state,stroke)
             if done: return
-        ### New way: handle vim keys only if not in a state.
+        # Handle vim keys only if not in a state.
         if c.vim_mode and c.vimCommands:
             ok = c.vimCommands.do_key(event)
+            if trace: g.trace('vc.do_key returns',ok)
             if ok: return
         if traceGC: g.printNewObjects('masterKey 2')
         # 2011/02/08: An important simplification.
@@ -3258,14 +3256,17 @@ class KeyHandlerClass:
     #@+node:ekr.20061031170011.7: *4* k.resetLabel
     def resetLabel (self):
 
-        k = self ; w = self.w
+        k = self
+        c,w = k.c,k.w
         k.setLabelGrey('')
         k.mb_prefix = ''
-
         if w:    
             w.setSelectionRange(0,0,insert=0)
             state = k.unboundKeyAction
-            k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
+            if c.vim_mode and c.vimCommands:
+                c.vimCommands.show_status()
+            else:
+                k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
         '''Set the label of the minibuffer.'''
@@ -4180,7 +4181,6 @@ class KeyHandlerClass:
         return g.KeyStroke(shortcut) if shortcut else None
 
     canonicalizeShortcut = strokeFromSetting # For compatibility.
-    ### strokeFromSetting = shortcutFromSetting
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char (self,stroke):
 
@@ -4339,7 +4339,7 @@ class KeyHandlerClass:
                 else: w2 = w
                 w = c.frame.tree.getWrapper(w2,item=None)
                 isText = bool(w) # A benign hack.
-        # if trace: g.trace('state: %s, text?: %s, w: %s' % (state,isText,w))
+        if trace: g.trace('state: %s, text?: %s, w: %s' % (state,isText,w))
         if mode:
             if mode in ('getArg','getFileName','full-command'):
                 s = None
@@ -4350,7 +4350,7 @@ class KeyHandlerClass:
                 if mode.endswith('-mode'):
                     mode = mode[:-5]
                 s = '%s Mode' % mode.capitalize()
-        elif c.vim_mode:
+        elif c.vim_mode and c.vimCommands:
             c.vimCommands.show_status()
             return
         else:
