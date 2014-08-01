@@ -382,7 +382,7 @@ class VimCommands:
         w = event and event.w
         # Dispatch an internal state handler if one is active.
         # Esc and Ctrl-j *always* abort state.
-        if trace: g.trace('**** stroke: <%s>' % stroke)
+        if trace: g.trace('**** stroke: <%s>, event: %s' % (stroke,event))
         if stroke == 'Escape':
             # k.masterKeyHandler handles Ctrl-G.
             vc.done()
@@ -434,7 +434,7 @@ class VimCommands:
         else:
             if trace: g.trace('not found',vc.stroke)
             return k.isPlainKey(vc.stroke)
-    #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode (Revise)
+    #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
     def do_insert_mode(vc):
         '''
         Handle keys in insert mode.
@@ -447,11 +447,17 @@ class VimCommands:
         vc.state = 'insert'
         w = vc.event.w
         vc.next_func = vc.do_insert_mode # By default, stay in this state.
-        if trace: g.trace(n,vc.stroke)
+        if trace: g.trace(n,vc.stroke,vc.event)
         if w != vc.command_w:
             g.trace('widget changed')
             return True
-        elif vc.stroke == 'Escape':
+        # Expand abbreviations.
+        if k.abbrevOn:
+            ks = g.KeyStroke(vc.stroke)
+            expanded = c.abbrevCommands.expandAbbrev(vc.event,ks)
+            if expanded: return True
+        # Now dispatch on characters...
+        if vc.stroke == 'Escape':
             vc.done()
             return True
         elif vc.stroke == 'BackSpace':
@@ -464,11 +470,15 @@ class VimCommands:
                 c.endEditing()
                 vc.done()
             else:
-                i = w.getInsertPoint()
+                i,j = w.getSelectionRange()
+                if i != j:
+                    w.delete(i,j)
                 w.insert(i,vc.ch)
             return True
         elif k.isPlainKey(vc.stroke):
-            i = w.getInsertPoint()
+            i,j = w.getSelectionRange()
+            if i != j:
+                w.delete(i,j)
             w.insert(i,vc.ch)
             return True
         else:

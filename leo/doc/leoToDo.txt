@@ -9,20 +9,25 @@
 @language rest
 
 Easy:
-* Add helper functions. eol, bol, on_same_line, etc.
-- Letters in insert-mode should replace selection.
+- Changing nodes should end insert mode (Like Alt-Up-Arrow).
+    Fix bug:
+        - Enter insert mode.  Alt-Up-Arrow.
+        - Alt-Down-Arrow: do_insert_mode widget changed.
+- Limit h & l commands to the present line.
+    - Add helper functions. eol, bol, on_same_line, etc.
 - Support repeat counts in i,a,A,o,O commands.
 - Handle <count>d<motion> properly
 - Always recompute vim state when vc.do_keys returns False.
     - This may have to be done in k.masterKeyHandler.
-- Expand abbreviations in vim-insert mode.
-- Changing nodes should end insert mode (Like Alt-Up-Arrow).
+* insert-mode should use c.editCommands.selfInsertCommand!
 
 Gui:
 * Show partial commands in the status area: d or 2d or 3.
 * Change cursor to indicate mode.
 
 Done:
+- Expands abbreviations in insert mode.
+- Keys in insert-mode replace selection.
 - <Return> in headline put focus enters normal mode.
 - <Return> in outline pane puts focus in body.
 .. @+node:ekr.20131111061547.16464: *3* * vim project
