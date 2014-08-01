@@ -48,7 +48,7 @@ class VimCommands:
         vc.in_motion = False
             # True if parsing an *inner* motion, the 2j in d2j.
         vc.motion_func = None
-            # The handler to execute after executing an inner motion.
+            # The callback handler to execute after executing an inner motion.
         vc.motion_i = None
             # The offset into the text at the start of a motion.
         vc.n1 = 1 # The leading repeat count.
@@ -410,8 +410,11 @@ class VimCommands:
         # Beep if we will ignore the key.
         if not val:
             if k.isPlainKey(stroke):
-                if trace: g.trace('ignoring',stroke)
-                vc.beep()
+                if vc.state is 'insert':
+                    pass # Not an error
+                else:
+                    if trace: g.trace('ignoring',stroke)
+                    vc.beep()
             else:
                 # Save the body text before doing any control key.
                 vc.update_widget(w)
@@ -460,29 +463,15 @@ class VimCommands:
         if vc.stroke == 'Escape':
             vc.done()
             return True
-        elif vc.stroke == 'BackSpace':
-            i = w.getInsertPoint()
-            if i > 0: w.delete(i-1,i)
-            return True
-        elif vc.ch == '\n':
-            if g.app.gui.widget_name(w).startswith('head'):
-                # End headline editing and enter normal mode.
-                c.endEditing()
-                vc.done()
-            else:
-                i,j = w.getSelectionRange()
-                if i != j:
-                    w.delete(i,j)
-                w.insert(i,vc.ch)
-            return True
-        elif k.isPlainKey(vc.stroke):
-            i,j = w.getSelectionRange()
-            if i != j:
-                w.delete(i,j)
-            w.insert(i,vc.ch)
+        elif vc.ch == '\n' and g.app.gui.widget_name(w).startswith('head'):
+            # End headline editing and enter normal mode.
+            c.endEditing()
+            vc.done()
             return True
         else:
+            # Let k.masterMasterKeyHandler deal with the character!
             return False
+        
     #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
     def do_outer_command(vc):
         '''
