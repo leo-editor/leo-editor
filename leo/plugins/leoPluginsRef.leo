@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="22" left="2024" height="953" width="1575"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -176,6 +176,7 @@
 expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
+<v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file importers/elisp.py</vh></v>
 <v t="ekr.20140723122936.18138"><vh>@file importers/html.py</vh></v>
 <v t="ekr.20140723122936.18142"><vh>@file importers/ini.py</vh></v>
@@ -371,7 +372,7 @@ Use separate nodes
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.
 </t>
-<t tx="ekr.20041211035618"></t>
+<t tx="ekr.20041211035618" str_leo_pos="4"></t>
 <t tx="ekr.20050111122605"></t>
 <t tx="ekr.20050217093214">@nocolor</t>
 <t tx="ekr.20050303051035">@nocolor-node
