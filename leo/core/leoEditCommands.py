@@ -646,7 +646,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event,forceFocus=False)
         if not w: return False
         if w.hasSelection(): return False
-        assert g.isStrokeOrNone(stroke)
+        assert g.isStrokeOrNone(stroke),stroke
         if stroke in ('BackSpace','Delete'):
             if trace and verbose: g.trace(stroke)
             return False
