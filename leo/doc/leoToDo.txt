@@ -8,18 +8,19 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 Easy:
-- Limit h & l commands to the present line.
-    - Add helper functions. eol, bol, on_same_line, etc.
 - Support repeat counts in i,a,A,o,O commands.
 - Handle <count>d<motion> properly
-- Always recompute vim state when vc.do_keys returns False.
-    - This may have to be done in k.masterKeyHandler.
 - Enter insert mode in headlines if text is selected.
-    - Should we *always* enter insert mode in headlines? Hmmm...
 Gui:
 * Show partial commands in the status area: d or 2d or 3.
 * Change cursor to indicate mode.
+Maybe:
+- Add helper functions. eol, bol, on_same_line, etc.
+- Always recompute vim state when vc.do_keys returns False?
+    - This may have to be done in k.masterKeyHandler.
+- Always enter insert mode in headlines?
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Limit h & l commands to the present line.
 - vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
   This expands abbreviations and does all default key handling!
 - Fixed crasher when changing nodes with Alt-arrow keys.

@@ -381,7 +381,7 @@ class VimCommands:
         vc.ch = ch = event and event.char or ''
         vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
-        w = event and event.w      
+        vc.w = w = event and event.w      
         # Dispatch an internal state handler if one is active.
         # Esc and Ctrl-j *always* abort state.
         if trace: g.trace('**** stroke: <%s>, event: %s' % (stroke,event))
@@ -796,10 +796,22 @@ class VimCommands:
         g.trace(vc.n,vc.stroke)
     #@+node:ekr.20131111061547.16468: *5* vim_h
     def vim_h(vc):
-        '''Left N chars.'''
-        for z in range(vc.n):
-            vc.c.editCommands.backCharacter(vc.event)
-
+        '''Move the cursor left vc.n chars, but not out of the present line.'''
+        trace = True and not g.unitTesting
+        w = vc.w
+        if g.app.gui.isTextWidget(w):
+            # for z in range(vc.n):
+                # vc.c.editCommands.backCharacter(vc.event)
+            s = w.getAllText()
+            i = w.getInsertPoint()
+            if i == 0 or (i > 0 and s[i-1] == '\n'):
+                if trace: g.trace('at line start')
+            else:
+                n = vc.n
+                while n > 0 and i > 0 and s[i-1] != '\n':
+                    i -= 1
+                    n -= 1
+                w.setInsertPoint(i)
     #@+node:ekr.20140222064735.16618: *5* vim_i
     def vim_i(vc):
         '''Insert text before the cursor N times.'''
@@ -817,9 +829,23 @@ class VimCommands:
             vc.c.editCommands.prevLine(vc.event)
     #@+node:ekr.20140222064735.16627: *5* vim_l
     def vim_l(vc):
-        '''Cursor right N chars.'''
-        for z in range(vc.n):
-            vc.c.editCommands.forwardCharacter(vc.event)
+        '''Move the cursor right vc.n chars, but not out of the present line.'''
+        trace = False and not g.unitTesting
+        w = vc.w
+        if g.app.gui.isTextWidget(w):
+            # for z in range(vc.n):
+                # vc.c.editCommands.forwardCharacter(vc.event)
+            s = w.getAllText()
+            i = w.getInsertPoint()
+            if i >= len(s) or s[i] == '\n':
+                if trace: g.trace('at line end')
+            else:
+                n = vc.n
+                while n > 0 and i <= len(s) and s[i] != '\n':
+                    i += 1
+                    n -= 1
+                w.setInsertPoint(i)
+           
     #@+node:ekr.20131111171616.16497: *5* vim_m (to do)
     def vim_m(vc):
         '''m<a-zA-Z> mark current position with mark.'''
