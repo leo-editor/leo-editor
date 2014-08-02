@@ -8,14 +8,14 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-- Support repeat counts in i,a,A,o,O commands in end_insert_mode.
 - Undo doesn't restore insert point after d{motion} commands.
 ** Support the dot.
 ** Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Support repeat counts in i,a,A,o,O commands.
+- Show status properly in cases such as 5i...
 - Handle d{motion} properly.
 - Handle <count>d<motion> properly in vim_d3.
-
 - Finished v{motion}d.
 - Finish e command.
 - Replaced non-terminating vis_ commands with vim_ commands.

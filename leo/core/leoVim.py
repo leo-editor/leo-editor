@@ -398,7 +398,7 @@ class VimCommands:
                 c.frame.bodyWantsFocusNow()
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
-        vc.command_n = vc.n1
+        ### vc.command_n = vc.n1
         vc.command_w = w
         vc.show_status()
         vc.next_func = vc.do_insert_mode
@@ -495,17 +495,14 @@ class VimCommands:
     #@+node:ekr.20140801121720.18076: *4* vc.end_insert_mode
     def end_insert_mode(vc):
         'End an insert mode started with the a,A,i,o and O commands.'''
-        # - Remember I1, the initial insert point in vc.begin_insert_mode
-        # - The insert text is s[I1,I2]
-        # - Munge the text depending on whether it has newlines??
-        # - Find out what vim actually does.
         w = vc.w
-        n = vc.command_n
-        if n > 1 and g.app.gui.isTextWidget(w):
+        if vc.n1 > 1 and g.app.gui.isTextWidget(w):
             s = w.getAllText()
             i1 = vc.command_i
             i2 = w.getInsertPoint()
-            g.trace('n',n,i1,i2,s[i1:i2])
+            if i1 > i2: i1,i2 = i2,i1
+            s2 = s[i1:i2] * (vc.n1-1)
+            w.insert(i2,s2)
     #@+node:ekr.20140801121720.18081: *4* vc.restart_key (not used)
     def restart_key(vc,event):
         '''Re-handle a key that terminates a repeat count.'''
@@ -555,6 +552,8 @@ class VimCommands:
             if vc.in_motion:
                 vc.do_inner_motion()
             else:
+                # Restart the command.
+                vc.command_list.append(vc.stroke)
                 vc.do_outer_command()
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140730175636.17983: *4* vc.enter_minibuffer
