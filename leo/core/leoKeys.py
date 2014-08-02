@@ -2593,7 +2593,7 @@ class KeyHandlerClass:
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
         if c.vim_mode and c.vimCommands:
-            c.vimCommands.done()
+            c.vimCommands.quit()
         else:
             # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)

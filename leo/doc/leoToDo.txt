@@ -8,10 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-** Support the dot.
-** Change cursor to indicate mode.
-- Extend Leo's undo system to handle vim-related undo.
+- Do the actual dot command.
+* Change cursor to indicate mode.
+- Extend Leo's undo system to show the vim command corresponding to the undo.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Computed the dot properly.
 - arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
 - Support repeat counts in i,a,A,o,O commands.
 - Show status properly in cases such as 5i...
@@ -45,95 +46,16 @@
 - Always recompute vim state when vc.do_keys returns False?
     - This may have to be done in k.masterKeyHandler.
 - Always enter insert mode in headlines?
-.. @+node:ekr.20140801121720.18073: *4* No longer used
-.. @+node:ekr.20140222064735.16636: *5* vis_b
-def vis_b(vc):
-    '''Back N words.'''
-    vc.c.editCommands.moveWordHelper(vc.event,extend=True,forward=False)
-    vc.next_func = vc.do_visual_mode
-.. @+node:ekr.20140222064735.16663: *5* vis_F
-def vis_F(vc):
-    '''Back to the Nth occurrence of <char>.'''
-    vc.next_func = vc.vis_F2
-    
-def vis_F2(vc):
-    ec = vc.c.editCommands
-    w = vc.vis_mode_w
-    s = w.getAllText()
-    i = i1 = w.getInsertPoint()
-    for n in range(vc.n):
-        i -= 1
-        while i >= 0 and s[i] != vc.ch:
-            i -= 1
-    if i >= 0 and s[i] == vc.ch:
-        g.trace(i1-i,vc.ch)
-        for z in range(i1-i):
-            ec.backCharacterExtendSelection(vc.event)
-    vc.next_func = vc.do_visual_mode
-.. @+node:ekr.20140222064735.16664: *5* vis_T
-def vis_T(vc):
-    '''Back before the Nth occurrence of <char>.'''
-    vc.next_func = vc.vis_T2
-    
-def vis_T2(vc):
-    ec = vc.c.editCommands
-    w = vc.vis_mode_w
-    s = w.getAllText()
-    i = i1 = w.getInsertPoint()
-    if i > 0 and s[i-1] == vc.ch:
-        i -= 1 # ensure progess.
-    for n in range(vc.n):
-        i -= 1
-        while i >= 0 and s[i] != vc.ch:
-            i -= 1
-    if i >= 0 and s[i] == vc.ch:
-        g.trace(i1-i-1,vc.ch)
-        for z in range(i1-i-1):
-            ec.backCharacterExtendSelection(vc.event)
-    vc.next_func = vc.do_visual_mode
-.. @+node:ekr.20140222064735.16666: *5* vis_f
-def vis_f(vc):
-    '''To the Nth occurrence of <char>.'''
-    vc.next_func = vc.vis_f2
-    
-def vis_f2(vc):
-    ec = vc.c.editCommands
-    w = vc.vis_mode_w
-    s = w.getAllText()
-    i = i1 = w.getInsertPoint()
-    for n in range(vc.n):
-        while i < len(s) and s[i] != vc.ch:
-            i += 1
-        i += 1
-    i -= 1
-    if i < len(s) and s[i] == vc.ch:
-        for z in range(i-i1+1):
-            ec.forwardCharacterExtendSelection(vc.event)
-    vc.next_func = vc.do_visual_mode
-.. @+node:ekr.20140222064735.16672: *5* vis_t
-def vis_t(vc):
-    '''Till before the Nth occurrence of <char>.'''
-    vc.next_func = vc.vis_t2
-    
-def vis_t2(vc):
-    ec = vc.c.editCommands
-    w = vc.vis_mode_w
-    s = w.getAllText()
-    i = i1 = w.getInsertPoint()
-    for n in range(vc.n):
-        i += 1
-        while i < len(s) and s[i] != vc.ch:
-            i += 1
-    if i < len(s) and s[i] == vc.ch:
-        for z in range(i-i1):
-            ec.forwardCharacterExtendSelection(vc.event)
-    vc.next_func = vc.do_visual_mode
-.. @+node:ekr.20140222064735.16673: *5* vis_w
-def vis_w(vc):
-    '''N words forward.'''
-    ec = vc.c.editCommands
-    extend = vc.state == 'visual'
-    ec.moveWordHelper(vc.event,extend=extend,forward=True)
+.. @+node:ekr.20140730175636.17994: *4* vc.update_widget (no longer used)
+def update_widget(vc,w):
+    '''If w is the body widget, make sure Leo remembers changes to it.'''
+    c = vc.c
+    # g.trace(w == c.frame.body.bodyCtrl)
+    if w == c.frame.body.bodyCtrl:
+        s = w.getAllText()
+        if c.p.b != s:
+            # g.trace('updating')
+            c.frame.body.onBodyChanged(undoType='Typing')
 .. @+node:ekr.20140801121720.18077: *4* (optional) Limit f,F,t,T to a single line
 .. @+node:ekr.20140222064735.16687: *5* vim_F
 def vim_F(vc):
