@@ -53,9 +53,9 @@ class VimCommands:
             # The callback handler to execute after executing an inner motion.
         vc.motion_i = None
             # The offset into the text at the start of a motion.
-        vc.n1 = None # The leading repeat count.
+        vc.n1 = 1 # The leading repeat count.
         vc.n = 1 # The inner repeat count.
-            # The repeat counts.
+        vc.n1_seen = False
         vc.next_func = None
             # The continuation of a multi-character command.
         vc.register_d = {}
@@ -196,7 +196,7 @@ class VimCommands:
         '}': None,
         ')': None,
         ']': None,
-        # Special chars. ### To do.
+        # Special chars. ## To do.
         'colon': vc.enter_minibuffer,
         'dollar': vc.vim_dollar,
         '@': None,
@@ -328,7 +328,7 @@ class VimCommands:
         }
         return d
     #@+node:ekr.20140221085636.16685: *3* vc.do_key & helpers
-    def do_key(vc,event,restart=False):
+    def do_key(vc,event):
         '''
         Handle the next key in vim mode by dispatching a handler.
         Handlers are responsible for completely handling a key, including
@@ -346,9 +346,6 @@ class VimCommands:
         vc.in_command = True # May be cleared later.
         vc.return_value = True # The default.
         if trace: g.trace('**** stroke: <%s>, event: %s' % (stroke,event))
-        # A benign hack: append the key here if we are restarting.
-        if restart and k.isPlainKey(stroke):
-            vc.command_list.append(stroke)
         if stroke == 'Escape':
             # k.masterKeyHandler handles Ctrl-G.
             vc.vim_esc()
@@ -373,10 +370,7 @@ class VimCommands:
         # Beep if we will ignore the key.
         if not vc.return_value and k.isPlainKey(stroke) and vc.state is not 'insert':
             vc.beep()
-        elif (
-            vc.in_command and k.isPlainKey(stroke)
-            and not restart and vc.state == 'normal'
-        ):
+        elif vc.in_command and k.isPlainKey(stroke) and vc.state == 'normal':
             vc.command_list.append(stroke)
         # Always show status.
         vc.show_status()
@@ -404,14 +398,14 @@ class VimCommands:
                 c.frame.bodyWantsFocusNow()
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
-        vc.command_n = 1 if vc.n1 is None else vc.n1
+        vc.command_n = vc.n1
         vc.command_w = w
         vc.show_status()
         vc.next_func = vc.do_insert_mode
     #@+node:ekr.20140222064735.16706: *4* vc.begin_motion
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
-        g.trace(motion_func.__name__)
+        # g.trace(motion_func.__name__)
         w = vc.event.w
         vc.command_w = w
         vc.in_motion = True
@@ -422,7 +416,7 @@ class VimCommands:
             vc.vim_digits()
         else:
             vc.do_inner_motion()
-    #@+node:ekr.20140222064735.16711: *4* vc.do_inner_motion (test)
+    #@+node:ekr.20140222064735.16711: *4* vc.do_inner_motion
     def do_inner_motion(vc):
         '''Handle a character when vc.in_motion is True.'''
         trace = True and not g.unitTesting
@@ -512,6 +506,30 @@ class VimCommands:
             i1 = vc.command_i
             i2 = w.getInsertPoint()
             g.trace('n',n,i1,i2,s[i1:i2])
+    #@+node:ekr.20140801121720.18081: *4* vc.restart_key (not used)
+    def restart_key(vc,event):
+        '''Re-handle a key that terminates a repeat count.'''
+        trace = True and not g.unitTesting
+        # Set up the state ivars.
+        c,k = vc.c,vc.c.k
+        # Dispatch an internal state handler if one is active.
+        if trace: g.trace('**** stroke: <%s>' % (vc.stroke))
+        if vc.next_func:
+            f = vc.next_func
+            vc.next_func = None
+            f() # May set vc.next_func and clear vc.return_value.
+            if trace: g.trace(
+                'old next_func',f.__name__,
+                'new next_func:',vc.next_func and vc.next_func.__name__)
+            if not vc.next_func and not vc.in_motion:
+                vc.done()
+        # Finally, dispatch depending on state.
+        elif vc.in_motion:
+            vc.do_inner_motion()
+        elif vc.state == 'visual':
+            vc.do_visual_mode()
+        else:
+            vc.do_outer_command()
     #@+node:ekr.20140222064735.16629: *4* vc.vim_digits
     def vim_digits(vc):
         '''Handle a digits that starts an outer repeat count.'''
@@ -528,19 +546,16 @@ class VimCommands:
             # Set vc.n1 before vc.n, so that inner motions won't repeat
             # until the end of vim mode.
             n = int(''.join(vc.repeat_list))
-            if vc.n1 is None:
-                vc.n1 = n
+            if vc.n1_seen:
                 vc.n = n
             else:
-                vc.n = n
-            g.trace('n1',vc.n1)
+                vc.n1_seen = True
+                vc.n1 = n
             vc.repeat_list = []
             if vc.in_motion:
                 vc.do_inner_motion()
             else:
-                # restart vc.do_key.
-                g.trace('***** restarting do-key')
-                vc.do_key(vc.event,restart=True)
+                vc.do_outer_command()
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140730175636.17983: *4* vc.enter_minibuffer
     def enter_minibuffer(vc):
@@ -581,7 +596,7 @@ class VimCommands:
         '''N words backward.'''
         ec = vc.c.editCommands
         extend = vc.state == 'visual'
-        for z in range(vc.n):
+        for z in range(vc.n1 * vc.n):
             ec.moveWordHelper(vc.event,extend=extend,forward=False)
     #@+node:ekr.20140222064735.16633: *5* vim_backspace
     def vim_backspace(vc):
@@ -603,45 +618,47 @@ class VimCommands:
     def vim_ctrl_r(vc):
         '''Redo the last command.'''
         vc.c.undoer.redo()
-    #@+node:ekr.20131111171616.16498: *5* vim_d & helpers (Revise)
+    #@+node:ekr.20131111171616.16498: *5* vim_d & helpers
     def vim_d(vc):
         '''
         dd        delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        ### vc.n1 = vc.n
         vc.n = 1
         vc.next_func = vc.vim_d2
         
     def vim_d2(vc):
         if vc.stroke == 'd':
-            if vc.n1 is None: vc.n1 = 1
-            g.trace('vc.n1',vc.n1,'vc.n',vc.n)
             w = vc.event.w
             s = w.getAllText()
             i = i1 = w.getInsertPoint()
             for z in range(vc.n1*vc.n):
                 i,j = g.getLine(s,i)
-                g.trace(repr(s[i:j]))
+                # g.trace(repr(s[i:j]))
                 i = j+1
             w.delete(i1,j)
         else:
             vc.begin_motion(vc.vim_d3)
 
     def vim_d3(vc):
-        # - Remember I1, the initial insert point.
-        # - The to-be-deleted text is s[I1,munge(I2)]
-          # - munge(I2) leaves I2 unchanged if I1 and I2 are on the same line.
-          # - munge(I2) moves I2 to the bol if I2 < I1,
-          # - munge(I2) moves I2 to the eol if I2 > I1.
-        
-        
-        w = vc.command_w
-        if w == vc.event.w:
+        '''Complete the d command after the cursor has moved.'''
+        trace = False and not g.unitTesting
+        w = vc.w
+        if g.app.gui.isTextWidget(w):
+            s = w.getAllText()
             i1,i2 = vc.motion_i,w.getInsertPoint()
+            if vc.on_same_line(s,i1,i2):
+                if trace:g.trace('same line',i1,i2)
+            elif i1 < i2:
+                i2 = vc.to_eol(s,i2)
+                if i2 < len(s) and s[i2] == '\n':
+                    i2 += 1
+                if trace: g.trace('extend i2 to eol',i1,i2)
+            else:
+                i1 = vc.to_bol(s,i1)
+                if trace: g.trace('extend i1 to bol',i1,i2)
             w.delete(i1,i2)
-        else:
-            g.trace('w changed')
+       
     #@+node:ekr.20140730175636.17991: *5* vim_dollar
     def vim_dollar(vc):
         '''Move the cursor to the end of the line.'''
@@ -659,10 +676,10 @@ class VimCommands:
         '''Forward to the end of the Nth word.'''
         ec = vc.c.editCommands
         if vc.state == 'visual':
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.forwardEndWordExtendSelection(vc.event)
         else:
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.forwardEndWord(vc.event)
     #@+node:ekr.20140222064735.16632: *5* vim_esc
     def vim_esc(vc):
@@ -687,7 +704,7 @@ class VimCommands:
         s = w.getAllText()
         if s:
             i = i1 = w.getInsertPoint()
-            for n in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 i -= 1
                 while i >= 0 and s[i] != vc.ch:
                     i -= 1
@@ -710,7 +727,7 @@ class VimCommands:
         s = w.getAllText()
         if s:
             i = i1 = w.getInsertPoint()
-            for n in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 while i < len(s) and s[i] != vc.ch:
                     i += 1
                 i += 1
@@ -735,7 +752,7 @@ class VimCommands:
         g.trace(vc.n,vc.stroke)
     #@+node:ekr.20131111061547.16468: *5* vim_h
     def vim_h(vc):
-        '''Move the cursor left vc.n chars, but not out of the present line.'''
+        '''Move the cursor left n chars, but not out of the present line.'''
         trace = True and not g.unitTesting
         w = vc.w
         if g.app.gui.isTextWidget(w):
@@ -744,7 +761,7 @@ class VimCommands:
             if i == 0 or (i > 0 and s[i-1] == '\n'):
                 if trace: g.trace('at line start')
             else:
-                n = vc.n
+                n = vc.n1 * vc.n
                 while n > 0 and i > 0 and s[i-1] != '\n':
                     i -= 1
                     n -= 1
@@ -759,23 +776,23 @@ class VimCommands:
        
     #@+node:ekr.20140220134748.16617: *5* vim_j
     def vim_j(vc):
-        '''Down N lines (also: Return, and Down).'''
+        '''Down n lines (also: Return, and Down).'''
         ec = vc.c.editCommands
         if vc.state == 'visual':
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.nextLineExtendSelection(vc.event)
         else:
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.nextLine(vc.event)
     #@+node:ekr.20140222064735.16628: *5* vim_k
     def vim_k(vc):
         '''Cursor up N lines.'''
         ec = vc.c.editCommands
         if vc.state == 'visual':
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.prevLineExtendSelection(vc.event)
         else:
-            for z in range(vc.n):
+            for z in range(vc.n1 * vc.n):
                 ec.prevLine(vc.event)
     #@+node:ekr.20140222064735.16627: *5* vim_l
     def vim_l(vc):
@@ -783,8 +800,6 @@ class VimCommands:
         trace = False and not g.unitTesting
         w = vc.w
         if g.app.gui.isTextWidget(w):
-            # for z in range(vc.n):
-                # vc.c.editCommands.forwardCharacter(vc.event)
             s = w.getAllText()
             i = w.getInsertPoint()
             if i >= len(s) or s[i] == '\n':
@@ -926,12 +941,11 @@ class VimCommands:
     #@+node:ekr.20140220134748.16626: *5* vim_u
     def vim_u(vc):
         '''U undo the last command.'''
-        ### Can this have a repeat count?
         vc.c.undoer.undo()
     #@+node:ekr.20140220134748.16627: *5* vim_v
     def vim_v(vc):
         '''Start visual mode.'''
-        if vc.n1 is not None:
+        if vc.n1_seen:
             vc.beep('%sv not valid' % vc.n1)
         else:
             vc.vis_mode_w = w = vc.event.w
@@ -1110,7 +1124,7 @@ class VimCommands:
         vc.done()
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140222064735.16700: *4* vc.beep
-    def beep(vc,message):
+    def beep(vc,message=''):
         '''Indicate an ignored character.'''
         if message:
             g.trace(message)
@@ -1130,8 +1144,9 @@ class VimCommands:
                 oldSel = w.getSelectionRange()
                 oldText = c.p.b
                 newText = w.getAllText()
-                ### To do: set undoType to the command spelling.
+                ### To do: set undoType to the command spelling?
                 if newText != oldText:
+                    # undoType = ''.join(vc.command_list) or 'Typing'
                     c.frame.body.onBodyChanged(undoType='Typing',
                         oldSel=oldSel,oldText=oldText,oldYview=None)
         # Clear everything.
@@ -1140,12 +1155,32 @@ class VimCommands:
         vc.in_command = False
         vc.in_motion = False
         vc.motion_func = None
-        vc.n1 = None
+        vc.n1 = 1
         vc.n = 1
+        vc.n1_seen = False
         vc.next_func = None
         vc.repeat_list = []
         vc.state = 'normal'
         vc.show_status()
+    #@+node:ekr.20140801121720.18079: *4* vc.on_same_line
+    def on_same_line(vc,s,i1,i2):
+        '''Return True if i1 and i2 are on the same line.'''
+        # Ensure that i1 <= i2
+        if i1 > i2: i1,i2 = i2,i1
+        if s[i2] == '\n': i2 -= 1
+        return i1 <= i2 and s[i1:i2].count('\n') == 0
+    #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
+    def to_bol(vc,s,i):
+        '''Return the index of the first character on the line containing s[i]'''
+        while i > 0 and s[i-1] != '\n':
+            i -= 1
+        return i
+        
+    def to_eol(vc,s,i):
+        '''Return the index of the last character on the line containing s[i]'''
+        while i < len(s) and s[i] != '\n':
+            i += 1
+        return i
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show the status (the state and the contents of vc.dot_list)'''

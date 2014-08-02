@@ -9,11 +9,13 @@
 @language rest
 
 - Support repeat counts in i,a,A,o,O commands in end_insert_mode.
-- Handle <count>d<motion> properly in vim_d3.
-
+- Undo doesn't restore insert point after d{motion} commands.
 ** Support the dot.
 ** Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Handle d{motion} properly.
+- Handle <count>d<motion> properly in vim_d3.
+
 - Finished v{motion}d.
 - Finish e command.
 - Replaced non-terminating vis_ commands with vim_ commands.
@@ -131,6 +133,102 @@ def vis_w(vc):
     ec = vc.c.editCommands
     extend = vc.state == 'visual'
     ec.moveWordHelper(vc.event,extend=extend,forward=True)
+.. @+node:ekr.20140801121720.18077: *4* (optional) Limit f,F,t,T to a single line
+.. @+node:ekr.20140222064735.16687: *5* vim_F
+def vim_F(vc):
+    '''Back to the Nth occurrence of <char>.'''
+    vc.next_func = vc.vim_F2
+
+def vim_F2(vc):
+    ec = vc.c.editCommands
+    w = vc.event.w
+    s = w.getAllText()
+    if s:
+        i = i1 = w.getInsertPoint()
+        for z in range(vc.n1 * vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            # g.trace(i1-i,vc.ch)
+            if vc.state == 'visual':
+                for z in range(i1-i):
+                    ec.backCharacterExtendSelection(vc.event)
+            else:
+                for z in range(i1-i):
+                    ec.backCharacter(vc.event)
+.. @+node:ekr.20140220134748.16620: *5* vim_f
+def vim_f(vc):
+    '''move past the Nth occurrence of <char>.'''
+    vc.next_func = vc.vim_f2
+
+def vim_f2(vc):
+    ec = vc.c.editCommands
+    w = vc.event.w
+    s = w.getAllText()
+    if s:
+        i = i1 = w.getInsertPoint()
+        for z in range(vc.n1 * vc.n):
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+            i += 1
+        i -= 1
+        if i < len(s) and s[i] == vc.ch:
+            # g.trace(i-i1+1,vc.ch)
+            if vc.state == 'visual':
+                for z in range(i-i1+1):
+                    ec.forwardCharacterExtendSelection(vc.event)
+            else:
+                for z in range(i-i1+1):
+                    ec.forwardCharacter(vc.event)
+.. @+node:ekr.20140222064735.16620: *5* vim_t
+def vim_t(vc):
+    '''Move before the Nth occurrence of <char> to the right.'''
+    vc.next_func = vc.vim_t2
+    
+def vim_t2(vc):
+    ec = vc.c.editCommands
+    w = vc.event.w
+    s = w.getAllText()
+    if s:
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            i += 1
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+        if i < len(s) and s[i] == vc.ch:
+            # g.trace(i-i1+1,vc.ch)
+            if vc.state == 'visual':
+                for z in range(i-i1):
+                    ec.forwardCharacterExtendSelection(vc.event)
+            else:
+                for z in range(i-i1):
+                    ec.forwardCharacter(vc.event)
+.. @+node:ekr.20140222064735.16686: *5* vim_T
+def vim_T(vc):
+    '''Back before the Nth occurrence of <char>.'''
+    vc.next_func = vc.vim_T2
+
+def vim_T2(vc):
+    ec = vc.c.editCommands
+    w = vc.event.w
+    s = w.getAllText()
+    if s:
+        i = i1 = w.getInsertPoint()
+        if i > 0 and s[i-1] == vc.ch:
+            i -= 1 # ensure progess.
+        for n in range(vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            # g.trace(i1-i-1,vc.ch)
+            if vc.state == 'visual':
+                for z in range(i1-i-1):
+                    ec.backCharacterExtendSelection(vc.event)
+            else:
+                for z in range(i1-i-1):
+                    ec.backCharacter(vc.event)
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
