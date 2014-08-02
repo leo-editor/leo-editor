@@ -8,12 +8,29 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-- Support repeat counts in i,a,A,o,O commands.
-- Handle <count>d<motion> properly
+- Finish e command.
+- w doesn't properly extend selection in visual mode?
 
+- Support repeat counts in i,a,A,o,O commands.
+    - Remember I1, the initial insert point.
+    - The insert text is s[I1,I2]
+    ? Munge the text depending on whether it has newlines??
+        - Find out what vim actually does.
+- Handle <count>d<motion> properly
+    - Remember I1, the initial insert point.
+    - The to-be-deleted text is s[I1,munge(I2)]
+      - munge(I2) leaves I2 unchanged if I1 and I2 are on the same line.
+      - munge(I2) moves I2 to the bol if I2 < I1,
+      - munge(I2) moves I2 to the eol if I2 > I1.
+** Support the dot.
+- Are t and f, etc. limited to a single line?
+
+Gui:
 * Show partial commands in the status area: d or 2d or 3.
 * Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Began replacing most vis_xxx methods by corresponding vim_xxx methods.
+  Motion commands will now extend the selection if vc.state == 'visual'.
 - Limit h & l commands to the present line.
 - vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
   This expands abbreviations and does all default key handling!
@@ -23,6 +40,9 @@
 - Keys in insert-mode replace selection.
 - <Return> in headline put focus enters normal mode.
 - <Return> in outline pane puts focus in body.
+.. @+node:ekr.20140801121720.18067: *4* Later
+Add more motions.
+Add more top-level commands.
 .. @+node:ekr.20140801121720.18066: *4* Maybe
 - Enter insert mode in headlines if text is selected.
     This won't be so important if we can change the cursor in the headline.
@@ -32,6 +52,27 @@
 - Always recompute vim state when vc.do_keys returns False?
     - This may have to be done in k.masterKeyHandler.
 - Always enter insert mode in headlines?
+.. @+node:ekr.20140801121720.18072: *4* no longer used
+.. @+node:ekr.20140222064735.16667: *5* vis_h (no longer used)
+# def vis_h(vc):
+    # '''One character left (also: Left).'''
+    # vc.c.editCommands.backCharacterExtendSelection(vc.event)
+    # vc.next_func = vc.do_visual_mode
+.. @+node:ekr.20140222064735.16668: *5* vis_j (no longer used)
+# def vis_j(vc):
+    # '''Down N lines (also: Return, and Down).'''
+    # vc.c.editCommands.nextLineExtendSelection(vc.event)
+    # vc.next_func = vc.do_visual_mode
+.. @+node:ekr.20140222064735.16669: *5* vis_k (no longer used)
+# def vis_k(vc):
+    # '''Up N lines (also Up)'''
+    # vc.c.editCommands.prevLineExtendSelection(vc.event)
+    # vc.next_func = vc.do_visual_mode
+.. @+node:ekr.20140222064735.16670: *5* vis_l (no longer used)
+# def vis_l(vc):
+    # '''Right one char(also: space or Right key)'''
+    # vc.c.editCommands.forwardCharacterExtendSelection(vc.event)
+    # vc.next_func = vc.do_visual_mode
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
