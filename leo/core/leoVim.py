@@ -58,6 +58,8 @@ class VimCommands:
         vc.n1_seen = False
         vc.next_func = None
             # The continuation of a multi-character command.
+        vc.old_sel = None
+            # The selection range at the start of a command.
         vc.register_d = {}
             # Keys are letters; values are strings.
         vc.repeat_list = []
@@ -189,6 +191,15 @@ class VimCommands:
         d = {
         # Vim hard-coded control characters...
         'Ctrl+r': vc.vim_ctrl_r,
+        # The arrow keys are good for undo.
+        'Down':  vc.vim_j,
+        'Left':  vc.vim_h,
+        'Return':vc.vim_j,
+        'Right': vc.vim_l,
+        'Up':    vc.vim_k,
+        'Ctrl+Left': vc.vim_b,
+        'Ctrl+Right': vc.vim_w,
+        'space': vc.vim_l,
         # brackets.
         '{': None,
         '(': None,
@@ -343,7 +354,10 @@ class VimCommands:
         vc.stroke = stroke = event and event.stroke and event.stroke.s
         vc.w = w = event and event.w  
         # Dispatch an internal state handler if one is active.
-        vc.in_command = True # May be cleared later.
+        if not vc.in_command:
+            vc.in_command = True # May be cleared later.
+            if g.app.gui.isTextWidget(w):
+                vc.old_sel = w.getSelectionRange()
         vc.return_value = True # The default.
         if trace: g.trace('**** stroke: <%s>, event: %s' % (stroke,event))
         if stroke == 'Escape':
@@ -752,7 +766,7 @@ class VimCommands:
     #@+node:ekr.20131111061547.16468: *5* vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         w = vc.w
         if g.app.gui.isTextWidget(w):
             s = w.getAllText()
@@ -1140,7 +1154,8 @@ class VimCommands:
             if trace: g.trace('(vimCommands)',name,g.callers())
             if name.startswith('body'):
                 # Similar to selfInsertCommand.
-                oldSel = w.getSelectionRange()
+                oldSel = vc.old_sel or w.getSelectionRange()
+                # g.trace(oldSel,g.callers())
                 oldText = c.p.b
                 newText = w.getAllText()
                 ### To do: set undoType to the command spelling?
@@ -1158,6 +1173,7 @@ class VimCommands:
         vc.n = 1
         vc.n1_seen = False
         vc.next_func = None
+        vc.old_sel = None
         vc.repeat_list = []
         vc.state = 'normal'
         vc.show_status()

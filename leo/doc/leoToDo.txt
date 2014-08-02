@@ -8,10 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-- Undo doesn't restore insert point after d{motion} commands.
 ** Support the dot.
 ** Change cursor to indicate mode.
+- Extend Leo's undo system to handle vim-related undo.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
 - Support repeat counts in i,a,A,o,O commands.
 - Show status properly in cases such as 5i...
 - Handle d{motion} properly.
