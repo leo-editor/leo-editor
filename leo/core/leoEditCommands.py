@@ -5601,7 +5601,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         # g.trace('moveSpot',i)
     #@+node:ekr.20081123102100.1: *4* backToHome
-    def backToHome (self,event):
+    def backToHome (self,event,extend=False):
 
         '''Smart home:
         Position the point at the first non-blank character on the line,
@@ -5622,7 +5622,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if i == ins:
             i = i1
 
-        self.moveToHelper(event,i,extend=False)
+        self.moveToHelper(event,i,extend=extend)
     #@+node:ekr.20050920084036.75: *4* backToIndentation
     def backToIndentation (self,event):
 
