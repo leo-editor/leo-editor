@@ -166,6 +166,11 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140802074328.4471"><vh>leoVim.py</vh>
+<v t="ekr.20140802074328.4472"><vh>@test vc.on_same_line</vh></v>
+<v t="ekr.20140802074328.4473"><vh>@test vc.to_bol</vh></v>
+<v t="ekr.20140802074328.4474"><vh>@test vc.to_eol</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -581,7 +586,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1255,5 +1260,54 @@ unl: organizer node--&gt;child1
 gnx: ekr.20140712142620.4581
 unl: organizer node--&gt;child2
 </t>
+<t tx="ekr.20140802074328.4471"></t>
+<t tx="ekr.20140802074328.4472">vc = c.vimCommands
+s = '''
+abc
+xyz
+pdq
+'''
+table = (
+    ('ab','y',False),
+    ('a','c',True),
+    ('x','\np',True),
+    ('\nx','z',False),
+)
+for a,b,expected in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.on_same_line(s,i1,i2)
+    assert result == expected,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)</t>
+<t tx="ekr.20140802074328.4473">vc = c.vimCommands
+s = '''
+abc
+xyz
+'''
+table = (
+    ('a','a'),
+    ('a','b'),
+    ('a','\nx')
+)
+for a,b,in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.to_bol(s,i2)
+    assert result == i1,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)</t>
+<t tx="ekr.20140802074328.4474">vc = c.vimCommands
+s = '''
+abc
+xyz
+'''
+table = (
+    ('a','\nx'),
+    ('b','\nx'),
+    ('c','\nx'),
+    ('\nx','\nx'),
+)
+for a,b,in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.to_eol(s,i1)
+    assert result == i2,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)</t>
 </tnodes>
 </leo_file>
