@@ -17376,5 +17376,28 @@ def writeAtAutoOtlFile (self,root):
                 put('%s: %s' % (indent,s))
     root.setVisited()
     return True
+.. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
+.. @+node:ekr.20140801121720.18081: *4* vc.restart_key (not used)
+def restart_key(vc,event):
+    '''Re-handle a key that terminates a repeat count.'''
+    trace = False and not g.unitTesting
+    # Dispatch an internal state handler if one is active.
+    if trace: g.trace('**** stroke: <%s>' % (vc.stroke))
+    if vc.next_func:
+        f = vc.next_func
+        vc.next_func = None
+        f() # May set vc.next_func and clear vc.return_value.
+        if trace: g.trace(
+            'old next_func',f.__name__,
+            'new next_func:',vc.next_func and vc.next_func.__name__)
+        if not vc.next_func and not vc.in_motion:
+            vc.done()
+    # Finally, dispatch depending on state.
+    elif vc.in_motion:
+        vc.do_inner_motion()
+    elif vc.state == 'visual':
+        vc.do_visual_mode()
+    else:
+        vc.do_outer_command()
 .. @-all
 .. @-leo

@@ -8,10 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-- Do the actual dot command.
 * Change cursor to indicate mode.
-- Extend Leo's undo system to show the vim command corresponding to the undo.
+
+- Extend Leo's undo to show the vim command for to the undo.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- The actual dot command passes some easy tests!
 - Computed the dot properly.
 - arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
 - Support repeat counts in i,a,A,o,O commands.
@@ -46,18 +47,10 @@
 - Always recompute vim state when vc.do_keys returns False?
     - This may have to be done in k.masterKeyHandler.
 - Always enter insert mode in headlines?
-.. @+node:ekr.20140730175636.17994: *4* vc.update_widget (no longer used)
-def update_widget(vc,w):
-    '''If w is the body widget, make sure Leo remembers changes to it.'''
-    c = vc.c
-    # g.trace(w == c.frame.body.bodyCtrl)
-    if w == c.frame.body.bodyCtrl:
-        s = w.getAllText()
-        if c.p.b != s:
-            # g.trace('updating')
-            c.frame.body.onBodyChanged(undoType='Typing')
-.. @+node:ekr.20140801121720.18077: *4* (optional) Limit f,F,t,T to a single line
-.. @+node:ekr.20140222064735.16687: *5* vim_F
+.. @+node:ekr.20140802183521.18000: *4* code
+@language python
+.. @+node:ekr.20140801121720.18077: *5* (optional) Limit f,F,t,T to a single line
+.. @+node:ekr.20140222064735.16687: *6* vc.vim_F
 def vim_F(vc):
     '''Back to the Nth occurrence of <char>.'''
     vc.next_func = vc.vim_F2
@@ -80,7 +73,7 @@ def vim_F2(vc):
             else:
                 for z in range(i1-i):
                     ec.backCharacter(vc.event)
-.. @+node:ekr.20140220134748.16620: *5* vim_f
+.. @+node:ekr.20140220134748.16620: *6* vc.vim_f
 def vim_f(vc):
     '''move past the Nth occurrence of <char>.'''
     vc.next_func = vc.vim_f2
@@ -104,7 +97,7 @@ def vim_f2(vc):
             else:
                 for z in range(i-i1+1):
                     ec.forwardCharacter(vc.event)
-.. @+node:ekr.20140222064735.16620: *5* vim_t
+.. @+node:ekr.20140222064735.16620: *6* vc.vim_t
 def vim_t(vc):
     '''Move before the Nth occurrence of <char> to the right.'''
     vc.next_func = vc.vim_t2
@@ -127,7 +120,7 @@ def vim_t2(vc):
             else:
                 for z in range(i-i1):
                     ec.forwardCharacter(vc.event)
-.. @+node:ekr.20140222064735.16686: *5* vim_T
+.. @+node:ekr.20140222064735.16686: *6* vc.vim_T
 def vim_T(vc):
     '''Back before the Nth occurrence of <char>.'''
     vc.next_func = vc.vim_T2
