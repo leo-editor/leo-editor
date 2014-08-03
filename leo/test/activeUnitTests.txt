@@ -20773,6 +20773,58 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
+#@+node:ekr.20140802074328.4471: *3* leoVim.py
+#@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
+vc = c.vimCommands
+s = '''
+abc
+xyz
+pdq
+'''
+table = (
+    ('ab','y',False),
+    ('a','c',True),
+    ('x','\np',True),
+    ('\nx','z',False),
+)
+for a,b,expected in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.on_same_line(s,i1,i2)
+    assert result == expected,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)
+#@+node:ekr.20140802074328.4473: *4* @test vc.to_bol
+vc = c.vimCommands
+s = '''
+abc
+xyz
+'''
+table = (
+    ('a','a'),
+    ('a','b'),
+    ('a','\nx')
+)
+for a,b,in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.to_bol(s,i2)
+    assert result == i1,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)
+#@+node:ekr.20140802074328.4474: *4* @test vc.to_eol
+vc = c.vimCommands
+s = '''
+abc
+xyz
+'''
+table = (
+    ('a','\nx'),
+    ('b','\nx'),
+    ('c','\nx'),
+    ('\nx','\nx'),
+)
+for a,b,in table:
+    i1,i2 = s.find(a),s.find(b)
+    result = vc.to_eol(s,i1)
+    assert result == i2,'%s expected: %s got: %s' % (
+        s[i1:i2],expected,got)
 #@+node:ekr.20050120095423: ** Plugins
 # Do this last.
 #@+node:ekr.20110610082755.3362: *3*  qtGui.py
