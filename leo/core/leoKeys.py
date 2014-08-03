@@ -4183,31 +4183,25 @@ class KeyHandlerClass:
     canonicalizeShortcut = strokeFromSetting # For compatibility.
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char (self,stroke):
-
-        '''Convert a stroke to an (insertable) char.
-
-        This method allows Leo to use strokes everywhere.'''
-
+        '''
+        Convert a stroke to an (insertable) char.
+        This method allows Leo to use strokes everywhere.
+        '''
         trace = False and not g.unitTesting
         k = self
-
         if not stroke: return ''
-        s = stroke.s
-
+        s = stroke.s if g.isStroke(stroke) else stroke
         # Allow bare angle brackets for unit tests.
         if s.startswith('<') and s.endswith('>'):
             s = s[1:-1]
-
         if len(s) == 0: return ''
         if len(s) == 1: return s
-
         for z in ('Alt','Ctrl','Command','Meta'):
             if s.find(z) != -1:            
                 return ''
                 # This is not accurate: LeoQtEventFilter retains
                 # the spelling of Alt-Ctrl keys because of the
                 # @bool enable_alt_ctrl_bindings setting.
-
         # Special case the gang of four, plus 'Escape',
         d = {
             'BackSpace':'\b',
@@ -4218,27 +4212,21 @@ class KeyHandlerClass:
         }
         ch = d.get(s)
         if ch: return ch
-
         # First, do the common translations.
         ch = k.guiBindNamesInverseDict.get(s)
         if ch:
             if trace: g.trace(repr(stroke),repr(ch))
             return ch
-
         # A much-simplified form of code in k.strokeFromSetting.
         shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
         s = s.replace('Shift+','').replace('Shift-','')
-
         last = s #  Everything should have been stripped.
-
         if len(s) == 1 and s.isalpha():
             if shift:
                 s = last.upper()
             else:
                 s = last.lower()
-
         val = s if len(s)==1 else ''
-
         if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
         return val
     #@+node:ekr.20061031131434.193: *3* k.States
