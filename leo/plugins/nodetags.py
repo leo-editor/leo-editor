@@ -33,7 +33,7 @@ As of v0.3, the tag browser has set-algebra querying possible.  Users may search
 '''
 #@-<< docstring >>
 
-__version__ = '0.3'
+__version__ = '0.4'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -41,6 +41,7 @@ __version__ = '0.3'
 # Version 0.1 - initial release, API only
 # Version 0.2 - add a minimal jumplist-only GUI  (still need to use API for add/remove of tags)
 # Version 0.3 - add query-based searching (set algebra) of tagged nodes
+# Version 0.4 - fix a small issue w/r/t v.u vs v.unknownAttributes
 # 
 # Future plans w/r/t UI:  
 #   - Add a jumplist of tags on selected node
@@ -130,25 +131,25 @@ class TagController:
     #@+node:peckj.20140804103733.9259: *4* get_tags
     def get_tags(self, p):
         ''' returns a list of tags applied to p '''
-        tags = p.v.unknownAttributes.get(self.TAG_LIST_KEY, set([]))
+        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
         return list(tags)
     #@+node:peckj.20140804103733.9260: *4* add_tag
     def add_tag(self, p, tag):
         ''' adds 'tag' to the taglist of p '''
-        tags = p.v.unknownAttributes.get(self.TAG_LIST_KEY, set([]))
+        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
         tags.add(tag)
-        p.v.unknownAttributes[self.TAG_LIST_KEY] = tags
+        p.v.u[self.TAG_LIST_KEY] = tags
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* remove_tag
     def remove_tag(self, p, tag):
         ''' removes 'tag' from the taglist of p '''
-        tags = p.v.unknownAttributes.get(self.TAG_LIST_KEY, set([]))
+        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
         if tag in tags:
             tags.remove(tag)
         if len(tags) == 0:
-            del p.v.unknownAttributes[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
+            del p.v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
         else:
-            p.v.unknownAttributes[self.TAG_LIST_KEY] = tags
+            p.v.u[self.TAG_LIST_KEY] = tags
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
