@@ -127,7 +127,7 @@ class VimCommands:
         'D': None,
         'E': None,
         'F': vc.vim_F,
-        'G': None,
+        'G': vc.vim_G,
         'H': None,
         'I': None,
         'J': None,
@@ -153,7 +153,7 @@ class VimCommands:
         # 'd': vc.vim_d,
         'e': vc.vim_e,
         # 'f': vc.vim_f,
-        # 'g': vc.vim_g,
+        'g': vc.vim_g,
         'h': vc.vim_h,
         # 'i': vc.vim_i,
         'j': vc.vim_j,
@@ -241,7 +241,7 @@ class VimCommands:
         'D': None,
         'E': None,
         'F': vc.vim_F,
-        'G': None,
+        'G': vc.vim_G,
         'H': None,
         'I': None,
         'J': None,
@@ -319,10 +319,12 @@ class VimCommands:
         '0': vc.vim_0,
         'dollar': vc.vim_dollar,
         'F': vc.vim_F,
+        'G': vc.vim_G,
         'T': vc.vim_T,
         'b': vc.vim_b,
         'e': vc.vim_e,
         'f': vc.vim_f,
+        'g': vc.vim_g,
         'h': vc.vim_h,
         'j': vc.vim_j,
         'k': vc.vim_k,
@@ -769,6 +771,22 @@ class VimCommands:
             vc.accept()
         else:
             vc.done()
+    #@+node:ekr.20140803220119.18112: *5* vc.vim_G
+    def vim_G(vc):
+        '''Put the cursor on the last character of the file.'''
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        last = max(0,len(s)-1)
+        if vc.state == 'visual':
+            i,j = w.getSelectionRange()
+            if i > j: i,j = j,i
+            w.setSelectionRange(i,last,insert=last)
+            vc.accept()
+        else:
+            w.setInsertPoint(last)
+            vc.done()
+
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
     def vim_f(vc):
         '''move past the Nth occurrence of <char>.'''
@@ -797,17 +815,38 @@ class VimCommands:
             vc.accept()
         else:
             vc.done()
-    #@+node:ekr.20140220134748.16621: *5* vc.vim_g (to do)
-    # N   ge    backward to the end of the Nth word
-    # N   gg    goto line N (default: first line), on the first non-blank character
-        # gv    start highlighting on previous visual area
+    #@+node:ekr.20140220134748.16621: *5* vc.vim_g (extend)
     def vim_g(vc):
-        '''Go...'''
+        '''
+        N ge backward to the end of the Nth word
+        N gg goto line N (default: first line), on the first non-blank character
+          gv start highlighting on previous visual area
+        '''
         vc.accept(handler=vc.vim_g2)
         
     def vim_g2(vc):
-        g.trace(vc.n,vc.stroke)
-        vc.done()
+        event,w = vc.event,vc.w
+        ec = vc.c.editCommands
+        ec.w = w
+        extend = vc.state == 'visual'
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        if not vc.is_text_widget(w):
+            g.trace('not text',w)
+        elif vc.stroke == 'g':
+            # Go to start of buffer.
+            if not vc.on_same_line(s,0,i):
+                if extend:
+                    ec.beginningOfBufferExtendSelection(event)
+                else:
+                    ec.beginningOfBuffer(event)
+            ec.backToHome(event,extend=extend)
+        else:
+            g.trace('not ready',vc.stroke)
+        if extend:
+            vc.accept(handler=vc.do_visual_mode)
+        else:
+            vc.done()
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
@@ -1280,7 +1319,7 @@ class VimCommands:
         assert vc.in_motion
         func = vc.motion_dispatch_d.get(vc.stroke)
         if func:
-            if trace: g.trace(vc.stroke,func.__name__,motion_func.__name__)
+            if trace: g.trace(vc.stroke,func.__name__,vc.motion_func.__name__)
             func()
             vc.motion_func()
             vc.init_motion_ivars()

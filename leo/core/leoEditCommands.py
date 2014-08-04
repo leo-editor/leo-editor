@@ -5602,27 +5602,23 @@ class EditCommandsClass (BaseEditCommandsClass):
         # g.trace('moveSpot',i)
     #@+node:ekr.20081123102100.1: *4* backToHome
     def backToHome (self,event,extend=False):
-
-        '''Smart home:
+        '''
+        Smart home:
         Position the point at the first non-blank character on the line,
-        or the start of the line if already there.'''
-
+        or the start of the line if already there.
+        '''
         w = self.editWidget(event)
         if not w: return
-
         s = w.getAllText()
         ins = w.getInsertPoint()
-        if ins == 0 or not(s): return
-
-        # Toggle back and forth between start of line and first-non-blank character.
-        i,j = g.getLine(s,ins)
-        i1 = i
-        while i < j and s[i] in (' \t'):
-            i += 1
-        if i == ins:
-            i = i1
-
-        self.moveToHelper(event,i,extend=extend)
+        if s:
+            i,j = g.getLine(s,ins)
+            i1 = i
+            while i < j and s[i] in (' \t'):
+                i += 1
+            if i == ins:
+                i = i1
+            self.moveToHelper(event,i,extend=extend)
     #@+node:ekr.20050920084036.75: *4* backToIndentation
     def backToIndentation (self,event):
 
