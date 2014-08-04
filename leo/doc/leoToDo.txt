@@ -8,21 +8,33 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-Today:
-- Do jj: same as escape.
-* ===== Eat my own dog food.
+* dot is broken.
+* Test invalid characters.
+
+Rough Edges:
+- Must hold down Alt-Key: plain keys put cursor in the body pane.
+- Enter insert mode when headline has selected text.
+- Dot cleared too often: Escape, Return clear it.
+
+Next:
+- Allow jj in headlines?
+- vc.common_motions_dict.
+    - Make sure there are no duplicates.
+- Merge vim_v and vis_d.
 - Allow commands starting with colon.
 - yank and paste.
-
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
 
-Next:
+Later:
+* Ironically, now that everything is hard coded in tables, it would be easy
+  for plugins to customize the workings of vim-mode.
 * Use different border in non-insert modes.
 - Extend Leo's undo to show the vim characters for the commands.
   Equate all vim commands with 'Typing'.
 - (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- jj in insert mode *only* is the same as escape.
 - Added support for gg and G, in both normal and visual modes.
 - Improved how show_stroke prints non-plain chars.
 - Escape in visual mode clears selection and leaves dot unchanged.
@@ -53,6 +65,10 @@ Next:
 I use a tiny subset of Vim commands:
 
 ==== Try them in vim!
+
+the '/' command for searching forward, '?' for searching backwards
+followed by 'n' for next match
+- probably my #1 fav
 
 '/' to find text:
     '*' find next occurrence of this word
