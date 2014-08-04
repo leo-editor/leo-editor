@@ -469,7 +469,6 @@ class VimCommands:
         # Undoably preserve any changes to the body.
         vc.save_body()
         # Clear all state, enter normal mode & show the status.
-        ### vc.reinit_ivars(vc.c)
         vc.init_ivars_after_done()
         vc.show_status()
         vc.return_value = return_value
@@ -1332,7 +1331,20 @@ class VimCommands:
     #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
-        vc.delegate()
+        # Support the jj abbreviation when there is no selection.
+        w = vc.event.w
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i2,j = w.getSelectionRange()
+        if i2 == j and i > 0 and s[i-1] == 'j':
+            # g.trace(i,i2,j,s[i-1:i+1])
+            w.delete(i-1,i)
+            w.setInsertPoint(i-1)
+            # A benign hack: simulate an Escape for the dot.
+            vc.stroke = 'Escape'
+            vc.end_insert_mode()
+        else:
+            vc.delegate()
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
         '''Handle strokes in normal mode.'''
