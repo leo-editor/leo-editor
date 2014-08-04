@@ -17424,5 +17424,42 @@ def enter_state(vc,state,add_to_dot=False,return_value=True,set_dot=True):
         vc.next_func = vc.do_normal_mode
     vc.show_state()
     vc.return_value = return_value
+.. @+node:ekr.20140802120757.18000: *4* vc.reinit_ivars (to be deleted)
+def reinit_ivars(vc,c):
+    '''
+    Init all the ivars of this class, except dot-related ivars.
+    This must be called *only* by the ctor and by vc.done().
+    '''
+    vc.ch = None
+        # The incoming character.
+    vc.command_i = None
+        # The offset into the text at the start of a command.
+    vc.command_list = []
+        # The list of all characters seen in this command.
+    vc.command_n = None
+        # The repeat count in effect at the start of a command.
+    vc.command_w = None
+        # The widget in effect at the start of a command.
+    vc.event = None
+        # The event for the current key.
+    vc.old_sel = None
+        # The selection range at the start of a command.
+    vc.repeat_list = []
+        # The characters of the current repeat count.
+    vc.restart_func = None
+        # The previous value of vc.next_func.
+        # vc.beep restores vc.next_function using this.
+    vc.return_value = True
+        # The value returned by vc.do_key.
+        # Handlers set this to False to tell k.masterKeyHandler to handle the key.
+    vc.state = 'normal'
+        # in ('normal','insert','visual',)
+    vc.stroke = None
+        # The incoming stroke.
+    vc.vis_mode_i = None
+        # The insertion point at the start of visual mode.
+    vc.vis_mode_w = None
+        # The widget in effect at the start of visual mode.
+ 
 .. @-all
 .. @-leo

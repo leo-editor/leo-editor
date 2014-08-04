@@ -8,13 +8,20 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-* Write Theory of Vim Mode, based on ENB post:
+Today:
+- Do jj: same as escape.
+* ===== Eat my own dog food.
+- Allow commands starting with colon.
+- yank and paste.
+
+* Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
- 
-Later:
-- Use different border in non-insert modes.
-- Change cursor to indicate mode.
-- Extend Leo's undo to show the vim command for to the undo.
+
+Next:
+* Use different border in non-insert modes.
+- Extend Leo's undo to show the vim characters for the commands.
+  Equate all vim commands with 'Typing'.
+- (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
 - Added support for gg and G, in both normal and visual modes.
 - Improved how show_stroke prints non-plain chars.
@@ -43,44 +50,40 @@ Later:
 - <Return> in headline put focus enters normal mode.
 - <Return> in outline pane puts focus in body.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
-I use a tiny subset of Vim capability, probably most often used is:
+I use a tiny subset of Vim commands:
 
-'/' to find text
-substitution ':% s/text/replaced text/g
-'*' find next occurrence of this word
-#' find previous occurrence
-yank and paste
+==== Try them in vim!
 
-I've also gotten to depend on the alias of 'jj' to esc,
-allowing entering normal mode without leaving home keys.
-
-gg and G for jumping to beginning and end of file.
-
+'/' to find text:
+    '*' find next occurrence of this word
+    #' find previous occurrence
+    
+:% s/text/replaced text/g
+    Substitution.
 :r filename
-put contents of filename at cursor position
-
+    Put contents of filename at cursor position
 :!shell command
-
 :e directory name
-presents list of files in the directory, selecting and <enter> opens a file
-
+    Shows list of files in the directory:
+    selecting and <enter> opens a file
 :tabnew filename
-opens filename in a new tab
+    opens filename in a new tab
 .. @+node:ekr.20140803220119.18110: *4* From Jake: do asap
 And these!
 
 :e!
-revert all changes since the current file was loaded (i.e. reload from disk)
-In a Leo context, this would probably make more sense on an @<file> node.
+    revert all changes since the current file was loaded (i.e. reload from
+    disk) In a Leo context, this would probably make more sense on an
+    @<file> node.
 
 :wq
-Save and exit.  I use this one all the time ;)
+    Save and exit.  I use this one all the time ;)
 
 :1,$ s/^/  /g
- From line 1 to EOF ($), replace the beginning of the line (^) with two
-spaces (  ), globally (keep applying as many times as possible)
-A quick vim-like way to do indents on a range of characters.  I also use
-this one frequently...
+    From line 1 to EOF ($), replace the beginning of the line (^) with two
+    spaces ( ), globally (keep applying as many times as possible) A quick
+    vim-like way to do indents on a range of characters. I also use this
+    one frequently...
 .. @+node:ekr.20140801121720.18067: *4* Later
 - Add more motions.
 - Add more top-level commands.

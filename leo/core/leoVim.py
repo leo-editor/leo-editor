@@ -577,12 +577,6 @@ class VimCommands:
                 vc.do_normal_mode()
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
-    #@+node:ekr.20140730175636.17983: *5* vc.vim_colon
-    def vim_colon(vc):
-        '''Enter the minibuffer.'''
-        vc.quit()
-        ### vc.k.extendLabel(':') # ,select=False,protect=False)
-        vc.k.fullCommand(event=g.Bunch(char=':',stroke='colon'))
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -647,6 +641,12 @@ class VimCommands:
     def vim_c2(vc):
         g.trace(vc.stroke)
         vc.done()
+    #@+node:ekr.20140730175636.17983: *5* vc.vim_colon
+    def vim_colon(vc):
+        '''Enter the minibuffer.'''
+        vc.quit()
+        ### vc.k.extendLabel(':') # ,select=False,protect=False)
+        vc.k.fullCommand(event=g.Bunch(char=':',stroke='colon'))
     #@+node:ekr.20140730175636.17992: *5* vc.vim_ctrl_r
     def vim_ctrl_r(vc):
         '''Redo the last command.'''
@@ -771,22 +771,6 @@ class VimCommands:
             vc.accept()
         else:
             vc.done()
-    #@+node:ekr.20140803220119.18112: *5* vc.vim_G
-    def vim_G(vc):
-        '''Put the cursor on the last character of the file.'''
-        ec = vc.c.editCommands
-        w = vc.event.w
-        s = w.getAllText()
-        last = max(0,len(s)-1)
-        if vc.state == 'visual':
-            i,j = w.getSelectionRange()
-            if i > j: i,j = j,i
-            w.setSelectionRange(i,last,insert=last)
-            vc.accept()
-        else:
-            w.setInsertPoint(last)
-            vc.done()
-
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
     def vim_f(vc):
         '''move past the Nth occurrence of <char>.'''
@@ -814,6 +798,21 @@ class VimCommands:
         if vc.state == 'visual':
             vc.accept()
         else:
+            vc.done()
+    #@+node:ekr.20140803220119.18112: *5* vc.vim_G
+    def vim_G(vc):
+        '''Put the cursor on the last character of the file.'''
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        last = max(0,len(s)-1)
+        if vc.state == 'visual':
+            i,j = w.getSelectionRange()
+            if i > j: i,j = j,i
+            w.setSelectionRange(i,last,insert=last)
+            vc.accept()
+        else:
+            w.setInsertPoint(last)
             vc.done()
     #@+node:ekr.20140220134748.16621: *5* vc.vim_g (extend)
     def vim_g(vc):
@@ -876,7 +875,7 @@ class VimCommands:
         vc.begin_insert_mode()
     #@+node:ekr.20140220134748.16617: *5* vc.vim_j
     def vim_j(vc):
-        '''Down n lines (also: Return, and Down).'''
+        '''N j  Down n lines.'''
         ec = vc.c.editCommands
         if vc.state == 'visual':
             for z in range(vc.n1 * vc.n):
