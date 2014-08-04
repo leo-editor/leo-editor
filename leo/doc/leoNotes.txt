@@ -17399,5 +17399,30 @@ def restart_key(vc,event):
         vc.do_visual_mode()
     else:
         vc.do_outer_command()
+.. @+node:ekr.20140802225657.18032: *4* vc.enter_state (not used)
+def enter_state(vc,state,add_to_dot=False,return_value=True,set_dot=True):
+    '''
+    Enter the given state.
+    Optionally, add to and/or set the dot.
+    '''
+    d={ 'insert': vc.do_insert_mode,
+        # 'motion': vc.do_inner_motion, # not a real state.
+        'normal': vc.do_normal_mode,
+        'visual': do_visual_mode,
+    }
+    # Handle the dot.
+    if add_to_dot: vc.add_to_dot()
+    if set_dot: vc.compute_dot(stroke=vc.stroke)
+    # Set vc.state & vc.next_func.
+    func = d.get(state)
+    if func:
+        vc.state = state
+        vc.next_func = func
+    else:
+        vc.oops('bad state argument: %s' % state)
+        vc.state = 'normal'
+        vc.next_func = vc.do_normal_mode
+    vc.show_state()
+    vc.return_value = return_value
 .. @-all
 .. @-leo

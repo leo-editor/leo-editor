@@ -11,6 +11,30 @@
 * Change cursor to indicate mode.
 
 - Extend Leo's undo to show the vim command for to the undo.
+.. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
+I use a tiny subset of Vim capability, probably most often used is:
+
+'/' to find text
+substitution ':% s/text/replaced text/g
+'*' find next occurrence of this word
+#' find previous occurrence
+yank and paste
+
+I've also gotten to depend on the alias of 'jj' to esc,
+allowing entering normal mode without leaving home keys.
+
+gg and G for jumping to beginning and end of file.
+
+:r filename
+put contents of filename at cursor position
+
+:!shell command
+
+:e directory name
+presents list of files in the directory, selecting and <enter> opens a file
+
+:tabnew filename
+opens filename in a new tab
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
 - The actual dot command passes some easy tests!
 - Computed the dot properly.
@@ -53,7 +77,7 @@
 .. @+node:ekr.20140222064735.16687: *6* vc.vim_F
 def vim_F(vc):
     '''Back to the Nth occurrence of <char>.'''
-    vc.next_func = vc.vim_F2
+    vc.accept(handler=vc.vim_F2)
 
 def vim_F2(vc):
     ec = vc.c.editCommands
@@ -73,10 +97,14 @@ def vim_F2(vc):
             else:
                 for z in range(i1-i):
                     ec.backCharacter(vc.event)
+    if vc.state == 'visual':
+        vc.accept()
+    else:
+        vc.done()
 .. @+node:ekr.20140220134748.16620: *6* vc.vim_f
 def vim_f(vc):
     '''move past the Nth occurrence of <char>.'''
-    vc.next_func = vc.vim_f2
+    vc.accept(handler=vc.vim_f2)
 
 def vim_f2(vc):
     ec = vc.c.editCommands
@@ -97,10 +125,14 @@ def vim_f2(vc):
             else:
                 for z in range(i-i1+1):
                     ec.forwardCharacter(vc.event)
+    if vc.state == 'visual':
+        vc.accept()
+    else:
+        vc.done()
 .. @+node:ekr.20140222064735.16620: *6* vc.vim_t
 def vim_t(vc):
     '''Move before the Nth occurrence of <char> to the right.'''
-    vc.next_func = vc.vim_t2
+    vc.accept(handler=vc.vim_t2)
     
 def vim_t2(vc):
     ec = vc.c.editCommands
@@ -120,10 +152,14 @@ def vim_t2(vc):
             else:
                 for z in range(i-i1):
                     ec.forwardCharacter(vc.event)
+    if vc.state == 'visual':
+        vc.accept()
+    else:
+        vc.done()
 .. @+node:ekr.20140222064735.16686: *6* vc.vim_T
 def vim_T(vc):
     '''Back before the Nth occurrence of <char>.'''
-    vc.next_func = vc.vim_T2
+    vc.accept(handler=vc.vim_T2)
 
 def vim_T2(vc):
     ec = vc.c.editCommands
@@ -145,6 +181,10 @@ def vim_T2(vc):
             else:
                 for z in range(i1-i-1):
                     ec.backCharacter(vc.event)
+    if vc.state == 'visual':
+        vc.accept()
+    else:
+        vc.done()
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
