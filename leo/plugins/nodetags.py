@@ -26,15 +26,27 @@ This plugin registers a controller object to c.theTagController, which provides 
 
 Internally, tags are stored in p.v.unknownAttributes['__node_tags'] as a set.
 
+As of v0.2, there is a minimal tag browser UI in the log pane.  Still need to use the API to add/remove tags from nodes.
+
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
+__version__ = '0.2'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial release, API only
+# Version 0.2 - Add a minimal jumplist-only GUI  (still need to use API for add/remove of tags)
+# 
+# Future plans w/r/t UI:  
+#   - Add a jumplist of tags on selected node
+#       - When a tag is clicked, change the combo box to that item, and update the jumplist
+#   - Add a search pane/gui to the Tags tab - the combobox can search with set operations:
+#       - intersect (&)
+#       - union (|)
+#       - difference (-)
+#       - symmetric difference (^)
 # 
 #@@c
 #@-<< version history >>
@@ -42,6 +54,7 @@ __version__ = '0.1'
 #@+<< imports >>
 #@+node:peckj.20140804103733.9241: ** << imports >>
 import leo.core.leoGlobals as g
+from PyQt4 import QtGui, QtCore
 #@-<< imports >>
 
 #@+others
@@ -80,6 +93,9 @@ class TagController:
         self.taglist = []
         self.initialize_taglist()
         c.theTagController = self
+        self.ui = LeoTagWidget(c)
+        c.frame.log.createTab('Tags', widget=self.ui)
+        self.ui.update_all()
     #@+node:peckj.20140804103733.9263: *5* initialize_taglist
     def initialize_taglist(self):
         taglist = []
@@ -101,6 +117,7 @@ class TagController:
         nodelist = self.get_tagged_nodes(tag)
         if len(nodelist) == 0:
             self.taglist.remove(tag)
+        self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* get_tagged_nodes
     def get_tagged_nodes(self, tag):
         ''' return a list of positions of nodes containing the tag '''
@@ -133,6 +150,116 @@ class TagController:
         else:
             p.v.unknownAttributes[self.TAG_LIST_KEY] = tags
         self.update_taglist(tag)
+    #@-others
+#@+node:peckj.20140804114520.15199: ** class LeoTagWidget
+class LeoTagWidget(QtGui.QWidget):
+    #@+others
+    #@+node:peckj.20140804114520.15200: *3* __init__
+    def __init__(self,c,parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.c = c
+        self.initUI()
+        self.registerCallbacks()
+        self.mapping = {}
+    #@+node:peckj.20140804114520.15201: *3* initialization
+    #@+node:peckj.20140804114520.15202: *4* initUI
+    def initUI(self):
+        # create GUI components
+        ## this code is atrocious... don't look too closely
+        self.setObjectName("LeoTagWidget")
+        
+        # verticalLayout_2: contains
+        # verticalLayout
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self)
+        self.verticalLayout_2.setContentsMargins(0,1,0,1)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        
+        # horizontalLayout: contains
+        # "Refresh" button
+        # comboBox
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(0,0,0,0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        
+        # verticalLayout: contains
+        # horizontalLayout
+        # listWidget
+        # label
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        
+        self.comboBox = QtGui.QComboBox(self)
+        self.comboBox.setObjectName("comboBox")
+        self.horizontalLayout.addWidget(self.comboBox)
+        # self.pushButton = QtGui.QPushButton("Refresh", self)
+        # self.pushButton.setObjectName("pushButton")
+        # self.pushButton.setMinimumSize(50,24)
+        # self.pushButton.setMaximumSize(50,24)
+        # self.horizontalLayout.addWidget(self.pushButton)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.listWidget = QtGui.QListWidget(self)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout.addWidget(self.listWidget)
+        self.label = QtGui.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Total: 0 items")
+        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+        QtCore.QMetaObject.connectSlotsByName(self)
+    #@+node:peckj.20140804114520.15203: *4* registerCallbacks
+    def registerCallbacks(self):
+        self.connect(self.listWidget, 
+            QtCore.SIGNAL("itemSelectionChanged()"), 
+            self.item_selected)
+        self.connect(self.listWidget,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
+            self.item_selected)
+        self.connect(self.comboBox,
+            QtCore.SIGNAL("currentIndexChanged(QString)"),
+            self.update_list)
+        #self.connect(self.pushButton,
+        #    QtCore.SIGNAL("clicked(bool)"),
+        #    self.update_all)
+        #self.c.k.registerCommand('nodewatch-refresh', shortcut=None, func=self.update_all)
+    #@+node:peckj.20140804114520.15204: *3* updates + interaction
+    #@+node:peckj.20140804114520.15205: *4* item_selected
+    def item_selected(self):
+        idx = self.listWidget.currentRow()
+        key = str(self.listWidget.currentItem().text())
+        if key == '' or key not in self.mapping.keys():
+            return
+        pos = self.mapping[key]
+        self.c.selectPosition(pos)
+        self.c.redraw_now()
+    #@+node:peckj.20140804114520.15206: *4* update_combobox
+    def update_combobox(self):
+        self.comboBox.clear()
+        tags = self.c.theTagController.get_all_tags()
+        self.comboBox.addItems(tags)
+    #@+node:peckj.20140804114520.15207: *4* update_list
+    def update_list(self):
+        key = str(self.comboBox.currentText())
+        nodelist = self.c.theTagController.get_tagged_nodes(key)
+        self.listWidget.clear()
+        self.mapping = {}
+        for n in nodelist:
+            self.listWidget.addItem(n.h)
+            self.mapping[n.h] = n
+        count = self.listWidget.count()
+        self.label.clear()
+        self.label.setText("Total: %s items" % count)
+    #@+node:peckj.20140804114520.15208: *4* update_all
+    def update_all(self,event=None):
+        ''' updates the tag GUI '''
+        key = str(self.comboBox.currentText())
+        self.update_combobox()
+        if len(key) > 0:
+            idx = self.comboBox.findText(key)
+            if idx == -1: idx = 0
+        else:
+            idx = 0 
+        self.comboBox.setCurrentIndex(idx)
+        self.update_list()
     #@-others
 #@-others
 #@-leo
