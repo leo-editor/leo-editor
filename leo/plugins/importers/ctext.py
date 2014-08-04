@@ -47,6 +47,8 @@ class CTextScanner(BaseScanner):
     def run(self,s,parent,parse_body=False,prepass=False):
         
         cchar = '#'
+        if self.fileType.lower() == '.tex':
+            cchar = '%'
         if self.fileType.lower() == '.sql':
             cchar = '-'
         if self.fileType.lower() == '.js':
