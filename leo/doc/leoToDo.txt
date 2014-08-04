@@ -8,9 +8,39 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-* Change cursor to indicate mode.
-
+* Write Theory of Vim Mode, based on ENB post:
+  https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
+ 
+Later:
+- Use different border in non-insert modes.
+- Change cursor to indicate mode.
 - Extend Leo's undo to show the vim command for to the undo.
+.. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Improved how show_stroke prints non-plain chars.
+- Escape in visual mode clears selection and leaves dot unchanged.
+- Clean up inits: https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/iRycTO1QG8kJ
+- The actual dot command passes some easy tests!
+- Computed the dot properly.
+- arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
+- Support repeat counts in i,a,A,o,O commands.
+- Show status properly in cases such as 5i...
+- Handle d{motion} properly.
+- Handle <count>d<motion> properly in vim_d3.
+- Finished v{motion}d.
+- Finish e command.
+- Replaced non-terminating vis_ commands with vim_ commands.
+- Show partial commands in the status area: d or 2d or 3.
+- Began replacing most vis_xxx methods by corresponding vim_xxx methods.
+  Motion commands will now extend the selection if vc.state == 'visual'.
+- Limit h & l commands to the present line.
+- vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
+  This expands abbreviations and does all default key handling!
+- Fixed crasher when changing nodes with Alt-arrow keys.
+  vc.do_key now always calls vc.update_widget.
+- vc.do_insert_mode now expands abbreviations in insert mode.
+- Keys in insert-mode replace selection.
+- <Return> in headline put focus enters normal mode.
+- <Return> in outline pane puts focus in body.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim capability, probably most often used is:
 
@@ -35,29 +65,6 @@ presents list of files in the directory, selecting and <enter> opens a file
 
 :tabnew filename
 opens filename in a new tab
-.. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
-- The actual dot command passes some easy tests!
-- Computed the dot properly.
-- arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
-- Support repeat counts in i,a,A,o,O commands.
-- Show status properly in cases such as 5i...
-- Handle d{motion} properly.
-- Handle <count>d<motion> properly in vim_d3.
-- Finished v{motion}d.
-- Finish e command.
-- Replaced non-terminating vis_ commands with vim_ commands.
-- Show partial commands in the status area: d or 2d or 3.
-- Began replacing most vis_xxx methods by corresponding vim_xxx methods.
-  Motion commands will now extend the selection if vc.state == 'visual'.
-- Limit h & l commands to the present line.
-- vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
-  This expands abbreviations and does all default key handling!
-- Fixed crasher when changing nodes with Alt-arrow keys.
-  vc.do_key now always calls vc.update_widget.
-- vc.do_insert_mode now expands abbreviations in insert mode.
-- Keys in insert-mode replace selection.
-- <Return> in headline put focus enters normal mode.
-- <Return> in outline pane puts focus in body.
 .. @+node:ekr.20140801121720.18067: *4* Later
 - Add more motions.
 - Add more top-level commands.

@@ -13,6 +13,18 @@ import leo.core.leoGlobals as g
 import string
 
 #@+others
+#@+node:ekr.20140803220119.18093: ** Colon Commands
+# :r filename
+# :!shell command
+# :e directory name
+# :tabnew filename
+
+if 0: # Doesn't work.
+    g.command(':r')
+    def ctrlClickAtCursor(event):
+        c = event.get('c')
+        if c:
+            g.trace()
 #@+node:ekr.20140802183521.17997: ** show_stroke
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
@@ -22,10 +34,10 @@ def show_stroke(stroke):
         'Ctrl+Left':    'Ctrl+Left',
         'Ctrl+Right':   'Ctrl+Right',
         'Ctrl+r':       'Ctrl+r',
-        'Down':         '<Down>',
+        'Down':         '<Dn>',
         'Escape':       '<Esc>',
-        'Left':         '<Left>',
-        'Right':        '<Right>',
+        'Left':         '<Lt>',
+        'Right':        '<Rt>',
         'Up':           '<Up>',
         'colon':        ':',
         'dollar':       '$',
@@ -57,23 +69,11 @@ class VimCommands:
         '''The ctor for the VimCommands class.'''
         vc.c = c
         vc.k = c.k
-        # Constants...
-        vc.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-            # List of printable characters
-        vc.register_names = string.ascii_letters
-            # List of register names.
-        # Ivars not set by vc.reinit_ivars.
-        vc.in_dot = False
-            # True if we are executing the dot command.
-        vc.dot_list = []
-            # This list is preserved across commands.
-        vc.old_dot_list = []
-            # The dot_list saved at the start of visual mode.
-        vc.reinit_ivars(c)
-        # Create dispatch dicts...
-        vc.normal_mode_dispatch_d = vc.create_normal_dispatch_d()
-        vc.motion_dispatch_d = vc.create_motion_dispatch_d()
-        vc.vis_dispatch_d = vc.create_vis_dispatch_d()
+        vc.init_constant_ivars()
+        vc.init_dot_ivars()
+        vc.init_motion_ivars()
+        vc.init_persistent_ivars()
+        vc.init_state_ivars()
     #@+node:ekr.20140222064735.16702: *4* vc.create_motion_dispatch_d
     def create_motion_dispatch_d(vc):
         '''
@@ -332,12 +332,56 @@ class VimCommands:
         'w': vc.vim_w,
         }
         return d
-    #@+node:ekr.20140802120757.18000: *4* vc.reinit_ivars
-    def reinit_ivars(vc,c):
-        '''
-        Init all the ivars of this class, except dot-related ivars.
-        This must be called *only* by the ctor and by vc.done().
-        '''
+    #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
+    # Called from command handlers or the ctor.
+    #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
+    def init_ivars_after_done(vc):
+        '''Init vim-mode ivars when a command completes.'''
+        if not vc.in_motion:
+            vc.init_motion_ivars()
+            vc.init_state_ivars()
+    #@+node:ekr.20140803220119.18100: *5* vc.init_ivars_after_quit
+    def init_ivars_after_quit(vc):
+        '''Init vim-mode ivars after the keyboard-quit command.'''
+        vc.init_motion_ivars()
+        vc.init_state_ivars()
+
+    #@+node:ekr.20140803220119.18103: *4* vc.init helpers
+    # Every ivar of this class must be initied in exactly one init helper.
+    #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
+    def init_dot_ivars(vc):
+        '''Init all dot-related ivars.'''
+        vc.in_dot = False
+            # True if we are executing the dot command.
+        vc.dot_list = []
+            # This list is preserved across commands.
+        vc.old_dot_list = []
+            # The dot_list saved at the start of visual mode.
+    #@+node:ekr.20140803220119.18109: *5* vc.init_constant_ivars
+    def init_constant_ivars(vc):
+        '''Init ivars whose values never change.'''
+        vc.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+            # List of printable characters
+        vc.register_names = string.ascii_letters
+            # List of register names.
+        vc.normal_mode_dispatch_d = vc.create_normal_dispatch_d()
+            # Dispatch table for normal mode.
+        vc.motion_dispatch_d = vc.create_motion_dispatch_d()
+            # Dispatch table for motions.
+        vc.vis_dispatch_d = vc.create_vis_dispatch_d()
+            # Dispatch table for visual mode.
+    #@+node:ekr.20140803220119.18105: *5* vc.init_motion_ivars
+    def init_motion_ivars(vc):
+        '''Init all ivars related to motions.'''
+        vc.in_motion = False
+            # True if parsing an *inner* motion, the 2j in d2j.
+        vc.motion_func = None
+            # The callback handler to execute after executing an inner motion.
+        vc.motion_i = None
+            # The offset into the text at the start of a motion.
+    #@+node:ekr.20140803220119.18106: *5* vc.init_state_ivars
+    def init_state_ivars(vc):
+        '''Init all ivars related to command state.'''
         vc.ch = None
             # The incoming character.
         vc.command_i = None
@@ -356,21 +400,16 @@ class VimCommands:
             # Use the handler for normal mode.
         vc.in_command = False
             # True: we have seen some command characters.
-        vc.in_motion = False
-            # True if parsing an *inner* motion, the 2j in d2j.
-        vc.motion_func = None
-            # The callback handler to execute after executing an inner motion.
-        vc.motion_i = None
-            # The offset into the text at the start of a motion.
-        vc.n1 = 1 # The leading repeat count.
-        vc.n = 1 # The inner repeat count.
+        vc.n1 = 1
+            # The first repeat count.
+        vc.n = 1
+            # The second repeat count.
         vc.n1_seen = False
+            # True if vc.n1 has been set.
         vc.next_func = None
             # The continuation of a multi-character command.
         vc.old_sel = None
             # The selection range at the start of a command.
-        vc.register_d = {}
-            # Keys are letters; values are strings.
         vc.repeat_list = []
             # The characters of the current repeat count.
         vc.restart_func = None
@@ -387,12 +426,21 @@ class VimCommands:
             # The insertion point at the start of visual mode.
         vc.vis_mode_w = None
             # The widget in effect at the start of visual mode.
+     
+        
+    #@+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
+    def init_persistent_ivars(vc):
+        '''Init ivars that are never re-inited.'''
+        vc.register_d = {}
+            # Keys are letters; values are strings.
         vc.w = None
-            # The present widget: c.frame.body.bodyCtrl is a QTextBrowser.
+            # The present widget.
+            # c.frame.body.bodyCtrl is a QTextBrowser.
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
-    #@+node:ekr.20140802225657.18031: *4* vc.accept
+    #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
+    #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(vc,add_to_dot=True,handler=None,return_value=True):
         '''
         Accept the present stroke.
@@ -405,12 +453,12 @@ class VimCommands:
             vc.add_to_dot()
         vc.show_status()
         vc.return_value = return_value
-    #@+node:ekr.20140802225657.18024: *4* vc.delegate
+    #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(vc):
         '''Delegate the present key to k.masterKeyHandler.'''
         vc.show_status()
         vc.return_value = False
-    #@+node:ekr.20140222064735.16631: *4* vc.done
+    #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
         '''Complete a command, preserving text and optionally updating the dot.'''
         if set_dot:
@@ -419,24 +467,25 @@ class VimCommands:
         # Undoably preserve any changes to the body.
         vc.save_body()
         # Clear all state, enter normal mode & show the status.
-        vc.reinit_ivars(vc.c)
+        ### vc.reinit_ivars(vc.c)
+        vc.init_ivars_after_done()
         vc.show_status()
         vc.return_value = return_value
-    #@+node:ekr.20140802225657.18025: *4* vc.ignore
+    #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(vc,message=None,return_value=True):
         '''Ignore the present key, with a warning.'''
         if message:
             g.warning(message)
         vc.show_status()
         vc.return_value = True
-    #@+node:ekr.20140802120757.17999: *4* vc.quit
+    #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(vc):
         '''
         Abort any present command.
         Don't set the dot and enter normal mode.
         '''
         vc.done(return_value=True,set_dot=False,stroke=None)
-    #@+node:ekr.20140802225657.18034: *4* helpers for acceptance methods
+    #@+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(vc,i=None):
         '''Common code for beginning insert mode.'''
@@ -530,7 +579,8 @@ class VimCommands:
     def vim_colon(vc):
         '''Enter the minibuffer.'''
         vc.quit()
-        vc.k.fullCommand(event=None)
+        ### vc.k.extendLabel(':') # ,select=False,protect=False)
+        vc.k.fullCommand(event=g.Bunch(char=':',stroke='colon'))
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -687,6 +737,9 @@ class VimCommands:
         '''
         if vc.state == 'insert':
             vc.end_insert_mode()
+        elif vc.state == 'visual':
+            # Clear the selection and reset dot.
+            vc.vis_v()
         else:
             vc.done()
     #@+node:ekr.20140222064735.16687: *5* vc.vim_F
@@ -1227,14 +1280,11 @@ class VimCommands:
         assert vc.in_motion
         func = vc.motion_dispatch_d.get(vc.stroke)
         if func:
-            # Save ivars that vc.done clears.
-            i,motion_func,w,w2 = vc.motion_i,vc.motion_func,vc.w,vc.command_w
             if trace: g.trace(vc.stroke,func.__name__,motion_func.__name__)
             func()
-            # Restore.
-            vc.motion_i,vc.w,vc.command_w = i,w,w2
-            motion_func() # Calls quit.
-            vc.in_motion = False
+            vc.motion_func()
+            vc.init_motion_ivars()
+            vc.done()
         elif vc.is_plain_key(vc.stroke):
             vc.ignore()
         else:
