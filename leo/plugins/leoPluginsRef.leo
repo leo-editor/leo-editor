@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="22" left="2024" height="953" width="1575"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -188,7 +188,7 @@ expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140723122936.18147"><vh>@file importers/pascal.py</vh></v>
 <v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
 <v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
-<v t="ekr.20140723122936.18151"><vh>@file importers/rst.py</vh></v>
+<v t="ekr.20140723122936.18151"><vh>@file importers/leo_rst.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
@@ -202,6 +202,7 @@ expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
+<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
 <v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
@@ -260,7 +261,7 @@ expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140726091031.18079"><vh>@file writers/org.py</vh></v>
 <v t="ekr.20140726091031.18078"><vh>@file writers/otl.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
-<v t="ekr.20140726091031.18080"><vh>@file writers/rst.py</vh></v>
+<v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -372,7 +373,7 @@ Use separate nodes
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.
 </t>
-<t tx="ekr.20041211035618" str_leo_pos="4"></t>
+<t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
 <t tx="ekr.20050217093214">@nocolor</t>
 <t tx="ekr.20050303051035">@nocolor-node
