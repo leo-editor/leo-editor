@@ -225,21 +225,21 @@ bunch = Bunch
 class Command:
     """ Decorator to create global commands """
     def __init__(self, name, **kwargs):
-        """ Registration for command 'name'
-
+        """
+        Registration for command 'name'
         kwargs reserved for future use (shortcut, button, ...?)
-
         """
         self.name = name
         self.args = kwargs
 
     def __call__(self,func):
-        # register command for all future commanders
+        '''Register command for all future commanders.'''
         if g and g.app:
             g.app.global_commands_dict[self.name] = func
             # ditto for all current commanders
-            for co in g.app.commanders():
-                co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
+            for c in g.app.commanders():
+                c.k.registerCommand(self.name,shortcut = None,
+                func = func, pane='all',verbose=False)        
         else:
             g.error('@command decorator inside leoGlobals.py')
         return func

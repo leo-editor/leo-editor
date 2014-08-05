@@ -2656,27 +2656,21 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
 
         '''
-
-        trace = False and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting and commandName.startswith(':')
+        verbose = False
         k = self ; c = k.c
-
         if trace: g.trace(commandName,shortcut)
-
         if wrap:
             func = c.universalCallback(func)
         f = c.commandsDict.get(commandName)
-
         if f and f.__name__ != 'dummyCallback' and trace and verbose:
             g.error('redefining',commandName)
-
         assert not g.isStroke(shortcut)
-
         c.commandsDict [commandName] = func
         fname = func.__name__
         k.inverseCommandsDict [fname] = commandName
         if trace and fname != 'minibufferCallback':
             g.trace('leoCommands %24s = %s' % (fname,commandName))
-
         if shortcut:
             if trace: g.trace('shortcut',shortcut)
             stroke = k.strokeFromSetting(shortcut)
@@ -2693,10 +2687,10 @@ class KeyHandlerClass:
                     # if trace: g.trace('*** found',si)
                     stroke = si.stroke
                     break
-
         if stroke:
             if trace: g.trace('stroke',stroke,'pane',pane,commandName)
-            ok = k.bindKey (pane,stroke,func,commandName,tag='register-command') # Must be a stroke.
+            ok = k.bindKey (pane,stroke,func,commandName,tag='register-command')
+                # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if trace and verbose and ok and not g.app.silentMode:
                 g.blue('','@command: %s = %s' % (
@@ -2706,7 +2700,6 @@ class KeyHandlerClass:
                     g.print_dict(d)
         elif trace and verbose and not g.app.silentMode:
             g.blue('','@command: %s' % (commandName))
-
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()

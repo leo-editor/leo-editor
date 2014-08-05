@@ -19,12 +19,11 @@ import string
 # :e directory name
 # :tabnew filename
 
-if 0: # Doesn't work.
-    g.command(':r')
-    def ctrlClickAtCursor(event):
-        c = event.get('c')
-        if c:
-            g.trace()
+@g.command(':r')
+def command_test(event):
+    c = event.get('c')
+    if c:
+        g.trace()
 #@+node:ekr.20140802183521.17997: ** show_stroke
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
