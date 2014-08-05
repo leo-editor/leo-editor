@@ -11,74 +11,16 @@
 First:
 - Click in body enters normal mode. It would be good to leave the mode unchanged.
 
-
-Next:
-** Change wc.w in vc.do_key
-- Init more vars in vc.do_visual_mode ??
-- Create vc.set_state_for_widget.
-- Dot cleared too often: Escape, Return clear it.
-- Test invalid characters.
-- Allow jj in headlines?
-- vc.common_motions_dict.
-    - Make sure there are no duplicates.
-- Merge vim_v and vis_d.
-- Allow commands starting with colon.
 - yank and paste.
-- What to do about different versions of @bool vim_mode in different tabs?
+
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
 
-Later:
-* Ironically, now that everything is hard coded in tables, it would be easy
-  for plugins to customize the workings of vim-mode.
-* Use different border in non-insert modes.
-- Extend Leo's undo to show the vim characters for the commands.
-  Equate all vim commands with 'Typing'.
-- (Maybe?) Change cursor to indicate mode.
-.. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
-- Bound all non-Alt keys now bound to vc.vim_arrow, which just calls
-  vc.delegate. This makes *all* keys work the same. It was easy to do this:
-  created vc.create_motion_dispatch_d & vc.create_dispatch_dicts.
-- Corrected a crasher in vc.do_insert_mode.
-- dd now works exactly as vim.  And so does 5dd ;-)
-- All calls to accept in visual mode now specify handler=vc.do_visual_mode.
-- Counts now work in visual mode.
-- Rewrote vim_h and vim_l.
-- Added the following commands:
-  :e! Revert all changes to a .leo file, prompting if there have been changes.
-  :q Quit, prompting for saves.
-  :qa Quit only if there are no unsaved changes.
-  :w Save the .leo file.
-  :wa Save all changed  .leo files.
-  :wq Save all open files and exit.
-  :xa ave all open files and exit.
-- jj in insert mode *only* is the same as escape.
-- Added support for gg and G, in both normal and visual modes.
-- Improved how show_stroke prints non-plain chars.
-- Escape in visual mode clears selection and leaves dot unchanged.
-- Clean up inits: https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/iRycTO1QG8kJ
-- The actual dot command passes some easy tests!
-- Computed the dot properly.
-- arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
-- Support repeat counts in i,a,A,o,O commands.
-- Show status properly in cases such as 5i...
-- Handle d{motion} properly.
-- Handle <count>d<motion> properly in vim_d3.
-- Finished v{motion}d.
-- Finish e command.
-- Replaced non-terminating vis_ commands with vim_ commands.
-- Show partial commands in the status area: d or 2d or 3.
-- Began replacing most vis_xxx methods by corresponding vim_xxx methods.
-  Motion commands will now extend the selection if vc.state == 'visual'.
-- Limit h & l commands to the present line.
-- vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
-  This expands abbreviations and does all default key handling!
-- Fixed crasher when changing nodes with Alt-arrow keys.
-  vc.do_key now always calls vc.update_widget.
-- vc.do_insert_mode now expands abbreviations in insert mode.
-- Keys in insert-mode replace selection.
-- <Return> in headline put focus enters normal mode.
-- <Return> in outline pane puts focus in body.
+Next:
+- Fix the dot.
+- Limit t,T,f,T to single line.
+- Dot neither set nor cleared properly. Escape, Return clear it.
+* Clean up widget vars: Change wc.w in vc.do_key
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
 
@@ -110,51 +52,17 @@ And these!
     spaces ( ), globally (keep applying as many times as possible) A quick
     vim-like way to do indents on a range of characters. I also use this
     one frequently...
-.. @+node:ekr.20140804123147.18142: *4* Changing border colors
-w = widget.to.be.styled()
-
-    # and then one of
-    w.setProperty('vim_state', 'vim_visual')
-    w.setProperty('vim_state', 'vim_normal')
-    w.setProperty('vim_state', 'vim_insert')
-    w.setProperty('vim_state', None)  # leaving vim mode
-
-    # and then
-    w.style().unpolish(w)
-    w.style().polish(w)
-
-and then, in the style sheet:
-
-QTextEdit[vim_state ~= 'vim_normal'] {
-  border: solid 3px red;
-}
-QTextEdit[vim_state ~= 'vim_insert'] {
-  border: solid 3px blue;
-}
-
-so how vim states are indicated is completely under user control in the
-style sheet, either
-
-  @data qt-gui-plugin-style-sheet
-
-or
-
-  @data qt-gui-user-style-sheet
 .. @+node:ekr.20140801121720.18067: *4* Later
 - Add more motions.
 - Add more top-level commands.
 - (Optional) Limit t,T,f and F to a single line.
-.. @+node:ekr.20140801121720.18066: *4* Maybe
-- Enter insert mode in headlines if text is selected.
-    This won't be so important if we can change the cursor in the headline.
-    ks = c.k.getShortcutForCommandName('edit-headline')
-    stroke = ks and ks.s or None
-- Add helper functions. eol, bol, on_same_line, etc.
-- Always recompute vim state when vc.do_keys returns False?
-    - This may have to be done in k.masterKeyHandler.
-- Always enter insert mode in headlines?
-.. @+node:ekr.20140802183521.18000: *4* code
-@language python
+- Change cursor to indicate mode?
+- What to do about different versions of @bool vim_mode in different tabs?o
+* Ironically, now that everything is hard coded in tables, it would be easy
+  for plugins to customize the workings of vim-mode.
+- Extend Leo's undo to show the vim characters for the commands.
+  Equate all vim commands with 'Typing'.
+- Init more vars in vc.do_visual_mode ??
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 

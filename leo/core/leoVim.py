@@ -1094,7 +1094,7 @@ class VimCommands:
     #@+node:ekr.20140220134748.16625: *5* vc.vim_n (to do)
     def vim_n(vc):
         '''Repeat last search N times.'''
-        g.trace(vc.n)
+        g.trace('not ready yet')
         vc.done()
     #@+node:ekr.20140222064735.16692: *5* vc.vim_O
     def vim_O(vc):
@@ -1151,7 +1151,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16625: *5* vc.vim_redo (to do)
     def vim_redo(vc):
         '''N Ctrl-R redo last N changes'''
-        g.trace()
+        g.trace('not ready yet')
         vc.done()
     #@+node:ekr.20140222064735.16626: *5* vc.vim_s (to do)
     def vim_s(vc):
@@ -1164,7 +1164,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16622: *5* vc.vim_slash (to do)
     def vim_slash(vc):
         '''Begin a search.'''
-        g.trace()
+        g.trace('not ready yet')
         vc.done()
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
@@ -1392,7 +1392,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16656: *5* vis_c (to do)
     def vis_c(vc):
         '''Change the highlighted text.'''
-        g.trace()
+        g.trace('not ready yet')
         vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16657: *5* vis_d
     def vis_d(vc):
@@ -1422,7 +1422,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16660: *5* vis_y
     def vis_y(vc):
         '''Yank the highlighted text.'''
-        g.trace()
+        g.trace('not ready yet')
         vc.done(set_dot=True)
     #@+node:ekr.20140221085636.16685: *3* vc.do_key & helpers
     def do_key(vc,event):
