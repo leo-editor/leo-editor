@@ -53,8 +53,7 @@ if 0:
             g.trace(':tabnew not ready yet')
     #@-others
 #@+node:ekr.20140804202802.18152: *3* :e!
-
-g.command(':e!')
+@g.command(':e!')
 def colon_e_exclam(event):
     '''Revert all changes to a .leo file, prompting if there have been changes.'''
     c = event.get('c')
