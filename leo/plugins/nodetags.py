@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140804114520.9427: * @file nodetags.py
+#@+node:peckj.20140804103733.9240: * @file nodetags.py
 #@@language python
 #@@tabwidth -4
 
@@ -33,7 +33,7 @@ As of v0.3, the tag browser has set-algebra querying possible.  Users may search
 '''
 #@-<< docstring >>
 
-__version__ = '0.5'
+__version__ = '0.6'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -43,6 +43,7 @@ __version__ = '0.5'
 # Version 0.3 - add query-based searching (set algebra) of tagged nodes
 # Version 0.4 - fix a small issue w/r/t v.u vs v.unknownAttributes
 # Version 0.5 - add a display/jump list of tags on currently selected node
+# Version 0.6 - fix several edge cases caused by me using a stupid mapping method.  Internally uses vnodes now for speed.
 # 
 # Future plans w/r/t UI:
 #   - Buttons for adding + removing tags
@@ -100,7 +101,8 @@ class TagController:
     #@+node:peckj.20140804103733.9263: *5* initialize_taglist
     def initialize_taglist(self):
         taglist = []
-        for p in self.c.all_positions():
+        for v in self.c.all_unique_nodes():
+            p = self.c.vnode2position(v)
             for tag in self.get_tags(p):
                 if tag not in taglist:
                     taglist.append(tag)
@@ -123,9 +125,10 @@ class TagController:
     def get_tagged_nodes(self, tag):
         ''' return a list of positions of nodes containing the tag '''
         nodelist = []
-        for node in self.c.all_positions():
-            if tag in self.get_tags(node):
-                nodelist.append(node.copy())
+        for node in self.c.all_unique_nodes():
+            p = self.c.vnode2position(node)
+            if tag in self.get_tags(p):
+                nodelist.append(p)
         return nodelist
     #@+node:peckj.20140804103733.9265: *3* individual nodes
     #@+node:peckj.20140804103733.9259: *4* get_tags
@@ -250,10 +253,7 @@ class LeoTagWidget(QtGui.QWidget):
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
-        idx = self.listWidget.currentRow()
-        key = str(self.listWidget.currentItem().text())
-        if key == '' or key not in self.mapping.keys():
-            return
+        key = self.listWidget.currentItem()
         pos = self.mapping[key]
         self.update_current_tags(pos)
         self.c.selectPosition(pos)
@@ -331,8 +331,9 @@ class LeoTagWidget(QtGui.QWidget):
         self.listWidget.clear()
         self.mapping = {}
         for n in resultset:
-            self.listWidget.addItem(n.h)
-            self.mapping[n.h] = n
+            item = QtGui.QListWidgetItem(n.h)
+            self.listWidget.addItem(item)
+            self.mapping[item] = n
         count = self.listWidget.count()
         self.label.clear()
         self.label.setText("Total: %s nodes" % count)
