@@ -535,8 +535,10 @@ class VimCommands:
             i2 = w.getInsertPoint()
             if i1 > i2: i1,i2 = i2,i1
             s2 = s[i1:i2]
+            g.trace(s2)
             if vc.n1 > 1:
                 s3 = s2 * (vc.n1-1)
+                g.trace(vc.in_dot,vc.n1,vc.n,s3)
                 w.insert(i2,s3)
             for stroke in s2:
                 vc.add_to_dot(stroke)
@@ -710,7 +712,7 @@ class VimCommands:
             vc.in_dot = True
             # Copy the list so it can't change in the loop.
             for event in vc.dot_list[:]:
-                # g.trace(event)
+                g.trace(vc.state,event)
                 vc.do_key(event)
         finally:
             vc.in_dot = False
@@ -1336,7 +1338,7 @@ class VimCommands:
         s = w.getAllText()
         i = w.getInsertPoint()
         i2,j = w.getSelectionRange()
-        if i2 == j and i > 0 and s[i-1] == 'j':
+        if False: ### i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
             # g.trace(i,i2,j,s[i-1:i+1])
             w.delete(i-1,i)
             w.setInsertPoint(i-1)
@@ -1344,6 +1346,7 @@ class VimCommands:
             vc.stroke = 'Escape'
             vc.end_insert_mode()
         else:
+            g.trace(i,vc.stroke)
             vc.delegate()
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
@@ -1414,7 +1417,7 @@ class VimCommands:
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline
     def in_headline(vc):
         '''Return True if we are in a headline edit widget.'''
-        return g.app.gui.widget_name(vc.event.w).startswith('head')
+        return vc.c.widget_name(vc.event.w).startswith('head')
     #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_widget
     def is_plain_key(vc,stroke):
         '''Return True if stroke is a plain key.'''
@@ -1455,11 +1458,29 @@ class VimCommands:
                 # undoType = ''.join(vc.command_list) or 'Typing'
                 c.frame.body.onBodyChanged(undoType='Typing',
                     oldSel=oldSel,oldText=oldText,oldYview=None)
+    #@+node:ekr.20140804123147.18929: *4* vc.set_border
+    def set_border(vc):
+        '''Set the border color of vc.w, depending on state.'''
+        trace = False and not g.unitTesting
+        from leo.core.leoQt import QtWidgets
+        w = vc.w
+        if vc.is_text_widget(w):
+            if hasattr(w,'widget'): w = w.widget
+            if isinstance(w,QtWidgets.QTextEdit):
+                selector = 'vim_%s' % (vc.state)
+                val = w.setProperty('vim_state',selector)
+                if trace: g.trace(vc.state,selector,w,val)
+                w.style().unpolish(w)
+                w.style().polish(w)
+                return
+        if trace and w:
+            g.trace('not a QTextWidget',w)
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''
         trace = False and not g.unitTesting
         k = vc.k
+        vc.set_border()
         if k.state.kind:
             if trace: g.trace('*** in k.state ***',k.state.kind)
         elif vc.state == 'visual':
