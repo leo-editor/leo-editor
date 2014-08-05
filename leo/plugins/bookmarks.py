@@ -63,6 +63,8 @@ Nodes can be added and removed from the display with the following mouse actions
     in which case the existing link is highlighted.
 **control-left-click on bookmark**
     Remove bookmark.
+**shift-control-left-click on bookmark**
+    Rename bookmark.
 **alt-left-click on bookmark**
     Edit clicked bookmark in bookmark list, to change link text.
 **alt-shift-left-click on bookmark**
@@ -548,6 +550,10 @@ class BookMarkDisplay:
         if mods == (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier):
             self.update_bookmark(bm)
             return
+        # Shift-Ctrl => rename bookmark
+        if mods == (QtCore.Qt.ShiftModifier | QtCore.Qt.ControlModifier):
+            self.rename_bookmark(bm)
+            return
         # Alt => edit the bookmark in the outline
         if mods == QtCore.Qt.AltModifier:
             self.edit_bookmark(bm)
@@ -828,6 +834,21 @@ class BookMarkDisplay:
         c.redraw()
 
         self.show_list(self.get_list())
+    #@+node:tbrown.20140804215436.30052: *3* rename_bookmark
+    def rename_bookmark(self, bm):
+        """Rename bookmark"""
+
+        txt = g.app.gui.runAskOkCancelStringDialog(
+            self.c,
+            "Rename "+bm.head,
+            "New name for "+bm.head,
+            default=bm.head
+        )
+        
+        if txt:
+            bm.v.h = txt
+            bm.v.context.redraw()
+            self.show_list(self.get_list())
     #@+node:tbrown.20130601104424.55363: *3* update_bookmark
     def update_bookmark(self, bm):
         """Update *EXISTING* bookmark to current node"""
