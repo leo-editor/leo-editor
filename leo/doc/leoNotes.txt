@@ -17377,89 +17377,15 @@ def writeAtAutoOtlFile (self,root):
     root.setVisited()
     return True
 .. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
-.. @+node:ekr.20140801121720.18081: *4* vc.restart_key (not used)
-def restart_key(vc,event):
-    '''Re-handle a key that terminates a repeat count.'''
-    trace = False and not g.unitTesting
-    # Dispatch an internal state handler if one is active.
-    if trace: g.trace('**** stroke: <%s>' % (vc.stroke))
-    if vc.next_func:
-        f = vc.next_func
-        vc.next_func = None
-        f() # May set vc.next_func and clear vc.return_value.
-        if trace: g.trace(
-            'old next_func',f.__name__,
-            'new next_func:',vc.next_func and vc.next_func.__name__)
-        if not vc.next_func and not vc.in_motion:
-            vc.done()
-    # Finally, dispatch depending on state.
-    elif vc.in_motion:
-        vc.do_inner_motion()
-    elif vc.state == 'visual':
-        vc.do_visual_mode()
+.. @+node:ekr.20140804222959.18927: *4* vc.style_sheet_for_state
+def style_sheet_for_state(vc):
+    '''Return a stylesheet giving the color for the vim state.'''
+    d = {'normal':'red','visual':'green','insert':'blue'}
+    color = d.get(vc.state)
+    if color:
+        return 'QTextEdit#richTextEdit { border: 5px solid %s; }' % color
     else:
-        vc.do_outer_command()
-.. @+node:ekr.20140802225657.18032: *4* vc.enter_state (not used)
-def enter_state(vc,state,add_to_dot=False,return_value=True,set_dot=True):
-    '''
-    Enter the given state.
-    Optionally, add to and/or set the dot.
-    '''
-    d={ 'insert': vc.do_insert_mode,
-        # 'motion': vc.do_inner_motion, # not a real state.
-        'normal': vc.do_normal_mode,
-        'visual': do_visual_mode,
-    }
-    # Handle the dot.
-    if add_to_dot: vc.add_to_dot()
-    if set_dot: vc.compute_dot(stroke=vc.stroke)
-    # Set vc.state & vc.next_func.
-    func = d.get(state)
-    if func:
-        vc.state = state
-        vc.next_func = func
-    else:
-        vc.oops('bad state argument: %s' % state)
-        vc.state = 'normal'
-        vc.next_func = vc.do_normal_mode
-    vc.show_state()
-    vc.return_value = return_value
-.. @+node:ekr.20140802120757.18000: *4* vc.reinit_ivars (to be deleted)
-def reinit_ivars(vc,c):
-    '''
-    Init all the ivars of this class, except dot-related ivars.
-    This must be called *only* by the ctor and by vc.done().
-    '''
-    vc.ch = None
-        # The incoming character.
-    vc.command_i = None
-        # The offset into the text at the start of a command.
-    vc.command_list = []
-        # The list of all characters seen in this command.
-    vc.command_n = None
-        # The repeat count in effect at the start of a command.
-    vc.command_w = None
-        # The widget in effect at the start of a command.
-    vc.event = None
-        # The event for the current key.
-    vc.old_sel = None
-        # The selection range at the start of a command.
-    vc.repeat_list = []
-        # The characters of the current repeat count.
-    vc.restart_func = None
-        # The previous value of vc.next_func.
-        # vc.beep restores vc.next_function using this.
-    vc.return_value = True
-        # The value returned by vc.do_key.
-        # Handlers set this to False to tell k.masterKeyHandler to handle the key.
-    vc.state = 'normal'
-        # in ('normal','insert','visual',)
-    vc.stroke = None
-        # The incoming stroke.
-    vc.vis_mode_i = None
-        # The insertion point at the start of visual mode.
-    vc.vis_mode_w = None
-        # The widget in effect at the start of visual mode.
- 
+        g.trace('bad state',vc.state)
+        return 'QTextEdit#richTextEdit { border: 5px solid black; }'
 .. @-all
 .. @-leo

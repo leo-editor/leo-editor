@@ -8416,7 +8416,7 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20110605121601.18523: *4* Style Sheets
+    #@+node:ekr.20110605121601.18523: *4* Style Sheets (qtGui)
     #@+node:ekr.20110605121601.18524: *5* setStyleSetting (qtGui)
     def setStyleSetting(self,w,widgetKind,selector,val):
 

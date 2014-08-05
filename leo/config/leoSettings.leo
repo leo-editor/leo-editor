@@ -5635,6 +5635,19 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
     font-weight: @bookmarks_current_weight;
     text-decoration: @bookmarks_current_decoration;
 }
+
+/* Borders for vim mode. */
+
+QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+  border: 3px solid red;
+}
+QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+  border: 3px solid blue;
+}
+QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+  border: 3px solid pink;
+}
+
 </t>
 <t tx="ekr.20131119143342.18879">This is the "default" theme.</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.

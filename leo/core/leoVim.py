@@ -95,7 +95,7 @@ def colon_wq(event):
     g.app.onQuit(event)
 #@+node:ekr.20140804202802.18157: *3* :xa
 @g.command(':xa') # same as wq
-def colon_wq(event):
+def colon_xa(event):
     '''Save all open files and exit.'''
     for c in g.app.commanders():
         c.save()
@@ -410,20 +410,11 @@ class VimCommands:
         'w': vc.vim_w,
         }
         return d
-    #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
-    # Called from command handlers or the ctor.
-    #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
-    def init_ivars_after_done(vc):
-        '''Init vim-mode ivars when a command completes.'''
-        if not vc.in_motion:
-            vc.init_motion_ivars()
-            vc.init_state_ivars()
-    #@+node:ekr.20140803220119.18100: *5* vc.init_ivars_after_quit
-    def init_ivars_after_quit(vc):
-        '''Init vim-mode ivars after the keyboard-quit command.'''
-        vc.init_motion_ivars()
-        vc.init_state_ivars()
-
+    #@+node:ekr.20140804222959.18930: *4* vc.finshCreate
+    def finishCreate(vc):
+        '''Complete the initialization for the VimCommands class.'''
+        # Set the widget for vc.set_border
+        vc.w = vc.c.frame.body.bodyCtrl
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -514,6 +505,20 @@ class VimCommands:
         vc.w = None
             # The present widget.
             # c.frame.body.bodyCtrl is a QTextBrowser.
+    #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
+    # Called from command handlers or the ctor.
+    #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
+    def init_ivars_after_done(vc):
+        '''Init vim-mode ivars when a command completes.'''
+        if not vc.in_motion:
+            vc.init_motion_ivars()
+            vc.init_state_ivars()
+    #@+node:ekr.20140803220119.18100: *5* vc.init_ivars_after_quit
+    def init_ivars_after_quit(vc):
+        '''Init vim-mode ivars after the keyboard-quit command.'''
+        vc.init_motion_ivars()
+        vc.init_state_ivars()
+
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
@@ -566,7 +571,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(vc,i=None):
         '''Common code for beginning insert mode.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = vc.c,vc.event.w
         if not vc.is_text_widget(w):
             if w == c.frame.tree:
@@ -1412,11 +1417,12 @@ class VimCommands:
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
+        vc.state = 'insert'
         w = vc.event.w
         s = w.getAllText()
         i = w.getInsertPoint()
         i2,j = w.getSelectionRange()
-        if False: ### i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
+        if i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
             # g.trace(i,i2,j,s[i-1:i+1])
             w.delete(i-1,i)
             w.setInsertPoint(i-1)
@@ -1546,13 +1552,13 @@ class VimCommands:
             if hasattr(w,'widget'): w = w.widget
             if isinstance(w,QtWidgets.QTextEdit):
                 selector = 'vim_%s' % (vc.state)
-                val = w.setProperty('vim_state',selector)
-                if trace: g.trace(vc.state,selector,w,val)
+                w.setProperty('vim_state',selector)
+                if trace: g.trace(vc.state,selector,g.callers())
                 w.style().unpolish(w)
                 w.style().polish(w)
                 return
-        if trace and w:
-            g.trace('not a QTextWidget',w)
+        if trace:
+            g.trace('not a QTextWidget',w,g.callers())
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''

@@ -361,6 +361,8 @@ class Commands (object):
         c.frame.menu.finishCreate()
         c.frame.log.finishCreate()
         c.undoer.clearUndoState()
+        if c.vimCommands and c.vim_mode:
+            c.vimCommands.finishCreate()
             # Menus must exist at this point.
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
