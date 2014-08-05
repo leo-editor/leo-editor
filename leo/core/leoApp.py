@@ -1589,25 +1589,21 @@ class LoadManager:
             return None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self,verbose):
-
+        '''Report directories.'''
         if not verbose: return
-
         if 1: # old
-
-            if verbose:
-                for kind,theDir in (
-                    ("load",g.app.loadDir),
-                    ("global config",g.app.globalConfigDir),
-                    ("home",g.app.homeDir),
-                ):
-                    g.blue("%s dir:" % (kind),theDir)
-
+            for kind,theDir in (
+                ("load",g.app.loadDir),
+                ("global config",g.app.globalConfigDir),
+                ("home",g.app.homeDir),
+            ):
+                # g.blue calls g.es_print, and that's annoying.
+                g.es("%s dir:" % (kind),theDir,color='blue')
         else:
             aList = (
                 'homeDir','homeLeoDir',
                 'leoDir','loadDir',
                 'extensionsDir','globalConfigDir')
-
             for ivar in aList:
                 val = getattr(g.app,ivar)
                 g.trace('%20s' % (ivar),val)

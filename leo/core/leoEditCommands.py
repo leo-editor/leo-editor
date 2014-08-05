@@ -472,10 +472,11 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.init_abbrev()
         self.init_tree_abbrev()
         self.init_env()
-        if (not g.app.initing and not g.unitTesting and
-            not g.app.batchMode and not c.gui.isNullGui
-        ):
-            g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
+        if 0: # Annoying.
+            if (not g.app.initing and not g.unitTesting and
+                not g.app.batchMode and not c.gui.isNullGui
+            ):
+                g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
     #@+node:ekr.20130924110246.13738: *5* init_abbrev
     def init_abbrev(self):
         '''
