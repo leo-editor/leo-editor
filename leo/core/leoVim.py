@@ -631,7 +631,7 @@ class VimCommands:
             i2 = w.getInsertPoint()
             if i1 > i2: i1,i2 = i2,i1
             s2 = s[i1:i2]
-            g.trace(s2)
+            # g.trace(s2)
             if vc.n1 > 1:
                 s3 = s2 * (vc.n1-1)
                 g.trace(vc.in_dot,vc.n1,vc.n,s3)
@@ -1443,16 +1443,19 @@ class VimCommands:
         # Support the jj abbreviation when there is no selection.
         vc.state = 'insert'
         w = vc.event.w
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        i2,j = w.getSelectionRange()
-        if i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
-            # g.trace(i,i2,j,s[i-1:i+1])
-            w.delete(i-1,i)
-            w.setInsertPoint(i-1)
-            # A benign hack: simulate an Escape for the dot.
-            vc.stroke = 'Escape'
-            vc.end_insert_mode()
+        if vc.is_text_widget(w):
+            s = w.getAllText()
+            i = w.getInsertPoint()
+            i2,j = w.getSelectionRange()
+            if i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
+                # g.trace(i,i2,j,s[i-1:i+1])
+                w.delete(i-1,i)
+                w.setInsertPoint(i-1)
+                # A benign hack: simulate an Escape for the dot.
+                vc.stroke = 'Escape'
+                vc.end_insert_mode()
+            else:
+                vc.delegate()
         else:
             # g.trace(i,vc.stroke)
             vc.delegate()

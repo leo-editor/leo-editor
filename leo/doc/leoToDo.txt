@@ -8,9 +8,8 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-Before transition:
+First:
 - Must hold down Alt-Key: plain keys put cursor in the body pane.
-- Enter insert mode when headline has selected text.
 
 Next:
 ** Change wc.w in vc.do_key
@@ -35,6 +34,7 @@ Later:
   Equate all vim commands with 'Typing'.
 - (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Corrected a crasher in vc.do_insert_mode.
 - dd now works exactly as vim.  And so does 5dd ;-)
 - All calls to accept in visual mode now specify handler=vc.do_visual_mode.
 - Counts now work in visual mode.
