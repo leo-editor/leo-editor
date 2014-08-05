@@ -8,11 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* Vim to-do
 @language rest
 
-Fix dd command:
-    vim: <dd> = delete entire line, regardless of cursor position
-    Leo: <dd> = delete from cursor to end of line = vim: <D>
-    vim maintains the newline, dd in Leo deletes newline joining this line with next.
-
 Before transition:
 - Must hold down Alt-Key: plain keys put cursor in the body pane.
 - Enter insert mode when headline has selected text.
@@ -40,6 +35,7 @@ Later:
   Equate all vim commands with 'Typing'.
 - (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- dd now works exactly as vim.
 - All calls to accept in visual mode now specify handler=vc.do_visual_mode.
 - Counts now work in visual mode.
 - Rewrote vim_h and vim_l.

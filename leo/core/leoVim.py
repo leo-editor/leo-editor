@@ -763,12 +763,12 @@ class VimCommands:
         if vc.stroke == 'd':
             w = vc.event.w
             s = w.getAllText()
-            i = i1 = w.getInsertPoint()
+            i = w.getInsertPoint()
             for z in range(vc.n1*vc.n):
                 i,j = g.getLine(s,i)
                 # g.trace(repr(s[i:j]))
-                i = j+1
-            w.delete(i1,j)
+                w.delete(i,j)
+                i = j
             vc.done()
         else:
             vc.begin_motion(vc.vim_d3)
