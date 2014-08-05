@@ -524,6 +524,50 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                             else:
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
+.. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
+- Bound all non-Alt keys now bound to vc.vim_arrow, which just calls
+  vc.delegate. This makes *all* keys work the same. It was easy to do this:
+  created vc.create_motion_dispatch_d & vc.create_dispatch_dicts.
+- Corrected a crasher in vc.do_insert_mode.
+- dd now works exactly as vim.  And so does 5dd ;-)
+- All calls to accept in visual mode now specify handler=vc.do_visual_mode.
+- Counts now work in visual mode.
+- Rewrote vim_h and vim_l.
+- Added the following commands:
+  :e! Revert all changes to a .leo file, prompting if there have been changes.
+  :q Quit, prompting for saves.
+  :qa Quit only if there are no unsaved changes.
+  :w Save the .leo file.
+  :wa Save all changed  .leo files.
+  :wq Save all open files and exit.
+  :xa ave all open files and exit.
+- jj in insert mode *only* is the same as escape.
+- Added support for gg and G, in both normal and visual modes.
+- Improved how show_stroke prints non-plain chars.
+- Escape in visual mode clears selection and leaves dot unchanged.
+- Clean up inits: https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/iRycTO1QG8kJ
+- The actual dot command passes some easy tests!
+- Computed the dot properly.
+- arrow keys are bound to h,j,k,l keys so they can set vc.old_sel properly.
+- Support repeat counts in i,a,A,o,O commands.
+- Show status properly in cases such as 5i...
+- Handle d{motion} properly.
+- Handle <count>d<motion> properly in vim_d3.
+- Finished v{motion}d.
+- Finish e command.
+- Replaced non-terminating vis_ commands with vim_ commands.
+- Show partial commands in the status area: d or 2d or 3.
+- Began replacing most vis_xxx methods by corresponding vim_xxx methods.
+  Motion commands will now extend the selection if vc.state == 'visual'.
+- Limit h & l commands to the present line.
+- vc.do_insert_mode now uses k.masterKeyHandler for most strokes.
+  This expands abbreviations and does all default key handling!
+- Fixed crasher when changing nodes with Alt-arrow keys.
+  vc.do_key now always calls vc.update_widget.
+- vc.do_insert_mode now expands abbreviations in insert mode.
+- Keys in insert-mode replace selection.
+- <Return> in headline put focus enters normal mode.
+- <Return> in outline pane puts focus in body.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
