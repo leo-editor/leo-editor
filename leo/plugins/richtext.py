@@ -308,17 +308,16 @@ def cmd_OpenEditor(kwargs, at_rich=False):
 def cmd_CloseEditor(kwargs, at_rich=False):
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
+    if not splitter:
+        return
     rte = splitter.find_child(CKEEditor, '')
-    
     if not rte:
         if not at_rich:
             g.es("No editor open")
         return
-    
     if at_rich and not rte.at_rich:
         # don't close manually opened editor
         return
-        
     body = splitter.get_provided('_leo_pane:bodyFrame')
     splitter = rte.parent()
     rte.at_rich_close = True
