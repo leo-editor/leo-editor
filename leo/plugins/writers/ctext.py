@@ -4,8 +4,8 @@
 #@@tabwidth -4
 #@+others
 #@+node:tbrown.20140804103545.29976: ** ctext declarations
-import time
 
+# import time
 import leo.plugins.writers.basewriter as basewriter
 
 #@+node:tbrown.20140804103545.29977: ** class CTextWriter
