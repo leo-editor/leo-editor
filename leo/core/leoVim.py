@@ -13,17 +13,94 @@ import leo.core.leoGlobals as g
 import string
 
 #@+others
-#@+node:ekr.20140803220119.18093: ** Colon Commands
-# :r filename
-# :!shell command
-# :e directory name
-# :tabnew filename
+#@+node:ekr.20140803220119.18093: ** ':' commands
+#@+node:ekr.20140804202802.18158: *3* not ready yet
+if 0:
+    #@+others
+    #@+node:ekr.20140804202802.18151: *4* :!
+    @g.command(':!') # :!shell command
+    def colon_exclam(event):
+        '''Execute a shell command.'''
+        c = event.get('c')
+        if c:
+            print(':! not ready yet')
+    #@+node:ekr.20140804202802.18159: *4* :e
+    @g.command(':e') # :e directory name
+    def colon_e(event):
+        '''Open a file from a director list.'''
+        c = event.get('c')
+        if c:
+            g.trace(':e not ready yet')
+    #@+node:ekr.20140804202802.18160: *4* :q! (not a good idea)
+    if 0: # Probably a bad idea.
+        @g.command(':q!')
+        def colon_q_exclaim(event):
+            '''Quit immediately.'''
+            g.app.forceShutdown()
+    #@+node:ekr.20140804202802.18150: *4* :r
+    @g.command(':r') # :r filename
+    def colon_r(event):
+        '''Put the contents of a file at the insertion point.'''
+        c = event.get('c')
+        if c:
+            g.trace(':r not ready yet')
+    #@+node:ekr.20140804202802.18153: *4* :tabnew
+    @g.command(':tabnew') # :tabnew filename
+    def colon_tabnew(event):
+        '''Open a file in a new tab.'''
+        c = event.get('c')
+        if c:
+            g.trace(':tabnew not ready yet')
+    #@-others
+#@+node:ekr.20140804202802.18152: *3* :e!
 
-@g.command(':r')
-def command_test(event):
+g.command(':e!')
+def colon_e_exclam(event):
+    '''Revert all changes to a .leo file, prompting if there have been changes.'''
     c = event.get('c')
     if c:
-        g.trace()
+        c.revert()
+#@+node:ekr.20140804202802.18156: *3* :q & :qa
+@g.command(':q')
+def colon_q(event):
+    '''Quit, prompting for saves.'''
+    g.app.onQuit(event)
+    
+@g.command(':qa')
+def colon_qa(event):
+    '''Quit only if there are no unsaved changes.'''
+    for c in g.app.commanders():
+        if c.isChanged():
+            return
+    g.app.onQuit(event)
+#@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
+@g.command(':w')
+def colon_w(event):
+    '''Save the file.'''
+    c = event.get('c')
+    if c:
+        c.save()
+        
+@g.command(':wa') # same as :xa
+def colon_wall(event):
+    '''Save all open files and keep working.'''
+    for c in g.app.commanders():
+        if c.isChanged():
+            c.save()
+
+@g.command(':wq')
+def colon_wq(event):
+    '''Save all open files and exit.'''
+    for c in g.app.commanders():
+        c.save()
+    g.app.onQuit(event)
+#@+node:ekr.20140804202802.18157: *3* :xa
+@g.command(':xa') # same as wq
+def colon_wq(event):
+    '''Save all open files and exit.'''
+    for c in g.app.commanders():
+        c.save()
+    g.app.onQuit(event)
 #@+node:ekr.20140802183521.17997: ** show_stroke
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
@@ -50,6 +127,7 @@ class VimEvent:
     '''A class to contain the components of the dot.'''
     def __init__(self,stroke,w):
         '''ctor for the VimEvent class.'''
+        self.char = '' # For Leo's core.
         self.stroke = stroke
         self.w = w
         self.widget = w # For Leo's core.
@@ -646,7 +724,8 @@ class VimCommands:
         '''Enter the minibuffer.'''
         vc.quit()
         ### vc.k.extendLabel(':') # ,select=False,protect=False)
-        vc.k.fullCommand(event=g.Bunch(char=':',stroke='colon'))
+        event = VimEvent(stroke='colon',w=vc.w)
+        vc.k.fullCommand(event=event)
     #@+node:ekr.20140730175636.17992: *5* vc.vim_ctrl_r
     def vim_ctrl_r(vc):
         '''Redo the last command.'''
