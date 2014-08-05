@@ -754,7 +754,7 @@ class VimCommands:
     #@+node:ekr.20131111171616.16498: *5* vc.vim_d & helpers
     def vim_d(vc):
         '''
-        dd        delete N lines
+        N dd      delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
         vc.n = 1
@@ -763,13 +763,18 @@ class VimCommands:
     def vim_d2(vc):
         if vc.stroke == 'd':
             w = vc.event.w
-            s = w.getAllText()
             i = w.getInsertPoint()
-            for z in range(vc.n1*vc.n):
+            n = vc.n1*vc.n
+            for z in range(n):
+                # It's simplest just to get the text again.
+                s = w.getAllText()
                 i,j = g.getLine(s,i)
-                # g.trace(repr(s[i:j]))
+                # g.trace(i,j,len(s),repr(s[i:j]))
+                # Special case for end of buffer only for n == 1.
+                # This is exactly how vim works.
+                if n == 1 and i == j == len(s):
+                    i = max(0,i-1)
                 w.delete(i,j)
-                i = j
             vc.done()
         else:
             vc.begin_motion(vc.vim_d3)
@@ -1454,9 +1459,10 @@ class VimCommands:
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
         '''Handle strokes in normal mode.'''
+        # Unlike visual mode, there is no need to init anything,
+        # because all normal mode commands call vc.done.
         vc.do_state(vc.normal_mode_dispatch_d,'normal')
-        vc.n1 = vc.n = 1
-            
+        
     #@+node:ekr.20140802225657.18029: *4* vc.do_state
     def do_state(vc,d,mode_name):
         '''General dispatcher code. d is a dispatch dict.'''

@@ -35,7 +35,7 @@ Later:
   Equate all vim commands with 'Typing'.
 - (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
-- dd now works exactly as vim.
+- dd now works exactly as vim.  And so does 5dd ;-)
 - All calls to accept in visual mode now specify handler=vc.do_visual_mode.
 - Counts now work in visual mode.
 - Rewrote vim_h and vim_l.
