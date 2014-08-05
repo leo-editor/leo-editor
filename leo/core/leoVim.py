@@ -150,7 +150,6 @@ class VimCommands:
         vc.init_motion_ivars()
         vc.init_persistent_ivars()
         vc.init_state_ivars()
-        g.registerHandler('idle',vc.on_idle)
     #@+node:ekr.20140222064735.16702: *4* vc.create_motion_dispatch_d
     def create_motion_dispatch_d(vc):
         '''
@@ -425,10 +424,12 @@ class VimCommands:
         '''Complete the initialization for the VimCommands class.'''
         # Set the widget for vc.set_border.
         # Be careful: c.frame or c.frame.body may not exist in some guis.
-        try:
-            vc.w = vc.c.frame.body.bodyCtrl
-        except Exception:
-            pass
+        if vc.c.vim_mode:
+            g.registerHandler('idle',vc.on_idle)
+            try:
+                vc.w = vc.c.frame.body.bodyCtrl
+            except Exception:
+                pass
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
