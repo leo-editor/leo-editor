@@ -183,7 +183,7 @@ import leo.core.leoGlobals as g
 use_qt = False
 if g.app.gui.guiName() == 'qt':
     try:
-        from PyQt4 import QtGui, QtCore
+        from leo.core.leoQt import QtCore, QtWidgets
         import hashlib
         use_qt = True
     except ImportError:
@@ -359,7 +359,7 @@ def cmd_use_other_outline(c):
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20131227100801.23857: ** FlowLayout
-class FlowLayout(QtGui.QLayout):
+class FlowLayout(QtWidgets.QLayout):
     """from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py"""
     def __init__(self, parent=None, margin=0, spacing=-1):
         super(FlowLayout, self).__init__(parent)
@@ -380,7 +380,7 @@ class FlowLayout(QtGui.QLayout):
         self.itemList.append(item)
 
     def insertWidget(self, index, item):
-        x = QtGui.QWidgetItem(item)
+        x = QtWidgets.QWidgetItem(item)
         # item.setParent(x)
         # self.itemList.insert(index, x)
 
@@ -432,8 +432,8 @@ class FlowLayout(QtGui.QLayout):
 
         for item in self.itemList:
             wid = item.widget()
-            spaceX = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
-            spaceY = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Vertical)
+            spaceX = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
+            spaceY = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Vertical)
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()
@@ -477,7 +477,7 @@ class BookMarkDisplay:
         
         self.already = -1  # used to indicate existing link when same link added again
         
-        self.w = QtGui.QWidget()
+        self.w = QtWidgets.QWidget()
         
         self.dark = c.config.getBool("color_theme_is_dark")
         
@@ -493,7 +493,7 @@ class BookMarkDisplay:
         
         self.w.setObjectName('show_bookmarks')
         self.w.setMinimumSize(10, 10)
-        self.w.setLayout(QtGui.QVBoxLayout())
+        self.w.setLayout(QtWidgets.QVBoxLayout())
         self.w.layout().setContentsMargins(0,0,0,0)
 
         self.current_list = self.get_list()
@@ -702,14 +702,7 @@ class BookMarkDisplay:
             if cull.widget():
                 cull.widget().deleteLater()
             cull = w.layout().takeAt(0)        
-            
-        #X w.setStyleSheet("""
-        #X #show_bookmarks QPushButton { margin: 0; padding: 1; }
-        #X QPushButton[style_class~='bookmark_current'] { font-weight: bold; color: orange; }
-        #X QPushButton[style_class~='bookmark_expanded'] { font-weight: bold; }
-        #X QPushButton[style_class~='bookmark_children'] { text-decoration: underline; }
-        #X """)
-            
+      
         todo = [links or []]  # empty list to create container to click in to add first
         current_level = 1
         current_url = None
@@ -719,16 +712,16 @@ class BookMarkDisplay:
             
             links = todo.pop(0)
         
-            top = QtGui.QWidget()
+            top = QtWidgets.QWidget()
             # pylint: disable=E0202
             # pylint bug, fix released: http://www.logilab.org/ticket/89092
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
             top.setMinimumSize(10,10)  # so there's something to click when empty
 
-            size_policy = QtGui.QSizePolicy(\
-                QtGui.QSizePolicy.Expanding,      
-                QtGui.QSizePolicy.Expanding
+            size_policy = QtWidgets.QSizePolicy(\
+                QtWidgets.QSizePolicy.Expanding,      
+                QtWidgets.QSizePolicy.Expanding
             )
             size_policy.setHorizontalStretch(1)
             size_policy.setVerticalStretch(1)
@@ -741,7 +734,7 @@ class BookMarkDisplay:
             top.setLayout(layout)
             for bm in links:
                 
-                but = QtGui.QPushButton(bm.head)
+                but = QtWidgets.QPushButton(bm.head)
 
                 if bm.url:
                     but.setToolTip(bm.url)
@@ -793,7 +786,7 @@ class BookMarkDisplay:
                 
                 # add an up button to the second row...
                 next_row = self.w.layout().itemAt(1).widget().layout()
-                but = QtGui.QPushButton('^')
+                but = QtWidgets.QPushButton('^')
                 bm = showing_chain.pop(0)
                 but.mouseReleaseEvent = (lambda event, bm=bm, but=but: 
                     self.button_clicked(event, bm, but, up=True))
