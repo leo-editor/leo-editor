@@ -75,7 +75,7 @@ def colon_qa(event):
 #@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
 @g.command(':w')
 def colon_w(event):
-    '''Save the file.'''
+    '''Save the .leo file.'''
     c = event.get('c')
     if c:
         c.save()
@@ -721,10 +721,11 @@ class VimCommands:
     #@+node:ekr.20140730175636.17983: *5* vc.vim_colon
     def vim_colon(vc):
         '''Enter the minibuffer.'''
+        k = vc.k
         vc.quit()
-        ### vc.k.extendLabel(':') # ,select=False,protect=False)
         event = VimEvent(stroke='colon',w=vc.w)
-        vc.k.fullCommand(event=event)
+        k.fullCommand(event=event)
+        k.extendLabel(':')
     #@+node:ekr.20140730175636.17992: *5* vc.vim_ctrl_r
     def vim_ctrl_r(vc):
         '''Redo the last command.'''
