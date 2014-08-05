@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140804103733.9240: * @file nodetags.py
+#@+node:peckj.20140804114520.9427: * @file nodetags.py
 #@@language python
 #@@tabwidth -4
 
@@ -33,7 +33,7 @@ As of v0.3, the tag browser has set-algebra querying possible.  Users may search
 '''
 #@-<< docstring >>
 
-__version__ = '0.4'
+__version__ = '0.5'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -42,10 +42,9 @@ __version__ = '0.4'
 # Version 0.2 - add a minimal jumplist-only GUI  (still need to use API for add/remove of tags)
 # Version 0.3 - add query-based searching (set algebra) of tagged nodes
 # Version 0.4 - fix a small issue w/r/t v.u vs v.unknownAttributes
+# Version 0.5 - add a display/jump list of tags on currently selected node
 # 
-# Future plans w/r/t UI:  
-#   - Add a jumplist of tags on selected node
-#       - When a tag is clicked, change the combo box to that item, and update the jumplist
+# Future plans w/r/t UI:
 #   - Buttons for adding + removing tags
 # 
 #@@c
@@ -83,6 +82,7 @@ def onCreate (tag, keys):
     
     theTagController = TagController(c)
     c.theTagController = theTagController
+
 #@+node:peckj.20140804103733.9246: ** class TagController
 class TagController:
     #@+others
@@ -165,6 +165,13 @@ class LeoTagWidget(QtGui.QWidget):
         self.mapping = {}
         self.search_chars = ['&','|','-','^']
         self.custom_searches = []
+        g.registerHandler('select2', self.select2_hook)
+    #@+node:peckj.20140804195456.13487: *3* select2_hook
+    def select2_hook(self, tag, keywords):
+        #c = keywords.get('c')
+        #tc = c.theTagController
+        tc = self.tc
+        tc.ui.update_current_tags(self.c.p)
     #@+node:peckj.20140804114520.15201: *3* initialization
     #@+node:peckj.20140804114520.15202: *4* initUI
     def initUI(self):
@@ -185,9 +192,21 @@ class LeoTagWidget(QtGui.QWidget):
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         
+        # horizontalLayout2: contains
+        # label2
+        # not much by default -- it's a place to add buttons for current tags
+        self.horizontalLayout2 = QtGui.QHBoxLayout()
+        self.horizontalLayout2.setContentsMargins(0,0,0,0)
+        self.horizontalLayout2.setObjectName("horizontalLayout2")
+        label2 = QtGui.QLabel(self)
+        label2.setObjectName("label2")
+        label2.setText("Tags for current node:")
+        self.horizontalLayout2.addWidget(label2)
+        
         # verticalLayout: contains
         # horizontalLayout
         # listWidget
+        # horizontalLayout2
         # label
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
@@ -206,6 +225,7 @@ class LeoTagWidget(QtGui.QWidget):
         self.listWidget = QtGui.QListWidget(self)
         self.listWidget.setObjectName("listWidget")
         self.verticalLayout.addWidget(self.listWidget)
+        self.verticalLayout.addLayout(self.horizontalLayout2)
         self.label = QtGui.QLabel(self)
         self.label.setObjectName("label")
         self.label.setText("Total: 0 items")
@@ -235,8 +255,37 @@ class LeoTagWidget(QtGui.QWidget):
         if key == '' or key not in self.mapping.keys():
             return
         pos = self.mapping[key]
+        self.update_current_tags(pos)
         self.c.selectPosition(pos)
         self.c.redraw_now()
+    #@+node:peckj.20140804192343.6568: *5* update_current_tags
+    def update_current_tags(self,pos):
+        # clear out the horizontalLayout2
+        hl2 = self.horizontalLayout2
+        while hl2.count():
+            child = hl2.takeAt(0)
+            child.widget().deleteLater()
+        label = QtGui.QLabel(self)
+        label.setText('Tags for current node:')
+        hl2.addWidget(label)
+        
+        tags = self.tc.get_tags(pos)
+        # add tags
+        for tag in tags:
+            l = QtGui.QLabel(self)
+            l.setText(tag)
+            hl2.addWidget(l)
+            l.mouseReleaseEvent = self.callback_factory(tag)
+        
+    #@+node:peckj.20140804194839.6569: *6* callback_factory
+    def callback_factory(self, tag):
+        c = self.c
+        def callback(event):
+            ui = c.theTagController.ui
+            idx = ui.comboBox.findText(tag)
+            ui.comboBox.setCurrentIndex(idx)
+            ui.update_list()
+        return callback
     #@+node:peckj.20140804114520.15206: *4* update_combobox
     def update_combobox(self):
         self.comboBox.clear()
@@ -299,6 +348,7 @@ class LeoTagWidget(QtGui.QWidget):
             idx = 0 
         self.comboBox.setCurrentIndex(idx)
         self.update_list()
+        self.update_current_tags(self.c.p)
     #@-others
 #@-others
 #@-leo
