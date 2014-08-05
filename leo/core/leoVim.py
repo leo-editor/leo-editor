@@ -150,6 +150,7 @@ class VimCommands:
         vc.init_motion_ivars()
         vc.init_persistent_ivars()
         vc.init_state_ivars()
+        g.registerHandler('idle',vc.on_idle)
     #@+node:ekr.20140222064735.16702: *4* vc.create_motion_dispatch_d
     def create_motion_dispatch_d(vc):
         '''
@@ -393,6 +394,15 @@ class VimCommands:
         'y': vc.vis_y,
         # Motions...
         '0': vc.vim_0,
+        '1': vc.vim_digits,
+        '2': vc.vim_digits,
+        '3': vc.vim_digits,
+        '4': vc.vim_digits,
+        '5': vc.vim_digits,
+        '6': vc.vim_digits,
+        '7': vc.vim_digits,
+        '8': vc.vim_digits,
+        '9': vc.vim_digits,
         'dollar': vc.vim_dollar,
         'F': vc.vim_F,
         'G': vc.vim_G,
@@ -413,8 +423,12 @@ class VimCommands:
     #@+node:ekr.20140804222959.18930: *4* vc.finshCreate
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
-        # Set the widget for vc.set_border
-        vc.w = vc.c.frame.body.bodyCtrl
+        # Set the widget for vc.set_border.
+        # Be careful: c.frame or c.frame.body may not exist in some guis.
+        try:
+            vc.w = vc.c.frame.body.bodyCtrl
+        except Exception:
+            pass
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -495,11 +509,11 @@ class VimCommands:
             # The insertion point at the start of visual mode.
         vc.vis_mode_w = None
             # The widget in effect at the start of visual mode.
-     
-        
     #@+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(vc):
         '''Init ivars that are never re-inited.'''
+        # vc.border_inited = False
+            # True if the border has been inited.
         vc.register_d = {}
             # Keys are letters; values are strings.
         vc.w = None
@@ -670,7 +684,7 @@ class VimCommands:
             # Move to start of line.
             if vc.state == 'visual':
                 ec.beginningOfLineExtendSelection(vc.event)
-                vc.accept()
+                vc.accept(handler=vc.do_visual_mode)
             else:
                 ec.beginningOfLine(vc.event)
                 vc.done()
@@ -678,7 +692,7 @@ class VimCommands:
             # Smart home: not compatible with vim.
             ec.backToHome(vc.event,extend=vc.state=='visual')
             if vc.state=='visual':
-                vc.accept()
+                vc.accept(handler=vc.do_visual_mode)
             else:
                 vc.done()
     #@+node:ekr.20140220134748.16614: *5* vc.vim_a
@@ -701,7 +715,7 @@ class VimCommands:
         if vc.state == 'visual':
             for z in range(vc.n1 * vc.n):
                 ec.moveWordHelper(vc.event,extend=True,forward=False)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             for z in range(vc.n1 * vc.n):
                 ec.moveWordHelper(vc.event,extend=False,forward=False)
@@ -784,7 +798,7 @@ class VimCommands:
         ec = vc.c.editCommands
         if vc.state == 'visual':
             ec.endOfLineExtendSelection(vc.event)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.c.editCommands.endOfLine(vc.event)
             vc.done()
@@ -807,7 +821,7 @@ class VimCommands:
         if vc.state == 'visual':
             for z in range(vc.n1 * vc.n):
                 ec.forwardEndWordExtendSelection(vc.event)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             for z in range(vc.n1 * vc.n):
                 ec.forwardEndWord(vc.event)
@@ -852,7 +866,7 @@ class VimCommands:
                     for z in range(i1-i):
                         ec.backCharacter(vc.event)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
@@ -880,7 +894,7 @@ class VimCommands:
                     for z in range(i-i1+1):
                         ec.forwardCharacter(vc.event)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
     #@+node:ekr.20140803220119.18112: *5* vc.vim_G
@@ -894,7 +908,7 @@ class VimCommands:
             i,j = w.getSelectionRange()
             if i > j: i,j = j,i
             w.setSelectionRange(i,last,insert=last)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             w.setInsertPoint(last)
             vc.done()
@@ -942,15 +956,18 @@ class VimCommands:
                 if trace: g.trace('at line start')
             else:
                 n = vc.n1 * vc.n
-                while n > 0 and i > 0 and s[i-1] != '\n':
-                    i -= 1
-                    n -= 1
+                for z in range(n):
+                    if i > 0 and s[i-1] != '\n':
+                        i -= 1
+                    if i == 0 or (i > 0 and s[i-1] == '\n'):
+                        break # Don't go past present line.
                 if vc.state == 'visual':
+                    # if vc.vis_mode_i > i: vc.vis_mode_i,i = i,vc.vis_mode_i
                     w.setSelectionRange(vc.vis_mode_i,i)
                 else:
                     w.setInsertPoint(i)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
     #@+node:ekr.20140222064735.16618: *5* vc.vim_i
@@ -964,7 +981,7 @@ class VimCommands:
         if vc.state == 'visual':
             for z in range(vc.n1 * vc.n):
                 ec.nextLineExtendSelection(vc.event)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             for z in range(vc.n1 * vc.n):
                 ec.nextLine(vc.event)
@@ -976,7 +993,7 @@ class VimCommands:
         if vc.state == 'visual':
             for z in range(vc.n1 * vc.n):
                 ec.prevLineExtendSelection(vc.event)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             for z in range(vc.n1 * vc.n):
                 ec.prevLine(vc.event)
@@ -993,20 +1010,21 @@ class VimCommands:
                 if trace: g.trace('at line end')
             else:
                 n = vc.n1 * vc.n
-                while n > 0 and i <= len(s) and s[i] != '\n':
-                    i += 1
-                    n -= 1
+                for z in range(n):
+                    if i < len(s) and s[i] != '\n':
+                        i += 1
+                    if i >= len(s) or s[i] == '\n':
+                        break # Don't go past present line.
                 if vc.state == 'visual':
+                    # g.trace(vc.vis_mode_i,i)
+                    # if vc.vis_mode_i > i: vc.vis_mode_i,i = i,vc.vis_mode_i
                     w.setSelectionRange(vc.vis_mode_i,i)
                 else:
                     w.setInsertPoint(i)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
-
-
-           
     #@+node:ekr.20131111171616.16497: *5* vc.vim_m (to do)
     def vim_m(vc):
         '''m<a-zA-Z> mark current position with mark.'''
@@ -1114,7 +1132,7 @@ class VimCommands:
                     for z in range(i-i1):
                         ec.forwardCharacter(vc.event)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
     #@+node:ekr.20140222064735.16686: *5* vc.vim_T
@@ -1143,7 +1161,7 @@ class VimCommands:
                     for z in range(i1-i-1):
                         ec.backCharacter(vc.event)
         if vc.state == 'visual':
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
     #@+node:ekr.20140220134748.16626: *5* vc.vim_u
@@ -1172,7 +1190,7 @@ class VimCommands:
         if vc.state == 'visual':
             for z in range(vc.n):
                 ec.moveWordHelper(vc.event,extend=True,forward=True)
-            vc.accept()
+            vc.accept(handler=vc.do_visual_mode)
         else:
             for z in range(vc.n):
                 ec.moveWordHelper(vc.event,extend=False,forward=True)
@@ -1430,17 +1448,19 @@ class VimCommands:
             vc.stroke = 'Escape'
             vc.end_insert_mode()
         else:
-            g.trace(i,vc.stroke)
+            # g.trace(i,vc.stroke)
             vc.delegate()
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
         '''Handle strokes in normal mode.'''
         vc.do_state(vc.normal_mode_dispatch_d,'normal')
+        vc.n1 = vc.n = 1
             
     #@+node:ekr.20140802225657.18029: *4* vc.do_state
     def do_state(vc,d,mode_name):
         '''General dispatcher code. d is a dispatch dict.'''
         trace = False and not g.unitTesting
+        if trace: g.trace('1',vc.next_func and vc.next_func.__name__)
         func = d.get(vc.stroke)
         if func:
             if trace: g.trace(mode_name,vc.stroke,func.__name__)
@@ -1451,9 +1471,13 @@ class VimCommands:
             # Pass non-plain keys to k.masterKeyHandler
             vc.delegate()
             vc.return_value = False
+        if trace: g.trace('2',vc.next_func and vc.next_func.__name__)
     #@+node:ekr.20140803220119.18092: *4* vc.do_visual_mode
     def do_visual_mode(vc):
         '''Handle strokes in visual mode.'''
+        # vc.next_func = vc.do_visual_mode
+            # By default, stay in visual mode.
+        vc.n1 = vc.n = 1
         vc.do_state(vc.vis_dispatch_d,'visual')
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140802142132.17981: *4* show_dot & show_list
@@ -1501,7 +1525,7 @@ class VimCommands:
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline
     def in_headline(vc):
         '''Return True if we are in a headline edit widget.'''
-        return vc.c.widget_name(vc.event.w).startswith('head')
+        return vc.widget_name(vc.event.w).startswith('head')
     #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_widget
     def is_plain_key(vc,stroke):
         '''Return True if stroke is a plain key.'''
@@ -1510,6 +1534,12 @@ class VimCommands:
     def is_text_widget(vc,w):
         '''Return True if w is a text widget.'''
         return g.app.gui.isTextWidget(w)
+    #@+node:ekr.20140805064952.18153: *4* vc.on_idle
+    def on_idle(vc,tag,keys):
+        '''The idle-time handler for the VimCommands class.'''
+        c = keys.get('c')
+        if c and vc == c.vimCommands:
+            vc.set_border()
     #@+node:ekr.20140801121720.18079: *4* vc.on_same_line
     def on_same_line(vc,s,i1,i2):
         '''Return True if i1 and i2 are on the same line.'''
@@ -1547,18 +1577,32 @@ class VimCommands:
         '''Set the border color of vc.w, depending on state.'''
         trace = False and not g.unitTesting
         from leo.core.leoQt import QtWidgets
-        w = vc.w
-        if vc.is_text_widget(w):
-            if hasattr(w,'widget'): w = w.widget
-            if isinstance(w,QtWidgets.QTextEdit):
-                selector = 'vim_%s' % (vc.state)
+        w = g.app.gui.get_focus()
+        w_name = vc.widget_name(w)
+        if w_name == 'richTextEdit':
+            selector = 'vim_%s' % (vc.state)
+            w.setProperty('vim_state',selector)
+            if trace: g.trace('body',vc.state,w_name)
+            w.style().unpolish(w)
+            w.style().polish(w)
+        elif w_name.startswith('head'):
+            selector = 'vim_%s' % (vc.state)
+            w.setProperty('vim_state',selector)
+            if trace: g.trace('head',vc.state,w_name)
+            w.style().unpolish(w)
+            w.style().polish(w)
+        if w_name != 'richTextEdit':
+            # Clear the border in the body pane.
+            try:
+                if trace: g.trace('unfocused body')
+                w = vc.c.frame.body.bodyCtrl.widget
+                selector = 'vim_unfocused'
                 w.setProperty('vim_state',selector)
-                if trace: g.trace(vc.state,selector,g.callers())
+                if trace: g.trace('body, unfocused',w_name)
                 w.style().unpolish(w)
                 w.style().polish(w)
-                return
-        if trace:
-            g.trace('not a QTextWidget',w,g.callers())
+            except Exception:
+                pass
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''
@@ -1591,6 +1635,9 @@ class VimCommands:
         while i < len(s) and s[i] != '\n':
             i += 1
         return i
+    #@+node:ekr.20140805064952.18152: *4* vc.widget_name
+    def widget_name(vc,w):
+        return vc.c.widget_name(w)
     #@-others
 #@-others
 #@-leo

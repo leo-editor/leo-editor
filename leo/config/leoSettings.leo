@@ -5639,13 +5639,13 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 /* Borders for vim mode. */
 
 QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: 3px solid red;
+  border: 3px solid #FA8072; /* Salmon */
 }
 QTextEdit#richTextEdit[vim_state~="vim_insert"] {
   border: 3px solid blue;
 }
 QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: 3px solid pink;
+  border: 3px solid gray;
 }
 
 </t>
