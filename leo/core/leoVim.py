@@ -150,7 +150,27 @@ class VimCommands:
         vc.init_motion_ivars()
         vc.init_persistent_ivars()
         vc.init_state_ivars()
-    #@+node:ekr.20140222064735.16702: *4* vc.create_motion_dispatch_d
+        vc.create_dispatch_dicts()
+    #@+node:ekr.20140805130800.18157: *4* dispatch dicts...
+    #@+node:ekr.20140805130800.18162: *5* vc.create_dispatch_dicts
+    def create_dispatch_dicts(vc):
+        '''Create all dispatch dicts.'''
+        vc.normal_mode_dispatch_d = d1 = vc.create_normal_dispatch_d()
+            # Dispatch table for normal mode.
+        vc.motion_dispatch_d = d2 = vc.create_motion_dispatch_d()
+            # Dispatch table for motions.
+        vc.vis_dispatch_d = d3 = vc.create_vis_dispatch_d()
+            # Dispatch table for visual mode.
+        # Add all entries in arrow dict to the other dicts.
+        arrow_d = vc.create_arrow_dict()
+        for d,tag in ((d1,'normal'),(d2,'motion'),(d3,'visual')):
+            for key in arrow_d.keys():
+                if key in d:
+                    g.trace('duplicate arrow key in %s dict: %s' % (tag,key))
+                else:
+                    d[key] = arrow_d.get(key)
+        ### To do: create common_motions_dict, and add them to visual and norma dicts.
+    #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
     def create_motion_dispatch_d(vc):
         '''
         Return the dispatch dict for motions.
@@ -251,7 +271,7 @@ class VimCommands:
         # 'z': vc.vim_z,
         }
         return d
-    #@+node:ekr.20131111061547.16460: *4* vc.create_normal_dispatch_d
+    #@+node:ekr.20131111061547.16460: *5* vc.create_normal_dispatch_d
     def create_normal_dispatch_d(vc):
         '''
         Return the dispatch dict for normal mode.
@@ -261,13 +281,13 @@ class VimCommands:
         # Vim hard-coded control characters...
         'Ctrl+r': vc.vim_ctrl_r,
         # The arrow keys are good for undo.
-        'Down':  vc.vim_j,
-        'Left':  vc.vim_h,
+        # # # 'Down':  vc.vim_j,
+        # # # 'Left':  vc.vim_h,
         'Return':vc.vim_j,
-        'Right': vc.vim_l,
-        'Up':    vc.vim_k,
-        'Ctrl+Left': vc.vim_b,
-        'Ctrl+Right': vc.vim_w,
+        # # # 'Right': vc.vim_l,
+        # # # 'Up':    vc.vim_k,
+        # # # 'Ctrl+Left': vc.vim_b,
+        # # # 'Ctrl+Right': vc.vim_w,
         'space': vc.vim_l,
         # brackets.
         '{': None,
@@ -365,7 +385,7 @@ class VimCommands:
         'z': vc.vim_z,
         }
         return d
-    #@+node:ekr.20140222064735.16630: *4* vc.create_vis_dispatch_d
+    #@+node:ekr.20140222064735.16630: *5* vc.create_vis_dispatch_d
     def create_vis_dispatch_d (vc):
         '''
         Create a dispatch dict for visual mode.
@@ -374,15 +394,15 @@ class VimCommands:
         d = {
         # Standard vim synonyms...
         # Not really, these are for select mode.
-        'Down':  vc.vim_j,
-        'Left':  vc.vim_h,
+        # # # 'Down':  vc.vim_dn_arrow, # vc.vim_j,
+        # # # 'Left':  vc.vim_lt_arrow, # vc.vim_h,
         'Return':vc.vim_j,
-        'Right': vc.vim_l,
-        'Up':    vc.vim_k,
+        # # # 'Right': vc.vim_rt_arrow, # vc.vim_l,
+        # # # 'Up':    vc.vim_up_arrow, # vc.vim_k,
         'space': vc.vim_l,
         # Other synonyms...
-        'Ctrl+Left': vc.vim_b,
-        'Ctrl+Right': vc.vim_w,
+        # # # 'Ctrl+Left': vc.vim_b,
+        # # # 'Ctrl+Right': vc.vim_w,
         # Terminating commands...
         'Escape': vc.vis_escape,
         'J': vc.vis_J,
@@ -419,6 +439,36 @@ class VimCommands:
         'w': vc.vim_w,
         }
         return d
+    #@+node:ekr.20140805130800.18161: *5* vc.create_arrow_dict
+    def create_arrow_dict(vc):
+        '''
+        Return a dict containing all flavors of arrows, except Alt-Arrows and
+        Alt-Shift-Arrows which are already handled properly.
+        '''
+        d = {}
+        for arrow in ('Left','Right','Up','Down'):
+            for mod in ('','Ctrl+','Shift+','Ctrl+Shift+'):
+                d[mod+arrow] = vc.vim_arrow
+        return d
+        ### Probably no need for separate bindings.
+        # return {
+            # 'Down':           vc.vim_dn_arrow, # vc.vim_j,
+            # 'Left':           vc.vim_lt_arrow, # vc.vim_h,
+            # 'Right':          vc.vim_rt_arrow, # vc.vim_l,
+            # 'Up':             vc.vim_up_arrow, # vc.vim_k,
+            # 'Ctrl+Down':      vc.vim_ctrl_dn_arrow, 
+            # 'Ctrl+Left':      vc.vim_ctrl_lt_arrow,
+            # 'Ctrl+Right':     vc.vim_ctrl_rt_arrow, 
+            # 'Ctrl+Up':        vc.vim_ctrl_up_arrow,
+            # 'Shift+Down':     vc.vim_shift_dn_arrow, 
+            # 'Shift+Left':     vc.vim_shift_lt_arrow,
+            # 'Shift+Right':    vc.vim_shift_rt_arrow, 
+            # 'Shift+Up':       vc.vim_shift_up_arrow,
+            # 'Ctrl+Shift+Down':vc.vim_ctrl_shift_dn_arrow, 
+            # 'Ctrl+Shift+Left':vc.vim_ctrl_shift_lt_arrow,
+            # 'Ctrl+Shift+Right':vc.vim_ctrl_shift_rt_arrow, 
+            # 'Ctrl+Shift+Up':  vc.vim_ctrl_shift_up_arrow,
+        # }
     #@+node:ekr.20140804222959.18930: *4* vc.finshCreate
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
@@ -448,12 +498,6 @@ class VimCommands:
             # List of printable characters
         vc.register_names = string.ascii_letters
             # List of register names.
-        vc.normal_mode_dispatch_d = vc.create_normal_dispatch_d()
-            # Dispatch table for normal mode.
-        vc.motion_dispatch_d = vc.create_motion_dispatch_d()
-            # Dispatch table for motions.
-        vc.vis_dispatch_d = vc.create_vis_dispatch_d()
-            # Dispatch table for visual mode.
     #@+node:ekr.20140803220119.18105: *5* vc.init_motion_ivars
     def init_motion_ivars(vc):
         '''Init all ivars related to motions.'''
@@ -673,6 +717,14 @@ class VimCommands:
                 # Restart the command.
                 vc.do_normal_mode()
     #@+node:ekr.20131111061547.16467: *3* vc.commands
+    #@+node:ekr.20140805130800.18158: *4* vc.arrow...
+    def vim_arrow(vc):
+        '''
+        Handle all non-Alt arrows in any mode.
+        This method attempts to leave focus unchanged.
+        '''
+        # g.trace(vc.stroke,g.callers())
+        vc.delegate()
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
@@ -815,7 +867,7 @@ class VimCommands:
             vc.in_dot = True
             # Copy the list so it can't change in the loop.
             for event in vc.dot_list[:]:
-                g.trace(vc.state,event)
+                # g.trace(vc.state,event)
                 vc.do_key(event)
         finally:
             vc.in_dot = False
@@ -1379,6 +1431,7 @@ class VimCommands:
         k.masterKeyHandler) if this method has handled the key.
         '''
         vc.init_scanner_vars(event)
+        # g.trace('stroke: %s' % vc.stroke)
         vc.return_value = None
         if not vc.handle_specials():
             vc.handler()
@@ -1406,13 +1459,11 @@ class VimCommands:
     #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars
     def init_scanner_vars(vc,event):
         '''Init all ivars used by the scanner.'''
-        trace = False and not g.unitTesting
         assert event
         vc.event = event
         stroke = event.stroke
         vc.stroke = stroke.s if g.isStroke(stroke) else stroke
         vc.w = event and event.w
-        if trace: g.trace('stroke: %s' % vc.stroke)
         if not vc.in_command:
             vc.in_command = True # May be cleared later.
             if vc.is_text_widget(vc.w):
@@ -1436,7 +1487,7 @@ class VimCommands:
         else:
             # Pass non-plain keys to k.masterKeyHandler
             vc.delegate()
-            vc.return_value = False
+
     #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
@@ -1457,7 +1508,6 @@ class VimCommands:
             else:
                 vc.delegate()
         else:
-            # g.trace(i,vc.stroke)
             vc.delegate()
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
@@ -1470,7 +1520,7 @@ class VimCommands:
     def do_state(vc,d,mode_name):
         '''General dispatcher code. d is a dispatch dict.'''
         trace = False and not g.unitTesting
-        if trace: g.trace('1',vc.next_func and vc.next_func.__name__)
+        # if trace: g.trace('1',vc.next_func and vc.next_func.__name__)
         func = d.get(vc.stroke)
         if func:
             if trace: g.trace(mode_name,vc.stroke,func.__name__)
@@ -1480,13 +1530,10 @@ class VimCommands:
         else:
             # Pass non-plain keys to k.masterKeyHandler
             vc.delegate()
-            vc.return_value = False
-        if trace: g.trace('2',vc.next_func and vc.next_func.__name__)
+        # if trace: g.trace('2',vc.next_func and vc.next_func.__name__)
     #@+node:ekr.20140803220119.18092: *4* vc.do_visual_mode
     def do_visual_mode(vc):
         '''Handle strokes in visual mode.'''
-        # vc.next_func = vc.do_visual_mode
-            # By default, stay in visual mode.
         vc.n1 = vc.n = 1
         vc.do_state(vc.vis_dispatch_d,'visual')
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities

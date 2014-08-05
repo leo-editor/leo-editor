@@ -9,7 +9,8 @@
 @language rest
 
 First:
-- Must hold down Alt-Key: plain keys put cursor in the body pane.
+- Click in body enters normal mode. It would be good to leave the mode unchanged.
+
 
 Next:
 ** Change wc.w in vc.do_key
@@ -23,6 +24,7 @@ Next:
 - Merge vim_v and vis_d.
 - Allow commands starting with colon.
 - yank and paste.
+- What to do about different versions of @bool vim_mode in different tabs?
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
 
@@ -34,6 +36,9 @@ Later:
   Equate all vim commands with 'Typing'.
 - (Maybe?) Change cursor to indicate mode.
 .. @+node:ekr.20140801121720.18064: *4* Documented in commit logs
+- Bound all non-Alt keys now bound to vc.vim_arrow, which just calls
+  vc.delegate. This makes *all* keys work the same. It was easy to do this:
+  created vc.create_motion_dispatch_d & vc.create_dispatch_dicts.
 - Corrected a crasher in vc.do_insert_mode.
 - dd now works exactly as vim.  And so does 5dd ;-)
 - All calls to accept in visual mode now specify handler=vc.do_visual_mode.
