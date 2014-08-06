@@ -526,6 +526,13 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- vc.do_key now delegates all keys if not vc.is_text_widget(vc.w)
+  This should eliminate the need for vc.vim_arrow and tests against vc.is_text_widget.
+- <esc> in normal mode works like Ctrl-G.
+- ,, in normal mode now moves to insert mode.
+  ,, in insert mode does nothing, unless there is an abbreviation template available.
+- vc.on_idle calls vc.set_border only for the presently selected .leo file.
+  This is required, apparently.
 
 - Return in visual/normal mode enters insert mode(!!)
     - When in doubt, hit return ;-)

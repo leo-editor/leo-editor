@@ -292,6 +292,7 @@ class VimCommands:
         ']': None,
         # Special chars.
         'colon': vc.vim_colon,
+        'comma': vc.vim_comma,
         'dollar': vc.vim_dollar,
         'period': vc.vim_dot,
         '@': None,
@@ -598,20 +599,20 @@ class VimCommands:
         '''Common code for beginning insert mode.'''
         trace = False and not g.unitTesting
         c,w = vc.c,vc.event.w
-        if not vc.is_text_widget(w):
-            if w == c.frame.tree:
-                c.editHeadline()
-                w = c.frame.tree.edit_widget(c.p)
-                if w:
-                    assert vc.is_text_widget(w)
-                else:
-                    if trace: g.trace('no edit widget')
-                    return
-            else:
-                if trace: g.trace('unknown widget: switching to body',w)
-                w = c.frame.body.bodyCtrl
-                assert vc.is_text_widget(w)
-                c.frame.bodyWantsFocusNow()
+        # # # if not vc.is_text_widget(w):
+            # # # if w == c.frame.tree:
+                # # # c.editHeadline()
+                # # # w = c.frame.tree.edit_widget(c.p)
+                # # # if w:
+                    # # # assert vc.is_text_widget(w)
+                # # # else:
+                    # # # if trace: g.trace('no edit widget')
+                    # # # return
+            # # # else:
+                # # # if trace: g.trace('unknown widget: switching to body',w)
+                # # # w = c.frame.body.bodyCtrl
+                # # # assert vc.is_text_widget(w)
+                # # # c.frame.bodyWantsFocusNow()
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
@@ -635,7 +636,7 @@ class VimCommands:
         '''End an insert mode started with the a,A,i,o and O commands.'''
         # Called from vim_esc.
         w = vc.w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             s = w.getAllText()
             i1 = vc.command_i
             i2 = w.getInsertPoint()
@@ -790,6 +791,16 @@ class VimCommands:
         event = VimEvent(stroke='colon',w=vc.w)
         k.fullCommand(event=event)
         k.extendLabel(':')
+    #@+node:ekr.20140806123540.18159: *5* vc.vim_comma
+    def vim_comma(vc):
+        '''Handle a comma in normal mode.'''
+        vc.accept(handler=vc.vim_comma2)
+        
+    def vim_comma2(vc):
+        if vc.stroke == 'comma':
+            vc.begin_insert_mode()
+        else:
+            vc.done()
     #@+node:ekr.20140730175636.17992: *5* vc.vim_ctrl_r
     def vim_ctrl_r(vc):
         '''Redo the last command.'''
@@ -827,7 +838,7 @@ class VimCommands:
         '''Complete the d command after the cursor has moved.'''
         trace = False and not g.unitTesting
         w = vc.w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             s = w.getAllText()
             i1,i2 = vc.motion_i,w.getInsertPoint()
             if vc.on_same_line(s,i1,i2):
@@ -891,7 +902,8 @@ class VimCommands:
             # Clear the selection and reset dot.
             vc.vis_v()
         else:
-            vc.done()
+            # vc.done()
+            vc.quit() # It's helpful to clear everything.
     #@+node:ekr.20140222064735.16687: *5* vc.vim_F
     def vim_F(vc):
         '''Back to the Nth occurrence of <char>.'''
@@ -976,11 +988,12 @@ class VimCommands:
         ec = vc.c.editCommands
         ec.w = w
         extend = vc.state == 'visual'
+        # # # if not vc.is_text_widget(w):
+            # # # g.trace('not text',w)
+        # # # el
         s = w.getAllText()
         i = w.getInsertPoint()
-        if not vc.is_text_widget(w):
-            g.trace('not text',w)
-        elif vc.stroke == 'g':
+        if vc.stroke == 'g':
             # Go to start of buffer.
             if not vc.on_same_line(s,0,i):
                 if extend:
@@ -997,9 +1010,9 @@ class VimCommands:
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         w = vc.w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             s = w.getAllText()
             i = w.getInsertPoint()
             if i == 0 or (i > 0 and s[i-1] == '\n'):
@@ -1013,10 +1026,11 @@ class VimCommands:
                         break # Don't go past present line.
                 if vc.state == 'visual':
                     # if vc.vis_mode_i > i: vc.vis_mode_i,i = i,vc.vis_mode_i
-                    w.setSelectionRange(vc.vis_mode_i,i)
+                    w.setSelectionRange(vc.vis_mode_i,i,insert=i)
                 else:
                     w.setInsertPoint(i)
         if vc.state == 'visual':
+            # g.trace('visual',vc.stroke,vc.widget_name(w))
             vc.accept(handler=vc.do_visual_mode)
         else:
             vc.done()
@@ -1053,7 +1067,7 @@ class VimCommands:
         '''Move the cursor right vc.n chars, but not out of the present line.'''
         trace = False and not g.unitTesting
         w = vc.w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             s = w.getAllText()
             i = w.getInsertPoint()
             if i >= len(s) or s[i] == '\n':
@@ -1068,7 +1082,7 @@ class VimCommands:
                 if vc.state == 'visual':
                     # g.trace(vc.vis_mode_i,i)
                     # if vc.vis_mode_i > i: vc.vis_mode_i,i = i,vc.vis_mode_i
-                    w.setSelectionRange(vc.vis_mode_i,i)
+                    w.setSelectionRange(vc.vis_mode_i,i,insert=i)
                 else:
                     w.setInsertPoint(i)
         if vc.state == 'visual':
@@ -1390,7 +1404,7 @@ class VimCommands:
     def vis_d(vc):
         '''Delete the highlighted text and terminate visual mode.'''
         w  = vc.vis_mode_w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             i1 = vc.vis_mode_i
             i2 = w.getInsertPoint()
             w.delete(i1,i2)
@@ -1405,7 +1419,7 @@ class VimCommands:
         '''End visual mode.'''
         # Clear the selection.  This is what vim does.
         w = vc.event.w
-        if vc.is_text_widget(w):
+        if True: ### vc.is_text_widget(w):
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
         # Visual mode affects the dot only if there is a terminating command.
@@ -1423,16 +1437,24 @@ class VimCommands:
         k.masterKeyHandler) if this method has handled the key.
         '''
         vc.init_scanner_vars(event)
-        # g.trace('stroke: %s' % vc.stroke)
-        vc.return_value = None
-        if not vc.handle_specials():
-            vc.handler()
-        if vc.return_value not in (True,False):
-            # It looks like no acceptance method has been called.
-            vc.oops('bad return_value: %s %s %s' % (
-                repr(vc.return_value),vc.state,vc.next_func))
-            vc.done() # Sets vc.return_value to True.
-        return vc.return_value
+        # This test seems prudent and convenient.
+        # There are probably no more need for arrow bindings,
+        # or for interior tests of is_text_widget.
+        if vc.is_text_widget(vc.w):
+            # g.trace('stroke: %s' % vc.stroke)
+            vc.return_value = None
+            if not vc.handle_specials():
+                vc.handler()
+            if vc.return_value not in (True,False):
+                # It looks like no acceptance method has been called.
+                vc.oops('bad return_value: %s %s %s' % (
+                    repr(vc.return_value),vc.state,vc.next_func))
+                vc.done() # Sets vc.return_value to True.
+            return vc.return_value
+        else:
+            # g.trace('not a text widget',vc.widget_name(vc.w),vc.stroke)
+            vc.quit()
+            return False # Delegate the stroke.
     #@+node:ekr.20140802225657.18021: *4* vc.handle_specials
     def handle_specials(vc):
         '''Return True vc.stroke is an Escape or a Return in the outline pane.'''
@@ -1448,7 +1470,7 @@ class VimCommands:
             return True
         else:
             return False
-    #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars
+    #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars (uses in_command)
     def init_scanner_vars(vc,event):
         '''Init all ivars used by the scanner.'''
         assert event
@@ -1578,11 +1600,15 @@ class VimCommands:
     def in_headline(vc):
         '''Return True if we are in a headline edit widget.'''
         return vc.widget_name(vc.event.w).startswith('head')
-    #@+node:ekr.20140806081828.18157: *4* vc.is_body
+    #@+node:ekr.20140806081828.18157: *4* vc.is_body & is_head
     def is_body(vc,w):
         '''Return True if w is the QTextBrowser of the body pane.'''
         w2 = vc.c.frame.body.bodyCtrl
         return w == w2
+
+    def is_head(vc,w):
+        '''Return True if w is an headline edit widget.'''
+        return vc.widget_name(w).startswith('head')
     #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_widget
     def is_plain_key(vc,stroke):
         '''Return True if stroke is a plain key.'''
@@ -1590,20 +1616,31 @@ class VimCommands:
         
     def is_text_widget(vc,w):
         '''Return True if w is a text widget.'''
-        return g.app.gui.isTextWidget(w)
+        return vc.is_body(w) or vc.is_head(w) or g.app.gui.isTextWidget(w)
     #@+node:ekr.20140805064952.18153: *4* vc.on_idle
     def on_idle(vc,tag,keys):
         '''The idle-time handler for the VimCommands class.'''
         c = keys.get('c')
         if c and vc == c.vimCommands:
-            vc.set_border()
+            # Call set_border only for the presently selected tab.
+            try:
+                # Careful: we may not have tabs.
+                w = g.app.gui.frameFactory.masterFrame
+            except AttributeError:
+                w = None
+            if w:
+                i = w.indexOf(c.frame.top)
+                if i == w.currentIndex():
+                    vc.set_border()
+            else:
+                vc.set_border()
     #@+node:ekr.20140801121720.18079: *4* vc.on_same_line
     def on_same_line(vc,s,i1,i2):
         '''Return True if i1 and i2 are on the same line.'''
         # Ensure that i1 <= i2 and that i2 is in range.
         if i1 > i2: i1,i2 = i2,i1
         i2 = min(i2,len(s)-1)
-        if s[i2] == '\n': i2 -= 1
+        if s[i2] == '\n': i2 = max(0,i2-1)
         return i1 <= i2 and s[i1:i2].count('\n') == 0
     #@+node:ekr.20140802225657.18022: *4* vc.oops
     def oops(vc,message):

@@ -5,26 +5,44 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140730175636.17982: *3* Vim to-do
+.. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-First:
-- Enter insert mode on space/tab ??
-- j,j abbreviation must not make node dirty.
-- Fix crashes
-- Fix dw
+- Clicks in body should not change state!
+- Make sure d{motion} works for all motions.
+    - Update tables at startup?
 - Put a vc hook in Leo's Ctrl-H code.
-- Click in body enters normal mode. It would be good to leave the mode unchanged.
 - yank and paste.
 
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
 
 Next:
+- Enter insert mode on space/tab ??
 - Fix the dot.
 - Limit t,T,f,T to single line.
 - Dot neither set nor cleared properly. Escape, Return clear it.
 * Clean up widget vars: Change wc.w in vc.do_key
+.. @+node:ekr.20140806071008.18149: *4* ENB
+@language rest
+
+Handling ivars
+- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
+- Scratch vars: must be inited by each command handler.
+- It's crucial that commands be limited to the body pane in which they started.
+    - Changing modes, even outside the vim-mode code,
+      must result in a call to vc.quit.
+
+vc.begin_motion inits motion vars.
+vc.check_motion double checks that w and p have not changed.
+
+*all* arrow keys must be bound to vc.arrow.
+This allows them to be ignored during commands.
+
+Handling finds.
+leoFind.showSuccess and showFailure will have vc hooks to end the vim-mode command.
+vim find commands will set node-only on entry, and restore on exit.
+
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
 
@@ -79,40 +97,6 @@ And these!
 - Extend Leo's undo to show the vim characters for the commands.
   Equate all vim commands with 'Typing'.
 - Init more vars in vc.do_visual_mode ??
-.. @+node:ekr.20140806075456.18153: *4* Crashes
-
-vim_r2 1 e
-Traceback (most recent call last):
-  File "c:\leo.repo\leo-editor\leo\plugins\qtGui.py", line 8742, in eventFilter
-    k.masterKeyHandler(event)
-  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 2935, in masterKeyHandler
-    ok = c.vimCommands.do_key(event)
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1408, in do_key
-    if not vc.handle_specials():
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 803, in vim_d2
-    else:
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 631, in begin_motion
-    else:
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1453, in do_inner_motion
-    func()
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 812, in vim_d3
-    i1,i2 = vc.motion_i,w.getInsertPoint()
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1580, in on_same_line
-    i2 = min(i2,len(s)-1)
-IndexError: string index out of range
-
-Traceback (most recent call last):
-  File "c:\leo.repo\leo-editor\leo\plugins\qtGui.py", line 8742, in eventFilter
-    k.masterKeyHandler(event)
-  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 2935, in masterKeyHandler
-    ok = c.vimCommands.do_key(event)
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1408, in do_key
-    vc.return_value = None
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 803, in vim_d2
-    vc.done()
-  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 626, in begin_motion
-    vc.motion_func = motion_func
-AttributeError: 'DynamicWindow' object has no attribute 'getInsertPoint'
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
