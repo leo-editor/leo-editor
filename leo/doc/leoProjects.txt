@@ -525,6 +525,13 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
+@language rest
+
+- Return in visual/normal mode enters insert mode(!!)
+    - When in doubt, hit return ;-)
+- Changing nodes calls vc.quit.
+    - vc.do_insert_mode calls vc.arrow for all arrow keys.
+    - All other modes have bindings to vc.arrow for all arrow keys.
 - Bound all non-Alt keys now bound to vc.vim_arrow, which just calls
   vc.delegate. This makes *all* keys work the same. It was easy to do this:
   created vc.create_motion_dispatch_d & vc.create_dispatch_dicts.

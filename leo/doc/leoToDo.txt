@@ -9,8 +9,12 @@
 @language rest
 
 First:
+- Enter insert mode on space/tab ??
+- j,j abbreviation must not make node dirty.
+- Fix crashes
+- Fix dw
+- Put a vc hook in Leo's Ctrl-H code.
 - Click in body enters normal mode. It would be good to leave the mode unchanged.
-
 - yank and paste.
 
 * Theory of Vim Mode, based on ENB post:
@@ -44,6 +48,18 @@ followed by 'n' for next match
     selecting and <enter> opens a file
 :tabnew filename
     opens filename in a new tab
+.. @+node:ekr.20140805170407.18158: *4* From Kent 2: do asap
+> dw: delete word, word is the only text object I use, there are many
+> http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
+> (just discovered diw, useful!)
+>
+> v, V, ctrl-v : visual select character, line, column
+> O open line above current, start insert mode
+> y yank (copy)
+> p paste after
+> P paste before
+> ^ goto line start
+> $ goto line end
 .. @+node:ekr.20140803220119.18110: *4* From Jake: do asap
 And these!
 
@@ -63,6 +79,40 @@ And these!
 - Extend Leo's undo to show the vim characters for the commands.
   Equate all vim commands with 'Typing'.
 - Init more vars in vc.do_visual_mode ??
+.. @+node:ekr.20140806075456.18153: *4* Crashes
+
+vim_r2 1 e
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qtGui.py", line 8742, in eventFilter
+    k.masterKeyHandler(event)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 2935, in masterKeyHandler
+    ok = c.vimCommands.do_key(event)
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1408, in do_key
+    if not vc.handle_specials():
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 803, in vim_d2
+    else:
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 631, in begin_motion
+    else:
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1453, in do_inner_motion
+    func()
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 812, in vim_d3
+    i1,i2 = vc.motion_i,w.getInsertPoint()
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1580, in on_same_line
+    i2 = min(i2,len(s)-1)
+IndexError: string index out of range
+
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qtGui.py", line 8742, in eventFilter
+    k.masterKeyHandler(event)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 2935, in masterKeyHandler
+    ok = c.vimCommands.do_key(event)
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 1408, in do_key
+    vc.return_value = None
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 803, in vim_d2
+    vc.done()
+  File "c:\leo.repo\leo-editor\leo\core\leoVim.py", line 626, in begin_motion
+    vc.motion_func = motion_func
+AttributeError: 'DynamicWindow' object has no attribute 'getInsertPoint'
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 

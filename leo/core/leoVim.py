@@ -162,7 +162,7 @@ class VimCommands:
         vc.vis_dispatch_d = d3 = vc.create_vis_dispatch_d()
             # Dispatch table for visual mode.
         # Add all entries in arrow dict to the other dicts.
-        arrow_d = vc.create_arrow_dict()
+        vc.arrow_d = arrow_d = vc.create_arrow_d()
         for d,tag in ((d1,'normal'),(d2,'motion'),(d3,'visual')):
             for key in arrow_d.keys():
                 if key in d:
@@ -177,6 +177,7 @@ class VimCommands:
         Keys are strokes, values are methods.
         '''
         d = {
+        'Return': vc.vim_return,
         # brackets.
         '{': None,
         '(': None,
@@ -217,7 +218,7 @@ class VimCommands:
         # '8': vc.motion_digits,
         # '9': vc.motion_digits,
         # Uppercase letters.
-        'A': None,
+        'A': None,  # vim doesn't enter insert mode.
         'B': None,
         'C': None,
         'D': None,
@@ -231,7 +232,7 @@ class VimCommands:
         'L': None,
         'M': None,
         'N': None,
-        'O': vc.vim_O,
+        'O': None,  # vim doesn't enter insert mode.
         'P': None,
         'R': None,
         'S': None,
@@ -243,21 +244,21 @@ class VimCommands:
         'Y': None,
         'Z': None,
         # Lowercase letters...
-        # 'a': vc.vim_a,
+        'a': None,      # vim doesn't enter insert mode.
         'b': vc.vim_b,
         # 'c': vc.vim_c,
-        # 'd': vc.vim_d,
+        'd': None,      # Not valid.
         'e': vc.vim_e,
-        # 'f': vc.vim_f,
+        'f': vc.vim_f,
         'g': vc.vim_g,
         'h': vc.vim_h,
-        # 'i': vc.vim_i,
+        'i': None,      # vim doesn't enter insert mode.
         'j': vc.vim_j,
         'k': vc.vim_k,
         'l': vc.vim_l,
         # 'm': vc.vim_m,
         # 'n': vc.vim_n,
-        # 'o': vc.vim_o,
+        'o': None,      # vim doesn't enter insert mode.
         # 'p': vc.vim_p,
         # 'q': vc.vim_q,
         # 'r': vc.vim_r,
@@ -265,7 +266,7 @@ class VimCommands:
         't': vc.vim_t,
         # 'u': vc.vim_u,
         # 'v': vc.vim_v,
-        # 'w': vc.vim_w,
+        'w': vc.vim_w,
         # 'x': vc.vim_x,
         # 'y': vc.vim_y,
         # 'z': vc.vim_z,
@@ -280,14 +281,7 @@ class VimCommands:
         d = {
         # Vim hard-coded control characters...
         'Ctrl+r': vc.vim_ctrl_r,
-        # The arrow keys are good for undo.
-        # # # 'Down':  vc.vim_j,
-        # # # 'Left':  vc.vim_h,
-        'Return':vc.vim_j,
-        # # # 'Right': vc.vim_l,
-        # # # 'Up':    vc.vim_k,
-        # # # 'Ctrl+Left': vc.vim_b,
-        # # # 'Ctrl+Right': vc.vim_w,
+        'Return':vc.vim_return,
         'space': vc.vim_l,
         # brackets.
         '{': None,
@@ -296,7 +290,7 @@ class VimCommands:
         '}': None,
         ')': None,
         ']': None,
-        # Special chars. ## To do.
+        # Special chars.
         'colon': vc.vim_colon,
         'dollar': vc.vim_dollar,
         'period': vc.vim_dot,
@@ -392,17 +386,8 @@ class VimCommands:
         Keys are strokes, values are methods.
         '''
         d = {
-        # Standard vim synonyms...
-        # Not really, these are for select mode.
-        # # # 'Down':  vc.vim_dn_arrow, # vc.vim_j,
-        # # # 'Left':  vc.vim_lt_arrow, # vc.vim_h,
-        'Return':vc.vim_j,
-        # # # 'Right': vc.vim_rt_arrow, # vc.vim_l,
-        # # # 'Up':    vc.vim_up_arrow, # vc.vim_k,
+        'Return':vc.vim_return,
         'space': vc.vim_l,
-        # Other synonyms...
-        # # # 'Ctrl+Left': vc.vim_b,
-        # # # 'Ctrl+Right': vc.vim_w,
         # Terminating commands...
         'Escape': vc.vis_escape,
         'J': vc.vis_J,
@@ -422,11 +407,11 @@ class VimCommands:
         '7': vc.vim_digits,
         '8': vc.vim_digits,
         '9': vc.vim_digits,
-        'dollar': vc.vim_dollar,
         'F': vc.vim_F,
         'G': vc.vim_G,
         'T': vc.vim_T,
         'b': vc.vim_b,
+        'dollar': vc.vim_dollar,
         'e': vc.vim_e,
         'f': vc.vim_f,
         'g': vc.vim_g,
@@ -439,36 +424,17 @@ class VimCommands:
         'w': vc.vim_w,
         }
         return d
-    #@+node:ekr.20140805130800.18161: *5* vc.create_arrow_dict
-    def create_arrow_dict(vc):
-        '''
-        Return a dict containing all flavors of arrows, except Alt-Arrows and
-        Alt-Shift-Arrows which are already handled properly.
-        '''
+    #@+node:ekr.20140805130800.18161: *5* vc.create_arrow_d
+    def create_arrow_d(vc):
+        '''Return a dict binding *all* arrows to vc.arrow.'''
         d = {}
         for arrow in ('Left','Right','Up','Down'):
-            for mod in ('','Ctrl+','Shift+','Ctrl+Shift+'):
+            for mod in ('',
+                'Alt+','Alt+Ctrl','Alt+Ctrl+Shift',
+                'Ctrl+','Shift+','Ctrl+Shift+'
+            ):
                 d[mod+arrow] = vc.vim_arrow
         return d
-        ### Probably no need for separate bindings.
-        # return {
-            # 'Down':           vc.vim_dn_arrow, # vc.vim_j,
-            # 'Left':           vc.vim_lt_arrow, # vc.vim_h,
-            # 'Right':          vc.vim_rt_arrow, # vc.vim_l,
-            # 'Up':             vc.vim_up_arrow, # vc.vim_k,
-            # 'Ctrl+Down':      vc.vim_ctrl_dn_arrow, 
-            # 'Ctrl+Left':      vc.vim_ctrl_lt_arrow,
-            # 'Ctrl+Right':     vc.vim_ctrl_rt_arrow, 
-            # 'Ctrl+Up':        vc.vim_ctrl_up_arrow,
-            # 'Shift+Down':     vc.vim_shift_dn_arrow, 
-            # 'Shift+Left':     vc.vim_shift_lt_arrow,
-            # 'Shift+Right':    vc.vim_shift_rt_arrow, 
-            # 'Shift+Up':       vc.vim_shift_up_arrow,
-            # 'Ctrl+Shift+Down':vc.vim_ctrl_shift_dn_arrow, 
-            # 'Ctrl+Shift+Left':vc.vim_ctrl_shift_lt_arrow,
-            # 'Ctrl+Shift+Right':vc.vim_ctrl_shift_rt_arrow, 
-            # 'Ctrl+Shift+Up':  vc.vim_ctrl_shift_up_arrow,
-        # }
     #@+node:ekr.20140804222959.18930: *4* vc.finshCreate
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
@@ -724,7 +690,33 @@ class VimCommands:
         This method attempts to leave focus unchanged.
         '''
         # g.trace(vc.stroke,g.callers())
+        # pylint: disable=maybe-no-member
+        s = vc.stroke.s if g.isStroke(vc.stroke) else vc.stroke
+        if s.find('Alt+') > -1:
+            # Any Alt key changes c.p.
+            # g.trace('quitting')
+            vc.quit()
         vc.delegate()
+    #@+node:ekr.20140806075456.18152: *4* vc.vim_return
+    def vim_return(vc):
+        '''
+        Handle a return key, regardless of mode.
+        In the body pane only, it has special meaning.
+        '''
+        if vc.w:
+            if vc.is_body(vc.w):
+                if vc.state == 'normal':
+                    vc.begin_insert_mode()
+                elif vc.state == 'visual':
+                    # same as v
+                    vc.stroke = 'v'
+                    vc.vis_v()
+                else:
+                    vc.done()
+            else:
+                vc.delegate()
+        else:
+            vc.delegate()
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
@@ -1505,10 +1497,13 @@ class VimCommands:
                 # A benign hack: simulate an Escape for the dot.
                 vc.stroke = 'Escape'
                 vc.end_insert_mode()
-            else:
-                vc.delegate()
+                return
+        # Special case for arrow keys.
+        if vc.stroke in vc.arrow_d:
+            vc.vim_arrow()
         else:
             vc.delegate()
+
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
         '''Handle strokes in normal mode.'''
@@ -1583,6 +1578,11 @@ class VimCommands:
     def in_headline(vc):
         '''Return True if we are in a headline edit widget.'''
         return vc.widget_name(vc.event.w).startswith('head')
+    #@+node:ekr.20140806081828.18157: *4* vc.is_body
+    def is_body(vc,w):
+        '''Return True if w is the QTextBrowser of the body pane.'''
+        w2 = vc.c.frame.body.bodyCtrl
+        return w == w2
     #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_widget
     def is_plain_key(vc,stroke):
         '''Return True if stroke is a plain key.'''
