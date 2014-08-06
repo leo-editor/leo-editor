@@ -33,7 +33,7 @@ As of v0.3, the tag browser has set-algebra querying possible.  Users may search
 '''
 #@-<< docstring >>
 
-__version__ = '0.7'
+__version__ = '0.8'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -45,9 +45,10 @@ __version__ = '0.7'
 # Version 0.5 - add a display/jump list of tags on currently selected node
 # Version 0.6 - fix several edge cases caused by me using a stupid mapping method.  Internally uses vnodes now for speed.
 # Version 0.7 - fix a paste-related bug by adding a command2 hook
+# Version 0.8 - able to remove tags from nodes by right-clicking on them in the tag explorer
 # 
 # Future plans w/r/t UI:
-#   - Buttons for adding + removing tags
+#   - Button for adding tags
 # 
 #@@c
 #@-<< version history >>
@@ -291,10 +292,17 @@ class LeoTagWidget(QtGui.QWidget):
     def callback_factory(self, tag):
         c = self.c
         def callback(event):
-            ui = c.theTagController.ui
-            idx = ui.comboBox.findText(tag)
-            ui.comboBox.setCurrentIndex(idx)
-            ui.update_list()
+            p = c.p
+            tc = c.theTagController
+            ui = tc.ui
+            # right click on a tag to remove it from the node
+            if event.button() == QtCore.Qt.RightButton:
+                tc.remove_tag(p,tag)
+            # other clicks make the jumplist open that tag for browsing
+            else:
+                idx = ui.comboBox.findText(tag)
+                ui.comboBox.setCurrentIndex(idx)
+            ui.update_all()
         return callback
     #@+node:peckj.20140804114520.15206: *4* update_combobox
     def update_combobox(self):
