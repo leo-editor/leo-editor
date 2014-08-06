@@ -34,7 +34,7 @@ Below the list box is a dynamic display of tags on the currently selected node. 
 
 The status line at the bottom is purely informational.
 
-The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precidence.  Parentheses are not supported.
+The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precedence.  Parentheses are not supported.  See below for more details.
 
 Searching
 ---------
@@ -54,7 +54,7 @@ The API is unlimited in tagging abilities.  If you do not wish to use the UI, th
 '''
 #@-<< docstring >>
 
-__version__ = '0.8'
+__version__ = '0.9'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
