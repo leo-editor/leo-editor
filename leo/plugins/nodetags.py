@@ -5,35 +5,56 @@
 
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
-'''Provides an API for manipulating and querying textual tags on nodes
+'''Provides node tagging capabilities to Leo
 
 By Jacob M. Peck
 
+API
+===
+
 This plugin registers a controller object to c.theTagController, which provides the following API::
     
-    tc = c.theTagController
-    
+    tc = c.theTagController   
     tc.get_all_tags() # return a list of all tags used in the current outline, automatically updated to be consistent
-    
     tc.get_tagged_nodes('foo') # return a list of positions tagged 'foo'
-    
     tc.get_tags(p) # return a list of tags applied to the node at position p; returns [] if node has no tags
-    
     tc.add_tag(p, 'bar') # add the tag 'bar' to the node at position p
-    
     tc.remove_tag(p, 'baz') # remove the tag 'baz' from p if it is in the tag list
+
+Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as a set.
+
+UI
+==
+
+The "Tags" tab in the Log pane is the UI for this plugin.  The bar at the top is a search bar, editable to allow complex search queries.  It is pre-populated with all existing tags in the outline, and remembers your custom searches within the given session.  It also acts double duty as an input box for the add (+) button, which adds the contents of the search bar as a tag to the currently selected node.
+
+The list box in the middle is a list of headlines of nodes which contain the tag(s) defined by the current search string.  These are clickable, and doing so will center the focus in the outline pane on the selected node.
+
+Below the list box is a dynamic display of tags on the currently selected node.  Left-clicking on any of these will populate the search bar with that tag, allowing you to explore similarly tagged nodes.  Right-clicking on a tag will remove it from the currently selected node.
+
+The status line at the bottom is purely informational.
+
+The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precedence.  Parentheses are not supported.  See below for more details.
+
+Searching
+---------
+
+Searching on tags in the UI is based on set algebra.  The following syntax is used::
     
+    <tag>&<tag> - return nodes tagged with both the given tags
+    <tag>|<tag> - return nodes tagged with either of the given tags (or both)
+    <tag>-<tag> - return nodes tagged with the first tag, but not the second tag
+    <tag>^<tag> - return nodes tagged with either of the given tags (but *not* both)
 
-Internally, tags are stored in p.v.unknownAttributes['__node_tags'] as a set.
+These may be combined, and are applied left-associatively, building the set from the left, such that the query `foo&bar^baz` will return only nodes tagged both 'foo' and 'bar', or nodes tagged with 'baz', but *not* tagged with all three.
 
-As of v0.2, there is a minimal tag browser UI in the log pane.  Still need to use the API to add/remove tags from nodes.
-
-As of v0.3, the tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precidence.  Parentheses are not supported.
-
+Tag Limitations
+---------------
+The API is unlimited in tagging abilities.  If you do not wish to use the UI, then the API may be used to tag nodes with any arbitrary strings.  The UI, however, due to searching capabilities, may *not* be used to tag (or search for) nodes with tags containing the special search characters, `&|-^`.  The UI also cannot search for tags of zero-length, and it automatically removes surrounding whitespace (calling .strip()).
 '''
 #@-<< docstring >>
 
-__version__ = '0.8'
+__version__ = '0.9'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -46,9 +67,7 @@ __version__ = '0.8'
 # Version 0.6 - fix several edge cases caused by me using a stupid mapping method.  Internally uses vnodes now for speed.
 # Version 0.7 - fix a paste-related bug by adding a command2 hook
 # Version 0.8 - able to remove tags from nodes by right-clicking on them in the tag explorer
-# 
-# Future plans w/r/t UI:
-#   - Button for adding tags
+# Version 0.9 - complete functionality!  Adding tags is easy, click the '+'
 # 
 #@@c
 #@-<< version history >>
@@ -144,6 +163,7 @@ class TagController:
         tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
         tags.add(tag)
         p.v.u[self.TAG_LIST_KEY] = tags
+        self.c.setChanged(True)
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* remove_tag
     def remove_tag(self, p, tag):
@@ -155,11 +175,128 @@ class TagController:
             del p.v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
         else:
             p.v.u[self.TAG_LIST_KEY] = tags
+        self.c.setChanged(True)
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
 class LeoTagWidget(QtGui.QWidget):
     #@+others
+    #@+node:peckj.20140804114520.15204: *3* updates + interaction
+    #@+node:peckj.20140804114520.15205: *4* item_selected
+    def item_selected(self):
+        key = self.listWidget.currentItem()
+        pos = self.mapping[key]
+        self.update_current_tags(pos)
+        self.c.selectPosition(pos)
+        self.c.redraw_now()
+    #@+node:peckj.20140804192343.6568: *5* update_current_tags
+    def update_current_tags(self,pos):
+        # clear out the horizontalLayout2
+        hl2 = self.horizontalLayout2
+        while hl2.count():
+            child = hl2.takeAt(0)
+            child.widget().deleteLater()
+        label = QtGui.QLabel(self)
+        label.setText('Tags for current node:')
+        hl2.addWidget(label)
+        
+        tags = self.tc.get_tags(pos)
+        # add tags
+        for tag in tags:
+            l = QtGui.QLabel(self)
+            l.setText(tag)
+            hl2.addWidget(l)
+            l.mouseReleaseEvent = self.callback_factory(tag)
+        
+    #@+node:peckj.20140804194839.6569: *6* callback_factory
+    def callback_factory(self, tag):
+        c = self.c
+        def callback(event):
+            p = c.p
+            tc = c.theTagController
+            ui = tc.ui
+            # right click on a tag to remove it from the node
+            if event.button() == QtCore.Qt.RightButton:
+                tc.remove_tag(p,tag)
+            # other clicks make the jumplist open that tag for browsing
+            else:
+                idx = ui.comboBox.findText(tag)
+                ui.comboBox.setCurrentIndex(idx)
+            ui.update_all()
+        return callback
+    #@+node:peckj.20140804114520.15206: *4* update_combobox
+    def update_combobox(self):
+        self.comboBox.clear()
+        tags = self.tc.get_all_tags()
+        self.comboBox.addItems(tags)
+        self.comboBox.addItems(self.custom_searches)
+        
+    #@+node:peckj.20140804114520.15207: *4* update_list
+    def update_list(self):
+        key = str(self.comboBox.currentText()).strip()
+        current_tags = self.tc.get_all_tags()
+        if key not in current_tags and key not in self.custom_searches:
+            if len(re.split(self.search_re, key)) > 1:
+                self.custom_searches.append(key)
+        
+        query = re.split(self.search_re, key)
+        
+        tags = []
+        operations = []
+        for i in range(len(query)):
+            if i % 2 == 0:
+                tags.append(query[i].strip())
+            else:
+                operations.append(query[i].strip())
+        tags.reverse()
+        operations.reverse()
+        
+        resultset = set(self.tc.get_tagged_nodes(tags.pop()))
+        while len(operations) > 0:
+            op = operations.pop()
+            nodes = set(self.tc.get_tagged_nodes(tags.pop()))
+            if op == '&':
+                resultset &= nodes
+            elif op == '|':
+                resultset |= nodes
+            elif op == '-':
+                resultset -= nodes
+            elif op == '^':
+                resultset ^= nodes
+
+        self.listWidget.clear()
+        self.mapping = {}
+        for n in resultset:
+            item = QtGui.QListWidgetItem(n.h)
+            self.listWidget.addItem(item)
+            self.mapping[item] = n
+        count = self.listWidget.count()
+        self.label.clear()
+        self.label.setText("Total: %s nodes" % count)
+    #@+node:peckj.20140804114520.15208: *4* update_all
+    def update_all(self):
+        ''' updates the tag GUI '''
+        key = str(self.comboBox.currentText())
+        self.update_combobox()
+        if len(key) > 0:
+            idx = self.comboBox.findText(key)
+            if idx == -1: idx = 0
+        else:
+            idx = 0 
+        self.comboBox.setCurrentIndex(idx)
+        self.update_list()
+        self.update_current_tags(self.c.p)
+    #@+node:peckj.20140806145948.6579: *4* add_tag
+    def add_tag(self, event=None):
+        p = self.c.p
+        tag = str(self.comboBox.currentText()).strip()
+        if len(tag) == 0:
+            return # no error message, probably an honest mistake
+        elif len(re.split(self.search_re,tag)) > 1:
+            g.es('Cannot add tags containing any of these characters: &|^-', color='red')
+            return # don't add unsearchable tags
+        else:
+            self.tc.add_tag(p,tag)
     #@+node:peckj.20140804114520.15200: *3* __init__
     def __init__(self,c,parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -168,7 +305,8 @@ class LeoTagWidget(QtGui.QWidget):
         self.initUI()
         self.registerCallbacks()
         self.mapping = {}
-        self.search_chars = ['&','|','-','^']
+        #self.search_chars = ['&','|','-','^']
+        self.search_re = '(&|\||-|\^)'
         self.custom_searches = []
         g.registerHandler('select2', self.select2_hook)
         g.registerHandler('command2', self.command2_hook)
@@ -230,11 +368,11 @@ class LeoTagWidget(QtGui.QWidget):
         self.comboBox.setEditable(True)
         self.horizontalLayout.addWidget(self.comboBox)
         
-        # self.pushButton = QtGui.QPushButton("Refresh", self)
-        # self.pushButton.setObjectName("pushButton")
-        # self.pushButton.setMinimumSize(50,24)
-        # self.pushButton.setMaximumSize(50,24)
-        # self.horizontalLayout.addWidget(self.pushButton)
+        self.pushButton = QtGui.QPushButton("+", self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setMinimumSize(24,24)
+        self.pushButton.setMaximumSize(24,24)
+        self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.listWidget = QtGui.QListWidget(self)
         self.listWidget.setObjectName("listWidget")
@@ -257,117 +395,9 @@ class LeoTagWidget(QtGui.QWidget):
         self.connect(self.comboBox,
             QtCore.SIGNAL("currentIndexChanged(QString)"),
             self.update_list)
-        #self.connect(self.pushButton,
-        #    QtCore.SIGNAL("clicked(bool)"),
-        #    self.update_all)
-        #self.c.k.registerCommand('nodewatch-refresh', shortcut=None, func=self.update_all)
-    #@+node:peckj.20140804114520.15204: *3* updates + interaction
-    #@+node:peckj.20140804114520.15205: *4* item_selected
-    def item_selected(self):
-        key = self.listWidget.currentItem()
-        pos = self.mapping[key]
-        self.update_current_tags(pos)
-        self.c.selectPosition(pos)
-        self.c.redraw_now()
-    #@+node:peckj.20140804192343.6568: *5* update_current_tags
-    def update_current_tags(self,pos):
-        # clear out the horizontalLayout2
-        hl2 = self.horizontalLayout2
-        while hl2.count():
-            child = hl2.takeAt(0)
-            child.widget().deleteLater()
-        label = QtGui.QLabel(self)
-        label.setText('Tags for current node:')
-        hl2.addWidget(label)
-        
-        tags = self.tc.get_tags(pos)
-        # add tags
-        for tag in tags:
-            l = QtGui.QLabel(self)
-            l.setText(tag)
-            hl2.addWidget(l)
-            l.mouseReleaseEvent = self.callback_factory(tag)
-        
-    #@+node:peckj.20140804194839.6569: *6* callback_factory
-    def callback_factory(self, tag):
-        c = self.c
-        def callback(event):
-            p = c.p
-            tc = c.theTagController
-            ui = tc.ui
-            # right click on a tag to remove it from the node
-            if event.button() == QtCore.Qt.RightButton:
-                tc.remove_tag(p,tag)
-            # other clicks make the jumplist open that tag for browsing
-            else:
-                idx = ui.comboBox.findText(tag)
-                ui.comboBox.setCurrentIndex(idx)
-            ui.update_all()
-        return callback
-    #@+node:peckj.20140804114520.15206: *4* update_combobox
-    def update_combobox(self):
-        self.comboBox.clear()
-        tags = self.tc.get_all_tags()
-        self.comboBox.addItems(tags)
-        self.comboBox.addItems(self.custom_searches)
-        
-    #@+node:peckj.20140804114520.15207: *4* update_list
-    def update_list(self):
-        key = str(self.comboBox.currentText()).strip()
-        current_tags = self.tc.get_all_tags()
-        if key not in current_tags and key not in self.custom_searches:
-            for char in self.search_chars:
-                if char in key:
-                    self.custom_searches.append(key)
-                    continue
-        
-        query = re.split('(&|\||-|\^)', key)
-        
-        tags = []
-        operations = []
-        for i in range(len(query)):
-            if i % 2 == 0:
-                tags.append(query[i].strip())
-            else:
-                operations.append(query[i].strip())
-        tags.reverse()
-        operations.reverse()
-        
-        resultset = set(self.tc.get_tagged_nodes(tags.pop()))
-        while len(operations) > 0:
-            op = operations.pop()
-            nodes = set(self.tc.get_tagged_nodes(tags.pop()))
-            if op == '&':
-                resultset &= nodes
-            elif op == '|':
-                resultset |= nodes
-            elif op == '-':
-                resultset -= nodes
-            elif op == '^':
-                resultset ^= nodes
-
-        self.listWidget.clear()
-        self.mapping = {}
-        for n in resultset:
-            item = QtGui.QListWidgetItem(n.h)
-            self.listWidget.addItem(item)
-            self.mapping[item] = n
-        count = self.listWidget.count()
-        self.label.clear()
-        self.label.setText("Total: %s nodes" % count)
-    #@+node:peckj.20140804114520.15208: *4* update_all
-    def update_all(self,event=None):
-        ''' updates the tag GUI '''
-        key = str(self.comboBox.currentText())
-        self.update_combobox()
-        if len(key) > 0:
-            idx = self.comboBox.findText(key)
-            if idx == -1: idx = 0
-        else:
-            idx = 0 
-        self.comboBox.setCurrentIndex(idx)
-        self.update_list()
-        self.update_current_tags(self.c.p)
+        self.connect(self.pushButton,
+            QtCore.SIGNAL("clicked(bool)"),
+            self.add_tag)
     #@-others
 #@-others
 #@-leo

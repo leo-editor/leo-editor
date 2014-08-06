@@ -10217,6 +10217,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
             
             # these are for spell as you type, not the spell tab
             'spell-as-you-type-toggle': self.as_you_type_toggle,
+            'spell-as-you-type-wrap':   self.as_you_type_wrap,
             'spell-as-you-type-next':   self.as_you_type_next,
             'spell-as-you-type-undo':   self.as_you_type_undo,        
         }
@@ -10242,6 +10243,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
         self.suggestions_idx = None
         self.word = None
         self.spell_as_you_type = False
+        self.wrap_as_you_type = False
     #@+node:ekr.20051025080420.1: *4* commands...(SpellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
@@ -10299,13 +10301,35 @@ class SpellCommandsClass (BaseEditCommandsClass):
         c = self.c
         if self.spell_as_you_type:
             self.spell_as_you_type = False
-            g.unregisterHandler('bodykey2', self.as_you_type_onkey)
+            if not self.wrap_as_you_type:
+                g.unregisterHandler('bodykey2', self.as_you_type_onkey)
             g.es("Spell as you type disabled")
             return
         
         self.spell_as_you_type = True
-        g.registerHandler('bodykey2', self.as_you_type_onkey)
+        if not self.wrap_as_you_type:
+            g.registerHandler('bodykey2', self.as_you_type_onkey)
         g.es("Spell as you type enabled")
+    #@+node:tbrown.20140805135321.39151: *5* as_you_type_wrap
+    def as_you_type_wrap(self, event):
+        """as_you_type_wrap - toggle wrap as you type
+
+        :Parameters:
+        - `event`: event triggering toggle, not useful
+        """
+
+        c = self.c
+        if self.wrap_as_you_type:
+            self.wrap_as_you_type = False
+            if not self.spell_as_you_type:
+                g.unregisterHandler('bodykey2', self.as_you_type_onkey)
+            g.es("Wrap as you type disabled")
+            return
+        
+        self.wrap_as_you_type = True
+        if not self.spell_as_you_type:
+            g.registerHandler('bodykey2', self.as_you_type_onkey)
+        g.es("Wrap as you type enabled")
     #@+node:tbrown.20140117115926.30768: *5* as_you_type_next
     def as_you_type_next(self, event):
         """as_you_type_next - cycle word behind cursor to next suggestion
@@ -10351,25 +10375,33 @@ class SpellCommandsClass (BaseEditCommandsClass):
             return
             
         c = self.c
-            
-        txt = c.frame.body.getAllText()
-        i = c.frame.body.getInsertPoint()
-        word = txt[:i].rsplit(None, 1)[-1]
-        word = ''.join(i if i.isalpha() else ' ' for i in word).split()
-        if not word:
-            return
-        word = word[-1]
-        ec = c.spellCommands.handler.spellController
-        suggests = ec.processWord(word)
-        if suggests:
-            g.es(' '.join(suggests[:5]) +
-                 ('...' if len(suggests) > 5 else ''),
-                 color='red')
-        elif suggests is not None:
-            g.es('[no suggestions]')
-        self.suggestions = suggests
-        self.suggestion_idx = 0
-        self.word = word
+        
+        spell_ok = True
+        
+        if self.spell_as_you_type:  # might just be for wrapping
+            txt = c.frame.body.getAllText()
+            i = c.frame.body.getInsertPoint()
+            word = txt[:i].rsplit(None, 1)[-1]
+            word = ''.join(i if i.isalpha() else ' ' for i in word).split()
+            if word:
+                word = word[-1]
+                ec = c.spellCommands.handler.spellController
+                suggests = ec.processWord(word)
+                if suggests:
+                    spell_ok = False
+                    g.es(' '.join(suggests[:5]) +
+                         ('...' if len(suggests) > 5 else ''),
+                         color='red')
+                elif suggests is not None:
+                    spell_ok = False
+                    g.es('[no suggestions]')
+                self.suggestions = suggests
+                self.suggestion_idx = 0
+                self.word = word
+        
+        if spell_ok and self.wrap_as_you_type and kwargs['ch'] == '\n':
+            g.es('filling')
+            c.k.simulateCommand('fill-paragraph')
     #@+node:tbrown.20140117133522.32004: *5* as_you_type_replace
     def as_you_type_replace(self, word):
         """as_you_type_replace - replace the word behind the cursor
