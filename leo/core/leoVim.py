@@ -616,7 +616,7 @@ class VimCommands:
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
-        vc.accept(handler=vc.do_insert_mode)
+        vc.accept(handler=vc.do_insert_mode,add_to_dot=False)
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
@@ -1710,10 +1710,15 @@ class VimCommands:
             if trace: g.trace('(vimCommands)',s,g.callers())
             k.setLabelBlue(label=s,protect=True)
         else:
-            s = '%8s: %-5s dot: %s' % (
+            if 1: # Don't show the dot:
+                s = '%8s: %s' % (
                 vc.state.capitalize(),
-                vc.show_command(),
-                vc.show_dot())
+                vc.show_command())
+            else:
+                s = '%8s: %-5s dot: %s' % (
+                    vc.state.capitalize(),
+                    vc.show_command(),
+                    vc.show_dot())
             if trace: g.trace('(vimCommands)',s,g.callers())
             k.setLabelBlue(label=s,protect=True)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol

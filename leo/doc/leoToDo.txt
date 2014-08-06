@@ -8,18 +8,18 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+
 - Clicks in body should not change state!
 - Make sure d{motion} works for all motions.
     - Update tables at startup?
 - Put a vc hook in Leo's Ctrl-H code.
 - yank and paste.
 
+Next:
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
-
-Next:
-- Enter insert mode on space/tab ??
 - Fix the dot.
+    - Create ashow-vim-dot command
 - Limit t,T,f,T to single line.
 - Dot neither set nor cleared properly. Escape, Return clear it.
 * Clean up widget vars: Change wc.w in vc.do_key
