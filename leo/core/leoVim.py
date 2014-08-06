@@ -468,6 +468,7 @@ class VimCommands:
     #@+node:ekr.20140803220119.18105: *5* vc.init_motion_ivars
     def init_motion_ivars(vc):
         '''Init all ivars related to motions.'''
+        # g.trace(g.callers(2))
         vc.in_motion = False
             # True if parsing an *inner* motion, the 2j in d2j.
         vc.motion_func = None
@@ -535,8 +536,14 @@ class VimCommands:
     # Called from command handlers or the ctor.
     #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
     def init_ivars_after_done(vc):
-        '''Init vim-mode ivars when a command completes.'''
-        if not vc.in_motion:
+        '''
+        Init vim-mode ivars when a command completes.
+        However, calling done does *not* change motion state???
+        '''
+        if vc.in_motion:
+            vc.next_func = None
+            # The minimum required.
+        else:
             vc.init_motion_ivars()
             vc.init_state_ivars()
     #@+node:ekr.20140803220119.18100: *5* vc.init_ivars_after_quit
@@ -557,7 +564,13 @@ class VimCommands:
         This can be a no-op, but even then it is recommended.
         '''
         if handler:
-            vc.handler = handler
+            if vc.in_motion:
+                # Tricky: queue up vc.do_inner_motion to continue the motion.
+                vc.handler = vc.do_inner_motion
+                vc.next_func = handler
+            else:
+                # Queue the outer handler as usual.
+                vc.handler = handler
         if add_to_dot:
             vc.add_to_dot()
         vc.show_status()
@@ -577,6 +590,7 @@ class VimCommands:
         vc.save_body()
         # Clear all state, enter normal mode & show the status.
         vc.init_ivars_after_done()
+            # Note: nothing cleared if vc.in_motion!
         vc.show_status()
         vc.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
@@ -620,7 +634,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
-        # g.trace(motion_func.__name__)
+        g.trace(motion_func.__name__,g.callers(2))
         w = vc.event.w
         vc.command_w = w
         vc.in_motion = True
@@ -836,22 +850,21 @@ class VimCommands:
 
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         w = vc.w
-        if True: ### vc.is_text_widget(w):
-            s = w.getAllText()
-            i1,i2 = vc.motion_i,w.getInsertPoint()
-            if vc.on_same_line(s,i1,i2):
-                if trace:g.trace('same line',i1,i2)
-            elif i1 < i2:
-                i2 = vc.to_eol(s,i2)
-                if i2 < len(s) and s[i2] == '\n':
-                    i2 += 1
-                if trace: g.trace('extend i2 to eol',i1,i2)
-            else:
-                i1 = vc.to_bol(s,i1)
-                if trace: g.trace('extend i1 to bol',i1,i2)
-            w.delete(i1,i2)
+        s = w.getAllText()
+        i1,i2 = vc.motion_i,w.getInsertPoint()
+        if vc.on_same_line(s,i1,i2):
+            if trace:g.trace('same line',i1,i2)
+        elif i1 < i2:
+            i2 = vc.to_eol(s,i2)
+            if i2 < len(s) and s[i2] == '\n':
+                i2 += 1
+            if trace: g.trace('extend i2 to eol',i1,i2)
+        else:
+            i1 = vc.to_bol(s,i1)
+            if trace: g.trace('extend i1 to bol',i1,i2)
+        w.delete(i1,i2)
         vc.done()
     #@+node:ekr.20140730175636.17991: *5* vc.vim_dollar
     def vim_dollar(vc):
@@ -984,13 +997,11 @@ class VimCommands:
         vc.accept(handler=vc.vim_g2)
         
     def vim_g2(vc):
+        g.trace(g.callers(2))
         event,w = vc.event,vc.w
         ec = vc.c.editCommands
         ec.w = w
         extend = vc.state == 'visual'
-        # # # if not vc.is_text_widget(w):
-            # # # g.trace('not text',w)
-        # # # el
         s = w.getAllText()
         i = w.getInsertPoint()
         if vc.stroke == 'g':
@@ -1001,12 +1012,10 @@ class VimCommands:
                 else:
                     ec.beginningOfBuffer(event)
             ec.backToHome(event,extend=extend)
+            vc.done()
         else:
             g.trace('not ready',vc.stroke)
-        if extend:
-            vc.accept(handler=vc.do_visual_mode)
-        else:
-            vc.done()
+            vc.quit()
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
@@ -1489,13 +1498,18 @@ class VimCommands:
         '''Handle strokes in motions.'''
         trace = False and not g.unitTesting
         assert vc.in_motion
-        func = vc.motion_dispatch_d.get(vc.stroke)
+        func = vc.next_func or vc.motion_dispatch_d.get(vc.stroke)
         if func:
-            if trace: g.trace(vc.stroke,func.__name__,vc.motion_func.__name__)
             func()
-            vc.motion_func()
-            vc.init_motion_ivars()
-            vc.done()
+            if vc.next_func:
+                # Nothing more to do!
+                if trace: g.trace('next_func:',vc.next_func and vc.next_func.__name__)
+            else:
+                # Set in_motion to False *before* calling the motion function.
+                vc.in_motion = False
+                if trace: g.trace('calling motion_func',vc.motion_func.__name__)
+                vc.motion_func()
+                # The motion function has called done()
         elif vc.is_plain_key(vc.stroke):
             vc.ignore()
         else:
@@ -1537,17 +1551,17 @@ class VimCommands:
     def do_state(vc,d,mode_name):
         '''General dispatcher code. d is a dispatch dict.'''
         trace = False and not g.unitTesting
-        # if trace: g.trace('1',vc.next_func and vc.next_func.__name__)
         func = d.get(vc.stroke)
         if func:
             if trace: g.trace(mode_name,vc.stroke,func.__name__)
             func()
         elif vc.is_plain_key(vc.stroke):
+            if trace: g.trace('ignore',vc.stroke)
             vc.ignore()
         else:
             # Pass non-plain keys to k.masterKeyHandler
+            if trace: g.trace('delegate',vc.stroke)
             vc.delegate()
-        # if trace: g.trace('2',vc.next_func and vc.next_func.__name__)
     #@+node:ekr.20140803220119.18092: *4* vc.do_visual_mode
     def do_visual_mode(vc):
         '''Handle strokes in visual mode.'''
@@ -1572,6 +1586,7 @@ class VimCommands:
         Never change vc.command_list if vc.in_dot is True
         Never add . to vc.command_list
         '''
+        # g.trace(vc.stroke,g.callers(2))
         if not vc.in_dot:
             s = stroke or vc.stroke
             # Never add '.' to the dot list.
@@ -1710,16 +1725,15 @@ class VimCommands:
             if trace: g.trace('(vimCommands)',s,g.callers())
             k.setLabelBlue(label=s,protect=True)
         else:
+            state_s = vc.state.capitalize()
+            command_s = vc.show_command()
+            dot_s = vc.show_dot()
+            if vc.in_motion: state_s = state_s + '(in_motion)'
             if 1: # Don't show the dot:
-                s = '%8s: %s' % (
-                vc.state.capitalize(),
-                vc.show_command())
+                s = '%8s: %s' % (state_s,command_s)
             else:
-                s = '%8s: %-5s dot: %s' % (
-                    vc.state.capitalize(),
-                    vc.show_command(),
-                    vc.show_dot())
-            if trace: g.trace('(vimCommands)',s,g.callers())
+                s = '%8s: %-5s dot: %s' % (state_s,command_s,dot_s)
+            if trace: g.trace('(vimCommands)',s,g.callers(2))
             k.setLabelBlue(label=s,protect=True)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(vc,s,i):
