@@ -8,10 +8,15 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+Urgent:
 - Clicks in body should not change state!
-- Update border immediately (in qtBody event handlers)
+- Put a vc hook in Leo's Ctrl-H code.
 
-- tab & shift-tab in normal mode might indent text.
+First:
+- Ctrl-G calls vc.reset.
+- Use scratch ivars where possible.
+    - vc.accept and vc.done should only explicitly set state ivars.
+    - define vc.init_scratch_ivars.
 - Support counts in vim_d3.
 - yank and paste.
 - Neither j,j nor , , should make the .leo file dirty.
@@ -19,7 +24,8 @@
 Next:
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
-- Put a vc hook in Leo's Ctrl-H code.
+
+- tab & shift-tab in normal mode might indent text.
 - Remove vim_backspace? Backspace is bound nowhere.
 - Limit t,T,f,T to single line.
 - Treat scratch vars separately.

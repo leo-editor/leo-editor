@@ -441,13 +441,13 @@ class VimCommands:
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
         # Set the widget for vc.set_border.
-        # Be careful: c.frame or c.frame.body may not exist in some guis.
         if vc.c.vim_mode:
-            g.registerHandler('idle',vc.on_idle)
+            # g.registerHandler('idle',vc.on_idle)
             try:
+                # Be careful: c.frame or c.frame.body may not exist in some gui's.
                 vc.w = vc.c.frame.body.bodyCtrl
             except Exception:
-                pass
+                vc.w = None
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -1657,37 +1657,35 @@ class VimCommands:
                 # undoType = ''.join(vc.command_list) or 'Typing'
                 c.frame.body.onBodyChanged(undoType='Typing',
                     oldSel=oldSel,oldText=oldText,oldYview=None)
-    #@+node:ekr.20140804123147.18929: *4* vc.set_border
-    def set_border(vc):
-        '''Set the border color of vc.w, depending on state.'''
-        trace = False and not g.unitTesting
-        from leo.core.leoQt import QtWidgets
-        w = g.app.gui.get_focus()
+    #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
+    def set_border(vc,kind=None,w=None,activeFlag=None):
+        '''
+        Set the border color of vc.w, depending on state.
+        Called from qtBody.onFocusColorHelper and vc.show_status.
+        '''
+        if not w: w = g.app.gui.get_focus()
+        if not w: return
         w_name = vc.widget_name(w)
         if w_name == 'richTextEdit':
-            selector = 'vim_%s' % (vc.state)
-            w.setProperty('vim_state',selector)
-            if trace: g.trace('body',vc.state,w_name)
-            w.style().unpolish(w)
-            w.style().polish(w)
+            vc.set_property(w,focus_flag=activeFlag in (None,True))
         elif w_name.startswith('head'):
-            selector = 'vim_%s' % (vc.state)
-            w.setProperty('vim_state',selector)
-            if trace: g.trace('head',vc.state,w_name)
-            w.style().unpolish(w)
-            w.style().polish(w)
-        if w_name != 'richTextEdit':
+            vc.set_property(w,True)
+        elif w_name != 'richTextEdit':
             # Clear the border in the body pane.
             try:
-                if trace: g.trace('unfocused body')
                 w = vc.c.frame.body.bodyCtrl.widget
-                selector = 'vim_unfocused'
-                w.setProperty('vim_state',selector)
-                if trace: g.trace('body, unfocused',w_name)
-                w.style().unpolish(w)
-                w.style().polish(w)
+                vc.set_property(w,False)
             except Exception:
                 pass
+    #@+node:ekr.20140807070500.18161: *5* vc.set_property
+    def set_property(vc,w,focus_flag):
+        '''Set the property of w, depending on focus and state.'''
+        trace = False and not g.unitTesting
+        selector = 'vim_%s' % (vc.state) if focus_flag else 'vim_unfocused'
+        if trace: g.trace(vc.widget_name(w),selector)
+        w.setProperty('vim_state',selector)
+        w.style().unpolish(w)
+        w.style().polish(w)
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''

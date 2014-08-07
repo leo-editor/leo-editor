@@ -514,10 +514,6 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
 
-                # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
-                # This used to call w.setStyleSheet, which caused unwanted scroll.
-                # The solution to this problem is to color border by
-                # coloring the innerBodyFrame using a QPainter.
                 c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
@@ -1612,7 +1608,7 @@ class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
         # Set ivars.
         self.item=item
         self.permanent = False # Warn the minibuffer that we can go away.
-        self.badFocusColors = []
+        # self.badFocusColors = []
 
     def __repr__ (self):
         return 'LeoQtHeadlineWidget: %s' % id(self)
@@ -1685,28 +1681,6 @@ class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
 
         w = self.widget
         w.setText(s)
-    #@+node:ekr.20110605121601.18126: *5* setEditorColors (LeoQtHeadlineWidget)
-    def setEditorColors(self,bg,fg):
-
-        obj = self.widget # A QLineEdit
-
-        # g.trace('(LeoQtHeadlineWidget)',bg,fg)
-
-        def check(color,kind,default):
-            if not QtGui.QColor(color).isValid():
-                if color not in self.badFocusColors:
-                    self.badFocusColors.append(color)
-                    g.warning('invalid head %s color: %s' % (kind,color))
-                color = default
-            return color
-
-        bg = check(bg,'background','white')
-        fg = check(fg,'foreground','black')
-
-        # if hasattr(obj,'viewport'):
-            # obj = obj.viewport()
-
-        obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     #@+node:ekr.20110605121601.18128: *5* setFocus
     def setFocus (self):
 
@@ -3368,39 +3342,6 @@ class LeoQtBody (leoFrame.LeoBody):
     def getName (self):
 
         return 'body-widget'
-    #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
-    def setEditorColors (self,bg,fg):
-        
-        # g.trace('do nothing:',bg,fg)
-        
-        if 0: # handled by stylesheet
-            trace = False and not g.unitTesting
-            c = self.c
-            if c.use_focus_border:
-                return
-            # Deprecated.  This can cause unwanted scrolling.
-            obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-            class_name = obj.__class__.__name__
-            if  class_name != 'LeoQTextBrowser':
-                if trace: g.trace('unexpected object',obj)
-                return
-            def check(color,kind,default):
-                if color in ('none','None',None):
-                    return default
-                if QtWidgets.QColor(color).isValid():
-                    return color
-                if color not in self.badFocusColors:
-                    self.badFocusColors.append(color)
-                    g.warning('invalid body %s color: %s' % (kind,color))
-                return default
-            bg = check(bg,'background','white')
-            fg = check(fg,'foreground','black')
-            if trace: g.trace(bg,fg,obj)
-            # Set the stylesheet only for the QTextBrowser itself,
-            # *not* the other child widgets:
-            # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-            sheet = 'background-color: %s; color: %s' % (bg,fg)
-            g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
     #@+node:ekr.20110605121601.18190: *4* oops (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -4067,7 +4008,7 @@ class LeoQtBody (leoFrame.LeoBody):
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
     #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
-    #@+node:ekr.20110930174206.15472: *5* onFocusIn (qtBody)
+    #@+node:ekr.20110930174206.15472: *5* qtBody.onFocusIn
     def onFocusIn (self,obj):
         '''Handle a focus-in event in the body pane.'''
         trace = False and not g.unitTesting
@@ -4081,7 +4022,7 @@ class LeoQtBody (leoFrame.LeoBody):
             self.onFocusColorHelper('focus-in',obj)
             obj.setReadOnly(False)
             obj.setFocus() # Weird, but apparently necessary.
-    #@+node:ekr.20110930174206.15473: *5* onFocusOut (qtBody)
+    #@+node:ekr.20110930174206.15473: *5* qtBody.onFocusOut
     def onFocusOut (self,obj):
         '''Handle a focus-out event in the body pane.'''
         trace = False and not g.unitTesting
@@ -4090,22 +4031,20 @@ class LeoQtBody (leoFrame.LeoBody):
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out',obj)
             obj.setReadOnly(True)
-    #@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
-    badFocusColors = []
+    #@+node:ekr.20110605121601.18224: *5* qtBody.onFocusColorHelper (revised)
+    # badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
-        
-        if 0: # Replaced by styesheets.
-            trace = True and not g.unitTesting
-            c = self.c
-            if trace: g.trace(kind)
-            if kind == 'focus-in':
-                # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
-                c.k.showStateColors(inOutline=False,w=self.widget)
-            else:
-                bg = self.unselectedBackgroundColor
-                fg = self.unselectedForegroundColor
-                c.frame.body.setEditorColors(bg,fg)
+        '''Handle changes of style when focus changes.'''
+        c,vc = self.c,self.c.vimCommands
+        if vc and c.vim_mode:
+            try:
+                assert kind in ('focus-in','focus-out')
+                w = c.frame.body.bodyCtrl.widget
+                vc.set_border(w=w,activeFlag=kind=='focus-in')
+            except Exception:
+                # g.es_exception()
+                pass
     #@-others
 #@+node:ekr.20110605121601.18245: *3* class LeoQtFrame
 class LeoQtFrame (leoFrame.LeoFrame):

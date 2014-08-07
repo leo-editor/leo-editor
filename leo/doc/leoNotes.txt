@@ -17377,15 +17377,114 @@ def writeAtAutoOtlFile (self,root):
     root.setVisited()
     return True
 .. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
-.. @+node:ekr.20140804222959.18927: *4* vc.style_sheet_for_state
-def style_sheet_for_state(vc):
-    '''Return a stylesheet giving the color for the vim state.'''
-    d = {'normal':'red','visual':'green','insert':'blue'}
-    color = d.get(vc.state)
-    if color:
-        return 'QTextEdit#richTextEdit { border: 5px solid %s; }' % color
+.. @+node:ekr.20140807070500.18160: *3* Unused color methods
+.. @+node:ekr.20080512115455.1: *4* k.showStateColors
+# This comment used to be in mouseReleaseEvent:
+    # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
+    # This used to call w.setStyleSheet, which caused unwanted scroll.
+    # The solution to this problem is to color border by
+    # coloring the innerBodyFrame using a QPainter.
+def showStateColors (self,inOutline,w):
+    
+    if 0: # This is now handled via stylesheets.
+        trace = True and not g.unitTesting
+        k = self ; c = k.c
+        if c.use_focus_border:
+            g.trace('use_focus_border is True: returning')
+            return
+        # This is now deprecated.
+        state = k.unboundKeyAction
+        if state not in ('insert','command','overwrite'):
+            g.trace('bad input state',state)
+        w_name = g.app.gui.widget_name(w)
+        if w_name.startswith('body'):
+            w = c.frame.body
+        elif w_name.startswith('head'):
+            pass
+        else:
+            # Don't recolor the minibuffer, log panes, etc.
+            if trace: g.trace('not body or head')
+            return
+        if trace: g.trace(state,w_name)
+        if state == 'insert':
+            bg = k.insert_mode_bg_color
+            fg = k.insert_mode_fg_color
+        elif state == 'command':
+            bg = k.command_mode_bg_color
+            fg = k.command_mode_fg_color
+        elif state == 'overwrite':
+            bg = k.overwrite_mode_bg_color
+            fg = k.overwrite_mode_fg_color
+        else:
+            bg = fg = 'red'
+        if hasattr(w,'setEditorColors'):
+            # Note: fg color has no effect on Qt at present.
+            if trace: g.trace('calling w.setEditorColors',bg,fg)
+            w.setEditorColors(bg=bg,fg=fg)
+                # This is a do-nothing.
+        else:
+            try:
+                if trace: g.trace('calling w.configure',bg,fg)
+                w.configure(bg=bg,fg=fg)
+            except Exception:
+                pass # g.es_exception()
+.. @+node:ekr.20110605121601.18126: *4* setEditorColors (LeoQtHeadlineWidget)
+def setEditorColors(self,bg,fg):
+    '''Handle changes of style in a headline when focus changes.'''
+    if 0: # handled by stylesheet
+        obj = self.widget # A QLineEdit
+        g.trace('(LeoQtHeadlineWidget)',bg,fg,g.callers())
+        def check(color,kind,default):
+            if not QtGui.QColor(color).isValid():
+                if color not in self.badFocusColors:
+                    self.badFocusColors.append(color)
+                    g.warning('invalid head %s color: %s' % (kind,color))
+                color = default
+            return color
+        bg = check(bg,'background','white')
+        fg = check(fg,'foreground','black')
+        obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
+.. @+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
+def setEditorColors (self,bg,fg):
+    
+    # g.trace('do nothing:',bg,fg)
+    
+    if 0: # handled by stylesheet
+        trace = False and not g.unitTesting
+        c = self.c
+        if c.use_focus_border:
+            return
+        # Deprecated.  This can cause unwanted scrolling.
+        obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+        class_name = obj.__class__.__name__
+        if  class_name != 'LeoQTextBrowser':
+            if trace: g.trace('unexpected object',obj)
+            return
+        def check(color,kind,default):
+            if color in ('none','None',None):
+                return default
+            if QtWidgets.QColor(color).isValid():
+                return color
+            if color not in self.badFocusColors:
+                self.badFocusColors.append(color)
+                g.warning('invalid body %s color: %s' % (kind,color))
+            return default
+        bg = check(bg,'background','white')
+        fg = check(fg,'foreground','black')
+        if trace: g.trace(bg,fg,obj)
+        # Set the stylesheet only for the QTextBrowser itself,
+        # *not* the other child widgets:
+        # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+        sheet = 'background-color: %s; color: %s' % (bg,fg)
+        g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
+.. @+node:ekr.20140807070500.18162: *4* From qtBody.onFocusColorHelper
+    # Replaced by styesheets.
+    c = self.c
+    if kind == 'focus-in':
+        c.k.showStateColors(inOutline=False,w=self.widget)
     else:
-        g.trace('bad state',vc.state)
-        return 'QTextEdit#richTextEdit { border: 5px solid black; }'
+        bg = self.unselectedBackgroundColor
+        fg = self.unselectedForegroundColor
+        c.frame.body.setEditorColors(bg,fg)
 .. @-all
 .. @-leo

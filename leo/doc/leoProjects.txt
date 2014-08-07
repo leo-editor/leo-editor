@@ -526,6 +526,9 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- Updated border immediately in qtBody event handlers.
+    - vc.show_status ensures that headlines are updated immediately.
+    - vc.on_idle is never run.
 * All unit tests now pass regardless of vim mode!!
 
 - Fixed an infinite recursion in vc.do_inner_motion.
