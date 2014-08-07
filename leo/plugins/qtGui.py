@@ -6648,6 +6648,7 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
         gui-specific stuff.
         '''
         trace = False and not g.unitTesting
+        c,vc = self.c,self.c.vimCommands
         w = self.treeWidget
         w.setCurrentItem(item)
             # Must do this first.
@@ -6670,6 +6671,12 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
             wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
+            if vc and c.vim_mode: #  and selectAll
+                # For now, *always* enter insert mode.
+                if vc.is_text_widget(wrapper):
+                    vc.begin_insert_mode(w=wrapper)
+                else:
+                    g.trace('not a text widget!',wrapper)
         if trace: g.trace(e,wrapper)
         return e,wrapper # 2011/02/11
     #@+node:ekr.20110605121601.18423: *6* getCurrentItem

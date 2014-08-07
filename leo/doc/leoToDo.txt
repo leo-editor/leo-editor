@@ -8,16 +8,18 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Put a vc hook in Leo's Ctrl-H code to enter insert mode if text is selected.
+- Neither j,j nor , , should make the .leo file dirty.
+- Support counts in vim_d3.
+- yank and paste.
+- Support searches:
+    - They don't set the dot, but they *do* affect F2 and F3.
+    - So just make # and n equivalent to F2 and F3!
 
+
+Next:
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
     - define vc.init_scratch_ivars.
-- Support counts in vim_d3.
-- yank and paste.
-- Neither j,j nor , , should make the .leo file dirty.
-
-Next:
 * Theory of Vim Mode, based on ENB post:
   https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
 

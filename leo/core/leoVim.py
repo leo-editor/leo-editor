@@ -633,24 +633,11 @@ class VimCommands:
         vc.done(return_value=True,set_dot=False,stroke=None)
     #@+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
-    def begin_insert_mode(vc,i=None):
+    def begin_insert_mode(vc,i=None,w=None):
         '''Common code for beginning insert mode.'''
         trace = False and not g.unitTesting
-        c,w = vc.c,vc.event.w
-        # # # if not vc.is_text_widget(w):
-            # # # if w == c.frame.tree:
-                # # # c.editHeadline()
-                # # # w = c.frame.tree.edit_widget(c.p)
-                # # # if w:
-                    # # # assert vc.is_text_widget(w)
-                # # # else:
-                    # # # if trace: g.trace('no edit widget')
-                    # # # return
-            # # # else:
-                # # # if trace: g.trace('unknown widget: switching to body',w)
-                # # # w = c.frame.body.bodyCtrl
-                # # # assert vc.is_text_widget(w)
-                # # # c.frame.bodyWantsFocusNow()
+        c = vc.c
+        if not w: w = vc.event.w
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
@@ -1617,7 +1604,7 @@ class VimCommands:
     def is_text_widget(vc,w):
         '''Return True if w is a text widget.'''
         return vc.is_body(w) or vc.is_head(w) or g.app.gui.isTextWidget(w)
-    #@+node:ekr.20140805064952.18153: *4* vc.on_idle
+    #@+node:ekr.20140805064952.18153: *4* vc.on_idle (no longer used)
     def on_idle(vc,tag,keys):
         '''The idle-time handler for the VimCommands class.'''
         c = keys.get('c')

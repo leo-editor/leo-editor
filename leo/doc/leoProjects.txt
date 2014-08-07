@@ -527,6 +527,9 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
 
+- Added a hook to leoQtTree.editLabelHelper that calls vc.begin_input_mode.
+  At present, we *always* enter input mode when editing a headline.
+  Changed vc.begin_input_mode to take a w keyword arg.
 - Fixed annoying bug: mouse clicks do not change vc.state.
     - k.keyboardQuit now calls vc.reset instead of vc.quit.
     - vc.reset calls vc.quit only if the user typed Ctrl-G.
