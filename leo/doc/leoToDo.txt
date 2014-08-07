@@ -8,26 +8,24 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Neither j,j nor , , should make the .leo file dirty.
-- Support counts in vim_d3.
 - yank and paste.
 - Support searches:
     - They don't set the dot, but they *do* affect F2 and F3.
     - So just make # and n equivalent to F2 and F3!
-
-
 Next:
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
     - define vc.init_scratch_ivars.
-* Theory of Vim Mode, based on ENB post:
-  https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
-
-- tab & shift-tab in normal mode might indent text.
-- Remove vim_backspace? Backspace is bound nowhere.
+* Theory of Vim Mode
 - Limit t,T,f,T to single line.
-- Treat scratch vars separately.
 - Fix the dot for insert commands.
+- Extend Leo's undo to show the vim characters for the commands.
+  Equate all vim commands with 'Typing'.
+.. @+node:ekr.20140807112800.18121: *4* Theory of Vim Mode
+- based on: https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
+
+- Ironically, now that everything is hard coded in tables, it would be easy
+  for plugins to customize the workings of vim-mode.
 .. @+node:ekr.20140806071008.18149: *4* ENB
 @language rest
 
@@ -95,13 +93,10 @@ And these!
 - Add more motions.
 - Add more top-level commands.
 - (Optional) Limit t,T,f and F to a single line.
-- Change cursor to indicate mode?
-- What to do about different versions of @bool vim_mode in different tabs?o
-* Ironically, now that everything is hard coded in tables, it would be easy
-  for plugins to customize the workings of vim-mode.
-- Extend Leo's undo to show the vim characters for the commands.
-  Equate all vim commands with 'Typing'.
-- Init more vars in vc.do_visual_mode ??
+- What to do about different versions of @bool vim_mode in different tabs?
+
+
+- tab & shift-tab in normal mode might indent text.
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 

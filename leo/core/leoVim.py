@@ -533,6 +533,9 @@ class VimCommands:
         vc.w = None
             # The present widget.
             # c.frame.body.bodyCtrl is a QTextBrowser.
+        vc.j_changed = True
+            # False if the .leo file's change indicator should be
+            # cleared after doing the j,j abbreviation.
     #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
     # Called from command handlers or the ctor.
     #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
@@ -781,11 +784,6 @@ class VimCommands:
         for z in range(vc.n1 * vc.n):
             ec.moveWordHelper(vc.event,extend=extend,forward=False)
         vc.accept_or_done()
-    #@+node:ekr.20140222064735.16633: *5* vc.vim_backspace (never called)
-    # def vim_backspace(vc):
-        # '''Handle a backspace while accumulating a command.'''
-        # g.trace('******')
-        # vc.ignore()
     #@+node:ekr.20140220134748.16619: *5* vc.vim_c (to do)
     def vim_c(vc):
         '''
@@ -855,23 +853,26 @@ class VimCommands:
         # d2w doesn't extend to line.  d2j does.
         trace = False and not g.unitTesting
         extend_to_line = vc.d_stroke in ('jk')
+        n = vc.n1*vc.n
         w = vc.w
         s = w.getAllText()
         i1,i2 = vc.motion_i,w.getInsertPoint()
         if i1 == i2:
             if trace: g.trace('no change')
         elif i1 < i2:
-            if extend_to_line:
-                i2 = vc.to_eol(s,i2)
-                if i2 < len(s) and s[i2] == '\n':
-                    i2 += 1
-                if trace: g.trace('extend i2 to eol',i1,i2)
+            for z in range(n):
+                if extend_to_line:
+                    i2 = vc.to_eol(s,i2)
+                    if i2 < len(s) and s[i2] == '\n':
+                        i2 += 1
+                    if trace: g.trace('extend i2 to eol',i1,i2)
             w.delete(i1,i2)
         else: # i1 > i2
             i1,i2 = i2,i1
-            if extend_to_line:
-                i1 = vc.to_bol(s,i1)
-                if trace: g.trace('extend i1 to bol',i1,i2)
+            for z in range(n):
+                if extend_to_line:
+                    i1 = vc.to_bol(s,i1)
+                    if trace: g.trace('extend i1 to bol',i1,i2)
             w.delete(i1,i2)
         vc.done()
     #@+node:ekr.20140730175636.17991: *5* vc.vim_dollar
@@ -1017,7 +1018,7 @@ class VimCommands:
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         w = vc.w
         s = w.getAllText()
         i = w.getInsertPoint()
@@ -1488,30 +1489,42 @@ class VimCommands:
             # Pass non-plain keys to k.masterKeyHandler
             vc.delegate()
 
-    #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode
+    #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode & helper
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
         vc.state = 'insert'
         w = vc.event.w
-        if vc.is_text_widget(w):
-            s = w.getAllText()
-            i = w.getInsertPoint()
-            i2,j = w.getSelectionRange()
-            if i2 == j and i > 0 and vc.stroke == 'j' and s[i-1] == 'j':
-                # g.trace(i,i2,j,s[i-1:i+1])
-                w.delete(i-1,i)
-                w.setInsertPoint(i-1)
-                # A benign hack: simulate an Escape for the dot.
-                vc.stroke = 'Escape'
-                vc.end_insert_mode()
-                return
+        if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
+            return
         # Special case for arrow keys.
         if vc.stroke in vc.arrow_d:
             vc.vim_arrow()
         else:
             vc.delegate()
 
+    #@+node:ekr.20140807112800.18122: *5* vc.test_for_insert_escape
+    def test_for_insert_escape(vc,w):
+        '''Return True if the j,j escape sequence has ended insert mode.'''
+        c = vc.c
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i2,j = w.getSelectionRange()
+        if i2 == j and vc.stroke == 'j':
+            if i > 0 and s[i-1] == 'j':
+                # g.trace(i,i2,j,s[i-1:i+1])
+                w.delete(i-1,i)
+                w.setInsertPoint(i-1)
+                # A benign hack: simulate an Escape for the dot.
+                vc.stroke = 'Escape'
+                vc.end_insert_mode()
+                if not vc.j_changed:
+                    c.setChanged(False)
+                return True
+            else:
+                # Remember the changed state when we saw the first 'j'.
+                vc.j_changed = c.isChanged()
+        return False
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(vc):
         '''Handle strokes in normal mode.'''
