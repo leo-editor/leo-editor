@@ -527,10 +527,12 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
 
+- Fixed an infinite recursion in vc.do_inner_motion.
+  Eventually, vc.do_inner_motion became simpler.
+- vc.ignore now calls vc.quit to reset all state.
 - Simplified code with calls to vc.accept_or_done().
 - Fixed bug in vim_G.
 - Fixed bugs in vim_d3, so d$ and d0 and dgg now work.
-
 - d{motion} now appears to works for all motions.
     - Fixed several tricky problems with inner motions: dgg now works:
         - Added tricky tests in vc.do_inner_motion.
