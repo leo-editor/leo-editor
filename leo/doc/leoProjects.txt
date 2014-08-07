@@ -526,6 +526,7 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+* All unit tests now pass regardless of vim mode!!
 
 - Fixed an infinite recursion in vc.do_inner_motion.
   Eventually, vc.do_inner_motion became simpler.

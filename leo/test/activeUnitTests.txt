@@ -10183,6 +10183,10 @@ if g.app.gui.guiName() != 'tkinter':
         # print('before insert a',c.p)
         assert p == c.p,'position has changed!'
         w = c.frame.body.bodyCtrl
+        if c.vim_mode and c.vimCommands:
+            if c.vimCommands.state == 'normal':
+                # Enter insert mode ;-)
+                g.app.gui.event_generate(c,'i','i',w)
         g.app.gui.event_generate(c,'a','a',w)
         assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
         if g.app.gui.guiName() != 'nullGui':

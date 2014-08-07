@@ -3371,6 +3371,8 @@ class LeoQtBody (leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
         
+        # g.trace('do nothing:',bg,fg)
+        
         if 0: # handled by stylesheet
             trace = False and not g.unitTesting
             c = self.c
@@ -3638,27 +3640,20 @@ class LeoQtBody (leoFrame.LeoBody):
     selectEditorLockout = False
 
     def selectEditor(self,wrapper):
-
         '''Select editor w and node w.leo_p.'''
-
         trace = False and not g.unitTesting
         verbose = False
         c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
-
         if not wrapper: return bodyCtrl
         if self.selectEditorLockout:
             if trace: g.trace('**busy')
             return
-
         w = wrapper.widget
-        # g.trace('widget',w)
         assert isinstance(wrapper,LeoQTextEditWidget),wrapper
         assert isinstance(w,QtWidgets.QTextEdit),w
-
         def report(s):
             g.trace('*** %9s wrapper %s w %s %s' % (
                 s,id(wrapper),id(w),c.p.h))
-
         if wrapper and wrapper == bodyCtrl:
             self.deactivateEditors(wrapper)
             if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
@@ -3667,14 +3662,12 @@ class LeoQtBody (leoFrame.LeoBody):
                 c.bodyWantsFocus()
             elif trace and verbose: report('no change')
             return
-
         try:
             val = None
             self.selectEditorLockout = True
             val = self.selectEditorHelper(wrapper)
         finally:
             self.selectEditorLockout = False
-
         return val # Don't put a return in a finally clause.
     #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
     def selectEditorHelper (self,wrapper):
@@ -4076,14 +4069,10 @@ class LeoQtBody (leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
     #@+node:ekr.20110930174206.15472: *5* onFocusIn (qtBody)
     def onFocusIn (self,obj):
-
         '''Handle a focus-in event in the body pane.'''
-
         trace = False and not g.unitTesting
         if trace: g.trace(str(obj.objectName()))
-
-        # 2010/08/01: Update the history only on focus in events.
-        # 2011/04/02: Update history only in leoframe.tree.select.
+        # Update history only in leoframe.tree.select.
         # c.NodeHistory.update(c.p)
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
@@ -4094,33 +4083,29 @@ class LeoQtBody (leoFrame.LeoBody):
             obj.setFocus() # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *5* onFocusOut (qtBody)
     def onFocusOut (self,obj):
-
         '''Handle a focus-out event in the body pane.'''
-
         trace = False and not g.unitTesting
-
         if trace: g.trace(str(obj.objectName()))
-
         # Apparently benign.
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out',obj)
             obj.setReadOnly(True)
-
     #@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
-
-        trace = False and not g.unitTesting
-        c = self.c
-        if trace: g.trace(kind)
-        if kind == 'focus-in':
-            # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
-            c.k.showStateColors(inOutline=False,w=self.widget)
-        else:
-            bg = self.unselectedBackgroundColor
-            fg = self.unselectedForegroundColor
-            c.frame.body.setEditorColors(bg,fg)
+        
+        if 0: # Replaced by styesheets.
+            trace = True and not g.unitTesting
+            c = self.c
+            if trace: g.trace(kind)
+            if kind == 'focus-in':
+                # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+                c.k.showStateColors(inOutline=False,w=self.widget)
+            else:
+                bg = self.unselectedBackgroundColor
+                fg = self.unselectedForegroundColor
+                c.frame.body.setEditorColors(bg,fg)
     #@-others
 #@+node:ekr.20110605121601.18245: *3* class LeoQtFrame
 class LeoQtFrame (leoFrame.LeoFrame):

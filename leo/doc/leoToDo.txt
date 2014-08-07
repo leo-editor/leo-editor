@@ -8,10 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Support counts in vim_d3.
-
-Urgent:
 - Clicks in body should not change state!
+- Update border immediately (in qtBody event handlers)
+
+- tab & shift-tab in normal mode might indent text.
+- Support counts in vim_d3.
 - yank and paste.
 - Neither j,j nor , , should make the .leo file dirty.
 

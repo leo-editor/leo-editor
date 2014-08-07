@@ -4345,49 +4345,51 @@ class KeyHandlerClass:
         if w and isText:
             k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
-    #@+node:ekr.20080512115455.1: *4* k.showStateColors
+    #@+node:ekr.20080512115455.1: *4* k.showStateColors (does nothing)
     def showStateColors (self,inOutline,w):
-
-        trace = False and not g.unitTesting
-        k = self ; c = k.c
-        if c.use_focus_border:
-            return
-
-        # This is now deprecated.
-        state = k.unboundKeyAction
-        if state not in ('insert','command','overwrite'):
-            g.trace('bad input state',state)
-
-        w_name = g.app.gui.widget_name(w)
-
-        if w_name.startswith('body'):
-            w = c.frame.body
-        elif w_name.startswith('head'):
-            pass
-        else:
-            # Don't recolor the minibuffer, log panes, etc.
-            if trace: g.trace('not body or head')
-            return
-        if state == 'insert':
-            bg = k.insert_mode_bg_color
-            fg = k.insert_mode_fg_color
-        elif state == 'command':
-            bg = k.command_mode_bg_color
-            fg = k.command_mode_fg_color
-        elif state == 'overwrite':
-            bg = k.overwrite_mode_bg_color
-            fg = k.overwrite_mode_fg_color
-        else:
-            bg = fg = 'red'
-
-        if hasattr(w,'setEditorColors'):
-            # Note: fg color has no effect on Qt at present.
-            w.setEditorColors(bg=bg,fg=fg)
-        else:
-            try:
-                w.configure(bg=bg,fg=fg)
-            except Exception:
-                pass # g.es_exception()
+        
+        if 0: # This is now handled via stylesheets.
+            trace = True and not g.unitTesting
+            k = self ; c = k.c
+            if c.use_focus_border:
+                g.trace('use_focus_border is True: returning')
+                return
+            # This is now deprecated.
+            state = k.unboundKeyAction
+            if state not in ('insert','command','overwrite'):
+                g.trace('bad input state',state)
+            w_name = g.app.gui.widget_name(w)
+            if w_name.startswith('body'):
+                w = c.frame.body
+            elif w_name.startswith('head'):
+                pass
+            else:
+                # Don't recolor the minibuffer, log panes, etc.
+                if trace: g.trace('not body or head')
+                return
+            if trace: g.trace(state,w_name)
+            if state == 'insert':
+                bg = k.insert_mode_bg_color
+                fg = k.insert_mode_fg_color
+            elif state == 'command':
+                bg = k.command_mode_bg_color
+                fg = k.command_mode_fg_color
+            elif state == 'overwrite':
+                bg = k.overwrite_mode_bg_color
+                fg = k.overwrite_mode_fg_color
+            else:
+                bg = fg = 'red'
+            if hasattr(w,'setEditorColors'):
+                # Note: fg color has no effect on Qt at present.
+                if trace: g.trace('calling w.setEditorColors',bg,fg)
+                w.setEditorColors(bg=bg,fg=fg)
+                    # This is a do-nothing.
+            else:
+                try:
+                    if trace: g.trace('calling w.configure',bg,fg)
+                    w.configure(bg=bg,fg=fg)
+                except Exception:
+                    pass # g.es_exception()
     #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor (self,state,w):
 
