@@ -8,7 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-Urgent:    
+- Support counts in vim_d3.
+- Removed vim_backspace?
+
+Urgent: 
+* Ctrl-G must clear all state.
 - Clicks in body should not change state!
 - yank and paste.
 - Neither j,j nor , , should make the .leo file dirty.
