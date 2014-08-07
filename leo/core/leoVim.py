@@ -606,7 +606,9 @@ class VimCommands:
         '''Ignore the present key, with a warning.'''
         if message:
             g.warning(message)
-        if 1: # Reset everything if the user is confused.
+        if vc.state in ('normal','insert'):
+            # Reset everything if the user is confused in normal mode.
+            # Leave visual mode alone.
             vc.quit()
         else:
             vc.show_status()
@@ -615,7 +617,8 @@ class VimCommands:
     def not_ready(vc):
         '''Print a not ready message and quit.'''
         g.trace('not ready',g.callers(1))
-        vc.quit()
+        vc.ignore()
+            # More forgiving than quit.  Leaves visual mode open.
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(vc):
         '''
@@ -1409,7 +1412,7 @@ class VimCommands:
     def vis_v(vc):
         '''End visual mode.'''
         # Clear the selection.  This is what vim does.
-        g.trace(vc.stroke)
+        # g.trace(vc.stroke)
         w = vc.event.w
         i = w.getInsertPoint()
         w.setSelectionRange(i,i)
