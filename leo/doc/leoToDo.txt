@@ -8,12 +8,8 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-Urgent:
-- Clicks in body should not change state!
-- Put a vc hook in Leo's Ctrl-H code.
+- Put a vc hook in Leo's Ctrl-H code to enter insert mode if text is selected.
 
-First:
-- Ctrl-G calls vc.reset.
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
     - define vc.init_scratch_ivars.

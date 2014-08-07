@@ -69,13 +69,12 @@ except ImportError:
 #@+<< define LeoQTextBrowser >>
 #@+node:ekr.20110605121601.18005: *3*  << define LeoQTextBrowser >>
 class LeoQTextBrowser (QtWidgets.QTextBrowser):
-
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
-
     #@+others
     #@+node:ekr.20110605121601.18006: *4*   ctor (LeoQTextBrowser)
     def __init__(self,parent,c,wrapper):
-
+        '''ctor for LeoQTextBrowser class.'''
+        # g.trace('(LeoQTextBrowser)',c)
         for attr in ('leo_c','leo_wrapper',):
             assert not hasattr(QtWidgets.QTextBrowser,attr),attr
         self.leo_c = c
@@ -355,18 +354,13 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         if trace: g.trace(tag,kind)
         return kind
     #@+node:ekr.20110605121601.18020: *4* url support (LeoQTextBrowser)
-    #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser)
+    #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser) (never called!)
     # def mousePressEvent (self,event):
         # QtWidgets.QTextBrowser.mousePressEvent(self,event)
 
     def mouseReleaseEvent(self,*args,**keys):
-        # g.trace('LeoQTextBrowser')
-        # self.onMouseUp(event)
-        # QtWidgets.QTextBrowser.mouseReleaseEvent(self,event)
-        
-        # Call the base class method.
-        # 2012/04/10: Use the same pattern for mouseReleaseEvents
-        # as in other parts of Leo's core.
+        '''Handle a mouse release event in a LeoQTextBrowser.'''
+        g.trace('LeoQTextBrowser')
         if len(args) == 1:
             event = args[0]
             self.onMouseUp(event)
@@ -481,15 +475,12 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
             #@+<< define mouseReleaseEvent >>
             #@+node:ekr.20110605121601.18026: *6* << define mouseReleaseEvent >> (LeoQtBaseTextWidget)
             def mouseReleaseEvent (*args,**keys):
-
-                '''Override QLineEdit.mouseReleaseEvent.
-
-                Simulate alt-x if we are not in an input state.'''
-
+                '''
+                Override QLineEdit.mouseReleaseEvent.
+                Simulate alt-x if we are not in an input state.
+                '''
                 trace = False and not g.unitTesting
-                
-                # g.trace('(LeoQtBaseTextWidget)')
-
+                if trace: g.trace('(LeoQtBaseTextWidget)')
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
@@ -500,20 +491,16 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
                 else:
                     g.trace('can not happen')
                     return
-
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event = {'c':c}
                     g.openUrlOnClick(event)
-
                 if name == 'body':
                     c.p.v.insertSpot = c.frame.body.getInsertPoint()
                     if trace: g.trace(c.p.v.insertSpot)
                 g.doHook("bodyclick2",c=c,p=c.p,v=c.p)                    
-
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
-
                 c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
@@ -3384,18 +3371,6 @@ class LeoQtBody (leoFrame.LeoBody):
 
     set_focus = setFocus
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20110605121601.18192: *4* hasFocus (qtBody)
-    # def hasFocus(self):
-
-        # '''Return True if the body has focus.'''
-
-        # # Always returning True is good enough for LeoMenu.updateEditMenu.
-        # return True
-
-        # # Doesn't work: the focus is already in the menu!
-        # # w = g.app.gui.get_focus()
-        # # g.trace(w,self.widget.widget)
-        # # return w == self.widget.widget
     #@+node:ekr.20110605121601.18193: *4* Editors (qtBody)
     #@+node:ekr.20110605121601.18194: *5* entries
     #@+node:ekr.20110605121601.18195: *6* addEditor & helper (qtBody)

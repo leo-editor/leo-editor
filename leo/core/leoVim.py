@@ -556,6 +556,18 @@ class VimCommands:
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
+    #@+node:ekr.20140807070500.18163: *4* vc.reset
+    def reset(vc,setFocus):
+        '''
+        Called from k.keyboardQuit when the user types Ctrl-G (setFocus = True).
+        Also called when the user clicks the mouse (setFocus = False).
+        '''
+        if setFocus:
+            # A hard reset.
+            vc.quit()
+        else:
+            # Do *not* change vc.state!
+            pass
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(vc,add_to_dot=True,handler=None,return_value=True):
