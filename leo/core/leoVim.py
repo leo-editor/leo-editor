@@ -602,23 +602,16 @@ class VimCommands:
         vc.show_status()
         vc.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
-    def ignore(vc,message=None,return_value=True):
-        '''Ignore the present key, with a warning.'''
-        if message:
-            g.warning(message)
-        if vc.state in ('normal','insert'):
-            # Reset everything if the user is confused in normal mode.
-            # Leave visual mode alone.
-            vc.quit()
-        else:
-            vc.show_status()
+    def ignore(vc):
+        '''Ignore the present key without passing it to k.masterKeyHandler.'''
+        vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
     def not_ready(vc):
         '''Print a not ready message and quit.'''
-        g.trace('not ready',g.callers(1))
+        g.es('not ready',g.callers(1))
         vc.ignore()
-            # More forgiving than quit.  Leaves visual mode open.
+            # More forgiving than quit. 
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(vc):
         '''
@@ -790,10 +783,10 @@ class VimCommands:
             ec.moveWordHelper(vc.event,extend=extend,forward=False)
         vc.accept_or_done()
     #@+node:ekr.20140222064735.16633: *5* vc.vim_backspace (never called)
-    def vim_backspace(vc):
-        '''Handle a backspace while accumulating a command.'''
-        g.trace('******')
-        vc.ignore()
+    # def vim_backspace(vc):
+        # '''Handle a backspace while accumulating a command.'''
+        # g.trace('******')
+        # vc.ignore()
     #@+node:ekr.20140220134748.16619: *5* vc.vim_c (to do)
     def vim_c(vc):
         '''
@@ -861,7 +854,7 @@ class VimCommands:
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
         # d2w doesn't extend to line.  d2j does.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         extend_to_line = vc.d_stroke in ('jk')
         w = vc.w
         s = w.getAllText()
