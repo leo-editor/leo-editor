@@ -544,6 +544,9 @@ class BookMarkDisplay:
         - `but`: button widget
         """
         
+        if event.button() == QtCore.Qt.RightButton:
+            return self.button_menu(event, bm, but, up=up)
+        
         mods = event.modifiers()
         
         # Alt-Ctrl => update bookmark to point to current node
@@ -578,6 +581,40 @@ class BookMarkDisplay:
         self.show_list(self.get_list(), up=up)
         if bm.url and not up and not no_move:
             g.handleUrl(bm.url, c=self.c)
+    #@+node:tbrown.20140807091931.30231: *3* button_menu
+    def button_menu(self, event, bm, but, up=False):
+        """button_menu - handle a button being right-clicked
+
+        :Parameters:
+        - `event`: QPushButton event
+        - `bm`: Bookmark associated with button
+        - `but`: button widget
+        """
+
+        menu = QtWidgets.QMenu()
+        
+        actions = [
+            ("Link bookmark to this node", self.update_bookmark),
+            ("Re-name bookmark", self.rename_bookmark),
+            ("Edit bookmark in tree", self.edit_bookmark),
+            ("Delete bookmark", self.delete_bookmark),
+            ("Add this node as child bookmark", self.add_child_bookmark),
+        ]
+        for action in actions:
+            act = QtWidgets.QAction(action[0], menu)
+            act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
+            menu.addAction(act)
+        
+        def follow(checked, bm=bm, manager=self):
+            manager.current = bm.v
+            manager.second = True
+            manager.upwards = False
+            manager.show_list(manager.get_list(), up=False)
+        act = QtWidgets.QAction("Show child bookmarks", menu)
+        act.triggered.connect(follow)
+        menu.addAction(act)
+       
+        menu.exec_(but.mapToGlobal(event.pos()))
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -849,9 +886,11 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         if bm.v.b == new_url:
             g.es("Bookmark unchanged")
-        else:
-            g.es("Bookmark updated")
+            return
+        g.es("Bookmark updated")
         bm.v.b = new_url
+        bm.v.setDirty()
+        bm.v.context.setChanged(True)
         bm.v.context.redraw()
         self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
