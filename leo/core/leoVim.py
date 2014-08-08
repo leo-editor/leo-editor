@@ -728,6 +728,7 @@ class VimCommands:
             vc.delegate()
         elif vc.trainer:
             # Ignore all non-Alt arrow keys.
+            # Note: this makes plain-arrow keys work in the outline pane.
             vc.ignore()
         else:
             # Delegate all arrow keys.

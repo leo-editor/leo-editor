@@ -8,7 +8,10 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-* Do vc.trainer mode.
+- Disable Home,End keys in vim-trainer mode?
+- Disable Ctrl-x/p/v ?
+- What's the equivalent of del and backspace?
+
 * Per-pane bindings in tree pane.
     - h,j,k,l
     - a,A,i,o,O

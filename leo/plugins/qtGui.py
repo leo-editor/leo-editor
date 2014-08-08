@@ -479,14 +479,23 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
                 Override QLineEdit.mouseReleaseEvent.
                 Simulate alt-x if we are not in an input state.
                 '''
-                trace = False and not g.unitTesting
-                if trace: g.trace('(LeoQtBaseTextWidget)')
+                c,vc = self.c,self.c.vimCommands
+                trace = True and not g.unitTesting
+                # if trace: g.trace('(LeoQtBaseTextWidget)',self.c.shortFileName())
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
+                    # There seems to be no way to disable mouse events...
+                    # if c.vim_mode and vc and vc.trainer:
+                        # if trace: g.trace('1: ignore:',event)
+                        # event.ignore() # Doesn't work.
+                        # return
                     QtWidgets.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
                 elif len(args) == 2:
+                    # In vim-trainer mode, stuff a 0 into the location field.  Hehe.
                     event = args[1]
+                    if c.vim_mode and vc and vc.trainer:
+                        if trace: g.trace('2',event)
                     QtWidgets.QTextBrowser.mouseReleaseEvent(*args)
                 else:
                     g.trace('can not happen')
