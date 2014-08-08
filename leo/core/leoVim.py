@@ -72,6 +72,17 @@ def colon_qa(event):
         if c.isChanged():
             return
     g.app.onQuit(event)
+#@+node:ekr.20140808074553.17923: *3* :toggle-vim-trainer-mode
+@g.command(':toggle-vim-trainer-mode')
+def toggle_vim_trainer_mode(event):
+    '''Save the .leo file.'''
+    c = event.get('c')
+    if c and c.vim_mode and c.vimCommands:
+        vc = c.vimCommands
+        vc.trainer = not vc.trainer
+        g.es('vim-trainer-mode: %s' % (
+            'on' if vc.trainer else 'off'),
+            color = 'red')
 #@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
 @g.command(':w')
 def colon_w(event):
@@ -427,13 +438,17 @@ class VimCommands:
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
         # Set the widget for vc.set_border.
-        if vc.c.vim_mode:
+        c = vc.c
+        if c.vim_mode:
             # g.registerHandler('idle',vc.on_idle)
             try:
                 # Be careful: c.frame or c.frame.body may not exist in some gui's.
                 vc.w = vc.c.frame.body.bodyCtrl
             except Exception:
                 vc.w = None
+            if c.config.getBool('vim-trainer-mode',default=False):
+                toggle_vim_trainer_mode(event=g.Bunch(c=c))
+                
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -516,6 +531,9 @@ class VimCommands:
             # True if the border has been inited.
         vc.register_d = {}
             # Keys are letters; values are strings.
+        vc.trainer = False
+            # True: in vim-training mode:
+            # Mouse clicks and arrows are disable.
         vc.w = None
             # The present widget.
             # c.frame.body.bodyCtrl is a QTextBrowser.
@@ -707,7 +725,13 @@ class VimCommands:
             # Any Alt key changes c.p.
             # g.trace('quitting')
             vc.quit()
-        vc.delegate()
+            vc.delegate()
+        elif vc.trainer:
+            # Ignore all non-Alt arrow keys.
+            vc.ignore()
+        else:
+            # Delegate all arrow keys.
+            vc.delegate()
     #@+node:ekr.20140806075456.18152: *4* vc.vim_return
     def vim_return(vc):
         '''

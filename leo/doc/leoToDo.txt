@@ -8,14 +8,15 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-* What to do about plain keys in the tree?
-  - Perhaps individual commands could do different things in different panes.
-  - a,o,O,i, should begin editing in the body pane always.
-  - h,j,k,l have natural meanings in the tree pane.
+* Do vc.trainer mode.
+* Per-pane bindings in tree pane.
+    - h,j,k,l
+    - a,A,i,o,O
+    - / and ? search only headlines?
+    - :
+    - gg and G (or maybe even new "tails" for g)
 
-- / and ? commands: make # and n equivalent to F2 and F3!
-
-Next:
+- Do / and ? commands: make # and n equivalent to F2 and F3!
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
     - define vc.init_scratch_ivars.

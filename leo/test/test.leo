@@ -12,6 +12,7 @@
 <vnodes>
 <v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20140808094008.3549"><vh>@bool vim_mode = False</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
@@ -1412,7 +1413,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12668,5 +12669,7 @@ def selector(n):
 </t>
 <t tx="ekr.20131128115544.3332"></t>
 <t tx="ekr.20131128115544.3333"></t>
+<t tx="ekr.20140808094008.3549">import meta
+print(meta)</t>
 </tnodes>
 </leo_file>
