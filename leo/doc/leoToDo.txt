@@ -529,28 +529,6 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
-.. @+node:ekr.20131119060731.20106: *5* Use vim-like bindings to move the cursor?
-@language rest
-
-After all these years of preaching about not using the mouse, I still use
-the mouse when I get impatient. Indeed, it seems unbearably slow to select
-text without the mouse.
-
-I actually never use Alt-S because it never does quite what I want. But
-it's close!
-
-What I want is a *really easy* way of making plain keys move the cursor
-and/or select text.
-
-Naturally, Vim bindings come to mind. There are several possibilities:
-
-1. Just use vim-mode when it becomes available. Some may think it's the
-   best way. But perhaps we don't have to go whole hog.
-
-2. Create a vim-like minibuffer handler that makes it easy to move the
-   cursor, extending text, or not, in an *easily* switchable way.
-
-3. Something else :-)
 .. @+node:ekr.20131105122124.16479: *5* vim reference card
 @killcolor
 .. @+node:ekr.20131105122124.16482: *6*  keys (do not sort!!)

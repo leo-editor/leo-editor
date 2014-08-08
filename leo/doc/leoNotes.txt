@@ -17376,7 +17376,6 @@ def writeAtAutoOtlFile (self,root):
                 put('%s: %s' % (indent,s))
     root.setVisited()
     return True
-.. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
 .. @+node:ekr.20140807070500.18160: *3* Unused color methods
 .. @+node:ekr.20080512115455.1: *4* k.showStateColors
 # This comment used to be in mouseReleaseEvent:
@@ -17486,5 +17485,37 @@ def setEditorColors (self,bg,fg):
         bg = self.unselectedBackgroundColor
         fg = self.unselectedForegroundColor
         c.frame.body.setEditorColors(bg,fg)
+.. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
+.. @+node:ekr.20140808142143.18076: *4* old vc.do_key
+def do_key(vc,event):
+    '''
+    Handle the next key in vim mode. Return True (a flag for
+    k.masterKeyHandler) if this method has handled the key.
+    '''
+    trace = False and not g.unitTesting
+    vc.init_scanner_vars(event)
+    # This test seems prudent and convenient.
+    # There are probably no more need for arrow bindings,
+    # or for interior tests of is_text_widget.
+    # Only the following commands are allowed outside the body pane:
+    ok_in_tree = ('Y','P','z','colon','question','slash')
+    if vc.is_text_widget(vc.w) or vc.stroke in ok_in_tree:
+        if trace: g.trace('stroke: %s' % vc.stroke)
+        vc.return_value = None
+        if not vc.handle_specials():
+            vc.handler()
+        if vc.return_value not in (True,False):
+            # It looks like no acceptance method has been called.
+            vc.oops('bad return_value: %s %s %s' % (
+                repr(vc.return_value),vc.state,vc.next_func))
+            vc.done() # Sets vc.return_value to True.
+        return vc.return_value
+    else:
+        # Temporary: this hack is way too strict and way too ugly.
+        if vc.stroke not in vc.arrow_d and vc.stroke in vc.normal_mode_dispatch_d:
+            if vc.stroke not in ('Return',):
+                g.es('not in body',vc.stroke)
+        vc.quit()
+        return False # Delegate the stroke.
 .. @-all
 .. @-leo
