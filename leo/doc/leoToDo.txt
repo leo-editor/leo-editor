@@ -8,15 +8,14 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-* Arrow keys in outline don't work in vim-trainer mode?
-
-* Per-pane bindings in tree pane.
-    - h,j,k,l
-    - / and ? search only headlines?
-    - :
-    - gg and G (or maybe even new "tails" for g)
-
+- Arrow keys in outline don't work in vim-trainer mode.
 - Do / and ? commands: make # and n equivalent to F2 and F3!
+
+Next:
+- Per-pane bindings in tree pane.
+    - h,j,k,l in outline should work like arrow keys
+    - / and ? search only headlines?
+    - gg and G (or maybe even new "tails" for g)
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
     - define vc.init_scratch_ivars.

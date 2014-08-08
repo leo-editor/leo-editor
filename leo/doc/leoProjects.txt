@@ -526,8 +526,10 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- Arrow keys work again in the outline in vim-trainer mode.
 - a,A,i,o,O now put focus in body pane if entered in tree pane.
-
+- Replaced all instance of vc.event.w with vc.w. This allows a, A, i, o and
+  O commands to set vc.w to c.frame.body.bodyCtrl when entered in the tree.
 * All key handlers now test vc.is_text_widget(vc.w) and possibly vc.in_tree(vc.w).
   This prepares for per-pane bindings.
 * Added vc.trainer mode and :toggle-vim-mode and :toggle-vim-trainer-mode commands.

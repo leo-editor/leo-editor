@@ -730,9 +730,12 @@ class VimCommands:
             vc.quit()
             vc.delegate()
         elif vc.trainer:
-            # Ignore all non-Alt arrow keys.
-            # Note: this makes plain-arrow keys work in the outline pane.
-            vc.ignore()
+            # Ignore all non-Alt arrow keys in text widgets.
+            if vc.is_text_widget(vc.w):
+                vc.ignore()
+            else:
+                # Allow plain-arrow keys work in the outline pane.
+                vc.delegate()
         else:
             # Delegate all arrow keys.
             vc.delegate()
@@ -1911,7 +1914,7 @@ class VimCommands:
         '''Undoably preserve any changes to body text.'''
         trace = False and not g.unitTesting
         c = vc.c
-        w = vc.command_w or vc.w ### vc.event and vc.event.w
+        w = vc.command_w or vc.w
         name = c.widget_name(w)
         if trace: g.trace(name,g.callers())
         if w and name.startswith('body'):
