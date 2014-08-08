@@ -302,7 +302,7 @@ class VimCommands:
         'greater': None,            # '>'
         'less': None,               # '<'
         'minus': None,              # '-'
-        'numbersign': None,         # '#'
+        'numbersign': vc.vim_pound, # '#'
         'parenleft': None,          # '('
         'parenright': None,         # ')'
         'percent': None,            # '%'
@@ -1213,10 +1213,13 @@ class VimCommands:
     def vim_m2(vc):
         g.trace(vc.stroke)
         vc.done()
-    #@+node:ekr.20140220134748.16625: *5* vc.vim_n (to do)
+    #@+node:ekr.20140220134748.16625: *5* vc.vim_n
     def vim_n(vc):
         '''Repeat last search N times.'''
-        vc.not_ready()
+        fc = vc.c.findCommands
+        fc.setup_command()
+        fc.findNext()
+        vc.done()
     #@+node:ekr.20140222064735.16692: *5* vc.vim_O
     def vim_O(vc):
         '''Open a new line above the current line N times.'''
@@ -1272,6 +1275,10 @@ class VimCommands:
     def vim_P(vc):
         '''Paste an outline at the cursor.'''
         vc.not_ready()
+    #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
+    def vim_pound(vc):
+        '''Find previous occurance of selected word.''' # Really?
+        vc.not_ready()
     #@+node:ekr.20140220134748.16623: *5* vc.vim_q (registers)
     def vim_q(vc):
         '''
@@ -1288,10 +1295,16 @@ class VimCommands:
         vc.done()
 
 
-    #@+node:ekr.20140807152406.18127: *5* vc.vim_question (to do)
+    #@+node:ekr.20140807152406.18127: *5* vc.vim_question
     def vim_question(vc):
         '''Begin a search.'''
-        vc.not_ready()
+        fc = vc.c.findCommands
+        ftm = fc.ftm
+        fc.reverse = True
+        fc.openFindTab(vc.event)
+        fc.ftm.clear_focus()
+        fc.searchWithPresentOptions(vc.event)
+        vc.done()
     #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
     def vim_r(vc):
         '''Replace next N characters with <char>'''
@@ -1314,10 +1327,15 @@ class VimCommands:
     def vim_s2(vc):
         g.trace(vc.n,vc.stroke)
         vc.done()
-    #@+node:ekr.20140222064735.16622: *5* vc.vim_slash (to do)
+    #@+node:ekr.20140222064735.16622: *5* vc.vim_slash
     def vim_slash(vc):
         '''Begin a search.'''
-        vc.not_ready()
+        fc = vc.c.findCommands
+        fc.reverse = False
+        fc.openFindTab(vc.event)
+        fc.ftm.clear_focus()
+        fc.searchWithPresentOptions(vc.event)
+        vc.done()
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
         '''Move before the Nth occurrence of <char> to the right.'''

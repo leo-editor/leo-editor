@@ -526,6 +526,7 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- Added / ? and n commands.
 - Arrow keys work again in the outline in vim-trainer mode.
 - a,A,i,o,O now put focus in body pane if entered in tree pane.
 - Replaced all instance of vc.event.w with vc.w. This allows a, A, i, o and
