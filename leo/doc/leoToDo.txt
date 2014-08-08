@@ -8,9 +8,10 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+* Arrow keys in outline don't work in vim-trainer mode?
+
 * Per-pane bindings in tree pane.
     - h,j,k,l
-    - a,A,i,o,O
     - / and ? search only headlines?
     - :
     - gg and G (or maybe even new "tails" for g)

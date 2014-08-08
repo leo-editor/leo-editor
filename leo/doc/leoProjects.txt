@@ -526,10 +526,11 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- a,A,i,o,O now put focus in body pane if entered in tree pane.
+
 * All key handlers now test vc.is_text_widget(vc.w) and possibly vc.in_tree(vc.w).
   This prepares for per-pane bindings.
 * Added vc.trainer mode and :toggle-vim-mode and :toggle-vim-trainer-mode commands.
-
 - Allow only the commands outside the body pane:
     ('Y','P','z','colon','question','slash')
 - Corrected entries in dispatch dicts to use Leo/Tk stroke spellings.

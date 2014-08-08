@@ -647,7 +647,7 @@ class VimCommands:
         '''Common code for beginning insert mode.'''
         trace = False and not g.unitTesting
         c = vc.c
-        if not w: w = vc.event.w
+        if not w: w = vc.w
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
@@ -656,7 +656,7 @@ class VimCommands:
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
         # g.trace(motion_func.__name__,g.callers(2))
-        w = vc.event.w
+        w = vc.w
         vc.command_w = w
         vc.in_motion = True
         vc.motion_func = motion_func
@@ -778,7 +778,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.bodyCtrl
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -791,7 +791,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.bodyCtrl
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -882,7 +882,7 @@ class VimCommands:
     def vim_d2(vc):
         if vc.is_text_widget(vc.w):
             if vc.stroke == 'd':
-                w = vc.event.w
+                w = vc.w
                 i = w.getInsertPoint()
                 for z in range(vc.n1*vc.n):
                     # It's simplest just to get the text again.
@@ -997,7 +997,7 @@ class VimCommands:
     def vim_F2(vc):
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
-            w = vc.event.w
+            w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
@@ -1028,7 +1028,7 @@ class VimCommands:
         
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
-            w = vc.event.w
+            w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
@@ -1053,7 +1053,7 @@ class VimCommands:
         '''Put the cursor on the last character of the file.'''
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
-            w = vc.event.w
+            w = vc.w
             s = w.getAllText()
             last = max(0,len(s)-1)
             if vc.state == 'visual':
@@ -1133,7 +1133,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.bodyCtrl
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1220,7 +1220,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.bodyCtrl
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1237,7 +1237,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.bodyCtrl
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1327,7 +1327,7 @@ class VimCommands:
         
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
-            w = vc.event.w
+            w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
@@ -1358,7 +1358,7 @@ class VimCommands:
         
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
-            w = vc.event.w
+            w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
@@ -1437,7 +1437,7 @@ class VimCommands:
         if vc.is_text_widget(vc.w):
             if vc.stroke == 'y':
                 # Yank n lines.
-                w = vc.event.w
+                w = vc.w
                 i1 = i = w.getInsertPoint()
                 s = w.getAllText()
                 for z in range(vc.n1*vc.n):
@@ -1629,7 +1629,7 @@ class VimCommands:
             vc.done()
         else:
             # The real vim clears the selection.
-            w = vc.event.w
+            w = vc.w
             if vc.is_text_widget(w):
                 i = w.getInsertPoint()
                 w.setSelectionRange(i,i)
@@ -1746,7 +1746,7 @@ class VimCommands:
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
         vc.state = 'insert'
-        w = vc.event.w
+        w = vc.w
         if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
             return
         # Special case for arrow keys.
@@ -1828,7 +1828,7 @@ class VimCommands:
             s = stroke or vc.stroke
             # Never add '.' to the dot list.
             if s and s != 'period':
-                event = VimEvent(s,vc.event.w)
+                event = VimEvent(s,vc.w)
                 vc.command_list.append(event)
     #@+node:ekr.20140222064735.16700: *4* vc.beep
     def beep(vc,message=''):
@@ -1911,7 +1911,7 @@ class VimCommands:
         '''Undoably preserve any changes to body text.'''
         trace = False and not g.unitTesting
         c = vc.c
-        w = vc.command_w or vc.event and vc.event.w
+        w = vc.command_w or vc.w ### vc.event and vc.event.w
         name = c.widget_name(w)
         if trace: g.trace(name,g.callers())
         if w and name.startswith('body'):
