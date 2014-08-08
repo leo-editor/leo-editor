@@ -8,10 +8,13 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- yank and paste.
-- Support searches:
-    - They don't set the dot, but they *do* affect F2 and F3.
-    - So just make # and n equivalent to F2 and F3!
+* What to do about plain keys in the tree?
+  - Perhaps individual commands could do different things in different panes.
+  - a,o,O,i, should begin editing in the body pane always.
+  - h,j,k,l have natural meanings in the tree pane.
+
+- / and ? commands: make # and n equivalent to F2 and F3!
+
 Next:
 - Use scratch ivars where possible.
     - vc.accept and vc.done should only explicitly set state ivars.
@@ -51,11 +54,15 @@ I use a tiny subset of Vim commands:
 
 ==== Try them in vim!
 
-the '/' command for searching forward, '?' for searching backwards
-followed by 'n' for next match
-- probably my #1 fav
+dw: delete word, word is the only text object I use, there are many
+http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
+just discovered diw, useful!
 
-'/' to find text:
+v, V, ctrl-v : visual select character, line, column
+
+'/' searched forward, '?' searched backwards
+followed by:
+    'n' for next match
     '*' find next occurrence of this word
     #' find previous occurrence
     
@@ -67,21 +74,11 @@ followed by 'n' for next match
 :e directory name
     Shows list of files in the directory:
     selecting and <enter> opens a file
-:tabnew filename
-    opens filename in a new tab
-.. @+node:ekr.20140805170407.18158: *4* From Kent 2: do asap
-> dw: delete word, word is the only text object I use, there are many
-> http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
-> (just discovered diw, useful!)
->
-> v, V, ctrl-v : visual select character, line, column
-> O open line above current, start insert mode
-> y yank (copy)
-> p paste after
-> P paste before
-> ^ goto line start
-> $ goto line end
-.. @+node:ekr.20140803220119.18110: *4* From Jake: do asap
+:tabnew <fname> (opens fname in new tab, without fname, opens tab with new file)
+:gt (focuses next tab)
+:Gt (focuses previous tab) 
+
+.. @+node:ekr.20140803220119.18110: *4* From Jake:
 And these!
 
 :1,$ s/^/  /g

@@ -1342,20 +1342,20 @@ class LeoFrame:
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     def pasteText (self,event=None,middleButton=False):
-
-        '''Paste the clipboard into a widget.
-        If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
-
-        trace = False and not g.unitTesting
+        '''
+        Paste the clipboard into a widget.
+        If middleButton is True, support x-windows middle-mouse-button easter-egg.
+        '''
+        trace = True and not g.unitTesting
         f = self ; c = f.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        if trace: g.trace(g.app.gui.isTextWidget(w),w)
-        if not w or not g.app.gui.isTextWidget(w): return
-
+        # if trace: g.trace(g.app.gui.isTextWidget(w),w)
+        if not w or not g.app.gui.isTextWidget(w):
+            if trace: g.trace('not a text widget',w)
+            return
         i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
         oldText = w.getAllText()
-
         if middleButton and c.k.previousSelection is not None:
             start,end = c.k.previousSelection
             s = w.getAllText()
@@ -1370,13 +1370,11 @@ class LeoFrame:
             # Strip trailing newlines so the truncation doesn't cause confusion.
             while s and s [ -1] in ('\n','\r'):
                 s = s [: -1]
-
         # Update the widget.
         if i != j:
             w.delete(i,j)
         w.insert(i,s)
         w.see(i+len(s) + 2) # 2011/06/01
-
         if wname.startswith('body'):
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)

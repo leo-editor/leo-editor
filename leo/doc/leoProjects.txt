@@ -526,6 +526,15 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- Allow only the commands outside the body pane:
+    ('Y','P','z','colon','question','slash')
+- Corrected entries in dispatch dicts to use Leo/Tk stroke spellings.
+- Added ^ command.
+- Added p,P,y and Y commands.  Note: P and Y paste and yank Leo outlines.
+- Fixed repeat count problems.
+- v ending visual mode no longer clears the outline.
+  This is a much better fit to Leo's legacy commands.
+
 - The j,j abbreviation preserves the changed status of the .leo file.
 - Support counts in vim_d3.
 - Added a hook to leoQtTree.editLabelHelper that calls vc.begin_input_mode.
