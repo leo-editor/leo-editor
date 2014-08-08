@@ -1549,7 +1549,17 @@ class VimCommands:
         g.es('vim-mode: %s' % (
             'on' if c.vim_mode else 'off'),
             color = 'red')
-        
+        if c.vim_mode:
+            vc.quit()
+        else:
+            try:
+                vc.state = 'insert'
+                c.bodyWantsFocusNow()
+                w = c.frame.body.bodyCtrl.widget
+                vc.set_border(kind=None,w=w,activeFlag=True)
+            except Exception:
+                g.es_exception()
+                pass
     #@+node:ekr.20140802225657.18026: *3* vc.state handlers
     # Neither state handler nor key handlers ever return non-None.
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion
