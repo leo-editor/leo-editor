@@ -21,6 +21,7 @@ allow_cloned_sibs = True
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 import glob
+import importlib
 import os
 import sys
 import time
@@ -151,37 +152,37 @@ class AtFile:
         seen = set()
         for kind,plugins in (('home',plugins1),('leo',plugins2)):
             path = g.os_path_finalize_join(plugins,folder)
-            pattern = g.os_path_finalize_join(path,'*.py')
-            for fn in glob.glob(pattern):
-                sfn = g.shortFileName(fn)
-                if g.os_path_exists(fn) and sfn != '__init__.py':
-                    moduleName = sfn[:-3]
-                    if moduleName:
-                        data = (folder,sfn)
-                        if data in seen:
-                            report('seen',kind,folder,sfn)
-                        else:
-                            m = g.importFromPath(moduleName,path) # Uses imp.
-                            if m:
-                                seen.add(data)
-                                at.parse_writer_dict(sfn,m)
-                                report('loaded',kind,folder,m.__name__)
+            if 1: # old code
+                pattern = g.os_path_finalize_join(g.app.loadDir,'..','plugins','writers','*.py')
+                for fn in glob.glob(pattern):
+                    sfn = g.shortFileName(fn)
+                    if sfn != '__init__.py':
+                        try:
+                            # Important: use importlib to give imported modules their fully qualified names.
+                            m = importlib.import_module('leo.plugins.writers.%s' % sfn[:-3])
+                            at.parse_writer_dict(sfn,m)
+                        except Exception:
+                            g.es_exception()
+                            g.warning('can not import leo.plugins.writers.%s' % sfn)
+            else: # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+                pattern = g.os_path_finalize_join(path,'*.py')
+                for fn in glob.glob(pattern):
+                    sfn = g.shortFileName(fn)
+                    if g.os_path_exists(fn) and sfn != '__init__.py':
+                        moduleName = sfn[:-3]
+                        if moduleName:
+                            data = (folder,sfn)
+                            if data in seen:
+                                report('seen',kind,folder,sfn)
                             else:
-                                report('error',kind,folder,sfn)
-                # else: report('skipped',kind,folder,sfn)
-
-        ### old code...
-        # pattern = g.os_path_finalize_join(g.app.loadDir,'..','plugins','writers','*.py')
-        # for fn in glob.glob(pattern):
-            # sfn = g.shortFileName(fn)
-            # if sfn != '__init__.py':
-                # try:
-                    # # Important: use importlib to give imported modules their fully qualified names.
-                    # m = importlib.import_module('leo.plugins.writers.%s' % sfn[:-3])
-                    # at.parse_writer_dict(sfn,m)
-                # except Exception:
-                    # g.es_exception()
-                    # g.warning('can not import leo.plugins.writers.%s' % sfn)
+                                m = g.importFromPath(moduleName,path) # Uses imp.
+                                if m:
+                                    seen.add(data)
+                                    at.parse_writer_dict(sfn,m)
+                                    report('loaded',kind,folder,m.__name__)
+                                else:
+                                    report('error',kind,folder,sfn)
+                    # else: report('skipped',kind,folder,sfn)
     #@+node:ekr.20140728040812.17991: *5* at.parse_writer_dict
     def parse_writer_dict(self,sfn,m):
         '''
@@ -200,7 +201,7 @@ class AtFile:
                 d = self.atAutoWritersDict
                 for s in at_auto:
                     aClass = d.get(s)
-                    if aClass:
+                    if aClass and aClass != scanner_class:
                         g.trace('%s: duplicate %s class %s in %s:' % (
                             sfn,s,aClass.__name__,m.__file__))
                     else:
@@ -208,10 +209,10 @@ class AtFile:
                         g.app.atAutoNames.add(s)
             if extensions:
                 # Make entries for each extension.
-                d = self.writersDispatchDict
+                d = at.writersDispatchDict
                 for ext in extensions:
                     aClass = d.get(ext)
-                    if aClass:
+                    if aClass and aClass != scanner_class:
                         g.trace('%s: duplicate %s class' % (sfn,ext),
                             aClass,scanner_class)
                     else:
