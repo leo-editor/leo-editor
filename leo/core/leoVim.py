@@ -77,12 +77,15 @@ def colon_qa(event):
 def toggle_vim_trainer_mode(event):
     '''Save the .leo file.'''
     c = event.get('c')
-    if c and c.vim_mode and c.vimCommands:
-        vc = c.vimCommands
-        vc.trainer = not vc.trainer
-        g.es('vim-trainer-mode: %s' % (
-            'on' if vc.trainer else 'off'),
-            color = 'red')
+    if c and c.vimCommands:
+        c.vimCommands.toggle_trainer()
+#@+node:ekr.20140808141921.18059: *3* :toggle-vim-mode
+@g.command(':toggle-vim-mode')
+def toggle_vim_mode(event):
+    '''Save the .leo file.'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.toggle_vim_mode()
 #@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
 @g.command(':w')
 def colon_w(event):
@@ -1531,6 +1534,22 @@ class VimCommands:
             vc.in_command = True # May be cleared later.
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
+    #@+node:ekr.20140808142143.18072: *3* vc.external commands
+    def toggle_trainer(vc):
+        '''toggle vim-trainer mode.'''
+        vc.trainer = not vc.trainer
+        g.es('vim-trainer-mode: %s' % (
+            'on' if vc.trainer else 'off'),
+            color = 'red')
+            
+    def toggle_vim_mode(vc):
+        '''toggle vim-mode.'''
+        c = vc.c
+        c.vim_mode = not c.vim_mode
+        g.es('vim-mode: %s' % (
+            'on' if c.vim_mode else 'off'),
+            color = 'red')
+        
     #@+node:ekr.20140802225657.18026: *3* vc.state handlers
     # Neither state handler nor key handlers ever return non-None.
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion

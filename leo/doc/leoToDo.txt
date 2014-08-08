@@ -8,10 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Disable Home,End keys in vim-trainer mode?
-- Disable Ctrl-x/p/v ?
-- What's the equivalent of del and backspace?
-
 * Per-pane bindings in tree pane.
     - h,j,k,l
     - a,A,i,o,O
@@ -33,6 +29,10 @@
 
 - Ironically, now that everything is hard coded in tables, it would be easy
   for plugins to customize the workings of vim-mode.
+.. @+node:ekr.20140808142143.18073: *4* vim-trainer-mode
+- Disable Home,End keys in vim-trainer mode?
+- Disable Ctrl-x/p/v ?
+- What's the equivalent of del and backspace?
 .. @+node:ekr.20140806071008.18149: *4* ENB
 @language rest
 

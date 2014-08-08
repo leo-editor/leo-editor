@@ -480,7 +480,7 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
                 Simulate alt-x if we are not in an input state.
                 '''
                 c,vc = self.c,self.c.vimCommands
-                trace = True and not g.unitTesting
+                trace = False and not g.unitTesting
                 # if trace: g.trace('(LeoQtBaseTextWidget)',self.c.shortFileName())
                 # Call the base class method.
                 if len(args) == 1:

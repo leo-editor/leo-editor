@@ -526,7 +526,7 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
-* Added vc.trainer mode.
+* Added vc.trainer mode and :toggle-vim-mode and :toggle-vim-trainer-mode commands.
 
 - Allow only the commands outside the body pane:
     ('Y','P','z','colon','question','slash')
