@@ -541,7 +541,7 @@ class VimCommands:
     # All key handlers must end with a call to an acceptance method.
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
-    def accept(vc,add_to_dot=True,handler=None,return_value=True):
+    def accept(vc,add_to_dot=True,handler=None):
         '''
         Accept the present stroke.
         Optionally, this can set the dot or change vc.handler.
@@ -558,7 +558,7 @@ class VimCommands:
         if add_to_dot:
             vc.add_to_dot()
         vc.show_status()
-        vc.return_value = return_value
+        vc.return_value = True
     #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(vc):
         '''Delegate the present key to k.masterKeyHandler.'''
