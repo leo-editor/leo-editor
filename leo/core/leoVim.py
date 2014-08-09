@@ -161,7 +161,6 @@ class VimCommands:
         vc.k = c.k
         vc.init_constant_ivars()
         vc.init_dot_ivars()
-        ### vc.init_motion_ivars()
         vc.init_persistent_ivars()
         vc.init_state_ivars()
         vc.create_dispatch_dicts()
@@ -284,8 +283,7 @@ class VimCommands:
         '''
         d = {
         # Vim hard-coded control characters...
-        ### 'Ctrl+r': vc.vim_ctrl_r,
-        ### 'space': vc.vim_l,
+        # 'Ctrl+r': vc.vim_ctrl_r,
         # Special chars: these are the Leo's official (tk) strokes.
         'asciicircum': vc.vim_caret,# '^'
         'asciitilde': None,         # '~'
@@ -561,14 +559,6 @@ class VimCommands:
             vc.add_to_dot()
         vc.show_status()
         vc.return_value = return_value
-    #@+node:ekr.20140806163730.18156: *5* vc.accept_or_done
-    def accept_or_done(vc):
-        '''call vc.accept() in visual mode; done() otherwise.'''
-        # if vc.state == 'visual':
-            # vc.accept()
-        # else:
-            # vc.done()
-        vc.done()
     #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(vc):
         '''Delegate the present key to k.masterKeyHandler.'''
@@ -578,9 +568,7 @@ class VimCommands:
     def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
         '''Complete a command, preserving text and optionally updating the dot.'''
         if vc.state == 'visual':
-            ### vc.accept()
-            ### same as:
-            ### vc.accept(add_to_dot=True,handler=None,return_value=True)
+            # accept() has this effect:
             vc.add_to_dot()
             vc.return_value = True
         else:
@@ -594,7 +582,6 @@ class VimCommands:
                 vc.next_func = None
                 # Do *not* change vc.in_motion!
             else:
-                ### vc.init_motion_ivars()
                 vc.init_state_ivars()
             vc.show_status()
             vc.return_value = return_value
@@ -761,7 +748,7 @@ class VimCommands:
                 ec.beginningOfLineExtendSelection(vc.event)
             else:
                 ec.beginningOfLine(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140220134748.16614: *5* vc.vim_a
@@ -802,7 +789,7 @@ class VimCommands:
             extend = vc.state == 'visual'
             for z in range(vc.n1*vc.n):
                 ec.moveWordHelper(vc.event,extend=extend,forward=False)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140220134748.16619: *5* vc.vim_c (to do)
@@ -827,7 +814,7 @@ class VimCommands:
         if vc.is_text_widget(vc.w):
             extend = vc.state == 'visual'
             vc.c.editCommands.backToHome(vc.event,extend=extend)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140730175636.17983: *5* vc.vim_colon
@@ -887,7 +874,7 @@ class VimCommands:
                     w.delete(i,j)
                 vc.done()
             else:
-                vc.d_stroke = vc.stroke ### A scratch var.
+                vc.d_stroke = vc.stroke # A scratch var.
                 vc.begin_motion(vc.vim_d3)
         else:
             vc.quit()
@@ -930,7 +917,7 @@ class VimCommands:
                 ec.endOfLineExtendSelection(vc.event)
             else:
                 vc.c.editCommands.endOfLine(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
 
@@ -957,7 +944,7 @@ class VimCommands:
             else:
                 for z in range(vc.n1*vc.n):
                     ec.forwardEndWord(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
 
@@ -1012,7 +999,7 @@ class VimCommands:
                     else:
                         for z in range(i1-i):
                             ec.backCharacter(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
@@ -1052,7 +1039,7 @@ class VimCommands:
                     else:
                         for z in range(i-i1+1):
                             ec.forwardCharacter(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140803220119.18112: *5* vc.vim_G
@@ -1069,7 +1056,7 @@ class VimCommands:
                 w.setSelectionRange(i,last,insert=last)
             else:
                 w.setInsertPoint(last)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140220134748.16621: *5* vc.vim_g
@@ -1101,7 +1088,7 @@ class VimCommands:
                     else:
                         ec.beginningOfBuffer(event)
                 ec.backToHome(event,extend=extend)
-                vc.accept_or_done()
+                vc.done()
             else:
                 vc.not_ready()
         else:
@@ -1128,7 +1115,7 @@ class VimCommands:
                     w.setSelectionRange(vc.vis_mode_i,i,insert=i)
                 else:
                     w.setInsertPoint(i)
-            vc.accept_or_done()
+            vc.done()
         elif vc.in_tree(vc.w):
             g.trace('h in tree')
             vc.quit() # Not ready yet.
@@ -1159,7 +1146,7 @@ class VimCommands:
             else:
                 for z in range(vc.n1*vc.n):
                     ec.nextLine(vc.event)
-            vc.accept_or_done()
+            vc.done()
         elif vc.in_tree(vc.w):
             g.trace('j in tree')
             vc.quit() # Not ready yet.
@@ -1176,7 +1163,7 @@ class VimCommands:
             else:
                 for z in range(vc.n1 * vc.n):
                     ec.prevLine(vc.event)
-            vc.accept_or_done()
+            vc.done()
         elif vc.in_tree(vc.w):
             g.trace('k in tree')
             vc.quit() # Not ready yet.
@@ -1202,7 +1189,7 @@ class VimCommands:
                     w.setSelectionRange(vc.vis_mode_i,i,insert=i)
                 else:
                     w.setInsertPoint(i)
-            vc.accept_or_done()
+            vc.done()
         elif vc.in_tree(vc.w):
             g.trace('l in tree')
             vc.quit() # Not ready yet.
@@ -1373,7 +1360,7 @@ class VimCommands:
                     else:
                         for z in range(i-i1):
                             ec.forwardCharacter(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
 
@@ -1413,7 +1400,7 @@ class VimCommands:
                     else:
                         for z in range(i1-i-1):
                             ec.backCharacter(vc.event)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
 
@@ -1446,7 +1433,7 @@ class VimCommands:
             extend = vc.state == 'visual'
             for z in range(vc.n1*vc.n):
                 ec.moveWordHelper(vc.event,extend=extend,forward=True)
-            vc.accept_or_done()
+            vc.done()
         else:
             vc.quit()
         
@@ -1499,7 +1486,7 @@ class VimCommands:
                 w.setInsertPoint(i1)
                 vc.done()
             else:
-                vc.y_stroke = vc.stroke ### A scratch var.
+                vc.y_stroke = vc.stroke # A scratch var.
                 vc.begin_motion(vc.vim_y3)
         else:
             vc.quit()

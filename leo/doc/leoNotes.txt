@@ -17553,5 +17553,13 @@ def init_motion_ivars(vc):
         # The callback handler to execute after executing an inner motion.
     vc.motion_i = None
         # The offset into the text at the start of a motion.
+.. @+node:ekr.20140806163730.18156: *4* vc.accept_or_done
+def accept_or_done(vc):
+    '''call vc.accept() in visual mode; done() otherwise.'''
+    # if vc.state == 'visual':
+        # vc.accept()
+    # else:
+        # vc.done()
+    vc.done()
 .. @-all
 .. @-leo

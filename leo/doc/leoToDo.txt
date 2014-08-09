@@ -8,12 +8,22 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Finish Theory of Vim Mode.
+- Update dot in find commands: add hook to leoFind.showSuccess and showFailure
 
-- Finish find commands
-    - Put hooks in leoFind.showSuccess and showFailure to set the dot.
+- Extend Leo's undo to show the vim characters for the commands.
+    - Equate all vim commands with 'Typing'.
 
-- Update dot in find commands: add hook to LeoFind class.
+- Per-pane bindings in tree pane.
+    - h,j,k,l in outline should work like arrow keys
+    - (maybe) / and ? search only headlines.
+    - gg and G (or maybe even new "tails" for g)
+    
+- Finish Theory of Vim Mode: put it on Leo's web site.
+  
+Bugs:
+- Fix the dot for insert commands.
+- t,T,f,T don't work if vc.cross_lines = False.
+
 .. @+node:ekr.20140807112800.18121: *4* Theory of Vim Mode
 @language rest
 
@@ -21,6 +31,14 @@ Ironically, now that everything is hard coded in tables, it would be easy
 for plugins to customize the workings of vim-mode.
 
 https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
+
+Handling ivars
+- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
+- Scratch vars: must be inited by each command handler.
+- It's crucial that commands be limited to the body pane in which they started.
+    - Changing modes, even outside the vim-mode code,
+      must result in a call to vc.quit.
+
 .. @+node:ekr.20140809042852.18187: *5* overview
 The code in leoVim.py implement's Leo's vim-emulation code. This section
 tells all you need to know in order to understand the code.
@@ -145,17 +163,16 @@ This is not completely trivial, but it makes explicit what must happen.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
 
+:gt (focuses next tab)
+:Gt (focuses previous tab) 
+
 dw: delete word, word is the only text object I use, there are many
 http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
 just discovered diw, useful!
 
 v, V, ctrl-v : visual select character, line, column
-
-'/' searched forward, '?' searched backwards
-followed by:
-    'n' for next match
-    '*' find next occurrence of this word
-    #' find previous occurrence
+'*' find next occurrence of this word
+#' find previous occurrence
     
 :% s/text/replaced text/g
     Substitution.
@@ -167,19 +184,6 @@ followed by:
     Shows list of files in the directory:
     selecting and <enter> opens a file
 :tabnew <fname> (opens fname in new tab, without fname, opens tab with new file)
-:gt (focuses next tab)
-:Gt (focuses previous tab) 
-.. @+node:ekr.20140808173212.18069: *4* Next
-- Per-pane bindings in tree pane.
-    - h,j,k,l in outline should work like arrow keys
-    - (maybe) / and ? search only headlines.
-    - gg and G (or maybe even new "tails" for g)
-
-- Fix the dot for insert commands.
-- Extend Leo's undo to show the vim characters for the commands.
-  Equate all vim commands with 'Typing'.
-
-* Bug: t,T,f,T don't work if vc.cross_lines = False.
 .. @+node:ekr.20140808182202.18183: *4* Maybe
 - What to do about different versions of @bool vim_mode in different tabs?
 - tab & shift-tab in normal mode might indent text.
@@ -197,16 +201,6 @@ followed by:
     this one frequently...
 
 EKR: Can't Leo's find command do this?
-.. @+node:ekr.20140806071008.18149: *4* ENB
-@language rest
-
-Handling ivars
-- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
-- Scratch vars: must be inited by each command handler.
-- It's crucial that commands be limited to the body pane in which they started.
-    - Changing modes, even outside the vim-mode code,
-      must result in a call to vc.quit.
-
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
