@@ -2189,5 +2189,5 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@-others
 #@-others
 
-print('vr2 imported correctly')
+# print('vr2 imported correctly')
 #@-leo
