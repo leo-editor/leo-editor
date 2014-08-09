@@ -17544,5 +17544,14 @@ def init_ivars_after_done(vc):
     else:
         vc.init_motion_ivars()
         vc.init_state_ivars()
+.. @+node:ekr.20140803220119.18105: *4* vc.init_motion_ivars
+def init_motion_ivars(vc):
+    '''Init all ivars related to motions.'''
+    vc.in_motion = False
+        # True if parsing an *inner* motion, the 2j in d2j.
+    vc.motion_func = None
+        # The callback handler to execute after executing an inner motion.
+    vc.motion_i = None
+        # The offset into the text at the start of a motion.
 .. @-all
 .. @-leo

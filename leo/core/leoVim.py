@@ -161,7 +161,7 @@ class VimCommands:
         vc.k = c.k
         vc.init_constant_ivars()
         vc.init_dot_ivars()
-        vc.init_motion_ivars()
+        ### vc.init_motion_ivars()
         vc.init_persistent_ivars()
         vc.init_state_ivars()
         vc.create_dispatch_dicts()
@@ -469,15 +469,6 @@ class VimCommands:
             # List of printable characters
         vc.register_names = string.ascii_letters
             # List of register names.
-    #@+node:ekr.20140803220119.18105: *5* vc.init_motion_ivars
-    def init_motion_ivars(vc):
-        '''Init all ivars related to motions.'''
-        vc.in_motion = False
-            # True if parsing an *inner* motion, the 2j in d2j.
-        vc.motion_func = None
-            # The callback handler to execute after executing an inner motion.
-        vc.motion_i = None
-            # The offset into the text at the start of a motion.
     #@+node:ekr.20140803220119.18106: *5* vc.init_state_ivars
     def init_state_ivars(vc):
         '''Init all ivars related to command state.'''
@@ -499,6 +490,12 @@ class VimCommands:
             # Use the handler for normal mode.
         vc.in_command = False
             # True: we have seen some command characters.
+        vc.in_motion = False
+            # True if parsing an *inner* motion, the 2j in d2j.
+        vc.motion_func = None
+            # The callback handler to execute after executing an inner motion.
+        vc.motion_i = None
+            # The offset into the text at the start of a motion.
         vc.n1 = 1
             # The first repeat count.
         vc.n = 1
@@ -544,18 +541,6 @@ class VimCommands:
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
-    #@+node:ekr.20140807070500.18163: *4* vc.reset
-    def reset(vc,setFocus):
-        '''
-        Called from k.keyboardQuit when the user types Ctrl-G (setFocus = True).
-        Also called when the user clicks the mouse (setFocus = False).
-        '''
-        if setFocus:
-            # A hard reset.
-            vc.quit()
-        else:
-            # Do *not* change vc.state!
-            pass
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(vc,add_to_dot=True,handler=None,return_value=True):
@@ -579,10 +564,11 @@ class VimCommands:
     #@+node:ekr.20140806163730.18156: *5* vc.accept_or_done
     def accept_or_done(vc):
         '''call vc.accept() in visual mode; done() otherwise.'''
-        if vc.state == 'visual':
-            vc.accept()
-        else:
-            vc.done()
+        # if vc.state == 'visual':
+            # vc.accept()
+        # else:
+            # vc.done()
+        vc.done()
     #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(vc):
         '''Delegate the present key to k.masterKeyHandler.'''
@@ -591,24 +577,31 @@ class VimCommands:
     #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
         '''Complete a command, preserving text and optionally updating the dot.'''
-        if set_dot:
-            stroke2 = stroke or vc.stroke if add_to_dot else None
-            vc.compute_dot(stroke2)
-        # Undoably preserve any changes to the body.
-        vc.save_body()
-        # Clear all state, enter normal mode & show the status.
-        if vc.in_motion:
-            vc.next_func = None
-            # The minimum required.
+        if vc.state == 'visual':
+            ### vc.accept()
+            ### same as:
+            ### vc.accept(add_to_dot=True,handler=None,return_value=True)
+            vc.add_to_dot()
+            vc.return_value = True
         else:
-            vc.init_motion_ivars()
-            vc.init_state_ivars()
-        vc.show_status()
-        vc.return_value = return_value
+            if set_dot:
+                stroke2 = stroke or vc.stroke if add_to_dot else None
+                vc.compute_dot(stroke2)
+            # Undoably preserve any changes to the body.
+            vc.save_body()
+            # Clear all state, enter normal mode & show the status.
+            if vc.in_motion:
+                vc.next_func = None
+                # Do *not* change vc.in_motion!
+            else:
+                ### vc.init_motion_ivars()
+                vc.init_state_ivars()
+            vc.show_status()
+            vc.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(vc):
         '''Ignore the present key without passing it to k.masterKeyHandler.'''
-        g.trace('ignoring',vc.stroke)
+        g.es('ignoring',vc.stroke,color='blue')
         vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
@@ -623,7 +616,20 @@ class VimCommands:
         Abort any present command.
         Don't set the dot and enter normal mode.
         '''
+        vc.state = 'normal'
         vc.done(return_value=True,set_dot=False,stroke=None)
+    #@+node:ekr.20140807070500.18163: *5* vc.reset
+    def reset(vc,setFocus):
+        '''
+        Called from k.keyboardQuit when the user types Ctrl-G (setFocus = True).
+        Also called when the user clicks the mouse (setFocus = False).
+        '''
+        if setFocus:
+            # A hard reset.
+            vc.quit()
+        else:
+            # Do *not* change vc.state!
+            pass
     #@+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(vc,i=None,w=None):
@@ -1638,15 +1644,18 @@ class VimCommands:
     #@+node:ekr.20140222064735.16684: *5* vis_escape
     def vis_escape(vc):
         '''Handle Escape in visual mode.'''
+        vc.state = 'normal'
         vc.done()
     #@+node:ekr.20140222064735.16661: *5* vis_J
     def vis_J(vc):
         '''Join the highlighted lines.'''
+        vc.state = 'normal'
         vc.not_ready()
         ### vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16656: *5* vis_c (to do)
     def vis_c(vc):
         '''Change the highlighted text.'''
+        vc.state = 'normal'
         vc.not_ready()
         ### vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16657: *5* vis_d
@@ -1657,12 +1666,14 @@ class VimCommands:
             i1 = vc.vis_mode_i
             i2 = w.getInsertPoint()
             w.delete(i1,i2)
+            vc.state = 'normal'
             vc.done(set_dot=True)
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16659: *5* vis_u
     def vis_u(vc):
         '''Make highlighted text lowercase.'''
+        vc.state = 'normal'
         vc.not_ready()
         ### vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16681: *5* vis_v
@@ -1671,6 +1682,7 @@ class VimCommands:
         if 1:
             # End visual node, retain the selection, and set the dot.
             # This makes much more sense in Leo.
+            vc.state = 'normal'
             vc.done()
         else:
             # The real vim clears the selection.
@@ -1680,12 +1692,14 @@ class VimCommands:
                 w.setSelectionRange(i,i)
                 # Visual mode affects the dot only if there is a terminating command.
                 vc.dot_list = vc.old_dot_list
+                vc.state = 'normal'
                 vc.done(set_dot=False)
     #@+node:ekr.20140222064735.16660: *5* vis_y
     def vis_y(vc):
         '''Yank the highlighted text.'''
         if vc.is_text_widget(vc.w):
             vc.c.frame.copyText(event=vc.event)
+            vc.state = 'normal'
             vc.done(set_dot=True)
         else:
             vc.quit()
