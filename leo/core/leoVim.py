@@ -451,7 +451,6 @@ class VimCommands:
                 vc.w = None
             if c.config.getBool('vim-trainer-mode',default=False):
                 toggle_vim_trainer_mode(event=g.Bunch(c=c))
-                
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -473,7 +472,6 @@ class VimCommands:
     #@+node:ekr.20140803220119.18105: *5* vc.init_motion_ivars
     def init_motion_ivars(vc):
         '''Init all ivars related to motions.'''
-        # g.trace(g.callers(2))
         vc.in_motion = False
             # True if parsing an *inner* motion, the 2j in d2j.
         vc.motion_func = None
@@ -513,9 +511,6 @@ class VimCommands:
             # The selection range at the start of a command.
         vc.repeat_list = []
             # The characters of the current repeat count.
-        vc.restart_func = None
-            # The previous value of vc.next_func.
-            # vc.beep restores vc.next_function using this.
         vc.return_value = True
             # The value returned by vc.do_key.
             # Handlers set this to False to tell k.masterKeyHandler to handle the key.
@@ -530,8 +525,9 @@ class VimCommands:
     #@+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(vc):
         '''Init ivars that are never re-inited.'''
-        # vc.border_inited = False
-            # True if the border has been inited.
+        c = vc.c
+        vc.cross_lines = c.config.getBool('vim-crosses-lines',default=True)
+            # True: allow f,F,h,l,t,T,x to cross line boundaries.
         vc.register_d = {}
             # Keys are letters; values are strings.
         vc.trainer = False
@@ -545,24 +541,6 @@ class VimCommands:
             # cleared after doing the j,j abbreviation.
     #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
     # Called from command handlers or the ctor.
-    #@+node:ekr.20140803220119.18101: *5* vc.init_ivars_after_done
-    def init_ivars_after_done(vc):
-        '''
-        Init vim-mode ivars when a command completes.
-        However, calling done does *not* change motion state???
-        '''
-        if vc.in_motion:
-            vc.next_func = None
-            # The minimum required.
-        else:
-            vc.init_motion_ivars()
-            vc.init_state_ivars()
-    #@+node:ekr.20140803220119.18100: *5* vc.init_ivars_after_quit
-    def init_ivars_after_quit(vc):
-        '''Init vim-mode ivars after the keyboard-quit command.'''
-        vc.init_motion_ivars()
-        vc.init_state_ivars()
-
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
@@ -619,13 +597,18 @@ class VimCommands:
         # Undoably preserve any changes to the body.
         vc.save_body()
         # Clear all state, enter normal mode & show the status.
-        vc.init_ivars_after_done()
-            # Note: nothing cleared if vc.in_motion!
+        if vc.in_motion:
+            vc.next_func = None
+            # The minimum required.
+        else:
+            vc.init_motion_ivars()
+            vc.init_state_ivars()
         vc.show_status()
         vc.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(vc):
         '''Ignore the present key without passing it to k.masterKeyHandler.'''
+        g.trace('ignoring',vc.stroke)
         vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
@@ -998,16 +981,23 @@ class VimCommands:
             vc.quit()
 
     def vim_F2(vc):
+        '''Handle F <stroke>'''
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
+                ### Doesn't work if vc.cross_lines is False.
                 for z in range(vc.n1*vc.n):
                     i -= 1
                     while i >= 0 and s[i] != vc.ch:
-                        i -= 1
+                        if vc.cross_lines:
+                            i -= 1
+                        elif s[i] != '\n':
+                            i -= 1
+                        else:
+                            break
                 if i >= 0 and s[i] == vc.ch:
                     # g.trace(i1-i,vc.ch)
                     if vc.state == 'visual':
@@ -1021,23 +1011,31 @@ class VimCommands:
             vc.quit()
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
     def vim_f(vc):
-        '''move past the Nth occurrence of <char>.'''
+        '''move past the Nth occurrence of <stroke>.'''
         if vc.is_text_widget(vc.w):
             vc.accept(handler=vc.vim_f2)
         else:
             vc.quit()
 
     def vim_f2(vc):
-        
+        '''Handle f <stroke>'''
+        trace = bool and not g.unitTesting
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
+                match_i = None
+                ### Doesn't work if vc.cross_lines is False.
                 for z in range(vc.n1*vc.n):
                     while i < len(s) and s[i] != vc.ch:
-                        i += 1
+                        if vc.cross_lines:
+                            i += 1
+                        elif s[i] != '\n':
+                            i += 1
+                        else:
+                            break
                     i += 1
                 i -= 1
                 if i < len(s) and s[i] == vc.ch:
@@ -1275,9 +1273,9 @@ class VimCommands:
     def vim_P(vc):
         '''Paste an outline at the cursor.'''
         vc.not_ready()
-    #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
+    #@+node:ekr.20140808173212.18070: *5* vc.vim_pound (not yet)
     def vim_pound(vc):
-        '''Find previous occurance of selected word.''' # Really?
+        '''Find previous occurance of word under the cursor.'''
         vc.not_ready()
     #@+node:ekr.20140220134748.16623: *5* vc.vim_q (registers)
     def vim_q(vc):
@@ -1345,17 +1343,23 @@ class VimCommands:
             vc.quit()
         
     def vim_t2(vc):
-        
+        '''Handle t <stroke>'''
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
+                ### Doesn't work if vc.cross_lines is False.
                 for n in range(vc.n1*vc.n):
                     i += 1
                     while i < len(s) and s[i] != vc.ch:
-                        i += 1
+                        if vc.cross_lines:
+                            i += 1
+                        elif s[i] != '\n':
+                            i += 1
+                        else:
+                            break
                 if i < len(s) and s[i] == vc.ch:
                     if vc.state == 'visual':
                         for z in range(i-i1):
@@ -1376,7 +1380,7 @@ class VimCommands:
             vc.quit()
 
     def vim_T2(vc):
-        
+        '''Handle T <stroke>'''
         if vc.is_text_widget(vc.w):
             ec = vc.c.editCommands
             w = vc.w
@@ -1385,10 +1389,16 @@ class VimCommands:
                 i = i1 = w.getInsertPoint()
                 if i > 0 and s[i-1] == vc.ch:
                     i -= 1 # ensure progess.
+                ### Doesn't work if vc.cross_lines is False.
                 for n in range(vc.n1*vc.n):
                     i -= 1
                     while i >= 0 and s[i] != vc.ch:
-                        i -= 1
+                        if vc.cross_lines:
+                            i -= 1
+                        elif s[i] != '\n':
+                            i -= 1
+                        else:
+                            break
                 if i >= 0 and s[i] == vc.ch:
                     # g.trace(i1-i-1,vc.ch)
                     if vc.state == 'visual':
@@ -1410,8 +1420,9 @@ class VimCommands:
     def vim_v(vc):
         '''Start visual mode.'''
         if vc.n1_seen:
-            vc.beep('%sv not valid' % vc.n1)
-            vc.done()
+            vc.ignore()
+            # vc.beep('%sv not valid' % vc.n1)
+            # vc.done()
         elif vc.is_text_widget(vc.w):
             vc.vis_mode_w = w = vc.w
             vc.vis_mode_i = w.getInsertPoint()
@@ -1433,10 +1444,23 @@ class VimCommands:
         else:
             vc.quit()
         
-    #@+node:ekr.20140220134748.16629: *5* vc.vim_x (to do)
+    #@+node:ekr.20140220134748.16629: *5* vc.vim_x
     def vim_x(vc):
         '''Delete N characters under and after the cursor.'''
-        vc.not_ready()
+        w = vc.w
+        if vc.is_text_widget(w):
+            for z in range(vc.n1*vc.n):
+                # It's simplest just to get the text again.
+                s = w.getAllText()
+                i = w.getInsertPoint()
+                if i > 0:
+                    if vc.cross_lines or s[i-1] != '\n':
+                        w.delete(i-1,i)
+                else:
+                    break
+            vc.done()
+        else:
+            vc.quit()
     #@+node:ekr.20140220134748.16630: *5* vc.vim_y
     def vim_y(vc):
         '''
@@ -1670,7 +1694,7 @@ class VimCommands:
     def do_key(vc,event):
         '''
         Handle the next key in vim mode:
-        - Set vc.event, vc.w and vc.stroke for *all* handlers.
+        - Set vc.event, vc.w, vc.stroke and vc.ch for *all* handlers.
         - Call vc.handler.
         Return True if k.masterKeyHandler should handle this key.
         '''
@@ -1701,12 +1725,13 @@ class VimCommands:
             return True
         else:
             return False
-    #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars (uses in_command)
+    #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars
     def init_scanner_vars(vc,event):
         '''Init all ivars used by the scanner.'''
         assert event
         vc.event = event
         stroke = event.stroke
+        vc.ch = event.char # Required for f,F,t,T.
         vc.stroke = stroke.s if g.isStroke(stroke) else stroke
         vc.w = event and event.w
         if not vc.in_command:
@@ -1851,17 +1876,6 @@ class VimCommands:
             if s and s != 'period':
                 event = VimEvent(s,vc.w)
                 vc.command_list.append(event)
-    #@+node:ekr.20140222064735.16700: *4* vc.beep
-    def beep(vc,message=''):
-        '''Indicate an ignored character.'''
-        if message:
-            g.trace(message)
-        else:
-            g.trace('ignoring',vc.stroke)
-            vc.stroke = None
-                # Don't put it in the dot.
-            vc.next_func = vc.restart_func
-            vc.restart_func = None
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot
     def compute_dot(vc,stroke):
         '''Compute the dot and set vc.dot.'''

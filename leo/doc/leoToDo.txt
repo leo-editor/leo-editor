@@ -8,35 +8,27 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Add the following:
-  '*' find next occurrence of this word
-   #' find previous occurrence
-
-- Use scratch ivars where possible.
-    - vc.accept and vc.done should only explicitly set state ivars.
-    - define vc.init_scratch_ivars.
-
-- x works like del, but does not cross lines.
 * Theory of Vim Mode
+
+- Update dot in find commands: add hook to LeoFind class.
+.. @+node:ekr.20140808173212.18069: *4* Next
 - Per-pane bindings in tree pane.
     - h,j,k,l in outline should work like arrow keys
     - (maybe) / and ? search only headlines.
     - gg and G (or maybe even new "tails" for g)
-.. @+node:ekr.20140808173212.18069: *4* Next
-- Limit t,T,f,T to single line.
+
 - Fix the dot for insert commands.
 - Extend Leo's undo to show the vim characters for the commands.
   Equate all vim commands with 'Typing'.
-- What to do about different versions of @bool vim_mode in different tabs?
 
+* Bug: t,T,f,T don't work if vc.cross_lines = False.
+.. @+node:ekr.20140808182202.18183: *4* Maybe
+- What to do about different versions of @bool vim_mode in different tabs?
 - tab & shift-tab in normal mode might indent text.
   They do nothing in the real vim.  Sheesh.
-
-.. @+node:ekr.20140807112800.18121: *4* Theory of Vim Mode
-- based on: https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
-
-- Ironically, now that everything is hard coded in tables, it would be easy
-  for plugins to customize the workings of vim-mode.
+- '*' find next occurrence of the word under the cursor.
+   #' find previous occurrence
+- Ctrl-C works like escape (Conflicts with copy-text)
 .. @+node:ekr.20140806071008.18149: *4* ENB
 @language rest
 

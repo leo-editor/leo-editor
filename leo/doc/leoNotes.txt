@@ -17517,5 +17517,32 @@ def do_key(vc,event):
                 g.es('not in body',vc.stroke)
         vc.quit()
         return False # Delegate the stroke.
+.. @+node:ekr.20140222064735.16700: *4* vc.beep
+def beep(vc,message=''):
+    '''Indicate an ignored character.'''
+    if message:
+        g.trace(message)
+    else:
+        g.trace('ignoring',vc.stroke)
+        vc.stroke = None
+            # Don't put it in the dot.
+.. @+node:ekr.20140803220119.18100: *4* vc.init_ivars_after_quit
+def init_ivars_after_quit(vc):
+    '''Init vim-mode ivars after the keyboard-quit command.'''
+    vc.init_motion_ivars()
+    vc.init_state_ivars()
+
+.. @+node:ekr.20140803220119.18101: *4* vc.init_ivars_after_done
+def init_ivars_after_done(vc):
+    '''
+    Init vim-mode ivars when a command completes.
+    However, calling done does *not* change motion state???
+    '''
+    if vc.in_motion:
+        vc.next_func = None
+        # The minimum required.
+    else:
+        vc.init_motion_ivars()
+        vc.init_state_ivars()
 .. @-all
 .. @-leo
