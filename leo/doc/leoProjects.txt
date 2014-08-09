@@ -526,13 +526,14 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+
+
 - Merged vc.init_motion_ivars into vc.init_state_ivars.
 - vc.accept_or_done now just calls vc.done.
     - This prepares to change all calls to vc.accept_or_done to vc.done.
     - I'll actually do this after more testing.
     - To do this, all code that ends visual mode must set
       vc.state = 'normal' before calling vc.done()
-    
 - Removed unused vc.restart_func ivar.
 - Replaced the only call to vc.beep by vc.ignore.
 - Added x command.

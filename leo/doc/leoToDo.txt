@@ -8,46 +8,139 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-* Theory of Vim Mode
+- Finish Theory of Vim Mode.
+
+- Finish find commands
+    - Put hooks in leoFind.showSuccess and showFailure to set the dot.
 
 - Update dot in find commands: add hook to LeoFind class.
-.. @+node:ekr.20140808173212.18069: *4* Next
-- Per-pane bindings in tree pane.
-    - h,j,k,l in outline should work like arrow keys
-    - (maybe) / and ? search only headlines.
-    - gg and G (or maybe even new "tails" for g)
-
-- Fix the dot for insert commands.
-- Extend Leo's undo to show the vim characters for the commands.
-  Equate all vim commands with 'Typing'.
-
-* Bug: t,T,f,T don't work if vc.cross_lines = False.
-.. @+node:ekr.20140808182202.18183: *4* Maybe
-- What to do about different versions of @bool vim_mode in different tabs?
-- tab & shift-tab in normal mode might indent text.
-  They do nothing in the real vim.  Sheesh.
-- '*' find next occurrence of the word under the cursor.
-   #' find previous occurrence
-- Ctrl-C works like escape (Conflicts with copy-text)
-.. @+node:ekr.20140806071008.18149: *4* ENB
+.. @+node:ekr.20140807112800.18121: *4* Theory of Vim Mode
 @language rest
 
-Handling ivars
-- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
-- Scratch vars: must be inited by each command handler.
-- It's crucial that commands be limited to the body pane in which they started.
-    - Changing modes, even outside the vim-mode code,
-      must result in a call to vc.quit.
+Ironically, now that everything is hard coded in tables, it would be easy
+for plugins to customize the workings of vim-mode.
 
-vc.begin_motion inits motion vars.
-vc.check_motion double checks that w and p have not changed.
+https://groups.google.com/d/msg/leo-editor/SVmxgvcQbqY/u0uNrFUmvE8J
+.. @+node:ekr.20140809042852.18187: *5* overview
+The code in leoVim.py implement's Leo's vim-emulation code. This section
+tells all you need to know in order to understand the code.
 
-*all* arrow keys must be bound to vc.arrow.
-This allows them to be ignored during commands.
+==== Init code.
 
-Handling finds.
-leoFind.showSuccess and showFailure will have vc hooks to end the vim-mode command.
-vim find commands will set node-only on entry, and restore on exit.
+Each ivar is inited by exactly one of the following.
+
+    vc.init_constant_ivars()
+    vc.init_dot_ivars()
+    vc.init_persistent_ivars()
+    vc.init_state_ivars()
+    vc.create_dispatch_dicts()
+    
+In effect, this code partitions each ivar into disjoint sets. This
+partitioning simlifies code that must re-init some ivars but not others.
+
+The init code creates **dispatch dicts** used by dispatchers.  
+
+==== Dispatchers.
+
+Depending on various state date, dispatchers route incoming keys to the
+proper **key handler**.
+   
+vc.do_key is the top-level dispatcher. k.masterKeyHandler calls it for all
+keys *except* Ctrl-G when there no key state in effect, that is, when the
+minibuffer is not active. As discussed below, the value retured by
+vc.do_key tells k.masterKeyHander whether vim mode has completely handled
+the key.
+
+Depending on the vc.handler ivar, vc.do_key can route the incoming key
+either to an **inner dispatcher** or directly to a key handler.
+
+Inner dispatchers handle keys for a particular vim mode using dispatch
+dicts. Inner disptachers the following ivars behind the schenes::
+
+    vc.handler, vc.next_func, vc.return_value
+    vc.in_motion and vc.motion_func
+    
+Handling these ivars can be tricky; hiding the details greatly simplifies all
+key handlers.
+  
+=== Key handlers and acceptance methods
+
+Key handlers handle a single key during the parsing of a vim command. Key
+handlers can either complete a command, thereby actually doing something,
+or change state so as to be able to parse (and possibly complete) the next
+incoming keystroke.
+
+When a key handler must end wit a call to an **acceptance method**.
+Acceptance methods prepare for the next keystroke by setting internal state
+ivars used by the various dispatchers.
+
+Most key handlers simply call vc.done(). This method handles all the
+details of completing a key handler: it hides the details of parsing vim command.
+
+There is only one special case to be aware of when calling vc.done(): key
+handlers must set vc.state = 'normal' when ending visual mode.
+
+Key handlers can call either **direct acceptance methods**, vc.accept,
+vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or
+**indirect acceptance methods**: vc.begin_insert_mode, vc.begin_motion,
+vc.end_insert_mode, and vc.vim_digits. Indirect acceptance methods must
+eventually call direct acceptance methods.
+
+==== vc.return_value and internal error checking
+
+vc.do_key returns the value of vc.return_value. Most the acceptance
+functions set vc.return_value to True, indicating that vim mode has
+completely handled the key and that k.masterKeyHandler should simply
+return. k.masterKeyHandler handles the key as usual if vc.do_key returns
+False.
+
+Each key handler sets vc.return_value indirectly by calling an acceptance
+method. A simple check in vc.do_key ensures that every key handler, has, in
+fact, called an acceptance method. In practice, this check has been very
+effective.
+
+===== Summary
+
+Despite the inherent complexity of parsing vim commands, dispatchers and
+key handlers are completely unaware of each other! Dispatch dicts and
+acceptance methods sheild dispatchers and key handlers of all knowledge of
+each other. In particular, acceptance methods handle the sometimes tricky
+details of ending a key handler.
+
+Leo's vim code is spectacularly different from the real vim's code.
+Wherever possible, Leo uses methods to hide implementation details.
+.. @+node:ekr.20140809042852.18192: *5* writing a key handler
+To do:
+
+- testing environment using vc.w.
+- Calling accept, done, ignore, quit.
+- Using the widget interface.
+
+
+The vim_d_... family of methods are examples of command handlers. In rough
+outline, they are...
+
+    def vim_d(vc):
+        vc.accept(handler=vc.vim_d2)
+            # Accept the 'd' and let vc.vim_d2 handle the next character.
+      
+    def vim_d2(vc):
+        if vc.stroke == 'd':
+            << delete the line >>
+            vc.done()
+        else:
+            vc.handler=None
+            vc.begin_motion(after_motion_handler=vc.vim_d3)
+                # vc.vim_d3 will be called when the motion is completed.
+            assert vc.handler
+                # vc.begin_motion (or a helper!) must set vc.handler *now*.
+   
+    def vim_d3(vc):
+        << Complete the d command after the cursor has moved >>
+        vc.done()
+            # Properly updates the dot.
+
+This is not completely trivial, but it makes explicit what must happen.
 
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
@@ -76,7 +169,25 @@ followed by:
 :tabnew <fname> (opens fname in new tab, without fname, opens tab with new file)
 :gt (focuses next tab)
 :Gt (focuses previous tab) 
-.. @+node:ekr.20140803220119.18110: *4* From Jake:
+.. @+node:ekr.20140808173212.18069: *4* Next
+- Per-pane bindings in tree pane.
+    - h,j,k,l in outline should work like arrow keys
+    - (maybe) / and ? search only headlines.
+    - gg and G (or maybe even new "tails" for g)
+
+- Fix the dot for insert commands.
+- Extend Leo's undo to show the vim characters for the commands.
+  Equate all vim commands with 'Typing'.
+
+* Bug: t,T,f,T don't work if vc.cross_lines = False.
+.. @+node:ekr.20140808182202.18183: *4* Maybe
+- What to do about different versions of @bool vim_mode in different tabs?
+- tab & shift-tab in normal mode might indent text.
+  They do nothing in the real vim.  Sheesh.
+- '*' find next occurrence of the word under the cursor.
+   #' find previous occurrence
+- Ctrl-C works like escape (Conflicts with copy-text)
+
 :1,$ s/^/  /g
 
     From line 1 to EOF ($), replace the beginning of the line (^) with two
@@ -86,7 +197,15 @@ followed by:
     this one frequently...
 
 EKR: Can't Leo's find command do this?
-.. @+node:ekr.20140801121720.18067: *4* Later
+.. @+node:ekr.20140806071008.18149: *4* ENB
+@language rest
+
+Handling ivars
+- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
+- Scratch vars: must be inited by each command handler.
+- It's crucial that commands be limited to the body pane in which they started.
+    - Changing modes, even outside the vim-mode code,
+      must result in a call to vc.quit.
 
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
