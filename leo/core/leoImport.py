@@ -13,6 +13,7 @@
 import leo.core.leoGlobals as g
 docutils = g.importExtension('docutils',pluginName='leoImport.py')
 import glob
+import importlib
 import os
 if g.isPython3:
     import io
@@ -68,38 +69,40 @@ class LeoImportCommands:
         seen = set()
         for kind,plugins in (('home',plugins1),('leo',plugins2)):
             path = g.os_path_finalize_join(plugins,folder)
-            pattern = g.os_path_finalize_join(path,'*.py')
-            for fn in glob.glob(pattern):
-                sfn = g.shortFileName(fn)
-                if g.os_path_exists(fn) and sfn != '__init__.py':
-                    moduleName = sfn[:-3]
-                    if moduleName:
-                        data = (folder,sfn)
-                        if data in seen:
-                            report('seen',kind,folder,sfn)
-                        else:
-                            m = g.importFromPath(moduleName,path) # Uses imp.
-                            if m:
-                                seen.add(data)
-                                self.parse_importer_dict(sfn,m)
-                                report('loaded',kind,folder,m.__name__)
+            if 1: # Old code...
+                pattern = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers','*.py')
+                for fn in glob.glob(pattern):
+                    sfn = g.shortFileName(fn)
+                    if sfn != '__init__.py':
+                        try:
+                            module_name = sfn[:-3]
+                            # Important: use importlib to give imported modules their fully qualified names.
+                            m = importlib.import_module('leo.plugins.importers.%s' % module_name)
+                            self.parse_importer_dict(sfn,m)
+                        except Exception:
+                            g.es_exception()
+                            g.warning('can not import leo.plugins.importers.%s' % module_name)
+            else: # New code: has problems.
+                pattern = g.os_path_finalize_join(path,'*.py')
+                for fn in glob.glob(pattern):
+                    sfn = g.shortFileName(fn)
+                    if g.os_path_exists(fn) and sfn != '__init__.py':
+                        moduleName = sfn[:-3]
+                        if moduleName:
+                            data = (folder,sfn)
+                            if data in seen:
+                                report('seen',kind,folder,sfn)
                             else:
-                                report('error',kind,folder,sfn)
-                # else: report('skipped',kind,folder,sfn)
+                                m = g.importFromPath(moduleName,path) # Uses imp.
+                                if m:
+                                    seen.add(data)
+                                    self.parse_importer_dict(sfn,m)
+                                    report('loaded',kind,folder,m.__name__)
+                                else:
+                                    report('error',kind,folder,sfn)
+                    # else: report('skipped',kind,folder,sfn)
 
-        ### Old code...
-        # pattern = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers','*.py')
-        # for fn in glob.glob(pattern):
-            # sfn = g.shortFileName(fn)
-            # if sfn != '__init__.py':
-                # try:
-                    # module_name = sfn[:-3]
-                    # # Important: use importlib to give imported modules their fully qualified names.
-                    # m = importlib.import_module('leo.plugins.importers.%s' % module_name)
-                    # self.parse_importer_dict(sfn,m)
-                # except Exception:
-                    # g.es_exception()
-                    # g.warning('can not import leo.plugins.importers.%s' % module_name)
+
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
@@ -118,7 +121,7 @@ class LeoImportCommands:
                 d = ic.atAutoDict
                 for s in at_auto:
                     aClass = d.get(s)
-                    if aClass:
+                    if aClass and aClass != scanner_class:
                         g.trace('%s: duplicate %5s class: %s in %s' % (
                             sfn,s,aClass.__name__,m.__file__))
                     else:
@@ -133,7 +136,7 @@ class LeoImportCommands:
                 d = ic.classDispatchDict
                 for ext in extensions:
                     aClass = d.get(ext)
-                    if aClass:
+                    if aClass and aClass != scanner_class:
                         g.trace('%s: duplicate %s class: %s in %s' % (
                             sfn,ext,aClass.__name__,m.__file__))
                     else:

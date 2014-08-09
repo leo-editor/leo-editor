@@ -808,23 +808,23 @@ class AutoCompleterClass:
         return aList
     #@+node:ekr.20110512090917.14466: *4* get_leo_namespace
     def get_leo_namespace (self,prefix):
-
-        '''Return an environment in which to evaluate prefix.
-
-        Add some common standard library modules as needed.'''
-
-
+        '''
+        Return an environment in which to evaluate prefix.
+        Add some common standard library modules as needed.
+        '''
+        trace = False and not g.unitTesting
         k = self.k
         d = {'c':k.c, 'p':k.c.p, 'g':g}
-
         aList = prefix.split('.')
         if len(aList) > 1:
             name = aList[0]
             m = sys.modules.get(name)
             if m:
                 d[name]= m
-
-        # g.trace(list(d.keys()))
+        if trace:
+            g.trace('prefix',prefix,'aList',aList)
+            for key in sorted(d.keys()):
+                g.trace(key,d.get(key))
         return d
     #@+node:ekr.20110512170111.14472: *4* get_object
     def get_object (self):
