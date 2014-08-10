@@ -740,14 +740,18 @@ class VimCommands:
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
         ec = vc.c.editCommands
-        if vc.repeat_list:
-            vc.vim_digits()
-        elif vc.is_text_widget(vc.w):
-            # Move to start of line.
-            if vc.state == 'visual':
-                ec.beginningOfLineExtendSelection(vc.event)
+        if vc.is_text_widget(vc.w):
+            if vc.repeat_list:
+                vc.vim_digits()
             else:
-                ec.beginningOfLine(vc.event)
+                # Move to start of line.
+                if vc.state == 'visual':
+                    ec.beginningOfLineExtendSelection(vc.event)
+                else:
+                    ec.beginningOfLine(vc.event)
+                vc.done()
+        elif vc.in_tree(vc.w):
+            vc.c.k.simulateCommand('goto-first-visible-node')
             vc.done()
         else:
             vc.quit()
@@ -945,6 +949,9 @@ class VimCommands:
                 for z in range(vc.n1*vc.n):
                     ec.forwardEndWord(vc.event)
             vc.done()
+        elif vc.in_tree(vc.w):
+            vc.c.k.simulateCommand('goto-last-visible-node')
+            vc.done()
         else:
             vc.quit()
 
@@ -1077,11 +1084,11 @@ class VimCommands:
             event,w = vc.event,vc.w
             ec = vc.c.editCommands
             ec.w = w
+            extend = vc.state == 'visual'
             s = w.getAllText()
             i = w.getInsertPoint()
             if vc.stroke == 'g':
                 # Go to start of buffer.
-                extend = vc.state == 'visual'
                 if not vc.on_same_line(s,0,i):
                     if extend:
                         ec.beginningOfBufferExtendSelection(event)
@@ -1089,8 +1096,26 @@ class VimCommands:
                         ec.beginningOfBuffer(event)
                 ec.backToHome(event,extend=extend)
                 vc.done()
+            elif vc.stroke == 'b':
+                # go to beginning of line: like 0.
+                if vc.state == 'visual':
+                    ec.beginningOfLineExtendSelection(vc.event)
+                else:
+                    ec.beginningOfLine(vc.event)
+                vc.done()
+            elif vc.stroke == 'e':
+                # got to end of line: like $
+                if vc.state == 'visual':
+                    ec.endOfLineExtendSelection(vc.event)
+                else:
+                    vc.c.editCommands.endOfLine(vc.event)
+                vc.done()
+            elif vc.stroke == 'h':
+                # go home: like ^.
+                vc.c.editCommands.backToHome(vc.event,extend=extend)
+                vc.done()
             else:
-                vc.not_ready()
+                vc.ignore()
         else:
             vc.quit()
 
@@ -1117,8 +1142,8 @@ class VimCommands:
                     w.setInsertPoint(i)
             vc.done()
         elif vc.in_tree(vc.w):
-            g.trace('h in tree')
-            vc.quit() # Not ready yet.
+            vc.c.k.simulateCommand('contract-or-go-left')
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16618: *5* vc.vim_i
@@ -1148,8 +1173,8 @@ class VimCommands:
                     ec.nextLine(vc.event)
             vc.done()
         elif vc.in_tree(vc.w):
-            g.trace('j in tree')
-            vc.quit() # Not ready yet.
+            vc.c.k.simulateCommand('goto-next-visible')
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16628: *5* vc.vim_k
@@ -1165,8 +1190,8 @@ class VimCommands:
                     ec.prevLine(vc.event)
             vc.done()
         elif vc.in_tree(vc.w):
-            g.trace('k in tree')
-            vc.quit() # Not ready yet.
+            vc.c.k.simulateCommand('goto-prev-visible')
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16627: *5* vc.vim_l
@@ -1191,8 +1216,8 @@ class VimCommands:
                     w.setInsertPoint(i)
             vc.done()
         elif vc.in_tree(vc.w):
-            g.trace('l in tree')
-            vc.quit() # Not ready yet.
+            vc.c.k.simulateCommand('expand-and-go-right')
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20131111171616.16497: *5* vc.vim_m (to do)

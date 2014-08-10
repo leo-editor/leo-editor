@@ -1148,6 +1148,7 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140810085801.18230"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20210,8 +20211,9 @@ and to add new vim commands.
     :depth: 3
 </t>
 <t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,w.
+  The h,j,k,l commands work on outlines when entered in the outline pane.
 - Deleting text: d{motion},{motion}d,v{motion}d,x.
-- Insert commands: a,A,i,o,O
+- Insert commands: a,A,i,o,O and switch to insert mode if entered in the outline pane.
 - Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
 - Search commands: /,?,n. Coming soon: c,*,#.
 - The dot command '.' works for motions, but not yet for inserts or searches.
@@ -20219,7 +20221,7 @@ and to add new vim commands.
 
 Notes:
 
-- Vim-mode commands that change or scan text must be entered in the body pane.
+- Except as noted above, all vim-mode commands must be entered in the body pane.
 - All unit tests now pass regardless of vim mode.
 - &lt;Return&gt; in headlines switches to the outline pane.
 - &lt;Return&gt; in the outline pane switches to the body pane.

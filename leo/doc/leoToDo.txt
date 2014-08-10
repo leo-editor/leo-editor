@@ -7,30 +7,25 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
-First:
 - Update dot in find commands: add hook to leoFind.showSuccess and showFailure
-    - Don't / and ? have to be confined to the present body pane?
-- Per-pane bindings in tree pane.
-    - h,j,k,l in outline should work like arrow keys
-    - (maybe) / and ? search only headlines.
-    - gg and G (or maybe even new "tails" for g)
+    - Confine / and ? to existing body pane?
+- '*' find next occurrence of the word under the cursor.
+   #' find previous occurrence
 Bugs:
 - Fix the dot for insert commands.
 - t,T,f,T don't work if vc.cross_lines = False.
-Next:
+Later:
 - Extend Leo's undo to show the vim characters for the commands.
-    - Equate all vim commands with 'Typing'.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
 
 :gt (focuses next tab)
 :Gt (focuses previous tab) 
 
-dw: delete word, word is the only text object I use, there are many
-http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
 just discovered diw, useful!
+    http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
 
-v, V, ctrl-v : visual select character, line, column
+
 '*' find next occurrence of this word
 #' find previous occurrence
     
@@ -45,11 +40,13 @@ v, V, ctrl-v : visual select character, line, column
     selecting and <enter> opens a file
 :tabnew <fname> (opens fname in new tab, without fname, opens tab with new file)
 .. @+node:ekr.20140808182202.18183: *4* Maybe
+- Kent: v, V, ctrl-v : visual select character, line, column
+
 - What to do about different versions of @bool vim_mode in different tabs?
+
 - tab & shift-tab in normal mode might indent text.
   They do nothing in the real vim.  Sheesh.
-- '*' find next occurrence of the word under the cursor.
-   #' find previous occurrence
+
 - Ctrl-C works like escape (Conflicts with copy-text)
 
 :1,$ s/^/  /g
@@ -61,6 +58,11 @@ v, V, ctrl-v : visual select character, line, column
     this one frequently...
 
 EKR: Can't Leo's find command do this?
+.. @+node:ekr.20140810124941.18208: *4* Links to new docs
+@language rest
+
+http://leoeditor.com/vim-theory.html
+http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
