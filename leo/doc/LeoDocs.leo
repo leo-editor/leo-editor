@@ -429,7 +429,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
-<v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh>
+<v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
@@ -611,23 +611,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
-<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
-<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
-<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
-</v>
-<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
-<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
-<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
-<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
-</v>
-</v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
@@ -677,6 +660,22 @@
 <v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
 </v>
 </v>
+<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
+<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
+<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
+<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
+<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
+</v>
+<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
+<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
+<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
+<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
@@ -692,6 +691,13 @@
 </v>
 <v t="TL.20080804095315.1"><vh>Leo and Vim</vh>
 <v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh>
+<v t="ekr.20140810153947.6747"><vh>Supported commands</vh></v>
+<v t="ekr.20140810153947.6749"><vh>Abbreviations</vh></v>
+<v t="ekr.20140810153947.6750"><vh>Colon commands</vh></v>
+<v t="ekr.20140810153947.6751"><vh>Settings</vh></v>
+<v t="ekr.20140810153947.6752"><vh>Differences &amp; additions from the real vim</vh></v>
+</v>
 <v t="ekr.20140720203932.17748"><vh>Using vimoutline (.otl) files in Leo</vh></v>
 <v t="ekr.20140810085801.18231"><vh>Using stand-alone vim bindings</vh>
 <v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
@@ -701,7 +707,6 @@
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
 </v>
-<v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
@@ -1143,9 +1148,6 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
-<v t="ekr.20101025080245.5799"></v>
-<v t="ekr.20140810085801.18216"></v>
-<v t="TL.20080804095315.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -1935,11 +1937,11 @@ g.toUnicode.
 Using Vim with Leo
 ###################
 
-This chapter discusses three topics:
+This chapter discusses these topics:
 
-1. How to import and export vim's .otl files.
-2. How to install and use stand-alone vim-like bindings.
-3. How to enable and use Leo's new vim-emulation mode.
+- How to enable and use Leo's new vim-emulation mode.
+- How to import and export vim's .otl files.
+- How to install and use stand-alone vim-like bindings.
 
 .. contents::
     :depth: 3
@@ -15106,6 +15108,7 @@ Downloading Leo
 .. links
 
 .. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.11%20final/
+.. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
 .. _`GitHub`: https://github.com/leo-editor
@@ -16938,7 +16941,7 @@ Preliminaries
    license
 
 .. ..  :titlesonly: </t>
-<t tx="ekr.20131008041326.16080"></t>
+<t tx="ekr.20131008041326.16080">Do *not* nest any @rst nodes.</t>
 <t tx="ekr.20131008041326.16082">.. |---| unicode:: U+02015
    :trim:
 
@@ -16963,8 +16966,9 @@ This is Leo's Users Guide. It covers additional material not covered in the
    customizing
    rstplugin3
    plugins
-   directives
    commands
+   directives
+
 </t>
 <t tx="ekr.20131008041326.16091"></t>
 <t tx="ekr.20131008041326.16092"></t>
@@ -20186,60 +20190,8 @@ effective.
 <t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three
 modes, insert, normal and visual.
 
-Supported commands:
 
-- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,w.
-- Deleting text: d{motion},{motion}d,v{motion}d,x.
-- Insert commands: a,A,i,o,O
-- Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
-- Search commands: /,?,n. Coming soon: c,*,#.
-- The dot command '.' works for motions, but not yet for inserts or searches.
-- v: start/end visual mode.
     
-Notes:
-
-- Vim-mode commands that change or scan text must be entered in the body pane.
-- All unit tests now pass regardless of vim mode.
-- &lt;Return&gt; in headlines switches to the outline pane.
-- &lt;Return&gt; in the outline pane switches to the body pane.
-.. - h,j,k,l in the outline pane work like arrow keys.
-
-Abbreviations:
-
-- The ``jj`` abbreviation switches to normal mode,
-  preserving the changed status of the .leo file.
-- ``,,`` in normal mode now moves to insert mode.
-  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
-- Return in visual/normal mode enters insert mode.
-
-Colon commands:
-
-The ':' command enters Leo's minibuffer, with ':' pre-inserted.
-You may backspace over the ':'. Here are the commands::
-  
-    :e! Revert all changes to a .leo file, prompting if there have been changes.
-    :q Quit, prompting for saves.
-    :qa Quit only if there are no unsaved changes.
-    :w Save the .leo file.
-    :wa Save all changed  .leo files.
-    :wq Save all open files and exit.
-    :xa ave all open files and exit.
-    :toggle-vim-mode
-    :toggle-vim-trainer-mode
-
-Settings:
-
-- \@bool vim-mode = False
-  True: enable Leo's vim mode.
-
-- \@bool vim-crosses-lines = True
-  True: f,F,h,l,t,T,x commands may cross line boundaries.
-  
-Differences &amp; additions from the real vim:
-
-- Ending visual mode with 'v' retains the selection range.
-- Ctrl-H puts the headline in insert mode.
-- Mouse clicks never change vim's state.
 </t>
 <t tx="ekr.20140810085801.18231"></t>
 <t tx="ekr.20140810085801.18232">#############################
@@ -20256,6 +20208,53 @@ and to add new vim commands.
 
 .. contents::
     :depth: 3
+</t>
+<t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,w.
+- Deleting text: d{motion},{motion}d,v{motion}d,x.
+- Insert commands: a,A,i,o,O
+- Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
+- Search commands: /,?,n. Coming soon: c,*,#.
+- The dot command '.' works for motions, but not yet for inserts or searches.
+- v: start/end visual mode.
+
+Notes:
+
+- Vim-mode commands that change or scan text must be entered in the body pane.
+- All unit tests now pass regardless of vim mode.
+- &lt;Return&gt; in headlines switches to the outline pane.
+- &lt;Return&gt; in the outline pane switches to the body pane.
+
+.. - h,j,k,l in the outline pane work like arrow keys.
+</t>
+<t tx="ekr.20140810153947.6749">- The ``jj`` abbreviation switches to normal mode,
+  preserving the changed status of the .leo file.
+- ``,,`` in normal mode now moves to insert mode.
+  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
+- Return in visual/normal mode enters insert mode.
+
+</t>
+<t tx="ekr.20140810153947.6750">The ':' command enters Leo's minibuffer, with ':' pre-inserted.
+You may backspace over the ':'. Here are the commands::
+  
+    :e! Revert all changes to a .leo file, prompting if there have been changes.
+    :q Quit, prompting for saves.
+    :qa Quit only if there are no unsaved changes.
+    :w Save the .leo file.
+    :wa Save all changed  .leo files.
+    :wq Save all open files and exit.
+    :xa ave all open files and exit.
+    :toggle-vim-mode
+    :toggle-vim-trainer-mode
+
+</t>
+<t tx="ekr.20140810153947.6751">**@bool vim-mode = False**: Enables Leo's vim mode when True.
+
+**@bool vim-crosses-lines = True**: When True the f,F,h,l,t,T,x
+commands may cross line boundaries.
+</t>
+<t tx="ekr.20140810153947.6752">- Ending visual mode with 'v' retains the selection range.
+- Ctrl-H puts the headline in insert mode.
+- Mouse clicks never change vim's state.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
