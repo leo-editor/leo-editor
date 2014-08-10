@@ -27,23 +27,6 @@ Bugs:
 
 .. @+node:ekr.20140807112800.18121: *4* Theory of Vim Mode
 @language rest
-
-The code in leoVim.py implement's Leo's vim-emulation code. This section
-tells all you need to know in order to understand the code.
-
-
-Ironically, now that everything is hard coded in tables, it would be easy
-for plugins to customize the workings of vim-mode.
-
-
-
-Handling ivars
-- Mode handlers know *only* about the vc.next_func and vc.return_value ivars.
-- Scratch vars: must be inited by each command handler.
-- It's crucial that commands be limited to the body pane in which they started.
-    - Changing modes, even outside the vim-mode code,
-      must result in a call to vc.quit.
-
 .. @+node:ekr.20140810053602.18062: *5* The big picture
 Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to
 **key handlers**.
@@ -286,6 +269,9 @@ methods handle the sometimes tricky details of ending a key handler.
 
 Leo's vim code is spectacularly different from the real vim's code.
 Wherever possible, Leo uses methods to hide implementation details.
+
+Ironically, now that everything is hard coded in tables, it would be easy
+for plugins to customize the workings of vim-mode.
 .. @+node:ekr.20140810053602.18063: *6* Initing VimCommands ivars
 Each ivar of the VimCommands class is inited by exactly one of the following::
 
