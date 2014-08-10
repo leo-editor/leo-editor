@@ -226,6 +226,13 @@ rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
 yaml.py:    fixed
+.. @+node:ekr.20140809063010.18177: *4* Fixed autocompleter bug
+@language rest
+
+The problem was in ic.createImporterData, not at.createWritesData.
+A trace in get_leo_namespace pinpointed the problem.
+
+ 
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
