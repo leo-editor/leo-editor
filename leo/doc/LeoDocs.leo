@@ -701,7 +701,7 @@
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
 </v>
-<v t="ekr.20140810085801.18230"><vh>Using Vim Mode (To do)</vh></v>
+<v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
@@ -854,7 +854,7 @@
 </v>
 </v>
 <v t="ekr.20140810085801.18216"><vh>Vim Mode Theory of Operation</vh>
-<v t="ekr.20140810085801.18232"><vh>@rst html/vim_theory.html</vh>
+<v t="ekr.20140810085801.18232"><vh>@rst html/vim-theory.html</vh>
 <v t="ekr.20140810085801.18217"><vh>The big picture</vh></v>
 <v t="ekr.20140810085801.18218"><vh>Overview of key handlers</vh></v>
 <v t="ekr.20140810085801.18219"><vh>Ivars for key handlers</vh></v>
@@ -1143,9 +1143,9 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
-<v t="TL.20080804095315.2"></v>
 <v t="ekr.20101025080245.5799"></v>
 <v t="ekr.20140810085801.18216"></v>
+<v t="TL.20080804095315.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -19894,7 +19894,7 @@ k.masterKeyHandler simply returns. Otherwise, k.masterKeyHandler handles
 the key as usual.
 
 Later sections discuss various code-level details. However, the most
-important section are next. They tell how to write key handlers to support
+important sections are next. They tell how to write key handlers to support
 new vim commands.
 </t>
 <t tx="ekr.20140810085801.18218">Key handlers handle a single key during the parsing of a vim command. Key
@@ -19917,8 +19917,8 @@ Many key handlers simply call vc.done(). This method handles all the
 details of completing a key handler: it hides the details of parsing vim
 command.
 
-**Important**: the vis_... family of key handlers end visual mode. Before
-calling vc.done, each vis_... method must set vc.state = 'normal' 
+**Important**: the ``vis_...`` family of key handlers end visual mode. Before
+calling vc.done, each ``vis_...`` method must set vc.state = 'normal' 
 
 Key handlers can call either **direct acceptance methods**, vc.accept,
 vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or
@@ -19964,6 +19964,7 @@ other key handler.
 </t>
 <t tx="ekr.20140810085801.18222">@language python
 ::
+
     def vim_d(vc):
         '''
         N dd      delete N lines
@@ -19988,6 +19989,7 @@ command.
 </t>
 <t tx="ekr.20140810085801.18223">@language python
 ::
+
     def vim_d2(vc):
         if vc.is_text_widget(vc.w):
             if vc.stroke == 'd':
@@ -20040,6 +20042,7 @@ Finally, vc.vim_d2 calls vc.begin_motion, which does the following:
 </t>
 <t tx="ekr.20140810085801.18224">@language python
 ::
+
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
         # d2w doesn't extend to line.  d2j does.
@@ -20087,6 +20090,7 @@ Finally, this method calls vc.done().
 </t>
 <t tx="ekr.20140810085801.18225">@language python
 ::
+
     def vis_d(vc):
         '''Delete the highlighted text and terminate visual mode.'''
         w  = vc.vis_mode_w
@@ -20179,7 +20183,64 @@ method. A simple check in vc.do_key ensures that every key handler, has, in
 fact, called an acceptance method. In practice, this check has been very
 effective.
 </t>
-<t tx="ekr.20140810085801.18230"></t>
+<t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three
+modes, insert, normal and visual.
+
+Supported commands:
+
+- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,w.
+- Deleting text: d{motion},{motion}d,v{motion}d,x.
+- Insert commands: a,A,i,o,O
+- Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
+- Search commands: /,?,n. Coming soon: c,*,#.
+- The dot command '.' works for motions, but not yet for inserts or searches.
+- v: start/end visual mode.
+    
+Notes:
+
+- Vim-mode commands that change or scan text must be entered in the body pane.
+- All unit tests now pass regardless of vim mode.
+- &lt;Return&gt; in headlines switches to the outline pane.
+- &lt;Return&gt; in the outline pane switches to the body pane.
+.. - h,j,k,l in the outline pane work like arrow keys.
+
+Abbreviations:
+
+- The ``jj`` abbreviation switches to normal mode,
+  preserving the changed status of the .leo file.
+- ``,,`` in normal mode now moves to insert mode.
+  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
+- Return in visual/normal mode enters insert mode.
+
+Colon commands:
+
+The ':' command enters Leo's minibuffer, with ':' pre-inserted.
+You may backspace over the ':'. Here are the commands::
+  
+    :e! Revert all changes to a .leo file, prompting if there have been changes.
+    :q Quit, prompting for saves.
+    :qa Quit only if there are no unsaved changes.
+    :w Save the .leo file.
+    :wa Save all changed  .leo files.
+    :wq Save all open files and exit.
+    :xa ave all open files and exit.
+    :toggle-vim-mode
+    :toggle-vim-trainer-mode
+
+Settings:
+
+- \@bool vim-mode = False
+  True: enable Leo's vim mode.
+
+- \@bool vim-crosses-lines = True
+  True: f,F,h,l,t,T,x commands may cross line boundaries.
+  
+Differences &amp; additions from the real vim:
+
+- Ending visual mode with 'v' retains the selection range.
+- Ctrl-H puts the headline in insert mode.
+- Mouse clicks never change vim's state.
+</t>
 <t tx="ekr.20140810085801.18231"></t>
 <t tx="ekr.20140810085801.18232">#############################
 Vim Mode: Theory of Operation

@@ -7,24 +7,19 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
-
+First:
 - Update dot in find commands: add hook to leoFind.showSuccess and showFailure
     - Don't / and ? have to be confined to the present body pane?
-
-- Extend Leo's undo to show the vim characters for the commands.
-    - Equate all vim commands with 'Typing'.
-
 - Per-pane bindings in tree pane.
     - h,j,k,l in outline should work like arrow keys
     - (maybe) / and ? search only headlines.
     - gg and G (or maybe even new "tails" for g)
-    
-- Finish Theory of Vim Mode: put it on Leo's web site.
-  
 Bugs:
 - Fix the dot for insert commands.
 - t,T,f,T don't work if vc.cross_lines = False.
-
+Next:
+- Extend Leo's undo to show the vim characters for the commands.
+    - Equate all vim commands with 'Typing'.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
 
