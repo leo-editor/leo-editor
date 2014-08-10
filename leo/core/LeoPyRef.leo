@@ -14,16 +14,28 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
-<v t="ekr.20131109170017.46980"><vh>vim settings</vh>
-<v t="ekr.20131109170017.46978"><vh>@@@data vim-control-character-commands</vh></v>
-<v t="ekr.20131109170017.41921"><vh>@data vim-command-tails</vh></v>
-<v t="ekr.20131109170017.41922"><vh>@data vim-commands</vh></v>
-<v t="ekr.20131109170017.46979"><vh>@data vim-motions</vh></v>
-<v t="ekr.20131109170017.46981"><vh>@data vim-motion-tails</vh></v>
-</v>
+<v t="ekr.20140808074553.17926"><vh>@bool vim_trainer_mode = False</vh></v>
+<v t="ekr.20140808172209.18067"><vh>@bool vim_mode = True</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
+</v>
+<v t="ekr.20140808103117.18035"><vh>@persistence</vh>
+<v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
+<v t="ekr.20140808103117.18037"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
+<v t="ekr.20140808103117.18039"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
+<v t="ekr.20140808103117.18041"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
+<v t="ekr.20140808103117.18043"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
+<v t="ekr.20140808103117.18045"><vh>@gnxs</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -55,6 +67,7 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
+<v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285505302e332e3271017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6174696d657107580d000000313331393436373035302e34387108755505302e332e3371097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6174696d65710f580d000000313332303433343235372e33367110755505302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6174696d657117580d000000313331393534393339302e38397118755505302e332e3171197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6174696d65711f580c000000313332303432323637302e397120755505302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755505302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
@@ -264,278 +277,6 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20100120072650.6088"></t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
-<t tx="ekr.20131109170017.41921">char F
-char T
-char f
-char r
-char t
-letter m
-letter q
-motion &lt;
-motion &gt;
-motion c
-motion d
-motion g
-motion y
-pattern /
-pattern ?
-register @
-</t>
-<t tx="ekr.20131109170017.41922"># http://tnerual.eriogerg.free.fr/vimqrc.html
-vim_0 0
-vim_tilda ~
-vim_plus +
-vim_underscore _
-vim_minus -
-vim_comma ,
-vim_dot .
-vim_semicolon ;
-vim_lparen (
-vim_rparen )
-vim_lcurly {
-vim_rcurly }
-vim_vertical |
-vim_backtick `
-vim_dollar $
-vim_caret ^
-vim_percent %
-vim_langle &lt;
-vim_langle &lt;&lt;
-vim_rangle &gt;
-vim_rangle &gt;&gt;
-vim_pound #
-vim_star *
-vim_slash /\\n
-vim_slash /
-vim_question ?\\n
-vim_question ?
-vim_at @
-vim_at @@
-vim_dquote "
-vim_lsquare [#
-vim_lsquare [(
-vim_lsquare [*
-vim_lsquare [[
-vim_lsquare []
-vim_lsquare [p
-vim_lsquare [{
-vim_rsquare ]#
-vim_rsquare ])
-vim_rsquare ]*
-vim_rsquare ][
-vim_rsquare ]]
-vim_rsquare ]p
-vim_rsquare ]}
-vim_A A
-vim_B B
-vim_C C
-vim_D D
-vim_E E
-vim_F F
-vim_G G
-vim_H H
-vim_I I
-vim_J J
-vim_K K
-vim_M M
-vim_L L
-vim_N N
-vim_O O
-vim_P P
-vim_R R
-vim_S S
-vim_T T
-vim_U U
-vim_V V
-vim_W W
-vim_X X
-vim_Y Y
-vim_Z ZQ
-vim_Z ZZ
-vim_a a
-vim_b b
-vim_c c
-vim_d dd
-vim_d d
-vim_g g~
-vim_g g^
-vim_g g#
-vim_g g$
-vim_g g*
-vim_g g0
-vim_g gD
-vim_g gE
-vim_g gI
-vim_g gU
-vim_g ga
-vim_g gd
-vim_g ge
-vim_g gf
-vim_g gg
-vim_g gj
-vim_g gk
-vim_g gq
-vim_g gs
-vim_g gu
-vim_g gv
-vim_h h
-vim_i i
-vim_j j
-vim_k k
-vim_l l
-vim_n n
-vim_m m
-vim_o o
-vim_p p
-vim_q q
-vim_r r
-vim_s s
-vim_t t
-vim_u u
-vim_v v
-vim_w w
-vim_x x
-vim_y y
-vim_y yy
-vim_z z-
-vim_z z.
-vim_z z&lt;CR&gt;
-vim_z zb
-vim_z zh
-vim_z zl
-vim_z zt
-vim_z zz
-</t>
-<t tx="ekr.20131109170017.46978"># Not yet...
-
-    &lt;BS&gt;        delete the character in front of the cursor
-N   &lt;Del&gt;       delete N characters under and after the cursor
-    &lt;Del&gt;       delete the character under the cursor
-    &lt;Del&gt;       while entering a count: delete last character
-    &lt;Down&gt;      recall newer command-line that starts with current command
-    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
-    &lt;Left&gt;      (motion) cursor left
-    &lt;Right&gt;     (motion) cursor right
-    &lt;S-Down&gt;    recall newer command-line from history
-    &lt;S-Left&gt;    (motion) cursor one word left
-    &lt;S-Right&gt;   (motion) cursor one word right
-    &lt;S-Up&gt;      recall older command-line from history
-    &lt;Up&gt;        recall older command-line that starts with current command
-
-N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
-N   CTRL-A                  add N to the number at or after the cursor
-N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  (motion?) cursor to beginning of command-line
-    CTRL-BREAK              MS-DOS: during searches: interrupt the search
-    CTRL-C                  during searches: interrupt the search
-N   CTRL-D                  window N lines Downwards (default: 1/2 window)
-N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  (motion?) cursor to end of command-line
-N   CTRL-F                  (motion) window N pages Forwards (downwards)
-    CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  (motion) go to Nth newer position in jump list
-    CTRL-K {char1} {char2}  enter digraph
-    CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  (motion) go to Nth older position in jump list
-N   CTRL-R                  redo last N undone changes
-    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
-N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
-N   CTRL-U                  window N lines Upwards (default: 1/2 window)
-    CTRL-U                  remove all characters
-    CTRL-V                  highlight blockwise or stop highlighting
-    CTRL-V                  start highlighting blockwise   }  highlighted text
-    CTRL-V {char}           insert {char} literally
-    CTRL-V {number}         enter decimal value of character (up to three digits)
-    CTRL-W                  delete the word in front of the cursor
-    CTRL-W +                Increase current window height
-    CTRL-W -                Decrease current window height
-    CTRL-W =                Make all windows equal height
-    CTRL-W CTRL-W           Move cursor to window below (wrap)
-    CTRL-W CTRL-^           Split window and edit alternate file
-    CTRL-W R                Rotate windows upwards
-    CTRL-W W                Move cursor to window above (wrap)
-    CTRL-W ]                Split window and jump to tag under cursor
-    CTRL-W _                Set current window height (default: very high)
-    CTRL-W b                Move cursor to bottom window
-    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
-    CTRL-W f                Split window and edit file name under the cursor
-    CTRL-W j                Move cursor to window below
-    CTRL-W k                Move cursor to window above
-    CTRL-W n  or :new       Create new empty window
-    CTRL-W o  or :on[ly]    Make current window only one on the screen
-    CTRL-W p                Move cursor to previous active window
-    CTRL-W q  or :q[uit]    Quit editing and close window
-    CTRL-W r                Rotate windows downwards
-    CTRL-W s                Split window into two parts
-    CTRL-W t                Move cursor to top window
-    CTRL-W x                Exchange current window with next one
-N   CTRL-X                  subtract N from the number at or after the cursor
-N   CTRL-Y                  window N lines upwards (default: 1)
-    CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made
-</t>
-<t tx="ekr.20131109170017.46979"># CR
-# Ctrl-End
-# Ctrl-Home
-# Ctrl-Left
-# Ctrl-M
-# Ctrl-N
-# Ctrl-P
-# Ctrl-Right
-# End
-# Home
-# Shift-Left
-# Shift-Right
-
-( 	
-)
-{
-}
-[[
-[]
-][
-]]
-$
-^	
-+
-,
--
-;
-_
-0
-B
-E
-F
-G
-T
-W
-b
-e
-f
-g$
-g^
-g0
-gE
-# gEnd
-# gHome	
-ge
-gg
-h
-j
-k
-t
-w
-</t>
-<t tx="ekr.20131109170017.46980">@nocolor
-
-For testing, these are loaded "by hand" so that reloading this file is not
-needed.
-</t>
-<t tx="ekr.20131109170017.46981">char F
-char T
-char f
-char t
-</t>
 <t tx="ekr.20131111060930.18010"># Standard bindings...
 # run-selected-unit-tests-externally = Alt-4 
 # run-marked-unit-tests-externally = Alt-5
@@ -550,20 +291,6 @@ g.app.debug_widgets = not g.app.debug_widgets
 # Report the new settings.
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
-
-
-
-
-
-
-
-
-
-
-
-
-
-@language python
 </t>
 <t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
 unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
@@ -571,5 +298,41 @@ unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBa
 @language rest
 The parser for @data nodes, doData, no longer strips *anything*.</t>
 <t tx="ekr.20140103105930.16446"></t>
+<t tx="ekr.20140808074553.17926"></t>
+<t tx="ekr.20140808103117.18035"></t>
+<t tx="ekr.20140808103117.18036">gnx: ekr.20110605121601.18696
+</t>
+<t tx="ekr.20140808103117.18037">gnx: ekr.20140225224703.8169
+unl: qtui_generate declarations
+</t>
+<t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
+</t>
+<t tx="ekr.20140808103117.18039">gnx: ekr.20140225224703.8170
+unl: qt_main declarations
+gnx: ekr.20140225224703.8171
+unl: class Ui_MainWindow
+gnx: ekr.20140225224703.8172
+unl: class Ui_MainWindow--&gt;setupUi
+gnx: ekr.20140225224703.8173
+unl: class Ui_MainWindow--&gt;retranslateUi
+</t>
+<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
+</t>
+<t tx="ekr.20140808103117.18041"></t>
+<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
+</t>
+<t tx="ekr.20140808103117.18043">gnx: ekr.20140225224703.8174
+unl: qt_quicksearch declarations
+gnx: ekr.20140225224703.8175
+unl: class Ui_LeoQuickSearchWidget
+gnx: ekr.20140225224703.8176
+unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
+gnx: ekr.20140225224703.8177
+unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+</t>
+<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
+</t>
+<t tx="ekr.20140808103117.18045"></t>
+<t tx="ekr.20140808172209.18067"></t>
 </tnodes>
 </leo_file>

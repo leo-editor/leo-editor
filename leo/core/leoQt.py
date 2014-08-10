@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140613061544.17664: * @file leoQt.py
+#@+node:ekr.20140810053602.18074: * @file leoQt.py
 '''
 A module to allow careful, uniform imports from PyQt4 or PyQt5.
 The isQt5 constant is True only if all important PyQt5 modules were imported.
