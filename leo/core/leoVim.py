@@ -595,7 +595,11 @@ class VimCommands:
         if vc.state == 'visual':
             vc.handler = vc.do_visual_mode
                 # A major bug fix.
-            vc.add_to_dot()
+            if set_dot:
+                stroke2 = stroke or vc.stroke if add_to_dot else None
+                vc.compute_dot(stroke2)
+            vc.command_list = []
+            vc.show_status()
             vc.return_value = True
         else:
             if set_dot:
@@ -1543,7 +1547,7 @@ class VimCommands:
             vc.state = 'visual'
             # Save the dot list in case v terminates visual mode.
             vc.old_dot_list = vc.dot_list[:]
-            vc.accept(handler=vc.do_visual_mode)
+            vc.accept(add_to_dot=False,handler=vc.do_visual_mode)
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
@@ -1906,6 +1910,7 @@ class VimCommands:
     def do_inner_motion(vc,restart=False):
         '''Handle strokes in motions.'''
         trace = False and not g.unitTesting
+        if trace: g.trace(vc.command_list)
         assert vc.in_motion
         if restart:
             vc.next_func = None
@@ -2136,7 +2141,7 @@ class VimCommands:
         vc.set_border()
         if k.state.kind:
             if trace: g.trace('*** in k.state ***',k.state.kind)
-        elif vc.state == 'visual':
+        elif False: ### vc.state == 'visual':
             s = '%8s:' % vc.state.capitalize()
             if trace: g.trace('(vimCommands)',s,g.callers())
             k.setLabelBlue(label=s,protect=True)
