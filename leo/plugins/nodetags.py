@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140804103733.9240: * @file nodetags.py
+#@+node:peckj.20140804114520.9427: * @file nodetags.py
 #@@language python
 #@@tabwidth -4
 
@@ -54,7 +54,7 @@ The API is unlimited in tagging abilities.  If you do not wish to use the UI, th
 '''
 #@-<< docstring >>
 
-__version__ = '0.9'
+__version__ = '1.0'
 #@+<< version history >>
 #@+node:peckj.20140804103733.9243: ** << version history >>
 #@+at
@@ -68,6 +68,7 @@ __version__ = '0.9'
 # Version 0.7 - fix a paste-related bug by adding a command2 hook
 # Version 0.8 - able to remove tags from nodes by right-clicking on them in the tag explorer
 # Version 0.9 - complete functionality!  Adding tags is easy, click the '+'
+# Version 1.0 - use leoQt instead of PyQt4
 # 
 #@@c
 #@-<< version history >>
@@ -76,7 +77,8 @@ __version__ = '0.9'
 #@+node:peckj.20140804103733.9241: ** << imports >>
 import leo.core.leoGlobals as g
 import re
-from PyQt4 import QtGui, QtCore
+#from PyQt4 import QtGui, QtCore
+from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 
 #@+others
@@ -179,8 +181,95 @@ class TagController:
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
-class LeoTagWidget(QtGui.QWidget):
+class LeoTagWidget(QtWidgets.QWidget):
     #@+others
+    #@+node:peckj.20140804114520.15201: *3* initialization
+    #@+node:peckj.20140804114520.15200: *4* __init__
+    def __init__(self,c,parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.c = c
+        self.tc = self.c.theTagController
+        self.initUI()
+        self.registerCallbacks()
+        self.mapping = {}
+        #self.search_chars = ['&','|','-','^']
+        self.search_re = '(&|\||-|\^)'
+        self.custom_searches = []
+        g.registerHandler('select2', self.select2_hook)
+        g.registerHandler('command2', self.command2_hook)
+    #@+node:peckj.20140804114520.15202: *5* initUI
+    def initUI(self):
+        # create GUI components
+        ## this code is atrocious... don't look too closely
+        self.setObjectName("LeoTagWidget")
+        
+        # verticalLayout_2: contains
+        # verticalLayout
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout_2.setContentsMargins(0,1,0,1)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        
+        # horizontalLayout: contains
+        # "Refresh" button
+        # comboBox
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(0,0,0,0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        
+        # horizontalLayout2: contains
+        # label2
+        # not much by default -- it's a place to add buttons for current tags
+        self.horizontalLayout2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout2.setContentsMargins(0,0,0,0)
+        self.horizontalLayout2.setObjectName("horizontalLayout2")
+        label2 = QtWidgets.QLabel(self)
+        label2.setObjectName("label2")
+        label2.setText("Tags for current node:")
+        self.horizontalLayout2.addWidget(label2)
+        
+        # verticalLayout: contains
+        # horizontalLayout
+        # listWidget
+        # horizontalLayout2
+        # label
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        
+        self.comboBox = QtWidgets.QComboBox(self)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.setEditable(True)
+        self.horizontalLayout.addWidget(self.comboBox)
+        
+        self.pushButton = QtWidgets.QPushButton("+", self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setMinimumSize(24,24)
+        self.pushButton.setMaximumSize(24,24)
+        self.horizontalLayout.addWidget(self.pushButton)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.listWidget = QtWidgets.QListWidget(self)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout.addWidget(self.listWidget)
+        self.verticalLayout.addLayout(self.horizontalLayout2)
+        self.label = QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Total: 0 items")
+        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+        QtCore.QMetaObject.connectSlotsByName(self)
+    #@+node:peckj.20140804114520.15203: *5* registerCallbacks
+    def registerCallbacks(self):
+        self.connect(self.listWidget, 
+            QtCore.SIGNAL("itemSelectionChanged()"), 
+            self.item_selected)
+        self.connect(self.listWidget,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
+            self.item_selected)
+        self.connect(self.comboBox,
+            QtCore.SIGNAL("currentIndexChanged(QString)"),
+            self.update_list)
+        self.connect(self.pushButton,
+            QtCore.SIGNAL("clicked(bool)"),
+            self.add_tag)
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
@@ -196,14 +285,14 @@ class LeoTagWidget(QtGui.QWidget):
         while hl2.count():
             child = hl2.takeAt(0)
             child.widget().deleteLater()
-        label = QtGui.QLabel(self)
+        label = QtWidgets.QLabel(self)
         label.setText('Tags for current node:')
         hl2.addWidget(label)
         
         tags = self.tc.get_tags(pos)
         # add tags
         for tag in tags:
-            l = QtGui.QLabel(self)
+            l = QtWidgets.QLabel(self)
             l.setText(tag)
             hl2.addWidget(l)
             l.mouseReleaseEvent = self.callback_factory(tag)
@@ -267,7 +356,7 @@ class LeoTagWidget(QtGui.QWidget):
         self.listWidget.clear()
         self.mapping = {}
         for n in resultset:
-            item = QtGui.QListWidgetItem(n.h)
+            item = QtWidgets.QListWidgetItem(n.h)
             self.listWidget.addItem(item)
             self.mapping[item] = n
         count = self.listWidget.count()
@@ -297,24 +386,12 @@ class LeoTagWidget(QtGui.QWidget):
             return # don't add unsearchable tags
         else:
             self.tc.add_tag(p,tag)
-    #@+node:peckj.20140804114520.15200: *3* __init__
-    def __init__(self,c,parent=None):
-        QtGui.QWidget.__init__(self, parent)
-        self.c = c
-        self.tc = self.c.theTagController
-        self.initUI()
-        self.registerCallbacks()
-        self.mapping = {}
-        #self.search_chars = ['&','|','-','^']
-        self.search_re = '(&|\||-|\^)'
-        self.custom_searches = []
-        g.registerHandler('select2', self.select2_hook)
-        g.registerHandler('command2', self.command2_hook)
-    #@+node:peckj.20140804195456.13487: *3* select2_hook
+    #@+node:peckj.20140811082039.6623: *3* event hooks
+    #@+node:peckj.20140804195456.13487: *4* select2_hook
     def select2_hook(self, tag, keywords):
         self.update_current_tags(self.c.p)
 
-    #@+node:peckj.20140806101020.14006: *3* command2_hook
+    #@+node:peckj.20140806101020.14006: *4* command2_hook
     def command2_hook(self, tag, keywords):
         paste_cmds = ['paste-node',
                       'pasteOutlineRetainingClones', # strange that this one isn't canonicalized
@@ -324,80 +401,6 @@ class LeoTagWidget(QtGui.QWidget):
         
         self.tc.initialize_taglist()
         self.update_all()
-    #@+node:peckj.20140804114520.15201: *3* initialization
-    #@+node:peckj.20140804114520.15202: *4* initUI
-    def initUI(self):
-        # create GUI components
-        ## this code is atrocious... don't look too closely
-        self.setObjectName("LeoTagWidget")
-        
-        # verticalLayout_2: contains
-        # verticalLayout
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self)
-        self.verticalLayout_2.setContentsMargins(0,1,0,1)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        
-        # horizontalLayout: contains
-        # "Refresh" button
-        # comboBox
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(0,0,0,0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        
-        # horizontalLayout2: contains
-        # label2
-        # not much by default -- it's a place to add buttons for current tags
-        self.horizontalLayout2 = QtGui.QHBoxLayout()
-        self.horizontalLayout2.setContentsMargins(0,0,0,0)
-        self.horizontalLayout2.setObjectName("horizontalLayout2")
-        label2 = QtGui.QLabel(self)
-        label2.setObjectName("label2")
-        label2.setText("Tags for current node:")
-        self.horizontalLayout2.addWidget(label2)
-        
-        # verticalLayout: contains
-        # horizontalLayout
-        # listWidget
-        # horizontalLayout2
-        # label
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        
-        self.comboBox = QtGui.QComboBox(self)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.setEditable(True)
-        self.horizontalLayout.addWidget(self.comboBox)
-        
-        self.pushButton = QtGui.QPushButton("+", self)
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.setMinimumSize(24,24)
-        self.pushButton.setMaximumSize(24,24)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.listWidget = QtGui.QListWidget(self)
-        self.listWidget.setObjectName("listWidget")
-        self.verticalLayout.addWidget(self.listWidget)
-        self.verticalLayout.addLayout(self.horizontalLayout2)
-        self.label = QtGui.QLabel(self)
-        self.label.setObjectName("label")
-        self.label.setText("Total: 0 items")
-        self.verticalLayout.addWidget(self.label)
-        self.verticalLayout_2.addLayout(self.verticalLayout)
-        QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:peckj.20140804114520.15203: *4* registerCallbacks
-    def registerCallbacks(self):
-        self.connect(self.listWidget, 
-            QtCore.SIGNAL("itemSelectionChanged()"), 
-            self.item_selected)
-        self.connect(self.listWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-            self.item_selected)
-        self.connect(self.comboBox,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-            self.update_list)
-        self.connect(self.pushButton,
-            QtCore.SIGNAL("clicked(bool)"),
-            self.add_tag)
     #@-others
 #@-others
 #@-leo
