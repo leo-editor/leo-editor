@@ -122,6 +122,7 @@ fashion, using scripts to define your document.
 # 
 # version 0.1 (2013-05-14) - initial release
 # version 0.2 (2013-08-14) - added print-html-node (rich text) commands
+# version 0.3 (2014-08-11) - use leoQt instead of PyQt4
 # 
 #@@c
 #@-<< version history >>
@@ -129,11 +130,12 @@ fashion, using scripts to define your document.
 #@+node:peckj.20130513115943.16253: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.plugins.qtGui as qtGui
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+#from PyQt4 import QtGui
+#from PyQt4 import QtCore
+from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 
-__version__ = '0.1'
+__version__ = '0.3'
 
 #@+others
 #@+node:peckj.20130513115943.16247: ** init
@@ -209,7 +211,7 @@ class printingController:
         return s
     #@+node:peckj.20130513115943.22459: *4* construct document
     def construct_document(self, text, head=None):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         text = self.sanitize_html(text)
         if head:
@@ -221,13 +223,13 @@ class printingController:
         return doc
     #@+node:peckj.20130814150446.4883: *4* construct html document
     def construct_html_document(self, text):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         doc.setHtml(text)
         return doc
     #@+node:peckj.20130514082859.5603: *4* construct complex document
     def construct_complex_document(self, nodes, heads=False):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         contents = ''
         for n in nodes:
@@ -238,12 +240,12 @@ class printingController:
         return doc
     #@+node:peckj.20130513115943.22661: *4* print dialog
     def print_doc(self, doc):
-        dialog = QtGui.QPrintDialog()
-        if dialog.exec_() == QtGui.QDialog.Accepted:
+        dialog = QtWidgets.QPrintDialog()
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
             doc.print_(dialog.printer())
     #@+node:peckj.20130513115943.22662: *4* print preview dialog
     def print_preview_doc(self, doc):
-        dialog = QtGui.QPrintPreviewDialog()
+        dialog = QtWidgets.QPrintPreviewDialog()
         dialog.paintRequested.connect(doc.print_)
         dialog.exec_()
     #@+node:peckj.20130514082859.5604: *4* sanitize html
