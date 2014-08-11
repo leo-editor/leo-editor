@@ -1053,19 +1053,17 @@ class VimCommands:
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
-                ### Doesn't work if vc.cross_lines is False.
-                for z in range(vc.n1*vc.n):
+                match_i,n = None,vc.n1*vc.n
+                i -= 1 # ensure progess.
+                while i >= 0:
+                    if s[i] == vc.ch:
+                        match_i,n = i,n-1
+                        if n == 0: break
+                    elif s[i] == '\n' and not vc.cross_lines:
+                        break
                     i -= 1
-                    while i >= 0 and s[i] != vc.ch:
-                        if vc.cross_lines:
-                            i -= 1
-                        elif s[i] != '\n':
-                            i -= 1
-                        else:
-                            break
-                if i >= 0 and s[i] == vc.ch:
-                    # g.trace(i1-i,vc.ch)
-                    for z in range(i1-i):
+                if match_i is not None:
+                    for z in range(i1-match_i-1):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
                         else:
@@ -1090,26 +1088,19 @@ class VimCommands:
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
-                match_i = None
-                ### Doesn't work if vc.cross_lines is False.
-                for z in range(vc.n1*vc.n):
-                    while i < len(s) and s[i] != vc.ch:
-                        if vc.cross_lines:
-                            i += 1
-                        elif s[i] != '\n':
-                            i += 1
-                        else:
-                            break
+                match_i,n = None,vc.n1*vc.n
+                while i < len(s):
+                    if s[i] == vc.ch:
+                        match_i,n = i,n-1
+                        if n == 0: break
+                    elif s[i] == '\n' and not vc.cross_lines:
+                        break
                     i += 1
-                i -= 1
-                if i < len(s) and s[i] == vc.ch:
-                    # g.trace(i-i1+1,vc.ch)
-                    for z in range(i-i1+1):
+                if match_i is not None:
+                    for z in range(match_i-i1+1):
                         if vc.state == 'visual':
-                            # ec.forwardCharacterExtendSelection(vc.event)
                             vc.do('forward-char-extend-selection')
                         else:
-                            # ec.forwardCharacter(vc.event)
                             vc.do('forward-char')
             vc.done()
         else:
@@ -1478,18 +1469,16 @@ class VimCommands:
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
-                ### Doesn't work if vc.cross_lines is False.
-                for n in range(vc.n1*vc.n):
+                match_i,n = None,vc.n1*vc.n
+                while i < len(s):
+                    if s[i] == vc.ch:
+                        match_i,n = i,n-1
+                        if n == 0: break
+                    elif s[i] == '\n' and not vc.cross_lines:
+                        break
                     i += 1
-                    while i < len(s) and s[i] != vc.ch:
-                        if vc.cross_lines:
-                            i += 1
-                        elif s[i] != '\n':
-                            i += 1
-                        else:
-                            break
-                if i < len(s) and s[i] == vc.ch:
-                    for z in range(i-i1):
+                if match_i is not None:
+                    for z in range(match_i-i1):
                         if vc.state == 'visual':
                             vc.do('forward-char-extend-selection')
                         else:
@@ -1498,7 +1487,7 @@ class VimCommands:
         else:
             vc.quit()
 
-    #@+node:ekr.20140222064735.16686: *5* vc.vim_T (fails test)
+    #@+node:ekr.20140222064735.16686: *5* vc.vim_T
     def vim_T(vc):
         '''Back before the Nth occurrence of <char>.'''
         if vc.is_text_widget(vc.w):
@@ -1516,19 +1505,18 @@ class VimCommands:
                 i = i1 = w.getInsertPoint()
                 if i > 0 and s[i-1] == vc.ch:
                     i -= 1 # ensure progess.
-                ### Doesn't work if vc.cross_lines is False.
-                for n in range(vc.n1*vc.n):
+                match_i,n = None,vc.n1*vc.n
+                i -= 1
+                while i >= 0:
+                    if s[i] == vc.ch:
+                        match_i,n = i,n-1
+                        if n == 0: break
+                    elif s[i] == '\n' and not vc.cross_lines:
+                        break
                     i -= 1
-                    while i >= 0 and s[i] != vc.ch:
-                        if vc.cross_lines:
-                            i -= 1
-                        elif s[i] != '\n':
-                            i -= 1
-                        else:
-                            break
-                if i >= 0 and s[i] == vc.ch:
-                    g.trace(i1-i-1,vc.ch)
-                    for z in range(i-i1):
+                if match_i is not None:
+                    # g.trace(i1-match_i,vc.ch)
+                    for z in range(i1-match_i):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
                         else:
@@ -2020,6 +2008,7 @@ class VimCommands:
             s = stroke or vc.stroke
             # Never add '.' to the dot list.
             if s and s != 'period':
+                # g.trace(s)
                 event = VimEvent(s,vc.w)
                 vc.command_list.append(event)
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot

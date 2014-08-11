@@ -8,13 +8,13 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-Bugs:
+- Show command in inner motions in visual mode.
+
 - / and ? must use node-only searches!
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
 - :print-dot must handle VimEvents, not chars.
-- t,T,f,T don't work if vc.cross_lines = False.
-    - This is minor, since this @bool vim-crosses-lines is True by default.
+- Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 
 Later:

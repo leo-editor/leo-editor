@@ -533,12 +533,14 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- The f,F,t,T commands now work regardless of repeat count or vc.cross_lines.
+- Fixed recent bug in vim_T.
+
 - Fixed a major bug affecting visual mode:
   vc.done now sets v.handler = vc.do_visual_mode if mode was 'visual'.
 - Added very effective debugging trace to vc.ignore.
 - Used vc.do(leo-command-name) wherever possible to simplify code.
   vc.vim_T fails at present.
-
 - Added back-to-home-extend-selection command, for use by vc.do :-)
 * Added code to check for missing motions in normal and visual mode dispatch dicts.
   Added several missing motions.
