@@ -294,7 +294,7 @@ class VimCommands:
         # Special chars: these are the Leo's official (tk) strokes.
         'asciicircum': vc.vim_caret,# '^'
         'asciitilde': None,         # '~'
-        'asterisk': None,           # '*'
+        'asterisk': vc.vim_star,    # '*'
         'at': None,                 # '@'
         'bar': None,                # '|'
         'braceleft': None,          # '{'
@@ -532,6 +532,8 @@ class VimCommands:
             # True: allow f,F,h,l,t,T,x to cross line boundaries.
         vc.register_d = {}
             # Keys are letters; values are strings.
+        vc.search_stroke = None
+            # The stroke ('/' or '?') that starts a vim search command.
         vc.trainer = False
             # True: in vim-training mode:
             # Mouse clicks and arrows are disable.
@@ -750,26 +752,33 @@ class VimCommands:
         # Don't use vc.add_to_dot: it updates vc.command_list.
         def add(stroke):
             vc.dot_list.append(stroke)
-        if not vc.in_dot:
-            if 1:
-                # This is all we can do until there is a substitution command.
-                vc.change_pattern = change_pattern
-                    # Not used at present.
+        if vc.in_dot:
+            # Don't set the dot again.
+            return
+        if vc.search_stroke is None:
+            # We didn't start the search with / or ?
+            return
+        if 1:
+            # This is all we can do until there is a substitution command.
+            vc.change_pattern = change_pattern
+                # Not used at present.
+            add(vc.search_stroke)
+            for ch in find_pattern:
+                add(ch)
+            vc.search_stroke = None
+        else:
+            # We could do this is we had a substitution command.
+            if change_pattern is None:
+                # A search pattern.
                 add(vc.search_stroke)
                 for ch in find_pattern:
                     add(ch)
             else:
-                # We could do this is we had a substitution command.
-                if change_pattern is None:
-                    # A search pattern.
-                    add(vc.search_stroke)
-                    for ch in find_pattern:
+                # A substitution:  :%s/find_pattern/change_pattern/g
+                for s in (":%s/",find_pattern,"/",change_pattern,"/g"):
+                    for ch in s:
                         add(ch)
-                else:
-                    # A substitution:  :%s/find_pattern/change_pattern/g
-                    for s in (":%s/",find_pattern,"/",change_pattern,"/g"):
-                        for ch in s:
-                            add(ch)
+            vc.search_stroke = None
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -1325,7 +1334,7 @@ class VimCommands:
     def vim_P(vc):
         '''Paste an outline at the cursor.'''
         vc.not_ready()
-    #@+node:ekr.20140808173212.18070: *5* vc.vim_pound (not yet)
+    #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(vc):
         '''Find previous occurance of word under the cursor.'''
         vc.not_ready()
@@ -1388,6 +1397,10 @@ class VimCommands:
         fc.ftm.clear_focus()
         fc.searchWithPresentOptions(vc.event)
         vc.done(add_to_dot=False,set_dot=False)
+    #@+node:ekr.20140810210411.18239: *5* vc.vim_star
+    def vim_star(vc):
+        '''Find previous occurance of word under the cursor.'''
+        vc.not_ready()
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
         '''Move before the Nth occurrence of <char> to the right.'''

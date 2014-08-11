@@ -8,7 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- :show-dot command
 - '*' find next occurrence of the word under the cursor.
    #' find previous occurrence
 
