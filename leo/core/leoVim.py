@@ -745,7 +745,7 @@ class VimCommands:
         else:
             vc.delegate()
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
-    #@+node:ekr.20140810181832.18220: *5* vc.update_dot_after_search
+    #@+node:ekr.20140810181832.18220: *5* vc.update_dot_after_search (Revise)
     def update_dot_after_search(vc,find_pattern,change_pattern):
         '''A callback that updates the dot just before searching.'''
         # g.trace(vc.search_stroke,find_pattern,change_pattern)
@@ -794,7 +794,7 @@ class VimCommands:
                     ec.beginningOfLine(vc.event)
                 vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('goto-first-visible-node')
+            vc.do('goto-first-visible-node')
             vc.done()
         else:
             vc.quit()
@@ -993,7 +993,7 @@ class VimCommands:
                     ec.forwardEndWord(vc.event)
             vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('goto-last-visible-node')
+            vc.do('goto-last-visible-node')
             vc.done()
         else:
             vc.quit()
@@ -1185,7 +1185,7 @@ class VimCommands:
                     w.setInsertPoint(i)
             vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('contract-or-go-left')
+            vc.do('contract-or-go-left')
             vc.done()
         else:
             vc.quit()
@@ -1216,7 +1216,7 @@ class VimCommands:
                     ec.nextLine(vc.event)
             vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('goto-next-visible')
+            vc.do('goto-next-visible')
             vc.done()
         else:
             vc.quit()
@@ -1233,7 +1233,7 @@ class VimCommands:
                     ec.prevLine(vc.event)
             vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('goto-prev-visible')
+            vc.do('goto-prev-visible')
             vc.done()
         else:
             vc.quit()
@@ -1259,7 +1259,7 @@ class VimCommands:
                     w.setInsertPoint(i)
             vc.done()
         elif vc.in_tree(vc.w):
-            vc.c.k.simulateCommand('expand-and-go-right')
+            vc.do('expand-and-go-right')
             vc.done()
         else:
             vc.quit()
@@ -1337,7 +1337,25 @@ class VimCommands:
     #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(vc):
         '''Find previous occurance of word under the cursor.'''
-        vc.not_ready()
+        ec = vc.c.editCommands
+        w = vc.w
+        if vc.is_text_widget(w):
+            i1 = w.getInsertPoint()
+            if not w.hasSelection():
+                ec.extendToWord(vc.event,direction='forward',select=True)
+            if w.hasSelection():
+                fc = vc.c.findCommands
+                s = w.getSelectedText()
+                w.setSelectionRange(i1,i1)
+                if not vc.in_dot:
+                    vc.dot_list.append(vc.stroke)
+                fc.reverse = True
+                fc.find_text = s
+                fc.findNext()
+                fc.reverse = False
+            vc.done()
+        else:
+            vc.quit()
     #@+node:ekr.20140220134748.16623: *5* vc.vim_q (registers)
     def vim_q(vc):
         '''
@@ -1364,6 +1382,7 @@ class VimCommands:
         fc.openFindTab(vc.event)
         fc.ftm.clear_focus()
         fc.searchWithPresentOptions(vc.event)
+        fc.reverse = False
         vc.done(add_to_dot=False,set_dot=False)
     #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
     def vim_r(vc):
@@ -1400,7 +1419,24 @@ class VimCommands:
     #@+node:ekr.20140810210411.18239: *5* vc.vim_star
     def vim_star(vc):
         '''Find previous occurance of word under the cursor.'''
-        vc.not_ready()
+        ec = vc.c.editCommands
+        w = vc.w
+        if vc.is_text_widget(w):
+            i1 = w.getInsertPoint()
+            if not w.hasSelection():
+                ec.extendToWord(vc.event,direction='forward',select=True)
+            if w.hasSelection():
+                fc = vc.c.findCommands
+                s = w.getSelectedText()
+                w.setSelectionRange(i1,i1)
+                if not vc.in_dot:
+                    vc.dot_list.append(vc.stroke)
+                fc.reverse = False
+                fc.find_text = s
+                fc.findNext()
+            vc.done()
+        else:
+            vc.quit()
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
         '''Move before the Nth occurrence of <char> to the right.'''
@@ -1817,11 +1853,15 @@ class VimCommands:
     #@+node:ekr.20140810181832.18223: *4* vc.print_dot
     def print_dot(vc):
         '''Print the dot.'''
-        i = 0
-        aList = [vc.c.k.stroke2char(s) for s in vc.dot_list]
-        while i < len(aList):
-            g.es(','.join(aList[i:i+10]))
-            i += 10
+        try:
+            i = 0
+            aList = [vc.c.k.stroke2char(s) for s in vc.dot_list]
+            while i < len(aList):
+                g.es(','.join(aList[i:i+10]))
+                i += 10
+        except Exception:
+            for z in vc.dot_list:
+                g.es(repr(z))
     #@+node:ekr.20140808142143.18074: *4* vc.toggle_trainer
     def toggle_trainer(vc):
         '''toggle vim-trainer mode.'''
@@ -1940,7 +1980,7 @@ class VimCommands:
         return ''.join([repr(z) for z in vc.command_list])
 
     def show_dot(vc):
-        '''Show the dot'''
+        '''Show the dot.'''
         s = ''.join([repr(z) for z in vc.dot_list[:10]])
         if len(vc.dot_list) > 10:
             s = s + '...'
@@ -1965,6 +2005,10 @@ class VimCommands:
             vc.add_to_dot(stroke)
         if vc.command_list:
             vc.dot_list = vc.command_list[:]
+    #@+node:ekr.20140810214537.18241: *4* vc.do
+    def do(vc,command_name):
+        '''Do a leo command by name.'''
+        vc.c.k.simulateCommand(command_name)
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(vc,w):
         '''Return True if we are in a headline edit widget.'''

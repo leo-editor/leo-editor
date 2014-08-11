@@ -538,7 +538,6 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 - The / and ? commands now update the dot.
     - Added callbacks to vc.update_dot_after_search in
       leoFind.generalSearch/ChangeHelper.    
-
 - Added ge,gb,gh commands: same as $,0,^.
 - h,j,k,l in outline work like the corresponding arrow keys in the tree pane.
 - 0 in outline pane: goto-first-visible-node

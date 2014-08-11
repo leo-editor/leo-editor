@@ -8,14 +8,15 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- '*' find next occurrence of the word under the cursor.
-   #' find previous occurrence
-
 Bugs:
-- Confine / and ? to existing body pane?
-- Fix the dot for insert commands.
+- vc.update_dot_after_search must call add_to_dot().
+    save & restore vc.command_list?
+- :print-dot must handle VimEvents, not chars.
 - t,T,f,T don't work if vc.cross_lines = False.
+- Fix the dot for insert commands.
+
 Later:
+- Confine / and ? to existing body pane?
 - Extend Leo's undo to show the vim characters for the commands.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
