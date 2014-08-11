@@ -258,18 +258,10 @@ class LeoTagWidget(QtWidgets.QWidget):
         QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:peckj.20140804114520.15203: *5* registerCallbacks
     def registerCallbacks(self):
-        self.connect(self.listWidget, 
-            QtCore.SIGNAL("itemSelectionChanged()"), 
-            self.item_selected)
-        self.connect(self.listWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-            self.item_selected)
-        self.connect(self.comboBox,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-            self.update_list)
-        self.connect(self.pushButton,
-            QtCore.SIGNAL("clicked(bool)"),
-            self.add_tag)
+        self.listWidget.itemSelectionChanged.connect(self.item_selected)
+        self.listWidget.itemClicked.connect(self.item_selected)
+        self.comboBox.currentIndexChanged.connect(self.update_list)
+        self.pushButton.clicked.connect(self.add_tag)
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):

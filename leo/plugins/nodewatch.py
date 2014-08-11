@@ -201,19 +201,11 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:peckj.20131101132841.6457: *4* registerCallbacks
     def registerCallbacks(self):
-        self.connect(self.listWidget, 
-            QtCore.SIGNAL("itemSelectionChanged()"), 
-            self.item_selected)
-        self.connect(self.listWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-            self.item_selected)
-        self.connect(self.comboBox,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-            self.update_list)
-        self.connect(self.pushButton,
-            QtCore.SIGNAL("clicked(bool)"),
-            self.update_all)
-        self.c.k.registerCommand('nodewatch-refresh', shortcut=None, func=self.update_all)
+        self.listWidget.itemSelectionChanged.connect(self.item_selected)
+        self.listWidget.itemClicked.connect(self.item_selected)
+        self.comboBox.currentIndexChanged.connect(self.update_list)
+        self.pushButton.clicked.connect(self.update_all)
+
     #@+node:peckj.20131101132841.6463: *3* updates + interaction
     #@+node:peckj.20131101132841.6459: *4* item_selected
     def item_selected(self):
