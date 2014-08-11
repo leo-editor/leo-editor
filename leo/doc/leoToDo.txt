@@ -9,13 +9,18 @@
 @language rest
 
 - / and ? must use node-only searches!
+- Summary of recent work:
+    - Fixed very confusing bug.
+    - New features:
+
+Dot related:
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
 - :print-dot must handle VimEvents, not chars.
-
-Later:
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
+
+Later:
 - Write extend_vim_mode plugin
 - Extend Leo's undo to show the vim characters for the commands.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
@@ -61,6 +66,284 @@ EKR: Can't Leo's find command do this?
 
 http://leoeditor.com/vim-theory.html
 http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
+.. @+node:ekr.20140808182202.18184: *4* Set dot in f,F,t,T commands
+.. @+node:ekr.20140802183521.17998: *5* vc.add_to_dot
+def add_to_dot(vc,stroke=None):
+    '''
+    Add a new VimEvent to vc.command_list.
+    Never change vc.command_list if vc.in_dot is True
+    Never add . to vc.command_list
+    '''
+    if not vc.in_dot:
+        s = stroke or vc.stroke
+        # Never add '.' to the dot list.
+        if s and s != 'period':
+            # g.trace(s)
+            event = VimEvent(s,vc.w)
+            vc.command_list.append(event)
+.. @+node:ekr.20140222064735.16631: *5* vc.done
+def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
+    '''Complete a command, preserving text and optionally updating the dot.'''
+    if vc.state == 'visual':
+        vc.handler = vc.do_visual_mode
+            # A major bug fix.
+        if set_dot:
+            stroke2 = stroke or vc.stroke if add_to_dot else None
+            vc.compute_dot(stroke2)
+        vc.command_list = []
+        vc.show_status()
+        vc.return_value = True
+    else:
+        if set_dot:
+            stroke2 = stroke or vc.stroke if add_to_dot else None
+            vc.compute_dot(stroke2)
+        # Undoably preserve any changes to the body.
+        vc.save_body()
+        # Clear all state, enter normal mode & show the status.
+        if vc.in_motion:
+            vc.next_func = None
+            # Do *not* change vc.in_motion!
+        else:
+            vc.init_state_ivars()
+        vc.show_status()
+        vc.return_value = return_value
+.. @+node:ekr.20140220134748.16620: *5* vc.vim_f
+def vim_f(vc):
+    '''move past the Nth occurrence of <stroke>.'''
+    if vc.is_text_widget(vc.w):
+        vc.accept(handler=vc.vim_f2)
+    else:
+        vc.quit()
+
+def vim_f2(vc):
+    '''Handle f <stroke>'''
+    trace = bool and not g.unitTesting
+    if vc.is_text_widget(vc.w):
+        ec = vc.c.editCommands
+        w = vc.w
+        s = w.getAllText()
+        if s:
+            i = i1 = w.getInsertPoint()
+            match_i,n = None,vc.n1*vc.n
+            while i < len(s):
+                if s[i] == vc.ch:
+                    match_i,n = i,n-1
+                    if n == 0: break
+                elif s[i] == '\n' and not vc.cross_lines:
+                    break
+                i += 1
+            if match_i is not None:
+                for z in range(match_i-i1+1):
+                    if vc.state == 'visual':
+                        vc.do('forward-char-extend-selection')
+                    else:
+                        vc.do('forward-char')
+        vc.done()
+    else:
+        vc.quit()
+.. @+node:ekr.20140222064735.16687: *5* vc.vim_F
+def vim_F(vc):
+    '''Back to the Nth occurrence of <char>.'''
+    if vc.is_text_widget(vc.w):
+        vc.accept(handler=vc.vim_F2)
+    else:
+        vc.quit()
+
+def vim_F2(vc):
+    '''Handle F <stroke>'''
+    if vc.is_text_widget(vc.w):
+        w = vc.w
+        s = w.getAllText()
+        if s:
+            i = i1 = w.getInsertPoint()
+            match_i,n = None,vc.n1*vc.n
+            i -= 1 # ensure progess.
+            while i >= 0:
+                if s[i] == vc.ch:
+                    match_i,n = i,n-1
+                    if n == 0: break
+                elif s[i] == '\n' and not vc.cross_lines:
+                    break
+                i -= 1
+            if match_i is not None:
+                for z in range(i1-match_i-1):
+                    if vc.state == 'visual':
+                        vc.do('back-char-extend-selection')
+                    else:
+                        vc.do('back-char')
+        vc.done()
+    else:
+        vc.quit()
+.. @+node:ekr.20140222064735.16620: *5* vc.vim_t
+def vim_t(vc):
+    '''Move before the Nth occurrence of <char> to the right.'''
+    if vc.is_text_widget(vc.w):
+        vc.accept(handler=vc.vim_t2)
+    else:
+        vc.quit()
+    
+def vim_t2(vc):
+    '''Handle t <stroke>'''
+    if vc.is_text_widget(vc.w):
+        ec = vc.c.editCommands
+        w = vc.w
+        s = w.getAllText()
+        if s:
+            i = i1 = w.getInsertPoint()
+            match_i,n = None,vc.n1*vc.n
+            while i < len(s):
+                if s[i] == vc.ch:
+                    match_i,n = i,n-1
+                    if n == 0: break
+                elif s[i] == '\n' and not vc.cross_lines:
+                    break
+                i += 1
+            if match_i is not None:
+                for z in range(match_i-i1):
+                    if vc.state == 'visual':
+                        vc.do('forward-char-extend-selection')
+                    else:
+                        vc.do('forward-char')
+        vc.done()
+    else:
+        vc.quit()
+
+.. @+node:ekr.20140222064735.16686: *5* vc.vim_T
+def vim_T(vc):
+    '''Back before the Nth occurrence of <char>.'''
+    if vc.is_text_widget(vc.w):
+        vc.accept(handler=vc.vim_T2)
+    else:
+        vc.quit()
+
+def vim_T2(vc):
+    '''Handle T <stroke>'''
+    if vc.is_text_widget(vc.w):
+        ec = vc.c.editCommands
+        w = vc.w
+        s = w.getAllText()
+        if s:
+            i = i1 = w.getInsertPoint()
+            if i > 0 and s[i-1] == vc.ch:
+                i -= 1 # ensure progess.
+            match_i,n = None,vc.n1*vc.n
+            i -= 1
+            while i >= 0:
+                if s[i] == vc.ch:
+                    match_i,n = i,n-1
+                    if n == 0: break
+                elif s[i] == '\n' and not vc.cross_lines:
+                    break
+                i -= 1
+            if match_i is not None:
+                # g.trace(i1-match_i,vc.ch)
+                for z in range(i1-match_i):
+                    if vc.state == 'visual':
+                        vc.do('back-char-extend-selection')
+                    else:
+                        vc.do('back-char')
+        vc.done()
+    else:
+        vc.quit()
+
+.. @+node:ekr.20140802183521.17998: *5* vc.add_to_dot
+def add_to_dot(vc,stroke=None):
+    '''
+    Add a new VimEvent to vc.command_list.
+    Never change vc.command_list if vc.in_dot is True
+    Never add . to vc.command_list
+    '''
+    if not vc.in_dot:
+        s = stroke or vc.stroke
+        # Never add '.' to the dot list.
+        if s and s != 'period':
+            # g.trace(s)
+            event = VimEvent(s,vc.w)
+            vc.command_list.append(event)
+.. @+node:ekr.20140802225657.18031: *5* vc.accept
+def accept(vc,add_to_dot=True,handler=None):
+    '''
+    Accept the present stroke.
+    Optionally, this can set the dot or change vc.handler.
+    This can be a no-op, but even then it is recommended.
+    '''
+    if handler:
+        if vc.in_motion:
+            # Tricky: queue up vc.do_inner_motion to continue the motion.
+            vc.handler = vc.do_inner_motion
+            vc.next_func = handler
+        else:
+            # Queue the outer handler as usual.
+            vc.handler = handler
+    if add_to_dot:
+        vc.add_to_dot()
+    vc.show_status()
+    vc.return_value = True
+.. @+node:ekr.20140222064735.16615: *5* vc.show_status
+def show_status(vc):
+    '''Show vc.state and vc.command_list'''
+    trace = False and not g.unitTesting
+    k = vc.k
+    vc.set_border()
+    if k.state.kind:
+        if trace: g.trace('*** in k.state ***',k.state.kind)
+    elif False: ### vc.state == 'visual':
+        s = '%8s:' % vc.state.capitalize()
+        if trace: g.trace('(vimCommands)',s,g.callers())
+        k.setLabelBlue(label=s,protect=True)
+    else:
+        state_s = vc.state.capitalize()
+        command_s = vc.show_command()
+        dot_s = vc.show_dot()
+        # if vc.in_motion: state_s = state_s + '(in_motion)'
+        if 1: # Don't show the dot:
+            s = '%8s: %s' % (state_s,command_s)
+        else:
+            s = '%8s: %-5s dot: %s' % (state_s,command_s,dot_s)
+        if trace: g.trace('(vimCommands)',s,g.callers(2))
+        k.setLabelBlue(label=s,protect=True)
+.. @+node:ekr.20140222064735.16631: *5* vc.done
+def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
+    '''Complete a command, preserving text and optionally updating the dot.'''
+    if vc.state == 'visual':
+        vc.handler = vc.do_visual_mode
+            # A major bug fix.
+        if set_dot:
+            stroke2 = stroke or vc.stroke if add_to_dot else None
+            vc.compute_dot(stroke2)
+        vc.command_list = []
+        vc.show_status()
+        vc.return_value = True
+    else:
+        if set_dot:
+            stroke2 = stroke or vc.stroke if add_to_dot else None
+            vc.compute_dot(stroke2)
+        # Undoably preserve any changes to the body.
+        vc.save_body()
+        # Clear all state, enter normal mode & show the status.
+        if vc.in_motion:
+            vc.next_func = None
+            # Do *not* change vc.in_motion!
+        else:
+            vc.init_state_ivars()
+        vc.show_status()
+        vc.return_value = return_value
+.. @+node:ekr.20140220134748.16627: *5* vc.vim_v
+def vim_v(vc):
+    '''Start visual mode.'''
+    if vc.n1_seen:
+        vc.ignore()
+        # vc.beep('%sv not valid' % vc.n1)
+        # vc.done()
+    elif vc.is_text_widget(vc.w):
+        vc.vis_mode_w = w = vc.w
+        vc.vis_mode_i = w.getInsertPoint()
+        vc.state = 'visual'
+        # Save the dot list in case v terminates visual mode.
+        vc.old_dot_list = vc.dot_list[:]
+        vc.accept(add_to_dot=False,handler=vc.do_visual_mode)
+    else:
+        vc.quit()
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 

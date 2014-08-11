@@ -693,10 +693,10 @@
 <v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
 <v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh>
 <v t="ekr.20140810153947.6747"><vh>Supported commands</vh></v>
+<v t="ekr.20140810153947.6752"><vh>Differences from the real vim</vh></v>
 <v t="ekr.20140810153947.6749"><vh>Abbreviations</vh></v>
 <v t="ekr.20140810153947.6750"><vh>Colon commands</vh></v>
 <v t="ekr.20140810153947.6751"><vh>Settings</vh></v>
-<v t="ekr.20140810153947.6752"><vh>Differences &amp; additions from the real vim</vh></v>
 </v>
 <v t="ekr.20140720203932.17748"><vh>Using vimoutline (.otl) files in Leo</vh></v>
 <v t="ekr.20140810085801.18231"><vh>Using stand-alone vim bindings</vh>
@@ -861,18 +861,19 @@
 <v t="ekr.20140810085801.18216"><vh>Vim Mode Theory of Operation</vh>
 <v t="ekr.20140810085801.18232"><vh>@rst html/vim-theory.html</vh>
 <v t="ekr.20140810085801.18217"><vh>The big picture</vh></v>
-<v t="ekr.20140810085801.18218"><vh>Overview of key handlers</vh></v>
-<v t="ekr.20140810085801.18219"><vh>Ivars for key handlers</vh></v>
-<v t="ekr.20140810085801.18220"><vh>The high-level text API</vh></v>
-<v t="ekr.20140810085801.18221"><vh>Writing a key handler</vh>
+<v t="ekr.20140811083910.18246"><vh>A simple key handler</vh></v>
+<v t="ekr.20140810085801.18221"><vh>A more complex key handler</vh>
 <v t="ekr.20140810085801.18222"><vh>vim_d</vh></v>
 <v t="ekr.20140810085801.18223"><vh>vim_d2</vh></v>
 <v t="ekr.20140810085801.18224"><vh>vim_d3</vh></v>
 <v t="ekr.20140810085801.18225"><vh>vis_d</vh></v>
 </v>
 <v t="ekr.20140810085801.18226"><vh>Code level details</vh>
-<v t="ekr.20140810085801.18227"><vh>Initing VimCommands ivars</vh></v>
+<v t="ekr.20140810085801.18227"><vh>Initialization</vh></v>
 <v t="ekr.20140810085801.18228"><vh>Dispatchers</vh></v>
+<v t="ekr.20140810085801.18218"><vh>About key handlers</vh></v>
+<v t="ekr.20140810085801.18219"><vh>Ivars for key handlers</vh></v>
+<v t="ekr.20140810085801.18220"><vh>API's for key handlers</vh></v>
 <v t="ekr.20140810085801.18229"><vh>vc.return_value and internal error checking</vh></v>
 </v>
 </v>
@@ -1148,6 +1149,7 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140810085801.18216"></v>
 <v t="ekr.20140810085801.18230"></v>
 </vnodes>
 <tnodes>
@@ -19897,10 +19899,6 @@ vc.accept(), vc.done(), vc.ignore() or vc.quit(). These methods tell
 k.masterKeyHandler whether vim-mode has completely handled the key. If so,
 k.masterKeyHandler simply returns. Otherwise, k.masterKeyHandler handles
 the key as usual.
-
-Later sections discuss various code-level details. However, the most
-important sections are next. They tell how to write key handlers to support
-new vim commands.
 </t>
 <t tx="ekr.20140810085801.18218">Key handlers handle a single key during the parsing of a vim command. Key
 handlers can either complete a command, thereby actually doing something,
@@ -19922,8 +19920,8 @@ Many key handlers simply call vc.done(). This method handles all the
 details of completing a key handler: it hides the details of parsing vim
 command.
 
-**Important**: the ``vis_...`` family of key handlers end visual mode. Before
-calling vc.done, each ``vis_...`` method must set vc.state = 'normal' 
+**Important**: Any key handler that wants to change vc.state should
+set vc.state *before* calling vc.done()
 
 Key handlers can call either **direct acceptance methods**, vc.accept,
 vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or
@@ -19953,13 +19951,19 @@ ultimate repeat count.
 
 **vc.motion_i** is the insertion point *before* the motion has taken place.
 </t>
-<t tx="ekr.20140810085801.18220">Key handlers that change text must use the **high-level interface**. This
-interface defines an API used throughout Leo's core. For details, see the
-HighLevelInterface class in leoFrame.py. leo/plugins/qtGui.py contains the
-subclasses that implement the interface.
+<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do
+method, a thin wrapper for c.k.simulateCommand.  For example::
+
+    if vc.state == 'visual':
+        vc.do('end-of-buffer-extend-selection')
+    else:
+        vc.do('end-of-buffer')
+
+Key handlers may also use the **high-level interface**. This is the API
+used throughout Leo's core. For details, see the HighLevelInterface class
+in leoFrame.py and various subclasses in qtGui.py.
 </t>
-<t tx="ekr.20140810085801.18221">
-The vc.vim_d method and its follow-on methods handle vim's d commands.
+<t tx="ekr.20140810085801.18221">The vc.vim_d method and its follow-on methods handle vim's d commands.
 
 The vc.vis_d method handles the d keystroke that ends visual mode.
 
@@ -20122,9 +20126,6 @@ simply deletes the highlighted text and calls vc.done().
 <t tx="ekr.20140810085801.18226">The VimCommands class in leoVim.py implements Leo's vim mode.
 Vim mode is active only if @bool vim-mode = True.
 
-The init code for each Leo commander c assigns an instance of VimCommands
-to c.vimCommands. This is done regardless of the @bool vim-mode setting.
-
 The following sections will be of interest only to those seeking a deep
 knowledge of how vim mode's dispatchers work. Such knowledge should rarely
 be required because dispatchers and key handlers are completely unaware of
@@ -20138,7 +20139,10 @@ Wherever possible, Leo uses methods to hide implementation details.
 Ironically, now that everything is hard coded in tables, it would be easy
 for plugins to customize the workings of vim-mode.
 </t>
-<t tx="ekr.20140810085801.18227">Each ivar of the VimCommands class is inited by exactly one of the following::
+<t tx="ekr.20140810085801.18227">The init code for each Leo commander c assigns an instance of VimCommands
+to c.vimCommands. This is done regardless of the @bool vim-mode setting.
+
+Each ivar of the VimCommands class is inited by exactly one of the following::
 
     vc.init_constant_ivars()
     vc.init_dot_ivars()
@@ -20175,7 +20179,6 @@ dicts. Inner dispatchers the following ivars behind the scenes::
     
 Handling these ivars can be tricky; hiding the details greatly simplifies all
 key handlers.
-  
 </t>
 <t tx="ekr.20140810085801.18229">vc.do_key returns the value of vc.return_value. Most the acceptance
 functions set vc.return_value to True, indicating that vim mode has
@@ -20210,30 +20213,28 @@ and to add new vim commands.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,w.
-  The h,j,k,l commands work on outlines when entered in the outline pane.
+<t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,T,w.
+- The gb,ge,gh commands are synonyms for 0,$,^.
+- The h,j,k,l commands work on outlines when entered in the outline pane.
 - Deleting text: d{motion},{motion}d,v{motion}d,x.
 - Insert commands: a,A,i,o,O and switch to insert mode if entered in the outline pane.
 - Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
-- Search commands: /,?,n. Coming soon: c,*,#.
+- Search commands: /,?,n,*,#.
 - The dot command '.' works for motions, but not yet for inserts or searches.
 - v: start/end visual mode.
 
 Notes:
 
 - Except as noted above, all vim-mode commands must be entered in the body pane.
-- All unit tests now pass regardless of vim mode.
 - &lt;Return&gt; in headlines switches to the outline pane.
 - &lt;Return&gt; in the outline pane switches to the body pane.
-
-.. - h,j,k,l in the outline pane work like arrow keys.
 </t>
 <t tx="ekr.20140810153947.6749">- The ``jj`` abbreviation switches to normal mode,
   preserving the changed status of the .leo file.
-- ``,,`` in normal mode now moves to insert mode.
-  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
 - Return in visual/normal mode enters insert mode.
 
+..  - ``,,`` in normal mode now moves to insert mode.
+..  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
 </t>
 <t tx="ekr.20140810153947.6750">The ':' command enters Leo's minibuffer, with ':' pre-inserted.
 You may backspace over the ':'. Here are the commands::
@@ -20245,6 +20246,10 @@ You may backspace over the ':'. Here are the commands::
     :wa Save all changed  .leo files.
     :wq Save all open files and exit.
     :xa ave all open files and exit.
+    
+The following colon commands are unique to Leo::
+
+    :print-vim-dot
     :toggle-vim-mode
     :toggle-vim-trainer-mode
 
@@ -20254,9 +20259,40 @@ You may backspace over the ':'. Here are the commands::
 **@bool vim-crosses-lines = True**: When True the f,F,h,l,t,T,x
 commands may cross line boundaries.
 </t>
-<t tx="ekr.20140810153947.6752">- Ending visual mode with 'v' retains the selection range.
+<t tx="ekr.20140810153947.6752">- The gb,ge,gh commands are synonyms for 0,$,^.
+- The h,j,k,l commands work on outlines when entered in the outline pane.
+- The a,A,i,o,O commands switch to insert mode if entered in the outline pane.
+- The y,p commands act on outlines if entered in the outline pane.
+- Ending visual mode with 'v' retains the selection range.
 - Ctrl-H puts the headline in insert mode.
 - Mouse clicks never change vim's state.
+
+</t>
+<t tx="ekr.20140811083910.18246">@language rest
+
+The handler for the G command moves or extends the cursor depending on
+vc.state.
+
+@language python
+::
+
+    def vim_G(vc):
+        '''Put the cursor on the last character of the body pane.'''
+        if vc.is_text_widget(vc.w):
+            if vc.state == 'visual':
+                vc.do('end-of-buffer-extend-selection')
+            else:
+                vc.do('end-of-buffer')
+            vc.done()
+        else:
+            vc.quit()
+            
+@language rest
+
+On entry, the dispatcher has set vc.w to the widget with focus. First, the
+code ensures that this widget is a text widget. If so, the code uses the
+vc.do method, a thin wrapper for c.k.simulateCommand, to execute Leo
+commands by name.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
