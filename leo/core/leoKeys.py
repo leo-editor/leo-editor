@@ -2710,30 +2710,27 @@ class KeyHandlerClass:
                         c.commandsDict [key] = c.commandsDict.get(commandName)
                         break
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand
-    def simulateCommand (self,commandName):
-
+    def simulateCommand (self,commandName,event=None):
+        '''Execute a Leo command by name.'''
         k = self ; c = k.c
-
         commandName = commandName.strip()
         if not commandName: return
-
         aList = commandName.split(None)
         if len(aList) == 1:
             k.givenArgs = []
         else:
             commandName = aList[0]
             k.givenArgs = aList[1:]
-
         # g.trace(commandName,k.givenArgs)
         func = c.commandsDict.get(commandName)
-
         if func:
             # g.trace(commandName,func.__name__)
-            if commandName.startswith('specialCallback'):
+            if event:
+                pass
+            elif commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c,None,None,None)
-
             k.masterCommand(event=event,func=func)
             if c.exists:
                 return k.funcReturn

@@ -364,7 +364,7 @@ class VimCommands:
         'S': None,
         'T': vc.vim_T,
         'U': None,
-        'V': None,
+        'V': vc.vim_V,
         'W': None,
         'X': None,
         'Y': vc.vim_Y,
@@ -444,6 +444,7 @@ class VimCommands:
         'question': vc.vim_question,
         'slash': vc.vim_slash,
         't': vc.vim_t,
+        'V': vc.vim_V,
         'w': vc.vim_w,
         }
         return d
@@ -1303,15 +1304,10 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = w = c.frame.body.bodyCtrl
-        else:
-            w = vc.w
-        if vc.is_text_widget(w):
-            s = w.getAllText()
-            i = w.getInsertPoint()
-            i = g.find_line_start(s,i)
-            w.insert(max(0,i-1),'\n')
-            vc.begin_insert_mode()
+            vc.w = c.frame.body.bodyCtrl
+        if vc.is_text_widget(vc.w):
+            vc.do(['beginning-of-line','insert-newline','back-char'])
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16619: *5* vc.vim_o
@@ -1337,21 +1333,24 @@ class VimCommands:
     def vim_p(vc):
         '''Paste after the cursor.'''
         if vc.in_tree(vc.w):
-            # Paste an outline.
-            p = vc.c.pasteOutline(vc.event)
-            if p: g.es('Copied outline')
-            else: g.warning('Clipboard is not an outline')
+            vc.do('paste-node')
             vc.done()
         elif vc.is_text_widget(vc.w):
-            # Paste text.
-            vc.c.frame.pasteText(vc.event)
+            vc.do('paste-text')
             vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140807152406.18125: *5* vc.vim_P
     def vim_P(vc):
-        '''Paste an outline at the cursor.'''
-        vc.not_ready()
+        '''Paste text at the cursor or paste a node before the present node.'''
+        if vc.in_tree(vc.w):
+            vc.do(['goto-prev-visible','paste-node'])
+            vc.done()
+        elif vc.is_text_widget(vc.w):
+            vc.do(['back-char','paste-text'])
+            vc.done()
+        else:
+            vc.quit()
     #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(vc):
         '''Find previous occurance of word under the cursor.'''
@@ -1564,6 +1563,24 @@ class VimCommands:
             # Save the dot list in case v terminates visual mode.
             vc.old_dot_list = vc.dot_list[:]
             vc.accept(add_to_dot=False,handler=vc.do_visual_mode)
+        else:
+            vc.quit()
+    #@+node:ekr.20140811110221.18250: *5* vc.vim_V
+    def vim_V(vc):
+        '''Visually select line.'''
+        if vc.is_text_widget(vc.w):
+            if vc.state == 'visual':
+                bx = 'beginning-of-line-extend-selection'
+                ex = 'end-of-line-extend-selection'
+                s = vc.w.getAllText()
+                i = vc.w.getInsertPoint()
+                if vc.on_same_line(s,i,vc.vis_mode_i):
+                    vc.do([bx,ex])
+                else:
+                    vc.do(ex if vc.vis_mode_i < i else bx)
+            else:
+                vc.do([bx,ex])
+            vc.done()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
@@ -2040,9 +2057,13 @@ class VimCommands:
         if vc.command_list:
             vc.dot_list = vc.command_list[:]
     #@+node:ekr.20140810214537.18241: *4* vc.do
-    def do(vc,command_name):
-        '''Do a leo command by name.'''
-        vc.c.k.simulateCommand(command_name)
+    def do(vc,o):
+        '''Do one or more Leo commands by name.'''
+        if isinstance(o,(tuple,list)):
+            for z in o:
+                vc.c.k.simulateCommand(z,event=vc.event)
+        else:
+            vc.c.k.simulateCommand(o,event=vc.event)
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(vc,w):
         '''Return True if we are in a headline edit widget.'''

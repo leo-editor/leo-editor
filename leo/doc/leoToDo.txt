@@ -8,6 +8,19 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+V visual select line
+P paste on new line above
+O put cursor on new line above, enter insert mode
+
+without V, I'm missing one of my most used idioms:
+Vyp or VyP  copy line, paste above or below
+
+:gt (focuses next tab)
+:Gt (focuses previous tab) 
+diw
+:% s/text/replaced text/g
+    Substitution.
+.. @+node:ekr.20140811110221.18251: *4* Dot related
 Dot related:
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
@@ -15,21 +28,12 @@ Dot related:
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 
+.. @+node:ekr.20140811110221.18252: *4* Later
 Later:
 - Write extend_vim_mode plugin
 - Extend Leo's undo to show the vim characters for the commands.
-.. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
-I use a tiny subset of Vim commands:
 
-:gt (focuses next tab)
-:Gt (focuses previous tab) 
-
-just discovered diw, useful!
-    http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
-    
-:% s/text/replaced text/g
-    Substitution.
-
+From Kent:
 :r filename
     Put contents of filename at cursor position
 :!shell command
@@ -39,6 +43,8 @@ just discovered diw, useful!
 :tabnew <fname> (opens fname in new tab, without fname, opens tab with new file)
 .. @+node:ekr.20140808182202.18183: *4* Maybe
 - Kent: v, V, ctrl-v : visual select character, line, column
+
+http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
 
 - What to do about different versions of @bool vim_mode in different tabs?
 
@@ -56,11 +62,6 @@ just discovered diw, useful!
     this one frequently...
 
 EKR: Can't Leo's find command do this?
-.. @+node:ekr.20140810124941.18208: *4* Links to new docs
-@language rest
-
-http://leoeditor.com/vim-theory.html
-http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
 .. @+node:ekr.20140808182202.18184: *4* Set dot in f,F,t,T commands
 .. @+node:ekr.20140802183521.17998: *5* vc.add_to_dot
 def add_to_dot(vc,stroke=None):
