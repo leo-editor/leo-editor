@@ -265,7 +265,7 @@ class LeoTagWidget(QtWidgets.QWidget):
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
-        key = self.listWidget.currentItem()
+        key = id(self.listWidget.currentItem())
         pos = self.mapping[key]
         self.update_current_tags(pos)
         self.c.selectPosition(pos)
@@ -350,7 +350,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         for n in resultset:
             item = QtWidgets.QListWidgetItem(n.h)
             self.listWidget.addItem(item)
-            self.mapping[item] = n
+            self.mapping[id(item)] = n
         count = self.listWidget.count()
         self.label.clear()
         self.label.setText("Total: %s nodes" % count)
