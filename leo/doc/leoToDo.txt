@@ -8,10 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Summary of recent work:
-    - Fixed very confusing bug.
-    - New features:
-
 Dot related:
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?

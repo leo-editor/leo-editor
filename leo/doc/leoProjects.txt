@@ -534,7 +534,6 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
 - Limited /,?,*,#,n to node-only searches.
-
 - Show command in inner motions in visual mode.
   This is important, but the present code may interfere with the dot.
 - The f,F,t,T commands now work regardless of repeat count or vc.cross_lines.
