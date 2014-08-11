@@ -8,9 +8,7 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-diw
 :% s/text/replaced text/g
-    Substitution.
 .. @+node:ekr.20140811110221.18251: *4* Dot related
 Dot related:
 - vc.update_dot_before_search must call add_to_dot().

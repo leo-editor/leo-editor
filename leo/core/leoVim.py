@@ -952,7 +952,9 @@ class VimCommands:
         else:
             vc.quit()
         
+    #@+node:ekr.20140811175537.18146: *6* vc.vim_d2
     def vim_d2(vc):
+        '''Handle the second stroke of the d command.'''
         if vc.is_text_widget(vc.w):
             if vc.stroke == 'd':
                 w = vc.w
@@ -967,12 +969,14 @@ class VimCommands:
                         i = max(0,i-1)
                     w.delete(i,j)
                 vc.done()
+            elif vc.stroke == 'i':
+                vc.accept(handler=vc.vim_di)
             else:
                 vc.d_stroke = vc.stroke # A scratch var.
                 vc.begin_motion(vc.vim_d3)
         else:
             vc.quit()
-
+    #@+node:ekr.20140811175537.18147: *6* vc.vim_d3
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
         # d2w doesn't extend to line.  d2j does.
@@ -1000,6 +1004,19 @@ class VimCommands:
                         if trace: g.trace('extend i1 to bol',i1,i2)
                 w.delete(i1,i2)
             vc.done()
+        else:
+            vc.quit()
+    #@+node:ekr.20140811175537.18145: *6* vc.vim_di
+    def vim_di(vc):
+        '''Handle delete inner commands.'''
+        if vc.is_text_widget(vc.w):
+            if vc.stroke == 'w':
+                # diw
+                vc.do(['extend-to-word','backward-delete-char'])
+                vc.done()
+            else:
+                vc.ignore()
+                vc.quit()
         else:
             vc.quit()
     #@+node:ekr.20140730175636.17991: *5* vc.vim_dollar

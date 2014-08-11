@@ -533,7 +533,7 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
-
+- Added diw.  It's exact properties depend on Ctrl-W (extend-to-word)
 - Added :gt (cycle-focus) and :gT (cycle-all-focus).
   Not exactly what Kent requested, but maybe good enough.
   Buglet: Ctrl-P (repeat-complex-command) doesn't work on these commands.
