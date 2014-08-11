@@ -533,6 +533,11 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
+- Fixed bugs or simplified a,A and O commands.
+- Added P commands. It pastes outlines when focus is in the outline pane.
+- Added V command. It works in both normal and visual modes.
+- Added optional event keyword arg to k.simulateCommand.
+
 - Limited /,?,*,#,n to node-only searches.
 - Show command in inner motions in visual mode.
   This is important, but the present code may interfere with the dot.

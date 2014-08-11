@@ -8,13 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-V visual select line
-P paste on new line above
-O put cursor on new line above, enter insert mode
-
-without V, I'm missing one of my most used idioms:
-Vyp or VyP  copy line, paste above or below
-
 :gt (focuses next tab)
 :Gt (focuses previous tab) 
 diw

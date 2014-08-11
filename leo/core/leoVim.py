@@ -734,7 +734,6 @@ class VimCommands:
         s = vc.stroke.s if g.isStroke(vc.stroke) else vc.stroke
         if s.find('Alt+') > -1:
             # Any Alt key changes c.p.
-            # g.trace('quitting')
             vc.quit()
             vc.delegate()
         elif vc.trainer:
@@ -839,6 +838,7 @@ class VimCommands:
         else:
             w = vc.w
         if vc.is_text_widget(w):
+            vc.do('forward-char')
             vc.begin_insert_mode()
         else:
             vc.quit()
@@ -852,10 +852,7 @@ class VimCommands:
         else:
             w = vc.w
         if vc.is_text_widget(w):
-            s = w.getAllText()
-            i = w.getInsertPoint()
-            i,j = g.getLine(s,i)
-            w.setInsertPoint(max(i,j-1))
+            vc.do('end-of-line')
             vc.begin_insert_mode()
         else:
             vc.quit()
@@ -1307,7 +1304,7 @@ class VimCommands:
             vc.w = c.frame.body.bodyCtrl
         if vc.is_text_widget(vc.w):
             vc.do(['beginning-of-line','insert-newline','back-char'])
-            vc.done()
+            vc.begin_insert_mode()
         else:
             vc.quit()
     #@+node:ekr.20140222064735.16619: *5* vc.vim_o
@@ -1320,12 +1317,7 @@ class VimCommands:
         else:
             w = vc.w
         if vc.is_text_widget(w):
-            s = w.getAllText()
-            i = w.getInsertPoint()
-            i = g.skip_line(s,i)
-            w.insert(i,'\n')
-            i = w.getInsertPoint()
-            w.setInsertPoint(i-1)
+            vc.do(['end-of-line','insert-newline'])
             vc.begin_insert_mode()
         else:
             vc.quit()
