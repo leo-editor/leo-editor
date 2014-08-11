@@ -258,22 +258,14 @@ class LeoTagWidget(QtWidgets.QWidget):
         QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:peckj.20140804114520.15203: *5* registerCallbacks
     def registerCallbacks(self):
-        self.connect(self.listWidget, 
-            QtCore.SIGNAL("itemSelectionChanged()"), 
-            self.item_selected)
-        self.connect(self.listWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-            self.item_selected)
-        self.connect(self.comboBox,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-            self.update_list)
-        self.connect(self.pushButton,
-            QtCore.SIGNAL("clicked(bool)"),
-            self.add_tag)
+        self.listWidget.itemSelectionChanged.connect(self.item_selected)
+        self.listWidget.itemClicked.connect(self.item_selected)
+        self.comboBox.currentIndexChanged.connect(self.update_list)
+        self.pushButton.clicked.connect(self.add_tag)
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
-        key = self.listWidget.currentItem()
+        key = id(self.listWidget.currentItem())
         pos = self.mapping[key]
         self.update_current_tags(pos)
         self.c.selectPosition(pos)
@@ -358,7 +350,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         for n in resultset:
             item = QtWidgets.QListWidgetItem(n.h)
             self.listWidget.addItem(item)
-            self.mapping[item] = n
+            self.mapping[id(item)] = n
         count = self.listWidget.count()
         self.label.clear()
         self.label.setText("Total: %s nodes" % count)

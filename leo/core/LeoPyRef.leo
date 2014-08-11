@@ -14,8 +14,6 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
-<v t="ekr.20140808074553.17926"><vh>@bool vim_trainer_mode = False</vh></v>
-<v t="ekr.20140808172209.18067"><vh>@bool vim_mode = True</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
@@ -47,8 +45,8 @@
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -298,7 +296,6 @@ unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBa
 @language rest
 The parser for @data nodes, doData, no longer strips *anything*.</t>
 <t tx="ekr.20140103105930.16446"></t>
-<t tx="ekr.20140808074553.17926"></t>
 <t tx="ekr.20140808103117.18035"></t>
 <t tx="ekr.20140808103117.18036">gnx: ekr.20110605121601.18696
 </t>
@@ -333,6 +330,5 @@ unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 <t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
 <t tx="ekr.20140808103117.18045"></t>
-<t tx="ekr.20140808172209.18067"></t>
 </tnodes>
 </leo_file>
