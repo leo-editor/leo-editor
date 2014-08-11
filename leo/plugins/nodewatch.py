@@ -74,7 +74,7 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 '''
 #@-<< docstring >>
 
-__version__ = '0.5'
+__version__ = '0.6'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
@@ -84,6 +84,7 @@ __version__ = '0.5'
 # Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
 # Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
 # Version 0.5 - added 'Total: N items' label to bottom of nodewatch pane
+# Version 0.6 - use leoQt to ensure PyQt5 compatibility
 # 
 #@@c
 #@-<< version history >>
@@ -91,8 +92,8 @@ __version__ = '0.5'
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>
 import leo.core.leoGlobals as g
-from PyQt4 import QtGui, QtCore
-
+#from PyQt4 import QtGui, QtCore
+from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 
 #@+others
@@ -136,11 +137,11 @@ class NodewatchController:
         self.watchlists[key]=list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
-class LeoNodewatchWidget(QtGui.QWidget):
+class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self,c,parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.c = c
         self.initUI()
         self.registerCallbacks()
@@ -162,14 +163,14 @@ class LeoNodewatchWidget(QtGui.QWidget):
         
         # verticalLayout_2: contains
         # verticalLayout
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         
@@ -177,22 +178,22 @@ class LeoNodewatchWidget(QtGui.QWidget):
         # horizontalLayout
         # listWidget
         # label
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         
-        self.comboBox = QtGui.QComboBox(self)
+        self.comboBox = QtWidgets.QComboBox(self)
         self.comboBox.setObjectName("comboBox")
         self.horizontalLayout.addWidget(self.comboBox)
-        self.pushButton = QtGui.QPushButton("Refresh", self)
+        self.pushButton = QtWidgets.QPushButton("Refresh", self)
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setMinimumSize(50,24)
         self.pushButton.setMaximumSize(50,24)
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.listWidget = QtGui.QListWidget(self)
+        self.listWidget = QtWidgets.QListWidget(self)
         self.listWidget.setObjectName("listWidget")
         self.verticalLayout.addWidget(self.listWidget)
-        self.label = QtGui.QLabel(self)
+        self.label = QtWidgets.QLabel(self)
         self.label.setObjectName("label")
         self.label.setText("Total: 0 items")
         self.verticalLayout.addWidget(self.label)
