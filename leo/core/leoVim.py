@@ -593,7 +593,8 @@ class VimCommands:
     def done(vc,add_to_dot=True,return_value=True,set_dot=True,stroke=None):
         '''Complete a command, preserving text and optionally updating the dot.'''
         if vc.state == 'visual':
-            # accept() has this effect:
+            vc.handler = vc.do_visual_mode
+                # A major bug fix.
             vc.add_to_dot()
             vc.return_value = True
         else:
@@ -613,7 +614,8 @@ class VimCommands:
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(vc):
         '''Ignore the present key without passing it to k.masterKeyHandler.'''
-        g.es('ignoring',vc.stroke,color='blue')
+        g.es('ignoring',vc.stroke,'in',vc.state,'mode',color='blue')
+        g.trace(g.callers())
         vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
@@ -799,11 +801,8 @@ class VimCommands:
     def update_selection_after_search(vc):
         '''Extend visual mode's selection after a search.'''
         if vc.state == 'visual':
-            w = vc.w
-            i = w.getInsertPoint()
-            j,k = w.getSelectionRange()
-            # g.trace(vc.state,vc.vis_mode_i,i,j,k,vc.widget_name(w))
-            w.setSelectionRange(vc.vis_mode_i,i,insert=i)
+            i = vc.w.getInsertPoint()
+            vc.w.setSelectionRange(vc.vis_mode_i,i,insert=i)
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -883,8 +882,6 @@ class VimCommands:
     def vim_caret(vc):
         '''Move to start of line.'''
         if vc.is_text_widget(vc.w):
-            # extend = vc.state == 'visual'
-            # vc.c.editCommands.backToHome(vc.event,extend=extend)
             if vc.state == 'visual':
                 vc.do('back-to-home-extend-selection')
             else:
@@ -988,12 +985,9 @@ class VimCommands:
     def vim_dollar(vc):
         '''Move the cursor to the end of the line.'''
         if vc.is_text_widget(vc.w):
-            ### ec = vc.c.editCommands
             if vc.state == 'visual':
-                ### ec.endOfLineExtendSelection(vc.event)
                 vc.do('end-of-line-extend-selection')
             else:
-                ### vc.c.editCommands.endOfLine(vc.event)
                 vc.do('end-of-line')
             vc.done()
         else:
@@ -1014,14 +1008,12 @@ class VimCommands:
     #@+node:ekr.20140222064735.16623: *5* vc.vim_e
     def vim_e(vc):
         '''Forward to the end of the Nth word.'''
-        ec = vc.c.editCommands
         if vc.is_text_widget(vc.w):
-            if vc.state == 'visual':
-                for z in range(vc.n1*vc.n):
-                    ec.forwardEndWordExtendSelection(vc.event)
-            else:
-                for z in range(vc.n1*vc.n):
-                    ec.forwardEndWord(vc.event)
+            for z in range(vc.n1*vc.n):
+                if vc.state == 'visual':
+                    vc.do('forward-word-extend-selection')
+                else:
+                    vc.do('forward-word')
             vc.done()
         elif vc.in_tree(vc.w):
             vc.do('goto-last-visible-node')
@@ -1057,7 +1049,6 @@ class VimCommands:
     def vim_F2(vc):
         '''Handle F <stroke>'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
@@ -1074,12 +1065,11 @@ class VimCommands:
                             break
                 if i >= 0 and s[i] == vc.ch:
                     # g.trace(i1-i,vc.ch)
-                    if vc.state == 'visual':
-                        for z in range(i1-i):
-                            ec.backCharacterExtendSelection(vc.event)
-                    else:
-                        for z in range(i1-i):
-                            ec.backCharacter(vc.event)
+                    for z in range(i1-i):
+                        if vc.state == 'visual':
+                            vc.do('back-char-extend-selection')
+                        else:
+                            vc.do('back-char')
             vc.done()
         else:
             vc.quit()
@@ -1114,12 +1104,13 @@ class VimCommands:
                 i -= 1
                 if i < len(s) and s[i] == vc.ch:
                     # g.trace(i-i1+1,vc.ch)
-                    if vc.state == 'visual':
-                        for z in range(i-i1+1):
-                            ec.forwardCharacterExtendSelection(vc.event)
-                    else:
-                        for z in range(i-i1+1):
-                            ec.forwardCharacter(vc.event)
+                    for z in range(i-i1+1):
+                        if vc.state == 'visual':
+                            # ec.forwardCharacterExtendSelection(vc.event)
+                            vc.do('forward-char-extend-selection')
+                        else:
+                            # ec.forwardCharacter(vc.event)
+                            vc.do('forward-char')
             vc.done()
         else:
             vc.quit()
@@ -1127,16 +1118,10 @@ class VimCommands:
     def vim_G(vc):
         '''Put the cursor on the last character of the file.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
-            w = vc.w
-            s = w.getAllText()
-            last = max(0,len(s)-1)
             if vc.state == 'visual':
-                i,j = w.getSelectionRange()
-                if i > j: i,j = j,i
-                w.setSelectionRange(i,last,insert=last)
+                vc.do('end-of-buffer-extend-selection')
             else:
-                w.setInsertPoint(last)
+                vc.do('end-of-buffer')
             vc.done()
         else:
             vc.quit()
@@ -1156,40 +1141,45 @@ class VimCommands:
         
         if vc.is_text_widget(vc.w):
             event,w = vc.event,vc.w
-            ec = vc.c.editCommands
-            ec.w = w
             extend = vc.state == 'visual'
             s = w.getAllText()
             i = w.getInsertPoint()
             if vc.stroke == 'g':
                 # Go to start of buffer.
-                if not vc.on_same_line(s,0,i):
-                    if extend:
-                        ec.beginningOfBufferExtendSelection(event)
-                    else:
-                        ec.beginningOfBuffer(event)
-                ec.backToHome(event,extend=extend)
+                on_line = vc.on_same_line(s,0,i)
+                if on_line and extend:
+                    vc.do('back-to-home-extend-selection')
+                elif on_line:
+                    vc.do('back-to-home')
+                elif extend:
+                    vc.do('beginning-of-buffer-extend-selection')
+                else:
+                    vc.do('beginning-of-buffer')
                 vc.done()
             elif vc.stroke == 'b':
                 # go to beginning of line: like 0.
-                if vc.state == 'visual':
-                    ec.beginningOfLineExtendSelection(vc.event)
+                if extend:
+                    vc.do('beginning-of-line-extend-selection')
                 else:
-                    ec.beginningOfLine(vc.event)
+                    vc.do('beginning-of-line')
                 vc.done()
             elif vc.stroke == 'e':
                 # got to end of line: like $
                 if vc.state == 'visual':
-                    ec.endOfLineExtendSelection(vc.event)
+                    vc.do('end-of-line-extend-selection')
                 else:
-                    vc.c.editCommands.endOfLine(vc.event)
+                    vc.do('end-of-line')
                 vc.done()
             elif vc.stroke == 'h':
                 # go home: like ^.
-                vc.c.editCommands.backToHome(vc.event,extend=extend)
+                if extend:
+                    vc.do('back-to-home-extend-selection')
+                elif on_line:
+                    vc.do('back-to-home')
                 vc.done()
             else:
                 vc.ignore()
+                vc.done()
         else:
             vc.quit()
 
@@ -1210,7 +1200,6 @@ class VimCommands:
                     if i == 0 or (i > 0 and s[i-1] == '\n'):
                         break # Don't go past present line.
                 if vc.state == 'visual':
-                    # if vc.vis_mode_i > i: vc.vis_mode_i,i = i,vc.vis_mode_i
                     w.setSelectionRange(vc.vis_mode_i,i,insert=i)
                 else:
                     w.setInsertPoint(i)
@@ -1238,13 +1227,11 @@ class VimCommands:
     def vim_j(vc):
         '''N j  Down n lines.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
-            if vc.state == 'visual':
-                for z in range(vc.n1*vc.n):
-                    ec.nextLineExtendSelection(vc.event)
-            else:
-                for z in range(vc.n1*vc.n):
-                    ec.nextLine(vc.event)
+            for z in range(vc.n1*vc.n):
+                if vc.state == 'visual':
+                    vc.do('next-line-extend-selection')
+                else:
+                    vc.do('next-line')
             vc.done()
         elif vc.in_tree(vc.w):
             vc.do('goto-next-visible')
@@ -1255,13 +1242,11 @@ class VimCommands:
     def vim_k(vc):
         '''Cursor up N lines.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
-            if vc.state == 'visual':
-                for z in range(vc.n1 * vc.n):
-                    ec.prevLineExtendSelection(vc.event)
-            else:
-                for z in range(vc.n1 * vc.n):
-                    ec.prevLine(vc.event)
+            for z in range(vc.n1 * vc.n):
+                if vc.state == 'visual':
+                    vc.do('previous-line-extend-selection')
+                else:
+                    vc.do('previous-line')
             vc.done()
         elif vc.in_tree(vc.w):
             vc.do('goto-prev-visible')
@@ -1504,17 +1489,16 @@ class VimCommands:
                         else:
                             break
                 if i < len(s) and s[i] == vc.ch:
-                    if vc.state == 'visual':
-                        for z in range(i-i1):
-                            ec.forwardCharacterExtendSelection(vc.event)
-                    else:
-                        for z in range(i-i1):
-                            ec.forwardCharacter(vc.event)
+                    for z in range(i-i1):
+                        if vc.state == 'visual':
+                            vc.do('forward-char-extend-selection')
+                        else:
+                            vc.do('forward-char')
             vc.done()
         else:
             vc.quit()
 
-    #@+node:ekr.20140222064735.16686: *5* vc.vim_T
+    #@+node:ekr.20140222064735.16686: *5* vc.vim_T (fails test)
     def vim_T(vc):
         '''Back before the Nth occurrence of <char>.'''
         if vc.is_text_widget(vc.w):
@@ -1543,13 +1527,12 @@ class VimCommands:
                         else:
                             break
                 if i >= 0 and s[i] == vc.ch:
-                    # g.trace(i1-i-1,vc.ch)
-                    if vc.state == 'visual':
-                        for z in range(i1-i-1):
-                            ec.backCharacterExtendSelection(vc.event)
-                    else:
-                        for z in range(i1-i-1):
-                            ec.backCharacter(vc.event)
+                    g.trace(i1-i-1,vc.ch)
+                    for z in range(i-i1):
+                        if vc.state == 'visual':
+                            vc.do('back-char-extend-selection')
+                        else:
+                            vc.do('back-char')
             vc.done()
         else:
             vc.quit()
@@ -1579,10 +1562,11 @@ class VimCommands:
     def vim_w(vc):
         '''N words forward.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
-            extend = vc.state == 'visual'
             for z in range(vc.n1*vc.n):
-                ec.moveWordHelper(vc.event,extend=extend,forward=True)
+                if vc.state == 'visual':
+                    vc.do('forward-word-extend-selection')
+                else:
+                    vc.do('forward-word')
             vc.done()
         else:
             vc.quit()

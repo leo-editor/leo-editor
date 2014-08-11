@@ -8,17 +8,17 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- Use vc.do(leo-command-name) wherever possible.
-
 Bugs:
+- / and ? must use node-only searches!
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
 - :print-dot must handle VimEvents, not chars.
 - t,T,f,T don't work if vc.cross_lines = False.
+    - This is minor, since this @bool vim-crosses-lines is True by default.
 - Fix the dot for insert commands.
 
 Later:
-- Confine / and ? to existing body pane?
+- Write extend_vim_mode plugin
 - Extend Leo's undo to show the vim characters for the commands.
 .. @+node:ekr.20140802225657.18028: *4* From Kent: do asap
 I use a tiny subset of Vim commands:
@@ -28,10 +28,6 @@ I use a tiny subset of Vim commands:
 
 just discovered diw, useful!
     http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
-
-
-'*' find next occurrence of this word
-#' find previous occurrence
     
 :% s/text/replaced text/g
     Substitution.
