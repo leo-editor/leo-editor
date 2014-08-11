@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140218144401.6035: * @file sftp.py
+#@+node:peckj.20140811080604.9496: * @file sftp.py
 #@@language python
 #@@tabwidth -4
 
@@ -88,20 +88,22 @@ Makes sftp.py forget your entered passwords.  Only available if `@bool sftp-cach
 '''
 #@-<< docstring >>
 
-__version__ = '0.3'
+__version__ = '0.2'
 #@+<< version history >>
 #@+node:peckj.20140218144401.6037: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial functionality
+# Version 0.2 - use leoQt instead of PyQt4
 #@-<< version history >>
 
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
 import leo.core.leoGlobals as g
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+#import PyQt4.QtCore as QtCore
+#import PyQt4.QtGui as QtGui
+from leo.core.leoQt import QtWidgets, QtCore
 
 import os
 
@@ -222,7 +224,7 @@ class SFTPController:
         message = "Please enter password for user '%s' on host '%s':" % (username, hostname)
         parent = None
         title = "Enter Password"
-        password, ok = QtGui.QInputDialog.getText(parent, title, message, mode=QtGui.QLineEdit.Password)
+        password, ok = QtWidgets.QInputDialog.getText(parent, title, message, mode=QtWidgets.QLineEdit.Password)
         password = str(password)
         if ok is False:
             return None
