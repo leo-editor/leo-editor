@@ -805,8 +805,12 @@ class VimCommands:
     def update_selection_after_search(vc):
         '''Extend visual mode's selection after a search.'''
         if vc.state == 'visual':
-            i = vc.w.getInsertPoint()
-            vc.w.setSelectionRange(vc.vis_mode_i,i,insert=i)
+            w = vc.w
+            if w == g.app.gui.get_focus():
+                i = w.getInsertPoint()
+                w.setSelectionRange(vc.vis_mode_i,i,insert=i)
+            else:
+                g.trace('Search has changed nodes.')
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -1288,7 +1292,10 @@ class VimCommands:
         '''Repeat last search N times.'''
         fc = vc.c.findCommands
         fc.setup_command()
+        old_node_only = fc.node_only
+        fc.node_only = True
         fc.findNext()
+        vc.node_only = old_node_only
         vc.done()
     #@+node:ekr.20140222064735.16692: *5* vc.vim_O
     def vim_O(vc):
@@ -1360,10 +1367,12 @@ class VimCommands:
                 w.setSelectionRange(i1,i1)
                 if not vc.in_dot:
                     vc.dot_list.append(vc.stroke)
+                old_node_only = fc.node_only
                 fc.reverse = True
                 fc.find_text = s
                 fc.findNext()
                 fc.reverse = False
+                fc.node_only = old_node_only
             vc.done()
         else:
             vc.quit()
@@ -1393,9 +1402,11 @@ class VimCommands:
             fc.reverse = True
             fc.openFindTab(vc.event)
             fc.ftm.clear_focus()
+            old_node_only = fc.node_only
             fc.searchWithPresentOptions(vc.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls vc.update_selection_after_search.
+            fc.node_only = old_node_only
             vc.done(add_to_dot=False,set_dot=False)
         else:
             vc.quit()
@@ -1430,9 +1441,12 @@ class VimCommands:
             fc.reverse = False
             fc.openFindTab(vc.event)
             fc.ftm.clear_focus()
+            old_node_only = fc.node_only
             fc.searchWithPresentOptions(vc.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls vc.update_selection_after_search.
+            fc.node_only = old_node_only
+            fc.reverse = False
             vc.done(add_to_dot=False,set_dot=False)
         else:
             vc.quit()
@@ -1451,9 +1465,11 @@ class VimCommands:
                 w.setSelectionRange(i1,i1)
                 if not vc.in_dot:
                     vc.dot_list.append(vc.stroke)
+                old_node_only = fc.node_only
                 fc.reverse = False
                 fc.find_text = s
                 fc.findNext()
+                fc.node_only = old_node_only
             vc.done()
         else:
             vc.quit()

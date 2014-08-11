@@ -8,7 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- / and ? must use node-only searches!
 - Summary of recent work:
     - Fixed very confusing bug.
     - New features:
