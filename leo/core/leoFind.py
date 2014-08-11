@@ -683,7 +683,7 @@ class LeoFind:
         self.setupSearchPattern(find_pattern)
         self.setupChangePattern(change_pattern)
         if c.vim_mode and c.vimCommands:
-            c.vimCommands.update_dot_after_search(
+            c.vimCommands.update_dot_before_search(
                 find_pattern=find_pattern,change_pattern=change_pattern)
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
@@ -701,7 +701,7 @@ class LeoFind:
         c = self.c
         self.setupSearchPattern(pattern)
         if c.vim_mode and c.vimCommands:
-            c.vimCommands.update_dot_after_search(
+            c.vimCommands.update_dot_before_search(
                 find_pattern=pattern,
                 change_pattern=None) # A flag indicating not a change command.
         c.widgetWantsFocusNow(self.w)
@@ -1923,6 +1923,8 @@ class LeoFind:
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
             c.outerUpdate()
+            if c.vim_mode and c.vimCommands:
+                c.vimCommands.update_selection_after_search()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars (self):

@@ -1884,6 +1884,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             'add-tab-to-lines':                     self.addTabToLines, 
             'back-to-indentation':                  self.backToIndentation,
             'back-to-home':                         self.backToHome,
+            'back-to-home-extend-selection':        self.backToHomeExtendSelection,
             'back-char':                            self.backCharacter,
             'back-char-extend-selection':           self.backCharacterExtendSelection,
             'back-page':                            self.backPage,
@@ -5601,7 +5602,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.moveSpotNode = p.v
 
         # g.trace('moveSpot',i)
-    #@+node:ekr.20081123102100.1: *4* backToHome
+    #@+node:ekr.20081123102100.1: *4* backToHome/ExtendSelection
     def backToHome (self,event,extend=False):
         '''
         Smart home:
@@ -5620,6 +5621,9 @@ class EditCommandsClass (BaseEditCommandsClass):
             if i == ins:
                 i = i1
             self.moveToHelper(event,i,extend=extend)
+            
+    def backToHomeExtendSelection (self,event):
+        self.backToHome(event,extend=True)
     #@+node:ekr.20050920084036.75: *4* backToIndentation
     def backToIndentation (self,event):
 

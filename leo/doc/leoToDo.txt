@@ -8,8 +8,10 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+- Use vc.do(leo-command-name) wherever possible.
+
 Bugs:
-- vc.update_dot_after_search must call add_to_dot().
+- vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
 - :print-dot must handle VimEvents, not chars.
 - t,T,f,T don't work if vc.cross_lines = False.

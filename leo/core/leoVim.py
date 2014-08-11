@@ -189,7 +189,19 @@ class VimCommands:
                     g.trace('duplicate arrow key in %s dict: %s' % (tag,key))
                 else:
                     d[key] = arrow_d.get(key)
-
+        if 1:
+            # Check for conflicts between motion dict (d2) and the normal and visual dicts.
+            # These are not necessarily errors, but are useful for debugging.
+            for d,tag in ((d1,'normal'),(d3,'visual')):
+                for key in d2.keys():
+                    f,f2 = d.get(key),d2.get(key)
+                    if f2 and f and f != f2:
+                        g.trace('conflicting motion key in %s dict: %s %s %s' % (
+                                tag,key,f2.__name__,f.__name__))
+                    elif f2 and not f:
+                        g.trace('missing motion key in %s dict: %s %s' % (
+                            tag,key,f2.__name__))
+                        # d[key] = f2
     #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
     def create_motion_dispatch_d(vc):
         '''
@@ -207,7 +219,7 @@ class VimCommands:
         'bracketleft': None,        # '['
         'bracketright': None,       # ']'
         'colon': None,              # ':' Not a motion.
-        'comma': vc.vim_comma,      # ','
+        'comma': None,              # ','
         'dollar': vc.vim_dollar,    # '$'
         'greater': None,            # '>'
         'less': None,               # '<'
@@ -302,7 +314,7 @@ class VimCommands:
         'bracketleft': None,        # '['
         'bracketright': None,       # ']'
         'colon': vc.vim_colon,      # ':'
-        'comma': vc.vim_comma,      # ','
+        'comma': None,              # ','
         'dollar': vc.vim_dollar,    # '$'
         'greater': None,            # '>'
         'less': None,               # '<'
@@ -417,6 +429,8 @@ class VimCommands:
         'F': vc.vim_F,
         'G': vc.vim_G,
         'T': vc.vim_T,
+        'Y': vc.vim_Y,
+        'asciicircum': vc.vim_caret,
         'b': vc.vim_b,
         'dollar': vc.vim_dollar,
         'e': vc.vim_e,
@@ -427,6 +441,8 @@ class VimCommands:
         'k': vc.vim_k,
         'l': vc.vim_l,
         'n': vc.vim_n,
+        'question': vc.vim_question,
+        'slash': vc.vim_slash,
         't': vc.vim_t,
         'w': vc.vim_w,
         }
@@ -745,8 +761,8 @@ class VimCommands:
         else:
             vc.delegate()
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
-    #@+node:ekr.20140810181832.18220: *5* vc.update_dot_after_search (Revise)
-    def update_dot_after_search(vc,find_pattern,change_pattern):
+    #@+node:ekr.20140810181832.18220: *5* vc.update_dot_before_search
+    def update_dot_before_search(vc,find_pattern,change_pattern):
         '''A callback that updates the dot just before searching.'''
         # g.trace(vc.search_stroke,find_pattern,change_pattern)
         # Don't use vc.add_to_dot: it updates vc.command_list.
@@ -779,19 +795,26 @@ class VimCommands:
                     for ch in s:
                         add(ch)
             vc.search_stroke = None
+    #@+node:ekr.20140811044942.18243: *5* vc.update_selection_after_search
+    def update_selection_after_search(vc):
+        '''Extend visual mode's selection after a search.'''
+        if vc.state == 'visual':
+            w = vc.w
+            i = w.getInsertPoint()
+            j,k = w.getSelectionRange()
+            # g.trace(vc.state,vc.vis_mode_i,i,j,k,vc.widget_name(w))
+            w.setSelectionRange(vc.vis_mode_i,i,insert=i)
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
-        ec = vc.c.editCommands
         if vc.is_text_widget(vc.w):
             if vc.repeat_list:
                 vc.vim_digits()
             else:
-                # Move to start of line.
                 if vc.state == 'visual':
-                    ec.beginningOfLineExtendSelection(vc.event)
+                    vc.do('beginning-of-line-extend-selection')
                 else:
-                    ec.beginningOfLine(vc.event)
+                    vc.do('beginning-of-line')
                 vc.done()
         elif vc.in_tree(vc.w):
             vc.do('goto-first-visible-node')
@@ -832,10 +855,11 @@ class VimCommands:
     def vim_b(vc):
         '''N words backward.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
-            extend = vc.state == 'visual'
             for z in range(vc.n1*vc.n):
-                ec.moveWordHelper(vc.event,extend=extend,forward=False)
+                if vc.state == 'visual':
+                    vc.do('back-word-extend-selection')
+                else:
+                    vc.do('back-word')
             vc.done()
         else:
             vc.quit()
@@ -859,8 +883,12 @@ class VimCommands:
     def vim_caret(vc):
         '''Move to start of line.'''
         if vc.is_text_widget(vc.w):
-            extend = vc.state == 'visual'
-            vc.c.editCommands.backToHome(vc.event,extend=extend)
+            # extend = vc.state == 'visual'
+            # vc.c.editCommands.backToHome(vc.event,extend=extend)
+            if vc.state == 'visual':
+                vc.do('back-to-home-extend-selection')
+            else:
+                vc.do('back-to-home')
             vc.done()
         else:
             vc.quit()
@@ -872,7 +900,8 @@ class VimCommands:
         event = VimEvent(stroke='colon',w=vc.w)
         k.fullCommand(event=event)
         k.extendLabel(':')
-    #@+node:ekr.20140806123540.18159: *5* vc.vim_comma
+    #@+node:ekr.20140806123540.18159: *5* vc.vim_comma (not used)
+    # This was an attempt to be clever: two commas would switch to insert mode.
     def vim_comma(vc):
         '''Handle a comma in normal mode.'''
         if vc.is_text_widget(vc.w):
@@ -959,11 +988,13 @@ class VimCommands:
     def vim_dollar(vc):
         '''Move the cursor to the end of the line.'''
         if vc.is_text_widget(vc.w):
-            ec = vc.c.editCommands
+            ### ec = vc.c.editCommands
             if vc.state == 'visual':
-                ec.endOfLineExtendSelection(vc.event)
+                ### ec.endOfLineExtendSelection(vc.event)
+                vc.do('end-of-line-extend-selection')
             else:
-                vc.c.editCommands.endOfLine(vc.event)
+                ### vc.c.editCommands.endOfLine(vc.event)
+                vc.do('end-of-line')
             vc.done()
         else:
             vc.quit()
@@ -1342,7 +1373,7 @@ class VimCommands:
         if vc.is_text_widget(w):
             i1 = w.getInsertPoint()
             if not w.hasSelection():
-                ec.extendToWord(vc.event,direction='forward',select=True)
+                vc.do('extend-to-word')
             if w.hasSelection():
                 fc = vc.c.findCommands
                 s = w.getSelectedText()
@@ -1375,15 +1406,19 @@ class VimCommands:
     #@+node:ekr.20140807152406.18127: *5* vc.vim_question
     def vim_question(vc):
         '''Begin a search.'''
-        fc = vc.c.findCommands
-        ftm = fc.ftm
-        vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_after_search.
-        fc.reverse = True
-        fc.openFindTab(vc.event)
-        fc.ftm.clear_focus()
-        fc.searchWithPresentOptions(vc.event)
-        fc.reverse = False
-        vc.done(add_to_dot=False,set_dot=False)
+        if vc.is_text_widget(vc.w):
+            fc = vc.c.findCommands
+            ftm = fc.ftm
+            vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_before_search.
+            fc.reverse = True
+            fc.openFindTab(vc.event)
+            fc.ftm.clear_focus()
+            fc.searchWithPresentOptions(vc.event)
+                # This returns immediately, before the actual search.
+                # leoFind.showSuccess calls vc.update_selection_after_search.
+            vc.done(add_to_dot=False,set_dot=False)
+        else:
+            vc.quit()
     #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
     def vim_r(vc):
         '''Replace next N characters with <char>'''
@@ -1409,13 +1444,18 @@ class VimCommands:
     #@+node:ekr.20140222064735.16622: *5* vc.vim_slash
     def vim_slash(vc):
         '''Begin a search.'''
-        fc = vc.c.findCommands
-        vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_after_search.
-        fc.reverse = False
-        fc.openFindTab(vc.event)
-        fc.ftm.clear_focus()
-        fc.searchWithPresentOptions(vc.event)
-        vc.done(add_to_dot=False,set_dot=False)
+        if vc.is_text_widget(vc.w):
+            fc = vc.c.findCommands
+            vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_before_search.
+            fc.reverse = False
+            fc.openFindTab(vc.event)
+            fc.ftm.clear_focus()
+            fc.searchWithPresentOptions(vc.event)
+                # This returns immediately, before the actual search.
+                # leoFind.showSuccess calls vc.update_selection_after_search.
+            vc.done(add_to_dot=False,set_dot=False)
+        else:
+            vc.quit()
     #@+node:ekr.20140810210411.18239: *5* vc.vim_star
     def vim_star(vc):
         '''Find previous occurance of word under the cursor.'''
@@ -1424,7 +1464,7 @@ class VimCommands:
         if vc.is_text_widget(w):
             i1 = w.getInsertPoint()
             if not w.hasSelection():
-                ec.extendToWord(vc.event,direction='forward',select=True)
+                vc.do('extend-to-word')
             if w.hasSelection():
                 fc = vc.c.findCommands
                 s = w.getSelectedText()
