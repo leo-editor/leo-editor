@@ -29,8 +29,7 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 
 controllers = {}
@@ -80,15 +79,15 @@ class NavController:
         w = c.frame.iconBar.w
         if not w: return # EKR: can be None when unit testing.
         
-        icon_l = w.style().standardIcon(QtGui.QStyle.SP_ArrowLeft)
-        icon_r = w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
+        icon_l = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowLeft)
+        icon_r = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowRight)
         
-        act_l = QtGui.QAction(icon_l,'prev',w)
-        act_r = QtGui.QAction(icon_r,'next',w)
+        act_l = QtWidgets.QAction(icon_l,'prev',w)
+        act_r = QtWidgets.QAction(icon_r,'next',w)
         
         # 2011/04/02: Use the new commands.
-        act_l.connect(act_l,QtCore.SIGNAL("triggered()"),c.goToPrevHistory)
-        act_r.connect(act_r,QtCore.SIGNAL("triggered()"),c.goToNextHistory)
+        act_l.triggered.connect(lambda checked: c.goToPrevHistory())
+        act_r.triggered.connect(lambda checked: c.goToNextHistory())
 
         # 2011/04/02: Don't execute the command twice.
         self.c.frame.iconBar.add(qaction = act_l) #, command = self.clickPrev)
