@@ -549,7 +549,7 @@
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20131213135427.21826"><vh>@menus</vh>
+<v t="ekr.20131213135427.21826" a="E"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
@@ -1184,7 +1184,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
@@ -3403,6 +3403,8 @@ printing.py
 # nested_splitter.py
 # niceNosent.py
 # nodeActions.py
+# nodediff.py
+# nodetags.py
 # nodewatch.py
 # notebook.py
 # open_shell.py
