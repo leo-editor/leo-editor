@@ -72,6 +72,13 @@ def colon_qa(event):
         if c.isChanged():
             return
     g.app.onQuit(event)
+#@+node:ekr.20140810181832.18222: *3* :print-dot
+@g.command(':print-dot')
+def show_dot(event):
+    '''Show the vim dot.'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.print_dot()
 #@+node:ekr.20140808074553.17923: *3* :toggle-vim-trainer-mode
 @g.command(':toggle-vim-trainer-mode')
 def toggle_vim_trainer_mode(event):
@@ -736,6 +743,33 @@ class VimCommands:
         else:
             vc.delegate()
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
+    #@+node:ekr.20140810181832.18220: *5* vc.update_dot_after_search
+    def update_dot_after_search(vc,find_pattern,change_pattern):
+        '''A callback that updates the dot just before searching.'''
+        # g.trace(vc.search_stroke,find_pattern,change_pattern)
+        # Don't use vc.add_to_dot: it updates vc.command_list.
+        def add(stroke):
+            vc.dot_list.append(stroke)
+        if not vc.in_dot:
+            if 1:
+                # This is all we can do until there is a substitution command.
+                vc.change_pattern = change_pattern
+                    # Not used at present.
+                add(vc.search_stroke)
+                for ch in find_pattern:
+                    add(ch)
+            else:
+                # We could do this is we had a substitution command.
+                if change_pattern is None:
+                    # A search pattern.
+                    add(vc.search_stroke)
+                    for ch in find_pattern:
+                        add(ch)
+                else:
+                    # A substitution:  :%s/find_pattern/change_pattern/g
+                    for s in (":%s/",find_pattern,"/",change_pattern,"/g"):
+                        for ch in s:
+                            add(ch)
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
@@ -1316,11 +1350,12 @@ class VimCommands:
         '''Begin a search.'''
         fc = vc.c.findCommands
         ftm = fc.ftm
+        vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_after_search.
         fc.reverse = True
         fc.openFindTab(vc.event)
         fc.ftm.clear_focus()
         fc.searchWithPresentOptions(vc.event)
-        vc.done()
+        vc.done(add_to_dot=False,set_dot=False)
     #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
     def vim_r(vc):
         '''Replace next N characters with <char>'''
@@ -1347,11 +1382,12 @@ class VimCommands:
     def vim_slash(vc):
         '''Begin a search.'''
         fc = vc.c.findCommands
+        vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_after_search.
         fc.reverse = False
         fc.openFindTab(vc.event)
         fc.ftm.clear_focus()
         fc.searchWithPresentOptions(vc.event)
-        vc.done()
+        vc.done(add_to_dot=False,set_dot=False)
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
         '''Move before the Nth occurrence of <char> to the right.'''
@@ -1765,14 +1801,22 @@ class VimCommands:
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140808142143.18072: *3* vc.external commands
-    #@+node:ekr.20140808142143.18074: *4* toggle_trainer
+    #@+node:ekr.20140810181832.18223: *4* vc.print_dot
+    def print_dot(vc):
+        '''Print the dot.'''
+        i = 0
+        aList = [vc.c.k.stroke2char(s) for s in vc.dot_list]
+        while i < len(aList):
+            g.es(','.join(aList[i:i+10]))
+            i += 10
+    #@+node:ekr.20140808142143.18074: *4* vc.toggle_trainer
     def toggle_trainer(vc):
         '''toggle vim-trainer mode.'''
         vc.trainer = not vc.trainer
         g.es('vim-trainer-mode: %s' % (
             'on' if vc.trainer else 'off'),
             color = 'red')
-    #@+node:ekr.20140808142143.18075: *4* toggle_vim_mode
+    #@+node:ekr.20140808142143.18075: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc):
         '''toggle vim-mode.'''
         c = vc.c
@@ -1895,7 +1939,6 @@ class VimCommands:
         Never change vc.command_list if vc.in_dot is True
         Never add . to vc.command_list
         '''
-        # g.trace(vc.stroke,g.callers(2))
         if not vc.in_dot:
             s = stroke or vc.stroke
             # Never add '.' to the dot list.

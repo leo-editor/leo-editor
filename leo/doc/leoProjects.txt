@@ -534,6 +534,11 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @language rest
 
+- Added the :print-dot command.
+- The / and ? commands now update the dot.
+    - Added callbacks to vc.update_dot_after_search in
+      leoFind.generalSearch/ChangeHelper.    
+
 - Added ge,gb,gh commands: same as $,0,^.
 - h,j,k,l in outline work like the corresponding arrow keys in the tree pane.
 - 0 in outline pane: goto-first-visible-node

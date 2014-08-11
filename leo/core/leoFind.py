@@ -682,6 +682,9 @@ class LeoFind:
         c = self.c
         self.setupSearchPattern(find_pattern)
         self.setupChangePattern(change_pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_after_search(
+                find_pattern=find_pattern,change_pattern=change_pattern)
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
         if changeAll:
@@ -697,6 +700,10 @@ class LeoFind:
     ):
         c = self.c
         self.setupSearchPattern(pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_after_search(
+                find_pattern=pattern,
+                change_pattern=None) # A flag indicating not a change command.
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
         if findAll:

@@ -7,11 +7,13 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
-- Update dot in find commands: add hook to leoFind.showSuccess and showFailure
-    - Confine / and ? to existing body pane?
+
+- :show-dot command
 - '*' find next occurrence of the word under the cursor.
    #' find previous occurrence
+
 Bugs:
+- Confine / and ? to existing body pane?
 - Fix the dot for insert commands.
 - t,T,f,T don't work if vc.cross_lines = False.
 Later:
