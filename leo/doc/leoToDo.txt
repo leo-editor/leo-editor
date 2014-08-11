@@ -8,8 +8,6 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-:gt (focuses next tab)
-:Gt (focuses previous tab) 
 diw
 :% s/text/replaced text/g
     Substitution.

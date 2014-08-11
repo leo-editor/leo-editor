@@ -59,6 +59,20 @@ def colon_e_exclam(event):
     c = event.get('c')
     if c:
         c.revert()
+#@+node:ekr.20140811170859.18253: *3* :gt & Gt
+@g.command(':gt')
+def vim_gT(event):
+    '''cycle-focus'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.cycle_focus()
+
+@g.command(':gT')
+def vim_gT(event):
+    '''cycle-all-focus'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.cycle_all_focus()
 #@+node:ekr.20140804202802.18156: *3* :q & :qa
 @g.command(':q')
 def colon_q(event):
@@ -899,6 +913,7 @@ class VimCommands:
     def vim_colon(vc):
         '''Enter the minibuffer.'''
         k = vc.k
+        vc.colon_w = vc.w # A scratch ivar, for :gt & gT commands.
         vc.quit()
         event = VimEvent(stroke='colon',w=vc.w)
         k.fullCommand(event=event)
@@ -1891,6 +1906,16 @@ class VimCommands:
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140808142143.18072: *3* vc.external commands
+    #@+node:ekr.20140811173921.18142: *4* cycle_focus & cycle_all_focus
+    def cycle_focus(vc):
+        '''Cycle focus'''
+        event = VimEvent(stroke='',w=vc.colon_w)
+        vc.do('cycle-focus',event=event)
+        
+    def cycle_all_focus(vc):
+        '''Cycle all focus'''
+        event = VimEvent(stroke='',w=vc.colon_w)
+        vc.do('cycle-all-focus',event=event)
     #@+node:ekr.20140810181832.18223: *4* vc.print_dot
     def print_dot(vc):
         '''Print the dot.'''
@@ -2049,13 +2074,15 @@ class VimCommands:
         if vc.command_list:
             vc.dot_list = vc.command_list[:]
     #@+node:ekr.20140810214537.18241: *4* vc.do
-    def do(vc,o):
+    def do(vc,o,event=None):
         '''Do one or more Leo commands by name.'''
+        if not event:
+            event = vc.event
         if isinstance(o,(tuple,list)):
             for z in o:
-                vc.c.k.simulateCommand(z,event=vc.event)
+                vc.c.k.simulateCommand(z,event=event)
         else:
-            vc.c.k.simulateCommand(o,event=vc.event)
+            vc.c.k.simulateCommand(o,event=event)
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(vc,w):
         '''Return True if we are in a headline edit widget.'''
