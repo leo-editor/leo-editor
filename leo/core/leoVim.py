@@ -14,44 +14,6 @@ import string
 
 #@+others
 #@+node:ekr.20140803220119.18093: ** ':' commands
-#@+node:ekr.20140804202802.18158: *3* not ready yet
-if 0:
-    #@+others
-    #@+node:ekr.20140804202802.18151: *4* :!
-    @g.command(':!') # :!shell command
-    def colon_exclam(event):
-        '''Execute a shell command.'''
-        c = event.get('c')
-        if c:
-            print(':! not ready yet')
-    #@+node:ekr.20140804202802.18159: *4* :e
-    @g.command(':e') # :e directory name
-    def colon_e(event):
-        '''Open a file from a director list.'''
-        c = event.get('c')
-        if c:
-            g.trace(':e not ready yet')
-    #@+node:ekr.20140804202802.18160: *4* :q! (not a good idea)
-    if 0: # Probably a bad idea.
-        @g.command(':q!')
-        def colon_q_exclaim(event):
-            '''Quit immediately.'''
-            g.app.forceShutdown()
-    #@+node:ekr.20140804202802.18150: *4* :r
-    @g.command(':r') # :r filename
-    def colon_r(event):
-        '''Put the contents of a file at the insertion point.'''
-        c = event.get('c')
-        if c:
-            g.trace(':r not ready yet')
-    #@+node:ekr.20140804202802.18153: *4* :tabnew
-    @g.command(':tabnew') # :tabnew filename
-    def colon_tabnew(event):
-        '''Open a file in a new tab.'''
-        c = event.get('c')
-        if c:
-            g.trace(':tabnew not ready yet')
-    #@-others
 #@+node:ekr.20140811180848.18153: *3* :! (shell command)
 @g.command(':!')
 def e_exclam(event):
@@ -87,6 +49,13 @@ def vim_gT(event):
     c = event.get('c')
     if c and c.vimCommands:
         c.vimCommands.cycle_all_focus()
+#@+node:ekr.20140810181832.18222: *3* :print-dot
+@g.command(':print-dot')
+def show_dot(event):
+    '''Show the vim dot.'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.print_dot()
 #@+node:ekr.20140804202802.18156: *3* :q & :qa
 @g.command(':q')
 def colon_q(event):
@@ -100,20 +69,13 @@ def colon_qa(event):
         if c.isChanged():
             return
     g.app.onQuit(event)
-#@+node:ekr.20140810181832.18222: *3* :print-dot
-@g.command(':print-dot')
-def show_dot(event):
-    '''Show the vim dot.'''
+#@+node:ekr.20140804202802.18150: *3* :r
+@g.command(':r') # :r filename
+def colon_r(event):
+    '''Put the contents of a file at the insertion point.'''
     c = event.get('c')
     if c and c.vimCommands:
-        c.vimCommands.print_dot()
-#@+node:ekr.20140808074553.17923: *3* :toggle-vim-trainer-mode
-@g.command(':toggle-vim-trainer-mode')
-def toggle_vim_trainer_mode(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.toggle_trainer()
+        c.vimCommands.load_file_at_cursor()
 #@+node:ekr.20140808141921.18059: *3* :toggle-vim-mode
 @g.command(':toggle-vim-mode')
 def toggle_vim_mode(event):
@@ -121,6 +83,13 @@ def toggle_vim_mode(event):
     c = event.get('c')
     if c and c.vimCommands:
         c.vimCommands.toggle_vim_mode()
+#@+node:ekr.20140808074553.17923: *3* :toggle-vim-trainer-mode
+@g.command(':toggle-vim-trainer-mode')
+def toggle_vim_trainer_mode(event):
+    '''Save the .leo file.'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.toggle_trainer()
 #@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
 @g.command(':w')
 def colon_w(event):
@@ -149,6 +118,24 @@ def colon_xa(event):
     for c in g.app.commanders():
         c.save()
     g.app.onQuit(event)
+#@+node:ekr.20140804202802.18158: *3* not ready yet
+if 0:
+    #@+others
+    #@+node:ekr.20140804202802.18159: *4* :e
+    @g.command(':e') # :e directory name
+    def colon_e(event):
+        '''Open a file from a director list.'''
+        c = event.get('c')
+        if c:
+            g.trace(':e not ready yet')
+    #@+node:ekr.20140804202802.18153: *4* :tabnew
+    @g.command(':tabnew') # :tabnew filename
+    def colon_tabnew(event):
+        '''Open a file in a new tab.'''
+        c = event.get('c')
+        if c:
+            g.trace(':tabnew not ready yet')
+    #@-others
 #@+node:ekr.20140802183521.17997: ** show_stroke
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
@@ -1947,6 +1934,29 @@ class VimCommands:
         '''Cycle all focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
+    #@+node:ekr.20140811211944.18162: *4* vc.load_file_at_cursor
+    def load_file_at_cursor(vc,event=None):
+        '''Prompt for a file name, then load it at the cursor.'''
+        k = vc.k
+        state = k.getState(':r')
+        if state == 0:
+            event = VimEvent(stroke='',w=vc.colon_w)
+            k.setLabelBlue(':r ',protect=True)
+            k.getArg(event,':r',1,vc.load_file_at_cursor)
+        else:
+            fn = k.arg
+            path = g.os_path_finalize_join('.',fn)
+            if g.os_path_exists(path):
+                f = open(path)
+                s = f.read()
+                f.close()
+                w = vc.colon_w
+                if vc.is_text_widget(w):
+                    i = w.getInsertPoint()
+                    w.insert(i,s)
+            else:
+                g.es('not found',path)
+            vc.quit()
     #@+node:ekr.20140810181832.18223: *4* vc.print_dot
     def print_dot(vc):
         '''Print the dot.'''
