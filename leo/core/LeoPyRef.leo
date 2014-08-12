@@ -20,19 +20,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20140808103117.18037"><vh>@gnxs</vh></v>
+<v t="ekr.20140811083910.18248"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20140808103117.18039"><vh>@gnxs</vh></v>
+<v t="ekr.20140811083910.18249"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20140808103117.18041"><vh>@gnxs</vh></v>
+<v t="ekr.20140811083910.18250"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20140808103117.18043"><vh>@gnxs</vh></v>
+<v t="ekr.20140811083910.18251"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20140808103117.18045"><vh>@gnxs</vh></v>
+<v t="ekr.20140811083910.18252"><vh>@gnxs</vh></v>
 </v>
 </v>
 </v>
@@ -45,8 +45,8 @@
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
-<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -299,12 +299,18 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 <t tx="ekr.20140808103117.18035"></t>
 <t tx="ekr.20140808103117.18036">gnx: ekr.20110605121601.18696
 </t>
-<t tx="ekr.20140808103117.18037">gnx: ekr.20140225224703.8169
-unl: qtui_generate declarations
-</t>
 <t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
 </t>
-<t tx="ekr.20140808103117.18039">gnx: ekr.20140225224703.8170
+<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
+</t>
+<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
+</t>
+<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
+</t>
+<t tx="ekr.20140811083910.18248">gnx: ekr.20140225224703.8169
+unl: qtui_generate declarations
+</t>
+<t tx="ekr.20140811083910.18249">gnx: ekr.20140225224703.8170
 unl: qt_main declarations
 gnx: ekr.20140225224703.8171
 unl: class Ui_MainWindow
@@ -313,12 +319,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20140225224703.8173
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
-</t>
-<t tx="ekr.20140808103117.18041"></t>
-<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
-</t>
-<t tx="ekr.20140808103117.18043">gnx: ekr.20140225224703.8174
+<t tx="ekr.20140811083910.18250"></t>
+<t tx="ekr.20140811083910.18251">gnx: ekr.20140225224703.8174
 unl: qt_quicksearch declarations
 gnx: ekr.20140225224703.8175
 unl: class Ui_LeoQuickSearchWidget
@@ -327,8 +329,6 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
-</t>
-<t tx="ekr.20140808103117.18045"></t>
+<t tx="ekr.20140811083910.18252"></t>
 </tnodes>
 </leo_file>
