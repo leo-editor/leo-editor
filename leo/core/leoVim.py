@@ -52,6 +52,20 @@ if 0:
         if c:
             g.trace(':tabnew not ready yet')
     #@-others
+#@+node:ekr.20140811180848.18153: *3* :! (shell command)
+@g.command(':!')
+def e_exclam(event):
+    '''Execute a shell command.'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.shell_command()
+#@+node:ekr.20140811180848.18151: *3* :%s (substitutions)
+@g.command(':%s')
+def vim_substitution(event):
+    '''cycle-focus'''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.substitution(':%s')
 #@+node:ekr.20140804202802.18152: *3* :e!
 @g.command(':e!')
 def colon_e_exclam(event):
@@ -1923,7 +1937,7 @@ class VimCommands:
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140808142143.18072: *3* vc.external commands
-    #@+node:ekr.20140811173921.18142: *4* cycle_focus & cycle_all_focus
+    #@+node:ekr.20140811173921.18142: *4* vc.cycle_focus & cycle_all_focus
     def cycle_focus(vc):
         '''Cycle focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
@@ -1945,6 +1959,18 @@ class VimCommands:
         except Exception:
             for z in vc.dot_list:
                 g.es(repr(z))
+    #@+node:ekr.20140811180848.18154: *4* vc.shell_command
+    def shell_command(vc):
+        '''Execute a shell command.'''
+        event = VimEvent(stroke='',w=vc.colon_w)
+        vc.do('shell-command',event=event)
+    #@+node:ekr.20140811180848.18152: *4* vc.substitution
+    def substitution(vc,leadin):
+        '''
+        Handle :%s/text/replaced text/g
+        The lead-in characters :%s are in the minibuffer.
+        '''
+        g.trace(leadin)
     #@+node:ekr.20140808142143.18074: *4* vc.toggle_trainer
     def toggle_trainer(vc):
         '''toggle vim-trainer mode.'''

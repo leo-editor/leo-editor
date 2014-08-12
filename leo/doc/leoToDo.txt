@@ -25,7 +25,6 @@ Later:
 From Kent:
 :r filename
     Put contents of filename at cursor position
-:!shell command
 :e directory name
     Shows list of files in the directory:
     selecting and <enter> opens a file

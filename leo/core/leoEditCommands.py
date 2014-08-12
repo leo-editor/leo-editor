@@ -1473,18 +1473,16 @@ class ControlCommandsClass (BaseEditCommandsClass):
         self.c.undoer.undo()
     #@+node:ekr.20050920084036.160: *3* executeSubprocess
     def executeSubprocess (self,event,command):
-
         '''Execute a command in a separate process.'''
-
         k = self.k
-
         try:
-            args = shlex.split(command)
+            args = shlex.split(g.toEncodedString(command))
             subprocess.Popen(args).wait()
-            k.setLabelGrey('Done: %s' % command)
         except Exception:
-            junk, x, junk = sys.exc_info()
-            k.setLabelRed('Exception: %s' % repr(x))
+            g.es_exception()
+        k.keyboardQuit()
+            # Inits vim mode too.
+        g.es('Done: %s' % command)
     #@+node:ekr.20070429090859: *3* print plugins info...
     def printPluginHandlers (self,event=None):
 
@@ -1520,36 +1518,31 @@ class ControlCommandsClass (BaseEditCommandsClass):
         self.c.k.silentMode = True
     #@+node:ekr.20050920084036.158: *3* shellCommand
     def shellCommand (self,event):
-
         '''Execute a shell command.'''
-
-        k = self.k ; state = k.getState('shell-command')
-
+        k = self.k
+        state = k.getState('shell-command')
         if state == 0:
             k.setLabelBlue('shell-command: ',protect=True)
             k.getArg(event,'shell-command',1,self.shellCommand)
         else:
             command = k.arg
-            k.commandName = 'shell-command: %s' % command
-            k.clearState()
+            # k.commandName = 'shell-command: %s' % command
+            # k.clearState()
             self.executeSubprocess(event,command)
-
     #@+node:ekr.20050930112126: *3* shellCommandOnRegion
     def shellCommandOnRegion (self,event):
-
         '''Execute a command taken from the selected text in a separate process.'''
-
         k = self.k
         w = self.editWidget(event)
-        if not w: return
-
-        if w.hasSelection():
-            command = w.getSelectedText()
-            k.commandName = 'shell-command: %s' % command
-            self.executeSubprocess(event,command)
-        else:
-            k.clearState()
-            k.setLabelRed('No text selected')
+        if w:
+            if w.hasSelection():
+                command = w.getSelectedText()
+                # k.commandName = 'shell-command: %s' % command
+                self.executeSubprocess(event,command)
+            else:
+                # k.clearState()
+                g.es('No text selected')
+        k.keyboardQuit()
     #@+node:ville.20090222184600.2: *3* actOnNode
     def actOnNode(self, event):
         """ Execute node-specific action (typically defined by plugins)
