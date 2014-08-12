@@ -10,8 +10,6 @@
 
 :% s/text/replaced text/g
 
-
-
 :tabnew <fname>
     opens fname in new tab, without fname, opens tab with new file.
 .. @+node:ekr.20140811110221.18251: *4* Dot related

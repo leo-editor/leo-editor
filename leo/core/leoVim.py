@@ -16,7 +16,7 @@ import string
 #@+node:ekr.20140803220119.18093: ** ':' commands
 #@+node:ekr.20140811180848.18153: *3* :! (shell command)
 @g.command(':!')
-def e_exclam(event):
+def vim_e_exclam(event):
     '''Execute a shell command.'''
     c = event.get('c')
     if c and c.vimCommands:
@@ -30,14 +30,14 @@ def vim_substitution(event):
         c.vimCommands.substitution(':%s')
 #@+node:ekr.20140804202802.18152: *3* :e!
 @g.command(':e!')
-def colon_e_exclam(event):
+def vim_colon_e_exclam(event):
     '''Revert all changes to a .leo file, prompting if there have been changes.'''
     c = event.get('c')
     if c:
         c.revert()
 #@+node:ekr.20140811170859.18253: *3* :gt & Gt
 @g.command(':gt')
-def vim_gT(event):
+def vim_gt(event):
     '''cycle-focus'''
     c = event.get('c')
     if c and c.vimCommands:
@@ -51,19 +51,19 @@ def vim_gT(event):
         c.vimCommands.cycle_all_focus()
 #@+node:ekr.20140810181832.18222: *3* :print-dot
 @g.command(':print-dot')
-def show_dot(event):
+def vim_show_dot(event):
     '''Show the vim dot.'''
     c = event.get('c')
     if c and c.vimCommands:
         c.vimCommands.print_dot()
 #@+node:ekr.20140804202802.18156: *3* :q & :qa
 @g.command(':q')
-def colon_q(event):
+def vim_colon_q(event):
     '''Quit, prompting for saves.'''
     g.app.onQuit(event)
     
 @g.command(':qa')
-def colon_qa(event):
+def vim_colon_qa(event):
     '''Quit only if there are no unsaved changes.'''
     for c in g.app.commanders():
         if c.isChanged():
@@ -71,11 +71,22 @@ def colon_qa(event):
     g.app.onQuit(event)
 #@+node:ekr.20140804202802.18150: *3* :r
 @g.command(':r') # :r filename
-def colon_r(event):
+def vim_colon_r(event):
     '''Put the contents of a file at the insertion point.'''
     c = event.get('c')
     if c and c.vimCommands:
         c.vimCommands.load_file_at_cursor()
+#@+node:ekr.20140811211944.18163: *3* :tabnew
+@g.command(':tabnew') # :tab
+def vim_colon_tabnew(event):
+    '''
+    Prompts for a file name.
+    If the file exits, opens it in a new tab.
+    Otherwise, opens a tab for a new file.
+    '''
+    c = event.get('c')
+    if c and c.vimCommands:
+        c.vimCommands.tabnew()
 #@+node:ekr.20140808141921.18059: *3* :toggle-vim-mode
 @g.command(':toggle-vim-mode')
 def toggle_vim_mode(event):
@@ -89,31 +100,31 @@ def toggle_vim_trainer_mode(event):
     '''Save the .leo file.'''
     c = event.get('c')
     if c and c.vimCommands:
-        c.vimCommands.toggle_trainer()
+        c.vimCommands.toggle_vim_trainer()
 #@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
 @g.command(':w')
-def colon_w(event):
+def vim_colon_w(event):
     '''Save the .leo file.'''
     c = event.get('c')
     if c:
         c.save()
         
 @g.command(':wa') # same as :xa
-def colon_wall(event):
+def vim_colon_wall(event):
     '''Save all open files and keep working.'''
     for c in g.app.commanders():
         if c.isChanged():
             c.save()
 
 @g.command(':wq')
-def colon_wq(event):
+def vim_colon_wq(event):
     '''Save all open files and exit.'''
     for c in g.app.commanders():
         c.save()
     g.app.onQuit(event)
 #@+node:ekr.20140804202802.18157: *3* :xa
 @g.command(':xa') # same as wq
-def colon_xa(event):
+def vim_colon_xa(event):
     '''Save all open files and exit.'''
     for c in g.app.commanders():
         c.save()
@@ -487,7 +498,7 @@ class VimCommands:
             except Exception:
                 vc.w = None
             if c.config.getBool('vim-trainer-mode',default=False):
-                toggle_vim_trainer_mode(event=g.Bunch(c=c))
+                vc.toggle_vim_trainer()
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -1956,7 +1967,7 @@ class VimCommands:
                     w.insert(i,s)
             else:
                 g.es('not found',path)
-            vc.quit()
+            k.keyboardQuit()
     #@+node:ekr.20140810181832.18223: *4* vc.print_dot
     def print_dot(vc):
         '''Print the dot.'''
@@ -1981,13 +1992,30 @@ class VimCommands:
         The lead-in characters :%s are in the minibuffer.
         '''
         g.trace(leadin)
-    #@+node:ekr.20140808142143.18074: *4* vc.toggle_trainer
-    def toggle_trainer(vc):
-        '''toggle vim-trainer mode.'''
-        vc.trainer = not vc.trainer
-        g.es('vim-trainer-mode: %s' % (
-            'on' if vc.trainer else 'off'),
-            color = 'red')
+    #@+node:ekr.20140811211944.18165: *4* vc.tabnew
+    def tabnew(vc,event=None):
+        '''
+        Prompts for a file name.
+        If the file exits, opens it in a new tab.
+        Otherwise, opens a tab for a new file.
+        '''
+        c,k = vc.c,vc.k
+        state = k.getState(':tabnew')
+        if state == 0:
+            event = VimEvent(stroke='',w=vc.colon_w)
+            k.setLabelBlue(':tabnew ',protect=True)
+            k.getArg(event,':tabnew',1,vc.tabnew)
+        else:
+            fn = k.arg
+            if fn:
+                path = g.os_path_finalize_join('.',fn)
+                if g.os_path_exists(path):
+                    g.trace('exists',path)
+                else:
+                    g.trace('new file',path)
+            else:
+                g.trace('new tab')
+            k.keyboardQuit()
     #@+node:ekr.20140808142143.18075: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc):
         '''toggle vim-mode.'''
@@ -2007,6 +2035,13 @@ class VimCommands:
             except Exception:
                 # g.es_exception()
                 pass
+    #@+node:ekr.20140808142143.18074: *4* vc.toggle_vim_trainer
+    def toggle_vim_trainer(vc):
+        '''toggle vim-trainer mode.'''
+        vc.trainer = not vc.trainer
+        g.es('vim-trainer-mode: %s' % (
+            'on' if vc.trainer else 'off'),
+            color = 'red')
     #@+node:ekr.20140802225657.18026: *3* vc.state handlers
     # Neither state handler nor key handlers ever return non-None.
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion
