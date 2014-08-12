@@ -20355,7 +20355,7 @@ os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
-<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from gitbub, no
+<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from github, no
 account required.  The downloaded file will have a name like::
 
   leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
