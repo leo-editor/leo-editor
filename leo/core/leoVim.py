@@ -571,6 +571,8 @@ class VimCommands:
     def init_persistent_ivars(vc):
         '''Init ivars that are never re-inited.'''
         c = vc.c
+        vc.colon_w = None
+            # The widget that has focus when a ':' command begins.  May be None.
         vc.cross_lines = c.config.getBool('vim-crosses-lines',default=True)
             # True: allow f,F,h,l,t,T,x to cross line boundaries.
         vc.register_d = {}
@@ -1935,7 +1937,7 @@ class VimCommands:
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140808142143.18072: *3* vc.external commands
-    #@+node:ekr.20140811173921.18142: *4* vc.cycle_focus & cycle_all_focus
+    #@+node:ekr.20140811173921.18142: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
     def cycle_focus(vc):
         '''Cycle focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
@@ -1945,29 +1947,24 @@ class VimCommands:
         '''Cycle all focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
-    #@+node:ekr.20140811211944.18162: *4* vc.load_file_at_cursor
+    #@+node:ekr.20140811211944.18162: *4* vc.load_file_at_cursor (:r)
     def load_file_at_cursor(vc,event=None):
         '''Prompt for a file name, then load it at the cursor.'''
-        k = vc.k
-        state = k.getState(':r')
-        if state == 0:
-            event = VimEvent(stroke='',w=vc.colon_w)
-            k.setLabelBlue(':r ',protect=True)
-            k.getArg(event,':r',1,vc.load_file_at_cursor)
+        vc.k.getFileName(event,callback=vc.r_callback)
+
+    def r_callback(vc,fn):
+        c,w = vc.c,vc.colon_w
+        if not vc.is_text_widget(w):
+            w = c.frame.body.bodyCtrl
+        if g.os_path_exists(fn):
+            f = open(fn)
+            s = f.read()
+            f.close()
+            i = w.getInsertPoint()
+            w.insert(i,s)
+            vc.save_body()
         else:
-            fn = k.arg
-            path = g.os_path_finalize_join('.',fn)
-            if g.os_path_exists(path):
-                f = open(path)
-                s = f.read()
-                f.close()
-                w = vc.colon_w
-                if vc.is_text_widget(w):
-                    i = w.getInsertPoint()
-                    w.insert(i,s)
-            else:
-                g.es('not found',path)
-            k.keyboardQuit()
+            g.es('does not exist:' % fn)
     #@+node:ekr.20140810181832.18223: *4* vc.print_dot
     def print_dot(vc):
         '''Print the dot.'''
@@ -1980,12 +1977,12 @@ class VimCommands:
         except Exception:
             for z in vc.dot_list:
                 g.es(repr(z))
-    #@+node:ekr.20140811180848.18154: *4* vc.shell_command
+    #@+node:ekr.20140811180848.18154: *4* vc.shell_command (:!)
     def shell_command(vc):
         '''Execute a shell command.'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('shell-command',event=event)
-    #@+node:ekr.20140811180848.18152: *4* vc.substitution
+    #@+node:ekr.20140811180848.18152: *4* vc.substitution (:%)
     def substitution(vc,leadin):
         '''
         Handle :%s/text/replaced text/g
@@ -1999,23 +1996,14 @@ class VimCommands:
         If the file exits, opens it in a new tab.
         Otherwise, opens a tab for a new file.
         '''
-        c,k = vc.c,vc.k
-        state = k.getState(':tabnew')
-        if state == 0:
-            event = VimEvent(stroke='',w=vc.colon_w)
-            k.setLabelBlue(':tabnew ',protect=True)
-            k.getArg(event,':tabnew',1,vc.tabnew)
+        vc.k.getFileName(event,callback=vc.tabnew_callback)
+
+    def tabnew_callback(vc,fn):
+        c = vc.c
+        if fn and not g.os_path_isdir(fn):
+            g.openWithFileName(fn,old_c=c)
         else:
-            fn = k.arg
-            if fn:
-                path = g.os_path_finalize_join('.',fn)
-                if g.os_path_exists(path):
-                    g.trace('exists',path)
-                else:
-                    g.trace('new file',path)
-            else:
-                g.trace('new tab')
-            k.keyboardQuit()
+            c.new()
     #@+node:ekr.20140808142143.18075: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc):
         '''toggle vim-mode.'''

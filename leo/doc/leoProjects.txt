@@ -532,7 +532,14 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
-@language rest
+@nocolor-node
+
+- :r and :tabnew commands now use k.getFileName: much simpler and better code.
+  :e is probably not needed because r: and tabnew: show completions.
+- Fixed bug in LM.openFileByName: delete "newHeadline" node after importing
+  an external file with sentinels.
+- By default, ignore .pyc and .bin files.
+
 - Added :r<return>filename<return> command.
   Puts contents of filename at cursor position.
 - Added :! (shell command) command. Fixed several bugs in Leo's shell-command command.

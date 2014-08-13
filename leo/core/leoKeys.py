@@ -1163,12 +1163,12 @@ class FileNameChooser:
     # The first argument is fnc.
     #@+others
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
-    def __init__(fnc,c,callback,filterExt='',prompt='Enter File Name: ',tabName='Dired'):
+    def __init__(fnc,c,callback,filterExt=None,prompt='Enter File Name: ',tabName='Dired'):
         '''Ctor for FileNameChooser class.'''
         # g.trace('(FileNameChooser)')
         fnc.c = c
         fnc.callback = callback
-        fnc.filterExt = filterExt
+        fnc.filterExt = filterExt or ['.pyc','.bin',]
         fnc.log = c.frame.log
         fnc.prompt = prompt
         fnc.tabName = tabName
@@ -1192,6 +1192,9 @@ class FileNameChooser:
                 path = path[:-1]
             aList = glob.glob(path+'*')
             tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
+        if fnc.filterExt:
+            for ext in fnc.filterExt:
+                tabList = [z for z in tabList if not z.endswith(ext)]
         junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
         if trace: g.trace('common_prefix',common_prefix)
         return common_prefix,tabList
@@ -1200,10 +1203,15 @@ class FileNameChooser:
         '''Handle a back space.'''
         trace = True and not g.unitTesting
         s = fnc.get_label()
-        if s: fnc.set_label(s[:-1])
-        common_prefix,tabList = fnc.compute_tab_list()
+        if s:
+            s = s[:-1]
+        fnc.set_label(s)
+        if s:
+            common_prefix,tabList = fnc.compute_tab_list()
+            # Do *not* extend the label to the common prefix.
+        else:
+            tabList = []
         fnc.show_tab_list(tabList)
-        # Do *not* extend the label to the common prefix.
     #@+node:ekr.20140813052702.18198: *3* fnc.do_char
     def do_char (fnc,char):
         '''Handle a non-special character.'''
@@ -2862,7 +2870,7 @@ class KeyHandlerClass:
         '''Create a FileNameChooser and use it to get a file name.'''
         c,k = self.c,self
         if not k.fnc:
-            k.fnc = FileNameChooser(c,callback=callback,filterExt='')
+            k.fnc = FileNameChooser(c,callback=callback,filterExt=None)
         k.fnc.get_file_name(event)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
