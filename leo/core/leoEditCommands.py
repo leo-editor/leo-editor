@@ -7430,7 +7430,11 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     def openOutlineByNameFinisher (self,fn):
         c = self.c
         if fn and g.os_path_exists(fn) and not g.os_path_isdir(fn):
-            g.openWithFileName(fn,old_c=c)
+            c2 = g.openWithFileName(fn,old_c=c)
+            try:
+                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+            except Exception:
+                pass
         else:
             g.es('ignoring: %s' % fn)
     #@+node:ekr.20050920084036.169: *3* removeDirectory

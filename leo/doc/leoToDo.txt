@@ -7,12 +7,12 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
-
-:e directory name
-    Shows list of files in the directory:
-    selecting and <enter> opens a file
-
+    
 :% s/text/replaced text/g
+
+Maybe:
+- Write extend_vim_mode plugin
+- Extend Leo's undo to show the vim characters for the commands.
 .. @+node:ekr.20140811110221.18251: *4* Dot related
 Dot related:
 - vc.update_dot_before_search must call add_to_dot().
@@ -21,12 +21,11 @@ Dot related:
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 
-.. @+node:ekr.20140811110221.18252: *4* Later
-Later:
-- Write extend_vim_mode plugin
-- Extend Leo's undo to show the vim characters for the commands.
-
 .. @+node:ekr.20140808182202.18183: *4* Maybe
+:e directory name
+    Shows list of files in the directory:
+    selecting and <enter> opens a file
+
 - Kent: v, V, ctrl-v : visual select character, line, column
 
 http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/

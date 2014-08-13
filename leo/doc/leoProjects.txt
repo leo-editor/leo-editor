@@ -539,7 +539,6 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
 - Fixed bug in LM.openFileByName: delete "newHeadline" node after importing
   an external file with sentinels.
 - By default, ignore .pyc and .bin files.
-
 - Added :r<return>filename<return> command.
   Puts contents of filename at cursor position.
 - Added :! (shell command) command. Fixed several bugs in Leo's shell-command command.

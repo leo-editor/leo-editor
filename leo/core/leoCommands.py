@@ -6824,7 +6824,7 @@ class Commands (object):
         p.moveToVisNext(c)
         c.treeSelectHelper(p)
     #@+node:ekr.20070417112650: *6* utils
-    #@+node:ekr.20070226121510: *7*  c.xFocusHelper
+    #@+node:ekr.20070226121510: *7*  c.xFocusHelper & initialFocusHelper
     def treeFocusHelper (self):
         c = self
         if c.stayInTreeAfterSelect:

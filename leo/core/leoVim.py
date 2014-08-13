@@ -2001,7 +2001,11 @@ class VimCommands:
     def tabnew_callback(vc,fn):
         c = vc.c
         if fn and not g.os_path_isdir(fn):
-            g.openWithFileName(fn,old_c=c)
+            c2 = g.openWithFileName(fn,old_c=c)
+            try:
+                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+            except Exception:
+                pass
         else:
             c.new()
     #@+node:ekr.20140808142143.18075: *4* vc.toggle_vim_mode

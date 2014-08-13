@@ -1251,7 +1251,6 @@ class FileNameChooser:
         if state == 0:
             fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
             k.setState(tag,1,fnc.get_file_name)
-            log.createTab(fnc.tabName)
             log.selectTab(fnc.tabName)
             common_prefix,tabList = fnc.compute_tab_list()
             fnc.show_tab_list(tabList)
