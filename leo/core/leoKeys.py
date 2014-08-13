@@ -1156,6 +1156,126 @@ class ContextSniffer:
 
         vars.append(klass)
     #@-others
+#@+node:ekr.20140813052702.18194: ** class FileNameChooser
+class FileNameChooser:
+    '''A class encapsulation file selection & completion logic.'''
+    # pylint: disable=no-self-argument
+    # The first argument is fnc.
+    #@+others
+    #@+node:ekr.20140813052702.18195: *3* fnc.__init__
+    def __init__(fnc,c,callback,filterExt='',prompt='Enter File Name: ',tabName='Dired'):
+        '''Ctor for FileNameChooser class.'''
+        fnc.c = c
+        fnc.callback = callback
+        fnc.filterExt = filterExt
+        fnc.log = c.frame.log
+        fnc.prompt = prompt
+        fnc.tabName = tabName
+    #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list (revise)
+    def compute_tab_list (fnc):
+        '''Compute the list of completions.'''
+        path = fnc.get_label()
+        g.trace('path1',path)
+        sep = os.path.sep
+        tabList = []
+        ### Must be much more clever.
+        for f in glob.glob(path+'*'):
+            if g.os_path_isdir(f):
+                tabList.append(f + sep)
+            else:
+                junk,ext = g.os_path_splitext(f)
+                if not ext or ext == fnc.filterExt:
+                    tabList.append(f)
+        junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
+        g.trace('common_prefix',common_prefix)
+        return common_prefix,tabList
+    #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
+    def do_back_space (fnc):
+        '''Handle a back space.'''
+        trace = True and not g.unitTesting
+        s = fnc.get_label()
+        if s:
+            fnc.set_label(s[:-1])
+        common_prefix,tabList = fnc.compute_tab_list()
+        fnc.show_tab_list(tabList)
+        if common_prefix:
+            fnc.set_label(common_prefix)
+    #@+node:ekr.20140813052702.18198: *3* fnc.do_char
+    def do_char (fnc,char):
+        '''Handle a non-special character.'''
+        trace = True and not g.unitTesting
+        fnc.extend_label(char)
+        common_prefix,tabList = fnc.compute_tab_list()
+        g.trace('char',char,'common_prefix',common_prefix)
+        fnc.show_tab_list(tabList)
+        if common_prefix:
+            fnc.set_label(common_prefix)
+        else:
+            # Restore everything.
+            fnc.set_label(fnc.get_label()[:-1])
+            fnc.extend_label(char)
+    #@+node:ekr.20140813052702.18199: *3* fnc.do_tab
+    def do_tab (fnc):
+        '''Handle tab completion.'''
+        old = fnc.get_label()
+        common_prefix,tabList = fnc.compute_tab_list()
+        fnc.show_tab_list(tabList)
+        ### compute_tab_list should ensure common_prefix >= old.
+        if len(common_prefix) > len(old):
+            fnc.set_label(common_prefix)
+    #@+node:ekr.20140813052702.18200: *3* fnc.get_file_name
+    def get_file_name(fnc,event=None):
+        '''Get a file name, supporting file completion.'''
+        trace = True and not g.unitTesting
+        c,k,log = fnc.c,fnc.c.k,fnc.log
+        tag = 'file-name-chooser'
+        state = k.getState(tag)
+        char = event and event.char or ''
+        if trace: g.trace('state',state,'char',char)
+        if state == 0:
+            fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
+            k.setState(tag,1,fnc.get_file_name)
+            log.createTab(fnc.tabName)
+            log.selectTab(fnc.tabName)
+            c.minibufferWantsFocus()
+        elif char in ('\n','Return'):
+            log.deleteTab(fnc.tabName)
+            value = fnc.get_label()
+            k.keyboardQuit()
+            fnc.callback(value)
+        elif char in ('\t','Tab'):
+            fnc.do_tab()
+            c.minibufferWantsFocus()
+        elif char in ('\b','BackSpace'):
+            fnc.do_back_space() 
+            c.minibufferWantsFocus()
+        else:
+            fnc.do_char(char)
+    #@+node:ekr.20140813052702.18201: *3* fnc.extend/get/set_label
+    def extend_label(fnc,s):
+        '''Extend the label by s.'''
+        fnc.c.k.extendLabel(s,select=False,protect=False)
+
+    def get_label(fnc):
+        '''Return the label, not including the prompt.'''
+        return fnc.c.k.getLabel(ignorePrompt=True)
+
+    def set_label(fnc,s):
+        '''Set the label after the prompt to s. The prompt never changes.'''
+        fnc.c.k.setLabel(fnc.prompt,protect=True)
+        fnc.c.k.extendLabel(s or '',select=False,protect=False)
+    #@+node:ekr.20140813052702.18202: *3* fnc.show_tab_list
+    def show_tab_list (fnc,tabList):
+        '''Show the tab list in the log tab.'''
+        fnc.log.clearTab(fnc.tabName)
+        s = g.os_path_finalize(os.curdir) + os.sep
+        g.es('',s,tabName=fnc.tabName)
+        for path in tabList:
+            theDir,fileName = g.os_path_split(path)
+            s = theDir if path.endswith(os.sep) else fileName
+            s = fileName or g.os_path_basename(theDir) + os.sep
+            g.es('',s,tabName=fnc.tabName)
+    #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
 class KeyHandlerClass:
 
@@ -3807,42 +3927,38 @@ class KeyHandlerClass:
 
         c.minibufferWantsFocus()
     #@+node:ekr.20061031131434.168: *4* k.getFileName & helpers
-    def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
-
+    def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo',tabName='Dired'):
         '''Similar to k.getArg, but uses completion to indicate files on the file system.'''
-
+        trace = True and not g.unitTesting
         k = self ; c = k.c
         tag = 'getFileName' ; state = k.getState(tag)
-        tabName = 'Completion'
-
         char = event and event.char or ''
-        # g.trace('state',state,'char',char)
-
         if state == 0:
             k.arg = ''
+            k.setLabel(prefix,protect=True)
             #@+<< init altX vars >>
             #@+node:ekr.20061031131434.169: *5* << init altX vars >>
+            k.file_tabName = tabName
             k.filterExt = filterExt
             k.mb_prefix = (prefix or k.getLabel())
             k.mb_prompt = prefix or k.getLabel()
             k.mb_tabList = []
-
             # Clear the list: any non-tab indicates that a new prefix is in effect.
             theDir = g.os_path_finalize(os.curdir)
             k.extendLabel(theDir,select=False,protect=False)
-
             k.mb_tabListPrefix = k.getLabel()
             #@-<< init altX vars >>
             # Set the states.
             k.getFileNameHandler = handler
             k.setState(tag,1,k.getFileName)
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-            c.frame.log.clearTab(tabName)
+            c.frame.log.createTab(tabName)
+            c.frame.log.selectTab(tabName)
             c.minibufferWantsFocus()
         elif char in ('\n','Return'):
             k.arg = k.getLabel(ignorePrompt=True)
+            c.frame.log.deleteTab(k.file_tabName)
             handler = k.getFileNameHandler
-            c.frame.log.deleteTab(tabName)
             if handler: handler(event)
         elif char in ('\t','Tab'):
             k.doFileNameTab()
@@ -3854,9 +3970,7 @@ class KeyHandlerClass:
             k.doFileNameChar(event)
     #@+node:ekr.20061031131434.170: *5* k.doFileNameBackSpace
     def doFileNameBackSpace (self):
-
         '''Cut back to previous prefix and update prefix.'''
-
         k = self
         if 0:
             g.trace(
@@ -3868,16 +3982,13 @@ class KeyHandlerClass:
             k.setLabel(k.mb_tabListPrefix)
     #@+node:ekr.20061031131434.171: *5* k.doFileNameChar
     def doFileNameChar (self,event):
-
+        '''Handle a non-special character.'''
         k = self
-
         # Clear the list, any other character besides tab indicates that a new prefix is in effect.
         k.mb_tabList = []
         k.updateLabel(event)
         k.mb_tabListPrefix = k.getLabel()
-
         common_prefix = k.computeFileNameCompletionList()
-
         if k.mb_tabList:
             k.setLabel(k.mb_prompt + common_prefix)
         else:
@@ -3889,14 +4000,13 @@ class KeyHandlerClass:
 
         k = self
         common_prefix = k.computeFileNameCompletionList()
-
         if k.mb_tabList:
             k.setLabel(k.mb_prompt + common_prefix)
     #@+node:ekr.20061031131434.173: *5* k.computeFileNameCompletionList
     # This code must not change mb_tabListPrefix.
     def computeFileNameCompletionList (self):
 
-        k = self ; c = k.c ; tabName = 'Completion'
+        k = self ; c = k.c
         path = k.getLabel(ignorePrompt=True)
         sep = os.path.sep
         tabList = []
@@ -3910,19 +4020,18 @@ class KeyHandlerClass:
         k.mb_tabList = tabList
         junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
         if tabList:
-            c.frame.log.clearTab(tabName)
+            c.frame.log.clearTab(k.file_tabName)
             k.showFileNameTabList()
         return common_prefix
     #@+node:ekr.20061031131434.174: *5* k.showFileNameTabList
     def showFileNameTabList (self):
 
-        k = self ; tabName = 'Completion'
-
+        k = self
         for path in k.mb_tabList:
             theDir,fileName = g.os_path_split(path)
             s = theDir if path.endswith('\\') else fileName
             s = fileName or g.os_path_basename(theDir) + '\\'
-            g.es('',s,tabName=tabName)
+            g.es('',s,tabName=k.file_tabName)
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage (self,ch,stroke):
 
