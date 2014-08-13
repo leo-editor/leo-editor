@@ -2698,6 +2698,9 @@ class LoadManager:
             # 2011/10/10: Create an @file node.
             p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
                 paths=[fn],command=None) # Not undoable.
+            if p and p.hasBack():
+                p.back().doDelete()
+                p = c.rootPosition()
             if not p: return None
         else:
             # Create an @edit node.
