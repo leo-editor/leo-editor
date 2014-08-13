@@ -117,6 +117,7 @@ class AtFile:
         '''ctor for atFile class.'''
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c = c
+        self.encoding = 'utf-8' # 2014/08/13
         self.fileCommands = c.fileCommands
         self.errors = 0 # Make sure at.error() works even when not inited.
         # **Only** at.writeAll manages these flags.

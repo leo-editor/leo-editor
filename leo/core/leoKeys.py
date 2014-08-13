@@ -1165,51 +1165,56 @@ class FileNameChooser:
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
     def __init__(fnc,c,callback,filterExt='',prompt='Enter File Name: ',tabName='Dired'):
         '''Ctor for FileNameChooser class.'''
+        # g.trace('(FileNameChooser)')
         fnc.c = c
         fnc.callback = callback
         fnc.filterExt = filterExt
         fnc.log = c.frame.log
         fnc.prompt = prompt
         fnc.tabName = tabName
-    #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list (revise)
+    #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
     def compute_tab_list (fnc):
         '''Compute the list of completions.'''
+        trace = False and not g.unitTesting
         path = fnc.get_label()
-        g.trace('path1',path)
         sep = os.path.sep
-        tabList = []
-        ### Must be much more clever.
-        for f in glob.glob(path+'*'):
-            if g.os_path_isdir(f):
-                tabList.append(f + sep)
+        if g.os_path_exists(path):
+            if trace: g.trace('existing directory',path)
+            if g.os_path_isdir(path):
+                aList = glob.glob(path+'*')
+                tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
             else:
-                junk,ext = g.os_path_splitext(f)
-                if not ext or ext == fnc.filterExt:
-                    tabList.append(f)
+                # An existing file.
+                tabList = [path]
+        else:
+            if trace: g.trace('does not exist',path)
+            if path and path.endswith(sep):
+                path = path[:-1]
+            aList = glob.glob(path+'*')
+            tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
         junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
-        g.trace('common_prefix',common_prefix)
+        if trace: g.trace('common_prefix',common_prefix)
         return common_prefix,tabList
     #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
     def do_back_space (fnc):
         '''Handle a back space.'''
         trace = True and not g.unitTesting
         s = fnc.get_label()
-        if s:
-            fnc.set_label(s[:-1])
+        if s: fnc.set_label(s[:-1])
         common_prefix,tabList = fnc.compute_tab_list()
         fnc.show_tab_list(tabList)
-        if common_prefix:
-            fnc.set_label(common_prefix)
+        # Do *not* extend the label to the common prefix.
     #@+node:ekr.20140813052702.18198: *3* fnc.do_char
     def do_char (fnc,char):
         '''Handle a non-special character.'''
-        trace = True and not g.unitTesting
         fnc.extend_label(char)
         common_prefix,tabList = fnc.compute_tab_list()
-        g.trace('char',char,'common_prefix',common_prefix)
         fnc.show_tab_list(tabList)
         if common_prefix:
             fnc.set_label(common_prefix)
+            # Recompute the tab list.
+            junk_common_prefix,tabList = fnc.compute_tab_list()
+            fnc.show_tab_list(tabList)
         else:
             # Restore everything.
             fnc.set_label(fnc.get_label()[:-1])
@@ -1224,19 +1229,24 @@ class FileNameChooser:
         if len(common_prefix) > len(old):
             fnc.set_label(common_prefix)
     #@+node:ekr.20140813052702.18200: *3* fnc.get_file_name
-    def get_file_name(fnc,event=None):
+    def get_file_name(fnc,event):
         '''Get a file name, supporting file completion.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,k,log = fnc.c,fnc.c.k,fnc.log
-        tag = 'file-name-chooser'
+        tag = 'get-file-name'
         state = k.getState(tag)
         char = event and event.char or ''
-        if trace: g.trace('state',state,'char',char)
+        if trace:
+            g.trace('event',event)
+            g.trace('state',state,'char',char or '<**no char**>')
+            g.trace(g.callers())
         if state == 0:
             fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
             k.setState(tag,1,fnc.get_file_name)
             log.createTab(fnc.tabName)
             log.selectTab(fnc.tabName)
+            common_prefix,tabList = fnc.compute_tab_list()
+            fnc.show_tab_list(tabList)
             c.minibufferWantsFocus()
         elif char in ('\n','Return'):
             log.deleteTab(fnc.tabName)
@@ -1269,7 +1279,7 @@ class FileNameChooser:
         '''Show the tab list in the log tab.'''
         fnc.log.clearTab(fnc.tabName)
         s = g.os_path_finalize(os.curdir) + os.sep
-        g.es('',s,tabName=fnc.tabName)
+        # g.es('',s,tabName=fnc.tabName)
         for path in tabList:
             theDir,fileName = g.os_path_split(path)
             s = theDir if path.endswith(os.sep) else fileName
@@ -1285,44 +1295,35 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4* k.__init__
     def __init__ (self,c):
-
         '''Create a key handler for c.'''
-
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('k.__init__')
-
         self.c = c
         self.dispatchEvent = None
+        self.fnc = None # The FileNameChooser in effect.
         self.inited = False         # Set at end of finishCreate.
         self.swap_mac_keys = False  #### How to init this ????
         self.w = None
                 # Note: will be None for NullGui.
-
         # Generalize...
         self.x_hasNumeric = ['sort-lines','sort-fields']
-
         self.altX_prompt = 'full-command: '
-
         # Access to data types defined in leoKeys.py
         self.KeyStroke = g.KeyStroke
-
         # Define all ivars...
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
         self.defineSettingsIvars()
-
         if g.new_modes:
             self.modeController = ModeController(c)
-
         self.defineTkNames()
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
         self.autoCompleter = AutoCompleterClass(self)
         self.qcompleter = None # Set by AutoCompleter.start.
-
         self.setDefaultUnboundKeyAction()
-        self.setDefaultEditingAction() # 2011/02/09
+        self.setDefaultEditingAction()
     #@+node:ekr.20061031131434.78: *4* k.defineExternallyVisibleIvars
     def defineExternallyVisibleIvars(self):
 
@@ -1347,10 +1348,9 @@ class KeyHandlerClass:
         self.state = g.bunch(kind=None,n=None,handler=None)
     #@+node:ekr.20061031131434.79: *4* k.defineInternalIvars
     def defineInternalIvars(self):
-
+        '''Define internal ivars of the KeyHandlerClass class.'''
         self.abbreviationsDict = {}
             # Abbreviations created by @alias nodes.
-
         # Previously defined bindings...
         self.bindingsDict = {}
             # Keys are Tk key names, values are lists of ShortcutInfo's.
@@ -1362,19 +1362,16 @@ class KeyHandlerClass:
             # Values are dicts: keys are strokes, values are ShortcutInfo's.
         self.masterGuiBindingsDict = {}
             # Keys are strokes; value is True;
-
         # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
         self.mb_cutKey = None
         self.mb_help = False
-
         # Keys whose bindings are computed by initSpecialIvars...
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
         self.fullCommandKey = None
         self.universalArgKey = None
-
         # Keepting track of the characters in the mini-buffer...
         self.arg_completion = True
         self.mb_event = None
@@ -1384,14 +1381,11 @@ class KeyHandlerClass:
         self.mb_tabList = []
         self.mb_tabListIndex = -1
         self.mb_prompt = ''
-
         self.func = None
         self.previous = []
         self.stroke = None
-
         # For onIdleTime...
         self.idleCount = 0
-
         # For modes...
         self.afterGetArgState = None
         self.argTabList = []
@@ -2704,6 +2698,7 @@ class KeyHandlerClass:
         if k.inputModeName:
             k.endMode()
         # Complete clear the state.
+        k.fnc = None # 2014/08/13
         k.state.kind = None
         k.state.n = None
         k.clearState()
@@ -2862,6 +2857,13 @@ class KeyHandlerClass:
             else:
                 g.error('simulateCommand: no command for %s' % (commandName))
                 return None
+    #@+node:ekr.20140813052702.18203: *4* k.getFileName
+    def getFileName(self,event=None,callback=None):
+        '''Create a FileNameChooser and use it to get a file name.'''
+        c,k = self.c,self
+        if not k.fnc:
+            k.fnc = FileNameChooser(c,callback=callback,filterExt='')
+        k.fnc.get_file_name(event)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
     def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
@@ -3073,7 +3075,7 @@ class KeyHandlerClass:
             if traceGC: g.printNewObjects('masterKey 4')
             if trace: g.trace(' unbound',stroke)
             k.handleUnboundKeys(event,char,stroke)
-    #@+node:ekr.20061031131434.108: *5* callStateFunction
+    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction (self,event):
 
         trace = False and not g.unitTesting
@@ -3104,7 +3106,7 @@ class KeyHandlerClass:
             else:
                 g.error('callStateFunction: no state function for',k.state.kind)
         return val
-    #@+node:ekr.20091230094319.6244: *5* doMode
+    #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode (self,event,state,stroke):
 
         trace = False and not g.unitTesting
@@ -3117,7 +3119,8 @@ class KeyHandlerClass:
         if state == 'getArg':
             k.getArg(event,stroke=stroke)
             return True
-        elif state == 'getFileName':
+        elif state in ('getFileName','get-file-name'):
+            if trace: g.trace(event,state,stroke)
             k.getFileName(event)
             return True
         elif state in ('full-command','auto-complete'):
@@ -3154,7 +3157,7 @@ class KeyHandlerClass:
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
-    #@+node:ekr.20091230094319.6240: *5* getPaneBinding
+    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding (self,stroke,w):
 
         trace = False and not g.unitTesting
@@ -3207,7 +3210,7 @@ class KeyHandlerClass:
                                 key,name,repr(si.stroke),si.commandName))
                             return si
         return None
-    #@+node:ekr.20061031131434.152: *5* handleMiniBindings
+    #@+node:ekr.20061031131434.152: *5* k.handleMiniBindings
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
@@ -3250,27 +3253,6 @@ class KeyHandlerClass:
                         if c.exists and not k.silentMode:
                             c.minibufferWantsFocus()
                         return True
-        return False
-    #@+node:ekr.20110209083917.16004: *5* isAutoCompleteChar
-    def isAutoCompleteChar (self,stroke):
-
-        '''Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.'''
-
-        k = self ; state = k.unboundKeyAction
-
-        assert g.isStrokeOrNone(stroke)
-
-        if stroke and state in ('insert','overwrite'):
-            for key in (state,'body','log','text','all'):
-                d = k.masterBindingsDict.get(key,{})
-                if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
-                        assert g.isShortcutInfo(si),si
-                        if si.commandName == 'auto-complete':
-                            return True
         return False
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys (self,event,char,stroke):
@@ -3324,6 +3306,27 @@ class KeyHandlerClass:
             if trace: g.trace('no func',repr(char),repr(stroke))
             k.masterCommand(event=event,stroke=stroke)
             return
+    #@+node:ekr.20110209083917.16004: *5* k.isAutoCompleteChar
+    def isAutoCompleteChar (self,stroke):
+
+        '''Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.'''
+
+        k = self ; state = k.unboundKeyAction
+
+        assert g.isStrokeOrNone(stroke)
+
+        if stroke and state in ('insert','overwrite'):
+            for key in (state,'body','log','text','all'):
+                d = k.masterBindingsDict.get(key,{})
+                if d:
+                    si = d.get(stroke)
+                    if si:
+                        assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                        assert g.isShortcutInfo(si),si
+                        if si.commandName == 'auto-complete':
+                            return True
+        return False
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
@@ -3926,112 +3929,6 @@ class KeyHandlerClass:
                     allow_empty_completion=allow_empty_completion)
 
         c.minibufferWantsFocus()
-    #@+node:ekr.20061031131434.168: *4* k.getFileName & helpers
-    def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo',tabName='Dired'):
-        '''Similar to k.getArg, but uses completion to indicate files on the file system.'''
-        trace = True and not g.unitTesting
-        k = self ; c = k.c
-        tag = 'getFileName' ; state = k.getState(tag)
-        char = event and event.char or ''
-        if state == 0:
-            k.arg = ''
-            k.setLabel(prefix,protect=True)
-            #@+<< init altX vars >>
-            #@+node:ekr.20061031131434.169: *5* << init altX vars >>
-            k.file_tabName = tabName
-            k.filterExt = filterExt
-            k.mb_prefix = (prefix or k.getLabel())
-            k.mb_prompt = prefix or k.getLabel()
-            k.mb_tabList = []
-            # Clear the list: any non-tab indicates that a new prefix is in effect.
-            theDir = g.os_path_finalize(os.curdir)
-            k.extendLabel(theDir,select=False,protect=False)
-            k.mb_tabListPrefix = k.getLabel()
-            #@-<< init altX vars >>
-            # Set the states.
-            k.getFileNameHandler = handler
-            k.setState(tag,1,k.getFileName)
-            k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-            c.frame.log.createTab(tabName)
-            c.frame.log.selectTab(tabName)
-            c.minibufferWantsFocus()
-        elif char in ('\n','Return'):
-            k.arg = k.getLabel(ignorePrompt=True)
-            c.frame.log.deleteTab(k.file_tabName)
-            handler = k.getFileNameHandler
-            if handler: handler(event)
-        elif char in ('\t','Tab'):
-            k.doFileNameTab()
-            c.minibufferWantsFocus()
-        elif char in ('\b','BackSpace'):
-            k.doFileNameBackSpace() 
-            c.minibufferWantsFocus()
-        else:
-            k.doFileNameChar(event)
-    #@+node:ekr.20061031131434.170: *5* k.doFileNameBackSpace
-    def doFileNameBackSpace (self):
-        '''Cut back to previous prefix and update prefix.'''
-        k = self
-        if 0:
-            g.trace(
-                len(k.mb_tabListPrefix) > len(k.mb_prefix),
-                repr(k.mb_tabListPrefix),repr(k.mb_prefix))
-
-        if len(k.mb_tabListPrefix) > len(k.mb_prefix):
-            k.mb_tabListPrefix = k.mb_tabListPrefix [:-1]
-            k.setLabel(k.mb_tabListPrefix)
-    #@+node:ekr.20061031131434.171: *5* k.doFileNameChar
-    def doFileNameChar (self,event):
-        '''Handle a non-special character.'''
-        k = self
-        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
-        k.mb_tabList = []
-        k.updateLabel(event)
-        k.mb_tabListPrefix = k.getLabel()
-        common_prefix = k.computeFileNameCompletionList()
-        if k.mb_tabList:
-            k.setLabel(k.mb_prompt + common_prefix)
-        else:
-            # Restore everything.
-            old = k.getLabel(ignorePrompt=True)[:-1]
-            k.setLabel(k.mb_prompt + old)
-    #@+node:ekr.20061031131434.172: *5* k.doFileNameTab
-    def doFileNameTab (self):
-
-        k = self
-        common_prefix = k.computeFileNameCompletionList()
-        if k.mb_tabList:
-            k.setLabel(k.mb_prompt + common_prefix)
-    #@+node:ekr.20061031131434.173: *5* k.computeFileNameCompletionList
-    # This code must not change mb_tabListPrefix.
-    def computeFileNameCompletionList (self):
-
-        k = self ; c = k.c
-        path = k.getLabel(ignorePrompt=True)
-        sep = os.path.sep
-        tabList = []
-        for f in glob.glob(path+'*'):
-            if g.os_path_isdir(f):
-                tabList.append(f + sep)
-            else:
-                junk,ext = g.os_path_splitext(f)
-                if not ext or ext == k.filterExt:
-                    tabList.append(f)
-        k.mb_tabList = tabList
-        junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
-        if tabList:
-            c.frame.log.clearTab(k.file_tabName)
-            k.showFileNameTabList()
-        return common_prefix
-    #@+node:ekr.20061031131434.174: *5* k.showFileNameTabList
-    def showFileNameTabList (self):
-
-        k = self
-        for path in k.mb_tabList:
-            theDir,fileName = g.os_path_split(path)
-            s = theDir if path.endswith('\\') else fileName
-            s = fileName or g.os_path_basename(theDir) + '\\'
-            g.es('',s,tabName=k.file_tabName)
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage (self,ch,stroke):
 

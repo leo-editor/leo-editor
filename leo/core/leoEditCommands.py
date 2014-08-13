@@ -7416,27 +7416,23 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                 k.setLabel("Created: %s" % k.arg)
             except Exception:
                 k.setLabel("Not Create: %s" % k.arg)
-    #@+node:ekr.20060419123128: *3* open-outline-by-name
+    #@+node:ekr.20060419123128: *3* openOutlineByName (EditFileCommandsClass)
     def openOutlineByName (self,event):
-
-        '''Prompt for the name of a Leo outline and open it.'''
-
+        '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
         c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
-
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if fileName and g.os_path_exists(fileName):
             g.openWithFileName(fileName,old_c=c)
         else:
             k.setLabelBlue('Open Leo Outline: ',protect=True)
-            k.getFileName(event,handler=self.openOutlineByNameFinisher)
+            k.getFileName(event,callback=self.openOutlineByNameFinisher)
 
-    def openOutlineByNameFinisher (self,event):
-
-        c = self.c ; k = self.k ; fileName = k.arg
-
-        k.resetLabel()
-        if fileName and g.os_path_exists(fileName) and not g.os_path_isdir(fileName):
-            g.openWithFileName(fileName,old_c=c)
+    def openOutlineByNameFinisher (self,fn):
+        c = self.c
+        if fn and g.os_path_exists(fn) and not g.os_path_isdir(fn):
+            g.openWithFileName(fn,old_c=c)
+        else:
+            g.es('ignoring: %s' % fn)
     #@+node:ekr.20050920084036.169: *3* removeDirectory
     def removeDirectory (self,event):
 

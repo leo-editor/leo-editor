@@ -17561,5 +17561,110 @@ def accept_or_done(vc):
     # else:
         # vc.done()
     vc.done()
+.. @+node:ekr.20061031131434.168: *3* k.getFileName & helpers
+def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo',tabName='Dired'):
+    '''Similar to k.getArg, but uses completion to indicate files on the file system.'''
+    trace = True and not g.unitTesting
+    k = self ; c = k.c
+    tag = 'getFileName' ; state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.arg = ''
+        k.setLabel(prefix,protect=True)
+        << init altX vars >>
+        # Set the states.
+        k.getFileNameHandler = handler
+        k.setState(tag,1,k.getFileName)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        c.frame.log.createTab(tabName)
+        c.frame.log.selectTab(tabName)
+        c.minibufferWantsFocus()
+    elif char in ('\n','Return'):
+        k.arg = k.getLabel(ignorePrompt=True)
+        c.frame.log.deleteTab(k.file_tabName)
+        handler = k.getFileNameHandler
+        if handler: handler(event)
+    elif char in ('\t','Tab'):
+        k.doFileNameTab()
+        c.minibufferWantsFocus()
+    elif char in ('\b','BackSpace'):
+        k.doFileNameBackSpace() 
+        c.minibufferWantsFocus()
+    else:
+        k.doFileNameChar(event)
+.. @+node:ekr.20061031131434.169: *4* << init altX vars >>
+k.file_tabName = tabName
+k.filterExt = filterExt
+k.mb_prefix = (prefix or k.getLabel())
+k.mb_prompt = prefix or k.getLabel()
+k.mb_tabList = []
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+theDir = g.os_path_finalize(os.curdir)
+k.extendLabel(theDir,select=False,protect=False)
+k.mb_tabListPrefix = k.getLabel()
+.. @+node:ekr.20061031131434.170: *4* k.doFileNameBackSpace
+def doFileNameBackSpace (self):
+    '''Cut back to previous prefix and update prefix.'''
+    k = self
+    if 0:
+        g.trace(
+            len(k.mb_tabListPrefix) > len(k.mb_prefix),
+            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+
+    if len(k.mb_tabListPrefix) > len(k.mb_prefix):
+        k.mb_tabListPrefix = k.mb_tabListPrefix [:-1]
+        k.setLabel(k.mb_tabListPrefix)
+.. @+node:ekr.20061031131434.171: *4* k.doFileNameChar
+def doFileNameChar (self,event):
+    '''Handle a non-special character.'''
+    k = self
+    # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+    k.mb_tabList = []
+    k.updateLabel(event)
+    k.mb_tabListPrefix = k.getLabel()
+    common_prefix = k.computeFileNameCompletionList()
+    if k.mb_tabList:
+        k.setLabel(k.mb_prompt + common_prefix)
+    else:
+        # Restore everything.
+        old = k.getLabel(ignorePrompt=True)[:-1]
+        k.setLabel(k.mb_prompt + old)
+.. @+node:ekr.20061031131434.172: *4* k.doFileNameTab
+def doFileNameTab (self):
+
+    k = self
+    common_prefix = k.computeFileNameCompletionList()
+    if k.mb_tabList:
+        k.setLabel(k.mb_prompt + common_prefix)
+.. @+node:ekr.20061031131434.173: *4* k.computeFileNameCompletionList
+# This code must not change mb_tabListPrefix.
+def computeFileNameCompletionList (self):
+
+    k = self ; c = k.c
+    path = k.getLabel(ignorePrompt=True)
+    sep = os.path.sep
+    tabList = []
+    for f in glob.glob(path+'*'):
+        if g.os_path_isdir(f):
+            tabList.append(f + sep)
+        else:
+            junk,ext = g.os_path_splitext(f)
+            if not ext or ext == k.filterExt:
+                tabList.append(f)
+    k.mb_tabList = tabList
+    junk,common_prefix = g.itemsMatchingPrefixInList(path,tabList)
+    if tabList:
+        c.frame.log.clearTab(k.file_tabName)
+        k.showFileNameTabList()
+    return common_prefix
+.. @+node:ekr.20061031131434.174: *4* k.showFileNameTabList
+def showFileNameTabList (self):
+
+    k = self
+    for path in k.mb_tabList:
+        theDir,fileName = g.os_path_split(path)
+        s = theDir if path.endswith('\\') else fileName
+        s = fileName or g.os_path_basename(theDir) + '\\'
+        g.es('',s,tabName=k.file_tabName)
 .. @-all
 .. @-leo
