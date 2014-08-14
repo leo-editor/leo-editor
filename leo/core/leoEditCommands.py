@@ -10673,7 +10673,8 @@ class EnchantClass:
     def open_dict(self,fn,language):
         
         '''Open or create the dict with the given fn.'''
-        
+        if not fn or not language:
+            return
         if not g.os_path_exists(fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized.
             self.create(fn)
