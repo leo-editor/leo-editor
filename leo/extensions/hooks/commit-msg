@@ -1,0 +1,19 @@
+#!/usr/bin/python
+"""
+Get the timestamp from commit_timestamp.json and add it to
+the commit message. 
+"""
+import json
+import os
+import sys
+PATH = os.path.join("leo", "core", "commit_timestamp.json")
+INFO = json.load(open(PATH))
+msg = open(sys.argv[1]).read().strip()
+chk = [i for i in msg.split('\n') if not i.startswith('#')]
+if not chk:
+    print("No commit message, not adding timestamp")
+    exit(0)  # git will probably kill the commit
+    
+open(sys.argv[1], 'w').write(
+    "%s\n\nLeo build: %s" % (msg, INFO['timestamp'])
+)
