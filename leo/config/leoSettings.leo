@@ -99,7 +99,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -549,7 +549,7 @@
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20131213135427.21826" a="E"><vh>@menus</vh>
+<v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
@@ -689,6 +689,8 @@
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
+<v t="tbrown.20140814090009.57476"><vh>@item style-reload</vh></v>
+<v t="tbrown.20140814090009.57475"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21957"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item *print-c&amp;ommands</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item *print-&amp;plugins-info</vh></v>
@@ -1184,7 +1186,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
@@ -9767,6 +9769,8 @@ else:
     QtGui.QApplication.clipboard().setText(text)
 </t>
 <t tx="tbrown.20140609102412.32431"></t>
+<t tx="tbrown.20140814090009.57475"></t>
+<t tx="tbrown.20140814090009.57476">Reload Styles</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
