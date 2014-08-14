@@ -185,7 +185,7 @@ class RstCommands:
         self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
-    #@+node:ekr.20090502071837.102: *4*  getPublicCommands
+    #@+node:ekr.20090502071837.102: *4*  getPublicCommands (RstCommands)
     def getPublicCommands (self):        
 
         return {

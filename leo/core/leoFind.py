@@ -1169,7 +1169,7 @@ class LeoFind:
             self.findNext(False) # don't reinitialize
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helper
     def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; w = self.s_ctrl ; u = c.undoer
         if clone_find_all_flattened:
             undoType = 'Clone Find All Flattened'

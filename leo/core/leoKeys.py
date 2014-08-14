@@ -1346,7 +1346,8 @@ class KeyHandlerClass:
         self.inputModeBindings = {}
         self.inputModeName = '' # The name of the input mode, or None.
         self.inverseCommandsDict = {}
-            # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+            # Completed in k.createInverseCommandsDict,
+            # but leoCommands.getPublicCommands adds entries first.
         self.modePrompt = '' # The mode promopt.
         self.negativeArg = False
         self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
@@ -1762,7 +1763,7 @@ class KeyHandlerClass:
 
         k.setDefaultInputState()
         k.resetLabel()
-    #@+node:ekr.20061031131434.81: *5* createInverseCommandsDict
+    #@+node:ekr.20061031131434.81: *5* k.createInverseCommandsDict
     def createInverseCommandsDict (self):
 
         '''Add entries to k.inverseCommandsDict using c.commandsDict.
@@ -4656,7 +4657,8 @@ class ModeInfo:
         c.commandsDict[key] = f = enterModeCallback
         k.inverseCommandsDict [f.__name__] = key
 
-        g.trace('(ModeInfo)',f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
+        g.trace('(ModeInfo)',f.__name__,key,
+            'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
     #@+node:ekr.20120208064440.10180: *3* enterMode (ModeInfo)
     def enterMode (self):
 
