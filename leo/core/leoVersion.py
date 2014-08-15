@@ -27,7 +27,8 @@ import json
 #@-<< imports >>
 
 ## get info from leo/core/commit_timestamp.json
-commit_path = os.path.join("leo", "core", "commit_timestamp.json")
+leo_core_path = os.path.dirname(os.path.realpath(__file__)) # leoVersion.py is in leo/core
+commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
 commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
