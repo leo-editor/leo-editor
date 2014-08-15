@@ -129,6 +129,8 @@ class Commands (object):
     def initCommandIvars(self):
         '''Init ivars used while executing a command.'''
         self.commandsDict = {}
+        if g.new_commands:
+            self.inverseCommandsDict = {}
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None

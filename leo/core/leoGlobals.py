@@ -20,6 +20,10 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
+new_commands = True
+    # True: defined command names at any time.
+# # # if new_commands:
+    # # # print('\n***** new_commands')
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:

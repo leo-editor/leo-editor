@@ -120,7 +120,7 @@ import time
 # ivar                    Keys                Values
 # ----                    ----                ------
 # c.commandsDict          command names (1)   functions
-# k.inverseCommandsDict   func.__name__       command names
+# c.inverseCommandsDict   func.__name__       command names
 # k.bindingsDict          shortcuts           lists of ShortcutInfo objects
 # k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
@@ -1345,7 +1345,10 @@ class KeyHandlerClass:
         self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = '' # The name of the input mode, or None.
-        self.inverseCommandsDict = {}
+        if g.new_commands:
+            pass
+        else:
+            self.inverseCommandsDict = {}
             # Completed in k.createInverseCommandsDict,
             # but leoCommands.getPublicCommands adds entries first.
         self.modePrompt = '' # The mode promopt.
@@ -1757,13 +1760,16 @@ class KeyHandlerClass:
         self.w = c.frame.miniBufferWidget
             # Will be None for NullGui.
 
-        k.createInverseCommandsDict()
+        if g.new_commands:
+            pass
+        else:
+            k.createInverseCommandsDict()
         k.makeAllBindings()
         self.inited = True
 
         k.setDefaultInputState()
         k.resetLabel()
-    #@+node:ekr.20061031131434.81: *5* k.createInverseCommandsDict
+    #@+node:ekr.20061031131434.81: *5* k.createInverseCommandsDict (to be removed)
     def createInverseCommandsDict (self):
 
         '''Add entries to k.inverseCommandsDict using c.commandsDict.
@@ -2791,7 +2797,10 @@ class KeyHandlerClass:
         assert not g.isStroke(shortcut)
         c.commandsDict [commandName] = func
         fname = func.__name__
-        k.inverseCommandsDict [fname] = commandName
+        if g.new_commands:
+            c.inverseCommandsDict [fname] = commandName
+        else:
+            k.inverseCommandsDict [fname] = commandName
         if trace and fname != 'minibufferCallback':
             g.trace('leoCommands %24s = %s' % (fname,commandName))
         if shortcut:
@@ -3517,7 +3526,10 @@ class KeyHandlerClass:
             def enterModeCallback (event=None,name=key):
                 k.enterNamedMode(event,name)
             c.commandsDict[key] = f = enterModeCallback
-            k.inverseCommandsDict [f.__name__] = key
+            if g.new_commands:
+                c.inverseCommandsDict [f.__name__] = key
+            else:
+                k.inverseCommandsDict [f.__name__] = key
             if trace: g.trace(f.__name__,key,
                 'len(c.commandsDict.keys())',
                 len(list(c.commandsDict.keys())))

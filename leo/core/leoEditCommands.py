@@ -1580,8 +1580,6 @@ class ControlCommandsClass (BaseEditCommandsClass):
         if not w: return
         self.c.frame.top.iconify()
 
-    # Must be a separate function so that k.inverseCommandsDict will be a true inverse.
-
     def iconifyFrame (self,event):
 
         '''Minimize the present Leo window.'''
@@ -9035,11 +9033,9 @@ class LeoCommandsClass (BaseEditCommandsClass):
         BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20050920084036.188: *3* leoCommands.getPublicCommands
     def getPublicCommands (self):
-
         '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
-
-        k = self.k ; d2 = {}
-
+        c,k = self.c,self.k
+        d2 = {}
         #@+<< define dictionary d of names and Leo commands >>
         #@+node:ekr.20050920084036.189: *4* << define dictionary d of names and Leo commands >>
         c = self.c ; f = c.frame
@@ -9235,14 +9231,15 @@ class LeoCommandsClass (BaseEditCommandsClass):
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
         }
         #@-<< define dictionary d of names and Leo commands >>
-
         # Create a callback for each item in d.
         for name in sorted(d):
             f = d.get(name)
             d2 [name] = f
-            k.inverseCommandsDict [f.__name__] = name
+            if g.new_commands:
+                c.inverseCommandsDict [f.__name__] = name
+            else:
+                k.inverseCommandsDict [f.__name__] = name
             # g.trace('leoCommands %24s = %s' % (f.__name__,name))
-
         return d2
     #@-others
 #@+node:ekr.20050920084036.190: ** MacroCommandsClass
