@@ -22,59 +22,41 @@ trace = False
 #@+node:ekr.20120109111947.9961: ** << imports >> (leoVersion)
 import os
 import time
+import json
 
-# The bzr_version stuff now just causes problems.
-    # try:
-        # import leo.core.bzr_version as bzr_version
-    # except ImportError:
-        # bzr_version = None
 #@-<< imports >>
-use_git = True # False = bzr
-static_version = 6240
-static_date = "2013-11-06"
+
+## get info from leo/core/commit_timestamp.json
+commit_path = os.path.join("leo", "core", "commit_timestamp.json")
+commit_info = json.load(open(commit_path))
+commit_timestamp = commit_info['timestamp']
+commit_asctime = commit_info['asctime']
+
 version = "4.11 final"
+
+# attempt to grab commit + branch info from git, else ignore it
+git_info = {}
 theDir = os.path.dirname(__file__)
-if use_git:
-    path = os.path.join(theDir,'..','..','.git','HEAD')
-else:
-    path = os.path.join(theDir,'..','..','.bzr','branch','last-revision') 
-path = os.path.normpath(path)
-path = os.path.abspath(path)
-# First, try to get the version from the .bzr/branch/last-revision or .git/HEAD
+path = os.path.join(theDir,'..','..','.git','HEAD')
 if os.path.exists(path):
-    if trace: print('leoVersion.py: %s' % (path))
     s = open(path,'r').read()
-    if use_git:
-        if trace: print('leoVersion.py: %s' % (s))
-        if s.startswith('ref'):
-            # on a proper branch
-            pointer = s.split()[1]
-            dirs = pointer.split('/')
-            branch = dirs[-1]
-            path = os.path.join(theDir, '..', '..', '.git', pointer)
-            s = open(path, 'r').read().strip()[0:12]
-                # shorten the hash to a unique shortname 
-                # (12 characters should be enough until the end of time, for Leo...)
-            build = '%s (branch: %s)' % (s, branch)
-        else:
-            branch = 'None'
-            s = s[0:12]
-            build = '%s (branch: %s)' % (s, branch)
+    if s.startswith('ref'):
+        # on a proper branch
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+        path = os.path.join(theDir, '..', '..', '.git', pointer)
+        s = open(path, 'r').read().strip()[0:12]
+            # shorten the hash to a unique shortname 
+            # (12 characters should be enough until the end of time, for Leo...)
+        git_info['branch'] = branch
+        git_info['commit'] = s
     else:
-        i = s.find(' ')
-        build = static_version if i == -1 else s[:i]
-    secs = os.path.getmtime(path)
-    t = time.localtime(secs)
-    date = time.strftime('%Y-%m-%d %H:%M:%S',t)
-# elif bzr_version:
-    # # Next use bzr_version_info.
-    # if trace: print('leoVersion.py: bzr_version_info',bzr_version)
-    # d = bzr_version.version_info
-    # build = d.get('revno','<unknown revno>')
-    # date  = d.get('build_date','<unknown build date>')
-else:
-    # Fall back to hard-coded values.
-    if trace: print('leoVersion.py: %s does not exist' % (path))
-    build = static_version
-    date = static_date
+        branch = 'None'
+        s = s[0:12]
+        git_info['branch'] = branch
+        git_info['commit'] = s
+
+build = commit_timestamp
+date = commit_asctime
 #@-leo

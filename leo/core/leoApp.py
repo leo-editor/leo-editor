@@ -767,6 +767,7 @@ class LeoApp:
 
         import leo.core.leoVersion as leoVersion
         build,date  = leoVersion.build,leoVersion.date
+        git_info = leoVersion.git_info
         guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer      = leoVersion.version
         n1,n2,n3,junk,junk=sys.version_info
@@ -794,6 +795,14 @@ class LeoApp:
 
         else: sysVersion = sys.platform
 
+        branch = git_info.get('branch', None)
+        commit = git_info.get('commit', None)
+        
+        if branch is None or commit is None:
+            app.signon1 = 'Not running running from a cloned git repo'
+        else:
+            app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
+                branch, commit)
         app.signon = 'Leo %s, build %s, %s' % (
             leoVer,build,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
@@ -1191,7 +1200,8 @@ class LeoApp:
         table = [
             ('Leo Log Window','red'),
             (app.signon,None),
-            (app.signon2,None),
+            (app.signon1,None),
+            (app.signon2,None)
         ]
         table.reverse()
 
@@ -1206,6 +1216,7 @@ class LeoApp:
                 if not g.enableDB:
                     print('** caching disabled')
                 print(app.signon)
+                print(app.signon1)
                 print(app.signon2)
         if not app.silentMode: # 2011/11/02:
             for s in app.printWaiting:
