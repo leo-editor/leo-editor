@@ -473,15 +473,16 @@ def checkFile(p):
 #@+node:ekr.20100131171342.5485: *3* @test all commands have an event arg
 import inspect
 
-d = c.commandsDict ; keys = list(d.keys()) ; keys.sort()
-
+d = c.commandsDict
+keys = sorted(d.keys())
 for key in keys:
     f = d.get(key) ; name = f and f.__name__
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
     # print('%-28s' % (name),data)
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
-    assert arg0 == 'self' and arg1 == 'event' or arg0 == 'event',\
+    # assert arg0 == 'self'
+    assert arg1 == 'event' or arg0 == 'event',\
        'no event arg for %s, args: %s' % (name,data)
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
