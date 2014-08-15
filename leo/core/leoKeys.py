@@ -1245,9 +1245,7 @@ class FileNameChooser:
         state = k.getState(tag)
         char = event and event.char or ''
         if trace:
-            g.trace('event',event)
             g.trace('state',state,'char',char or '<**no char**>')
-            g.trace(g.callers())
         if state == 0:
             fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
             k.setState(tag,1,fnc.get_file_name)
@@ -1255,6 +1253,8 @@ class FileNameChooser:
             common_prefix,tabList = fnc.compute_tab_list()
             fnc.show_tab_list(tabList)
             c.minibufferWantsFocus()
+        elif char == 'Escape':
+            k.keyboardQuit()
         elif char in ('\n','Return'):
             log.deleteTab(fnc.tabName)
             value = fnc.get_label()
