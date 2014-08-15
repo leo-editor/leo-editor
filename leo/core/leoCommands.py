@@ -90,24 +90,16 @@ class Commands (object):
         c.initFileIvars(fileName,relativeFileName)
         c.initOptionsIvars()
         c.initObjectIvars()
-
-        # Init the settings *before* initing the objects.
-        import leo.core.leoConfig as leoConfig
-        self.config = leoConfig.LocalConfigManager(c,previousSettings)
-        g.app.config.setIvarsFromSettings(c)
-
+        c.initSettings(previousSettings)
+            # Init the settings *before* initing the objects.
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
-
         assert c.frame
         assert c.frame.c
-
         if trace and not g.trace_startup:
             g.printDiffTime('%s: after controllers created' % (tag),t1)
-
         # Complete the init!
         c.finishCreate()
-
         if trace and not g.trace_startup:
             g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
@@ -129,8 +121,9 @@ class Commands (object):
     def initCommandIvars(self):
         '''Init ivars used while executing a command.'''
         self.commandsDict = {}
-        if g.new_commands:
-            self.inverseCommandsDict = {}
+        self.inverseCommandsDict = {}
+            # Completed in k.createInverseCommandsDict,
+            # but leoCommands.getPublicCommands adds entries first.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None
@@ -329,13 +322,20 @@ class Commands (object):
         self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
+    #@+node:ekr.20140815160132.18837: *5* c.initSettings
+    def initSettings(self,previousSettings):
+        '''Init the settings *before* initing the objects.'''
+        c = self
+        import leo.core.leoConfig as leoConfig
+        c.config = leoConfig.LocalConfigManager(c,previousSettings)
+        g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__ (self):
 
         return "Commander %d: %s" % (id(self),repr(self.mFileName))
 
     __str__ = __repr__
-    #@+node:ekr.20050920093543: *4* c.finishCreate & helper
+    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers
     def finishCreate (self):
         '''
         Finish creating the commander and all sub-objects.
@@ -350,12 +350,7 @@ class Commands (object):
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
         # This costs little.
-        c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
-        self.rstCommands.finishCreate()
-        # copy global commands to this controller    
-        for name,f in g.app.global_commands_dict.items():
-            k.registerCommand(name,
-                shortcut=None,func=f,pane='all',verbose=False)        
+        c.createCommandNames()   
         k.finishCreate()
         c.findCommands.finishCreate() # 2013/11/17
         if not c.gui.isNullGui:
@@ -369,7 +364,21 @@ class Commands (object):
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
         c.bodyWantsFocus()
-    #@+node:ekr.20051007143620: *5* printCommandsDict
+    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames
+    def createCommandNames(self):
+        '''Create all command names.'''
+        c,k = self,self.k
+        c.commandsDict = c.editCommandsManager.defineCommandNames()
+        self.rstCommands.defineCommandNames()
+        if c.vimCommands:
+            c.vimCommands.defineCommandNames()
+        # copy global commands to this controller    
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,
+                shortcut=None,func=f,pane='all',verbose=False)
+        # Create the inverse dict last.
+        c.createInverseCommandsDict()
+    #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 
         c = self
@@ -380,6 +389,23 @@ class Commands (object):
             print('%30s = %s' % (
                 key,command.__name__ if command else '<None>'))
         print('')
+    #@+node:ekr.20061031131434.81: *5* c.createInverseCommandsDict
+    def createInverseCommandsDict (self):
+        '''Add entries to k.inverseCommandsDict using c.commandsDict.
+
+        c.commandsDict:        keys are command names, values are funcions f.
+        c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+        '''
+        c = self
+        ### k = self ; c = k.c
+        for name in c.commandsDict:
+            f = c.commandsDict.get(name)
+            try:
+                c.inverseCommandsDict [f.__name__] = name
+                # g.trace('%24s = %s' % (f.__name__,name))
+            except Exception:
+                g.es_exception()
+                g.trace(repr(name),repr(f),g.callers())
     #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
     def hash (self):

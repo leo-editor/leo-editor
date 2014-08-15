@@ -531,6 +531,12 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                             else:
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
+.. @+node:ekr.20140815081211.18471: *4* Cleaned up command-name handling a bit
+Changed k.inverseCommandsDict to c.inverseCommandsDict.
+Called vc.define commands from c.finishCreate.
+Changed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
+The new c.createCommandNames copies entries in g.app.global_commands_dict to commander c.
+    Note: @g.command makes entries in g.app.global_commands_dict.
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @nocolor-node
 

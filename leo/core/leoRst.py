@@ -185,19 +185,13 @@ class RstCommands:
         self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
-    #@+node:ekr.20090502071837.102: *4*  getPublicCommands (RstCommands)
-    def getPublicCommands (self):        
-
-        return {
+    #@+node:ekr.20090511055302.5792: *4* rst.defineCommandNames
+    def defineCommandNames(self):
+        '''Return the commands dict for this module.'''
+        self.c.commandsDict.update({
             'rst3': self.rst3, # Formerly write-restructured-text.
             'code-to-rst': self.code_to_rst_command,
-        }
-    #@+node:ekr.20090511055302.5792: *4* finishCreate (RstCommands)
-    def finishCreate(self):
-
-        c = self.c
-        d = self.getPublicCommands()
-        c.commandsDict.update(d)
+        })
     #@+node:ekr.20090502071837.38: *4* initHeadlineCommands
     def initHeadlineCommands (self):
 

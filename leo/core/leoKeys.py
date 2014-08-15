@@ -1345,12 +1345,6 @@ class KeyHandlerClass:
         self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = '' # The name of the input mode, or None.
-        if g.new_commands:
-            pass
-        else:
-            self.inverseCommandsDict = {}
-            # Completed in k.createInverseCommandsDict,
-            # but leoCommands.getPublicCommands adds entries first.
         self.modePrompt = '' # The mode promopt.
         self.negativeArg = False
         self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
@@ -1749,46 +1743,21 @@ class KeyHandlerClass:
     # Insert
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate (self):
-
-        '''Complete the construction of the keyHandler class.
-        c.commandsDict has been created when this is called.'''
-
+        '''
+        Complete the construction of the keyHandler class.
+        c.commandsDict has been created when this is called.
+        '''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('k.finishCreate')
-
         k = self ; c = k.c
         self.w = c.frame.miniBufferWidget
             # Will be None for NullGui.
-
-        if g.new_commands:
-            pass
-        else:
-            k.createInverseCommandsDict()
+        ### k.createInverseCommandsDict()
+        ### Now done in c.finishCreate
         k.makeAllBindings()
         self.inited = True
-
         k.setDefaultInputState()
         k.resetLabel()
-    #@+node:ekr.20061031131434.81: *5* k.createInverseCommandsDict (to be removed)
-    def createInverseCommandsDict (self):
-
-        '''Add entries to k.inverseCommandsDict using c.commandsDict.
-
-        c.commandsDict:        keys are command names, values are funcions f.
-        k.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
-        '''
-
-        k = self ; c = k.c
-
-        for name in c.commandsDict:
-            f = c.commandsDict.get(name)
-            try:
-                k.inverseCommandsDict [f.__name__] = name
-                # g.trace('%24s = %s' % (f.__name__,name))
-
-            except Exception:
-                g.es_exception()
-                g.trace(repr(name),repr(f),g.callers())
     #@+node:ekr.20061101071425: *4* k.oops
     def oops (self):
 
@@ -2797,10 +2766,7 @@ class KeyHandlerClass:
         assert not g.isStroke(shortcut)
         c.commandsDict [commandName] = func
         fname = func.__name__
-        if g.new_commands:
-            c.inverseCommandsDict [fname] = commandName
-        else:
-            k.inverseCommandsDict [fname] = commandName
+        c.inverseCommandsDict [fname] = commandName
         if trace and fname != 'minibufferCallback':
             g.trace('leoCommands %24s = %s' % (fname,commandName))
         if shortcut:
@@ -3526,10 +3492,7 @@ class KeyHandlerClass:
             def enterModeCallback (event=None,name=key):
                 k.enterNamedMode(event,name)
             c.commandsDict[key] = f = enterModeCallback
-            if g.new_commands:
-                c.inverseCommandsDict [f.__name__] = key
-            else:
-                k.inverseCommandsDict [f.__name__] = key
+            c.inverseCommandsDict [f.__name__] = key
             if trace: g.trace(f.__name__,key,
                 'len(c.commandsDict.keys())',
                 len(list(c.commandsDict.keys())))

@@ -17485,143 +17485,6 @@ def setEditorColors (self,bg,fg):
         bg = self.unselectedBackgroundColor
         fg = self.unselectedForegroundColor
         c.frame.body.setEditorColors(bg,fg)
-.. @+node:ekr.20140802183521.18001: *3* Unused from leoVim
-.. @+node:ekr.20140803220119.18093: *4* ':' commands
-# All commands are now defined in the VimCommands class.
-if 0:
-    @others
-.. @+node:ekr.20140811180848.18153: *5* :! (shell command)
-@g.command(':!')
-def vim_e_exclam(event):
-    '''Execute a shell command.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.shell_command()
-.. @+node:ekr.20140811180848.18151: *5* :%s (substitutions)
-@g.command(':%s')
-def vim_substitution(event):
-    '''cycle-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.substitution(':%s')
-.. @+node:ekr.20140804202802.18152: *5* :e! (revert)
-@g.command(':e!')
-def vim_colon_e_exclam(event):
-    '''Revert all changes to a .leo file, prompting if there have been changes.'''
-    c = event.get('c')
-    if c:
-        c.revert()
-.. @+node:ekr.20140811170859.18253: *5* :gt & Gt
-@g.command(':gt')
-def vim_gt(event):
-    '''cycle-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.cycle_focus()
-
-@g.command(':gT')
-def vim_gT(event):
-    '''cycle-all-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.cycle_all_focus()
-.. @+node:ekr.20140810181832.18222: *5* :print-dot
-@g.command(':print-dot')
-def vim_show_dot(event):
-    '''Show the vim dot.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.print_dot()
-.. @+node:ekr.20140804202802.18156: *5* :q & :qa
-@g.command(':q')
-def vim_colon_q(event):
-    '''Quit, prompting for saves.'''
-    g.app.onQuit(event)
-    
-@g.command(':qa')
-def vim_colon_qa(event):
-    '''Quit only if there are no unsaved changes.'''
-    for c in g.app.commanders():
-        if c.isChanged():
-            return
-    g.app.onQuit(event)
-.. @+node:ekr.20140804202802.18150: *5* :r
-@g.command(':r') # :r filename
-def vim_colon_r(event):
-    '''Put the contents of a file at the insertion point.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.load_file_at_cursor()
-.. @+node:ekr.20140811211944.18163: *5* :tabnew
-@g.command(':tabnew') # :tab
-def vim_colon_tabnew(event):
-    '''
-    Prompts for a file name.
-    If the file exits, opens it in a new tab.
-    Otherwise, opens a tab for a new file.
-    '''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.tabnew()
-.. @+node:ekr.20140808141921.18059: *5* :toggle-vim-mode
-@g.command(':toggle-vim-mode')
-def toggle_vim_mode(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.toggle_vim_mode()
-.. @+node:ekr.20140808074553.17923: *5* :toggle-vim-trainer-mode
-@g.command(':toggle-vim-trainer-mode')
-def toggle_vim_trainer_mode(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.toggle_vim_trainer()
-.. @+node:ekr.20140804202802.18154: *5* :w & :wa & :wq
-@g.command(':w')
-def vim_colon_w(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c:
-        c.save()
-        
-@g.command(':wa') # same as :xa
-def vim_colon_wall(event):
-    '''Save all open files and keep working.'''
-    for c in g.app.commanders():
-        if c.isChanged():
-            c.save()
-
-@g.command(':wq')
-def vim_colon_wq(event):
-    '''Save all open files and exit.'''
-    for c in g.app.commanders():
-        c.save()
-    g.app.onQuit(event)
-.. @+node:ekr.20140804202802.18157: *5* :xa
-@g.command(':xa') # same as wq
-def vim_colon_xa(event):
-    '''Save all open files and exit.'''
-    for c in g.app.commanders():
-        c.save()
-    g.app.onQuit(event)
-.. @+node:ekr.20140804202802.18158: *5* not ready yet
-if 0:
-    @others
-.. @+node:ekr.20140804202802.18159: *6* :e
-@g.command(':e') # :e directory name
-def colon_e(event):
-    '''Open a file from a director list.'''
-    c = event.get('c')
-    if c:
-        g.trace(':e not ready yet')
-.. @+node:ekr.20140804202802.18153: *6* :tabnew
-@g.command(':tabnew') # :tabnew filename
-def colon_tabnew(event):
-    '''Open a file in a new tab.'''
-    c = event.get('c')
-    if c:
-        g.trace(':tabnew not ready yet')
 .. @+node:ekr.20140815081211.18437: *3* unused from command-name reorg
 .. @+node:ekr.20140815081211.18432: *4* c.registerCommandName (not used)
 def registerCommandName (self,commandName,shortcut,func,
@@ -17700,5 +17563,12 @@ def registerCommandNames(self,d):
             g.trace('duplicate command',key)
         else:
             c.registerCommandName(key,shortcut='',func=d.get(key))
+.. @+node:ekr.20090502071837.102: *3* rst.getPublicCommands
+def getPublicCommands (self):
+    '''Return the commands dict for this class.'''
+    return {
+        'rst3': self.rst3, # Formerly write-restructured-text.
+        'code-to-rst': self.code_to_rst_command,
+    }
 .. @-all
 .. @-leo

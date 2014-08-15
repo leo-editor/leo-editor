@@ -13,140 +13,6 @@ import leo.core.leoGlobals as g
 import string
 
 #@+others
-#@+node:ekr.20140803220119.18093: ** ':' commands
-#@+node:ekr.20140811180848.18153: *3* :! (shell command)
-@g.command(':!')
-def vim_e_exclam(event):
-    '''Execute a shell command.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.shell_command()
-#@+node:ekr.20140811180848.18151: *3* :%s (substitutions)
-@g.command(':%s')
-def vim_substitution(event):
-    '''cycle-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.substitution(':%s')
-#@+node:ekr.20140804202802.18152: *3* :e!
-@g.command(':e!')
-def vim_colon_e_exclam(event):
-    '''Revert all changes to a .leo file, prompting if there have been changes.'''
-    c = event.get('c')
-    if c:
-        c.revert()
-#@+node:ekr.20140811170859.18253: *3* :gt & Gt
-@g.command(':gt')
-def vim_gt(event):
-    '''cycle-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.cycle_focus()
-
-@g.command(':gT')
-def vim_gT(event):
-    '''cycle-all-focus'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.cycle_all_focus()
-#@+node:ekr.20140810181832.18222: *3* :print-dot
-@g.command(':print-dot')
-def vim_show_dot(event):
-    '''Show the vim dot.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.print_dot()
-#@+node:ekr.20140804202802.18156: *3* :q & :qa
-@g.command(':q')
-def vim_colon_q(event):
-    '''Quit, prompting for saves.'''
-    g.app.onQuit(event)
-    
-@g.command(':qa')
-def vim_colon_qa(event):
-    '''Quit only if there are no unsaved changes.'''
-    for c in g.app.commanders():
-        if c.isChanged():
-            return
-    g.app.onQuit(event)
-#@+node:ekr.20140804202802.18150: *3* :r
-@g.command(':r') # :r filename
-def vim_colon_r(event):
-    '''Put the contents of a file at the insertion point.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.load_file_at_cursor()
-#@+node:ekr.20140811211944.18163: *3* :tabnew
-@g.command(':tabnew') # :tab
-def vim_colon_tabnew(event):
-    '''
-    Prompts for a file name.
-    If the file exits, opens it in a new tab.
-    Otherwise, opens a tab for a new file.
-    '''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.tabnew()
-#@+node:ekr.20140808141921.18059: *3* :toggle-vim-mode
-@g.command(':toggle-vim-mode')
-def toggle_vim_mode(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.toggle_vim_mode()
-#@+node:ekr.20140808074553.17923: *3* :toggle-vim-trainer-mode
-@g.command(':toggle-vim-trainer-mode')
-def toggle_vim_trainer_mode(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c and c.vimCommands:
-        c.vimCommands.toggle_vim_trainer()
-#@+node:ekr.20140804202802.18154: *3* :w & :wa & :wq
-@g.command(':w')
-def vim_colon_w(event):
-    '''Save the .leo file.'''
-    c = event.get('c')
-    if c:
-        c.save()
-        
-@g.command(':wa') # same as :xa
-def vim_colon_wall(event):
-    '''Save all open files and keep working.'''
-    for c in g.app.commanders():
-        if c.isChanged():
-            c.save()
-
-@g.command(':wq')
-def vim_colon_wq(event):
-    '''Save all open files and exit.'''
-    for c in g.app.commanders():
-        c.save()
-    g.app.onQuit(event)
-#@+node:ekr.20140804202802.18157: *3* :xa
-@g.command(':xa') # same as wq
-def vim_colon_xa(event):
-    '''Save all open files and exit.'''
-    for c in g.app.commanders():
-        c.save()
-    g.app.onQuit(event)
-#@+node:ekr.20140804202802.18158: *3* not ready yet
-if 0:
-    #@+others
-    #@+node:ekr.20140804202802.18159: *4* :e
-    @g.command(':e') # :e directory name
-    def colon_e(event):
-        '''Open a file from a director list.'''
-        c = event.get('c')
-        if c:
-            g.trace(':e not ready yet')
-    #@+node:ekr.20140804202802.18153: *4* :tabnew
-    @g.command(':tabnew') # :tabnew filename
-    def colon_tabnew(event):
-        '''Open a file in a new tab.'''
-        c = event.get('c')
-        if c:
-            g.trace(':tabnew not ready yet')
-    #@-others
 #@+node:ekr.20140802183521.17997: ** show_stroke
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
@@ -197,6 +63,23 @@ class VimCommands:
         vc.init_persistent_ivars()
         vc.init_state_ivars()
         vc.create_dispatch_dicts()
+    #@+node:ekr.20140815160132.18834: *4* vc.defineCommandNames
+    def defineCommandNames(vc):
+        '''Add the names of commands defined in this file to c.commandsDict'''
+        vc.c.commandsDict.update({
+            ':!':   vc.shell_command,
+            ':%':   vc.substitution,
+            ':e!':  vc.revert,
+            ':gT':  vc.cycle_all_focus,
+            ':gt':  vc.cycle_focus,
+            ':q':   vc.q_command,
+            ':qa':  vc.qa_command,
+            ':r':   vc.load_file_at_cursor,
+            ':print-dot':               vc.print_dot,
+            ':tabnew':                  vc.tabnew,
+            ':toggle-vim-mode':         vc.toggle_vim_mode,
+            ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
+        })
     #@+node:ekr.20140805130800.18157: *4* dispatch dicts...
     #@+node:ekr.20140805130800.18162: *5* vc.create_dispatch_dicts
     def create_dispatch_dicts(vc):
@@ -485,7 +368,7 @@ class VimCommands:
             ):
                 d[mod+arrow] = vc.vim_arrow
         return d
-    #@+node:ekr.20140804222959.18930: *4* vc.finshCreate
+    #@+node:ekr.20140804222959.18930: *4* vc.finishCreate
     def finishCreate(vc):
         '''Complete the initialization for the VimCommands class.'''
         # Set the widget for vc.set_border.
@@ -498,7 +381,7 @@ class VimCommands:
             except Exception:
                 vc.w = None
             if c.config.getBool('vim-trainer-mode',default=False):
-                vc.toggle_vim_trainer()
+                vc.toggle_vim_trainer_mode()
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
     # Every ivar of this class must be initied in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
@@ -1936,18 +1819,18 @@ class VimCommands:
             vc.in_command = True # May be cleared later.
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
-    #@+node:ekr.20140808142143.18072: *3* vc.external commands
-    #@+node:ekr.20140811173921.18142: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
-    def cycle_focus(vc):
+    #@+node:ekr.20140815160132.18821: *3* vc.external commands
+    #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
+    def cycle_focus(vc,event=None):
         '''Cycle focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('cycle-focus',event=event)
         
-    def cycle_all_focus(vc):
+    def cycle_all_focus(vc,event=None):
         '''Cycle all focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
-    #@+node:ekr.20140811211944.18162: *4* vc.load_file_at_cursor (:r)
+    #@+node:ekr.20140815160132.18823: *4* vc.load_file_at_cursor (:r)
     def load_file_at_cursor(vc,event=None):
         '''Prompt for a file name, then load it at the cursor.'''
         vc.k.getFileName(event,callback=vc.r_callback)
@@ -1965,8 +1848,8 @@ class VimCommands:
             vc.save_body()
         else:
             g.es('does not exist:' % fn)
-    #@+node:ekr.20140810181832.18223: *4* vc.print_dot
-    def print_dot(vc):
+    #@+node:ekr.20140815160132.18824: *4* vc.print_dot
+    def print_dot(vc,event=None):
         '''Print the dot.'''
         try:
             i = 0
@@ -1977,19 +1860,34 @@ class VimCommands:
         except Exception:
             for z in vc.dot_list:
                 g.es(repr(z))
-    #@+node:ekr.20140811180848.18154: *4* vc.shell_command (:!)
-    def shell_command(vc):
+    #@+node:ekr.20140815160132.18825: *4* vc.q_command & qa_command
+    def q_command(vc,event=None):
+        '''Quit, prompting for saves.'''
+        g.app.onQuit(event)
+        
+    def qa_command(vc,event=None):
+        '''Quit only if there are no unsaved changes.'''
+        for c in g.app.commanders():
+            if c.isChanged():
+                return
+        g.app.onQuit(event)
+    #@+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
+    def revert(vc,event=None):
+        '''Revert all changes to a .leo file, prompting if there have been changes.'''
+        vc.c.revert()
+    #@+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
+    def shell_command(vc,event=None):
         '''Execute a shell command.'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('shell-command',event=event)
-    #@+node:ekr.20140811180848.18152: *4* vc.substitution (:%)
-    def substitution(vc,leadin):
+    #@+node:ekr.20140815160132.18828: *4* vc.substitution (:%)
+    def substitution(vc,event=None,leadin=''):
         '''
         Handle :%s/text/replaced text/g
         The lead-in characters :%s are in the minibuffer.
         '''
         g.trace(leadin)
-    #@+node:ekr.20140811211944.18165: *4* vc.tabnew
+    #@+node:ekr.20140815160132.18829: *4* vc.tabnew
     def tabnew(vc,event=None):
         '''
         Prompts for a file name.
@@ -2008,8 +1906,8 @@ class VimCommands:
                 pass
         else:
             c.new()
-    #@+node:ekr.20140808142143.18075: *4* vc.toggle_vim_mode
-    def toggle_vim_mode(vc):
+    #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
+    def toggle_vim_mode(vc,event=None):
         '''toggle vim-mode.'''
         c = vc.c
         c.vim_mode = not c.vim_mode
@@ -2027,13 +1925,29 @@ class VimCommands:
             except Exception:
                 # g.es_exception()
                 pass
-    #@+node:ekr.20140808142143.18074: *4* vc.toggle_vim_trainer
-    def toggle_vim_trainer(vc):
+    #@+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
+    def toggle_vim_trainer_mode(vc,event=None):
         '''toggle vim-trainer mode.'''
         vc.trainer = not vc.trainer
         g.es('vim-trainer-mode: %s' % (
             'on' if vc.trainer else 'off'),
             color = 'red')
+    #@+node:ekr.20140815160132.18832: *4* w_command & wa_command and wq_command
+    def w_command(vc,event= None):
+        '''Save the .leo file.'''
+        vc.c.save()
+            
+    def xa_command(vc,event=None): # same as :xa
+        '''Save all open files and keep working.'''
+        for c in g.app.commanders():
+            if c.isChanged():
+                c.save()
+
+    def wq_command(vc,event=None):
+        '''Save all open files and exit.'''
+        for c in g.app.commanders():
+            c.save()
+        g.app.onQuit(event)
     #@+node:ekr.20140802225657.18026: *3* vc.state handlers
     # Neither state handler nor key handlers ever return non-None.
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion

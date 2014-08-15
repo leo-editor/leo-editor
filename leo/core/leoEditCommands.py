@@ -407,12 +407,9 @@ class EditCommandsManager:
             theInstance = theClass(c)# Create the class.
             setattr(c,name,theInstance)
             # g.trace(name,theInstance)
-    #@+node:ekr.20120211121736.10828: *3* ecm.finishCreateEditCommanders
-    def finishCreateEditCommanders (self):
-
-        '''Finish creating edit classes in the commander.
-        Return the commands dictionary for all the classes.'''
-
+    #@+node:ekr.20120211121736.10828: *3* ecm.defineCommandNames
+    def defineCommandNames (self):
+        '''Return the commands dictionary for all classes in this file.'''
         c,d = self.c,{}
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
@@ -424,7 +421,6 @@ class EditCommandsManager:
                 if 0:
                     g.pr('----- %s' % name)
                     for key in sorted(d2): g.pr(key)
-
         return d
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
     def initAllEditCommanders (self):
@@ -7279,15 +7275,11 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                         p2.v.context = c
     #@+node:ekr.20070921070101: *4* createHiddenCommander (EditFileCommandsClass)
     def createHiddenCommander(self,fn):
-
         '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
-
         import leo.core.leoCommands as leoCommands
         lm = g.app.loadManager
-
         c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
         theFile = lm.openLeoOrZipFile(fn)
-
         if theFile:
             c2.fileCommands.openLeoFile(theFile,fn,
                 readAtFileNodesFlag=True,silent=True)
@@ -9235,10 +9227,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
         for name in sorted(d):
             f = d.get(name)
             d2 [name] = f
-            if g.new_commands:
-                c.inverseCommandsDict [f.__name__] = name
-            else:
-                k.inverseCommandsDict [f.__name__] = name
+            c.inverseCommandsDict [f.__name__] = name
             # g.trace('leoCommands %24s = %s' % (f.__name__,name))
         return d2
     #@-others
