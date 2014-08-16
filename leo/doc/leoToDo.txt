@@ -3,6 +3,19 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20140813144229.19021: ** To do today
+@language rest
+
+- Get git hooks working.
+
+- Don't require <return> after :xxx commands
+
+Others
+- Post: Leo 4.12 coming "soon".
+- Put paths in print-settings pane.
+- Create GetArg Class.
+
+@language python
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
