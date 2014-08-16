@@ -20216,10 +20216,12 @@ and to add new vim commands.
 <t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,T,w.
 - The gb,ge,gh commands are synonyms for 0,$,^.
 - The h,j,k,l commands work on outlines when entered in the outline pane.
-- Deleting text: d{motion},{motion}d,v{motion}d,x.
+- 0 in outline pane: goto-first-visible-node
+- e in outline pane: goto-last-visible-node.
+- Deleting text: d{motion},{motion}d,v{motion}d,diw,x.
 - Insert commands: a,A,i,o,O and switch to insert mode if entered in the outline pane.
 - Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
-- Search commands: /,?,n,*,#.
+- Search commands: /,?,n,*,#.  These commands are node-only searches.
 - The dot command '.' works for motions, but not yet for inserts or searches.
 - v: start/end visual mode.
 
@@ -20239,9 +20241,14 @@ Notes:
 <t tx="ekr.20140810153947.6750">The ':' command enters Leo's minibuffer, with ':' pre-inserted.
 You may backspace over the ':'. Here are the commands::
   
+    :! Execute a shell command.
     :e! Revert all changes to a .leo file, prompting if there have been changes.
+    :gt cycle-focus
+    :gT cycle-all-focus
     :q Quit, prompting for saves.
     :qa Quit only if there are no unsaved changes.
+    :r Prompt for a file name.  Insert it at the cursor.
+    :tabnew Prompt for a file name, and open a new tab.
     :w Save the .leo file.
     :wa Save all changed  .leo files.
     :wq Save all open files and exit.
