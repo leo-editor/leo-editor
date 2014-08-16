@@ -364,20 +364,37 @@ class Commands (object):
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
         c.bodyWantsFocus()
-    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames
+    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames & helper
     def createCommandNames(self):
-        '''Create all command names.'''
+        '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
         c,k = self,self.k
-        c.commandsDict = c.editCommandsManager.defineCommandNames()
-        self.rstCommands.defineCommandNames()
-        if c.vimCommands:
-            c.vimCommands.defineCommandNames()
+        c.commandsDict = {}
+        # A list of all subcommanders with a getPublicCommands method.
+        # c.editCommandsManager.getPublicCommands handles all
+        # subcommanders in leoEditCommands.py.
+        for o in (c.editCommandsManager,c.rstCommands,c.vimCommands):
+            if o: o.getPublicCommands()
         # copy global commands to this controller    
         for name,f in g.app.global_commands_dict.items():
-            k.registerCommand(name,
-                shortcut=None,func=f,pane='all',verbose=False)
+            k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
         # Create the inverse dict last.
         c.createInverseCommandsDict()
+    #@+node:ekr.20061031131434.81: *6* c.createInverseCommandsDict
+    def createInverseCommandsDict (self):
+        '''Add entries to k.inverseCommandsDict using c.commandsDict.
+
+        c.commandsDict:        keys are command names, values are funcions f.
+        c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+        '''
+        c = self
+        for name in c.commandsDict:
+            f = c.commandsDict.get(name)
+            try:
+                c.inverseCommandsDict [f.__name__] = name
+                # g.trace('%24s = %s' % (f.__name__,name))
+            except Exception:
+                g.es_exception()
+                g.trace(repr(name),repr(f),g.callers())
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 
@@ -389,23 +406,6 @@ class Commands (object):
             print('%30s = %s' % (
                 key,command.__name__ if command else '<None>'))
         print('')
-    #@+node:ekr.20061031131434.81: *5* c.createInverseCommandsDict
-    def createInverseCommandsDict (self):
-        '''Add entries to k.inverseCommandsDict using c.commandsDict.
-
-        c.commandsDict:        keys are command names, values are funcions f.
-        c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
-        '''
-        c = self
-        ### k = self ; c = k.c
-        for name in c.commandsDict:
-            f = c.commandsDict.get(name)
-            try:
-                c.inverseCommandsDict [f.__name__] = name
-                # g.trace('%24s = %s' % (f.__name__,name))
-            except Exception:
-                g.es_exception()
-                g.trace(repr(name),repr(f),g.callers())
     #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
     def hash (self):

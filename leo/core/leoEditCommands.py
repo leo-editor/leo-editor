@@ -407,9 +407,9 @@ class EditCommandsManager:
             theInstance = theClass(c)# Create the class.
             setattr(c,name,theInstance)
             # g.trace(name,theInstance)
-    #@+node:ekr.20120211121736.10828: *3* ecm.defineCommandNames
-    def defineCommandNames (self):
-        '''Return the commands dictionary for all classes in this file.'''
+    #@+node:ekr.20120211121736.10828: *3* ecm.getPublicCommands
+    def getPublicCommands (self):
+        '''Add the names of commands defined in this file to c.commandsDict.'''
         c,d = self.c,{}
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
@@ -421,7 +421,7 @@ class EditCommandsManager:
                 if 0:
                     g.pr('----- %s' % name)
                     for key in sorted(d2): g.pr(key)
-        return d
+        c.commandsDict.update(d)
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
     def initAllEditCommanders (self):
 

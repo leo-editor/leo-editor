@@ -63,8 +63,8 @@ class VimCommands:
         vc.init_persistent_ivars()
         vc.init_state_ivars()
         vc.create_dispatch_dicts()
-    #@+node:ekr.20140815160132.18834: *4* vc.defineCommandNames
-    def defineCommandNames(vc):
+    #@+node:ekr.20140815160132.18834: *4* vc.getPublicCommands
+    def getPublicCommands(vc):
         '''Add the names of commands defined in this file to c.commandsDict'''
         vc.c.commandsDict.update({
             ':!':   vc.shell_command,
