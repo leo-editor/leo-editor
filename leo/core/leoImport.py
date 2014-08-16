@@ -101,8 +101,6 @@ class LeoImportCommands:
                                 else:
                                     report('error',kind,folder,sfn)
                     # else: report('skipped',kind,folder,sfn)
-
-
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
@@ -586,14 +584,14 @@ class LeoImportCommands:
             return
         # Init ivars.
         self.setEncoding(p=parent,atAuto=atAuto)
-        ext,s = self.init_import(atAuto,atShadow,ext,fileName,s)
+        atAuto,atAutoKind,ext,s = self.init_import(atAuto,atShadow,ext,fileName,s)
         if s is None:
             if trace: g.trace('read failed',fileName)
             return
         if trace and not s:
             g.trace('empty file: but calling importer',fileName)
         # Create the top-level headline.
-        p = self.create_top_node(atAuto,fileName,parent)
+        p = self.create_top_node(atAuto,atAutoKind,fileName,parent)
         # Get the scanning function.
         func = self.dispatch(ext,p)
         if trace: g.trace(ext,p.h,func)
@@ -617,12 +615,20 @@ class LeoImportCommands:
         w.seeInsertPoint()
         return p
     #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
-    def create_top_node(self,atAuto,fileName,parent):
+    def create_top_node(self,atAuto,atAutoKind,fileName,parent):
         '''Create the top node.'''
         u = self.c.undoer
         if atAuto:
-            p = parent.copy()
-            p.setBodyString('')
+            if atAutoKind:
+                # We have found a match between ext and an @auto importer.
+                g.trace(parent.h)
+                undoData = u.beforeInsertNode(parent)
+                p = parent.insertAfter()
+                p.initHeadString(atAutoKind + ' ' + fileName)
+                u.afterInsertNode(p,'Import',undoData)
+            else:
+                p = parent.copy()
+                p.setBodyString('')
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
@@ -704,7 +710,22 @@ class LeoImportCommands:
         else:
             self.rootLine = ''
         # g.trace(atAuto,self.treeType,fileName)
-        return ext,s
+        if not atAuto and kind != '@auto':
+            # Not yet an @auto node.
+            # Set atAutoKind if there is an @auto importer for ext.
+            aClass = self.classDispatchDict.get(ext)
+            if aClass:
+                # Set the atAuto flag if any @auto importers match the extension.
+                d2 = self.atAutoDict
+                for z in d2:
+                    if d2.get(z) == aClass:
+                        # g.trace('found',z,'for',ext,aClass.__name__)
+                        atAuto = True
+                        atAutoKind = z
+                        break
+        else:
+            atAutoKind = None
+        return atAuto,atAutoKind,ext,s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
 
@@ -785,6 +806,7 @@ class LeoImportCommands:
             p = self.createOutline(fn,current)
             if p: # createOutline may fail.
                 if not g.unitTesting: g.blue("imported",fn)
+                current = p # 2014/08/16
                 p.contract()
                 p.setDirty()
                 c.setChanged(True)

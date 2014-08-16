@@ -542,46 +542,6 @@ The new c.createCommandNames copies entries in g.app.global_commands_dict to com
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @nocolor-node
 
-- :r and :tabnew commands now use k.getFileName: much simpler and better code.
-  :e is probably not needed because r: and tabnew: show completions.
-- Fixed bug in LM.openFileByName: delete "newHeadline" node after importing
-  an external file with sentinels.
-- By default, ignore .pyc and .bin files.
-- Added :r<return>filename<return> command.
-  Puts contents of filename at cursor position.
-- Added :! (shell command) command. Fixed several bugs in Leo's shell-command command.
-- Added diw.  It's exact properties depend on Ctrl-W (extend-to-word)
-- Added :gt (cycle-focus) and :gT (cycle-all-focus).
-  Not exactly what Kent requested, but maybe good enough.
-  Buglet: Ctrl-P (repeat-complex-command) doesn't work on these commands.
-- Fixed bugs or simplified a,A and O commands.
-- Added P commands. It pastes outlines when focus is in the outline pane.
-- Added V command. It works in both normal and visual modes.
-- Added optional event keyword arg to k.simulateCommand.
-- Limited /,?,*,#,n to node-only searches.
-- Show command in inner motions in visual mode.
-  This is important, but the present code may interfere with the dot.
-- The f,F,t,T commands now work regardless of repeat count or vc.cross_lines.
-- Fixed recent bug in vim_T.
-- Fixed a major bug affecting visual mode:
-  vc.done now sets v.handler = vc.do_visual_mode if mode was 'visual'.
-- Added very effective debugging trace to vc.ignore.
-- Used vc.do(leo-command-name) wherever possible to simplify code.
-  vc.vim_T fails at present.
-- Added back-to-home-extend-selection command, for use by vc.do :-)
-* Added code to check for missing motions in normal and visual mode dispatch dicts.
-  Added several missing motions.
-- The / and ? commands now update the selection range properly in visual mode.
-  This required a new callback, vc.update_selection_after_search,
-  called from leoFind.showSuccess.
-- Added the :print-dot command.
-- The / and ? commands now update the dot.
-    - Added callbacks to vc.update_dot_before_search in
-      leoFind.generalSearch/ChangeHelper.    
-- Added ge,gb,gh commands: same as $,0,^.
-- h,j,k,l in outline work like the corresponding arrow keys in the tree pane.
-- 0 in outline pane: goto-first-visible-node
-- e in outline pane: goto-last-visible-node.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
