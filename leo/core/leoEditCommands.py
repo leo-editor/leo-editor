@@ -1996,6 +1996,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             'indent-to-comment-column':             self.indentToCommentColumn,
             'insert-hard-tab':                      self.insertHardTab,
             'insert-icon':                          self.insertIcon,
+            'insert-file-name':                     self.insertFileName,
             'insert-newline':                       self.insertNewline,
             'insert-parentheses':                   self.insertParentheses,
             'insert-soft-tab':                      self.insertSoftTab,
@@ -4626,6 +4627,71 @@ class EditCommandsClass (BaseEditCommandsClass):
             c.frame.body.onBodyChanged(undoType,oldSel=oldSel,oldText=s,oldYview=oldYview)
         finally:
             self.endCommand(changed=True,setLabel=True)
+    #@+node:ekr.20050920084036.79: *3* info...
+    #@+node:ekr.20050920084036.80: *4* howMany
+    def howMany (self,event):
+
+        '''Print how many occurances of a regular expression are found
+        in the body text of the presently selected node.'''
+
+        k = self.k
+        w = self.editWidget(event)
+        if not w: return
+
+        state = k.getState('how-many')
+        if state == 0:
+            k.setLabelBlue('How many: ',protect = True)
+            k.getArg(event,'how-many',1,self.howMany)
+        else:
+            k.clearState()
+            s = w.getAllText()
+            reg = re.compile(k.arg)
+            i = reg.findall(s)
+            k.setLabelGrey('%s occurances of %s' % (len(i),k.arg))
+    #@+node:ekr.20050920084036.81: *4* lineNumber
+    def lineNumber (self,event):
+
+        '''Print the line and column number and percentage of insert point.'''
+
+        k = self.k
+        w = self.editWidget(event)
+        if not w: return
+
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        percent = int((i*100)/len(s))
+
+        k.setLabelGrey(
+            'char: %s row: %d col: %d pos: %d (%d%% of %d)' % (
+                repr(s[i]),row,col,i,percent,len(s)))
+    #@+node:ekr.20050920084036.83: *4* k.viewLossage
+    def viewLossage (self,event):
+
+        '''Put the Emacs-lossage in the minibuffer label.'''
+
+        k = self.k
+
+        g.es('lossage...')
+        aList = g.app.lossage
+        aList.reverse()
+        for data in aList:
+            ch,stroke = data
+            g.es('',k.prettyPrintKey(stroke))
+    #@+node:ekr.20050920084036.84: *4* whatLine
+    def whatLine (self,event):
+
+        '''Print the line number of the line containing the cursor.'''
+
+        k = self.k ; w = self.editWidget(event)
+        if not w: return
+
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,i)
+
+        k.keyboardQuit()
+        k.setLabel("Line %s" % row)
     #@+node:ekr.20050920084036.85: *3* insert & delete...
     #@+node:ekr.20060417171125: *4* addSpace/TabToLines & removeSpace/TabFromLines & helper
     def addSpaceToLines (self,event):
@@ -5337,71 +5403,21 @@ class EditCommandsClass (BaseEditCommandsClass):
                     self.doPlainTab(s,i,tab_width,w)
             else:
                 self.doPlainTab(s,i,tab_width,w)
-    #@+node:ekr.20050920084036.79: *3* info...
-    #@+node:ekr.20050920084036.80: *4* howMany
-    def howMany (self,event):
-
-        '''Print how many occurances of a regular expression are found
-        in the body text of the presently selected node.'''
-
-        k = self.k
+    #@+node:ekr.20140816053742.18402: *3* insertFileName
+    def insertFileName(self,event=None):
+        '''
+        Prompt for a file name, then insert it at the cursor position.
+        This operation is undoable if done in the body pane.
+        '''
+        c = self.c
         w = self.editWidget(event)
-        if not w: return
-
-        state = k.getState('how-many')
-        if state == 0:
-            k.setLabelBlue('How many: ',protect = True)
-            k.getArg(event,'how-many',1,self.howMany)
-        else:
-            k.clearState()
-            s = w.getAllText()
-            reg = re.compile(k.arg)
-            i = reg.findall(s)
-            k.setLabelGrey('%s occurances of %s' % (len(i),k.arg))
-    #@+node:ekr.20050920084036.81: *4* lineNumber
-    def lineNumber (self,event):
-
-        '''Print the line and column number and percentage of insert point.'''
-
-        k = self.k
-        w = self.editWidget(event)
-        if not w: return
-
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        percent = int((i*100)/len(s))
-
-        k.setLabelGrey(
-            'char: %s row: %d col: %d pos: %d (%d%% of %d)' % (
-                repr(s[i]),row,col,i,percent,len(s)))
-    #@+node:ekr.20050920084036.83: *4* k.viewLossage
-    def viewLossage (self,event):
-
-        '''Put the Emacs-lossage in the minibuffer label.'''
-
-        k = self.k
-
-        g.es('lossage...')
-        aList = g.app.lossage
-        aList.reverse()
-        for data in aList:
-            ch,stroke = data
-            g.es('',k.prettyPrintKey(stroke))
-    #@+node:ekr.20050920084036.84: *4* whatLine
-    def whatLine (self,event):
-
-        '''Print the line number of the line containing the cursor.'''
-
-        k = self.k ; w = self.editWidget(event)
-        if not w: return
-
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,i)
-
-        k.keyboardQuit()
-        k.setLabel("Line %s" % row)
+        if w:
+            def callback(arg,w=w):
+                i = w.getInsertPoint()
+                w.insert(i,arg)
+                if g.app.gui.widget_name(w) == 'body':
+                    c.frame.body.onBodyChanged(undoType='Typing')
+            c.k.getFileName(callback=callback)
     #@+node:ekr.20050920084036.88: *3* line...
     #@+node:ekr.20050920084036.90: *4* flushLines
     def flushLines (self,event):

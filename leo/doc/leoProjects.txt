@@ -537,6 +537,8 @@ Called vc.define commands from c.finishCreate.
 Changed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
 The new c.createCommandNames copies entries in g.app.global_commands_dict to commander c.
     Note: @g.command makes entries in g.app.global_commands_dict.
+.. @+node:ekr.20140813144229.19018: *4* Added insert-file-name command
+# The code is in leoEditCommands.py::insertFileName.
 .. @+node:ekr.20140801121720.18064: *3* Vim: documented in commit logs
 @nocolor-node
 
