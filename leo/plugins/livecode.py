@@ -181,7 +181,9 @@ class LiveCodeDisplay:
                     if isinstance(node, ast.Expr):
                         node_result = repr(eval(block[n], self.scope))
                     else:
-                        exec block[n] in self.scope
+                        # exec block[n] in self.scope
+                        # EKR: Python 3 compatibility.
+                        exec(block[n],self.scope)
                 except:
                     self.status.setText("ACTIVE: fail at %s" %
                         block[n].split('\n')[0])
