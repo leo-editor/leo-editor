@@ -78,6 +78,11 @@ class OrgModeScanner(basescanner.BaseScanner):
         p = self.createHeadline(parent,b,h)
         self.parents = self.parents[:level+1]
         self.parents.append(p)
+    #@+node:ekr.20140816065309.18222: *4* oms.endGen
+    def endGen (self,s):
+        '''End code generation.'''
+        warning = '\nWarning: this node is ignored when writing this file.\n\n'
+        self.root.b = self.root.b + warning
     #@-others
 #@-others
 importer_dict = {
