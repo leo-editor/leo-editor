@@ -9,13 +9,13 @@ if trace:
     print('%s importing importers/test.py' % ('='*20))
 class TestScanner(basescanner.BaseScanner):
     def __init__(self,importCommands,atAuto):
-        g.trace(tag)
+        if trace: g.trace(tag)
         basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='test')
     def run(self,s,parent,parse_body=False,prepass=False):
-        g.trace(tag)
+        if trace: g.trace(tag)
         return True
     def scan (self,s,parent,parse_body=False):
-        g.trace(tag)
+        if trace: g.trace(tag)
         return True
 
 importer_dict = {
