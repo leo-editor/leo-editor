@@ -621,7 +621,6 @@ class LeoImportCommands:
         if atAuto:
             if atAutoKind:
                 # We have found a match between ext and an @auto importer.
-                g.trace(parent.h)
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAfter()
                 p.initHeadString(atAutoKind + ' ' + fileName)
@@ -696,6 +695,7 @@ class LeoImportCommands:
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
         ext = ext.lower()
+        kind = None
         if not s:
             if atShadow: kind = '@shadow '
             elif atAuto: kind = '@auto '
@@ -703,13 +703,14 @@ class LeoImportCommands:
             s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
                 # Kind is used only for messages.
             if s is None:
-                return None,None
+                return None,None,None,None
             if e: self.encoding = e
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
         # g.trace(atAuto,self.treeType,fileName)
+        atAutoKind = None
         if not atAuto and kind != '@auto':
             # Not yet an @auto node.
             # Set atAutoKind if there is an @auto importer for ext.
@@ -723,8 +724,6 @@ class LeoImportCommands:
                         atAuto = True
                         atAutoKind = z
                         break
-        else:
-            atAutoKind = None
         return atAuto,atAutoKind,ext,s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
