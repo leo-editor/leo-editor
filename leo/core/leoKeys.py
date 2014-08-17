@@ -1164,15 +1164,15 @@ class FileNameChooser:
     # The first argument is fnc.
     #@+others
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
-    def __init__(fnc,c,callback,filterExt=None,prompt='Enter File Name: ',tabName='Dired'):
+    def __init__(fnc,c):
         '''Ctor for FileNameChooser class.'''
         # g.trace('(FileNameChooser)')
         fnc.c = c
-        fnc.callback = callback
-        fnc.filterExt = filterExt or ['.pyc','.bin',]
-        fnc.log = c.frame.log
-        fnc.prompt = prompt
-        fnc.tabName = tabName
+        fnc.callback = None
+        fnc.filterExt = None ### filterExt or ['.pyc','.bin',]
+        fnc.log = None # inited later.
+        fnc.prompt = None
+        fnc.tabName = None
     #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
     def compute_tab_list (fnc):
         '''Compute the list of completions.'''
@@ -1238,29 +1238,40 @@ class FileNameChooser:
         if len(common_prefix) > len(old):
             fnc.set_label(common_prefix)
     #@+node:ekr.20140813052702.18200: *3* fnc.get_file_name
-    def get_file_name(fnc,event):
+    def get_file_name(fnc,event,callback,filterExt,prompt,tabName):
         '''Get a file name, supporting file completion.'''
         trace = False and not g.unitTesting
-        c,k,log = fnc.c,fnc.c.k,fnc.log
+        c,k = fnc.c,fnc.c.k
         tag = 'get-file-name'
         state = k.getState(tag)
         char = event and event.char or ''
         if trace:
             g.trace('state',state,'char',char or '<**no char**>')
         if state == 0:
+            # Re-init all ivars.
+            fnc.log = c.frame.log or g.NullObject()
+            fnc.callback = callback
+            fnc.filterExt = filterExt or ['.pyc','.bin',]
+            fnc.prompt = prompt
+            fnc.tabName = tabName
+            # Init the label and state.
             fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
             k.setState(tag,1,fnc.get_file_name)
-            log.selectTab(fnc.tabName)
-            common_prefix,tabList = fnc.compute_tab_list()
+            fnc.log.selectTab(fnc.tabName)
+            junk,tabList = fnc.compute_tab_list()
             fnc.show_tab_list(tabList)
             c.minibufferWantsFocus()
         elif char == 'Escape':
             k.keyboardQuit()
         elif char in ('\n','Return'):
-            log.deleteTab(fnc.tabName)
+            fnc.log.deleteTab(fnc.tabName)
             value = fnc.get_label()
             k.keyboardQuit()
-            fnc.callback(value)
+            if fnc.callback:
+                # pylint: disable=not-callable
+                fnc.callback(value)
+            else:
+                g.trace('no callback')
         elif char in ('\t','Tab'):
             fnc.do_tab()
             c.minibufferWantsFocus()
@@ -1564,7 +1575,7 @@ class KeyHandlerClass:
         if trace: print('k.__init__')
         self.c = c
         self.dispatchEvent = None
-        self.fnc = None # The FileNameChooser in effect.
+        self.fnc = FileNameChooser(c)
         self.getArgInstance = GetArg(c)
             # The singleton GetArg instance.
         self.inited = False         # Set at end of finishCreate.
@@ -3222,12 +3233,12 @@ class KeyHandlerClass:
                 g.error('simulateCommand: no command for %s' % (commandName))
                 return None
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
-    def getFileName(self,event=None,callback=None):
-        '''Create a FileNameChooser and use it to get a file name.'''
-        c,k = self.c,self
-        if not k.fnc:
-            k.fnc = FileNameChooser(c,callback=callback,filterExt=None)
-        k.fnc.get_file_name(event)
+    def getFileName(self,event=None,callback=None,
+        filterExt=None,prompt='Enter File Name: ',tabName='Dired'
+    ):
+        '''Get a file name from the minibuffer.'''
+        k = self
+        k.fnc.get_file_name(event,callback,filterExt,prompt,tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
     def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
