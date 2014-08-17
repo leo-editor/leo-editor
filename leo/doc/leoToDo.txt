@@ -8,25 +8,12 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-Add special case code in leoKeys.py so no <return> is needed after :r or :tabnew etc.
+Don't require <return> after :xxx commands.
+    May require special cases in leoKeys.py.
     
 :% s/text/replaced text/g
 
-Maybe:
-- Write extend_vim_mode plugin
-- Extend Leo's undo to show the vim characters for the commands.
-.. @+node:ekr.20140814105040.18408: *4* New from Kent
-- 'V' should provide line mode visual, it inserts a 'V' at cursor
-- 'v' starts visual character mode, 'y' should end visual mode and yank, 'y'
-     is ignored until another 'v'
-- aliasing <return> to 'i' is confusing, in vim it advances cursor to next line
-- 'x' is backspace in Leo, delete in vim
-
-- '/' and '?' look good, with 'n' going to next find
-
-wish list:
-
-- :s /text/replace with this/<scope flag>
+Fix dot problems
 .. @+node:ekr.20140811110221.18251: *4* Dot related
 Dot related:
 - vc.update_dot_before_search must call add_to_dot().
@@ -35,7 +22,17 @@ Dot related:
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 
-.. @+node:ekr.20140808182202.18183: *4* Maybe
+.. @+node:ekr.20140814105040.18408: *4* New from Kent
+- 'V' should provide line mode visual, it inserts a 'V' at cursor
+- 'v' starts visual character mode, 'y' should end visual mode and yank, 'y'
+     is ignored until another 'v'
+- aliasing <return> to 'i' is confusing, in vim it advances cursor to next line
+- 'x' is backspace in Leo, delete in vim
+
+wish list:
+
+- :s /text/replace with this/<scope flag>
+.. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
 :e directory name
     Shows list of files in the directory:
     selecting and <enter> opens a file
@@ -43,8 +40,10 @@ Dot related:
 - Kent: v, V, ctrl-v : visual select character, line, column
 
 http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
+.. @+node:ekr.20140808182202.18183: *4* Maybe
+- Write extend_vim_mode plugin
 
-- What to do about different versions of @bool vim_mode in different tabs?
+- Extend Leo's undo to show the vim characters for the commands.
 
 - tab & shift-tab in normal mode might indent text.
   They do nothing in the real vim.  Sheesh.
