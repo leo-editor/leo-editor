@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-new_arg = True # True: use helper GetArg class.
+new_arg = False # True: use helper GetArg class.
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
@@ -1324,7 +1324,6 @@ class GetArg:
         ga.arg = ''
         ga.argSelectedText = ''
         ga.arg_completion = True
-        ga.getArgEscapes = []
         ga.oneCharacterArg = ''
         ga.tabList = []
     #@+node:ekr.20140817110228.18327: *4* ga.init_mb_ivars (to be removed)
@@ -1389,7 +1388,7 @@ class GetArg:
         The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
         # pylint: disable=unpacking-non-sequence
-        trace = False and not g.app.unitTesting
+        trace = True and not g.app.unitTesting
         c = ga.c
         k = c.k
         state = k.getState('getArg')
@@ -1416,7 +1415,7 @@ class GetArg:
         elif char == 'Escape':
             k.keyboardQuit()
         elif (
-            char in ('\n','Return',) or k.oneCharacterArg or 
+            char in ('\n','Return',) or ga.oneCharacterArg or 
             stroke and stroke in k.getArgEscapes or
             char == '\t' and char in k.getArgEscapes # The Find Easter Egg.
         ):
@@ -1451,18 +1450,19 @@ class GetArg:
     #@+node:ekr.20140817110228.18316: *5* ga.do_end
     def do_end(ga,event,char,stroke):
         '''A return or escape has been seen.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c,k = ga.c,ga.k
         if trace: g.trace('***escape***','char',repr(char),
-            stroke,ga.getArgEscapes,ga.afterGetArgState)
-        if char == '\t' and char in ga.getArgEscapes:
-            ga.getArgEscapeFlag = True
-        if stroke and stroke in ga.getArgEscapes:
-            ga.getArgEscapeFlag = True
+            stroke,k.getArgEscapes,ga.afterGetArgState)
+        if char == '\t' and char in k.getArgEscapes:
+            k.getArgEscapeFlag = True
+        if stroke and stroke in k.getArgEscapes:
+            k.getArgEscapeFlag = True
         if ga.oneCharacterArg:
             ga.arg = char
         else:
-            ga.arg = ga.get_label()
+            s = ga.get_label()
+            ga.arg = ga.get_command(s)
         kind,n,handler = ga.afterGetArgState
         if kind: k.setState(kind,n,handler)
         c.frame.log.deleteTab('Completion')
@@ -1494,10 +1494,17 @@ class GetArg:
 
     def compute_tab_list(ga,tabList,backspace=False,allow_empty_completion=False):
         '''Compute and show the available completions.'''
+        # Support vim-mode commands.
         command = ga.get_label()
-        tabList,common_prefix = g.itemsMatchingPrefixInList(command,tabList)
-        return common_prefix,tabList
-            # note order.
+        if ga.is_command(command):
+            tabList,common_prefix = g.itemsMatchingPrefixInList(command,tabList)
+            return common_prefix,tabList
+                # note order.
+        else:
+            # For now, disallow further completions if something follows the command.
+            command = ga.get_command(command)
+            g.trace(command)
+            return command,[command]
     #@+node:ekr.20140816165728.18958: *4* ga.extend/get/set_label
     def extend_label(ga,s):
         '''Extend the label by s.'''
@@ -1511,6 +1518,27 @@ class GetArg:
         '''Set the label after the prompt to s. The prompt never changes.'''
         ga.c.k.setLabel(ga.prompt,protect=True)
         ga.c.k.extendLabel(s or '',select=False,protect=False)
+    #@+node:ekr.20140818074502.18221: *4* ga.is_command
+    def is_command(ga,s):
+        '''Return True if s consists only of valid minibuffer command characters.'''
+        for ch in s:
+            if not ch.isalnum() and not ch in '-_':
+                return False
+        return True
+    #@+node:ekr.20140818074502.18222: *4* ga.get_command & get_minibuffer_command_name
+    def get_command(ga,s):
+        '''Return the command part of a minibuffer contents s.'''
+        aList = []
+        for ch in s:
+            if ga.is_command([ch]):
+                aList.append(ch)
+            else:
+                break
+        return ''.join(aList)
+
+    def get_minibuffer_command_name(ga):
+        '''Return the command name in the minibuffer.'''
+        return ga.get_command(ga.get_label())
     #@+node:ekr.20140816165728.18959: *4* ga.show_tab_list
     def show_tab_list (ga,tabList):
         '''Show the tab list in the log tab.'''
@@ -1581,6 +1609,8 @@ class KeyHandlerClass:
         self.argSelectedText = '' # The selected text in state 0.
         self.commandName = None # The name of the command being executed.
         self.funcReturn = None # For k.simulateCommand
+        # These are true globals
+        self.getArgEscapes = []
         self.getArgEscapeFlag = False # A signal that the user escaped getArg in an unusual way.
         self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
@@ -1622,20 +1652,23 @@ class KeyHandlerClass:
         self.mb_history = []
         self.mb_help = False
         self.mb_helpHandler = None
+        # Important: these are defined in k.defineExternallyVisibleIvars...
+            # self.getArgEscapes = []
+            # self.getArgEscapeFlag 
         # Keepting track of the characters in the mini-buffer...
         if new_arg:
             pass
         else:
             # Will be ivars of the GetArg class.
-            self.arg_completion = True
             self.afterGetArgState = None
-            self.getArgEscapes = []
+            self.argTabList = []
+            self.arg_completion = True
             self.mb_prefix = ''
-            self.mb_tabListPrefix = ''
+            self.mb_prompt = ''
             self.mb_tabList = []
             self.mb_tabListIndex = -1
-            self.mb_prompt = ''
-            self.argTabList = []
+            self.mb_tabListPrefix = ''
+            self.oneCharacterArg = ''
         # For onIdleTime...
         self.idleCount = 0
         # For modes...
@@ -2451,10 +2484,11 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.112: *5* callAltXFunction
     def callAltXFunction (self,event):
         '''Call the function whose name is in the minibuffer.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
-        commandName = s[len(k.mb_prefix):].strip()
+        commandName = k.getMinibufferCommandName()
+        ### commandName = s[len(k.mb_prefix):].strip()
         func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
         # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
@@ -2828,7 +2862,10 @@ class KeyHandlerClass:
         def doTabCompletion (self,tabList,redraw=True,allow_empty_completion=False):
             self.getArgInstance.do_tab(tabList)
                 ### ,redraw,allow_empty_completion)
-            
+                
+        def getMinibufferCommandName(self):
+            return self.getArgInstance.get_minibuffer_command_name()
+
         ### To be removed.
         def init_mb_ivars(self,prompt):
             self.getArgInstance.init_mb_ivars(prompt)
@@ -2837,6 +2874,12 @@ class KeyHandlerClass:
         #@+<< define old arg methods >>
         #@+node:ekr.20140816165728.18967: *5* << define old arg methods >>
         #@+others
+        #@+node:ekr.20140818074502.18223: *6* k.getMinibufferCommandName
+        def getMinibufferCommandName(self):
+            '''Return the command name in the minibuffer.'''
+            k = self
+            s = k.getLabel()
+            return  s[len(k.mb_prefix):].strip()
         #@+node:ekr.20061031131434.175: *6* k.computeCompletionList
         # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
 
