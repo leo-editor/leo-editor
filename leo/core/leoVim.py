@@ -1833,12 +1833,16 @@ class VimCommands:
     #@+node:ekr.20140815160132.18823: *4* vc.load_file_at_cursor (:r)
     def load_file_at_cursor(vc,event=None):
         '''Prompt for a file name, then load it at the cursor.'''
-        vc.k.getFileName(event,callback=vc.r_callback)
+        if hasattr(event,'get_arg_value'):
+            # This is a callback from k.getArg after the user hit tab.
+            vc.r_callback(event.get_arg_value)
+        else:
+            vc.k.getFileName(event,callback=vc.r_callback)
 
     def r_callback(vc,fn):
         c,w = vc.c,vc.colon_w
-        if not vc.is_text_widget(w):
-            w = c.frame.body.bodyCtrl
+        if not w: ### vc.is_text_widget(w):
+            w = vc.w = c.frame.body.bodyCtrl
         if g.os_path_exists(fn):
             f = open(fn)
             s = f.read()
@@ -1848,7 +1852,7 @@ class VimCommands:
             vc.save_body()
         else:
             g.es('does not exist:' % fn)
-    #@+node:ekr.20140815160132.18824: *4* vc.print_dot
+    #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
         '''Print the dot.'''
         try:
@@ -1860,7 +1864,7 @@ class VimCommands:
         except Exception:
             for z in vc.dot_list:
                 g.es(repr(z))
-    #@+node:ekr.20140815160132.18825: *4* vc.q_command & qa_command
+    #@+node:ekr.20140815160132.18825: *4* vc.q_command & qa_command (:q & :qa)
     def q_command(vc,event=None):
         '''Quit, prompting for saves.'''
         g.app.onQuit(event)
@@ -1878,8 +1882,13 @@ class VimCommands:
     #@+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
     def shell_command(vc,event=None):
         '''Execute a shell command.'''
-        event = VimEvent(stroke='',w=vc.colon_w)
-        vc.do('shell-command',event=event)
+        c,k = vc.c,vc.c.k
+        if k.functionTail:
+            command = k.functionTail
+            c.controlCommands.executeSubprocess(event,command)
+        else:
+            event = VimEvent(stroke='',w=vc.colon_w)
+            vc.do('shell-command',event=event)
     #@+node:ekr.20140815160132.18828: *4* vc.substitution (:%)
     def substitution(vc,event=None,leadin=''):
         '''
@@ -1887,14 +1896,18 @@ class VimCommands:
         The lead-in characters :%s are in the minibuffer.
         '''
         g.trace(leadin)
-    #@+node:ekr.20140815160132.18829: *4* vc.tabnew
+    #@+node:ekr.20140815160132.18829: *4* vc.tabnew (:tabnew)
     def tabnew(vc,event=None):
         '''
         Prompts for a file name.
         If the file exits, opens it in a new tab.
         Otherwise, opens a tab for a new file.
         '''
-        vc.k.getFileName(event,callback=vc.tabnew_callback)
+        if hasattr(event,'get_arg_value'):
+            # This is a callback from k.getArg after the user hit tab.
+            vc.tabnew_callback(event.get_arg_value)
+        else:
+            vc.k.getFileName(event,callback=vc.tabnew_callback)
 
     def tabnew_callback(vc,fn):
         c = vc.c
@@ -1932,7 +1945,7 @@ class VimCommands:
         g.es('vim-trainer-mode: %s' % (
             'on' if vc.trainer else 'off'),
             color = 'red')
-    #@+node:ekr.20140815160132.18832: *4* w_command & wa_command and wq_command
+    #@+node:ekr.20140815160132.18832: *4* w/xa/wz_command (:w & :xa & wq)
     def w_command(vc,event= None):
         '''Save the .leo file.'''
         vc.c.save()

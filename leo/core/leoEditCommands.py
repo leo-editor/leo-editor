@@ -4330,7 +4330,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Goto global line: ')
+            k.setLabelBlue('Goto global line: ',protect=True)
             k.getArg(event,tag,1,self.gotoGlobalLine)
         else:
             n = k.arg
