@@ -5,6 +5,8 @@ try:
 except ImportError:
     pass
 
+overwrite_existing = '--force' in sys.argv
+
 print("""
 This script will install `commit-msg` and `pre-commit` hooks in
 .../leo-editor/.git/hooks/ to manage Leo build numbers.
@@ -34,8 +36,9 @@ for hook in 'commit-msg', 'pre-commit':
     assert os.path.exists(rel_path)
     rel_path = os.path.join(rel_path, 'hooks', hook)
     rel_path = os.path.abspath(rel_path)
-    if os.path.exists(rel_path):
+    if os.path.exists(rel_path) and not overwrite_existing:
         print("'%s' already exists, aborting"%rel_path)
+        print("Re-run with --force to overwrite existing hooks")
         exit(10)
     data[hook+"PATH"] = rel_path
 
