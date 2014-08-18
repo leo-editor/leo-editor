@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-new_arg = True # True: use helper GetArg class.
+new_arg = False # True: use helper GetArg class.
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
