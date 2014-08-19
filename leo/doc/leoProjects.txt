@@ -233,6 +233,40 @@ The problem was in ic.createImporterData, not at.createWritesData.
 A trace in get_leo_namespace pinpointed the problem.
 
  
+.. @+node:ekr.20140819050118.18319: *3* Code
+.. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
+.. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
+.. @+node:ekr.20140702124615.16727: *4* Added support for html handlebar syntax coloring
+These are colored with the previously unused literal3 tag,
+so you specify the color with:
+
+    @color html_literal3_color = pink
+.. @+node:ekr.20140427131738.16870: *4* Added support for qt5
+@language rest
+
+It is not possible to use both the PyQt4 and PyQt5 installers at the same
+time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
+only.
+.. @+node:ekr.20140426105101.16868: *4* Converted all class names to pep8 style
+Capitalized, no underscores.
+.. @+node:ekr.20131223064351.16352: *4* Improved p.isAncestorOf and c.positionExists
+- Added test for c.positionExists to p.isAncestorOf.
+- Added v.isNthChildOf
+- Rewrote c.positionsExists using v.isNthChildOf
+.. @+node:ekr.20140426052603.18136: *4* Removed g.choose from Leo's core & plugins
+This function is deprecated: use Python's ternary operator instead.
+.. @+node:ekr.20140816165728.18938: *4* Rewrote & simplified k.getArg
+What I did:
+- Removed prefix arg to all calls to k.getArg.
+  Not needed now that there is better convention for k.setLabelBlue.
+- Removed protect argument from k.setLabelBlue.
+  Some code now uses k.extendLabel to mix protect and unprotected parts of the label.
+  
+- k.fnc and k.getArgInstance now created by finishCreate.
+  This guarantees that the c,k and log ivars are inited properly.
+- Allow <tab> to escape to :r and :tabname code.
+  This required several kludges.
+
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
@@ -269,11 +303,6 @@ c.p and all it's ancestors are always expanded, the worst that can happen
 when an outline changes is that some positions that *aren't* the present
 position will contract unexpectedly. Most such contraction will occur off
 screen.
-.. @+node:ekr.20131223064351.16352: *4* Improved p.isAncestorOf and c.positionExists
-- Added test for c.positionExists to p.isAncestorOf.
-- Added v.isNthChildOf
-- Rewrote c.positionsExists using v.isNthChildOf
-.. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140212082408.16406: *4* Added spell-as-you-type commands
 Thanks to Terry Brown for these commands::
 
@@ -289,7 +318,6 @@ spell-as-you-type-next
 
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
-.. @+node:ekr.20140218040104.16759: *4* added p.nosentinels
 .. @+node:ekr.20140401054342.16845: *4* Created g.run_pylint so pylint can run unmodified
 @language rest
 
@@ -306,10 +334,6 @@ What I did:
 2. g.run_pylint uses Sherlock tracing if requested.
 
     
-.. @+node:ekr.20140426052603.18136: *4* Removed g.choose from Leo's core & plugins
-This function is deprecated: use Python's ternary operator instead.
-.. @+node:ekr.20140426105101.16868: *4* Converted all class names to pep8 style
-Capitalized, no underscores.
 .. @+node:ekr.20140601151054.17620: *4* Improved find/replace-all commands
 @nocolor-node
 
@@ -325,12 +349,6 @@ setReplaceString,
 Also fixed the bindings in create_find_buttons so buttons
 are bound to the proper button-related methods. As a result,
 the find-all and change-all buttons now work as expected.
-.. @+node:ekr.20140427131738.16870: *4* Added support for qt5
-@language rest
-
-It is not possible to use both the PyQt4 and PyQt5 installers at the same
-time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
-only.
 .. @+node:ekr.20140702091137.16754: *4* Improved idle-time handling and added new commands
 @language rest
 
@@ -380,11 +398,6 @@ if g.app.idleTimeHook:
     g.disableIdleTimeHook()
 else:
     g.enableIdleTimeHook(1000,h.h1)
-.. @+node:ekr.20140702124615.16727: *4* Added support for html handlebar syntax coloring
-These are colored with the previously unused literal3 tag,
-so you specify the color with:
-
-    @color html_literal3_color = pink
 .. @+node:ekr.20140402091953.16865: *4* Added pylint command
 @language rest
 

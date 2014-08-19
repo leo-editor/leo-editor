@@ -1332,6 +1332,10 @@ class GetArg:
         ga.arg_completion = True
         ga.handler = None
         ga.tabList = []
+        # Tab cycling ivars...
+        ga.cycling_prefix = None
+        ga.cycling_index = -1
+        ga.cycling_tabList = []
         # The following are k globals.
             # k.arg.
             # k.argSelectedText
@@ -1386,8 +1390,9 @@ class GetArg:
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
+        ga.reset_cycling()
         ga.show_tab_list(tabList)
-    #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry)
+    #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
     def do_tab(ga,tabList,completion=True):
@@ -1398,13 +1403,18 @@ class GetArg:
             tabList = ga.tabList = tabList[:] if tabList else []
             command = ga.get_label()
             common_prefix,tabList = ga.compute_tab_list(tabList)
-            # Do file-name completion if there is a completed colon command.
-            if command.startswith(':') and len(tabList) == 1:
-                if ga.do_colon_command():
-                    return
-            ga.show_tab_list(tabList)
-            if len(common_prefix) > len(command):
-                ga.set_label(common_prefix)
+            # No tab cycling for colon commands.
+            if command.startswith(':'):
+                ga.reset_cycling()
+                if len(tabList) == 1:
+                    if ga.do_colon_command():
+                        return
+            if (len(tabList) > 1 or ga.cycling_prefix) and not command.startswith(':'):
+                ga.do_tab_cycling(common_prefix,tabList)
+            else:
+                ga.show_tab_list(tabList)
+                if len(common_prefix) > len(command):
+                    ga.set_label(common_prefix)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_colon_command
     def do_colon_command(ga):
@@ -1427,8 +1437,38 @@ class GetArg:
             return True
         else:
             return False
-    #@+node:ekr.20140818052417.18239: *3* ga.entry points
-    # All entry points must set ga.k, ga.log and ga.tabList ivars.
+    #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
+    def do_tab_cycling(ga,common_prefix,tabList):
+        '''Put the next (or first) completion in the minibuffer.'''
+        trace = True and not g.unitTesting
+        s = ga.get_label()
+        if ga.cycling_prefix:
+            if s.startswith(ga.cycling_prefix):
+                n = ga.cycling_index
+                ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
+                if trace: g.trace('cycle',ga.cycling_index)
+                ga.set_label(ga.cycling_tabList[ga.cycling_index])
+                ga.show_tab_list(ga.cycling_tabList)
+            else:
+                if trace: g.trace('prefix mismatch')
+                ga.cycling_prefix = None
+                ga.cycling_index = -1
+                ga.show_tab_list(tabList)
+                    # Abort: show everything.
+        else:
+            if trace: g.trace('no ga.cycling_prefix')
+            ga.cycling_prefix = s
+            ga.cycling_index = -1
+            ga.cycling_tabList = tabList[:]
+            ga.set_label(common_prefix)
+                # Don't extend the label yet!
+            ga.show_tab_list(ga.cycling_tabList)
+    #@+node:ekr.20140819050118.18318: *4* ga.reset_cycling
+    def reset_cycling(ga):
+        '''Reset all tab cycling ivars.'''
+        ga.cycling_prefix = None
+        ga.cycling_index = -1
+        ga.cycling_tabList = []
     #@+node:ekr.20140816165728.18958: *3* ga.extend/get/set_label
     # Not useful because k.entendLabel doesn't handle selected text.
     if 0:
@@ -1518,6 +1558,7 @@ class GetArg:
         ga.log.deleteTab('Completion')
         if trace: g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         # pylint: disable=not-callable
+        ga.reset_cycling()
         if handler: handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
     def do_state_zero(ga,completion,event,handler,oneCharacter,prefix,
@@ -1533,6 +1574,7 @@ class GetArg:
         # Set the ga globals...
         ga.after_get_arg_state=returnKind,returnState,handler
         ga.arg_completion = completion
+        ga.cycling_prefix = None
         ga.handler = handler
         ga.tabList = tabList[:] if tabList else []
         # Set the k globals...
@@ -2576,8 +2618,8 @@ class KeyHandlerClass:
                 k.doTabCompletion(list(c.commandsDict.keys()))
             else: # Annoying.
                 k.keyboardQuit()
-                ### k.setLabel('Command does not exist: %s' % commandName)
-                g.es('Command does not exist: %s' % commandName)
+                k.setLabel('Command does not exist: %s' % commandName)
+                # g.es('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
     #@+node:ekr.20061031131434.113: *4* k.endCommand
     def endCommand (self,commandName):
