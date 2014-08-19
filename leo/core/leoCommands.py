@@ -4586,14 +4586,14 @@ class Commands (object):
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
 
-    def sortChildren (self,event=None,key=None):
+    def sortChildren (self,event=None,key=None,reverse=False):
 
         '''Sort the children of a node.'''
 
         c = self ; p = c.p
 
         if p and p.hasChildren():
-            c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key)
+            c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key,reverse=reverse)
     #@+node:ekr.20050415134809.1: *7* c.sortSiblings
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
