@@ -9,7 +9,7 @@
 import leo.core.leoGlobals as g
 
 from leo.plugins.qtGui import LeoQtFrame 
-QtIconBarClass = LeoQtFrame.QtIconBarClass
+from leo.plugins.mod_scripting import build_rclick_tree
 
 import sys
 #@-<< imports >>
@@ -185,8 +185,7 @@ class ParserBaseClass:
                         useSentinels=True)
                     command_p = p.copy()
                     aList.append((command_p,script),)
-                    rclicks = QtIconBarClass.build_rclick_tree(
-                        command_p, top_level=True, offset=-1)
+                    rclicks = build_rclick_tree(command_p, top_level=True)
                     command_p.rclicks = rclicks
                 p.moveToThreadNext()
 

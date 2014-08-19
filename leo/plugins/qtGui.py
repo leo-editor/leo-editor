@@ -28,6 +28,7 @@ import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
 
 import leo.plugins.baseNativeTree as baseNativeTree
+from leo.plugins.mod_scripting import build_rclick_tree
 
 if PYTHON_COLORER:
     import leo.core.qsyntaxhighlighter as qsh
@@ -40,7 +41,7 @@ import sys
 # import tempfile
 import platform
 import time
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 
 # if g.isPython3:
     # import urllib.request as urllib
@@ -4406,8 +4407,6 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         '''A class representing the singleton Icon bar'''
 
-        RClick = namedtuple('RClick', 'position, offset, children')
-
         #@+others
         #@+node:ekr.20110605121601.18263: *5*  ctor (QtIconBarClass)
         def __init__ (self,c,parentFrame):
@@ -4568,42 +4567,16 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 b.addAction(gts)
                 gts.triggered.connect(goto_command)
                 
-                rclicks = self.build_rclick_tree(command_p, top_level=True)
+                rclicks = build_rclick_tree(command_p, top_level=True)
                 self.add_rclick_menu(b, rclicks, command.controller)
-              
-        @classmethod  
-        def build_rclick_tree(cls, command_p, rclicks=None, top_level=False, offset=-2):
-                
-            if rclicks is None:
-                rclicks = list()
-                
-            if top_level:
-                if '@others' not in command_p.b:
-                    rclicks.extend([
-                        cls.RClick(position=i.copy(), offset=offset, children=[])
-                        # -2 for top level entries, i.e. before "Remove button"
-                        for i in command_p.children()
-                        if i.h.startswith('@rclick ')
-                    ])
-                for i in command_p.following_siblings():
-                    if i.h.startswith('@rclick '):
-                        rclicks.append(cls.RClick(position=i.copy(), offset=offset, children=[]))
-                    else:
-                        break
-                for rc in rclicks:
-                    cls.build_rclick_tree(rc.position, rc.children, top_level=False)
-            else:  # recursive mode below top level
-                if command_p.b.strip():
-                    return # sub menus can't have body text
-                for child in command_p.children():
-                    rc = cls.RClick(position=child.copy(), offset=0, children=[])
-                    rclicks.append(rc)
-                    cls.build_rclick_tree(rc.position, rc.children, top_level=False)
-
-            return rclicks
 
         def add_rclick_menu(self, action_container, rclicks, controller,
                             top_level=True, button=None, from_settings=False):
+
+            if from_settings:
+                top_offset = -1  # insert before the remove button item
+            else:
+                top_offset = -2  # insert before the remove button and goto script items
 
             if top_level:
                 button = action_container
@@ -4639,11 +4612,13 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     sub_menu = QtWidgets.QMenu(action_container)
                     act.setMenu(sub_menu)
                     self.add_rclick_menu(sub_menu, rc.children, controller,
-                                         top_level=False, button=button, from_settings=from_settings)
-                    
-                if rc.offset:
-                    action_container.insertAction(action_container.actions()[rc.offset], act)  
+                                         top_level=False, button=button,
+                                         from_settings=from_settings)
+                                         
+                if top_level:
                     # insert act before Remove Button
+                    action_container.insertAction(
+                        action_container.actions()[top_offset], act)
                 else:
                     action_container.addAction(act)  
 
@@ -4651,7 +4626,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 act = QtWidgets.QAction('---', action_container)
                 act.setSeparator(True)
                 action_container.insertAction(
-                    action_container.actions()[rclicks[0].offset], act)
+                    action_container.actions()[top_offset], act)
                 action_container.setText(
                     g.u(action_container.text()) + 
                     (controller.c.config.getString(
