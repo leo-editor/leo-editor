@@ -1390,7 +1390,7 @@ class GetArg:
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
-        ga.reset_cycling()
+        ga.reset_tab_cycling()
         ga.show_tab_list(tabList)
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
@@ -1405,7 +1405,7 @@ class GetArg:
             common_prefix,tabList = ga.compute_tab_list(tabList)
             # No tab cycling for colon commands.
             if command.startswith(':'):
-                ga.reset_cycling()
+                ga.reset_tab_cycling()
                 if len(tabList) == 1:
                     if ga.do_colon_command():
                         return
@@ -1463,8 +1463,8 @@ class GetArg:
             ga.set_label(common_prefix)
                 # Don't extend the label yet!
             ga.show_tab_list(ga.cycling_tabList)
-    #@+node:ekr.20140819050118.18318: *4* ga.reset_cycling
-    def reset_cycling(ga):
+    #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
+    def reset_tab_cycling(ga):
         '''Reset all tab cycling ivars.'''
         ga.cycling_prefix = None
         ga.cycling_index = -1
@@ -1558,7 +1558,7 @@ class GetArg:
         ga.log.deleteTab('Completion')
         if trace: g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         # pylint: disable=not-callable
-        ga.reset_cycling()
+        ga.reset_tab_cycling()
         if handler: handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
     def do_state_zero(ga,completion,event,handler,oneCharacter,prefix,
