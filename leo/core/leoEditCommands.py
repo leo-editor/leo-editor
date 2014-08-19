@@ -7336,23 +7336,20 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('delete_file')
 
         if state == 0:
+            ### prefix = 'Delete File: '
             k.setLabelBlue('Delete File: ')
             k.extendLabel(os.getcwd() + os.sep)
             k.getArg(event,'delete_file',1,self.deleteFile) ### ,prefix=prefix)
-            ###
-            # # # prefix = 'Delete File: '
-            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            # # # k.getArg(event,'delete_file',1,self.deleteFile,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.remove(k.arg)
-                ### k.setLabel('Deleted: %s' % k.arg)
-                g.es('Deleted: %s' % k.arg)
+                k.setLabel('Deleted: %s' % k.arg)
+                # g.es('Deleted: %s' % k.arg)
             except Exception:
-                ### k.setLabel('Not Deleted: %s' % k.arg)
-                g.es('Not Deleted: %s' % k.arg)
+                k.setLabel('Not Deleted: %s' % k.arg)
+                # g.es('Not Deleted: %s' % k.arg)
     #@+node:ekr.20050920084036.165: *3* diff (revise)
     def diff (self,event):
 
@@ -7410,23 +7407,20 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k
         state = k.getState('make_directory')
         if state == 0:
+            ### prefix = 'Make Directory: '
             k.setLabelBlue('Make Directory: ')
             k.extendLabel(os.getcwd() + os.sep)
             k.getArg(event,'make_directory',1,self.makeDirectory) ###,prefix=prefix)
-            ###
-            # # # prefix = 'Make Directory: '
-            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            # # # k.getArg(event,'make_directory',1,self.makeDirectory,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.mkdir(k.arg)
-                ### k.setLabel("Created: %s" % k.arg)
-                g.es("Created: %s" % k.arg)
+                k.setLabel("Created: %s" % k.arg)
+                # g.es("Created: %s" % k.arg)
             except Exception:
-                ### k.setLabel("Not Create: %s" % k.arg)
-                g.es("Not Created: %s" % k.arg)
+                k.setLabel("Not Create: %s" % k.arg)
+                # g.es("Not Created: %s" % k.arg)
     #@+node:ekr.20060419123128: *3* openOutlineByName (EditFileCommandsClass)
     def openOutlineByName (self,event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
@@ -7456,23 +7450,20 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('remove_directory')
 
         if state == 0:
+            ### prefix = 'Remove Directory: '
             k.setLabelBlue('Remove Directory: ')
             k.extendLabel(os.getcwd() + os.sep)
             k.getArg(event,'remove_directory',1,self.removeDirectory) ### ,prefix=prefix)
-            ### 
-            # # # prefix = 'Remove Directory: '
-            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            # # # k.getArg(event,'remove_directory',1,self.removeDirectory,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.rmdir(k.arg)
-                ### k.setLabel('Removed: %s' % k.arg)
-                g.es('Removed: %s' % k.arg)
+                k.setLabel('Removed: %s' % k.arg)
+                # g.es('Removed: %s' % k.arg)
             except Exception:
-                ### k.setLabel('Not Removed: %s' % k.arg)
-                g.es('Not Removed: %s' % k.arg)
+                k.setLabel('Not Removed: %s' % k.arg)
+                # g.es('Not Removed: %s' % k.arg)
     #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
 
@@ -9362,11 +9353,11 @@ class MacroCommandsClass (BaseEditCommandsClass):
             self.macros.insert(0,self.macro)
             self.lastMacro = self.macro[:]
             self.macro = []
-            ### k.setLabelBlue('Keyboard macro defined, not named')
-            g.es('Keyboard macro defined, not named')
+            k.setLabelBlue('Keyboard macro defined, not named')
+            # g.es('Keyboard macro defined, not named')
         else:
-            ### k.setLabelBlue('Empty keyboard macro')
-            g.es('Empty keyboard macro')
+            k.setLabelBlue('Empty keyboard macro')
+            # g.es('Empty keyboard macro')
     #@+node:ekr.20050920084036.203: *3* executeMacro
     def executeMacro (self,macro):
 
@@ -9538,8 +9529,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
                 self.macro.append(event)
             else:
                 self.recordingMacro = True
-                ### k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
-                g.es('Recording macro. ctrl-g to end...')
+                k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
+                # g.es('Recording macro. ctrl-g to end...')
         else:
             g.trace('can not happen: no event')
     #@-others
