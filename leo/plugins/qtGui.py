@@ -4570,8 +4570,9 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 
                 rclicks = self.build_rclick_tree(command_p, top_level=True)
                 self.add_rclick_menu(b, rclicks, command.controller)
-                
-        def build_rclick_tree(self, command_p, rclicks=None, top_level=False):
+              
+        @classmethod  
+        def build_rclick_tree(cls, command_p, rclicks=None, top_level=False, offset=-2):
                 
             if rclicks is None:
                 rclicks = list()
@@ -4579,30 +4580,30 @@ class LeoQtFrame (leoFrame.LeoFrame):
             if top_level:
                 if '@others' not in command_p.b:
                     rclicks.extend([
-                        self.RClick(position=i.copy(), offset=-2, children=[])  
+                        cls.RClick(position=i.copy(), offset=offset, children=[])
                         # -2 for top level entries, i.e. before "Remove button"
                         for i in command_p.children()
                         if i.h.startswith('@rclick ')
                     ])
                 for i in command_p.following_siblings():
                     if i.h.startswith('@rclick '):
-                        rclicks.append(self.RClick(position=i.copy(), offset=-2, children=[]))
+                        rclicks.append(cls.RClick(position=i.copy(), offset=offset, children=[]))
                     else:
                         break
                 for rc in rclicks:
-                    self.build_rclick_tree(rc.position, rc.children, top_level=False)
+                    cls.build_rclick_tree(rc.position, rc.children, top_level=False)
             else:  # recursive mode below top level
                 if command_p.b.strip():
                     return # sub menus can't have body text
                 for child in command_p.children():
-                    rc = self.RClick(position=child.copy(), offset=0, children=[])
+                    rc = cls.RClick(position=child.copy(), offset=0, children=[])
                     rclicks.append(rc)
-                    self.build_rclick_tree(rc.position, rc.children, top_level=False)
+                    cls.build_rclick_tree(rc.position, rc.children, top_level=False)
 
             return rclicks
 
         def add_rclick_menu(self, action_container, rclicks, controller,
-                            top_level=True, button=None):
+                            top_level=True, button=None, from_settings=False):
 
             if top_level:
                 button = action_container
@@ -4613,22 +4614,32 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 if '---' in headline and headline.strip().strip('-') == '':
                     act.setSeparator(True)
                 elif rc.position.b.strip():
-                    def cb(checked, p=rc.position, button=button,
-                           controller=controller):
-                        controller.executeScriptFromButton(
-                            button,
-                            p.h[8:].strip(),
-                            p.gnx
-                        )
-                        if p.v.context.exists:
-                            p.v.context.outerUpdate()
+                    if from_settings:
+                        def cb(checked, script=rc.position.b, button=button,
+                               controller=controller, buttonText=rc.position.h[8:].strip()):
+                            controller.executeScriptFromSettingButton(
+                                [],  # args,
+                                button,
+                                script,
+                                buttonText
+                            )
+                    else:
+                        def cb(checked, p=rc.position, button=button,
+                               controller=controller):
+                            controller.executeScriptFromButton(
+                                button,
+                                p.h[8:].strip(),
+                                p.gnx
+                            )
+                            if controller.c.exists:
+                                controller.c.outerUpdate()
                     act.triggered.connect(cb)
                     
                 else:  # recurse submenu
                     sub_menu = QtWidgets.QMenu(action_container)
                     act.setMenu(sub_menu)
                     self.add_rclick_menu(sub_menu, rc.children, controller,
-                                         top_level=False, button=button)
+                                         top_level=False, button=button, from_settings=from_settings)
                     
                 if rc.offset:
                     action_container.insertAction(action_container.actions()[rc.offset], act)  
@@ -4640,10 +4651,10 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 act = QtWidgets.QAction('---', action_container)
                 act.setSeparator(True)
                 action_container.insertAction(
-                    action_container.actions()[-2], act)
+                    action_container.actions()[rclicks[0].offset], act)
                 action_container.setText(
                     g.u(action_container.text()) + 
-                    (rclicks[0].position.v.context.config.getString(
+                    (controller.c.config.getString(
                         'mod_scripting_subtext') or '')
                 )
         #@-others

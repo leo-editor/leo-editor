@@ -307,9 +307,9 @@ class scriptingController:
                     seen.append(p.v)
                     h = p.h
                     if trace: g.trace('global @button',h)
-                    self.handleAtButtonSetting(h,script)
+                    self.handleAtButtonSetting(h,script,rclicks=getattr(p, 'rclicks'))
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
-    def handleAtButtonSetting (self,h,script):
+    def handleAtButtonSetting (self,h,script,rclicks=None):
 
         '''Create a button in the icon area for a common @button node in an @setting tree.
 
@@ -323,9 +323,9 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        b = self.createAtButtonFromSettingHelper(h,script,statusLine)
+        b = self.createAtButtonFromSettingHelper(h,script,statusLine,rclicks=rclicks)
     #@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,h,script,statusLine,kind='at-button'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,rclicks=None,kind='at-button'):
 
         '''Create a button from an @button node.
 
@@ -353,6 +353,8 @@ class scriptingController:
             if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+        if rclicks:
+            self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
 
         # At last we can define the command.
         self.registerTwoCommands(h,func=atSettingButtonCallback,

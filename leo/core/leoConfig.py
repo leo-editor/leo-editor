@@ -8,6 +8,9 @@
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
 
+from leo.plugins.qtGui import LeoQtFrame 
+QtIconBarClass = LeoQtFrame.QtIconBarClass
+
 import sys
 #@-<< imports >>
 
@@ -180,7 +183,11 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
-                    aList.append((p.copy(),script),)
+                    command_p = p.copy()
+                    aList.append((command_p,script),)
+                    rclicks = QtIconBarClass.build_rclick_tree(
+                        command_p, top_level=True, offset=-1)
+                    command_p.rclicks = rclicks
                 p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
