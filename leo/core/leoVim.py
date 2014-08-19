@@ -2207,7 +2207,7 @@ class VimCommands:
         elif False: ### vc.state == 'visual':
             s = '%8s:' % vc.state.capitalize()
             if trace: g.trace('(vimCommands)',s,g.callers())
-            k.setLabelBlue(label=s,protect=True)
+            k.setLabelBlue(s) ### label=s,protect=True)
         else:
             state_s = vc.state.capitalize()
             command_s = vc.show_command()
@@ -2218,7 +2218,7 @@ class VimCommands:
             else:
                 s = '%8s: %-5s dot: %s' % (state_s,command_s,dot_s)
             if trace: g.trace('(vimCommands)',s,g.callers(2))
-            k.setLabelBlue(label=s,protect=True)
+            k.setLabelBlue(s) ### label=s,protect=True)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(vc,s,i):
         '''Return the index of the first character on the line containing s[i]'''

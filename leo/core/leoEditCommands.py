@@ -925,8 +925,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             prefix2 = 'dabbrev-expand: '
             c.frame.log.deleteTab('Completion')
             g.es('','\n'.join(aList),tabName='Completion')
-            k.setLabelBlue(prefix2+prefix,protect=True)
-            k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=aList)
+            k.setLabelBlue(prefix2+prefix) ### ,protect=True)
+            k.getArg(event,tag,1,self.dynamicExpandHelper,tabList=aList) ### prefix=prefix2,
         else:
             c.frame.log.deleteTab('Completion')
             k.clearState()
@@ -999,7 +999,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Add Abbreviation: ',protect=True)
+            k.setLabelBlue('Add Abbreviation: ') ### ,protect=True)
             k.getArg(event,'add-abbr',1,self.addAbbreviation)
         else:
             w = self.w
@@ -1024,7 +1024,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Add Inverse Abbreviation: ',protect=True)
+            k.setLabelBlue('Add Inverse Abbreviation: ') ### ,protect=True)
             k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
         else:
             w = self.w
@@ -1518,7 +1518,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         k = self.k
         state = k.getState('shell-command')
         if state == 0:
-            k.setLabelBlue('shell-command: ',protect=True)
+            k.setLabelBlue('shell-command: ') ### ,protect=True)
             k.getArg(event,'shell-command',1,self.shellCommand)
         else:
             command = k.arg
@@ -4051,7 +4051,8 @@ class EditCommandsClass (BaseEditCommandsClass):
             finally:
                 k.keyboardQuit()
                 if not ok:
-                    k.setLabel('Error: Invalid Expression')
+                    ### k.setLabel('Error: Invalid Expression')
+                    g.es('Error: Invalid Expression')
         else:
             k.updateLabel(event)
     #@+node:ekr.20050920084036.65: *3* evalExpression
@@ -4059,7 +4060,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Evaluate a Python Expression entered in the minibuffer.'''
         k = self.k ; state = k.getState('eval-expression')
         if state == 0:
-            k.setLabelBlue('Eval: ',protect=True)
+            k.setLabelBlue('Eval: ') ### ,protect=True)
             k.getArg(event,'eval-expression',1,self.evalExpression)
         else:
             k.clearState()
@@ -4214,11 +4215,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         return self.findCharacterHelper(event,backward=False,extend=True)
     #@+node:ekr.20060417194232.1: *5* findCharacterHelper
     def findCharacterHelper (self,event,backward,extend):
-
         '''Put the cursor at the next occurance of a character on a line.'''
-
         c = self.c ; k = c.k ; tag = 'find-char' ; state = k.getState(tag)
-
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
@@ -4229,7 +4227,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             s = '%s character%s: ' % (
                 'Backward find' if backward else 'Find',
                 ' & extend' if extend else '')
-            k.setLabelBlue(s,protect=True)
+            k.setLabelBlue(s) ### ,protect=True)
             # Get the arg without touching the focus.
             k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
         else:
@@ -4330,7 +4328,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Goto global line: ',protect=True)
+            k.setLabelBlue('Goto global line: ') ### ,protect=True)
             k.getArg(event,tag,1,self.gotoGlobalLine)
         else:
             n = k.arg
@@ -4640,7 +4638,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         state = k.getState('how-many')
         if state == 0:
-            k.setLabelBlue('How many: ',protect = True)
+            k.setLabelBlue('How many: ') ### ,protect = True)
             k.getArg(event,'how-many',1,self.howMany)
         else:
             k.clearState()
@@ -4680,18 +4678,15 @@ class EditCommandsClass (BaseEditCommandsClass):
             g.es('',k.prettyPrintKey(stroke))
     #@+node:ekr.20050920084036.84: *4* whatLine
     def whatLine (self,event):
-
         '''Print the line number of the line containing the cursor.'''
-
         k = self.k ; w = self.editWidget(event)
         if not w: return
-
         s = w.getAllText()
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
-
         k.keyboardQuit()
-        k.setLabel("Line %s" % row)
+        ### k.setLabel("Line %s" % row)
+        g.es("Line %s" % row)
     #@+node:ekr.20050920084036.85: *3* insert & delete...
     #@+node:ekr.20060417171125: *4* addSpace/TabToLines & removeSpace/TabFromLines & helper
     def addSpaceToLines (self,event):
@@ -5108,7 +5103,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                k.setLabelBlue('Replace Character: ',protect=True)
+                k.setLabelBlue('Replace Character: ') ### ,protect=True)
                 k.getArg(event,tag,1,self.replaceCurrentCharacter)
         else:
             w = self.w
@@ -5429,7 +5424,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('flush-lines')
 
         if state == 0:
-            k.setLabelBlue('Flush lines regexp: ',protect=True)
+            k.setLabelBlue('Flush lines regexp: ') ### ,protect=True)
             k.getArg(event,'flush-lines',1,self.flushLines)
         else:
             k.clearState()
@@ -5446,7 +5441,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('keep-lines')
 
         if state == 0:
-            k.setLabelBlue('Keep lines regexp: ',protect=True)
+            k.setLabelBlue('Keep lines regexp: ') ### ,protect=True)
             k.getArg(event,'keep-lines',1,self.keepLines)
         else:
             k.clearState()
@@ -7159,13 +7154,13 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                k.setLabelBlue('Set uA: ',protect=True)
+                k.setLabelBlue('Set uA: ') ###,protect=True)
                 k.getArg(event,tag,1,self.setUa)
         elif state == 1:
             self.uaName = k.arg
             s = 'Set uA: %s To: ' % (self.uaName)
-            k.setLabelBlue(s,protect=True)
-            k.getArg(event,tag,2,self.setUa,completion=False,prefix=s)
+            k.setLabelBlue(s) ### ,protect=True)
+            k.getArg(event,tag,2,self.setUa,completion=False) ### ,prefix=s)
         else:
             assert state == 2,state
             val = k.arg
@@ -7333,7 +7328,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                     g.pr('%-32s %s' % (key,p.h))
                 else:
                     g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
-    #@+node:ekr.20050920084036.164: *3* deleteFile
+    #@+node:ekr.20050920084036.164: *3* deleteFile (changed)
     def deleteFile (self,event):
 
         '''Prompt for the name of a file and delete it.'''
@@ -7341,17 +7336,23 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('delete_file')
 
         if state == 0:
-            prefix = 'Delete File: '
-            k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            k.getArg(event,'delete_file',1,self.deleteFile,prefix=prefix)
+            k.setLabelBlue('Delete File: ')
+            k.extendLabel(os.getcwd() + os.sep)
+            k.getArg(event,'delete_file',1,self.deleteFile) ### ,prefix=prefix)
+            ###
+            # # # prefix = 'Delete File: '
+            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
+            # # # k.getArg(event,'delete_file',1,self.deleteFile,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.remove(k.arg)
-                k.setLabel('Deleted: %s' % k.arg)
+                ### k.setLabel('Deleted: %s' % k.arg)
+                g.es('Deleted: %s' % k.arg)
             except Exception:
-                k.setLabel('Not Deleted: %s' % k.arg)
+                ### k.setLabel('Not Deleted: %s' % k.arg)
+                g.es('Not Deleted: %s' % k.arg)
     #@+node:ekr.20050920084036.165: *3* diff (revise)
     def diff (self,event):
 
@@ -7405,23 +7406,27 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20050920084036.168: *3* makeDirectory
     def makeDirectory (self,event):
-
         '''Prompt for the name of a directory and create it.'''
-
-        k = self.k ; state = k.getState('make_directory')
-
+        k = self.k
+        state = k.getState('make_directory')
         if state == 0:
-            prefix = 'Make Directory: '
-            k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            k.getArg(event,'make_directory',1,self.makeDirectory,prefix=prefix)
+            k.setLabelBlue('Make Directory: ')
+            k.extendLabel(os.getcwd() + os.sep)
+            k.getArg(event,'make_directory',1,self.makeDirectory) ###,prefix=prefix)
+            ###
+            # # # prefix = 'Make Directory: '
+            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
+            # # # k.getArg(event,'make_directory',1,self.makeDirectory,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.mkdir(k.arg)
-                k.setLabel("Created: %s" % k.arg)
+                ### k.setLabel("Created: %s" % k.arg)
+                g.es("Created: %s" % k.arg)
             except Exception:
-                k.setLabel("Not Create: %s" % k.arg)
+                ### k.setLabel("Not Create: %s" % k.arg)
+                g.es("Not Created: %s" % k.arg)
     #@+node:ekr.20060419123128: *3* openOutlineByName (EditFileCommandsClass)
     def openOutlineByName (self,event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
@@ -7430,7 +7435,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         if fileName and g.os_path_exists(fileName):
             g.openWithFileName(fileName,old_c=c)
         else:
-            k.setLabelBlue('Open Leo Outline: ',protect=True)
+            k.setLabelBlue('Open Leo Outline: ') ### ,protect=True)
             k.getFileName(event,callback=self.openOutlineByNameFinisher)
 
     def openOutlineByNameFinisher (self,fn):
@@ -7451,17 +7456,23 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('remove_directory')
 
         if state == 0:
-            prefix = 'Remove Directory: '
-            k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
-            k.getArg(event,'remove_directory',1,self.removeDirectory,prefix=prefix)
+            k.setLabelBlue('Remove Directory: ')
+            k.extendLabel(os.getcwd() + os.sep)
+            k.getArg(event,'remove_directory',1,self.removeDirectory) ### ,prefix=prefix)
+            ### 
+            # # # prefix = 'Remove Directory: '
+            # # # k.setLabelBlue('%s%s%s' % (prefix,os.getcwd(),os.sep))
+            # # # k.getArg(event,'remove_directory',1,self.removeDirectory,prefix=prefix)
         else:
             k.keyboardQuit()
             k.clearState()
             try:
                 os.rmdir(k.arg)
-                k.setLabel('Removed: %s' % k.arg)
+                ### k.setLabel('Removed: %s' % k.arg)
+                g.es('Removed: %s' % k.arg)
             except Exception:
-                k.setLabel('Not Removed: %s' % k.arg)
+                ### k.setLabel('Not Removed: %s' % k.arg)
+                g.es('Not Removed: %s' % k.arg)
     #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
 
@@ -8579,7 +8590,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             c.minibufferWantsFocus()
-            k.setLabelBlue('Python help: ',protect=True)
+            k.setLabelBlue('Python help: ') ### ,protect=True)
             k.getArg(event,tag,1,self.pythonHelp)
         else:
             k.clearState()
@@ -9014,7 +9025,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
 
         state = k.getState('zap-to-char')
         if state == 0:
-            k.setLabelBlue('Zap To Character: ',protect=True)
+            k.setLabelBlue('Zap To Character: ') ### ,protect=True)
             k.setState('zap-to-char',1,handler=self.zapToCharacter)
         else:
             ch = event and event.char or ' '
@@ -9301,7 +9312,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         prompt = 'Call macro named: '
 
         if state == 0:
-            k.setLabelBlue(prompt,protect=True)
+            k.setLabelBlue(prompt) ### ,protect=True)
             k.getArg(event,tag,1,self.callNamedMacro)
         else:
             macro = self.namedMacros.get(k.arg)
@@ -9342,21 +9353,20 @@ class MacroCommandsClass (BaseEditCommandsClass):
         self.namedMacros [name] = macro
     #@+node:ekr.20050920084036.206: *3* endMacro
     def endMacro (self,event=None):
-
         '''Stops recording a macro.'''
-
         k = self.k
         self.recordingMacro = False
-            # Tell k.masterKeyHandler and masterCommandHandler we are done.
-
+            # Tell k.masterKeyHandler and k.masterCommandHandler we are done.
         if self.macro:
             # self.macro = self.macro [: -4]
             self.macros.insert(0,self.macro)
             self.lastMacro = self.macro[:]
             self.macro = []
-            k.setLabelBlue('Keyboard macro defined, not named')
+            ### k.setLabelBlue('Keyboard macro defined, not named')
+            g.es('Keyboard macro defined, not named')
         else:
-            k.setLabelBlue('Empty keyboard macro')
+            ### k.setLabelBlue('Empty keyboard macro')
+            g.es('Empty keyboard macro')
     #@+node:ekr.20050920084036.203: *3* executeMacro
     def executeMacro (self,macro):
 
@@ -9466,7 +9476,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('name-macro')
 
         if state == 0:
-            k.setLabelBlue('Name of macro: ',protect=True)
+            k.setLabelBlue('Name of macro: ') ### ,protect=True)
             k.getArg(event,'name-macro',1,self.nameLastMacro)
         else:
             k.clearState()
@@ -9528,7 +9538,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
                 self.macro.append(event)
             else:
                 self.recordingMacro = True
-                k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
+                ### k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
+                g.es('Recording macro. ctrl-g to end...')
         else:
             g.trace('can not happen: no event')
     #@-others
@@ -9713,7 +9724,7 @@ class RecTangleCommandsClass (BaseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w or not self.check(event): return
             self.stringRect = self.getRectanglePoints(w)
-            k.setLabelBlue('String rectangle: ',protect=True)
+            k.setLabelBlue('String rectangle: ') ### ,protect=True)
             k.getArg(event,'string-rect',1,self.stringRectangle)
         else:
             k.clearState()
@@ -9859,7 +9870,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Append to Register: ',protect=True)
+            k.setLabelBlue('Append to Register: ') ### ,protect=True)
             k.setState(tag,1,self.appendToRegister)
         else:
             k.clearState()
@@ -9887,7 +9898,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Prepend to Register: ',protect=True)
+            k.setLabelBlue('Prepend to Register: ') ### ,protect=True)
             k.setState(tag,1,self.prependToRegister)
         else:
             k.clearState()
@@ -9917,7 +9928,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w: return
             k.commandName = 'copy-rectangle-to-register'
-            k.setLabelBlue('Copy Rectangle To Register: ',protect=True)
+            k.setLabelBlue('Copy Rectangle To Register: ') ### ,protect=True)
             k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
         elif self.checkBodySelection('No rectangle selected'):
             k.clearState()
@@ -9948,7 +9959,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Copy to Register: ',protect=True)
+            k.setLabelBlue('Copy to Register: ') ### ,protect=True)
             k.setState(tag,1,self.copyToRegister)
         else:
             k.clearState()
@@ -9973,7 +9984,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         char = event and event.char or ''
 
         if state == 0:
-            k.setLabelBlue('Increment register: ',protect=True)
+            k.setLabelBlue('Increment register: ') ### ,protect=True)
             k.setState('increment-reg',1,self.incrementRegister)
         else:
             k.clearState()
@@ -10002,7 +10013,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'insert-register'
-            k.setLabelBlue('Insert register: ',protect=True)
+            k.setLabelBlue('Insert register: ') ### ,protect=True)
             k.setState('insert-reg',1,self.insertRegister)
         else:
             k.clearState()
@@ -10033,7 +10044,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         char = event and event.char or ''
 
         if state == 0:
-            k.setLabelBlue('Jump to register: ',protect=True)
+            k.setLabelBlue('Jump to register: ') ### ,protect=True)
             k.setState('jump-to-reg',1,self.jumpToRegister)
         else:
             k.clearState()
@@ -10071,7 +10082,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'number-to-register'
-            k.setLabelBlue('Number to register: ',protect=True)
+            k.setLabelBlue('Number to register: ') ### ,protect=True)
             k.setState('number-to-reg',1,self.numberToRegister)
         else:
             k.clearState()
@@ -10091,7 +10102,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'point-to-register'
-            k.setLabelBlue('Point to register: ',protect=True)
+            k.setLabelBlue('Point to register: ') ### ,protect=True)
             k.setState('point-to-reg',1,self.pointToRegister)
         else:
             k.clearState()
@@ -10116,7 +10127,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'view-register'
-            k.setLabelBlue('View register: ',protect=True)
+            k.setLabelBlue('View register: ') ### ,protect=True)
             k.setState('view-reg',1,self.viewRegister)
         else:
             k.clearState()

@@ -74,7 +74,7 @@ class ChapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Clone node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
+            k.setLabelBlue(prefix) ### ,protect=True)
             k.getArg(event,tag,1,self.cloneNodeToChapter,prefix=prefix,tabList=names)
         else:
             k.clearState()
@@ -133,7 +133,7 @@ class ChapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Convert node to chapter: ',protect=True)
+            k.setLabelBlue('Convert node to chapter: ') ### ,protect=True)
             k.getArg(event,tag,1,self.convertNodeToChapter,tabList=names)
         else:
             k.clearState()
@@ -152,8 +152,8 @@ class ChapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Copy node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.copyNodeToChapter,prefix=prefix,tabList=names)
+            k.setLabelBlue(prefix) ### ,protect=True)
+            k.getArg(event,tag,1,self.copyNodeToChapter,tabList=names) ### prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()
@@ -197,7 +197,7 @@ class ChapterController:
         state = k.getState(tag)
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter: ',protect=True)
+            k.setLabelBlue('Create chapter: ') ### ,protect=True)
             k.getArg(event,tag,1,self.createChapter,tabList=names)
         else:
             k.clearState()
@@ -246,7 +246,7 @@ class ChapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter from node: ',protect=True)
+            k.setLabelBlue('Create chapter from node: ') ### ,protect=True)
             k.getArg(event,tag,1,self.createChapterFromNode,tabList=names)
         else:
             k.clearState()
@@ -264,9 +264,9 @@ class ChapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            prefix = 'Move node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.moveNodeToChapter,prefix=prefix,tabList=names)
+            ### prefix = 'Move node to chapter: '
+            k.setLabelBlue('Move node to chapter: ') ### ,protect=True)
+            k.getArg(event,tag,1,self.moveNodeToChapter,tabList=names) ### prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()
@@ -369,9 +369,9 @@ class ChapterController:
                 return cc.note('can not rename the main chapter')
             else:
                 names = list(cc.chaptersDict.keys())
-                prefix = 'Rename this chapter: '
-                k.setLabelBlue(prefix,protect=True)
-                k.getArg(event,tag,1,self.renameChapter,prefix=prefix,tabList=names)
+                ### prefix = 'Rename this chapter: '
+                k.setLabelBlue('Rename this chapter: ') ### ,protect=True)
+                k.getArg(event,tag,1,self.renameChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()
@@ -414,9 +414,9 @@ class ChapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            prefix = 'Select chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.selectChapter,prefix=prefix,tabList=names)
+            ### prefix = 'Select chapter: '
+            k.setLabelBlue('Select chapter: ') ### ,protect=True)
+            k.getArg(event,tag,1,self.selectChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()

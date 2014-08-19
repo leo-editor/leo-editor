@@ -583,10 +583,10 @@ class LeoFind:
         self.inverseBindingDict = k.computeInverseBindingDict()
         self.iSearchStrokes = self.getStrokes(commandName)
         k.setLabelBlue('Isearch%s%s%s: ' % (
-                '' if self.isearch_forward else ' Backward',
-                ' Regexp' if self.isearch_regexp else '',
-                ' NoCase' if self.isearch_ignore_case else '',
-            ),protect=True)
+            '' if self.isearch_forward else ' Backward',
+            ' Regexp' if self.isearch_regexp else '',
+            ' NoCase' if self.isearch_ignore_case else '',
+        )) ### ,protect=True)
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
@@ -805,9 +805,9 @@ class LeoFind:
             self._sString = k.arg
             self.updateFindList(k.arg)
             s = '%s: %s With: ' % (prompt,self._sString)
-            k.setLabelBlue(s,protect=True)
+            k.setLabelBlue(s) ###,protect=True)
             self.addChangeStringToLabel()
-            k.getArg(event,'replace-string',2,self.setReplaceString,completion=False,prefix=s)
+            k.getArg(event,'replace-string',2,self.setReplaceString,completion=False) ###,prefix=s)
         elif state == 2:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
@@ -853,14 +853,14 @@ class LeoFind:
         if not self.w:
             g.trace('no self.w')
             return
-        k.setLabelBlue(prefix,protect=True)
+        k.setLabelBlue(prefix) ### ,protect=True)
         self.addFindStringToLabel(protect=False)
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
         k.getArgEscapeFlag = False # k.getArg may set this.
         k.getArg(event,tag,1,handler, # enter state 1
-            tabList=self.findTextList,completion=True,prefix=prefix)
+            tabList=self.findTextList,completion=True) ###,prefix=prefix)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
     def updateChangeList (self,s):
 
