@@ -141,6 +141,7 @@ import leo.core.leoGui as leoGui
 # import os
 import string
 import sys
+from collections import namedtuple
 #@-<< imports >>
 
 __version__ = '2.5'
@@ -199,6 +200,52 @@ def onCreate (tag, keys):
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
+#@+node:tbrown.20140819100840.37720: ** type RClick
+# representation of an rclick node
+# this used to have more elements, but evolved to be simpler
+RClick = namedtuple('RClick', 'position, children')
+#@+node:tbrown.20140819100840.37719: ** build_rclick_tree
+def build_rclick_tree(command_p, rclicks=None, top_level=False):
+    """build_rclick_tree - Return a list of top level RClicks for the
+    button at command_p, which can be used later to add the rclick menus
+
+    After building a list of @rclick children and following siblings of the
+    @button this method applies itself recursively to each member of that
+    list to handle submenus.
+
+    :Parameters:
+    - `command_p`: node containing @button
+    - `rclicks`: list of RClicks to add to, created if needed
+    - `top_level`: is this the top level?
+    """
+
+    if rclicks is None:
+        rclicks = list()
+        
+    if top_level:
+        if '@others' not in command_p.b:
+            rclicks.extend([
+                RClick(position=i.copy(), children=[])
+                # -2 for top level entries, i.e. before "Remove button"
+                for i in command_p.children()
+                if i.h.startswith('@rclick ')
+            ])
+        for i in command_p.following_siblings():
+            if i.h.startswith('@rclick '):
+                rclicks.append(RClick(position=i.copy(), children=[]))
+            else:
+                break
+        for rc in rclicks:
+            build_rclick_tree(rc.position, rc.children, top_level=False)
+    else:  # recursive mode below top level
+        if command_p.b.strip():
+            return # sub menus can't have body text
+        for child in command_p.children():
+            rc = RClick(position=child.copy(), children=[])
+            rclicks.append(rc)
+            build_rclick_tree(rc.position, rc.children, top_level=False)
+
+    return rclicks
 #@+node:ekr.20060328125248.6: ** class scriptingController
 class scriptingController:
 
@@ -307,9 +354,9 @@ class scriptingController:
                     seen.append(p.v)
                     h = p.h
                     if trace: g.trace('global @button',h)
-                    self.handleAtButtonSetting(h,script)
+                    self.handleAtButtonSetting(h,script,rclicks=getattr(p, 'rclicks'))
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
-    def handleAtButtonSetting (self,h,script):
+    def handleAtButtonSetting (self,h,script,rclicks=None):
 
         '''Create a button in the icon area for a common @button node in an @setting tree.
 
@@ -323,9 +370,9 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        b = self.createAtButtonFromSettingHelper(h,script,statusLine)
+        b = self.createAtButtonFromSettingHelper(h,script,statusLine,rclicks=rclicks)
     #@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,h,script,statusLine,kind='at-button'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,rclicks=None,kind='at-button'):
 
         '''Create a button from an @button node.
 
@@ -353,6 +400,8 @@ class scriptingController:
             if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+        if rclicks:
+            self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
 
         # At last we can define the command.
         self.registerTwoCommands(h,func=atSettingButtonCallback,
