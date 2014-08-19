@@ -40,7 +40,7 @@ import sys
 # import tempfile
 import platform
 import time
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 # if g.isPython3:
     # import urllib.request as urllib
@@ -4406,6 +4406,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         '''A class representing the singleton Icon bar'''
 
+        RClick = namedtuple('RClick', 'position, offset, children')
+
         #@+others
         #@+node:ekr.20110605121601.18263: *5*  ctor (QtIconBarClass)
         def __init__ (self,c,parentFrame):
@@ -4533,7 +4535,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20110605121601.18271: *5* QtIconBarClass.setCommandForButton (@rclick nodes)
+        #@+node:ekr.20110605121601.18271: *5* setCommandForButton (@rclick nodes)
         def setCommandForButton(self,button,command):
 
             # EKR 2013/09/12: fix bug 1193819: Script buttons cant "go to script" after outline changes.
@@ -4565,61 +4567,85 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
                 b.addAction(gts)
                 gts.triggered.connect(goto_command)
-                # 20100519 - TNB also, scan @button's following sibs and childs
-                #   for @rclick nodes
-                rclicks = []  # list of (rclick_node, action_container, offset)
+                
+                rclicks = self.build_rclick_tree(command_p, top_level=True)
+                self.add_rclick_menu(b, rclicks, command.controller)
+                
+        def build_rclick_tree(self, command_p, rclicks=None, top_level=False):
+                
+            if rclicks is None:
+                rclicks = list()
+                
+            if top_level:
                 if '@others' not in command_p.b:
                     rclicks.extend([
-                        (i.copy(), b, -2)  
+                        self.RClick(position=i.copy(), offset=-2, children=[])  
                         # -2 for top level entries, i.e. before "Remove button"
                         for i in command_p.children()
                         if i.h.startswith('@rclick ')
                     ])
                 for i in command_p.following_siblings():
                     if i.h.startswith('@rclick '):
-                        rclicks.append((i.copy(), b, -2))
+                        rclicks.append(self.RClick(position=i.copy(), offset=-2, children=[]))
                     else:
                         break
-                need_divider = False
-                if rclicks:
-                    b.setText(
-                        g.u(b.text()) + 
-                        (command.c.config.getString('mod_scripting_subtext') or '')
-                    )
-                    need_divider = True
+                for rc in rclicks:
+                    self.build_rclick_tree(rc.position, rc.children, top_level=False)
+            else:  # recursive mode below top level
+                if command_p.b.strip():
+                    return # sub menus can't have body text
+                for child in command_p.children():
+                    rc = self.RClick(position=child.copy(), offset=0, children=[])
+                    rclicks.append(rc)
+                    self.build_rclick_tree(rc.position, rc.children, top_level=False)
+
+            return rclicks
+
+        def add_rclick_menu(self, action_container, rclicks, controller,
+                            top_level=True, button=None):
+
+            if top_level:
+                button = action_container
+
+            for rc in rclicks:
+                headline = rc.position.h[8:].strip()
+                act = QtWidgets.QAction(headline, action_container)
+                if '---' in headline and headline.strip().strip('-') == '':
+                    act.setSeparator(True)
+                elif rc.position.b.strip():
+                    def cb(checked, p=rc.position, button=button,
+                           controller=controller):
+                        controller.executeScriptFromButton(
+                            button,
+                            p.h[8:].strip(),
+                            p.gnx
+                        )
+                        if p.v.context.exists:
+                            p.v.context.outerUpdate()
+                    act.triggered.connect(cb)
                     
-                while rclicks:
-                    rclick, action_container, offset = rclicks.pop(0)
-                    headline = rclick.h[8:]
-                    rc = QtWidgets.QAction(headline.strip(),action_container)
-                    if '---' in headline and headline.strip().strip('-') == '':
-                        rc.setSeparator(True)
-                    elif not rclick.b.strip():  # organizer i.e. submenu
-                        sub_menu = QtWidgets.QMenu(b)
-                        rc.setMenu(sub_menu)
-                        for child in rclick.children():
-                            rclicks.append((child.copy(), sub_menu, 0))
-                    else:
-                        def cb(checked, ctrl=command.controller, p=rclick, 
-                               c=command.c, b=command.b, t=rclick.h[8:]):
-                            ctrl.executeScriptFromButton(b,t,p.gnx)
-                            if c.exists:
-                                c.outerUpdate()
-                        rc.triggered.connect(cb)
-                    # This code has no effect.
-                    # docstring = g.getDocString(rclick.b).strip()
-                    # if docstring:
-                        # rc.setToolTip(docstring)
-                    if offset:
-                        action_container.insertAction(b.actions()[offset],rc)  
-                        # insert rc before Remove Button
-                    else:
-                        action_container.addAction(rc)  
-                        
-                if need_divider:
-                    rc = QtWidgets.QAction('---',b)
-                    rc.setSeparator(True)
-                    b.insertAction(b.actions()[-2],rc)
+                else:  # recurse submenu
+                    sub_menu = QtWidgets.QMenu(action_container)
+                    act.setMenu(sub_menu)
+                    self.add_rclick_menu(sub_menu, rc.children, controller,
+                                         top_level=False, button=button)
+                    
+                if rc.offset:
+                    action_container.insertAction(action_container.actions()[rc.offset], act)  
+                    # insert act before Remove Button
+                else:
+                    action_container.addAction(act)  
+
+            if top_level and rclicks:
+                act = QtWidgets.QAction('---', action_container)
+                act.setSeparator(True)
+                action_container.insertAction(
+                    action_container.actions()[-2], act)
+                action_container.setText(
+                    g.u(action_container.text()) + 
+                    (rclicks[0].position.v.context.config.getString(
+                        'mod_scripting_subtext') or '')
+                )
         #@-others
     #@+node:ekr.20110605121601.18274: *4* Configuration (qtFrame)
     #@+node:ekr.20110605121601.18275: *5* configureBar (qtFrame)
