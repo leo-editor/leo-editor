@@ -68,7 +68,7 @@ class VimCommands:
         '''Add the names of commands defined in this file to c.commandsDict'''
         vc.c.commandsDict.update({
             ':!':   vc.shell_command,
-            ':%':   vc.substitution,
+            ':%':   vc.Substitution(vc),
             ':e!':  vc.revert,
             ':gT':  vc.cycle_all_focus,
             ':gt':  vc.cycle_focus,
@@ -1820,16 +1820,6 @@ class VimCommands:
             if vc.is_text_widget(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140815160132.18821: *3* vc.external commands
-    #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
-    def cycle_focus(vc,event=None):
-        '''Cycle focus'''
-        event = VimEvent(stroke='',w=vc.colon_w)
-        vc.do('cycle-focus',event=event)
-        
-    def cycle_all_focus(vc,event=None):
-        '''Cycle all focus'''
-        event = VimEvent(stroke='',w=vc.colon_w)
-        vc.do('cycle-all-focus',event=event)
     #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
     class LoadFileAtCursor:
         '''
@@ -1866,6 +1856,69 @@ class VimCommands:
             '''Called when the user types :r<tab>'''
             self.vc.c.k.getFileName(event=None,callback=self.load_file_at_cursor)
         #@-others
+    #@+node:ekr.20140815160132.18828: *4* class vc.Substitution (:%)
+    class Substitution:
+        '''A class to handle Vim's :% command.'''
+        def __init__(self,vc):
+            '''Ctor for VimCommands.tabnew class.'''
+            self.vc = vc
+        __name__ = ':%'
+            # Required.
+        #@+others
+        #@+node:ekr.20140820063930.18321: *5* :%.__call__
+        def __call__(self,event=None):
+            '''Handle substitution.'''
+            k = self.vc.k
+            g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
+
+        #@+node:ekr.20140820063930.18323: *5* :%.tab_callback (not supported)
+        # def tab_callback(self):
+            # '''Called when the user types :tabnew<tab>'''
+            # g.trace()
+        #@-others
+    #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
+    class Tabnew:
+        '''
+        A class to handle Vim's :tabnew command.
+        This class supports the do_tab callback.
+        '''
+        def __init__(self,vc):
+            '''Ctor for VimCommands.tabnew class.'''
+            self.vc = vc
+        __name__ = ':tabnew'
+            # Required.
+        #@+others
+        #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
+        def __call__(self,event=None):
+            '''Prompt for a file name, the open a new Leo tab.'''
+            self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
+        #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
+        def open_file_by_name(self,fn):
+            c = self.vc.c
+            if fn and not g.os_path_isdir(fn):
+                c2 = g.openWithFileName(fn,old_c=c)
+                try:
+                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+                except Exception:
+                    pass
+            else:
+                c.new()
+        #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
+        def tab_callback(self):
+            '''Called when the user types :tabnew<tab>'''
+            self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
+        #@-others
+
+    #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
+    def cycle_focus(vc,event=None):
+        '''Cycle focus'''
+        event = VimEvent(stroke='',w=vc.colon_w)
+        vc.do('cycle-focus',event=event)
+        
+    def cycle_all_focus(vc,event=None):
+        '''Cycle all focus'''
+        event = VimEvent(stroke='',w=vc.colon_w)
+        vc.do('cycle-all-focus',event=event)
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
         '''Print the dot.'''
@@ -1903,46 +1956,6 @@ class VimCommands:
         else:
             event = VimEvent(stroke='',w=vc.colon_w)
             vc.do('shell-command',event=event)
-    #@+node:ekr.20140815160132.18828: *4* vc.substitution (:%)
-    def substitution(vc,event=None,leadin=''):
-        '''
-        Handle :%s/text/replaced text/g
-        The lead-in characters :%s are in the minibuffer.
-        '''
-        g.trace(leadin)
-    #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
-    class Tabnew:
-        '''
-        A class to handle Vim's :tabnew command.
-        This class supports the do_tab callback.
-        '''
-        def __init__(self,vc):
-            '''Ctor for VimCommands.tabnew class.'''
-            self.vc = vc
-        __name__ = ':tabnew'
-            # Required.
-        #@+others
-        #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
-        def __call__(self,event=None):
-            '''Prompt for a file name, the open a new Leo tab.'''
-            self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
-        #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
-        def open_file_by_name(self,fn):
-            c = self.vc.c
-            if fn and not g.os_path_isdir(fn):
-                c2 = g.openWithFileName(fn,old_c=c)
-                try:
-                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-                except Exception:
-                    pass
-            else:
-                c.new()
-        #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
-        def tab_callback(self):
-            '''Called when the user types :tabnew<tab>'''
-            self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
-        #@-others
-
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc,event=None):
         '''toggle vim-mode.'''
