@@ -1910,7 +1910,7 @@ class VimCommands:
         The lead-in characters :%s are in the minibuffer.
         '''
         g.trace(leadin)
-    #@+node:ekr.20140815160132.18829: *4* class vc.tabnew (:tabnew)
+    #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
     class Tabnew:
         '''
         A class to handle Vim's :tabnew command.
