@@ -1575,7 +1575,7 @@ class VimCommands:
         '''Complete the y command after the cursor has moved.'''
         # The motion is responsible for all repeat counts.
          # y2w doesn't extend to line.  y2j does.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if vc.is_text_widget(vc.w):
             extend_to_line = vc.y_stroke in ('jk')
             n = vc.n1*vc.n

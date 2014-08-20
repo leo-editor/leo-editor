@@ -1435,7 +1435,7 @@ class GetArg:
     #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
     def do_tab_cycling(ga,common_prefix,tabList):
         '''Put the next (or first) completion in the minibuffer.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         s = ga.get_label()
         if ga.cycling_prefix:
             if s.startswith(ga.cycling_prefix):
