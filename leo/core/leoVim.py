@@ -1861,18 +1861,10 @@ class VimCommands:
                 vc.save_body()
             else:
                 g.es('does not exist:' % fn)
-        #@+node:ekr.20140820034724.18318: *5* :r.tab_filename_callback
-        def tab_filename_callback(self,fn):
-            '''
-            The existence of this method is a signal to k.do_tab to call::
-                
-                k.
-            When this method exists, k.do_tab calls k.getFileName(
-            k.do_tab calls tab_filename_callback when
-            a) there is exactly one completion for the current command and,
-            b) hasattr(c.commandsDict.get(commandName),'tab_filename_callback')
-            '''
-            self.load_file_at_cursor(fn)
+        #@+node:ekr.20140820034724.18318: *5* :r.tab_callback
+        def tab_callback(self):
+            '''Called when the user types :r<tab>'''
+            self.vc.c.k.getFileName(event=None,callback=self.load_file_at_cursor)
         #@-others
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
@@ -1948,14 +1940,10 @@ class VimCommands:
                     pass
             else:
                 c.new()
-        #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_filename_callback
-        def tab_filename_callback(self,fn):
-            '''
-            k.do_tab calls tab_callback when
-            a) there is exactly one completion for the current command and,
-            b) hasattr(c.commandsDict.get(commandName),'tab_callback')
-            '''
-            self.open_file_by_name(fn)
+        #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
+        def tab_callback(self):
+            '''Called when the user types :tabnew<tab>'''
+            self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
         #@-others
 
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode

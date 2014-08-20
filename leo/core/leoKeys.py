@@ -1404,8 +1404,8 @@ class GetArg:
             command = ga.get_label()
             common_prefix,tabList = ga.compute_tab_list(tabList)
             # No tab cycling for completed commands having
-            # a 'tab_filename_callback' attribute.
-            if len(tabList) == 1 and ga.do_tab_filename_callback():
+            # a 'tab_callback' attribute.
+            if len(tabList) == 1 and ga.do_tab_callback():
                 return
             elif len(tabList) > 1 or ga.cycling_prefix:
                 ga.do_tab_cycling(common_prefix,tabList)
@@ -1414,21 +1414,22 @@ class GetArg:
                 if len(common_prefix) > len(command):
                     ga.set_label(common_prefix)
         c.minibufferWantsFocus()
-    #@+node:ekr.20140818145250.18235: *4* ga.do_tab_filename_callback
-    def do_tab_filename_callback(ga):
+    #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
+    def do_tab_callback(ga):
         '''
-        If the command-name handler has a tab_filename_callback,
-        call k.getFileName with that callback and return True.
+        If the command-name handler has a tab_callback,
+        call handler.tab_callback() and return True.
         '''
         trace = False and not g.unitTesting
         c,k = ga.c,ga.k
         commandName,tail = k.getMinibufferCommandName()
-        obj = c.commandsDict.get(commandName)
-        if trace: g.trace(commandName, obj and obj.__name__ or 'None')
-        if hasattr(obj,'tab_filename_callback'):
+        handler = c.commandsDict.get(commandName)
+        if trace: g.trace(commandName,handler and handler.__name__ or 'None')
+        if hasattr(handler,'tab_callback'):
             ga.reset_tab_cycling()
             k.functionTail = tail
-            k.getFileName(event=None,callback=obj.tab_filename_callback)
+                # For k.getFileName.
+            handler.tab_callback()
             return True
         else:
             return False
