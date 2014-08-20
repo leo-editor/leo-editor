@@ -1833,11 +1833,11 @@ class VimCommands:
     #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
     class LoadFileAtCursor:
         '''
-        A class to handle Vim's tabnew command.
+        A class to handle Vim's :r command.
         This class supports the do_tab callback.
         '''
         def __init__(self,vc):
-            '''Ctor for VimCommands.tabnew class.'''
+            '''Ctor for VimCommands.LoadFileAtCursor class.'''
             self.vc = vc
         __name__ = ':r'
             # Required.
@@ -1845,7 +1845,7 @@ class VimCommands:
         #@+node:ekr.20140820034724.18316: *5* :r.__call__ 
         def __call__ (self,event=None):
             '''Prompt for a file name, then load it at the cursor.'''
-            self.vc.k.getFileName(event,callback=self.load_file_at_cursor)
+            self.vc.c.k.getFileName(event,callback=self.load_file_at_cursor)
         #@+node:ekr.20140820034724.18317: *5* :r.load_file_at_cursor
         def load_file_at_cursor(self,fn):
             vc = self.vc
@@ -1913,7 +1913,7 @@ class VimCommands:
     #@+node:ekr.20140815160132.18829: *4* class vc.tabnew (:tabnew)
     class Tabnew:
         '''
-        A class to handle Vim's tabnew command.
+        A class to handle Vim's :tabnew command.
         This class supports the do_tab callback.
         '''
         def __init__(self,vc):
@@ -1924,11 +1924,8 @@ class VimCommands:
         #@+others
         #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
         def __call__(self,event=None):
-            '''
-            Prompts for a file name.
-            Called only if the user hits <alt-x>:tabnew<return>
-            '''
-            self.vc.k.getFileName(event,callback=self.open_file_by_name)
+            '''Prompt for a file name, the open a new Leo tab.'''
+            self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
         #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
         def open_file_by_name(self,fn):
             c = self.vc.c
