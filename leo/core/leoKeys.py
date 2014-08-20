@@ -1497,7 +1497,7 @@ class GetArg:
         The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
         # pylint: disable=unpacking-non-sequence
-        trace = True and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         c,k = ga.c,ga.k
         state = k.getState('getArg')
         c.check_event(event)
