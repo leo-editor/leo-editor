@@ -476,7 +476,11 @@ import inspect
 d = c.commandsDict
 keys = sorted(d.keys())
 for key in keys:
-    f = d.get(key) ; name = f and f.__name__
+    f = d.get(key)
+    # Test true __call__ methods if they exist.
+    name = f and f.__name__
+    if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
+        f = getattr(f,'__call__')
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
     # print('%-28s' % (name),data)
     arg0 = len(args) > 0 and args[0]

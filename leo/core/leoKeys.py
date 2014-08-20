@@ -1403,37 +1403,32 @@ class GetArg:
             tabList = ga.tabList = tabList[:] if tabList else []
             command = ga.get_label()
             common_prefix,tabList = ga.compute_tab_list(tabList)
-            # No tab cycling for colon commands.
-            if command.startswith(':'):
-                ga.reset_tab_cycling()
-                if len(tabList) == 1:
-                    if ga.do_colon_command():
-                        return
-            if (len(tabList) > 1 or ga.cycling_prefix) and not command.startswith(':'):
+            # No tab cycling for completed commands having
+            # a 'tab_filename_callback' attribute.
+            if len(tabList) == 1 and ga.do_tab_filename_callback():
+                return
+            elif len(tabList) > 1 or ga.cycling_prefix:
                 ga.do_tab_cycling(common_prefix,tabList)
             else:
                 ga.show_tab_list(tabList)
                 if len(common_prefix) > len(command):
                     ga.set_label(common_prefix)
         c.minibufferWantsFocus()
-    #@+node:ekr.20140818145250.18235: *4* ga.do_colon_command
-    def do_colon_command(ga):
-        '''Handle a complete colon command, possibly having a tail.'''
+    #@+node:ekr.20140818145250.18235: *4* ga.do_tab_filename_callback
+    def do_tab_filename_callback(ga):
+        '''
+        If the command-name handler has a tab_filename_callback,
+        call k.getFileName with that callback and return True.
+        '''
         trace = False and not g.unitTesting
         c,k = ga.c,ga.k
         commandName,tail = k.getMinibufferCommandName()
-        # g.trace('command:',commandName,'tail:',tail)
-        k.functionTail = tail
-        func = c.commandsDict.get(commandName)
-        if trace: g.trace(
-            'complete colon command',commandName,
-            'command func',func and func.__name__ or 'None')
-        if func:
-            def callback(value):
-                event = g.Bunch(char='',stroke=None,get_arg_value=value)
-                func(event)
-            k.getFileName(event=None,callback=callback)
-                # prompt='Enter File Name: ',tabName=ga.tabName)
+        obj = c.commandsDict.get(commandName)
+        if trace: g.trace(commandName, obj and obj.__name__ or 'None')
+        if hasattr(obj,'tab_filename_callback'):
+            ga.reset_tab_cycling()
+            k.functionTail = tail
+            k.getFileName(event=None,callback=obj.tab_filename_callback)
             return True
         else:
             return False

@@ -74,9 +74,9 @@ class VimCommands:
             ':gt':  vc.cycle_focus,
             ':q':   vc.q_command,
             ':qa':  vc.qa_command,
-            ':r':   vc.load_file_at_cursor,
+            ':r':   vc.LoadFileAtCursor(vc),
             ':print-dot':               vc.print_dot,
-            ':tabnew':                  vc.tabnew,
+            ':tabnew':                  vc.Tabnew(vc),
             ':toggle-vim-mode':         vc.toggle_vim_mode,
             ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
         })
@@ -1830,28 +1830,50 @@ class VimCommands:
         '''Cycle all focus'''
         event = VimEvent(stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
-    #@+node:ekr.20140815160132.18823: *4* vc.load_file_at_cursor (:r)
-    def load_file_at_cursor(vc,event=None):
-        '''Prompt for a file name, then load it at the cursor.'''
-        if hasattr(event,'get_arg_value'):
-            # This is a callback from k.getArg after the user hit tab.
-            vc.r_callback(event.get_arg_value)
-        else:
-            vc.k.getFileName(event,callback=vc.r_callback)
-
-    def r_callback(vc,fn):
-        c,w = vc.c,vc.colon_w
-        if not w: ### vc.is_text_widget(w):
-            w = vc.w = c.frame.body.bodyCtrl
-        if g.os_path_exists(fn):
-            f = open(fn)
-            s = f.read()
-            f.close()
-            i = w.getInsertPoint()
-            w.insert(i,s)
-            vc.save_body()
-        else:
-            g.es('does not exist:' % fn)
+    #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
+    class LoadFileAtCursor:
+        '''
+        A class to handle Vim's tabnew command.
+        This class supports the do_tab callback.
+        '''
+        def __init__(self,vc):
+            '''Ctor for VimCommands.tabnew class.'''
+            self.vc = vc
+        __name__ = ':r'
+            # Required.
+        #@+others
+        #@+node:ekr.20140820034724.18316: *5* :r.__call__ 
+        def __call__ (self,event=None):
+            '''Prompt for a file name, then load it at the cursor.'''
+            self.vc.k.getFileName(event,callback=self.load_file_at_cursor)
+        #@+node:ekr.20140820034724.18317: *5* :r.load_file_at_cursor
+        def load_file_at_cursor(self,fn):
+            vc = self.vc
+            c,w = vc.c,vc.colon_w
+            if not w:
+                w = vc.w = c.frame.body.bodyCtrl
+            if g.os_path_exists(fn):
+                f = open(fn)
+                s = f.read()
+                f.close()
+                i = w.getInsertPoint()
+                w.insert(i,s)
+                vc.save_body()
+            else:
+                g.es('does not exist:' % fn)
+        #@+node:ekr.20140820034724.18318: *5* :r.tab_filename_callback
+        def tab_filename_callback(self,fn):
+            '''
+            The existence of this method is a signal to k.do_tab to call::
+                
+                k.
+            When this method exists, k.do_tab calls k.getFileName(
+            k.do_tab calls tab_filename_callback when
+            a) there is exactly one completion for the current command and,
+            b) hasattr(c.commandsDict.get(commandName),'tab_filename_callback')
+            '''
+            self.load_file_at_cursor(fn)
+        #@-others
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
         '''Print the dot.'''
@@ -1896,29 +1918,46 @@ class VimCommands:
         The lead-in characters :%s are in the minibuffer.
         '''
         g.trace(leadin)
-    #@+node:ekr.20140815160132.18829: *4* vc.tabnew (:tabnew)
-    def tabnew(vc,event=None):
+    #@+node:ekr.20140815160132.18829: *4* class vc.tabnew (:tabnew)
+    class Tabnew:
         '''
-        Prompts for a file name.
-        If the file exits, opens it in a new tab.
-        Otherwise, opens a tab for a new file.
+        A class to handle Vim's tabnew command.
+        This class supports the do_tab callback.
         '''
-        if hasattr(event,'get_arg_value'):
-            # This is a callback from k.getArg after the user hit tab.
-            vc.tabnew_callback(event.get_arg_value)
-        else:
-            vc.k.getFileName(event,callback=vc.tabnew_callback)
+        def __init__(self,vc):
+            '''Ctor for VimCommands.tabnew class.'''
+            self.vc = vc
+        __name__ = ':tabnew'
+            # Required.
+        #@+others
+        #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
+        def __call__(self,event=None):
+            '''
+            Prompts for a file name.
+            Called only if the user hits <alt-x>:tabnew<return>
+            '''
+            self.vc.k.getFileName(event,callback=self.open_file_by_name)
+        #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
+        def open_file_by_name(self,fn):
+            c = self.vc.c
+            if fn and not g.os_path_isdir(fn):
+                c2 = g.openWithFileName(fn,old_c=c)
+                try:
+                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+                except Exception:
+                    pass
+            else:
+                c.new()
+        #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_filename_callback
+        def tab_filename_callback(self,fn):
+            '''
+            k.do_tab calls tab_callback when
+            a) there is exactly one completion for the current command and,
+            b) hasattr(c.commandsDict.get(commandName),'tab_callback')
+            '''
+            self.open_file_by_name(fn)
+        #@-others
 
-    def tabnew_callback(vc,fn):
-        c = vc.c
-        if fn and not g.os_path_isdir(fn):
-            c2 = g.openWithFileName(fn,old_c=c)
-            try:
-                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-            except Exception:
-                pass
-        else:
-            c.new()
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc,event=None):
         '''toggle vim-mode.'''
