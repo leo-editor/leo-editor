@@ -1405,14 +1405,17 @@ class GetArg:
             common_prefix,tabList = ga.compute_tab_list(tabList)
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
-            if len(tabList) == 1 and ga.do_tab_callback():
-                return
-            elif len(tabList) > 1 or ga.cycling_prefix:
-                ga.do_tab_cycling(common_prefix,tabList)
+            if len(tabList) == 1:
+                if ga.do_tab_callback():
+                    return
+                elif ga.cycling_prefix:
+                    ga.do_tab_cycling(common_prefix,tabList)
+                else:
+                    ga.show_tab_list(tabList)
+                    if len(common_prefix) > len(command):
+                        ga.set_label(common_prefix)
             else:
-                ga.show_tab_list(tabList)
-                if len(common_prefix) > len(command):
-                    ga.set_label(common_prefix)
+                ga.do_tab_cycling(common_prefix,tabList)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
     def do_tab_callback(ga):
@@ -1494,7 +1497,7 @@ class GetArg:
         The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
         # pylint: disable=unpacking-non-sequence
-        trace = False and not g.app.unitTesting
+        trace = True and not g.app.unitTesting
         c,k = ga.c,ga.k
         state = k.getState('getArg')
         c.check_event(event)
@@ -1626,13 +1629,20 @@ class GetArg:
         tail = s[len(command):] ### .strip()
         # g.trace('command:',command,'tail:',tail)
         return command,tail
-    #@+node:ekr.20140818074502.18221: *3* ga.is_command
+    #@+node:ekr.20140818074502.18221: *3* ga.is_command (generalize)
     def is_command(ga,s):
-        '''Return True if s consists only of valid minibuffer command characters.'''
-        for ch in s:
-            if not ch.isalnum() and not ch in '-_:!':
-                return False
-        return True
+        '''Return True if s minibuffer command without a significant tail.'''
+        i = 0
+        while i < len(s) and (s[i].isalnum() or s[i] in '-_'):
+            i += 1
+        while i < len(s) and (not s[i].isalnum() and s[i] not in ' \t'):
+            i += 1
+        return i == len(s)
+        # return i == len(s)
+        # for ch in s:
+            # if not ch.isalnum() and not ch in '-_:!%':
+                # return False
+        # return True
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list
     def show_tab_list (ga,tabList):
         '''Show the tab list in the log tab.'''
@@ -2589,7 +2599,7 @@ class KeyHandlerClass:
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName,tail = k.getMinibufferCommandName()
-        # g.trace('command:',commandName,'tail:',tail)
+        if trace: g.trace('command:',commandName,'tail:',tail)
         k.functionTail = tail
         func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
