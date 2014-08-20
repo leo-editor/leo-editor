@@ -1613,14 +1613,27 @@ class GetArg:
     #@+node:ekr.20140818074502.18222: *3* ga.get_command
     def get_command(ga,s):
         '''Return the command part of a minibuffer contents s.'''
-        aList = []
-        for ch in s:
-            if ga.is_command([ch]):
-                aList.append(ch)
+        if s.startswith(':'):
+            # A vim-like command.
+            if len(s) == 1:
+                return s
+            elif s[1].isalpha():
+                command = [':']
+                for ch in s[1:]:
+                    if ch.isalnum() or ch != '-':
+                        command.append(ch)
+                    else: break
+                return ''.join(command)
             else:
-                break
-        return ''.join(aList)
-
+                # Special case for :! and :% etc.
+                return s[:2]
+        else:
+            command = []
+            for ch in s:
+                if ch.isalnum() or ch in '_-':
+                    command.append(ch)
+                else: break
+            return ''.join(command)
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
     def get_minibuffer_command_name(ga):
         '''Return the command name in the minibuffer.'''
@@ -1629,20 +1642,26 @@ class GetArg:
         tail = s[len(command):] ### .strip()
         # g.trace('command:',command,'tail:',tail)
         return command,tail
-    #@+node:ekr.20140818074502.18221: *3* ga.is_command (generalize)
+    #@+node:ekr.20140818074502.18221: *3* ga.is_command
     def is_command(ga,s):
-        '''Return True if s minibuffer command without a significant tail.'''
-        i = 0
-        while i < len(s) and (s[i].isalnum() or s[i] in '-_'):
-            i += 1
-        while i < len(s) and (not s[i].isalnum() and s[i] not in ' \t'):
-            i += 1
-        return i == len(s)
-        # return i == len(s)
-        # for ch in s:
-            # if not ch.isalnum() and not ch in '-_:!%':
-                # return False
-        # return True
+        '''Return False if something, even a blank, follows a command.'''
+        if s.startswith(':'):
+            if len(s) == 1:
+                return True
+            elif s[1].isalpha():
+                for ch in s[1:]:
+                    if not ch.isalnum() and ch != '-':
+                        return False
+                return True
+            else:
+                # assert not s[1].isalpha()
+                # Special case for :! and :% etc.
+                return len(s) == 2
+        else:
+            for ch in s:
+                if not ch.isalnum() and ch not in '_-':
+                    return False
+            return True
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list
     def show_tab_list (ga,tabList):
         '''Show the tab list in the log tab.'''

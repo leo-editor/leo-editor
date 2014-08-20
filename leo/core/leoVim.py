@@ -1870,11 +1870,20 @@ class VimCommands:
             '''Handle substitution.'''
             k = self.vc.k
             g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
-
-        #@+node:ekr.20140820063930.18323: *5* :%.tab_callback (not supported)
-        # def tab_callback(self):
-            # '''Called when the user types :tabnew<tab>'''
-            # g.trace()
+        #@+node:ekr.20140820063930.18323: *5* :%.tab_callback
+        def tab_callback(self):
+            '''
+            Called when the user types :%<tab> or :%/x<tab>.
+            This never ends the command: only return does that.
+            '''
+            k = self.vc.k
+            # g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
+            tail = k.functionTail
+            tail = tail[1:] if tail.startswith(' ') else tail
+            if not tail.startswith('/'):
+                tail = '/'+tail
+            k.setLabel(k.mb_prefix)
+            k.extendLabel(':%'+tail+'/')
         #@-others
     #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
     class Tabnew:
