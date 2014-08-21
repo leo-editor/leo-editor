@@ -38,7 +38,7 @@
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20031218072017.329"
-expanded="ekr.20131213072223.16396,ekr.20131211054925.16385,ekr.20131211054925.16392,ekr.20131211054925.16393,"><vh>@file ../doc/leoNotes.txt</vh></v>
+expanded="ekr.20031218072017.434,"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -75,7 +75,6 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20140526082700.17153"><vh>@file leoSTC.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
-<v t="ekr.20131230090121.16504"><vh>@file leoViews.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>

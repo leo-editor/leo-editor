@@ -18113,7 +18113,7 @@ def init_mb_ivars(ga,prompt):
     # ga.mb_prompt = ga.mb_tabListPrefix = ga.mb_prefix = prompt
     # ga.mb_tabList = []
     # ga.mb_tabListIndex = -1
-.. @+node:ekr.20131230090121.16504: *3* leoViews.py (no longer used)
+.. @+node:ekr.20131230090121.16504: *3* from leoViews.py
 @first # -*- coding: utf-8 -*-
 '''Support for @views trees and related operations.'''
 # Started 2013/12/31.
