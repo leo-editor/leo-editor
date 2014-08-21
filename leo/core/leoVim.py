@@ -10,6 +10,7 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
+import os
 import string
 
 #@+others
@@ -69,6 +70,7 @@ class VimCommands:
         vc.c.commandsDict.update({
             ':!':   vc.shell_command,
             ':%':   vc.Substitution(vc),
+            ':e':   vc.Tabnew(vc),
             ':e!':  vc.revert,
             ':gT':  vc.cycle_all_focus,
             ':gt':  vc.cycle_focus,
@@ -1934,14 +1936,22 @@ class VimCommands:
         #@+node:ekr.20140820034724.18315: *5* :tabnew.open_file_by_name
         def open_file_by_name(self,fn):
             c = self.vc.c
-            if fn and not g.os_path_isdir(fn):
-                c2 = g.openWithFileName(fn,old_c=c)
+            if fn and g.os_path_isdir(fn):
+                # change the working directory.
+                c.new()
                 try:
-                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+                    os.chdir(fn)
+                    g.es('chdir(%s)' % (fn),color='blue')
                 except Exception:
-                    pass
+                    g.es('curdir not changed',color='red')
+            elif fn:
+                c2 = g.openWithFileName(fn,old_c=c)
             else:
                 c.new()
+            try:
+                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+            except Exception:
+                pass
         #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
         def tab_callback(self):
             '''Called when the user types :tabnew<tab>'''

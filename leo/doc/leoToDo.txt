@@ -11,11 +11,9 @@
 :% s/find/change/g
 
 Fix vim command problems:
-- 'y' should end visual mode and yank: 'y' is ignored until another 'v'
-
-Later:
-    - :print-dot must handle VimEvents, not chars.
-    - 'V' should provide line mode visual, it inserts a 'V' at cursor
+- 'V' should provide line mode visual, it inserts a 'V' at cursor
+- :print-dot must handle VimEvents, not chars.
+    
 
 Fix dot problems:
 - vc.update_dot_before_search must call add_to_dot().
@@ -23,9 +21,12 @@ Fix dot problems:
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
-:e directory name
-    Shows list of files in the directory:
-    selecting and <enter> opens a file
+Works for me:
+- 'y' should end visual mode and yank: 'y' is ignored until another 'v'
+
+Others:
+
+
 
 - Kent: v, V, ctrl-v : visual select character, line, column
 
