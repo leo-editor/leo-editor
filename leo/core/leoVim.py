@@ -676,7 +676,10 @@ class VimCommands:
         if vc.w:
             if vc.is_body(vc.w):
                 if vc.state == 'normal':
-                    vc.begin_insert_mode()
+                    # Entering insert mode is confusing for real vim users.
+                    # It should advance the cursor to the next line.
+                    # vc.begin_insert_mode()
+                    vc.vim_j()
                 elif vc.state == 'visual':
                     # same as v
                     vc.stroke = 'v'
