@@ -2147,10 +2147,11 @@ class VimCommands:
             ex = 'end-of-line-extend-selection'
             w = vc.w
             s = w.getAllText()
-            i = w.getInsertPoint()
-            if vc.on_same_line(s,i,vc.vis_mode_i):
-                vc.do([bx,ex])
-            elif vc.vis_mode_i < i:
+            i = i0 = w.getInsertPoint()
+            # if vc.on_same_line(s,i,vc.vis_mode_i):
+                # vc.do([bx,ex])
+            # el
+            if vc.vis_mode_i < i:
                 # Select from the beginning of the line containing vc.vismode_i
                 # To the end of the line containing i.
                 w.setInsertPoint(vc.vis_mode_i)
@@ -2161,6 +2162,8 @@ class VimCommands:
                 j1,j2 = w.getSelectionRange()
                 i,j = min(i1,i2),max(j1,j2)
                 w.setSelectionRange(i,j,insert=j)
+                    # We want to set insert=i0. Alas, 
+                    # w.setSelectionRange requires either insert==i or insert==j.
             else:
                 # Select from the beginning of the line containing i
                 # To the end of the line containing vc.vismode_i.
@@ -2172,6 +2175,8 @@ class VimCommands:
                 j1,j2 = w.getSelectionRange()
                 i,j = min(i1,i2),max(j1,j2)
                 w.setSelectionRange(i,j,insert=i)
+                    # We want to set insert=i0. Alas, 
+                    # w.setSelectionRange requires either insert==i or insert==j.
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140802142132.17981: *4* show_dot & show_list
     def show_command(vc):

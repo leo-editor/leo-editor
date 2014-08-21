@@ -1282,13 +1282,11 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         self.setSelectionRangeHelper(i=i,j=i,insert=i)
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (LeoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
-
-        trace = (False or g.trace_scroll) and not g.unitTesting
-
+        '''Set the selection range and the insert point.'''
+        trace = (True or g.trace_scroll) and not g.unitTesting
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
-
         n = self.lengthHelper()
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -1297,7 +1295,6 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         else:
             ins = self.toPythonIndex(insert)
             ins = max(0,min(ins,n))
-
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
         tc = w.textCursor()
@@ -1307,12 +1304,16 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             # Put the insert point at j
             tc.setPosition(i)
             tc.setPosition(j,tc.KeepAnchor)
-        else:
-            # Put the insert point a i
+        elif ins == i:
+            # Put the insert point at i
             tc.setPosition(j)
             tc.setPosition(i,tc.KeepAnchor)
+        else:
+            # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
+            tc.setPosition(j)
+            tc.setPosition(i,tc.KeepAnchor)
+            # if trace: g.trace('***',i,j,ins)
         w.setTextCursor(tc)
-
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins
@@ -1321,9 +1322,8 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         v.selectionStart = i
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.verticalScrollBar().value()
-        if trace:
-            g.trace(spot,v.h)
-            # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
+        # g.trace(spot,v.h)
+        # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
     #@+node:ekr.20110605121601.18097: *6* lengthHelper
     def lengthHelper(self):
         '''Return the length of the text.'''
