@@ -72,9 +72,15 @@ class VimCommands:
             ':e!':  vc.revert,
             ':gT':  vc.cycle_all_focus,
             ':gt':  vc.cycle_focus,
+            ':q!':  vc.quit_now,
             ':q':   vc.q_command,
             ':qa':  vc.qa_command,
             ':r':   vc.LoadFileAtCursor(vc),
+            ':q':   vc.q_command,
+            ':w':   vc.w_command,
+            ':xa':  vc.xa_command,
+            ':wq':  vc.wq_command,
+            # Longer names...
             ':print-dot':               vc.print_dot,
             ':tabnew':                  vc.Tabnew(vc),
             ':toggle-vim-mode':         vc.toggle_vim_mode,
@@ -1940,7 +1946,8 @@ class VimCommands:
         except Exception:
             for z in vc.dot_list:
                 g.es(repr(z))
-    #@+node:ekr.20140815160132.18825: *4* vc.q_command & qa_command (:q & :qa)
+
+    #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     def q_command(vc,event=None):
         '''Quit, prompting for saves.'''
         g.app.onQuit(event)
@@ -1951,6 +1958,11 @@ class VimCommands:
             if c.isChanged():
                 return
         g.app.onQuit(event)
+
+    def quit_now(vc,event=None):
+        '''Quit immediately.'''
+        g.app.forceShutdown()
+        
     #@+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
     def revert(vc,event=None):
         '''Revert all changes to a .leo file, prompting if there have been changes.'''
@@ -1991,7 +2003,7 @@ class VimCommands:
         g.es('vim-trainer-mode: %s' % (
             'on' if vc.trainer else 'off'),
             color = 'red')
-    #@+node:ekr.20140815160132.18832: *4* w/xa/wz_command (:w & :xa & wq)
+    #@+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
     def w_command(vc,event= None):
         '''Save the .leo file.'''
         vc.c.save()

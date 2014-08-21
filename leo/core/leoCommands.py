@@ -393,8 +393,8 @@ class Commands (object):
                 c.inverseCommandsDict [f.__name__] = name
                 # g.trace('%24s = %s' % (f.__name__,name))
             except Exception:
-                g.es_exception()
-                g.trace(repr(name),repr(f),g.callers())
+                # g.es_exception()
+                g.trace(repr(name),repr(f))
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 
