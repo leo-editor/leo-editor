@@ -7639,37 +7639,6 @@ Kent, Terry, did I omit anything?  Misstate anything?
 @color
 
 @language rest
-.. @+node:ekr.20101127154340.5929: *4*  To investigate first
-.. @+node:ekr.20101127154340.5928: *5* @url pyexpect: spawn child apps
-http://pexpect.sourceforge.net/pexpect.html
-
-@language rest
-
-pexpect: a Python module for spawning child applications and
-controlling them automatically. 
-.. @+node:ekr.20101127154340.5930: *5* @url pyjamas: AJAX tool kit
-http://pyjs.org/
-
-@language rest
-
-Pyjamas: AJAX tool kit.
-.. @+node:ekr.20101127154340.5936: *5* @url proto of a Leo forum
-http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
-
-@language rest
-
-A few buttons turns Leo into a competitor for google groups.
-
-.. @+node:ekr.20101129064803.6060: *5* @url server code to interact with a running Leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/278aa85d7298a319/ef6446fcf6268c0d
-
-leoRemote.py
-.. @+node:ekr.20101129064803.6061: *5* @url problem solving with graph traversals
-http://groups.google.com/group/leo-editor/browse_thread/thread/2e1b240b023b545e/8e9164b52ff25199
-
-Cool slide show: very technical, about graph traversals, from AT&T technical talk
-
-http://www.slideshare.net/slidarko/problemsolving-using-graph-traversals-searching-scoring-ranking-and-recommendation
 .. @+node:ekr.20101127154340.5935: *4* Apps
 .. @+node:ekr.20101127154340.6806: *5* @url review board: code review
 http://www.reviewboard.org/
@@ -7684,8 +7653,6 @@ http://projects.gnome.org/tomboy/index.html
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
 .. @+node:ekr.20101127152442.5879: *4* Autocompletion
-.. @+node:ekr.20101127154340.6852: *5* @url codewise: ville's code completer
-http://www.mail-archive.com/leo-editor@googlegroups.com/msg10145.html
 .. @+node:ekr.20101127152442.5881: *5* @url ctagscompleter.py (Ville's suggestion)
 http://groups.google.com/group/leo-editor/browse_thread/thread/c537f3bc8328a938
 .. @+node:ekr.20101127152442.5880: *5* @url pydiction (autocompletion for vim)
