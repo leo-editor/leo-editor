@@ -1890,6 +1890,7 @@ def style_reload(kwargs):
     # default light theme uses a single @data qt-gui-plugin-style-sheet node
     settings_p = g.findNodeAnywhere(c, '@settings')
     if not settings_p:
+        # pylint: disable=fixme
         g.es("No '@settings' node found in outline")
         g.es("Please see http://leoeditor.com/FIXME.html")
         return False

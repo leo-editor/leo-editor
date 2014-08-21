@@ -29,7 +29,7 @@ import leo.core.leoGlobals as g
 
 g.assertUi('qt')
 
-from leo.core.leoQt import QtWidgets, QtCore
+from leo.core.leoQt import QtWidgets # , QtCore
 #@-<< imports >>
 
 controllers = {}

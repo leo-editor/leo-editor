@@ -3,17 +3,13 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
-
-from leo.plugins.qtGui import LeoQtFrame 
+# from leo.plugins.qtGui import LeoQtFrame 
 from leo.plugins.mod_scripting import build_rclick_tree
-
 import sys
 #@-<< imports >>
-
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:
@@ -1138,7 +1134,6 @@ class ParserBaseClass:
         self.oops()
     #@-others
 #@-<< class ParserBaseClass >>
-
 #@+others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
