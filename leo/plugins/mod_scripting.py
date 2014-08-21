@@ -203,7 +203,7 @@ def onCreate (tag, keys):
 #@+node:tbrown.20140819100840.37720: ** type RClick
 # representation of an rclick node
 # this used to have more elements, but evolved to be simpler
-RClick = namedtuple('RClick', 'position, children')
+RClick = namedtuple('RClick', 'position,children')
 #@+node:tbrown.20140819100840.37719: ** build_rclick_tree
 def build_rclick_tree(command_p, rclicks=None, top_level=False):
     """build_rclick_tree - Return a list of top level RClicks for the
