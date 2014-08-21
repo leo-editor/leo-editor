@@ -5,7 +5,6 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-new_arg = True # True: use helper GetArg class.
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
@@ -1340,13 +1339,6 @@ class GetArg:
             # k.arg.
             # k.argSelectedText
             # k.oneCharacterArg
-    #@+node:ekr.20140817110228.18327: *4* ga.init_mb_ivars (to be removed)
-    def init_mb_ivars(ga,prompt):
-        '''Init tab-completion ivars.'''
-        # A kludge: called from k.fullCommand.
-        # ga.mb_prompt = ga.mb_tabListPrefix = ga.mb_prefix = prompt
-        # ga.mb_tabList = []
-        # ga.mb_tabListIndex = -1
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
@@ -1639,7 +1631,7 @@ class GetArg:
         '''Return the command name in the minibuffer.'''
         s = ga.get_label()
         command = ga.get_command(s)
-        tail = s[len(command):] ### .strip()
+        tail = s[len(command):]
         # g.trace('command:',command,'tail:',tail)
         return command,tail
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
@@ -1782,20 +1774,6 @@ class KeyHandlerClass:
         # Important: these are defined in k.defineExternallyVisibleIvars...
             # self.getArgEscapes = []
             # self.getArgEscapeFlag 
-        # Keepting track of the characters in the mini-buffer...
-        if new_arg:
-            pass
-        else:
-            # Will be ivars of the GetArg class.
-            self.afterGetArgState = None
-            self.argTabList = []
-            self.arg_completion = True
-            self.mb_prefix = ''
-            self.mb_prompt = ''
-            self.mb_tabList = []
-            self.mb_tabListIndex = -1
-            self.mb_tabListPrefix = ''
-            self.oneCharacterArg = ''
         # For onIdleTime...
         self.idleCount = 0
         # For modes...
@@ -2569,9 +2547,7 @@ class KeyHandlerClass:
             k.mb_event = event # Save the full event for later.
             k.setState('full-command',1,handler=k.fullCommand)
             prompt = helpPrompt if help else k.altX_prompt
-            k.setLabelBlue(prompt) ### '%s' % (prompt),protect=True)
-            # Init mb_ ivars. This prevents problems with an initial backspace.
-            k.init_mb_ivars(prompt)
+            k.setLabelBlue(prompt)
             k.mb_help = help
             k.mb_helpHandler = helpHandler
             c.minibufferWantsFocus()
@@ -2676,13 +2652,13 @@ class KeyHandlerClass:
     def universalArgument (self,event):
         '''Prompt for a universal argument.'''
         k = self
-        k.setLabelBlue('Universal Argument: ') ### ,protect=True)
+        k.setLabelBlue('Universal Argument: ')
         k.universalDispatcher(event)
 
     def digitArgument (self,event):
         '''Prompt for a digit argument.'''
         k = self
-        k.setLabelBlue('Digit Argument: ') ### ,protect=True)
+        k.setLabelBlue('Digit Argument: ')
         k.universalDispatcher(event)
     #@+node:ekr.20070613133500: *4* k.menuCommandKey
     def menuCommandKey (self,event=None):
@@ -2972,251 +2948,25 @@ class KeyHandlerClass:
         k.setInputState(state)
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
-    #@+node:ekr.20061031131434.128: *4* k.getArg (two sets of methods)
-    if new_arg:
-        #@+<< define new arg methods >>
-        #@+node:ekr.20140816165728.18968: *5* << define new arg methods >>
-        def getArg (self,event,
-            returnKind=None,returnState=None,handler=None,
-            prefix=None,tabList=[],completion=True,oneCharacter=False,
-            stroke=None,useMinibuffer=True
-        ):
-            '''Create the singleton GetArg instance and use it to get an argument.'''
-            self.getArgInstance.get_arg(event,returnKind,returnState,handler,
-                prefix,tabList,completion,oneCharacter,stroke,useMinibuffer)
+    #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
+    def getArg (self,event,
+        returnKind=None,returnState=None,handler=None,
+        prefix=None,tabList=[],completion=True,oneCharacter=False,
+        stroke=None,useMinibuffer=True
+    ):
+        '''Create the singleton GetArg instance and use it to get an argument.'''
+        self.getArgInstance.get_arg(event,returnKind,returnState,handler,
+            prefix,tabList,completion,oneCharacter,stroke,useMinibuffer)
+
+    def doBackSpace (self,tabList,completion=True):
+        self.getArgInstance.do_back_space(tabList,completion)
+
+    def doTabCompletion (self,tabList,redraw=True,allow_empty_completion=False):
+        self.getArgInstance.do_tab(tabList)
+            ### ,redraw,allow_empty_completion)
             
-        # Wrapper methods...
-        def doBackSpace (self,tabList,completion=True):
-            self.getArgInstance.do_back_space(tabList,completion)
-
-        def doTabCompletion (self,tabList,redraw=True,allow_empty_completion=False):
-            self.getArgInstance.do_tab(tabList)
-                ### ,redraw,allow_empty_completion)
-                
-        def getMinibufferCommandName(self):
-            return self.getArgInstance.get_minibuffer_command_name()
-
-        ### To be removed.
-        def init_mb_ivars(self,prompt):
-            self.getArgInstance.init_mb_ivars(prompt)
-        #@-<< define new arg methods >>
-    else:
-        #@+<< define old arg methods >>
-        #@+node:ekr.20140816165728.18967: *5* << define old arg methods >>
-        #@+others
-        #@+node:ekr.20140818074502.18223: *6* k.getMinibufferCommandName
-        def getMinibufferCommandName(self):
-            '''Return the command name in the minibuffer.'''
-            # The old code does not support command tails.
-            k = self
-            s = k.getLabel()
-            command = s[len(k.mb_prefix):]
-            tail = ''
-            return command,tail
-        #@+node:ekr.20061031131434.175: *6* k.computeCompletionList
-        # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
-
-        # Called from doTabCompletion: with defaultTabList = list(c.commandsDict.keys())
-
-        def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=False):
-
-            trace = False and not g.unitTesting
-            k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
-            command = s [len(k.mb_prompt):]
-                # s always includes prefix, so command is well defined.
-
-            k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
-            c.frame.log.clearTab(tabName)
-
-            if trace:
-                g.trace('command',command,g.callers())
-                g.trace('defaultTabList',len(defaultTabList) if defaultTabList else 'None')
-                g.trace('common_prefix',common_prefix)
-                g.trace('k.mb_tabList',k.mb_tabList)
-
-            if not k.mb_tabList and allow_empty_completion:
-                if command:
-                    # 2012/05/20: Put up an *empty* list as a visual cue.
-                    k.mb_tabList = []
-                    g.es('','\n',tabName=tabName)
-                else:
-                    # 2012/05/20: Return *all* completions if the command is empty.
-                    k.mb_tabList = sorted(defaultTabList)
-                    common_prefix = ''
-
-            if k.mb_tabList:
-                k.mb_tabListIndex = -1 # The next item will be item 0.
-                if not backspace:
-                    k.setLabel(k.mb_prompt + common_prefix)
-
-                inverseBindingDict = k.computeInverseBindingDict()
-                data,n = [],0
-                for commandName in k.mb_tabList:
-                    dataList = inverseBindingDict.get(commandName,[('',''),])
-                    for z in dataList:
-                        pane,key = z
-                        s1a = '%s ' % (pane) if pane != 'all:' else ''
-                        s1b = k.prettyPrintKey(key)
-                        s1 = s1a + s1b
-                        s2 = commandName
-                        data.append((s1,s2),)
-                        n = max(n,len(s1))
-                aList = ['%*s %s' % (-n,s1,s2) for s1,s2 in data]
-                g.es('','\n'.join(aList),tabName=tabName)
-            c.bodyWantsFocus()
-        #@+node:ekr.20061031131434.177: *6* k.doBackSpace
-        # Used by getArg and fullCommand.
-
-        def doBackSpace (self,defaultCompletionList,completion=True):
-            '''Cut back to previous prefix and update prefix.'''
-            trace = False and not g.unitTesting
-            k = self
-            w = self.w
-            ins = w.getInsertPoint()
-            if trace: g.trace(
-                'ins',ins,'k.mb_prefix',repr(k.mb_prefix),'w',w)
-            if ins <= len(k.mb_prefix):
-                # g.trace('at start')
-                return
-            # Step 1: actually delete the character.
-            i,j = w.getSelectionRange()
-            if i == j:
-                ins -= 1
-                w.delete(ins)
-                w.setSelectionRange(ins,ins,insert=ins)
-            else:
-                ins = i
-                w.delete(i,j)
-                w.setSelectionRange(i,i,insert=ins)
-            # Step 2: compute completions.
-            if not completion: return
-            k.mb_tabListPrefix = w.getAllText()
-            k.computeCompletionList(defaultCompletionList,backspace=True)
-        #@+node:ekr.20061031131434.178: *6* k.doTabCompletion
-        # Used by getArg and fullCommand.
-
-        def doTabCompletion (self,defaultTabList,redraw=True,allow_empty_completion=False):
-            '''Handle tab completion when the user hits a tab.'''
-            trace = False and not g.unitTesting
-            k = self ; c = k.c ; s = k.getLabel().strip()
-            if k.mb_tabList and s.startswith(k.mb_tabListPrefix):
-                if trace: g.trace('cycle',repr(s))
-                # Set the label to the next item on the tab list.
-                k.mb_tabListIndex +=1
-                if k.mb_tabListIndex >= len(k.mb_tabList):
-                    k.mb_tabListIndex = 0
-                k.setLabel(k.mb_prompt + k.mb_tabList [k.mb_tabListIndex])
-            else:
-                if redraw:
-                    if trace: g.trace('** recomputing default completions')
-                    k.computeCompletionList(defaultTabList,
-                        backspace=False,
-                        allow_empty_completion=allow_empty_completion)
-            c.minibufferWantsFocus()
-        #@+node:ekr.20140816165728.18939: *6* k.getArg (OLD)
-        def getArg (self,event,
-            returnKind=None,returnState=None,handler=None,
-            prefix=None,tabList=[],completion=True,oneCharacter=False,
-            stroke=None, # New in 4.4.1.
-            useMinibuffer=True # New in 4.4.1
-        ):
-            '''
-            Accumulate an argument until the user hits return (or control-g).
-            Enter the given return state when done.
-            The prefix does not form the arg.  The prefix defaults to the k.getLabel().
-            '''
-            # pylint: disable=unpacking-non-sequence
-            trace = False and not g.app.unitTesting
-            k = self ; c = k.c
-            state = k.getState('getArg')
-            c.check_event(event)
-            # Remember these events also.
-            if c.macroCommands.recordingMacro and state > 0:
-                c.macroCommands.startRecordingMacro(event)
-            char = event and event.char or ''
-            if state > 0:
-                k.setLossage(char,stroke)
-            if trace: g.trace(
-                'state',state,'char',repr(char),'stroke',repr(stroke),
-                'isPlain',k.isPlainKey(stroke),
-                'escapes',k.getArgEscapes,
-                'completion',state==0 and completion or state!=0 and k.arg_completion,
-                'handler',handler and handler.__name__ or 'None')
-            if state == 0:
-                k.arg = ''
-                #@+<< init altX vars >>
-                #@+node:ekr.20061031131434.129: *7* << init altX vars >> old k.getArg
-                # Set global ivars.
-                k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
-                    # 2010/09/01: remember the selected text for abbreviations.
-                k.oneCharacterArg = oneCharacter
-
-                k.argTabList = tabList and tabList[:] or []
-                k.arg_completion = completion
-                # g.trace('completion',completion,'tabList',tabList)
-                k.mb_prefix = prefix or k.getLabel()
-                    # if prefix is not given, we expect k.mb_prefix to be k.getLabel aleady.
-                    # if not, something unusual is going on.  Probably should be fixed.
-                k.mb_prompt = prefix or ''
-                k.mb_tabList = []
-                # Clear the list: any non-tab indicates that a new prefix is in effect.
-                k.mb_tabListPrefix = k.getLabel()
-                #@-<< init altX vars >>
-                # Set the states.
-                bodyCtrl = c.frame.body.bodyCtrl
-                c.widgetWantsFocus(bodyCtrl)
-                k.afterGetArgState=returnKind,returnState,handler
-                k.setState('getArg',1,k.getArg)
-                k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-                if useMinibuffer: c.minibufferWantsFocus()
-            elif char == 'Escape':
-                k.keyboardQuit()
-            elif (
-                char in ('\n','Return',) or
-                k.oneCharacterArg or 
-                stroke and stroke in k.getArgEscapes or
-                char == '\t' and char in k.getArgEscapes # The Find Easter Egg.
-            ):
-                if trace:
-                    g.trace('***escape***','char',repr(char),
-                        stroke,k.getArgEscapes,k.afterGetArgState)
-                    # g.trace(g.callers())
-                if char == '\t' and char in k.getArgEscapes:
-                    k.getArgEscapeFlag = True
-                if stroke and stroke in k.getArgEscapes:
-                    k.getArgEscapeFlag = True
-                if k.oneCharacterArg:
-                    k.arg = char
-                else:
-                    k.arg = k.getLabel(ignorePrompt=True)
-                kind,n,handler = k.afterGetArgState
-                if kind: k.setState(kind,n,handler)
-                c.frame.log.deleteTab('Completion')
-                if trace: g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
-                if handler: handler(event)
-            elif char in('\t','Tab'):
-                if trace: g.trace('***tab***')
-                k.doTabCompletion(k.argTabList,k.arg_completion)
-            elif char in ('\b','BackSpace'):
-                k.doBackSpace(k.argTabList,k.arg_completion)
-                c.minibufferWantsFocus()
-            elif k.isFKey(stroke):
-                pass
-                # 2011/03/01: ignore F-keys. Ignoring all except plain keys would kill unicode searches.
-            else:
-                # Clear the list, any other character besides tab indicates that a new prefix is in effect.
-                k.mb_tabList = []
-                k.updateLabel(event)
-                k.mb_tabListPrefix = k.getLabel()
-        #@+node:ekr.20140817110228.18326: *6* k.init_mb_ivars
-        def init_mb_ivars(self,prompt):
-            '''Init tab completion ivars.'''
-            k = self
-            k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
-            k.mb_tabList = []
-            k.mb_tabListIndex = -1
-        #@-others
-        #@-<< define old arg methods >>
+    def getMinibufferCommandName(self):
+        return self.getArgInstance.get_minibuffer_command_name()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
         '''
@@ -3403,10 +3153,6 @@ class KeyHandlerClass:
     ):
         '''Get a file name from the minibuffer.'''
         k = self
-        ### k.keyboardQuit improperly cleared k.fnc.
-        # if not k.fnc:
-            # g.trace('***** no k.fnc',k.c)
-            # k.fnc = FileNameChooser(k.c)
         k.fnc.get_file_name(event,callback,filterExt,prompt,tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
@@ -3922,7 +3668,7 @@ class KeyHandlerClass:
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.show_status()
             else:
-                k.setLabelBlue(label='%s State' % (state.capitalize())) ### ,protect=True)
+                k.setLabelBlue(label='%s State' % (state.capitalize()))
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
         '''Set the label of the minibuffer.'''
@@ -3968,7 +3714,7 @@ class KeyHandlerClass:
 
 
     #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
-    def setLabelBlue (self,label): ### =None,protect=True):
+    def setLabelBlue (self,label):
         '''Set the minibuffer label.'''
         trace = False and not g.unitTesting
         k = self ; w = k.w
@@ -4783,7 +4529,7 @@ class KeyHandlerClass:
         # if trace: g.trace('w',w,'s',s)
         if trace: g.trace(g.callers())
         if s:
-            k.setLabelBlue(s) ### label=s,protect=True)
+            k.setLabelBlue(s)
         if w and isText:
             # k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
