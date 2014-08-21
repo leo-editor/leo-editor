@@ -76,10 +76,9 @@ class VimCommands:
             ':q':   vc.q_command,
             ':qa':  vc.qa_command,
             ':r':   vc.LoadFileAtCursor(vc),
-            ':q':   vc.q_command,
             ':w':   vc.w_command,
-            ':xa':  vc.xa_command,
             ':wq':  vc.wq_command,
+            ':xa':  vc.xa_command,
             # Longer names...
             ':print-dot':               vc.print_dot,
             ':tabnew':                  vc.Tabnew(vc),

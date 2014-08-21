@@ -11,7 +11,6 @@
 :% s/find/change/g
 
 Fix vim command problems:
-*** Ctrl-G **must** completely clear vim state.
 - aliasing <return> to 'i' is confusing, in vim it advances cursor to next line
 - 'x' is backspace in Leo, delete in vim
 - 'y' should end visual mode and yank: 'y' is ignored until another 'v'
