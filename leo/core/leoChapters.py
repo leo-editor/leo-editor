@@ -74,7 +74,7 @@ class ChapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Clone node to chapter: '
-            k.setLabelBlue(prefix) ### ,protect=True)
+            k.setLabelBlue(prefix)
             k.getArg(event,tag,1,self.cloneNodeToChapter,prefix=prefix,tabList=names)
         else:
             k.clearState()
@@ -133,7 +133,7 @@ class ChapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Convert node to chapter: ') ### ,protect=True)
+            k.setLabelBlue('Convert node to chapter: ')
             k.getArg(event,tag,1,self.convertNodeToChapter,tabList=names)
         else:
             k.clearState()
@@ -152,8 +152,8 @@ class ChapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Copy node to chapter: '
-            k.setLabelBlue(prefix) ### ,protect=True)
-            k.getArg(event,tag,1,self.copyNodeToChapter,tabList=names) ### prefix=prefix,
+            k.setLabelBlue(prefix)
+            k.getArg(event,tag,1,self.copyNodeToChapter,tabList=names)
         else:
             k.clearState()
             k.resetLabel()
@@ -197,7 +197,7 @@ class ChapterController:
         state = k.getState(tag)
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter: ') ### ,protect=True)
+            k.setLabelBlue('Create chapter: ')
             k.getArg(event,tag,1,self.createChapter,tabList=names)
         else:
             k.clearState()
@@ -246,7 +246,7 @@ class ChapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter from node: ') ### ,protect=True)
+            k.setLabelBlue('Create chapter from node: ')
             k.getArg(event,tag,1,self.createChapterFromNode,tabList=names)
         else:
             k.clearState()
@@ -264,9 +264,8 @@ class ChapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            ### prefix = 'Move node to chapter: '
-            k.setLabelBlue('Move node to chapter: ') ### ,protect=True)
-            k.getArg(event,tag,1,self.moveNodeToChapter,tabList=names) ### prefix=prefix,
+            k.setLabelBlue('Move node to chapter: ')
+            k.getArg(event,tag,1,self.moveNodeToChapter,tabList=names)
         else:
             k.clearState()
             k.resetLabel()
@@ -369,8 +368,7 @@ class ChapterController:
                 return cc.note('can not rename the main chapter')
             else:
                 names = list(cc.chaptersDict.keys())
-                ### prefix = 'Rename this chapter: '
-                k.setLabelBlue('Rename this chapter: ') ### ,protect=True)
+                k.setLabelBlue('Rename this chapter: ')
                 k.getArg(event,tag,1,self.renameChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
@@ -414,8 +412,7 @@ class ChapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            ### prefix = 'Select chapter: '
-            k.setLabelBlue('Select chapter: ') ### ,protect=True)
+            k.setLabelBlue('Select chapter: ')
             k.getArg(event,tag,1,self.selectChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
@@ -681,7 +678,7 @@ class ChapterController:
             return
         if theChapter.positionIsInChapter(p):
             if trace: g.trace('position found in chapter:',theChapter.name,p.h)
-            cc.selectChapterByName(theChapter.name) ### New.
+            cc.selectChapterByName(theChapter.name)
             return
         for name in cc.chaptersDict:
             if name not in (firstName,'main'):
@@ -899,7 +896,6 @@ class Chapter:
             self.chapterSelectHelper(w,selectEditor)
             if tt:
                 # A bad kludge: update all the chapter names *after* the selection.
-                ### tt.setNames()
                 tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False

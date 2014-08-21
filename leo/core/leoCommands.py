@@ -608,7 +608,6 @@ class Commands (object):
             g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
-                ### c.frame.bringToFront()
                 c.requestBringToFront.frame.bringToFront()
                     # c.requestBringToFront is a commander.
             c.requestBringToFront = None
@@ -5701,7 +5700,7 @@ class Commands (object):
 
         c = self
 
-        for p in c.all_positions(): ### c.all_unique_positions():
+        for p in c.all_positions():
             p.contract()
         # Select the topmost ancestor of the presently selected node.
         p = c.p
@@ -7513,9 +7512,7 @@ class Commands (object):
     def traceFocus (self,w):
 
         c = self
-
         if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-            ### import pdb ; pdb.set_trace() # Drop into pdb.
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@+node:ekr.20080514131122.17: *4* c.widget_name

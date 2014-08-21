@@ -1570,7 +1570,6 @@ class GlobalConfigManager:
             data = [z for z in data if not z.startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
-        ### return self.get(setting,"data")
         return data
         
     def getOutlineData (self,setting):

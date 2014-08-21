@@ -925,8 +925,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             prefix2 = 'dabbrev-expand: '
             c.frame.log.deleteTab('Completion')
             g.es('','\n'.join(aList),tabName='Completion')
-            k.setLabelBlue(prefix2+prefix) ### ,protect=True)
-            k.getArg(event,tag,1,self.dynamicExpandHelper,tabList=aList) ### prefix=prefix2,
+            k.setLabelBlue(prefix2+prefix)
+            k.getArg(event,tag,1,self.dynamicExpandHelper,tabList=aList)
         else:
             c.frame.log.deleteTab('Completion')
             k.clearState()
@@ -999,7 +999,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Add Abbreviation: ') ### ,protect=True)
+            k.setLabelBlue('Add Abbreviation: ')
             k.getArg(event,'add-abbr',1,self.addAbbreviation)
         else:
             w = self.w
@@ -1024,7 +1024,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Add Inverse Abbreviation: ') ### ,protect=True)
+            k.setLabelBlue('Add Inverse Abbreviation: ')
             k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
         else:
             w = self.w
@@ -1518,7 +1518,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         k = self.k
         state = k.getState('shell-command')
         if state == 0:
-            k.setLabelBlue('shell-command: ') ### ,protect=True)
+            k.setLabelBlue('shell-command: ')
             k.getArg(event,'shell-command',1,self.shellCommand)
         else:
             command = k.arg
@@ -3468,7 +3468,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                 headString = ''.join(head[k:kk])
                 # C keywords that might be followed by '{'
                 # print "headString:", headString
-                if headString in [ "do", "for", "if", "struct", "switch", "while"]: ### "class", 
+                if headString in [ "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(aList, i)
 
             args = aList[open_paren:close+1]
@@ -4060,7 +4060,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Evaluate a Python Expression entered in the minibuffer.'''
         k = self.k ; state = k.getState('eval-expression')
         if state == 0:
-            k.setLabelBlue('Eval: ') ### ,protect=True)
+            k.setLabelBlue('Eval: ')
             k.getArg(event,'eval-expression',1,self.evalExpression)
         else:
             k.clearState()
@@ -4227,7 +4227,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             s = '%s character%s: ' % (
                 'Backward find' if backward else 'Find',
                 ' & extend' if extend else '')
-            k.setLabelBlue(s) ### ,protect=True)
+            k.setLabelBlue(s)
             # Get the arg without touching the focus.
             k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
         else:
@@ -4328,7 +4328,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Goto global line: ') ### ,protect=True)
+            k.setLabelBlue('Goto global line: ')
             k.getArg(event,tag,1,self.gotoGlobalLine)
         else:
             n = k.arg
@@ -4638,7 +4638,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         state = k.getState('how-many')
         if state == 0:
-            k.setLabelBlue('How many: ') ### ,protect = True)
+            k.setLabelBlue('How many: ')
             k.getArg(event,'how-many',1,self.howMany)
         else:
             k.clearState()
@@ -4685,8 +4685,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         k.keyboardQuit()
-        ### k.setLabel("Line %s" % row)
-        g.es("Line %s" % row)
+        k.setLabel("Line %s" % row)
+        # g.es("Line %s" % row)
     #@+node:ekr.20050920084036.85: *3* insert & delete...
     #@+node:ekr.20060417171125: *4* addSpace/TabToLines & removeSpace/TabFromLines & helper
     def addSpaceToLines (self,event):
@@ -5103,7 +5103,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                k.setLabelBlue('Replace Character: ') ### ,protect=True)
+                k.setLabelBlue('Replace Character: ')
                 k.getArg(event,tag,1,self.replaceCurrentCharacter)
         else:
             w = self.w
@@ -5424,7 +5424,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('flush-lines')
 
         if state == 0:
-            k.setLabelBlue('Flush lines regexp: ') ### ,protect=True)
+            k.setLabelBlue('Flush lines regexp: ')
             k.getArg(event,'flush-lines',1,self.flushLines)
         else:
             k.clearState()
@@ -5441,7 +5441,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('keep-lines')
 
         if state == 0:
-            k.setLabelBlue('Keep lines regexp: ') ### ,protect=True)
+            k.setLabelBlue('Keep lines regexp: ')
             k.getArg(event,'keep-lines',1,self.keepLines)
         else:
             k.clearState()
@@ -7154,13 +7154,13 @@ class EditCommandsClass (BaseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                k.setLabelBlue('Set uA: ') ###,protect=True)
+                k.setLabelBlue('Set uA: ')
                 k.getArg(event,tag,1,self.setUa)
         elif state == 1:
             self.uaName = k.arg
             s = 'Set uA: %s To: ' % (self.uaName)
-            k.setLabelBlue(s) ### ,protect=True)
-            k.getArg(event,tag,2,self.setUa,completion=False) ### ,prefix=s)
+            k.setLabelBlue(s)
+            k.getArg(event,tag,2,self.setUa,completion=False)
         else:
             assert state == 2,state
             val = k.arg
@@ -7336,10 +7336,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('delete_file')
 
         if state == 0:
-            ### prefix = 'Delete File: '
             k.setLabelBlue('Delete File: ')
             k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event,'delete_file',1,self.deleteFile) ### ,prefix=prefix)
+            k.getArg(event,'delete_file',1,self.deleteFile)
         else:
             k.keyboardQuit()
             k.clearState()
@@ -7407,10 +7406,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k
         state = k.getState('make_directory')
         if state == 0:
-            ### prefix = 'Make Directory: '
             k.setLabelBlue('Make Directory: ')
             k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event,'make_directory',1,self.makeDirectory) ###,prefix=prefix)
+            k.getArg(event,'make_directory',1,self.makeDirectory)
         else:
             k.keyboardQuit()
             k.clearState()
@@ -7429,7 +7427,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         if fileName and g.os_path_exists(fileName):
             g.openWithFileName(fileName,old_c=c)
         else:
-            k.setLabelBlue('Open Leo Outline: ') ### ,protect=True)
+            k.setLabelBlue('Open Leo Outline: ')
             k.getFileName(event,callback=self.openOutlineByNameFinisher)
 
     def openOutlineByNameFinisher (self,fn):
@@ -7450,10 +7448,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('remove_directory')
 
         if state == 0:
-            ### prefix = 'Remove Directory: '
             k.setLabelBlue('Remove Directory: ')
             k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event,'remove_directory',1,self.removeDirectory) ### ,prefix=prefix)
+            k.getArg(event,'remove_directory',1,self.removeDirectory)
         else:
             k.keyboardQuit()
             k.clearState()
@@ -8581,7 +8578,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             c.minibufferWantsFocus()
-            k.setLabelBlue('Python help: ') ### ,protect=True)
+            k.setLabelBlue('Python help: ')
             k.getArg(event,tag,1,self.pythonHelp)
         else:
             k.clearState()
@@ -9016,7 +9013,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
 
         state = k.getState('zap-to-char')
         if state == 0:
-            k.setLabelBlue('Zap To Character: ') ### ,protect=True)
+            k.setLabelBlue('Zap To Character: ')
             k.setState('zap-to-char',1,handler=self.zapToCharacter)
         else:
             ch = event and event.char or ' '
@@ -9303,7 +9300,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         prompt = 'Call macro named: '
 
         if state == 0:
-            k.setLabelBlue(prompt) ### ,protect=True)
+            k.setLabelBlue(prompt)
             k.getArg(event,tag,1,self.callNamedMacro)
         else:
             macro = self.namedMacros.get(k.arg)
@@ -9467,7 +9464,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         k = self.k ; state = k.getState('name-macro')
 
         if state == 0:
-            k.setLabelBlue('Name of macro: ') ### ,protect=True)
+            k.setLabelBlue('Name of macro: ')
             k.getArg(event,'name-macro',1,self.nameLastMacro)
         else:
             k.clearState()
@@ -9715,7 +9712,7 @@ class RecTangleCommandsClass (BaseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w or not self.check(event): return
             self.stringRect = self.getRectanglePoints(w)
-            k.setLabelBlue('String rectangle: ') ### ,protect=True)
+            k.setLabelBlue('String rectangle: ')
             k.getArg(event,'string-rect',1,self.stringRectangle)
         else:
             k.clearState()
@@ -9861,7 +9858,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Append to Register: ') ### ,protect=True)
+            k.setLabelBlue('Append to Register: ')
             k.setState(tag,1,self.appendToRegister)
         else:
             k.clearState()
@@ -9889,7 +9886,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Prepend to Register: ') ### ,protect=True)
+            k.setLabelBlue('Prepend to Register: ')
             k.setState(tag,1,self.prependToRegister)
         else:
             k.clearState()
@@ -9919,7 +9916,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w: return
             k.commandName = 'copy-rectangle-to-register'
-            k.setLabelBlue('Copy Rectangle To Register: ') ### ,protect=True)
+            k.setLabelBlue('Copy Rectangle To Register: ')
             k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
         elif self.checkBodySelection('No rectangle selected'):
             k.clearState()
@@ -9950,7 +9947,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = tag
-            k.setLabelBlue('Copy to Register: ') ### ,protect=True)
+            k.setLabelBlue('Copy to Register: ')
             k.setState(tag,1,self.copyToRegister)
         else:
             k.clearState()
@@ -9975,7 +9972,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         char = event and event.char or ''
 
         if state == 0:
-            k.setLabelBlue('Increment register: ') ### ,protect=True)
+            k.setLabelBlue('Increment register: ')
             k.setState('increment-reg',1,self.incrementRegister)
         else:
             k.clearState()
@@ -10004,7 +10001,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'insert-register'
-            k.setLabelBlue('Insert register: ') ### ,protect=True)
+            k.setLabelBlue('Insert register: ')
             k.setState('insert-reg',1,self.insertRegister)
         else:
             k.clearState()
@@ -10035,7 +10032,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         char = event and event.char or ''
 
         if state == 0:
-            k.setLabelBlue('Jump to register: ') ### ,protect=True)
+            k.setLabelBlue('Jump to register: ')
             k.setState('jump-to-reg',1,self.jumpToRegister)
         else:
             k.clearState()
@@ -10073,7 +10070,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'number-to-register'
-            k.setLabelBlue('Number to register: ') ### ,protect=True)
+            k.setLabelBlue('Number to register: ')
             k.setState('number-to-reg',1,self.numberToRegister)
         else:
             k.clearState()
@@ -10093,7 +10090,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'point-to-register'
-            k.setLabelBlue('Point to register: ') ### ,protect=True)
+            k.setLabelBlue('Point to register: ')
             k.setState('point-to-reg',1,self.pointToRegister)
         else:
             k.clearState()
@@ -10118,7 +10115,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         if state == 0:
             k.commandName = 'view-register'
-            k.setLabelBlue('View register: ') ### ,protect=True)
+            k.setLabelBlue('View register: ')
             k.setState('view-reg',1,self.viewRegister)
         else:
             k.clearState()

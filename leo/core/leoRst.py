@@ -106,8 +106,8 @@ code_block.arguments = (
 if docutils:
     code_block.options = {
         'language':
-        docutils.parsers.rst.directives.unchanged # Return the text argument, unchanged.
-        ### rst.directives.unchanged # Return the text argument, unchanged.
+        docutils.parsers.rst.directives.unchanged
+            # Return the text argument, unchanged.
     }
     code_block.content = 1 # True if content is allowed.
 
