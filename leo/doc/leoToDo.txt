@@ -12,9 +12,7 @@
     :% s/find/change/g
 
 Fix dot problems:
-- :print-dot must handle VimEvents, not chars.
-- vc.update_dot_before_search must call add_to_dot().
-    save & restore vc.command_list?
+- vc.update_dot_before_search must call add_to_dot(): save & restore vc.command_list?
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent

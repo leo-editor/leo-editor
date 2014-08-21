@@ -1972,16 +1972,15 @@ class VimCommands:
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
         '''Print the dot.'''
-        try:
-            i = 0
-            aList = [vc.c.k.stroke2char(s) for s in vc.dot_list]
-            while i < len(aList):
-                g.es(','.join(aList[i:i+10]))
-                i += 10
-        except Exception:
-            for z in vc.dot_list:
-                g.es(repr(z))
-
+        aList = [z.stroke if isinstance(z,VimEvent) else z for z in vc.dot_list]
+        aList = [vc.c.k.stroke2char(z) for z in aList]
+        aList = [r'\n' if z in ('\n','Return') else z for z in aList]
+        aList = ['Esc' if z == 'Escape' else z for z in aList]
+        aList = ['<%s>'%(z) if len(z) > 1 else z for z in aList]
+        i = 0
+        while i < len(aList):
+            g.es('dot:',''.join(aList[i:i+10]))
+            i += 10
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     def q_command(vc,event=None):
         '''Quit, prompting for saves.'''
@@ -2148,9 +2147,6 @@ class VimCommands:
             w = vc.w
             s = w.getAllText()
             i = i0 = w.getInsertPoint()
-            # if vc.on_same_line(s,i,vc.vis_mode_i):
-                # vc.do([bx,ex])
-            # el
             if vc.vis_mode_i < i:
                 # Select from the beginning of the line containing vc.vismode_i
                 # To the end of the line containing i.

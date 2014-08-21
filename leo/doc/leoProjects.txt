@@ -552,6 +552,18 @@ The new c.createCommandNames copies entries in g.app.global_commands_dict to com
     Note: @g.command makes entries in g.app.global_commands_dict.
 .. @+node:ekr.20140813144229.19018: *4* Added insert-file-name command
 # The code is in leoEditCommands.py::insertFileName.
+.. @+node:ekr.20140821164256.18294: *4* Added vim mode
+See: http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
+.. @+node:ekr.20140821115448.18291: *5* Support visual line mode
+@nocolor-node
+
+
+do_visual_mode will extend the selection if visual_line_mode is True.
+
+Affected methods: vc.vim_V and vc>do_visual_mode.
+
+It would be good if LeoQTextEditWidget.setSelectionRangeHelper could handle
+insert points in the middle of a text selection, but at present it can't.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
