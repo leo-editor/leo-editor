@@ -1532,18 +1532,31 @@ class VimCommands:
         
     #@+node:ekr.20140220134748.16629: *5* vc.vim_x
     def vim_x(vc):
-        '''Delete N characters under and after the cursor.'''
+        '''
+        Works like Del if there is a character after the cursor.
+        Works like Backspace otherwise.
+        '''
         w = vc.w
         if vc.is_text_widget(w):
+            delete_flag = False
             for z in range(vc.n1*vc.n):
                 # It's simplest just to get the text again.
                 s = w.getAllText()
                 i = w.getInsertPoint()
-                if i > 0:
-                    if vc.cross_lines or s[i-1] != '\n':
-                        w.delete(i-1,i)
+                if i >= 0:
+                    if vc.cross_lines or s[i] != '\n':
+                        w.delete(i,i+1)
+                        delete_flag = True
                 else:
                     break
+            # Vim works exactly this way:
+            # backspace over one character, regardless of count,
+            # if nothing has been deleted so far.
+            if not delete_flag:
+                s = w.getAllText()
+                i = w.getInsertPoint()
+                if i > 0 and (vc.cross_lines or s[i-1] != '\n'):
+                    w.delete(i-1,i)
             vc.done()
         else:
             vc.quit()
