@@ -4051,8 +4051,8 @@ class EditCommandsClass (BaseEditCommandsClass):
             finally:
                 k.keyboardQuit()
                 if not ok:
-                    ### k.setLabel('Error: Invalid Expression')
-                    g.es('Error: Invalid Expression')
+                    k.setLabel('Error: Invalid Expression')
+                    # g.es('Error: Invalid Expression')
         else:
             k.updateLabel(event)
     #@+node:ekr.20050920084036.65: *3* evalExpression
