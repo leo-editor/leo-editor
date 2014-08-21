@@ -453,6 +453,8 @@ class VimCommands:
             # in ('normal','insert','visual',)
         vc.stroke = None
             # The incoming stroke.
+        vc.visual_line_flag = False
+            # True: in visual-line state.
         vc.vis_mode_i = None
             # The insertion point at the start of visual mode.
         vc.vis_mode_w = None
@@ -1506,15 +1508,14 @@ class VimCommands:
         '''Visually select line.'''
         if vc.is_text_widget(vc.w):
             if vc.state == 'visual':
+                vc.visual_line_flag = not vc.visual_line_flag
+                if vc.visual_line_flag:
+                    pass # do_visual_mode extends the selection.
+                else:
+                    vc.quit()
+            else:
                 bx = 'beginning-of-line-extend-selection'
                 ex = 'end-of-line-extend-selection'
-                s = vc.w.getAllText()
-                i = vc.w.getInsertPoint()
-                if vc.on_same_line(s,i,vc.vis_mode_i):
-                    vc.do([bx,ex])
-                else:
-                    vc.do(ex if vc.vis_mode_i < i else bx)
-            else:
                 vc.do([bx,ex])
             vc.done()
         else:
@@ -2138,7 +2139,39 @@ class VimCommands:
     def do_visual_mode(vc):
         '''Handle strokes in visual mode.'''
         vc.n1 = vc.n = 1
-        vc.do_state(vc.vis_dispatch_d,'visual')
+        vc.do_state(vc.vis_dispatch_d,
+            mode_name = 'visual-line' if vc.visual_line_flag else 'visual')
+        if vc.visual_line_flag:
+            # Extend the selection.
+            bx = 'beginning-of-line-extend-selection'
+            ex = 'end-of-line-extend-selection'
+            w = vc.w
+            s = w.getAllText()
+            i = w.getInsertPoint()
+            if vc.on_same_line(s,i,vc.vis_mode_i):
+                vc.do([bx,ex])
+            elif vc.vis_mode_i < i:
+                # Select from the beginning of the line containing vc.vismode_i
+                # To the end of the line containing i.
+                w.setInsertPoint(vc.vis_mode_i)
+                vc.do(bx)
+                i1,i2 = w.getSelectionRange()
+                w.setInsertPoint(i)
+                vc.do(ex)
+                j1,j2 = w.getSelectionRange()
+                i,j = min(i1,i2),max(j1,j2)
+                w.setSelectionRange(i,j,insert=j)
+            else:
+                # Select from the beginning of the line containing i
+                # To the end of the line containing vc.vismode_i.
+                w.setInsertPoint(i)
+                vc.do(bx)
+                i1,i2 = w.getSelectionRange()
+                w.setInsertPoint(vc.vis_mode_i)
+                vc.do(ex)
+                j1,j2 = w.getSelectionRange()
+                i,j = min(i1,i2),max(j1,j2)
+                w.setSelectionRange(i,j,insert=i)
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140802142132.17981: *4* show_dot & show_list
     def show_command(vc):
@@ -2296,12 +2329,15 @@ class VimCommands:
         vc.set_border()
         if k.state.kind:
             if trace: g.trace('*** in k.state ***',k.state.kind)
-        elif False: ### vc.state == 'visual':
-            s = '%8s:' % vc.state.capitalize()
-            if trace: g.trace('(vimCommands)',s,g.callers())
-            k.setLabelBlue(s) ### label=s,protect=True)
+        # elif vc.state == 'visual':
+            # s = '%8s:' % vc.state.capitalize()
+            # if trace: g.trace('(vimCommands)',s,g.callers())
+            # k.setLabelBlue(s)
         else:
-            state_s = vc.state.capitalize()
+            if vc.visual_line_flag:
+                state_s = 'Visual Line'
+            else:
+                state_s = vc.state.capitalize()
             command_s = vc.show_command()
             dot_s = vc.show_dot()
             # if vc.in_motion: state_s = state_s + '(in_motion)'
@@ -2310,7 +2346,7 @@ class VimCommands:
             else:
                 s = '%8s: %-5s dot: %s' % (state_s,command_s,dot_s)
             if trace: g.trace('(vimCommands)',s,g.callers(2))
-            k.setLabelBlue(s) ### label=s,protect=True)
+            k.setLabelBlue(s)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(vc,s,i):
         '''Return the index of the first character on the line containing s[i]'''

@@ -8,14 +8,11 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
     
-:% s/find/change/g
-
-Fix vim command problems:
-- 'V' should provide line mode visual, it inserts a 'V' at cursor
-- :print-dot must handle VimEvents, not chars.
-    
+- do substitutions:
+    :% s/find/change/g
 
 Fix dot problems:
+- :print-dot must handle VimEvents, not chars.
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
