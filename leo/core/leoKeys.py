@@ -1480,13 +1480,13 @@ class GetArg:
     #@+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
     def get_arg (ga,event,
         returnKind=None,returnState=None,handler=None,
-        prefix=None,tabList=[],completion=True,oneCharacter=False,
+        # prefix=None,
+        tabList=[],completion=True,oneCharacter=False,
         stroke=None,useMinibuffer=True
     ):
         '''
         Accumulate an argument until the user hits return (or control-g).
         Enter the given return state when done.
-        The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
         # pylint: disable=unpacking-non-sequence
         trace = False and not g.app.unitTesting
@@ -1500,11 +1500,11 @@ class GetArg:
         if state > 0:
             k.setLossage(char,stroke)
         if state == 0:
-            ga.do_state_zero(completion,event,handler,oneCharacter,prefix,
+            ga.do_state_zero(completion,event,handler,oneCharacter,### prefix,
                 returnKind,returnState,tabList,useMinibuffer)
-            if trace: ga.trace_state(char,completion,handler,prefix,state,stroke)
+            if trace: ga.trace_state(char,completion,handler,state,stroke)
         else:
-            if trace: ga.trace_state(char,completion,handler,prefix,state,stroke)
+            if trace: ga.trace_state(char,completion,handler,state,stroke)
             if char == 'Escape':
                 k.keyboardQuit()
             elif ga.should_end(char,stroke):
@@ -1552,16 +1552,12 @@ class GetArg:
         ga.reset_tab_cycling()
         if handler: handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
-    def do_state_zero(ga,completion,event,handler,oneCharacter,prefix,
+    def do_state_zero(ga,completion,event,handler,oneCharacter, ### prefix,
         returnKind,returnState,tabList,useMinibuffer
     ):
         '''Do state 0 processing.'''
         trace = False and not g.unitTesting
         c,k = ga.c,ga.k
-        # We expect a non-empty prefix to match k.mb_prefix.
-        # If so we can deprecate/eliminate the unused prefix arg.
-        if trace and prefix and prefix != k.mb_prefix:
-            g.trace('prefix',prefix,'k.mb_prefix',k.mb_prefix)
         # Set the ga globals...
         ga.after_get_arg_state=returnKind,returnState,handler
         ga.arg_completion = completion
@@ -1590,11 +1586,10 @@ class GetArg:
                 # The Find Easter Egg.
         )
     #@+node:ekr.20140818103808.18235: *4* ga.trace_state
-    def trace_state(ga,char,completion,handler,prefix,state,stroke):
+    def trace_state(ga,char,completion,handler,state,stroke):
         '''Trace the vars and ivars.'''
         k = ga.c.k
         g.trace(
-            'prefix',prefix,'k.mb_prefix',k.mb_prefix,
             'state',state,'char',repr(char),'stroke',repr(stroke),
             # 'isPlain',k.isPlainKey(stroke),
             '\n',
@@ -2955,8 +2950,8 @@ class KeyHandlerClass:
         stroke=None,useMinibuffer=True
     ):
         '''Create the singleton GetArg instance and use it to get an argument.'''
-        self.getArgInstance.get_arg(event,returnKind,returnState,handler,
-            prefix,tabList,completion,oneCharacter,stroke,useMinibuffer)
+        self.getArgInstance.get_arg(event,returnKind,returnState,handler, ### prefix,
+            tabList,completion,oneCharacter,stroke,useMinibuffer)
 
     def doBackSpace (self,tabList,completion=True):
         self.getArgInstance.do_back_space(tabList,completion)
