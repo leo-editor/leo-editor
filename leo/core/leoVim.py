@@ -552,8 +552,13 @@ class VimCommands:
         Abort any present command.
         Don't set the dot and enter normal mode.
         '''
+        # Undoably preserve any changes to the body.
+        # g.trace('no change! old vc.state:',vc.state)
+        vc.save_body()
+        vc.init_state_ivars()
         vc.state = 'normal'
-        vc.done(return_value=True,set_dot=False,stroke=None)
+        vc.show_status()
+        vc.return_value = True
     #@+node:ekr.20140807070500.18163: *5* vc.reset
     def reset(vc,setFocus):
         '''
@@ -563,9 +568,9 @@ class VimCommands:
         if setFocus:
             # A hard reset.
             vc.quit()
-        else:
+        elif 0:
             # Do *not* change vc.state!
-            pass
+            g.trace('no change! vc.state:',vc.state,g.callers())
     #@+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(vc,i=None,w=None):
@@ -1876,20 +1881,24 @@ class VimCommands:
             '''Handle substitution.'''
             k = self.vc.k
             g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
-        #@+node:ekr.20140820063930.18323: *5* :%.tab_callback
-        def tab_callback(self):
-            '''
-            Called when the user types :%<tab> or :%/x<tab>.
-            This never ends the command: only return does that.
-            '''
-            k = self.vc.k
-            # g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
-            tail = k.functionTail
-            tail = tail[1:] if tail.startswith(' ') else tail
-            if not tail.startswith('/'):
-                tail = '/'+tail
-            k.setLabel(k.mb_prefix)
-            k.extendLabel(':%'+tail+'/')
+        #@+node:ekr.20140820063930.18323: *5* :%.tab_callback (not used)
+        if 0:
+            # This Easter Egg is a bad idea.
+            # It will just confuse real vim users.
+            
+            def tab_callback(self):
+                '''
+                Called when the user types :%<tab> or :%/x<tab>.
+                This never ends the command: only return does that.
+                '''
+                k = self.vc.k
+                # g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
+                tail = k.functionTail
+                tail = tail[1:] if tail.startswith(' ') else tail
+                if not tail.startswith('/'):
+                    tail = '/'+tail
+                k.setLabel(k.mb_prefix)
+                k.extendLabel(':%'+tail+'/')
         #@-others
     #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
     class Tabnew:

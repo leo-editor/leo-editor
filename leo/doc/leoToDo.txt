@@ -10,19 +10,21 @@
     
 :% s/find/change/g
 
+Fix vim command problems:
+*** Ctrl-G **must** completely clear vim state.
+- aliasing <return> to 'i' is confusing, in vim it advances cursor to next line
+- 'x' is backspace in Leo, delete in vim
+- 'y' should end visual mode and yank: 'y' is ignored until another 'v'
+
+Later:
+    - :print-dot must handle VimEvents, not chars.
+    - 'V' should provide line mode visual, it inserts a 'V' at cursor
+
 Fix dot problems:
 - vc.update_dot_before_search must call add_to_dot().
     save & restore vc.command_list?
-- :print-dot must handle VimEvents, not chars.
 - Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
 - Fix the dot for insert commands.
-
-.. @+node:ekr.20140814105040.18408: *4* New vim bugs from Kent
-- 'V' should provide line mode visual, it inserts a 'V' at cursor
-- 'v' starts visual character mode, 'y' should end visual mode and yank, 'y'
-     is ignored until another 'v'
-- aliasing <return> to 'i' is confusing, in vim it advances cursor to next line
-- 'x' is backspace in Leo, delete in vim
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
 :e directory name
     Shows list of files in the directory:
