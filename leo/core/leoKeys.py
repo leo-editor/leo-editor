@@ -1398,6 +1398,7 @@ class GetArg:
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1:
+                # g.trace(ga.cycling_prefix,g.callers(2))
                 if ga.do_tab_callback():
                     return
                 elif ga.cycling_prefix:
@@ -1607,7 +1608,7 @@ class GetArg:
             elif s[1].isalpha():
                 command = [':']
                 for ch in s[1:]:
-                    if ch.isalnum() or ch != '-':
+                    if ch.isalnum() or ch == '-':
                         command.append(ch)
                     else: break
                 return ''.join(command)
