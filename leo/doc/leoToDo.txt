@@ -8,13 +8,19 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- :q closes current tab in vim, exits Leo session in Leo
-
 - do substitutions:
     :% s/find/change/flags
     :s /find/change/flags
 
 - do the / and ? commands update the dot properly?
+
+Most important unfinished commands:
+- Support ';' repeat the last t,T,f,F command: dot already does this.
+- Support z commands.
+- Motions:
+    N /<CR> repeat last search.
+    N ?<CR> repeat last search, in the backward direction
+- Do n and N work after :s searches?
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
 Works for me:
 - 'y' should end visual mode and yank: 'y' is ignored until another 'v'
@@ -52,16 +58,16 @@ The :substitute command searches for a text pattern, and replaces it with a text
 
 :%s/foo/bar
 :%s/foo/bar/
-    Replace first occurance of 'foo' with 'bar' in all lines.
+    Replace first occurrence of 'foo' with 'bar' in all lines.
 
 :%s/foo/bar/g
-     Replace all occurances of 'foo' with 'bar' in all lines.
-    
+     Replace all occurrences of 'foo' with 'bar' in all lines.
+   
 :s/foo/bar/
-    Replace first occurance of 'foo' (current line) with 'bar'
+    Replace first occurrence of 'foo' (on the current line) with 'bar'
 
 :s/foo/bar/g
-    Replace all occurrence of 'foo' (current line ), with 'bar'.
+    Replace all occurrence of 'foo' (on the current line ), with 'bar'.
     
 Flags:
 /gi case insensitive
@@ -84,79 +90,10 @@ Flags:
 :%s/foo/bar/gcI
     Change each 'foo' (case sensitive) to 'bar'; ask for confirmation. 
     This may be wanted after using :set ignorecase to make searches case insensitive. 
-.. @+node:ekr.20131111061547.16464: *3* * vim project
-@language rest
-
-Principles:
-- Use as many of vim's *plain* keys as possible.
-- Use Leo's control keys as possible.
-- Use Alt-Keys to switch to outline
-- <Enter> works in the outine as before.
-
-First:
-* Fix the widget mess.
-    - All commands must set vc.command_w.
-    - Define vc.check_w.
-* Maintain command_list.
-    - What about cursor-moving control characters?
-    - What about commands that switch nodes?
-* undo (in vc.done) should report the spelling of the command.
-- ':' operation.
-
-Later:
-* Review dot example.  Is /x/y/ needed?  Can we just use Leo's find command?
-- Simulate a box cursor by always selecting one character.
-
-@language python
-.. @+node:ekr.20140218130540.18726: *4* vim notes (do not delete)
-@language rest
-
-https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
-
-http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
-.. @+node:ekr.20140219070357.16607: *5* Most important operations (EKR)
-@language rest
-
-- executing commands:
-    - Alt-x or :
-- changing modes:
-    - Ctrl-g or Esc
-- focus changes:
-    - to tree, body, log, and various named tabs.
-- moving the cursor (in text):
-    - set & switch point & mark.
-    - by searching:
-        - with various options: Alt-Ctrl-option.
-        - forward, backward.
-        - incremental forward/backword.
-    - by incremental searching.
-    - by chars, words, lines, buffers.
-    - (less) by paragraphs.
-*** selecting character ranges.
-    - by searching.
-    - by incremental searching.
-    - by chars, words, lines, buffers.
-- Searching in the tree.
-- Changing and deleting text (combined with text moves).
-.. @+node:ekr.20140219070357.16611: *5* Most important keys (EKR)
-N   <Del>       delete N characters under and after the cursor
-    <Del>       delete the character under the cursor
-    <Del>       while entering a count: delete last character
-    
-    <Left>      (motion) cursor left
-    <Right>     (motion) cursor right
-    <C-Left>    (motion) cursor one word left
-    <C-Right>   (motion) cursor one word right
-    
-    Ctrl-F      Leo Find Command
-    Ctrl-G      <esc>
-
+.. @+node:ekr.20140822160427.19046: *4* Unfinished operations
 N   CTRL-R          redo last N undone changes
     Ctrl-Shift-Z    redo last change
-    CTRL-X          copy
-    CTRL-V          paste
     
-    0               (motion) to first character in the line (also: <Home> key)
 N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
 N   -               (motion) up N lines, on the first non-blank character
 N   ,               (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
@@ -169,8 +106,6 @@ N   }               (motion) N paragraphs forward
 N   |               (motion) to column N (default: 1)
     `<              (motion) go to the start of the (previous) Visual area
     `>              (motion) go to the end of the (previous) Visual area
-N   $               (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
-    ^               (motion) go to first non-blank character in the line
     
 N   [(              (motion) N times back to unclosed '('
 N   [*              (motion) N times back to start of comment "/*"
@@ -179,111 +114,46 @@ N   ])              (motion) N times forward to unclosed ')'
 N   ]*              (motion) N times forward to end of comment "*/"
 N   ]}              (motion) N times forward to unclosed '}'
 
-N   A               append text at the end of the line (N times)
 N   C               change to end-of-line (and N-1 more lines)
 N   D               delete to end-of-line (and N-1 more lines)
-N   F<char>         (motion) to the Nth occurrence of <char> to the left
 N   G               (motion) goto line N (default: last line), on the first non-blank character
 N   I               insert text before the first non-blank in the line (N times)
 N   J               (motion?) join N-1 lines (delete newlines)
 VIS J               (motion?) join the highlighted lines
 N   N               (motion) repeat last search, in opposite direction
-N   O               open a new line above the current line, append text (N times)
 N   R               enter Replace mode (repeat the entered text N times)
 N   S               change N lines
-N   T<char>         (motion) till before the Nth occurrence of <char> to the left
-    V               start/stop linewise highlighting
 N   X               delete N characters before the cursor
 N   Y               yank N lines
     ZQ              Same as ":q!".
     ZZ              Same as ":x".
-N   a               append text after the cursor (N times)
-N   b               (motion) N words backward
+    
 N   cc              change N lines
 N   c{motion}       change the text that is moved over with {motion}
 VIS c               change the highlighted text
-VIS d               delete the highlighted text
-N   dd              delete N lines
-N   d{motion}       delete the text that is moved over with {motion}
-N   e               (motion) forward to the end of the Nth word
-N   f<char>         (motion) to the Nth occurrence of <char> to the right
-
 N   ge              (motion) backward to the end of the Nth word
-N   gg              (motion) goto line N (default: first line), on the first non-blank character
     gv              start highlighting on previous visual area
-    
-N   h               (motion) left (also: CTRL-H, <BS>, or <Left> key)
-N   i               insert text before the cursor (N times) (also: <Insert>)
-N   j               (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
-N   k               (motion) up N lines (also: CTRL-P and <Up>)
-N   l               (motion) right (also: <Space> or <Right> key)
 N   n               (motion?) repeat last search
     m<a-zA-Z>       mark current position with mark <a-zA-Z>
-N   o               open a new line below the current line, append text (N times)
-    o               (motion?) exchange cursor position with start of highlighting
 N   p               put a register after the cursor position (N times)
     q               stop recording
     q<A-Z>          record typed characters, appended to register <a-z>
     q<a-z>          record typed characters into register <a-z>
 N   r<char>         replace N characters with <char>
 N   s               change N characters
-N   t<char>         (motion) till before the Nth occurrence of <char> to the right
-N   u               undo last N changes
-VIS u               make highlighted text lowercase
-    v               highlight characters or stop highlighting
-    v               start highlighting characters  }  move cursor and use
-N   w               (motion) N words forward
-N   x               delete N characters under and after the cursor
-N   yy              yank N lines 
-N   y{motion}       yank the text moved over with {motion} 
-VIS y               yank the highlighted text
     z- or zb        redraw, current line at bottom of window
     z. or zz        redraw, current line at center of window
     z<CR> or zt     redraw, current line at top of window
     
-Searches
+Searches:
 
-N   #                           (motion) search backward for the identifier under the cursor
-N   *                           (motion) search forward for the identifier under the cursor
 N   /<CR>                       (motion) repeat last search, in the forward direction
 N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
 N   ?<CR>                       (motion) repeat last search, in the backward direction
 N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
-.. @+node:ekr.20140219070357.16609: *5* Proposed EKR vim-like bindings
+.. @+node:ekr.20140219070357.16609: *4* Proposed EKR vim-like bindings
 @language rest
 
-N   <Del>       delete N characters under and after the cursor
-    <Del>       delete the character under the cursor
-    <Del>       while entering a count: delete last character
-    
-    <Left>      (motion) cursor left
-    <Right>     (motion) cursor right
-    <C-Left>    (motion) cursor one word left
-    <C-Right>   (motion) cursor one word right
-    
-    Ctrl-F      Leo Find Command
-    Ctrl-G      <esc>
-
-N   CTRL-R          redo last N undone changes
-    Ctrl-Shift-Z    redo last change
-    CTRL-X          copy
-    CTRL-V          paste
-Home back-to-home
-End
-0 start of line
-. repeat last change (with count replaced with N)
-^ first non-blank char of line (use Leo Home key)
-$ last char of line
-a append text
-A append text at the end of the line
-b word backward
-c change
-C change to end-of-line (and N-1 more lines)
-d delete
-D delete to end-of-line (and N-1 more lines)
-e forward word (end of word)
-f find <char> (on one line)
-F find backward
 g go 
     N   ge  (motion) backward to the end of the Nth word
     N   gg  (motion) goto line N (default: first line), on the first non-blank character
@@ -294,51 +164,17 @@ g go
     gfb  focus-to-body
     gfl  focus-to-log
     gfs  focus-to-spell-tab
+
 G goto-line-number:
     *** extensions ***
-h char left
-i insert text
-I insert text before the first non-blank in the line (N times)
-j down lines
-J join lines (replace newline by blank)
-k up lines
-l char right
-M goto middle line
+
 n repeat last search (F3)
 N repeat last search in opposite direction (F2)
-o open text
-O open line
-p put register after cursor
-q stop/start recording *** needed? ***
-r replace N chars with <char>
-s change N chars
-t till <char> (on one line)
-u undo
-v start/stop visual mode
-w word forward
-x delete N chars under cursor.
-y yank
-Y yank N lines
-z redraw: zb, zz, zt.
-ZQ  Same as ":q!".
-ZZ  Same as ":x".
 
-Less important:
-
-, backward repeat last f,F,t,T motion
-; repeat last f,F,t,T motion
-( sentences backward
-) sentences forward
-{ paragraphs backward
-} paragraphs forward
-[x  go back...
-]x  go...
-- up line to first non-blank char
-+ down line to first non-blank char
-.. @+node:ekr.20100113075303.6270: *5* Vim problems (from TL)
-@language rest
-
-# None of these is easily solvable in Leo's present environment.
+.. @+node:ekr.20100113075303.6270: *4* vim problems (from Tom L)
+None of these is easily solvable in Leo's present environment.
+.. @+node:ekr.20140822160427.19049: *5* Can not be solved using @mode
+Most, if not all of these things *can* be solved in Leo's new vim mode.
 .. @+node:ekr.20100112051224.6239: *6* Displaying mode help
 The "--> mode-help" command has the following issues related to the
 display of the "Help" tab:
@@ -360,14 +196,77 @@ For example, the following entries would change from::
 to::
     d : vi-delete-line
     b : vi-delete-to-begin-of-word
-.. @+node:ekr.20100112051224.6225: *6* Repeat last cursor movement command
-Support the ';' key: repeat the last "To character" or "Find character" command.
 .. @+node:ekr.20100113075303.6271: *6* Need mode-oriented bindings
 Mapping a number to a command or an @mode node works but can not be used as it
 prevents the number from being entered as text while in Vi's insert state.
 
 Binding 'bksp' key to back-char to move back a character in command mode
 prevents 'bksp' from deleting characters in text edit mode.
+.. @+node:ekr.20100112051224.6238: *6* Some commands do not work in headline
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+.. @+node:ekr.20100112051224.6222: *6* Commands requesting user input
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+
+======
+
+Maybe we just need more commands...
+.. @+node:ekr.20100112051224.6223: *6* Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+.. @+node:ekr.20110529115328.18247: *6* Block cursor
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+.. @+node:ekr.20090629183608.8446: *6* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+.. @+node:ekr.20100112051224.6226: *6* Range prefix to commands/objects (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+.. @+node:ekr.20140822160427.19047: *5* To be solved in new vim mode
+Support the ';' key: repeat the last "To character" or "Find character" command.
 .. @+node:ekr.20080616110054.2: *6* Support vim dot command
 The ability to repeat the last editing related command by pressing the period
 key is not supported and there is no workaround in place.
@@ -400,53 +299,15 @@ Notes:
 - The same or a separate storage location can be used for all commands to retain
   a copy of the character entered by the user. It doesn't matter since only the
   last command is assigned to the period key to be re-executed.
-.. @+node:ekr.20100112051224.6238: *6* Some commands do not work in headline
-Leo functions exist which unconditionally set focus to the body pane
-regardless of the active pane.
-
-For example, bracket matching commands ("%" key) do not work within
-a node's headline text.  Instead, the command is performed on the
-node's body text.
-
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-.. @+node:ekr.20100112051224.6222: *6* Commands requesting user input
-Commands requesting user input must be the last command executed within an @mode
-node. This prevents the implementation of commands such as "yank to <character>"
-that requires a "copy to clipboard" operation after the "find-character"
-command.
-
-======
-
-Maybe we just need more commands...
-.. @+node:ekr.20100112051224.6223: *6* Editing node headlines using @mode nodes
-Commands modifying or selecting headline text do not work correctly within a
-@mode node.
-
-This eliminates accurate implementation of vi's delete/change/substitute/yank
-object commands. As a workaround, the commands are currently written to only
-select the text. The user must perform the subsequent delete, change,
-substitute, and yank.
-.. @+node:ekr.20100112051224.6246: *6* Missing commands/features
-.. @+node:ekr.20100112051224.6234: *7* Move current line (to screen position)
+.. @+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
 Vi has a collection of "z<movement>" commands that will move the
 current line to the top, middle, and bottom of the screen.  They are
 not supported in Leo.
-.. @+node:ekr.20100112051224.6235: *7* Move body text up/down
+.. @+node:ekr.20100112051224.6235: *6* Move body text up/down
 Vi maps keys to scroll the text up/down one line and by half the
 number of visible lines.  Leo does not support this.
 
-.. @+node:ekr.20110529115328.18247: *7* Block cursor
-Having worked with Tk text canvases more that Qt, there still seem to
-be things that it had that have to be worked around as the Qt people
-just haven't seen the need for.
-
-One is the block cursor, I giving Leo Vim like functionality, it would
-be nice if one where supported, theses new kids just don't understand
-something so primitive I guess.
-.. @+node:ekr.20110202094848.12568: *7* Named marks
+.. @+node:ekr.20110202094848.12568: *6* Named marks
 Another is named marks, in Vim you can store a number of cursor
 locations, and recall them to jump around in your code.  This was also
 useful in filling out templates as each stop could be given a name
@@ -459,8 +320,7 @@ used and which ones were being bypassed.
 
 As these things had an actual presence in the text buffer, it going to
 be a little harder to come up with a reasonable work around.
-.. @+node:ekr.20110115062009.6025: *6* Commands that work differently in Vim
-.. @+node:ekr.20100112051224.6236: *7* Two kinds of words
+.. @+node:ekr.20100112051224.6236: *6* Two kinds of words
 Vi supports two types of words in its commands:
 
 1. Words that consist of only a subset of the character set and
@@ -469,27 +329,7 @@ Vi supports two types of words in its commands:
 Leo's always considers a word to consist of a subset of characters
 although some word related commands include different characters
 than others.
-.. @+node:ekr.20090629183608.8446: *7* Copy/paste/yank/delete
-Yank vs. Yank:
-Vi's "yank" commands copy the selected text TO the clipboard.
-Leo's "yank" commands insert text FROM the clipboard.
-
-copy-text in modes:
-Leo's copy-text command does not work within a mode.  As a result,
-all "copy to clipboard" capability is being implemented using the
-kill-<object> command followed by Leo's "yank" command to put the
-text back.
-
-paste-text in modes:
-The paste-text command does not work within an @mode node.  Leo's
-"yank" command is used instead.
-
-delete-node does not copy node to clipboard:
-A copy-node command is issued to copy the node to the clipboard
-followed by the delete-node command.
-.. @+node:ekr.20100521090440.5887: *6* Generalize minibuffer code
-@nocolor-node
-
+.. @+node:ekr.20100521090440.5887: *5* Generalize minibuffer code
 From Tom L
 
 This is hardwired for the first parameter.  Things I need to expand
@@ -506,18 +346,14 @@ the minibuffer.
 Sinc I'm only modifying existing code without real understanding of
 what Leo is doing, any guidance would be appreciated.
 
-Tom
-.. @+node:ekr.20100112051224.6226: *6* Vim-related: Range prefix to commands/objects (k.getArgs)
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-.. @+node:ekr.20131105122124.16479: *5* vim reference card
+===== EKR: I think this has been solved.
+.. @+node:ekr.20131105122124.16479: *4* vim reference card (do not delete)
 @killcolor
-.. @+node:ekr.20131105122124.16482: *6*  keys (do not sort!!)
+
+https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+
+http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
+.. @+node:ekr.20131105122124.16482: *5*  keys (do not sort!!)
 N   <Del>       delete N characters under and after the cursor
     <Del>       delete the character under the cursor
     <Del>       while entering a count: delete last character
@@ -737,7 +573,7 @@ VIS y               yank the highlighted text
     z<CR> or zt     redraw, current line at top of window
 N   zh              scroll screen N characters to the right
 N   zl              scroll screen N characters to the left
-.. @+node:ekr.20131108082341.18235: *6* motion keys
+.. @+node:ekr.20131108082341.18235: *5* motion keys
     CTRL-B  (motion?) cursor to beginning of command-line
     CTRL-E  (motion?) cursor to end of command-line
     N   .   (motion?) repeat last change (with count replaced with N)
@@ -838,7 +674,7 @@ N   n       (motion?) repeat last search
     o       (motion?) exchange cursor position with start of highlighting
 N   t<char> (motion) till before the Nth occurrence of <char> to the right
 N   w       (motion) N words forward
-.. @+node:ekr.20131108082341.18226: *6* motions
+.. @+node:ekr.20131108082341.18226: *5* motions
 @color
 
 w   to start of next word, excluding it's first character.
@@ -905,7 +741,7 @@ N ]]
 N ][ 	    
 N [[ 	    
 N [] 	
-.. @+node:ekr.20131105122124.16483: *6* vim regex
+.. @+node:ekr.20131105122124.16483: *5* vim regex
                                            Value of magic option
                                            ---------------------
                         meaning            magic       nomagic
@@ -936,7 +772,7 @@ matches 1 or more of the preceding atom      \+           \+
    matches 0 or 1 of the preceding atom      \=           \=
                  separates two branches      \|           \|
            group a pattern into an atom      \(\)         \(\)
-.. @+node:ekr.20131105122124.16484: *6* keys in insert mode
+.. @+node:ekr.20131105122124.16484: *5* keys in insert mode
     char                action in Insert mode
     ----                --------------------- 
  
@@ -972,7 +808,7 @@ matches 1 or more of the preceding atom      \+           \+
     CTRL-W              delete word before the cursor
     CTRL-X ...          complete the word before the cursor in various ways
     CTRL-Y              insert the character from above the cursor
-.. @+node:ekr.20131105122124.16485: *6* complex
+.. @+node:ekr.20131105122124.16485: *5* complex
 N  !{motion}{command}<CR>  filter the lines that are moved over through {command}
 N  !!{command}<CR>         filter N lines through {command}
    {visual}!{command}<CR>  filter the highlighted lines through {command}
@@ -985,7 +821,7 @@ N  ==                      filter N lines through "indent"
 :[range]s[ubstitute] [g][c]
    &         Repeat previous ":s" on current line without options
 :[range]ret[ab][!] [tabstop]
-.. @+node:ekr.20131105122124.16486: *6* text object
+.. @+node:ekr.20131105122124.16486: *5* text object
 Used only in Visual mode or after an operator
 
 a   Select current word
@@ -994,7 +830,7 @@ s   Select current sentence
 p   Select current paragraph
 S   Select current block (from "[(" to "])")
 P   Select current block (from "[{" to "]}")
-.. @+node:ekr.20131105122124.16487: *6* offsets after search command
+.. @+node:ekr.20131105122124.16487: *5* offsets after search command
 [num]       [num] lines downwards, in column 1
 +[num]      [num] lines downwards, in column 1
 -[num]      [num] lines upwards, in column 1
@@ -1012,7 +848,7 @@ Examples
 /test/e		on the last t of "test"
 /test/s+2		on the 's' of "test"
 /test/b-3		three characters before "test"
-.. @+node:ekr.20131105122124.16488: *6* Examples
+.. @+node:ekr.20131105122124.16488: *5* Examples
 :%g/^a/-1join     join lines starting with character 'a' to previous line
 :%g/^ *$/d        delete empty lines
 :%v/vim/m 1       move lines not matching the word 'vim' to line 1
@@ -1021,7 +857,7 @@ Examples
 :so[urce] {file}    Read Ex commands from {file}.
 :so[urce]! {file}   Read Vim commands from {file}.
 :sl[eep] [N]        don't do anything for N seconds
-.. @+node:ekr.20131105122124.16489: *6* Options overview
+.. @+node:ekr.20131105122124.16489: *5* Options overview
 name       short name   explanation
 ----       ----------   -----------
 aleph          al       ASCII code of the letter Aleph (RIGHTLEFT)
@@ -1174,7 +1010,7 @@ wrapscan       ws       searches wrap around the end of the file
 writeany       wa       write to file with no need for "!" override
 writebackup    wb       make a backup before overwriting a file
 writedelay     wd       delay this many msec for each char (for debug)
-.. @+node:ekr.20131105122124.16490: *6* Command-line completion
+.. @+node:ekr.20131105122124.16490: *5* Command-line completion
 'wildchar' (default: <Tab>)
     do completion on the pattern in front of the cursor. If there are
     multiple matches, beep and show the first one; further 'wildchar' will
@@ -1185,7 +1021,7 @@ CTRL-D  list   all names that match the pattern in front of the cursor
 CTRL-L  insert longest common part of names that match pattern
 CTRL-N  after 'wildchar' with multiple matches: go to next match
 CTRL-P  after 'wildchar' with multiple matches: go to previous match
-.. @+node:ekr.20131105122124.16491: *6* Special Ex characters
+.. @+node:ekr.20131105122124.16491: *5* Special Ex characters
 |           separates two commands (not for ":global" and ":!")
 "           begins comment
 
@@ -1205,7 +1041,7 @@ After "%", "#", "<cfile>", or "<afile>"
 :t          tail
 :r          root
 :e          extension
-.. @+node:ekr.20131105122124.16492: *6* Ex ranges
+.. @+node:ekr.20131105122124.16492: *5* Ex ranges
 ,               separates two line numbers
 ;               idem, set cursor to the first line number
                 before interpreting the second one
@@ -1219,7 +1055,7 @@ $               the last line in the file
 ?{pattern}[?]   the previous line where {pattern} matches
 +[num]          add [num] to the preceding line number (default: 1)
 -[num]          subtract [num] from the preceding line number (default: 1)
-.. @+node:ekr.20131105122124.16493: *6* Starting vim
+.. @+node:ekr.20131105122124.16493: *5* Starting vim
 38 -- Starting VIM
 
 
@@ -1274,7 +1110,7 @@ Automatic execution of commands on certain events.
 :au! * {pat}            Remove all autocommands for {pat}
 :au! {event} {pat}      Remove all autocommands for {event} with {pat}
 :au! {event} {pat} {cmd}  Remove all autocommands for {event} with {pat} and enter new one
-.. @+node:ekr.20131105122124.16494: *6* : commands unsorted
+.. @+node:ekr.20131105122124.16494: *5* : commands unsorted
 :marks                  print the active marks
 :ju[mps]                print the jump list
 :ta[g][!] {tag}         Jump to tag {tag}
@@ -1425,7 +1261,7 @@ Automatic execution of commands on certain events.
 :sbrewind           to first arg/buf (in new window)
 :sblast             to last arg/buf (in new window)
 :[N]sbmod [N]       to Nth modified buf (in new window)
-.. @+node:ekr.20131105122124.16495: *6* : commands merged (do not sort!)
+.. @+node:ekr.20131105122124.16495: *5* : commands merged (do not sort!)
 :!{command}                     execute {command} with a shell
 :@<a-z>                         execute the contents of register <a-z> as an Ex command
 :@@                             repeat previous :@<a-z>
@@ -1565,64 +1401,6 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
-.. @+node:ekr.20140221190714.16611: *5* Key examples
-@language rest
-
-Simple: N not significant
-0 ^ $ n N o O p q
-f<char> t<char> F<char> T<char>
-
-Unusual: N applied at end of operation.
-
-5a 5i 5A 5o (pretty much the same)
-5. (5 replaces previous repeat count)
-
-Typical:
-
-2b 5w 5e 3C 3D 5h 5l 5k 5j 5J 5r<char>
-
-Compound (repeat & motion or visual)
-
-2d3j 2c3j
-
-g go 
-    N   ge  (motion) backward to the end of the Nth word
-    N   gg  (motion) goto line N (default: first line), on the first non-blank character
-        gv  start highlighting on previous visual area
-    *** extensions ***
-    gV  start highlighting at end of previous visual area.
-    gft  focus-to-tree
-    gfb  focus-to-body
-    gfl  focus-to-log
-    gfs  focus-to-spell-tab
-G goto-line-number:
-    *** extensions ***
-
-I insert text before the first non-blank in the line (N times)
-
-s change N chars
-u undo
-v start/stop visual mode
-w word forward
-x delete N chars under cursor.
-y yank
-Y yank N lines
-z redraw: zb, zz, zt.
-ZQ  Same as ":q!".
-ZZ  Same as ":x".
-
-Less important:
-
-, backward repeat last f,F,t,T motion
-; repeat last f,F,t,T motion
-( sentences backward
-) sentences forward
-{ paragraphs backward
-} paragraphs forward
-[x  go back...
-]x  go...
-- up line to first non-blank char
-+ down line to first non-blank char
 .. @+node:ekr.20140402091953.16863: *3* * Add rope to Leo
 # http://rope.sourceforge.net/library.html
 
