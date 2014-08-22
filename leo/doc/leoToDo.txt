@@ -7,7 +7,7 @@
 @language rest
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
-    
+
 - do substitutions:
     :% s/find/change/g
     

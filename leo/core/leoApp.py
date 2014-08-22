@@ -1263,12 +1263,12 @@ class LeoApp:
             else:
                 return True
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile (self,fn):
+    def forgetOpenFile (self,fn,force=False):
 
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
 
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             pass
         else:
             aList = d.get(tag) or []
