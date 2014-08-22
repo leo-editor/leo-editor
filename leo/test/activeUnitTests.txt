@@ -21315,5 +21315,9 @@ c.bodyWantsFocus()
 
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')
+#@+node:ekr.20140822063016.4474: ** @test zzz force a quit on Linux
+import sys
+if not sys.platform.startswith('win'):
+    c.k.simulateCommand(':q!')
 #@-all
 #@-leo
