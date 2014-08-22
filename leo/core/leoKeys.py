@@ -1311,7 +1311,13 @@ class FileNameChooser:
     #@-others
 #@+node:ekr.20140816165728.18940: ** class GetArg
 class GetArg:
-    '''A class encapsulating all k.getArg logic.'''
+    '''
+    A class encapsulating all k.getArg logic.
+    
+    k.getArg maps to ga.get_arg, which gets arguments in the minibuffer.
+    
+    For details, see the docstring for ga.get_arg
+    '''
     # pylint: disable=no-self-argument
     # The first argument is ga.
     #@+others
@@ -1481,14 +1487,43 @@ class GetArg:
     #@+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
     def get_arg (ga,event,
         returnKind=None,returnState=None,handler=None,
-        # prefix=None,
         tabList=[],completion=True,oneCharacter=False,
         stroke=None,useMinibuffer=True
     ):
+        #@+<< ga.get_arg docstring >>
+        #@+node:ekr.20140822051549.18299: *4* << ga.get_arg docstring >>
         '''
-        Accumulate an argument until the user hits return (or control-g).
-        Enter the given return state when done.
+        Accumulate an argument. Enter the given return state when done.
+
+        Ctrl-G will abort this processing at any time.
+
+        All commands needing user input call k.getArg, which just calls ga.get_arg.
+
+        The arguments to ga.get_arg are as follows:
+            
+        event:              The event passed to the command.
+            
+        returnKind=None:    A string.
+        returnState=None,   An int.
+        handler=None,       A function.
+
+            When the argument is complete, ga.do_end does::
+
+                if kind: k.setState(kind,n,handler)
+
+        tabList=[]:         A list of possible completions.
+              
+        completion=True:    True if completions are enabled.
+
+        oneCharacter=False: True if k.arg should be a single character.
+
+        stroke=None:        The incoming key stroke.
+
+        useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
+                            False allows sort-lines, for example, to show the selection range.
+
         '''
+        #@-<< ga.get_arg docstring >>
         # pylint: disable=unpacking-non-sequence
         trace = False and not g.app.unitTesting
         c,k = ga.c,ga.k
@@ -1501,7 +1536,7 @@ class GetArg:
         if state > 0:
             k.setLossage(char,stroke)
         if state == 0:
-            ga.do_state_zero(completion,event,handler,oneCharacter,### prefix,
+            ga.do_state_zero(completion,event,handler,oneCharacter,
                 returnKind,returnState,tabList,useMinibuffer)
             if trace: ga.trace_state(char,completion,handler,state,stroke)
         else:
@@ -1553,7 +1588,7 @@ class GetArg:
         ga.reset_tab_cycling()
         if handler: handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
-    def do_state_zero(ga,completion,event,handler,oneCharacter, ### prefix,
+    def do_state_zero(ga,completion,event,handler,oneCharacter,
         returnKind,returnState,tabList,useMinibuffer
     ):
         '''Do state 0 processing.'''
@@ -2564,7 +2599,7 @@ class KeyHandlerClass:
                 k.callAltXFunction(k.mb_event)
         elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
-            k.doTabCompletion(list(c.commandsDict.keys()),allow_empty_completion=True)
+            k.doTabCompletion(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
         elif char in ('\b','BackSpace'):
             if trace and verbose: g.trace('***BackSpace')
@@ -2949,18 +2984,23 @@ class KeyHandlerClass:
         prefix=None,tabList=[],completion=True,oneCharacter=False,
         stroke=None,useMinibuffer=True
     ):
-        '''Create the singleton GetArg instance and use it to get an argument.'''
-        self.getArgInstance.get_arg(event,returnKind,returnState,handler, ### prefix,
+        '''Convenience method mapping k.getArg to ga.get_arg.'''
+        self.getArgInstance.get_arg(event,returnKind,returnState,handler,
             tabList,completion,oneCharacter,stroke,useMinibuffer)
 
     def doBackSpace (self,tabList,completion=True):
+        '''Convenience method mapping k.doBackSpace to ga.do_back_space.'''
         self.getArgInstance.do_back_space(tabList,completion)
 
-    def doTabCompletion (self,tabList,redraw=True,allow_empty_completion=False):
+    def doTabCompletion (self,tabList):
+        '''Convenience method mapping k.doTabCompletion to ga.do_tab.'''
         self.getArgInstance.do_tab(tabList)
-            ### ,redraw,allow_empty_completion)
             
     def getMinibufferCommandName(self):
+        '''
+        Convenience method mapping k.getMinibufferCommandName to
+        ga.get_minibuffer_command_name.
+        '''
         return self.getArgInstance.get_minibuffer_command_name()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
