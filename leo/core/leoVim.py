@@ -1961,9 +1961,14 @@ class VimCommands:
         #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self,event=None):
             '''Handle the :s and :%s commands. Neither command affects the dot.'''
-            vc,k = self.vc,self.vc.k
-            g.trace('(Substitution)','all_lines',self.all_lines,'k.arg',k.arg,'k.functionTail',k.functionTail)
-            if vc.is_text_widget(vc.w):
+            trace = False and not g.unitTesting
+            vc = self.vc
+            c,k,w = vc.c,vc.k,vc.w
+            if trace: g.trace('(Substitution)',
+                # 'all_lines',self.all_lines,
+                'k.arg',k.arg,'k.functionTail',k.functionTail)
+            w = vc.c if c.vim_mode else c.frame.body
+            if vc.is_text_widget(w):
                 fc = vc.c.findCommands
                 ftm = fc.ftm
                 vc.search_stroke = None
@@ -1972,12 +1977,14 @@ class VimCommands:
                 fc.openFindTab(vc.event)
                 fc.ftm.clear_focus()
                 old_node_only = fc.node_only
+                fc.node_only = True
+                    # Doesn't work.
                 fc.searchWithPresentOptions(vc.event)
                     # This returns immediately, before the actual search.
                     # leoFind.showSuccess calls vc.update_selection_after_search.
-                fc.node_only = old_node_only
-                vc.done(add_to_dot=False,set_dot=False)
-            else:
+                if c.vim_mode:
+                    vc.done(add_to_dot=False,set_dot=False)
+            elif c.vim_mode:
                 vc.quit()
         #@+node:ekr.20140820063930.18323: *5* :%.tab_callback (not used)
         if 0:
