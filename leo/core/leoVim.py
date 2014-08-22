@@ -19,10 +19,10 @@ def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
     s = stroke.s if g.isStroke(stroke) else stroke
     d = {
-        '\n':           r'\n',
-        'Ctrl+Left':    'Ctrl+Left',
-        'Ctrl+Right':   'Ctrl+Right',
-        'Ctrl+r':       'Ctrl+r',
+        '\n':           r'<NL>',
+        'Ctrl+Left':    '<Ctrl+Lt>',
+        'Ctrl+Right':   '<Ctrl+Rt>',
+        'Ctrl+r':       '<Ctrl+r>',
         'Down':         '<Dn>',
         'Escape':       '<Esc>',
         'Left':         '<Lt>',
@@ -38,9 +38,9 @@ def show_stroke(stroke):
 #@+node:ekr.20140802183521.17996: ** class VimEvent
 class VimEvent:
     '''A class to contain the components of the dot.'''
-    def __init__(self,stroke,w):
+    def __init__(self,char,stroke,w):
         '''ctor for the VimEvent class.'''
-        self.char = '' # For Leo's core.
+        self.char = char # For Leo's core.
         self.stroke = stroke
         self.w = w
         self.widget = w # For Leo's core.
@@ -584,7 +584,7 @@ class VimCommands:
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
-        vc.accept(handler=vc.do_insert_mode,add_to_dot=False)
+        vc.accept(handler=vc.do_insert_mode,add_to_dot=True)
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
@@ -611,7 +611,7 @@ class VimCommands:
         s2 = s[i1:i2]
         if vc.n1 > 1:
             s3 = s2 * (vc.n1-1)
-            g.trace(vc.in_dot,vc.n1,vc.n,s3)
+            # g.trace(vc.in_dot,vc.n1,vc.n,s3)
             w.insert(i2,s3)
         for stroke in s2:
             vc.add_to_dot(stroke)
@@ -829,7 +829,7 @@ class VimCommands:
         k = vc.k
         vc.colon_w = vc.w # A scratch ivar, for :gt & gT commands.
         vc.quit()
-        event = VimEvent(stroke='colon',w=vc.w)
+        event = VimEvent(char=':',stroke='colon',w=vc.w)
         k.fullCommand(event=event)
         k.extendLabel(':')
     #@+node:ekr.20140806123540.18159: *5* vc.vim_comma (not used)
@@ -948,12 +948,24 @@ class VimCommands:
     #@+node:ekr.20131111105746.16544: *5* vc.vim_dot
     def vim_dot(vc):
         '''Repeat the last command.'''
+        trace = True and not g.unitTesting
+        if trace:
+            vc.print_dot()
         try:
             vc.in_dot = True
             # Copy the list so it can't change in the loop.
             for event in vc.dot_list[:]:
-                # g.trace(vc.state,event)
-                vc.do_key(event)
+                # if trace: g.trace(vc.state,event)
+                # Create the minimal event needed for both k.masterKeyHandler and vc.do_key.
+                event2 = g.Bunch(
+                    # for vc.do_key...
+                    w=vc.w,
+                    # for k.masterKeyHandler...
+                    widget=vc.w, 
+                    char=event.char,
+                    stroke=g.KeyStroke(event.stroke))
+                # Only k.masterKeyHandler can insert characters!
+                vc.k.masterKeyHandler(event2)
         finally:
             vc.in_dot = False
         vc.done()
@@ -1006,16 +1018,19 @@ class VimCommands:
             if s:
                 i = i1 = w.getInsertPoint()
                 match_i,n = None,vc.n1*vc.n
-                i -= 1 # ensure progess.
+                i -= 1 # Ensure progress
                 while i >= 0:
+                    g.trace(s[i],vc.ch,n)
                     if s[i] == vc.ch:
                         match_i,n = i,n-1
                         if n == 0: break
                     elif s[i] == '\n' and not vc.cross_lines:
                         break
                     i -= 1
+                g.trace(match_i,i)
                 if match_i is not None:
-                    for z in range(i1-match_i-1):
+                    g.trace(i1-match_i-1)
+                    for z in range(i1-match_i):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
                         else:
@@ -1426,6 +1441,9 @@ class VimCommands:
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
+                # ensure progress:
+                if i < len(s) and s[i] == vc.ch:
+                    i += 1
                 match_i,n = None,vc.n1*vc.n
                 while i < len(s):
                     if s[i] == vc.ch:
@@ -1460,11 +1478,12 @@ class VimCommands:
             s = w.getAllText()
             if s:
                 i = i1 = w.getInsertPoint()
-                if i > 0 and s[i-1] == vc.ch:
-                    i -= 1 # ensure progess.
                 match_i,n = None,vc.n1*vc.n
                 i -= 1
+                if i >=0 and s[i] == vc.ch:
+                    i -= 1
                 while i >= 0:
+                    # g.trace(i,s[i])
                     if s[i] == vc.ch:
                         match_i,n = i,n-1
                         if n == 0: break
@@ -1473,7 +1492,7 @@ class VimCommands:
                     i -= 1
                 if match_i is not None:
                     # g.trace(i1-match_i,vc.ch)
-                    for z in range(i1-match_i):
+                    for z in range(i1-match_i-1):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
                         else:
@@ -1962,25 +1981,25 @@ class VimCommands:
     #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
     def cycle_focus(vc,event=None):
         '''Cycle focus'''
-        event = VimEvent(stroke='',w=vc.colon_w)
+        event = VimEvent(char='',stroke='',w=vc.colon_w)
         vc.do('cycle-focus',event=event)
         
     def cycle_all_focus(vc,event=None):
         '''Cycle all focus'''
-        event = VimEvent(stroke='',w=vc.colon_w)
+        event = VimEvent(char='',stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     def print_dot(vc,event=None):
         '''Print the dot.'''
         aList = [z.stroke if isinstance(z,VimEvent) else z for z in vc.dot_list]
-        aList = [vc.c.k.stroke2char(z) for z in aList]
-        aList = [r'\n' if z in ('\n','Return') else z for z in aList]
-        aList = ['Esc' if z == 'Escape' else z for z in aList]
-        aList = ['<%s>'%(z) if len(z) > 1 else z for z in aList]
-        i = 0
+        aList = [show_stroke(vc.c.k.stroke2char(z)) for z in aList]
+        if vc.n1 > 1:
+            g.es('dot repeat count:',vc.n1)
+        i,n = 0,0
         while i < len(aList):
-            g.es('dot:',''.join(aList[i:i+10]))
+            g.es('dot[%s]:' % (n),''.join(aList[i:i+10]))
             i += 10
+            n += 1
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     def q_command(vc,event=None):
         '''Quit, prompting for saves.'''
@@ -2009,7 +2028,7 @@ class VimCommands:
             command = k.functionTail
             c.controlCommands.executeSubprocess(event,command)
         else:
-            event = VimEvent(stroke='',w=vc.colon_w)
+            event = VimEvent(char='',stroke='',w=vc.colon_w)
             vc.do('shell-command',event=event)
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     def toggle_vim_mode(vc,event=None):
@@ -2080,16 +2099,18 @@ class VimCommands:
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
+        trace = False and not g.unitTesting
+        if trace: g.trace(show_stroke(vc.stroke),g.callers(2))
         vc.state = 'insert'
         w = vc.w
         if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
+            if trace: g.trace('*** abort ***',w)
             return
         # Special case for arrow keys.
         if vc.stroke in vc.arrow_d:
             vc.vim_arrow()
         else:
             vc.delegate()
-
     #@+node:ekr.20140807112800.18122: *5* vc.test_for_insert_escape
     def test_for_insert_escape(vc,w):
         '''Return True if the j,j escape sequence has ended insert mode.'''
@@ -2197,7 +2218,7 @@ class VimCommands:
             # Never add '.' to the dot list.
             if s and s != 'period':
                 # g.trace(s)
-                event = VimEvent(s,vc.w)
+                event = VimEvent(char=s,stroke=s,w=vc.w)
                 vc.command_list.append(event)
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot
     def compute_dot(vc,stroke):

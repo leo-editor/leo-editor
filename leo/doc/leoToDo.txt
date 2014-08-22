@@ -10,11 +10,20 @@
     
 - do substitutions:
     :% s/find/change/g
-
-Fix dot problems:
+    
+Fix bugs:
+- Longer repeat counts mess up the dot.
+    
+Not yet:
 - vc.update_dot_before_search must call add_to_dot(): save & restore vc.command_list?
-- Fix the dot for f,F,t,T commands (add_to_dot is called correctly.)
-- Fix the dot for insert commands.
+
+Done:
+- Dot commands now work for f,F,t,T commands, including repeats.
+  Changed several commands to ensure progress.
+- All insert commands now add leading character to the dot.
+- Fixed the dot for insert commands.
+
+
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
 Works for me:
 - 'y' should end visual mode and yank: 'y' is ignored until another 'v'
