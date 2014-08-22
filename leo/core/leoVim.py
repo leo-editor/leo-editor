@@ -949,23 +949,31 @@ class VimCommands:
     def vim_dot(vc):
         '''Repeat the last command.'''
         trace = True and not g.unitTesting
+        verbose = True
+        if vc.in_dot:
+            if trace and verbose: g.trace('*** already in dot ***')
+            return
         if trace:
             vc.print_dot()
         try:
             vc.in_dot = True
+            # Save the dot list.
+            vc.old_dot_list = vc.dot_list[:]
             # Copy the list so it can't change in the loop.
             for event in vc.dot_list[:]:
-                # if trace: g.trace(vc.state,event)
-                # Create the minimal event needed for both k.masterKeyHandler and vc.do_key.
-                event2 = g.Bunch(
-                    # for vc.do_key...
+                # Only k.masterKeyHandler can insert characters!
+                # Create an event satisfying both k.masterKeyHandler and vc.do_key.
+                vc.k.masterKeyHandler(g.Bunch(
+                     # for vc.do_key...
                     w=vc.w,
                     # for k.masterKeyHandler...
                     widget=vc.w, 
                     char=event.char,
-                    stroke=g.KeyStroke(event.stroke))
-                # Only k.masterKeyHandler can insert characters!
-                vc.k.masterKeyHandler(event2)
+                    stroke=g.KeyStroke(event.stroke)),
+                )
+            # For the dot list to be the old dot list, whatever happens.
+            vc.command_list = vc.old_dot_list[:]
+            vc.dot_list = vc.old_dot_list[:]
         finally:
             vc.in_dot = False
         vc.done()
@@ -1994,10 +2002,10 @@ class VimCommands:
         aList = [z.stroke if isinstance(z,VimEvent) else z for z in vc.dot_list]
         aList = [show_stroke(vc.c.k.stroke2char(z)) for z in aList]
         if vc.n1 > 1:
-            g.es('dot repeat count:',vc.n1)
+            g.es_print('dot repeat count:',vc.n1)
         i,n = 0,0
         while i < len(aList):
-            g.es('dot[%s]:' % (n),''.join(aList[i:i+10]))
+            g.es_print('dot[%s]:' % (n),''.join(aList[i:i+10]))
             i += 10
             n += 1
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
