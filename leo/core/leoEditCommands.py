@@ -4051,8 +4051,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             finally:
                 k.keyboardQuit()
                 if not ok:
-                    k.setLabel('Error: Invalid Expression')
-                    # g.es('Error: Invalid Expression')
+                    k.setStatusLabel('Error: Invalid Expression')
         else:
             k.updateLabel(event)
     #@+node:ekr.20050920084036.65: *3* evalExpression
@@ -4685,8 +4684,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         k.keyboardQuit()
-        k.setLabel("Line %s" % row)
-        # g.es("Line %s" % row)
+        k.setStatusLabel("Line %s" % row)
     #@+node:ekr.20050920084036.85: *3* insert & delete...
     #@+node:ekr.20060417171125: *4* addSpace/TabToLines & removeSpace/TabFromLines & helper
     def addSpaceToLines (self,event):
@@ -7344,11 +7342,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             k.clearState()
             try:
                 os.remove(k.arg)
-                k.setLabel('Deleted: %s' % k.arg)
-                # g.es('Deleted: %s' % k.arg)
+                k.setStatusLabel('Deleted: %s' % k.arg)
             except Exception:
-                k.setLabel('Not Deleted: %s' % k.arg)
-                # g.es('Not Deleted: %s' % k.arg)
+                k.setStatusLabel('Not Deleted: %s' % k.arg)
     #@+node:ekr.20050920084036.165: *3* diff (revise)
     def diff (self,event):
 
@@ -7414,11 +7410,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             k.clearState()
             try:
                 os.mkdir(k.arg)
-                k.setLabel("Created: %s" % k.arg)
-                # g.es("Created: %s" % k.arg)
+                k.setStatusLabel("Created: %s" % k.arg)
             except Exception:
-                k.setLabel("Not Create: %s" % k.arg)
-                # g.es("Not Created: %s" % k.arg)
+                k.setStatusLabel("Not Create: %s" % k.arg)
     #@+node:ekr.20060419123128: *3* openOutlineByName (EditFileCommandsClass)
     def openOutlineByName (self,event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
@@ -7456,11 +7450,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             k.clearState()
             try:
                 os.rmdir(k.arg)
-                k.setLabel('Removed: %s' % k.arg)
-                # g.es('Removed: %s' % k.arg)
+                k.setStatusLabel('Removed: %s' % k.arg)
             except Exception:
-                k.setLabel('Not Removed: %s' % k.arg)
-                # g.es('Not Removed: %s' % k.arg)
+                k.setStatusLabel('Not Removed: %s' % k.arg)
     #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
 

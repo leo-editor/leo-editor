@@ -2615,8 +2615,7 @@ class KeyHandlerClass:
                 k.doTabCompletion(list(c.commandsDict.keys()))
             else: # Annoying.
                 k.keyboardQuit()
-                k.setLabel('Command does not exist: %s' % commandName)
-                # g.es('Command does not exist: %s' % commandName)
+                k.setStatusLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
     #@+node:ekr.20061031131434.113: *4* k.endCommand
     def endCommand (self,commandName):
@@ -3614,11 +3613,34 @@ class KeyHandlerClass:
         return False
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
-    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
-    # def minibufferWantsFocus(self):
+    #@+node:ekr.20061031170011.9: *4* k.extendLabel
+    def extendLabel(self,s,select=False,protect=False):
 
-        # c = self.c
-        # c.widgetWantsFocus(c.miniBufferWidget)
+        trace = False and not g.unitTesting
+
+        k = self ; c = k.c ; w = self.w
+        if not (w and s): return
+
+        if trace: g.trace(s)
+
+        c.widgetWantsFocusNow(w)
+
+        w.insert('end',s)
+
+        if select:
+            i,j = k.getEditableTextRange()
+            w.setSelectionRange(i,j,insert=j)
+
+        if protect:
+            k.protectLabel()
+    #@+node:ekr.20061031170011.13: *4* k.getEditableTextRange
+    def getEditableTextRange (self):
+
+        k = self ; w = self.w
+        s = w.getAllText()
+        i = len(k.mb_prefix)
+        j = len(s)
+        return i,j
     #@+node:ekr.20061031170011.5: *4* k.getLabel
     def getLabel (self,ignorePrompt=False):
 
@@ -3643,6 +3665,11 @@ class KeyHandlerClass:
         w.setSelectionRange(n,n,insert=n)
         if protect:
             k.mb_prefix = s
+    #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus
+    # def minibufferWantsFocus(self):
+
+        # c = self.c
+        # c.widgetWantsFocus(c.miniBufferWidget)
     #@+node:ekr.20061031170011.6: *4* k.protectLabel
     def protectLabel (self):
 
@@ -3665,6 +3692,16 @@ class KeyHandlerClass:
                 c.vimCommands.show_status()
             else:
                 k.setLabelBlue(label='%s State' % (state.capitalize()))
+    #@+node:ekr.20080408060320.790: *4* k.selectAll
+    def selectAll (self):
+
+        '''Select all the user-editable text of the minibuffer.'''
+
+        w = self.w
+        i,j = self.getEditableTextRange()
+        w.setSelectionRange(i,j,insert=j)
+
+
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel (self,s,protect=False):
         '''Set the label of the minibuffer.'''
@@ -3679,36 +3716,6 @@ class KeyHandlerClass:
                 k.mb_prefix = s
         elif trace:
             g.trace('*** no w ***')
-    #@+node:ekr.20061031170011.9: *4* k.extendLabel
-    def extendLabel(self,s,select=False,protect=False):
-
-        trace = False and not g.unitTesting
-
-        k = self ; c = k.c ; w = self.w
-        if not (w and s): return
-
-        if trace: g.trace(s)
-
-        c.widgetWantsFocusNow(w)
-
-        w.insert('end',s)
-
-        if select:
-            i,j = k.getEditableTextRange()
-            w.setSelectionRange(i,j,insert=j)
-
-        if protect:
-            k.protectLabel()
-    #@+node:ekr.20080408060320.790: *4* k.selectAll
-    def selectAll (self):
-
-        '''Select all the user-editable text of the minibuffer.'''
-
-        w = self.w
-        i,j = self.getEditableTextRange()
-        w.setSelectionRange(i,j,insert=j)
-
-
     #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
     def setLabelBlue (self,label):
         '''Set the minibuffer label.'''
@@ -3743,6 +3750,17 @@ class KeyHandlerClass:
 
         if label is not None:
             k.setLabel(label,protect)
+    #@+node:ekr.20140822051549.18298: *4* k.setStatusLabel
+    def setStatusLabel(self,s):
+        '''
+        Set the label to s.
+        
+        Use k.setStatusLabel, not k.setLael, to report the status of a Leo
+        command. This allows the option to use g.es instead of the minibuffer
+        to report status.
+        '''
+        k = self
+        k.setLabel(s,protect=False)
     #@+node:ekr.20061031170011.12: *4* k.updateLabel
     def updateLabel (self,event):
 
@@ -3769,14 +3787,6 @@ class KeyHandlerClass:
             else:
                 w.insert(ins,ch)
                 i = ins+1
-    #@+node:ekr.20061031170011.13: *4* k.getEditableTextRange
-    def getEditableTextRange (self):
-
-        k = self ; w = self.w
-        s = w.getAllText()
-        i = len(k.mb_prefix)
-        j = len(s)
-        return i,j
     #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands (self):

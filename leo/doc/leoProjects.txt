@@ -267,6 +267,12 @@ What I did:
 - Allow <tab> to escape to :r and :tabname code.
   This required several kludges.
 
+.. @+node:ekr.20140821112622.18367: *4* Changed most calls to k.setLabel to k.setStatusLabel
+@nocolor-node
+
+Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
+of a Leo command. This allows an option (does not exist yet) to use g.es
+instead of the minibuffer to report status.
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
