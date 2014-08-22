@@ -539,17 +539,25 @@ class VimCommands:
             vc.return_value = return_value
     #@+node:ekr.20140802225657.18025: *5* vc.ignore
     def ignore(vc):
-        '''Ignore the present key without passing it to k.masterKeyHandler.'''
-        g.es('ignoring',vc.stroke,'in',vc.state,'mode',color='blue')
-        g.trace(g.callers())
+        '''
+        Ignore the present key without passing it to k.masterKeyHandler.
+        
+        **Important**: all code now calls vc.quit() after vc.ignore.
+        This code could do that, but the calling v.quit() emphasizes what happens.
+        '''
+        aList = [z.stroke if isinstance(z,VimEvent) else z for z in vc.command_list]
+        aList = [show_stroke(vc.c.k.stroke2char(z)) for z in aList]
+        g.es_print('ignoring %s in %s mode after %s' % (
+            vc.stroke,vc.state,''.join(aList)),color='blue')
+        # This is a surprisingly helpful trace.
+        # g.trace(g.callers())
         vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
     def not_ready(vc):
         '''Print a not ready message and quit.'''
         g.es('not ready',g.callers(1))
-        vc.ignore()
-            # More forgiving than quit. 
+        vc.quit()
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(vc):
         '''
@@ -666,6 +674,7 @@ class VimCommands:
             # Ignore all non-Alt arrow keys in text widgets.
             if vc.is_text_widget(vc.w):
                 vc.ignore()
+                vc.quit()
             else:
                 # Allow plain-arrow keys work in the outline pane.
                 vc.delegate()
@@ -934,8 +943,7 @@ class VimCommands:
             if vc.stroke == 'w':
                 # diw
                 vc.do('extend-to-word')
-                s2 = w.getSelectedText()
-                g.app.gui.replaceClipboardWith(s2)
+                g.app.gui.replaceClipboardWith(w.getSelectedText())
                 vc.do('backward-delete-char')
                 vc.done()
             else:
@@ -1155,7 +1163,7 @@ class VimCommands:
                 vc.done()
             else:
                 vc.ignore()
-                vc.done()
+                vc.quit()
         else:
             vc.quit()
 
@@ -1529,6 +1537,7 @@ class VimCommands:
         '''Start visual mode.'''
         if vc.n1_seen:
             vc.ignore()
+            vc.quit()
             # vc.beep('%sv not valid' % vc.n1)
             # vc.done()
         elif vc.is_text_widget(vc.w):
@@ -1813,6 +1822,7 @@ class VimCommands:
         if vc.is_text_widget(w):
             i1 = vc.vis_mode_i
             i2 = w.getInsertPoint()
+            g.app.gui.replaceClipboardWith(w.getSelectedText())
             w.delete(i1,i2)
             vc.state = 'normal'
             vc.done(set_dot=True)
@@ -2053,9 +2063,9 @@ class VimCommands:
             n += 1
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     def q_command(vc,event=None):
-        '''Quit, prompting for saves.'''
-        g.app.onQuit(event)
-        
+        '''Quit the present Leo outline, prompting for saves.'''
+        g.app.closeLeoWindow(vc.c.frame,new_c=None)
+
     def qa_command(vc,event=None):
         '''Quit only if there are no unsaved changes.'''
         for c in g.app.commanders():
@@ -2145,6 +2155,7 @@ class VimCommands:
                 vc.done()
         elif vc.is_plain_key(vc.stroke):
             vc.ignore()
+            vc.quit()
         else:
             # Pass non-plain keys to k.masterKeyHandler
             vc.delegate()
@@ -2205,6 +2216,7 @@ class VimCommands:
         elif vc.is_plain_key(vc.stroke):
             if trace: g.trace('ignore',vc.stroke)
             vc.ignore()
+            vc.quit()
         else:
             # Pass non-plain keys to k.masterKeyHandler
             if trace: g.trace('delegate',vc.stroke)
