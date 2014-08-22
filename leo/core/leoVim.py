@@ -869,13 +869,12 @@ class VimCommands:
             vc.accept(handler=vc.vim_d2)
         else:
             vc.quit()
-        
     #@+node:ekr.20140811175537.18146: *6* vc.vim_d2
     def vim_d2(vc):
         '''Handle the second stroke of the d command.'''
-        if vc.is_text_widget(vc.w):
+        w = vc.w
+        if vc.is_text_widget(w):
             if vc.stroke == 'd':
-                w = vc.w
                 i = w.getInsertPoint()
                 for z in range(vc.n1*vc.n):
                     # It's simplest just to get the text again.
@@ -885,6 +884,7 @@ class VimCommands:
                     # This is exactly how vim works.
                     if vc.n1*vc.n == 1 and i == j == len(s):
                         i = max(0,i-1)
+                    g.app.gui.replaceClipboardWith(s[i:j])
                     w.delete(i,j)
                 vc.done()
             elif vc.stroke == 'i':
@@ -899,9 +899,9 @@ class VimCommands:
         '''Complete the d command after the cursor has moved.'''
         # d2w doesn't extend to line.  d2j does.
         trace = False and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        w = vc.w
+        if vc.is_text_widget(w):
             extend_to_line = vc.d_stroke in ('jk')
-            w = vc.w
             s = w.getAllText()
             i1,i2 = vc.motion_i,w.getInsertPoint()
             if i1 == i2:
@@ -913,6 +913,7 @@ class VimCommands:
                         if i2 < len(s) and s[i2] == '\n':
                             i2 += 1
                         if trace: g.trace('extend i2 to eol',i1,i2)
+                g.app.gui.replaceClipboardWith(s[i1:i2])
                 w.delete(i1,i2)
             else: # i1 > i2
                 i1,i2 = i2,i1
@@ -920,6 +921,7 @@ class VimCommands:
                     if extend_to_line:
                         i1 = vc.to_bol(s,i1)
                         if trace: g.trace('extend i1 to bol',i1,i2)
+                g.app.gui.replaceClipboardWith(s[i1:i2])
                 w.delete(i1,i2)
             vc.done()
         else:
@@ -927,10 +929,14 @@ class VimCommands:
     #@+node:ekr.20140811175537.18145: *6* vc.vim_di
     def vim_di(vc):
         '''Handle delete inner commands.'''
-        if vc.is_text_widget(vc.w):
+        w = vc.w
+        if vc.is_text_widget(w):
             if vc.stroke == 'w':
                 # diw
-                vc.do(['extend-to-word','backward-delete-char'])
+                vc.do('extend-to-word')
+                s2 = w.getSelectedText()
+                g.app.gui.replaceClipboardWith(s2)
+                vc.do('backward-delete-char')
                 vc.done()
             else:
                 vc.ignore()
@@ -1944,10 +1950,7 @@ class VimCommands:
         #@+others
         #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self,event=None):
-            '''
-            Handle substitution, that is, :s nor :%s.
-            Neither command affects the dot.
-            '''
+            '''Handle the :s and :%s commands. Neither command affects the dot.'''
             vc,k = self.vc,self.vc.k
             g.trace('(Substitution)','all_lines',self.all_lines,'k.arg',k.arg,'k.functionTail',k.functionTail)
             if vc.is_text_widget(vc.w):
