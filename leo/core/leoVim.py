@@ -1544,8 +1544,10 @@ class VimCommands:
                 vc.visual_line_flag = not vc.visual_line_flag
                 if vc.visual_line_flag:
                     # Switch visual mode to visual-line mode.
+                    # do_visual_mode extends the selection.
                     if trace: g.trace('switch from visual to visual-line mode.')
-                    pass # do_visual_mode extends the selection.
+                    # pylint: disable=unnecessary-pass
+                    pass 
                 else:
                     # End visual mode.
                     if trace: g.trace('end visual-line mode.')
@@ -1946,7 +1948,7 @@ class VimCommands:
             Handle substitution, that is, :s nor :%s.
             Neither command affects the dot.
             '''
-            k = self.vc.k
+            vc,k = self.vc,self.vc.k
             g.trace('(Substitution)','all_lines',self.all_lines,'k.arg',k.arg,'k.functionTail',k.functionTail)
             if vc.is_text_widget(vc.w):
                 fc = vc.c.findCommands
