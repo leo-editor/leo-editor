@@ -69,7 +69,7 @@ class VimCommands:
         '''Add the names of commands defined in this file to c.commandsDict'''
         vc.c.commandsDict.update({
             ':!':   vc.shell_command,
-            ':%':   vc.Substitution(vc),
+            ':%s':  vc.Substitution(vc,all_lines=True),
             ':e':   vc.Tabnew(vc),
             ':e!':  vc.revert,
             ':gT':  vc.cycle_all_focus,
@@ -78,6 +78,7 @@ class VimCommands:
             ':q':   vc.q_command,
             ':qa':  vc.qa_command,
             ':r':   vc.LoadFileAtCursor(vc),
+            ':s':   vc.Substitution(vc,all_lines=False),
             ':w':   vc.w_command,
             ':wq':  vc.wq_command,
             ':xa':  vc.xa_command,
@@ -735,8 +736,11 @@ class VimCommands:
         if vc.state == 'visual':
             w = vc.w
             if w == g.app.gui.get_focus():
-                i = w.getInsertPoint()
-                w.setSelectionRange(vc.vis_mode_i,i,insert=i)
+                if vc.visual_line_flag:
+                    vc.visual_line_helper()
+                else:
+                    i = w.getInsertPoint()
+                    w.setSelectionRange(vc.vis_mode_i,i,insert=i)
             else:
                 g.trace('Search has changed nodes.')
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
@@ -1522,6 +1526,7 @@ class VimCommands:
             # vc.beep('%sv not valid' % vc.n1)
             # vc.done()
         elif vc.is_text_widget(vc.w):
+            # Enter visual mode.
             vc.vis_mode_w = w = vc.w
             vc.vis_mode_i = w.getInsertPoint()
             vc.state = 'visual'
@@ -1533,19 +1538,31 @@ class VimCommands:
     #@+node:ekr.20140811110221.18250: *5* vc.vim_V
     def vim_V(vc):
         '''Visually select line.'''
+        trace = False and not g.unitTesting
         if vc.is_text_widget(vc.w):
             if vc.state == 'visual':
                 vc.visual_line_flag = not vc.visual_line_flag
                 if vc.visual_line_flag:
+                    # Switch visual mode to visual-line mode.
+                    if trace: g.trace('switch from visual to visual-line mode.')
                     pass # do_visual_mode extends the selection.
                 else:
+                    # End visual mode.
+                    if trace: g.trace('end visual-line mode.')
                     vc.quit()
             else:
-                bx = 'beginning-of-line-extend-selection'
+                # Enter visual line mode.
+                vc.vis_mode_w = w = vc.w
+                vc.vis_mode_i = w.getInsertPoint()
+                vc.state = 'visual'
+                vc.visual_line_flag = True
+                if trace: g.trace('enter visual-line mode.')
+                bx = 'beginning-of-line'
                 ex = 'end-of-line-extend-selection'
                 vc.do([bx,ex])
             vc.done()
         else:
+            if trace: g.trace('not a text widget.')
             vc.quit()
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
     def vim_w(vc):
@@ -1912,20 +1929,41 @@ class VimCommands:
             '''Called when the user types :r<tab>'''
             self.vc.c.k.getFileName(event=None,callback=self.load_file_at_cursor)
         #@-others
-    #@+node:ekr.20140815160132.18828: *4* class vc.Substitution (:%)
+    #@+node:ekr.20140815160132.18828: *4* class vc.Substitution (:%s & :s)
     class Substitution:
         '''A class to handle Vim's :% command.'''
-        def __init__(self,vc):
+        def __init__(self,vc,all_lines):
             '''Ctor for VimCommands.tabnew class.'''
+            self.all_lines = all_lines
+                # True: :%s command.  False: :s command.
             self.vc = vc
         __name__ = ':%'
             # Required.
         #@+others
-        #@+node:ekr.20140820063930.18321: *5* :%.__call__
+        #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self,event=None):
-            '''Handle substitution.'''
+            '''
+            Handle substitution, that is, :s nor :%s.
+            Neither command affects the dot.
+            '''
             k = self.vc.k
-            g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
+            g.trace('(Substitution)','all_lines',self.all_lines,'k.arg',k.arg,'k.functionTail',k.functionTail)
+            if vc.is_text_widget(vc.w):
+                fc = vc.c.findCommands
+                ftm = fc.ftm
+                vc.search_stroke = None
+                    # Tell vc.update_dot_before_search not to update the dot.
+                fc.reverse = False
+                fc.openFindTab(vc.event)
+                fc.ftm.clear_focus()
+                old_node_only = fc.node_only
+                fc.searchWithPresentOptions(vc.event)
+                    # This returns immediately, before the actual search.
+                    # leoFind.showSuccess calls vc.update_selection_after_search.
+                fc.node_only = old_node_only
+                vc.done(add_to_dot=False,set_dot=False)
+            else:
+                vc.quit()
         #@+node:ekr.20140820063930.18323: *5* :%.tab_callback (not used)
         if 0:
             # This Easter Egg is a bad idea.
@@ -2173,50 +2211,8 @@ class VimCommands:
         vc.do_state(vc.vis_dispatch_d,
             mode_name = 'visual-line' if vc.visual_line_flag else 'visual')
         if vc.visual_line_flag:
-            # Extend the selection.
-            bx = 'beginning-of-line-extend-selection'
-            ex = 'end-of-line-extend-selection'
-            w = vc.w
-            s = w.getAllText()
-            i = i0 = w.getInsertPoint()
-            if vc.vis_mode_i < i:
-                # Select from the beginning of the line containing vc.vismode_i
-                # To the end of the line containing i.
-                w.setInsertPoint(vc.vis_mode_i)
-                vc.do(bx)
-                i1,i2 = w.getSelectionRange()
-                w.setInsertPoint(i)
-                vc.do(ex)
-                j1,j2 = w.getSelectionRange()
-                i,j = min(i1,i2),max(j1,j2)
-                w.setSelectionRange(i,j,insert=j)
-                    # We want to set insert=i0. Alas, 
-                    # w.setSelectionRange requires either insert==i or insert==j.
-            else:
-                # Select from the beginning of the line containing i
-                # To the end of the line containing vc.vismode_i.
-                w.setInsertPoint(i)
-                vc.do(bx)
-                i1,i2 = w.getSelectionRange()
-                w.setInsertPoint(vc.vis_mode_i)
-                vc.do(ex)
-                j1,j2 = w.getSelectionRange()
-                i,j = min(i1,i2),max(j1,j2)
-                w.setSelectionRange(i,j,insert=i)
-                    # We want to set insert=i0. Alas, 
-                    # w.setSelectionRange requires either insert==i or insert==j.
+            vc.visual_line_helper()
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
-    #@+node:ekr.20140802142132.17981: *4* show_dot & show_list
-    def show_command(vc):
-        '''Show the accumulating command.'''
-        return ''.join([repr(z) for z in vc.command_list])
-
-    def show_dot(vc):
-        '''Show the dot.'''
-        s = ''.join([repr(z) for z in vc.dot_list[:10]])
-        if len(vc.dot_list) > 10:
-            s = s + '...'
-        return s
     #@+node:ekr.20140802183521.17998: *4* vc.add_to_dot
     def add_to_dot(vc,stroke=None):
         '''
@@ -2248,6 +2244,39 @@ class VimCommands:
                 vc.c.k.simulateCommand(z,event=event)
         else:
             vc.c.k.simulateCommand(o,event=event)
+    #@+node:ekr.20140822072856.18256: *4* vc.visual_line_helper
+    def visual_line_helper(vc):
+        '''Extend the selection as necessary in visual line mode.'''
+        bx = 'beginning-of-line-extend-selection'
+        ex = 'end-of-line-extend-selection'
+        w = vc.w
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        # We would like to set insert=i0, but
+        # w.setSelectionRange requires either insert==i or insert==j.
+            # i0 = i
+        if vc.vis_mode_i < i:
+            # Select from the beginning of the line containing vc.vismode_i
+            # to the end of the line containing i.
+            w.setInsertPoint(vc.vis_mode_i)
+            vc.do(bx)
+            i1,i2 = w.getSelectionRange()
+            w.setInsertPoint(i)
+            vc.do(ex)
+            j1,j2 = w.getSelectionRange()
+            i,j = min(i1,i2),max(j1,j2)
+            w.setSelectionRange(i,j,insert=j)
+        else:
+            # Select from the beginning of the line containing i
+            # to the end of the line containing vc.vismode_i.
+            w.setInsertPoint(i)
+            vc.do(bx)
+            i1,i2 = w.getSelectionRange()
+            w.setInsertPoint(vc.vis_mode_i)
+            vc.do(ex)
+            j1,j2 = w.getSelectionRange()
+            i,j = min(i1,i2),max(j1,j2)
+            w.setSelectionRange(i,j,insert=i)
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(vc,w):
         '''Return True if we are in a headline edit widget.'''
@@ -2354,6 +2383,17 @@ class VimCommands:
         w.setProperty('vim_state',selector)
         w.style().unpolish(w)
         w.style().polish(w)
+    #@+node:ekr.20140802142132.17981: *4* vc.show_dot & show_list
+    def show_command(vc):
+        '''Show the accumulating command.'''
+        return ''.join([repr(z) for z in vc.command_list])
+
+    def show_dot(vc):
+        '''Show the dot.'''
+        s = ''.join([repr(z) for z in vc.dot_list[:10]])
+        if len(vc.dot_list) > 10:
+            s = s + '...'
+        return s
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''

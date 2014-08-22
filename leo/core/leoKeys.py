@@ -1647,6 +1647,8 @@ class GetArg:
                         command.append(ch)
                     else: break
                 return ''.join(command)
+            elif s.startswith(':%s'):
+                return s[:3]
             else:
                 # Special case for :! and :% etc.
                 return s[:2]

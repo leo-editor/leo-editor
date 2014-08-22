@@ -8,12 +8,13 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
+- :q closes current tab in vim, exits Leo session in Leo
+
 - do substitutions:
-    :% s/find/change/g
-    
-Not yet:
-- vc.update_dot_before_search must call add_to_dot():
-  save & restore vc.command_list as in vim_dot?
+    :% s/find/change/flags
+    :s /find/change/flags
+
+- do the / and ? commands update the dot properly?
 .. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
 Works for me:
 - 'y' should end visual mode and yank: 'y' is ignored until another 'v'
@@ -44,6 +45,45 @@ http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
     this one frequently...
 
 EKR: Can't Leo's find command do this?
+.. @+node:ekr.20140822072856.18255: *4* Substitution notes
+@language rest
+
+The :substitute command searches for a text pattern, and replaces it with a text string. There are many options, but these are what you probably want:
+
+:%s/foo/bar
+:%s/foo/bar/
+    Replace first occurance of 'foo' with 'bar' in all lines.
+
+:%s/foo/bar/g
+     Replace all occurances of 'foo' with 'bar' in all lines.
+    
+:s/foo/bar/
+    Replace first occurance of 'foo' (current line) with 'bar'
+
+:s/foo/bar/g
+    Replace all occurrence of 'foo' (current line ), with 'bar'.
+    
+Flags:
+/gi case insensitive
+/gI case sensitive
+/gw word insensitive
+/gW word sensitive
+    
+===== It's pointless to ask for confirmation: in that case, use Leo's search commands.
+
+:%s/foo/bar/gc
+    Change each 'foo' to 'bar', but ask for confirmation first. 
+
+:%s/\<foo\>/bar/gc
+    Change only whole words exactly matching 'foo' to 'bar'; ask for confirmation. 
+
+:%s/foo/bar/gci
+    Change each 'foo' (case insensitive) to 'bar'; ask for confirmation. 
+    This may be wanted after using :set noignorecase to make searches case sensitive (the default). 
+
+:%s/foo/bar/gcI
+    Change each 'foo' (case sensitive) to 'bar'; ask for confirmation. 
+    This may be wanted after using :set ignorecase to make searches case insensitive. 
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
