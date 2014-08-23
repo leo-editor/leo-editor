@@ -8,31 +8,29 @@
 .. @+node:ekr.20140730175636.17982: *3* ** Vim to-do
 @language rest
 
-- do substitutions:
-    :% s/find/change/flags
-    :s /find/change/flags
+- N ; repeat the last t,T,f,F command.
+  N , repeat the last t,T,f,F command in opposite direction.
 
-- do the / and ? commands update the dot properly?
+- Support z commands:
+    z-          or zb   redraw, current line at bottom of window
+    z.          or zz   redraw, current line at center of window
+    z<Return>   or zt   redraw, current line at top of window
 
-Most important unfinished commands:
-- Support ';' repeat the last t,T,f,F command: dot already does this.
-- Support z commands.
-- Motions:
-    N /<CR> repeat last search.
-    N ?<CR> repeat last search, in the backward direction
-- Do n and N work after :s searches?
-.. @+node:ekr.20140816165728.18937: *4* Maybe from Kent
-Works for me:
-- 'y' should end visual mode and yank: 'y' is ignored until another 'v'
-
-Others:
-
-
-
-- Kent: v, V, ctrl-v : visual select character, line, column
-
-http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
+- Finish g command
+    ge should go to end of n'th work: at present it goes to end of line.
+    gv start visual mode at previous visual area
+    gV start visual-line mode at previous visual area.
+    
+- Possible extensions:
+    gft  focus-to-tree
+    gfb  focus-to-body
+    gfl  focus-to-log
+    gfs  focus-to-spell-tab
 .. @+node:ekr.20140808182202.18183: *4* Maybe
+http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/
+
+- ctrl-v : visual select column
+
 - Write extend_vim_mode plugin
 
 - Extend Leo's undo to show the vim characters for the commands.
@@ -96,9 +94,6 @@ N   CTRL-R          redo last N undone changes
     
 N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
 N   -               (motion) up N lines, on the first non-blank character
-N   ,               (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
-N   .               (motion?) repeat last change (with count replaced with N)
-N   ;               (motion) repeat the last "f", "F", "t", or "T" N times
 N   (               (motion) N sentences backward
 N   )               (motion) N sentences forward
 N   {               (motion) N paragraphs backward
@@ -131,9 +126,6 @@ N   Y               yank N lines
 N   cc              change N lines
 N   c{motion}       change the text that is moved over with {motion}
 VIS c               change the highlighted text
-N   ge              (motion) backward to the end of the Nth word
-    gv              start highlighting on previous visual area
-N   n               (motion?) repeat last search
     m<a-zA-Z>       mark current position with mark <a-zA-Z>
 N   p               put a register after the cursor position (N times)
     q               stop recording
@@ -141,36 +133,13 @@ N   p               put a register after the cursor position (N times)
     q<a-z>          record typed characters into register <a-z>
 N   r<char>         replace N characters with <char>
 N   s               change N characters
-    z- or zb        redraw, current line at bottom of window
-    z. or zz        redraw, current line at center of window
-    z<CR> or zt     redraw, current line at top of window
-    
+
 Searches:
 
 N   /<CR>                       (motion) repeat last search, in the forward direction
 N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
 N   ?<CR>                       (motion) repeat last search, in the backward direction
 N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
-.. @+node:ekr.20140219070357.16609: *4* Proposed EKR vim-like bindings
-@language rest
-
-g go 
-    N   ge  (motion) backward to the end of the Nth word
-    N   gg  (motion) goto line N (default: first line), on the first non-blank character
-        gv  start highlighting on previous visual area
-    *** extensions ***
-    gV  start highlighting at end of previous visual area.
-    gft  focus-to-tree
-    gfb  focus-to-body
-    gfl  focus-to-log
-    gfs  focus-to-spell-tab
-
-G goto-line-number:
-    *** extensions ***
-
-n repeat last search (F3)
-N repeat last search in opposite direction (F2)
-
 .. @+node:ekr.20100113075303.6270: *4* vim problems (from Tom L)
 None of these is easily solvable in Leo's present environment.
 .. @+node:ekr.20140822160427.19049: *5* Can not be solved using @mode
