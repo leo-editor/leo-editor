@@ -274,7 +274,7 @@ class VimCommands:
         'K': None,
         'L': None,
         'M': None,
-        'N': None,
+        'N': vc.vim_N,
         'O': vc.vim_O,
         'P': vc.vim_P, # Paste *outline*
         'R': None,
@@ -707,41 +707,51 @@ class VimCommands:
     #@+node:ekr.20140222064735.16634: *4* vc.vim...(normal mode)
     #@+node:ekr.20140810181832.18220: *5* vc.update_dot_before_search
     def update_dot_before_search(vc,find_pattern,change_pattern):
-        '''A callback that updates the dot just before searching.'''
-        # g.trace(vc.search_stroke,find_pattern,change_pattern)
-        # Don't use vc.add_to_dot: it updates vc.command_list.
-        def add(stroke):
-            vc.dot_list.append(stroke)
-        if vc.in_dot:
-            # Don't set the dot again.
-            return
-        if vc.search_stroke is None:
-            # We didn't start the search with / or ?
-            return
-        if 1:
-            # This is all we can do until there is a substitution command.
-            vc.change_pattern = change_pattern
-                # Not used at present.
-            add(vc.search_stroke)
-            for ch in find_pattern:
-                add(ch)
-            vc.search_stroke = None
-        else:
-            # We could do this is we had a substitution command.
-            if change_pattern is None:
-                # A search pattern.
+        '''
+        A callback that updates the dot just before searching.
+        At present, this **leaves the dot unchanged**.
+        Use the n or N commands to repeat searches, 
+        '''
+        vc.command_list = []
+        if 0: # Don't do anything else!
+            # g.trace(vc.search_stroke,find_pattern,change_pattern)
+            # Don't use vc.add_to_dot: it updates vc.command_list.
+            def add(stroke):
+                event = VimEvent(char=stroke,stroke=stroke,w=vc.w)
+                vc.dot_list.append(event)
+            if vc.in_dot:
+                # Don't set the dot again.
+                return
+            if vc.search_stroke is None:
+                # We didn't start the search with / or ?
+                return
+            if 1:
+                # This is all we can do until there is a substitution command.
+                vc.change_pattern = change_pattern
+                    # Not used at present.
                 add(vc.search_stroke)
                 for ch in find_pattern:
                     add(ch)
+                vc.search_stroke = None
             else:
-                # A substitution:  :%s/find_pattern/change_pattern/g
-                for s in (":%s/",find_pattern,"/",change_pattern,"/g"):
-                    for ch in s:
+                # We could do this is we had a substitution command.
+                if change_pattern is None:
+                    # A search pattern.
+                    add(vc.search_stroke)
+                    for ch in find_pattern:
                         add(ch)
-            vc.search_stroke = None
+                else:
+                    # A substitution:  :%s/find_pattern/change_pattern/g
+                    for s in (":%s/",find_pattern,"/",change_pattern,"/g"):
+                        for ch in s:
+                            add(ch)
+                vc.search_stroke = None
     #@+node:ekr.20140811044942.18243: *5* vc.update_selection_after_search
     def update_selection_after_search(vc):
-        '''Extend visual mode's selection after a search.'''
+        '''
+        Extend visual mode's selection after a search.
+        Called from leoFind.showSuccess.
+        '''
         if vc.state == 'visual':
             w = vc.w
             if w == g.app.gui.get_focus():
@@ -1279,8 +1289,25 @@ class VimCommands:
         fc.setup_command()
         old_node_only = fc.node_only
         fc.node_only = True
-        fc.findNext()
-        vc.node_only = old_node_only
+        for z in range(vc.n1*vc.n):
+            if not fc.findNext():
+                break
+        fc.node_only = old_node_only
+        vc.done()
+    #@+node:ekr.20140823045819.18292: *5* vc.vim_N
+    def vim_N(vc):
+        '''Repeat last search N times (reversed).'''
+        fc = vc.c.findCommands
+        fc.setup_command()
+        old_node_only = fc.node_only
+        old_reverse = fc.reverse
+        fc.node_only = True
+        fc.reverse = True
+        for z in range(vc.n1*vc.n):
+            if not fc.findNext():
+                break
+        fc.node_only = old_node_only
+        fc.reverse = old_reverse
         vc.done()
     #@+node:ekr.20140222064735.16692: *5* vc.vim_O
     def vim_O(vc):
@@ -1967,7 +1994,7 @@ class VimCommands:
             if trace: g.trace('(Substitution)',
                 # 'all_lines',self.all_lines,
                 'k.arg',k.arg,'k.functionTail',k.functionTail)
-            w = vc.c if c.vim_mode else c.frame.body
+            w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_widget(w):
                 fc = vc.c.findCommands
                 ftm = fc.ftm

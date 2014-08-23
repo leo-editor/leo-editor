@@ -1251,7 +1251,7 @@ class LeoFind:
     def findNext(self,initFlag=True):
         '''Find the next instance of the pattern.'''
         if not self.checkArgs():
-            return
+            return False # for vim-mode find commands.
         # initFlag is False for change-then-find.
         if initFlag:
             self.initInHeadline()
@@ -1266,8 +1266,10 @@ class LeoFind:
             else:
                 g.es("not found","'%s'" % (self.find_text))
             self.restore(data)
+            return False # for vim-mode find commands.
         else:
             self.showSuccess(pos,newpos)
+            return True # for vim-mode find commands.
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         '''
