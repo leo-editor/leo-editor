@@ -3892,6 +3892,9 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
+
+move-lines-up               ! body = Ctrl-UpArrow
+move-lines-down             ! body = Ctrl-DnArrow 
   
 goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
