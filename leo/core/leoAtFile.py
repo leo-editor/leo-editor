@@ -3245,7 +3245,17 @@ class AtFile:
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                self.writeAllHelper(p,root,force,toString,writeAtFileNodesFlag,writtenFiles)
+                try:
+                    self.writeAllHelper(p,root,force,toString,writeAtFileNodesFlag,writtenFiles)
+                except Exception:
+                    # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+                    # Give a more urgent, more specific, more helpful message.
+                    g.es_exception()
+                    g.es('Internal error writing: %s' % (p.h),color='red')
+                    g.es('Please report this error to:',color='blue')
+                    g.es('https://groups.google.com/forum/#!forum/leo-editor',color='blue')
+                    g.es('Warning: changes to this file will be lost',color='red')
+                    g.es('unless you can save the file successfully.',color='red')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()

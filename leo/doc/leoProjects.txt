@@ -245,6 +245,28 @@ Changed LeoQtTree.closeEditorHelper as follows:
 - Catch RuntimeError exceptions.
 .. @+node:ekr.20140824161117.18385: *4* Gave the Find Tab the intended amount of border
 dw.createGrid now honors the margin argument.
+.. @+node:ekr.20140824163757.20586: *4* Fixed bug 1260415: exception writing external files" is insufficient 
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1260415
+
+Added more informative error messages in at.writeAllAtFileNodesHelper.
+This is the direct response to the bug report.  A typical message::
+
+    Internal error writing one or more external files.
+    Please report this error to:
+    https://groups.google.com/forum/#!forum/leo-editor
+    All changes will be lost unless you
+    can save each changed file.
+    
+A much better fix: catch all exceptions in at.writeAll.
+A typical message::
+
+    Internal error writing: @<file> node
+    Please report this error to:
+    https://groups.google.com/forum/#!forum/leo-editor
+    Warning: changes to this file will be lost
+    unless you can save the file successfully.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

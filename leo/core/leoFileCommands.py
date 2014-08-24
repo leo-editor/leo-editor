@@ -2062,20 +2062,22 @@ class BaseFileCommands:
         return False
     #@+node:ekr.20100119145629.6114: *4* fc.writeAllAtFileNodesHelper
     def writeAllAtFileNodesHelper (self):
-
-        '''Write all @<file> nodes and set orphan bits.
-        '''
-
+        '''Write all @<file> nodes and set orphan bits.'''
         c = self.c
-
         try:
             # 2010/01/19: Do *not* signal failure here.
             # This allows Leo to quit properly.
             c.atFileCommands.writeAll()
             return True
         except Exception:
+            # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
             g.es_error("exception writing external files")
             g.es_exception()
+            g.es('Internal error writing one or more external files.',color='red')
+            g.es('Please report this error to:',color='blue')
+            g.es('https://groups.google.com/forum/#!forum/leo-editor',color='blue')
+            g.es('All changes will be lost unless you',color='red')
+            g.es('can save each changed file.',color='red')
             return False
     #@+node:ekr.20100119145629.6111: *4* fc.writeToFileHelper & helpers
     def writeToFileHelper (self,fileName,toOPML):

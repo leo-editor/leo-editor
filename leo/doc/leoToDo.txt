@@ -11,9 +11,6 @@
 - Add all items in the to-be-documented mailbox to docs.
 - What to do about all the correspondence in the docs section below?
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
-.. @+node:ekr.20130908104426.11232: *4* Bug-tracker: High priority
-https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130530110446.12450: *5* Fix bug: syntax coloring with involving multiple body editors
 .. @+node:ekr.20140824043305.18302: *4* Fix all git bugs
 https://github.com/leo-editor/leo-editor/labels/bug
 .. @+node:ekr.20140824043305.18305: *4* Other bugs
@@ -4526,7 +4523,13 @@ xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20130926053913.11562: *3* Bug-tracker: Hard
-.. @+node:ekr.20130806072439.20497: *4* ** Leo does not display all content of a node ...
+.. @+node:ekr.20140824163757.20587: *4* Bug 1022140: scroll problem in the body pane (Hard)
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1022140
+.. @+node:ekr.20130806072439.20497: *5* ** Leo does not display all content of a node ...
+@language rest
+
 From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
 even at the latest revision (rev. 5500) Leo does not display all content of 
@@ -4569,7 +4572,7 @@ reading settings in D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
 reading: D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
 
 </log>
-.. @+node:ekr.20130806072439.20498: *5* Re: Leo does not display all content of a node ...
+.. @+node:ekr.20130806072439.20498: *6* Re: Leo does not display all content of a node ...
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 I can confirm that this type of bug is still present in 5500 also.
@@ -4600,7 +4603,7 @@ mode) vs. after selection of its body.
 Not a very helpful report, but maybe the difference between deletion of
 the node immediately and after selecting its body guides you to a
 particular piece of code.
-.. @+node:ekr.20130806072439.20499: *5* Re: Leo does not display all content of a node ...
+.. @+node:ekr.20130806072439.20499: *6* Re: Leo does not display all content of a node ...
 From: resi147 <scalet@yebu.de>
 
 I also have the same problem, using the official 4.10 final.
@@ -4609,7 +4612,7 @@ increments and decrements but the cursor does not move).
 
 Not sure what report could be useful.
 I also feel like it occurs on larger body nodes.
-.. @+node:ekr.20130806072439.20501: *5* Re: Leo does not display all content of a node ...
+.. @+node:ekr.20130806072439.20501: *6* Re: Leo does not display all content of a node ...
 From: lewis <lewisneal@operamail.com>
 
 Same issue for me has been occurring on a large node. Interestingly, I can
@@ -4628,7 +4631,7 @@ Leo Log Window
 Leo 4.11 devel, build 5647, 2013-04-02 08:03:37
 Python 3.3.1, qt version 4.8.4
 Windows 6, 1, 7601, 2, Service Pack 1
-.. @+node:ekr.20130806072439.20531: *5* Response to Leo does not display... Styling in Leo
+.. @+node:ekr.20130806072439.20531: *6* Response to Leo does not display... Styling in Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 (This is a response to the invisible line glitch, but not directly
@@ -4694,7 +4697,7 @@ Here is the test file::
     app.listen(port, function() {
     console.log("Listening on " + port);
     });
-.. @+node:ekr.20130916105324.19894: *4* Bug 1226353: @shadow does not retain outline structure properly (hard)
+.. @+node:ekr.20130916105324.19894: *4* Bug 1226353: @shadow does not retain outline structure properly (Hard)
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1226353
@@ -4729,11 +4732,8 @@ See https://bugs.launchpad.net/leo-editor/+bug/613153
 https://bugs.launchpad.net/leo-editor/+bug/914221
 
 Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
-.. @+node:ekr.20130908104426.11233: *4* Bug: 1022140 scroll problem in the body pane
-https://bugs.launchpad.net/leo-editor/+bug/1022140
 .. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130530110446.12450: *4* Fix bug: syntax coloring with involving multiple body editors
 .. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
 @language rest
 
