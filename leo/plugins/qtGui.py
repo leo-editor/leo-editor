@@ -2340,7 +2340,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createGrid (self,parent,name,margin=0,spacing=0):
 
         w = QtWidgets.QGridLayout(parent)
-        w.setContentsMargins(QtCore.QMargins(0,0,0,0))
+        w.setContentsMargins(QtCore.QMargins(margin,margin,margin,margin))
+            # 2014/08/24: honor margin argument.
         w.setSpacing(spacing)
         self.setName(w,name)
         return w

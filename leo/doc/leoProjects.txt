@@ -243,6 +243,8 @@ Changed LeoQtTree.closeEditorHelper as follows:
 - Call w.setItemWidget(item,0,None) to make sure e is never referenced again.
     
 - Catch RuntimeError exceptions.
+.. @+node:ekr.20140824161117.18385: *4* Gave the Find Tab the intended amount of border
+dw.createGrid now honors the margin argument.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
