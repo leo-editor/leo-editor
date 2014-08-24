@@ -1056,14 +1056,14 @@ class VimCommands:
                 match_i,n = None,vc.n1*vc.n
                 i -= 1 # Ensure progress
                 while i >= 0:
-                    g.trace(s[i],vc.ch,n)
+                    # g.trace(s[i],vc.ch,n)
                     if s[i] == vc.ch:
                         match_i,n = i,n-1
                         if n == 0: break
                     elif s[i] == '\n' and not vc.cross_lines:
                         break
                     i -= 1
-                g.trace(match_i,i)
+                # g.trace(match_i,i)
                 if match_i is not None:
                     g.trace(i1-match_i-1)
                     for z in range(i1-match_i):
