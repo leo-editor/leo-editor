@@ -241,6 +241,7 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
         if command_p.b.strip():
             return # sub menus can't have body text
         for child in command_p.children():
+            # pylint: disable=no-member
             rc = RClick(position=child.copy(), children=[])
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
