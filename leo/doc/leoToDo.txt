@@ -14,52 +14,6 @@
 .. @+node:ekr.20130908104426.11232: *4* Bug-tracker: High priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130530110446.12450: *5* Fix bug: syntax coloring with involving multiple body editors
-.. @+node:ekr.20130908104426.11234: *5* Fix bug: 1041906 underlying C/C++ object has been deleted
-https://bugs.launchpad.net/leo-editor/+bug/1041906
-
-I did the following: Ctrl-F, entered "Dream:". F3 several times. Deleted characters "Dream: " from a body. Changed the header from Diary to Dream.
-F3
-
-Leo Log Window
-Leo 4.11 devel, build 5424, 2012-08-21 16:03:45
-Python 2.7.2, qt version 4.7.4
-linux2
-setting leoID from os.getenv('USER'): 'bob02'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob02
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob02/.leo/myLeoSettings.leo
-reading settings in /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-reading: /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 559, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoEditCommands.py", line 9803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1492, in findNextCommand
-    self.findNext()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 702, in findNext
-    self.showSuccess(pos,newpos)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1330, in showSuccess
-    c.endEditing() # 2011/06/10: A major bug fix.
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8197, in endEditing
-    c.frame.tree.endEditLabel()
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 862, in endEditLabel
-    self.onHeadChanged(p)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 893, in onHeadChanged
-    self.closeEditorHelper(e,item)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/qtGui.py", line 6570, in closeEditorHelper
-    w.setCurrentItem(item)
-RuntimeError: underlying C/C++ object has been deleted
---------------- End log pane ----------------
-
-As you can see my Leo-Editor version is 5424.
-openSUSE 12.1
-Kernel Linux 3.1.10-1.16-desktop
-XFCE desktop environment
 .. @+node:ekr.20140824043305.18302: *4* Fix all git bugs
 https://github.com/leo-editor/leo-editor/labels/bug
 .. @+node:ekr.20140824043305.18305: *4* Other bugs
@@ -4780,52 +4734,6 @@ https://bugs.launchpad.net/leo-editor/+bug/1022140
 .. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130530110446.12450: *4* Fix bug: syntax coloring with involving multiple body editors
-.. @+node:ekr.20130908104426.11234: *4* Fix bug: 1041906 underlying C/C++ object has been deleted
-https://bugs.launchpad.net/leo-editor/+bug/1041906
-
-I did the following: Ctrl-F, entered "Dream:". F3 several times. Deleted characters "Dream: " from a body. Changed the header from Diary to Dream.
-F3
-
-Leo Log Window
-Leo 4.11 devel, build 5424, 2012-08-21 16:03:45
-Python 2.7.2, qt version 4.7.4
-linux2
-setting leoID from os.getenv('USER'): 'bob02'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob02
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob02/.leo/myLeoSettings.leo
-reading settings in /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-reading: /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 559, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoEditCommands.py", line 9803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1492, in findNextCommand
-    self.findNext()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 702, in findNext
-    self.showSuccess(pos,newpos)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1330, in showSuccess
-    c.endEditing() # 2011/06/10: A major bug fix.
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8197, in endEditing
-    c.frame.tree.endEditLabel()
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 862, in endEditLabel
-    self.onHeadChanged(p)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 893, in onHeadChanged
-    self.closeEditorHelper(e,item)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/qtGui.py", line 6570, in closeEditorHelper
-    w.setCurrentItem(item)
-RuntimeError: underlying C/C++ object has been deleted
---------------- End log pane ----------------
-
-As you can see my Leo-Editor version is 5424.
-openSUSE 12.1
-Kernel Linux 3.1.10-1.16-desktop
-XFCE desktop environment
 .. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
 @language rest
 

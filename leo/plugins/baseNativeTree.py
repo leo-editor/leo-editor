@@ -807,9 +807,9 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
             if trace and verbose: g.trace('(nativeTree) ** not editing')
             return
         s = g.u(e.text())
+        self.closeEditorHelper(e,item)
         if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
             return
-        self.closeEditorHelper(e,item)
         oldHead = p.h
         changed = s != oldHead
         if changed:

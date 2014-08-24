@@ -6707,13 +6707,20 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
         return items
     #@+node:ekr.20110605121601.18417: *6* closeEditorHelper (LeoQtTree)
     def closeEditorHelper (self,e,item):
-
+        'End editing of the underlying QLineEdit widget for the headline.'''
         w = self.treeWidget
-
         if e:
-            # g.trace(g.callers(5))
             w.closeEditor(e,QtWidgets.QAbstractItemDelegate.NoHint)
-            w.setCurrentItem(item)
+            try:
+                # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
+                # underlying C/C++ object has been deleted
+                w.setItemWidget(item,0,None)
+                    # Make sure e is never referenced again.
+                w.setCurrentItem(item)
+            except RuntimeError:
+                g.es_exception()
+                # Recover silently even if there is a problem.
+                pass
     #@+node:ekr.20110605121601.18418: *6* connectEditorWidget & helper
     def connectEditorWidget(self,e,item):
 

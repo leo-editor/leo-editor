@@ -233,6 +233,16 @@ The problem was in ic.createImporterData, not at.createWritesData.
 A trace in get_leo_namespace pinpointed the problem.
 
  
+.. @+node:ekr.20130908104426.11234: *4* Fixed bug 1041906: underlying C/C++ object has been deleted
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1041906
+
+Changed LeoQtTree.closeEditorHelper as follows:
+    
+- Call w.setItemWidget(item,0,None) to make sure e is never referenced again.
+    
+- Catch RuntimeError exceptions.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
