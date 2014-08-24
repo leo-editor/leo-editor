@@ -99,7 +99,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -3851,10 +3851,9 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
 # These all cause problems on Ubuntu...
-do-nothing  = Ctrl-DnArrow  
-do-nothing  = Ctrl-UpArrow
-# do-nothing  = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
-# do-nothing  = Ctrl-PageDn  # working in Xfce at least
+
+# do-nothing    = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
+# do-nothing    = Ctrl-PageDn  # working in Xfce at least
 
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
@@ -3893,6 +3892,8 @@ move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
 
+do-nothing                  ! tree = Ctrl-DnArrow
+do-nothing                  ! tree = Ctrl-UpArrow
 move-lines-up               ! body = Ctrl-UpArrow
 move-lines-down             ! body = Ctrl-DnArrow 
   
