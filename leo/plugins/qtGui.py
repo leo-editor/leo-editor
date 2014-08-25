@@ -8664,7 +8664,7 @@ class IdleTime:
     '''A class that executes a handler at idle time.'''
     #@+others
     #@+node:ekr.20140825042850.18406: *3*  IdleTime.ctor
-    def __init__(self,c,handler,delay=500):
+    def __init__(self,c,handler,delay=500,tag=None):
         '''ctor for IdleTime class.'''
         self.c = c
             # The commander that created this timer.
@@ -8679,6 +8679,8 @@ class IdleTime:
             # The user-provided idle-time handler.
         self.starting_time = None
             # Time that the timer started.
+        self.tag = tag
+            # An arbitrary string/object for use during debugging.
         self.time = None
             # Time that the handle is called.
         self.waiting_for_idle = False

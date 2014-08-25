@@ -3984,10 +3984,10 @@ def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
         idleTimeHandler.__name__,idleTimeDelay))
     g.app.gui.setIdleTimeHook()
 #@+node:ekr.20140825042850.18410: *4* g.IdleTime
-def IdleTime(c,handler,delay=500):
+def IdleTime(c,handler,delay=500,tag=None):
     '''A proxy for the g.app.gui.IdleTime class.'''
     if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
-        return g.app.gui.idleTimeClass(c,handler,delay)
+        return g.app.gui.idleTimeClass(c,handler,delay,tag)
     else:
         return None
 #@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
