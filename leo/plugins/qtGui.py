@@ -8677,12 +8677,12 @@ class IdleTime:
             # True: run the timer continuously.
         self.handler = handler
             # The user-provided idle-time handler.
-        self.last_delay = 0
-            # The previous value of self.delay.
         self.starting_time = None
             # Time that the timer started.
         self.time = None
             # Time that the handle is called.
+        self.waiting_for_idle = False
+            # True if we have already waited for the minimum delay
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         def IdleTime_callback():
@@ -8691,27 +8691,15 @@ class IdleTime:
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
-        trace = False and not g.unitTesting
         if self.enabled:
-            # Idle-time processing is enabled.
-            if self.last_delay == 0:
-                # At idle time: call the handler.
-                if trace: g.trace('at idle time')
+            # At idle time: call the handler.
+            if self.waiting_for_idle:
                 self.call_handler()
-                # Now wait at for at least self.delay msec.
-                self.last_delay = self.delay
-                self.timer.stop()
-                self.timer.start(self.delay)
-            else:
-                # We have waited at least self.delay msec.
-                # Now wait for idle time.
-                if trace: g.trace('waiting for idle time')
-                self.last_delay = 0
-                self.timer.stop()
-                self.timer.start(0)
+            # Requeue the timer with the appropriate delay.
+            self.waiting_for_idle = not self.waiting_for_idle
+            self.timer.stop()
+            self.timer.start(0 if self.waiting_for_idle else self.delay)
         else:
-            # Idle-time processing is disabled.  Stop the timer.
-            if trace: g.trace('Stopping timer.')
             self.timer.stop()
     #@+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
     def call_handler(self):
@@ -8735,6 +8723,7 @@ class IdleTime:
 
     def stop(self):
         '''Stop idle-time processing.'''
+        self.timer.stop()
         self.enabled = False
     #@-others
 #@+node:ekr.20110605121601.18537: ** class LeoQtEventFilter
