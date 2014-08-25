@@ -8666,8 +8666,8 @@ class IdleTime:
     #@+node:ekr.20140825042850.18406: *3* IdleTime.ctor
     def __init__(self,c,handler,delay=500):
         '''ctor for IdleTime class.'''
-        # g.trace('(IdleTime)')
         self.c = c
+            # The commander that created this timer.
         self.count = 0
             # The number of times handler has been called.
         self.delay = delay
@@ -8685,9 +8685,7 @@ class IdleTime:
             # True if we have already waited for the minimum delay
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
-        def IdleTime_callback():
-            self.at_idle_time()
-        self.timer.timeout.connect(IdleTime_callback)
+        self.timer.timeout.connect(self.at_idle_time)
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
