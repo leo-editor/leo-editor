@@ -6719,9 +6719,11 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
                     # Make sure e is never referenced again.
                 w.setCurrentItem(item)
             except RuntimeError:
-                g.es_exception()
-                # Recover silently even if there is a problem.
-                pass
+                if 1: # Testing.
+                    g.es_exception()
+                else:
+                    # Recover silently even if there is a problem.
+                    pass
     #@+node:ekr.20110605121601.18418: *6* connectEditorWidget & helper
     def connectEditorWidget(self,e,item):
 
