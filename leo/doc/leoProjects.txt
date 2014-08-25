@@ -245,7 +245,7 @@ Changed LeoQtTree.closeEditorHelper as follows:
 - Catch RuntimeError exceptions.
 .. @+node:ekr.20140824161117.18385: *4* Gave the Find Tab the intended amount of border
 dw.createGrid now honors the margin argument.
-.. @+node:ekr.20140824163757.20586: *4* Fixed bug 1260415: exception writing external files" is insufficient 
+.. @+node:ekr.20140824163757.20586: *4* Fixed bug 1260415: exception writing external files" is insufficient
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1260415
@@ -307,6 +307,85 @@ What I did:
 Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
 of a Leo command. This allows an option (does not exist yet) to use g.es
 instead of the minibuffer to report status.
+.. @+node:ekr.20140825071827.18528: *4* Created g.IdleTime and qtGui.IdleTime
+@language rest
+
+Rev 060c33a...Leo build: 20140825070951 contains a spectacular collapse in
+complexity in idle-time handling. Instantly, registering idle-time event
+handlers can be considered deprecated, though I have no plans to remove the
+horrendous older code.
+
+The new pattern allows multiple, independent (or cooperating) idle-time
+handlers, created at will as needed.
+
+The new code is based on the IdleTime class in qtGui.py. Rather than access
+this directly, code should use the g.IdleTime proxy:: g.IdleTime ensures
+that all is well when using gui's that don't have an IdleTime class.
+
+Here is how to use the new code::
+
+    def handler(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+    it = g.IdleTime(c,handler,delay=500)
+    if it: it.start()
+
+The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+
+Timer instances are completely independent.  For example:
+
+    def handler1(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+
+    def handler2(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 10:
+            g.trace('done')
+            it.stop()
+
+    it1 = g.IdleTime(c,handler1,delay=500)
+    it2 = g.IdleTime(c,handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

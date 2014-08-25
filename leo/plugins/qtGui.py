@@ -39,6 +39,7 @@ import re # For colorizer
 import string
 import sys
 # import tempfile
+import time
 import platform
 import time
 from collections import defaultdict
@@ -8665,7 +8666,7 @@ class IdleTime:
     #@+node:ekr.20140825042850.18406: *3* IdleTime.ctor
     def __init__(self,c,handler,delay=500):
         '''ctor for IdleTime class.'''
-        g.trace('(IdleTime)')
+        # g.trace('(IdleTime)')
         self.c = c
         self.count = 0
             # The number of times handler has been called.
@@ -8678,6 +8679,10 @@ class IdleTime:
             # The user-provided idle-time handler.
         self.last_delay = 0
             # The previous value of self.delay.
+        self.starting_time = None
+            # Time that the timer started.
+        self.time = None
+            # Time that the handle is called.
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         def IdleTime_callback():
@@ -8686,7 +8691,7 @@ class IdleTime:
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
-        trace = False #  and not g.unitTesting
+        trace = False and not g.unitTesting
         if self.enabled:
             # Idle-time processing is enabled.
             if self.last_delay == 0:
@@ -8713,6 +8718,7 @@ class IdleTime:
         '''Carefully call the handler.'''
         try:
             self.count += 1
+            self.time = time.time()
             self.handler(self)
         except Exception:
             g.es_exception()
@@ -8720,15 +8726,15 @@ class IdleTime:
     #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
     def start(self):
         '''Start idle-time processing'''
-        # g.trace(self.timer)
         self.enabled = True
+        if self.starting_time is None:
+            self.starting_time = time.time()
         # Wait at least self.delay msec, then wait for idle time.
         self.last_delay = self.delay
         self.timer.start(self.delay)
 
     def stop(self):
         '''Stop idle-time processing.'''
-        # g.trace(self.timer)
         self.enabled = False
     #@-others
 #@+node:ekr.20110605121601.18537: ** class LeoQtEventFilter
