@@ -8691,10 +8691,22 @@ class IdleTime:
         # Add this instance to the global idle_timers.list.
         # This reference prevents this instance from being destroyed.
         g.app.idle_timers.append(self)
+    #@+node:ekr.20140825102404.18525: *3*  IdleTime.__repr__
+    def __repr__(self):
+        '''IdleTime repr.'''
+        tag = self.tag
+        if tag:
+            return '<IdleTime: %s>' % (tag if g.isString(tag) else repr(tag))
+        else:
+            return '<IdleTime: id: %s>' % id(self)
+
+    __str__ = __repr__
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
-        if self.enabled:
+        if g.app.killed:
+            self.stop()
+        elif self.enabled:
             if self.waiting_for_idle:
                 # At idle time: call the handler.
                 self.call_handler()
@@ -8731,9 +8743,10 @@ class IdleTime:
         self.timer.start(self.delay)
 
     def stop(self):
-        '''Stop idle-time processing.'''
-        self.timer.stop()
+        '''Stop idle-time processing. May be called during shutdown.'''
         self.enabled = False
+        if hasattr(self,'timer'):
+            self.timer.stop()
     #@-others
 #@+node:ekr.20110605121601.18537: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
