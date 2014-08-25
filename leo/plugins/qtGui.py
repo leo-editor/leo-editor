@@ -8692,10 +8692,11 @@ class IdleTime:
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
         if self.enabled:
-            # At idle time: call the handler.
             if self.waiting_for_idle:
+                # At idle time: call the handler.
                 self.call_handler()
             # Requeue the timer with the appropriate delay.
+            # 0 means wait until idle time.
             self.waiting_for_idle = not self.waiting_for_idle
             self.timer.stop()
             self.timer.start(0 if self.waiting_for_idle else self.delay)
