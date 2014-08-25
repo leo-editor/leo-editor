@@ -23,7 +23,8 @@ ruby_main_attributes_dict = {
 
 # Attributes dict for ruby_doublequoteliteral ruleset.
 ruby_doublequoteliteral_attributes_dict = {
-	"default": "null",
+	"default": "LITERAL1",
+		# Fix https://github.com/leo-editor/leo-editor/issues/47
 	"digit_re": "",
 	"escape": "\\",
 	"highlight_digits": "true",
