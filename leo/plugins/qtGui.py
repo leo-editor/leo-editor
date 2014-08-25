@@ -8730,7 +8730,7 @@ class IdleTime:
     #@+node:ekr.20140825080012.18529: *3* IdleTime.destory_self
     def destroy_self(self):
         '''Remove the instance from g.app.idle_timers.'''
-        if self in g.app.idle_timers:
+        if not g.app.killed and self in g.app.idle_timers:
             g.app.idle_timers.remove(self)
     #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
     def start(self):
