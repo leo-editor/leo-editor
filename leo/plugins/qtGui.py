@@ -7450,16 +7450,17 @@ class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
 
     #@+others
-    #@+node:ekr.20110605121601.18476: *4*   Birth & death (qtGui)
-    #@+node:ekr.20110605121601.18477: *5*  qtGui.__init__ (qtGui)
+    #@+node:ekr.20110605121601.18476: *4*  LeoQtGui.Birth & death
+    #@+node:ekr.20110605121601.18477: *5*  LeoQtGui.__init__
     def __init__ (self):
-
+        '''Ctor for qtGui class.'''
         # Initialize the base class.
         leoGui.LeoGui.__init__(self,'qt')
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.bodyTextWidget  = LeoQtBaseTextWidget
         self.iconimages = {}
+        self.idleTimeClass = IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
         self.plainTextWidget = LeoQtBaseTextWidget
         self.mGuiName = 'qt'
@@ -7477,7 +7478,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = TabbedFrameFactory()
         else:
             self.frameFactory = SDIFrameFactory()
-    #@+node:ekr.20110605121601.18483: *5* runMainLoop & runWithIpythonKernel (qtGui)
+    #@+node:ekr.20110605121601.18483: *5* LeoQtGui.runMainLoop & runWithIpythonKernel
     #@+node:ekr.20130930062914.16000: *6* qtGui.runMainLoop
     def runMainLoop(self):
         '''Start the Qt main loop.'''
@@ -7545,11 +7546,11 @@ class LeoQtGui(leoGui.LeoGui):
             finally:
                 sys.stdout.flush()
                 # sys.stderr.flush()
-    #@+node:ekr.20110605121601.18484: *5* destroySelf (qtGui)
+    #@+node:ekr.20110605121601.18484: *5* LeoQtGui.destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
-    #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
+    #@+node:ekr.20111022215436.16685: *4* LeoQtGui.Borders
     #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
         
@@ -7594,7 +7595,7 @@ class LeoQtGui(leoGui.LeoGui):
         # How's this for a kludge.
         # Set this ivar for InnerBodyFrame.paintEvent.
         g.app.gui.innerBodyFrameColor = color
-    #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
+    #@+node:ekr.20110605121601.18485: *4* LeoQtGui.Clipboard
     def replaceClipboardWith (self,s):
 
         '''Replace the clipboard with the string s.'''
@@ -7627,7 +7628,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace('no clipboard!')
             return ''
-    #@+node:ekr.20110605121601.18487: *4* Dialogs & panels (qtGui)
+    #@+node:ekr.20110605121601.18487: *4* LeoQtGui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *5* alert (qtGui)
     def alert (self,c,message):
 
@@ -8003,8 +8004,8 @@ class LeoQtGui(leoGui.LeoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
-    #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
+    #@+node:ekr.20110607182447.16456: *4* LeoQtGui.Event handlers
+    #@+node:ekr.20110605121601.18480: *5* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent (self,event,c,obj,tag):
@@ -8026,7 +8027,7 @@ class LeoQtGui(leoGui.LeoGui):
             if c.p.v:
                 c.p.v.restoreCursorAndScroll()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-    #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
+    #@+node:ekr.20110605121601.18481: *5* LeoQtGui.onDeactiveEvent
     def onDeactivateEvent (self,event,c,obj,tag):
 
         '''Put the focus in the body pane when the Leo window is
@@ -8045,7 +8046,29 @@ class LeoQtGui(leoGui.LeoGui):
                 # 2011/09/29. Don't change the tab in the log pane.
             # c.endEditing()
             g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
-    #@+node:ekr.20110605121601.18508: *4* Focus (qtGui)
+    #@+node:ekr.20130921043420.21175: *5* LeoQtGui.setFilter
+    # w's type is in (DynamicWindow,,LeoQtMinibuffer,LeoQtLog,LeoQtTree,
+    # LeoQTextEditWidget,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
+    def setFilter(self,c,obj,w,tag):
+        '''
+        Create an event filter in obj.
+        w is a wrapper object, not necessarily a QWidget.
+        '''
+        if 0:
+            g.trace(isinstance(w,QtWidgets.QWidget),
+                hasattr(w,'getName') and w.getName() or None,
+                w.__class__.__name__)
+        if 0:
+            g.trace('obj: %4s %20s w: %5s %s' % (
+                isinstance(obj,QtWidgets.QWidget),obj.__class__.__name__,
+                isinstance(w,QtWidgets.QWidget),w.__class__.__name__))
+        assert isinstance(obj,QtWidgets.QWidget),obj
+        gui = self
+        theFilter = LeoQtEventFilter(c,w=w,tag=tag)
+        obj.installEventFilter(theFilter)
+        w.ev_filter = theFilter
+            # Set the official ivar in w.
+    #@+node:ekr.20110605121601.18508: *4* LeoQtGui.Focus
     def get_focus(self,c=None,raw=False):
         """Returns the widget that has focus."""
         # pylint: disable=w0221
@@ -8086,7 +8109,7 @@ class LeoQtGui(leoGui.LeoGui):
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
         # END: copy
-    #@+node:ekr.20110605121601.18509: *4* Font
+    #@+node:ekr.20110605121601.18509: *4* LeoQtGui.Fonts
     #@+node:ekr.20110605121601.18510: *5* qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
@@ -8116,7 +8139,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
-    #@+node:ekr.20110605121601.18511: *4* getFullVersion
+    #@+node:ekr.20110605121601.18511: *4* LeoQtGui.getFullVersion
     def getFullVersion (self,c=None):
         '''Return the PyQt version (for signon)'''
         try:
@@ -8125,7 +8148,7 @@ class LeoQtGui(leoGui.LeoGui):
             # g.es_exception()
             qtLevel = '<qtLevel>'
         return 'PyQt %s' % (qtLevel)
-    #@+node:ekr.20110605121601.18514: *4* Icons
+    #@+node:ekr.20110605121601.18514: *4* LeoQtGui.Icons
     #@+node:ekr.20110605121601.18515: *5* attachLeoIcon (qtGui)
     def attachLeoIcon (self,window):
 
@@ -8262,7 +8285,7 @@ class LeoQtGui(leoGui.LeoGui):
             return image,image.height()
         else:
             return None,None
-    #@+node:ekr.20110605121601.18519: *4* Idle Time (qtGui)
+    #@+node:ekr.20110605121601.18519: *4* LeoQtGui.Idle Time
     #@+node:ekr.20110605121601.18520: *5* qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
     timer = None
     timer_last_delay = 0
@@ -8316,7 +8339,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runAtIdle (self,aFunc):
         '''This can not be called in some contexts.'''
         QtCore.QTimer.singleShot(0,aFunc)
-    #@+node:ekr.20131007055150.17608: *4* insertKeyEvent (qtGui) (New in 4.11)
+    #@+node:ekr.20131007055150.17608: *4* LeoQtGui.insertKeyEvent
     def insertKeyEvent (self,event,i):
         
         '''Insert the key given by event in location i of widget event.w.'''
@@ -8340,24 +8363,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20110605121601.18522: *4* isTextWidget (qtGui)
-    def isTextWidget (self,w):
-
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-
-        if not w: return False
-
-        val = (
-            isinstance(w,leoFrame.BaseTextWidget) or
-            isinstance(w,LeoQtBody) or
-            isinstance(w,LeoQtLog) or
-            isinstance(w,LeoQtBaseTextWidget)
-        )
-
-        # g.trace(val,w)
-        return val
-
-    #@+node:ekr.20110605121601.18528: *4* makeScriptButton (to do)
+    #@+node:ekr.20110605121601.18528: *4* LeoQtGui.makeScriptButton
     def makeScriptButton (self,c,
         args=None,
         p=None, # A node containing the script.
@@ -8421,7 +8427,7 @@ class LeoQtGui(leoGui.LeoGui):
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-<< create press-buttonText-button command >>
-    #@+node:ekr.20111215193352.10220: *4* Splash Screen (qtGui)
+    #@+node:ekr.20111215193352.10220: *4* LeoQtGui.Splash Screen
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
         '''Put up a splash screen with the Leo logo.'''
@@ -8464,7 +8470,7 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20110605121601.18523: *4* Style Sheets (qtGui)
+    #@+node:ekr.20110605121601.18523: *4* LeoQtGui.Style Sheets
     #@+node:ekr.20110605121601.18524: *5* setStyleSetting (qtGui)
     def setStyleSetting(self,w,widgetKind,selector,val):
 
@@ -8527,7 +8533,25 @@ class LeoQtGui(leoGui.LeoGui):
         # This call is responsible for the unwanted scrolling!
         # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
         w.setStyleSheet(s)
-    #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
+    #@+node:ekr.20140825042850.18411: *4* LeoQtGui.Utils...
+    #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget
+    def isTextWidget (self,w):
+
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+
+        if not w: return False
+
+        val = (
+            isinstance(w,leoFrame.BaseTextWidget) or
+            isinstance(w,LeoQtBody) or
+            isinstance(w,LeoQtLog) or
+            isinstance(w,LeoQtBaseTextWidget)
+        )
+
+        # g.trace(val,w)
+        return val
+
+    #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):
 
         try:
@@ -8537,7 +8561,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace('*** Unicode Error: bugs possible')
             # The mass update omitted the encoding param.
             return g.toUnicode(s,reportErrors='replace')
-    #@+node:ekr.20110605121601.18527: *4* widget_name (qtGui)
+    #@+node:ekr.20110605121601.18527: *5* LeoQtGui.widget_name
     def widget_name (self,w):
 
         # First try the widget's getName method.
@@ -8554,7 +8578,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         # g.trace(id(w),name)
         return name
-    #@+node:ekr.20111027083744.16532: *4* enableSignalDebugging (qtGui)
+    #@+node:ekr.20111027083744.16532: *5* LeoQtGui.enableSignalDebugging
     # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
 
     if isQt5:
@@ -8604,28 +8628,6 @@ class LeoQtGui(leoGui.LeoGui):
                 self._oldEmit(self, *args)
         
             QtCore.QObject.emit = new_emit
-    #@+node:ekr.20130921043420.21175: *4* setFilter (qtGui)
-    # w's type is in (DynamicWindow,,LeoQtMinibuffer,LeoQtLog,LeoQtTree,
-    # LeoQTextEditWidget,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
-    def setFilter(self,c,obj,w,tag):
-        '''
-        Create an event filter in obj.
-        w is a wrapper object, not necessarily a QWidget.
-        '''
-        if 0:
-            g.trace(isinstance(w,QtWidgets.QWidget),
-                hasattr(w,'getName') and w.getName() or None,
-                w.__class__.__name__)
-        if 0:
-            g.trace('obj: %4s %20s w: %5s %s' % (
-                isinstance(obj,QtWidgets.QWidget),obj.__class__.__name__,
-                isinstance(w,QtWidgets.QWidget),w.__class__.__name__))
-        assert isinstance(obj,QtWidgets.QWidget),obj
-        gui = self
-        theFilter = LeoQtEventFilter(c,w=w,tag=tag)
-        obj.installEventFilter(theFilter)
-        w.ev_filter = theFilter
-            # Set the official ivar in w.
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines
@@ -8656,6 +8658,79 @@ class QuickHeadlines:
         p = self.c.currentPosition()
         for n in p.children():
             self.listWidget.addItem(n.h)
+#@+node:ekr.20140825042850.18405: ** class IdleTime (qtGui.py)
+class IdleTime:
+    '''A class that executes a handler at idle time.'''
+    #@+others
+    #@+node:ekr.20140825042850.18406: *3* IdleTime.ctor
+    def __init__(self,c,handler,delay=500):
+        '''ctor for IdleTime class.'''
+        g.trace('(IdleTime)')
+        self.c = c
+        self.count = 0
+            # The number of times handler has been called.
+        self.delay = delay
+            # The argument to self.timer.start:
+            # 0 for idle time, otherwise a delay in msec.
+        self.enabled = False
+            # True: run the timer continuously.
+        self.handler = handler
+            # The user-provided idle-time handler.
+        self.last_delay = 0
+            # The previous value of self.delay.
+        # Create the timer, but do not fire it.
+        self.timer = QtCore.QTimer()
+        def IdleTime_callback():
+            self.at_idle_time()
+        self.timer.timeout.connect(IdleTime_callback)
+    #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
+    def at_idle_time(self):
+        '''Call self.handler not more than once every self.delay msec.'''
+        trace = False #  and not g.unitTesting
+        if self.enabled:
+            # Idle-time processing is enabled.
+            if self.last_delay == 0:
+                # At idle time: call the handler.
+                if trace: g.trace('at idle time')
+                self.call_handler()
+                # Now wait at for at least self.delay msec.
+                self.last_delay = self.delay
+                self.timer.stop()
+                self.timer.start(self.delay)
+            else:
+                # We have waited at least self.delay msec.
+                # Now wait for idle time.
+                if trace: g.trace('waiting for idle time')
+                self.last_delay = 0
+                self.timer.stop()
+                self.timer.start(0)
+        else:
+            # Idle-time processing is disabled.  Stop the timer.
+            if trace: g.trace('Stopping timer.')
+            self.timer.stop()
+    #@+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
+    def call_handler(self):
+        '''Carefully call the handler.'''
+        try:
+            self.count += 1
+            self.handler(self)
+        except Exception:
+            g.es_exception()
+            self.stop()
+    #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
+    def start(self):
+        '''Start idle-time processing'''
+        # g.trace(self.timer)
+        self.enabled = True
+        # Wait at least self.delay msec, then wait for idle time.
+        self.last_delay = self.delay
+        self.timer.start(self.delay)
+
+    def stop(self):
+        '''Stop idle-time processing.'''
+        # g.trace(self.timer)
+        self.enabled = False
+    #@-others
 #@+node:ekr.20110605121601.18537: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
 
@@ -9634,7 +9709,10 @@ class LeoQtColorizer:
     # Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
 
     def write_colorizer_cache (self,p):
-
+        '''
+        Write colorizing data for p for later use by rehighlight_with_cache.
+        Called from the node selection logic only if an @colorcache directive is in effect.
+        '''
         trace = False and not g.unitTesting
         if not p: return
         c = self.c
@@ -9657,7 +9735,6 @@ class LeoQtColorizer:
                         # r.format = QtWidgets.QTextCharFormat(r.format)
                         # ranges2.append(r)
                     # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
-
         p.v.colorCache = g.bunch(aList=aList,n=doc.blockCount(),v=p.v)
         if trace:
             g.trace('%2.3f sec len(aList): %s v: %s' % (
@@ -9741,8 +9818,8 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 self.colorer.recolorCount-n,time.time()-t1))
     #@+node:ekr.20121003051050.10201: *5* rehighlight_with_cache (LeoQtSyntaxHighlighter)
     def rehighlight_with_cache (self,bunch):
-
-        '''Rehighlight the block from bunch, without calling QSH.rehighlight.
+        '''
+        Rehighlight the block from bunch, without calling QSH.rehighlight.
 
         - bunch.aList: a list of bunch2 objects.
         - bunch.n: a block (line) number.
@@ -9751,8 +9828,7 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             - bunch2.s: the contents of the block.
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
         '''
-
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
         doc = w.document()
         if bunch.n != doc.blockCount():
@@ -9769,7 +9845,7 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
                     i,bunch2.s,g.u(b.text())))
         if trace:
-            g.trace('%2.3f sec %s' % (time.time()-t1))
+            g.trace('%2.3f sec' % (time.time()-t1))
     #@-others
 #@+node:ekr.20130702040231.12633: *3* LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter) NEW
 # This is c.frame.body.colorizer.highlighter
@@ -11709,24 +11785,22 @@ class JEditColorizer:
         return i
     #@+node:ekr.20110605121601.18640: *4* recolor
     def recolor (self,s):
-
-        '''Recolor a *single* line, s.'''
-
+        '''
+        Recolor a *single* line, s.
+        Qt calls this method repeatedly to colorizer all the text.
+        '''
         trace = False and not g.unitTesting
         callers = False ; line = True ; state = False
         returns = False
-
         # Update the counts.
         self.recolorCount += 1
         self.totalChars += len(s)
-
         if self.colorizer.changingText:
             if trace and returns: g.trace('changingText')
             return
         if not self.colorizer.flag:
             if trace and returns: g.trace('not flag')
             return
-
         # Get the previous state.
         n = self.prevState() # The state at the end of the previous line.
         if trace:
@@ -11737,7 +11811,6 @@ class JEditColorizer:
             if callers:
                 # Called from colorize:rehightlight,highlightBlock
                 g.trace(g.callers())
-
         if s.strip() or self.showInvisibles:
             self.mainLoop(n,s)
         else:

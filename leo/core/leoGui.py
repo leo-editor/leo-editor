@@ -77,11 +77,11 @@ class LeoGui:
     #@+node:ekr.20031218072017.3721: *3* app.gui Birth & death
     #@+node:ekr.20031218072017.3722: *4*  LeoGui.__init__
     def __init__ (self,guiName):
-
+        '''Ctor for the LeoGui class.'''
         # g.trace("LeoGui",guiName,g.callers())
-
         self.active = None # Used only by qtGui.
         self.bodyTextWidget = None
+        self.idleTimeClass = None
         self.isNullGui = False
         self.lastFrame = None
         self.leoIcon = None

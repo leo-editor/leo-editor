@@ -3961,6 +3961,12 @@ def skip_ws_and_nl(s,i):
     return i
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20031218072017.1315: *3* g.idle time functions
+#@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
+def disableIdleTimeHook():
+    '''Disable the global idle-time hook.'''
+    trace = g.app.trace_idle_time and not g.unitTesting
+    if trace: g.trace()
+    g.app.idleTimeHook = False
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
 def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     '''
@@ -3977,12 +3983,13 @@ def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     if trace: g.trace('start handler: %s: delay: %d msec.' % (
         idleTimeHandler.__name__,idleTimeDelay))
     g.app.gui.setIdleTimeHook()
-#@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
-def disableIdleTimeHook():
-    '''Disable the global idle-time hook.'''
-    trace = g.app.trace_idle_time and not g.unitTesting
-    if trace: g.trace()
-    g.app.idleTimeHook = False
+#@+node:ekr.20140825042850.18410: *4* g.IdleTime
+def IdleTime(c,handler,delay=500):
+    '''A proxy for the g.app.gui.IdleTime class.'''
+    if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
+        return g.app.gui.idleTimeClass(c,handler,delay)
+    else:
+        return None
 #@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
 trace_count = 0
 
