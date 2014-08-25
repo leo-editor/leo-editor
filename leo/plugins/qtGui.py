@@ -8663,7 +8663,7 @@ class QuickHeadlines:
 class IdleTime:
     '''A class that executes a handler at idle time.'''
     #@+others
-    #@+node:ekr.20140825042850.18406: *3* IdleTime.ctor
+    #@+node:ekr.20140825042850.18406: *3*  IdleTime.ctor
     def __init__(self,c,handler,delay=500):
         '''ctor for IdleTime class.'''
         self.c = c
@@ -8686,6 +8686,9 @@ class IdleTime:
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.at_idle_time)
+        # Add this instance to the global idle_timers.list.
+        # This reference prevents this instance from being destroyed.
+        g.app.idle_timers.append(self)
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
@@ -8710,6 +8713,11 @@ class IdleTime:
         except Exception:
             g.es_exception()
             self.stop()
+    #@+node:ekr.20140825080012.18529: *3* IdleTime.destory_self
+    def destroy_self(self):
+        '''Remove the instance from g.app.idle_timers.'''
+        if self in g.app.idle_timers:
+            g.app.idle_timers.remove(self)
     #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
     def start(self):
         '''Start idle-time processing'''

@@ -70,6 +70,7 @@ class LeoApp:
         self.debugSwitch = 0            # For g.es_exception: 0: Brief; 1: Full.
         self.disable_redraw = False     # True: disable all redraws.
         self.disableSave = False        # May be set by plugins.
+        self.idle_timers = []           # A list of IdleTime instances, so they persist.
         self.positions = 0              # The number of positions generated.
         self.scanErrors = 0             # The number of errors seen by g.scanError.
         self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
