@@ -432,19 +432,16 @@ class ParserBaseClass:
             self.set(p,kind,name,val)
     #@+node:tbrown.20080514112857.124: *4* doMenuat
     def doMenuat (self,p,kind,name,val):
-        
+        '''Handle @menuat setting.'''
         trace = False and not g.unitTesting
-
         if g.app.config.menusList:
             if trace: g.es_print("Patching menu tree: " + name)
-
             # get the patch fragment
             patch = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(),patch)
                 if trace: self.dumpMenuTree(patch)
-
             # setup        
             parts = name.split()
             if len(parts) != 3:
@@ -487,6 +484,9 @@ class ParserBaseClass:
                     list_.extend(use)
             else:
                 g.es_print("ERROR: didn't find menu path " + targetPath)
+        elif g.app.inBridge:
+            pass # Not an error.
+                # Fix: https://github.com/leo-editor/leo-editor/issues/48
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* getName (ParserBaseClass)
