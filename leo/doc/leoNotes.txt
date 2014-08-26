@@ -20058,5 +20058,120 @@ def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
+.. @+node:ekr.20130702040231.12633: *3* class LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter) NEW
+# This is c.frame.body.colorizer.highlighter
+
+if PYTHON_COLORER:
+
+    class LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter):
+    
+        '''A subclass of qsh.LeoSyntaxHighlighter that overrides
+        the highlightBlock and rehighlight methods.
+    
+        All actual syntax coloring is done in the jeditColorer class.'''
+    
+        @others
+.. @+node:ekr.20130702040231.12634: *4* ctor (LeoSyntaxHighlighter)
+def __init__ (self,c,w,colorizer):
+
+    self.c = c
+    self.w = w # w is a LeoQTextBrowser.
+    assert isinstance(w,LeoQTextBrowser),w
+
+    # print('LeoQtSyntaxHighlighter.__init__',w)
+
+    # Not all versions of Qt have the crucial currentBlock method.
+    self.hasCurrentBlock = hasattr(self,'currentBlock')
+
+    # Init the base class.
+    qsh.LeoSyntaxHighlighter.__init__(self,c,w)
+
+    self.colorizer = colorizer
+
+    self.colorer = JEditColorizer(c,
+        colorizer=colorizer,
+        highlighter=self,
+        w=c.frame.body.bodyCtrl)
+.. @+node:ekr.20130702040231.12635: *4* highlightBlock (LeoSyntaxHighlighter)
+def highlightBlock (self,s):
+    """ Called by QSyntaxHiglighter """
+
+    trace = False and not g.unitTesting
+
+    if self.hasCurrentBlock and not self.colorizer.killColorFlag:
+        if g.isPython3:
+            s = str(s)
+        else:
+            s = unicode(s)
+        self.colorer.recolor(s)
+        v = self.c.p.v
+        if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
+            if trace: g.trace('clearing cache',g.callers())
+            self.c.p.v.colorCache = None # Kill the color caching.
+.. @+node:ekr.20130702040231.12636: *4* rehighlight  (LeoSyntaxHighligher) & helper
+def rehighlight (self,p):
+    '''Override base rehighlight method'''
+    # pylint: disable=W0221
+    # Arguments number differ from overridden method.
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    self.w = c.frame.body.bodyCtrl.widget
+    if trace: t1 = time.time()
+    # g.trace('(LeoSyntaxHighlighter)',g.callers())
+
+    # Call the base class method, but *only*
+    # if the crucial 'currentBlock' method exists.
+    n = self.colorer.recolorCount
+    if self.colorizer.enabled and self.hasCurrentBlock:
+        # Lock out onTextChanged.
+        old_selecting = tree.selecting
+        try:
+            tree.selecting = True
+            if False and (
+                self.colorizer.colorCacheFlag
+                and hasattr(p.v,'colorCache') and p.v.colorCache
+                and not g.unitTesting
+            ):
+                # Should be no need to init the colorizer.
+                self.rehighlight_with_cache(p.v.colorCache)
+            else:
+                self.colorer.init(p,p.b)
+                qsh.LeoSyntaxHighlighter.rehighlight(self)
+        finally:
+            tree.selecting = old_selecting
+    if trace:
+        g.trace('recolors: %4s %2.3f sec' % (
+            self.colorer.recolorCount-n,time.time()-t1))
+.. @+node:ekr.20130702040231.12637: *5* rehighlight_with_cache (leoSyntaxHighlighter)
+def rehighlight_with_cache (self,bunch):
+
+    '''Rehighlight the block from bunch, without calling QSH.rehighlight.
+
+    - bunch.aList: a list of bunch2 objects.
+    - bunch.n: a block (line) number.
+    - bunch.v: the VNode.
+        - bunch2.i: the index of the block.
+        - bunch2.s: the contents of the block.
+        - bunch2.ranges: a list of QTextLayout.FormatRange objects.
+    '''
+
+    trace = False and not g.unitTesting
+    w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
+    doc = w.document()
+    if bunch.n != doc.blockCount():
+        return g.trace('bad block count: expected %s got %s' % (
+            bunch.n,doc.blockCount()))
+    if trace:
+        t1 = time.time()
+    for i,bunch2 in enumerate(bunch.aList):
+        b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
+        layout = b.layout() # a QTextLayout.
+        if bunch2.s == g.u(b.text()):
+            layout.setAdditionalFormats(bunch2.ranges)
+        else:
+            return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
+                i,bunch2.s,g.u(b.text())))
+    if trace:
+        g.trace('%2.3f sec %s' % (time.time()-t1))
 .. @-all
 .. @-leo
