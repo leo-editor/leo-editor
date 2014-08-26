@@ -9408,9 +9408,12 @@ class PythonQSyntaxHighlighter:
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
-        self.currentBlock = None # QTextBlock
+        self._currentBlock = None # QTextBlock
         self.doc = None  # QPointer<QTextDocument> doc
-        self.document = parent
+        self.d = parent
+            ### d.currentBlock is not defined in QTextDocument or QTextEdit.
+            ### For now, I've transliterated it to self._currentBlock.
+            ### There may be magic in the Q_D(const QSyntaxHighlighter) macro.
         self.formatChanges = [] # QVector<QTextCharFormat>
         self.inReformatBlocks = False
         self.rehighlightPending = False
@@ -9423,24 +9426,24 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
     def rehighlight(self):
         '''Color the whole document.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
+        d = self.d
         if d.doc:
-            cursor = QTextCursor(d.doc)
-            self.rehighlight_helper(cursor,QTextCursor.End)
+            cursor = QtGui.QTextCursor(d.doc)
+            self.rehighlight_helper(cursor,QtGui.QTextCursor.End)
     #@+node:ekr.20140825132752.18568: *5* pqsh.rehighlightBlock & helper
     def rehighlightBlock(self,block):
         '''Reapplies the highlighting to the given QTextBlock block.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
+        d = self.d
         if d.doc and block.isValid() and block.document() == d.doc:
             self.rehighlightPending = d.rehighlightPending
-            cursor = QTextCursor(block)
-            self.rehighlight_helper(cursor,QTextCursor.EndOfBlock)
+            cursor = QtGui.QTextCursor(block)
+            self.rehighlight_helper(cursor,QtGui.QTextCursor.EndOfBlock)
             if self.rehighlightPending:
                 d.rehighlightPending = self.rehighlightPending
     #@+node:ekr.20140825132752.18591: *5* pqsh.rehighlight_helper
     def rehighlight_helper(self,cursor,operation):
-            # QTextCursor &cursor
-            # QTextCursor.MoveOperation operation
+            # QtGui.QTextCursor &cursor
+            # QtGui.QTextCursor.MoveOperation operation
         self.inReformatBlocks = True
         try:
             cursor.beginEditBlock()
@@ -9455,49 +9458,53 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18582: *6* pqsh.currentBlock & currentBlockUserData
     def currentBlock(self):
         '''Returns the current text block.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
-        return d.currentBlock
+        return self._currentBlock # self.d.currentBlock
 
     def currentBlockUserData(self):
         '''Returns the QTextBlockUserData object attached to the current text block.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
-        return d.currentBlock.userData() if d.currentBlock.isValid() else None
+        ### d = self.d
+        ### return d.currentBlock.userData() if d.currentBlock.isValid() else None
+        return self._currentBlock.userData() if self._currentBlock.isValid() else None
     #@+node:ekr.20140825132752.18580: *6* pqsh.currentBlockState & previousBlockState
     def currentBlockState(self):
         '''Returns the state of the current text block or -1.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
-        return d.currentBlock.userState() if d.currentBlock.isValid() else -1
-
+        return self._currentBlock.userState() if self._currentBlock.isValid() else -1
+        # # # d = self.d
+        # # # return d.currentBlock.userState() if d.currentBlock.isValid() else -1
+        
     def previousBlockState(self):
         '''Returns the end state previous text block or -1'''
-        d = self.document # Q_D(QSyntaxHighlighter)
-        if d.currentBlock.isValid():
-            previous = d.currentBlock.previous()
+        if self._currentBlock.isValid():
+            previous = self._currentBlock.previous()
             return previous.userState() if previous.isValid() else -1
         else:
             return -1
+        # # # d = self.d
+        # # # if d.currentBlock.isValid():
+            # # # previous = d.currentBlock.previous()
+            # # # return previous.userState() if previous.isValid() else -1
+        # # # else:
+            # # # return -1
     #@+node:ekr.20140825132752.18565: *6* pqsh.document
     def document(self):
         '''Returns the QTextDocument on which this syntax highlighter is installed.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
-        return d.doc
+        return self.d.doc
     #@+node:ekr.20140825132752.18575: *6* pqsh.format
     def format(self,pos):
         '''Return the format at the given position in the current text block.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
+        d = self.d
         if 0 <= pos < d.formatChanges.count():
             return d.formatChanges.at(pos)
         else:
-            return QTextCharFormat()
+            return QtWidgets.QTextCharFormat()
     #@+node:ekr.20140825132752.18587: *5* pqsh.Setters
     #@+node:ekr.20140825132752.18564: *6* pqsh.setDocument
     def setDocument(self,doc):
         '''Install self on the given QTextDocument.'''
-        d = self.document # Q_D(QSyntaxHighlighter)
+        d = self.d
         if d.doc:
-            ### 
-            ### disconnect(d.doc,SIGNAL(contentsChange(,,)),self,SLOT(self.q_reformatBlocks(,,)))
-            cursor = QTextCursor(d.doc)
+            d.doc.contentsChange.disconnect()
+            cursor = QtGui.QTextCursor(d.doc)
             cursor.beginEditBlock()
             blk = d.doc.begin()
             while blk.isValid(): # blk: QTextBlock 
@@ -9506,14 +9513,13 @@ class PythonQSyntaxHighlighter:
             cursor.endEditBlock()
         d.doc = doc
         if d.doc:
-            ### 
-            ### connect(d.doc,SIGNAL(contentsChange(,,)),self,SLOT(self.q_reformatBlocks(,,)))
+            d.doc.contentsChange.connect(self.q_reformatBlocks)
             d.rehighlightPending = True
-                # **Not** self.rehighlightPending.
-            QTimer.singleShot(0,self,SLOT(self.delayedRehighlight()))
+                # Set d's pending flag.
+            QtCore.QTimer.singleShot(0,self.delayedRehighlight)
     #@+node:ekr.20140825132752.18584: *6* pqsh.setFormat...
     def setFormat(self,start,count,format):
-        d = self.document # Q_D(QSyntaxHighlighter)
+        d = self.d
         if 0 <= start < d.formatChanges.count():
             end = min(start+count,d.formatChanges.count())
             i = start
@@ -9533,16 +9539,22 @@ class PythonQSyntaxHighlighter:
         # self.setFormat(start,count,format)
 
     #@+node:ekr.20140825132752.18576: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
-    # Sets the state of the current text block to \a newState.
+
     def setCurrentBlockState(self,newState):
-        d = self.document # Q_D(QSyntaxHighlighter)
-        if d.currentBlock.isValid():
-            d.currentBlock.setUserState(newState)
+        '''Sets the state of the current text block.'''
+        if self._currentBlock.isValid():
+            self._currentBlock.setUserState(newState)
+        # # # d = self.d
+        # # # if d.currentBlock.isValid():
+            # # # d.currentBlock.setUserState(newState)
 
     def setCurrentBlockUserData(self,data):
-        d = self.document # Q_D(QSyntaxHighlighter)
-        if d.currentBlock.isValid():
-            d.currentBlock.setUserData(data)
+        '''Set the user data of the current text block.'''
+        if self._currentBlock.isValid():
+            self._currentBlock.setUserData(data)
+        # # # d = self.d
+        # # # if d.currentBlock.isValid():
+            # # # d.currentBlock.setUserData(data)
     #@+node:ekr.20140825132752.18589: *4* pqsh.Helpers
     # These helpers are the main reason QSyntaxHighlighter exists.
     # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
@@ -9550,7 +9562,7 @@ class PythonQSyntaxHighlighter:
     def applyFormatChanges(self):
         '''Internal helper.'''
         formatsChanged = False
-        layout = self.currentBlock.layout() # QTextLayout
+        layout = self._currentBlock.layout() # QTextLayout
         ranges = layout.additionalFormats() # QList<QTextLayout.FormatRange> 
         preeditAreaStart = layout.preeditAreaPosition()
         preeditAreaLength = layout.preeditAreaText().length()
@@ -9567,8 +9579,8 @@ class PythonQSyntaxHighlighter:
         elif not ranges.isEmpty():
             ranges.clear()
             formatsChanged = True
-        emptyFormat = QTextCharFormat()
-        r = QTextLayout.FormatRange()
+        emptyFormat = QtWidgets.QTextCharFormat()
+        r = QtGui.QTextLayout.FormatRange()
         r.start = -1
         i = 0
         changes = self.formatChanges
@@ -9590,7 +9602,7 @@ class PythonQSyntaxHighlighter:
                 elif r.start + r.length >= preeditAreaStart:
                     r.length += preeditAreaLength
             ### syntax coloring bug!
-            ranges << r
+            ranges = ranges << r
             formatsChanged = True
             r.start = -1
         if r.start != -1:
@@ -9601,17 +9613,19 @@ class PythonQSyntaxHighlighter:
                 elif r.start + r.length >= preeditAreaStart:
                     r.length += preeditAreaLength
             ### syntax coloring bug!
-            ranges << r
+            ranges = ranges << r
             formatsChanged = True
         if formatsChanged:
             layout.setAdditionalFormats(ranges)
-            doc.markContentsDirty(currentBlock.position(),currentBlock.length())
+            self.doc.markContentsDirty(
+                self._currentBlock.position(),
+                self._currentBlock.length())
     #@+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight (inline)
     def delayedRehighlight(self): # inline
         '''Queued rehighlight.'''
         if self.rehighlightPending:
             self.rehighlightPending = False
-            self.righighlight() ### q_func().rehighlight()
+            self.rehighlight() ### q_func().rehighlight()
     #@+node:ekr.20140825132752.18558: *5* pqsh.q_reformatBlocks
     def q_reformatBlocks(self,from_,charsRemoved,charsAdded):
         if not self.inReformatBlocks:
@@ -9619,15 +9633,17 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
         # Q_Q(QSyntaxHighlighter)
-        if currentBlock.isValid():
+        if self._currentBlock.isValid():
             g.trace('can not happen: called recursively')
         else:
-            self.currentBlock = block
+            self._currentBlock = block
             # self.formatChanges.fill(QTextCharFormat(),block.length()- 1)
-            self.formatChanges = [QTextCharFormat() for z in range(block.length())] # -1 ???
+            self.formatChanges = [QtWidgets.QTextCharFormat() for z in range(block.length())] # -1 ???
+            # pylint: disable=no-member
+            # Must be defined in subclasses.
             self.highlightBlock(block.text())
             self.applyFormatChanges()
-            self.currentBlock = QTextBlock()
+            self._currentBlock = QtGui.QTextBlock()
     #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks
     def reformatBlocks(self,from_,charsRemoved,charsAdded):
         '''Internal helper.'''
@@ -9640,7 +9656,7 @@ class PythonQSyntaxHighlighter:
         if lastBlock.isValid():
             endPosition = lastBlock.position()+lastBlock.length()
         else:
-            endPosition = doc.docHandle().length()
+            endPosition = self.doc.docHandle().length()
         # Continue highlighting until states match.
         forceHighlightOfNextBlock = False
         while block.isValid() and (block.position()<endPosition or forceHighlightOfNextBlock):
