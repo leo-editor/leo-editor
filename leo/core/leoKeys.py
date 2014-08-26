@@ -1365,7 +1365,7 @@ class GetArg:
 
     def do_back_space(ga,tabList,completion=True):
         '''Handle a backspace and update the completion list.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # g.trace('completion',completion,tabList)
         c,k = ga.c,ga.k
         ga.tabList = tabList[:] if tabList else []
@@ -1390,7 +1390,8 @@ class GetArg:
         else:
             tabList = []
         ga.reset_tab_cycling()
-        ga.show_tab_list(tabList)
+        if completion:
+            ga.show_tab_list(tabList)
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
@@ -1443,25 +1444,30 @@ class GetArg:
         s = ga.get_label()
         if ga.cycling_prefix:
             if s.startswith(ga.cycling_prefix):
+                # The expected case.
                 n = ga.cycling_index
                 ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
                 if trace: g.trace('cycle',ga.cycling_index)
                 ga.set_label(ga.cycling_tabList[ga.cycling_index])
                 ga.show_tab_list(ga.cycling_tabList)
             else:
+                # Abort if anything unexpected happens.
                 if trace: g.trace('prefix mismatch')
-                ga.cycling_prefix = None
-                ga.cycling_index = -1
+                ga.reset_cycling()
                 ga.show_tab_list(tabList)
-                    # Abort: show everything.
-        else:
-            if trace: g.trace('no ga.cycling_prefix')
+        elif len(common_prefix) == len(s):
+            # Start cycling only when the lengths match is best.
+            if trace: g.trace('starting tab cycling')
             ga.cycling_prefix = s
             ga.cycling_index = -1
             ga.cycling_tabList = tabList[:]
-            ga.set_label(common_prefix)
-                # Don't extend the label yet!
             ga.show_tab_list(ga.cycling_tabList)
+        else:
+            # Never cycle if we can extended the label.
+            if trace: g.trace('recompute prefix, extend the label.')
+            ga.show_tab_list(tabList)
+            if len(common_prefix) > len(s):
+                ga.set_label(common_prefix)
     #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(ga):
         '''Reset all tab cycling ivars.'''
@@ -1562,6 +1568,8 @@ class GetArg:
         '''Handle a non-special character.'''
         k = ga.k
         k.updateLabel(event)
+        # Any plain key resets tab cycling.
+        ga.reset_tab_cycling()
     #@+node:ekr.20140817110228.18316: *4* ga.do_end
     def do_end(ga,event,char,stroke):
         '''A return or escape has been seen.'''
