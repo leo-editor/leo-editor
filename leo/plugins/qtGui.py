@@ -3,7 +3,6 @@
 #@+node:ekr.20110605121601.18002: * @file ../plugins/qtGui.py
 #@@first
 '''qt gui plugin.'''
-PYTHON_COLORER = False
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
@@ -29,9 +28,6 @@ import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.baseNativeTree as baseNativeTree
 from leo.plugins.mod_scripting import build_rclick_tree
-
-if PYTHON_COLORER:
-    import leo.core.qsyntaxhighlighter as qsh
 
 import datetime
 import os
@@ -9397,7 +9393,264 @@ class LeoQtEventFilter(QtCore.QObject):
                 g.trace('%20s %s' % (t,w.__class__))
     #@-others
 #@+node:ekr.20110605121601.18550: ** Syntax coloring
-#@+node:ekr.20110605121601.18551: *3* LeoQtColorizer
+#@+node:ekr.20140825132752.18554: *3* class PythonQSyntaxHighlighter 
+class PythonQSyntaxHighlighter:
+    '''
+    **Experimental** python implementation of QtGui.QSyntaxHighlighter.
+    
+    This would allow incremental coloring of text at idle time, trading
+    slower overall speed for much faster response time.
+    '''
+    #@+others
+    #@+node:ekr.20140825132752.18561: *4* pqsh.Birth & death
+    def __init__(self,parent):
+        '''
+        Ctor for QSyntaxHighlighter class.
+        Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
+        '''
+        self.currentBlock = None # QTextBlock
+        self.doc = None  # QPointer<QTextDocument> doc
+        self.document = parent
+        self.formatChanges = [] # QVector<QTextCharFormat>
+        self.inReformatBlocks = False
+        self.rehighlightPending = False
+        self.setDocument(parent)
+
+    # def __del__(self):
+        # '''Uninstalls this syntax highlighter from the text document.'''
+        # self.setDocument(None)
+    #@+node:ekr.20140825132752.18588: *4* pqsh.Entry points
+    #@+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
+    def rehighlight(self):
+        '''Color the whole document.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.doc:
+            cursor = QTextCursor(d.doc)
+            self.rehighlight_helper(cursor,QTextCursor.End)
+    #@+node:ekr.20140825132752.18568: *5* pqsh.rehighlightBlock & helper
+    def rehighlightBlock(self,block):
+        '''Reapplies the highlighting to the given QTextBlock block.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.doc and block.isValid() and block.document() == d.doc:
+            self.rehighlightPending = d.rehighlightPending
+            cursor = QTextCursor(block)
+            self.rehighlight_helper(cursor,QTextCursor.EndOfBlock)
+            if self.rehighlightPending:
+                d.rehighlightPending = self.rehighlightPending
+    #@+node:ekr.20140825132752.18591: *5* pqsh.rehighlight_helper
+    def rehighlight_helper(self,cursor,operation):
+            # QTextCursor &cursor
+            # QTextCursor.MoveOperation operation
+        self.inReformatBlocks = True
+        try:
+            cursor.beginEditBlock()
+            from_ = cursor.position()
+            cursor.movePosition(operation)
+            self.reformatBlocks(from_,0,cursor.position()-from_)
+            cursor.endEditBlock()
+        finally:
+            self.inReformatBlocks = False
+    #@+node:ekr.20140825132752.18590: *4* pqsh.Getters & Setters
+    #@+node:ekr.20140825132752.18586: *5* pqsh.Getters
+    #@+node:ekr.20140825132752.18582: *6* pqsh.currentBlock & currentBlockUserData
+    def currentBlock(self):
+        '''Returns the current text block.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        return d.currentBlock
+
+    def currentBlockUserData(self):
+        '''Returns the QTextBlockUserData object attached to the current text block.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        return d.currentBlock.userData() if d.currentBlock.isValid() else None
+    #@+node:ekr.20140825132752.18580: *6* pqsh.currentBlockState & previousBlockState
+    def currentBlockState(self):
+        '''Returns the state of the current text block or -1.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        return d.currentBlock.userState() if d.currentBlock.isValid() else -1
+
+    def previousBlockState(self):
+        '''Returns the end state previous text block or -1'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.currentBlock.isValid():
+            previous = d.currentBlock.previous()
+            return previous.userState() if previous.isValid() else -1
+        else:
+            return -1
+    #@+node:ekr.20140825132752.18565: *6* pqsh.document
+    def document(self):
+        '''Returns the QTextDocument on which this syntax highlighter is installed.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        return d.doc
+    #@+node:ekr.20140825132752.18575: *6* pqsh.format
+    def format(self,pos):
+        '''Return the format at the given position in the current text block.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if 0 <= pos < d.formatChanges.count():
+            return d.formatChanges.at(pos)
+        else:
+            return QTextCharFormat()
+    #@+node:ekr.20140825132752.18587: *5* pqsh.Setters
+    #@+node:ekr.20140825132752.18564: *6* pqsh.setDocument
+    def setDocument(self,doc):
+        '''Install self on the given QTextDocument.'''
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.doc:
+            ### 
+            ### disconnect(d.doc,SIGNAL(contentsChange(,,)),self,SLOT(self.q_reformatBlocks(,,)))
+            cursor = QTextCursor(d.doc)
+            cursor.beginEditBlock()
+            blk = d.doc.begin()
+            while blk.isValid(): # blk: QTextBlock 
+                blk.layout().clearAdditionalFormats()
+                blk = blk.next()
+            cursor.endEditBlock()
+        d.doc = doc
+        if d.doc:
+            ### 
+            ### connect(d.doc,SIGNAL(contentsChange(,,)),self,SLOT(self.q_reformatBlocks(,,)))
+            d.rehighlightPending = True
+                # **Not** self.rehighlightPending.
+            QTimer.singleShot(0,self,SLOT(self.delayedRehighlight()))
+    #@+node:ekr.20140825132752.18584: *6* pqsh.setFormat...
+    def setFormat(self,start,count,format):
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if 0 <= start < d.formatChanges.count():
+            end = min(start+count,d.formatChanges.count())
+            i = start
+            while i < end:
+                d.formatChanges[i] = format
+                i += 1
+
+    # Not used by Leo...
+    # def setFormat(self,start,count,color):
+        # format = QTextCharFormat()
+        # format.setForeground(color)
+        # setFormat(start,count,format)
+
+    # def setFormat(self,start,count,font):
+        # format = QTextCharFormat()
+        # format.setFont(font)
+        # self.setFormat(start,count,format)
+
+    #@+node:ekr.20140825132752.18576: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
+    # Sets the state of the current text block to \a newState.
+    def setCurrentBlockState(self,newState):
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.currentBlock.isValid():
+            d.currentBlock.setUserState(newState)
+
+    def setCurrentBlockUserData(self,data):
+        d = self.document # Q_D(QSyntaxHighlighter)
+        if d.currentBlock.isValid():
+            d.currentBlock.setUserData(data)
+    #@+node:ekr.20140825132752.18589: *4* pqsh.Helpers
+    # These helpers are the main reason QSyntaxHighlighter exists.
+    # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
+    #@+node:ekr.20140825132752.18557: *5* pqsh.applyFormatChanges **
+    def applyFormatChanges(self):
+        '''Internal helper.'''
+        formatsChanged = False
+        layout = self.currentBlock.layout() # QTextLayout
+        ranges = layout.additionalFormats() # QList<QTextLayout.FormatRange> 
+        preeditAreaStart = layout.preeditAreaPosition()
+        preeditAreaLength = layout.preeditAreaText().length()
+        if preeditAreaLength != 0:
+            it = ranges.begin() # QList<QTextLayout.FormatRange>.Iterator 
+            while it != ranges.end():
+                if (it.start >= preeditAreaStart and
+                     it.start + it.length <= preeditAreaStart + preeditAreaLength
+                ):
+                    it += 1
+                else:
+                    it = ranges.erase(it)
+                    formatsChanged = True
+        elif not ranges.isEmpty():
+            ranges.clear()
+            formatsChanged = True
+        emptyFormat = QTextCharFormat()
+        r = QTextLayout.FormatRange()
+        r.start = -1
+        i = 0
+        changes = self.formatChanges
+        while i < len(changes):
+            while i < len(changes) and changes[i] == emptyFormat:
+                i += 1
+            if i >= len(changes):
+                break
+            r.start = i
+            r.format = changes[i]
+            while i < len(changes) and changes[i] == r.format:
+                i += 1
+            if i >= len(changes):
+                break
+            r.length = i - r.start
+            if preeditAreaLength != 0:
+                if r.start >= preeditAreaStart:
+                    r.start += preeditAreaLength
+                elif r.start + r.length >= preeditAreaStart:
+                    r.length += preeditAreaLength
+            ### syntax coloring bug!
+            ranges << r
+            formatsChanged = True
+            r.start = -1
+        if r.start != -1:
+            r.length = len(changes) - r.start
+            if preeditAreaLength != 0:
+                if r.start >= preeditAreaStart:
+                    r.start += preeditAreaLength
+                elif r.start + r.length >= preeditAreaStart:
+                    r.length += preeditAreaLength
+            ### syntax coloring bug!
+            ranges << r
+            formatsChanged = True
+        if formatsChanged:
+            layout.setAdditionalFormats(ranges)
+            doc.markContentsDirty(currentBlock.position(),currentBlock.length())
+    #@+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight (inline)
+    def delayedRehighlight(self): # inline
+        '''Queued rehighlight.'''
+        if self.rehighlightPending:
+            self.rehighlightPending = False
+            self.righighlight() ### q_func().rehighlight()
+    #@+node:ekr.20140825132752.18558: *5* pqsh.q_reformatBlocks
+    def q_reformatBlocks(self,from_,charsRemoved,charsAdded):
+        if not self.inReformatBlocks:
+            self.reformatBlocks(from_,charsRemoved,charsAdded)
+    #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
+    def reformatBlock(self,block):
+        # Q_Q(QSyntaxHighlighter)
+        if currentBlock.isValid():
+            g.trace('can not happen: called recursively')
+        else:
+            self.currentBlock = block
+            # self.formatChanges.fill(QTextCharFormat(),block.length()- 1)
+            self.formatChanges = [QTextCharFormat() for z in range(block.length())] # -1 ???
+            self.highlightBlock(block.text())
+            self.applyFormatChanges()
+            self.currentBlock = QTextBlock()
+    #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks
+    def reformatBlocks(self,from_,charsRemoved,charsAdded):
+        '''Internal helper.'''
+        self.rehighlightPending = False
+        block = self.doc.findBlock(from_) # QTextBlock 
+        if not block.isValid():
+            return
+        adjust = 1 if charsRemoved > 0 else 0
+        lastBlock = self.doc.findBlock(from_+charsAdded+adjust) # QTextBlock 
+        if lastBlock.isValid():
+            endPosition = lastBlock.position()+lastBlock.length()
+        else:
+            endPosition = doc.docHandle().length()
+        # Continue highlighting until states match.
+        forceHighlightOfNextBlock = False
+        while block.isValid() and (block.position()<endPosition or forceHighlightOfNextBlock):
+            stateBeforeHighlight = block.userState()
+            self.reformatBlock(block)
+            forceHighlightOfNextBlock = (block.userState()!=stateBeforeHighlight)
+            block = block.next()
+        self.formatChanges = []
+    #@-others
+#@+node:ekr.20110605121601.18551: *3* class LeoQtColorizer
 # This is c.frame.body.colorizer
 
 class LeoQtColorizer:
@@ -9412,12 +9665,10 @@ class LeoQtColorizer:
     #@+others
     #@+node:ekr.20110605121601.18552: *4*  ctor (LeoQtColorizer)
     def __init__ (self,c,w):
-
+        '''Ctor for LeoQtColorizer class.'''
         # g.trace('(LeoQtColorizer)',w)
-
         self.c = c
         self.w = w
-
         # Step 1: create the ivars.
         self.changingText = False
         self.count = 0 # For unit testing.
@@ -9432,30 +9683,24 @@ class LeoQtColorizer:
         self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
         self.oldLanguageList = []
         self.oldV = None
-        self.showInvisibles = False # 2010/1/2
-
+        self.showInvisibles = False
         # Step 2: create the highlighter.
-        if PYTHON_COLORER:
-            self.highlighter = LeoSyntaxHighlighter(c,w,colorizer=self)
-        else:
-            self.highlighter = LeoQtSyntaxHighlighter(c,w,colorizer=self)
+        self.highlighter = LeoQtSyntaxHighlighter(c,w,colorizer=self)
         self.colorer = self.highlighter.colorer
         w.leo_colorizer = self
-
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter,'currentBlock')
     #@+node:ekr.20110605121601.18553: *4* colorize (LeoQtColorizer) & helper
     def colorize(self,p,incremental=False,interruptable=True):
-
         '''The main colorizer entry point.'''
-
         trace = False and not g.unitTesting ; verbose = True
-
         self.count += 1 # For unit testing.
         if not incremental:
             self.full_recolor_count += 1
-
+        if not p.b.strip():
+            if trace: g.trace('no body',p.h)
+            return
         if len(p.b) > self.max_chars_to_colorize > 0:
             self.flag = False
         elif self.enabled:
@@ -9465,7 +9710,6 @@ class LeoQtColorizer:
             if trace and verbose:
                 g.trace('old: %s, new: %s, %s' % (
                     self.oldLanguageList,self.languageList,repr(p.h)))
-
             # fullRecolor is True if we can not do an incremental recolor.
             fullRecolor = (
                 oldFlag != self.flag or
@@ -9473,7 +9717,6 @@ class LeoQtColorizer:
                 self.oldLanguageList != self.languageList or
                 not incremental
             )
-
             # 2012/03/09: Determine the present language from the insertion
             # point if there are more than one @language directives in effect
             # and we are about to do an incremental recolor.
@@ -9483,13 +9726,11 @@ class LeoQtColorizer:
                     if trace: g.trace('** must rescan',self.c.frame.title,language)
                     fullRecolor = True
                     self.language = language
-
             if fullRecolor:
                 if trace: g.trace('** calling rehighlight',g.callers())
                 self.oldLanguageList = self.languageList[:]
                 self.oldV = p.v
                 self.highlighter.rehighlight(p)
-
         return "ok" # For unit testing.
     #@+node:ekr.20120309075544.9888: *5* scanColorByPosition (LeoQtColorizer)
     def scanColorByPosition(self,p):
@@ -9758,7 +9999,7 @@ class LeoQtColorizer:
                 time.time()-t1,len(aList),c.p.v.h,))
     #@-others
 
-#@+node:ekr.20110605121601.18565: *3* LeoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter)
+#@+node:ekr.20110605121601.18565: *3* class LeoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter)
 # This is c.frame.body.colorizer.highlighter
 
 class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
@@ -9806,7 +10047,12 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     def rehighlight (self,p):
         '''Override base rehighlight method'''
         trace = False and not g.unitTesting
-        c = self.c ; tree = c.frame.tree
+        c = self.c
+        # if trace: g.trace(c.shortFileName(),p and p.h,g.callers(20))
+        if not p.b.strip():
+            if trace: g.trace('no body',c.shortFileName(),p and p.h)
+            return
+        tree = c.frame.tree
         self.w = c.frame.body.bodyCtrl.widget
         if trace:
             t1 = time.time()
@@ -9845,7 +10091,7 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             - bunch2.s: the contents of the block.
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
         doc = w.document()
         if bunch.n != doc.blockCount():
@@ -9864,122 +10110,6 @@ class LeoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         if trace:
             g.trace('%2.3f sec' % (time.time()-t1))
     #@-others
-#@+node:ekr.20130702040231.12633: *3* LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter) NEW
-# This is c.frame.body.colorizer.highlighter
-
-if PYTHON_COLORER:
-
-    class LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter):
-    
-        '''A subclass of qsh.LeoSyntaxHighlighter that overrides
-        the highlightBlock and rehighlight methods.
-    
-        All actual syntax coloring is done in the jeditColorer class.'''
-    
-        #@+others
-        #@+node:ekr.20130702040231.12634: *4* ctor (LeoSyntaxHighlighter)
-        def __init__ (self,c,w,colorizer):
-
-            self.c = c
-            self.w = w # w is a LeoQTextBrowser.
-            assert isinstance(w,LeoQTextBrowser),w
-
-            # print('LeoQtSyntaxHighlighter.__init__',w)
-
-            # Not all versions of Qt have the crucial currentBlock method.
-            self.hasCurrentBlock = hasattr(self,'currentBlock')
-
-            # Init the base class.
-            qsh.LeoSyntaxHighlighter.__init__(self,c,w)
-
-            self.colorizer = colorizer
-
-            self.colorer = JEditColorizer(c,
-                colorizer=colorizer,
-                highlighter=self,
-                w=c.frame.body.bodyCtrl)
-        #@+node:ekr.20130702040231.12635: *4* highlightBlock (LeoSyntaxHighlighter)
-        def highlightBlock (self,s):
-            """ Called by QSyntaxHiglighter """
-
-            trace = True and not g.unitTesting
-
-            if self.hasCurrentBlock and not self.colorizer.killColorFlag:
-                if g.isPython3:
-                    s = str(s)
-                else:
-                    s = unicode(s)
-                self.colorer.recolor(s)
-                v = self.c.p.v
-                if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
-                    if trace: g.trace('clearing cache',g.callers())
-                    self.c.p.v.colorCache = None # Kill the color caching.
-        #@+node:ekr.20130702040231.12636: *4* rehighlight  (LeoSyntaxHighligher) & helper
-        def rehighlight (self,p):
-            '''Override base rehighlight method'''
-            # pylint: disable=W0221
-            # Arguments number differ from overridden method.
-            trace = False and not g.unitTesting
-            c = self.c ; tree = c.frame.tree
-            self.w = c.frame.body.bodyCtrl.widget
-            if trace: t1 = time.time()
-            # g.trace('(LeoSyntaxHighlighter)',g.callers())
-
-            # Call the base class method, but *only*
-            # if the crucial 'currentBlock' method exists.
-            n = self.colorer.recolorCount
-            if self.colorizer.enabled and self.hasCurrentBlock:
-                # Lock out onTextChanged.
-                old_selecting = tree.selecting
-                try:
-                    tree.selecting = True
-                    if False and (
-                        self.colorizer.colorCacheFlag
-                        and hasattr(p.v,'colorCache') and p.v.colorCache
-                        and not g.unitTesting
-                    ):
-                        # Should be no need to init the colorizer.
-                        self.rehighlight_with_cache(p.v.colorCache)
-                    else:
-                        self.colorer.init(p,p.b)
-                        qsh.LeoSyntaxHighlighter.rehighlight(self)
-                finally:
-                    tree.selecting = old_selecting
-            if trace:
-                g.trace('recolors: %4s %2.3f sec' % (
-                    self.colorer.recolorCount-n,time.time()-t1))
-        #@+node:ekr.20130702040231.12637: *5* rehighlight_with_cache (leoSyntaxHighlighter)
-        def rehighlight_with_cache (self,bunch):
-
-            '''Rehighlight the block from bunch, without calling QSH.rehighlight.
-
-            - bunch.aList: a list of bunch2 objects.
-            - bunch.n: a block (line) number.
-            - bunch.v: the VNode.
-                - bunch2.i: the index of the block.
-                - bunch2.s: the contents of the block.
-                - bunch2.ranges: a list of QTextLayout.FormatRange objects.
-            '''
-
-            trace = False and not g.unitTesting
-            w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
-            doc = w.document()
-            if bunch.n != doc.blockCount():
-                return g.trace('bad block count: expected %s got %s' % (
-                    bunch.n,doc.blockCount()))
-            if trace:
-                t1 = time.time()
-            for i,bunch2 in enumerate(bunch.aList):
-                b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
-                layout = b.layout() # a QTextLayout.
-                if bunch2.s == g.u(b.text()):
-                    layout.setAdditionalFormats(bunch2.ranges)
-                else:
-                    return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
-                        i,bunch2.s,g.u(b.text())))
-            if trace:
-                g.trace('%2.3f sec %s' % (time.time()-t1))
-        #@-others
 #@+node:ekr.20110605121601.18569: *3* JEditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
 
@@ -10029,8 +10159,9 @@ class JEditColorizer:
 
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
-        self.hyperCount = 0
         self.defaultState = 'default-state:' # The name of the default state.
+        self.hyperCount = 0
+        self.lineCount = 0 # The number of lines recolored so far.
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
         self.stateDict = {} # Keys are state numbers, values state names.
@@ -10085,24 +10216,6 @@ class JEditColorizer:
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
-
-            # To be removed...
-
-                # Used only by the old colorizer.
-                # 'bracketRange',
-                # "comment",
-                # "cwebName"
-                # "keyword",
-                # "latexBackground","latexKeyword","latexModeKeyword",
-                # "pp",
-                # "string",
-
-                # Wiki styling.  These were never user options.
-                # "bold","bolditalic","elide","italic",
-
-                # Marked as Leo jEdit tags, but not used.
-                # '@color', '@nocolor','doc_part', 'section_ref',
-
             # 8 Leo-specific tags.
             "blank",  # show_invisibles_space_color
             "docpart",
@@ -10112,7 +10225,6 @@ class JEditColorizer:
             "namebrackets",
             "tab", # show_invisibles_space_color
             "url",
-
             # jEdit tags.
             'comment1','comment2','comment3','comment4',
             # default, # exists, but never generated.
@@ -10477,6 +10589,7 @@ class JEditColorizer:
         self.all_s = s
         self.global_i,self.global_j = 0,0
         self.global_offset = 0
+        self.lineCount = 0
 
         # These *must* be recomputed.
         self.nextState = 1 # Dont use 0.
@@ -11800,32 +11913,37 @@ class JEditColorizer:
             i = 0
 
         return i
-    #@+node:ekr.20110605121601.18640: *4* recolor
+    #@+node:ekr.20110605121601.18640: *4* recolor (entry point)
     def recolor (self,s):
         '''
         Recolor a *single* line, s.
         Qt calls this method repeatedly to colorizer all the text.
         '''
         trace = False and not g.unitTesting
-        callers = False ; line = True ; state = False
-        returns = False
+        traceCallers = False ; traceLine = True
+        traceState = False ; traceReturns = False
+        limit = True # do only 10 lines at a time.
         # Update the counts.
         self.recolorCount += 1
-        self.totalChars += len(s)
         if self.colorizer.changingText:
-            if trace and returns: g.trace('changingText')
+            if trace and traceReturns: g.trace('changingText')
             return
         if not self.colorizer.flag:
-            if trace and returns: g.trace('not flag')
+            if trace and traceReturns: g.trace('not flag')
             return
+        self.lineCount += 1
+        # # # if self.lineCount >= 10:
+            # # # if trace: g.trace('at line limit')
+            # # # return
         # Get the previous state.
+        self.totalChars += len(s)
         n = self.prevState() # The state at the end of the previous line.
         if trace:
-            if line and state:
-                g.trace('%2s %s %s' % (n,self.showState(n),repr(s)))
-            elif line:
-                g.trace('%2s %s' % (n,repr(s)))
-            if callers:
+            if traceLine and traceState:
+                g.trace('%3s %2s %s %s' % (self.lineCount,n,self.showState(n),repr(s)))
+            elif traceLine:
+                g.trace('%3s %2s %s' % (self.lineCount,n,repr(s)))
+            if traceCallers:
                 # Called from colorize:rehightlight,highlightBlock
                 g.trace(g.callers())
         if s.strip() or self.showInvisibles:
