@@ -1415,7 +1415,7 @@ class GetArg:
                     ga.show_tab_list(tabList)
                     if len(common_prefix) > len(command):
                         ga.set_label(common_prefix)
-            else:
+            elif tabList:
                 ga.do_tab_cycling(common_prefix,tabList)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
@@ -1453,13 +1453,20 @@ class GetArg:
             else:
                 # Abort if anything unexpected happens.
                 if trace: g.trace('prefix mismatch')
-                ga.reset_cycling()
+                ga.reset_tab_cycling()
                 ga.show_tab_list(tabList)
         elif len(common_prefix) == len(s):
             # Start cycling only when the lengths match is best.
             if trace: g.trace('starting tab cycling')
             ga.cycling_prefix = s
-            ga.cycling_index = -1
+            # Start with the second item if the first is already showing.
+            # Otherwise, it takes *two* tabs to change the buffer,
+            # which makes it looks like tab cycling doesn't work
+            if s == tabList[0] and len(tabList) > 1:
+                ga.cycling_index = 1
+                ga.set_label(tabList[ga.cycling_index])
+            else:
+                ga.cycling_index = -1
             ga.cycling_tabList = tabList[:]
             ga.show_tab_list(ga.cycling_tabList)
         else:
