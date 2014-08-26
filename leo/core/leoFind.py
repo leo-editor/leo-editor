@@ -638,8 +638,8 @@ class LeoFind:
         
     #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
-    def addChangeStringToLabel (self,protect=True):
-
+    def addChangeStringToLabel (self):
+        '''Add an unprotected change string to the minibuffer label.'''
         c = self.c
         ftm = c.findCommands.ftm
         s = ftm.getChangeText()
@@ -647,7 +647,7 @@ class LeoFind:
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]
-        c.k.extendLabel(s,select=True,protect=protect)
+        c.k.extendLabel(s,select=True,protect=False)
     #@+node:ekr.20131117164142.16993: *4* find.addFindStringToLabel
     def addFindStringToLabel (self,protect=True):
 

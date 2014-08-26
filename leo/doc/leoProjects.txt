@@ -267,6 +267,13 @@ A typical message::
     https://groups.google.com/forum/#!forum/leo-editor
     Warning: changes to this file will be lost
     unless you can save the file successfully.
+.. @+node:ekr.20140825212426.18671: *4* Fixed recent bug in change command
+@language rest
+
+The change pattern doesn't always get set properly.
+
+The fix was in find.addChangeStringToLabel. It must never protect the
+change string!
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
