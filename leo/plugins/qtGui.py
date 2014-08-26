@@ -9456,8 +9456,7 @@ class PythonQSyntaxHighlighter:
         finally:
             self.inReformatBlocks = False
     #@+node:ekr.20140825132752.18590: *4* pqsh.Getters & Setters
-    #@+node:ekr.20140825132752.18586: *5* pqsh.Getters
-    #@+node:ekr.20140825132752.18582: *6* pqsh.currentBlock & currentBlockUserData
+    #@+node:ekr.20140825132752.18582: *5* pqsh.currentBlock & currentBlockUserData
     def currentBlock(self):
         '''Returns the current text block.'''
         return self._currentBlock
@@ -9470,7 +9469,7 @@ class PythonQSyntaxHighlighter:
             return self._currentBlock.userData()
         else:
             return None
-    #@+node:ekr.20140825132752.18580: *6* pqsh.currentBlockState & previousBlockState
+    #@+node:ekr.20140825132752.18580: *5* pqsh.currentBlockState & previousBlockState
     def currentBlockState(self):
         '''Returns the state of the current text block or -1.'''
         if self.is_valid(self._currentBlock):
@@ -9493,19 +9492,35 @@ class PythonQSyntaxHighlighter:
             # # # return previous.userState() if previous.isValid() else -1
         # # # else:
             # # # return -1
-    #@+node:ekr.20140825132752.18565: *6* pqsh.document
+    #@+node:ekr.20140825132752.18565: *5* pqsh.document
     def document(self):
         '''Returns the QTextDocument on which this syntax highlighter is installed.'''
         return self._document
-    #@+node:ekr.20140825132752.18575: *6* pqsh.format
+    #@+node:ekr.20140825132752.18575: *5* pqsh.format
     def format(self,pos):
         '''Return the format at the given position in the current text block.'''
         if 0 <= pos < len(self.formatChanges):
             return self.formatChanges[pos]
         else:
             return QtWidgets.QTextCharFormat()
-    #@+node:ekr.20140825132752.18587: *5* pqsh.Setters
-    #@+node:ekr.20140825132752.18564: *6* pqsh.setDocument
+    #@+node:ekr.20140825132752.18576: *5* pqsh.setCurrentBlockState & setCurrentBlockUserData
+
+    def setCurrentBlockState(self,newState):
+        '''Sets the state of the current text block.'''
+        if self.is_valid(self._currentBlock):
+            self._currentBlock.setUserState(newState)
+        # # # d = self.d
+        # # # if d.currentBlock.isValid():
+            # # # d.currentBlock.setUserState(newState)
+
+    def setCurrentBlockUserData(self,data):
+        '''Set the user data of the current text block.'''
+        if self.is_valid(self._currentBlock):
+            self._currentBlock.setUserData(data)
+        # # # d = self.d
+        # # # if d.currentBlock.isValid():
+            # # # d.currentBlock.setUserData(data)
+    #@+node:ekr.20140825132752.18564: *5* pqsh.setDocument
     def setDocument(self,parent):
         '''Install self on the given QTextDocument.'''
         d = self._document
@@ -9526,9 +9541,14 @@ class PythonQSyntaxHighlighter:
             d.rehighlightPending = True
                 # Set d's pending flag.
             QtCore.QTimer.singleShot(0,self.delayedRehighlight)
-    #@+node:ekr.20140825132752.18584: *6* pqsh.setFormat...
+    #@+node:ekr.20140825132752.18584: *5* pqsh.setFormat (start,count,format)
     def setFormat(self,start,count,format):
         '''Fill in the formatChanges array with format.'''
+        trace = True and not g.unitTesting
+        if trace:
+            color = format.foreground().color().name()
+            g.trace(start,count,str(color))
+        ### This will never insert anything, since formatChanges is inited as [].
         i = start
         while 0 <= i < len(self.formatChanges):
             self.formatChanges[i] = format
@@ -9544,24 +9564,6 @@ class PythonQSyntaxHighlighter:
         # format = QTextCharFormat()
         # format.setFont(font)
         # self.setFormat(start,count,format)
-
-    #@+node:ekr.20140825132752.18576: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
-
-    def setCurrentBlockState(self,newState):
-        '''Sets the state of the current text block.'''
-        if self.is_valid(self._currentBlock):
-            self._currentBlock.setUserState(newState)
-        # # # d = self.d
-        # # # if d.currentBlock.isValid():
-            # # # d.currentBlock.setUserState(newState)
-
-    def setCurrentBlockUserData(self,data):
-        '''Set the user data of the current text block.'''
-        if self.is_valid(self._currentBlock):
-            self._currentBlock.setUserData(data)
-        # # # d = self.d
-        # # # if d.currentBlock.isValid():
-            # # # d.currentBlock.setUserData(data)
     #@+node:ekr.20140825132752.18589: *4* pqsh.Helpers
     # These helpers are the main reason QSyntaxHighlighter exists.
     # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
@@ -9644,7 +9646,6 @@ class PythonQSyntaxHighlighter:
             self.reformatBlocks(from_,charsRemoved,charsAdded)
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
-        # Q_Q(QSyntaxHighlighter)
         if self.is_valid(self._currentBlock):
             g.trace('can not happen: called recursively')
         else:
