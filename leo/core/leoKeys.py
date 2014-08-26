@@ -1365,7 +1365,8 @@ class GetArg:
 
     def do_back_space(ga,tabList,completion=True):
         '''Handle a backspace and update the completion list.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        # g.trace('completion',completion,tabList)
         c,k = ga.c,ga.k
         ga.tabList = tabList[:] if tabList else []
         # Update the label.
@@ -1576,7 +1577,7 @@ class GetArg:
         if stroke and stroke in k.getArgEscapes:
             k.getArgEscapeFlag = True
         if k.oneCharacterArg:
-            ga.arg = char
+            k.arg = char
         else:
             k.arg = ga.get_label()
             if trace: g.trace('k.mb_prefix',k.mb_prefix,'k.arg',k.arg)
