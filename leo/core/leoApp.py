@@ -2277,41 +2277,17 @@ class LoadManager:
         return [lm.completeFileName(z) for z in files]
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
-
         '''Create a Leo window for each file in the lm.files list.'''
-
         # Clear g.app.initing _before_ creating commanders.
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
-        # g.trace(lm.files)
+        c = c1 = None
         if lm.files:
-            # A terrible kludge for Linux only:
-            # When using tabs, the first tab has no menu, so
-            # create a temp tab during loading and then delete it.
-            kludge = sys.platform.lower().startswith('linux') and g.app.qt_use_tabs
-            
-            if kludge:
-                # TNB 20140716 - the kludge breaks --minimize
-                # possibly ...menuBar().setNativeMenuBar(False) is the right way
-                kludge = False
-
-            c1 = None
-            if kludge:
-                c0 = g.app.newCommander(fileName='loading...',gui=g.app.gui,
-                    previousSettings=None)
             for fn in lm.files:
                 c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
-                    # Will give a "not found" message.
-                # This can fail if the file is open in another instance of Leo.
-                # assert c
-                if not c1: c1 = c
-                if kludge:
-                    # Now destroy the dummy frame, leaving menus in all real frames.
-                    g.app.destroyWindow(c0.frame)
-                    kludge = False
-        else:
-            c = c1 = None
+                    # Returns None if the file is open in another instance of Leo.
+                if not c1: c1 = c 
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
@@ -2343,7 +2319,8 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
-        return True
+        else:
+            return True
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self,c,fileName):
 
