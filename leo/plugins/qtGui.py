@@ -9405,25 +9405,25 @@ class PythonQSyntaxHighlighter:
     '''
     #@+others
     #@+node:ekr.20140825132752.18561: *4* pqsh.Birth & death
-    def __init__(self,parent,c=None):
+    def __init__(self,parent,c=None,delay=10,limit=100):
         '''
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
         # g.trace('(PythonQSyntaxBrowser)',parent)
         # Ivars corresponding to QSH ivars...
-        self.c = c                  # The commander.
-        self.cb = None              # The current block: a QTextBlock.
-        self.d = None               # The QTextDocument attached to this colorizers.
-        self.formats = []           # An array of QTextLayout.FormatRange objects.
+        self.c = c              # The commander.
+        self.cb = None          # The current block: a QTextBlock.
+        self.d = None           # The QTextDocument attached to this colorizers.
+        self.formats = []       # An array of QTextLayout.FormatRange objects.
         self.inReformatBlocks = False
         self.rehighlightPending = False
         # Ivars for reformatBlocks and idle_handler...
-        self.r_block = None         # The block to be colorized.
-        self.r_end = None           # The ultimate ending position.
-        self.r_delay = 20           # The waiting time, in msec. for self.timer.
-        self.r_force = False        # True if the next block must be recolored.
-        self.r_limit = 100          # The max number of lines to color at one time.
+        self.r_block = None     # The block to be colorized.
+        self.r_end = None       # The ultimate ending position.
+        self.r_delay = delay    # The waiting time, in msec. for self.timer.
+        self.r_force = False    # True if the next block must be recolored.
+        self.r_limit = limit    # The max number of lines to color at one time.
         self.timer = g.IdleTime(handler=self.idle_handler,delay=self.r_delay)
         # Attach the parent's QTextDocument and set self.d.
         self.setDocument(parent)
@@ -9599,7 +9599,7 @@ class PythonQSyntaxHighlighter:
         n,start = 0,False
         while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
             n += 1
-            if n >= self.r_limit:
+            if n >= self.r_limit and self.timer:
                 start = True
                 break
             else:
@@ -9608,9 +9608,9 @@ class PythonQSyntaxHighlighter:
                 self.r_force = block.userState() != before_state
                 block = self.r_block = block.next()
         self.formatChanges = []
-        if start:
+        if self.timer and start:
             self.timer.start()
-        else:
+        elif self.timer:
             self.timer.stop()
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
