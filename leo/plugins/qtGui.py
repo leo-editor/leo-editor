@@ -9580,7 +9580,7 @@ class PythonQSyntaxHighlighter:
         '''Return the foreground color of the given character format.'''
         return str(format.foreground().color().name())
     #@+node:ekr.20140826120657.18650: *5* pqsh.highlightBlock
-    def highlightBlock(s):
+    def highlightBlock(self,s):
         g.trace('must be defined in subclasses.''')
     #@+node:ekr.20140826120657.18648: *5* pqsh.is_valid
     def is_valid(self,obj):
