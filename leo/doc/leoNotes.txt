@@ -20058,7 +20058,7 @@ def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
-.. @+node:ekr.20140826120657.18651: ** original applyFormatChanges code
+.. @+node:ekr.20140826120657.18651: *3* original applyFormatChanges code
 def applyFormatChanges(self):
     '''Internal helper.'''
     trace = True and not g.unitTesting
@@ -20106,7 +20106,7 @@ def applyFormatChanges(self):
                 r.start += preeditAreaLength
             elif r.start + r.length >= preeditAreaStart:
                 r.length += preeditAreaLength
-        ### syntax coloring bug!
+        ### syntax coloring bug! (now fixed)
         ### ranges = ranges << r
         formatsChanged = True
         r.start = -1

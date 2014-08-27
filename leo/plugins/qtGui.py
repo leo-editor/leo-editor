@@ -9405,18 +9405,26 @@ class PythonQSyntaxHighlighter:
     '''
     #@+others
     #@+node:ekr.20140825132752.18561: *4* pqsh.Birth & death
-    def __init__(self,parent):
+    def __init__(self,parent,c=None):
         '''
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
         # g.trace('(PythonQSyntaxBrowser)',parent)
-        self.cb = None      # The current block: a QTextBlock.
-        self.d = None       # The QTextDocument attached to this colorizers.
-        self.formats = []   # An array of QTextLayout.FormatRange objects.
+        # Ivars corresponding to QSH ivars...
+        self.c = c                  # The commander.
+        self.cb = None              # The current block: a QTextBlock.
+        self.d = None               # The QTextDocument attached to this colorizers.
+        self.formats = []           # An array of QTextLayout.FormatRange objects.
         self.inReformatBlocks = False
         self.rehighlightPending = False
-        self.timer = g.IdleTime(handler=self.idle_handler,delay=100)
+        # Ivars for reformatBlocks and idle_handler...
+        self.r_block = None         # The block to be colorized.
+        self.r_end = None           # The ultimate ending position.
+        self.r_delay = 20           # The waiting time, in msec. for self.timer.
+        self.r_force = False        # True if the next block must be recolored.
+        self.r_limit = 100          # The max number of lines to color at one time.
+        self.timer = g.IdleTime(handler=self.idle_handler,delay=self.r_delay)
         # Attach the parent's QTextDocument and set self.d.
         self.setDocument(parent)
     #@+node:ekr.20140825132752.18588: *4* pqsh.Entry points
@@ -9561,8 +9569,21 @@ class PythonQSyntaxHighlighter:
     def highlightBlock(self,s):
         g.trace('must be defined in subclasses.''')
     #@+node:ekr.20140827063632.18569: *5* pqsh.idle_handler
-    def idle_handler(self):
-        g.trace()
+    def idle_handler(self,timer):
+        trace = False and not g.unitTesting
+        verbose = True
+        c = self.c
+        if trace and verbose:
+            s = g.u(self.r_block.text()).lstrip()
+            g.trace('force: %5s s: %s' % (self.r_force,s))
+        # This is defensive code.  Apparently it is never needed.
+        # This is the only place c is used, so the c argument to the ctor is optional.
+        if c:
+            if c.p == self.r_p:
+                self.reformat_blocks_helper()
+            elif trace:
+                g.trace('node changed: old: %s new: %s' % (
+                    self.r_p and self.r_p.h[:10],c.p and c.p.h[:10]))
     #@+node:ekr.20140826120657.18648: *5* pqsh.is_valid
     def is_valid(self,obj):
         return obj and obj.isValid()
@@ -9571,6 +9592,26 @@ class PythonQSyntaxHighlighter:
         if not self.inReformatBlocks:
             # g.trace(from_,charsRemoved,charsAdded)
             self.reformatBlocks(from_,charsRemoved,charsAdded)
+    #@+node:ekr.20140827074435.18570: *5* pqsh.reformat_blocks_helper
+    def reformat_blocks_helper(self):
+        '''The common code shared by reformatBlocks and idle_handler.'''
+        block = self.r_block
+        n,start = 0,False
+        while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
+            n += 1
+            if n >= self.r_limit:
+                start = True
+                break
+            else:
+                before_state = block.userState()
+                self.reformatBlock(block)
+                self.r_force = block.userState() != before_state
+                block = self.r_block = block.next()
+        self.formatChanges = []
+        if start:
+            self.timer.start()
+        else:
+            self.timer.stop()
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
         trace = False and not g.unitTesting
@@ -9589,25 +9630,23 @@ class PythonQSyntaxHighlighter:
             self.cb = QtGui.QTextBlock()
     #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks (main line)
     def reformatBlocks(self,from_,charsRemoved,charsAdded):
-        '''Internal helper.'''
+        '''Main line: Reformat the lines in the indicated range.'''
         self.rehighlightPending = False
-        block = self.d.findBlock(from_) # QTextBlock 
+        block = self.d.findBlock(from_)
         if not self.is_valid(block):
             return
+        # Set the ivars for reformat_blocks_helper.
         adjust = 1 if charsRemoved > 0 else 0
-        lastBlock = self.d.findBlock(from_+charsAdded+adjust) # QTextBlock 
+        lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
         if self.is_valid(lastBlock):
-            endPosition = lastBlock.position()+lastBlock.length()
+            self.r_end = lastBlock.position() + lastBlock.length()
         else:
-            endPosition = self.d.blockCount()
-        # Continue highlighting until states match.
-        forceHighlightOfNextBlock = False
-        while self.is_valid(block) and (block.position()<endPosition or forceHighlightOfNextBlock):
-            stateBeforeHighlight = block.userState()
-            self.reformatBlock(block)
-            forceHighlightOfNextBlock = (block.userState()!=stateBeforeHighlight)
-            block = block.next()
-        self.formatChanges = []
+            self.r_end = self.d.blockCount()
+        self.r_block = block
+        self.r_p = self.c.p.copy()
+        self.r_force = False
+        # Delegate the colorizing to shared helper.
+        self.reformat_blocks_helper()
     #@-others
 #@+node:ekr.20110605121601.18551: *3* class LeoQtColorizer
 # This is c.frame.body.colorizer
@@ -9985,7 +10024,9 @@ class LeoQtSyntaxHighlighter(base_highlighter):
         # Init the base class.
         if python_qsh:
             # g.trace('parent',w)
-            PythonQSyntaxHighlighter.__init__(self,parent=w)
+            # The c argument is now optional.
+            # If present, it allows an extra safety check in PQSH.idle_handler.
+            PythonQSyntaxHighlighter.__init__(self,parent=w,c=c)
         else:
             QtGui.QSyntaxHighlighter.__init__(self,w)
         self.colorizer = colorizer
