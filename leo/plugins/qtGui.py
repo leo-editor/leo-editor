@@ -8664,10 +8664,8 @@ class IdleTime:
     '''A class that executes a handler at idle time.'''
     #@+others
     #@+node:ekr.20140825042850.18406: *3*  IdleTime.ctor
-    def __init__(self,c,handler,delay=500,tag=None):
+    def __init__(self,handler,delay=500,tag=None):
         '''ctor for IdleTime class.'''
-        self.c = c
-            # The commander that created this timer.
         self.count = 0
             # The number of times handler has been called.
         self.delay = delay
@@ -9418,6 +9416,8 @@ class PythonQSyntaxHighlighter:
         self.formats = []   # An array of QTextLayout.FormatRange objects.
         self.inReformatBlocks = False
         self.rehighlightPending = False
+        self.timer = g.IdleTime(handler=self.idle_handler,delay=100)
+        # Attach the parent's QTextDocument and set self.d.
         self.setDocument(parent)
     #@+node:ekr.20140825132752.18588: *4* pqsh.Entry points
     #@+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
@@ -9514,15 +9514,16 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18584: *5* pqsh.setFormat (start,count,format)
     def setFormat(self,start,count,format):
         '''Remember the requested formatting.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        verbose = False
         if start >= 0:
             r = QtGui.QTextLayout.FormatRange()
             r.start,r.length,r.format = start,count,format
             self.formats.append(r)
-            if trace: g.trace('%3s %3s %s %s' % (
+            if trace and verbose: g.trace('%3s %3s %s %s' % (
                 start,count,self.format_to_color(format),self.cb.text()))
-        else:
-            g.trace('bad start value',repr(start))
+        elif trace:
+            g.trace('bad start value',repr(start),g.callers())
 
     # Not used by Leo...
     # def setFormat(self,start,count,color):
@@ -9559,6 +9560,9 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140826120657.18650: *5* pqsh.highlightBlock
     def highlightBlock(self,s):
         g.trace('must be defined in subclasses.''')
+    #@+node:ekr.20140827063632.18569: *5* pqsh.idle_handler
+    def idle_handler(self):
+        g.trace()
     #@+node:ekr.20140826120657.18648: *5* pqsh.is_valid
     def is_valid(self,obj):
         return obj and obj.isValid()
@@ -9569,18 +9573,18 @@ class PythonQSyntaxHighlighter:
             self.reformatBlocks(from_,charsRemoved,charsAdded)
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
+        trace = False and not g.unitTesting
         if self.is_valid(self.cb):
             g.trace('can not happen: called recursively')
         else:
-            # g.trace(block and str(block.text()))
             self.cb = block
             self.formats = []
             for i in range(block.length()):
                 r = QtGui.QTextLayout.FormatRange()
                 r.start,r.length,r.format = i,1,QtWidgets.QTextCharFormat()
                 self.formats.append(r)
-            self.s = block.text()
-            self.highlightBlock(self.s)
+            if trace: g.trace(str(block.text()))
+            self.highlightBlock(block.text())
             self.applyFormatChanges()
             self.cb = QtGui.QTextBlock()
     #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks (main line)
@@ -11066,7 +11070,9 @@ class JEditColorizer:
         if not g.match(s,i,'<<'):
             return 0
         k = g.find_on_line(s,i+2,'>>')
-        if k is not None:
+        if k == -1:
+            return 0
+        else:
             j = k + 2
             self.colorRangeWithTag(s,i,i+2,'namebrackets')
             ref = g.findReference(c,s[i:j],p)
@@ -11085,8 +11091,6 @@ class JEditColorizer:
                 self.colorRangeWithTag(s,i+2,k,'name')
             self.colorRangeWithTag(s,k,j,'namebrackets')
             return j - i
-        else:
-            return 0
     #@+node:ekr.20110605121601.18607: *6* match_tabs
     def match_tabs (self,s,i):
 
