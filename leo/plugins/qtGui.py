@@ -9414,15 +9414,15 @@ class PythonQSyntaxHighlighter:
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
         # g.trace('(PythonQSyntaxBrowser)',parent)
-        self._currentBlock = None # QTextBlock
-        self._document = None # Set in setDocument. A QTextDocument.
-        self.formatChanges = [] # QVector<QTextCharFormat>
+        self._currentBlock = None   # A QTextBlock.
+        self._document = None       # A QTextDocument.
+        self.formats = []           # An array of QTextLayout.FormatRange objects.
         self.inReformatBlocks = False
         self.rehighlightPending = False
         self.setDocument(parent)
 
     # def __del__(self):
-        # '''Uninstalls this syntax highlighter from the text document.'''
+        # '''Detach this highlighter from the text document.'''
         # self.setDocument(None)
     #@+node:ekr.20140825132752.18588: *4* pqsh.Entry points
     #@+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
@@ -9504,22 +9504,15 @@ class PythonQSyntaxHighlighter:
         else:
             return QtWidgets.QTextCharFormat()
     #@+node:ekr.20140825132752.18576: *5* pqsh.setCurrentBlockState & setCurrentBlockUserData
-
     def setCurrentBlockState(self,newState):
         '''Sets the state of the current text block.'''
         if self.is_valid(self._currentBlock):
             self._currentBlock.setUserState(newState)
-        # # # d = self.d
-        # # # if d.currentBlock.isValid():
-            # # # d.currentBlock.setUserState(newState)
 
     def setCurrentBlockUserData(self,data):
         '''Set the user data of the current text block.'''
         if self.is_valid(self._currentBlock):
             self._currentBlock.setUserData(data)
-        # # # d = self.d
-        # # # if d.currentBlock.isValid():
-            # # # d.currentBlock.setUserData(data)
     #@+node:ekr.20140825132752.18564: *5* pqsh.setDocument
     def setDocument(self,parent):
         '''Install self on the given QTextDocument.'''
@@ -9533,9 +9526,8 @@ class PythonQSyntaxHighlighter:
                 blk.layout().clearAdditionalFormats()
                 blk = blk.next()
             cursor.endEditBlock()
-        d = parent.document()
+        self._document = d = parent.document()
         assert isinstance(d,QtGui.QTextDocument),d
-        self._document = d
         if d:
             d.contentsChange.connect(self.q_reformatBlocks)
             d.rehighlightPending = True
@@ -9543,16 +9535,16 @@ class PythonQSyntaxHighlighter:
             QtCore.QTimer.singleShot(0,self.delayedRehighlight)
     #@+node:ekr.20140825132752.18584: *5* pqsh.setFormat (start,count,format)
     def setFormat(self,start,count,format):
-        '''Fill in the formatChanges array with format.'''
-        trace = True and not g.unitTesting
-        if trace:
-            color = format.foreground().color().name()
-            g.trace(start,count,str(color))
-        ### This will never insert anything, since formatChanges is inited as [].
-        i = start
-        while 0 <= i < len(self.formatChanges):
-            self.formatChanges[i] = format
-            i += 1
+        '''Remember the requested formatting.'''
+        trace = False and not g.unitTesting
+        if start >= 0:
+            r = QtGui.QTextLayout.FormatRange()
+            r.start,r.length,r.format = start,count,format
+            self.formats.append(r)
+            if trace: g.trace('%3s %3s %s %s' % (
+                start,count,self.format_to_color(format),self._currentBlock.text()))
+        else:
+            g.trace('bad start value',repr(start))
 
     # Not used by Leo...
     # def setFormat(self,start,count,color):
@@ -9569,80 +9561,34 @@ class PythonQSyntaxHighlighter:
     # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
     #@+node:ekr.20140825132752.18557: *5* pqsh.applyFormatChanges
     def applyFormatChanges(self):
-        '''Internal helper.'''
-        formatsChanged = False
-        layout = self._currentBlock.layout() # QTextLayout
-        ranges = layout.additionalFormats() # QList<QTextLayout.FormatRange>
-        preeditAreaStart = layout.preeditAreaPosition()
-        preeditAreaLength = layout.preeditAreaText().length()
-        if preeditAreaLength != 0:
-            it = ranges.begin() # QList<QTextLayout.FormatRange>.Iterator 
-            while it != ranges.end():
-                if (it.start >= preeditAreaStart and
-                     it.start + it.length <= preeditAreaStart + preeditAreaLength
-                ):
-                    it += 1
-                else:
-                    it = ranges.erase(it)
-                    formatsChanged = True
-        ### elif not ranges.isEmpty():
-        elif ranges:
-            ### ranges.clear()
-            ranges = []
-            formatsChanged = True
-        emptyFormat = QtWidgets.QTextCharFormat()
-        r = QtGui.QTextLayout.FormatRange()
-        r.start = -1
-        i = 0
-        changes = self.formatChanges
-        while i < len(changes):
-            while i < len(changes) and changes[i] == emptyFormat:
-                i += 1
-            if i >= len(changes):
-                break
-            r.start = i
-            r.format = changes[i]
-            while i < len(changes) and changes[i] == r.format:
-                i += 1
-            if i >= len(changes):
-                break
-            r.length = i - r.start
-            if preeditAreaLength != 0:
-                if r.start >= preeditAreaStart:
-                    r.start += preeditAreaLength
-                elif r.start + r.length >= preeditAreaStart:
-                    r.length += preeditAreaLength
-            ### syntax coloring bug!
-            ### ranges = ranges << r
-            formatsChanged = True
-            r.start = -1
-        if r.start != -1:
-            r.length = len(changes) - r.start
-            if preeditAreaLength != 0:
-                if r.start >= preeditAreaStart:
-                    r.start += preeditAreaLength
-                elif r.start + r.length >= preeditAreaStart:
-                    r.length += preeditAreaLength
-            ### syntax coloring bug!
-            ### ranges = ranges << r
-            formatsChanged = True
-        if formatsChanged:
-            layout.setAdditionalFormats(ranges)
+        '''Apply self.formats to self._currentBlock.layout().'''
+        if self.formats:
+            layout = self._currentBlock.layout() # A QTextLayout.
+            layout.setAdditionalFormats(self.formats)
+            self.formats = []
             self._document.markContentsDirty(
                 self._currentBlock.position(),
                 self._currentBlock.length())
-    #@+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight (inline)
+    #@+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight
     def delayedRehighlight(self): # inline
         '''Queued rehighlight.'''
         if self.rehighlightPending:
             self.rehighlightPending = False
-            self.rehighlight() ### q_func().rehighlight()
+            self.rehighlight()
+    #@+node:ekr.20140826120657.18649: *5* pqsh.format_to_color
+    def format_to_color(self,format):
+        '''Return the foreground color of the given character format.'''
+        return str(format.foreground().color().name())
+    #@+node:ekr.20140826120657.18650: *5* pqsh.highlightBlock
+    def highlightBlock(s):
+        g.trace('must be defined in subclasses.''')
     #@+node:ekr.20140826120657.18648: *5* pqsh.is_valid
     def is_valid(self,obj):
         return obj and obj.isValid()
     #@+node:ekr.20140825132752.18558: *5* pqsh.q_reformatBlocks
     def q_reformatBlocks(self,from_,charsRemoved,charsAdded):
         if not self.inReformatBlocks:
+            # g.trace(from_,charsRemoved,charsAdded)
             self.reformatBlocks(from_,charsRemoved,charsAdded)
     #@+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
     def reformatBlock(self,block):
@@ -9650,14 +9596,12 @@ class PythonQSyntaxHighlighter:
             g.trace('can not happen: called recursively')
         else:
             self._currentBlock = block
-            # self.formatChanges.fill(QTextCharFormat(),block.length()- 1)
-            self.formatChanges = [QtWidgets.QTextCharFormat() for z in range(block.length())] # -1 ???
-            # pylint: disable=no-member
-            # Must be defined in subclasses.
-            self.highlightBlock(block.text())
+            self.formatChanges = [QtWidgets.QTextCharFormat()] * (block.length()-1)
+            self.s = block.text()
+            self.highlightBlock(self.s)
             self.applyFormatChanges()
             self._currentBlock = QtGui.QTextBlock()
-    #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks
+    #@+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks (main line)
     def reformatBlocks(self,from_,charsRemoved,charsAdded):
         '''Internal helper.'''
         self.rehighlightPending = False
@@ -11972,9 +11916,6 @@ class JEditColorizer:
             if trace and traceReturns: g.trace('not flag')
             return
         self.lineCount += 1
-        # # # if self.lineCount >= 10:
-            # # # if trace: g.trace('at line limit')
-            # # # return
         # Get the previous state.
         self.totalChars += len(s)
         n = self.prevState() # The state at the end of the previous line.
