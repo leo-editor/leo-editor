@@ -9463,8 +9463,6 @@ class PythonQSyntaxHighlighter:
 
     def currentBlockUserData(self):
         '''Returns the QTextBlockUserData object attached to the current text block.'''
-        ### d = self._document
-        ### return d.currentBlock.userData() if d.currentBlock.isValid() else None
         if self.is_valid(self._currentBlock):
             return self._currentBlock.userData()
         else:
@@ -9613,7 +9611,7 @@ class PythonQSyntaxHighlighter:
         if self.is_valid(lastBlock):
             endPosition = lastBlock.position()+lastBlock.length()
         else:
-            endPosition = self._document.blockCount() ### docHandle().length()
+            endPosition = self._document.blockCount()
         # Continue highlighting until states match.
         forceHighlightOfNextBlock = False
         while self.is_valid(block) and (block.position()<endPosition or forceHighlightOfNextBlock):
@@ -10056,7 +10054,6 @@ class LeoQtSyntaxHighlighter(base_highlighter):
                     self.rehighlight_with_cache(p.v.colorCache)
                 else:
                     self.colorer.init(p,p.b)
-                    ### QtGui.QSyntaxHighlighter.rehighlight(self)
                     base_highlighter.rehighlight(self)
             finally:
                 tree.selecting = old_selecting
