@@ -20,25 +20,24 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20140817075533.18314"><vh>@gnxs</vh></v>
+<v t="ekr.20140821061549.18384"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20140817075533.18315"><vh>@gnxs</vh></v>
+<v t="ekr.20140821061549.18385"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20140817075533.18316"><vh>@gnxs</vh></v>
+<v t="ekr.20140821061549.18386"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20140817075533.18317"><vh>@gnxs</vh></v>
+<v t="ekr.20140821061549.18387"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20140817075533.18318"><vh>@gnxs</vh></v>
+<v t="ekr.20140821061549.18388"><vh>@gnxs</vh></v>
 </v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329"
-expanded="ekr.20031218072017.434,"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -54,6 +53,7 @@ expanded="ekr.20031218072017.434,"><vh>@file ../doc/leoNotes.txt</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
+<v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
@@ -64,12 +64,12 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20111116103733.9817"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
-<v t="ekr.20140821054212.25844"><vh>@file leoPersistence.py</vh></v>
+<v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
-<v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
+<v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285505302e332e3271017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6174696d657107580d000000313331393436373035302e34387108755505302e332e3371097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6174696d65710f580d000000313332303433343235372e33367110755505302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6174696d657117580d000000313331393534393339302e38397118755505302e332e3171197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6174696d65711f580c000000313332303432323637302e397120755505302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755505302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20140526082700.17153"><vh>@file leoSTC.py</vh></v>
@@ -91,7 +91,8 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
-<v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
+<v t="ekr.20110605121601.18002"
+expanded="ekr.20110605121601.18136,ekr.20110605121601.18180,ekr.20110605121601.18193,ekr.20110605121601.18206,"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20130701072841.12673"><vh>@file qsyntaxhighlighter.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
@@ -117,6 +118,7 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
+<v t="ekr.20061031131434"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -273,7 +275,8 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
-<t tx="ekr.20100120072650.6088"></t>
+<t tx="ekr.20100120072650.6088">
+</t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
 <t tx="ekr.20131111060930.18010"># Standard bindings...
@@ -308,10 +311,10 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 </t>
 <t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
-<t tx="ekr.20140817075533.18314">gnx: ekr.20140225224703.8169
+<t tx="ekr.20140821061549.18384">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20140817075533.18315">gnx: ekr.20140225224703.8170
+<t tx="ekr.20140821061549.18385">gnx: ekr.20140225224703.8170
 unl: qt_main declarations
 gnx: ekr.20140225224703.8171
 unl: class Ui_MainWindow
@@ -320,8 +323,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20140225224703.8173
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20140817075533.18316"></t>
-<t tx="ekr.20140817075533.18317">gnx: ekr.20140225224703.8174
+<t tx="ekr.20140821061549.18386"></t>
+<t tx="ekr.20140821061549.18387">gnx: ekr.20140225224703.8174
 unl: qt_quicksearch declarations
 gnx: ekr.20140225224703.8175
 unl: class Ui_LeoQuickSearchWidget
@@ -330,6 +333,6 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20140817075533.18318"></t>
+<t tx="ekr.20140821061549.18388"></t>
 </tnodes>
 </leo_file>
