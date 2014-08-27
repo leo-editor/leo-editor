@@ -31,6 +31,8 @@ def getCoreList():
         'leoAtFile',
         'leoBridge',
         'leoCache',
+        'leoColor',
+        'leoColorizer',
         'leoChapters',
         'leoCommands',
         'leoConfig',
