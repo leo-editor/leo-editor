@@ -31,7 +31,7 @@ class PythonQSyntaxHighlighter:
     '''
     #@+others
     #@+node:ekr.20140825132752.18561: *3* pqsh.Birth & death
-    def __init__(self,parent,c=None,delay=10,limit=100):
+    def __init__(self,parent,c=None,delay=10,limit=50):
         '''
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
@@ -45,6 +45,7 @@ class PythonQSyntaxHighlighter:
         self.inReformatBlocks = False
         self.rehighlightPending = False
         # Ivars for reformatBlocks and idle_handler...
+        self.idle_active = False# True if the idle_handler should colorize.
         self.r_block = None     # The block to be colorized.
         self.r_end = None       # The ultimate ending position.
         self.r_delay = delay    # The waiting time, in msec. for self.timer.
@@ -54,10 +55,20 @@ class PythonQSyntaxHighlighter:
         # Attach the parent's QTextDocument and set self.d.
         self.setDocument(parent)
     #@+node:ekr.20140825132752.18588: *3* pqsh.Entry points
+    #@+node:ekr.20140827112712.18469: *4* pqsh.kill
+    def kill(self):
+        '''Kill any queued coloring.'''
+        trace = False and not g.unitTesting
+        if self.idle_active:
+            if trace: g.trace('(PythonQSyntaxHighlighter)')
+            self.idle_active = False
+            if self.timer:
+                self.timer.stop()
     #@+node:ekr.20140825132752.18566: *4* pqsh.rehighlight
     def rehighlight(self):
         '''Color the whole document.'''
         if self.d:
+            # g.trace('*****',g.callers())
             cursor = QtGui.QTextCursor(self.d)
             self.rehighlight_helper(cursor,QtGui.QTextCursor.End)
     #@+node:ekr.20140825132752.18568: *4* pqsh.rehighlightBlock & helper
@@ -148,7 +159,7 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18584: *4* pqsh.setFormat (start,count,format)
     def setFormat(self,start,count,format):
         '''Remember the requested formatting.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         if start >= 0:
             r = QtGui.QTextLayout.FormatRange()
@@ -198,16 +209,20 @@ class PythonQSyntaxHighlighter:
     def idle_handler(self,timer):
         trace = False and not g.unitTesting
         verbose = True
+        if not self.idle_active:
+            # Shortcut everything else.
+            return
         c = self.c
         if trace and verbose:
             s = g.u(self.r_block.text()).lstrip()
-            g.trace('force: %5s s: %s' % (self.r_force,s))
+            g.trace('force: %5s s: %s' % (self.r_force,s[:20]))
         # This is defensive code.  Apparently it is never needed.
         # This is the only place c is used, so the c argument to the ctor is optional.
         if c:
             if c.p == self.r_p:
                 self.reformat_blocks_helper()
             elif trace:
+                self.idle_active = False
                 g.trace('node changed: old: %s new: %s' % (
                     self.r_p and self.r_p.h[:10],c.p and c.p.h[:10]))
     #@+node:ekr.20140826120657.18648: *4* pqsh.is_valid
@@ -234,6 +249,7 @@ class PythonQSyntaxHighlighter:
                 self.r_force = block.userState() != before_state
                 block = self.r_block = block.next()
         self.formatChanges = []
+        self.idle_active = start
         if self.timer and start:
             self.timer.start()
         elif self.timer:
@@ -2203,15 +2219,22 @@ class LeoQtColorizer:
     #@+node:ekr.20110605121601.18553: *3* colorize (LeoQtColorizer) & helper
     def colorize(self,p,incremental=False,interruptable=True):
         '''The main colorizer entry point.'''
-        trace = False and not g.unitTesting ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
         self.count += 1 # For unit testing.
         if not incremental:
             self.full_recolor_count += 1
-        if not p.b.strip():
+        s = p.b
+        if not s.strip():
             if trace: g.trace('no body',p.h)
+            self.kill()
             return
-        if len(p.b) > self.max_chars_to_colorize > 0:
-            self.flag = False
+        if s.startswith('@killcolor'):
+            if trace: g.trace('@killcolor')
+            self.kill()
+            return
+        # # # if len(p.b) > self.max_chars_to_colorize > 0:
+            # # # self.flag = False
         elif self.enabled:
             oldFlag = self.flag
             self.updateSyntaxColorer(p)
@@ -2258,11 +2281,10 @@ class LeoQtColorizer:
 
         return language
 
-    #@+node:ekr.20110605121601.18554: *3* enable/disable
+    #@+node:ekr.20110605121601.18554: *3* enable/disable (not used)
     def disable (self,p):
 
         g.trace(g.callers(4))
-
         if self.enabled:
             self.flag = False
             self.enabled = False
@@ -2271,13 +2293,17 @@ class LeoQtColorizer:
     def enable (self,p):
 
         g.trace(g.callers(4))
-
         if not self.enabled:
             self.enabled = True
             self.flag = True
             # Do a full recolor, but only if we aren't changing nodes.
             if self.c.currentPosition() == p:
                 self.highlighter.rehighlight(p)
+    #@+node:ekr.20140827112712.18468: *3* kill (LeoQtColorizer)
+    def kill (self): # c.frame.body.colorizer.kill
+        '''Kill any queue colorizing.'''
+        if self.highlighter and hasattr(self.highlighter,'kill'):
+            self.highlighter.kill()
     #@+node:ekr.20110605121601.18556: *3* scanColorDirectives (LeoQtColorizer) & helper
     def scanColorDirectives(self,p):
 
@@ -2310,7 +2336,7 @@ class LeoQtColorizer:
                 # In ancestor nodes, only unambiguous @language directives
                 # set self.language.
                 if p == root or len(aList) == 1:
-                    self.languageList = aList
+                    self.languageList = list(set(aList))
                     self.language = aList and aList[0] or []
                     break
             #@-<< Test for @language >>
@@ -2366,14 +2392,14 @@ class LeoQtColorizer:
 
         fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
         return g.os_path_exists(fn)
-    #@+node:ekr.20110605121601.18561: *3* setHighlighter
+    #@+node:ekr.20110605121601.18561: *3* setHighlighter **** (slow) ****
     # Called *only* from LeoTree.setBodyTextAfterSelect
 
     def setHighlighter (self,p):
 
         if self.enabled:
             self.flag = self.updateSyntaxColorer(p)
-
+            return self.flag
 
     # def setHighlighter (self,p):
 
@@ -2392,16 +2418,19 @@ class LeoQtColorizer:
         # if trace: g.trace('enabled: %s flag: %s %s' % (
             # self.enabled,self.flag,p.h),g.callers())
             
-    #@+node:ekr.20110605121601.18562: *3* updateSyntaxColorer
+    #@+node:ekr.20110605121601.18562: *3* updateSyntaxColorer (LeoQtColorizer)
     def updateSyntaxColorer (self,p):
-
+        '''Scan p.b for color directives.'''
         trace = False and not g.unitTesting
-        p = p.copy()
-
-        if len(p.b) > self.max_chars_to_colorize > 0:
+        if p.b.startswith('@killcolor'):
+            if trace: g.trace('@killcolor')
             self.flag = False
+            return self.flag
+        # # # if len(p.b) > self.max_chars_to_colorize > 0:
+            # # # self.flag = False
         else:
             # self.flag is True unless an unambiguous @nocolor is seen.
+            p = p.copy()
             self.flag = self.useSyntaxColoring(p)
             self.scanColorDirectives(p) # Sets self.language
 
@@ -2598,7 +2627,7 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             finally:
                 tree.selecting = old_selecting
         if trace:
-            g.trace('recolors: %4s %2.3f sec' % (
+            g.trace('(LeoQtSyntaxHighlighter) recolors: %4s %2.3f sec' % (
                 self.colorer.recolorCount-n,time.time()-t1))
     #@+node:ekr.20121003051050.10201: *4* rehighlight_with_cache (LeoQtSyntaxHighlighter)
     def rehighlight_with_cache (self,bunch):
