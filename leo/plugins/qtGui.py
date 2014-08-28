@@ -72,12 +72,16 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         for attr in ('leo_c','leo_wrapper',):
             assert not hasattr(QtWidgets.QTextBrowser,attr),attr
         self.leo_c = c
+        self.leo_s = '' # The cached text.
         self.leo_wrapper = wrapper
         self.htmlFlag = True
         QtWidgets.QTextBrowser.__init__(self,parent)
+        # Connect event handlers...
+        self.textChanged.connect(self.onTextChanged)
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         vsb.valueChanged.connect(self.onSliderChanged)
+        
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
         # For QCompleter
         self.leo_q_completer = None
@@ -347,7 +351,33 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         else: kind = 'unknown: %s' % repr(button)
         if trace: g.trace(tag,kind)
         return kind
-    #@+node:ekr.20110605121601.18020: *4* url support (LeoQTextBrowser)
+    #@+node:ekr.20140828033858.18518: *4* getTextLength (LeoQTextBrowser)
+    def getTextLength(self):
+        '''Return the length of all the text.'''
+        if 1: # safe.
+            s = g.u(self.toPlainText())
+            if s != self.leo_s:
+                g.trace('can not happen: text mismatch.')
+                self.leo_s = s
+            return len(self.leo_s)
+        else: # fast
+            return len(self.leo_s)
+    #@+node:ekr.20110605121601.18020: *4* event handlers (LeoQTextBrowser)
+    #@+node:ekr.20140828033858.18517: *5* onTextChanged (LeoQTextBrowser)
+    def onTextChanged(self):
+        '''The textChanged event handler.  Cached the text in self.leo_s.'''
+        trace = False and not g.unitTesting
+        self.leo_s = s = g.u(self.toPlainText())
+        if trace:
+            w_name = g.app.gui.widget_name(self)
+            if w_name == 'richTextEdit':
+                i = self.leo_s.find('\n')
+                line = self.leo_s[:i] if i > -1 else ''
+                # Important: c.p is not accurate here.
+                # onTextChanged will be called while switching nodes.
+                    # c = self.leo_c
+                    # h = c.p.h if c and c.p and c.p.v else '<no c.p>'
+                g.trace(w_name,len(s),line)
     #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser) (never called!)
     # def mousePressEvent (self,event):
         # QtWidgets.QTextBrowser.mousePressEvent(self,event)
@@ -655,7 +685,7 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
 
         return self.setSelectionRangeHelper(i,j,insert)
     #@+node:ekr.20110605121601.18046: *7* setSelectionRangeHelper
-    def setSelectionRangeHelper(self,i,j,insert=None):
+    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
         self.oops()
     #@+node:ekr.20110605121601.18050: *5* HighLevelInterface (LeoQtBaseTextWidget)
@@ -685,7 +715,7 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
     def hasSelection(self):                     self.oops()
     def see(self,i):                            self.oops()
     def setAllText(self,s):                     self.oops()
-    def setInsertPoint(self,i):                 self.oops()
+    def setInsertPoint(self,i,s=None):          self.oops()
     #@+node:ekr.20110605121601.18056: *6* tag_configure (LeoQtBaseTextWidget)
     def tag_configure (self,*args,**keys):
 
@@ -890,22 +920,24 @@ class LeoQLineEditWidget (LeoQtBaseTextWidget):
         if disabled:
             w.setEnabled(False)
     #@+node:ekr.20110605121601.18069: *5* setInsertPoint (QLineEdit)
-    def setInsertPoint(self,i):
+    def setInsertPoint(self,i,s=None):
 
         w = self.widget
-        s = w.text()
-        s = g.u(s)
+        if s is None:
+            s = w.text()
+            s = g.u(s)
         i = self.toPythonIndex(i) # 2010/10/22.
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18070: *5* setSelectionRangeHelper (leoQLineEdit)
-    def setSelectionRangeHelper(self,i,j,insert=None):
+    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
         w = self.widget
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
-        s = w.text()
-        s = g.u(s)
+        if s is None:
+            s = w.text()
+            s = g.u(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -1248,6 +1280,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         Otherwise, the scrollbars are preserved.'''
 
         trace = False and not g.unitTesting
+        traceTime = False and not g.unitTesting
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
@@ -1261,26 +1294,41 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             self.changingText = True # Disable onTextChanged.
             colorizer.changingText = True # Disable colorizer.
             w.setReadOnly(False)
+            if traceTime: t1 = time.time()
             w.setPlainText(s)
+            if traceTime:
+                delta_t = time.time()-t1
+                if delta_t > 0.1:
+                    g.trace('w.setPlainText: %2.3f sec. isinstance(w,QTextEdit): %s' % (
+                        delta_t,isinstance(w,QtGui.QTextEdit)))
         finally:
             self.changingText = False
             colorizer.changingText = False
         if trace:
             g.trace(g.timeSince(t1))
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (LeoQTextEditWidget)
-    def setInsertPoint(self,i):
+    def setInsertPoint(self,i,s=None):
 
         # Fix bug 981849: incorrect body content shown.
         # Use the more careful code in setSelectionRangeHelper & lengthHelper.
-        self.setSelectionRangeHelper(i=i,j=i,insert=i)
+        self.setSelectionRangeHelper(i=i,j=i,insert=i,s=s)
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (LeoQTextEditWidget)
-    def setSelectionRangeHelper(self,i,j,insert=None):
+    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
         '''Set the selection range and the insert point.'''
-        trace = (True or g.trace_scroll) and not g.unitTesting
+        # trace = (False or g.trace_scroll) and not g.unitTesting
+        traceTime = False and not g.unitTesting
+        # Part 1
+        if traceTime: t1 = time.time()
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
-        n = self.lengthHelper()
+        if s is not None:
+            n = len(s)
+        elif 1:
+            s = self.getAllText()
+            n = len(s)
+        else: # **** Very slow for large text ***
+            n = self.lengthHelper()
         i = max(0,min(i,n))
         j = max(0,min(j,n))
         if insert is None:
@@ -1288,6 +1336,11 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         else:
             ins = self.toPythonIndex(insert)
             ins = max(0,min(ins,n))
+        if traceTime:
+            delta_t = time.time()-t1
+            if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
+        # Part 2:
+        if traceTime: t2 = time.time()
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
         tc = w.textCursor()
@@ -1317,13 +1370,24 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         v.scrollBarSpot = spot = w.verticalScrollBar().value()
         # g.trace(spot,v.h)
         # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
-    #@+node:ekr.20110605121601.18097: *6* lengthHelper
+        if traceTime:
+            delta_t = time.time()-t2
+            tot_t = time.time()-t1
+            if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
+            if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
+    #@+node:ekr.20110605121601.18097: *6* lengthHelper (LeoQTextEditWidget)
     def lengthHelper(self):
         '''Return the length of the text.'''
+        # This is *extremely slow for large text.
+        traceTime = False and not g.unitTesting
+        if traceTime: t1 = time.time()
         w = self.widget
         tc = w.textCursor()
         tc.movePosition(QtGui.QTextCursor.End)
         n = tc.position()
+        if traceTime:
+            delta_t = time.time()-t1
+            if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
         return n
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (LeoQTextEditWidget)
     def setYScrollPosition(self,pos):
@@ -1342,12 +1406,9 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex (LeoQTextEditWidget) (Fast)
     def toPythonIndex (self,index):
-
         '''This is much faster than versions using g.toPythonIndex.'''
-
         w = self
         te = self.widget
-
         if index is None:
             return 0
         if type(index) == type(99):
@@ -1355,8 +1416,10 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         elif index == '1.0':
             return 0
         elif index == 'end':
+            # g.trace('===== slow =====',repr(index))
             return w.getLastPosition()
         else:
+            # g.trace('===== slow =====',repr(index))
             doc = te.document()
             data = index.split('.')
             if len(data) == 2:
@@ -1561,13 +1624,13 @@ class LeoQScintillaWidget (LeoQtBaseTextWidget):
         w.setText(s)
 
     #@+node:ekr.20110605121601.18114: *5* setInsertPoint
-    def setInsertPoint(self,i):
+    def setInsertPoint(self,i,s=None):
 
         w = self.widget
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
     #@+node:ekr.20110605121601.18115: *5* setSelectionRangeHelper (QScintilla)
-    def setSelectionRangeHelper(self,i,j,insert=None):
+    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
         w = self.widget
 
@@ -1677,25 +1740,26 @@ class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
         if self.check():
             g.app.gui.set_focus(self.c,self.widget)
     #@+node:ekr.20110605121601.18129: *5* setInsertPoint (LeoQtHeadlineWidget)
-    def setInsertPoint(self,i):
+    def setInsertPoint(self,i,s=None):
 
         if not self.check(): return
-
         w = self.widget
-        s = w.text()
-        s = g.u(s)
+        if s is None:
+            s = w.text()
+            s = g.u(s)
         i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *5* setSelectionRangeHelper (leoQLineEdit)
-    def setSelectionRangeHelper(self,i,j,insert=None):
+    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
         if not self.check(): return
         w = self.widget
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
-        s = w.text()
-        s = g.u(s)
+        if s is None:
+            s = w.text()
+            s = g.u(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -3476,7 +3540,7 @@ class LeoQtBody (leoFrame.LeoBody):
     def setBackgroundColor (self,color):    return self.widget.setBackgroundColor(color)
     def setFocus (self):                    return self.widget.setFocus()
     def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
-    def setInsertPoint (self,pos):          return self.widget.setInsertPoint(pos)
+    def setInsertPoint (self,pos,s=None):   return self.widget.setInsertPoint(pos,s=s)
     def setSelectionRange (self,i,j,insert=None):
         self.widget.setSelectionRange(i,j,insert=insert)
     def setYScrollPosition (self,i):        return self.widget.setYScrollPosition(i)
@@ -8658,6 +8722,7 @@ class IdleTime:
     #@+node:ekr.20140825042850.18406: *3*  IdleTime.ctor
     def __init__(self,handler,delay=500,tag=None):
         '''ctor for IdleTime class.'''
+        # g.trace('(IdleTime)',g.callers(2))
         self.count = 0
             # The number of times handler has been called.
         self.delay = delay
@@ -8703,9 +8768,10 @@ class IdleTime:
             # Requeue the timer with the appropriate delay.
             # 0 means wait until idle time.
             self.waiting_for_idle = not self.waiting_for_idle
-            self.timer.stop()
+            if self.timer.isActive():
+                self.timer.stop()
             self.timer.start(0 if self.waiting_for_idle else self.delay)
-        else:
+        elif self.timer.isActive():
             self.timer.stop()
     #@+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
     def call_handler(self):
@@ -8735,7 +8801,7 @@ class IdleTime:
     def stop(self):
         '''Stop idle-time processing. May be called during shutdown.'''
         self.enabled = False
-        if hasattr(self,'timer'):
+        if hasattr(self,'timer') and self.timer.isActive():
             self.timer.stop()
     #@-others
 #@+node:ekr.20110605121601.18537: ** class LeoQtEventFilter
