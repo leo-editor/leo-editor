@@ -976,7 +976,7 @@ class VimCommands:
     #@+node:ekr.20131111105746.16544: *5* vc.vim_dot
     def vim_dot(vc):
         '''Repeat the last command.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         if vc.in_dot:
             if trace and verbose: g.trace('*** already in dot ***')

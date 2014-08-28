@@ -306,7 +306,6 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(pd,root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        trace = True and not g.unitTesting
         if pd.is_foreign_file(root):
             # Create clone links from @gnxs node
             at_gnxs = pd.has_at_gnxs_node(root)

@@ -1203,7 +1203,6 @@ class FileNameChooser:
     #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
     def do_back_space (fnc):
         '''Handle a back space.'''
-        trace = True and not g.unitTesting
         s = fnc.get_label()
         if s:
             s = s[:-1]

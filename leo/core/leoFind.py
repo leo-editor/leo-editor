@@ -104,7 +104,7 @@ class SearchWidget:
         self.i = 0
         self.sel = 0,0
 
-    def setInsertPoint (self,i):
+    def setInsertPoint (self,i,s=None):
         self.i = i
 
     def setSelectionRange (self,i,j,insert=None):
@@ -1001,7 +1001,6 @@ class LeoFind:
 
     def batchChange (self,pos1,pos2):
 
-        trace = True and not g.unitTesting
         c = self.c ; u = c.undoer
         p = self.p
         w = self.s_ctrl

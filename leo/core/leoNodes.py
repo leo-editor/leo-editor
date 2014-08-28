@@ -2335,33 +2335,39 @@ class VNode (BaseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed)
     # Called only by LeoTree.selectHelper.
 
     def restoreCursorAndScroll (self):
-
+        '''Restore the cursor position and scroll so it is visible.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
-        v = self ; c = self.context
+        traceTime = False and not g.unitTesting
+        v = self
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
-        w = c.frame.body
-
+        w = self.context.frame.body
         # Fix bug 981849: incorrect body content shown.
         if ins is None: ins = 0
-        w.setInsertPoint(ins)
-
+        # This is very expensive for large text.
+        if traceTime: t1 = time.time()
+        # Doubly defensive code.
+        try:
+            w.widget.setInsertPoint(ins,s=v._bodyString)
+        except TypeError:
+            g.trace('**********',w.widget)
+            w.setInsertPoint(ins)
+        if traceTime: 
+            delta_t = time.time()-t1
+            if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
         if g.no_scroll:
             return
-
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
-
         if trace: g.trace(spot,v.h)
-
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):
