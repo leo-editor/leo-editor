@@ -690,6 +690,8 @@ Affected methods: vc.vim_V and vc>do_visual_mode.
 
 It would be good if LeoQTextEditWidget.setSelectionRangeHelper could handle
 insert points in the middle of a text selection, but at present it can't.
+.. @+node:ekr.20140828033858.18516: *4* Added clone-find-parents command
+Added c.cloneFindParents.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
