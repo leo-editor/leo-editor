@@ -709,6 +709,45 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
+    #@+node:ekr.20140828080010.18532: *3* c.cloneFindParents
+    def cloneFindParents(self,event=None):
+        '''Create a "Found: parents of p.h for all parents of p or c.p.'''
+        c,u = self,self.undoer
+        p = c.p
+        if not p: return
+        if not p.isCloned():
+            g.es('not a clone: %s' % p.h)
+            return
+        p0 = p.copy()
+        undoType = 'Find Clone Parents'
+        aList = c.vnode2allPositions(p.v)
+        if not aList:
+            g.trace('can not happen: no parents')
+            return
+        # Create the node as the last top-level node.
+        # All existing positions remain valid.
+        u.beforeChangeGroup(p0,undoType)
+        top = c.rootPosition()
+        while top.hasNext():
+            top.moveToNext()
+        b = u.beforeInsertNode(p0)
+        found = top.insertAfter()
+        found.h = 'Found: parents of %s' % p.h
+        u.afterInsertNode(found,'insert',b)
+        seen = []
+        for p2 in aList:
+            parent = p2.parent()
+            if parent and parent.v not in seen:
+                seen.append(parent.v)
+                b = u.beforeCloneNode(parent)
+                clone = parent.clone()
+                clone.moveToLastChildOf(found)
+                u.afterCloneNode(clone,'clone',b,dirtyVnodeList=[])
+        u.afterChangeGroup(p0,undoType)
+        c.selectPosition(found)
+        c.setChanged(True)
+        c.redraw()
+       
     #@+node:peckj.20131023115434.10114: *3* c.createNodeHierarchy
     def createNodeHierarchy(self, heads, parent=None, forcecreate=False):
         

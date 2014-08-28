@@ -10137,6 +10137,7 @@ class SearchCommandsClass (BaseEditCommandsClass):
         return {
         'clone-find-all':                 find.minibufferCloneFindAll,
         'clone-find-all-flattened':       find.minibufferCloneFindAllFlattened,
+        'clone-find-parents':             self.c.cloneFindParents,
         'find-all':                       find.minibufferFindAll,
         'find-clone-all':                 find.minibufferCloneFindAll,
         'find-clone-all-flattened':       find.minibufferCloneFindAllFlattened,
