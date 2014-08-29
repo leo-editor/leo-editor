@@ -8019,47 +8019,39 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *4* LeoQtGui.Event handlers
+    #@+node:ekr.20110605121601.18481: *5* LeoQtGui.onDeactiveEvent
+    deactivated_name = ''
+
+    def onDeactivateEvent (self,event,c,obj,tag):
+        '''Gracefully deactivate the Leo window.'''
+        trace = False and not g.unitTesting
+        # This is called several times for each window activation.
+        if c.exists and not self.deactivated_name:
+            self.deactivated_name = self.widget_name(self.get_focus())
+            self.active = False
+            if trace: g.trace(self.deactivated_name)
+            c.k.keyboardQuit(setFocus=False)
+                # The best way to retain as much focus as possible.
+            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18480: *5* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent (self,event,c,obj,tag):
-
-        '''Put the focus in the body pane when the Leo window is
-        activated, say as the result of an Alt-tab or click.'''
-
+        '''Restore the focus when the Leo window is activated.'''
         # This is called several times for each window activation.
-        # We only need to set the focus once.
-
         trace = False and not g.unitTesting
-
-        if trace: g.trace(tag)
-
-        if c.exists and tag == 'body':
+        if c.exists and self.deactivated_name:
             self.active = True
-            # Retain the focus that existed when the deactivate event happened.
-                # c.bodyWantsFocusNow()
+            w_name = self.deactivated_name
+            self.deactivated_name = None
+            if trace: g.trace(w_name)
             if c.p.v:
                 c.p.v.restoreCursorAndScroll()
+            if w_name.startswith('tree') or w_name.startswith('head'):
+                c.treeWantsFocusNow()
+            else:
+                c.bodyWantsFocusNow()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-    #@+node:ekr.20110605121601.18481: *5* LeoQtGui.onDeactiveEvent
-    def onDeactivateEvent (self,event,c,obj,tag):
-
-        '''Put the focus in the body pane when the Leo window is
-        activated, say as the result of an Alt-tab or click.'''
-
-        trace = False and not g.unitTesting
-
-        # This is called several times for each window activation.
-        # Save the headline only once.
-
-        if c.exists and tag.startswith('tree'):
-            self.active = False
-            if trace: g.trace()
-            c.k.keyboardQuit(setFocus=False)
-                # 2011/06/13.
-                # 2011/09/29. Don't change the tab in the log pane.
-            # c.endEditing()
-            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20130921043420.21175: *5* LeoQtGui.setFilter
     # w's type is in (DynamicWindow,,LeoQtMinibuffer,LeoQtLog,LeoQtTree,
     # LeoQTextEditWidget,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
