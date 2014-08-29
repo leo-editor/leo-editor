@@ -2017,20 +2017,21 @@ class LeoTree:
             c.frame.tree.afterSelectHint(p,old_p)
         if traceTime:
             delta_t = time.time()-t1
-            if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
+            if False or delta_t > 0.1:
+                print('%20s: %2.3f sec' % ('tree-select:outer',delta_t))
         return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
-    # Do **not** try to "optimize" this by returning if p==c.p.
-    # 2011/11/06: *event handlers* are called only if p != c.p.
-
     def selectHelper (self,p,scroll):
-        '''A helper function for leoTree.select.'''
+        '''
+        A helper function for leoTree.select.
+        Do **not** "optimize" this by returning if p==c.p!
+        '''
         traceTime = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         if not p:
             # This is not an error! We may be changing roots.
-            # Do *not* test c.positionExists(p) here.
+            # Do *not* test c.positionExists(p) here!
             return
         c = self.c
         if not c.frame.body.bodyCtrl:

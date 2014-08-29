@@ -18796,5 +18796,64 @@ def lengthHelper(self):
         delta_t = time.time()-t1
         if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
     return n
+.. @+node:ekr.20140829053801.18456: *3* old code from selectHelper
+.. @+node:ekr.20140829053801.18457: *4* From selectHelper
+
+    # # # if traceTime: t2 = time.time()
+    # # # if call_event_handlers:
+        # # # select = not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    # # # else:
+        # # # select = True  
+    # # # if select:
+        # # # # setBodyTextAfterSelect is *expensive* for large text.
+        # # # self.selectNewNode(p,old_p)
+        # # # c.NodeHistory.update(p) # Remember this position.
+    # # # if traceTime:
+        # # # delta_t = time.time()-t2
+        # # # if delta_t > 0.1: g.trace('select: %2.3f sec' % (delta_t))
+.. @+node:ekr.20120325072403.7771: *4* << unselect the old node >> (selectHelper)
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    colorizer = c.frame.body.colorizer
+    if colorizer:
+        if hasattr(colorizer,'kill'):
+            colorizer.kill()
+        if (hasattr(colorizer,'colorCacheFlag') and
+            colorizer.colorCacheFlag and
+            hasattr(colorizer,'write_colorizer_cache')
+        ):
+            colorizer.write_colorizer_cache(old_p)
+.. @+node:ekr.20040803072955.133: *4* << set the current node >> (selectHelper)
+c.frame.scanForTabWidth(p)
+    #GS I believe this should also get into the select1 hook
+use_chapters = c.config.getBool('use_chapters')
+if use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+c.treeFocusHelper()
+c.undoer.onSelect(old_p,p)
+.. @+node:ekr.20120325072403.7767: *4* LeoTree.selectNewNode
+def selectNewNode(self,p,old_p):
+    '''Finish selecting a node.'''
+    # Bug fix: we must always set this, even if we never edit the node.
+    frame = self.c.frame
+    self.revertHeadline = p.h
+    frame.setWrap(p)
+    self.setBodyTextAfterSelect(p,old_p)
+.. @+node:ekr.20140829053801.18454: *4* From selectHelper
+    # # # if traceTime: t1 = time.time()
+    # # # if call_event_handlers:
+        # # # unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    # # # else:
+        # # # unselect = True
+    # # # if unselect:
+        # # # << unselect the old node >>
+    # # # if call_event_handlers:
+        # # # g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    # # # if traceTime:
+        # # # delta_t = time.time()-t1
+        # # # if delta_t > 0.1: g.trace('unselect: %2.3f sec' % (delta_t))
 .. @-all
 .. @-leo
