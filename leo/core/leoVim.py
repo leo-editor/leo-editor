@@ -1898,16 +1898,20 @@ class VimCommands:
         Return True if k.masterKeyHandler should handle this key.
         '''
         trace = False and not g.unitTesting
-        vc.init_scanner_vars(event)
-        if trace: g.trace('stroke: %s' % vc.stroke)
-        vc.return_value = None
-        if not vc.handle_specials():
-            vc.handler()
-        if vc.return_value not in (True,False):
-            # It looks like no acceptance method has been called.
-            vc.oops('bad return_value: %s %s %s' % (
-                repr(vc.return_value),vc.state,vc.next_func))
-            vc.done() # Sets vc.return_value to True.
+        try:
+            vc.init_scanner_vars(event)
+            if trace: g.trace('stroke: %s' % vc.stroke)
+            vc.return_value = None
+            if not vc.handle_specials():
+                vc.handler()
+            if vc.return_value not in (True,False):
+                # It looks like no acceptance method has been called.
+                vc.oops('bad return_value: %s %s %s' % (
+                    repr(vc.return_value),vc.state,vc.next_func))
+                vc.done() # Sets vc.return_value to True.
+        except Exception:
+            g.es_exception()
+            vc.quit()
         return vc.return_value
     #@+node:ekr.20140802225657.18021: *4* vc.handle_specials
     def handle_specials(vc):
@@ -2177,39 +2181,46 @@ class VimCommands:
         '''Handle strokes in motions.'''
         trace = False and not g.unitTesting
         if trace: g.trace(vc.command_list)
-        assert vc.in_motion
-        if restart:
-            vc.next_func = None
-        func = vc.next_func or vc.motion_dispatch_d.get(vc.stroke)
-        if func:
-            func()
-            if vc.motion_func:
-                vc.motion_func()
-                vc.in_motion = False # Required.
-                vc.done()
-        elif vc.is_plain_key(vc.stroke):
-            vc.ignore()
+        try:
+            assert vc.in_motion
+            if restart:
+                vc.next_func = None
+            func = vc.next_func or vc.motion_dispatch_d.get(vc.stroke)
+            if func:
+                func()
+                if vc.motion_func:
+                    vc.motion_func()
+                    vc.in_motion = False # Required.
+                    vc.done()
+            elif vc.is_plain_key(vc.stroke):
+                vc.ignore()
+                vc.quit()
+            else:
+                # Pass non-plain keys to k.masterKeyHandler
+                vc.delegate()
+        except Exception:
+            g.es_exception()
             vc.quit()
-        else:
-            # Pass non-plain keys to k.masterKeyHandler
-            vc.delegate()
-
     #@+node:ekr.20140803220119.18090: *4* vc.do_insert_mode & helper
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
         trace = False and not g.unitTesting
         if trace: g.trace(show_stroke(vc.stroke),g.callers(2))
-        vc.state = 'insert'
-        w = vc.w
-        if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
-            if trace: g.trace('*** abort ***',w)
-            return
-        # Special case for arrow keys.
-        if vc.stroke in vc.arrow_d:
-            vc.vim_arrow()
-        else:
-            vc.delegate()
+        try:
+            vc.state = 'insert'
+            w = vc.w
+            if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
+                if trace: g.trace('*** abort ***',w)
+                return
+            # Special case for arrow keys.
+            if vc.stroke in vc.arrow_d:
+                vc.vim_arrow()
+            else:
+                vc.delegate()
+        except Exception:
+            g.es_exception()
+            vc.quit()
     #@+node:ekr.20140807112800.18122: *5* vc.test_for_insert_escape
     def test_for_insert_escape(vc,w):
         '''Return True if the j,j escape sequence has ended insert mode.'''
@@ -2243,26 +2254,34 @@ class VimCommands:
     def do_state(vc,d,mode_name):
         '''General dispatcher code. d is a dispatch dict.'''
         trace = False and not g.unitTesting
-        func = d.get(vc.stroke)
-        if func:
-            if trace: g.trace(mode_name,vc.stroke,func.__name__)
-            func()
-        elif vc.is_plain_key(vc.stroke):
-            if trace: g.trace('ignore',vc.stroke)
-            vc.ignore()
+        try:
+            func = d.get(vc.stroke)
+            if func:
+                if trace: g.trace(mode_name,vc.stroke,func.__name__)
+                func()
+            elif vc.is_plain_key(vc.stroke):
+                if trace: g.trace('ignore',vc.stroke)
+                vc.ignore()
+                vc.quit()
+            else:
+                # Pass non-plain keys to k.masterKeyHandler
+                if trace: g.trace('delegate',vc.stroke)
+                vc.delegate()
+        except Exception:
+            g.es_exception()
             vc.quit()
-        else:
-            # Pass non-plain keys to k.masterKeyHandler
-            if trace: g.trace('delegate',vc.stroke)
-            vc.delegate()
     #@+node:ekr.20140803220119.18092: *4* vc.do_visual_mode
     def do_visual_mode(vc):
         '''Handle strokes in visual mode.'''
-        vc.n1 = vc.n = 1
-        vc.do_state(vc.vis_dispatch_d,
-            mode_name = 'visual-line' if vc.visual_line_flag else 'visual')
-        if vc.visual_line_flag:
-            vc.visual_line_helper()
+        try:
+            vc.n1 = vc.n = 1
+            vc.do_state(vc.vis_dispatch_d,
+                mode_name = 'visual-line' if vc.visual_line_flag else 'visual')
+            if vc.visual_line_flag:
+                vc.visual_line_helper()
+        except Exception:
+            g.es_exception()
+            vc.quit()
     #@+node:ekr.20140222064735.16682: *3* vc.Utilities
     #@+node:ekr.20140802183521.17998: *4* vc.add_to_dot
     def add_to_dot(vc,stroke=None):
