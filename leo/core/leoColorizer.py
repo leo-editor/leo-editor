@@ -2392,7 +2392,7 @@ class LeoQtColorizer:
 
         fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
         return g.os_path_exists(fn)
-    #@+node:ekr.20110605121601.18561: *3* setHighlighter **** (slow) ****
+    #@+node:ekr.20110605121601.18561: *3* setHighlighter
     # Called *only* from LeoTree.setBodyTextAfterSelect
 
     def setHighlighter (self,p):
@@ -2400,40 +2400,20 @@ class LeoQtColorizer:
         if self.enabled:
             self.flag = self.updateSyntaxColorer(p)
             return self.flag
-
-    # def setHighlighter (self,p):
-
-        # trace = False and not g.unitTesting
-        # if self.enabled:
-            # self.flag = self.updateSyntaxColorer(p)
-            # if self.flag:
-                # # Do a full recolor, but only if we aren't changing nodes.
-                # if self.c.currentPosition() == p:
-                    # self.highlighter.rehighlight(p)
-            # else:
-                # self.highlighter.rehighlight(p) # Do a full recolor (to black)
-        # else:
-            # self.highlighter.rehighlight(p) # Do a full recolor (to black)
-
-        # if trace: g.trace('enabled: %s flag: %s %s' % (
-            # self.enabled,self.flag,p.h),g.callers())
-            
     #@+node:ekr.20110605121601.18562: *3* updateSyntaxColorer (LeoQtColorizer)
     def updateSyntaxColorer (self,p):
         '''Scan p.b for color directives.'''
         trace = False and not g.unitTesting
+        # An important hack: shortcut everything if the first line is @killcolor.
         if p.b.startswith('@killcolor'):
             if trace: g.trace('@killcolor')
             self.flag = False
             return self.flag
-        # # # if len(p.b) > self.max_chars_to_colorize > 0:
-            # # # self.flag = False
         else:
             # self.flag is True unless an unambiguous @nocolor is seen.
             p = p.copy()
             self.flag = self.useSyntaxColoring(p)
             self.scanColorDirectives(p) # Sets self.language
-
         if trace: g.trace(self.flag,len(p.b),self.language,p.h,g.callers(5))
         return self.flag
     #@+node:ekr.20110605121601.18563: *3* useSyntaxColoring & helper

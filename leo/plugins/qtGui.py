@@ -77,7 +77,8 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         self.htmlFlag = True
         QtWidgets.QTextBrowser.__init__(self,parent)
         # Connect event handlers...
-        self.textChanged.connect(self.onTextChanged)
+        if 0: # Not a good idea: it will complicate delayed loading of body text.
+            self.textChanged.connect(self.onTextChanged)
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         vsb.valueChanged.connect(self.onSliderChanged)
@@ -351,33 +352,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         else: kind = 'unknown: %s' % repr(button)
         if trace: g.trace(tag,kind)
         return kind
-    #@+node:ekr.20140828033858.18518: *4* getTextLength (LeoQTextBrowser)
-    def getTextLength(self):
-        '''Return the length of all the text.'''
-        if 1: # safe.
-            s = g.u(self.toPlainText())
-            if s != self.leo_s:
-                g.trace('can not happen: text mismatch.')
-                self.leo_s = s
-            return len(self.leo_s)
-        else: # fast
-            return len(self.leo_s)
     #@+node:ekr.20110605121601.18020: *4* event handlers (LeoQTextBrowser)
-    #@+node:ekr.20140828033858.18517: *5* onTextChanged (LeoQTextBrowser)
-    def onTextChanged(self):
-        '''The textChanged event handler.  Cached the text in self.leo_s.'''
-        trace = False and not g.unitTesting
-        self.leo_s = s = g.u(self.toPlainText())
-        if trace:
-            w_name = g.app.gui.widget_name(self)
-            if w_name == 'richTextEdit':
-                i = self.leo_s.find('\n')
-                line = self.leo_s[:i] if i > -1 else ''
-                # Important: c.p is not accurate here.
-                # onTextChanged will be called while switching nodes.
-                    # c = self.leo_c
-                    # h = c.p.h if c and c.p and c.p.v else '<no c.p>'
-                g.trace(w_name,len(s),line)
     #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser) (never called!)
     # def mousePressEvent (self,event):
         # QtWidgets.QTextBrowser.mousePressEvent(self,event)
@@ -1273,12 +1248,11 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *5* setAllText (LeoQTextEditWidget) & helper (changed 4.10)
     def setAllText(self,s):
-
-        '''Set the text of the widget.
-
-        If insert is None, the insert point, selection range and scrollbars are initied.
-        Otherwise, the scrollbars are preserved.'''
-
+        '''
+        Set the text of the widget.
+        If insert is None, init the insert point, selection range and scrollbars.
+        Otherwise, the scrollbars are preserved.
+        '''
         trace = False and not g.unitTesting
         traceTime = False and not g.unitTesting
         c,w = self.c,self.widget
@@ -1312,10 +1286,9 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         # Fix bug 981849: incorrect body content shown.
         # Use the more careful code in setSelectionRangeHelper & lengthHelper.
         self.setSelectionRangeHelper(i=i,j=i,insert=i,s=s)
-    #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (LeoQTextEditWidget)
+    #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper (LeoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None,s=None):
         '''Set the selection range and the insert point.'''
-        # trace = (False or g.trace_scroll) and not g.unitTesting
         traceTime = False and not g.unitTesting
         # Part 1
         if traceTime: t1 = time.time()
@@ -1327,8 +1300,6 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         elif 1:
             s = self.getAllText()
             n = len(s)
-        else: # **** Very slow for large text ***
-            n = self.lengthHelper()
         i = max(0,min(i,n))
         j = max(0,min(j,n))
         if insert is None:
@@ -1358,7 +1329,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
             tc.setPosition(j)
             tc.setPosition(i,tc.KeepAnchor)
-            # if trace: g.trace('***',i,j,ins)
+            # g.trace('***',i,j,ins)
         w.setTextCursor(tc)
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
@@ -1375,20 +1346,6 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             tot_t = time.time()-t1
             if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
             if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
-    #@+node:ekr.20110605121601.18097: *6* lengthHelper (LeoQTextEditWidget)
-    def lengthHelper(self):
-        '''Return the length of the text.'''
-        # This is *extremely slow for large text.
-        traceTime = False and not g.unitTesting
-        if traceTime: t1 = time.time()
-        w = self.widget
-        tc = w.textCursor()
-        tc.movePosition(QtGui.QTextCursor.End)
-        n = tc.position()
-        if traceTime:
-            delta_t = time.time()-t1
-            if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
-        return n
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (LeoQTextEditWidget)
     def setYScrollPosition(self,pos):
 
