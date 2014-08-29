@@ -264,6 +264,7 @@ def pylint_command(event):
         def __init__(self,c):
             '''ctor for PylintCommand class.'''
             self.c = c
+            self.seen = [] # List of checked vnodes.
             self.wait = True
                 # The no-wait code doesn't seem to work.
         #@+others
@@ -276,8 +277,10 @@ def pylint_command(event):
                 if fn.endswith('.py'):
                     theDir = g.os_path_dirname(c.fileName())
                     fn = g.os_path_finalize_join(theDir,fn)
-                    self.run_pylint(fn,rc_fn)
-                    found = True
+                    if p.v not in self.seen:
+                        self.seen.append(p.v)
+                        self.run_pylint(fn,rc_fn)
+                        found = True
             return found
         #@+node:ekr.20140719051145.17727: *5* get_rc_file
         def get_rc_file(self):
