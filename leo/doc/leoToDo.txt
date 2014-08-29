@@ -3151,7 +3151,7 @@ Also handy for those not in portable mode, but working on different windows
 boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
 .. @+node:ekr.20140824043305.18307: *3* To do for b1
-.. @+node:ekr.20140730175636.17982: *4* * Vim to-do
+.. @+node:ekr.20140730175636.17982: *4* ** Vim to-do
 @language rest
 
 - N ; repeat the last t,T,f,F command.
