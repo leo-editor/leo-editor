@@ -18796,22 +18796,105 @@ def lengthHelper(self):
         delta_t = time.time()-t1
         if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
     return n
-.. @+node:ekr.20140829053801.18456: *3* old code from selectHelper
-.. @+node:ekr.20140829053801.18457: *4* From selectHelper
+.. @+node:ekr.20140829075147.18475: *3* OLD LeoTree.select & helpers
+tree_select_lockout = False
 
-    # # # if traceTime: t2 = time.time()
-    # # # if call_event_handlers:
-        # # # select = not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    # # # else:
-        # # # select = True  
-    # # # if select:
-        # # # # setBodyTextAfterSelect is *expensive* for large text.
-        # # # self.selectNewNode(p,old_p)
-        # # # c.NodeHistory.update(p) # Remember this position.
-    # # # if traceTime:
-        # # # delta_t = time.time()-t2
-        # # # if delta_t > 0.1: g.trace('select: %2.3f sec' % (delta_t))
-.. @+node:ekr.20120325072403.7771: *4* << unselect the old node >> (selectHelper)
+def select (self,p,scroll=True):
+    '''
+    Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by the gui to suppress scrolling while dragging.
+    '''
+    if g.app.killed or self.tree_select_lockout:
+        return None
+    traceTime = False and not g.unitTesting
+    if traceTime:
+        t1 = time.time()
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+    if traceTime:
+        delta_t = time.time()-t1
+        if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
+    return val  # Don't put a return in a finally clause.
+.. @+node:ekr.20140829075147.18476: *4* OLD selectHelper (LeoTree) & helpers
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+    '''A helper function for leoTree.select.'''
+    traceTime = False and not g.unitTesting
+    c = self.c
+    w = c.frame.body.bodyCtrl
+    if not w: return # Defensive.
+    old_p = c.p
+    call_event_handlers = p != old_p
+    if p:
+        # Selecting a foreign position will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+    # Part 1: Unselect.
+    if traceTime: t1 = time.time()
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        unselect = True
+    if unselect:
+        << unselect the old node >>
+    if call_event_handlers:
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    if traceTime:
+        delta_t = time.time()-t1
+        if delta_t > 0.1: g.trace('unselect: %2.3f sec' % (delta_t))
+    # Part 2: Start selecting.
+    
+    if traceTime: t2 = time.time()
+    if call_event_handlers:
+        select = not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        select = True  
+    if select:
+        # setBodyTextAfterSelect is *expensive* for large text.
+        self.selectNewNode(p,old_p)
+        c.NodeHistory.update(p) # Remember this position.
+    if traceTime:
+        delta_t = time.time()-t2
+        if delta_t > 0.1: g.trace('select: %2.3f sec' % (delta_t))
+    # Part 3: Scrolling the cursor.
+    if traceTime: t3 = time.time()
+    c.setCurrentPosition(p)
+    << set the current node >>
+    p.restoreCursorAndScroll()
+        # Was in setBodyTextAfterSelect (in <select the new node>)
+    if traceTime:
+        delta_t = time.time()-t3
+        if delta_t > 0.1: g.trace('scroll: %2.3f sec' % (delta_t))
+    # Part 4: status lilne.
+    if traceTime: t4 = time.time()
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
+    c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    if traceTime:
+        delta_t = time.time()-t4
+        tot_t = time.time()-t1
+        if delta_t > 0.1: g.trace('status: %2.3f sec' % (delta_t))
+        if tot_t > 0.1:   g.trace('total:  %2.3f sec' % (tot_t))
+.. @+node:ekr.20140829075147.18477: *5* << unselect the old node >> (selectHelper)
 if old_p != p:
     self.endEditLabel() # sets editPosition = None
     colorizer = c.frame.body.colorizer
@@ -18823,7 +18906,7 @@ if old_p != p:
             hasattr(colorizer,'write_colorizer_cache')
         ):
             colorizer.write_colorizer_cache(old_p)
-.. @+node:ekr.20040803072955.133: *4* << set the current node >> (selectHelper)
+.. @+node:ekr.20140829075147.18478: *5* << set the current node >> (selectHelper)
 c.frame.scanForTabWidth(p)
     #GS I believe this should also get into the select1 hook
 use_chapters = c.config.getBool('use_chapters')
@@ -18834,7 +18917,7 @@ if use_chapters:
         theChapter.p = p.copy()
 c.treeFocusHelper()
 c.undoer.onSelect(old_p,p)
-.. @+node:ekr.20120325072403.7767: *4* LeoTree.selectNewNode
+.. @+node:ekr.20140829075147.18479: *4* OLD LeoTree.selectNewNode
 def selectNewNode(self,p,old_p):
     '''Finish selecting a node.'''
     # Bug fix: we must always set this, even if we never edit the node.
@@ -18842,18 +18925,39 @@ def selectNewNode(self,p,old_p):
     self.revertHeadline = p.h
     frame.setWrap(p)
     self.setBodyTextAfterSelect(p,old_p)
-.. @+node:ekr.20140829053801.18454: *4* From selectHelper
-    # # # if traceTime: t1 = time.time()
-    # # # if call_event_handlers:
-        # # # unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    # # # else:
-        # # # unselect = True
-    # # # if unselect:
-        # # # << unselect the old node >>
-    # # # if call_event_handlers:
-        # # # g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    # # # if traceTime:
-        # # # delta_t = time.time()-t1
-        # # # if delta_t > 0.1: g.trace('unselect: %2.3f sec' % (delta_t))
+.. @+node:ekr.20140829075147.18480: *4* OLD LeoTree.setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+    '''Set the text after selecting a node.'''
+    trace = False and not g.unitTesting
+    traceTime = False and not g.unitTesting
+    if traceTime: t1 = time.time()
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+    if p and p == old_p and s == old_s:
+        if trace: g.trace('*pass',p.h,old_p.h)
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        if trace: g.trace('*reload',p.h,old_p and old_p.h)
+        w.setAllText(s) # ***** Very slow
+        colorizer = c.frame.body.colorizer
+        if traceTime:
+            delta_t = time.time()-t1
+            if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
+        # Part 2:
+        if traceTime: t2 = time.time()
+        if hasattr(colorizer,'setHighlighter'):
+            if colorizer.setHighlighter(p):
+                self.frame.body.recolor(p)
+        else:
+            self.frame.body.recolor(p)
+        if traceTime:
+            delta_t = time.time()-t2
+            tot_t = time.time()-t1
+            if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
+            if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
+    # This is now done after c.p has been changed.
+        # p.restoreCursorAndScroll()
 .. @-all
 .. @-leo
