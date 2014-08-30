@@ -2053,7 +2053,20 @@ class LeoTree:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:total',delta_t))
-    #@+node:ekr.20140829053801.18453: *5* LeoTree.unselect_helper
+    #@+node:ekr.20140829172618.20682: *5* LeoTree.is_big_text
+    def is_big_text(self,p):
+        '''True if p.b is large and the text widgets supports big text buttons.'''
+        c = self.c
+        w = c.frame.body and c.frame.body.widget and c.frame.body.widget.widget
+            # A LeoQTextBrowser.
+            # This is not the same as c.frame.body.BodyCtrl!
+        if 1:
+            return False # Disable the big-text feature.
+        else:
+            return (
+                hasattr(w,'leo_load_button') and
+                len(p.b) > c.max_pre_loaded_body_chars)
+    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
     def unselect_helper(self,old_p,p,traceTime):
         '''Unselect the old node, calling the unselect hooks.'''
         if traceTime:
@@ -2067,22 +2080,49 @@ class LeoTree:
         if unselect and old_p != p:
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
-            colorizer = c.frame.body.colorizer
-            if colorizer:
-                if hasattr(colorizer,'kill'):
-                    colorizer.kill()
-                if (hasattr(colorizer,'colorCacheFlag') and
-                    colorizer.colorCacheFlag and
-                    hasattr(colorizer,'write_colorizer_cache')
-                ):
-                    colorizer.write_colorizer_cache(old_p)
+            self.stop_colorizer(old_p)
+            self.remove_big_text_buttons(old_p)
         if call_event_handlers:
             g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect',delta_t))
-    #@+node:ekr.20140829053801.18455: *5* LeoTree.select_new_node & helper
+    #@+node:ekr.20140829172618.18477: *6* LeoTree.remove_big_text_buttons
+    def remove_big_text_buttons(self,old_p):
+        '''Remove the load and paste buttons created for large text.'''
+        c = self.c
+        w = c.frame.body and c.frame.body.widget and c.frame.body.widget.widget
+            # A LeoQTextBrowser.
+        if w:
+            if old_p and hasattr(w,'leo_big_text') and w.leo_big_text:
+                s = w.leo_big_text
+                w.leo_big_text = None
+                if old_p and old_p.b != s:
+                    g.trace('===== restoring big text',len(s),old_p.h)
+                    old_p.b = s
+                    if hasattr(c.frame.tree,'updateIcon'):
+                        c.frame.tree.updateIcon(old_p,force=True)
+            if hasattr(w,'leo_copy_button') and w.leo_copy_button:
+                w.leo_copy_button.deleteLater()
+                w.leo_copy_button = None
+            if hasattr(w,'leo_load_button') and w.leo_load_button:
+                w.leo_load_button.deleteLater()
+                w.leo_load_button = None
+    #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
+    def stop_colorizer(self,old_p):
+        '''Stop colorizing the present node.'''
+        c = self.c
+        colorizer = c.frame.body.colorizer
+        if colorizer:
+            if hasattr(colorizer,'kill'):
+                colorizer.kill()
+            if (hasattr(colorizer,'colorCacheFlag') and
+                colorizer.colorCacheFlag and
+                hasattr(colorizer,'write_colorizer_cache')
+            ):
+                colorizer.write_colorizer_cache(old_p)
+    #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self,old_p,p,traceTime):
         '''Select the new node, part 1.'''
         if traceTime:
@@ -2095,15 +2135,70 @@ class LeoTree:
             select = True  
         if select:
             self.revertHeadline = p.h
-            self.c.frame.setWrap(p)
-            self.setBodyTextAfterSelect(p,old_p,traceTime) # *Expensive* for large text.
+            c.frame.setWrap(p)
+            if self.is_big_text(p):
+                self.set_not_loaded_text(p)
+                self.add_big_text_buttons(old_p,p,traceTime)
+            else:
+                self.set_body_text_after_select(p,old_p,traceTime)
             c.NodeHistory.update(p) # Remember this position.
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select1',delta_t))
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.setBodyTextAfterSelect
-    def setBodyTextAfterSelect (self,p,old_p,traceTime):
+    #@+node:ekr.20140829172618.18478: *6* LeoTree.add_big_text_buttons
+    def add_big_text_buttons(self,old_p,p,traceTime):
+        '''Add the load and copy buttons.'''
+        from leo.core.leoQt import QtGui
+        c = self.c
+        if c.undoer.undoing:
+            g.trace('undoing')
+            return
+        w = c.frame.body and c.frame.body.widget and c.frame.body.widget.widget
+            # A LeoQTextBrowser.
+        if w and not g.app.unitTesting:
+            frame = w.parent() # A QWidget
+            layout = frame.layout()
+            s = p.b
+            w.leo_copy_button = b1 = QtGui.QPushButton('Copy body to clipboard: %s' % (p.h))
+            w.leo_load_button = b2 = QtGui.QPushButton('Load Text: %s' % (p.h))
+            b1.setObjectName('big-text-copy-button')
+            b2.setObjectName('big-text-load-button')
+            self.add_load_button(layout,old_p,p,s,traceTime,w)
+            self.add_copy_button(layout,s,w)
+            layout.removeWidget(w)
+                # Evenly space the buttons in the body pane.
+    #@+node:ekr.20140829172618.19888: *7* add_load_button
+    def add_load_button(self,layout,old_p,p,s,traceTime,w):
+        '''Create a 'load' button in the body text area.'''
+        def onClicked(arg,c=self.c,p=p.copy()):
+            body = c.frame.body.bodyCtrl
+            if c.positionExists(p):
+                # Recreate the entire select code.
+                self.set_body_text_after_select(p,old_p,traceTime)
+                self.scroll_cursor(p,traceTime)
+            layout.addWidget(w)
+            layout.removeWidget(w.leo_copy_button)
+            layout.removeWidget(w.leo_load_button)
+            w.leo_copy_button.deleteLater()
+            w.leo_load_button.deleteLater()
+            w.leo_copy_button = None
+            w.leo_load_button = None
+            c.bodyWantsFocusNow()
+            c.recolor_now()
+                # Unlike set_body_text_after_select, we can call
+                # c.recolor_now because the new node has been inited.
+        w.leo_load_button.clicked.connect(onClicked)
+        layout.addWidget(w.leo_load_button)
+    #@+node:ekr.20140829172618.19890: *7* add_copy_button
+    def add_copy_button(self,layout,s,w):
+        '''Create a 'copy to clipboard' button in the body area.'''
+        def onClicked(checked=False):
+            g.app.gui.replaceClipboardWith(s)
+        w.leo_copy_button.clicked.connect(onClicked)
+        layout.addWidget(w.leo_copy_button)
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
+    def set_body_text_after_select (self,p,old_p,traceTime):
         '''Set the text after selecting a node.'''
         trace = False and not g.unitTesting
         if traceTime: t1 = time.time()
@@ -2118,12 +2213,13 @@ class LeoTree:
             # w.setAllText destroys all color tags, so do a full recolor.
             if trace: g.trace('*reload',p.h,old_p and old_p.h)
             w.setAllText(s) # ***** Very slow
-            colorizer = c.frame.body.colorizer
             if traceTime:
                 delta_t = time.time()-t1
                 if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
             # Part 2:
             if traceTime: t2 = time.time()
+            # We can't call c.recolor_now here.
+            colorizer = c.frame.body.colorizer
             if hasattr(colorizer,'setHighlighter'):
                 if colorizer.setHighlighter(p):
                     self.frame.body.recolor(p)
@@ -2136,7 +2232,19 @@ class LeoTree:
                 if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
-    #@+node:ekr.20140829053801.18458: *5* LeoTree.change_current_position
+    #@+node:ekr.20140829172618.18479: *6* LeoTree.set_not_loaded_text
+    def set_not_loaded_text(self,p):
+        '''Set the body text to a "not loaded" message.'''
+        c = self.c
+        w = c.frame.body and c.frame.body.widget and c.frame.body.widget.widget
+        body = c.frame and c.frame.body and c.frame.body.bodyCtrl
+        if body and w:
+            s = p.b
+            w.leo_big_text = p.b # Save the original text
+            body.setAllText("To load the body text, click the 'load' button.")
+            assert p.b == s
+                # There will be data loss if this assert fails.
+    #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self,old_p,p,traceTime):
         '''Select the new node, part 2.'''
         if traceTime:
@@ -2157,18 +2265,20 @@ class LeoTree:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select2',delta_t))
-    #@+node:ekr.20140829053801.18459: *5* LeoTree.scroll_cursor
+    #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self,p,traceTime):
         '''Scroll the cursor. It deserves separate timing stats.'''
         if traceTime:
             t1 = time.time()
-        p.restoreCursorAndScroll()
-            # Was in setBodyTextAfterSelect
+        c = self.c
+        if not self.is_big_text(p):
+            p.restoreCursorAndScroll()
+                # Was in setBodyTextAfterSelect
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:scroll',delta_t))
-    #@+node:ekr.20140829053801.18460: *5* LeoTree.set_status_line
+    #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
     def set_status_line(self,p,traceTime):
         '''Update the status line.'''
         if traceTime:

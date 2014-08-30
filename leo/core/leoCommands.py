@@ -454,21 +454,16 @@ class Commands (object):
         pass
     #@+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings (self):
-
         '''Init all cached commander config settings.'''
-
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-
         if trace:
             print('c.initConfigSettings: c.configInited: %s %s' % (
-                c.configInited,c.shortFileName()))
-
+            c.configInited,c.shortFileName()))
         getBool = c.config.getBool
         getColor = c.config.getColor
         getData  = c.config.getData
         getInt = c.config.getInt
-
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -484,8 +479,10 @@ class Commands (object):
             'focus_border_overwrite_state_color') or 'green'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.forceExecuteEntireBody    = getBool('force_execute_entire_body',default=False)
+        c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 10000
+            # g.trace('c.max_pre_loaded_body_chars',c.max_pre_loaded_body_chars)
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
-        # c.showMinibuffer            = getBool('useMinibuffer')
+        # c.showMinibuffer          = getBool('useMinibuffer')
             # This option is a bad idea.
         c.page_width                = getInt('page_width') or 132
             # 2012/02/27: this appears to be a fix of an *ancient* bug.
@@ -502,9 +499,8 @@ class Commands (object):
         c.use_focus_border          = getBool('use_focus_border',default=True)
         c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
-
-        # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
-        # g.trace(c.sparse_move)
+            # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+            # g.trace(c.sparse_move)
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition (self):
 

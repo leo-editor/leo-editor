@@ -1361,6 +1361,7 @@
 </v>
 </v>
 <v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 15000</vh></v>
 <v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
 <v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
@@ -9204,6 +9205,9 @@ like vim.
 To enable vim emulation, place a copy this "@keys Vim bindings" node and
 its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 </t>
+<t tx="ekr.20140829172618.19886">The maximum number of characters that will be automatically load into the body text.
+If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons.
+Clicking the 'load' button will load the body text and remove the buttons.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -2205,7 +2205,8 @@ class LeoQtColorizer:
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
         self.languageList = [] # List of color directives in the node the determines it.
-        self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
+        # self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
+            # No longer needed now that coloring is continued in the background.
         self.oldLanguageList = []
         self.oldV = None
         self.showInvisibles = False
@@ -2233,8 +2234,6 @@ class LeoQtColorizer:
             if trace: g.trace('@killcolor')
             self.kill()
             return
-        # # # if len(p.b) > self.max_chars_to_colorize > 0:
-            # # # self.flag = False
         elif self.enabled:
             oldFlag = self.flag
             self.updateSyntaxColorer(p)

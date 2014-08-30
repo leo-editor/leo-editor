@@ -274,6 +274,10 @@ The change pattern doesn't always get set properly.
 
 The fix was in find.addChangeStringToLabel. It must never protect the
 change string!
+.. @+node:ekr.20140827092102.18572: *4* Fixed bug: activate events now properly restore focus
+Previously, Ctrl-F Alt-tab Alt-tab would put focus in an inactive minibuffer.
+
+The fix involved rewriting onActivate/DeactivateEvent.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -82,7 +82,10 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         vsb.valueChanged.connect(self.onSliderChanged)
-        
+        # Signal that the widget can accept delayed-load buttons.
+        self.leo_load_button = None
+        self.leo_paste_button = None
+        self.leo_big_text = None
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
         # For QCompleter
         self.leo_q_completer = None
@@ -937,20 +940,15 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18072: *4* Birth (LeoQTextEditWidget)
     #@+node:ekr.20110605121601.18073: *5* ctor (LeoQTextEditWidget)
     def __init__ (self,widget,name,c=None):
-
-        # widget is a QTextEdit (or QTextBrowser).
-        # g.trace('LeoQTextEditWidget',widget)
-
+        '''
+        Ctor for LeoQTextEditWidget class.
+        widget is a QTextEdit or QTextBrowser.
+        '''
         # Init the base class.
         LeoQtBaseTextWidget.__init__(self,widget,name,c=c)
-
         self.baseClassName='LeoQTextEditWidget'
-
         widget.setUndoRedoEnabled(False)
-
         self.setConfig()
-        # self.setFontFromConfig()
-        # self.setColorFromConfig()
     #@+node:ekr.20110605121601.18076: *5* setConfig
     def setConfig (self):
 
@@ -1246,40 +1244,31 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         else:
             if trace: g.trace('*****',g.callers())
             self.widget.ensureCursorVisible()
-    #@+node:ekr.20110605121601.18092: *5* setAllText (LeoQTextEditWidget) & helper (changed 4.10)
+    #@+node:ekr.20110605121601.18092: *5* setAllText (LeoQTextEditWidget)
     def setAllText(self,s):
-        '''
-        Set the text of the widget.
-        If insert is None, init the insert point, selection range and scrollbars.
-        Otherwise, the scrollbars are preserved.
-        '''
-        trace = False and not g.unitTesting
+        '''Set the text of body pane.'''
         traceTime = False and not g.unitTesting
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         colorer = highlighter.colorer
-        # Set a hook for the colorer.
-        colorer.initFlag = True
-        if trace:
-            g.trace(w)
-            t1 = g.getTime()
         try:
+            if traceTime:
+                t1 = time.time()
+            colorer.initFlag = True
             self.changingText = True # Disable onTextChanged.
             colorizer.changingText = True # Disable colorizer.
+            # g.trace('read/write text')
             w.setReadOnly(False)
-            if traceTime: t1 = time.time()
             w.setPlainText(s)
             if traceTime:
                 delta_t = time.time()-t1
-                if delta_t > 0.1:
-                    g.trace('w.setPlainText: %2.3f sec. isinstance(w,QTextEdit): %s' % (
-                        delta_t,isinstance(w,QtGui.QTextEdit)))
+                if False or delta_t > 0.1:
+                    g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
+                    # g.trace('isinstance(w,QTextEdit)',isinstance(w,QtGui.QTextEdit))
         finally:
             self.changingText = False
             colorizer.changingText = False
-        if trace:
-            g.trace(g.timeSince(t1))
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (LeoQTextEditWidget)
     def setInsertPoint(self,i,s=None):
 
@@ -1569,14 +1558,9 @@ class LeoQScintillaWidget (LeoQtBaseTextWidget):
         w.ensureLineVisible(row)
 
     # Use base-class method for seeInsertPoint.
-    #@+node:ekr.20110605121601.18113: *5* setAllText
+    #@+node:ekr.20110605121601.18113: *5* setAllText (QScintilla)
     def setAllText(self,s):
-
-        '''Set the text of the widget.
-
-        If insert is None, the insert point, selection range and scrollbars are initied.
-        Otherwise, the scrollbars are preserved.'''
-
+        '''Set the text of a QScintilla widget.'''
         w = self.widget
         w.setText(s)
 
@@ -1684,13 +1668,12 @@ class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
 
     def seeInsertPoint (self):
         pass
-    #@+node:ekr.20110605121601.18125: *5* setAllText
+    #@+node:ekr.20110605121601.18125: *5* setAllText (LeoQtHeadlineWidget)
     def setAllText(self,s):
-
-        if not self.check(): return
-
-        w = self.widget
-        w.setText(s)
+        '''Set all text of a Qt headline widget.'''
+        if self.check():
+            w = self.widget
+            w.setText(s)
     #@+node:ekr.20110605121601.18128: *5* setFocus
     def setFocus (self):
 
@@ -4131,7 +4114,12 @@ class LeoQtBody (leoFrame.LeoBody):
             if wrapper and wrapper != self.bodyCtrl:
                 self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in',obj)
-            obj.setReadOnly(False)
+            if hasattr(obj,'leo_copy_button') and obj.leo_copy_button:
+                # g.trace('read only text')
+                obj.setReadOnly(True)
+            else:
+                # g.trace('read/write text')
+                obj.setReadOnly(False)
             obj.setFocus() # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *5* qtBody.onFocusOut
     def onFocusOut (self,obj):

@@ -327,7 +327,7 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
 
         # Bug fix: 2009/10/06
         self.redraw_after_icons_changed()
-    #@+node:ekr.20110605121601.17883: *3* redraw_after_icons_changed
+    #@+node:ekr.20110605121601.17883: *3* redraw_after_icons_changed (nativeTree)
     def redraw_after_icons_changed (self):
 
         trace = False and not g.unitTesting
