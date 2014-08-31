@@ -161,7 +161,7 @@ class HighLevelInterface(object):
     #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (HighLevelInterface)
     def toPythonIndexRowCol(self,index):
 
-        # This works, but is much slower that the LeoQTextEditWidget method.
+        # This works, but is much slower that the QTextEditWrapper method.
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)

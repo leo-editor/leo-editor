@@ -2136,7 +2136,7 @@ class JEditColorizer:
         if i == j:
             if trace: g.trace('empty range')
             return
-        w = self.w # A LeoQTextEditWidget
+        w = self.w # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
         colorName = w.configDict.get(tag)
         # Munge the color name.

@@ -8393,7 +8393,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
             f.c                     is the frame’s commander.
             f.body                  is a LeoBody instance.
-            f.body.bodyCtl          is a LeoQTextEditWidget instance.
+            f.body.bodyCtl          is a QTextEditWrapper instance.
             f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
             f.log                   is a LeoLog instance.
             f.tree                  is a LeoQtTree instance.

@@ -10856,7 +10856,7 @@ if g.app.isExternalUnitTest:
     assert name == 'NullLog',name
 else:
     assert name == 'LeoQtLog',name
-    assert log.widget.__class__.__name__ == 'LeoQTextEditWidget' 
+    assert log.widget.__class__.__name__ == 'QTextEditWrapper',log.widget
     assert not issubclass(log.widget.__class__,QtWidgets.QWidget.__class__)
         # leoQTextEditWidget us a poor name: it is not a Qt widget.
     assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
@@ -21270,7 +21270,9 @@ files.sort()
 exclude = [
     # These are not real plugins...
     'baseNativeTree.py','leocursor.py',
-    'qt_main.py','qt_quicksearch.py',
+    'qt_main.py',
+    'qt_text.py',
+    'qt_quicksearch.py',
     'swing_gui.py',
 ]
 
