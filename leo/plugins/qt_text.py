@@ -3,16 +3,33 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 '''Text classes for the Qt version of Leo'''
-
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import time
-
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci
-
-#@+<< class BaseQTextWrapper >>
-#@+node:ekr.20110605121601.18023: **  << class BaseQTextWrapper >>
+#@+others
+#@+node:tbrown.20130411145310.18857: **    Commands: zoom_in/out
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+    c = event.get('c')
+    if c:
+        c._style_deltas['font-size-body'] += delta
+        ss = g.expand_css_constants(c, c.active_stylesheet)
+        c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
+    
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+    zoom_in(event=event, delta=-1)
+#@+node:ekr.20110605121601.18023: **   class BaseQTextWrapper
 class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     '''
     A general wrapper class supporting the interface of BaseTextWrapper.
@@ -390,9 +407,7 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
             g.trace(spot,v.h)
             # g.trace(id(v),id(w),i,j,ins,spot,v.h)
     #@-others
-#@-<< class BaseQTextWrapper >>
-#@+<< class QLineEditWrapper(BaseQTextWrapper) >>
-#@+node:ekr.20110605121601.18058: **  << class QLineEditWrapper(BaseQTextWrapper) >>
+#@+node:ekr.20110605121601.18058: **  class QLineEditWrapper(BaseQTextWrapper)
 class QLineEditWrapper (BaseQTextWrapper):
 
     #@+others
@@ -498,28 +513,6 @@ class QLineEditWrapper (BaseQTextWrapper):
             else:
                 w.setSelection(i,length)
     #@-others
-#@-<< class QLineEditWrapper(BaseQTextWrapper) >>
-#@+others
-#@+node:tbrown.20130411145310.18857: ** Commands: zoom_in/out
-@g.command("zoom-in")
-def zoom_in(event=None, delta=1):
-    """increase body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    c = event.get('c')
-    if c:
-        c._style_deltas['font-size-body'] += delta
-        ss = g.expand_css_constants(c, c.active_stylesheet)
-        c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
-    
-@g.command("zoom-out")
-def zoom_out(event=None):
-    """decrease body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    zoom_in(event=event, delta=-1)
 #@+node:ekr.20110605121601.18116: ** class HeadlineWrapper (BaseQTextWrapper)
 class HeadlineWrapper (BaseQTextWrapper):
     '''A wrapper class for QLineEdit widgets in QTreeWidget's.
@@ -653,7 +646,7 @@ class HeadlineWrapper (BaseQTextWrapper):
             else:
                 w.setSelection(i,length)
     #@-others
-#@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QTextBrowser)
+#@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 class LeoQTextBrowser (QtWidgets.QTextBrowser):
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
     #@+others
