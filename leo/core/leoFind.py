@@ -68,7 +68,7 @@ import re
 #@+node:ekr.20070105092022.1: ** class SearchWidget
 class SearchWidget:
     '''A class to simulating high-level interface widget.'''
-    # This could be a StringTextWidget, but this code is simple and good.
+    # This could be a StringTextWrapper, but this code is simple and good.
     def __init__ (self,*args,**keys):
         # g.trace ('SearchWidget',g.callers())
         self.s = ''    # The widget text

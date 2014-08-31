@@ -81,6 +81,7 @@ def getGuiPluginsList ():
         'free_layout',
         'nested_splitter',
         'qtGui',
+        'qt_text',
     )
 #@+node:ekr.20140727180847.17983: ** getModesList
 def getModesList():

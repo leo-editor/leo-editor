@@ -48,22 +48,15 @@ import time
 #@+<< define class DummyHighLevelInterface >>
 #@+node:ekr.20111118104929.10211: ** << define class DummyHighLevelInterface >>
 class DummyHighLevelInterface (object):
-
     '''A class to support a do-nothing HighLevelInterface.'''
-
-    # pylint: disable=R0923
-    # Interface not implemented.
-
+    # pylint: disable=interface-not-implemented
     def __init__(self,c):
         self.c = c
-
     # Mutable methods.
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
-
     def toPythonIndex (self,index):                 return 0
     def toPythonIndexRowCol(self,index):            return 0,0,0
-
     # Immutable redirection methods.
     def appendText(self,s):                         pass
     def delete(self,i,j=None):                      pass
@@ -88,24 +81,18 @@ class DummyHighLevelInterface (object):
     def setSelectionRange (self,i,j,insert=None):   pass
     def setYScrollPosition (self,i):                pass
     def tag_configure (self,colorName,**keys):      pass
-
     # Other immutable methods.
     # These all use leoGlobals functions or LeoGui methods.
     def clipboard_append(self,s):
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
-
     def clipboard_clear (self):
         g.app.gui.replaceClipboardWith('')
-
     def getFocus(self):
         return g.app.gui.get_focus(self.c)
-
     def rowColToGuiIndex (self,s,row,col):
         return g.convertRowColToPythonIndex(s,row,col)    
-
     set_focus = setFocus
-
 #@-<< define class DummyHighLevelInterface >>
 #@+<< define class HighLevelInterface >>
 #@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
@@ -122,7 +109,7 @@ class HighLevelInterface(object):
     '''
 
     #@+others
-    #@+node:ekr.20111114102224.9950: *3* ctor (HighLevelInterface)
+    #@+node:ekr.20111114102224.9950: *3* hli.ctor
     def __init__ (self,c):
 
         self.c = c
@@ -135,7 +122,7 @@ class HighLevelInterface(object):
             'toPythonIndexRowCol',
             # 'toGuiIndex', # A synonym.
         )
-    #@+node:ekr.20070302101344: *3* Must be defined in the base class (HighLevelInterface)
+    #@+node:ekr.20070302101344: *3* hli.Must be defined in the base class
 
     def disable (self):
 
@@ -145,12 +132,12 @@ class HighLevelInterface(object):
 
         self.enabled = enabled
 
-    #@+node:ekr.20111114102224.9935: *3* mutable methods (HighLevelInterface)
-    #@+node:ekr.20111114102224.9946: *4* flashCharacter
+    #@+node:ekr.20111114102224.9935: *3* hli.mutable methods
+    #@+node:ekr.20111114102224.9946: *4* hli.flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
 
-    #@+node:ekr.20111114102224.9943: *4* toPythonIndex (HighLevelInterface)
+    #@+node:ekr.20111114102224.9943: *4* hli.toPythonIndex
     def toPythonIndex (self,index):
 
         s = self.getAllText()
@@ -158,7 +145,7 @@ class HighLevelInterface(object):
         return g.toPythonIndex(s,index)
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (HighLevelInterface)
+    #@+node:ekr.20111114102224.9945: *4* hli.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
 
         # This works, but is much slower that the QTextEditWrapper method.
@@ -166,7 +153,7 @@ class HighLevelInterface(object):
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20111114102224.9937: *3* immutable redirection methods (HighLevelInterface)
+    #@+node:ekr.20111114102224.9937: *3* hli.immutable redirection methods
     def appendText(self,s):
         if self.widget: self.widget.appendText(s)
     def delete(self,i,j=None):
@@ -216,7 +203,7 @@ class HighLevelInterface(object):
         if self.widget: self.widget.setYScrollPosition(i)
     def tag_configure (self,colorName,**keys):
         if self.widget: self.widget.tag_configure(colorName,**keys)
-    #@+node:ekr.20111114102224.9940: *3* other immutable methods (HighLevelInterface)
+    #@+node:ekr.20111114102224.9940: *3* hli.other immutable methods
     # These all use leoGlobals functions or LeoGui methods.
 
     def clipboard_append(self,s):
@@ -238,14 +225,14 @@ class HighLevelInterface(object):
     set_focus = setFocus
     #@-others
 #@-<< define class HighLevelInterface >>
-#@+<< define class BaseTextWidget >>
-#@+node:ekr.20070228074312: ** << define class BaseTextWidget >>
-class BaseTextWidget(object):
+#@+<< define class BaseTextWrapper >>
+#@+node:ekr.20070228074312: ** << define class BaseTextWrapper >>
+class BaseTextWrapper(object):
 
     '''The base class for all wrapper classes for leo Text widgets.'''
 
     #@+others
-    #@+node:ekr.20070228074312.1: *3* Birth & special methods (BaseTextWidget)
+    #@+node:ekr.20070228074312.1: *3* btw.Birth & special methods
     def __init__ (self,c,baseClassName,name,widget):
 
         self.baseClassName = baseClassName
@@ -256,7 +243,7 @@ class BaseTextWidget(object):
 
     def __repr__(self):
         return '%s: %s' % (self.baseClassName,id(self))
-    #@+node:ekr.20070228074312.12: *3* Clipboard (BaseTextWidget)
+    #@+node:ekr.20070228074312.12: *3* btw.Clipboard
     # There is no need to override these in subclasses.
 
     def clipboard_clear (self):
@@ -268,7 +255,7 @@ class BaseTextWidget(object):
         s1 = g.app.gui.getTextFromClipboard()
 
         g.app.gui.replaceClipboardWith(s1 + s)
-    #@+node:ekr.20081031074455.13: *3* Do-nothings (BaseTextWidget)
+    #@+node:ekr.20081031074455.13: *3* btw.Do-nothings
     # **Do not delete** 
     # The redirection methods of HighLevelInterface 
     # redirect calls from LeoBody & LeoLog to *this* class.
@@ -288,29 +275,29 @@ class BaseTextWidget(object):
     def tag_configure (self,colorName,**keys):  pass
 
     set_focus = setFocus
-    #@+node:ekr.20111113141805.10060: *3* Indices (BaseTextWidget)
-    #@+node:ekr.20070228074312.8: *4* rowColToGuiIndex (BaseTextWidget)
+    #@+node:ekr.20111113141805.10060: *3* btw.Indices
+    #@+node:ekr.20070228074312.8: *4* btw.rowColToGuiIndex
     # This method is called only from the colorizer.
     # It provides a huge speedup over naive code.
 
     def rowColToGuiIndex (self,s,row,col):
 
         return g.convertRowColToPythonIndex(s,row,col)    
-    #@+node:ekr.20070228074312.7: *4* toPythonIndex (BaseTextWidget)
+    #@+node:ekr.20070228074312.7: *4* btw.toPythonIndex
     def toPythonIndex (self,index):
 
         return g.toPythonIndex(self.s,index)
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20090320055710.4: *4* toPythonIndexRowCol (BaseTextWidget)
+    #@+node:ekr.20090320055710.4: *4* btw.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
 
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20111113141805.10058: *3* Insert point & selection Range (BaseTextWidget)
-    #@+node:ekr.20070228074312.20: *4* getInsertPoint (BaseTextWidget)
+    #@+node:ekr.20111113141805.10058: *3* btw.Insert point & selection Range
+    #@+node:ekr.20070228074312.20: *4* btw.getInsertPoint
     def getInsertPoint(self):
 
         i = self.ins
@@ -322,9 +309,9 @@ class BaseTextWidget(object):
 
         self.virtualInsertPoint = i
 
-        # g.trace('BaseTextWidget): i:',i,'virtual',self.virtualInsertPoint)
+        # g.trace('BaseTextWrapper): i:',i,'virtual',self.virtualInsertPoint)
         return i
-    #@+node:ekr.20070228074312.22: *4* getSelectionRange (BaseTextWidget)
+    #@+node:ekr.20070228074312.22: *4* btw.getSelectionRange
     def getSelectionRange (self,sort=True):
 
         """Return a tuple representing the selected range of the widget.
@@ -341,18 +328,18 @@ class BaseTextWidget(object):
             i = self.ins
             return i,i
 
-    #@+node:ekr.20070228074312.25: *4* hasSelection
+    #@+node:ekr.20070228074312.25: *4* btw.hasSelection
     def hasSelection (self):
 
         i,j = self.getSelectionRange()
         return i != j
-    #@+node:ekr.20070228074312.35: *4* setInsertPoint (BaseTextWidget)
+    #@+node:ekr.20070228074312.35: *4* btw.setInsertPoint
     def setInsertPoint (self,pos,s=None):
 
         self.virtualInsertPoint = i = self.toPythonIndex(pos)
         self.ins = i
         self.sel = i,i
-    #@+node:ekr.20070228074312.36: *4* setSelectionRange (BaseTextWidget)
+    #@+node:ekr.20070228074312.36: *4* btw.setSelectionRange
     def setSelectionRange (self,i,j,insert=None):
 
         i1, j1, insert1 = i,j,insert
@@ -365,25 +352,25 @@ class BaseTextWidget(object):
             ins = self.toPythonIndex(insert)
             if ins in (i,j):
                 self.virtualInsertPoint = ins
-    #@+node:ekr.20070228074312.31: *4* selectAllText (BaseTextWidget)
+    #@+node:ekr.20070228074312.31: *4* btw.selectAllText
     def selectAllText (self,insert=None):
 
         '''Select all text of the widget.'''
 
         self.setSelectionRange(0,'end',insert=insert)
-    #@+node:ekr.20070228074312.5: *3* oops (BaseTextWidget)
+    #@+node:ekr.20070228074312.5: *3* btw.oops
     def oops (self):
 
-        g.pr('BaseTextWidget oops:',self,g.callers(4),
+        g.pr('BaseTextWrapper oops:',self,g.callers(4),
             'must be overridden in subclass')
-    #@+node:ekr.20111113141805.10057: *3* Text (BaseTextWidget)
-    #@+node:ekr.20070228074312.10: *4* appendText (BaseTextWidget)
+    #@+node:ekr.20111113141805.10057: *3* btw.Text
+    #@+node:ekr.20070228074312.10: *4* btw.appendText
     def appendText (self,s):
 
         self.s = self.s + s
         self.ins = len(self.s)
         self.sel = self.ins,self.ins
-    #@+node:ekr.20070228074312.13: *4* delete (BaseTextWidget)
+    #@+node:ekr.20070228074312.13: *4* btw.delete
     def delete(self,i,j=None):
 
         i = self.toPythonIndex(i)
@@ -399,12 +386,12 @@ class BaseTextWidget(object):
 
         # Bug fix: 2011/11/13: Significant in external tests.
         self.setSelectionRange(i,i,insert=i)
-    #@+node:ekr.20070228074312.14: *4* deleteTextSelection (BaseTextWidget)
+    #@+node:ekr.20070228074312.14: *4* btw.deleteTextSelection
     def deleteTextSelection (self):
 
         i,j = self.getSelectionRange()
         self.delete(i,j)
-    #@+node:ekr.20070228074312.18: *4* get (BaseTextWidget)
+    #@+node:ekr.20070228074312.18: *4* btw.get
     def get(self,i,j=None):
 
         i = self.toPythonIndex(i)
@@ -412,18 +399,18 @@ class BaseTextWidget(object):
         j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.19: *4* getAllText (BaseTextWidget)
+    #@+node:ekr.20070228074312.19: *4* btw.getAllText
     def getAllText (self):
 
         s = self.s
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.21: *4* getSelectedText (BaseTextWidget)
+    #@+node:ekr.20070228074312.21: *4* btw.getSelectedText
     def getSelectedText (self):
 
         i,j = self.sel
         s = self.s[i:j]
         return g.toUnicode(s)
-    #@+node:ekr.20070228074312.26: *4* insert (BaseTextWidget)
+    #@+node:ekr.20070228074312.26: *4* btw.insert
     def insert(self,i,s):
 
         i = self.toPythonIndex(i)
@@ -432,12 +419,12 @@ class BaseTextWidget(object):
         i += len(s1)
         self.ins = i
         self.sel = i,i
-    #@+node:ekr.20070228074312.28: *4* replace (BaseTextWidget)
+    #@+node:ekr.20070228074312.28: *4* btw.replace
     def replace (self,i,j,s):
 
         self.delete(i,j)
         self.insert(i,s)
-    #@+node:ekr.20070228074312.32: *4* setAllText (BaseTextWidget)
+    #@+node:ekr.20070228074312.32: *4* btw.setAllText
     def setAllText (self,s):
 
         self.s = s
@@ -445,26 +432,26 @@ class BaseTextWidget(object):
         self.ins = i
         self.sel = i,i
     #@-others
-#@-<< define class BaseTextWidget >>
-#@+<< define class StringTextWidget >>
-#@+node:ekr.20070228074228.1: ** << define class StringTextWidget >>
-class StringTextWidget (BaseTextWidget):
+#@-<< define class BaseTextWrapper >>
+#@+<< define class StringTextWrapper >>
+#@+node:ekr.20070228074228.1: ** << define class StringTextWrapper >>
+class StringTextWrapper (BaseTextWrapper):
 
     '''A class that represents text as a Python string.'''
 
     #@+others
-    #@+node:ekr.20070228074228.2: *3* ctor (StringTextWidget)
+    #@+node:ekr.20070228074228.2: *3* stw.ctor
     def __init__ (self,c,name):
 
         # Init the base class
-        BaseTextWidget.__init__ (self,c=c,
-            baseClassName='StringTextWidget',name=name,widget=None)
+        BaseTextWrapper.__init__ (self,c=c,
+            baseClassName='StringTextWrapper',name=name,widget=None)
 
         self.ins = 0
         self.sel = 0,0
         self.s = ''
         self.trace = False
-    #@+node:ekr.20070228111853: *3* setSelectionRange (StringTextWidget)
+    #@+node:ekr.20070228111853: *3* stw.setSelectionRange
     def setSelectionRange (self,i,j,insert=None):
 
         i1, j1, insert1 = i,j,insert
@@ -479,7 +466,7 @@ class StringTextWidget (BaseTextWidget):
 
         if self.trace: g.trace('i',i,'j',j,'insert',repr(insert))
     #@-others
-#@-<< define class StringTextWidget >>
+#@-<< define class StringTextWrapper >>
 
 #@+others
 #@+node:ekr.20031218072017.3656: ** class LeoBody (HighLevelInterface)
@@ -2364,7 +2351,7 @@ class NullBody (LeoBody):
         self.selection = 0,0
         self.s = "" # The body text
 
-        w = StringTextWidget(c=self.c,name='body')
+        w = StringTextWrapper(c=self.c,name='body')
         self.bodyCtrl = self.widget = w
         self.editorWidgets['1'] = w
         self.colorizer = NullColorizer(self.c)
@@ -2641,7 +2628,7 @@ class NullLog (LeoLog):
 
         self.logNumber += 1
         c = self.c
-        log = StringTextWidget(c=c,name="log-%d" % self.logNumber)
+        log = StringTextWrapper(c=c,name="log-%d" % self.logNumber)
         return log
     #@+node:ekr.20111119145033.10186: *3* isLogWidget (NullLog)
     def isLogWidget(self,w):
@@ -2687,7 +2674,7 @@ class NullStatusLineClass:
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget = StringTextWidget(c,name='status-line')
+        self.textWidget = StringTextWrapper(c,name='status-line')
 
         # Set the official ivars.
         c.frame.statusFrame = None
@@ -2764,7 +2751,7 @@ class NullTree (LeoTree):
             return None
         w = d.get(p.v)
         if not w:
-            d[p.v] = w = StringTextWidget(
+            d[p.v] = w = StringTextWrapper(
                 c=self.c,
                 name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)

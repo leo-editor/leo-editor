@@ -17,7 +17,7 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20120219194520.10466: ** << imports >> (LeoGui.py)
 import leo.core.leoGlobals as g
-import leo.core.leoFrame as leoFrame # for NullGui and StringTextWidget.
+import leo.core.leoFrame as leoFrame # for NullGui and StringTextWrapper.
 #@-<< imports >>
 
 #@+others
@@ -326,8 +326,8 @@ class NullGui(LeoGui):
         self.script = None
         self.lastFrame = None
         self.isNullGui = True
-        self.bodyTextWidget  = leoFrame.StringTextWidget
-        self.plainTextWidget = leoFrame.StringTextWidget
+        self.bodyTextWidget  = leoFrame.StringTextWrapper
+        self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.2229: *4* NullGui.runMainLoop
     def runMainLoop(self):
 
@@ -348,7 +348,7 @@ class NullGui(LeoGui):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
-        return w and isinstance(w,leoFrame.BaseTextWidget)
+        return w and isinstance(w,leoFrame.BaseTextWrapper)
     #@+node:ekr.20031218072017.2230: *3* oops (NullGui)
     def oops(self):
 

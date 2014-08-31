@@ -47,7 +47,7 @@ from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
 
 from leo.plugins.qt_text import LeoQTextBrowser
-from leo.plugins.qt_text import BaseTextWrapper
+from leo.plugins.qt_text import BaseQTextWrapper
 from leo.plugins.qt_text import HeadlineWrapper,MinibufferWrapper
 from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 
@@ -4675,7 +4675,7 @@ class LeoQtSpellTab:
         self.c = c
         self.handler = handler
         # hack:
-        handler.workCtrl = leoFrame.StringTextWidget(c, 'spell-workctrl')
+        handler.workCtrl = leoFrame.StringTextWrapper(c, 'spell-workctrl')
         self.tabName = tabName
         ui = c.frame.top.leo_ui
         # self.createFrame()
@@ -5723,11 +5723,11 @@ class LeoQtGui(leoGui.LeoGui):
         leoGui.LeoGui.__init__(self,'qt')
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
-        self.bodyTextWidget  = BaseTextWrapper
+        self.bodyTextWidget  = BaseQTextWrapper
         self.iconimages = {}
         self.idleTimeClass = IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
-        self.plainTextWidget = BaseTextWrapper
+        self.plainTextWidget = BaseQTextWrapper
         self.mGuiName = 'qt'
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
         # Communication between idle_focus_helper and activate/deactivate events.
@@ -6799,7 +6799,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not w: return False
         
         return w and isinstance(w,
-            (leoFrame.BaseTextWidget,LeoQtBody,LeoQtLog,BaseTextWrapper))
+            (leoFrame.BaseTextWrapper,LeoQtBody,LeoQtLog,BaseQTextWrapper))
 
     #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):

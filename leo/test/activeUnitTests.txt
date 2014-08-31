@@ -10769,10 +10769,10 @@ time.sleep(0.5)
 
 if 0:
     c.frame.body.deleteEditor()
-#@+node:ekr.20111113194727.3869: *4* @test bastTextWidget methods
+#@+node:ekr.20111113194727.3869: *4* @test BaseTextWrapper methods
 import leo.core.leoFrame as leoFrame
 
-w = leoFrame.BaseTextWidget(c,'base-name','class-name',widget=None)
+w = leoFrame.BaseTextWrapper(c,'base-name','class-name',widget=None)
 
 def check(expected):
     s = w.getAllText()
