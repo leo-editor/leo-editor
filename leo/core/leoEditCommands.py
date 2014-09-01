@@ -5006,7 +5006,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event) ; p = c.p
         if not w: return
 
-        assert g.app.gui.isTextWidget(w)
+        assert g.app.gui.isTextWidget(w),w
         name = c.widget_name(w)
         if name.startswith('head'): return
 

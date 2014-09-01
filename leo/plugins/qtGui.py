@@ -46,8 +46,7 @@ from collections import defaultdict
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
 
-from leo.plugins.qt_text import LeoQTextBrowser
-from leo.plugins.qt_text import BaseQTextWrapper
+from leo.plugins.qt_text import BaseQTextWrapper,QTextMixin,LeoQTextBrowser
 from leo.plugins.qt_text import QHeadlineWrapper,QMinibufferWrapper
 from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 
@@ -370,7 +369,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     #@+node:ekr.20110605121601.18142: *5* dw.top-level
-    #@+node:ekr.20110605121601.18143: *6* dw.createBodyPane (changed)
+    #@+node:ekr.20110605121601.18143: *6* dw.createBodyPane
     def createBodyPane (self,parent):
         '''Create the body pane.'''
         # Create widgets.
@@ -1620,9 +1619,8 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
     #@-others
 #@+node:ekr.20110605121601.18180: *3* class LeoQtBody (LeoBody)
 class LeoQtBody (leoFrame.LeoBody):
-
     """A class that represents the body pane of a Qt window."""
-    # py--lint: disable=inteface-not-implemented
+    # pylint: disable=interface-not-implemented
     #@+others
     #@+node:ekr.20110605121601.18181: *4*  Birth
     #@+node:ekr.20110605121601.18182: *5*  ctor (LeoQtBody) (changed)
@@ -6738,7 +6736,7 @@ class LeoQtGui(leoGui.LeoGui):
     def isTextWidget (self,w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and isinstance(w,
-            (LeoQtBody,LeoQtLog,BaseQTextWrapper,leoFrame.BaseTextWrapper))
+            (LeoQtBody,LeoQtLog,BaseQTextWrapper,leoFrame.BaseTextWrapper,QTextMixin))
     #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):
 
