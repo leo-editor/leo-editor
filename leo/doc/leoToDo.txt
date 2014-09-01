@@ -1345,7 +1345,7 @@ These wrapper classes have a widget ivar, which is a reference to the
 corresponding Qt widget object.  For example::
 
     import PyQt4.QtGui as QtGui
-    w =3D c.frame.body.bodyCtrl.widget
+    w =3D c.frame.body.wrapper.widget
     g.es(w)
     g.es(isinstance(w,QtGui.QTextBrowser)
 

@@ -2330,7 +2330,7 @@ class LoadManager:
             c.redraw()
 
         # Respect c's focus wishes if posssible.
-        if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        if w != c.frame.body.wrapper and w != c.frame.tree.canvas:
             c.bodyWantsFocus()
             c.k.showStateAndMode(w)
 

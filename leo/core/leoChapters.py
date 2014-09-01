@@ -917,7 +917,7 @@ class Chapter:
         p = self.p
         # Next, recompute p and possibly select a new editor.
         if w:
-            assert w == c.frame.body.bodyCtrl
+            assert w == c.frame.body.wrapper
             assert w.leo_p
             self.p = p = self.findPositionInChapter(w.leo_p) or root.copy()
             if trace: g.trace('recomputed: %s' % (self.p))

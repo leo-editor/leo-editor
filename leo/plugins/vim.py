@@ -249,10 +249,10 @@ def open_in_vim_helper (c):
     if c.config.getBool('vim_plugin_positions_cursor'):    
         #Line number - start at same line as Leo cursor
         #  get node's body text
-        bodyCtrl = c.frame.body.bodyCtrl
-        s = bodyCtrl.getAllText()    
+        wrapper = c.frame.body.wrapper
+        s = wrapper.getAllText()    
         #  Get cursors row & column number
-        index = bodyCtrl.getInsertPoint()
+        index = wrapper.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,index)
         #  Build gVim command line parameter for setting cursor row
         Lnum = "+" + str(row + 1)

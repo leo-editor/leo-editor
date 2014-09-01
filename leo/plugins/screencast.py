@@ -308,7 +308,7 @@ class ScreenCastController:
         m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
         p = c.p
-        w = c.frame.body.bodyCtrl.widget
+        w = c.frame.body.wrapper.widget
         c.undoer.setUndoTypingParams(p,'typing',
             oldText=p.b,newText=p.b+s,oldSel=None,newSel=None,oldYview=None)
         for ch in s:
@@ -842,7 +842,7 @@ class ScreenCastController:
 
         d = {
             'all':  c.frame.top,
-            'body': c.frame.body.bodyCtrl.widget,
+            'body': c.frame.body.wrapper.widget,
             'log':  c.frame.log.logCtrl.widget,
             'minibuffer': c.frame.miniBufferWidget.widget,
             'tree': c.frame.tree.treeWidget,

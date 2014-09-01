@@ -385,7 +385,7 @@ class VimCommands:
             # g.registerHandler('idle',vc.on_idle)
             try:
                 # Be careful: c.frame or c.frame.body may not exist in some gui's.
-                vc.w = vc.c.frame.body.bodyCtrl
+                vc.w = vc.c.frame.body.wrapper
             except Exception:
                 vc.w = None
             if c.config.getBool('vim-trainer-mode',default=False):
@@ -477,7 +477,7 @@ class VimCommands:
             # Mouse clicks and arrows are disable.
         vc.w = None
             # The present widget.
-            # c.frame.body.bodyCtrl is a QTextBrowser.
+            # c.frame.body.wrapper is a QTextBrowser.
         vc.j_changed = True
             # False if the .leo file's change indicator should be
             # cleared after doing the j,j abbreviation.
@@ -785,7 +785,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -799,7 +799,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1209,7 +1209,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1315,7 +1315,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = c.frame.body.bodyCtrl
+            vc.w = c.frame.body.wrapper
         if vc.is_text_widget(vc.w):
             vc.do(['beginning-of-line','insert-newline','back-char'])
             vc.begin_insert_mode()
@@ -1327,7 +1327,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             c = vc.c
             c.bodyWantsFocusNow()
-            vc.w = w = c.frame.body.bodyCtrl
+            vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
         if vc.is_text_widget(w):
@@ -1963,7 +1963,7 @@ class VimCommands:
             vc = self.vc
             c,w = vc.c,vc.colon_w
             if not w:
-                w = vc.w = c.frame.body.bodyCtrl
+                w = vc.w = c.frame.body.wrapper
             if g.os_path_exists(fn):
                 f = open(fn)
                 s = f.read()
@@ -2146,7 +2146,7 @@ class VimCommands:
             try:
                 vc.state = 'insert'
                 c.bodyWantsFocusNow()
-                w = c.frame.body.bodyCtrl.widget
+                w = c.frame.body.qt_widget
                 vc.set_border(kind=None,w=w,activeFlag=True)
             except Exception:
                 # g.es_exception()
@@ -2358,7 +2358,7 @@ class VimCommands:
     #@+node:ekr.20140806081828.18157: *4* vc.is_body & is_head
     def is_body(vc,w):
         '''Return True if w is the QTextBrowser of the body pane.'''
-        w2 = vc.c.frame.body.bodyCtrl
+        w2 = vc.c.frame.body.wrapper
         return w == w2
 
     def is_head(vc,w):
@@ -2440,7 +2440,7 @@ class VimCommands:
         elif w_name != 'richTextEdit':
             # Clear the border in the body pane.
             try:
-                w = vc.c.frame.body.bodyCtrl.widget
+                w = vc.c.frame.body.qt_widget
                 vc.set_property(w,False)
             except Exception:
                 pass

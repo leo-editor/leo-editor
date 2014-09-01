@@ -581,7 +581,7 @@ class QuickSearchController:
             c.selectPosition(p)
             if pos is not None:
                 st, en = pos
-                w = c.frame.body.bodyCtrl
+                w = c.frame.body.wrapper
                 w.setSelectionRange(st,en)
                 w.seeInsertPoint()
                 

@@ -152,7 +152,7 @@ class CtagsController:
         self.popup_filter = None
         
         # Init.
-        w = c.frame.body.bodyCtrl # A leoQTextEditWidget
+        w = c.frame.body.wrapper # A LeoQTextBrowser.
         self.ev_filter = w.ev_filter
         
         # g.trace('CtagsController',c.shortFileName(),self.body)

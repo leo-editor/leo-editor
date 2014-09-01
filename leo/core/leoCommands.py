@@ -1543,7 +1543,7 @@ class Commands (object):
         p2 = c.insertHeadline(op_name='Open File', as_child=False)
         p2.h = '@edit %s' % fn # g.shortFileName(fn)
         p2.b = prefix + s
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if w: w.setInsertPoint(0)
         c.redraw()
         c.recolor()
@@ -2230,7 +2230,7 @@ class Commands (object):
 
         g.chdir(fileName)
         s = '@nocolor\n' + s
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         p = c.insertHeadline(op_name=undoType)
         p.setHeadString('@read-file-into-node ' + fileName)
         p.setBodyString(s)
@@ -3221,11 +3221,10 @@ class Commands (object):
         def showResults(self,found,p,n,n2,lines):
 
             trace = False and not g.unitTesting
-            c = self.c ; w = c.frame.body.bodyCtrl
-
+            c = self.c
+            w = c.frame.body.wrapper
             # Select p and make it visible.
             c.redraw(p)
-
             # Put the cursor on line n2 of the body text.
             s = w.getAllText()
             if found:
@@ -3239,7 +3238,6 @@ class Commands (object):
                 i,j = g.getLine(s,ins)
                 g.trace('found: %5s %2s %2s %15s %s' % (
                     found,n,n2,p.h,repr(s[i:j])))  
-
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
             c.frame.body.seeInsertPoint()
@@ -3247,15 +3245,12 @@ class Commands (object):
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
     def findMatchingBracket (self,event=None):
-
         '''Select the text between matching brackets.'''
-
-        c = self ; w = c.frame.body.bodyCtrl
-
+        c = self
+        w = c.frame.body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode("Match Brackets")
             return
-
         brackets = "()[]{}<>"
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -3648,18 +3643,19 @@ class Commands (object):
         return name
     #@+node:ekr.20031218072017.1829: *6* c.getBodyLines
     def getBodyLines (self,expandSelection=False):
-
-        """Return head,lines,tail where:
+        """
+        Return head,lines,tail where:
 
         before is string containg all the lines before the selected text
-        (or the text before the insert point if no selection)
-        lines is a list of lines containing the selected text (or the line containing the insert point if no selection)
-        after is a string all lines after the selected text
-        (or the text after the insert point if no selection)"""
-
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        (or the text before the insert point if no selection) lines is a
+        list of lines containing the selected text (or the line containing
+        the insert point if no selection) after is a string all lines
+        after the selected text (or the text after the insert point if no
+        selection)
+        """
+        c = self ; body = c.frame.body
+        w = body.wrapper
         oldVview = body.getYScrollPosition()
-
         if expandSelection:
             s = w.getAllText()
             head = tail = ''
@@ -3669,12 +3665,10 @@ class Commands (object):
             # Note: lines is the entire line containing the insert point if no selection.
             head,s,tail = body.getSelectionLines()
             lines = g.splitLines(s) # Retain the newlines of each line.
-
             # Expand the selection.
             i = len(head)
             j = max(i,len(head)+len(s)-1)
             oldSel = i,j
-
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
     #@+node:ekr.20031218072017.1830: *6* indentBody (indent-region)
     def indentBody (self,event=None):
@@ -3719,7 +3713,7 @@ class Commands (object):
         '''
         c = self
         tag = '@language'     
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         ins = w.getInsertPoint()
         n = 0
         for s in g.splitLines(p.b):
@@ -3848,22 +3842,17 @@ class Commands (object):
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
     #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests
     def insertBodyTime (self,event=None):
-
         '''Insert a time/date stamp at the cursor.'''
-
         c = self ; undoType = 'Insert Body Time'
-        w = c.frame.body.bodyCtrl
-
+        w = c.frame.body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
             return
-
         oldSel = c.frame.body.getSelectionRange()
         w.deleteTextSelection()
         s = self.getTime(body=True)
         i = w.getInsertPoint()
         w.insert(i,s)
-
         c.frame.body.onBodyChanged(undoType,oldSel=oldSel)
     #@+node:ekr.20031218072017.1832: *7* getTime
     def getTime (self,body=True):
@@ -3897,13 +3886,11 @@ class Commands (object):
         return s
     #@+node:ekr.20131002055813.19033: *6* c.reformatBody (can hang)
     def reformatBody (self,event=None):
-        
         '''Reformat all paragraphs in the body.'''
-        
         # New in Leo 4.11
         c,p = self,self.p
         undoType = 'reformat-body'
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         c.undoer.beforeChangeGroup(p,undoType)
         w.setInsertPoint(0)
         while 1:
@@ -3930,7 +3917,9 @@ class Commands (object):
 
         """
         trace = False and not g.unitTesting
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        c = self
+        body = c.frame.body
+        w = body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode("reformat-paragraph")
             return
@@ -4040,12 +4029,10 @@ class Commands (object):
         return val
     #@+node:ekr.20101118113953.5840: *7* rp_get_args
     def rp_get_args (self):
-
         '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-
         c = self
         body = c.frame.body
-        w = body.bodyCtrl
+        w = body.wrapper
         d = c.scanAllDirectives()
         # g.trace(c.editCommands.fillColumn)
         if c.editCommands.fillColumn > 0:
@@ -4079,14 +4066,11 @@ class Commands (object):
         return indents,leading_ws
     #@+node:ekr.20101118113953.5842: *7* rp_reformat
     def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
-
         '''Reformat the body and update the selection.'''
-
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        c = self ; body = c.frame.body ; w = body.wrapper
         s = w.getAllText()
         # This destroys recoloring.
         junk, ins = body.setSelectionAreas(head,result,tail)
-        
         changed = original != head + result + tail
         if changed:
             # 2013/09/14: fix an annoying glitch when there is no
@@ -7371,7 +7355,7 @@ class Commands (object):
         c2 = c2 or c
         c.requestBringToFront = c2
         c.requestedIconify = 'deiconify'
-        c.requestedFocusWidget = c2.frame.body.bodyCtrl
+        c.requestedFocusWidget = c2.frame.body.wrapper
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
@@ -7559,7 +7543,7 @@ class Commands (object):
 
     def bodyWantsFocus(self):
         c = self ; body = c.frame.body
-        c.request_focus(body and body.bodyCtrl)
+        c.request_focus(body and body.wrapper)
 
     def logWantsFocus(self):
         c = self ; log = c.frame.log
@@ -7585,7 +7569,7 @@ class Commands (object):
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
     def bodyWantsFocusNow(self):
         c = self ; body = c.frame.body
-        c.widgetWantsFocusNow(body and body.bodyCtrl)
+        c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self):
         c = self ; log = c.frame.log
@@ -8279,7 +8263,7 @@ class Commands (object):
         if current and p.v==current.v:
             # Revert to previous code, but force an empty selection.
             c.frame.body.setSelectionAreas(s,None,None)
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
             # This code destoys all tags, so we must recolor.
@@ -8501,7 +8485,7 @@ class Commands (object):
         # if k:
             # k.setDefaultInputState()
             # # Recolor the *body* text, **not** the headline.
-            # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
     def selectPosition(self,p,enableRedrawFlag=True):
         """Select a new position."""

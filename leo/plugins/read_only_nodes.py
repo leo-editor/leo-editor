@@ -392,9 +392,9 @@ def on_bodykey1 (tag,keywords):
         # but perhaps that is obvious anyway...
         if 0: # Davide Salomoni requests that this code be eliminated.
             # An @read-only node: do not change its text.
-            body = c.frame.body.bodyCtrl
-            body.delete("1.0","end")
-            body.insert("1.0",p.b)
+            w = c.frame.body.wrapper
+            w.delete("1.0","end")
+            w.insert("1.0",p.b)
         return 1 # Override the body key event handler.
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter

@@ -617,15 +617,15 @@ def removeFile(path):
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
 #@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property
-# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
+# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.wrapper.
 body = c.frame.body
-old_w = body.widget
+old_w = body.wrapper
 assert old_w is not None
 try:
     body.bodyCtrl = None
-    assert body.widget is None
+    assert body.wrapper is None
 finally:
-    body.widget = old_w
+    body.wrapper = old_w
     
 assert hasattr(c.frame.body,'bodyCtrl')
 assert hasattr(c.frame.log,'logCtrl')

@@ -73,7 +73,7 @@ class Recorder(object):
         self.last_time = 0
         
         c = g.app.commanders()[0]
-        w = c.frame.body.bodyCtrl.widget
+        w = c.frame.body.wrapper.widget
         while w.parent():
             w = w.parent()
         

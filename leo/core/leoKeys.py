@@ -298,7 +298,7 @@ class AutoCompleterClass:
         if trace: g.trace(g.callers())
 
         c = self.c
-        w = self.w or c.frame.body.bodyCtrl
+        w = self.w or c.frame.body.wrapper
 
         if trace: g.trace(g.callers())
 
@@ -922,7 +922,7 @@ class AutoCompleterClass:
 
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
 
-        w = self.c.frame.body.bodyCtrl.widget
+        w = self.c.frame.body.qt_widget
             # A LeoQTextBrowser.  May be none for unit tests.
 
         if w and options:
@@ -1616,14 +1616,14 @@ class GetArg:
         ga.handler = handler
         ga.tabList = tabList[:] if tabList else []
         # Set the k globals...
-        k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
+        k.argSelectedText = c.frame.body.wrapper.getSelectedText()
         k.functionTail = None
         k.oneCharacterArg = oneCharacter
         # Do *not* change the label here!
         # Enter the next state.
-        c.widgetWantsFocus(c.frame.body.bodyCtrl)
+        c.widgetWantsFocus(c.frame.body.wrapper)
         k.setState('getArg',1,k.getArg)
-        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        k.afterArgWidget = event and event.widget or c.frame.body.wrapper
         if useMinibuffer: c.minibufferWantsFocus()
     #@+node:ekr.20140818103808.18234: *4* ga.should_end
     def should_end(ga,char,stroke):
@@ -2560,9 +2560,9 @@ class KeyHandlerClass:
         else:
             # New in Leo 4.5: we *must* make the binding in the binding widget.
             bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
-            bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
+            wrapper = f.body and hasattr(f.body,'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
-            widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
+            widgets = (c.miniBufferWidget,wrapper,canvas,bindingWidget)
 
         for w in widgets:
             if not w: continue
@@ -4528,7 +4528,7 @@ class KeyHandlerClass:
         k.unboundKeyAction = state
 
         if set_border and c.frame and c.frame.body:
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             if hasattr(w,'widget'):
                 g.app.gui.add_border(c,w.widget)
     #@+node:ekr.20061031131434.199: *4* k.setState

@@ -49,10 +49,8 @@ def onCreate (tag, keys):
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
-    body = self.frame.body ; w = body.bodyCtrl
-
-    # g.pr('newPut',repr(s),w,g.callers())
-
+    body = self.frame.body
+    w = body.wrapper
     if w:
         w.insert("end",s)
         body.onBodyChanged("Typing")

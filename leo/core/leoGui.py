@@ -381,7 +381,7 @@ class NullGui(LeoGui):
         return self.clipboardContents
     def get_focus(self,frame=None):
         if not frame: return None
-        return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
+        return self.focusWidget or (hasattr(frame,'body') and frame.body.wrapper) or None 
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         return g.app.config.defaultFont
     def get_window_info (self,window):

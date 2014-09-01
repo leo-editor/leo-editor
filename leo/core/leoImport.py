@@ -610,7 +610,7 @@ class LeoImportCommands:
             # Fix bug 889175: Remember the full fileName.
             c.atFileCommands.rememberReadPath(fileName,p)
         p.contract()
-        w = c.frame.body
+        w = c.frame.body.wrapper
         w.setInsertPoint(0)
         w.seeInsertPoint()
         return p
@@ -1478,7 +1478,7 @@ class LeoImportCommands:
         current = c.p
         if current and p.v==current.v:
             c.frame.body.setSelectionAreas(s,None,None)
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
 

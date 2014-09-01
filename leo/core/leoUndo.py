@@ -522,7 +522,7 @@ class Undoer:
     def afterChangeGroup (self,p,undoType,reportFlag=False,dirtyVnodeList=[]):
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
         u = self ; c = self.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
@@ -556,7 +556,7 @@ class Undoer:
     #@+node:ekr.20050315134017.2: *5* afterChangeNodeContents
     def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[],inHead=False):
         '''Create an undo node using d created by beforeChangeNode.'''
-        u = self ; c = self.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = self.c ; w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # Set the type & helpers.
@@ -577,7 +577,7 @@ class Undoer:
     #@+node:ekr.20050315134017.3: *5* afterChangeTree
     def afterChangeTree (self,p,command,bunch):
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
-        u = self ; c = self.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = self.c ; w = c.frame.body.wrapper
         if u.redoing or u.undoing: return
         # Set the types & helpers.
         bunch.kind = 'tree'
@@ -935,7 +935,7 @@ class Undoer:
     def beforeChangeTree (self,p):
 
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
         bunch.oldSel = w.getSelectionRange()
         bunch.oldText = w.getAllText()
@@ -1036,7 +1036,7 @@ class Undoer:
         '''Return a bunch containing all common undo info.
         This is mostly the info for recreating an empty node at position p.'''
 
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
 
         return g.Bunch(
             oldChanged = c.isChanged(),
@@ -1416,7 +1416,7 @@ class Undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         if not c.p:
             if trace: g.trace('no current position')
@@ -1667,7 +1667,7 @@ class Undoer:
     #@+node:ekr.20050318085432.7: *4* redoNodeContents
     def redoNodeContents (self):
 
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
@@ -1746,7 +1746,7 @@ class Undoer:
     def redoTyping (self):
 
         u = self ; c = u.c ; current = c.p
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
@@ -1779,7 +1779,7 @@ class Undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         if not c.p:
             return g.trace('no current position')
@@ -2058,7 +2058,7 @@ class Undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p,incremental=False)
@@ -2134,7 +2134,7 @@ class Undoer:
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
         # newNewlines is unused, but it has symmetry.
         trace = False and not g.unitTesting
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
         #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
         # Recreate the text using the present body text.
@@ -2216,7 +2216,7 @@ class Undoer:
     def undoTyping (self):
 
         u = self ; c = u.c ; current = c.p
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:

@@ -252,7 +252,7 @@ class CodewiseController:
         self.completer = None
         self.popup = None
         self.popup_filter = None
-        self.w = c.frame.body.bodyCtrl # A leoQTextEditWidget
+        self.w = c.frame.body.wrapper # A LeoQTextBrowser
         
         # Init.
         self.ev_filter = self.w.ev_filter

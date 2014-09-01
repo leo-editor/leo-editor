@@ -133,7 +133,7 @@ def insertDirectoryString (c):
         startdir=os.curdir)
 
     if d:
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         ins = w.getInsertPoint()
         w.insert(ins,d)
         #w.event_generate('<Key>')

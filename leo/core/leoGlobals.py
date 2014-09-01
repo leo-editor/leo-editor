@@ -6707,7 +6707,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     # so there can be no conflict with c.atFileCommands.
     import leo.core.leoAtFile as leoAtFile
     at = leoAtFile.AtFile(c)
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     p1 = p and p.copy()
     if not p: p = c.p
     try:
@@ -7094,7 +7094,7 @@ def openUrlOnClick(event):
     '''Open the URL under the cursor.  Return it for unit testing.'''
     c = event.get('c')
     if not c: return None
-    w = event.get('w') or c.frame.body.bodyCtrl
+    w = event.get('w') or c.frame.body.wrapper
     s = w.getAllText()
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()

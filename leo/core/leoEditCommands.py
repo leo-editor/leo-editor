@@ -47,7 +47,7 @@ class BaseEditCommandsClass:
 
         self.k = self.c.k
         try:
-            self.w = self.c.frame.body.bodyCtrl # New in 4.4a4.
+            self.w = self.c.frame.body.wrapper # New in 4.4a4.
         except AttributeError:
             self.w = None
 
@@ -133,7 +133,7 @@ class BaseEditCommandsClass:
         if w and isTextWidget:
             self.w = w
         else:
-            self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+            self.w = self.c.frame.body and self.c.frame.body.wrapper
 
         if trace: g.trace(isTextWidget,wname,w)
 
@@ -1146,7 +1146,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         self.tnodes = {} # Keys are n: <headline>, values are tnodes.
 
         try:
-            self.w = c.frame.body.bodyCtrl
+            self.w = c.frame.body.wrapper
         except AttributeError:
             self.w = None
     #@+node:ekr.20050920084036.33: *3*  getPublicCommands
@@ -3772,33 +3772,24 @@ class EditCommandsClass (BaseEditCommandsClass):
         c.frame.menu.activateMenu(menuName)
     #@+node:ekr.20051022144825.1: *4* cycleFocus
     def cycleFocus (self,event):
-
         '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
-
         c = self.c ; k = c.k ; w = event and event.widget
-
-        body = c.frame.body.bodyCtrl
+        body = c.frame.body.wrapper
         log  = c.frame.log.logCtrl
         tree = c.frame.tree.canvas
-
         # A hack for the Qt gui.
         if hasattr(w,'logCtrl'):
             w = w.logCtrl
-
         panes = [body,log,tree]
-
         # g.trace(w in panes,event.widget,panes)
-
         if w in panes:
             i = panes.index(w) + 1
             if i >= len(panes): i = 0
             pane = panes[i]
         else:
             pane = body
-
         # Warning: traces mess up the focus
         # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
-
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
         k.newMinibufferWidget = pane
@@ -3820,14 +3811,14 @@ class EditCommandsClass (BaseEditCommandsClass):
         if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).find('tree') > -1 or w_name(w).startswith('head'):
-            pane = c.frame.body.bodyCtrl
+            pane = c.frame.body.wrapper
         elif w_name(w).startswith('body'):
             # Cycle through the *body* editor if there are several.
             n = c.frame.body.numberOfEditors
             if n > 1:
                 self.editWidgetCount += 1
                 if self.editWidgetCount == 1:
-                    pane = c.frame.body.bodyCtrl
+                    pane = c.frame.body.wrapper
                 elif self.editWidgetCount > n:
                     self.editWidgetCount = 0
                     c.frame.log.selectTab('Log')
@@ -3846,7 +3837,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         else:
             # A safe default: go to the body.
             if trace: g.trace('* default to body')
-            pane = c.frame.body.bodyCtrl
+            pane = c.frame.body.wrapper
         if trace: g.trace('**after',w_name(pane),pane)
         if pane:
             k.newMinibufferWidget = pane
@@ -4808,12 +4799,10 @@ class EditCommandsClass (BaseEditCommandsClass):
                 w.setSelectionRange(ins,ins,insert=ins)
     #@+node:ekr.20070325094935: *4* cleanAllLines
     def cleanAllLines (self,event):
-
         '''Clean all lines in the selected tree.'''
-
         c = self.c
         u = c.undoer
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if not w: return
         tag = 'clean-all-lines'
         u.beforeChangeGroup(c.p,tag)
@@ -7197,28 +7186,23 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         }
     #@+node:ekr.20070920104110: *3* compareLeoFiles
     def compareLeoFiles (self,event):
-
         '''Compare two .leo files.'''
-
         trace = False and not g.unitTesting
-        c = c1 = self.c ; w = c.frame.body.bodyCtrl
-
+        c = c1 = self.c
+        w = c.frame.body.wrapper
         # Prompt for the file to be compared with the present outline.
         filetypes = [("Leo files", "*.leo"),("All files", "*"),]
         fileName = g.app.gui.runOpenFileDialog(
             title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
         if not fileName: return
-
         # Read the file into the hidden commander.
         c2 = self.createHiddenCommander(fileName)
         if not c2: return
-
         # Compute the inserted, deleted and changed dicts.
         d1 = self.createFileDict(c1)
         d2 = self.createFileDict(c2)  
         inserted, deleted, changed = self.computeChangeDicts(d1,d2)
         if trace: self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
-
         # Create clones of all inserted, deleted and changed dicts.
         self.createAllCompareClones(c1,c2,inserted,deleted,changed)
         c2.frame.destroySelf()
@@ -8389,15 +8373,17 @@ class HelpCommandsClass (BaseEditCommandsClass):
             c.redraw()
             c.positionExists(p)
 
-        Here is a partial list of the **official ivars** of any LeoFrame f::
+        Here is a partial list of the **official ivars** of any commander c:
 
-            f.c                     is the frame’s commander.
-            f.body                  is a LeoBody instance.
-            f.body.bodyCtl          is a QTextEditWrapper instance.
-            f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
-            f.log                   is a LeoLog instance.
-            f.tree                  is a LeoQtTree instance.
-            f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+            c.frame                 The frame containing the log,body,tree, etc.
+            c.frame.body            The body pane.
+            c.frame.body.widget     The gui widget for the body pane.
+            c.frame.body.wrapper    The high level interface for the body widget.
+            c.frame.iconBar         The icon bar.
+            c.frame.log             The log pane.
+            c.frame.log.widget      The gui widget for the log pane.
+            c.frame.log.wrapper     The high-level inteface for the log pane.
+            c.frame.tree            The tree pane.
             
         VNode class
         ===========
@@ -9401,9 +9387,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         return ''
     #@+node:ekr.20110606152005.16787: *3* loadMacros
     def loadMacros (self,event=None):
-
         '''Load macros from the @macros node.'''
-
         trace = False and not g.unitTesting
         c = self.c
         create_event = g.app.gui.create_key_event
@@ -9419,7 +9403,6 @@ class MacroCommandsClass (BaseEditCommandsClass):
             progress = i
             s = lines[i].strip()
             i += 1
-
             if s.startswith('::') and s.endswith('::'):
                 name = s[2:-2]
                 if name:
@@ -9430,7 +9413,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
                         if s:
                             stroke=s
                             char = c.k.stroke2char(stroke)
-                            w = c.frame.body.bodyCtrl
+                            w = c.frame.body.wrapper
                             macro.append(create_event(c,char,stroke,w))
                             i += 1
                         else: break
@@ -9447,7 +9430,6 @@ class MacroCommandsClass (BaseEditCommandsClass):
                     oops('ignoring line: %s' % (repr(s)))
             else: pass
             assert progress < i
-
         # finish of the last macro.
         if macro:
             self.completeMacroDef(name,macro)
@@ -9859,7 +9841,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             k.clearState()
             if self.checkBodySelection():
                 if char.isalpha():
-                    w = c.frame.body.bodyCtrl
+                    w = c.frame.body.wrapper
                     c.bodyWantsFocus()
                     key = char.lower()
                     val = self.registers.get(key,'')
@@ -9887,7 +9869,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             k.clearState()
             if self.checkBodySelection():
                 if char.isalpha():
-                    w = c.frame.body.bodyCtrl
+                    w = c.frame.body.wrapper
                     c.bodyWantsFocus()
                     key = char.lower()
                     val = self.registers.get(key,'')
@@ -9949,7 +9931,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             if self.checkBodySelection():
                 if char.isalpha():
                     key = char.lower()
-                    w = c.frame.body.bodyCtrl
+                    w = c.frame.body.wrapper
                     c.bodyWantsFocus()
                     val = w.getSelectedText()
                     self.registers[key] = val
@@ -10001,7 +9983,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         else:
             k.clearState()
             if char.isalpha():
-                w = c.frame.body.bodyCtrl
+                w = c.frame.body.wrapper
                 c.bodyWantsFocus()
                 key = char.lower()
                 val = self.registers.get(key)
@@ -10035,7 +10017,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
                 if self._checkIfRectangle(event): return
                 key = char.lower()
                 val = self.registers.get(key)
-                w = c.frame.body.bodyCtrl
+                w = c.frame.body.wrapper
                 c.bodyWantsFocus()
                 if val:
                     try:
@@ -10090,7 +10072,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         else:
             k.clearState()
             if char.isalpha():
-                w = c.frame.body.bodyCtrl
+                w = c.frame.body.wrapper
                 c.bodyWantsFocus()
                 key = char.lower()
                 val = w.getInsertPoint()
@@ -10465,7 +10447,7 @@ class SpellTabHandler:
         if not self.loaded:
             return
         c = self.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
         if selection:
             # Use getattr to keep pylint happy.
@@ -10495,7 +10477,7 @@ class SpellTabHandler:
         if not self.loaded:
             return
         c = self.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         # Reload the work pane from the present node.
         s = w.getAllText().rstrip()
         self.workCtrl.delete(0,"end")
@@ -10525,7 +10507,7 @@ class SpellTabHandler:
         """Find the next unknown word."""
         trace = False and not g.unitTesting
         c = self.c ; p = c.p
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         sc = self.spellController
         alts = None ; word = None
         try:
@@ -10576,7 +10558,7 @@ class SpellTabHandler:
                 word = s[i:j]
                 # This trace verifies that all words have been checked.
                 # g.trace(repr(word))
-                for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                for w in (self.workCtrl,c.frame.body.wrapper):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(i,j,insert=j)
                 if trace: g.trace(i,j,word,p.h)
@@ -10587,7 +10569,7 @@ class SpellTabHandler:
                 if not p: break
                 self.workCtrl.delete(0,'end')
                 self.workCtrl.insert(0,p.b)
-                for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                for w in (self.workCtrl,c.frame.body.wrapper):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(0,0,insert=0)
                 if trace: g.trace(0,0,'-->',p.h)

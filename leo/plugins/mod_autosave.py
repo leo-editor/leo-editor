@@ -111,9 +111,6 @@ def onIdle (tag,keywords):
         if guiName in ('qt','qttabs'):
             bodyWidget = c.frame.body
             treeWidget = c.frame.tree.treeWidget # QtGui.
-        ### elif guiName == 'tkinter':
-            # treeWidget = c.frame.tree.canvas
-            # bodyWidget = c.frame.body.bodyCtrl
         else:
             return # Only Qt and Tk gui's are supported.
         isBody = w == bodyWidget

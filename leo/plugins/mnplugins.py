@@ -70,7 +70,7 @@ def setHeadOK(c,v):
 #@+node:ekr.20040205071616.5: ** mnplugins.insertBodystamp
 def insertBodystamp (c,v):
 
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     stamp = mnOKstamp() + '\n'
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
@@ -113,7 +113,7 @@ def insertUser (self,event=None):
     """Handle the Insert User command."""
 
     c = self ; v = c.currentVnode()
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
 
     oldSel = w.getSelectionRange()
     w.deleteTextSelection() # Works if nothing is selected.

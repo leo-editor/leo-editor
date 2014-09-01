@@ -122,7 +122,7 @@ class paramClass:
         c = self.c
         tree = c.frame.tree
         body = c.frame.body
-        w = body.bodyCtrl
+        w = body.wrapper
         current = c.currentVnode()
 
         if not self.params:

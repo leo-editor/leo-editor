@@ -329,15 +329,15 @@ class JEditColorizer:
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  Birth & init
     #@+node:ekr.20110605121601.18572: *4* __init__ (jeditColorizer)
-    def __init__(self,c,colorizer,highlighter,w):
+    def __init__(self,c,colorizer,highlighter,wrapper):
 
         # Basic data...
         self.c = c
         self.colorizer = colorizer
         self.highlighter = highlighter # a QSyntaxHighlighter
         self.p = None
-        self.w = w
-        assert(w == self.c.frame.body.bodyCtrl)
+        self.wrapper = wrapper
+        assert(wrapper == self.c.frame.body.wrapper)
 
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
@@ -609,14 +609,14 @@ class JEditColorizer:
         The stated default is 40, but apparently it must be set explicitly.
         '''
         trace = False and not g.unitTesting
-        c,w = self.c,self.w
+        c,wrapper = self.c,self.wrapper
         if 0:
             # No longer used: c.config.getInt('qt-tab-width')
             hard_tab_width = abs(10*c.tab_width)
-            if trace: g.trace('hard_tab_width',hard_tab_width,self.w)
+            if trace: g.trace('hard_tab_width',hard_tab_width,self.wrapper)
         else:
             # For some reason, the size is not accurate.
-            font = w.widget.currentFont()
+            font = wrapper.qt_widget.currentFont()
             info = QtGui.QFontInfo(font)
             size = info.pointSizeF()
             pixels_per_point = 1.0 # 0.9
@@ -624,22 +624,20 @@ class JEditColorizer:
             if trace: g.trace(
                 'family',font.family(),'point size',size,
                 'tab_width',c.tab_width,
-                'hard_tab_width',hard_tab_width) # ,self.w)
-        w.widget.setTabStopWidth(hard_tab_width)
+                'hard_tab_width',hard_tab_width)
+        wrapper.qt_widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *4* configure_tags
     def configure_tags (self):
 
         trace = False and not g.unitTesting
         traceColors = False
         traceFonts = False
-        c = self.c ; w = self.w
+        c = self.c
+        wrapper = self.wrapper
         isQt = g.app.gui.guiName().startswith('qt')
-
         if trace: g.trace(self.colorizer.language)
-
-        if w and hasattr(w,'start_tag_configure'):
-            w.start_tag_configure()
-
+        if wrapper and hasattr(wrapper,'start_tag_configure'):
+            wrapper.start_tag_configure()
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
         if not defaultBodyfont:
@@ -661,7 +659,7 @@ class JEditColorizer:
                 if font:
                     if trace and traceFonts:
                         g.trace('**found',name,id(font))
-                    w.tag_configure(key,font=font)
+                    wrapper.tag_configure(key,font=font)
                     break
                 else:
                     family = c.config.get(name + '_family','family')
@@ -678,7 +676,7 @@ class JEditColorizer:
                         self.fonts[key] = font
                         if trace and traceFonts:
                             g.trace('**found',key,name,family,size,slant,weight,id(font))
-                        w.tag_configure(key,font=font)
+                        wrapper.tag_configure(key,font=font)
                         break
 
             else: # Neither the general setting nor the language-specific setting exists.
@@ -686,7 +684,7 @@ class JEditColorizer:
                     if trace and traceFonts:
                         g.trace('default',key,font)
                     self.fonts[key] = font # 2010/02/19: Essential
-                    w.tag_configure(key,font=defaultBodyfont)
+                    wrapper.tag_configure(key,font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
@@ -708,35 +706,33 @@ class JEditColorizer:
 
             # Must use foreground, not fg.
             try:
-                w.tag_configure(name, foreground=color)
+                wrapper.tag_configure(name, foreground=color)
             except: # Recover after a user error.
                 g.es_exception()
-                w.tag_configure(name, foreground=default_color)
+                wrapper.tag_configure(name, foreground=default_color)
 
         # underline=var doesn't seem to work.
         if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-            w.tag_configure("link",underline=1) # defined
-            w.tag_configure("name",underline=0) # undefined
+            wrapper.tag_configure("link",underline=1) # defined
+            wrapper.tag_configure("name",underline=0) # undefined
         else:
-            w.tag_configure("link",underline=0)
+            wrapper.tag_configure("link",underline=0)
             if self.underline_undefined:
-                w.tag_configure("name",underline=1)
+                wrapper.tag_configure("name",underline=1)
             else:
-                w.tag_configure("name",underline=0)
+                wrapper.tag_configure("name",underline=0)
 
         self.configure_variable_tags()
 
         try:
-            w.end_tag_configure()
+            wrapper.end_tag_configure()
         except AttributeError:
             pass
     #@+node:ekr.20110605121601.18579: *4* configure_variable_tags
     def configure_variable_tags (self):
 
-        c = self.c ; w = self.w
-
-        # g.trace()
-
+        c = self.c
+        wrapper = self.wrapper
         for name,option_name,default_color in (
             ("blank","show_invisibles_space_background_color","Gray90"),
             ("tab",  "show_invisibles_tab_background_color",  "Gray80"),
@@ -748,13 +744,13 @@ class JEditColorizer:
                 option_name,default_color = self.default_colors_dict.get(name,(None,None),)
                 color = option_name and c.config.getColor(option_name) or ''
             try:
-                w.tag_configure(name,background=color)
+                wrapper.tag_configure(name,background=color)
             except: # A user error.
-                w.tag_configure(name,background=default_color)
+                wrapper.tag_configure(name,background=default_color)
 
         # Special case:
         if not self.showInvisibles:
-            w.tag_configure("elide",elide="1")
+            wrapper.tag_configure("elide",elide="1")
     #@+node:ekr.20110605121601.18580: *4* init (jeditColorizer)
     def init (self,p,s):
 
@@ -2136,9 +2132,9 @@ class JEditColorizer:
         if i == j:
             if trace: g.trace('empty range')
             return
-        w = self.w # A QTextEditWrapper
+        wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
-        colorName = w.configDict.get(tag)
+        colorName = wrapper.configDict.get(tag)
         # Munge the color name.
         if not colorName:
             if trace: g.trace('no color for %s' % tag)
@@ -2153,7 +2149,7 @@ class JEditColorizer:
                 self.actualColorDict[colorName] = color
             else:
                 return g.trace('unknown color name',colorName,g.callers())
-        underline = w.configUnderlineDict.get(tag)
+        underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
         font = self.fonts.get(tag)
         if font:
@@ -2189,11 +2185,11 @@ class LeoQtColorizer:
 
     #@+others
     #@+node:ekr.20110605121601.18552: *3*  ctor (LeoQtColorizer)
-    def __init__ (self,c,w):
+    def __init__ (self,c,qt_widget):
         '''Ctor for LeoQtColorizer class.'''
-        # g.trace('(LeoQtColorizer)',w)
+        # g.trace('(LeoQtColorizer)',qt_widget)
         self.c = c
-        self.w = w
+        self.qt_widget = qt_widget
         # Step 1: create the ivars.
         self.changingText = False
         self.count = 0 # For unit testing.
@@ -2211,9 +2207,9 @@ class LeoQtColorizer:
         self.oldV = None
         self.showInvisibles = False
         # Step 2: create the highlighter.
-        self.highlighter = LeoQtSyntaxHighlighter(c,w,colorizer=self)
+        self.highlighter = LeoQtSyntaxHighlighter(c,qt_widget,colorizer=self)
         self.colorer = self.highlighter.colorer
-        w.leo_colorizer = self
+        qt_widget.leo_colorizer = self
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter,'currentBlock')
@@ -2267,9 +2263,9 @@ class LeoQtColorizer:
     def scanColorByPosition(self,p):
 
         c = self.c
-        w = c.frame.body.bodyCtrl
-        i = w.getInsertPoint()
-        s = w.getAllText()
+        wrapper = c.frame.body.wrapper
+        i = wrapper.getInsertPoint()
+        s = wrapper.getAllText()
 
         i1,i2 = g.getLine(s,i)
         tag = '@language'
@@ -2491,8 +2487,8 @@ class LeoQtColorizer:
         trace = False and not g.unitTesting
         if not p: return
         c = self.c
-        w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
-        doc = w.document()
+        qt_widget = c.frame.body.qt_widget # a subclass of QTextBrowser
+        doc = qt_widget.document()
         if trace:
             t1 = time.time()
         aList = []
@@ -2533,40 +2529,36 @@ class LeoQtSyntaxHighlighter(base_highlighter):
 
     #@+others
     #@+node:ekr.20110605121601.18566: *3* ctor (LeoQtSyntaxHighlighter)
-    def __init__ (self,c,w,colorizer):
+    def __init__ (self,c,qt_widget,colorizer):
         '''ctor for LeoQtSyntaxHighlighter class.'''
         self.c = c
-        self.w = w # w is a LeoQTextBrowser.
-        # print('LeoQtSyntaxHighlighter.__init__',w,self.setDocument)
+        self.qt_widget = qt_widget # qt_widget is a LeoQTextBrowser.
+        # print('LeoQtSyntaxHighlighter.__init__',qt_widget,self.setDocument)
         # Not all versions of Qt have the crucial currentBlock method.
         self.hasCurrentBlock = hasattr(self,'currentBlock')
         # Init the base class.
         if python_qsh:
-            # g.trace('parent',w)
+            # g.trace('parent',qt_widget)
             # The c argument is now optional.
             # If present, it allows an extra safety check in PQSH.idle_handler.
-            PythonQSyntaxHighlighter.__init__(self,parent=w,c=c)
+            PythonQSyntaxHighlighter.__init__(self,parent=qt_widget,c=c)
         else:
-            QtGui.QSyntaxHighlighter.__init__(self,w)
+            QtGui.QSyntaxHighlighter.__init__(self,qt_widget)
         self.colorizer = colorizer
         self.colorer = JEditColorizer(c,
             colorizer=colorizer,
             highlighter=self,
-            w=c.frame.body.bodyCtrl)
+            wrapper=c.frame.body.wrapper)
     #@+node:ekr.20110605121601.18567: *3* highlightBlock (LeoQtSyntaxHighlighter)
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
-
         trace = False and not g.unitTesting
-
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
             if g.isPython3:
                 s = str(s)
             else:
                 s = unicode(s)
-
             self.colorer.recolor(s)
-
             v = self.c.p.v
             if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
                 if trace: g.trace('clearing cache',g.callers())
@@ -2582,7 +2574,7 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             if trace: g.trace('no body',c.shortFileName(),p and p.h)
             return
         tree = c.frame.tree
-        self.w = c.frame.body.bodyCtrl.widget
+        self.qt_widget = c.frame.body.qt_widget
         if trace:
             t1 = time.time()
         # Call the base class method, but *only*
@@ -2621,8 +2613,8 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
         '''
         trace = False and not g.unitTesting
-        w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
-        doc = w.document()
+        qt_widget = self.c.frame.body.qt_widget # a subclass of QTextEdit.
+        doc = qt_widget.document()
         if bunch.n != doc.blockCount():
             return g.trace('bad block count: expected %s got %s' % (
                 bunch.n,doc.blockCount()))

@@ -218,18 +218,14 @@ class slideshowController:
         g.es('At start of first slide show')
     #@+node:ekr.20060901145257: *3* select
     def select (self,p):
-
         '''Make p the present slide, and set self.slide and maybe self.slideShowRoot.'''
-
         c = self.c ; h = p.h.strip()
-        w = c.frame.body.bodyCtrl
-
+        w = c.frame.body.wrapper
         g.es('%s' % h)
         #c.expandAllAncestors(p)
         #c.selectPosition(p)
         c.redraw_now(p)
         w.see('1.0')
-
         if h.startswith('@slideshow'):
             self.slideShowRoot = p.copy()
 

@@ -516,7 +516,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit # QtWidgets.LeoQTextBrowser 
+        self.text_class = QtWidgets.QTextBrowser 
         self.html_class = QtWebKitWidgets.QWebView
         self.graphics_class = QtWidgets.QGraphicsWidget
         self.vp = None # The present video player.
@@ -658,18 +658,14 @@ class ViewRenderedController(QtWidgets.QWidget):
             # if trace: g.trace('no update')
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None):
-        
         '''Embed widget w in the free_layout splitter.'''
-        
         pc = self ; c = pc.c #X ; splitter = pc.splitter
-        
         pc.w = w
         layout = self.layout()
         for i in range(layout.count()):
             layout.removeItem(layout.itemAt(0))
         self.layout().addWidget(w)
         w.show()
-
         # Special inits for text widgets...
         if w.__class__ == pc.text_class:
             text_name = 'body-text-renderer'
@@ -677,14 +673,12 @@ class ViewRenderedController(QtWidgets.QWidget):
             w.setObjectName(text_name)
             pc.setBackgroundColor(pc.background_color,text_name,w)
             w.setReadOnly(True)
-            
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qtGui.LeoQTextEditWidget(w,wrapper_name,c)
+            wrapper = qtGui.QTextEditWrapper(w,wrapper_name,c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-              
         return
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):

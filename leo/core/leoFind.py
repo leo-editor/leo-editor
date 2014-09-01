@@ -390,7 +390,7 @@ class LeoFind:
     def abortSearch (self):
         '''Restore the original position and selection.'''
         c = self.c ; k = self.k
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         k.clearState()
         k.resetLabel()
         p,i,j,in_headline = self.stack[0]
@@ -518,7 +518,7 @@ class LeoFind:
                 keepMinibuffer=True)
         else:
             c.selectPosition(p)
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             c.bodyWantsFocus()
             if i > j: i,j = j,i
             w.setSelectionRange(i,j)
@@ -548,7 +548,7 @@ class LeoFind:
     def setWidget (self):
 
         c = self.c ; p = c.currentPosition()
-        bodyCtrl = c.frame.body.bodyCtrl
+        wrapper = c.frame.body.wrapper
         if self.in_headline:
             w = c.edit_widget(p)
             if not w:
@@ -559,10 +559,10 @@ class LeoFind:
                 w = c.edit_widget(p)
             if not w: # Should never happen.
                 g.trace('**** no edit widget!')
-                self.in_headline = False ; w = bodyCtrl
+                self.in_headline = False ; w = wrapper
         else:
-            w = bodyCtrl
-        if w == bodyCtrl:
+            w = wrapper
+        if w == wrapper:
             c.bodyWantsFocus()
         return w
     #@+node:ekr.20131117164142.16955: *4* find.startIncremental
@@ -575,7 +575,7 @@ class LeoFind:
         self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
         # Note: the word option can't be used with isearches!
-        self.w = w = c.frame.body.bodyCtrl
+        self.w = w = c.frame.body.wrapper
         self.p1 = c.p.copy()
         self.sel1 = w.getSelectionRange(sort=False)
         i,j = self.sel1
@@ -661,20 +661,17 @@ class LeoFind:
         k.extendLabel(s,select=True,protect=protect)
     #@+node:ekr.20131117164142.16985: *4* find.editWidget
     def editWidget (self,event,forceFocus=True):
+        '''
+        An override of baseEditCommands.editWidget that does *not* set
+        focus when using anything other than the tk gui.
 
-        '''An override of baseEditCommands.editWidget
-
-        that does *not* set focus when using anything other than the tk gui.
-
-        This prevents this class from caching an edit widget
-        that is about to be deallocated.'''
-
+        This prevents this class from caching an edit widget that is about
+        to be deallocated.
+        '''
         c = self.c
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-
         # Do not cache a pointer to a headline!
         # It will die when the minibuffer is selected.
-        self.w = bodyCtrl
+        self.w = c.frame.body.wrapper
         return self.w
     #@+node:ekr.20131117164142.16999: *4* find.generalChangeHelper
     def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
@@ -1088,11 +1085,11 @@ class LeoFind:
     def changeSelection(self):
 
         c = self.c ; p = self.p
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-        w = c.edit_widget(p) if self.in_headline else bodyCtrl
+        wrapper = c.frame.body and c.frame.body.wrapper
+        w = c.edit_widget(p) if self.in_headline else wrapper
         if not w:
             self.in_headline = False
-            w = bodyCtrl
+            w = wrapper
         if not w: return
 
         oldSel = sel = w.getSelectionRange()
@@ -1783,7 +1780,7 @@ class LeoFind:
         ftm.entry_focus = None # Only use this focus widget once!
         w_name = w and g.app.gui.widget_name(w) or ''
         # Easy case: focus in body.
-        if w == c.frame.body.bodyCtrl:
+        if w == c.frame.body.wrapper:
             val = False
         elif w == c.frame.tree.treeWidget:
             val = True
@@ -1804,10 +1801,10 @@ class LeoFind:
         trace = False and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+        wrapper = c.frame.body and c.frame.body.wrapper
         headCtrl = c.edit_widget(p)
         # w is the real widget.  It may not exist for headlines.
-        w = headCtrl if self.in_headline else bodyCtrl
+        w = headCtrl if self.in_headline else wrapper
         # We only use the insert point, *never* the selection range.
         # None is a signal to self.initNextText()
         ins = w.getInsertPoint() if w else None
@@ -1872,7 +1869,7 @@ class LeoFind:
         if 1: # I prefer always putting the focus in the body.
             c.invalidateFocus()
             c.bodyWantsFocus()
-            c.k.showStateAndMode(c.frame.body.bodyCtrl)
+            c.k.showStateAndMode(c.frame.body.wrapper)
         else:
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save
@@ -1880,7 +1877,7 @@ class LeoFind:
         '''Save everything needed to restore after a search fails.'''
         c = self.c
         p = self.p or c.p
-        w = c.edit_widget(p) if self.in_headline else c.frame.body.bodyCtrl
+        w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
         if w:
             insert = w.getInsertPoint()
             sel = w.getSelectionRange()
@@ -1913,7 +1910,7 @@ class LeoFind:
                 keepMinibuffer=True)
             w = c.edit_widget(p)
         else:
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             # Bug fix: 2012/11/26: *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
             c.selectPosition(p)
