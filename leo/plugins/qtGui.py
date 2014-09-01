@@ -390,7 +390,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         self.verticalLayout.addWidget(parent)
-
         # Official ivars
         self.text_page = page2
         self.stackedWidget = sw # used by LeoQtBody
@@ -664,7 +663,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         self.setName(w,name)
         return w
-    #@+node:ekr.20110605121601.18163: *6* dw.createText (** changed)
+    #@+node:ekr.20110605121601.18163: *6* dw.createText (*changed)
     def createText (self,parent,name,
         # hPolicy=None,vPolicy=None,
         lineWidth = 0,
@@ -673,9 +672,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     ):
         # Create a text widget.
         c = self.leo_c
-        if name == 'richTextEditor':
-            # 2014/08/31: this will be created later.
-            w = None
+        if name == 'richTextEdit' and self.useScintilla:
+            # Do this in finishCreate, when c.frame.body exists.
+            w = Qsci.QsciScintilla(parent)
+            self.scintilla_widget = w
         else:
             w = LeoQTextBrowser(parent,c,None)
             # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
@@ -1331,7 +1331,7 @@ class FindTabManager:
         # to the tree pane widget.  Headline widgets can disappear!
         c = self.c
         w = g.app.gui.get_focus(raw=True)
-        if w != c.frame.body.qt_widget:
+        if w != c.frame.body.wrapper.widget:
             w = c.frame.tree.treeWidget
         self.entry_focus = w
         # g.trace(w,g.app.gui.widget_name(w))
@@ -1618,14 +1618,11 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
     #@-others
-#@+node:ekr.20110605121601.18180: *3* class LeoQtBody (subclass of LeoBody)
+#@+node:ekr.20110605121601.18180: *3* class LeoQtBody (LeoBody)
 class LeoQtBody (leoFrame.LeoBody):
 
     """A class that represents the body pane of a Qt window."""
-
-    # pylint: disable=R0923
-    # R0923:LeoQtBody: Interface not implemented
-
+    # py--lint: disable=inteface-not-implemented
     #@+others
     #@+node:ekr.20110605121601.18181: *4*  Birth
     #@+node:ekr.20110605121601.18182: *5*  ctor (LeoQtBody) (changed)
@@ -1636,47 +1633,9 @@ class LeoQtBody (leoFrame.LeoBody):
         leoFrame.LeoBody.__init__(self,frame,parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.unselectedBackgroundColor = c.config.getColor(
-            # 'unselected-background-color')
-            'unselected_body_bg_color')
-        # 2011/03/14
-        self.unselectedForegroundColor = c.config.getColor(
-            'unselected_body_fg_color')
-        # Set the actual gui widget.
-        if self.useScintilla:
-            from leo.core.leoQt import Qsci
-            self.qt_widget = Qsci.QsciScintilla(parentFrame)
-            self.widget = self.qt_widget
-                # Note: this allows access to the widget without knowing its type.
-            self.wrapper = QScintillaWrapper(self.qt_widget,name='body',c=c)
-            # self.bodyCtrl = wrapper # The widget as seen from Leo's core.
-            ### self.widget = wrapper
-            self.colorizer = leoFrame.NullColorizer(c) # 2011/02/07
-        else:
-            top = c.frame.top
-            sw = top.leo_ui.stackedWidget
-            sw.setCurrentIndex(1)
-            self.qt_widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
-            self.widget = self.qt_widget
-                # Note: this allows access to the widget without knowing its type.
-            self.wrapper = QTextEditWrapper(self.qt_widget,name='body',c=c)
-                # The widget as seen from Leo's core.
-            self.bodyCtrl = self.wrapper
-                ### deprecated.
-            # Hook up the QSyntaxHighlighter
-            self.colorizer = leoColorizer.LeoQtColorizer(c,self.wrapper.qt_widget)
-            self.qt_widget.setAcceptRichText(False)
-            if 0: # xxx test: disable foreground color change for selected text.
-                palette = self.qt_widget.palette()
-                highlight_foreground_brush = palette.brush(palette.Active,palette.HighlightedText) # white.
-                highlight_background_brush = palette.brush(palette.Active,palette.Highlight) # dark blue
-                # normal_brush = palette.brush(palette.Active,palette.Text)
-                g.trace('foreground',highlight_foreground_brush.color().name())
-                g.trace('background',highlight_background_brush.color().name())
-                highlight_foreground_brush.setColor(QtWidgets.QColor('red'))
-                g.trace('foreground',highlight_foreground_brush.color().name())
-                palette.setBrush(palette.HighlightedText,highlight_foreground_brush)
+        self.set_config()
+        self.set_widget()
+        
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.setWrap(c.p)
@@ -1694,21 +1653,40 @@ class LeoQtBody (leoFrame.LeoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
         if trace: g.trace('(qtBody)',self.widget)
+    #@+node:ekr.20140901062324.18562: *6* set_config
+    def set_config(self):
+        '''Set configuration ivars.'''
+        c = self.c
+        self.useScintilla = c.config.getBool('qt-use-scintilla')
+        self.unselectedBackgroundColor = c.config.getColor(
+            'unselected_body_bg_color')
+        self.unselectedForegroundColor = c.config.getColor(
+            'unselected_body_fg_color')
+    #@+node:ekr.20140901062324.18563: *6* set_widget (LeoQtBody)
+    def set_widget(self):
+        '''Set the actual gui widget.'''
+        c = self.c
+        top = c.frame.top
+        sw = top.leo_ui.stackedWidget
+        sw.setCurrentIndex(1)
+        if self.useScintilla:
+            self.widget = c.frame.top.scintilla_widget
+                # dw.createText sets self.scintilla_widget
+            self.wrapper = QScintillaWrapper(self.widget,name='body',c=c)
+            self.colorizer = leoFrame.NullColorizer(c) # 2011/02/07
+        else:
+            self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+            self.wrapper = QTextEditWrapper(self.widget,name='body',c=c)
+            self.widget.setAcceptRichText(False)
+            self.colorizer = leoColorizer.LeoQtColorizer(c,self.wrapper.widget)
     #@+node:ekr.20110605121601.18183: *6* setWrap (qtBody)
     def setWrap (self,p):
 
         if not p: return
         if self.useScintilla: return
         c = self.c
-        w = c.frame.body.qt_widget
-        if 1:
-            # Quicker, more self-contained.
-            wrap = g.scanAllAtWrapDirectives(c,p)
-        else:
-            d = c.scanAllDirectives(p)
-            if d is None: return
-            wrap = d.get('wrap')
-
+        w = c.frame.body.wrapper.widget
+        wrap = g.scanAllAtWrapDirectives(c,p)
         # g.trace(wrap,w.verticalScrollBar())
         option,qt = QtGui.QTextOption,QtCore.Qt
         w.setHorizontalScrollBarPolicy(
@@ -1769,21 +1747,21 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c,p = self.c,self.c.p
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
-        qt_widget = wrapper.qt_widget
+        widget = wrapper.widget
         self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
             # Pack the original body editor.
-            self.packLabel(qt_widget,n=1)
+            self.packLabel(widget,n=1)
         name = '%d' % self.totalNumberOfEditors
         f,wrapper = self.createEditor(name)
         assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(qt_widget,QtWidgets.QTextEdit),qt_widget
+        assert isinstance(widget,QtWidgets.QTextEdit),widget
         assert isinstance(f,QtWidgets.QFrame),f
         self.editorWidgets[name] = wrapper
-        if trace: g.trace('name %s wrapper %s qt_widget %s' % (
-            name,id(wrapper),id(qt_widget)))
+        if trace: g.trace('name %s wrapper %s widget %s' % (
+            name,id(wrapper),id(widget)))
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
@@ -1827,7 +1805,7 @@ class LeoQtBody (leoFrame.LeoBody):
         '''Called *only* from tree.select to select the present body editor.'''
         c = self.c
         wrapper = c.frame.body.bodyCtrl
-        w = wrapper.qt_widget
+        w = wrapper.widget
         self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
         # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
@@ -1855,7 +1833,7 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
         wrapper = c.frame.body.bodyCtrl
-        w = wrapper.qt_widget
+        w = wrapper.widget
         # This seems not to be a valid assertion.
         # assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,QTextEditWrapper),wrapper
@@ -1924,7 +1902,7 @@ class LeoQtBody (leoFrame.LeoBody):
     def selectLabel (self,wrapper):
 
         c = self.c
-        w = wrapper.qt_widget
+        w = wrapper.widget
         lab = hasattr(w,'leo_label') and w.leo_label
         if lab:
             lab.setEnabled(True)
@@ -1942,7 +1920,7 @@ class LeoQtBody (leoFrame.LeoBody):
         if self.selectEditorLockout:
             if trace: g.trace('**busy')
             return
-        w = wrapper.qt_widget
+        w = wrapper.widget
         assert isinstance(wrapper,(QScintillaWrapper,QTextEditWrapper)),wrapper
         assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
         def report(s):
@@ -1969,7 +1947,7 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c
         assert isinstance(wrapper,QTextEditWrapper),wrapper
-        w = wrapper.qt_widget
+        w = wrapper.widget
         assert isinstance(w,QtWidgets.QTextEdit),w
         if not w.leo_p:
             g.trace('no w.leo_p') 
@@ -2016,7 +1994,7 @@ class LeoQtBody (leoFrame.LeoBody):
         pos0 = sb0.sliderPosition()
         for key in d:
             wrapper = d.get(key)
-            w = wrapper.qt_widget
+            w = wrapper.widget
             v = hasattr(w,'leo_p') and w.leo_p.v
             if v and v == p.v and w != w0:
                 sb = w.verticalScrollBar()
@@ -2095,7 +2073,7 @@ class LeoQtBody (leoFrame.LeoBody):
     def injectIvars (self,parentFrame,name,p,wrapper):
 
         trace = False and not g.unitTesting
-        w = wrapper.qt_widget
+        w = wrapper.widget
         assert isinstance(wrapper,QTextEditWrapper),wrapper
         assert isinstance(w,QtWidgets.QTextEdit),w
         if trace: g.trace(w)
@@ -2147,7 +2125,7 @@ class LeoQtBody (leoFrame.LeoBody):
         # Save.
         old_wrapper = c.frame.body.bodyCtrl
         c.frame.body.bodyCtrl = wrapper
-        w = wrapper.qt_widget
+        w = wrapper.widget
         if not hasattr(w,'leo_colorizer'):
             if trace: g.trace('*** creating colorizer for',w)
             leoColorizer.LeoQtColorizer(c,w) # injects w.leo_colorizer
@@ -2182,15 +2160,13 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         if trace: g.trace('w %s len(p.b) %s %s' % (
             id(w),len(p.b),p.h),g.callers(5))
-
-        c = self.c ; cc = c.chapterController
+        c = self.c
+        cc = c.chapterController
         assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
-
         if cc and self.use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
-
         w.leo_p = p.copy()
     #@+node:ekr.20110605121601.18216: *6* unpackWidget (qtBody)
     def unpackWidget (self,layout,w):
@@ -2212,7 +2188,7 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
         wrapper = c.frame.body.bodyCtrl
-        w = wrapper.qt_widget
+        w = wrapper.widget
         name = w.leo_name
         assert name
         assert wrapper == d.get(name),'wrong wrapper'
@@ -2249,7 +2225,7 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
         wrapper = c.frame.body.bodyCtrl
-        w = wrapper.qt_widget
+        w = wrapper.widget
         name = w.leo_name
         assert name
         assert wrapper == d.get(name),'wrong wrapper'
@@ -2374,7 +2350,7 @@ class LeoQtBody (leoFrame.LeoBody):
         if vc and c.vim_mode:
             try:
                 assert kind in ('focus-in','focus-out')
-                w = c.frame.body.wrapper.qt_widget
+                w = c.frame.body.wrapper.widget
                 vc.set_border(w=w,activeFlag=kind=='focus-in')
             except Exception:
                 # g.es_exception()
@@ -2611,14 +2587,11 @@ class LeoQtFrame (leoFrame.LeoFrame):
         def update (self):
 
             if g.app.killed: return
-
             c = self.c ; body = c.frame.body
-
             # te is a QTextEdit.
             # 2010/02/19: Fix bug 525090
             # An added editor window doesn't display line/col
-            if not hasattr(body,'qt_widget'): return
-            te = body.qt_widget
+            te = body.widget
             if isinstance(te,QtGui.QTextEdit):
                 cr = te.textCursor()
                 bl = cr.block()
@@ -3591,9 +3564,8 @@ class LeoQtLog (leoFrame.LeoLog):
         return val
     #@+node:ekr.20110605121601.18321: *4* put & putnl (LeoQtLog)
     #@+node:ekr.20110605121601.18322: *5* put (LeoQtLog)
-    # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log',from_redirect=False):
-
+        '''All output to the log stream eventually comes here.'''
         trace = False and not g.unitTesting
         c = self.c
         if g.app.quitting or not c or not c.exists:
@@ -3604,9 +3576,8 @@ class LeoQtLog (leoFrame.LeoLog):
         else:
             color = leoColor.getColor('black')
         self.selectTab(tabName or 'Log')
-
-        # Note: this must be done after the call to selectTab.
-        w = self.logCtrl.qt_widget # w is a QTextBrowser
+        # Must be done after the call to selectTab.
+        w = self.logCtrl.widget # w is a QTextBrowser
         if w:
             sb = w.horizontalScrollBar()
             # pos = sb.sliderPosition()
@@ -3640,7 +3611,7 @@ class LeoQtLog (leoFrame.LeoLog):
             return
         if tabName:
             self.selectTab(tabName)
-        w = self.logCtrl.qt_widget
+        w = self.logCtrl.widget
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -3664,37 +3635,37 @@ class LeoQtLog (leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18326: *5* createTab (LeoQtLog)
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         """
-        Create a new tab in tab qt_widget
-        if qt_widget is None, Create a QTextBrowser,
+        Create a new tab in tab widget
+        if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
         trace = False and not g.unitTesting
         c = self.c
-        qt_widget = widget
-        if trace: g.trace(tabName,qt_widget and g.app.gui.widget_name(qt_widget) or '<no qt_widget>')
-        if qt_widget is None:
-            qt_widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
-                # qt_widget is subclass of QTextBrowser.
-            contents = QTextEditWrapper(qt_widget=qt_widget,name='log',c=c)
+        if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
+        if widget is None:
+            widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+                # widget is subclass of QTextBrowser.
+            contents = QTextEditWrapper(widget=widget,name='log',c=c)
                 # contents a wrapper.
-            qt_widget.leo_log_wrapper = contents
+            widget.leo_log_wrapper = contents
                 # Inject an ivar into the QTextBrowser that points to the wrapper.
-            if trace: g.trace('** creating',tabName,'self.qt_widget',contents,'wrapper',qt_widget)
+            if trace: g.trace('** creating',tabName,'widget',widget,'wrapper',contents)
             option = QtGui.QTextOption
-            qt_widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
-            qt_widget.setReadOnly(False) # Allow edits.
-            self.logDict[tabName] = qt_widget
+            widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
+            widget.setReadOnly(False) # Allow edits.
+            self.logDict[tabName] = widget
             if tabName == 'Log':
-                self.qt_widget = contents # qt_widget is an alias for logCtrl.
-                qt_widget.setObjectName('log-widget')
+                ##### Huh???
+                self.widget = contents # widget is an alias for logCtrl.
+                widget.setObjectName('log-widget')
             # Set binding on all log pane widgets.
-            g.app.gui.setFilter(c,qt_widget,self,tag='log')
+            g.app.gui.setFilter(c,widget,self,tag='log')
             # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
             if tabName == 'Log':
                 assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                 find_widget = c.frame.top.leo_find_widget
                 # 2011/11/21: A hack: add an event filter.
-                g.app.gui.setFilter(c,find_widget,qt_widget,'find-widget')
+                g.app.gui.setFilter(c,find_widget,widget,'find-widget')
                 if trace: g.trace('** Adding event filter for Find',find_widget)
                 # 2011/11/21: A hack: make the find_widget an official log widget.
                 self.contentsDict['Find']=find_widget
@@ -3702,16 +3673,16 @@ class LeoQtLog (leoFrame.LeoLog):
                 if hasattr(c.frame.top,'leo_spell_widget'):
                     spell_widget = c.frame.top.leo_spell_widget
                     if trace: g.trace('** Adding event filter for Spell',find_widget)
-                    g.app.gui.setFilter(c,spell_widget,qt_widget,'spell-widget')
-            self.contentsDict[tabName] = qt_widget
-            self.tabWidget.addTab(qt_widget,tabName)
+                    g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
+            self.contentsDict[tabName] = widget
+            self.tabWidget.addTab(widget,tabName)
         else:
-            contents = qt_widget
-                # Unlike text widgets, contents is the actual qt_widget.
-            qt_widget.leo_log_wrapper = contents
-                # The leo_log_wrapper is the qt_widget itself.
-            if trace: g.trace('** using',tabName,qt_widget)
-            g.app.gui.setFilter(c,qt_widget,contents,'tabWidget')
+            contents = widget
+                # Unlike text widgets, contents is the actual widget.
+            widget.leo_log_wrapper = contents
+                # The leo_log_wrapper is the widget itself.
+            if trace: g.trace('** using',tabName,widget)
+            g.app.gui.setFilter(c,widget,contents,'tabWidget')
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents,tabName)
         return contents
@@ -7585,7 +7556,7 @@ class LeoQtEventFilter(QtCore.QObject):
         }
         table = (
             c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
-            c.frame.body.bodyCtrl and c.frame.body.bodyCtrl.qt_widget,
+            c.frame.body.bodyCtrl and c.frame.body.bodyCtrl.widget,
             c.frame.tree and c.frame.tree.treeWidget,
             c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
         )

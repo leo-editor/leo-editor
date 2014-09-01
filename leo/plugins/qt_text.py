@@ -6,7 +6,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import time
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import isQt5,QtCore,QtGui,Qsci,QtWidgets
 from leo.core.leoQt import Qsci
 #@+others
 #@+node:tbrown.20130411145310.18857: **    Commands: zoom_in/out
@@ -41,15 +41,13 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     #@+node:ekr.20110605121601.18025: *4* bqtw.ctor
     def __init__ (self,widget,name='BaseQTextWrapper',c=None):
         '''The ctor for the BaseQTextWrapper class.'''
-        # g.trace('(BaseQTextWrapper)',name,self.qt_widget,g.callers(2))
+        # g.trace('(BaseQTextWrapper)',name,self.widget,g.callers(2))
         self.c = c or widget.leo_c
         # Init the base class.
         leoFrame.BaseTextWrapper.__init__(
             self,c,baseClassName='BaseQTextWrapper',
             name=name,widget=widget)
-        assert self.widget
-        self.qt_widget = widget
-                # Note: allows access to the widget without knowing its type.
+        assert self.widget and self.widget==widget
         # Init ivars.
         self.changingText = False # A lockout for onTextChanged.
         self.tags = {}
@@ -59,70 +57,54 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
         self.useScintilla = False # This is used!
         if not c:
             return # Can happen.
-        if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
-            # g.trace('hooking up qt events',name)
-            # Hook up qt events.
-            g.app.gui.setFilter(c,self.qt_widget,self,tag=name)
-        if name == 'body':
-            w = self.qt_widget
-            w.textChanged.connect(self.onTextChanged)
-            w.cursorPositionChanged.connect(self.onCursorPositionChanged)
-        if name in ('body','log'):
-            # Monkey patch the event handler.
-            #@+<< define mouseReleaseEvent >>
-            #@+node:ekr.20110605121601.18026: *5* << define mouseReleaseEvent >> (BaseQTextWrapper)
-            def mouseReleaseEvent (*args,**keys):
-                '''
-                Override QLineEdit.mouseReleaseEvent.
-                Simulate alt-x if we are not in an input state.
-                '''
-                c,vc = self.c,self.c.vimCommands
-                trace = False and not g.unitTesting
-                # if trace: g.trace('(BaseQTextWrapper)',self.c.shortFileName())
-                # Call the base class method.
-                if len(args) == 1:
-                    event = args[0]
-                    # There seems to be no way to disable mouse events...
-                    # if c.vim_mode and vc and vc.trainer:
-                        # if trace: g.trace('1: ignore:',event)
-                        # event.ignore() # Doesn't work.
-                        # return
-                    QtWidgets.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
-                elif len(args) == 2:
-                    # In vim-trainer mode, stuff a 0 into the location field.  Hehe.
-                    event = args[1]
-                    if c.vim_mode and vc and vc.trainer:
-                        if trace: g.trace('2',event)
-                    QtWidgets.QTextBrowser.mouseReleaseEvent(*args)
-                else:
-                    g.trace('can not happen')
-                    return
-                # Open the url on a control-click.
-                if QtCore.Qt.ControlModifier & event.modifiers():
-                    event = {'c':c}
-                    g.openUrlOnClick(event)
-                if name == 'body':
-                    c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
-                    if trace: g.trace(c.p.v.insertSpot)
-                g.doHook("bodyclick2",c=c,p=c.p,v=c.p)                    
-                # 2011/05/28: Do *not* change the focus!
-                # This would rip focus away from tab panes.
-                c.k.keyboardQuit(setFocus=False)
-            #@-<< define mouseReleaseEvent >>
-            self.qt_widget.mouseReleaseEvent = mouseReleaseEvent
         self.injectIvars(c)
+    #@+node:ekr.20110605121601.18026: *5* mouseReleaseEvent (callback)
+    def mouseReleaseEvent (*args,**keys):
+        '''
+        Override QLineEdit.mouseReleaseEvent.
+        Simulate alt-x if we are not in an input state.
+        '''
+        c,vc = self.c,self.c.vimCommands
+        trace = False and not g.unitTesting
+        # if trace: g.trace('(BaseQTextWrapper)',self.c.shortFileName())
+        # Call the base class method.
+        if len(args) == 1:
+            event = args[0]
+            # There seems to be no way to disable mouse events...
+            # if c.vim_mode and vc and vc.trainer:
+                # if trace: g.trace('1: ignore:',event)
+                # event.ignore() # Doesn't work.
+                # return
+            QtWidgets.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
+        elif len(args) == 2:
+            # In vim-trainer mode, stuff a 0 into the location field.  Hehe.
+            event = args[1]
+            if c.vim_mode and vc and vc.trainer:
+                if trace: g.trace('2',event)
+            QtWidgets.QTextBrowser.mouseReleaseEvent(*args)
+        else:
+            g.trace('can not happen')
+            return
+        # Open the url on a control-click.
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            event = {'c':c}
+            g.openUrlOnClick(event)
+        if name == 'body':
+            c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
+            if trace: g.trace(c.p.v.insertSpot)
+        g.doHook("bodyclick2",c=c,p=c.p,v=c.p)                    
+        # 2011/05/28: Do *not* change the focus!
+        # This would rip focus away from tab panes.
+        c.k.keyboardQuit(setFocus=False)
     #@+node:ekr.20110605121601.18027: *4* bqtw.injectIvars
     def injectIvars (self,name='1',parentFrame=None):
 
         w = self ; p = self.c.currentPosition()
-
         if name == '1':
             w.leo_p = None # Will be set when the second editor is created.
         else:
             w.leo_p = p.copy()
-
         w.leo_active = True
-
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
@@ -148,27 +130,27 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     #@+node:ekr.20110605121601.18032: *4* bqtw.Focus
     def getFocus(self):
 
-        # g.trace('LeoQtBody',self.qt_widget,g.callers(4))
+        # g.trace('LeoQtBody',self.widget,g.callers(4))
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
 
     findFocus = getFocus
 
     # def hasFocus (self):
 
-        # val = self.qt_widget == g.app.gui.get_focus(self.c)
-        # # g.trace('LeoQtBody returns',val,self.qt_widget,g.callers(4))
+        # val = self.widget == g.app.gui.get_focus(self.c)
+        # # g.trace('LeoQtBody returns',val,self.widget,g.callers(4))
         # return val
 
     def setFocus (self):
 
         trace = False and not g.unitTesting
         if trace: print('BaseQTextWrapper.setFocus',
-            # g.app.gui.widget_name(self.qt_widget),
-            self.qt_widget,g.callers(3))
+            # g.app.gui.widget_name(self.widget),
+            self.widget,g.callers(3))
         # Call the base class
-        assert isinstance(self.qt_widget,
-            (QtWidgets.QTextBrowser,QtWidgets.QLineEdit,QtWidgets.QTextEdit)),self.qt_widget
-        QtWidgets.QTextBrowser.setFocus(self.qt_widget)
+        assert isinstance(self.widget,
+            (QtWidgets.QTextBrowser,QtWidgets.QLineEdit,QtWidgets.QTextEdit)),self.widget
+        QtWidgets.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20110605121601.18033: *4* bqtw.Indices
     #@+node:ekr.20110605121601.18034: *5* bqtw.toPythonIndex
     def toPythonIndex (self,index):
@@ -198,14 +180,11 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     #@+node:ekr.20110605121601.18041: *5* bqtw.getSelectedText
     def getSelectedText(self):
 
-        # w = self.qt_widget
-        # g.trace(w,self)
         i,j = self.getSelectionRange()
         if i == j:
             return ''
         else:
             s = self.getAllText()
-            # g.trace(repr(s[i:j]))
             return s[i:j]
     #@+node:ekr.20110605121601.18042: *5* bqtw.get
     def get(self,i,j=None):
@@ -231,7 +210,7 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     #@+node:ekr.20110605121601.18044: *5* bqtw.selectAllText
     def selectAllText(self,insert=None):
 
-        w = self.qt_widget
+        w = self.widget
         w.selectAll()
         # if insert is not None:
             # self.setInsertPoint(insert)
@@ -298,7 +277,7 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
             g.trace('oops',args,keys)
 
     tag_config = tag_configure
-    #@+node:ekr.20110605121601.18052: *4* bqtw.Idle time
+    #@+node:ekr.20110605121601.18052: *4* bqtw.Idle time (to be removed)
     def after_idle(self,func,threadCount):
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
@@ -312,7 +291,7 @@ class BaseQTextWrapper (leoFrame.BaseTextWrapper):
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
         g.trace()
         # if not g.app.unitTesting:
-            # self.qt_widget.after_idle(function,*args,**keys)
+            # self.widget.after_idle(function,*args,**keys)
     #@+node:ekr.20110605121601.18048: *4* bqtw.onTextChanged
     def onTextChanged (self):
 
@@ -415,36 +394,32 @@ class QLineEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18060: *4* qlew.ctor (QLineEditWrapper)
     def __init__ (self,widget,name,c=None):
         '''Ctor for QLineEditWrapper class.'''
-        # g.trace('(QLineEditWrapper):widget',name,self.qt_widget)
+        # g.trace('(QLineEditWrapper):widget',name,self.widget)
         BaseQTextWrapper.__init__(self,widget,name,c=c)
             # Init the base class.
-        assert self.qt_widget
-        self.widget = self.qt_widget
-            # Note: allows access to the widget without knowing its type.
+        assert self.widget
         self.baseClassName='QLineEditWrapper'
     #@+node:ekr.20110605121601.18061: *4* qlew.__repr__
     def __repr__ (self):
 
-        return '<QLineEditWrapper: widget: %s' % (self.qt_widget)
+        return '<QLineEditWrapper: widget: %s' % (self.widget)
 
     __str__ = __repr__
     #@+node:ekr.20110605121601.18062: *3* qlew.Widget-specific overrides
     #@+node:ekr.20110605121601.18063: *4* qlew.getAllText
     def getAllText(self):
 
-        w = self.qt_widget
+        w = self.widget
         s = w.text()
         return g.u(s)
     #@+node:ekr.20110605121601.18064: *4* qlew.getInsertPoint
     def getInsertPoint(self):
 
-        i = self.qt_widget.cursorPosition()
-        # g.trace(i)
-        return i
+        return self.widget.cursorPosition()
     #@+node:ekr.20110605121601.18065: *4* qlew.getSelectionRange
     def getSelectionRange(self,sort=True):
 
-        w = self.qt_widget
+        w = self.widget
         if w.hasSelectedText():
             i = w.selectionStart()
             s = w.selectedText()
@@ -452,13 +427,11 @@ class QLineEditWrapper (BaseQTextWrapper):
             j = i + len(s)
         else:
             i = j = w.cursorPosition()
-        # g.trace(i,j)
         return i,j
     #@+node:ekr.20110605121601.18066: *4* qlew.hasSelection
     def hasSelection(self):
 
-        # 2011/05/26: was hasSelection.
-        return self.qt_widget.hasSelectedText()
+        return self.widget.hasSelectedText()
     #@+node:ekr.20110605121601.18067: *4* qlew.see & seeInsertPoint
     def see(self,i):
         pass
@@ -468,7 +441,7 @@ class QLineEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18068: *4* qlew.setAllText
     def setAllText(self,s):
 
-        w = self.qt_widget
+        w = self.widget
         disabled = hasattr(w,'leo_disabled') and w.leo_disabled
         if disabled:
             w.setEnabled(True)
@@ -478,7 +451,7 @@ class QLineEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18069: *4* qlew.setInsertPoint
     def setInsertPoint(self,i,s=None):
 
-        w = self.qt_widget
+        w = self.widget
         if s is None:
             s = w.text()
             s = g.u(s)
@@ -488,7 +461,7 @@ class QLineEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18070: *4* qlew.setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
-        w = self.qt_widget
+        w = self.widget
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         if s is None:
@@ -563,7 +536,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
                 splitter2 = c.frame.top.splitter_2
                 splitter2.insertWidget(1,self)
             # Inject the ivars
-            self.leo_w = c.frame.body.wrapper.qt_widget
+            self.leo_w = c.frame.body.wrapper.widget
                 # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
             self.leo_c = c
             # A weird hack.
@@ -866,7 +839,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
                 if trace: g.trace('locked out: c.frame.tree.tree_select_lockout')
                 return
         # Only scrolling in the body pane should set v.scrollBarSpot.
-        if not c.frame.body or self != c.frame.body.wrapper.qt_widget:
+        if not c.frame.body or self != c.frame.body.wrapper.widget:
             if trace: g.trace('**** wrong pane')
             return
         if p:
@@ -897,16 +870,14 @@ class QHeadlineWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18117: *3* qhlw.Birth
     def __init__ (self,c,item,name,widget):
         '''The ctor for the QHeadlineWrapper class.'''
-        #g.trace('(QHeadlineWrapper)',item,qt_widget)
+        #g.trace('(QHeadlineWrapper)',item,widget)
         BaseQTextWrapper.__init__(self,widget,name,c)
-        assert isinstance(widget,QtWidgets.QLineEdit),widget
-        assert self.qt_widget == widget
             # Init the base class.
-            # Note: the .widget ivar allows callers not to know the implementation type.
+        assert isinstance(widget,QtWidgets.QLineEdit),widget
+        assert self.widget == widget
         # Set ivars.
         self.item=item
         self.permanent = False # Warn the minibuffer that we can go away.
-        # self.badFocusColors = []
 
     def __repr__ (self):
         return 'QHeadlineWrapper: %s' % id(self)
@@ -919,16 +890,16 @@ class QHeadlineWrapper (BaseQTextWrapper):
         tree = self.c.frame.tree
         e = tree.treeWidget.itemWidget(self.item,0)
         valid = tree.isValidItem(self.item)
-        result = valid and e == self.qt_widget
-        if trace: g.trace('result %s self.qt_widget %s itemWidget %s' % (
-            result,self.qt_widget,e))
+        result = valid and e == self.widget
+        if trace: g.trace('result %s self.widget %s itemWidget %s' % (
+            result,self.widget,e))
 
         return result
     #@+node:ekr.20110605121601.18120: *4* qhlw.getAllText
     def getAllText(self):
 
         if self.check():
-            w = self.qt_widget
+            w = self.widget
             s = w.text()
             return g.u(s)
         else:
@@ -937,14 +908,14 @@ class QHeadlineWrapper (BaseQTextWrapper):
     def getInsertPoint(self):
 
         if self.check():
-            i = self.qt_widget.cursorPosition()
+            i = self.widget.cursorPosition()
             return i
         else:
             return 0
     #@+node:ekr.20110605121601.18122: *4* qhlw.getSelectionRange
     def getSelectionRange(self,sort=True):
 
-        w = self.qt_widget
+        w = self.widget
         if self.check():
             if w.hasSelectedText():
                 i = w.selectionStart()
@@ -960,7 +931,7 @@ class QHeadlineWrapper (BaseQTextWrapper):
     def hasSelection(self):
 
         if self.check():
-            return self.qt_widget.hasSelectedText()
+            return self.widget.hasSelectedText()
         else:
             return False
     #@+node:ekr.20110605121601.18124: *4* qhlw.see & seeInsertPoint
@@ -973,18 +944,18 @@ class QHeadlineWrapper (BaseQTextWrapper):
     def setAllText(self,s):
         '''Set all text of a Qt headline widget.'''
         if self.check():
-            w = self.qt_widget
+            w = self.widget
             w.setText(s)
     #@+node:ekr.20110605121601.18128: *4* qhlw.setFocus
     def setFocus (self):
 
         if self.check():
-            g.app.gui.set_focus(self.c,self.qt_widget)
+            g.app.gui.set_focus(self.c,self.widget)
     #@+node:ekr.20110605121601.18129: *4* qhlw.setInsertPoint
     def setInsertPoint(self,i,s=None):
 
         if not self.check(): return
-        w = self.qt_widget
+        w = self.widget
         if s is None:
             s = w.text()
             s = g.u(s)
@@ -995,7 +966,7 @@ class QHeadlineWrapper (BaseQTextWrapper):
     def setSelectionRangeHelper(self,i,j,insert=None,s=None):
 
         if not self.check(): return
-        w = self.qt_widget
+        w = self.widget
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         if s is None:
@@ -1026,11 +997,9 @@ class QMinibufferWrapper (QLineEditWrapper):
         self.c = c
         w = c.frame.top.leo_ui.lineEdit # QLineEdit
         # g.trace('(QMinibufferWrapper)',w)
-        # Init the base class.
         QLineEditWrapper.__init__(self,widget=w,name='minibuffer',c=c)
-        assert self.qt_widget
-        self.widget = self.qt_widget
-            # Note: allows access to the widget without knowing its type.
+            # Init the base class.
+        assert self.widget
         g.app.gui.setFilter(c,w,self,tag='minibuffer')
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
@@ -1065,47 +1034,45 @@ class QMinibufferWrapper (QLineEditWrapper):
 
     # Note: can only set one stylesheet at a time.
     def setBackgroundColor(self,color):
-        self.qt_widget.setStyleSheet('background-color:%s' % color)
+        self.widget.setStyleSheet('background-color:%s' % color)
 
     def setForegroundColor(self,color):
-        self.qt_widget.setStyleSheet('color:%s' % color)
+        self.widget.setStyleSheet('color:%s' % color)
 
     def setBothColors(self,background_color,foreground_color):
-        self.qt_widget.setStyleSheet('background-color:%s; color: %s' % (
+        self.widget.setStyleSheet('background-color:%s; color: %s' % (
             background_color,foreground_color))
             
     def setStyleClass(self,style_class):
-        self.qt_widget.setProperty('style_class', style_class)
+        self.widget.setProperty('style_class', style_class)
         # to get the appearance to change because of a property
         # change, unlike a focus or hover change, we need to
         # re-apply the stylesheet.  But re-applying at the top level
         # is too CPU hungry, so apply just to this widget instead.
         # It may lag a bit when the style's edited, but the new top
         # level sheet will get pushed down quite frequently.
-        self.qt_widget.setStyleSheet(self.c.frame.top.styleSheet())
+        self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 #@+node:ekr.20110605121601.18103: ** class QScintillaWrapper (BaseQTextWrapper)
 class QScintillaWrapper (BaseQTextWrapper):
 
     #@+others
-    #@+node:ekr.20110605121601.18104: *3* qsci.Birth
-    #@+node:ekr.20110605121601.18105: *4* qsci.ctor
-    def __init__ (self,parent,c,name=None):
+    #@+node:ekr.20110605121601.18104: *3* qsciw.Birth
+    #@+node:ekr.20110605121601.18105: *4* qsciw.ctor
+    def __init__ (self,widget,c,name=None):
         '''Ctor for the QScintillaWrapper class.'''
         # g.trace('(QScintillaWrapper)',c.shortFileName(),name,g.callers())
-        BaseQTextWrapper.__init__(self,parent,name,c=c)
+        BaseQTextWrapper.__init__(self,widget,name,c=c)
             # Init the base class
-        self.parent = parent
-            # Ensure parent stays around.
-        self.qt_widget = Qsci.QsciScintilla(parent)
-        self.widget = self.qt_widget
-            # Note: the .widget ivar allows callers not to know the implementation type.
+        assert self.widget and self.widget == widget
+        # # # self.parent = parent
+            # # # # Ensure parent stays around.
         self.baseClassName='QScintillaWrapper'
         self.useScintilla = True
-        self.setConfig()
-    #@+node:ekr.20110605121601.18106: *4* qsci.setConfig
-    def setConfig (self):
+        self.set_config()
+    #@+node:ekr.20110605121601.18106: *4* qsciw.set_config
+    def set_config (self):
         '''Set QScintillaWrapper configuration options.'''
-        c,w = self.c,self.qt_widget
+        c,w = self.c,self.widget
         lexer = Qsci.QsciLexerPython(w)
         self.configure_lexer(lexer)
         w.setLexer(lexer)
@@ -1115,7 +1082,7 @@ class QScintillaWrapper (BaseQTextWrapper):
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
-    #@+node:ekr.20140831054256.18458: *4* qsci.configureLexer
+    #@+node:ekr.20140831054256.18458: *4* qsciw.configure_lexer
     def configure_lexer(self,lexer):
         '''Configure the QScintilla lexer.'''
         # To do: make this more configurable in the Leo way.
@@ -1155,26 +1122,532 @@ class QScintillaWrapper (BaseQTextWrapper):
                 except Exception:
                     oops('bad color: %s' % color)
             else: oops('bad style: %s' % style)
-    #@+node:ekr.20110605121601.18107: *3* qsci.overrides
-    #@+node:ekr.20110605121601.18108: *4* qsci.getAllText
+    #@+node:ekr.20110605121601.18107: *3* qsciw.overrides
+    #@+node:ekr.20140901062324.18612: *4* optional, disabled
+    if 0:
+        #@+others
+        #@+node:ekr.20140901062324.18594: *5* qtew.flashCharacter
+        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+
+            # numbered color names don't work in Ubuntu 8.10, so...
+            if bg[-1].isdigit() and bg[0] != '#':
+                bg = bg[:-1]
+            if fg[-1].isdigit() and fg[0] != '#':
+                fg = fg[:-1]
+
+            # This might causes problems during unit tests.
+            # The selection point isn't restored in time.
+            if g.app.unitTesting:
+                return
+            w = self.widget # A QTextEdit.
+            e = QtWidgets.QTextCursor
+
+            def after(func):
+                QtCore.QTimer.singleShot(delay,func)
+
+            def addFlashCallback(self=self,w=w):
+                n,i = self.flashCount,self.flashIndex
+                cursor = w.textCursor() # Must be the widget's cursor.
+                cursor.setPosition(i)
+                cursor.movePosition(e.Right,e.KeepAnchor,1)
+                extra = w.ExtraSelection()
+                extra.cursor = cursor
+                if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
+                if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
+                self.extraSelList = [extra] # keep the reference.
+                w.setExtraSelections(self.extraSelList)
+                self.flashCount -= 1
+                after(removeFlashCallback)
+
+            def removeFlashCallback(self=self,w=w):
+                w.setExtraSelections([])
+                if self.flashCount > 0:
+                    after(addFlashCallback)
+                else:
+                    w.setFocus()
+
+            self.flashCount = flashes
+            self.flashIndex = i
+            self.flashBg = None if bg.lower()=='same' else bg
+            self.flashFg = None if fg.lower()=='same' else fg
+            addFlashCallback()
+        #@+node:ekr.20140901062324.18604: *5* qtew.scrollDelegate (QTextEdit)
+        def scrollDelegate(self,kind):
+            '''
+            Scroll a QTextEdit up or down one page.
+            direction is in ('down-line','down-page','up-line','up-page')
+            '''
+            c = self.c
+            w = self.widget
+            vScroll = w.verticalScrollBar()
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            n = max(2,n-3)
+            if   kind == 'down-half-page': delta = n/2
+            elif kind == 'down-line':      delta = 1
+            elif kind == 'down-page':      delta = n
+            elif kind == 'up-half-page':   delta = -n/2
+            elif kind == 'up-line':        delta = -1
+            elif kind == 'up-page':        delta = -n
+            else:
+                delta = 0 ; g.trace('bad kind:',kind)
+            val = vScroll.value()
+            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
+            vScroll.setValue(val+(delta*lineSpacing))
+            c.bodyWantsFocus()
+        #@-others
+    #@+node:ekr.20140901062324.18613: *4* from BaseQTextWrapper (disabled)
+    if 0:
+        #@+others
+        #@+node:ekr.20140901062324.18633: *5* bqtw.Focus
+        def getFocus(self):
+
+            # g.trace('LeoQtBody',self.widget,g.callers(4))
+            return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
+
+        findFocus = getFocus
+
+        # def hasFocus (self):
+
+            # val = self.widget == g.app.gui.get_focus(self.c)
+            # # g.trace('LeoQtBody returns',val,self.widget,g.callers(4))
+            # return val
+
+        def setFocus (self):
+
+            trace = False and not g.unitTesting
+            if trace: print('BaseQTextWrapper.setFocus',
+                # g.app.gui.widget_name(self.widget),
+                self.widget,g.callers(3))
+            # Call the base class
+            if 0: ### Not yet.
+                assert isinstance(self.widget,
+                    (QtWidgets.QTextBrowser,QtWidgets.QLineEdit,QtWidgets.QTextEdit)),self.widget
+                QtWidgets.QTextBrowser.setFocus(self.widget)
+        #@+node:ekr.20140901062324.18634: *5* bqtw.Indices
+        #@+node:ekr.20140901062324.18635: *6* bqtw.toPythonIndex
+        def toPythonIndex (self,index):
+
+            s = self.getAllText()
+            return g.toPythonIndex(s,index)
+
+        toGuiIndex = toPythonIndex
+        #@+node:ekr.20140901062324.18636: *6* bqtw.indexWarning
+        # warningsDict = {}
+
+        def indexWarning (self,s):
+
+            return
+        #@+node:ekr.20140901062324.18637: *5* bqtw.Text getters/settters
+        #@+node:ekr.20140901062324.18638: *6* bqtw.appendText
+        def appendText(self,s):
+
+            s2 = self.getAllText()
+            self.setAllText(s2+s)
+            self.setInsertPoint(len(s2))
+
+        #@+node:ekr.20140901062324.18639: *6* bqtw.getLastPosition
+        def getLastPosition(self):
+
+            return len(self.getAllText())
+        #@+node:ekr.20140901062324.18640: *6* bqtw.getSelectedText
+        def getSelectedText(self):
+
+            i,j = self.getSelectionRange()
+            if i == j:
+                return ''
+            else:
+                s = self.getAllText()
+                return s[i:j]
+        #@+node:ekr.20140901062324.18641: *6* bqtw.get
+        def get(self,i,j=None):
+            """ Slow implementation of get() - ok for QLineEdit """
+            #g.trace('Slow get', g.callers(5))
+
+            s = self.getAllText()
+            i = self.toGuiIndex(i)
+
+            if j is None: 
+                j = i+1
+
+            j = self.toGuiIndex(j)
+            return s[i:j]
+        #@+node:ekr.20140901062324.18642: *6* bqtw.insert
+        def insert(self,i,s):
+
+            s2 = self.getAllText()
+            i = self.toGuiIndex(i)
+            self.setAllText(s2[:i] + s + s2[i:])
+            self.setInsertPoint(i+len(s))
+            return i
+        #@+node:ekr.20140901062324.18643: *6* bqtw.selectAllText
+        def selectAllText(self,insert=None):
+
+            w = self.widget
+            w.selectAll()
+            # if insert is not None:
+                # self.setInsertPoint(insert)
+            # Bug fix: 2012/03/25.
+            self.setSelectionRange(0,'end',insert=insert)
+
+        #@+node:ekr.20140901062324.18644: *6* bqtw.setSelectionRange & dummy helper
+        # Note: this is used by QTextEditWrapper.
+
+        def setSelectionRange (self,i,j,insert=None):
+
+            i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+
+            return self.setSelectionRangeHelper(i,j,insert)
+        #@+node:ekr.20140901062324.18645: *7* bqtw.setSelectionRangeHelper
+        def setSelectionRangeHelper(self,i,j,insert=None,s=None):
+
+            self.oops()
+        #@+node:ekr.20140901062324.18646: *5* bqtw.HighLevelInterface
+        # Do not delete.
+        # The redirection methods of HighLevelInterface redirect calls
+        # from LeoBody & LeoLog to *this* class.
+
+        # Essential methods...
+        def getName (self):
+            return self.name
+
+        # Optional methods...
+        def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+            pass
+
+        def getYScrollPosition(self):           return None # A flag
+        def seeInsertPoint (self):              self.see(self.getInsertPoint())
+        def setBackgroundColor(self,color):     pass
+        def setEditorColors (self,bg,fg):       pass
+        def setForegroundColor(self,color):     pass
+        def setYScrollPosition(self,pos):       pass
+
+        # Must be defined in subclasses.
+        def getAllText(self):                       self.oops()
+        def getInsertPoint(self):                   self.oops()
+        def getSelectionRange(self,sort=True):      self.oops()
+        def hasSelection(self):                     self.oops()
+        def see(self,i):                            self.oops()
+        def setAllText(self,s):                     self.oops()
+        def setInsertPoint(self,i,s=None):          self.oops()
+        #@+node:ekr.20140901062324.18647: *6* bqtw.tag_configure
+        def tag_configure (self,*args,**keys):
+
+            trace = False and not g.unitTesting
+            if trace: g.trace(args,keys)
+
+            if len(args) == 1:
+                key = args[0]
+                self.tags[key] = keys
+                val = keys.get('foreground')
+                underline = keys.get('underline')
+                if val:
+                    # if trace: g.trace(key,val)
+                    self.configDict [key] = val
+                if underline:
+                    self.configUnderlineDict [key] = True
+            else:
+                g.trace('oops',args,keys)
+
+        tag_config = tag_configure
+        #@+node:ekr.20140901062324.18648: *5* bqtw.Idle time (to be removed)
+        def after_idle(self,func,threadCount):
+            # g.trace(func.__name__,'threadCount',threadCount)
+            return func(threadCount)
+
+        def after(self,n,func,threadCount):
+            def after_callback(func=func,threadCount=threadCount):
+                # g.trace(func.__name__,threadCount)
+                return func(threadCount)
+            QtCore.QTimer.singleShot(n,after_callback)
+
+        def scheduleIdleTimeRoutine (self,function,*args,**keys):
+            g.trace()
+            # if not g.app.unitTesting:
+                # self.widget.after_idle(function,*args,**keys)
+        #@+node:ekr.20140901062324.18649: *5* bqtw.onTextChanged
+        def onTextChanged (self):
+
+            '''Update Leo after the body has been changed.
+
+            self.selecting is guaranteed to be True during
+            the entire selection process.'''
+
+            # Important: usually w.changingText is True.
+            # This method very seldom does anything.
+            trace = False and not g.unitTesting
+            verbose = False
+            w = self
+            c = self.c ; p = c.p
+            tree = c.frame.tree
+            
+            if w.changingText: 
+                if trace and verbose: g.trace('already changing')
+                return
+            if tree.tree_select_lockout:
+                if trace and verbose: g.trace('selecting lockout')
+                return
+            if tree.selecting:
+                if trace and verbose: g.trace('selecting')
+                return
+            if tree.redrawing:
+                if trace and verbose: g.trace('redrawing')
+                return
+            if not p:
+                if trace: g.trace('*** no p')
+                return
+            newInsert = w.getInsertPoint()
+            newSel = w.getSelectionRange()
+            newText = w.getAllText() # Converts to unicode.
+
+            # Get the previous values from the VNode.
+            oldText = p.b
+            if oldText == newText:
+                # This can happen as the result of undo.
+                # g.error('*** unexpected non-change')
+                return
+            # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+            # oldIns  = p.v.insertSpot
+            i,j = p.v.selectionStart,p.v.selectionLength
+            oldSel  = (i,i+j)
+            if trace: g.trace('oldSel',oldSel,'newSel',newSel)
+            oldYview = None
+            undoType = 'Typing'
+            c.undoer.setUndoTypingParams(p,undoType,
+                oldText=oldText,newText=newText,
+                oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+            # Update the VNode.
+            p.v.setBodyString(newText)
+            if True:
+                p.v.insertSpot = newInsert
+                i,j = newSel
+                i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+                if i > j: i,j = j,i
+                p.v.selectionStart,p.v.selectionLength = (i,j-i)
+
+            # No need to redraw the screen.
+            if not self.useScintilla:
+                c.recolor()
+            if g.app.qt_use_tabs:
+                if trace: g.trace(c.frame.top)
+            if not c.changed and c.frame.initComplete:
+                c.setChanged(True)
+            c.frame.body.updateEditors()
+            c.frame.tree.updateIcon(p)
+            if 1: # This works, and is probably better.
+                # Set a hook for the old jEdit colorer.
+                colorer = c.frame.body.colorizer.highlighter.colorer
+                colorer.initFlag = True
+            else:
+                # Allow incremental recoloring.
+                c.incrementalRecolorFlag = True
+                c.outerUpdate()
+        #@-others
+    #@+node:ekr.20140901062324.18611: *4* from QTextWrapper (test)
+    #@+node:ekr.20140901062324.18593: *5* qtew.delete (avoid call to setAllText)
+    def delete(self,i,j=None):
+
+        trace = False and not g.unitTesting
+        c,w = self.c,self.widget
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        # n = colorer.recolorCount
+        if trace: g.trace(self.getSelectionRange())
+        i = self.toGuiIndex(i)
+        if j is None: j = i+1
+        j = self.toGuiIndex(j)
+        if i > j: i,j = j,i
+        if trace: g.trace(i,j)
+        # Set a hook for the colorer.
+        colorer.initFlag = True
+        sb = w.verticalScrollBar()
+        pos = sb.sliderPosition()
+        cursor = w.textCursor()
+        try:
+            self.changingText = True # Disable onTextChanged
+            old_i,old_j = self.getSelectionRange()
+            if i == old_i and j == old_j:
+                # Work around an apparent bug in cursor.movePosition.
+                cursor.removeSelectedText()
+            elif i == j:
+                pass
+            else:
+                # g.trace('*** using dubious code')
+                cursor.setPosition(i)
+                moveCount = abs(j-i)
+                cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+                w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+                if trace:
+                    i,j = self.getSelectionRange()
+                    g.trace(i,j)
+                cursor.removeSelectedText()
+                if trace: g.trace(self.getSelectionRange())
+        finally:
+            self.changingText = False
+        sb.setSliderPosition(pos)
+        # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
+    #@+node:ekr.20140901062324.18595: *5* qtew.get
+    def get(self,i,j=None):
+
+        if 1:
+            # 2012/04/12: fix the following two bugs by using the vanilla code:
+            # https://bugs.launchpad.net/leo-editor/+bug/979142
+            # https://bugs.launchpad.net/leo-editor/+bug/971166
+            s = self.getAllText()
+            i = self.toGuiIndex(i)
+            j = self.toGuiIndex(j)
+            return s[i:j]
+        else:
+            # This fails when getting text from the html-encoded log panes.
+            i = self.toGuiIndex(i)
+            if j is None: 
+                j = i+1
+            else:
+                j = self.toGuiIndex(j)
+            te = self.widget
+            doc = te.document()
+            bl = doc.findBlock(i)
+            #row = bl.blockNumber()
+            #col = index - bl.position()
+
+            # common case, e.g. one character    
+            if bl.contains(j):
+                s = g.u(bl.text())
+                offset = i - bl.position()
+                ret = s[ offset : offset + (j-i)]
+                #print "fastget",ret
+                return ret
+
+            # This is much slower, but will have to do        
+            #g.trace('Slow get()', g.callers(5))
+            s = self.getAllText()
+            i = self.toGuiIndex(i)
+            j = self.toGuiIndex(j)
+            return s[i:j]
+    #@+node:ekr.20140901062324.18597: *5* qtew.getInsertPoint
+    def getInsertPoint(self):
+
+        return self.widget.textCursor().position()
+    #@+node:ekr.20140901062324.18598: *5* qtew.getSelectionRange
+    def getSelectionRange(self,sort=True):
+
+        w = self.widget
+        tc = w.textCursor()
+        i,j = tc.selectionStart(),tc.selectionEnd()
+        return i,j
+    #@+node:ekr.20140901062324.18599: *5* qtew.getYScrollPosition
+    def getYScrollPosition(self):
+
+        # **Important**: There is a Qt bug here: the scrollbar position
+        # is valid only if cursor is visible.  Otherwise the *reported*
+        # scrollbar position will be such that the cursor *is* visible.
+        trace = False and g.trace_scroll and not g.unitTesting
+        w = self.widget
+        sb = w.verticalScrollBar()
+        pos = sb.sliderPosition()
+        if trace: g.trace(pos)
+        return pos
+    #@+node:ekr.20140901062324.18601: *5* qtew.insert (avoid call to setAllText)
+    def insert(self,i,s):
+
+        c,w = self.c,self.widget
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        # n = colorer.recolorCount
+        # Set a hook for the colorer.
+        colorer.initFlag = True
+        i = self.toGuiIndex(i)
+        cursor = w.textCursor()
+        try:
+            self.changingText = True # Disable onTextChanged.
+            cursor.setPosition(i)
+            cursor.insertText(s) # This cause an incremental call to recolor.
+            w.setTextCursor(cursor) # Bug fix: 2010/01/27
+        finally:
+            self.changingText = False
+    #@+node:ekr.20140901062324.18603: *5* qtew.indexIsVisible and linesPerPage
+    def linesPerPage (self):
+        '''Return the number of lines presently visible.'''
+        w = self.widget
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h/lineSpacing
+        return n
+    #@+node:ekr.20140901062324.18609: *5* qtew.setYScrollPosition
+    def setYScrollPosition(self,pos):
+
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self.widget
+        if g.no_scroll:
+            return
+        elif pos is None:
+            if trace: g.trace('None')
+        else:
+            if trace: g.trace(pos,g.callers())
+            sb = w.verticalScrollBar()
+            sb.setSliderPosition(pos)
+    #@+node:ekr.20140901062324.18591: *5* qtew.toPythonIndex (Fast)
+    def toPythonIndex (self,index):
+        '''This is much faster than versions using g.toPythonIndex.'''
+        w = self
+        te = self.widget
+        if index is None:
+            return 0
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            # g.trace('===== slow =====',repr(index))
+            return w.getLastPosition()
+        else:
+            # g.trace('===== slow =====',repr(index))
+            doc = te.document()
+            data = index.split('.')
+            if len(data) == 2:
+                row,col = data
+                row,col = int(row),int(col)
+                bl = doc.findBlockByNumber(row-1)
+                return bl.position() + col
+            else:
+                g.trace('bad string index: %s' % index)
+                return 0
+
+    toGuiIndex = toPythonIndex
+    #@+node:ekr.20140901062324.18592: *5* qtew.toPythonIndexRowCol
+    def toPythonIndexRowCol(self,index):
+
+        w = self 
+        if index == '1.0':
+            return 0, 0, 0
+        if index == 'end':
+            index = w.getLastPosition()
+        te = self.widget
+        doc = te.document()
+        i = w.toPythonIndex(index)
+        bl = doc.findBlock(i)
+        row = bl.blockNumber()
+        col = i - bl.position()
+        return i,row,col
+    #@+node:ekr.20140901062324.18610: *4* original
+    #@+node:ekr.20110605121601.18108: *5* qsciw.getAllText
     def getAllText(self):
         '''Get all text from a QsciScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         s = w.text()
         s = g.u(s)
         return s
-    #@+node:ekr.20110605121601.18109: *4* qsci.getInsertPoint
+    #@+node:ekr.20110605121601.18109: *5* qsciw.getInsertPoint
     def getInsertPoint(self):
         '''Get the insertion point from a QsciScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         s = self.getAllText()
         row,col = w.getCursorPosition()  
         i = g.convertRowColToPythonIndex(s, row, col)
         return i
-    #@+node:ekr.20110605121601.18110: *4* qsci.getSelectionRange
+    #@+node:ekr.20110605121601.18110: *5* qsciw.getSelectionRange
     def getSelectionRange(self,sort=True):
         '''Get the selection range from a QsciScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         if w.hasSelectedText():
             s = self.getAllText()
             row_i,col_i,row_j,col_j = w.getSelection()
@@ -1185,39 +1658,39 @@ class QScintillaWrapper (BaseQTextWrapper):
         else:
             i = j = self.getInsertPoint()
         return i,j
-    #@+node:ekr.20110605121601.18111: *4* qsci.hasSelection
+    #@+node:ekr.20110605121601.18111: *5* qsciw.hasSelection
     def hasSelection(self):
         '''Return True if a QsciScintilla widget has a selection range.'''
-        return self.qt_widget.hasSelectedText()
-    #@+node:ekr.20110605121601.18112: *4* qsci.see
+        return self.widget.hasSelectedText()
+    #@+node:ekr.20110605121601.18112: *5* qsciw.see
     def see(self,i):
         '''Ensure insert point i is visible in a QsciScintilla widget.'''
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
-        w = self.qt_widget
+        w = self.widget
         s = self.getAllText()
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
 
     # Use base-class method for seeInsertPoint.
-    #@+node:ekr.20110605121601.18113: *4* qsci.setAllText
+    #@+node:ekr.20110605121601.18113: *5* qsciw.setAllText
     def setAllText(self,s):
         '''Set the text of a QScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         assert isinstance(w,Qsci.QsciScintilla),w
         g.trace(len(s))
         w.setText(s)
         w.update()
 
-    #@+node:ekr.20110605121601.18114: *4* qsci.setInsertPoint
+    #@+node:ekr.20110605121601.18114: *5* qsciw.setInsertPoint
     def setInsertPoint(self,i,s=None):
         '''Set the insertion point in a QsciScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
-    #@+node:ekr.20110605121601.18115: *4* qsci.setSelectionRangeHelper
+    #@+node:ekr.20110605121601.18115: *5* qsciw.setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert=None,s=None):
         '''Set the selection range in a QsciScintilla widget.'''
-        w = self.qt_widget
+        w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         if insert in (j,None):
             self.setInsertPoint(j)
@@ -1234,25 +1707,25 @@ class QTextEditWrapper (BaseQTextWrapper):
     '''
     #@+others
     #@+node:ekr.20110605121601.18072: *3* qtew.Birth
-    #@+node:ekr.20110605121601.18073: *4* qtew.ctor
-    def __init__ (self,qt_widget,name,c=None):
+    #@+node:ekr.20110605121601.18073: *4* qtew.ctor & helpers
+    def __init__ (self,widget,name,c=None):
         '''
         Ctor for QTextEditWrapper class.
-        qt_widget is a QTextEdit or QTextBrowser.
+        widget is a QTextEdit or QTextBrowser.
         '''
         # Init the base class.
-        BaseQTextWrapper.__init__(self,qt_widget,name,c=c)
-        assert qt_widget == self.qt_widget,(qt_widget,self.qt_widget)
-        self.widget = self.qt_widget
-            # Important: this allow callers not to know the implementation type.
+        BaseQTextWrapper.__init__(self,widget,name,c=c)
+        assert widget == self.widget,(widget,self.widget)
         self.baseClassName='QTextEditWrapper'
-        self.qt_widget.setUndoRedoEnabled(False)
-        self.setConfig()
-    #@+node:ekr.20110605121601.18076: *4* qtew.setConfig
-    def setConfig (self):
+        self.widget.setUndoRedoEnabled(False)
+        self.set_config()
+        self.set_signals()
+        
+    #@+node:ekr.20110605121601.18076: *5* qtew.set_config
+    def set_config (self):
         '''Set configuration options for QTextEdit.'''
         c = self.c
-        w = self.qt_widget
+        w = self.widget
         n = c.config.getInt('qt-rich-text-zoom-in')
         w.setWordWrapMode(QtGui.QTextOption.NoWrap)
         # w.zoomIn(1)
@@ -1264,12 +1737,67 @@ class QTextEditWrapper (BaseQTextWrapper):
             w.updateMicroFocus()
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
+    #@+node:ekr.20140901062324.18566: *5* qtew.set_signals
+    def set_signals(self):
+        '''Set up signals.'''
+        c,name = self.c,self.name
+        if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
+            # g.trace('hooking up qt events',name)
+            # Hook up qt events.
+            g.app.gui.setFilter(c,self.widget,self,tag=name)
+        if name == 'body':
+            w = self.widget
+            w.textChanged.connect(self.onTextChanged)
+            w.cursorPositionChanged.connect(self.onCursorPositionChanged)
+        if name in ('body','log'):
+            # Monkey patch the event handler.
+            #@+others
+            #@+node:ekr.20140901062324.18565: *6* mouseReleaseEvent (callback)
+            def mouseReleaseEvent (*args,**keys):
+                '''
+                Override QLineEdit.mouseReleaseEvent.
+                Simulate alt-x if we are not in an input state.
+                '''
+                c,vc = self.c,self.c.vimCommands
+                trace = False and not g.unitTesting
+                # if trace: g.trace('(BaseQTextWrapper)',self.c.shortFileName())
+                # Call the base class method.
+                if len(args) == 1:
+                    event = args[0]
+                    # There seems to be no way to disable mouse events...
+                    # if c.vim_mode and vc and vc.trainer:
+                        # if trace: g.trace('1: ignore:',event)
+                        # event.ignore() # Doesn't work.
+                        # return
+                    QtWidgets.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
+                elif len(args) == 2:
+                    # In vim-trainer mode, stuff a 0 into the location field.  Hehe.
+                    event = args[1]
+                    if c.vim_mode and vc and vc.trainer:
+                        if trace: g.trace('2',event)
+                    QtWidgets.QTextBrowser.mouseReleaseEvent(*args)
+                else:
+                    g.trace('can not happen')
+                    return
+                # Open the url on a control-click.
+                if QtCore.Qt.ControlModifier & event.modifiers():
+                    event = {'c':c}
+                    g.openUrlOnClick(event)
+                if name == 'body':
+                    c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
+                    if trace: g.trace(c.p.v.insertSpot)
+                g.doHook("bodyclick2",c=c,p=c.p,v=c.p)                    
+                # 2011/05/28: Do *not* change the focus!
+                # This would rip focus away from tab panes.
+                c.k.keyboardQuit(setFocus=False)
+            #@-others
+            self.widget.mouseReleaseEvent = mouseReleaseEvent
     #@+node:ekr.20110605121601.18077: *3* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
         '''Move the cursor in a QTextEdit.'''
         trace = False and not g.unitTesting
         verbose = True
-        w = self.qt_widget
+        w = self.widget
         if trace:
             g.trace(kind,'extend',extend)
             if verbose:
@@ -1316,7 +1844,7 @@ class QTextEditWrapper (BaseQTextWrapper):
            a straight port of the C++ code found in the pageUpDown method
            of gui/widgets/qtextedit.cpp'''
 
-        control = self.qt_widget
+        control = self.widget
         cursor = control.textCursor()
         moved = False
         lastY = control.cursorRect(cursor).top()
@@ -1345,7 +1873,7 @@ class QTextEditWrapper (BaseQTextWrapper):
     def toPythonIndex (self,index):
         '''This is much faster than versions using g.toPythonIndex.'''
         w = self
-        te = self.qt_widget
+        te = self.widget
         if index is None:
             return 0
         if type(index) == type(99):
@@ -1377,7 +1905,7 @@ class QTextEditWrapper (BaseQTextWrapper):
             return 0, 0, 0
         if index == 'end':
             index = w.getLastPosition()
-        te = self.qt_widget
+        te = self.widget
         doc = te.document()
         i = w.toPythonIndex(index)
         bl = doc.findBlock(i)
@@ -1388,7 +1916,7 @@ class QTextEditWrapper (BaseQTextWrapper):
     def delete(self,i,j=None):
 
         trace = False and not g.unitTesting
-        c,w = self.c,self.qt_widget
+        c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
         if trace: g.trace(self.getSelectionRange())
@@ -1438,7 +1966,7 @@ class QTextEditWrapper (BaseQTextWrapper):
         # The selection point isn't restored in time.
         if g.app.unitTesting:
             return
-        w = self.qt_widget # A QTextEdit.
+        w = self.widget # A QTextEdit.
         e = QtWidgets.QTextCursor
 
         def after(func):
@@ -1446,7 +1974,7 @@ class QTextEditWrapper (BaseQTextWrapper):
 
         def addFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            cursor = w.textCursor() # Must be the qt_widget's cursor.
+            cursor = w.textCursor() # Must be the widget's cursor.
             cursor.setPosition(i)
             cursor.movePosition(e.Right,e.KeepAnchor,1)
             extra = w.ExtraSelection()
@@ -1488,7 +2016,7 @@ class QTextEditWrapper (BaseQTextWrapper):
                 j = i+1
             else:
                 j = self.toGuiIndex(j)
-            te = self.qt_widget
+            te = self.widget
             doc = te.document()
             bl = doc.findBlock(i)
             #row = bl.blockNumber()
@@ -1511,17 +2039,17 @@ class QTextEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18081: *4* qtew.getAllText
     def getAllText(self):
 
-        w = self.qt_widget
+        w = self.widget
         s = g.u(w.toPlainText())
         return s
     #@+node:ekr.20110605121601.18082: *4* qtew.getInsertPoint
     def getInsertPoint(self):
 
-        return self.qt_widget.textCursor().position()
+        return self.widget.textCursor().position()
     #@+node:ekr.20110605121601.18083: *4* qtew.getSelectionRange
     def getSelectionRange(self,sort=True):
 
-        w = self.qt_widget
+        w = self.widget
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
         return i,j
@@ -1532,7 +2060,7 @@ class QTextEditWrapper (BaseQTextWrapper):
         # is valid only if cursor is visible.  Otherwise the *reported*
         # scrollbar position will be such that the cursor *is* visible.
         trace = False and g.trace_scroll and not g.unitTesting
-        w = self.qt_widget
+        w = self.widget
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         if trace: g.trace(pos)
@@ -1540,11 +2068,11 @@ class QTextEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18085: *4* qtew.hasSelection
     def hasSelection(self):
 
-        return self.qt_widget.textCursor().hasSelection()
+        return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
     def insert(self,i,s):
 
-        c,w = self.c,self.qt_widget
+        c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
         # Set a hook for the colorer.
@@ -1562,7 +2090,7 @@ class QTextEditWrapper (BaseQTextWrapper):
     #@+node:ekr.20110605121601.18087: *5* qtew.indexIsVisible and linesPerPage
     def linesPerPage (self):
         '''Return the number of lines presently visible.'''
-        w = self.qt_widget
+        w = self.widget
         h = w.size().height()
         lineSpacing = w.fontMetrics().lineSpacing()
         n = h/lineSpacing
@@ -1574,7 +2102,7 @@ class QTextEditWrapper (BaseQTextWrapper):
         direction is in ('down-line','down-page','up-line','up-page')
         '''
         c = self.c
-        w = self.qt_widget
+        w = self.widget
         vScroll = w.verticalScrollBar()
         h = w.size().height()
         lineSpacing = w.fontMetrics().lineSpacing()
@@ -1601,7 +2129,7 @@ class QTextEditWrapper (BaseQTextWrapper):
             pass
         else:
             if trace: g.trace('*****',i,g.callers())
-            self.qt_widget.ensureCursorVisible()
+            self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
 
@@ -1610,12 +2138,12 @@ class QTextEditWrapper (BaseQTextWrapper):
             pass
         else:
             if trace: g.trace('*****',g.callers())
-            self.qt_widget.ensureCursorVisible()
+            self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
     def setAllText(self,s):
         '''Set the text of body pane.'''
         traceTime = True and not g.unitTesting
-        c,w = self.c,self.qt_widget
+        c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         colorer = highlighter.colorer
@@ -1651,7 +2179,7 @@ class QTextEditWrapper (BaseQTextWrapper):
         traceTime = False and not g.unitTesting
         # Part 1
         if traceTime: t1 = time.time()
-        w = self.qt_widget
+        w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
         if s is not None:
@@ -1709,7 +2237,7 @@ class QTextEditWrapper (BaseQTextWrapper):
     def setYScrollPosition(self,pos):
 
         trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self.qt_widget
+        w = self.widget
         if g.no_scroll:
             return
         elif pos is None:

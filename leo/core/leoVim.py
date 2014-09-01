@@ -2146,7 +2146,7 @@ class VimCommands:
             try:
                 vc.state = 'insert'
                 c.bodyWantsFocusNow()
-                w = c.frame.body.qt_widget
+                w = c.frame.body.widget
                 vc.set_border(kind=None,w=w,activeFlag=True)
             except Exception:
                 # g.es_exception()
@@ -2440,7 +2440,7 @@ class VimCommands:
         elif w_name != 'richTextEdit':
             # Clear the border in the body pane.
             try:
-                w = vc.c.frame.body.qt_widget
+                w = vc.c.frame.body.widget
                 vc.set_property(w,False)
             except Exception:
                 pass

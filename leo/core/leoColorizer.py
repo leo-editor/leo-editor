@@ -616,7 +616,7 @@ class JEditColorizer:
             if trace: g.trace('hard_tab_width',hard_tab_width,self.wrapper)
         else:
             # For some reason, the size is not accurate.
-            font = wrapper.qt_widget.currentFont()
+            font = wrapper.widget.currentFont()
             info = QtGui.QFontInfo(font)
             size = info.pointSizeF()
             pixels_per_point = 1.0 # 0.9
@@ -625,7 +625,7 @@ class JEditColorizer:
                 'family',font.family(),'point size',size,
                 'tab_width',c.tab_width,
                 'hard_tab_width',hard_tab_width)
-        wrapper.qt_widget.setTabStopWidth(hard_tab_width)
+        wrapper.widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *4* configure_tags
     def configure_tags (self):
 
@@ -2185,11 +2185,11 @@ class LeoQtColorizer:
 
     #@+others
     #@+node:ekr.20110605121601.18552: *3*  ctor (LeoQtColorizer)
-    def __init__ (self,c,qt_widget):
+    def __init__ (self,c,widget):
         '''Ctor for LeoQtColorizer class.'''
-        # g.trace('(LeoQtColorizer)',qt_widget)
+        # g.trace('(LeoQtColorizer)',widget)
         self.c = c
-        self.qt_widget = qt_widget
+        self.widget = widget
         # Step 1: create the ivars.
         self.changingText = False
         self.count = 0 # For unit testing.
@@ -2207,9 +2207,9 @@ class LeoQtColorizer:
         self.oldV = None
         self.showInvisibles = False
         # Step 2: create the highlighter.
-        self.highlighter = LeoQtSyntaxHighlighter(c,qt_widget,colorizer=self)
+        self.highlighter = LeoQtSyntaxHighlighter(c,widget,colorizer=self)
         self.colorer = self.highlighter.colorer
-        qt_widget.leo_colorizer = self
+        widget.leo_colorizer = self
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter,'currentBlock')
@@ -2487,8 +2487,8 @@ class LeoQtColorizer:
         trace = False and not g.unitTesting
         if not p: return
         c = self.c
-        qt_widget = c.frame.body.qt_widget # a subclass of QTextBrowser
-        doc = qt_widget.document()
+        widget = c.frame.body.widget # a subclass of QTextBrowser
+        doc = widget.document()
         if trace:
             t1 = time.time()
         aList = []
@@ -2529,21 +2529,20 @@ class LeoQtSyntaxHighlighter(base_highlighter):
 
     #@+others
     #@+node:ekr.20110605121601.18566: *3* ctor (LeoQtSyntaxHighlighter)
-    def __init__ (self,c,qt_widget,colorizer):
+    def __init__ (self,c,widget,colorizer):
         '''ctor for LeoQtSyntaxHighlighter class.'''
         self.c = c
-        self.qt_widget = qt_widget # qt_widget is a LeoQTextBrowser.
-        # print('LeoQtSyntaxHighlighter.__init__',qt_widget,self.setDocument)
+        self.widget = widget # widget is a LeoQTextBrowser.
+        # print('LeoQtSyntaxHighlighter.__init__',widget,self.setDocument)
         # Not all versions of Qt have the crucial currentBlock method.
         self.hasCurrentBlock = hasattr(self,'currentBlock')
         # Init the base class.
         if python_qsh:
-            # g.trace('parent',qt_widget)
             # The c argument is now optional.
             # If present, it allows an extra safety check in PQSH.idle_handler.
-            PythonQSyntaxHighlighter.__init__(self,parent=qt_widget,c=c)
+            PythonQSyntaxHighlighter.__init__(self,parent=widget,c=c)
         else:
-            QtGui.QSyntaxHighlighter.__init__(self,qt_widget)
+            QtGui.QSyntaxHighlighter.__init__(self,widget)
         self.colorizer = colorizer
         self.colorer = JEditColorizer(c,
             colorizer=colorizer,
@@ -2574,7 +2573,7 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             if trace: g.trace('no body',c.shortFileName(),p and p.h)
             return
         tree = c.frame.tree
-        self.qt_widget = c.frame.body.qt_widget
+        self.widget = c.frame.body.widget
         if trace:
             t1 = time.time()
         # Call the base class method, but *only*
@@ -2613,8 +2612,8 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
         '''
         trace = False and not g.unitTesting
-        qt_widget = self.c.frame.body.qt_widget # a subclass of QTextEdit.
-        doc = qt_widget.document()
+        widget = self.c.frame.body.widget # a subclass of QTextEdit.
+        doc = widget.document()
         if bunch.n != doc.blockCount():
             return g.trace('bad block count: expected %s got %s' % (
                 bunch.n,doc.blockCount()))

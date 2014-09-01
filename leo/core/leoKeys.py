@@ -915,16 +915,12 @@ class AutoCompleterClass:
     def init_qcompleter (self,event=None):
 
         trace = False and not g.unitTesting
-
         # Compute the prefix and the list of options.
         prefix = self.get_autocompleter_prefix()
         options = self.get_completions(prefix)
-
         if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix),len(options)))
-
-        w = self.c.frame.body.qt_widget
+        w = self.c.frame.body.wrapper.widget
             # A LeoQTextBrowser.  May be none for unit tests.
-
         if w and options:
             self.qw = w
             self.qcompleter = w.init_completer(options)

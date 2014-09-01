@@ -18959,5 +18959,17 @@ def setBodyTextAfterSelect (self,p,old_p):
             if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
     # This is now done after c.p has been changed.
         # p.restoreCursorAndScroll()
+.. @+node:ekr.20140901062324.18567: *3* set_colors (LeoQtBody)
+def set_colors(self):
+    '''Set body colors.'''
+    palette = self.widget.palette()
+    highlight_foreground_brush = palette.brush(palette.Active,palette.HighlightedText) # white.
+    highlight_background_brush = palette.brush(palette.Active,palette.Highlight) # dark blue
+    # normal_brush = palette.brush(palette.Active,palette.Text)
+    g.trace('foreground',highlight_foreground_brush.color().name())
+    g.trace('background',highlight_background_brush.color().name())
+    highlight_foreground_brush.setColor(QtWidgets.QColor('red'))
+    g.trace('foreground',highlight_foreground_brush.color().name())
+    palette.setBrush(palette.HighlightedText,highlight_foreground_brush)
 .. @-all
 .. @-leo

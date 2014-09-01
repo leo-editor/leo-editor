@@ -123,7 +123,6 @@ class HighLevelInterface(object):
             # 'toGuiIndex', # A synonym.
         )
     #@+node:ekr.20070302101344: *3* hli.Must be defined in the base class
-
     def disable (self):
 
         self.enabled = False
@@ -131,7 +130,6 @@ class HighLevelInterface(object):
     def enable (self,enabled=True):
 
         self.enabled = enabled
-
     #@+node:ekr.20111114102224.9935: *3* hli.mutable methods
     #@+node:ekr.20111114102224.9946: *4* hli.flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -494,7 +492,6 @@ class LeoBody (HighLevelInterface):
         self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
-
     #@+node:ekr.20061109173122: *3* LeoBody: must be defined in subclasses
     # Birth, death & config
     def createControl (self,parentFrame,p):
@@ -818,21 +815,18 @@ class LeoBody (HighLevelInterface):
     # Called from addEditor and assignPositionToEditor.
 
     def updateInjectedIvars (self,w,p):
-
-        c = self.c ; cc = c.chapterController
-
+        '''Inject updated ivars in w, a gui widget.'''
+        c = self.c
+        cc = c.chapterController
         # Was in ctor.
         use_chapters = c.config.getBool('use_chapters')
-
         if cc and use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
-
         w.leo_p = p.copy()
         w.leo_v = w.leo_p.v
         w.leo_label_s = p.h
-
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
@@ -2018,7 +2012,7 @@ class LeoTree:
         if 1:
             return False # Disable the big-text feature.
         else:
-            w = c.frame.body and hasattr(c.frame.body,'qt_widget') and c.frame.body.qt_widget
+            w = c.frame.body and c.frame.body.widget
             return (
                 w and hasattr(w,'leo_load_button') and
                 len(p.b) > c.max_pre_loaded_body_chars)
@@ -2026,8 +2020,8 @@ class LeoTree:
     def is_qt_body(self):
         '''Return True if the body widget is a QTextEdit.'''
         c = self.c
-        return c.frame.body and hasattr(c.frame.body,'qt_widget') and c.frame.body.qt_widget
-            # c.frame.body.qt_widget is a LeoQTextBrowser.
+        return c.frame.body and c.frame.body.widget
+            # c.frame.body.widget is a LeoQTextBrowser.
             # Note: c.frame.body.wrapper is a BaseTextWrapper.
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
     def unselect_helper(self,old_p,p,traceTime):
@@ -2056,7 +2050,7 @@ class LeoTree:
         '''Remove the load and paste buttons created for large text.'''
         c = self.c
         if self.is_qt_body():
-            w = c.frame.body.qt_widget
+            w = c.frame.body.widget
             if old_p and hasattr(w,'leo_big_text') and w.leo_big_text:
                 s = w.leo_big_text
                 w.leo_big_text = None
@@ -2117,7 +2111,7 @@ class LeoTree:
             g.trace('undoing')
             return
         if self.is_qt_body() and not g.app.unitTesting:
-            w = c.frame.body.widget.qt_widget
+            w = c.frame.body.widget.widget
             frame = w.parent() # A QWidget
             layout = frame.layout()
             s = p.b
@@ -2197,11 +2191,11 @@ class LeoTree:
         '''Set the body text to a "not loaded" message.'''
         c = self.c
         if self.is_qt_body():
-            w = c.frame.body.widget.qt_widget
-            body = c.frame and c.frame.body and c.frame.body.wrapper
+            w = c.frame.body.wrapper.widget
+            wrapper = c.frame and c.frame.body and c.frame.body.wrapper
             s = p.b
             w.leo_big_text = p.b # Save the original text
-            body.setAllText("To load the body text, click the 'load' button.")
+            wrapper.setAllText("To load the body text, click the 'load' button.")
             assert p.b == s
                 # There will be data loss if this assert fails.
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
