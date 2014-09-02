@@ -1041,6 +1041,7 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage
     def linesPerPage (self):
         '''Return the number of lines presently visible.'''
+        w = self.widget
         return int(w.SendScintilla(w.SCI_LINESONSCREEN))
     #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
     def setYScrollPosition(self,pos):
@@ -1070,7 +1071,6 @@ class QScintillaWrapper(QTextMixin):
         '''Flash the character at position i.'''
         # This causes problems during unit tests:
         # The selection point isn't restored in time.
-        return ### Try to use Scintilla matching.
         if g.app.unitTesting:
             return
         #@+others
