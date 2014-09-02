@@ -4519,6 +4519,7 @@ Automatic execution of commands on certain events.
 .. @+node:ekr.20131220065609.16590: *4* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20071003104917: *4* Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+.. @+node:ekr.20140902074808.18612: *3* ** scan core for calls to wrapper methods
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20130926053913.11562: *3* Bug-tracker: Hard

@@ -130,6 +130,7 @@ class Cacher:
             c = frame.c
             if c.cacher:
                 c.cacher.clearCache()
+        g.es('done',color='blue')
     #@+node:ekr.20100208071151.5907: *3* fileKey
     # was AtFile._contentHashFile
 
