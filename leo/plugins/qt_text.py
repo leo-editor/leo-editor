@@ -303,8 +303,13 @@ class QTextMixin:
         return i,row,col
     #@-others
 #@+node:ekr.20110605121601.18058: **  class QLineEditWrapper(QTextMixin)
-class QLineEditWrapper(QTextMixin): ### (BaseQTextWrapper):
-
+class QLineEditWrapper(QTextMixin):
+    '''
+    A class to wrap QLineEdit widgets.
+    
+    The QHeadlineWrapper class is a subclass that merely
+    redefines the do-nothing check method here.
+    '''
     #@+others
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
     def __init__ (self,widget,name,c=None):
@@ -315,72 +320,91 @@ class QLineEditWrapper(QTextMixin): ### (BaseQTextWrapper):
         self.widget = widget
         self.name = name
         self.baseClassName='QLineEditWrapper'
-        # Set the signal.
-        if name.startswith('head'):
-            g.app.gui.setFilter(c,self.widget,self,tag=name)
             
     def __repr__ (self):
         return '<QLineEditWrapper: widget: %s' % (self.widget)
     __str__ = __repr__
-    #@+node:ekr.20110605121601.18062: *3* qlew.Widget-specific overrides
-    #@+node:ekr.20110605121601.18063: *4* qlew.getAllText
+    #@+node:ekr.20140901191541.18599: *3* qlew.check (does nothing)
+    def check(self):
+        '''
+        QLineEditWrapper.
+        '''
+        return True
+    #@+node:ekr.20110605121601.18118: *3* qlew.Widget-specific overrides
+    #@+node:ekr.20110605121601.18120: *4* qlew.getAllText
     def getAllText(self):
-
-        w = self.widget
-        s = w.text()
-        return g.u(s)
-    #@+node:ekr.20110605121601.18064: *4* qlew.getInsertPoint
-    def getInsertPoint(self):
-
-        return self.widget.cursorPosition()
-    #@+node:ekr.20110605121601.18065: *4* qlew.getSelectionRange
-    def getSelectionRange(self,sort=True):
-
-        w = self.widget
-        if w.hasSelectedText():
-            i = w.selectionStart()
-            s = w.selectedText()
-            s = g.u(s)
-            j = i + len(s)
+        '''QHeadlineWrapper.'''
+        if self.check():
+            w = self.widget
+            s = w.text()
+            return g.u(s)
         else:
-            i = j = w.cursorPosition()
-        return i,j
-    #@+node:ekr.20110605121601.18066: *4* qlew.hasSelection
+            return ''
+    #@+node:ekr.20110605121601.18121: *4* qlew.getInsertPoint
+    def getInsertPoint(self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            i = self.widget.cursorPosition()
+            return i
+        else:
+            return 0
+    #@+node:ekr.20110605121601.18122: *4* qlew.getSelectionRange
+    def getSelectionRange(self,sort=True):
+        '''QHeadlineWrapper.'''
+        w = self.widget
+        if self.check():
+            if w.hasSelectedText():
+                i = w.selectionStart()
+                s = w.selectedText()
+                s = g.u(s)
+                j = i + len(s)
+            else:
+                i = j = w.cursorPosition()
+            return i,j
+        else:
+            return 0,0
+    #@+node:ekr.20110605121601.18123: *4* qlew.hasSelection
     def hasSelection(self):
-
-        return self.widget.hasSelectedText()
-    #@+node:ekr.20110605121601.18067: *4* qlew.see & seeInsertPoint
+        '''QHeadlineWrapper.'''
+        if self.check():
+            return self.widget.hasSelectedText()
+        else:
+            return False
+    #@+node:ekr.20110605121601.18124: *4* qlew.see & seeInsertPoint
     def see(self,i):
+        '''QHeadlineWrapper.'''
         pass
 
     def seeInsertPoint (self):
+        '''QHeadlineWrapper.'''
         pass
-    #@+node:ekr.20110605121601.18068: *4* qlew.setAllText
+    #@+node:ekr.20110605121601.18125: *4* qlew.setAllText
     def setAllText(self,s):
-
-        w = self.widget
-        disabled = hasattr(w,'leo_disabled') and w.leo_disabled
-        # g.trace(s,w)
-        if disabled:
-            w.setEnabled(True)
-        w.setText(s)
-        if disabled:
-            w.setEnabled(False)
-    #@+node:ekr.20110605121601.18069: *4* qlew.setInsertPoint
+        '''Set all text of a Qt headline widget.'''
+        if self.check():
+            w = self.widget
+            w.setText(s)
+    #@+node:ekr.20110605121601.18128: *4* qlew.setFocus
+    def setFocus (self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            g.app.gui.set_focus(self.c,self.widget)
+    #@+node:ekr.20110605121601.18129: *4* qlew.setInsertPoint
     def setInsertPoint(self,i,s=None):
-
+        '''QHeadlineWrapper.'''
+        if not self.check(): return
         w = self.widget
         if s is None:
             s = w.text()
             s = g.u(s)
-        i = self.toPythonIndex(i) # 2010/10/22.
+        i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
-    #@+node:ekr.20110605121601.18070: *4* qlew.setSelectionRange
+    #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
     def setSelectionRange(self,i,j,insert=None,s=None):
-        'QLineEditWrapper'
+        '''QHeadlineWrapper.'''
+        if not self.check(): return
         w = self.widget
-        # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         if s is None:
             s = w.text()
@@ -390,19 +414,22 @@ class QLineEditWrapper(QTextMixin): ### (BaseQTextWrapper):
         j = self.toPythonIndex(j)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
-        if j < i: i,j = j,i
-        if insert is None: insert = j
-        insert = max(0,min(insert,n))
+        if insert is None:
+            insert = j
+        else:
+            insert = self.toPythonIndex(insert)
+            insert = max(0,min(insert,n))
         if i == j:
             w.setCursorPosition(i)
         else:
             length = j-i
+            # Set selection is a QLineEditMethod
             if insert < j:
                 w.setSelection(j,-length)
             else:
                 w.setSelection(i,length)
                 
-    ### setSelectionRangeHelper = setSelectionRange
+    # setSelectionRangeHelper = setSelectionRange
     #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 class LeoQTextBrowser (QtWidgets.QTextBrowser):
@@ -788,22 +815,23 @@ class PlainTextWrapper(QTextMixin):
         '''Ctor for the PlainTextWrapper class.'''
         QTextMixin.__init__(self)
         self.widget = widget
-#@+node:ekr.20110605121601.18116: ** class QHeadlineWrapper (QTextMixin)
-class QHeadlineWrapper(QTextMixin):
-    '''A wrapper class for QLineEdit widgets in QTreeWidget's.
-
-    This wrapper must appear to be a leoFrame.BaseTextWrapper to Leo's core.
+#@+node:ekr.20110605121601.18116: ** class QHeadlineWrapper (QLineEditWrapper)
+class QHeadlineWrapper(QLineEditWrapper):
     '''
-
+    A wrapper class for QLineEdit widgets in QTreeWidget's.
+    This class just redefines the check method.
+    '''
     #@+others
     #@+node:ekr.20110605121601.18117: *3* qhw.Birth
     def __init__ (self,c,item,name,widget):
         '''The ctor for the QHeadlineWrapper class.'''
         # g.trace('(QHeadlineWrapper)',item,widget)
         assert isinstance(widget,QtWidgets.QLineEdit),widget
-        QTextMixin.__init__(self,c)
+        ### QTextMixin.__init__(self,c)
+        QLineEditWrapper.__init__(self,widget,name,c)
             # Init the base class.
         # Set ivars.
+        self.c = c
         self.item = item
         self.name = name
         self.permanent = False # Warn the minibuffer that we can go away.
@@ -813,9 +841,7 @@ class QHeadlineWrapper(QTextMixin):
 
     def __repr__ (self):
         return 'QHeadlineWrapper: %s' % id(self)
-    #@+node:ekr.20110605121601.18118: *3* qhw.Widget-specific overrides
-    # These are safe versions of QLineEdit methods.
-    #@+node:ekr.20110605121601.18119: *4* qhw.check
+    #@+node:ekr.20110605121601.18119: *3* qhw.check
     def check (self):
         '''Return True if the tree item exists and it's edit widget exists.'''
         trace = False and not g.unitTesting
@@ -825,107 +851,7 @@ class QHeadlineWrapper(QTextMixin):
         result = valid and e == self.widget
         if trace: g.trace('result %s self.widget %s itemWidget %s' % (
             result,self.widget,e))
-
         return result
-    #@+node:ekr.20110605121601.18120: *4* qhw.getAllText
-    def getAllText(self):
-        '''QHeadlineWrapper.'''
-        if self.check():
-            w = self.widget
-            s = w.text()
-            return g.u(s)
-        else:
-            return ''
-    #@+node:ekr.20110605121601.18121: *4* qhw.getInsertPoint
-    def getInsertPoint(self):
-        '''QHeadlineWrapper.'''
-        if self.check():
-            i = self.widget.cursorPosition()
-            return i
-        else:
-            return 0
-    #@+node:ekr.20110605121601.18122: *4* qhw.getSelectionRange
-    def getSelectionRange(self,sort=True):
-        '''QHeadlineWrapper.'''
-        w = self.widget
-        if self.check():
-            if w.hasSelectedText():
-                i = w.selectionStart()
-                s = w.selectedText()
-                s = g.u(s)
-                j = i + len(s)
-            else:
-                i = j = w.cursorPosition()
-            return i,j
-        else:
-            return 0,0
-    #@+node:ekr.20110605121601.18123: *4* qhw.hasSelection
-    def hasSelection(self):
-        '''QHeadlineWrapper.'''
-        if self.check():
-            return self.widget.hasSelectedText()
-        else:
-            return False
-    #@+node:ekr.20110605121601.18124: *4* qhw.see & seeInsertPoint
-    def see(self,i):
-        '''QHeadlineWrapper.'''
-        pass
-
-    def seeInsertPoint (self):
-        '''QHeadlineWrapper.'''
-        pass
-    #@+node:ekr.20110605121601.18125: *4* qhw.setAllText
-    def setAllText(self,s):
-        '''Set all text of a Qt headline widget.'''
-        if self.check():
-            w = self.widget
-            w.setText(s)
-    #@+node:ekr.20110605121601.18128: *4* qhw.setFocus
-    def setFocus (self):
-        '''QHeadlineWrapper.'''
-        if self.check():
-            g.app.gui.set_focus(self.c,self.widget)
-    #@+node:ekr.20110605121601.18129: *4* qhw.setInsertPoint
-    def setInsertPoint(self,i,s=None):
-        '''QHeadlineWrapper.'''
-        if not self.check(): return
-        w = self.widget
-        if s is None:
-            s = w.text()
-            s = g.u(s)
-        i = self.toPythonIndex(i)
-        i = max(0,min(i,len(s)))
-        w.setCursorPosition(i)
-    #@+node:ekr.20110605121601.18130: *4* qhw.setSelectionRange
-    def setSelectionRange(self,i,j,insert=None,s=None):
-        '''QHeadlineWrapper.'''
-        if not self.check(): return
-        w = self.widget
-        if i > j: i,j = j,i
-        if s is None:
-            s = w.text()
-            s = g.u(s)
-        n = len(s)
-        i = self.toPythonIndex(i)
-        j = self.toPythonIndex(j)
-        i = max(0,min(i,n))
-        j = max(0,min(j,n))
-        if insert is None:
-            insert = j
-        else:
-            insert = self.toPythonIndex(insert)
-            insert = max(0,min(insert,n))
-        if i == j:
-            w.setCursorPosition(i)
-        else:
-            length = j-i
-            # Set selection is a QLineEditMethod
-            if insert < j:
-                w.setSelection(j,-length)
-            else:
-                w.setSelection(i,length)
-                
-    # setSelectionRangeHelper = setSelectionRange
     #@-others
 #@+node:ekr.20110605121601.18131: ** class QMinibufferWrapper (QLineEditWrapper)
 class QMinibufferWrapper (QLineEditWrapper):
