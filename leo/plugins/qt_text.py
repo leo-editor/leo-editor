@@ -324,7 +324,7 @@ class QLineEditWrapper(QTextMixin):
     def __repr__ (self):
         return '<QLineEditWrapper: widget: %s' % (self.widget)
     __str__ = __repr__
-    #@+node:ekr.20140901191541.18599: *3* qlew.check (does nothing)
+    #@+node:ekr.20140901191541.18599: *3* qlew.check
     def check(self):
         '''
         QLineEditWrapper.
