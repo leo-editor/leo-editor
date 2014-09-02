@@ -262,14 +262,13 @@ class QTextMixin:
         j = self.toGuiIndex(j)
         return s[i:j]
     #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
-    def getLastPosition(self):
+    def getLastPosition(self,s=None):
         '''QTextMixin'''
-        return len(self.getAllText())
+        return len(self.getAllText()) if s is None else len(s)
         
-    def getLength(self):
+    def getLength(self,s=None):
         '''QTextMixin'''
-        return len(self.getAllText())
-
+        return len(self.getAllText()) if s is None else len(s)
     #@+node:ekr.20140901062324.18705: *5* qtm.getSelectedText
     def getSelectedText(self):
         '''QTextMixin'''
@@ -292,6 +291,10 @@ class QTextMixin:
         '''Ensure the insert point is visible.'''
         self.see(self.getInsertPoint())
             # getInsertPoint defined in client classes.
+    #@+node:ekr.20140902135648.18668: *5* qtm.selectAllText
+    def selectAllText(self,s=None):
+        '''QTextMixin.'''
+        self.setSelectionRange(0,self.getLength(s))
     #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex
     def toPythonIndex (self,index,s=None):
         '''QTextMixin'''
@@ -953,6 +956,11 @@ class QScintillaWrapper(QTextMixin):
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None,0):
             w.zoomIn(n)
+        # g.trace(dir(w.BraceMatch))
+        w.setUtf8(True) # Important.
+        w.setBraceMatching(2) # Sloppy
+        w.setMarginWidth(1,40)
+        w.setMarginLineNumbers(1,True)
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
@@ -1030,17 +1038,10 @@ class QScintillaWrapper(QTextMixin):
         
         w = self.widget
         return 0 # Not ready yet.
-    #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage (to do)
+    #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage
     def linesPerPage (self):
         '''Return the number of lines presently visible.'''
-        if 1:
-            return 50
-        else:
-            w = self.widget
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            return n
+        return int(w.SendScintilla(w.SCI_LINESONSCREEN))
     #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
     def setYScrollPosition(self,pos):
         '''Set the position of the vertical scrollbar.'''
@@ -1051,35 +1052,25 @@ class QScintillaWrapper(QTextMixin):
     # def toPythonIndexRowCol(self,index):
         # pass
     #@+node:ekr.20140901062324.18610: *4* working
-    #@+node:ekr.20140901062324.18593: *5* qsciw.delete (test)
+    #@+node:ekr.20140901062324.18593: *5* qsciw.delete
     def delete(self,i,j=None):
         '''Delete s[i:j]'''
-        if 0: 
-            s = self.getAllText()
-            g.trace(i,j,len(s),g.callers())
-        # g.trace(i,j,self.getAllText())
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i+1
         j = self.toPythonIndex(j)
-        # # # if j is None: j = i
-        # # # if i > j: i,j = j,i
         self.setSelectionRange(i,j)
-        if 0:
-            i2,j2 = self.getSelectionRange()
-            g.trace(i2,j2,s[i2:j2])
-        # g.trace(self.getSelectionRange())
-        w.replaceSelectedText('')
-        # try:
-            # self.changingText = True # Disable onTextChanged
-            # w.replaceSelectedText('')
-        # finally:
-            # self.changingText = False
+        try:
+            self.changingText = True # Disable onTextChanged
+            w.replaceSelectedText('')
+        finally:
+            self.changingText = False
     #@+node:ekr.20140901062324.18594: *5* qsciw.flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         '''Flash the character at position i.'''
         # This causes problems during unit tests:
         # The selection point isn't restored in time.
+        return ### Try to use Scintilla matching.
         if g.app.unitTesting:
             return
         #@+others
@@ -1091,6 +1082,7 @@ class QScintillaWrapper(QTextMixin):
         def addFlashCallback(self=self):
             n,i = self.flashCount,self.flashIndex
             w = self.widget
+            self.setSelectionRange(i,i+1)
             # e = QtWidgets.QTextCursor
             # cursor = w.textCursor() # Must be the widget's cursor.
             # cursor.setPosition(i)
@@ -1143,26 +1135,15 @@ class QScintillaWrapper(QTextMixin):
     def getInsertPoint(self):
         '''Get the insertion point from a QsciScintilla widget.'''
         w = self.widget
-        s = self.getAllText()
-        row,col = w.getCursorPosition()  
-        i = g.convertRowColToPythonIndex(s, row, col)
+        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
         return i
-    #@+node:ekr.20140901062324.18652: *5* qsciw.getLength (uses getAllText)
-    def getLength(self):
-        '''Return the length of the text.'''
-        return len(self.getAllText())
     #@+node:ekr.20110605121601.18110: *5* qsciw.getSelectionRange
     def getSelectionRange(self,sort=True):
         '''Get the selection range from a QsciScintilla widget.'''
         w = self.widget
-        if w.hasSelectedText():
-            s = self.getAllText()
-            row_i,col_i,row_j,col_j = w.getSelection()
-            i = g.convertRowColToPythonIndex(s, row_i, col_i)
-            j = g.convertRowColToPythonIndex(s, row_j, col_j)
-            if sort and i > j: i,j = j,i
-        else:
-            i = j = self.getInsertPoint()
+        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
+        j = int(w.SendScintilla(w.SCI_GETANCHOR))
+        if sort and i > j: i,j = j,i
         return i,j
     #@+node:ekr.20110605121601.18111: *5* qsciw.hasSelection
     def hasSelection(self):
@@ -1170,7 +1151,7 @@ class QScintillaWrapper(QTextMixin):
         return self.widget.hasSelectedText()
     #@+node:ekr.20140901062324.18601: *5* qsciw.insert (calls getAllText)
     def insert(self,i,s):
-        
+        '''Insert s at position i.'''
         s2 = self.getAllText()
         i = self.toPythonIndex(i)
         s3 = s2[:i] + s + s2[i:]
@@ -1198,21 +1179,20 @@ class QScintillaWrapper(QTextMixin):
     def setInsertPoint(self,i,s=None):
         '''Set the insertion point in a QsciScintilla widget.'''
         w = self.widget
-        w.SendScintilla(w.SCI_SETCURRENTPOS,i)
-        w.SendScintilla(w.SCI_SETANCHOR,i)
+        # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
+        # w.SendScintilla(w.SCI_SETANCHOR,i)
+        w.SendScintilla(w.SCI_SETSEL,i,i)
     #@+node:ekr.20110605121601.18115: *5* qsciw.setSelectionRange
     def setSelectionRange(self,i,j,insert=None,s=None):
         '''Set the selection range in a QsciScintilla widget.'''
         w = self.widget
-        # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
-        if insert in (j,None):
-            self.setInsertPoint(j)
-            w.SendScintilla(w.SCI_SETANCHOR,i)
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        # g.trace('i',i,'j',j,'insert',insert,g.callers())
+        if insert == j:
+            w.SendScintilla(w.SCI_SETSEL,j,i)
         else:
-            self.setInsertPoint(i)
-            w.SendScintilla(w.SCI_SETANCHOR,j)
-
-    setSelectionRangeHelper = setSelectionRange
+            w.SendScintilla(w.SCI_SETSEL,i,j)
     #@-others
 #@+node:ekr.20110605121601.18071: ** class QTextEditWrapper(QTextMixin)
 class QTextEditWrapper(QTextMixin):
