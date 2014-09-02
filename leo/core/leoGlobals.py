@@ -4334,6 +4334,7 @@ def toPythonIndex (s,index):
             row,col = data
             row,col = int(row),int(col)
             i = g.convertRowColToPythonIndex(s,row-1,col)
+            # g.trace(data,row,col,i)
             return i
         else:
             g.trace('bad string index: %s' % index)

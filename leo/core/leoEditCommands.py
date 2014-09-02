@@ -3732,6 +3732,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         # g.trace('changed',changed,'word2',repr(word2))
 
         if changed:
+            g.trace(i,j)
             w.delete(i,j)
             w.insert(i,word2)
             w.setSelectionRange(ins,ins,insert=ins)

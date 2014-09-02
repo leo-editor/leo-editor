@@ -297,7 +297,9 @@ class QTextMixin:
         '''QTextMixin'''
         if s is None:
             s = self.getAllText()
-        return g.toPythonIndex(s,index)
+        i = g.toPythonIndex(s,index)
+        # g.trace(index,len(s),i,s[i:i+10])
+        return i
 
     toGuiIndex = toPythonIndex
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
@@ -995,61 +997,131 @@ class QScintillaWrapper(QTextMixin):
                     oops('bad color: %s' % color)
             else: oops('bad style: %s' % style)
     #@+node:ekr.20110605121601.18107: *3* qsciw.High-level interface
-    #@+node:ekr.20140901062324.18610: *4* original
+    #@+node:ekr.20140902084950.18638: *4* to do
+    #@+node:ekr.20140901062324.18604: *5* qsciw.scrollDelegate (to be deleted)
+    if 0: # Not yet.
+        
+        def scrollDelegate(self,kind):
+            '''
+            Scroll a QTextEdit up or down one page.
+            direction is in ('down-line','down-page','up-line','up-page')
+            '''
+            c = self.c
+            w = self.widget
+            vScroll = w.verticalScrollBar()
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            n = max(2,n-3)
+            if   kind == 'down-half-page': delta = n/2
+            elif kind == 'down-line':      delta = 1
+            elif kind == 'down-page':      delta = n
+            elif kind == 'up-half-page':   delta = -n/2
+            elif kind == 'up-line':        delta = -1
+            elif kind == 'up-page':        delta = -n
+            else:
+                delta = 0 ; g.trace('bad kind:',kind)
+            val = vScroll.value()
+            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
+            vScroll.setValue(val+(delta*lineSpacing))
+            c.bodyWantsFocus()
+    #@+node:ekr.20140901062324.18599: *5* qsciw.getYScrollPosition (to do)
+    def getYScrollPosition(self):
+        
+        w = self.widget
+        return 0 # Not ready yet.
+    #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage (to do)
+    def linesPerPage (self):
+        '''Return the number of lines presently visible.'''
+        if 1:
+            return 50
+        else:
+            w = self.widget
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            return n
+    #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
+    def setYScrollPosition(self,pos):
+        '''Set the position of the vertical scrollbar.'''
+    #@+node:ekr.20140901062324.18592: *5* qsciw.toPythonIndexRowCol (to do)
+    # For now, use the QTextMixin method.
+    # It's slow, but it works.
+
+    # def toPythonIndexRowCol(self,index):
+        # pass
+    #@+node:ekr.20140901062324.18610: *4* working
     #@+node:ekr.20140901062324.18593: *5* qsciw.delete (test)
     def delete(self,i,j=None):
         '''Delete s[i:j]'''
+        if 0: 
+            s = self.getAllText()
+            g.trace(i,j,len(s),g.callers())
+        # g.trace(i,j,self.getAllText())
         w = self.widget
-        i = self.toGuiIndex(i)
+        i = self.toPythonIndex(i)
         if j is None: j = i+1
-        j = self.toGuiIndex(j)
-        if i > j: i,j = j,i
+        j = self.toPythonIndex(j)
+        # # # if j is None: j = i
+        # # # if i > j: i,j = j,i
         self.setSelectionRange(i,j)
-        try:
-            self.changingText = True # Disable onTextChanged
-            w.replaceSelectedText('')
-        finally:
-            self.changingText = False
-        
         if 0:
-            trace = False and not g.unitTesting
-            c,w = self.c,self.widget
-            colorer = c.frame.body.colorizer.highlighter.colorer
-            # n = colorer.recolorCount
-            if trace: g.trace(self.getSelectionRange())
-            i = self.toGuiIndex(i)
-            if j is None: j = i+1
-            j = self.toGuiIndex(j)
-            if i > j: i,j = j,i
-            if trace: g.trace(i,j)
-            # Set a hook for the colorer.
-            colorer.initFlag = True
-            sb = w.verticalScrollBar()
-            pos = sb.sliderPosition()
-            cursor = w.textCursor()
-            try:
-                self.changingText = True # Disable onTextChanged
-                old_i,old_j = self.getSelectionRange()
-                if i == old_i and j == old_j:
-                    # Work around an apparent bug in cursor.movePosition.
-                    cursor.removeSelectedText()
-                elif i == j:
-                    pass
-                else:
-                    # g.trace('*** using dubious code')
-                    cursor.setPosition(i)
-                    moveCount = abs(j-i)
-                    cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
-                    w.setTextCursor(cursor)  # Bug fix: 2010/01/27
-                    if trace:
-                        i,j = self.getSelectionRange()
-                        g.trace(i,j)
-                    cursor.removeSelectedText()
-                    if trace: g.trace(self.getSelectionRange())
-            finally:
-                self.changingText = False
-            sb.setSliderPosition(pos)
-            # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
+            i2,j2 = self.getSelectionRange()
+            g.trace(i2,j2,s[i2:j2])
+        # g.trace(self.getSelectionRange())
+        w.replaceSelectedText('')
+        # try:
+            # self.changingText = True # Disable onTextChanged
+            # w.replaceSelectedText('')
+        # finally:
+            # self.changingText = False
+    #@+node:ekr.20140901062324.18594: *5* qsciw.flashCharacter
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+        '''Flash the character at position i.'''
+        # This causes problems during unit tests:
+        # The selection point isn't restored in time.
+        if g.app.unitTesting:
+            return
+        #@+others
+        #@+node:ekr.20140902084950.18635: *6* after
+        def after(func,delay=delay):
+            '''Run func after the given delay.'''
+            QtCore.QTimer.singleShot(delay,func)
+        #@+node:ekr.20140902084950.18636: *6* addFlashCallback
+        def addFlashCallback(self=self):
+            n,i = self.flashCount,self.flashIndex
+            w = self.widget
+            # e = QtWidgets.QTextCursor
+            # cursor = w.textCursor() # Must be the widget's cursor.
+            # cursor.setPosition(i)
+            # cursor.movePosition(e.Right,e.KeepAnchor,1)
+            # extra = w.ExtraSelection()
+            # extra.cursor = cursor
+            # if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
+            # if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
+            # self.extraSelList = [extra] # keep the reference.
+            # w.setExtraSelections(self.extraSelList)
+            self.flashCount -= 1
+            after(removeFlashCallback)
+        #@+node:ekr.20140902084950.18637: *6* removeFlashCallback
+        def removeFlashCallback(self=self):
+            '''Remove the extra selections.'''
+            ### w.setExtraSelections([])
+            w = self.widget
+            if self.flashCount > 0:
+                after(addFlashCallback)
+            else:
+                w.setFocus()
+        #@-others
+        # Numbered color names don't work in Ubuntu 8.10, so...
+        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
+        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+        w = self.widget # A QsciScintilla widget.
+        self.flashCount = flashes
+        self.flashIndex = i
+        self.flashBg = None if bg.lower()=='same' else bg
+        self.flashFg = None if fg.lower()=='same' else fg
+        addFlashCallback()
     #@+node:ekr.20140901062324.18595: *5* qsciw.get
     def get(self,i,j=None):
 
@@ -1100,8 +1172,9 @@ class QScintillaWrapper(QTextMixin):
     def insert(self,i,s):
         
         s2 = self.getAllText()
-        i = self.toGuiIndex(i)
-        self.setAllText(s2[:i] + s + s2[i:])
+        i = self.toPythonIndex(i)
+        s3 = s2[:i] + s + s2[i:]
+        self.setAllText(s3)
         self.setInsertPoint(i+len(s))
         return i
     #@+node:ekr.20110605121601.18112: *5* qsciw.see
@@ -1119,7 +1192,7 @@ class QScintillaWrapper(QTextMixin):
         assert isinstance(w,Qsci.QsciScintilla),w
         # g.trace(len(s))
         w.setText(s)
-        w.update()
+        # w.update()
 
     #@+node:ekr.20110605121601.18114: *5* qsciw.setInsertPoint
     def setInsertPoint(self,i,s=None):
@@ -1140,101 +1213,6 @@ class QScintillaWrapper(QTextMixin):
             w.SendScintilla(w.SCI_SETANCHOR,j)
 
     setSelectionRangeHelper = setSelectionRange
-    #@+node:ekr.20140901062324.18604: *4* qsciw.scrollDelegate (to be deleted)
-    if 0: # Not yet.
-        
-        def scrollDelegate(self,kind):
-            '''
-            Scroll a QTextEdit up or down one page.
-            direction is in ('down-line','down-page','up-line','up-page')
-            '''
-            c = self.c
-            w = self.widget
-            vScroll = w.verticalScrollBar()
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            n = max(2,n-3)
-            if   kind == 'down-half-page': delta = n/2
-            elif kind == 'down-line':      delta = 1
-            elif kind == 'down-page':      delta = n
-            elif kind == 'up-half-page':   delta = -n/2
-            elif kind == 'up-line':        delta = -1
-            elif kind == 'up-page':        delta = -n
-            else:
-                delta = 0 ; g.trace('bad kind:',kind)
-            val = vScroll.value()
-            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
-            vScroll.setValue(val+(delta*lineSpacing))
-            c.bodyWantsFocus()
-    #@+node:ekr.20140901062324.18594: *4* qsciw.flashCharacter & helpers (to do)
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        '''Flash the character at position i.'''
-        # This causes problems during unit tests:
-        # The selection point isn't restored in time.
-        if g.app.unitTesting:
-            return
-        # Numbered color names don't work in Ubuntu 8.10, so...
-        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
-        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
-        w = self.widget # A QsciScintilla widget.
-        self.flashCount = flashes
-        self.flashIndex = i
-        self.flashBg = None if bg.lower()=='same' else bg
-        self.flashFg = None if fg.lower()=='same' else fg
-        self.addFlashCallback(w)
-    #@+node:ekr.20140902084950.18635: *5* qsciw.after
-    def after(self,delay,func):
-        '''Run func after the given delay.'''
-        QtCore.QTimer.singleShot(delay,func)
-    #@+node:ekr.20140902084950.18636: *5* qsciw.addFlashCallback
-    def addFlashCallback(self,w):
-        n,i = self.flashCount,self.flashIndex
-        # e = QtWidgets.QTextCursor
-        # cursor = w.textCursor() # Must be the widget's cursor.
-        # cursor.setPosition(i)
-        # cursor.movePosition(e.Right,e.KeepAnchor,1)
-        # extra = w.ExtraSelection()
-        # extra.cursor = cursor
-        # if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
-        # if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
-        # self.extraSelList = [extra] # keep the reference.
-        # w.setExtraSelections(self.extraSelList)
-        self.flashCount -= 1
-        self.after(removeFlashCallback)
-    #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
-    def removeFlashCallback(self,w):
-        '''Remove the extra selections.'''
-        ### w.setExtraSelections([])
-        if self.flashCount > 0:
-            after(addFlashCallback)
-        else:
-            w.setFocus()
-    #@+node:ekr.20140901062324.18599: *4* qsciw.getYScrollPosition (to do)
-    def getYScrollPosition(self):
-        
-        w = self.widget
-        return 0 # Not ready yet.
-    #@+node:ekr.20140901062324.18603: *4* qsciw.linesPerPage (to do)
-    def linesPerPage (self):
-        '''Return the number of lines presently visible.'''
-        if 1:
-            return 50
-        else:
-            w = self.widget
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            return n
-    #@+node:ekr.20140901062324.18609: *4* qsciw.setYScrollPosition (to do)
-    def setYScrollPosition(self,pos):
-        '''Set the position of the vertical scrollbar.'''
-    #@+node:ekr.20140901062324.18592: *4* qsciw.toPythonIndexRowCol (to do)
-    # For now, use the QTextMixin method.
-    # It's slow, but it works.
-
-    # def toPythonIndexRowCol(self,index):
-        # pass
     #@-others
 #@+node:ekr.20110605121601.18071: ** class QTextEditWrapper(QTextMixin)
 class QTextEditWrapper(QTextMixin):
