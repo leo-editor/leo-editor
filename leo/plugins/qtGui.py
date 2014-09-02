@@ -672,7 +672,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     ):
         # Create a text widget.
         c = self.leo_c
-        if name == 'richTextEdit' and self.useScintilla:
+        if name == 'richTextEdit' and self.useScintilla and Qsci:
             # Do this in finishCreate, when c.frame.body exists.
             w = Qsci.QsciScintilla(parent)
             self.scintilla_widget = w
@@ -1879,7 +1879,10 @@ class LeoQtBody (leoFrame.LeoBody):
             return
         w = wrapper.widget
         assert isinstance(wrapper,(QScintillaWrapper,QTextEditWrapper)),wrapper
-        assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        if Qsci:
+            assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        else:
+            assert isinstance(w,QtWidgets.QTextEdit),w
         def report(s):
             g.trace('*** %9s wrapper %s w %s %s' % (
                 s,id(wrapper),id(w),c.p.h))
@@ -2119,7 +2122,10 @@ class LeoQtBody (leoFrame.LeoBody):
             id(w),len(p.b),p.h),g.callers(5))
         c = self.c
         cc = c.chapterController
-        assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        if Qsci:
+            assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        else:
+            assert isinstance(w,QtWidgets.QTextEdit),w
         if cc and self.use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:

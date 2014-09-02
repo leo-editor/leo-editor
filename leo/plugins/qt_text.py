@@ -4,7 +4,6 @@
 #@@first
 '''Text classes for the Qt version of Leo'''
 import leo.core.leoGlobals as g
-# import leo.core.leoFrame as leoFrame
 import time
 from leo.core.leoQt import isQt5,QtCore,QtGui,Qsci,QtWidgets
 from leo.core.leoQt import Qsci
