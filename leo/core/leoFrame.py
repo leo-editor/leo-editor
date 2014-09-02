@@ -2402,6 +2402,8 @@ class NullColorizer:
 
     def scanColorDirectives(self,p): pass
 
+    def showInvisibles(self): pass
+
     def updateSyntaxColorer (self,p): pass
 
     def useSyntaxColoring(self,p):
