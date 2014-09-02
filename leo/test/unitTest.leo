@@ -14,7 +14,7 @@
 <v t="ekr.20140103103143.4095"><vh>@views</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = True</vh></v>
+<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
 <v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
 <v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
