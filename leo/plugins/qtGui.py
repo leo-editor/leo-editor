@@ -1668,7 +1668,9 @@ class LeoQtBody (leoFrame.LeoBody):
         top = c.frame.top
         sw = top.leo_ui.stackedWidget
         sw.setCurrentIndex(1)
-        if self.useScintilla:
+        if self.useScintilla and not Qsci:
+            g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
+        if self.useScintilla and Qsci:
             self.widget = c.frame.top.scintilla_widget
                 # dw.createText sets self.scintilla_widget
             self.wrapper = QScintillaWrapper(self.widget,name='body',c=c)
