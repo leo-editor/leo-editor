@@ -206,7 +206,9 @@ class QTextMixin:
         assert isinstance(self.widget,(
             QtWidgets.QTextBrowser,
             QtWidgets.QLineEdit,
-            QtWidgets.QTextEdit)),self.widget
+            QtWidgets.QTextEdit,
+            Qsci and Qsci.QsciScintilla,
+        )),self.widget
         QtWidgets.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20140901062324.18713: *4* qtm.Idle time (removed)
     if 0:
@@ -285,6 +287,11 @@ class QTextMixin:
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i+len(s))
         return i
+    #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
+    def seeInsertPoint(self):
+        '''Ensure the insert point is visible.'''
+        self.see(self.getInsertPoint())
+            # getInsertPoint defined in client classes.
     #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex
     def toPythonIndex (self,index,s=None):
         '''QTextMixin'''
@@ -932,6 +939,8 @@ class QScintillaWrapper(QTextMixin):
         self.widget = widget
         # Complete the init.
         self.set_config()
+        # Set the signal.
+        g.app.gui.setFilter(c,widget,self,tag=name)
     #@+node:ekr.20110605121601.18106: *4* qsciw.set_config
     def set_config (self):
         '''Set QScintillaWrapper configuration options.'''
@@ -986,89 +995,23 @@ class QScintillaWrapper(QTextMixin):
                     oops('bad color: %s' % color)
             else: oops('bad style: %s' % style)
     #@+node:ekr.20110605121601.18107: *3* qsciw.High-level interface
-    #@+node:ekr.20140901062324.18650: *4* Do nothings
-    #@+node:ekr.20140901062324.18594: *5* qsciw.flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        
-        if 0: ### Not yet
-        
-            # numbered color names don't work in Ubuntu 8.10, so...
-            if bg[-1].isdigit() and bg[0] != '#':
-                bg = bg[:-1]
-            if fg[-1].isdigit() and fg[0] != '#':
-                fg = fg[:-1]
-        
-            # This might causes problems during unit tests.
-            # The selection point isn't restored in time.
-            if g.app.unitTesting:
-                return
-            w = self.widget # A QTextEdit.
-            e = QtWidgets.QTextCursor
-        
-            def after(func):
-                QtCore.QTimer.singleShot(delay,func)
-        
-            def addFlashCallback(self=self,w=w):
-                n,i = self.flashCount,self.flashIndex
-                cursor = w.textCursor() # Must be the widget's cursor.
-                cursor.setPosition(i)
-                cursor.movePosition(e.Right,e.KeepAnchor,1)
-                extra = w.ExtraSelection()
-                extra.cursor = cursor
-                if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
-                if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
-                self.extraSelList = [extra] # keep the reference.
-                w.setExtraSelections(self.extraSelList)
-                self.flashCount -= 1
-                after(removeFlashCallback)
-        
-            def removeFlashCallback(self=self,w=w):
-                w.setExtraSelections([])
-                if self.flashCount > 0:
-                    after(addFlashCallback)
-                else:
-                    w.setFocus()
-        
-            self.flashCount = flashes
-            self.flashIndex = i
-            self.flashBg = None if bg.lower()=='same' else bg
-            self.flashFg = None if fg.lower()=='same' else fg
-            addFlashCallback()
-    #@+node:ekr.20140901062324.18604: *5* qsciw.scrollDelegate
-    if 0: # Not yet.
-        
-        def scrollDelegate(self,kind):
-            '''
-            Scroll a QTextEdit up or down one page.
-            direction is in ('down-line','down-page','up-line','up-page')
-            '''
-            c = self.c
-            w = self.widget
-            vScroll = w.verticalScrollBar()
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            n = max(2,n-3)
-            if   kind == 'down-half-page': delta = n/2
-            elif kind == 'down-line':      delta = 1
-            elif kind == 'down-page':      delta = n
-            elif kind == 'up-half-page':   delta = -n/2
-            elif kind == 'up-line':        delta = -1
-            elif kind == 'up-page':        delta = -n
-            else:
-                delta = 0 ; g.trace('bad kind:',kind)
-            val = vScroll.value()
-            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
-            vScroll.setValue(val+(delta*lineSpacing))
-            c.bodyWantsFocus()
-    #@+node:ekr.20140901062324.18651: *4* to do...
-    #@+node:ekr.20140901062324.18593: *5* qsciw.delete (to do)
+    #@+node:ekr.20140901062324.18610: *4* original
+    #@+node:ekr.20140901062324.18593: *5* qsciw.delete (test)
     def delete(self,i,j=None):
+        '''Delete s[i:j]'''
+        w = self.widget
+        i = self.toGuiIndex(i)
+        if j is None: j = i+1
+        j = self.toGuiIndex(j)
+        if i > j: i,j = j,i
+        self.setSelectionRange(i,j)
+        try:
+            self.changingText = True # Disable onTextChanged
+            w.replaceSelectedText('')
+        finally:
+            self.changingText = False
         
-        if 1:
-            # Avoid calls to setAll text if possible.
-            g.trace('not ready yet')
-        else:
+        if 0:
             trace = False and not g.unitTesting
             c,w = self.c,self.widget
             colorer = c.frame.body.colorizer.highlighter.colorer
@@ -1107,58 +1050,6 @@ class QScintillaWrapper(QTextMixin):
                 self.changingText = False
             sb.setSliderPosition(pos)
             # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
-    #@+node:ekr.20140901062324.18599: *5* qsciw.getYScrollPosition (to do)
-    def getYScrollPosition(self):
-        
-        if 1:
-            return 0
-        else:
-            # **Important**: There is a Qt bug here: the scrollbar position
-            # is valid only if cursor is visible.  Otherwise the *reported*
-            # scrollbar position will be such that the cursor *is* visible.
-            trace = False and g.trace_scroll and not g.unitTesting
-            w = self.widget
-            sb = w.verticalScrollBar()
-            pos = sb.sliderPosition()
-            if trace: g.trace(pos)
-            return pos
-    #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage (to do)
-    def linesPerPage (self):
-        '''Return the number of lines presently visible.'''
-        if 1:
-            return 50
-        else:
-            w = self.widget
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            return n
-    #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
-    def setYScrollPosition(self,pos):
-
-        if 0:
-            trace = (False or g.trace_scroll) and not g.unitTesting
-            w = self.widget
-            if g.no_scroll:
-                return
-            elif pos is None:
-                if trace: g.trace('None')
-            else:
-                if trace: g.trace(pos,g.callers())
-                sb = w.verticalScrollBar()
-                sb.setSliderPosition(pos)
-    #@+node:ekr.20140901062324.18592: *5* qsciw.toPythonIndexRowCol (to do)
-    def toPythonIndexRowCol(self,index):
-        
-        w = self
-        if index == '1.0':
-            return 0, 0, 0
-        if index == 'end':
-            index = w.getLength()
-        i = w.toPythonIndex(index)
-        row,col = 0,0 ### To do
-        return i,row,col
-    #@+node:ekr.20140901062324.18610: *4* original
     #@+node:ekr.20140901062324.18595: *5* qsciw.get
     def get(self,i,j=None):
 
@@ -1197,8 +1088,7 @@ class QScintillaWrapper(QTextMixin):
             row_i,col_i,row_j,col_j = w.getSelection()
             i = g.convertRowColToPythonIndex(s, row_i, col_i)
             j = g.convertRowColToPythonIndex(s, row_j, col_j)
-            if sort and i > j:
-                i,j = j,i # 2013/03/02: real bug fix.
+            if sort and i > j: i,j = j,i
         else:
             i = j = self.getInsertPoint()
         return i,j
@@ -1214,7 +1104,7 @@ class QScintillaWrapper(QTextMixin):
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i+len(s))
         return i
-    #@+node:ekr.20110605121601.18112: *5* qsciw.see & seeInsertPoint
+    #@+node:ekr.20110605121601.18112: *5* qsciw.see
     def see(self,i):
         '''Ensure insert point i is visible in a QsciScintilla widget.'''
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
@@ -1222,10 +1112,6 @@ class QScintillaWrapper(QTextMixin):
         s = self.getAllText()
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
-
-    def seeInsertPoint(self):
-        '''Ensure the insert point is visible.'''
-        self.see(self.getInsertPoint())
     #@+node:ekr.20110605121601.18113: *5* qsciw.setAllText
     def setAllText(self,s):
         '''Set the text of a QScintilla widget.'''
@@ -1241,8 +1127,8 @@ class QScintillaWrapper(QTextMixin):
         w = self.widget
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
-    #@+node:ekr.20110605121601.18115: *5* qsciw.setSelectionRangeHelper
-    def setSelectionRangeHelper(self,i,j,insert=None,s=None):
+    #@+node:ekr.20110605121601.18115: *5* qsciw.setSelectionRange
+    def setSelectionRange(self,i,j,insert=None,s=None):
         '''Set the selection range in a QsciScintilla widget.'''
         w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
@@ -1252,6 +1138,103 @@ class QScintillaWrapper(QTextMixin):
         else:
             self.setInsertPoint(i)
             w.SendScintilla(w.SCI_SETANCHOR,j)
+
+    setSelectionRangeHelper = setSelectionRange
+    #@+node:ekr.20140901062324.18604: *4* qsciw.scrollDelegate (to be deleted)
+    if 0: # Not yet.
+        
+        def scrollDelegate(self,kind):
+            '''
+            Scroll a QTextEdit up or down one page.
+            direction is in ('down-line','down-page','up-line','up-page')
+            '''
+            c = self.c
+            w = self.widget
+            vScroll = w.verticalScrollBar()
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            n = max(2,n-3)
+            if   kind == 'down-half-page': delta = n/2
+            elif kind == 'down-line':      delta = 1
+            elif kind == 'down-page':      delta = n
+            elif kind == 'up-half-page':   delta = -n/2
+            elif kind == 'up-line':        delta = -1
+            elif kind == 'up-page':        delta = -n
+            else:
+                delta = 0 ; g.trace('bad kind:',kind)
+            val = vScroll.value()
+            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
+            vScroll.setValue(val+(delta*lineSpacing))
+            c.bodyWantsFocus()
+    #@+node:ekr.20140901062324.18594: *4* qsciw.flashCharacter & helpers (to do)
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+        '''Flash the character at position i.'''
+        # This causes problems during unit tests:
+        # The selection point isn't restored in time.
+        if g.app.unitTesting:
+            return
+        # Numbered color names don't work in Ubuntu 8.10, so...
+        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
+        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+        w = self.widget # A QsciScintilla widget.
+        self.flashCount = flashes
+        self.flashIndex = i
+        self.flashBg = None if bg.lower()=='same' else bg
+        self.flashFg = None if fg.lower()=='same' else fg
+        self.addFlashCallback(w)
+    #@+node:ekr.20140902084950.18635: *5* qsciw.after
+    def after(self,delay,func):
+        '''Run func after the given delay.'''
+        QtCore.QTimer.singleShot(delay,func)
+    #@+node:ekr.20140902084950.18636: *5* qsciw.addFlashCallback
+    def addFlashCallback(self,w):
+        n,i = self.flashCount,self.flashIndex
+        # e = QtWidgets.QTextCursor
+        # cursor = w.textCursor() # Must be the widget's cursor.
+        # cursor.setPosition(i)
+        # cursor.movePosition(e.Right,e.KeepAnchor,1)
+        # extra = w.ExtraSelection()
+        # extra.cursor = cursor
+        # if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
+        # if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
+        # self.extraSelList = [extra] # keep the reference.
+        # w.setExtraSelections(self.extraSelList)
+        self.flashCount -= 1
+        self.after(removeFlashCallback)
+    #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
+    def removeFlashCallback(self,w):
+        '''Remove the extra selections.'''
+        ### w.setExtraSelections([])
+        if self.flashCount > 0:
+            after(addFlashCallback)
+        else:
+            w.setFocus()
+    #@+node:ekr.20140901062324.18599: *4* qsciw.getYScrollPosition (to do)
+    def getYScrollPosition(self):
+        
+        w = self.widget
+        return 0 # Not ready yet.
+    #@+node:ekr.20140901062324.18603: *4* qsciw.linesPerPage (to do)
+    def linesPerPage (self):
+        '''Return the number of lines presently visible.'''
+        if 1:
+            return 50
+        else:
+            w = self.widget
+            h = w.size().height()
+            lineSpacing = w.fontMetrics().lineSpacing()
+            n = h/lineSpacing
+            return n
+    #@+node:ekr.20140901062324.18609: *4* qsciw.setYScrollPosition (to do)
+    def setYScrollPosition(self,pos):
+        '''Set the position of the vertical scrollbar.'''
+    #@+node:ekr.20140901062324.18592: *4* qsciw.toPythonIndexRowCol (to do)
+    # For now, use the QTextMixin method.
+    # It's slow, but it works.
+
+    # def toPythonIndexRowCol(self,index):
+        # pass
     #@-others
 #@+node:ekr.20110605121601.18071: ** class QTextEditWrapper(QTextMixin)
 class QTextEditWrapper(QTextMixin):
