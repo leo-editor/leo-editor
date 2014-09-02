@@ -1039,11 +1039,12 @@ class QScintillaWrapper(QTextMixin):
     def getYScrollPosition(self):
         
         w = self.widget
+        # g.trace(g.callers())
         return 0 # Not ready yet.
     #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
     def setYScrollPosition(self,pos):
         '''Set the position of the vertical scrollbar.'''
-        g.trace(pos)
+        # g.trace(pos)
 
     #@+node:ekr.20140901062324.18610: *4* working
     #@+node:ekr.20140901062324.18593: *5* qsciw.delete
@@ -1060,7 +1061,7 @@ class QScintillaWrapper(QTextMixin):
         finally:
             self.changingText = False
     #@+node:ekr.20140901062324.18594: *5* qsciw.flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    def flashCharacter(self,i,bg='white',fg='red',flashes=2,delay=50):
         '''Flash the character at position i.'''
         # This causes problems during unit tests:
         # The selection point isn't restored in time.
@@ -1107,7 +1108,6 @@ class QScintillaWrapper(QTextMixin):
         addFlashCallback()
     #@+node:ekr.20140901062324.18595: *5* qsciw.get
     def get(self,i,j=None):
-
         # Fix the following two bugs by using vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
@@ -1140,14 +1140,14 @@ class QScintillaWrapper(QTextMixin):
     def hasSelection(self):
         '''Return True if a QsciScintilla widget has a selection range.'''
         return self.widget.hasSelectedText()
-    #@+node:ekr.20140901062324.18601: *5* qsciw.insert (calls getAllText)
+    #@+node:ekr.20140901062324.18601: *5* qsciw.insert
     def insert(self,i,s):
         '''Insert s at position i.'''
-        s2 = self.getAllText()
-        i = self.toPythonIndex(i)
-        s3 = s2[:i] + s + s2[i:]
-        self.setAllText(s3)
-        self.setInsertPoint(i+len(s))
+        w = self.widget
+        w.SendScintilla(w.SCI_SETSEL,i,i)
+        w.SendScintilla(w.SCI_ADDTEXT,len(s),s)
+        i += len(s)
+        w.SendScintilla(w.SCI_SETSEL,i,i)
         return i
     #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage
     def linesPerPage (self):
