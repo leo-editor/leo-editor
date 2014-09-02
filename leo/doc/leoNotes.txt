@@ -18971,5 +18971,308 @@ def set_colors(self):
     highlight_foreground_brush.setColor(QtWidgets.QColor('red'))
     g.trace('foreground',highlight_foreground_brush.color().name())
     palette.setBrush(palette.HighlightedText,highlight_foreground_brush)
+.. @+node:ekr.20110605121601.18023: *3*   class BaseQTextWrapper(BaseTextWrapper)
+class BaseQTextWrapper (leoFrame.BaseTextWrapper):
+    '''
+    A general wrapper class supporting the interface of BaseTextWrapper.
+    The redirection methods of HighLevelInterface redirect calls
+    from LeoBody & LeoLog to *this* class.
+    '''
+    @others
+.. @+node:ekr.20110605121601.18024: *4* bqtw.Birth
+.. @+node:ekr.20110605121601.18025: *5* bqtw.ctor
+def __init__ (self,widget,name='BaseQTextWrapper',c=None):
+    '''The ctor for the BaseQTextWrapper class.'''
+    # g.trace('(BaseQTextWrapper)',name,self.widget,g.callers(2))
+    self.c = c or widget.leo_c
+    # Init the base class.
+    leoFrame.BaseTextWrapper.__init__(self,c,
+        baseClassName='BaseQTextWrapper',name=name,widget=widget)
+    assert self.widget and self.widget==widget
+    # Init ivars.
+    self.changingText = False # A lockout for onTextChanged.
+    self.tags = {}
+    self.permanent = True # False if selecting the minibuffer will make the widget go away.
+    self.configDict = {} # Keys are tags, values are colors (names or values).
+    self.configUnderlineDict = {} # Keys are tags, values are True
+    self.useScintilla = False # This is used!
+    if c:
+        self.injectIvars(c)
+.. @+node:ekr.20110605121601.18027: *5* bqtw.injectIvars
+def injectIvars (self,name='1',parentFrame=None):
+
+    w = self ; p = self.c.currentPosition()
+    if name == '1':
+        w.leo_p = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+    w.leo_active = True
+    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    w.leo_frame = None
+    w.leo_name = name
+    w.leo_label = None
+    return w
+.. @+node:ekr.20111114013726.9968: *4* bqtw.High-level interface
+# HighLevelInterface methods call these methods.
+.. @+node:ekr.20110605121601.18032: *5* bqtw.Focus
+def getFocus(self):
+
+    # g.trace('LeoQtBody',self.widget,g.callers(4))
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
+
+findFocus = getFocus
+
+# def hasFocus (self):
+
+    # val = self.widget == g.app.gui.get_focus(self.c)
+    # # g.trace('LeoQtBody returns',val,self.widget,g.callers(4))
+    # return val
+
+def setFocus (self):
+
+    trace = False and not g.unitTesting
+    if trace: print('BaseQTextWrapper.setFocus',
+        # g.app.gui.widget_name(self.widget),
+        self.widget,g.callers(3))
+    # Call the base class
+    assert isinstance(self.widget,
+        (QtWidgets.QTextBrowser,QtWidgets.QLineEdit,QtWidgets.QTextEdit)),self.widget
+    QtWidgets.QTextBrowser.setFocus(self.widget)
+.. @+node:ekr.20110605121601.18033: *5* bqtw.Indices
+.. @+node:ekr.20110605121601.18034: *6* bqtw.toPythonIndex
+def toPythonIndex (self,index):
+    '''BaseQTextWrapper'''
+    s = self.getAllText()
+    return g.toPythonIndex(s,index)
+
+toGuiIndex = toPythonIndex
+.. @+node:ekr.20110605121601.18049: *6* bqtw.indexWarning
+# warningsDict = {}
+
+def indexWarning (self,s):
+
+    return
+.. @+node:ekr.20110605121601.18036: *5* bqtw.Text getters/settters
+.. @+node:ekr.20110605121601.18037: *6* bqtw.appendText
+def appendText(self,s):
+
+    s2 = self.getAllText()
+    self.setAllText(s2+s)
+    self.setInsertPoint(len(s2))
+
+.. @+node:ekr.20110605121601.18040: *6* bqtw.getLastPosition
+def getLastPosition(self):
+
+    return len(self.getAllText())
+.. @+node:ekr.20110605121601.18041: *6* bqtw.getSelectedText
+def getSelectedText(self):
+
+    i,j = self.getSelectionRange()
+    if i == j:
+        return ''
+    else:
+        s = self.getAllText()
+        return s[i:j]
+.. @+node:ekr.20110605121601.18042: *6* bqtw.get
+def get(self,i,j=None):
+    """ Slow implementation of get() - ok for QLineEdit """
+    #g.trace('Slow get', g.callers(5))
+
+    s = self.getAllText()
+    i = self.toGuiIndex(i)
+
+    if j is None: 
+        j = i+1
+
+    j = self.toGuiIndex(j)
+    return s[i:j]
+.. @+node:ekr.20110605121601.18043: *6* bqtw.insert
+def insert(self,i,s):
+
+    s2 = self.getAllText()
+    i = self.toGuiIndex(i)
+    self.setAllText(s2[:i] + s + s2[i:])
+    self.setInsertPoint(i+len(s))
+    return i
+.. @+node:ekr.20110605121601.18044: *6* bqtw.selectAllText
+def selectAllText(self,insert=None):
+
+    w = self.widget
+    w.selectAll()
+    # if insert is not None:
+        # self.setInsertPoint(insert)
+    # Bug fix: 2012/03/25.
+    self.setSelectionRange(0,'end',insert=insert)
+
+.. @+node:ekr.20110605121601.18045: *6* bqtw.setSelectionRange & dummy helper
+# Note: this is used by QTextEditWrapper.
+
+def setSelectionRange (self,i,j,insert=None):
+
+    # i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+    return self.setSelectionRangeHelper(i,j,insert)
+.. @+node:ekr.20110605121601.18046: *7* bqtw.setSelectionRangeHelper
+def setSelectionRangeHelper(self,i,j,insert=None,s=None):
+
+    self.oops()
+.. @+node:ekr.20110605121601.18050: *5* bqtw.HighLevelInterface
+# Do not delete.
+# The redirection methods of HighLevelInterface redirect calls
+# from LeoBody & LeoLog to *this* class.
+
+# Essential methods...
+def getName (self):
+    return self.name
+
+# Optional methods...
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+
+def getYScrollPosition(self):           return None # A flag
+def seeInsertPoint (self):              self.see(self.getInsertPoint())
+def setBackgroundColor(self,color):     pass
+def setEditorColors (self,bg,fg):       pass
+def setForegroundColor(self,color):     pass
+def setYScrollPosition(self,pos):       pass
+
+# Must be defined in subclasses.
+def getAllText(self):                       self.oops()
+def getInsertPoint(self):                   self.oops()
+def getSelectionRange(self,sort=True):      self.oops()
+def hasSelection(self):                     self.oops()
+def see(self,i):                            self.oops()
+def setAllText(self,s):                     self.oops()
+def setInsertPoint(self,i,s=None):          self.oops()
+.. @+node:ekr.20110605121601.18056: *6* bqtw.tag_configure
+def tag_configure (self,*args,**keys):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(args,keys)
+
+    if len(args) == 1:
+        key = args[0]
+        self.tags[key] = keys
+        val = keys.get('foreground')
+        underline = keys.get('underline')
+        if val:
+            # if trace: g.trace(key,val)
+            self.configDict [key] = val
+        if underline:
+            self.configUnderlineDict [key] = True
+    else:
+        g.trace('oops',args,keys)
+
+tag_config = tag_configure
+.. @+node:ekr.20110605121601.18052: *5* bqtw.Idle time (to be removed)
+def after_idle(self,func,threadCount):
+    # g.trace(func.__name__,'threadCount',threadCount)
+    return func(threadCount)
+
+def after(self,n,func,threadCount):
+    def after_callback(func=func,threadCount=threadCount):
+        # g.trace(func.__name__,threadCount)
+        return func(threadCount)
+    QtCore.QTimer.singleShot(n,after_callback)
+
+def scheduleIdleTimeRoutine (self,function,*args,**keys):
+    g.trace()
+    # if not g.app.unitTesting:
+        # self.widget.after_idle(function,*args,**keys)
+.. @+node:ekr.20110605121601.18048: *4* bqtw.onTextChanged
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    # Important: usually w.changingText is True.
+    # This method very seldom does anything.
+    trace = False and not g.unitTesting
+    verbose = False
+    w = self
+    c = self.c ; p = c.p
+    tree = c.frame.tree
+    
+    if w.changingText: 
+        if trace and verbose: g.trace('already changing')
+        return
+    if tree.tree_select_lockout:
+        if trace and verbose: g.trace('selecting lockout')
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the VNode.
+    oldText = p.b
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.error('*** unexpected non-change')
+        return
+    # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+    # oldIns  = p.v.insertSpot
+    i,j = p.v.selectionStart,p.v.selectionLength
+    oldSel  = (i,i+j)
+    if trace: g.trace('oldSel',oldSel,'newSel',newSel)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    # Update the VNode.
+    p.v.setBodyString(newText)
+    if True:
+        p.v.insertSpot = newInsert
+        i,j = newSel
+        i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+        if i > j: i,j = j,i
+        p.v.selectionStart,p.v.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if g.app.qt_use_tabs:
+        if trace: g.trace(c.frame.top)
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    c.frame.body.updateEditors()
+    c.frame.tree.updateIcon(p)
+    if 1: # This works, and is probably better.
+        # Set a hook for the old jEdit colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+.. @+node:ekr.20120325032957.9730: *4* bqtw.rememberSelectionAndScroll
+def rememberSelectionAndScroll(self):
+
+    trace = (False or g.trace_scroll) and not g.unitTesting
+    w = self
+    v = self.c.p.v # Always accurate.
+    v.insertSpot = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i > j: i,j = j,i
+    assert(i<=j)
+    v.selectionStart = i
+    v.selectionLength = j-i
+    v.scrollBarSpot = spot = w.getYScrollPosition()
+    if trace:
+        g.trace(spot,v.h)
+        # g.trace(id(v),id(w),i,j,ins,spot,v.h)
 .. @-all
 .. @-leo

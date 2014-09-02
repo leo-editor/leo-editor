@@ -46,7 +46,8 @@ from collections import defaultdict
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
 
-from leo.plugins.qt_text import BaseQTextWrapper,QTextMixin,LeoQTextBrowser
+from leo.plugins.qt_text import PlainTextWrapper # BaseQTextWrapper,
+from leo.plugins.qt_text import QTextMixin,LeoQTextBrowser
 from leo.plugins.qt_text import QHeadlineWrapper,QMinibufferWrapper
 from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 
@@ -662,7 +663,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         self.setName(w,name)
         return w
-    #@+node:ekr.20110605121601.18163: *6* dw.createText (*changed)
+    #@+node:ekr.20110605121601.18163: *6* dw.createText
     def createText (self,parent,name,
         # hPolicy=None,vPolicy=None,
         lineWidth = 0,
@@ -1617,13 +1618,13 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
     #@-others
-#@+node:ekr.20110605121601.18180: *3* class LeoQtBody (LeoBody)
+#@+node:ekr.20110605121601.18180: *3* class LeoQtBody(leoFrame.LeoBody)
 class LeoQtBody (leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
     # pylint: disable=interface-not-implemented
     #@+others
-    #@+node:ekr.20110605121601.18181: *4*  Birth
-    #@+node:ekr.20110605121601.18182: *5*  ctor (LeoQtBody) (changed)
+    #@+node:ekr.20110605121601.18181: *4* LeoQtBody.Birth
+    #@+node:ekr.20110605121601.18182: *5* LeoQtBody.ctor
     def __init__ (self,frame,parentFrame):
         '''Ctor for LeoQtBody class.'''
         trace = False and not g.unitTesting
@@ -1651,7 +1652,7 @@ class LeoQtBody (leoFrame.LeoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
         if trace: g.trace('(qtBody)',self.widget)
-    #@+node:ekr.20140901062324.18562: *6* set_config
+    #@+node:ekr.20140901062324.18562: *6* LeoQtBody.set_config
     def set_config(self):
         '''Set configuration ivars.'''
         c = self.c
@@ -1660,7 +1661,7 @@ class LeoQtBody (leoFrame.LeoBody):
             'unselected_body_bg_color')
         self.unselectedForegroundColor = c.config.getColor(
             'unselected_body_fg_color')
-    #@+node:ekr.20140901062324.18563: *6* set_widget (LeoQtBody)
+    #@+node:ekr.20140901062324.18563: *6* LeoQtBody.set_widget
     def set_widget(self):
         '''Set the actual gui widget.'''
         c = self.c
@@ -1677,7 +1678,7 @@ class LeoQtBody (leoFrame.LeoBody):
             self.wrapper = QTextEditWrapper(self.widget,name='body',c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.LeoQtColorizer(c,self.wrapper.widget)
-    #@+node:ekr.20110605121601.18183: *6* setWrap (qtBody)
+    #@+node:ekr.20110605121601.18183: *6* LeoQtBody.setWrap
     def setWrap (self,p):
 
         if not p: return
@@ -1690,55 +1691,13 @@ class LeoQtBody (leoFrame.LeoBody):
         w.setHorizontalScrollBarPolicy(
             qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
         w.setWordWrapMode(option.WordWrap if wrap else option.NoWrap)
-    #@+node:ekr.20110605121601.18185: *6* get_name (qtBody)
+    #@+node:ekr.20110605121601.18185: *6* LeoQtBody.get_name
     def getName (self):
 
         return 'body-widget'
-    #@+node:ekr.20110605121601.18190: *4* oops (qtBody)
-    def oops (self):
-        g.trace('qtBody',g.callers(3))
-    #@+node:ekr.20110605121601.18191: *4* High-level interface (qtBody)
-    # The required high-level interface.
-    def appendText (self,s):                return self.wrapper.appendText(s)
-    def clipboard_append(self,s):           return self.wrapper.clipboard_append(s)
-    def clipboard_clear(self):              return self.wrapper.clipboard_clear()
-    def delete(self,i,j=None):              self.wrapper.delete(i,j)
-    def deleteTextSelection (self):         return self.wrapper.deleteTextSelection()
-    def flashCharacter(self,i,
-        bg='white',fg='red',
-        flashes=3,delay=75):                return self.wrapper(i,bg,fg,flashes,delay)
-    def get(self,i,j=None):                 return self.wrapper.get(i,j)
-    def getAllText (self):                  return self.wrapper.getAllText()
-    def getFocus (self):                    return self.wrapper.getFocus()
-    def getInsertPoint(self):               return self.wrapper.getInsertPoint()
-    def getSelectedText (self):             return self.wrapper.getSelectedText()
-    def getSelectionRange(self):            return self.wrapper.getSelectionRange()
-    def getYScrollPosition (self):          return self.wrapper.getYScrollPosition()
-    def hasSelection (self):                return self.wrapper.hasSelection()
-    def insert(self,i,s):                   return self.wrapper.insert(i,s)
-    def replace (self,i,j,s):               self.wrapper.replace (i,j,s)
-    def rowColToGuiIndex (self,s,row,col):  return self.wrapper.rowColToGuiIndex(s,row,col)
-    def see(self,index):                    return self.wrapper.see(index)
-    def seeInsertPoint(self):               return self.wrapper.seeInsertPoint()
-    def selectAllText (self,insert=None):   self.wrapper.selectAllText(insert)
-    # def setAllText (self,s,new_p=None):     return self.wrapper.setAllText(s,new_p=new_p)
-    def setAllText(self,s):                 return self.wrapper.setAllText(s)
-    def setBackgroundColor (self,color):    return self.wrapper.setBackgroundColor(color)
-    def setFocus (self):                    return self.wrapper.setFocus()
-    def setForegroundColor (self,color):    return self.wrapper.setForegroundColor(color)
-    def setInsertPoint (self,pos,s=None):   return self.wrapper.setInsertPoint(pos,s=s)
-    def setSelectionRange (self,i,j,insert=None):
-        self.wrapper.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):        return self.wrapper.setYScrollPosition(i)
-    def tag_configure(self,colorName,**keys):pass
-    def toPythonIndex(self,index):          return self.wrapper.toPythonIndex(index)
-    def toPythonIndexRowCol(self,index):    return self.wrapper.toPythonIndexRowCol(index)
-
-    set_focus = setFocus
-    toGuiIndex = toPythonIndex
-    #@+node:ekr.20110605121601.18193: *4* Editors (qtBody)
-    #@+node:ekr.20110605121601.18194: *5* entries
-    #@+node:ekr.20110605121601.18195: *6* addEditor & helper (qtBody)
+    #@+node:ekr.20110605121601.18193: *4* LeoQtBody.Editors
+    #@+node:ekr.20110605121601.18194: *5* LeoQtBody.entries
+    #@+node:ekr.20110605121601.18195: *6* LeoQtBody.addEditor & helper
     # An override of leoFrame.addEditor.
     def addEditor (self,event=None):
         '''Add another editor to the body pane.'''
@@ -1777,7 +1736,7 @@ class LeoQtBody (leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18196: *7* createEditor (qtBody)
+    #@+node:ekr.20110605121601.18196: *7* LeoQtBody.createEditor
     def createEditor (self,name):
 
         c = self.c ; p = c.p
@@ -1798,7 +1757,7 @@ class LeoQtBody (leoFrame.LeoBody):
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p,wrapper)
         return f,wrapper
-    #@+node:ekr.20110605121601.18197: *6* assignPositionToEditor (qtBody)
+    #@+node:ekr.20110605121601.18197: *6* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor (self,p):
         '''Called *only* from tree.select to select the present body editor.'''
         c = self.c
@@ -1807,7 +1766,7 @@ class LeoQtBody (leoFrame.LeoBody):
         self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
         # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
-    #@+node:ekr.20110605121601.18198: *6* cycleEditorFocus (qtBody)
+    #@+node:ekr.20110605121601.18198: *6* LeoQtBody.cycleEditorFocus
     # Use the base class method.
 
     # def cycleEditorFocus (self,event=None):
@@ -1825,7 +1784,7 @@ class LeoQtBody (leoFrame.LeoBody):
             # self.selectEditor(w2)
             # c.frame.body.bodyCtrl = w2
 
-    #@+node:ekr.20110605121601.18199: *6* deleteEditor (qtBody)
+    #@+node:ekr.20110605121601.18199: *6* LeoQtBody.deleteEditor
     def deleteEditor (self,event=None):
         '''Delete the presently selected body text editor.'''
         trace = False and not g.unitTesting
@@ -1863,7 +1822,7 @@ class LeoQtBody (leoFrame.LeoBody):
                 self.unpackWidget(layout,w.leo_label)
                 w.leo_label = None # 2011/11/12
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18200: *6* findEditorForChapter (qtBody)
+    #@+node:ekr.20110605121601.18200: *6* LeoQtBody.findEditorForChapter
     def findEditorForChapter (self,chapter,p):
 
         '''Return an editor to be assigned to chapter.'''
@@ -1891,7 +1850,7 @@ class LeoQtBody (leoFrame.LeoBody):
         # As a last resort, return the present editor widget.
         if trace: g.trace('***',id(self.bodyCtrl),'no match',p.h)
         return c.frame.body.bodyCtrl
-    #@+node:ekr.20110605121601.18201: *6* select/unselectLabel (qtBody)
+    #@+node:ekr.20110605121601.18201: *6* LeoQtBody.select/unselectLabel
     def unselectLabel (self,wrapper):
 
         pass
@@ -1906,7 +1865,7 @@ class LeoQtBody (leoFrame.LeoBody):
             lab.setEnabled(True)
             lab.setText(c.p.h)
             lab.setEnabled(False)
-    #@+node:ekr.20110605121601.18202: *6* selectEditor & helpers (changed)
+    #@+node:ekr.20110605121601.18202: *6* LeoQtBody.selectEditor & helpers
     selectEditorLockout = False
 
     def selectEditor(self,wrapper):
@@ -1939,7 +1898,7 @@ class LeoQtBody (leoFrame.LeoBody):
         finally:
             self.selectEditorLockout = False
         return val # Don't put a return in a finally clause.
-    #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
+    #@+node:ekr.20110605121601.18203: *7* LeoQtBody.selectEditorHelper
     def selectEditorHelper (self,wrapper):
 
         trace = False and not g.unitTesting
@@ -1976,7 +1935,7 @@ class LeoQtBody (leoFrame.LeoBody):
         c.redraw()
         c.recolor_now()
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18205: *6* updateEditors (qtBody)
+    #@+node:ekr.20110605121601.18205: *6* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors (self):
@@ -2006,8 +1965,8 @@ class LeoQtBody (leoFrame.LeoBody):
             # 2011/11/21: bug fix: was ins=ins
         # g.trace(pos0)
         sb0.setSliderPosition(pos0)
-    #@+node:ekr.20110605121601.18206: *5* utils
-    #@+node:ekr.20110605121601.18207: *6* computeLabel (qtBody)
+    #@+node:ekr.20110605121601.18206: *5* LeoQtBody.utils
+    #@+node:ekr.20110605121601.18207: *6* LeoQtBody.computeLabel
     def computeLabel (self,w):
 
         if hasattr(w,'leo_label') and w.leo_label: # 2011/11/12
@@ -2019,7 +1978,7 @@ class LeoQtBody (leoFrame.LeoBody):
             s = '%s: %s' % (w.leo_chapter,s)
 
         return s
-    #@+node:ekr.20110605121601.18208: *6* createChapterIvar (qtBody)
+    #@+node:ekr.20110605121601.18208: *6* LeoQtBody.createChapterIvar
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
@@ -2030,7 +1989,7 @@ class LeoQtBody (leoFrame.LeoBody):
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
-    #@+node:ekr.20110605121601.18209: *6* deactivateEditors (qtBody)
+    #@+node:ekr.20110605121601.18209: *6* LeoQtBody.deactivateEditors
     def deactivateEditors(self,wrapper):
 
         '''Deactivate all editors except wrapper's editor.'''
@@ -2051,7 +2010,7 @@ class LeoQtBody (leoFrame.LeoBody):
                 self.unselectLabel(wrapper2)
                 if trace: g.trace(w2)
                 self.onFocusOut(w2)
-    #@+node:ekr.20110605121601.18210: *6* ensurePositionExists (qtBody)
+    #@+node:ekr.20110605121601.18210: *6* LeoQtBody.ensurePositionExists
     def ensurePositionExists(self,w):
         '''Return True if w.leo_p exists or can be reconstituted.'''
         trace = False and not g.unitTesting
@@ -2067,7 +2026,7 @@ class LeoQtBody (leoFrame.LeoBody):
         # This *can* happen when selecting a deleted node.
         w.leo_p = c.p.copy()
         return False
-    #@+node:ekr.20110605121601.18211: *6* injectIvars (qtBody)
+    #@+node:ekr.20110605121601.18211: *6* LeoQtBody.injectIvars
     def injectIvars (self,parentFrame,name,p,wrapper):
 
         trace = False and not g.unitTesting
@@ -2089,7 +2048,7 @@ class LeoQtBody (leoFrame.LeoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         w.leo_wrapper = wrapper
-    #@+node:ekr.20110605121601.18212: *6* packLabel (qtBody)
+    #@+node:ekr.20110605121601.18212: *6* LeoQtBody.packLabel
     def packLabel (self,w,n=None):
 
         trace = False and not g.unitTesting
@@ -2115,7 +2074,7 @@ class LeoQtBody (leoFrame.LeoBody):
 
         w.leo_label = lab # Inject the ivar.
         if trace: g.trace('w.leo_label',w,lab)
-    #@+node:ekr.20110605121601.18213: *6* recolorWidget (qtBody)
+    #@+node:ekr.20110605121601.18213: *6* LeoQtBody.recolorWidget
     def recolorWidget (self,p,wrapper):
 
         trace = False and not g.unitTesting
@@ -2136,7 +2095,7 @@ class LeoQtBody (leoFrame.LeoBody):
         finally:
             # Restore.
             c.frame.body.bodyCtrl = old_wrapper
-    #@+node:ekr.20110605121601.18214: *6* switchToChapter (qtBody)
+    #@+node:ekr.20110605121601.18214: *6* LeoQtBody.switchToChapter
     def switchToChapter (self,w):
 
         '''select w.leo_chapter.'''
@@ -2152,7 +2111,7 @@ class LeoQtBody (leoFrame.LeoBody):
                 if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18215: *6* updateInjectedIvars (qtBody) (changed)
+    #@+node:ekr.20110605121601.18215: *6* LeoQtBody.updateInjectedIvars
     def updateInjectedIvars (self,w,p):
 
         trace = False and not g.unitTesting
@@ -2166,7 +2125,7 @@ class LeoQtBody (leoFrame.LeoBody):
         else:
             w.leo_chapter = None
         w.leo_p = p.copy()
-    #@+node:ekr.20110605121601.18216: *6* unpackWidget (qtBody)
+    #@+node:ekr.20110605121601.18216: *6* LeoQtBody.unpackWidget
     def unpackWidget (self,layout,w):
 
         trace = False and not g.unitTesting
@@ -2179,8 +2138,93 @@ class LeoQtBody (leoFrame.LeoBody):
         layout.removeItem(item)
 
 
-    #@+node:ekr.20110605121601.18217: *4* Renderer panes (qtBody)
-    #@+node:ekr.20110605121601.18218: *5* hideCanvasRenderer (qtBody)
+    #@+node:ekr.20110605121601.18223: *4* LeoQtBody.Event handlers
+    #@+node:ekr.20110930174206.15472: *5* LeoQtBody.onFocusIn
+    def onFocusIn (self,obj):
+        '''Handle a focus-in event in the body pane.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(str(obj.objectName()))
+        # Update history only in leoframe.tree.select.
+        # c.NodeHistory.update(c.p)
+        if obj.objectName() == 'richTextEdit':
+            wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+            if wrapper and wrapper != self.bodyCtrl:
+                self.selectEditor(wrapper)
+            self.onFocusColorHelper('focus-in',obj)
+            if hasattr(obj,'leo_copy_button') and obj.leo_copy_button:
+                # g.trace('read only text')
+                obj.setReadOnly(True)
+            else:
+                # g.trace('read/write text')
+                obj.setReadOnly(False)
+            obj.setFocus() # Weird, but apparently necessary.
+    #@+node:ekr.20110930174206.15473: *5* LeoQtBody.onFocusOut
+    def onFocusOut (self,obj):
+        '''Handle a focus-out event in the body pane.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(str(obj.objectName()))
+        # Apparently benign.
+        if obj.objectName() == 'richTextEdit':
+            self.onFocusColorHelper('focus-out',obj)
+            obj.setReadOnly(True)
+    #@+node:ekr.20110605121601.18224: *5* LeoQtBody.qtBody.onFocusColorHelper (revised)
+    # badFocusColors = []
+
+    def onFocusColorHelper(self,kind,obj):
+        '''Handle changes of style when focus changes.'''
+        c,vc = self.c,self.c.vimCommands
+        if vc and c.vim_mode:
+            try:
+                assert kind in ('focus-in','focus-out')
+                w = c.frame.body.wrapper.widget
+                vc.set_border(w=w,activeFlag=kind=='focus-in')
+            except Exception:
+                # g.es_exception()
+                pass
+    #@+node:ekr.20110605121601.18191: *4* LeoQtBody.High-level interface
+    # The required high-level interface.
+    def appendText (self,s):                return self.wrapper.appendText(s)
+    def clipboard_append(self,s):           return self.wrapper.clipboard_append(s)
+    def clipboard_clear(self):              return self.wrapper.clipboard_clear()
+    def delete(self,i,j=None):              self.wrapper.delete(i,j)
+    def deleteTextSelection (self):         return self.wrapper.deleteTextSelection()
+    def flashCharacter(self,i,
+        bg='white',fg='red',
+        flashes=3,delay=75):                return self.wrapper(i,bg,fg,flashes,delay)
+    def get(self,i,j=None):                 return self.wrapper.get(i,j)
+    def getAllText (self):                  return self.wrapper.getAllText()
+    def getFocus (self):                    return self.wrapper.getFocus()
+    def getInsertPoint(self):               return self.wrapper.getInsertPoint()
+    def getSelectedText (self):             return self.wrapper.getSelectedText()
+    def getSelectionRange(self):            return self.wrapper.getSelectionRange()
+    def getYScrollPosition (self):          return self.wrapper.getYScrollPosition()
+    def hasSelection (self):                return self.wrapper.hasSelection()
+    def insert(self,i,s):                   return self.wrapper.insert(i,s)
+    def replace (self,i,j,s):               self.wrapper.replace (i,j,s)
+    def rowColToGuiIndex (self,s,row,col):  return self.wrapper.rowColToGuiIndex(s,row,col)
+    def see(self,index):                    return self.wrapper.see(index)
+    def seeInsertPoint(self):               return self.wrapper.seeInsertPoint()
+    def selectAllText (self,insert=None):   self.wrapper.selectAllText(insert)
+    # def setAllText (self,s,new_p=None):     return self.wrapper.setAllText(s,new_p=new_p)
+    def setAllText(self,s):                 return self.wrapper.setAllText(s)
+    def setBackgroundColor (self,color):    return self.wrapper.setBackgroundColor(color)
+    def setFocus (self):                    return self.wrapper.setFocus()
+    def setForegroundColor (self,color):    return self.wrapper.setForegroundColor(color)
+    def setInsertPoint (self,pos,s=None):   return self.wrapper.setInsertPoint(pos,s=s)
+    def setSelectionRange (self,i,j,insert=None):
+        self.wrapper.setSelectionRange(i,j,insert=insert)
+    def setYScrollPosition (self,i):        return self.wrapper.setYScrollPosition(i)
+    def tag_configure(self,colorName,**keys):pass
+    def toPythonIndex(self,index):          return self.wrapper.toPythonIndex(index)
+    def toPythonIndexRowCol(self,index):    return self.wrapper.toPythonIndexRowCol(index)
+
+    set_focus = setFocus
+    toGuiIndex = toPythonIndex
+    #@+node:ekr.20110605121601.18190: *4* LeoQtBody.oops (no longer used)
+    # def oops (self):
+        # g.trace('qtBody',g.callers(3))
+    #@+node:ekr.20110605121601.18217: *4* LeoQtBody.Renderer panes
+    #@+node:ekr.20110605121601.18218: *5* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer (self,event=None):
         '''Hide canvas pane.'''
         trace = False and not g.unitTesting
@@ -2217,7 +2261,7 @@ class LeoQtBody (leoFrame.LeoBody):
                 self.unpackWidget(layout,w.leo_label)
                 w.leo_label = None # 2011/11/12
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18219: *5* hideTextRenderer (qtBody)
+    #@+node:ekr.20110605121601.18219: *5* LeoQtBody.hideTextRenderer
     def hideCanvas (self,event=None):
         '''Hide canvas pane.'''
         trace = False and not g.unitTesting
@@ -2254,7 +2298,7 @@ class LeoQtBody (leoFrame.LeoBody):
                 self.unpackWidget(layout,w.leo_label)
                 w.leo_label = None # 2011/11/1
         self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18220: *5* packRenderer (qtBody)
+    #@+node:ekr.20110605121601.18220: *5* LeoQtBody.packRenderer
     def packRenderer (self,f,name,w):
 
         n = max(1,self.numberOfEditors)
@@ -2271,7 +2315,7 @@ class LeoQtBody (leoFrame.LeoBody):
         layout.setRowStretch(0,0)
         layout.setRowStretch(1,1) # Give row 1 as much as possible.
         return lab
-    #@+node:ekr.20110605121601.18221: *5* showCanvasRenderer (qtBody)
+    #@+node:ekr.20110605121601.18221: *5* LeoQtBody.showCanvasRenderer
     # An override of leoFrame.addEditor.
 
     def showCanvasRenderer (self,event=None):
@@ -2289,7 +2333,7 @@ class LeoQtBody (leoFrame.LeoBody):
         if not self.canvasRendererVisible:
             self.canvasRendererLabel = self.packRenderer(f,name,w)
             self.canvasRendererVisible = True
-    #@+node:ekr.20110605121601.18222: *5* showTextRenderer (qtBody)
+    #@+node:ekr.20110605121601.18222: *5* LeoQtBody.showTextRenderer
     # An override of leoFrame.addEditor.
 
     def showTextRenderer (self,event=None):
@@ -2310,49 +2354,6 @@ class LeoQtBody (leoFrame.LeoBody):
         if not self.textRendererVisible:
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
-    #@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
-    #@+node:ekr.20110930174206.15472: *5* qtBody.onFocusIn
-    def onFocusIn (self,obj):
-        '''Handle a focus-in event in the body pane.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(str(obj.objectName()))
-        # Update history only in leoframe.tree.select.
-        # c.NodeHistory.update(c.p)
-        if obj.objectName() == 'richTextEdit':
-            wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
-            if wrapper and wrapper != self.bodyCtrl:
-                self.selectEditor(wrapper)
-            self.onFocusColorHelper('focus-in',obj)
-            if hasattr(obj,'leo_copy_button') and obj.leo_copy_button:
-                # g.trace('read only text')
-                obj.setReadOnly(True)
-            else:
-                # g.trace('read/write text')
-                obj.setReadOnly(False)
-            obj.setFocus() # Weird, but apparently necessary.
-    #@+node:ekr.20110930174206.15473: *5* qtBody.onFocusOut
-    def onFocusOut (self,obj):
-        '''Handle a focus-out event in the body pane.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(str(obj.objectName()))
-        # Apparently benign.
-        if obj.objectName() == 'richTextEdit':
-            self.onFocusColorHelper('focus-out',obj)
-            obj.setReadOnly(True)
-    #@+node:ekr.20110605121601.18224: *5* qtBody.onFocusColorHelper (revised)
-    # badFocusColors = []
-
-    def onFocusColorHelper(self,kind,obj):
-        '''Handle changes of style when focus changes.'''
-        c,vc = self.c,self.c.vimCommands
-        if vc and c.vim_mode:
-            try:
-                assert kind in ('focus-in','focus-out')
-                w = c.frame.body.wrapper.widget
-                vc.set_border(w=w,activeFlag=kind=='focus-in')
-            except Exception:
-                # g.es_exception()
-                pass
     #@-others
 #@+node:ekr.20110605121601.18245: *3* class LeoQtFrame
 class LeoQtFrame (leoFrame.LeoFrame):
@@ -2581,7 +2582,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         def put_helper(self,s,w):
             w.setText(s)
-        #@+node:ekr.20110605121601.18261: *5* update (QtStatusLineClass) (changed)
+        #@+node:ekr.20110605121601.18261: *5* update (QtStatusLineClass)
         def update (self):
 
             if g.app.killed: return
@@ -5664,11 +5665,11 @@ class LeoQtGui(leoGui.LeoGui):
         leoGui.LeoGui.__init__(self,'qt')
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
-        self.bodyTextWidget  = BaseQTextWrapper
+        self.bodyTextWidget = QTextMixin ### BaseQTextWrapper
         self.iconimages = {}
         self.idleTimeClass = IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
-        self.plainTextWidget = BaseQTextWrapper
+        self.plainTextWidget = PlainTextWrapper ### BaseQTextWrapper
         self.mGuiName = 'qt'
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
         # Communication between idle_focus_helper and activate/deactivate events.
@@ -5989,7 +5990,7 @@ class LeoQtGui(leoGui.LeoGui):
         title = 'Enter Leo id'
         s,ok = QtWidgets.QInputDialog.getText(parent,title,message)
         return g.u(s)
-    #@+node:ekr.20110605121601.18491: *5* runAskOkCancelNumberDialog (changed)
+    #@+node:ekr.20110605121601.18491: *5* runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
 
         """Create and run askOkCancelNumber dialog ."""
@@ -6011,7 +6012,7 @@ class LeoQtGui(leoGui.LeoGui):
         except ValueError:
             n = None
         return n if ok else None
-    #@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog (changed)
+    #@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
                                    okButtonText=None,default=""):
 
@@ -6732,11 +6733,15 @@ class LeoQtGui(leoGui.LeoGui):
         # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
         w.setStyleSheet(s)
     #@+node:ekr.20140825042850.18411: *4* LeoQtGui.Utils...
-    #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget (changed)
+    #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget
     def isTextWidget (self,w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        return w and isinstance(w,
-            (LeoQtBody,LeoQtLog,BaseQTextWrapper,leoFrame.BaseTextWrapper,QTextMixin))
+        return w and isinstance(w,(
+            LeoQtBody,LeoQtLog,QTextMixin,
+            leoFrame.BaseTextWrapper, ### To be deleted.
+        ))
+            # 
+            # BaseQTextWrapper,
     #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):
 
@@ -6994,7 +6999,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
-    #@+node:ekr.20110605121601.18540: *3* eventFilter
+    #@+node:ekr.20110605121601.18540: *3* eventFilter (LeoQtEventFilter)
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
