@@ -1214,7 +1214,7 @@ class QScintillaWrapper(QTextMixin):
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i+len(s))
         return i
-    #@+node:ekr.20110605121601.18112: *5* qsciw.see
+    #@+node:ekr.20110605121601.18112: *5* qsciw.see & seeInsertPoint
     def see(self,i):
         '''Ensure insert point i is visible in a QsciScintilla widget.'''
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
@@ -1223,13 +1223,15 @@ class QScintillaWrapper(QTextMixin):
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
 
-    # Use base-class method for seeInsertPoint.
+    def seeInsertPoint(self):
+        '''Ensure the insert point is visible.'''
+        self.see(self.getInsertPoint())
     #@+node:ekr.20110605121601.18113: *5* qsciw.setAllText
     def setAllText(self,s):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w,Qsci.QsciScintilla),w
-        g.trace(len(s))
+        # g.trace(len(s))
         w.setText(s)
         w.update()
 
