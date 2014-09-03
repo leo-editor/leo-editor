@@ -1129,10 +1129,6 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
 
     findFocus = getFocus
 
-    # def hasFocus (self):
-
-        # return g.app.gui.get_focus(self.c)
-
     def setFocus (self):
 
         g.app.gui.set_focus(self.c,self.treeWidget)

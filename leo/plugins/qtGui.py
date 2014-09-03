@@ -2201,7 +2201,6 @@ class LeoQtBody (leoFrame.LeoBody):
         flashes=3,delay=75):                return self.wrapper(i,bg,fg,flashes,delay)
     def get(self,i,j=None):                 return self.wrapper.get(i,j)
     def getAllText (self):                  return self.wrapper.getAllText()
-    def getFocus (self):                    return self.wrapper.getFocus()
     def getInsertPoint(self):               return self.wrapper.getInsertPoint()
     def getSelectedText (self):             return self.wrapper.getSelectedText()
     def getSelectionRange(self):            return self.wrapper.getSelectionRange()

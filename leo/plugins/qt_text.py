@@ -172,12 +172,6 @@ class QTextMixin:
     def clipboard_clear (self):
         g.app.gui.replaceClipboardWith('')
     #@+node:ekr.20140901062324.18698: *4* qtm.Focus
-    def getFocus(self):
-        '''QTextMixin'''
-        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
-
-    findFocus = getFocus
-
     def setFocus (self):
         '''QTextMixin'''
         trace = False and not g.unitTesting

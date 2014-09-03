@@ -45,49 +45,6 @@ import time
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
-#@+<< define class DummyHighLevelInterface >>
-#@+node:ekr.20111118104929.10211: ** << define class DummyHighLevelInterface >>
-class DummyHighLevelInterface (object):
-    '''A class to support a do-nothing HighLevelInterface.'''
-    # pylint: disable=interface-not-implemented
-    def __init__(self,c):
-        self.c = c
-    # Mutable methods.
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass
-    def toPythonIndex (self,index):                 return 0
-    def toPythonIndexRowCol(self,index):            return 0,0,0
-    # Immutable redirection methods.
-    def appendText(self,s):                         pass
-    def delete(self,i,j=None):                      pass
-    def deleteTextSelection (self):                 pass
-    def get(self,i,j):                              return ''
-    def getAllText(self):                           return ''
-    def getInsertPoint(self):                       return 0
-    def getSelectedText(self):                      return ''
-    def getSelectionRange (self):                   return 0,0
-    def getYScrollPosition (self):                  return 0
-    def hasSelection(self):                         return False
-    def insert(self,i,s):                           pass    
-    def see(self,i):                                pass
-    def seeInsertPoint (self):                      pass
-    def selectAllText (self,insert=None):           pass
-    def setAllText (self,s):                        pass
-    def setFocus(self):                             pass
-    def setInsertPoint(self,pos,s=None):            pass
-    def setSelectionRange (self,i,j,insert=None):   pass
-    def setYScrollPosition (self,i):                pass
-    def tag_configure (self,colorName,**keys):      pass
-    # Other immutable methods.
-    # These all use leoGlobals functions or LeoGui methods.
-    def clipboard_append(self,s):
-        s1 = g.app.gui.getTextFromClipboard()
-        g.app.gui.replaceClipboardWith(s1 + s)
-    def clipboard_clear (self):
-        g.app.gui.replaceClipboardWith('')
-    def getFocus(self):
-        return g.app.gui.get_focus(self.c)
-#@-<< define class DummyHighLevelInterface >>
 #@+<< define class HighLevelInterface >>
 #@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
 class HighLevelInterface(object):
@@ -116,10 +73,7 @@ class HighLevelInterface(object):
         
     def enable (self,enabled=True):
         self.enabled = enabled
-        
-    def getFocus(self):
-        return g.app.gui.get_focus(self.c)
-        
+
     def toPythonIndex (self,index):
         s = self.getAllText()
         return g.toPythonIndex(s,index)
@@ -152,7 +106,7 @@ class HighLevelInterface(object):
     def getYScrollPosition (self):
         return self.widget and self.widget.getYScrollPosition() or 0
     def hasSelection(self):
-        # Take special care with this, for the benefit of LeoQuickSearchWidget.
+        # Take special care, for the benefit of LeoQuickSearchWidget.
         # This problem only happens with the qttabs gui.
         w = self.widget
         return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
@@ -214,8 +168,6 @@ class BaseTextWrapper(object):
 
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
-
-    def getFocus(self):                         return None
     def getName(self):                          return self.name # Essential.
     def getYScrollPosition (self):              return 0
     def see(self,i):                            pass
@@ -1440,21 +1392,6 @@ class LeoFrame:
 
         # Subclasses may override this to affect drawing.
         self.tab_width = w
-    #@+node:ekr.20060206093313: *3* Focus (LeoFrame)
-    # For compatibility with old scripts.
-    # Using the commander methods directly is recommended.
-
-    def getFocus(self):
-        return g.app.gui.get_focus(self.c) # Used by wxGui plugin.
-
-    def bodyWantsFocus(self):
-        return self.c.bodyWantsFocus()
-
-    def logWantsFocus(self):
-        return self.c.logWantsFocus()
-
-    def minibufferWantsFocus(self):
-        return self.c.minibufferWantsFocus()
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog (HighLevelInterface)
 class LeoLog (HighLevelInterface):
@@ -1462,7 +1399,7 @@ class LeoLog (HighLevelInterface):
     """The base class for the log pane in Leo windows."""
 
     #@+others
-    #@+node:ekr.20031218072017.3695: *3*  ctor (LeoLog)
+    #@+node:ekr.20031218072017.3695: *3* LeoLog.ctor
     def __init__ (self,frame,parentFrame):
 
         self.frame = frame
@@ -1486,7 +1423,7 @@ class LeoLog (HighLevelInterface):
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20070302101023: *3* May be overridden (HighLevelInterface)
+    #@+node:ekr.20070302101023: *3* LeoLog.May be overridden
     def createControl (self,parentFrame):           pass
     def createCanvas (self,tabName):                pass
     def createTextWidget (self,parentFrame):        return None
@@ -2316,7 +2253,6 @@ class NullBody (LeoBody):
     def forceFullRecolor (self):                pass
     def scheduleIdleTimeRoutine (self,function,*args,**keys): pass
     # Low-level gui...
-    # def hasFocus (self):                        pass
     def setFocus (self):                        pass
     #@-others
 #@+node:ekr.20031218072017.2218: ** class NullColorizer
@@ -2691,5 +2627,36 @@ class NullTree (LeoTree):
         else:
             g.trace('-'*20,'oops')
     #@-others
+#@+node:ekr.20140903025053.18631: ** class WrapperAPI class
+class WrapperAPI(object):
+    '''A class specifying the wrapper api used throughout Leo's core.'''
+    def __init__ (self,c): pass
+    def appendText(self,s): pass
+    def clipboard_append(self,s): pass
+    def clipboard_clear (self): pass
+    def delete(self,i,j=None): pass
+    def deleteTextSelection (self): pass
+    def disable (self): pass
+    def enable (self,enabled=True): pass
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): pass
+    def get(self,i,j): return ''
+    def getAllText(self): return ''
+    def getInsertPoint(self): return 0
+    def getSelectedText(self): return ''
+    def getSelectionRange (self): return (0,0)
+    def getYScrollPosition (self): return 0
+    def hasSelection(self): return False
+    def insert(self,i,s): pass
+    def see(self,i): pass
+    def seeInsertPoint (self): pass
+    def selectAllText (self,insert=None): pass
+    def setAllText (self,s): pass
+    def setFocus(self): pass # Required: sets the focus to wrapper.widget.
+    def setInsertPoint(self,pos,s=None): pass
+    def setSelectionRange (self,i,j,insert=None): pass
+    def setYScrollPosition (self,i): pass
+    def tag_configure (self,colorName,**keys): pass
+    def toPythonIndex (self,index): return 0
+    def toPythonIndexRowCol(self,index): return (0,0,0)
 #@-others
 #@-leo
