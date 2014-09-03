@@ -18800,5 +18800,20 @@ if 0:
     def tag_configure(self,colorName,**keys):pass
     def toPythonIndex(self,index):          return self.wrapper.toPythonIndex(index)
     def toPythonIndexRowCol(self,index):    return self.wrapper.toPythonIndexRowCol(index)
+.. @+node:ekr.20111115100829.9785: *3* log.logCtrl property
+# def __get_logCtrl(self):
+
+    # return self.widget
+
+# def __set_logCtrl(self,val):
+
+    # self.widget = val
+
+
+# logCtrl = property(
+    # __get_logCtrl,
+    # __set_logCtrl,
+    # doc = "log.logCtrl property"
+# )
 .. @-all
 .. @-leo

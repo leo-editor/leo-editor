@@ -1365,8 +1365,7 @@ class LeoLog (HighLevelInterface):
 
         # Official status variables.  Can be used by client code.
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
-        self.widget = None # Set below. Same as self.textDict.get(self.tabName)
-        ### self.wrapper = self ### New.
+        self.logCtrl = None # Set below. Same as self.textDict.get(self.tabName)
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
 
@@ -1478,8 +1477,7 @@ class LeoLog (HighLevelInterface):
         # Update the status vars.
         self.tabName = tabName
         self.canvasCtrl = self.canvasDict.get(tabName)
-        self.widget = self.textDict.get(tabName)
-            # logCtrl is now a property.
+        self.logCtrl = self.textDict.get(tabName)
         self.tabFrame = self.frameDict.get(tabName)
         if 0:
             # Absolutely do not do this here!
@@ -1490,21 +1488,6 @@ class LeoLog (HighLevelInterface):
     def oops (self):
 
         g.pr("LeoLog oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20111115100829.9785: *3* log.logCtrl property
-    def __get_logCtrl(self):
-
-        return self.widget
-
-    def __set_logCtrl(self,val):
-
-        self.widget = val
-
-
-    logCtrl = property(
-        __get_logCtrl,
-        __set_logCtrl,
-        doc = "log.logCtrl property"
-    )
     #@-others
 #@+node:ekr.20031218072017.3704: ** class LeoTree
 # This would be useful if we removed all the tree redirection routines.

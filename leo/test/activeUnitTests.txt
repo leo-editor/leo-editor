@@ -677,16 +677,6 @@ for ivar,setting in table:
     val = getattr(k,ivar)
     assert val == setting,'%s k.%s setting: %s' % (
         ivar,ivar,val)
-#@+node:ekr.20111118183928.3881: *4* @test logCtrl property
-# Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
-log = c.frame.log
-old_w = log.widget
-assert old_w is not None
-try:
-    log.logCtrl = None
-    assert log.widget is None
-finally:
-    log.widget = old_w
 #@+node:ekr.20100131171342.5479: *4* @test official commander ivars
 f = c.frame
 assert(f.c==c)
@@ -10856,14 +10846,14 @@ if g.app.isExternalUnitTest:
     assert name == 'NullLog',name
 else:
     assert name == 'LeoQtLog',name
-    assert log.widget.__class__.__name__ == 'QTextEditWrapper',log.widget
-    assert not issubclass(log.widget.__class__,QtWidgets.QWidget.__class__)
+    assert log.logCtrl.__class__.__name__ == 'QTextEditWrapper',log.logCtrl
+    assert not issubclass(log.logCtrl.__class__,QtWidgets.QWidget.__class__)
         # leoQTextEditWidget us a poor name: it is not a Qt widget.
-    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
-    assert hasattr(log.widget,'widget') and log.widget.widget
-    assert hasattr(log.widget.widget,'leo_log_wrapper')
-    wrapper = log.widget.widget.leo_log_wrapper
-    assert wrapper == log.widget
+    assert log.logCtrl.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.logCtrl,'widget') and log.logCtrl.widget
+    assert hasattr(log.logCtrl.widget,'leo_log_wrapper')
+    wrapper = log.logCtrl.widget.leo_log_wrapper
+    assert wrapper == log.logCtrl
 
 #@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
 if g.app.isExternalUnitTest:

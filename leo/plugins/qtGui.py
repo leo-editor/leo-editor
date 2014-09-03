@@ -3498,6 +3498,12 @@ class LeoQtLog (leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *5* LeoQtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
+    #@+node:ekr.20140903140611.18596: *4* LeoQtLog.Enable
+    def disable (self):
+        self.enabled = False
+        
+    def enable (self,enabled=True):
+        self.enabled = enabled
     #@+node:ekr.20120304214900.9940: *4* LeoQtLog.Event handler
     def onCurrentChanged(self,idx):
 
@@ -3509,7 +3515,7 @@ class LeoQtLog (leoFrame.LeoLog):
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely
         wrapper = hasattr(w,'leo_log_wrapper') and w.leo_log_wrapper
         if wrapper:
-            self.widget = wrapper
+            self.logCtrl = wrapper
 
         if trace: g.trace(idx,tabw.tabText(idx),self.c.frame.title) # wrapper and wrapper.widget)
     #@+node:ekr.20111120124732.10184: *4* LeoQtLog.isLogWidget
@@ -3611,8 +3617,7 @@ class LeoQtLog (leoFrame.LeoLog):
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
             if tabName == 'Log':
-                ##### Huh???
-                self.widget = contents # widget is an alias for logCtrl.
+                self.logCtrl = contents
                 widget.setObjectName('log-widget')
             # Set binding on all log pane widgets.
             g.app.gui.setFilter(c,widget,self,tag='log')
@@ -3706,8 +3711,7 @@ class LeoQtLog (leoFrame.LeoLog):
                 widget = w.widget(i)
                 # 2011/11/21: Set the .widget ivar only if there is a wrapper.
                 wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
-                if wrapper:
-                    self.widget = wrapper
+                if wrapper: self.logCtrl = wrapper
                 if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
                 # Do *not* set focus here!
                     # c.widgetWantsFocus(tab_widget)
