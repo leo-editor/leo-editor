@@ -1272,7 +1272,7 @@ class Undoer:
         if oldYview:
             u.yview = oldYview
         else:
-            u.yview = c.frame.body.getYScrollPosition()
+            u.yview = c.frame.body.wrapper.getYScrollPosition()
         #@-<< save the selection and scrolling position >>
         #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
@@ -1581,7 +1581,7 @@ class Undoer:
         c.selectPosition(p)
         if newSel:
             i,j = newSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:ekr.20050412085138.1: *4* redoHoistNode & redoDehoistNode
     def redoHoistNode (self):
 
@@ -1741,37 +1741,32 @@ class Undoer:
         c.selectPosition(u.p) # Does full recolor.
         if u.newSel:
             i,j = u.newSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:EKR.20040526075238.5: *4* redoTyping
     def redoTyping (self):
 
         u = self ; c = u.c ; current = c.p
         w = c.frame.body.wrapper
-
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
             c.selectPosition(u.p)
         elif u.undoType in ('Cut','Paste','Clear Recent Files'):
             c.frame.body.forceFullRecolor()
-
         self.undoRedoText(
             u.p,u.leading,u.trailing,
             u.newMiddleLines,u.oldMiddleLines,
             u.newNewlines,u.oldNewlines,
             tag="redo",undoType=u.undoType)
-
         u.updateMarks('new')
-
         for v in u.dirtyVnodeList:
             v.setDirty()
-
         if u.newSel:
             c.bodyWantsFocus()
             i,j = u.newSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
             c.bodyWantsFocus()
-            c.frame.body.setYScrollPosition(u.yview)
+            w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* undo
     def undo (self,event=None):
 
@@ -1922,22 +1917,16 @@ class Undoer:
         c.setCurrentPosition(u.p)
     #@+node:ekr.20050318085713: *4* undoGroup
     def undoGroup (self):
-
         '''Process beads until the matching 'beforeGroup' bead is seen.'''
-
         trace = False and not g.unitTesting
         u = self
-
         # Remember these values.
         c = u.c
         dirtyVnodeList = u.dirtyVnodeList or []
         oldSel = u.oldSel
         p = u.p.copy()
-
         u.groupCount += 1
-
         bunch = u.beads[u.bead] ; count = 0
-
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
             g.trace(bunch)
@@ -1952,21 +1941,16 @@ class Undoer:
                     z.undoHelper() ; count += 1
                 else:
                     g.trace('oops: no undo helper for %s %s' % (u.undoType,p.v))
-
         u.groupCount -= 1
-
         u.updateMarks('old') # Bug fix: Leo 4.4.6.
-
         for v in dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
-
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo",count,"instances")
-
         c.selectPosition(p)
         if oldSel:
             i,j = oldSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:ekr.20050412083244: *4* undoHoistNode & undoDehoistNode
     def undoHoistNode (self):
 
@@ -2202,46 +2186,38 @@ class Undoer:
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* undoTree
     def undoTree (self):
-
         '''Redo replacement of an entire tree.'''
-
         u = self ; c = u.c
-
         u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
         c.selectPosition(u.p) # Does full recolor.
         if u.oldSel:
             i,j = u.oldSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:EKR.20040526090701.4: *4* undoTyping
     def undoTyping (self):
 
         u = self ; c = u.c ; current = c.p
         w = c.frame.body.wrapper
-
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:
             c.selectPosition(u.p)
         elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
             c.frame.body.forceFullRecolor()
-
         self.undoRedoText(
             u.p,u.leading,u.trailing,
             u.oldMiddleLines,u.newMiddleLines,
             u.oldNewlines,u.newNewlines,
             tag="undo",undoType=u.undoType)
-
         u.updateMarks('old')
-
         for v in u.dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
-
         if u.oldSel:
             c.bodyWantsFocus()
             i,j = u.oldSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
             c.bodyWantsFocus()
-            c.frame.body.setYScrollPosition(u.yview)
+            w.setYScrollPosition(u.yview)
     #@-others
 #@-others
 #@-leo

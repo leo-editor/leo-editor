@@ -2347,12 +2347,13 @@ class VNode (BaseVnode):
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
         body = self.context.frame.body
+        w = body.wrapper
         # Fix bug 981849: incorrect body content shown.
         if ins is None: ins = 0
         # This is very expensive for large text.
         if traceTime: t1 = time.time()
         if hasattr(body.wrapper,'setInsertPoint'):
-            body.wrapper.setInsertPoint(ins,s=v._bodyString)
+            w.setInsertPoint(ins,s=v._bodyString)
         if traceTime: 
             delta_t = time.time()-t1
             if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
@@ -2361,7 +2362,7 @@ class VNode (BaseVnode):
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:
-            body.setYScrollPosition(spot)
+            w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
         if trace: g.trace(spot,v.h)
         # Never call w.see here.

@@ -2191,36 +2191,6 @@ class LeoQtBody (leoFrame.LeoBody):
             except Exception:
                 # g.es_exception()
                 pass
-    #@+node:ekr.20110605121601.18191: *4* LeoQtBody.High-level interface
-    # The required high-level interface.
-    def appendText (self,s):                return self.wrapper.appendText(s)
-    def clipboard_append(self,s):           return self.wrapper.clipboard_append(s)
-    def clipboard_clear(self):              return self.wrapper.clipboard_clear()
-    def delete(self,i,j=None):              self.wrapper.delete(i,j)
-    def deleteTextSelection (self):         return self.wrapper.deleteTextSelection()
-    def flashCharacter(self,i,
-        bg='white',fg='red',
-        flashes=3,delay=75):                return self.wrapper(i,bg,fg,flashes,delay)
-    def get(self,i,j=None):                 return self.wrapper.get(i,j)
-    def getAllText (self):                  return self.wrapper.getAllText()
-    def getInsertPoint(self):               return self.wrapper.getInsertPoint()
-    def getSelectedText (self):             return self.wrapper.getSelectedText()
-    def getSelectionRange(self):            return self.wrapper.getSelectionRange()
-    def getYScrollPosition (self):          return self.wrapper.getYScrollPosition()
-    def hasSelection (self):                return self.wrapper.hasSelection()
-    def insert(self,i,s):                   return self.wrapper.insert(i,s)
-    def see(self,index):                    return self.wrapper.see(index)
-    def seeInsertPoint(self):               return self.wrapper.seeInsertPoint()
-    def selectAllText (self,insert=None):   self.wrapper.selectAllText(insert)
-    def setAllText(self,s):                 return self.wrapper.setAllText(s)
-    def setFocus (self):                    return self.wrapper.setFocus()
-    def setInsertPoint (self,pos,s=None):   return self.wrapper.setInsertPoint(pos,s=s)
-    def setSelectionRange (self,i,j,insert=None):
-        self.wrapper.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):        return self.wrapper.setYScrollPosition(i)
-    def tag_configure(self,colorName,**keys):pass
-    def toPythonIndex(self,index):          return self.wrapper.toPythonIndex(index)
-    def toPythonIndexRowCol(self,index):    return self.wrapper.toPythonIndexRowCol(index)
     #@+node:ekr.20110605121601.18217: *4* LeoQtBody.Renderer panes
     #@+node:ekr.20110605121601.18218: *5* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer (self,event=None):
@@ -2897,17 +2867,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
     def reconfigureFromConfig (self):
 
         frame = self ; c = frame.c
-
-        # frame.tree.setFontFromConfig()
         frame.configureBarsFromConfig()
-
-        # frame.body.setFontFromConfig()
-        # frame.body.setColorFromConfig()
-
         frame.setTabWidth(c.tab_width)
-        # frame.log.setFontFromConfig()
-        # frame.log.setColorFromConfig()
-
         c.redraw()
     #@+node:ekr.20110605121601.18278: *5* setInitialWindowGeometry (qtFrame)
     def setInitialWindowGeometry(self):
@@ -3375,7 +3336,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
         # Fix bug 581031: Scrollbar position is not preserved.
         # This is better than adjust the scroll value directy.
         c.frame.tree.setItemForCurrentPosition(scroll=True)
-        c.frame.body.seeInsertPoint()
+        w = c.frame.body.wrapper
+        if w: w.seeInsertPoint()
     #@+node:ekr.20110605121601.18308: *6* resizeToScreen (qtFrame)
     def resizeToScreen (self,event=None):
 

@@ -360,16 +360,11 @@ class StringTextWrapper (BaseTextWrapper):
 #@+node:ekr.20031218072017.3656: ** class LeoBody
 class LeoBody:
     '''The base class for the body pane in Leo windows.'''
-    # pylint: disable=no-member
-    # All missing members are defined in LeoQtBody class.
-    # This will be verified by a unit test.
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
     def __init__ (self,frame,parentFrame):
         '''Ctor for LeoBody class.'''
         c = frame.c
-        ### HighLevelInterface.__init__(self,c)
-        ###    # Init the base class
         frame.body = self
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
@@ -387,30 +382,6 @@ class LeoBody:
         self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
-    #@+node:ekr.20130303133655.10213: *3* LeoBody.attribute_test (to be deleted)
-    # # # def pyflake_test(self):
-        
-        # # # # pylint: disable=E1101
-        # # # # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
-        # # # print(self.xyzzy22)
-        
-        # # # # pyflakes incorrectly complains that dn is not used.
-        # # # dn = self.def_stack[-1] # Add the code at the top of the stack.
-        # # # dn.code += 'abc'
-    #@+node:ekr.20111115100829.9789: *3* LeoBody.bodyCtrl property (deprecated)
-    # def __get_bodyCtrl(self):
-
-        # return self.wrapper
-
-    # def __set_bodyCtrl(self,val):
-
-        # self.wrapper = val
-
-    # bodyCtrl = property(
-        # __get_bodyCtrl,
-        # __set_bodyCtrl,
-        # doc = "body.bodyCtrl property"
-    # )
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -426,6 +397,24 @@ class LeoBody:
         self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
+    #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
+    # Methods of this class call the following methods of subclasses (LeoQtBody)
+    # Fail loudly if these methods are not defined.
+    def oops (self):
+        '''Say that a required method in a subclass is missing.'''
+        g.trace("(LeoBody) %s should be overridden in a subclass", g.callers())
+
+    def createEditorFrame (self,w):
+        self.oops()
+
+    def createTextWidget (self,parentFrame,p,name):
+        self.oops()
+
+    def getInsertPoint(self):
+        self.oops()
+
+    def packEditorLabelWidget (self,w):
+        self.oops()
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
 
@@ -729,70 +718,16 @@ class LeoBody:
         w.leo_v = w.leo_p.v
         w.leo_label_s = p.h
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
-    #@+node:ekr.20031218072017.1329: *3* LeoBody.onBodyChanged
-    # This is the only key handler for the body pane.
-    def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
-
-        '''Update Leo after the body has been changed.'''
-
-        trace = False and not g.unitTesting
-        c = self.c
-        body = self
-        w = self.wrapper
-        p = c.p
-        insert = w.getInsertPoint()
-        ch = '' if insert==0 else w.get(insert-1)
-        ch = g.toUnicode(ch)
-        newText = w.getAllText() # Note: getAllText converts to unicode.
-        newSel = w.getSelectionRange()
-        if not oldText:
-            oldText = p.b ; changed = True
-        else:
-            changed = oldText != newText
-        if not changed: return
-        if trace:
-            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-            g.trace('oldSel',oldSel,'newSel',newSel)
-        c.undoer.setUndoTypingParams(p,undoType,
-            oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-        p.v.setBodyString(newText)
-        p.v.insertSpot = body.getInsertPoint()
-        #@+<< recolor the body >>
-        #@+node:ekr.20051026083733.6: *4* << recolor the body >>
-        c.frame.scanForTabWidth(p)
-        body.recolor(p,incremental=not self.forceFullRecolorFlag)
-        self.forceFullRecolorFlag = False
-
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        #@-<< recolor the body >>
-        if not c.changed: c.setChanged(True)
-        self.updateEditors()
-        p.v.contentModified()
-        #@+<< update icons if necessary >>
-        #@+node:ekr.20051026083733.7: *4* << update icons if necessary >>
-
-        redraw_flag = False
-        # Update dirty bits.
-        # p.setDirty() sets all cloned and @file dirty bits.
-        if not p.isDirty() and p.setDirty():
-            redraw_flag = True
-
-        # Update icons. p.v.iconVal may not exist during unit tests.
-        val = p.computeIcon()
-        # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
-        if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-            redraw_flag = True
-
-        if redraw_flag:
-            c.redraw_after_icons_changed()
-        #@-<< update icons if necessary >>
-    #@+node:ekr.20031218072017.3658: *3* LeoBody.oops (to be deleted)
-    # # # def oops (self):
-
-        # # # g.trace("LeoBody oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
+    #@+node:ekr.20031218072017.4038: *4* LeoBody.get/setYScrollPosition (deleted)
+    # def getYScrollPosition (self):
+
+        # i = self.wrapper.getYScrollPosition()
+        # return i
+
+    # def setYScrollPosition (self,i):
+
+        # self.wrapper.setYScrollPosition(i)
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines (self):
         """
@@ -867,6 +802,58 @@ class LeoBody:
         after  = g.toUnicode(s[j:len(s)])
         # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
         return before,sel,after # 3 strings.
+    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
+    # This is the only key handler for the body pane.
+    def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+        '''Update Leo after the body has been changed.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        body,w = self,self.wrapper
+        p = c.p
+        insert = w.getInsertPoint()
+        ch = '' if insert==0 else w.get(insert-1)
+        ch = g.toUnicode(ch)
+        newText = w.getAllText() # Note: getAllText converts to unicode.
+        newSel = w.getSelectionRange()
+        if not oldText:
+            oldText = p.b ; changed = True
+        else:
+            changed = oldText != newText
+        if not changed: return
+        if trace:
+            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+            g.trace('oldSel',oldSel,'newSel',newSel)
+        c.undoer.setUndoTypingParams(p,undoType,
+            oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+        p.v.setBodyString(newText)
+        p.v.insertSpot = w.getInsertPoint()
+        #@+<< recolor the body >>
+        #@+node:ekr.20051026083733.6: *5* << recolor the body >>
+        c.frame.scanForTabWidth(p)
+        body.recolor(p,incremental=not self.forceFullRecolorFlag)
+        self.forceFullRecolorFlag = False
+
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        #@-<< recolor the body >>
+        if not c.changed: c.setChanged(True)
+        self.updateEditors()
+        p.v.contentModified()
+        #@+<< update icons if necessary >>
+        #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
+        redraw_flag = False
+        # Update dirty bits.
+        # p.setDirty() sets all cloned and @file dirty bits.
+        if not p.isDirty() and p.setDirty():
+            redraw_flag = True
+        # Update icons. p.v.iconVal may not exist during unit tests.
+        val = p.computeIcon()
+        if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+            redraw_flag = True
+        if redraw_flag:
+            c.redraw_after_icons_changed()
+        #@-<< update icons if necessary >>
     #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
     def setSelectionAreas (self,before,sel,after):
 
@@ -889,39 +876,6 @@ class LeoBody:
         w.setSelectionRange(i,j,insert=j)
         w.setYScrollPosition(pos)
         return i,j
-    #@+node:ekr.20031218072017.4038: *4* LeoBody.get/setYScrollPosition
-    def getYScrollPosition (self):
-
-        i = self.wrapper.getYScrollPosition()
-        return i
-
-    def setYScrollPosition (self,i):
-
-        self.wrapper.setYScrollPosition(i)
-    #@+node:ekr.20081005065934.6: *3* LeoBody: may be defined in subclasses (to be deleted)
-    # # # # These are optional.
-    # # # def after_idle (self,idle_handler,thread_count):
-        # # # pass
-
-    # # # def initAfterLoad (self):
-        # # # pass
-    #@+node:ekr.20061109173122: *3* LeoBody: must be defined in subclasses (to be deleted)
-    # # # # Birth, death & config
-    # # # def createControl (self,parentFrame,p):
-        # # # self.oops()
-    # # # def createTextWidget (self,parentFrame,p,name):
-        # # # self.oops()
-        # # # return None
-
-    # # # # Editor
-    # # # def createEditorFrame (self,w):     self.oops() ; return None
-    # # # def createEditorLabel (self,pane):  self.oops()
-    # # # def packEditorLabelWidget (self,w): self.oops()
-    # # # def setEditorColors (self,bg,fg):   self.oops()
-
-    # # # # Events...
-    # # # def scheduleIdleTimeRoutine (self,function,*args,**keys):
-        # # # self.oops()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:

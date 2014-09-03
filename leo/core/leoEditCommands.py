@@ -851,7 +851,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20131114124839.17399: *4* set_selection
     def set_selection(self,i,j):
         '''Set the selection range, with the insert point at the end.'''
-        self.c.frame.body.setSelectionRange(i,j,insert=j)
+        self.c.frame.body.wrapper.setSelectionRange(i,j,insert=j)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):
@@ -10343,20 +10343,16 @@ class SpellCommandsClass (BaseEditCommandsClass):
         - `tag`: hook tag
         - `kwargs`: hook arguments
         """
-
         if kwargs['c'] != self.c:
             return
-
         if kwargs['ch'] not in '\'",.:) \n\t':
             return
-            
         c = self.c
-        
         spell_ok = True
-        
         if self.spell_as_you_type:  # might just be for wrapping
-            txt = c.frame.body.getAllText()
-            i = c.frame.body.getInsertPoint()
+            w = c.frame.body.wrapper
+            txt = w.getAllText()
+            i = w.getInsertPoint()
             word = txt[:i].rsplit(None, 1)[-1]
             word = ''.join(i if i.isalpha() else ' ' for i in word).split()
             if word:
@@ -10374,7 +10370,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 self.suggestions = suggests
                 self.suggestion_idx = 0
                 self.word = word
-        
         if spell_ok and self.wrap_as_you_type and kwargs['ch'] == '\n':
             g.es('filling')
             c.k.simulateCommand('fill-paragraph')
@@ -10386,10 +10381,10 @@ class SpellCommandsClass (BaseEditCommandsClass):
         :Parameters:
         - `word`: word to use as replacement
         """
-
         c = self.c
-        txt = c.frame.body.getAllText()
-        j = i = c.frame.body.getInsertPoint()
+        w = c.frame.body.wrapper
+        txt = w.getAllText()
+        j = i = w.getInsertPoint()
         i -= 1
         while i and not txt[i].isalpha():
             i -= 1
@@ -10400,11 +10395,9 @@ class SpellCommandsClass (BaseEditCommandsClass):
         if i or (txt and not txt[0].isalpha()):
             i += 1
         txt = txt[:i]+word+txt[j:]
-        c.frame.body.setAllText(txt)
+        w.setAllText(txt)
         c.p.b = txt
-        c.frame.body.wrapper.setInsertPoint(
-            i+len(word)+xtra-1
-        )
+        w.setInsertPoint(i+len(word)+xtra-1)
         c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20051025071455.18: *3* class SpellTabHandler

@@ -8541,10 +8541,8 @@ b
 A
 #@+node:ekr.20111121140833.3916: *5* @test selectToMatchingBracket
 '''selectToMatchingBracket was crashing.'''
-
 ec = c.editCommands
-w = c.frame.body
-
+w = c.frame.body.wrapper
 s = w.getAllText()
 i = s.find('(')
 w.setInsertPoint(i)

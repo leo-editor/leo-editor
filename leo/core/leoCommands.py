@@ -3240,7 +3240,7 @@ class Commands (object):
                     found,n,n2,p.h,repr(s[i:j])))  
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
-            c.frame.body.seeInsertPoint()
+            w.seeInsertPoint()
         #@-others
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
@@ -3602,7 +3602,6 @@ class Commands (object):
         if not lines:
             g.warning('No lines selected')
             return
-
         u.beforeChangeGroup(current,undoType)
         found = False
         for s in lines:
@@ -3613,7 +3612,6 @@ class Commands (object):
                 u.afterInsertNode(p,undoType,undoData)
                 found = True
         c.validateOutline()
-
         if found:
             u.afterChangeGroup(current,undoType)
             c.redraw(p)
@@ -3622,8 +3620,10 @@ class Commands (object):
 
         # Restore the selection.
         i,j = oldSel
-        body.setSelectionRange(i,j)
-        body.setFocus()
+        w = body.wrapper
+        if w:
+            w.setSelectionRange(i,j)
+            w.setFocus()
     #@+node:ekr.20031218072017.1711: *8* findSectionName
     def findSectionName(self,s):
 
@@ -3653,9 +3653,10 @@ class Commands (object):
         after the selected text (or the text after the insert point if no
         selection)
         """
-        c = self ; body = c.frame.body
+        c = self
+        body = c.frame.body
         w = body.wrapper
-        oldVview = body.getYScrollPosition()
+        oldVview = w.getYScrollPosition()
         if expandSelection:
             s = w.getAllText()
             head = tail = ''
@@ -3848,7 +3849,7 @@ class Commands (object):
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
             return
-        oldSel = c.frame.body.getSelectionRange()
+        oldSel = w.getSelectionRange()
         w.deleteTextSelection()
         s = self.getTime(body=True)
         i = w.getInsertPoint()
@@ -3923,7 +3924,7 @@ class Commands (object):
         if g.app.batchMode:
             c.notValidInBatchMode("reformat-paragraph")
             return
-        if body.hasSelection():
+        if w.hasSelection():
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
         oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
@@ -4042,7 +4043,7 @@ class Commands (object):
         tabWidth  = d.get("tabwidth")
         original = w.getAllText()
         oldSel =  w.getSelectionRange()
-        oldYview = body.getYScrollPosition()
+        oldYview = w.getYScrollPosition()
         return oldSel,oldYview,original,pageWidth,tabWidth
     #@+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
     def rp_get_leading_ws (self,lines,tabWidth):
@@ -4136,14 +4137,13 @@ class Commands (object):
         result = '\n'.join(paddedResult)
         if trailingNL: result = result + '\n'
         return result
-    #@+node:ekr.20031218072017.1838: *6* updateBodyPane (handles changeNodeContents)
+    #@+node:ekr.20031218072017.1838: *6* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
-
-        c = self ; body = c.frame.body ; p = c.p
-
+        '''Handle changed text in the body pane.'''
+        c,p = self,self.p
+        body = c.frame.body
         # Update the text and notify the event handler.
         body.setSelectionAreas(head,middle,tail)
-
         # Expand the selection.
         head = head or ''
         middle = middle or ''
@@ -4151,27 +4151,22 @@ class Commands (object):
         i = len(head)
         j = max(i,len(head)+len(middle)-1)
         newSel = i,j
-        body.setSelectionRange(i,j)
-
+        body.wrapper.setSelectionRange(i,j)
         # This handles the undo.
         body.onBodyChanged(undoType,oldSel=oldSel or newSel,oldYview=oldYview)
-
         # Update the changed mark and icon.
         c.setChanged(True)
         if p.isDirty():
             dirtyVnodeList = []
         else:
             dirtyVnodeList = p.setDirty()
-
         c.redraw_after_icons_changed()
-
         # Scroll as necessary.
         if oldYview:
-            body.setYScrollPosition(oldYview)
+            body.wrapper.setYScrollPosition(oldYview)
         else:
-            body.seeInsertPoint()
-
-        body.setFocus()
+            body.wrapper.seeInsertPoint()
+        body.wrapper.setFocus()
         c.recolor()
         return dirtyVnodeList
     #@+node:ekr.20031218072017.2885: *5* Edit Headline submenu
@@ -5580,7 +5575,6 @@ class Commands (object):
         def replaceBody (self,p,lines):
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            # sel = c.frame.body.getInsertPoint()
             oldBody = p.b
             body = ''.join(lines)
             if oldBody != body:
@@ -7712,19 +7706,19 @@ class Commands (object):
     #@+node:ekr.20031218072017.2287: *4* canExtract, canExtractSection & canExtractSectionNames
     def canExtract (self):
 
-        c = self ; body = c.frame.body
-        return body and body.hasSelection()
+        c = self
+        w = c.frame.body.wrapper
+        return w and w.hasSelection()
 
     canExtractSectionNames = canExtract
 
     def canExtractSection (self):
 
-        c = self ; body = c.frame.body
-        if not body: return False
-
-        s = body.getSelectedText()
+        c = self
+        w = c.frame.body.wrapper
+        if not w: return False
+        s = w.getSelectedText()
         if not s: return False
-
         line = g.get_line(s,0)
         i1 = line.find("<<")
         j1 = line.find(">>")
@@ -7734,13 +7728,13 @@ class Commands (object):
     #@+node:ekr.20031218072017.2965: *4* canFindMatchingBracket
     def canFindMatchingBracket (self):
 
-        c = self ; brackets = "()[]{}"
-        body = c.frame.body
-        s = body.getAllText()
-        ins = body.getInsertPoint()
+        c = self
+        brackets = "()[]{}"
+        w = c.frame.body.wrapper
+        s = w.getAllText()
+        ins = w.getInsertPoint()
         c1 = 0 <= ins   < len(s) and s[ins] or ''
         c2 = 0 <= ins-1 < len(s) and s[ins-1] or ''
-
         val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
         return bool(val)
     #@+node:ekr.20040303165342: *4* canHoist & canDehoist
@@ -7862,8 +7856,9 @@ class Commands (object):
     #@+node:ekr.20031218072017.2978: *4* canShiftBodyLeft/Right
     def canShiftBodyLeft (self):
 
-        c = self ; body = c.frame.body
-        return body and body.getAllText()
+        c = self
+        w = c.frame.body.wrapper
+        return w and w.getAllText()
 
     canShiftBodyRight = canShiftBodyLeft
     #@+node:ekr.20031218072017.2979: *4* canSortChildren, canSortSiblings
