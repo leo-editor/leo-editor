@@ -4339,8 +4339,6 @@ def toPythonIndex (s,index):
         else:
             g.trace('bad string index: %s' % index)
             return 0
-
-toGuiIndex = toPythonIndex
 #@+node:ekr.20140711071454.17648: *3* g.List composition
 #@+node:ekr.20140526144610.17602: *4* about string composition
 #@@nocolor-node

@@ -87,73 +87,58 @@ class DummyHighLevelInterface (object):
         g.app.gui.replaceClipboardWith('')
     def getFocus(self):
         return g.app.gui.get_focus(self.c)
-   
-    set_focus = setFocus
 #@-<< define class DummyHighLevelInterface >>
 #@+<< define class HighLevelInterface >>
 #@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
 class HighLevelInterface(object):
-
-    '''A class to specify Leo's high-level editing interface
-    used throughout Leo's core.
-
-    The interface has two parts:
-
-    1. Standard (immutable) methods that will never be overridden.
-
-    2. Other (mutable) methods that subclasses may override.
     '''
-
-    #@+others
-    #@+node:ekr.20111114102224.9950: *3* hli.ctor
+    A class specifying the wrapper api used throughout Leo's core.
+    
+    At present, this class contains redirection methods. Not great.
+    
+    The WrapperAPI class will soon replace this class. WrapperAPI will
+    contain only docstrings.
+    '''
     def __init__ (self,c):
-
         self.c = c
-
         self.widget = None
+    #@+others
+    #@+node:ekr.20140903025053.18629: *3* hli.methods with implementations
+    def clipboard_append(self,s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
 
-        self.mutable_methods = (
-            'flashCharacter',
-            'toPythonIndex',
-            'toPythonIndexRowCol',
-            # 'toGuiIndex', # A synonym.
-        )
-    #@+node:ekr.20070302101344: *3* hli.Must be defined in the base class
+    def clipboard_clear (self):
+        g.app.gui.replaceClipboardWith('')
+
     def disable (self):
-
         self.enabled = False
-
+        
     def enable (self,enabled=True):
-
         self.enabled = enabled
-    #@+node:ekr.20111114102224.9935: *3* hli.mutable methods
-    #@+node:ekr.20111114102224.9946: *4* hli.flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass
-
-    #@+node:ekr.20111114102224.9943: *4* hli.toPythonIndex
+        
+    def getFocus(self):
+        return g.app.gui.get_focus(self.c)
+        
     def toPythonIndex (self,index):
-
         s = self.getAllText()
-        # g.trace(len(s),index)
         return g.toPythonIndex(s,index)
 
-    toGuiIndex = toPythonIndex
-    #@+node:ekr.20111114102224.9945: *4* hli.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
-
         # This works, but is much slower that the QTextEditWrapper method.
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
-    #@+node:ekr.20111114102224.9937: *3* hli.immutable redirection methods
+    #@+node:ekr.20140903025053.18628: *3* hli.redirection methods
     def appendText(self,s):
         if self.widget: self.widget.appendText(s)
     def delete(self,i,j=None):
         if self.widget: self.widget.delete(i,j)
     def deleteTextSelection (self):
         if self.widget: self.widget.deleteTextSelection()
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+        pass
     def get(self,i,j):
         return self.widget and self.widget.get(i,j) or ''
     def getAllText(self):
@@ -191,20 +176,6 @@ class HighLevelInterface(object):
         if self.widget: self.widget.setYScrollPosition(i)
     def tag_configure (self,colorName,**keys):
         if self.widget: self.widget.tag_configure(colorName,**keys)
-    #@+node:ekr.20111114102224.9940: *3* hli.other immutable methods
-    # These all use leoGlobals functions or LeoGui methods.
-
-    def clipboard_append(self,s):
-        s1 = g.app.gui.getTextFromClipboard()
-        g.app.gui.replaceClipboardWith(s1 + s)
-
-    def clipboard_clear (self):
-        g.app.gui.replaceClipboardWith('')
-
-    def getFocus(self):
-        return g.app.gui.get_focus(self.c)
-
-    set_focus = setFocus
     #@-others
 #@-<< define class HighLevelInterface >>
 #@+<< define class BaseTextWrapper >>
@@ -252,15 +223,11 @@ class BaseTextWrapper(object):
     def setFocus(self):                         pass
     def setYScrollPosition (self,i):            pass
     def tag_configure (self,colorName,**keys):  pass
-
-    set_focus = setFocus
     #@+node:ekr.20111113141805.10060: *3* btw.Indices
     #@+node:ekr.20070228074312.7: *4* btw.toPythonIndex
     def toPythonIndex (self,index):
 
         return g.toPythonIndex(self.s,index)
-
-    toGuiIndex = toPythonIndex
     #@+node:ekr.20090320055710.4: *4* btw.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
 

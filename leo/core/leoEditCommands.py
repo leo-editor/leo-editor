@@ -5666,7 +5666,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             # Find the start of the next/prev line.
             row,col = g.convertPythonIndexToRowCol(s,ins)
             if trace:
-                gui_ins = w.toGuiIndex(ins)
+                gui_ins = w.toPythonIndex(ins)
                 bbox = w.bbox(gui_ins)
                 if bbox:
                     x,y,width,height = bbox

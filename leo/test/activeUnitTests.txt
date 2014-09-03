@@ -150,15 +150,15 @@ def runEditCommandTest (c,p,inHeadline=False):
 
         assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
         sel3 = w.getSelectionRange()
-        ins = w.toGuiIndex(w.getInsertPoint())
+        ins = w.toPythonIndex(w.getInsertPoint())
         #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
         # g.trace(w)
         assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
         c.selectPosition(atTest)
         atTest.contract()
@@ -11758,53 +11758,6 @@ if hasattr(tree,'treeWidget'):
         tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
         assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
-#@+node:ekr.20100131171342.5602: *4* @test leoTextWidget
-if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-    import Tkinter as Tk
-    w = tkGui.leoTkTextWidget()
-    w.setAllText('abcdef\n')
-    s = w.getAllText()
-    assert s == 'abcdef\n'
-    s1 = w.get(0,len(s))
-    assert s1 == 'abcdef\n'
-    w.delete(0,len(s))
-    assert len(w.getAllText()) == 0
-    w.setAllText('')
-    w.insert(0,'abcdef\n')
-    s = w.getAllText()
-    assert s == 'abcdef\n','got: %s' % repr(s)
-    w.setInsertPoint(2)
-    i = w.getInsertPoint()
-    assert i == 2
-    w.setSelectionRange(2,4)
-    assert w.hasSelection()
-    i,j = w.getSelectionRange()
-    assert i==2 and j==4
-    s3 = w.getSelectedText()
-    assert s3 == 'cd'
-    w.deleteTextSelection()
-    s4 = w.getAllText()
-    assert s4 == 'abef\n'
-    w.selectAllText()
-    i,j = w.getSelectionRange()
-    assert i==0 and j==5,'getSelectionRange failed: i=%d,j=%d' % (i,j)
-    w.replace(0,3,'wxyz')
-    s5 = w.getAllText()
-    assert s5 == 'wxyzf\n','getAllText failed'
-    w.flashCharacter(3)
-    i = w.xyToGuiIndex(0,0)
-    assert i == '1.0','wxToGuiIndex failed'
-    i = w.xyToPythonIndex(0,0)
-    assert i == 0
-    w.mark_set('insert','1.3'),'xyToPythonIndex failed'
-    i = w.getInsertPoint()
-    assert i == 3
-    w.tag_add('test',4,6)
-    aTuple = w.tag_ranges('test')
-    assert aTuple == (4,6),'tag_add failed: %s' % aTuple
 #@+node:ekr.20111123214629.3941: *4* @test unbound Alt-N key is completely ignored
 try:
     import PyQt5.QtCore as QtCore
@@ -11834,36 +11787,6 @@ else:
     # Assert that handleUnboundChar actually ignored it.
     assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 
-#@+node:ekr.20100131171342.5600: *4* @test w.toGui/PythonIndex
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-for i in range(len(s)):
-    i2 = w.toGuiIndex(i)
-    i3 = w.toPythonIndex(i2)
-    assert(i3==i)
-#@+node:ekr.20100131171342.5601: *4* @test w.toGuiIndex (test2)
-#ab
-#
-
-w = c.frame.body.bodyCtrl
-
-# This test applies only to tkinter indices.
-if g.app.gui.guiName() == 'tkinter':
-
-    table = (
-        (-1,'1.0'), # One too small.
-        (0,'1.0'),
-        (1,'1.1'),
-        (2,'1.2'),
-        (3,'1.3'), # The newline ends a row.
-        (4,'2.0'),
-        (5,'2.1'),
-    )
-
-    for i,expected in table:
-        result = w.toGuiIndex(i)
-        assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)
 #@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

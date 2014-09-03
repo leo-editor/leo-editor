@@ -134,7 +134,7 @@ class QTextMixin:
         if True:
             p.v.insertSpot = newInsert
             i,j = newSel
-            i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+            i,j = self.toPythonIndex(i),self.toPythonIndex(j)
             if i > j: i,j = j,i
             p.v.selectionStart,p.v.selectionLength = (i,j-i)
         # No need to redraw the screen.
@@ -224,8 +224,8 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toGuiIndex(i)
-        j = self.toGuiIndex(j)
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
         return s[i:j]
     #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
     def getLastPosition(self,s=None):
@@ -248,7 +248,7 @@ class QTextMixin:
     def insert(self,i,s):
         '''QTextMixin'''
         s2 = self.getAllText()
-        i = self.toGuiIndex(i)
+        i = self.toPythonIndex(i)
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i+len(s))
         return i
@@ -269,8 +269,6 @@ class QTextMixin:
         i = g.toPythonIndex(s,index)
         # g.trace(index,len(s),i,s[i:i+10])
         return i
-
-    toGuiIndex = toPythonIndex
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
         '''QTextMixin'''
@@ -1117,8 +1115,8 @@ class QScintillaWrapper(QTextMixin):
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toGuiIndex(i)
-        j = self.toGuiIndex(j)
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
         return s[i:j]
     #@+node:ekr.20110605121601.18108: *5* qsciw.getAllText
     def getAllText(self):
@@ -1288,9 +1286,9 @@ class QTextEditWrapper(QTextMixin):
         colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
         if trace: g.trace(self.getSelectionRange())
-        i = self.toGuiIndex(i)
+        i = self.toPythonIndex(i)
         if j is None: j = i+1
-        j = self.toGuiIndex(j)
+        j = self.toPythonIndex(j)
         if i > j: i,j = j,i
         if trace: g.trace(i,j)
         # Set a hook for the colorer.
@@ -1407,7 +1405,7 @@ class QTextEditWrapper(QTextMixin):
         # n = colorer.recolorCount
         # Set a hook for the colorer.
         colorer.initFlag = True
-        i = self.toGuiIndex(i)
+        i = self.toPythonIndex(i)
         cursor = w.textCursor()
         try:
             self.changingText = True # Disable onTextChanged.
@@ -1679,8 +1677,6 @@ class QTextEditWrapper(QTextMixin):
             else:
                 g.trace('bad string index: %s' % index)
                 return 0
-
-    toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
     def toPythonIndexRowCol(self,index):
 

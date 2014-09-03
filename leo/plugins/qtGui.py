@@ -2220,9 +2220,6 @@ class LeoQtBody (leoFrame.LeoBody):
     def tag_configure(self,colorName,**keys):pass
     def toPythonIndex(self,index):          return self.wrapper.toPythonIndex(index)
     def toPythonIndexRowCol(self,index):    return self.wrapper.toPythonIndexRowCol(index)
-
-    set_focus = setFocus
-    toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18217: *4* LeoQtBody.Renderer panes
     #@+node:ekr.20110605121601.18218: *5* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer (self,event=None):

@@ -35,6 +35,9 @@ Fix code messes:
 Eliminate toPythonIndex?
 - All unit tests should call g.toPythonIndex.
 - Wrapper code could just assert isinstance(i,int) or isinstance(j,(j,Null.__class__))
+
+What I did:
+- Removed the evil set_focus synonym in the HighLevelInterface class.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
 Fix all git bugs:
 https://github.com/leo-editor/leo-editor/labels/bug
