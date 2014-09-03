@@ -12,13 +12,11 @@
 #@+<< imports >>
 #@+node:ekr.20120219194520.10465: ** << imports >> (baseNativeTree.py)
 import leo.core.leoGlobals as g
-
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
 # Sheesh: this crashes pylint.
 # from leo.core.leoQt import QtConst,QtWidgets
-
 try:
     from PyQt5 import QtCore
     from PyQt5 import QtWidgets
@@ -43,24 +41,20 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17864: **  Birth... (nativeTree)
     #@+node:ekr.20110605121601.17865: *3* __init__ (nativeTree)
     def __init__(self,c,frame):
-
+        '''Ctor for BaseNativeTreeWidget.'''
         # Init the base class.
         leoFrame.LeoTree.__init__(self,frame)
-
         # Components.
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
-
         # Configuration.
         self.auto_edit = c.config.getBool('single_click_auto_edits_headline',False)
-
-        # Subclasses should define headline wrappers to
-        # be a subclass of leoFrame.BaseTextWrapper.
-        self.headlineWrapper = leoFrame.BaseTextWrapper
-
-        # Subclasses should define .treeWidget to be the underlying
-        # native tree widget.
+        self.headlineWrapper = None
+            # The wrapper class for headlines.
+            # Must be set in subclasses.
         self.treeWidget = None
+            # The underlying native tree widget.
+            # Must be set in subclasses.
 
         # Widget independent status ivars...
         self.contracting = False

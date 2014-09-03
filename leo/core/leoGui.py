@@ -345,10 +345,9 @@ class NullGui(LeoGui):
         # Getting here will terminate Leo.
     #@+node:ekr.20070228155807: *3* isTextWidget (NullGui)
     def isTextWidget (self,w):
-
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
-
-        return w and isinstance(w,leoFrame.BaseTextWrapper)
+        # return w and isinstance(w,leoFrame.BaseTextWrapper)
+        return w and hasattr(w,'supportsHighLevelInterface')
     #@+node:ekr.20031218072017.2230: *3* oops (NullGui)
     def oops(self):
 

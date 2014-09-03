@@ -13,17 +13,14 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
-Simplify classes:
-* Remove all redirection code in LeoLog (and everywhere else).
-    - Replace log.wrapperMethod by log.wrapper.wrapperMethod.
-- Revise StringTextWidget.  Call it StringTextWrapper.
-    
+toGuiIndex -> toPythonIndex
+
 Fix code messes:
 - Change self.w to self.wrapper in leoEditCommands.py.
 - Add g checking/assertion functions.
     - g.isWrapper: calls g.app.gui.isWrapper
     - g.isWidget: calls g.app.gui.isWidget
-    
+
 Testing:
 - Use WrapperAPI class in unit tests.
 - Create a unit test based on "Compare dir(QSW) and dir(HLI)" script
@@ -33,6 +30,8 @@ Eliminate toPythonIndex?
 - Wrapper code could just assert isinstance(i,int) or isinstance(j,(j,Null.__class__))
 
 What I did:
+- StringTextWrapper is now a stand-alone class.
+- Removed BaseTextWrapper.
 - LeoLog is no longer a subclass of the HighLevelInterface class.
   This required a hack to handle keystrokes in the log pane:
   k.masterKeyHandler sends strokes to c.frame.log.logWidget (a QTextEditWrapper)
