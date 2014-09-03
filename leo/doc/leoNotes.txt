@@ -18899,27 +18899,194 @@ def setYScrollPosition (self,i):
     if self.widget: self.widget.setYScrollPosition(i)
 def tag_configure (self,colorName,**keys):
     if self.widget: self.widget.tag_configure(colorName,**keys)
-.. @+node:ekr.20140903143741.18551: *3* LeoQtLog.redirection
-# # # def hasSelection(self):
-    # # # # Take special care, for the benefit of LeoQuickSearchWidget.
-    # # # # This problem only happens with the qttabs gui.
-    # # # w = self.logWidget
-    # # # return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
-    
-# # # def getAllText(self):
-    # # # w = self.logWidget
-    # # # return w and w.getAllText() or ''
-    
-# # # def getInsertPoint(self):
-    # # # w = self.logWidget
-    # # # return w and w.getInsertPoint() or 0
-    
-# # # def setFocus(self):
-    # # # w = self.logWidget
-    # # # if w: w.setFocus()
-    
-# # # def setSelectionRange (self,i,j,insert=None):
-    # # # w = self.logWidget
-    # # # if w: w.setSelectionRange(i,j,insert=insert)
+.. @+node:ekr.20070228074312: *3* << define class BaseTextWrapper >>
+class BaseTextWrapper(object):
+    '''The base class for all wrapper classes for leo Text widgets.'''
+    @others
+.. @+node:ekr.20070228074312.1: *4* btw.Birth & special methods
+def __init__ (self,c,baseClassName,name,widget):
+    '''Ctor for BaseTextWrapper class.'''
+    # g.trace('(BaseTextWrapper)',widget)
+    self.baseClassName = baseClassName
+    self.c = c
+    self.name = name
+    self.virtualInsertPoint = None
+    self.widget = widget # Used in base classes.
+
+def __repr__(self):
+    return '%s: %s' % (self.baseClassName,id(self))
+.. @+node:ekr.20070228074312.12: *4* btw.Clipboard
+# There is no need to override these in subclasses.
+
+def clipboard_clear (self):
+
+    g.app.gui.replaceClipboardWith('')
+
+def clipboard_append(self,s):
+
+    s1 = g.app.gui.getTextFromClipboard()
+
+    g.app.gui.replaceClipboardWith(s1 + s)
+.. @+node:ekr.20081031074455.13: *4* btw.Do-nothings
+# **Do not delete** 
+# The redirection methods of HighLevelInterface 
+# redirect calls from LeoBody & LeoLog to *this* class.
+
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+def getName(self):                          return self.name # Essential.
+def getYScrollPosition (self):              return 0
+def see(self,i):                            pass
+def seeInsertPoint(self):                   pass
+def setFocus(self):                         pass
+def setYScrollPosition (self,i):            pass
+def tag_configure (self,colorName,**keys):  pass
+.. @+node:ekr.20111113141805.10060: *4* btw.Indices
+.. @+node:ekr.20070228074312.7: *5* btw.toPythonIndex
+def toPythonIndex (self,index):
+
+    return g.toPythonIndex(self.s,index)
+.. @+node:ekr.20090320055710.4: *5* btw.toPythonIndexRowCol
+def toPythonIndexRowCol(self,index):
+
+    s = self.getAllText()
+    i = self.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+.. @+node:ekr.20111113141805.10058: *4* btw.Insert point & selection Range
+.. @+node:ekr.20070228074312.20: *5* btw.getInsertPoint
+def getInsertPoint(self):
+
+    i = self.ins
+    if i is None:
+        if self.virtualInsertPoint is None:
+            i = 0
+        else:
+            i = self.virtualInsertPoint
+
+    self.virtualInsertPoint = i
+
+    # g.trace('BaseTextWrapper): i:',i,'virtual',self.virtualInsertPoint)
+    return i
+.. @+node:ekr.20070228074312.22: *5* btw.getSelectionRange
+def getSelectionRange (self,sort=True):
+
+    """Return a tuple representing the selected range of the widget.
+
+    Return a tuple giving the insertion point if no range of text is selected."""
+
+    sel = self.sel
+
+    if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
+        i,j = sel
+        if sort and i > j: sel = j,i # Bug fix: 10/5/07
+        return sel
+    else:
+        i = self.ins
+        return i,i
+
+.. @+node:ekr.20070228074312.25: *5* btw.hasSelection
+def hasSelection (self):
+
+    i,j = self.getSelectionRange()
+    return i != j
+.. @+node:ekr.20070228074312.35: *5* btw.setInsertPoint
+def setInsertPoint (self,pos,s=None):
+
+    self.virtualInsertPoint = i = self.toPythonIndex(pos)
+    self.ins = i
+    self.sel = i,i
+.. @+node:ekr.20070228074312.36: *5* btw.setSelectionRange
+def setSelectionRange (self,i,j,insert=None):
+
+    i1, j1, insert1 = i,j,insert
+    i,j = self.toPythonIndex(i),self.toPythonIndex(j)
+
+    self.sel = i,j
+    self.ins = j
+
+    if insert is not None and insert in (i,j):
+        ins = self.toPythonIndex(insert)
+        if ins in (i,j):
+            self.virtualInsertPoint = ins
+.. @+node:ekr.20070228074312.31: *5* btw.selectAllText
+def selectAllText (self,insert=None):
+
+    '''Select all text of the widget.'''
+
+    self.setSelectionRange(0,'end',insert=insert)
+.. @+node:ekr.20070228074312.5: *4* btw.oops
+def oops (self):
+
+    g.pr('BaseTextWrapper oops:',self,g.callers(4),
+        'must be overridden in subclass')
+.. @+node:ekr.20111113141805.10057: *4* btw.Text
+.. @+node:ekr.20070228074312.10: *5* btw.appendText
+def appendText (self,s):
+
+    self.s = self.s + s
+    self.ins = len(self.s)
+    self.sel = self.ins,self.ins
+.. @+node:ekr.20070228074312.13: *5* btw.delete
+def delete(self,i,j=None):
+
+    i = self.toPythonIndex(i)
+    if j is None: j = i+ 1
+    j = self.toPythonIndex(j)
+
+    # 2011/11/13: This allows subclasses to use this base class method.
+    if i > j: i,j = j,i
+
+    # g.trace(i,j,len(s),repr(s[:20]))
+    s = self.getAllText()
+    self.setAllText(s[:i] + s[j:])
+
+    # Bug fix: 2011/11/13: Significant in external tests.
+    self.setSelectionRange(i,i,insert=i)
+.. @+node:ekr.20070228074312.14: *5* btw.deleteTextSelection
+def deleteTextSelection (self):
+
+    i,j = self.getSelectionRange()
+    self.delete(i,j)
+.. @+node:ekr.20070228074312.18: *5* btw.get
+def get(self,i,j=None):
+
+    i = self.toPythonIndex(i)
+    if j is None: j = i+ 1
+    j = self.toPythonIndex(j)
+    s = self.s[i:j]
+    return g.toUnicode(s)
+.. @+node:ekr.20070228074312.19: *5* btw.getAllText
+def getAllText (self):
+
+    s = self.s
+    return g.toUnicode(s)
+.. @+node:ekr.20070228074312.21: *5* btw.getSelectedText
+def getSelectedText (self):
+
+    i,j = self.sel
+    s = self.s[i:j]
+    return g.toUnicode(s)
+.. @+node:ekr.20070228074312.26: *5* btw.insert
+def insert(self,i,s):
+
+    i = self.toPythonIndex(i)
+    s1 = s
+    self.s = self.s[:i] + s1 + self.s[i:]
+    i += len(s1)
+    self.ins = i
+    self.sel = i,i
+.. @+node:ekr.20070228074312.28: *5* btw.replace (not used)
+# def replace (self,i,j,s):
+
+    # self.delete(i,j)
+    # self.insert(i,s)
+.. @+node:ekr.20070228074312.32: *5* btw.setAllText
+def setAllText (self,s):
+
+    self.s = s
+    i = len(self.s)
+    self.ins = i
+    self.sel = i,i
 .. @-all
 .. @-leo
