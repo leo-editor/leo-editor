@@ -2223,17 +2223,6 @@ class LeoQtBody (leoFrame.LeoBody):
 
     set_focus = setFocus
     toGuiIndex = toPythonIndex
-
-    # No longer used...
-        # def replace (self,i,j,s):                     self.wrapper.replace (i,j,s)
-        # def setBackgroundColor (self,color):          return self.wrapper.setBackgroundColor(color)
-        # def setForegroundColor (self,color):  return self.wrapper.setForegroundColor(color)
-        # def rowColToGuiIndex (self,s,row,col):
-            # Very useful for the Tk colorizer.
-            # return self.wrapper.rowColToGuiIndex(s,row,col)
-    #@+node:ekr.20110605121601.18190: *4* LeoQtBody.oops (no longer used)
-    # def oops (self):
-        # g.trace('qtBody',g.callers(3))
     #@+node:ekr.20110605121601.18217: *4* LeoQtBody.Renderer panes
     #@+node:ekr.20110605121601.18218: *5* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer (self,event=None):

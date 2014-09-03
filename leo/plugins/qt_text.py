@@ -922,17 +922,6 @@ class QMinibufferWrapper (QLineEditWrapper):
                 # c.outerUpdate() # Doesn't work.
         #@-<< define mouseReleaseEvent >>
         w.mouseReleaseEvent = mouseReleaseEvent
-
-    # Note: can only set one stylesheet at a time.
-    # def setBackgroundColor(self,color):
-        # self.widget.setStyleSheet('background-color:%s' % color)
-
-    # def setForegroundColor(self,color):
-        # self.widget.setStyleSheet('color:%s' % color)
-
-    # def setBothColors(self,background_color,foreground_color):
-        # self.widget.setStyleSheet('background-color:%s; color: %s' % (
-            # background_color,foreground_color))
             
     def setStyleClass(self,style_class):
         self.widget.setProperty('style_class', style_class)

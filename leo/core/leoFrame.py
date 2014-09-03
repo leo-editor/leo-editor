@@ -89,12 +89,6 @@ class DummyHighLevelInterface (object):
         return g.app.gui.get_focus(self.c)
    
     set_focus = setFocus
-    
-    # No longer used...
-        # def replace (self,i,j,s):                 pass
-        # def rowColToGuiIndex (self,s,row,col):    return g.convertRowColToPythonIndex(s,row,col)    
-        # def setBackgroundColor(self,color):       pass
-        # def setForegroundColor(self,color):       pass
 #@-<< define class DummyHighLevelInterface >>
 #@+<< define class HighLevelInterface >>
 #@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
@@ -179,9 +173,6 @@ class HighLevelInterface(object):
         return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
     def insert(self,i,s):
         if self.widget: self.widget.insert(i,s)
-    # Never used.   
-    # def replace (self,i,j,s):
-        # if self.widget: self.widget.replace(i,j,s)
     def see(self,i):
         if self.widget: self.widget.see(i)
     def seeInsertPoint (self):
@@ -190,12 +181,8 @@ class HighLevelInterface(object):
         if self.widget: self.widget.selectAllText(insert)
     def setAllText (self,s):
         if self.widget: self.widget.setAllText(s)
-    # def setBackgroundColor(self,color):
-    #    if self.widget: self.widget.setBackgroundColor(color)
     def setFocus(self):
         if self.widget: self.widget.setFocus()
-    # def setForegroundColor(self,color):
-        # if self.widget: self.widget.setForegroundColor(color)
     def setInsertPoint(self,pos,s=None):
         if self.widget: self.widget.setInsertPoint(pos,s=s)
     def setSelectionRange (self,i,j,insert=None):
@@ -262,9 +249,7 @@ class BaseTextWrapper(object):
     def getYScrollPosition (self):              return 0
     def see(self,i):                            pass
     def seeInsertPoint(self):                   pass
-    # def setBackgroundColor(self,color):       pass  
     def setFocus(self):                         pass
-    # def setForegroundColor(self,color):       pass
     def setYScrollPosition (self,i):            pass
     def tag_configure (self,colorName,**keys):  pass
 
