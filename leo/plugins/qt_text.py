@@ -39,6 +39,7 @@ class QTextMixin:
         self.c = c
         self.changingText = False # A lockout for onTextChanged.
         self.enabled = True
+        self.supportsHighLevelInterface = True # A flag for k.masterKeyHandler.
         self.tags = {}
         self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).

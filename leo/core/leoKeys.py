@@ -45,10 +45,9 @@ import time
 # 
 # 1. g.app.gui.setFilter allows various traces and assertions to be made
 #    uniformly. The obj argument to setFilter is a QWidget object; the w
-#    argument to setFilter can be either the same as obj, or a Leo wrapper
-#    class the supports the HighLevelInterface protocol. **Important**: the
-#    types of obj and w are not actually all that important, as discussed
-#    next.
+#    argument to setFilter can be either the same as obj, or a Leo
+#    wrapper class. **Important**: the types of obj and w are not
+#    actually all that important, as discussed next.
 #    
 # 2. The logic in k.masterKeyHandler and its helpers is long and involved:
 # 
@@ -3291,7 +3290,7 @@ class KeyHandlerClass:
             if traceGC: g.printNewObjects('masterCom 4')
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self,event,stroke):
-
+        '''Handle an unbound key.'''
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
@@ -3322,15 +3321,16 @@ class KeyHandlerClass:
         elif name.startswith('log'):
             # Bug fix: 2011/11/21: Because of universal bindings
             # we may not be able to insert anything into w.
-            import leo.core.leoFrame as leoFrame
-            if issubclass(w.__class__,leoFrame.HighLevelInterface):
-                i = w.logCtrl.getInsertPoint()
+            log_w = event.widget
+            if log_w and hasattr(log_w,'supportsHighLevelInterface'):
+                # Send the event to the text widget, not the LeoLog instance.
+                i = log_w.getInsertPoint()
                 if not stroke:
                     stroke = event and event.stroke
                 if stroke:
                     s = stroke.toGuiChar()
-                    w.logCtrl.insert(i,s)
-            elif trace: g.trace('Not a HighLevelInterface object',w)
+                    log_w.insert(i,s)
+            elif trace: g.trace('not supportsHighLevelInterface',log_w)
         else:
             pass # Ignore the event
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
@@ -3348,7 +3348,10 @@ class KeyHandlerClass:
         w = event and event.widget
         char = event and event.char or ''
         stroke = event and event.stroke or None
-        # w_name = c.widget_name(w)
+        w_name = c.widget_name(w)
+        if w_name.startswith('log'):
+            # A hack: send the event to the text part of the log.
+            w = event.widget = c.frame.log.logCtrl
         state = k.state.kind
         special_keys = (
             'Alt_L','Alt_R',
@@ -3400,7 +3403,7 @@ class KeyHandlerClass:
                 if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
                 k.handleUnboundKeys(event,char,stroke)
                 return
-        # 2011/02/08: Use getPandBindings for *all* keys.
+        # 2011/02/08: Use getPaneBindings for *all* keys.
         si = k.getPaneBinding(stroke,w)
         if si:
             assert g.isShortcutInfo(si),si

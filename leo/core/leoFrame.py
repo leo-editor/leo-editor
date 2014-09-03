@@ -45,93 +45,6 @@ import time
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
-#@+<< define class HighLevelInterface >>
-#@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
-class HighLevelInterface(object):
-    '''
-    A class specifying the wrapper api used throughout Leo's core.
-    
-    At present, this class contains redirection methods. Not great.
-    
-    The WrapperAPI class will soon replace this class. WrapperAPI will
-    contain only docstrings.
-    '''
-    def __init__ (self,c):
-        self.c = c
-        self.widget = None
-    #@+others
-    #@+node:ekr.20140903025053.18629: *3* hli.methods with implementations
-    def clipboard_append(self,s):
-        s1 = g.app.gui.getTextFromClipboard()
-        g.app.gui.replaceClipboardWith(s1 + s)
-
-    def clipboard_clear (self):
-        g.app.gui.replaceClipboardWith('')
-
-    def disable (self):
-        self.enabled = False
-        
-    def enable (self,enabled=True):
-        self.enabled = enabled
-
-    def toPythonIndex (self,index):
-        s = self.getAllText()
-        return g.toPythonIndex(s,index)
-
-    def toPythonIndexRowCol(self,index):
-        # This works, but is much slower that the QTextEditWrapper method.
-        s = self.getAllText()
-        i = self.toPythonIndex(index)
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        return i,row,col
-    #@+node:ekr.20140903025053.18628: *3* hli.redirection methods
-    def appendText(self,s):
-        if self.widget: self.widget.appendText(s)
-    def delete(self,i,j=None):
-        if self.widget: self.widget.delete(i,j)
-    def deleteTextSelection (self):
-        if self.widget: self.widget.deleteTextSelection()
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-        pass
-    def get(self,i,j):
-        return self.widget and self.widget.get(i,j) or ''
-    def getAllText(self):
-        return self.widget and self.widget.getAllText() or ''
-    def getInsertPoint(self):
-        return self.widget and self.widget.getInsertPoint() or 0
-    def getSelectedText(self):
-        return self.widget and self.widget.getSelectedText() or ''
-    def getSelectionRange (self):
-        return self.widget and self.widget.getSelectionRange() or (0,0)
-    def getYScrollPosition (self):
-        return self.widget and self.widget.getYScrollPosition() or 0
-    def hasSelection(self):
-        # Take special care, for the benefit of LeoQuickSearchWidget.
-        # This problem only happens with the qttabs gui.
-        w = self.widget
-        return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
-    def insert(self,i,s):
-        if self.widget: self.widget.insert(i,s)
-    def see(self,i):
-        if self.widget: self.widget.see(i)
-    def seeInsertPoint (self):
-        if self.widget: self.widget.seeInsertPoint()
-    def selectAllText (self,insert=None):
-        if self.widget: self.widget.selectAllText(insert)
-    def setAllText (self,s):
-        if self.widget: self.widget.setAllText(s)
-    def setFocus(self):
-        if self.widget: self.widget.setFocus()
-    def setInsertPoint(self,pos,s=None):
-        if self.widget: self.widget.setInsertPoint(pos,s=s)
-    def setSelectionRange (self,i,j,insert=None):
-        if self.widget: self.widget.setSelectionRange(i,j,insert=insert)
-    def setYScrollPosition (self,i):
-        if self.widget: self.widget.setYScrollPosition(i)
-    def tag_configure (self,colorName,**keys):
-        if self.widget: self.widget.tag_configure(colorName,**keys)
-    #@-others
-#@-<< define class HighLevelInterface >>
 #@+<< define class BaseTextWrapper >>
 #@+node:ekr.20070228074312: ** << define class BaseTextWrapper >>
 class BaseTextWrapper(object):
@@ -1345,48 +1258,34 @@ class LeoFrame:
         self.tab_width = w
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog
-class LeoLog (HighLevelInterface):
-
+class LeoLog:
     """The base class for the log pane in Leo windows."""
-
     #@+others
-    #@+node:ekr.20031218072017.3695: *3* LeoLog.ctor
+    #@+node:ekr.20031218072017.3695: *3*  LeoLog.ctor
     def __init__ (self,frame,parentFrame):
-
+        '''Ctor for LeoLog class.'''
         self.frame = frame
         self.c = c = frame and frame.c or None
-
-        HighLevelInterface.__init__(self,c)
-            # Init the base class
-
         self.enabled = True
         self.newlines = 0
         self.isNull = False
-
-        # Official status variables.  Can be used by client code.
+        # Official ivars...
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
         self.logCtrl = None # Set below. Same as self.textDict.get(self.tabName)
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
-
         self.canvasDict = {} # Keys are page names.  Values are Tk.Canvas's.
         self.frameDict = {}  # Keys are page names. Values are Tk.Frames.
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20070302101023: *3* LeoLog.May be overridden
-    def createControl (self,parentFrame):           pass
-    def createCanvas (self,tabName):                pass
-    def createTextWidget (self,parentFrame):        return None
-    def finishCreate (self):                        pass
-    def initAfterLoad (self):                       pass
-    #@+node:ekr.20070302094848.1: *4* clearTab
+    #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab (self,tabName,wrap='none'):
 
         self.selectTab(tabName,wrap=wrap)
         w = self.logCtrl
         if w: w.delete(0,'end')
-    #@+node:ekr.20070302094848.2: *4* createTab (LeoLog)
+    #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         if createText:
@@ -1399,7 +1298,10 @@ class LeoLog (HighLevelInterface):
             self.frameDict [tabName] = tabName # tabFrame
 
 
-    #@+node:ekr.20070302094848.4: *4* cycleTabFocus (LeoLog)
+    #@+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
+    def createTextWidget(self,parentFrame):
+        return None
+    #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
     def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -1413,7 +1315,7 @@ class LeoLog (HighLevelInterface):
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
-    #@+node:ekr.20070302094848.5: *4* deleteTab (LeoLog)
+    #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab (self,tabName,force=False):
 
         c = self.c
@@ -1429,15 +1331,21 @@ class LeoLog (HighLevelInterface):
             self.selectTab('Log')
         c.invalidateFocus()
         c.bodyWantsFocus()
-    #@+node:ekr.20070302094848.7: *4* getSelectedTab
+    #@+node:ekr.20140903143741.18549: *3* LeoLog.enable/disable
+    def disable (self):
+        self.enabled = False
+        
+    def enable (self,enabled=True):
+        self.enabled = enabled
+    #@+node:ekr.20070302094848.7: *3* LeoLog.getSelectedTab
     def getSelectedTab (self):
 
         return self.tabName
-    #@+node:ekr.20070302094848.6: *4* hideTab
+    #@+node:ekr.20070302094848.6: *3* LeoLog.hideTab
     def hideTab (self,tabName):
 
         self.selectTab('Log')
-    #@+node:ekr.20070302094848.8: *4* lower/raiseTab
+    #@+node:ekr.20070302094848.8: *3* LeoLog.lower/raiseTab
     def lowerTab (self,tabName):
 
         self.c.invalidateFocus()
@@ -1447,16 +1355,16 @@ class LeoLog (HighLevelInterface):
 
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
-    #@+node:ekr.20111122080923.10184: *4* orderedTabNames (LeoLog)
+    #@+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
     def orderedTabNames (self,LeoLog):
 
         return list(self.frameDict.values())
-    #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (LeoLog)
+    #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs (self):
 
         return len([val for val in list(self.frameDict.values()) if val != None])
 
-    #@+node:ekr.20070302101304: *4* put & putnl (LeoLog)
+    #@+node:ekr.20070302101304: *3* LeoLog.put & putnl
     # All output to the log stream eventually comes here.
 
     def put (self,s,color=None,tabName='Log',from_redirect=False):
@@ -1464,10 +1372,10 @@ class LeoLog (HighLevelInterface):
 
     def putnl (self,tabName='Log'):
         pass # print ('')
-    #@+node:ekr.20070302094848.10: *4* renameTab
+    #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab (self,oldName,newName):
         pass
-    #@+node:ekr.20070302094848.11: *4* selectTab (LeoLog)
+    #@+node:ekr.20070302094848.11: *3* LeoLog.selectTab
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):# widget unused.
         '''Create the tab if necessary and make it active.'''
         c = self.c
@@ -1484,10 +1392,6 @@ class LeoLog (HighLevelInterface):
             # It is a cause of the 'sticky focus' problem.
             c.widgetWantsFocusNow(self.logCtrl)
         return tabFrame
-    #@+node:ekr.20031218072017.3700: *3* LeoLog.oops
-    def oops (self):
-
-        g.pr("LeoLog oops:", g.callers(4), "should be overridden in subclass")
     #@-others
 #@+node:ekr.20031218072017.3704: ** class LeoTree
 # This would be useful if we removed all the tree redirection routines.
@@ -2115,11 +2019,8 @@ class LeoTreeTab:
     #@-others
 #@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody (LeoBody):
-    # LeoBody is a subclass of HighLevelInterface.
-
     # pylint: disable=R0923
     # Interface not implemented.
-
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  NullBody.__init__
     def __init__ (self,frame,parentFrame):
@@ -2376,10 +2277,7 @@ class NullIconBarClass:
     #@-others
 #@+node:ekr.20031218072017.2232: ** class NullLog (LeoLog)
 class NullLog (LeoLog):
-
-    # pylint: disable=R0923
-    # Interface not implemented.
-
+    # py--lint: disable=interface-not-implemented
     #@+others
     #@+node:ekr.20070302095500: *3* Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__

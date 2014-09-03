@@ -3435,25 +3435,21 @@ class LeoQtFrame (leoFrame.LeoFrame):
     #@-others
 #@+node:ekr.20110605121601.18312: *3* class LeoQtLog (LeoLog)
 class LeoQtLog (leoFrame.LeoLog):
-
-    """A class that represents the log pane of a Qt window."""
-
-    # pylint: disable=R0923
-    # R0923:LeoQtLog: Interface not implemented
-
+    '''A class that represents the log pane of a Qt window.'''
     #@+others
     #@+node:ekr.20110605121601.18313: *4* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *5* LeoQtLog.__init__
     def __init__ (self,frame,parentFrame):
-
+        '''Ctor for LeoQtLog class.'''
         # g.trace('(LeoQtLog)',frame,parentFrame)
-
-        # Call the base class constructor and calls createControl.
         leoFrame.LeoLog.__init__(self,frame,parentFrame)
+            # Init the base class. Calls createControl.
+        assert self.logCtrl is None,self.logCtrl # Set in finishCreate.
         self.c = c = frame.c # Also set in the base constructor, but we need it here.
         self.contentsDict = {} # Keys are tab names.  Values are widgets.
         self.eventFilters = [] # Apparently needed to make filters work!
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
+        self.logWidget = None # Set in finishCreate.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
             # The Qt.QTabWidget that holds all the tabs.
@@ -3468,8 +3464,9 @@ class LeoQtLog (leoFrame.LeoLog):
         tw.setMovable(True)
     #@+node:ekr.20110605121601.18315: *5* LeoQtLog.finishCreate
     def finishCreate (self):
-
-        c = self.c ; log = self ; w = self.tabWidget
+        '''Finish creating the LeoQtLog class.'''
+        c = self.c ; log = self
+        w = self.tabWidget
         # Remove unneeded tabs.
         for name in ('Tab 1','Page'):
             for i in range(w.count()):
@@ -3498,13 +3495,63 @@ class LeoQtLog (leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *5* LeoQtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
-    #@+node:ekr.20140903140611.18596: *4* LeoQtLog.Enable
-    def disable (self):
-        self.enabled = False
-        
-    def enable (self,enabled=True):
-        self.enabled = enabled
-    #@+node:ekr.20120304214900.9940: *4* LeoQtLog.Event handler
+    #@+node:ekr.20110605121601.18333: *4* LeoQtLog.color tab stuff
+    def createColorPicker (self,tabName):
+
+        g.warning('color picker not ready for qt')
+    #@+node:ekr.20110605121601.18334: *4* LeoQtLog.font tab stuff
+    #@+node:ekr.20110605121601.18335: *5* LeoQtLog.createFontPicker
+    def createFontPicker (self,tabName):
+
+        # log = self
+        QFont = QtWidgets.QFont
+        font,ok = QtWidgets.QFontDialog.getFont()
+        if not (font and ok): return
+        style = font.style()
+        table = (
+            (QFont.StyleNormal,'normal'),
+            (QFont.StyleItalic,'italic'),
+            (QFont.StyleOblique,'oblique'))
+        for val,name in table:
+            if style == val:
+                style = name
+                break
+        else:
+            style = ''
+        weight = font.weight()
+        table = (
+            (QFont.Light,'light'),
+            (QFont.Normal,'normal'),
+            (QFont.DemiBold,'demibold'),
+            (QFont.Bold	,'bold'),
+            (QFont.Black,'black'))
+        for val,name in table:
+            if weight == val:
+                weight = name
+                break
+        else:
+            weight = ''
+        table = (
+            ('family',str(font.family())),
+            ('size  ',font.pointSize()),
+            ('style ',style),
+            ('weight',weight),
+        )
+        for key,val in table:
+            if val: g.es(key,val,tabName='Fonts')
+    #@+node:ekr.20110605121601.18339: *5* LeoQtLog.hideFontTab
+    def hideFontTab (self,event=None):
+
+        c = self.c
+        c.frame.log.selectTab('Log')
+        c.bodyWantsFocus()
+    #@+node:ekr.20111120124732.10184: *4* LeoQtLog.isLogWidget
+    def isLogWidget(self,w):
+
+        val = w == self or w in list(self.contentsDict.values())
+        # g.trace(val,w)
+        return val
+    #@+node:ekr.20120304214900.9940: *4* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self,idx):
 
         trace = False and not g.unitTesting
@@ -3518,12 +3565,6 @@ class LeoQtLog (leoFrame.LeoLog):
             self.logCtrl = wrapper
 
         if trace: g.trace(idx,tabw.tabText(idx),self.c.frame.title) # wrapper and wrapper.widget)
-    #@+node:ekr.20111120124732.10184: *4* LeoQtLog.isLogWidget
-    def isLogWidget(self,w):
-
-        val = w == self or w in list(self.contentsDict.values())
-        # g.trace(val,w)
-        return val
     #@+node:ekr.20110605121601.18321: *4* LeoQtLog.put & putnl
     #@+node:ekr.20110605121601.18322: *5* LeoQtLog.put
     def put (self,s,color=None,tabName='Log',from_redirect=False):
@@ -3729,56 +3770,6 @@ class LeoQtLog (leoFrame.LeoLog):
         self.tabName = None # 2011/11/20
         if trace: g.trace('** not found',tabName)
         return False
-    #@+node:ekr.20110605121601.18333: *4* LeoQtLog.color tab stuff
-    def createColorPicker (self,tabName):
-
-        g.warning('color picker not ready for qt')
-    #@+node:ekr.20110605121601.18334: *4* LeoQtLog.font tab stuff
-    #@+node:ekr.20110605121601.18335: *5* LeoQtLog.createFontPicker
-    def createFontPicker (self,tabName):
-
-        # log = self
-        QFont = QtWidgets.QFont
-        font,ok = QtWidgets.QFontDialog.getFont()
-        if not (font and ok): return
-        style = font.style()
-        table = (
-            (QFont.StyleNormal,'normal'),
-            (QFont.StyleItalic,'italic'),
-            (QFont.StyleOblique,'oblique'))
-        for val,name in table:
-            if style == val:
-                style = name
-                break
-        else:
-            style = ''
-        weight = font.weight()
-        table = (
-            (QFont.Light,'light'),
-            (QFont.Normal,'normal'),
-            (QFont.DemiBold,'demibold'),
-            (QFont.Bold	,'bold'),
-            (QFont.Black,'black'))
-        for val,name in table:
-            if weight == val:
-                weight = name
-                break
-        else:
-            weight = ''
-        table = (
-            ('family',str(font.family())),
-            ('size  ',font.pointSize()),
-            ('style ',style),
-            ('weight',weight),
-        )
-        for key,val in table:
-            if val: g.es(key,val,tabName='Fonts')
-    #@+node:ekr.20110605121601.18339: *5* LeoQtLog.hideFontTab
-    def hideFontTab (self,event=None):
-
-        c = self.c
-        c.frame.log.selectTab('Log')
-        c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20110605121601.18340: *3* class LeoQtMenu (LeoMenu)
 class LeoQtMenu (leoMenu.LeoMenu):

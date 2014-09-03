@@ -18815,5 +18815,111 @@ if 0:
     # __set_logCtrl,
     # doc = "log.logCtrl property"
 # )
+.. @+node:ekr.20111114102224.9936: *3* << define class HighLevelInterface >>
+class HighLevelInterface(object):
+    '''
+    A class specifying the wrapper api used throughout Leo's core.
+    
+    At present, this class contains redirection methods. Not great.
+    
+    The WrapperAPI class will soon replace this class. WrapperAPI will
+    contain only docstrings.
+    '''
+    def __init__ (self,c):
+        self.c = c
+        self.widget = None
+    @others
+.. @+node:ekr.20140903025053.18629: *4* hli.methods with implementations
+def clipboard_append(self,s):
+    s1 = g.app.gui.getTextFromClipboard()
+    g.app.gui.replaceClipboardWith(s1 + s)
+
+def clipboard_clear (self):
+    g.app.gui.replaceClipboardWith('')
+
+def disable (self):
+    self.enabled = False
+    
+def enable (self,enabled=True):
+    self.enabled = enabled
+
+def toPythonIndex (self,index):
+    s = self.getAllText()
+    return g.toPythonIndex(s,index)
+
+def toPythonIndexRowCol(self,index):
+    # This works, but is much slower that the QTextEditWrapper method.
+    s = self.getAllText()
+    i = self.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+.. @+node:ekr.20140903025053.18628: *4* hli.redirection methods
+def appendText(self,s):
+    if self.widget: self.widget.appendText(s)
+def delete(self,i,j=None):
+    if self.widget: self.widget.delete(i,j)
+def deleteTextSelection (self):
+    if self.widget: self.widget.deleteTextSelection()
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+def get(self,i,j):
+    return self.widget and self.widget.get(i,j) or ''
+def getAllText(self):
+    return self.widget and self.widget.getAllText() or ''
+def getInsertPoint(self):
+    return self.widget and self.widget.getInsertPoint() or 0
+def getSelectedText(self):
+    return self.widget and self.widget.getSelectedText() or ''
+def getSelectionRange (self):
+    return self.widget and self.widget.getSelectionRange() or (0,0)
+def getYScrollPosition (self):
+    return self.widget and self.widget.getYScrollPosition() or 0
+def hasSelection(self):
+    # Take special care, for the benefit of LeoQuickSearchWidget.
+    # This problem only happens with the qttabs gui.
+    w = self.widget
+    return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
+def insert(self,i,s):
+    if self.widget: self.widget.insert(i,s)
+def see(self,i):
+    if self.widget: self.widget.see(i)
+def seeInsertPoint (self):
+    if self.widget: self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):
+    if self.widget: self.widget.selectAllText(insert)
+def setAllText (self,s):
+    if self.widget: self.widget.setAllText(s)
+def setFocus(self):
+    if self.widget: self.widget.setFocus()
+def setInsertPoint(self,pos,s=None):
+    if self.widget: self.widget.setInsertPoint(pos,s=s)
+def setSelectionRange (self,i,j,insert=None):
+    if self.widget: self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):
+    if self.widget: self.widget.setYScrollPosition(i)
+def tag_configure (self,colorName,**keys):
+    if self.widget: self.widget.tag_configure(colorName,**keys)
+.. @+node:ekr.20140903143741.18551: *3* LeoQtLog.redirection
+# # # def hasSelection(self):
+    # # # # Take special care, for the benefit of LeoQuickSearchWidget.
+    # # # # This problem only happens with the qttabs gui.
+    # # # w = self.logWidget
+    # # # return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
+    
+# # # def getAllText(self):
+    # # # w = self.logWidget
+    # # # return w and w.getAllText() or ''
+    
+# # # def getInsertPoint(self):
+    # # # w = self.logWidget
+    # # # return w and w.getInsertPoint() or 0
+    
+# # # def setFocus(self):
+    # # # w = self.logWidget
+    # # # if w: w.setFocus()
+    
+# # # def setSelectionRange (self,i,j,insert=None):
+    # # # w = self.logWidget
+    # # # if w: w.setSelectionRange(i,j,insert=insert)
 .. @-all
 .. @-leo
