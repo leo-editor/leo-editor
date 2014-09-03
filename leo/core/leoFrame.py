@@ -1344,7 +1344,7 @@ class LeoFrame:
         # Subclasses may override this to affect drawing.
         self.tab_width = w
     #@-others
-#@+node:ekr.20031218072017.3694: ** class LeoLog (HighLevelInterface)
+#@+node:ekr.20031218072017.3694: ** class LeoLog
 class LeoLog (HighLevelInterface):
 
     """The base class for the log pane in Leo windows."""

@@ -3442,7 +3442,7 @@ class LeoQtLog (leoFrame.LeoLog):
     # R0923:LeoQtLog: Interface not implemented
 
     #@+others
-    #@+node:ekr.20110605121601.18313: *4* LeoQtLog Birth
+    #@+node:ekr.20110605121601.18313: *4* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *5* LeoQtLog.__init__
     def __init__ (self,frame,parentFrame):
 
@@ -3498,7 +3498,7 @@ class LeoQtLog (leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *5* LeoQtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
-    #@+node:ekr.20120304214900.9940: *4* Event handler (LeoQtLog)
+    #@+node:ekr.20120304214900.9940: *4* LeoQtLog.Event handler
     def onCurrentChanged(self,idx):
 
         trace = False and not g.unitTesting
@@ -3512,14 +3512,14 @@ class LeoQtLog (leoFrame.LeoLog):
             self.widget = wrapper
 
         if trace: g.trace(idx,tabw.tabText(idx),self.c.frame.title) # wrapper and wrapper.widget)
-    #@+node:ekr.20111120124732.10184: *4* isLogWidget (LeoQtLog)
+    #@+node:ekr.20111120124732.10184: *4* LeoQtLog.isLogWidget
     def isLogWidget(self,w):
 
         val = w == self or w in list(self.contentsDict.values())
         # g.trace(val,w)
         return val
-    #@+node:ekr.20110605121601.18321: *4* put & putnl (LeoQtLog)
-    #@+node:ekr.20110605121601.18322: *5* put (LeoQtLog)
+    #@+node:ekr.20110605121601.18321: *4* LeoQtLog.put & putnl
+    #@+node:ekr.20110605121601.18322: *5* LeoQtLog.put
     def put (self,s,color=None,tabName='Log',from_redirect=False):
         '''All output to the log stream eventually comes here.'''
         trace = False and not g.unitTesting
@@ -3560,7 +3560,7 @@ class LeoQtLog (leoFrame.LeoLog):
             if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
             print(s)
-    #@+node:ekr.20110605121601.18323: *5* putnl (LeoQtLog)
+    #@+node:ekr.20110605121601.18323: *5* LeoQtLog.putnl
     def putnl (self,tabName='Log'):
         '''Put a newline to the Qt log.'''
         if g.app.quitting:
@@ -3580,15 +3580,15 @@ class LeoQtLog (leoFrame.LeoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
-    #@+node:ekr.20120913110135.10613: *4* putImage (LeoQtLog)
-    #@+node:ekr.20110605121601.18324: *4* Tab (LeoQtLog)
-    #@+node:ekr.20110605121601.18325: *5* clearTab
+    #@+node:ekr.20120913110135.10613: *4* LeoQtLog.putImage
+    #@+node:ekr.20110605121601.18324: *4* LeoQtLog.Tab
+    #@+node:ekr.20110605121601.18325: *5* LeoQtLog.clearTab
     def clearTab (self,tabName,wrap='none'):
 
         w = self.logDict.get(tabName)
         if w:
             w.clear() # w is a QTextBrowser.
-    #@+node:ekr.20110605121601.18326: *5* createTab (LeoQtLog)
+    #@+node:ekr.20110605121601.18326: *5* LeoQtLog.createTab
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         """
         Create a new tab in tab widget
@@ -3642,7 +3642,7 @@ class LeoQtLog (leoFrame.LeoLog):
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents,tabName)
         return contents
-    #@+node:ekr.20110605121601.18327: *5* cycleTabFocus (LeoQtLog)
+    #@+node:ekr.20110605121601.18327: *5* LeoQtLog.cycleTabFocus
     def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -3657,7 +3657,7 @@ class LeoQtLog (leoFrame.LeoLog):
         self.selectTab(tabName,createText=False)
         if trace: g.trace('(LeoQtLog)',i,w,w.count(),w.currentIndex(),g.u(tabName))
         return i
-    #@+node:ekr.20110605121601.18328: *5* deleteTab (LeoQtLog)
+    #@+node:ekr.20110605121601.18328: *5* LeoQtLog.deleteTab
     def deleteTab (self,tabName,force=False):
         '''Delete the tab if it exists.  Otherwise do *nothing*.'''
         c = self.c
@@ -3670,11 +3670,11 @@ class LeoQtLog (leoFrame.LeoLog):
                     c.invalidateFocus()
                     c.bodyWantsFocus()
                     return
-    #@+node:ekr.20110605121601.18329: *5* hideTab
+    #@+node:ekr.20110605121601.18329: *5* LeoQtLog.hideTab
     def hideTab (self,tabName):
 
         self.selectTab('Log')
-    #@+node:ekr.20111122080923.10185: *5* orderedTabNames (LeoQtLog)
+    #@+node:ekr.20111122080923.10185: *5* LeoQtLog.orderedTabNames
     def orderedTabNames (self,LeoLog=None): # Unused: LeoLog
 
         '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
@@ -3683,19 +3683,19 @@ class LeoQtLog (leoFrame.LeoLog):
 
         return [w.tabText(i) for i in range(w.count())]
 
-    #@+node:ekr.20110605121601.18330: *5* numberOfVisibleTabs (LeoQtLog)
+    #@+node:ekr.20110605121601.18330: *5* LeoQtLog.numberOfVisibleTabs
     def numberOfVisibleTabs (self):
 
         return len([val for val in self.contentsDict.values() if val != None])
             # **Note**: the base-class version of this uses frameDict.
-    #@+node:ekr.20110605121601.18331: *5* selectTab & helper (LeoQtLog)
+    #@+node:ekr.20110605121601.18331: *5* LeoQtLog.selectTab & helper
     # createText is used by LeoLog.selectTab.
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
         '''Create the tab if necessary and make it active.'''
         if not self.selectHelper(tabName):
             self.createTab(tabName,widget=widget,wrap=wrap)
             self.selectHelper(tabName)
-    #@+node:ekr.20110605121601.18332: *6* selectHelper (LeoQtLog)
+    #@+node:ekr.20110605121601.18332: *6* LeoQtLog.selectHelper
     def selectHelper (self,tabName):
 
         trace = False and not g.unitTesting
@@ -3725,12 +3725,12 @@ class LeoQtLog (leoFrame.LeoLog):
         self.tabName = None # 2011/11/20
         if trace: g.trace('** not found',tabName)
         return False
-    #@+node:ekr.20110605121601.18333: *4* LeoQtLog color tab stuff
+    #@+node:ekr.20110605121601.18333: *4* LeoQtLog.color tab stuff
     def createColorPicker (self,tabName):
 
         g.warning('color picker not ready for qt')
-    #@+node:ekr.20110605121601.18334: *4* LeoQtLog font tab stuff
-    #@+node:ekr.20110605121601.18335: *5* createFontPicker
+    #@+node:ekr.20110605121601.18334: *4* LeoQtLog.font tab stuff
+    #@+node:ekr.20110605121601.18335: *5* LeoQtLog.createFontPicker
     def createFontPicker (self,tabName):
 
         # log = self
@@ -3769,7 +3769,7 @@ class LeoQtLog (leoFrame.LeoLog):
         )
         for key,val in table:
             if val: g.es(key,val,tabName='Fonts')
-    #@+node:ekr.20110605121601.18339: *5* hideFontTab
+    #@+node:ekr.20110605121601.18339: *5* LeoQtLog.hideFontTab
     def hideFontTab (self,event=None):
 
         c = self.c
