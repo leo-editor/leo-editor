@@ -2208,16 +2208,11 @@ class LeoQtBody (leoFrame.LeoBody):
     def getYScrollPosition (self):          return self.wrapper.getYScrollPosition()
     def hasSelection (self):                return self.wrapper.hasSelection()
     def insert(self,i,s):                   return self.wrapper.insert(i,s)
-    def replace (self,i,j,s):               self.wrapper.replace (i,j,s)
-    def rowColToGuiIndex (self,s,row,col):  return self.wrapper.rowColToGuiIndex(s,row,col)
     def see(self,index):                    return self.wrapper.see(index)
     def seeInsertPoint(self):               return self.wrapper.seeInsertPoint()
     def selectAllText (self,insert=None):   self.wrapper.selectAllText(insert)
-    # def setAllText (self,s,new_p=None):     return self.wrapper.setAllText(s,new_p=new_p)
     def setAllText(self,s):                 return self.wrapper.setAllText(s)
-    def setBackgroundColor (self,color):    return self.wrapper.setBackgroundColor(color)
     def setFocus (self):                    return self.wrapper.setFocus()
-    def setForegroundColor (self,color):    return self.wrapper.setForegroundColor(color)
     def setInsertPoint (self,pos,s=None):   return self.wrapper.setInsertPoint(pos,s=s)
     def setSelectionRange (self,i,j,insert=None):
         self.wrapper.setSelectionRange(i,j,insert=insert)
@@ -2228,6 +2223,14 @@ class LeoQtBody (leoFrame.LeoBody):
 
     set_focus = setFocus
     toGuiIndex = toPythonIndex
+
+    # No longer used...
+        # def replace (self,i,j,s):                     self.wrapper.replace (i,j,s)
+        # def setBackgroundColor (self,color):          return self.wrapper.setBackgroundColor(color)
+        # def setForegroundColor (self,color):  return self.wrapper.setForegroundColor(color)
+        # def rowColToGuiIndex (self,s,row,col):
+            # Very useful for the Tk colorizer.
+            # return self.wrapper.rowColToGuiIndex(s,row,col)
     #@+node:ekr.20110605121601.18190: *4* LeoQtBody.oops (no longer used)
     # def oops (self):
         # g.trace('qtBody',g.callers(3))

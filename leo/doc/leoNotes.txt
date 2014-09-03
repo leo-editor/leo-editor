@@ -19274,5 +19274,12 @@ def rememberSelectionAndScroll(self):
     if trace:
         g.trace(spot,v.h)
         # g.trace(id(v),id(w),i,j,ins,spot,v.h)
+.. @+node:ekr.20070228074312.8: *3* btw.rowColToGuiIndex
+# This method is called only from the colorizer.
+# It provides a huge speedup over naive code.
+
+def rowColToGuiIndex (self,s,row,col):
+
+    return g.convertRowColToPythonIndex(s,row,col)    
 .. @-all
 .. @-leo

@@ -38,6 +38,7 @@ class QTextMixin:
         name = 'QTextMixin'
         self.c = c
         self.changingText = False # A lockout for onTextChanged.
+        self.enabled = True
         self.tags = {}
         self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).
@@ -155,40 +156,21 @@ class QTextMixin:
             c.outerUpdate()
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
-    #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
-    def rememberSelectionAndScroll(self):
+    #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
+    def disable (self):
 
-        trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self
-        v = self.c.p.v # Always accurate.
-        v.insertSpot = w.getInsertPoint()
-        i,j = w.getSelectionRange()
-        if i > j: i,j = j,i
-        assert(i<=j)
-        v.selectionStart = i
-        v.selectionLength = j-i
-        v.scrollBarSpot = spot = w.getYScrollPosition()
-        if trace:
-            g.trace(spot,v.h)
-            # g.trace(id(v),id(w),i,j,ins,spot,v.h)
-    #@+node:ekr.20140901062324.18712: *4* qtm.tag_configure
-    def tag_configure (self,*args,**keys):
-        trace = False and not g.unitTesting
-        if trace: g.trace(args,keys)
-        if len(args) == 1:
-            key = args[0]
-            self.tags[key] = keys
-            val = keys.get('foreground')
-            underline = keys.get('underline')
-            if val:
-                # if trace: g.trace(key,val)
-                self.configDict [key] = val
-            if underline:
-                self.configUnderlineDict [key] = True
-        else:
-            g.trace('oops',args,keys)
+        self.enabled = False
 
-    tag_config = tag_configure
+    def enable (self,enabled=True):
+
+        self.enabled = enabled
+    #@+node:ekr.20140902181058.18644: *4* qtm.Clipboard
+    def clipboard_append(self,s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+
+    def clipboard_clear (self):
+        g.app.gui.replaceClipboardWith('')
     #@+node:ekr.20140901062324.18698: *4* qtm.Focus
     def getFocus(self):
         '''QTextMixin'''
@@ -210,22 +192,6 @@ class QTextMixin:
             Qsci and Qsci.QsciScintilla,
         )),self.widget
         QtWidgets.QTextBrowser.setFocus(self.widget)
-    #@+node:ekr.20140901062324.18713: *4* qtm.Idle time (removed)
-    if 0:
-        def after_idle(self,func,threadCount):
-            # g.trace(func.__name__,'threadCount',threadCount)
-            return func(threadCount)
-        
-        def after(self,n,func,threadCount):
-            def after_callback(func=func,threadCount=threadCount):
-                # g.trace(func.__name__,threadCount)
-                return func(threadCount)
-            QtCore.QTimer.singleShot(n,after_callback)
-        
-        def scheduleIdleTimeRoutine (self,function,*args,**keys):
-            g.trace()
-            # if not g.app.unitTesting:
-                # self.widget.after_idle(function,*args,**keys)
     #@+node:ekr.20140901062324.18717: *4* qtm.Generic text
     #@+node:ekr.20140901062324.18703: *5* qtm.appendText
     def appendText(self,s):
@@ -312,6 +278,56 @@ class QTextMixin:
         i = self.toPythonIndex(index)
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
+    #@+node:ekr.20140901062324.18713: *4* qtm.Idle time (removed)
+    if 0:
+        def after_idle(self,func,threadCount):
+            # g.trace(func.__name__,'threadCount',threadCount)
+            return func(threadCount)
+        
+        def after(self,n,func,threadCount):
+            def after_callback(func=func,threadCount=threadCount):
+                # g.trace(func.__name__,threadCount)
+                return func(threadCount)
+            QtCore.QTimer.singleShot(n,after_callback)
+        
+        def scheduleIdleTimeRoutine (self,function,*args,**keys):
+            g.trace()
+            # if not g.app.unitTesting:
+                # self.widget.after_idle(function,*args,**keys)
+    #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
+    def rememberSelectionAndScroll(self):
+
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        if i > j: i,j = j,i
+        assert(i<=j)
+        v.selectionStart = i
+        v.selectionLength = j-i
+        v.scrollBarSpot = spot = w.getYScrollPosition()
+        if trace:
+            g.trace(spot,v.h)
+            # g.trace(id(v),id(w),i,j,ins,spot,v.h)
+    #@+node:ekr.20140901062324.18712: *4* qtm.tag_configure
+    def tag_configure (self,*args,**keys):
+        trace = False and not g.unitTesting
+        if trace: g.trace(args,keys)
+        if len(args) == 1:
+            key = args[0]
+            self.tags[key] = keys
+            val = keys.get('foreground')
+            underline = keys.get('underline')
+            if val:
+                # if trace: g.trace(key,val)
+                self.configDict [key] = val
+            if underline:
+                self.configUnderlineDict [key] = True
+        else:
+            g.trace('oops',args,keys)
+
+    tag_config = tag_configure
     #@-others
 #@+node:ekr.20110605121601.18058: **  class QLineEditWrapper(QTextMixin)
 class QLineEditWrapper(QTextMixin):
@@ -908,15 +924,15 @@ class QMinibufferWrapper (QLineEditWrapper):
         w.mouseReleaseEvent = mouseReleaseEvent
 
     # Note: can only set one stylesheet at a time.
-    def setBackgroundColor(self,color):
-        self.widget.setStyleSheet('background-color:%s' % color)
+    # def setBackgroundColor(self,color):
+        # self.widget.setStyleSheet('background-color:%s' % color)
 
-    def setForegroundColor(self,color):
-        self.widget.setStyleSheet('color:%s' % color)
+    # def setForegroundColor(self,color):
+        # self.widget.setStyleSheet('color:%s' % color)
 
-    def setBothColors(self,background_color,foreground_color):
-        self.widget.setStyleSheet('background-color:%s; color: %s' % (
-            background_color,foreground_color))
+    # def setBothColors(self,background_color,foreground_color):
+        # self.widget.setStyleSheet('background-color:%s; color: %s' % (
+            # background_color,foreground_color))
             
     def setStyleClass(self,style_class):
         self.widget.setProperty('style_class', style_class)
@@ -1152,6 +1168,7 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage
     def linesPerPage (self):
         '''Return the number of lines presently visible.'''
+        # Not used in Leo's core. Not tested.
         w = self.widget
         return int(w.SendScintilla(w.SCI_LINESONSCREEN))
     #@+node:ekr.20110605121601.18112: *5* qsciw.see
@@ -1197,16 +1214,16 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18073: *3* qtew.ctor & helpers
     def __init__ (self,widget,name,c=None):
         '''Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser.'''
-        if c:
-            QTextMixin.__init__(self,c)
-                # Init the base class.
-            # Make sure all ivars are set.
-            self.baseClassName='QTextEditWrapper'
-            self.c = c
-            self.name = name
-            self.useScintilla = False
-            self.widget = widget
-            # Complete the init.
+        QTextMixin.__init__(self,c)
+            # Init the base class.
+        # Make sure all ivars are set.
+        self.baseClassName='QTextEditWrapper'
+        self.c = c
+        self.name = name
+        self.widget = widget
+        self.useScintilla = False
+        # Complete the init.
+        if c and widget:
             self.widget.setUndoRedoEnabled(False)
             self.set_config()
             self.set_signals()
@@ -1488,6 +1505,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18087: *4* qtew.linesPerPage
     def linesPerPage (self):
         '''QTextEditWrapper.'''
+        # Not used in Leo's core.
         w = self.widget
         h = w.size().height()
         lineSpacing = w.fontMetrics().lineSpacing()

@@ -69,14 +69,11 @@ class DummyHighLevelInterface (object):
     def getYScrollPosition (self):                  return 0
     def hasSelection(self):                         return False
     def insert(self,i,s):                           pass    
-    def replace (self,i,j,s):                       pass
     def see(self,i):                                pass
     def seeInsertPoint (self):                      pass
     def selectAllText (self,insert=None):           pass
     def setAllText (self,s):                        pass
-    def setBackgroundColor(self,color):             pass
     def setFocus(self):                             pass
-    def setForegroundColor(self,color):             pass
     def setInsertPoint(self,pos,s=None):            pass
     def setSelectionRange (self,i,j,insert=None):   pass
     def setYScrollPosition (self,i):                pass
@@ -90,9 +87,14 @@ class DummyHighLevelInterface (object):
         g.app.gui.replaceClipboardWith('')
     def getFocus(self):
         return g.app.gui.get_focus(self.c)
-    def rowColToGuiIndex (self,s,row,col):
-        return g.convertRowColToPythonIndex(s,row,col)    
+   
     set_focus = setFocus
+    
+    # No longer used...
+        # def replace (self,i,j,s):                 pass
+        # def rowColToGuiIndex (self,s,row,col):    return g.convertRowColToPythonIndex(s,row,col)    
+        # def setBackgroundColor(self,color):       pass
+        # def setForegroundColor(self,color):       pass
 #@-<< define class DummyHighLevelInterface >>
 #@+<< define class HighLevelInterface >>
 #@+node:ekr.20111114102224.9936: ** << define class HighLevelInterface >>
@@ -176,9 +178,10 @@ class HighLevelInterface(object):
         w = self.widget
         return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
     def insert(self,i,s):
-        if self.widget: self.widget.insert(i,s)    
-    def replace (self,i,j,s):
-        if self.widget: self.widget.replace(i,j,s)
+        if self.widget: self.widget.insert(i,s)
+    # Never used.   
+    # def replace (self,i,j,s):
+        # if self.widget: self.widget.replace(i,j,s)
     def see(self,i):
         if self.widget: self.widget.see(i)
     def seeInsertPoint (self):
@@ -187,12 +190,12 @@ class HighLevelInterface(object):
         if self.widget: self.widget.selectAllText(insert)
     def setAllText (self,s):
         if self.widget: self.widget.setAllText(s)
-    def setBackgroundColor(self,color):
-        if self.widget: self.widget.setBackgroundColor(color)
+    # def setBackgroundColor(self,color):
+    #    if self.widget: self.widget.setBackgroundColor(color)
     def setFocus(self):
         if self.widget: self.widget.setFocus()
-    def setForegroundColor(self,color):
-        if self.widget: self.widget.setForegroundColor(color)
+    # def setForegroundColor(self,color):
+        # if self.widget: self.widget.setForegroundColor(color)
     def setInsertPoint(self,pos,s=None):
         if self.widget: self.widget.setInsertPoint(pos,s=s)
     def setSelectionRange (self,i,j,insert=None):
@@ -213,12 +216,6 @@ class HighLevelInterface(object):
 
     def getFocus(self):
         return g.app.gui.get_focus(self.c)
-
-    def rowColToGuiIndex (self,s,row,col):
-        return g.convertRowColToPythonIndex(s,row,col)   
-
-    # def rowColToGuiIndex (self,s,row,col):
-        # return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0 
 
     set_focus = setFocus
     #@-others
@@ -265,21 +262,14 @@ class BaseTextWrapper(object):
     def getYScrollPosition (self):              return 0
     def see(self,i):                            pass
     def seeInsertPoint(self):                   pass
-    def setBackgroundColor(self,color):         pass  
+    # def setBackgroundColor(self,color):       pass  
     def setFocus(self):                         pass
-    def setForegroundColor(self,color):         pass
+    # def setForegroundColor(self,color):       pass
     def setYScrollPosition (self,i):            pass
     def tag_configure (self,colorName,**keys):  pass
 
     set_focus = setFocus
     #@+node:ekr.20111113141805.10060: *3* btw.Indices
-    #@+node:ekr.20070228074312.8: *4* btw.rowColToGuiIndex
-    # This method is called only from the colorizer.
-    # It provides a huge speedup over naive code.
-
-    def rowColToGuiIndex (self,s,row,col):
-
-        return g.convertRowColToPythonIndex(s,row,col)    
     #@+node:ekr.20070228074312.7: *4* btw.toPythonIndex
     def toPythonIndex (self,index):
 
@@ -416,11 +406,11 @@ class BaseTextWrapper(object):
         i += len(s1)
         self.ins = i
         self.sel = i,i
-    #@+node:ekr.20070228074312.28: *4* btw.replace
-    def replace (self,i,j,s):
+    #@+node:ekr.20070228074312.28: *4* btw.replace (not used)
+    # def replace (self,i,j,s):
 
-        self.delete(i,j)
-        self.insert(i,s)
+        # self.delete(i,j)
+        # self.insert(i,s)
     #@+node:ekr.20070228074312.32: *4* btw.setAllText
     def setAllText (self,s):
 

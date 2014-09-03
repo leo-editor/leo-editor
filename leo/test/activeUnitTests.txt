@@ -10783,13 +10783,13 @@ w.appendText('abc')     ; check('abc')
 w.delete(1,2)           ; check('ac')
 w.insert(0,'xy')        ; check('xyac')
 w.insert(1,'z')         ; check('xzyac')
-w.replace(2,4,'ABCD')   ; check('xzABCDc')
+    # w.replace(2,4,'ABCD') ; check('xzABCDc')
+        # This method no longer exists.  It is not used anywhere.
+    # w.setSelectionRange(3,6)
+    # s = w.getSelectedText()
+    # assert s == 'BCD',repr(s)
 
-w.setSelectionRange(3,6)
-s = w.getSelectedText()
-assert s == 'BCD',repr(s)
-
-w.deleteTextSelection() ; check('xzAc')
+w.deleteTextSelection() ; check('xzyac')
 #@+node:ekr.20061106201509.6: *4* @test c.frame.body.getInsertLines
 # line 1
 # line 2
