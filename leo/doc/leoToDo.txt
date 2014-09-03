@@ -10,6 +10,31 @@
 - Document recent tags work.
 - Add all items in the to-be-documented mailbox to docs.
 - What to do about all the correspondence in the docs section below?
+.. @+node:ekr.20140903025053.18627: *3* To do first
+@language rest
+
+Simplify classes:
+- Eliminate unused distinctions in HighLevelInterface class: organize methods alphabetically.
+* Create WrapperAPI class, containing only docstrings.
+    - Use WrapperAPI class in unit tests.
+    - Create a unit test based on "Compare dir(QSW) and dir(HLI)" script
+- Revise StringTextWidget.  Call it StringTextWrapper.
+
+Eliminate redirection code:
+* Remove all references to HighLevelInterface class in the core.
+* Remove all redirection code in LeoBody and LeoLog (and everywhere else).
+    - Replace body.wrapperMethod by body.wrapper.wrapperMethod.
+    
+Fix code messes:
+- Fix logCtrl mess
+- Change self.w to self.wrapper in leoEditCommands.py.
+- Add g checking/assertion functions.
+    - g.isWrapper: calls g.app.gui.isWrapper
+    - g.isWidget: calls g.app.gui.isWidget
+
+Eliminate toPythonIndex?
+- All unit tests should call g.toPythonIndex.
+- Wrapper code could just assert isinstance(i,int) or isinstance(j,(j,Null.__class__))
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
 Fix all git bugs:
 https://github.com/leo-editor/leo-editor/labels/bug
