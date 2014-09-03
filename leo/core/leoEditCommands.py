@@ -10402,7 +10402,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
         txt = txt[:i]+word+txt[j:]
         c.frame.body.setAllText(txt)
         c.p.b = txt
-        c.frame.body.setInsertPoint(
+        c.frame.body.wrapper.setInsertPoint(
             i+len(word)+xtra-1
         )
         c.bodyWantsFocusNow()

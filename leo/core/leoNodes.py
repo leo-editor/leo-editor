@@ -2351,7 +2351,8 @@ class VNode (BaseVnode):
         if ins is None: ins = 0
         # This is very expensive for large text.
         if traceTime: t1 = time.time()
-        body.setInsertPoint(ins,s=v._bodyString)
+        if hasattr(body.wrapper,'setInsertPoint'):
+            body.wrapper.setInsertPoint(ins,s=v._bodyString)
         if traceTime: 
             delta_t = time.time()-t1
             if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))

@@ -1733,7 +1733,7 @@ class LeoQtBody (leoFrame.LeoBody):
             self.updateInjectedIvars (old_w,p)
             self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
         # Switch editors.
-        c.frame.body.bodyCtrl = wrapper
+        c.frame.body.wrapper = wrapper
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
@@ -1763,11 +1763,13 @@ class LeoQtBody (leoFrame.LeoBody):
     def assignPositionToEditor (self,p):
         '''Called *only* from tree.select to select the present body editor.'''
         c = self.c
-        wrapper = c.frame.body.bodyCtrl
-        w = wrapper.widget
-        self.updateInjectedIvars(w,p)
-        self.selectLabel(wrapper)
-        # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
+        wrapper = c.frame.body.wrapper
+        w = wrapper and wrapper.widget
+            # Careful: w may not exist during unit testing.
+        if w:
+            self.updateInjectedIvars(w,p)
+            self.selectLabel(wrapper)
+                # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
     #@+node:ekr.20110605121601.18198: *6* LeoQtBody.cycleEditorFocus
     # Use the base class method.
 
@@ -1791,7 +1793,7 @@ class LeoQtBody (leoFrame.LeoBody):
         '''Delete the presently selected body text editor.'''
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
-        wrapper = c.frame.body.bodyCtrl
+        wrapper = c.frame.body.wrapper
         w = wrapper.widget
         # This seems not to be a valid assertion.
         # assert wrapper == d.get(name),'wrong wrapper'
@@ -1850,8 +1852,8 @@ class LeoQtBody (leoFrame.LeoBody):
                 return w
 
         # As a last resort, return the present editor widget.
-        if trace: g.trace('***',id(self.bodyCtrl),'no match',p.h)
-        return c.frame.body.bodyCtrl
+        if trace: g.trace('***',id(self.wrapper),'no match',p.h)
+        return c.frame.body.wrapper
     #@+node:ekr.20110605121601.18201: *6* LeoQtBody.select/unselectLabel
     def unselectLabel (self,wrapper):
 
@@ -1874,8 +1876,9 @@ class LeoQtBody (leoFrame.LeoBody):
         '''Select editor w and node w.leo_p.'''
         trace = False and not g.unitTesting
         verbose = False
-        c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
-        if not wrapper: return bodyCtrl
+        c = self.c
+        if not wrapper:
+            return c.frame.body.wrapper
         if self.selectEditorLockout:
             if trace: g.trace('**busy')
             return
@@ -1888,7 +1891,7 @@ class LeoQtBody (leoFrame.LeoBody):
         def report(s):
             g.trace('*** %9s wrapper %s w %s %s' % (
                 s,id(wrapper),id(w),c.p.h))
-        if wrapper and wrapper == bodyCtrl:
+        if wrapper and wrapper == c.frame.body.wrapper:
             self.deactivateEditors(wrapper)
             if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
                 if trace: report('select')
@@ -1918,7 +1921,6 @@ class LeoQtBody (leoFrame.LeoBody):
         self.deactivateEditors(wrapper)
         self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
         # g.trace('c.frame.body',c.frame.body)
-        # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
         # g.trace('wrapper',wrapper)
         c.frame.body.bodyCtrl = wrapper
         c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
@@ -1949,7 +1951,7 @@ class LeoQtBody (leoFrame.LeoBody):
         d = self.editorWidgets
         if len(list(d.keys())) < 2: return # There is only the main widget
 
-        w0 = c.frame.body.bodyCtrl
+        w0 = c.frame.body.wrapper
         i,j = w0.getSelectionRange()
         ins = w0.getInsertPoint()
         sb0 = w0.widget.verticalScrollBar()
@@ -2085,8 +2087,8 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c
         # Save.
-        old_wrapper = c.frame.body.bodyCtrl
-        c.frame.body.bodyCtrl = wrapper
+        old_wrapper = c.frame.body.wrapper
+        c.frame.body.wrapper = wrapper
         w = wrapper.widget
         if not hasattr(w,'leo_colorizer'):
             if trace: g.trace('*** creating colorizer for',w)
@@ -2099,7 +2101,7 @@ class LeoQtBody (leoFrame.LeoBody):
             c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
         finally:
             # Restore.
-            c.frame.body.bodyCtrl = old_wrapper
+            c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20110605121601.18214: *6* LeoQtBody.switchToChapter
     def switchToChapter (self,w):
 
@@ -2156,7 +2158,7 @@ class LeoQtBody (leoFrame.LeoBody):
         # c.NodeHistory.update(c.p)
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
-            if wrapper and wrapper != self.bodyCtrl:
+            if wrapper and wrapper != self.wrapper:
                 self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in',obj)
             if hasattr(obj,'leo_copy_button') and obj.leo_copy_button:
@@ -2225,7 +2227,7 @@ class LeoQtBody (leoFrame.LeoBody):
         '''Hide canvas pane.'''
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
-        wrapper = c.frame.body.bodyCtrl
+        wrapper = c.frame.body.wrapper
         w = wrapper.widget
         name = w.leo_name
         assert name
@@ -2262,7 +2264,7 @@ class LeoQtBody (leoFrame.LeoBody):
         '''Hide canvas pane.'''
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
-        wrapper = c.frame.body.bodyCtrl
+        wrapper = c.frame.body.wrapper
         w = wrapper.widget
         name = w.leo_name
         assert name
@@ -2317,8 +2319,6 @@ class LeoQtBody (leoFrame.LeoBody):
     def showCanvasRenderer (self,event=None):
 
         '''Show the canvas area in the body pane, creating it if necessary.'''
-
-        # bodyCtrl = self.c.frame.body.bodyCtrl # A QTextEditWrapper
         c = self.c
         f = c.frame.top.leo_ui.leo_body_inner_frame
         assert isinstance(f,QtWidgets.QFrame),f
@@ -2598,7 +2598,6 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     col = g.computeWidth (s2,c.tab_width)
                 fcol = col + c.currentPosition().textOffset()
                 # g.trace('fcol',fcol,'te',id(te),g.callers(2))
-                # g.trace('c.frame.body.bodyCtrl',body.bodyCtrl)
                 # g.trace(row,col,fcol)
             else:
                 row,col,fcol = 0,0,0
@@ -3047,7 +3046,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
                 return
             else:
-                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+                c.k.showStateAndMode(w=c.frame.body.wrapper)
                 g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodyclick")
@@ -3060,7 +3059,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
                 return
             else:
-                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+                c.k.showStateAndMode(w=c.frame.body.wrapper)
                 g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
@@ -3073,7 +3072,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             c = self.c ; p = c.currentPosition()
             if event and not g.doHook("bodydclick1",c=c,p=p,v=p,event=event):
                 c.editCommands.extendToWord(event) # Handles unicode properly.
-                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+                c.k.showStateAndMode(w=c.frame.body.wrapper)
             g.doHook("bodydclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodydclick")
@@ -4731,7 +4730,7 @@ class LeoQtSpellTab:
 
         ui = c.frame.top.leo_ui
 
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         state = self.suggestions and w.hasSelection()
 
         ui.leo_spell_btn_Change.setDisabled(not state)
@@ -5414,7 +5413,7 @@ class QtSearchWidget:
 
         self.insertPoint = 0
         self.selection = 0,0
-        self.bodyCtrl = self
+        self.wrapper = self
         self.body = self
         self.text = None
 #@+node:ekr.20110605121601.18462: *3* class SDIFrameFactory
@@ -7555,7 +7554,7 @@ class LeoQtEventFilter(QtCore.QObject):
         }
         table = (
             c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
-            c.frame.body.bodyCtrl and c.frame.body.bodyCtrl.widget,
+            c.frame.body.wrapper and c.frame.body.wrapper.widget,
             c.frame.tree and c.frame.tree.treeWidget,
             c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
         )

@@ -357,18 +357,19 @@ class StringTextWrapper (BaseTextWrapper):
 #@-<< define class StringTextWrapper >>
 
 #@+others
-#@+node:ekr.20031218072017.3656: ** class LeoBody (HighLevelInterface)
-class LeoBody (HighLevelInterface):
-    '''
-    The base class for the body pane in Leo windows.
-    '''
+#@+node:ekr.20031218072017.3656: ** class LeoBody
+class LeoBody:
+    '''The base class for the body pane in Leo windows.'''
+    # pylint: disable=no-member
+    # All missing members are defined in LeoQtBody class.
+    # This will be verified by a unit test.
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
     def __init__ (self,frame,parentFrame):
         '''Ctor for LeoBody class.'''
         c = frame.c
-        HighLevelInterface.__init__(self,c)
-            # Init the base class
+        ### HighLevelInterface.__init__(self,c)
+        ###    # Init the base class
         frame.body = self
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
@@ -377,7 +378,7 @@ class LeoBody (HighLevelInterface):
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
         # May be overridden in subclasses...
-        self.wrapper = self
+        self.wrapper = None # set in LeoQtBody.setWidget.
             # self.bodyCtrl is deprecated synonum for self.wrapper
             # It is implemented as a property.
             # self.widget no longer exists.
@@ -386,45 +387,51 @@ class LeoBody (HighLevelInterface):
         self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
-    #@+node:ekr.20061109173122: *3* LeoBody: must be defined in subclasses
-    # Birth, death & config
-    def createControl (self,parentFrame,p):
-        self.oops()
-    def createTextWidget (self,parentFrame,p,name):
-        self.oops()
-        return None
+    #@+node:ekr.20130303133655.10213: *3* LeoBody.attribute_test (to be deleted)
+    # # # def pyflake_test(self):
+        
+        # # # # pylint: disable=E1101
+        # # # # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
+        # # # print(self.xyzzy22)
+        
+        # # # # pyflakes incorrectly complains that dn is not used.
+        # # # dn = self.def_stack[-1] # Add the code at the top of the stack.
+        # # # dn.code += 'abc'
+    #@+node:ekr.20111115100829.9789: *3* LeoBody.bodyCtrl property (deprecated)
+    # def __get_bodyCtrl(self):
 
-    # Editor
-    def createEditorFrame (self,w):     self.oops() ; return None
-    def createEditorLabel (self,pane):  self.oops()
-    def packEditorLabelWidget (self,w): self.oops()
-    def setEditorColors (self,bg,fg):   self.oops()
+        # return self.wrapper
 
-    # Events...
-    def scheduleIdleTimeRoutine (self,function,*args,**keys):
-        self.oops()
-    #@+node:ekr.20061109173021: *3* LeoBody: must be defined in the base class
-    #@+node:ekr.20031218072017.3677: *4* LeoBody.Coloring
+    # def __set_bodyCtrl(self,val):
+
+        # self.wrapper = val
+
+    # bodyCtrl = property(
+        # __get_bodyCtrl,
+        # __set_bodyCtrl,
+        # doc = "body.bodyCtrl property"
+    # )
+    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
+    def forceFullRecolor (self):
+        self.forceFullRecolorFlag = True
+
     def getColorizer(self):
-
         return self.colorizer
 
     def updateSyntaxColorer(self,p):
-
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self,p,incremental=False):
-
         self.c.requestRecolorFlag = True
         self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
-    #@+node:ekr.20060528100747: *4* LeoBody.Editors
+    #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
 
 
-    #@+node:ekr.20070424053629: *5* LeoBody.entries
-    #@+node:ekr.20060528100747.1: *6* LeoBody.addEditor
+    #@+node:ekr.20070424053629: *4* LeoBody.entries
+    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
     def addEditor (self,event=None):
 
         '''Add another editor to the body pane.'''
@@ -469,7 +476,7 @@ class LeoBody (HighLevelInterface):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20060528132829: *6* LeoBody.assignPositionToEditor
+    #@+node:ekr.20060528132829: *5* LeoBody.assignPositionToEditor
     def assignPositionToEditor (self,p):
         '''Called *only* from tree.select to select the present body editor.'''
         c = self.c
@@ -477,7 +484,7 @@ class LeoBody (HighLevelInterface):
         self.updateInjectedIvars(w,p)
         self.selectLabel(w)
         # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
-    #@+node:ekr.20060528170438: *6* LeoBody.cycleEditorFocus
+    #@+node:ekr.20060528170438: *5* LeoBody.cycleEditorFocus
     def cycleEditorFocus (self,event=None):
 
         '''Cycle keyboard focus between the body text editors.'''
@@ -493,7 +500,7 @@ class LeoBody (HighLevelInterface):
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.wrapper = w2
-    #@+node:ekr.20060528113806: *6* LeoBody.deleteEditor
+    #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor
     def deleteEditor (self,event=None):
 
         '''Delete the presently selected body text editor.'''
@@ -515,7 +522,7 @@ class LeoBody (HighLevelInterface):
         # c.frame.body.wrapper = w # Don't do this now?
         self.numberOfEditors -= 1
         self.selectEditor(w)
-    #@+node:ekr.20070425180705: *6* LeoBody.findEditorForChapter
+    #@+node:ekr.20070425180705: *5* LeoBody.findEditorForChapter
     def findEditorForChapter (self,chapter,p):
         '''Return an editor to be assigned to chapter.'''
         c = self.c
@@ -538,7 +545,7 @@ class LeoBody (HighLevelInterface):
         # As a last resort, return the present editor widget.
         # g.trace('***',id(self.wrapper),'no match',p.h)
         return c.frame.body.wrapper
-    #@+node:ekr.20060530210057: *6* LeoBody.select/unselectLabel
+    #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel (self,w):
 
         self.createChapterIvar(w)
@@ -559,7 +566,7 @@ class LeoBody (HighLevelInterface):
         elif hasattr(w,'leo_label') and w.leo_label:
             w.leo_label.pack_forget()
             w.leo_label = None
-    #@+node:ekr.20061017083312: *6* LeoBody.selectEditor & helpers
+    #@+node:ekr.20061017083312: *5* LeoBody.selectEditor & helpers
     selectEditorLockout = False
 
     def selectEditor(self,w):
@@ -580,7 +587,7 @@ class LeoBody (HighLevelInterface):
         finally:
             self.selectEditorLockout = False
         return val # Don't put a return in a finally clause.
-    #@+node:ekr.20070423102603: *7* LeoBody.selectEditorHelper
+    #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
     def selectEditorHelper (self,wrapper):
         '''Select the editor whose widget is given.'''
         c = self.c
@@ -609,7 +616,7 @@ class LeoBody (HighLevelInterface):
         c.redraw(p)
         c.recolor()
         c.bodyWantsFocus()
-    #@+node:ekr.20060528131618: *6* LeoBody.updateEditors
+    #@+node:ekr.20060528131618: *5* LeoBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors (self):
@@ -627,8 +634,8 @@ class LeoBody (HighLevelInterface):
                 # g.trace('update',wrapper,v)
                 self.recolorWidget(p,wrapper)
         c.bodyWantsFocus()
-    #@+node:ekr.20070424053629.1: *5* LeoBody.utils
-    #@+node:ekr.20070422093128: *6* LeoBody.computeLabel
+    #@+node:ekr.20070424053629.1: *4* LeoBody.utils
+    #@+node:ekr.20070422093128: *5* LeoBody.computeLabel
     def computeLabel (self,w):
 
         s = w.leo_label_s
@@ -637,7 +644,7 @@ class LeoBody (HighLevelInterface):
             s = '%s: %s' % (w.leo_chapter.name,s)
 
         return s
-    #@+node:ekr.20070422094710: *6* LeoBody.createChapterIvar
+    #@+node:ekr.20070422094710: *5* LeoBody.createChapterIvar
     def createChapterIvar (self,w):
 
         c = self.c
@@ -647,7 +654,7 @@ class LeoBody (HighLevelInterface):
                 w.leo_chapter = cc.getSelectedChapter()
             else:
                 w.leo_chapter = None
-    #@+node:ekr.20070424084651: *6* LeoBody.ensurePositionExists
+    #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
     def ensurePositionExists(self,w):
         '''Return True if w.leo_p exists or can be reconstituted.'''
         c = self.c
@@ -662,7 +669,7 @@ class LeoBody (HighLevelInterface):
             # This *can* happen when selecting a deleted node.
             w.leo_p = c.p
             return False
-    #@+node:ekr.20070424080640: *6* LeoBody.deactivateActiveEditor
+    #@+node:ekr.20070424080640: *5* LeoBody.deactivateActiveEditor
     # Not used in Qt.
 
     def deactivateActiveEditor(self,w):
@@ -678,7 +685,7 @@ class LeoBody (HighLevelInterface):
                 w2.leo_active = False
                 self.unselectLabel(w2)
                 return
-    #@+node:ekr.20060530204135: *6* LeoBody.recolorWidget
+    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget
     def recolorWidget (self,p,w):
 
         c = self.c
@@ -690,7 +697,7 @@ class LeoBody (HighLevelInterface):
         finally:
             # Restore.
             c.frame.body.wrapper = old_wrapper
-    #@+node:ekr.20070424084012: *6* LeoBody.switchToChapter
+    #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
     def switchToChapter (self,w):
 
         '''select w.leo_chapter.'''
@@ -705,7 +712,7 @@ class LeoBody (HighLevelInterface):
                 # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
-    #@+node:ekr.20070424092855: *6* LeoBody.updateInjectedIvars
+    #@+node:ekr.20070424092855: *5* LeoBody.updateInjectedIvars
     # Called from addEditor and assignPositionToEditor.
 
     def updateInjectedIvars (self,w,p):
@@ -722,7 +729,7 @@ class LeoBody (HighLevelInterface):
         w.leo_v = w.leo_p.v
         w.leo_label_s = p.h
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
-    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
+    #@+node:ekr.20031218072017.1329: *3* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
     def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
 
@@ -751,7 +758,7 @@ class LeoBody (HighLevelInterface):
         p.v.setBodyString(newText)
         p.v.insertSpot = body.getInsertPoint()
         #@+<< recolor the body >>
-        #@+node:ekr.20051026083733.6: *5* << recolor the body >>
+        #@+node:ekr.20051026083733.6: *4* << recolor the body >>
         c.frame.scanForTabWidth(p)
         body.recolor(p,incremental=not self.forceFullRecolorFlag)
         self.forceFullRecolorFlag = False
@@ -763,7 +770,7 @@ class LeoBody (HighLevelInterface):
         self.updateEditors()
         p.v.contentModified()
         #@+<< update icons if necessary >>
-        #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
+        #@+node:ekr.20051026083733.7: *4* << update icons if necessary >>
 
         redraw_flag = False
         # Update dirty bits.
@@ -781,12 +788,12 @@ class LeoBody (HighLevelInterface):
         if redraw_flag:
             c.redraw_after_icons_changed()
         #@-<< update icons if necessary >>
-    #@+node:ekr.20031218072017.3658: *4* LeoBody.oops
-    def oops (self):
+    #@+node:ekr.20031218072017.3658: *3* LeoBody.oops (to be deleted)
+    # # # def oops (self):
 
-        g.trace("LeoBody oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20031218072017.4018: *4* LeoBody.Text
-    #@+node:ekr.20031218072017.4030: *5* LeoBody.getInsertLines
+        # # # g.trace("LeoBody oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
+    #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines (self):
         """
         Return before,after where:
@@ -809,7 +816,7 @@ class LeoBody (HighLevelInterface):
         ins    = g.toUnicode(ins)
         after  = g.toUnicode(after)
         return before,ins,after
-    #@+node:ekr.20031218072017.4031: *5* LeoBody.getSelectionAreas
+    #@+node:ekr.20031218072017.4031: *4* LeoBody.getSelectionAreas
     def getSelectionAreas (self):
         """
         Return before,sel,after where:
@@ -832,7 +839,7 @@ class LeoBody (HighLevelInterface):
         sel    = g.toUnicode(sel)
         after  = g.toUnicode(after)
         return before,sel,after
-    #@+node:ekr.20031218072017.2377: *5* LeoBody.getSelectionLines
+    #@+node:ekr.20031218072017.2377: *4* LeoBody.getSelectionLines
     def getSelectionLines (self):
         """
         Return before,sel,after where:
@@ -860,7 +867,7 @@ class LeoBody (HighLevelInterface):
         after  = g.toUnicode(s[j:len(s)])
         # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
         return before,sel,after # 3 strings.
-    #@+node:ekr.20031218072017.4037: *5* LeoBody.setSelectionAreas
+    #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
     def setSelectionAreas (self,before,sel,after):
 
         """Replace the body text by before + sel + after and
@@ -882,7 +889,7 @@ class LeoBody (HighLevelInterface):
         w.setSelectionRange(i,j,insert=j)
         w.setYScrollPosition(pos)
         return i,j
-    #@+node:ekr.20031218072017.4038: *5* LeoBody.get/setYScrollPosition
+    #@+node:ekr.20031218072017.4038: *4* LeoBody.get/setYScrollPosition
     def getYScrollPosition (self):
 
         i = self.wrapper.getYScrollPosition()
@@ -891,40 +898,30 @@ class LeoBody (HighLevelInterface):
     def setYScrollPosition (self,i):
 
         self.wrapper.setYScrollPosition(i)
-    #@+node:ekr.20081005065934.6: *3* LeoBody: may be defined in subclasses
-    # These are optional.
-    def after_idle (self,idle_handler,thread_count):
-        pass
+    #@+node:ekr.20081005065934.6: *3* LeoBody: may be defined in subclasses (to be deleted)
+    # # # # These are optional.
+    # # # def after_idle (self,idle_handler,thread_count):
+        # # # pass
 
-    def forceFullRecolor (self):
-        self.forceFullRecolorFlag = True
+    # # # def initAfterLoad (self):
+        # # # pass
+    #@+node:ekr.20061109173122: *3* LeoBody: must be defined in subclasses (to be deleted)
+    # # # # Birth, death & config
+    # # # def createControl (self,parentFrame,p):
+        # # # self.oops()
+    # # # def createTextWidget (self,parentFrame,p,name):
+        # # # self.oops()
+        # # # return None
 
-    def initAfterLoad (self):
-        pass
-    #@+node:ekr.20130303133655.10213: *3* LeoBody.attribute_test
-    def pyflake_test(self):
-        
-        # pylint: disable=E1101
-        # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
-        print(self.xyzzy22)
-        
-        # pyflakes incorrectly complains that dn is not used.
-        dn = self.def_stack[-1] # Add the code at the top of the stack.
-        dn.code += 'abc'
-    #@+node:ekr.20111115100829.9789: *3* LeoBody.bodyCtrl property (deprecated)
-    def __get_bodyCtrl(self):
+    # # # # Editor
+    # # # def createEditorFrame (self,w):     self.oops() ; return None
+    # # # def createEditorLabel (self,pane):  self.oops()
+    # # # def packEditorLabelWidget (self,w): self.oops()
+    # # # def setEditorColors (self,bg,fg):   self.oops()
 
-        return self.wrapper
-
-    def __set_bodyCtrl(self,val):
-
-        self.wrapper = val
-
-    bodyCtrl = property(
-        __get_bodyCtrl,
-        __set_bodyCtrl,
-        doc = "body.bodyCtrl property"
-    )
+    # # # # Events...
+    # # # def scheduleIdleTimeRoutine (self,function,*args,**keys):
+        # # # self.oops()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
@@ -1415,6 +1412,7 @@ class LeoLog (HighLevelInterface):
         # Official status variables.  Can be used by client code.
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
         self.widget = None # Set below. Same as self.textDict.get(self.tabName)
+        ### self.wrapper = self ### New.
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
 
@@ -2178,7 +2176,7 @@ class LeoTreeTab:
 
         g.pr("LeoTreeTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others
-#@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody:HighLevelInterface)
+#@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody (LeoBody):
     # LeoBody is a subclass of HighLevelInterface.
 
@@ -2195,6 +2193,7 @@ class NullBody (LeoBody):
         self.insertPoint = 0
         self.selection = 0,0
         self.s = "" # The body text
+        self.widget = None
         self.wrapper = wrapper = StringTextWrapper(c=self.c,name='body')
         self.editorWidgets['1'] = wrapper
         self.colorizer = NullColorizer(self.c)

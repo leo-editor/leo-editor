@@ -305,7 +305,7 @@ class EditBodyTestCase(unittest.TestCase):
         tempNode.setBodyString(text)
         c.selectPosition(self.tempNode)
 
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if self.sel:
             s = str(self.sel.b) # Can't be unicode.
             lines = s.split('\n')
@@ -1097,7 +1097,7 @@ class TestManager:
         tm = self
         c = self.c
         atTest = p.copy()
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         h = atTest.h
         assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
         commandName = h[6:].strip()
@@ -1296,7 +1296,7 @@ class TestManager:
         c = self.c
         vc = c.vimCommands
         atTest = p.copy()
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         h = atTest.h
         assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
         s = h[6:].strip()

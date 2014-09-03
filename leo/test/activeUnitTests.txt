@@ -124,7 +124,7 @@ def runEditCommandTest (c,p,inHeadline=False):
         w = c.edit_widget(work)
         g.app.gui.set_focus(c,w)
     else:
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         c.setBodyString(work,before.b)
 
     try:
@@ -616,19 +616,22 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
-#@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property
+#@+node:ekr.20111118125141.3879: *4* @@@test bodyCtrl property
 # Test that changing c.frame.body.bodyCtrl also changes c.frame.body.wrapper.
-body = c.frame.body
-old_w = body.wrapper
-assert old_w is not None
-try:
-    body.bodyCtrl = None
-    assert body.wrapper is None
-finally:
-    body.wrapper = old_w
-    
-assert hasattr(c.frame.body,'bodyCtrl')
-assert hasattr(c.frame.log,'logCtrl')
+if 0:
+    # A very dangerous test.
+    # A failure here will destroy all following tests!
+    # Furthermore, it is not needed.  bodyCtrl exists nowhere in Leo.
+    body = c.frame.body
+    old_w = body.wrapper
+    try:
+        assert old_w is not None
+        body.bodyCtrl = None
+        assert body.wrapper is None
+    finally:
+        body.wrapper = old_w
+    assert hasattr(c.frame.body,'bodyCtrl')
+    assert hasattr(c.frame.log,'logCtrl')
 #@+node:ekr.20120227152633.3934: *4* @test c.config.initIvar sets *commander* ivars
 # for key in sorted(list(g.app.config.ivarsDict.keys())):
     
@@ -720,8 +723,7 @@ if g.app.gui.guiName() == 'tkinter':
     ivars = (
         'bar1','bar2',
         'body',
-        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.bodyCtrl.
-        #'bodyCtrl', # 2007/10/27: this ivar is evil and has been removed.
+        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.wrapper.
         'canvas',
         'f1','f2',
         'iconBar','iconFrame',
@@ -4420,7 +4422,7 @@ c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
 #@+node:ekr.20111112171235.3854: *4* @test add/delete html comments
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'html')
 assert p,'no test node'
 s = p.b
@@ -4455,7 +4457,7 @@ finally:
 </html>
 #@+node:ekr.20111112171235.3858: *4* @test add/delete python comments
 # Can't be run externally.
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'no test node'
 s = p.b
@@ -4493,7 +4495,7 @@ def spam():
 # after
 #@+node:ekr.20120309155126.3949: *4* @test add/delete comments with multiple @language directives
 # Can't be run externally.
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'no test node'
 s = p.b
@@ -5006,7 +5008,7 @@ finally:
     c.selectPosition(p1)
     c.redraw()
 #@+node:ekr.20061106112522: *4* @test c.insertBodyTime
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 s = w.getAllText()
 
 try:
@@ -8554,7 +8556,7 @@ assert i < j,'i: %s j: %s' % (i,j)
 @language python
 
 try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    ec = c.editCommands ; w = c.frame.body.wrapper
     s = w.getAllText()
 
     # This strings tests unicode, paren matching, and auto-indentation.
@@ -8582,7 +8584,7 @@ finally:
 @tabwidth -4
 
 try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    ec = c.editCommands ; w = c.frame.body.wrapper
     s = w.getAllText()
     w.setSelectionRange(len(s)-9,len(s)-6)
     event = g.app.gui.create_key_event(c,'\t','Tab',w)
@@ -8600,7 +8602,7 @@ finally:
 # xxxx.yyyy
 
 s = p.b
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
 prefix = c.editCommands.fillPrefix
@@ -9712,7 +9714,7 @@ for name,s,expected in table:
 #@+node:ekr.20061104172236.3: *5* @test capitalizeHelper
 # TARGETWORD
 
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 
 for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
     w.setInsertPoint(5)
@@ -9723,7 +9725,7 @@ for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWO
     i = w.getInsertPoint()
     assert i == 5, 'Expected 5, got: %d' % i
 #@+node:ekr.20061104172236.5: *5* @test extendHelper
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
+ec = c.editCommands ; w = c.frame.body.wrapper
 
 for i,j,python in (
     # ('1.0','4.5',False),
@@ -9742,7 +9744,7 @@ for i,j,python in (
 
 e = c.editCommands
 k = c.k
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 
 w.setInsertPoint(0)
 k.arg = 't' # 'targetWord'
@@ -9755,7 +9757,7 @@ assert i == 10, 'expected 15, got %s' % (i)
 # targetWord
 
 e = c.editCommands
-k = c.k ; w = c.frame.body.bodyCtrl
+k = c.k ; w = c.frame.body.wrapper
 
 w.setInsertPoint(0)
 k.arg = 't' # 'targetWord'
@@ -9775,7 +9777,7 @@ if g.app.isExternalUnitTest:
 else:
     c.helpCommands.helpForMinibuffer()
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
+ec = c.editCommands ; w = c.frame.body.wrapper
 
 for i,j,python in (
     #('1.0','4.5',False),
@@ -9789,7 +9791,7 @@ for i,j,python in (
     assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
     w.setSelectionRange(0,0,insert=None)
 #@+node:ekr.20061110094226: *5* @test moveUpOrDownHelper
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
+ec = c.editCommands ; w = c.frame.body.wrapper
 
 for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
     event = None ; extend = False; ec.moveSpot = None
@@ -9804,14 +9806,14 @@ for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
         w.setSelectionRange(0,0,insert=None)
 #@+node:ekr.20061104172236.7: *5* @test scrollHelper
 ec = c.editCommands
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 
 for direction in ('up','down'):
     for distance in ('line','page','half-page'):
         event = g.app.gui.create_key_event(c,None,None,w)
         ec.scrollHelper(event,direction,distance)
 #@+node:ekr.20061104172236.4: *5* @test setMoveCol
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 ec = c.editCommands
 
 for spot,result in (('1.0',0),(5,5)):
@@ -9829,7 +9831,7 @@ s = 'ABC'
 c.setBodyString(p,s)
 try:
     c.bodyWantsFocus()
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
     if 1:
@@ -9869,7 +9871,7 @@ c.redraw_now() # To make node visible and to set the icon.
 try:
     c.bodyWantsFocus()
     n = c.frame.tree.redrawCount
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     w.setInsertPoint('end')
     g.app.gui.event_generate(c,'\b','BackSpace',w)
     n2 = c.frame.tree.redrawCount
@@ -10010,7 +10012,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
     c.bodyWantsFocus()
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
+    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
     c.frame.pasteText(event)
     
     # Move around and and make sure it doesn't change.
@@ -10051,7 +10053,7 @@ finally:
 # Should be a comment
 h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocus()
@@ -10059,7 +10061,7 @@ paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
 n = c.frame.body.colorizer.count
-event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
+event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
 # i = w.getInsertPoint()
 c.frame.pasteText(event)
 # assert w.getInsertPoint()==i
@@ -10187,7 +10189,7 @@ if g.app.gui.guiName() != 'tkinter':
     try:
         # print('before insert a',c.p)
         assert p == c.p,'position has changed!'
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if c.vim_mode and c.vimCommands:
             if c.vimCommands.state == 'normal':
                 # Enter insert mode ;-)
@@ -10212,7 +10214,7 @@ c.redraw(p) # To make node visible
 c.bodyWantsFocus()
 n = c.frame.tree.redrawCount
 try:
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     g.app.gui.event_generate(c,'a','a',w)
     n2 = c.frame.tree.redrawCount
     assert n2 == n,'too many redraws: %d' % (n2-n)
@@ -10265,7 +10267,7 @@ print('\nEnd of leoEditCommands tests.')
 
 << define table >>
 
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 child = g.findNodeInChildren(c,p,'work')
 assert child
 c.selectPosition(child)
@@ -10688,18 +10690,18 @@ print('\nEnd of leoFileCommands tests.')
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
 import leo.core.leoEditCommands as leoEditCommands
-s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
+s = 'foo' ; wrapper = c.frame.body.wrapper
 c.searchCommands.openFindTab()
 h = c.searchCommands.findTabHandler
 w = h.find_ctrl
 w.setAllText(s)
 c.bodyWantsFocus()
-bodyCtrl.setInsertPoint(0)
+wrapper.setInsertPoint(0)
 c.searchCommands.findTabFindNext()
 w = c.get_focus()
 wName = g.app.gui.widget_name(w)
 assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
-    w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))
+    w,wName,wrapper,g.app.gui.widget_name(wrapper))
 #@+node:ekr.20060130151716.3: *4* @test minbuffer find commands
 table = (
     're-search-forward',
@@ -10795,7 +10797,7 @@ w.deleteTextSelection() ; check('xzyac')
 # line 2
 # line 3
 
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 index = 11 # in the second line.
 w.setInsertPoint(index)
 before,ins,after = c.frame.body.getInsertLines()
@@ -10810,7 +10812,7 @@ assert after.endswith('# end.\n'),'end'
 # line 2
 # line 3
 
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 s = w.getAllText()
 start,end = 11,15
 w.setSelectionRange(start,end)
@@ -10825,7 +10827,7 @@ assert after == s[end:]
 # line 2
 # line 3
 
-w = c.frame.body.bodyCtrl
+w = c.frame.body.wrapper
 s = w.getAllText()
 start,end = 11,15
 w.setSelectionRange(start,end)
@@ -10903,7 +10905,7 @@ if not g.app.isExternalUnitTest:
 # target.
 
 try:
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     s = w.getAllText()
     w.setInsertPoint(len(s))
     c.k.previousSelection = 2,8
@@ -10922,7 +10924,7 @@ finally:
 # target
 
 try:
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     # print((w))
     s2 = p.b
     s = w.getAllText()
@@ -11715,7 +11717,7 @@ else:
     app = g.app.gui.qtApp
     assert issubclass(app.__class__,QtWidgets.QApplication)
     
-    w = c.frame.body.bodyCtrl.widget
+    w = c.frame.body.wrapper.widget
     assert issubclass(w.__class__,QtWidgets.QTextEdit)
     w_name = w.__class__.__name__
     assert w_name == 'LeoQTextBrowser',w_name
@@ -11773,7 +11775,7 @@ import leo.plugins.qtGui as leoQtGui
 if g.app.isExternalUnitTest:
     pass
 else:
-    w = c.frame.body.bodyCtrl.widget
+    w = c.frame.body.wrapper.widget
     assert issubclass(w.__class__,QtWidgets.QTextEdit)
     
     filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
@@ -13978,7 +13980,7 @@ print('\nEnd of leoImport tests.')
 
 try:
     k = c.k
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     ac = k.autoCompleter
     # Set the insertion point.
     s = w.getAllText()
@@ -14000,7 +14002,7 @@ table = (
 )
 
 ac = c.k.autoCompleter
-ac.w = c.frame.body.bodyCtrl
+ac.w = c.frame.body.wrapper
 
 for expected,prefix in table:
     
@@ -14808,7 +14810,7 @@ assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 h = p.h
 
 try:
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     child = p.firstChild()
     before = child.b
     after = "after"
@@ -21153,8 +21155,8 @@ def removeLeadingWs (code):
 #@+node:ekr.20100131171342.5497: *3* @@test detect_urls.py
 import leo.plugins.detect_urls as detect_urls
 
-# print(c.frame.body.bodyCtrl)
-w = c.frame.body.bodyCtrl
+# print(c.frame.body.wrapper)
+w = c.frame.body.wrapper
 s = w.getAllText()
 
 # s will be empty when running unit tests dynamically.

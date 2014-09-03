@@ -36,6 +36,8 @@ Eliminate toPythonIndex?
 - Wrapper code could just assert isinstance(i,int) or isinstance(j,(j,Null.__class__))
 
 What I did:
+- LeoBody is no longer a subclass of the HighLevelInterface class.
+    - The only changes, one or two new guards.
 - Removed wrapper.getFocus method.
 - Removed all references to HighLevelInterface class in the core.
 - Removed the evil set_focus synonym in the HighLevelInterface class.

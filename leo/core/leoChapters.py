@@ -986,8 +986,9 @@ class Chapter:
 
         chapter,c = self,self.c
         w = c.frame.body.findEditorForChapter(chapter,p)
-        w.leo_chapter = chapter
-        w.leo_p = p and p.copy()
+        if w:
+            w.leo_chapter = chapter
+            w.leo_p = p and p.copy()
         return w
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter (self,p):
