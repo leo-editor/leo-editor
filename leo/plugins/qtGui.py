@@ -6688,8 +6688,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget
     def isTextWidget (self,w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        # return w and isinstance(w,(LeoQtBody,LeoQtLog,QTextMixin))
-        return w and hasattr(w,'supportsHighLevelInterface')
+        return w and hasattr(w,'supportsHighLevelInterface') and w.supportsHighLevelInterface
             
     #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):

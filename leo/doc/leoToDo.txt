@@ -13,6 +13,8 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
+- Post: bad Scintilla text.
+
 - Change self.w to self.wrapper in leoEditCommands.py.
 
 Testing:
