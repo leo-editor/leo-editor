@@ -127,15 +127,15 @@ class BaseEditCommandsClass:
         c = self.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        isTextWidget = g.app.gui.isTextWidget(w)
+        isTextWrapper = g.isTextWrapper(w)
 
         # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
-        if w and isTextWidget:
+        if w and isTextWrapper:
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.wrapper
 
-        if trace: g.trace(isTextWidget,wname,w)
+        if trace: g.trace(isTextWrapper,wname,w)
 
         if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
@@ -4963,7 +4963,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w: return
-        assert g.app.gui.isTextWidget(w)
+        assert g.isTextWrapper(w)
         name = c.widget_name(w)
         if name.startswith('head'): return
         ins = w.getInsertPoint()
@@ -4980,7 +4980,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         c = self.c ; k = c.k ; w = self.editWidget(event)
         if not w: return
 
-        assert g.app.gui.isTextWidget(w)
+        assert g.isTextWrapper(w)
         name = c.widget_name(w)
         if name.startswith('head'): return
 
@@ -5006,7 +5006,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event) ; p = c.p
         if not w: return
 
-        assert g.app.gui.isTextWidget(w),w
+        assert g.isTextWrapper(w),w
         name = c.widget_name(w)
         if name.startswith('head'): return
 
@@ -5044,7 +5044,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event) 
         if not w: return
 
-        assert g.app.gui.isTextWidget(w)
+        assert g.isTextWrapper(w)
         name = c.widget_name(w)
         if name.startswith('head'): return
 
@@ -6051,8 +6051,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         if w == k.w:
             k.selectAll()
         else:
-            isTextWidget = g.app.gui.isTextWidget(w)
-            if w and isTextWidget:
+            isTextWrapper = g.isTextWrapper(w)
+            if w and isTextWrapper:
                 return w.selectAllText()
     #@+node:ekr.20050920084036.131: *4* sentences & helpers
     def backSentence (self,event):

@@ -672,7 +672,7 @@ class VimCommands:
             vc.delegate()
         elif vc.trainer:
             # Ignore all non-Alt arrow keys in text widgets.
-            if vc.is_text_widget(vc.w):
+            if vc.is_text_wrapper(vc.w):
                 vc.ignore()
                 vc.quit()
             else:
@@ -765,7 +765,7 @@ class VimCommands:
     #@+node:ekr.20140221085636.16691: *5* vc.vim_0
     def vim_0(vc):
         '''Handle zero, either the '0' command or part of a repeat count.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.repeat_list:
                 vc.vim_digits()
             else:
@@ -788,7 +788,7 @@ class VimCommands:
             vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             vc.do('forward-char')
             vc.begin_insert_mode()
         else:
@@ -802,7 +802,7 @@ class VimCommands:
             vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             vc.do('end-of-line')
             vc.begin_insert_mode()
         else:
@@ -810,7 +810,7 @@ class VimCommands:
     #@+node:ekr.20140220134748.16618: *5* vc.vim_b
     def vim_b(vc):
         '''N words backward.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             for z in range(vc.n1*vc.n):
                 if vc.state == 'visual':
                     vc.do('back-word-extend-selection')
@@ -830,7 +830,7 @@ class VimCommands:
         ### vc.accept(handler=vc.vim_c2)
         
     def vim_c2(vc):
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             g.trace(vc.stroke)
             vc.done()
         else:
@@ -838,7 +838,7 @@ class VimCommands:
     #@+node:ekr.20140807152406.18128: *5* vc.vim_caret
     def vim_caret(vc):
         '''Move to start of line.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.state == 'visual':
                 vc.do('back-to-home-extend-selection')
             else:
@@ -859,13 +859,13 @@ class VimCommands:
     # This was an attempt to be clever: two commas would switch to insert mode.
     def vim_comma(vc):
         '''Handle a comma in normal mode.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_comma2)
         else:
             vc.quit()
         
     def vim_comma2(vc):
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.stroke == 'comma':
                 vc.begin_insert_mode()
             else:
@@ -883,7 +883,7 @@ class VimCommands:
         N dd      delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.n = 1
             vc.accept(handler=vc.vim_d2)
         else:
@@ -892,7 +892,7 @@ class VimCommands:
     def vim_d2(vc):
         '''Handle the second stroke of the d command.'''
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             if vc.stroke == 'd':
                 i = w.getInsertPoint()
                 for z in range(vc.n1*vc.n):
@@ -919,7 +919,7 @@ class VimCommands:
         # d2w doesn't extend to line.  d2j does.
         trace = False and not g.unitTesting
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             extend_to_line = vc.d_stroke in ('jk')
             s = w.getAllText()
             i1,i2 = vc.motion_i,w.getInsertPoint()
@@ -949,7 +949,7 @@ class VimCommands:
     def vim_di(vc):
         '''Handle delete inner commands.'''
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             if vc.stroke == 'w':
                 # diw
                 vc.do('extend-to-word')
@@ -964,7 +964,7 @@ class VimCommands:
     #@+node:ekr.20140730175636.17991: *5* vc.vim_dollar
     def vim_dollar(vc):
         '''Move the cursor to the end of the line.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.state == 'visual':
                 vc.do('end-of-line-extend-selection')
             else:
@@ -1008,7 +1008,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16623: *5* vc.vim_e
     def vim_e(vc):
         '''Forward to the end of the Nth word.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             for z in range(vc.n1*vc.n):
                 if vc.state == 'visual':
                     vc.do('forward-word-extend-selection')
@@ -1041,14 +1041,14 @@ class VimCommands:
     #@+node:ekr.20140222064735.16687: *5* vc.vim_F
     def vim_F(vc):
         '''Back to the Nth occurrence of <char>.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_F2)
         else:
             vc.quit()
 
     def vim_F2(vc):
         '''Handle F <stroke>'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             w = vc.w
             s = w.getAllText()
             if s:
@@ -1077,7 +1077,7 @@ class VimCommands:
     #@+node:ekr.20140220134748.16620: *5* vc.vim_f
     def vim_f(vc):
         '''move past the Nth occurrence of <stroke>.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_f2)
         else:
             vc.quit()
@@ -1085,7 +1085,7 @@ class VimCommands:
     def vim_f2(vc):
         '''Handle f <stroke>'''
         trace = bool and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
@@ -1111,7 +1111,7 @@ class VimCommands:
     #@+node:ekr.20140803220119.18112: *5* vc.vim_G
     def vim_G(vc):
         '''Put the cursor on the last character of the file.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.state == 'visual':
                 vc.do('end-of-buffer-extend-selection')
             else:
@@ -1126,14 +1126,14 @@ class VimCommands:
         N gg goto line N (default: first line), on the first non-blank character
           gv start highlighting on previous visual area
         '''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_g2)
         else:
             vc.quit()
         
     def vim_g2(vc):
         
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             event,w = vc.event,vc.w
             extend = vc.state == 'visual'
             s = w.getAllText()
@@ -1181,7 +1181,7 @@ class VimCommands:
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
         trace = False and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             w = vc.w
             s = w.getAllText()
             i = w.getInsertPoint()
@@ -1212,7 +1212,7 @@ class VimCommands:
             vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             vc.begin_insert_mode()
         else:
             vc.done()
@@ -1220,7 +1220,7 @@ class VimCommands:
     #@+node:ekr.20140220134748.16617: *5* vc.vim_j
     def vim_j(vc):
         '''N j  Down n lines.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             for z in range(vc.n1*vc.n):
                 if vc.state == 'visual':
                     vc.do('next-line-extend-selection')
@@ -1235,7 +1235,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16628: *5* vc.vim_k
     def vim_k(vc):
         '''Cursor up N lines.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             for z in range(vc.n1 * vc.n):
                 if vc.state == 'visual':
                     vc.do('previous-line-extend-selection')
@@ -1251,7 +1251,7 @@ class VimCommands:
     def vim_l(vc):
         '''Move the cursor right vc.n chars, but not out of the present line.'''
         trace = False and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             w = vc.w
             s = w.getAllText()
             i = w.getInsertPoint()
@@ -1316,7 +1316,7 @@ class VimCommands:
             c = vc.c
             c.bodyWantsFocusNow()
             vc.w = c.frame.body.wrapper
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.do(['beginning-of-line','insert-newline','back-char'])
             vc.begin_insert_mode()
         else:
@@ -1330,7 +1330,7 @@ class VimCommands:
             vc.w = w = c.frame.body.wrapper
         else:
             w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             vc.do(['end-of-line','insert-newline'])
             vc.begin_insert_mode()
         else:
@@ -1341,7 +1341,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             vc.do('paste-node')
             vc.done()
-        elif vc.is_text_widget(vc.w):
+        elif vc.is_text_wrapper(vc.w):
             vc.do('paste-text')
             vc.done()
         else:
@@ -1352,7 +1352,7 @@ class VimCommands:
         if vc.in_tree(vc.w):
             vc.do(['goto-prev-visible','paste-node'])
             vc.done()
-        elif vc.is_text_widget(vc.w):
+        elif vc.is_text_wrapper(vc.w):
             vc.do(['back-char','paste-text'])
             vc.done()
         else:
@@ -1362,7 +1362,7 @@ class VimCommands:
         '''Find previous occurance of word under the cursor.'''
         ec = vc.c.editCommands
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             i1 = w.getInsertPoint()
             if not w.hasSelection():
                 vc.do('extend-to-word')
@@ -1400,7 +1400,7 @@ class VimCommands:
     #@+node:ekr.20140807152406.18127: *5* vc.vim_question
     def vim_question(vc):
         '''Begin a search.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             fc = vc.c.findCommands
             ftm = fc.ftm
             vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_before_search.
@@ -1440,7 +1440,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16622: *5* vc.vim_slash
     def vim_slash(vc):
         '''Begin a search.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             fc = vc.c.findCommands
             vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_before_search.
             fc.reverse = False
@@ -1460,7 +1460,7 @@ class VimCommands:
         '''Find previous occurance of word under the cursor.'''
         ec = vc.c.editCommands
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             i1 = w.getInsertPoint()
             if not w.hasSelection():
                 vc.do('extend-to-word')
@@ -1481,14 +1481,14 @@ class VimCommands:
     #@+node:ekr.20140222064735.16620: *5* vc.vim_t
     def vim_t(vc):
         '''Move before the Nth occurrence of <char> to the right.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_t2)
         else:
             vc.quit()
         
     def vim_t2(vc):
         '''Handle t <stroke>'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
@@ -1518,14 +1518,14 @@ class VimCommands:
     #@+node:ekr.20140222064735.16686: *5* vc.vim_T
     def vim_T(vc):
         '''Back before the Nth occurrence of <char>.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_T2)
         else:
             vc.quit()
 
     def vim_T2(vc):
         '''Handle T <stroke>'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
@@ -1567,7 +1567,7 @@ class VimCommands:
             vc.quit()
             # vc.beep('%sv not valid' % vc.n1)
             # vc.done()
-        elif vc.is_text_widget(vc.w):
+        elif vc.is_text_wrapper(vc.w):
             # Enter visual mode.
             vc.vis_mode_w = w = vc.w
             vc.vis_mode_i = w.getInsertPoint()
@@ -1581,7 +1581,7 @@ class VimCommands:
     def vim_V(vc):
         '''Visually select line.'''
         trace = False and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.state == 'visual':
                 vc.visual_line_flag = not vc.visual_line_flag
                 if vc.visual_line_flag:
@@ -1611,7 +1611,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
     def vim_w(vc):
         '''N words forward.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             for z in range(vc.n1*vc.n):
                 if vc.state == 'visual':
                     vc.do('forward-word-extend-selection')
@@ -1628,7 +1628,7 @@ class VimCommands:
         Works like Backspace otherwise.
         '''
         w = vc.w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             delete_flag = False
             for z in range(vc.n1*vc.n):
                 # It's simplest just to get the text again.
@@ -1657,7 +1657,7 @@ class VimCommands:
         N   yy          yank N lines 
         N   y{motion}   yank the text moved over with {motion} 
         '''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_y2)
         elif vc.in_tree(vc.w):
             # Paste an outline.
@@ -1669,7 +1669,7 @@ class VimCommands:
             vc.quit()
         
     def vim_y2(vc):
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             if vc.stroke == 'y':
                 # Yank n lines.
                 w = vc.w
@@ -1693,7 +1693,7 @@ class VimCommands:
         # The motion is responsible for all repeat counts.
          # y2w doesn't extend to line.  y2j does.
         trace = False and not g.unitTesting
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             extend_to_line = vc.y_stroke in ('jk')
             n = vc.n1*vc.n
             w = vc.w
@@ -1846,7 +1846,7 @@ class VimCommands:
     def vis_d(vc):
         '''Delete the highlighted text and terminate visual mode.'''
         w  = vc.vis_mode_w
-        if vc.is_text_widget(w):
+        if vc.is_text_wrapper(w):
             i1 = vc.vis_mode_i
             i2 = w.getInsertPoint()
             g.app.gui.replaceClipboardWith(w.getSelectedText())
@@ -1872,7 +1872,7 @@ class VimCommands:
         else:
             # The real vim clears the selection.
             w = vc.w
-            if vc.is_text_widget(w):
+            if vc.is_text_wrapper(w):
                 i = w.getInsertPoint()
                 w.setSelectionRange(i,i)
                 # Visual mode affects the dot only if there is a terminating command.
@@ -1882,7 +1882,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16660: *5* vis_y
     def vis_y(vc):
         '''Yank the highlighted text.'''
-        if vc.is_text_widget(vc.w):
+        if vc.is_text_wrapper(vc.w):
             vc.c.frame.copyText(event=vc.event)
             vc.state = 'normal'
             vc.done(set_dot=True)
@@ -1939,7 +1939,7 @@ class VimCommands:
         vc.w = event and event.w
         if not vc.in_command:
             vc.in_command = True # May be cleared later.
-            if vc.is_text_widget(vc.w):
+            if vc.is_text_wrapper(vc.w):
                 vc.old_sel = vc.w.getSelectionRange()
     #@+node:ekr.20140815160132.18821: *3* vc.external commands
     #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
@@ -1999,7 +1999,7 @@ class VimCommands:
                 # 'all_lines',self.all_lines,
                 'k.arg',k.arg,'k.functionTail',k.functionTail)
             w = vc.w if c.vim_mode else c.frame.body
-            if vc.is_text_widget(w):
+            if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
                 ftm = fc.ftm
                 vc.search_stroke = None
@@ -2210,7 +2210,7 @@ class VimCommands:
         try:
             vc.state = 'insert'
             w = vc.w
-            if vc.is_text_widget(w) and vc.test_for_insert_escape(w):
+            if vc.is_text_wrapper(w) and vc.test_for_insert_escape(w):
                 if trace: g.trace('*** abort ***',w)
                 return
             # Special case for arrow keys.
@@ -2364,14 +2364,14 @@ class VimCommands:
     def is_head(vc,w):
         '''Return True if w is an headline edit widget.'''
         return vc.widget_name(w).startswith('head')
-    #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_widget
+    #@+node:ekr.20140801121720.18083: *4* vc.is_plain_key & is_text_wrapper
     def is_plain_key(vc,stroke):
         '''Return True if stroke is a plain key.'''
         return vc.k.isPlainKey(stroke)
         
-    def is_text_widget(vc,w=None):
+    def is_text_wrapper(vc,w=None):
         '''Return True if w is a text widget.'''
-        return vc.is_body(w) or vc.is_head(w) or g.app.gui.isTextWidget(w)
+        return vc.is_body(w) or vc.is_head(w) or g.isTextWrapper(w)
     #@+node:ekr.20140805064952.18153: *4* vc.on_idle (no longer used)
     def on_idle(vc,tag,keys):
         '''The idle-time handler for the VimCommands class.'''

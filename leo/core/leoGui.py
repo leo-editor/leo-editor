@@ -343,8 +343,11 @@ class NullGui(LeoGui):
             print('**** NullGui.runMainLoop: terminating Leo.')
 
         # Getting here will terminate Leo.
-    #@+node:ekr.20070228155807: *3* isTextWidget (NullGui)
-    def isTextWidget (self,w):
+    #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
+    def isTextWidget(self,w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper (self,w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and hasattr(w,'supportsHighLevelInterface') and w.supportsHighLevelInterface
     #@+node:ekr.20031218072017.2230: *3* oops (NullGui)

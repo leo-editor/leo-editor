@@ -3507,7 +3507,7 @@ class KeyHandlerClass:
         state = k.unboundKeyAction
         assert g.isStroke(stroke)
         if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
-            'isTextWidget(w)',g.app.gui.isTextWidget(w))
+            'isTextWrapper(w)',g.isTextWrapper(w))
         for key,name in (
             # Order here is similar to bindtags order.
             ('command',None),
@@ -3527,7 +3527,7 @@ class KeyHandlerClass:
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
                 key in ('command','insert','overwrite') and state == key or # 2010/02/09
-                key in ('text','all') and g.app.gui.isTextWidget(w) or
+                key in ('text','all') and g.isTextWrapper(w) or
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
@@ -4558,7 +4558,7 @@ class KeyHandlerClass:
         if not w:
             w = g.app.gui.get_focus(c)
             if not w: return
-        isText = g.app.gui.isTextWidget(w)
+        isText = g.isTextWrapper(w)
         # This fixes a problem with the tk gui plugin.
         if mode and mode.lower().startswith('isearch'):
             return

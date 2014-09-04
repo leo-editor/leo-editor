@@ -165,6 +165,13 @@ inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20140711071454.17644: ** g.Classes
+#@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
+def isTextWidget(w):
+    return g.app.gui.isTextWidget(w)
+    
+def isTextWrapper(w):
+    return g.app.gui.isTextWrapper(w)
+    
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 #@+at From The Python Cookbook: Often we want to just collect a bunch of
 # stuff together, naming each item of the bunch; a dictionary's OK for

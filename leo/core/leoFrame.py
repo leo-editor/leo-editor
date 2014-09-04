@@ -803,8 +803,8 @@ class LeoFrame(object):
         f = self ; c = f.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        if trace: g.trace(g.app.gui.isTextWidget(w),wname,w)
-        if not w or not g.app.gui.isTextWidget(w): return
+        if trace: g.trace(g.isTextWrapper(w),wname,w)
+        if not w or not g.isTextWrapper(w): return
 
         # Set the clipboard text.
         i,j = w.getSelectionRange()
@@ -819,7 +819,7 @@ class LeoFrame(object):
         '''Invoked from the mini-buffer and from shortcuts.'''
 
         f = self ; c = f.c ; w = event and event.widget
-        if not w or not g.app.gui.isTextWidget(w): return
+        if not w or not g.isTextWrapper(w): return
 
         name = c.widget_name(w)
         oldSel = w.getSelectionRange()
@@ -855,8 +855,8 @@ class LeoFrame(object):
         f = self ; c = f.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        # if trace: g.trace(g.app.gui.isTextWidget(w),w)
-        if not w or not g.app.gui.isTextWidget(w):
+        # if trace: g.trace(g.isTextWrapper(w),w)
+        if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget',w)
             return
         i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
@@ -1878,6 +1878,7 @@ class NullColorizer(object):
         self.count = 0
         self.enabled = False
         self.full_recolor_count = 0
+        self.highlighter = None
 
     #@+node:ekr.20031218072017.2220: *3* entry points
     def colorize(self,p,incremental=False,interruptable=True):

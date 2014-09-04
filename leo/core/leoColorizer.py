@@ -36,7 +36,7 @@ class PythonQSyntaxHighlighter:
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
-        # g.trace('(PythonQSyntaxBrowser)',parent)
+        # g.trace('(PythonQSyntaxBrowser)',parent,g.callers())
         # Ivars corresponding to QSH ivars...
         self.c = c              # The commander.
         self.cb = None          # The current block: a QTextBlock.
@@ -2207,8 +2207,13 @@ class LeoQtColorizer:
         self.oldV = None
         self.showInvisibles = False
         # Step 2: create the highlighter.
-        self.highlighter = LeoQtSyntaxHighlighter(c,widget,colorizer=self)
-        self.colorer = self.highlighter.colorer
+        if isinstance(widget,QtGui.QTextEdit):
+            self.highlighter = LeoQtSyntaxHighlighter(c,widget,colorizer=self)
+            self.colorer = self.highlighter.colorer
+        else:
+            # No coloring for Scintilla
+            self.highlighter = None
+            self.colorer = None
         widget.leo_colorizer = self
         # Step 3: finish enabling.
         if self.enabled:

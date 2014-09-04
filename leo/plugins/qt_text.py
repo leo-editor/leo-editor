@@ -40,7 +40,7 @@ class QTextMixin:
         self.changingText = False # A lockout for onTextChanged.
         self.enabled = True
         self.supportsHighLevelInterface = True
-            # A flag for k.masterKeyHandler and isTextWidget.
+            # A flag for k.masterKeyHandler and isTextWrapper.
         self.tags = {}
         self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).
@@ -1545,11 +1545,12 @@ class QTextEditWrapper(QTextMixin):
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
-        colorer = highlighter.colorer
+        # Be careful: Scintilla doesn't have a colorer.
+        colorer = highlighter and highlighter.colorer
+        if colorer: colorer.initFlag = True
         try:
             if traceTime:
                 t1 = time.time()
-            colorer.initFlag = True
             self.changingText = True # Disable onTextChanged.
             colorizer.changingText = True # Disable colorizer.
             # g.trace('read/write text')

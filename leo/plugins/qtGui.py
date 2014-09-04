@@ -1715,8 +1715,8 @@ class LeoQtBody (leoFrame.LeoBody):
             self.packLabel(widget,n=1)
         name = '%d' % self.totalNumberOfEditors
         f,wrapper = self.createEditor(name)
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(widget,QtWidgets.QTextEdit),widget
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(widget),widget
         assert isinstance(f,QtWidgets.QFrame),f
         self.editorWidgets[name] = wrapper
         if trace: g.trace('name %s wrapper %s widget %s' % (
@@ -1797,8 +1797,8 @@ class LeoQtBody (leoFrame.LeoBody):
         w = wrapper.widget
         # This seems not to be a valid assertion.
         # assert wrapper == d.get(name),'wrong wrapper'
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         if len(list(d.keys())) <= 1: return
         name = w.leo_name if hasattr(w,'leo_name') else '1'
             # Defensive programming.
@@ -1883,11 +1883,13 @@ class LeoQtBody (leoFrame.LeoBody):
             if trace: g.trace('**busy')
             return
         w = wrapper.widget
-        assert isinstance(wrapper,(QScintillaWrapper,QTextEditWrapper)),wrapper
-        if Qsci:
-            assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
-        else:
-            assert isinstance(w,QtWidgets.QTextEdit),w
+        # assert isinstance(wrapper,(QScintillaWrapper,QTextEditWrapper)),wrapper
+        # if Qsci:
+            # assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        # else:
+            # assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         def report(s):
             g.trace('*** %9s wrapper %s w %s %s' % (
                 s,id(wrapper),id(w),c.p.h))
@@ -1911,9 +1913,9 @@ class LeoQtBody (leoFrame.LeoBody):
 
         trace = False and not g.unitTesting
         c = self.c
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
         w = wrapper.widget
-        assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         if not w.leo_p:
             g.trace('no w.leo_p') 
             return 'break'
@@ -2039,8 +2041,8 @@ class LeoQtBody (leoFrame.LeoBody):
 
         trace = False and not g.unitTesting
         w = wrapper.widget
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         if trace: g.trace(w)
         # Inject ivars
         if name == '1':
@@ -2127,10 +2129,7 @@ class LeoQtBody (leoFrame.LeoBody):
             id(w),len(p.b),p.h),g.callers(5))
         c = self.c
         cc = c.chapterController
-        if Qsci:
-            assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
-        else:
-            assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWidget(w),w
         if cc and self.use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
@@ -2203,8 +2202,8 @@ class LeoQtBody (leoFrame.LeoBody):
         name = w.leo_name
         assert name
         assert wrapper == d.get(name),'wrong wrapper'
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         if len(list(d.keys())) <= 1: return
         # At present, can not delete the first column.
         if name == '1':
@@ -2240,8 +2239,8 @@ class LeoQtBody (leoFrame.LeoBody):
         name = w.leo_name
         assert name
         assert wrapper == d.get(name),'wrong wrapper'
-        assert isinstance(wrapper,QTextEditWrapper),wrapper
-        assert isinstance(w,QtWidgets.QTextEdit),w
+        assert g.isTextWrapper(wrapper),wrapper
+        assert g.isTextWidget(w),w
         if len(list(d.keys())) <= 1: return
         # At present, can not delete the first column.
         if name == '1':
@@ -4975,7 +4974,7 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
             wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
             if vc and c.vim_mode: #  and selectAll
                 # For now, *always* enter insert mode.
-                if vc.is_text_widget(wrapper):
+                if vc.is_text_wrapper(wrapper):
                     vc.begin_insert_mode(w=wrapper)
                 else:
                     g.trace('not a text widget!',wrapper)
@@ -6683,11 +6682,17 @@ class LeoQtGui(leoGui.LeoGui):
         # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
         w.setStyleSheet(s)
     #@+node:ekr.20140825042850.18411: *4* LeoQtGui.Utils...
-    #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget
-    def isTextWidget (self,w):
+    #@+node:ekr.20110605121601.18522: *5* LeoQtGui.isTextWidget/Wrapper
+    def isTextWidget(self,w):
+        '''Return True if w is some kind of Qt text widget.'''
+        if Qsci:
+            return isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
+        else:
+            return isinstance(w,QtWidgets.QTextEdit),w
+
+    def isTextWrapper (self,w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and hasattr(w,'supportsHighLevelInterface') and w.supportsHighLevelInterface
-            
     #@+node:ekr.20110605121601.18526: *5* LeoQtGui.toUnicode
     def toUnicode (self,s):
 
