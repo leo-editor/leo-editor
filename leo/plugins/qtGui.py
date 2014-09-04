@@ -1634,7 +1634,7 @@ class LeoQtBody (leoFrame.LeoBody):
         assert c.frame == frame and frame.c == c
         self.set_config()
         self.set_widget()
-        
+            # Sets self.widget and self.wrapper.
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.setWrap(c.p)
@@ -1917,13 +1917,14 @@ class LeoQtBody (leoFrame.LeoBody):
         if not w.leo_p:
             g.trace('no w.leo_p') 
             return 'break'
+        # g.trace('wrapper',id(wrapper),'w',id(w),w.leo_p.h)
         # The actual switch.
         self.deactivateEditors(wrapper)
         self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
-        # g.trace('c.frame.body',c.frame.body)
-        # g.trace('wrapper',wrapper)
-        c.frame.body.bodyCtrl = wrapper
-        c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
+        c.frame.body.wrapper = wrapper
+        # 2014/09/04: Must set both wrapper.widget and body.widget.
+        c.frame.body.wrapper.widget = w
+        c.frame.body.widget = w
         w.leo_active = True
         self.switchToChapter(wrapper)
         self.selectLabel(wrapper)

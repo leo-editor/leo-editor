@@ -88,10 +88,8 @@ class LeoBody(object):
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
         # May be overridden in subclasses...
+        self.widget = None # set in LeoQtBody.setWidget.
         self.wrapper = None # set in LeoQtBody.setWidget.
-            # self.bodyCtrl is deprecated synonum for self.wrapper
-            # It is implemented as a property.
-            # self.widget no longer exists.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
         self.use_chapters = c.config.getBool('use_chapters')
