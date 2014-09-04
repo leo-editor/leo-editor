@@ -240,7 +240,7 @@ class PythonQSyntaxHighlighter:
         n,start = 0,False
         while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
             n += 1
-            if n >= self.r_limit and self.timer:
+            if n >= self.r_limit > 0 and self.timer:
                 start = True
                 break
             else:
