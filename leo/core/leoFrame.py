@@ -46,6 +46,32 @@ import time
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
 #@+others
+#@+node:ekr.20140904043623.18535: ** class ColorizerAPI
+class ColorizerAPI:
+    '''The required API of c.frame.body.colorizer.'''
+    def __init__ (self,c,widget): pass
+    def colorize(self,p,incremental=False,interruptable=True): return 'ok'
+    # def disable (self,p): pass
+    # def enable (self,p): pass
+    def kill (self): pass
+    def scanColorDirectives(self,p): return 'python'
+    def setHighlighter (self,p): return True
+    def updateSyntaxColorer (self,p): return True
+    def useSyntaxColoring (self,p): return True
+    def write_colorizer_cache (self,p): pass
+#@+node:ekr.20140904043623.18552: ** class IconBarAPI
+class IconBarAPI:
+    '''The required API for c.frame.iconBar.'''
+    def __init__ (self,c,parentFrame): pass
+    def add(self,*args,**keys): pass
+    def addRow(self,height=None): pass
+    def addRowIfNeeded (self): pass
+    def addWidget (self,w): pass
+    def clear(self): pass
+    def createChaptersIcon(self): pass
+    def deleteButton (self,w): pass
+    def getNewFrame (self): pass
+    def setCommandForButton(self,button,command): pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
 class LeoBody(object):
     '''The base class for the body pane in Leo windows.'''
@@ -408,15 +434,6 @@ class LeoBody(object):
         w.leo_label_s = p.h
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
-    #@+node:ekr.20031218072017.4038: *4* LeoBody.get/setYScrollPosition (deleted)
-    # def getYScrollPosition (self):
-
-        # i = self.wrapper.getYScrollPosition()
-        # return i
-
-    # def setYScrollPosition (self,i):
-
-        # self.wrapper.setYScrollPosition(i)
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines (self):
         '''
@@ -1858,7 +1875,7 @@ class NullColorizer(object):
     #@+others
     #@+node:ekr.20031218072017.2219: *3* __init__ (NullColorizer)
     def __init__ (self,c):
-
+        '''NullColorizer'''
         self.c = c
         self.count = 0
         self.enabled = False
@@ -1870,17 +1887,14 @@ class NullColorizer(object):
         return 'ok' # Used by unit tests.
 
     def disable(self): pass
-
     def enable(self): pass
-
+    def kill (self): pass
     def scanColorDirectives(self,p): pass
-
+    def setHighlighter (self,p): return False
     def showInvisibles(self): pass
-
     def updateSyntaxColorer (self,p): pass
-
-    def useSyntaxColoring(self,p):
-        return None
+    def useSyntaxColoring(self,p): return False
+    def write_colorizer_cache (self,p): pass
     #@-others
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame (LeoFrame):
@@ -1975,18 +1989,26 @@ class NullFrame (LeoFrame):
 class NullIconBarClass(object):
     '''A class representing the singleton Icon bar'''
     #@+others
-    #@+node:ekr.20070301164543.1: *3*  ctor (NullIconBarClass)
+    #@+node:ekr.20070301164543.1: *3*  NullIconBarClass.ctor
     def __init__ (self,c,parentFrame):
-
+        '''Ctor for NullIconBarClass.'''
         self.c = c
         self.iconFrame = None
         self.parentFrame = parentFrame
         self.w = g.NullObject()
-    #@+node:ekr.20070301164543.2: *3* add
+
+    #@+node:ekr.20070301165343: *3*  NullIconBarClass.Do nothing
+    def addRow(self,height=None): pass
+    def addRowIfNeeded (self): pass
+    def addWidget (self,w): pass
+    def createChaptersIcon(self): pass
+    def deleteButton (self,w): pass
+    def getNewFrame (self): return None
+    def hide(self): pass
+    def show(self): pass
+    #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self,*args,**keys):
-
         '''Add a (virtual) button to the (virtual) icon bar.'''
-
         command = keys.get('command')
         text = keys.get('text')
         try:    g.app.iconWidgetCount += 1
@@ -2010,24 +2032,13 @@ class NullIconBarClass(object):
 
         b = nullButtonWidget(self.c,command,name,text)
         return b
-    #@+node:ekr.20070301165343: *3* do nothing
-    def addRow(self,height=None):
-        pass
-    def addWidget (self,w):
-        pass
+    #@+node:ekr.20140904043623.18574: *3* NullIconBarClass.clear
     def clear(self):
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
-    def deleteButton (self,w):
-        pass
-    def getNewFrame (self):
-        return None
-    def hide(self):
-        pass
+    #@+node:ekr.20140904043623.18575: *3* NullIconBarClass.setCommandForButton
     def setCommandForButton(self,b,command):
         b.command = command
-    def show(self):
-        pass
     #@-others
 #@+node:ekr.20031218072017.2232: ** class NullLog (LeoLog)
 class NullLog (LeoLog):
@@ -2093,34 +2104,34 @@ class NullLog (LeoLog):
 #@+node:ekr.20070302171509: ** class NullStatusLineClass
 class NullStatusLineClass(object):
     '''A do-nothing status line.'''
-    #@+others
-    #@+node:ekr.20070302171509.2: *3*  NullStatusLineClass.ctor
-    def __init__ (self,c,parentFrame):
 
+    def __init__ (self,c,parentFrame):
+        '''Ctor for NullStatusLine class.'''
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
         self.textWidget = StringTextWrapper(c,name='status-line')
-
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
         c.frame.statusText  = self.textWidget
+
+    #@+others
     #@+node:ekr.20070302171917: *3* methods
     def disable (self,background=None):
         self.enabled = False
-        self.c.bodyWantsFocus()
+        # self.c.bodyWantsFocus()
 
     def enable (self,background="white"):
         self.c.widgetWantsFocus(self.textWidget)
         self.enabled = True
 
-    def clear (self):                   self.textWidget.delete(0,'end')
-    def get (self):                     return self.textWidget.getAllText()
-    def isEnabled(self):                return self.enabled
-    def put(self,s,color=None):         self.textWidget.insert('end',s)
-    def setFocus (self):                pass
-    def update(self):                   pass
+    def clear (self):           self.textWidget.delete(0,'end')
+    def get (self):             return self.textWidget.getAllText()
+    def isEnabled(self):        return self.enabled
+    def put(self,s,color=None): self.textWidget.insert('end',s)
+    def setFocus (self):        pass
+    def update(self):           pass
     #@-others
 #@+node:ekr.20031218072017.2233: ** class NullTree (LeoTree)
 class NullTree (LeoTree):
@@ -2211,6 +2222,18 @@ class NullTree (LeoTree):
         else:
             g.trace('-'*20,'oops')
     #@-others
+#@+node:ekr.20140904043623.18576: ** class StatusLineAPI
+class StatusLineAPI:
+    '''The required API for c.frame.statusLine.'''
+    def __init__ (self,c,parentFrame): pass
+    def clear (self): pass
+    def disable (self,background=None): pass
+    def enable (self,background="white"): pass
+    def get (self): return ''
+    def isEnabled(self): return False
+    def put(self,s,color=None): pass
+    def setFocus (self): pass
+    def update(self): pass
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper:
     '''A class that represents text as a Python string.'''

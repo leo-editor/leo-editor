@@ -5146,18 +5146,18 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
     #@-others
 #@+node:ekr.20110605121601.18438: *3* class LeoQtTreeTab
 class LeoQtTreeTab:
+    '''
+    A class representing a so-called tree-tab.
 
-    '''A class representing a so-called tree-tab.
-
-    Actually, it represents a combo box'''
+    Actually, it represents a combo box
+    '''
 
     #@+others
     #@+node:ekr.20110605121601.18439: *4*  Birth & death
-    #@+node:ekr.20110605121601.18440: *5*  ctor (LeoTreeTab)
+    #@+node:ekr.20110605121601.18440: *5*  ctor (LeoQtTreeTab)
     def __init__ (self,c,iconBar):
-
+        '''Ctor for LeoQtTreeTab class.'''
         # g.trace('(LeoTreeTab)',g.callers(4))
-
         self.c = c
         self.cc = c.chapterController
         assert self.cc
@@ -5166,7 +5166,6 @@ class LeoQtTreeTab:
         self.tabNames = []
             # The list of tab names. Changes when tabs are renamed.
         self.w = None # The QComboBox
-
         self.createControl()
     #@+node:ekr.20110605121601.18441: *5* tt.createControl (defines class LeoQComboBox)
     def createControl (self):
@@ -5201,7 +5200,7 @@ class LeoQtTreeTab:
         w.currentIndexChanged.connect(onIndexChanged)
     #@+node:ekr.20110605121601.18443: *4* tt.createTab
     def createTab (self,tabName,select=True):
-
+        '''LeoQtTreeTab.'''
         tt = self
         # Avoid a glitch during initing.
         if tabName != 'main' and tabName not in tt.tabNames:
@@ -5209,14 +5208,14 @@ class LeoQtTreeTab:
             tt.setNames()
     #@+node:ekr.20110605121601.18444: *4* tt.destroyTab
     def destroyTab (self,tabName):
-
+        '''LeoQtTreeTab.'''
         tt = self
         if tabName in tt.tabNames:
             tt.tabNames.remove(tabName)
             tt.setNames()
     #@+node:ekr.20110605121601.18445: *4* tt.selectTab
     def selectTab (self,tabName):
-
+        '''LeoQtTreeTab.'''
         tt,c,cc = self,self.c,self.cc
         exists = tabName in self.tabNames
         if not exists:
@@ -5227,16 +5226,14 @@ class LeoQtTreeTab:
             c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *4* tt.setTabLabel
     def setTabLabel (self,tabName):
-
+        '''LeoQtTreeTab.'''
         tt,w = self,self.w
         i = w.findText (tabName)
         if i > -1:
             w.setCurrentIndex(i)
     #@+node:ekr.20110605121601.18447: *4* tt.setNames
     def setNames (self):
-
-        '''Recreate the list of items.'''
-
+        '''LeoQtTreeTab: Recreate the list of items.'''
         tt,w = self,self.w
         names = self.cc.setAllChapterNames()
         w.clear()

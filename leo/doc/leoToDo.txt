@@ -13,18 +13,21 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
-- Post: bad Scintilla text.
+- Document logCtrl.
+- Improve Scintilla text: if that fails, post.
+- Complete the cleanup of leoFrame.py classes.
+    - Run the checking script on body and pane classes.
 
 - Change self.w to self.wrapper in leoEditCommands.py.
 
 Testing:
-- Use WrapperAPI class in unit tests.
 - Create a unit test based on "Compare dir(QSW) and dir(HLI)" script.
 - Add g checking/assertion functions.
     - g.isWrapper: calls g.app.gui.isWrapper
     - g.isWidget: calls g.app.gui.isWidget
 
 What I did:
+- Created "@test interfaces using API classes" based on the checking script.
 - The various isTextWidget methods now check for the existence of a supportsHighLevelInterface ivar.
 - StringTextWrapper is now a stand-alone class.
 - Removed BaseTextWrapper.
