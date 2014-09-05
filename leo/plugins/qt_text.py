@@ -1100,7 +1100,7 @@ class QScintillaWrapper(QTextMixin):
         w = self.widget # A QsciScintilla widget.
         self.flashCount = flashes
         self.flashIndex1 = self.getInsertPoint()
-        self.flashIndex = i
+        self.flashIndex = self.toPythonIndex(i)
         self.flashBg = None if bg.lower()=='same' else bg
         self.flashFg = None if fg.lower()=='same' else fg
         # g.trace(self.flashBg,self.flashFg)
@@ -1143,8 +1143,9 @@ class QScintillaWrapper(QTextMixin):
     def insert(self,i,s):
         '''Insert s at position i.'''
         w = self.widget
+        i = self.toPythonIndex(i)
         w.SendScintilla(w.SCI_SETSEL,i,i)
-        w.SendScintilla(w.SCI_ADDTEXT,len(s),s)
+        w.SendScintilla(w.SCI_ADDTEXT,len(s),g.toEncodedString(s))
         i += len(s)
         w.SendScintilla(w.SCI_SETSEL,i,i)
         return i
@@ -1160,6 +1161,7 @@ class QScintillaWrapper(QTextMixin):
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
         w = self.widget
         s = self.getAllText()
+        i = self.toPythonIndex(i)
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
     #@+node:ekr.20110605121601.18113: *5* qsciw.setAllText
@@ -1167,14 +1169,14 @@ class QScintillaWrapper(QTextMixin):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w,Qsci.QsciScintilla),w
-        # g.trace(len(s))
-        w.setText(s)
+        w.setText(g.toEncodedString(s))
         # w.update()
 
     #@+node:ekr.20110605121601.18114: *5* qsciw.setInsertPoint
     def setInsertPoint(self,i,s=None):
         '''Set the insertion point in a QsciScintilla widget.'''
         w = self.widget
+        i = self.toPythonIndex(i)
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL,i,i)
@@ -1184,6 +1186,7 @@ class QScintillaWrapper(QTextMixin):
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
+        insert = j if insert is None else self.toPythonIndex(insert)
         # g.trace('i',i,'j',j,'insert',insert,g.callers())
         if insert == j:
             w.SendScintilla(w.SCI_SETSEL,j,i)
