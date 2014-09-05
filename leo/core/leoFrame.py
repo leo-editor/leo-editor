@@ -1059,6 +1059,8 @@ class LeoLog(object):
         # Official ivars...
         self.canvasCtrl = None # Set below. Same as self.canvasDict.get(self.tabName)
         self.logCtrl = None # Set below. Same as self.textDict.get(self.tabName)
+            # Important: depeding on the log *tab*,
+            # logCtrl may be either a wrapper or a widget.
         self.tabName = None # The name of the active tab.
         self.tabFrame = None # Same as self.frameDict.get(self.tabName)
         self.canvasDict = {} # Keys are page names.  Values are Tk.Canvas's.

@@ -3445,6 +3445,8 @@ class LeoQtLog (leoFrame.LeoLog):
         leoFrame.LeoLog.__init__(self,frame,parentFrame)
             # Init the base class. Calls createControl.
         assert self.logCtrl is None,self.logCtrl # Set in finishCreate.
+            # Important: depeding on the log *tab*,
+            # logCtrl may be either a wrapper or a widget.
         self.c = c = frame.c # Also set in the base constructor, but we need it here.
         self.contentsDict = {} # Keys are tab names.  Values are widgets.
         self.eventFilters = [] # Apparently needed to make filters work!
