@@ -14,7 +14,7 @@
 <v t="ekr.20140103103143.4095"><vh>@views</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = True</vh></v>
+<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
 <v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
 <v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
@@ -583,7 +583,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
