@@ -13,14 +13,10 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
-* Report QTextEdit bug.
-
-- Use Scintilla myself.
-    - Fix all Scintilla unit-test failures.
-    - Improve Scintilla text.
+- Fix all Scintilla unit-test failures.
+- Improve Scintilla text.
 
 ? Change self.w to self.wrapper in leoEditCommands.py.
-
 .. @+node:ekr.20140902080443.18607: *4* ** Fix todo problem
 @nocolor-node
 

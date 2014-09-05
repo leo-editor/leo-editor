@@ -278,6 +278,8 @@ change string!
 Previously, Ctrl-F Alt-tab Alt-tab would put focus in an inactive minibuffer.
 
 The fix involved rewriting onActivate/DeactivateEvent.
+.. @+node:ekr.20140905085028.18560: *4* Reported QTextEdit bug
+https://bugreports.qt-project.org/browse/QTBUG-41153
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
