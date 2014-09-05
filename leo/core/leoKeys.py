@@ -613,7 +613,7 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
 
         # Only the body pane supports auto-completion.
-        w = self.c.frame.body
+        w = self.c.frame.body.wrapper
         s = w.getAllText()
         if not s: return ''
         i = w.getInsertPoint() - 1
