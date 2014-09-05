@@ -13,8 +13,14 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
+- Document the recent work.
+* Report QTextEdit bug.
+- Script to find/replace body.x -> body.wrapper.x
+* Document scripting changes: body.bodyCtrl -> body.wrapper.
 - Document logCtrl.
-- Improve Scintilla text: if that fails, post.
+- Use Scintilla myself.
+- Fix all Scintilla unit-test failures.
+- Improve Scintilla text.
 ? Change self.w to self.wrapper in leoEditCommands.py.
 
 What I did:
@@ -34,6 +40,35 @@ What I did:
 - Removed wrapper.getFocus method.
 - Removed all references to HighLevelInterface class in the core.
 - Removed the evil set_focus synonym in the HighLevelInterface class.
+.. @+node:ekr.20140902080443.18607: *4* ** Fix todo problem
+@nocolor-node
+
+Traceback (most recent call last):
+    
+  File "C:\Python27\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 357, in callTagHandler
+    result = handler(tag,keywords)
+
+  File "C:\Python27\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 357, in callTagHandler
+    result = handler(tag,keywords)  File "C:\Python27\Lib\site-packages\leo-editor\leo\plugins\todo.py", line 1173, in updateUI
+    self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?"))
+
+  File "C:\Python27\Lib\site-packages\leo-editor\leo\plugins\todo.py", line 1173, in updateUI
+    self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?"))
+    ValueError: year=1106 is before 1900; the datetime strftime() methods require year >= 1900
+
+ValueError: year=1106 is before 1900; the datetime strftime() methods require year >= 1900
+[end]
+
+The todo.py plugin appears to be the the problem. When I disable todo.py there is no traceback error.
+.. @+node:ekr.20140902162209.18642: *4* ** Scintilla to do
+@nocolor
+
+*** Use config file.
+    * Better fonts.
+
+* Fix remaining unit tests.
+* Shift-arrows do not work.
+* Honor @color directives.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
 Fix all git bugs:
 https://github.com/leo-editor/leo-editor/labels/bug
