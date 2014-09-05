@@ -418,15 +418,6 @@ try:
 finally:
     if g.os_path_exists(fn):
         os.remove(fn)
-#@+node:ekr.20100208230953.5383: ** Cache tests
-#@+node:ekr.20100208095817.5387: *3* @@test leoCache
-# Disabled this test because it's best to open this file without caching.
-
-import leo.core.leoCache as leoCache
-
-cacher = leoCache.cacher(c)
-
-assert cacher.test()
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100131171342.5486: *3* @@test that all @test nodes in derived files start with if g.unitTesting
 # print('-' * 30)
