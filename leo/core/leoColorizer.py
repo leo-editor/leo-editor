@@ -2907,6 +2907,8 @@ class QScintillaColorizer(ColorizerMixin):
         # font = qfont("Courier New",8,qfont.Bold)
         font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
         lexer.setFont(font)
+        lexer.setEolFill(False,-1)
+        lexer.setStringsOverNewlineAllowed(False)
         table = None
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
@@ -2919,23 +2921,36 @@ class QScintillaColorizer(ColorizerMixin):
                 else: oops('entry: %s' % z)
             # g.trace('@data ** qt-scintilla-styles',table)
         if not table:
+            # g.trace('using default color table')
+            black = '#000000'
+            leo_green = '#00aa00'
+            # See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
+            # for list of selector names.
             table = (
-                ('#CD2626','Comment'), # Firebrick3
-                ('#00aa00','SingleQuotedString'), # Leo green.
-                ('#00aa00','DoubleQuotedString'),
-                ('#00aa00','TripleSingleQuotedString'),
-                ('#00aa00','TripleDoubleQuotedString'),
-                ('#00aa00','UnclosedString'),
-                ('blue','Keyword'),
+                # EKR's personal settings: they are reasonable defaults.
+                (black,     'ClassName'),
+                ('#CD2626', 'Comment'), # Firebrick3
+                (leo_green, 'Decorator'),
+                (leo_green, 'DoubleQuotedString'),
+                (black,     'FunctionMethodName'),
+                ('blue',    'Keyword'),
+                (black,     'Number'),
+                (leo_green, 'SingleQuotedString'), # Leo green.
+                (leo_green, 'TripleSingleQuotedString'),
+                (leo_green, 'TripleDoubleQuotedString'),
+                (leo_green, 'UnclosedString'),
+                # End of line where string is not closed
+                # style.python.13=fore:#000000,$(font.monospace),back:#E0C0E0,eolfilled
             )
         for color,style in table:
             if hasattr(lexer,style):
-                style = getattr(lexer,style)
+                style_number = getattr(lexer,style)
                 try:
-                    lexer.setColor(qcolor(color),style)
+                    # g.trace(color,style)
+                    lexer.setColor(qcolor(color),style_number)
                 except Exception:
                     oops('bad color: %s' % color)
-            else: oops('bad style: %s' % style)
+            else: oops('bad style name: %s' % style)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize (revise)
     def colorize(self,p,incremental=False,interruptable=True):
         '''The main Scintilla colorizer entry point.'''
@@ -2943,41 +2958,13 @@ class QScintillaColorizer(ColorizerMixin):
         self.count += 1 # For unit testing.
         if not incremental:
             self.full_recolor_count += 1
-        s = p.b
-        if s.startswith('@killcolor'):
+        if p.b.startswith('@killcolor'):
             if trace: g.trace('kill: @killcolor')
             self.kill()
-            return 'ok' # For unit testing.
-        oldFlag = self.flag
-        self.updateSyntaxColorer(p)
-            # sets self.flag and self.language and self.languageList.
-        # if self.oldLanguageList != self.languageList:
-            # self.oldLanguageList = self.languageList[:]
-        self.changeLexer(self.language)
-        if 0:
-            g.trace('old: %s, new: %s, %s' % (
-                self.oldLanguageList,self.languageList,repr(p.h)))
-        # fullRecolor is True if we can not do an incremental recolor.
-        ### fullRecolor = (
-        ###    oldFlag != self.flag or
-        ###    self.oldV != p.v or
-        ###    self.oldLanguageList != self.languageList or
-        ###    not incremental)
-        # 2012/03/09: Determine the present language from the insertion
-        # point if there are more than one @language directives in effect
-        # and we are about to do an incremental recolor.
-        if 0: # Probably can't do this.
-            if len(self.languageList) > 0 and not fullRecolor:
-                language = self.scanColorByPosition(p) # May reset self.language
-                if language != self.colorer.language_name:
-                    if trace: g.trace('** must rescan',self.c.frame.title,language)
-                    fullRecolor = True
-                    self.language = language
-        ### if fullRecolor:
-        ###    if trace: g.trace('** calling rehighlight',g.callers())
-        ###    self.oldLanguageList = self.languageList[:]
-        ###    self.oldV = p.v
-        ###    self.highlighter.rehighlight(p)
+        else:
+            self.updateSyntaxColorer(p)
+                # sets self.flag and self.language and self.languageList.
+            self.changeLexer(self.language)
         return "ok" # For unit testing.
     #@+node:ekr.20140906081909.18716: *3* qsc.kill
     def kill(self):

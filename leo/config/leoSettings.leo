@@ -4206,23 +4206,34 @@ If there are more than this number, a new row is created.</t>
 This allows you to increase the font size.</t>
 <t tx="ekr.20081022181056.10"># Lines have the form: color, style
 # color may be any kind of Qt color specifier
-# The valid sytles are as follows: (capitalization is significant).
-# Default Comment Number Keyword
-# DoubleQuotedString SingleQuotedString
-# TripleSingleQuotedString TripleDoubleQuotedString
-# ClassName FunctionMethodName
-# Operator Identifier
-# CommentBlock UnclosedString
-# HighlightedIdentifier Decorator
+# See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
+# for list of selector names.
 
- #CD2626, Comment
- #00AA00, SingleQuotedString
- #00AA00, DoubleQuotedString
- #00AA00, TripleSingleQuotedString
- #00AA00, TripleDoubleQuotedString
- #00AA00, UnclosedString
- #00AA00, Decorator
- blue,  Keyword</t>
+# Firebrick3: #CD2626
+# Black: #000000
+# Green: #008000
+# Leo Green: # 00AA00
+# Red: #FF0000
+# Blue: #0000FF
+
+# Note: the following lines must be indented.
+
+    black, ClassName
+    #CD2626, Comment
+    #CD2626, CommentBlock
+    #00AA00, Decorator
+    #00AA00, DoubleQuotedString
+    black, FunctionMethodName
+    black, HighlightedIdentifier
+    black, Identifier
+    blue,  Keyword
+    black, Number
+    black, Operator
+    #00AA00, SingleQuotedString
+    #00AA00, TripleSingleQuotedString
+    #00AA00, TripleDoubleQuotedString
+    #00AA00, UnclosedString
+</t>
 <t tx="ekr.20081023060109.14"></t>
 <t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
 
