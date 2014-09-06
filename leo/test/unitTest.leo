@@ -168,6 +168,10 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140906073339.5229"><vh>Fixed</vh>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
+</v>
 <v t="ekr.20140906072925.5224"><vh>Scintilla fails</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20111112171235.3854"><vh>@test add/delete html comments</vh>
@@ -287,10 +291,6 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20140906073339.5229"><vh>Fixed</vh>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
-<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
 </v>
 <v t="ekr.20140906073339.5226"><vh>Interesting fails</vh>
 <v t="ekr.20071113145804.4"></v>
@@ -817,7 +817,7 @@ Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
 weather impacts every American. Communities can now rely on the National Weather
 Service’s StormReady program to help them guard against the ravages of Mother
-Natureg
+Nature.
 to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
 program started in 1999 in Tulsa, OK, helps arm America's communities with the
 communication and safety skills needed to save lives and property– before and
@@ -827,7 +827,7 @@ strengthen local safety programs.
 StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
-make a differenence?
+make a difference?
 </t>
 <t tx="ekr.20061101121602.128">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -874,7 +874,7 @@ leading to around 500 deaths per year and nearly $14 billion in damage.
          StormReady, a program started in 1999 in Tulsa, OK,
   helps arm America's communities with the communication and safety
 skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programss.
+StormReady helps community leaders and emergency managers strengthen local safety programs.
 </t>
 <t tx="ekr.20061101121602.156">Some 90% of all presidentially declared disasters are weather related,
 leading to around 500 deaths per year and nearly $14 billion in damage.
@@ -893,11 +893,11 @@ StormReady helps community leaders and emergency managers strengthen local safet
 <t tx="ekr.20061101121602.174">c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 </t>
-<t tx="ekr.20061101121602.175">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Serviceâs StormReady program to help them guard against the ravages of Mother Nature.
+<t tx="ekr.20061101121602.175">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and propertyâ before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
+some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
 
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a differenence?
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
 <t tx="ekr.20061101121602.176">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -918,12 +918,14 @@ Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
 weather impacts every American. Communities can now rely on the National Weather
 Service’s StormReady program to help them guard against the ravages of Mother
-Nature.ams.
+Nature.
+
+
 
 StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
-make a differene?
+make a difference?
 </t>
 <t tx="ekr.20061101121602.284">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -961,11 +963,11 @@ make a difference?
 <t tx="ekr.20061101121602.350">c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 </t>
-<t tx="ekr.20061101121602.351">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Serviceâs StormReady program to help them guard against the ravages of Mother Nature.
+<t tx="ekr.20061101121602.351">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTYâ BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
+SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
 
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a differenence?
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
 <t tx="ekr.20061101121602.352">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -1129,7 +1131,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1166,7 +1168,7 @@ try:
     s = w.getAllText()
 
     # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÃÎ©Bãä¹¼cz):\n'
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:

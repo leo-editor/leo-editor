@@ -1672,9 +1672,10 @@ class LeoQtBody (leoFrame.LeoBody):
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
             self.widget = c.frame.top.scintilla_widget
+                # A Qsci.QsciSintilla object.
                 # dw.createText sets self.scintilla_widget
             self.wrapper = QScintillaWrapper(self.widget,name='body',c=c)
-            self.colorizer = leoFrame.NullColorizer(c) # 2011/02/07
+            self.colorizer = leoColorizer.QScintillaColorizer(c,self.widget)
         else:
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = QTextEditWrapper(self.widget,name='body',c=c)

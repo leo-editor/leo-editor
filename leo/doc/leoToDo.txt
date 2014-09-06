@@ -36,6 +36,28 @@ ValueError: year=1106 is before 1900; the datetime strftime() methods require ye
 [end]
 
 The todo.py plugin appears to be the the problem. When I disable todo.py there is no traceback error.
+.. @+node:ekr.20140906081909.18717: *4* scintilla post
+Hello all,
+
+I am the author of Leo: http://leoeditor.com/ an app containing more than 1.5 million lines of Python and PyQt code.
+
+First of all, thanks, Neil, for your great technology.  It is shocking how much faster Scintilla is that QTextEdit :-)
+
+I'm having great fun allowing Leo's body pane to be a QsciScintilla widget rather than a QTextEdit. 
+
+Two questions:
+
+1. Is there a way to tell QsciScintilla to use a properties file at a particular location?
+
+This would allow Leo to provide default properties without Leo's users having to know anything about Scintilla.
+
+Just for now, Leo is calling lexer.setFont and lexer.Color.
+
+2. Is there a way to pass a string to a QsciScintilla widget which would work as if the string were the contents of a properties file?
+
+This would allow a slick "Leonine" way to set properties on a Leo-file-by-Leo-file basis: the properties could be embedded in Leo configuration nodes.
+
+Edward
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
 Fix all git bugs:
 https://github.com/leo-editor/leo-editor/labels/bug

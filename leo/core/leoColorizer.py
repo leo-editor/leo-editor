@@ -14,7 +14,7 @@ python_qsh = True
 #@+node:ekr.20140827092102.18575: ** << imports >>
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import QtCore,QtGui,QtWidgets
+from leo.core.leoQt import Qsci,QtCore,QtGui,QtWidgets
 
 import re
 import string
@@ -292,6 +292,194 @@ class PythonQSyntaxHighlighter:
     #@-others
 #@-<< class PythonQSyntaxHighlighter >>
 #@+others
+#@+node:ekr.20140906081909.18690: ** class ColorizerMixin
+class ColorizerMixin:
+    '''A mixin class for all c.frame.body.colorizer classes.'''
+    
+    def __init__(self,c):
+        '''Ctor for ColorizerMixin class.'''
+        self.c = c
+        
+    def colorize(self,p,incremental=False,interruptable=True):
+        assert False,'colorize must be defined in sublcasses'
+        
+    def kill(self):
+        '''Kill colorizing.'''
+        pass
+        
+    def write_colorizer_cache (self,p):
+        '''Write colorizing data for p for later use by rehighlight_with_cache.'''
+        pass
+
+    #@+others
+    #@+node:ekr.20140906081909.18715: *3* cm.findColorDirectives
+    color_directives_pat = re.compile(
+        # Order is important: put longest matches first.
+        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+        ,re.MULTILINE)
+
+    def findColorDirectives (self,p):
+        '''
+        Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+        Return a dict containing pointers to the start of each directive.
+        '''
+        trace = False and not g.unitTesting
+        d = {}
+        anIter = self.color_directives_pat.finditer(p.b)
+        for m in anIter:
+            # Remove leading '@' for compatibility with
+            # functions in leoGlobals.py.
+            word = m.group(0)[1:]
+            d[word] = word
+        if trace: g.trace(d)
+        return d
+    #@+node:ekr.20140906081909.18701: *3* cm.findLanguageDirectives
+    def findLanguageDirectives (self,p):
+
+        '''Scan p's body text for *valid* @language directives.
+
+        Return a list of languages.'''
+
+        # Speed not very important: called only for nodes containing @language directives.
+        trace = False and not g.unitTesting
+        aList = []
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'@language'):
+                i = len('@language')
+                i = g.skip_ws(s,i)
+                j = g.skip_id(s,i)
+                if j > i:
+                    word = s[i:j]
+                    if self.isValidLanguage(word):
+                        aList.append(word)
+                    else:
+                        if trace:g.trace('invalid',word)
+
+        if trace: g.trace(aList)
+        return aList
+    #@+node:ekr.20140906081909.18702: *3* cm.isValidLanguage
+    def isValidLanguage (self,language):
+
+        fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+        return g.os_path_exists(fn)
+    #@+node:ekr.20140906081909.18711: *3* cm.scanColorByPosition
+    def scanColorByPosition(self,p):
+        '''Scan p for color-related directives.'''
+        c = self.c
+        wrapper = c.frame.body.wrapper
+        i = wrapper.getInsertPoint()
+        s = wrapper.getAllText()
+        i1,i2 = g.getLine(s,i)
+        tag = '@language'
+        language = self.language
+        for s in g.splitLines(s[:i1]):
+            if s.startswith(tag):
+                language = s[len(tag):].strip()
+        return language
+
+    #@+node:ekr.20140906081909.18697: *3* cm.scanColorDirectives
+    def scanColorDirectives(self,p):
+        '''Set self.language based on the directives in p's tree.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        if not c:
+            return None # self.c may be None for testing.
+        root = p.copy()
+        self.colorCacheFlag = False
+        self.language = None
+        self.rootMode = None # None, "code" or "doc"
+        for p in root.self_and_parents():
+            theDict = g.get_directives_dict(p)
+            # if trace: g.trace(p.h,theDict)
+            if p == root:
+                # The @colorcache directive is a per-node directive.
+                self.colorCacheFlag = 'colorcache' in theDict
+                # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
+            if 'language' in theDict:
+                s = theDict["language"]
+                aList = self.findLanguageDirectives(p)
+                # In the root node, we use the first (valid) @language directive,
+                # no matter how many @language directives the root node contains.
+                # In ancestor nodes, only unambiguous @language directives
+                # set self.language.
+                if p == root or len(aList) == 1:
+                    self.languageList = list(set(aList))
+                    self.language = aList and aList[0] or []
+                    break
+            if 'root' in theDict and not self.rootMode:
+                s = theDict["root"]
+                if g.match_word(s,0,"@root-code"):
+                    self.rootMode = "code"
+                elif g.match_word(s,0,"@root-doc"):
+                    self.rootMode = "doc"
+                else:
+                    doc = c.config.at_root_bodies_start_in_doc_mode
+                    self.rootMode = "doc" if doc else "code"
+        # If no language, get the language from any @<file> node.
+        if self.language:
+            if trace: g.trace('found @language %s %s' % (self.language,self.languageList))
+            return self.language
+        #  Attempt to get the language from the nearest enclosing @<file> node.
+        self.language = g.getLanguageFromAncestorAtFileNode(root)
+        if not self.language:
+            if trace: g.trace('using default',c.target_language)
+            self.language = c.target_language
+        return self.language # For use by external routines.
+    #@+node:ekr.20140906081909.18704: *3* cm.updateSyntaxColorer
+    def updateSyntaxColorer (self,p):
+        '''Scan p.b for color directives.'''
+        trace = False and not g.unitTesting
+        # An important hack: shortcut everything if the first line is @killcolor.
+        if p.b.startswith('@killcolor'):
+            if trace: g.trace('@killcolor')
+            self.flag = False
+            return self.flag
+        else:
+            # self.flag is True unless an unambiguous @nocolor is seen.
+            p = p.copy()
+            self.flag = self.useSyntaxColoring(p)
+            self.scanColorDirectives(p) # Sets self.language
+        if trace: g.trace(self.flag,len(p.b),self.language,p.h,g.callers(5))
+        return self.flag
+    #@+node:ekr.20140906081909.18714: *3* cm.useSyntaxColoring
+    def useSyntaxColoring (self,p):
+        """Return True unless p is unambiguously under the control of @nocolor."""
+        trace = False and not g.unitTesting
+        if not p:
+            if trace: g.trace('no p',repr(p))
+            return False
+        p = p.copy()
+        first = True ; kind = None ; val = True
+        self.killColorFlag = False
+        for p in p.self_and_parents():
+            d = self.findColorDirectives(p)
+            color,no_color = 'color' in d,'nocolor' in d
+            # An @nocolor-node in the first node disabled coloring.
+            if first and 'nocolor-node' in d:
+                kind = '@nocolor-node'
+                self.killColorFlag = True
+                val = False ; break
+            # A killcolor anywhere disables coloring.
+            elif 'killcolor' in d:
+                kind = '@killcolor %s' % p.h
+                self.killColorFlag = True
+                val = False ; break
+            # A color anywhere in the target enables coloring.
+            elif color and first:
+                kind = 'color %s' % p.h
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                kind = '@nocolor %s' % p.h
+                val = False ; break
+            elif color and not no_color:
+                kind = '@color %s' % p.h
+                val = True ; break
+            first = False
+        if trace: g.trace(val,kind)
+        return val
+    #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
 
@@ -2171,7 +2359,7 @@ class JEditColorizer:
             format.setForeground(color)
         self.highlighter.setFormat (i,j-i,format)
     #@-others
-#@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
+#@+node:ekr.20110605121601.18551: ** class LeoQtColorizer # (ColorizerMixin)
 # This is c.frame.body.colorizer
 
 class LeoQtColorizer:
@@ -2634,6 +2822,168 @@ class LeoQtSyntaxHighlighter(base_highlighter):
                     i,bunch2.s,g.u(b.text())))
         if trace:
             g.trace('%2.3f sec' % (time.time()-t1))
+    #@-others
+#@+node:ekr.20140906095826.18717: ** class NullScintillaLexer
+class NullScintillaLexer(Qsci.QsciLexerCustom):
+    
+    def __init__(self,c,parent=None):
+        Qsci.QsciLexerCustom.__init__(self,parent)
+            # Init the pase class
+        self.leo_c = c
+        self.configure_lexer()
+        
+    def description(self,style):
+        return 'NullScintillaLexer'
+
+    def setStyling(self,length,style):
+        g.trace('(NullScintillaLexer)',length,style)
+        
+    def styleText(self,start,end):
+        '''Style the text from start to end.'''
+        # g.trace('(NullScintillaLexer)',start,end)
+        
+    def configure_lexer(self):
+        '''Configure the QScintilla lexer.'''
+        c = self.leo_c
+        lexer = self
+        ### To do: use c.config setting.
+        font = QtWidgets.QFont("DejaVu Sans Mono",14)
+        lexer.setFont(font)
+#@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(ColorizerMixin)
+# This is c.frame.body.colorizer
+
+class QScintillaColorizer(ColorizerMixin):
+    '''A colorizer for a QsciScintilla widget.'''
+    #@+others
+    #@+node:ekr.20140906081909.18709: *3* qsc.ctor
+    def __init__(self,c,widget):
+        '''Ctor for QScintillaColorizer. widget is a '''
+        # g.trace('QScintillaColorizer)',widget)
+        ColorizerMixin.__init__(self,c)
+            # init the base class.
+        self.changingText = False
+        self.count = 0 # For unit testing.
+        self.colorCacheFlag = False
+        self.enabled = c.config.getBool('use_syntax_coloring')
+        self.error = False # Set if there is an error in jeditColorizer.recolor
+        self.flag = True # Per-node enable/disable flag.
+        self.full_recolor_count = 0 # For unit testing.
+        self.language = 'python' # set by scanColorDirectives.
+        self.languageList = [] # List of color directives in the node the determines it.
+        self.lexer = None # Set in changeLexer.
+        self.oldLanguageList = []
+        self.showInvisibles = False
+        widget.leo_colorizer = self
+        # Define/configure various lexers.
+        self.lexersDict = {
+            'python': Qsci.QsciLexerPython(parent=None),
+        }
+        lexer = self.lexersDict.get('python')
+        self.configure_lexer(lexer)
+        self.nullLexer = NullScintillaLexer(c)
+        # No longer used.
+        ### self.colorer = None # No colorer for Scintilla
+        ### self.highlighter = None # No highlighter for Scintilla.
+        ### self.killColorFlag = False
+        ### self.oldV = None
+    #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
+    def changeLexer(self,language):
+        '''Set the lexer for the given language.'''
+        c = self.c
+        wrapper = c.frame.body.wrapper
+        w = wrapper.widget # A Qsci.QsciSintilla object.
+        self.lexer = self.lexersDict.get(language,self.nullLexer)
+        w.setLexer(self.lexer)
+        # g.trace(language,self.lexer)
+    #@+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
+    def configure_lexer(self,lexer):
+        '''Configure the QScintilla lexer.'''
+        # return # Try to use  USERPROFILE:SciTEUser.properties
+        def oops(s):
+            g.trace('bad @data qt-scintilla-styles:',s)
+        # A small font size, to be magnified.
+        c = self.c
+        qcolor,qfont = QtWidgets.QColor,QtWidgets.QFont
+        # font = qfont("Courier New",8,qfont.Bold)
+        font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
+        lexer.setFont(font)
+        table = None
+        aList = c.config.getData('qt-scintilla-styles')
+        if aList:
+            aList = [s.split(',') for s in aList]
+            table = []
+            for z in aList:
+                if len(z) == 2:
+                    color,style = z
+                    table.append((color.strip(),style.strip()),)
+                else: oops('entry: %s' % z)
+            # g.trace('@data ** qt-scintilla-styles',table)
+        if not table:
+            table = (
+                ('#CD2626','Comment'), # Firebrick3
+                ('#00aa00','SingleQuotedString'), # Leo green.
+                ('#00aa00','DoubleQuotedString'),
+                ('#00aa00','TripleSingleQuotedString'),
+                ('#00aa00','TripleDoubleQuotedString'),
+                ('#00aa00','UnclosedString'),
+                ('blue','Keyword'),
+            )
+        for color,style in table:
+            if hasattr(lexer,style):
+                style = getattr(lexer,style)
+                try:
+                    lexer.setColor(qcolor(color),style)
+                except Exception:
+                    oops('bad color: %s' % color)
+            else: oops('bad style: %s' % style)
+    #@+node:ekr.20140906081909.18707: *3* qsc.colorize (revise)
+    def colorize(self,p,incremental=False,interruptable=True):
+        '''The main Scintilla colorizer entry point.'''
+        trace = False and not g.unitTesting
+        self.count += 1 # For unit testing.
+        if not incremental:
+            self.full_recolor_count += 1
+        s = p.b
+        if s.startswith('@killcolor'):
+            if trace: g.trace('kill: @killcolor')
+            self.kill()
+            return 'ok' # For unit testing.
+        oldFlag = self.flag
+        self.updateSyntaxColorer(p)
+            # sets self.flag and self.language and self.languageList.
+        # if self.oldLanguageList != self.languageList:
+            # self.oldLanguageList = self.languageList[:]
+        self.changeLexer(self.language)
+        if 0:
+            g.trace('old: %s, new: %s, %s' % (
+                self.oldLanguageList,self.languageList,repr(p.h)))
+        # fullRecolor is True if we can not do an incremental recolor.
+        ### fullRecolor = (
+        ###    oldFlag != self.flag or
+        ###    self.oldV != p.v or
+        ###    self.oldLanguageList != self.languageList or
+        ###    not incremental)
+        # 2012/03/09: Determine the present language from the insertion
+        # point if there are more than one @language directives in effect
+        # and we are about to do an incremental recolor.
+        if 0: # Probably can't do this.
+            if len(self.languageList) > 0 and not fullRecolor:
+                language = self.scanColorByPosition(p) # May reset self.language
+                if language != self.colorer.language_name:
+                    if trace: g.trace('** must rescan',self.c.frame.title,language)
+                    fullRecolor = True
+                    self.language = language
+        ### if fullRecolor:
+        ###    if trace: g.trace('** calling rehighlight',g.callers())
+        ###    self.oldLanguageList = self.languageList[:]
+        ###    self.oldV = p.v
+        ###    self.highlighter.rehighlight(p)
+        return "ok" # For unit testing.
+    #@+node:ekr.20140906081909.18716: *3* qsc.kill
+    def kill(self):
+        '''Kill coloring for this node.'''
+        self.changeLexer(language=None)
+            
     #@-others
 #@-others
 #@-leo

@@ -949,63 +949,21 @@ class QScintillaWrapper(QTextMixin):
     def set_config (self):
         '''Set QScintillaWrapper configuration options.'''
         c,w = self.c,self.widget
-        lexer = Qsci.QsciLexerPython(w)
-        self.configure_lexer(lexer)
-        w.setLexer(lexer)
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None,1,0):
             w.zoomIn(n)
         # g.trace(dir(w.BraceMatch))
         w.setUtf8(True) # Important.
-        w.setBraceMatching(0)
-        if 0:
+        if 1:
             w.setBraceMatching(2) # Sloppy
+        else:
+            w.setBraceMatching(0) # wrapper.flashCharacter creates big problems.
+        if 0:
             w.setMarginWidth(1,40)
             w.setMarginLineNumbers(1,True)
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
-    #@+node:ekr.20140831054256.18458: *4* qsciw.configure_lexer
-    def configure_lexer(self,lexer):
-        '''Configure the QScintilla lexer.'''
-        # return # Try to use  USERPROFILE:SciTEUser.properties
-        def oops(s):
-            g.trace('bad @data qt-scintilla-styles:',s)
-        # A small font size, to be magnified.
-        c = self.c
-        qcolor,qfont = QtWidgets.QColor,QtWidgets.QFont
-        # font = qfont("Courier New",8,qfont.Bold)
-        font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
-        lexer.setFont(font)
-        table = None
-        aList = c.config.getData('qt-scintilla-styles')
-        if aList:
-            aList = [s.split(',') for s in aList]
-            table = []
-            for z in aList:
-                if len(z) == 2:
-                    color,style = z
-                    table.append((color.strip(),style.strip()),)
-                else: oops('entry: %s' % z)
-            # g.trace('@data ** qt-scintilla-styles',table)
-        if not table:
-            table = (
-                ('#CD2626','Comment'), # Firebrick3
-                ('#00aa00','SingleQuotedString'), # Leo green.
-                ('#00aa00','DoubleQuotedString'),
-                ('#00aa00','TripleSingleQuotedString'),
-                ('#00aa00','TripleDoubleQuotedString'),
-                ('#00aa00','UnclosedString'),
-                ('blue','Keyword'),
-            )
-        for color,style in table:
-            if hasattr(lexer,style):
-                style = getattr(lexer,style)
-                try:
-                    lexer.setColor(qcolor(color),style)
-                except Exception:
-                    oops('bad color: %s' % color)
-            else: oops('bad style: %s' % style)
     #@+node:ekr.20110605121601.18107: *3* qsciw.WidgetAPI
     #@+node:ekr.20140901062324.18593: *4* qsciw.delete
     def delete(self,i,j=None):
@@ -1020,52 +978,54 @@ class QScintillaWrapper(QTextMixin):
             w.replaceSelectedText('')
         finally:
             self.changingText = False
-    #@+node:ekr.20140901062324.18594: *4* qsciw.flashCharacter
+    #@+node:ekr.20140901062324.18594: *4* qsciw.flashCharacter (disabled)
     def flashCharacter(self,i,bg='white',fg='red',flashes=2,delay=50):
         '''Flash the character at position i.'''
-        # This causes problems during unit tests:
-        # The selection point isn't restored in time.
-        if g.app.unitTesting:
-            return
-        #@+others
-        #@+node:ekr.20140902084950.18635: *5* after
-        def after(func,delay=delay):
-            '''Run func after the given delay.'''
-            QtCore.QTimer.singleShot(delay,func)
-        #@+node:ekr.20140902084950.18636: *5* addFlashCallback
-        def addFlashCallback(self=self):
-            n,i = self.flashCount,self.flashIndex
-            w = self.widget
-            self.setSelectionRange(i,i+1)
-            if self.flashBg:
-                w.setSelectionBackgroundColor(QtWidgets.QColor(self.flashBg))
-            if self.flashFg:
-                w.setSelectionForegroundColor(QtWidgets.QColor(self.flashFg))
-            self.flashCount -= 1
-            after(removeFlashCallback)
-        #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
-        def removeFlashCallback(self=self):
-            '''Remove the extra selections.'''
-            self.setInsertPoint(self.flashIndex)
-            w = self.widget
-            if self.flashCount > 0:
-                after(addFlashCallback)
-            else:
-                w.resetSelectionBackgroundColor()
-                self.setInsertPoint(self.flashIndex1)
-                w.setFocus()
-        #@-others
-        # Numbered color names don't work in Ubuntu 8.10, so...
-        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
-        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
-        w = self.widget # A QsciScintilla widget.
-        self.flashCount = flashes
-        self.flashIndex1 = self.getInsertPoint()
-        self.flashIndex = self.toPythonIndex(i)
-        self.flashBg = None if bg.lower()=='same' else bg
-        self.flashFg = None if fg.lower()=='same' else fg
-        # g.trace(self.flashBg,self.flashFg)
-        addFlashCallback()
+        if 0: # This causes a lot of problems: Better to use Scintilla matching.
+
+            # This causes problems during unit tests:
+            # The selection point isn't restored in time.
+            if g.app.unitTesting:
+                return
+            #@+others
+            #@+node:ekr.20140902084950.18635: *5* after
+            def after(func,delay=delay):
+                '''Run func after the given delay.'''
+                QtCore.QTimer.singleShot(delay,func)
+            #@+node:ekr.20140902084950.18636: *5* addFlashCallback
+            def addFlashCallback(self=self):
+                n,i = self.flashCount,self.flashIndex
+                w = self.widget
+                self.setSelectionRange(i,i+1)
+                if self.flashBg:
+                    w.setSelectionBackgroundColor(QtWidgets.QColor(self.flashBg))
+                if self.flashFg:
+                    w.setSelectionForegroundColor(QtWidgets.QColor(self.flashFg))
+                self.flashCount -= 1
+                after(removeFlashCallback)
+            #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
+            def removeFlashCallback(self=self):
+                '''Remove the extra selections.'''
+                self.setInsertPoint(self.flashIndex)
+                w = self.widget
+                if self.flashCount > 0:
+                    after(addFlashCallback)
+                else:
+                    w.resetSelectionBackgroundColor()
+                    self.setInsertPoint(self.flashIndex1)
+                    w.setFocus()
+            #@-others
+            # Numbered color names don't work in Ubuntu 8.10, so...
+            if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
+            if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+            w = self.widget # A QsciScintilla widget.
+            self.flashCount = flashes
+            self.flashIndex1 = self.getInsertPoint()
+            self.flashIndex = self.toPythonIndex(i)
+            self.flashBg = None if bg.lower()=='same' else bg
+            self.flashFg = None if fg.lower()=='same' else fg
+            # g.trace(self.flashBg,self.flashFg)
+            addFlashCallback()
     #@+node:ekr.20140901062324.18595: *4* qsciw.get
     def get(self,i,j=None):
         # Fix the following two bugs by using vanilla code:

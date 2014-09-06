@@ -19088,5 +19088,46 @@ def setAllText (self,s):
     i = len(self.s)
     self.ins = i
     self.sel = i,i
+.. @+node:ekr.20140831054256.18458: *3* qsciw.configure_lexer
+def configure_lexer(self,lexer):
+    '''Configure the QScintilla lexer.'''
+    # return # Try to use  USERPROFILE:SciTEUser.properties
+    def oops(s):
+        g.trace('bad @data qt-scintilla-styles:',s)
+    # A small font size, to be magnified.
+    c = self.c
+    qcolor,qfont = QtWidgets.QColor,QtWidgets.QFont
+    # font = qfont("Courier New",8,qfont.Bold)
+    font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
+    lexer.setFont(font)
+    table = None
+    aList = c.config.getData('qt-scintilla-styles')
+    if aList:
+        aList = [s.split(',') for s in aList]
+        table = []
+        for z in aList:
+            if len(z) == 2:
+                color,style = z
+                table.append((color.strip(),style.strip()),)
+            else: oops('entry: %s' % z)
+        # g.trace('@data ** qt-scintilla-styles',table)
+    if not table:
+        table = (
+            ('#CD2626','Comment'), # Firebrick3
+            ('#00aa00','SingleQuotedString'), # Leo green.
+            ('#00aa00','DoubleQuotedString'),
+            ('#00aa00','TripleSingleQuotedString'),
+            ('#00aa00','TripleDoubleQuotedString'),
+            ('#00aa00','UnclosedString'),
+            ('blue','Keyword'),
+        )
+    for color,style in table:
+        if hasattr(lexer,style):
+            style = getattr(lexer,style)
+            try:
+                lexer.setColor(qcolor(color),style)
+            except Exception:
+                oops('bad color: %s' % color)
+        else: oops('bad style: %s' % style)
 .. @-all
 .. @-leo
