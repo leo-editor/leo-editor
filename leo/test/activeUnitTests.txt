@@ -9409,7 +9409,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
-Last paragraph.
+Last paragraraph.
 #@+node:ekr.20110118082508.3773: *7* before sel=1.0,1.0
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -9470,7 +9470,7 @@ strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
-Last paragraph.
+Last paragraraph.
 #@+node:ekr.20110118082508.3781: *7* before sel=13.0,13.0
 Americans live in the most severe
 weather-prone country on Earth. Each
@@ -9558,7 +9558,7 @@ but StormReady can help communities save
 lives. Does StormReady make a
 difference?
 
-Last paragraph.
+Last paragraraph.
 #@+node:ekr.20110118082508.3789: *7* before sel=25.10,25.10
 Americans live in the most severe
 weather-prone country on Earth. Each
@@ -11719,17 +11719,15 @@ else:
     
     app = g.app.gui.qtApp
     assert issubclass(app.__class__,QtWidgets.QApplication)
-    
-    w = c.frame.body.wrapper.widget
-    assert issubclass(w.__class__,QtWidgets.QTextEdit)
-    w_name = w.__class__.__name__
-    assert w_name == 'LeoQTextBrowser',w_name
-    
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    # w_name = w.__class__.__name__
+    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
     p1 = p.copy()
-    
     filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
-    
     try:
         ev = QtCore.QEvent
         table = (
@@ -11748,7 +11746,6 @@ else:
             n = p1.numberOfChildren()
             assert n==2,'%s children' % (n)
             delete_children(p1)
-    
     finally:
         delete_children(p1)
         c.redraw()
@@ -11778,20 +11775,18 @@ import leo.plugins.qtGui as leoQtGui
 if g.app.isExternalUnitTest:
     pass
 else:
-    w = c.frame.body.wrapper.widget
-    assert issubclass(w.__class__,QtWidgets.QTextEdit)
-    
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
     filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
-
     # Create an Alt-7 key event.
     ev = QtCore.QEvent
     e = QtGui.QKeyEvent(ev.KeyPress,ord('7'),QtCore.Qt.AltModifier)
     filter_obj.eventFilter(w,e)
-
     # Assert that handleUnboundChar actually ignored it.
     assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
-
 #@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

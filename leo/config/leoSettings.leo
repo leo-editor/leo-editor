@@ -1425,7 +1425,7 @@
 <v t="tbrown.20131122094200.2515"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 <v t="tbrown.20131122091143.22659"><vh>@button reload-styles</vh></v>
@@ -4215,13 +4215,13 @@ This allows you to increase the font size.</t>
 # CommentBlock UnclosedString
 # HighlightedIdentifier Decorator
 
- red,   Comment
- green, SingleQuotedString
- green, DoubleQuotedString
- green, TripleSingleQuotedString
- green, TripleDoubleQuotedString
- green, UnclosedString
- green, Decorator
+ #CD2626, Comment
+ #00AA00, SingleQuotedString
+ #00AA00, DoubleQuotedString
+ #00AA00, TripleSingleQuotedString
+ #00AA00, TripleDoubleQuotedString
+ #00AA00, UnclosedString
+ #00AA00, Decorator
  blue,  Keyword</t>
 <t tx="ekr.20081023060109.14"></t>
 <t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.

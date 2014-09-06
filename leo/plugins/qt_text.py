@@ -953,7 +953,7 @@ class QScintillaWrapper(QTextMixin):
         self.configure_lexer(lexer)
         w.setLexer(lexer)
         n = c.config.getInt('qt-scintilla-zoom-in')
-        if n not in (None,0):
+        if n not in (None,1,0):
             w.zoomIn(n)
         # g.trace(dir(w.BraceMatch))
         w.setUtf8(True) # Important.
@@ -968,13 +968,14 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20140831054256.18458: *4* qsciw.configure_lexer
     def configure_lexer(self,lexer):
         '''Configure the QScintilla lexer.'''
-        # To do: make this more configurable in the Leo way.
+        # return # Try to use  USERPROFILE:SciTEUser.properties
         def oops(s):
             g.trace('bad @data qt-scintilla-styles:',s)
         # A small font size, to be magnified.
         c = self.c
         qcolor,qfont = QtWidgets.QColor,QtWidgets.QFont
-        font = qfont("Courier New",8,qfont.Bold)
+        # font = qfont("Courier New",8,qfont.Bold)
+        font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
         lexer.setFont(font)
         table = None
         aList = c.config.getData('qt-scintilla-styles')
@@ -986,15 +987,15 @@ class QScintillaWrapper(QTextMixin):
                     color,style = z
                     table.append((color.strip(),style.strip()),)
                 else: oops('entry: %s' % z)
-            # g.trace(g.printList(table))
+            # g.trace('@data ** qt-scintilla-styles',table)
         if not table:
             table = (
-                ('red','Comment'),
-                ('green','SingleQuotedString'),
-                ('green','DoubleQuotedString'),
-                ('green','TripleSingleQuotedString'),
-                ('green','TripleDoubleQuotedString'),
-                ('green','UnclosedString'),
+                ('#CD2626','Comment'), # Firebrick3
+                ('#00aa00','SingleQuotedString'), # Leo green.
+                ('#00aa00','DoubleQuotedString'),
+                ('#00aa00','TripleSingleQuotedString'),
+                ('#00aa00','TripleDoubleQuotedString'),
+                ('#00aa00','UnclosedString'),
                 ('blue','Keyword'),
             )
         for color,style in table:
@@ -1005,9 +1006,123 @@ class QScintillaWrapper(QTextMixin):
                 except Exception:
                     oops('bad color: %s' % color)
             else: oops('bad style: %s' % style)
-    #@+node:ekr.20110605121601.18107: *3* qsciw.High-level interface
-    #@+node:ekr.20140902084950.18638: *4* to do
-    #@+node:ekr.20140901062324.18604: *5* qsciw.scrollDelegate (maybe never)
+    #@+node:ekr.20110605121601.18107: *3* qsciw.WidgetAPI
+    #@+node:ekr.20140901062324.18593: *4* qsciw.delete
+    def delete(self,i,j=None):
+        '''Delete s[i:j]'''
+        w = self.widget
+        i = self.toPythonIndex(i)
+        if j is None: j = i+1
+        j = self.toPythonIndex(j)
+        self.setSelectionRange(i,j)
+        try:
+            self.changingText = True # Disable onTextChanged
+            w.replaceSelectedText('')
+        finally:
+            self.changingText = False
+    #@+node:ekr.20140901062324.18594: *4* qsciw.flashCharacter
+    def flashCharacter(self,i,bg='white',fg='red',flashes=2,delay=50):
+        '''Flash the character at position i.'''
+        # This causes problems during unit tests:
+        # The selection point isn't restored in time.
+        if g.app.unitTesting:
+            return
+        #@+others
+        #@+node:ekr.20140902084950.18635: *5* after
+        def after(func,delay=delay):
+            '''Run func after the given delay.'''
+            QtCore.QTimer.singleShot(delay,func)
+        #@+node:ekr.20140902084950.18636: *5* addFlashCallback
+        def addFlashCallback(self=self):
+            n,i = self.flashCount,self.flashIndex
+            w = self.widget
+            self.setSelectionRange(i,i+1)
+            if self.flashBg:
+                w.setSelectionBackgroundColor(QtWidgets.QColor(self.flashBg))
+            if self.flashFg:
+                w.setSelectionForegroundColor(QtWidgets.QColor(self.flashFg))
+            self.flashCount -= 1
+            after(removeFlashCallback)
+        #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
+        def removeFlashCallback(self=self):
+            '''Remove the extra selections.'''
+            self.setInsertPoint(self.flashIndex)
+            w = self.widget
+            if self.flashCount > 0:
+                after(addFlashCallback)
+            else:
+                w.resetSelectionBackgroundColor()
+                self.setInsertPoint(self.flashIndex1)
+                w.setFocus()
+        #@-others
+        # Numbered color names don't work in Ubuntu 8.10, so...
+        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
+        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+        w = self.widget # A QsciScintilla widget.
+        self.flashCount = flashes
+        self.flashIndex1 = self.getInsertPoint()
+        self.flashIndex = self.toPythonIndex(i)
+        self.flashBg = None if bg.lower()=='same' else bg
+        self.flashFg = None if fg.lower()=='same' else fg
+        # g.trace(self.flashBg,self.flashFg)
+        addFlashCallback()
+    #@+node:ekr.20140901062324.18595: *4* qsciw.get
+    def get(self,i,j=None):
+        # Fix the following two bugs by using vanilla code:
+        # https://bugs.launchpad.net/leo-editor/+bug/979142
+        # https://bugs.launchpad.net/leo-editor/+bug/971166
+        s = self.getAllText()
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        return s[i:j]
+    #@+node:ekr.20110605121601.18108: *4* qsciw.getAllText
+    def getAllText(self):
+        '''Get all text from a QsciScintilla widget.'''
+        w = self.widget
+        s = w.text()
+        s = g.u(s)
+        return s
+    #@+node:ekr.20110605121601.18109: *4* qsciw.getInsertPoint
+    def getInsertPoint(self):
+        '''Get the insertion point from a QsciScintilla widget.'''
+        w = self.widget
+        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
+        return i
+    #@+node:ekr.20110605121601.18110: *4* qsciw.getSelectionRange
+    def getSelectionRange(self,sort=True):
+        '''Get the selection range from a QsciScintilla widget.'''
+        w = self.widget
+        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
+        j = int(w.SendScintilla(w.SCI_GETANCHOR))
+        if sort and i > j: i,j = j,i
+        return i,j
+    #@+node:ekr.20140901062324.18599: *4* qsciw.getYScrollPosition (to do)
+    def getYScrollPosition(self):
+        
+        w = self.widget
+        # g.trace(g.callers())
+        return 0 # Not ready yet.
+    #@+node:ekr.20110605121601.18111: *4* qsciw.hasSelection
+    def hasSelection(self):
+        '''Return True if a QsciScintilla widget has a selection range.'''
+        return self.widget.hasSelectedText()
+    #@+node:ekr.20140901062324.18601: *4* qsciw.insert
+    def insert(self,i,s):
+        '''Insert s at position i.'''
+        w = self.widget
+        i = self.toPythonIndex(i)
+        w.SendScintilla(w.SCI_SETSEL,i,i)
+        w.SendScintilla(w.SCI_ADDTEXT,len(s),g.toEncodedString(s))
+        i += len(s)
+        w.SendScintilla(w.SCI_SETSEL,i,i)
+        return i
+    #@+node:ekr.20140901062324.18603: *4* qsciw.linesPerPage
+    def linesPerPage (self):
+        '''Return the number of lines presently visible.'''
+        # Not used in Leo's core. Not tested.
+        w = self.widget
+        return int(w.SendScintilla(w.SCI_LINESONSCREEN))
+    #@+node:ekr.20140901062324.18604: *4* qsciw.scrollDelegate (maybe)
     if 0: # Not yet.
         
         def scrollDelegate(self,kind):
@@ -1034,128 +1149,7 @@ class QScintillaWrapper(QTextMixin):
             # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
             vScroll.setValue(val+(delta*lineSpacing))
             c.bodyWantsFocus()
-    #@+node:ekr.20140901062324.18599: *5* qsciw.getYScrollPosition (to do)
-    def getYScrollPosition(self):
-        
-        w = self.widget
-        # g.trace(g.callers())
-        return 0 # Not ready yet.
-    #@+node:ekr.20140901062324.18609: *5* qsciw.setYScrollPosition (to do)
-    def setYScrollPosition(self,pos):
-        '''Set the position of the vertical scrollbar.'''
-        # g.trace(pos)
-
-    #@+node:ekr.20140901062324.18610: *4* working
-    #@+node:ekr.20140901062324.18593: *5* qsciw.delete
-    def delete(self,i,j=None):
-        '''Delete s[i:j]'''
-        w = self.widget
-        i = self.toPythonIndex(i)
-        if j is None: j = i+1
-        j = self.toPythonIndex(j)
-        self.setSelectionRange(i,j)
-        try:
-            self.changingText = True # Disable onTextChanged
-            w.replaceSelectedText('')
-        finally:
-            self.changingText = False
-    #@+node:ekr.20140901062324.18594: *5* qsciw.flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=2,delay=50):
-        '''Flash the character at position i.'''
-        # This causes problems during unit tests:
-        # The selection point isn't restored in time.
-        if g.app.unitTesting:
-            return
-        #@+others
-        #@+node:ekr.20140902084950.18635: *6* after
-        def after(func,delay=delay):
-            '''Run func after the given delay.'''
-            QtCore.QTimer.singleShot(delay,func)
-        #@+node:ekr.20140902084950.18636: *6* addFlashCallback
-        def addFlashCallback(self=self):
-            n,i = self.flashCount,self.flashIndex
-            w = self.widget
-            self.setSelectionRange(i,i+1)
-            if self.flashBg:
-                w.setSelectionBackgroundColor(QtWidgets.QColor(self.flashBg))
-            if self.flashFg:
-                w.setSelectionForegroundColor(QtWidgets.QColor(self.flashFg))
-            self.flashCount -= 1
-            after(removeFlashCallback)
-        #@+node:ekr.20140902084950.18637: *6* removeFlashCallback
-        def removeFlashCallback(self=self):
-            '''Remove the extra selections.'''
-            self.setInsertPoint(self.flashIndex)
-            w = self.widget
-            if self.flashCount > 0:
-                after(addFlashCallback)
-            else:
-                w.resetSelectionBackgroundColor()
-                self.setInsertPoint(self.flashIndex1)
-                w.setFocus()
-        #@-others
-        # Numbered color names don't work in Ubuntu 8.10, so...
-        if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
-        if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
-        w = self.widget # A QsciScintilla widget.
-        self.flashCount = flashes
-        self.flashIndex1 = self.getInsertPoint()
-        self.flashIndex = self.toPythonIndex(i)
-        self.flashBg = None if bg.lower()=='same' else bg
-        self.flashFg = None if fg.lower()=='same' else fg
-        # g.trace(self.flashBg,self.flashFg)
-        addFlashCallback()
-    #@+node:ekr.20140901062324.18595: *5* qsciw.get
-    def get(self,i,j=None):
-        # Fix the following two bugs by using vanilla code:
-        # https://bugs.launchpad.net/leo-editor/+bug/979142
-        # https://bugs.launchpad.net/leo-editor/+bug/971166
-        s = self.getAllText()
-        i = self.toPythonIndex(i)
-        j = self.toPythonIndex(j)
-        return s[i:j]
-    #@+node:ekr.20110605121601.18108: *5* qsciw.getAllText
-    def getAllText(self):
-        '''Get all text from a QsciScintilla widget.'''
-        w = self.widget
-        s = w.text()
-        s = g.u(s)
-        return s
-    #@+node:ekr.20110605121601.18109: *5* qsciw.getInsertPoint
-    def getInsertPoint(self):
-        '''Get the insertion point from a QsciScintilla widget.'''
-        w = self.widget
-        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
-        return i
-    #@+node:ekr.20110605121601.18110: *5* qsciw.getSelectionRange
-    def getSelectionRange(self,sort=True):
-        '''Get the selection range from a QsciScintilla widget.'''
-        w = self.widget
-        i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
-        j = int(w.SendScintilla(w.SCI_GETANCHOR))
-        if sort and i > j: i,j = j,i
-        return i,j
-    #@+node:ekr.20110605121601.18111: *5* qsciw.hasSelection
-    def hasSelection(self):
-        '''Return True if a QsciScintilla widget has a selection range.'''
-        return self.widget.hasSelectedText()
-    #@+node:ekr.20140901062324.18601: *5* qsciw.insert
-    def insert(self,i,s):
-        '''Insert s at position i.'''
-        w = self.widget
-        i = self.toPythonIndex(i)
-        w.SendScintilla(w.SCI_SETSEL,i,i)
-        w.SendScintilla(w.SCI_ADDTEXT,len(s),g.toEncodedString(s))
-        i += len(s)
-        w.SendScintilla(w.SCI_SETSEL,i,i)
-        return i
-    #@+node:ekr.20140901062324.18603: *5* qsciw.linesPerPage
-    def linesPerPage (self):
-        '''Return the number of lines presently visible.'''
-        # Not used in Leo's core. Not tested.
-        w = self.widget
-        return int(w.SendScintilla(w.SCI_LINESONSCREEN))
-    #@+node:ekr.20110605121601.18112: *5* qsciw.see
+    #@+node:ekr.20110605121601.18112: *4* qsciw.see
     def see(self,i):
         '''Ensure insert point i is visible in a QsciScintilla widget.'''
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
@@ -1164,7 +1158,7 @@ class QScintillaWrapper(QTextMixin):
         i = self.toPythonIndex(i)
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
-    #@+node:ekr.20110605121601.18113: *5* qsciw.setAllText
+    #@+node:ekr.20110605121601.18113: *4* qsciw.setAllText
     def setAllText(self,s):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
@@ -1172,7 +1166,7 @@ class QScintillaWrapper(QTextMixin):
         w.setText(g.toEncodedString(s))
         # w.update()
 
-    #@+node:ekr.20110605121601.18114: *5* qsciw.setInsertPoint
+    #@+node:ekr.20110605121601.18114: *4* qsciw.setInsertPoint
     def setInsertPoint(self,i,s=None):
         '''Set the insertion point in a QsciScintilla widget.'''
         w = self.widget
@@ -1180,7 +1174,7 @@ class QScintillaWrapper(QTextMixin):
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL,i,i)
-    #@+node:ekr.20110605121601.18115: *5* qsciw.setSelectionRange
+    #@+node:ekr.20110605121601.18115: *4* qsciw.setSelectionRange
     def setSelectionRange(self,i,j,insert=None,s=None):
         '''Set the selection range in a QsciScintilla widget.'''
         w = self.widget
@@ -1188,10 +1182,15 @@ class QScintillaWrapper(QTextMixin):
         j = self.toPythonIndex(j)
         insert = j if insert is None else self.toPythonIndex(insert)
         # g.trace('i',i,'j',j,'insert',insert,g.callers())
-        if insert == j:
-            w.SendScintilla(w.SCI_SETSEL,j,i)
-        else:
+        if insert >= i:
             w.SendScintilla(w.SCI_SETSEL,i,j)
+        else:
+            w.SendScintilla(w.SCI_SETSEL,j,i)
+    #@+node:ekr.20140901062324.18609: *4* qsciw.setYScrollPosition (to do)
+    def setYScrollPosition(self,pos):
+        '''Set the position of the vertical scrollbar.'''
+        # g.trace(pos)
+
     #@-others
 #@+node:ekr.20110605121601.18071: ** class QTextEditWrapper(QTextMixin)
 class QTextEditWrapper(QTextMixin):
