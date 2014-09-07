@@ -817,14 +817,12 @@ class LeoApp:
         app.pluginsController.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
-
         """A convenience routines for plugins to create the default gui class."""
-
-        app = self ; argName = app.guiArgName
-
+        app = self
+        argName = app.guiArgName
         # This method can be called twice if we had to get .leoID.txt.
-        if app.gui: return
-
+        if app.gui:
+            return
         if argName in ('qt','qttabs'): # 2011/06/15.
             app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
@@ -833,7 +831,7 @@ class LeoApp:
             app.createCursesGui()
 
         if not app.gui:
-            print('Leo requires Qt to be installed.')
+            print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
     def createNullGuiWithScript (self,script=None):
 
@@ -847,7 +845,7 @@ class LeoApp:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
-        # import pdb ; pdb.set_trace()
+        import pdb ; pdb.set_trace()
         try:
             import PyQt5.QtGui
             import PyQt5.QtCore    
