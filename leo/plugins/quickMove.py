@@ -343,7 +343,7 @@ class quickMove(object):
         # createButton truncates text.  
 
         if parent and g.app.gui.guiName() == "qt":
-            # see qtGui.py/class leoQtFrame/class qtIconBarClass/setCommandForButton
+            # see setCommandForButton
             pb = parent.button
             rc = QtGui.QAction(text, pb)
             rc.connect(rc, QtCore.SIGNAL("triggered()"), mb.moveCurrentNodeToTarget)

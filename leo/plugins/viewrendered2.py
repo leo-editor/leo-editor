@@ -1552,7 +1552,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit # qtGui.LeoQTextBrowser 
+        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit
         self.html_class = WebViewPlus #QtWebKitWidgets.QWebView
         self.graphics_class = QtWidgets.QGraphicsWidget
         self.vp = None # The present video player.

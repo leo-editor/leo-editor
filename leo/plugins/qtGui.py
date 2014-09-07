@@ -20,17 +20,6 @@ import leo.core.leoColorizer as leoColorizer
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins # Uses leoPlugins.TryNext.
-import leo.plugins.baseNativeTree as baseNativeTree
-import leo.plugins.qt_events as qt_events
-from leo.plugins.mod_scripting import build_rclick_tree
-
-import datetime
-import os
-import sys
-import time
-import platform
-import time
-from collections import defaultdict
 
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
@@ -38,12 +27,21 @@ from leo.plugins.qt_text import LeoQTextBrowser
 from leo.plugins.qt_text import QHeadlineWrapper,QMinibufferWrapper
 from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 
+import leo.plugins.baseNativeTree as baseNativeTree
+import leo.plugins.qt_events as qt_events
+from leo.plugins.mod_scripting import build_rclick_tree
+
+import datetime
+import os
+import sys
+import platform
+from collections import defaultdict
+
 try:
     import leo.plugins.nested_splitter as nested_splitter
     splitter_class = nested_splitter.NestedSplitter
-    # disable special behavior, turned back on by associated plugin,
-    # if the plugin's loaded
     nested_splitter.NestedSplitter.enabled = False
+        # Disable special behavior, turned back on by associated plugin.
 except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
@@ -5586,95 +5584,6 @@ class QuickHeadlines:
         p = self.c.currentPosition()
         for n in p.children():
             self.listWidget.addItem(n.h)
-#@+node:ekr.20140825042850.18405: ** class IdleTime (qtGui.py)
-class IdleTime:
-    '''A class that executes a handler at idle time.'''
-    #@+others
-    #@+node:ekr.20140825042850.18406: *3*  IdleTime.ctor
-    def __init__(self,handler,delay=500,tag=None):
-        '''ctor for IdleTime class.'''
-        # g.trace('(IdleTime)',g.callers(2))
-        self.count = 0
-            # The number of times handler has been called.
-        self.delay = delay
-            # The argument to self.timer.start:
-            # 0 for idle time, otherwise a delay in msec.
-        self.enabled = False
-            # True: run the timer continuously.
-        self.handler = handler
-            # The user-provided idle-time handler.
-        self.starting_time = None
-            # Time that the timer started.
-        self.tag = tag
-            # An arbitrary string/object for use during debugging.
-        self.time = None
-            # Time that the handle is called.
-        self.waiting_for_idle = False
-            # True if we have already waited for the minimum delay
-        # Create the timer, but do not fire it.
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.at_idle_time)
-        # Add this instance to the global idle_timers.list.
-        # This reference prevents this instance from being destroyed.
-        g.app.idle_timers.append(self)
-    #@+node:ekr.20140825102404.18525: *3*  IdleTime.__repr__
-    def __repr__(self):
-        '''IdleTime repr.'''
-        tag = self.tag
-        if tag:
-            return '<IdleTime: %s>' % (tag if g.isString(tag) else repr(tag))
-        else:
-            return '<IdleTime: id: %s>' % id(self)
-
-    __str__ = __repr__
-    #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
-    def at_idle_time(self):
-        '''Call self.handler not more than once every self.delay msec.'''
-        if g.app.killed:
-            self.stop()
-        elif self.enabled:
-            if self.waiting_for_idle:
-                # At idle time: call the handler.
-                self.call_handler()
-            # Requeue the timer with the appropriate delay.
-            # 0 means wait until idle time.
-            self.waiting_for_idle = not self.waiting_for_idle
-            if self.timer.isActive():
-                self.timer.stop()
-            self.timer.start(0 if self.waiting_for_idle else self.delay)
-        elif self.timer.isActive():
-            self.timer.stop()
-    #@+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
-    def call_handler(self):
-        '''Carefully call the handler.'''
-        try:
-            self.count += 1
-            self.time = time.time()
-            self.handler(self)
-        except Exception:
-            g.es_exception()
-            self.stop()
-    #@+node:ekr.20140825080012.18529: *3* IdleTime.destory_self
-    def destroy_self(self):
-        '''Remove the instance from g.app.idle_timers.'''
-        if not g.app.killed and self in g.app.idle_timers:
-            g.app.idle_timers.remove(self)
-    #@+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
-    def start(self):
-        '''Start idle-time processing'''
-        self.enabled = True
-        if self.starting_time is None:
-            self.starting_time = time.time()
-        # Wait at least self.delay msec, then wait for idle time.
-        self.last_delay = self.delay
-        self.timer.start(self.delay)
-
-    def stop(self):
-        '''Stop idle-time processing. May be called during shutdown.'''
-        self.enabled = False
-        if hasattr(self,'timer') and self.timer.isActive():
-            self.timer.stop()
-    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

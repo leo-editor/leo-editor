@@ -21196,6 +21196,7 @@ exclude = [
     'qtGui.py',
     'qt_events.py',
     'qt_frame.py',
+    'qt_idle_time.py',
     'qt_main.py',
     'qt_text.py',
     'qt_quicksearch.py',

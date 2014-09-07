@@ -81,8 +81,9 @@ def getGuiPluginsList ():
         'free_layout',
         'nested_splitter',
         'qtGui', # To be removed, eventually.
-        'qt_events.py',
-        'qt_frame.py',
+        'qt_events',
+        'qt_frame.',
+        'qt_idle_time',
         'qt_gui',
         'qt_text',
     )

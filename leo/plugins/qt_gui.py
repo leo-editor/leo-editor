@@ -5,8 +5,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
 from leo.plugins.qt_events import LeoQtEventFilter
+from leo.plugins.qt_idle_time import IdleTime
 from leo.plugins.qt_text import LeoQTextBrowser,PlainTextWrapper,QTextMixin
-from leo.plugins.qtGui import IdleTime
 from leo.plugins.qtGui import LeoQtFrame,LeoQtSpellTab
 from leo.plugins.qtGui import SDIFrameFactory,TabbedFrameFactory
 import datetime
