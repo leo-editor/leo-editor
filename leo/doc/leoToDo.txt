@@ -13,6 +13,7 @@
 .. @+node:ekr.20140903025053.18627: *3* To do first
 @language rest
 
+** Remove leoInspect and leoSTC
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
