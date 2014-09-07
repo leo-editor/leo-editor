@@ -5,7 +5,7 @@
 '''All colorizing code for Leo.'''
 python_qsh = True
     # True use PythonQSyntaxHighlighter
-    # False use QtGui.QSyntaxHighlighter
+    # False use QSyntaxHighlighter
 # if python_qsh: print('===== python_qsh ===== ')
 #@@language python
 #@@tabwidth -4
@@ -2876,16 +2876,12 @@ class QScintillaColorizer(ColorizerMixin):
         widget.leo_colorizer = self
         # Define/configure various lexers.
         self.lexersDict = {
-            'python': Qsci.QsciLexerPython(parent=None),
+            'python': Qsci.QsciLexerPython(parent=c.frame.body.wrapper.widget),
+            # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
         }
         lexer = self.lexersDict.get('python')
         self.configure_lexer(lexer)
         self.nullLexer = NullScintillaLexer(c)
-        # No longer used.
-        ### self.colorer = None # No colorer for Scintilla
-        ### self.highlighter = None # No highlighter for Scintilla.
-        ### self.killColorFlag = False
-        ### self.oldV = None
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self,language):
         '''Set the lexer for the given language.'''
@@ -2964,6 +2960,7 @@ class QScintillaColorizer(ColorizerMixin):
         else:
             self.updateSyntaxColorer(p)
                 # sets self.flag and self.language and self.languageList.
+            if trace: g.trace(self.language)
             self.changeLexer(self.language)
         return "ok" # For unit testing.
     #@+node:ekr.20140906081909.18716: *3* qsc.kill
@@ -2972,5 +2969,41 @@ class QScintillaColorizer(ColorizerMixin):
         self.changeLexer(language=None)
             
     #@-others
+#@+node:ekr.20140906143232.18697: ** class PythonLexer (does not work)
+# Stuck: regardless of class: there seems to be no way to force a recolor.
+class PythonLexer(Qsci.QsciLexerCustom):
+    '''A subclass of the Python lexer that colorizers section references.'''
+    
+    def __init__(self,parent=None):
+        '''Ctor for PythonLexer class.'''
+        Qsci.QsciLexerCustom.__init__(self,parent)
+            # Init the base class.
+        self.lexer = None
+        self.parent = parent
+        self.tag = '(PythonLexer)'
+        
+    def setStringsOverNewlineAllowed(self,aBool):
+        pass
+        
+    def description(self,style):
+        return self.tag
+
+    def setStyling(self,length,style):
+        g.trace(self.tag,length,style)
+        
+    def styleText(self,start,end):
+        '''Style the text from start to end.'''
+        g.trace(self.tag,start,end)
+        self.lexer = Qsci.QsciLexerPython(parent=self.parent)
+        self.lexer.setStringsOverNewlineAllowed(True)
+        ### self.lexer.styleText(start,end)
+
+    def configure_lexer(self):
+        '''Configure the QScintilla lexer.'''
+        c = self.leo_c
+        lexer = self
+        ### To do: use c.config setting.
+        font = QtWidgets.QFont("DejaVu Sans Mono",14)
+        lexer.setFont(font)
 #@-others
 #@-leo
