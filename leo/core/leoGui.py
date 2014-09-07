@@ -2,69 +2,20 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3719: * @file leoGui.py
 #@@first
+"""
+A module containing the base gui-related classes.
 
-"""A module containing the base LeoGui class.
-
-This class and its subclasses hides the details of which gui is actually being used.
+These classes hide the details of which gui is actually being used.
 Leo's core calls this class to allocate all gui objects.
 
-Plugins may define their own gui classes by setting g.app.gui."""
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
+Plugins may define their own gui classes by setting g.app.gui.
+"""
 #@+<< imports >>
 #@+node:ekr.20120219194520.10466: ** << imports >> (LeoGui.py)
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame # for NullGui and StringTextWrapper.
 #@-<< imports >>
-
 #@+others
-#@+node:ekr.20070228160107: ** class LeoKeyEvent (LeoGui.py)
-class LeoKeyEvent:
-
-    '''A gui-independent wrapper for gui events.'''
-
-    #@+others
-    #@+node:ekr.20110605121601.18846: *3* ctor (LeoKeyEvent)
-    def __init__ (self,c,char,event,shortcut,w,x,y,x_root,y_root):
-
-        trace = False and not g.unitTesting
-
-        if g.isStroke(shortcut):
-            g.trace('***** (LeoKeyEvent) oops: already a stroke',shortcut,g.callers())
-            stroke = shortcut
-        else:
-            stroke = g.KeyStroke(shortcut) if shortcut else None
-
-        assert g.isStrokeOrNone(stroke),'(LeoKeyEvent) %s %s' % (
-            repr(stroke),g.callers())
-
-        if trace: g.trace('(LeoKeyEvent) stroke',stroke)
-
-        self.c = c
-        self.char = char or ''
-        self.event = event # New in Leo 4.11.
-        self.stroke = stroke
-        self.w = self.widget = w
-
-        # Optional ivars
-        self.x = x
-        self.y = y
-
-        # Support for fastGotoNode plugin
-        self.x_root = x_root
-        self.y_root = y_root
-    #@-others
-
-    def __repr__ (self):
-
-        return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
-            repr(self.stroke),repr(self.char),repr(self.w))
-
-    def type(self):
-        return 'LeoKeyEvent'
 #@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui:
 
@@ -308,6 +259,41 @@ class LeoGui:
         """E.g. if commanders are in tabs, make sure c's tab is visible"""
         pass
     #@-others
+#@+node:ekr.20070228160107: ** class LeoKeyEvent
+class LeoKeyEvent:
+    '''A gui-independent wrapper for gui events.'''
+    #@+others
+    #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
+    def __init__ (self,c,char,event,shortcut,w,x,y,x_root,y_root):
+        '''Ctor for LeoKeyEvent class.'''
+        trace = False and not g.unitTesting
+        if g.isStroke(shortcut):
+            g.trace('***** (LeoKeyEvent) oops: already a stroke',shortcut,g.callers())
+            stroke = shortcut
+        else:
+            stroke = g.KeyStroke(shortcut) if shortcut else None
+        assert g.isStrokeOrNone(stroke),'(LeoKeyEvent) %s %s' % (
+            repr(stroke),g.callers())
+        if trace: g.trace('(LeoKeyEvent) stroke',stroke)
+        self.c = c
+        self.char = char or ''
+        self.event = event # New in Leo 4.11.
+        self.stroke = stroke
+        self.w = self.widget = w
+        # Optional ivars
+        self.x = x
+        self.y = y
+        # Support for fastGotoNode plugin
+        self.x_root = x_root
+        self.y_root = y_root
+    #@+node:ekr.20140907103315.18774: *3* LeoKeyEvent.__repr__
+    def __repr__ (self):
+        return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke),repr(self.char),repr(self.w))
+    #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type
+    def type(self):
+        return 'LeoKeyEvent'
+    #@-others
 #@+node:ekr.20031218072017.2223: ** class NullGui (LeoGui)
 class NullGui(LeoGui):
     """Null gui class."""
@@ -516,4 +502,7 @@ class UnitTestGui(NullGui):
             return unicode(s)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -4,8 +4,9 @@
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
+from leo.plugins.qt_events import LeoQtEventFilter
 from leo.plugins.qt_text import LeoQTextBrowser,PlainTextWrapper,QTextMixin
-from leo.plugins.qtGui import IdleTime,LeoQtEventFilter
+from leo.plugins.qtGui import IdleTime
 from leo.plugins.qtGui import LeoQtFrame,LeoQtSpellTab
 from leo.plugins.qtGui import SDIFrameFactory,TabbedFrameFactory
 import datetime
@@ -843,9 +844,7 @@ class LeoQtGui(leoGui.LeoGui):
         QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131007055150.17608: *3* LeoQtGui.insertKeyEvent
     def insertKeyEvent (self,event,i):
-        
         '''Insert the key given by event in location i of widget event.w.'''
-        
         import leo.core.leoGui as leoGui
         assert isinstance(event,leoGui.LeoKeyEvent)
         qevent = event.event

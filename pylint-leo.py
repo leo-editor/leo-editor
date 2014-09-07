@@ -80,7 +80,9 @@ def getGuiPluginsList ():
         'baseNativeTree',
         'free_layout',
         'nested_splitter',
-        'qtGui',
+        'qtGui', # To be removed, eventually.
+        'qt_events.py',
+        'qt_frame.py',
         'qt_gui',
         'qt_text',
     )

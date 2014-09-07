@@ -11702,6 +11702,7 @@ except ImportError:
     import PyQt4.QtGui as QtGui
     QtWidgets = QtGui
 
+import leo.plugins.qt_events as qt_events
 import leo.plugins.qtGui as leoQtGui
 
 if g.app.isExternalUnitTest:
@@ -11726,7 +11727,7 @@ else:
     # w_name = w.__class__.__name__
     # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
     p1 = p.copy()
-    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
     try:
         ev = QtCore.QEvent
@@ -11769,8 +11770,7 @@ except ImportError:
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
     QtWidgets = QtGui
-
-import leo.plugins.qtGui as leoQtGui
+import leo.plugins.qt_events as qt_events
 
 if g.app.isExternalUnitTest:
     pass
@@ -11779,7 +11779,7 @@ else:
     w = wrapper.widget
     assert g.isTextWrapper(wrapper),wrapper
     assert g.isTextWidget(w),w
-    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
     # Create an Alt-7 key event.
     ev = QtCore.QEvent
@@ -21194,6 +21194,7 @@ exclude = [
     # These are not real plugins...
     'baseNativeTree.py','leocursor.py',
     'qtGui.py',
+    'qt_events.py',
     'qt_frame.py',
     'qt_main.py',
     'qt_text.py',

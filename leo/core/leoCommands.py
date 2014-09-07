@@ -11,15 +11,9 @@
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
-
-# if g.app and g.app.use_psyco:
-    # # g.pr("enabled psyco classes",__file__)
-    # try: from psyco.classes import *
-    # except ImportError: pass
-
+import leo.core.leoNodes as leoNodes
 # The leoCommands ctor now does these imports.
 # This breaks circular dependencies.
-
     # import leo.core.leoAtFile as leoAtFile
     # import leo.core.leoCache as leoCache
     # import leo.core.leoChapters as leoChapters
@@ -33,11 +27,6 @@ import leo.core.leoGlobals as g
     # import leo.core.leoTest as leoTest
     # import leo.core.leoUndo as leoUndo
 
-import leo.core.leoNodes as leoNodes
-
-# import leo.external.pickleshare as pickleshare
-
-# import hashlib
 import imp
 import itertools
 import keyword
@@ -47,16 +36,13 @@ import subprocess
 import sys
 import tempfile
 import time
+import token    # for Check Python command
 import tokenize # for Check Python command
-# import unittest
-
 try:
     import tabnanny # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
-
-# The following import _is_ used.
-import token    # for Check Python command
+    
 #@-<< imports >>
 
 #@+others
