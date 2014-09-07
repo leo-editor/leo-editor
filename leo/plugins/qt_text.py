@@ -8,26 +8,6 @@ import time
 from leo.core.leoQt import isQt5,QtCore,QtGui,Qsci,QtWidgets
 from leo.core.leoQt import Qsci
 #@+others
-#@+node:tbrown.20130411145310.18857: **    Commands: zoom_in/out
-@g.command("zoom-in")
-def zoom_in(event=None, delta=1):
-    """increase body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    c = event.get('c')
-    if c:
-        c._style_deltas['font-size-body'] += delta
-        ss = g.expand_css_constants(c, c.active_stylesheet)
-        c.frame.body.wrapper.widget.setStyleSheet(ss)
-    
-@g.command("zoom-out")
-def zoom_out(event=None):
-    """decrease body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    zoom_in(event=event, delta=-1)
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
