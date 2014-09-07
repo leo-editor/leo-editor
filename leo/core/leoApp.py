@@ -55,9 +55,9 @@ class LeoApp:
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.
         self.silentMode = False         # True: no signon.
-        self.start_fullscreen = False   # For qtGui plugin.
-        self.start_maximized = False    # For qtGui plugin.
-        self.start_minimized = False    # For qtGui plugin.
+        self.start_fullscreen = False   # For qt_frame plugin.
+        self.start_maximized = False    # For qt_frame plugin.
+        self.start_minimized = False    # For qt_frame plugin.
         self.translateToUpperCase = False # Never set to True.
         self.useIpython = False         # True: add support for IPython.
         self.use_psyco = False          # True: use psyco optimization.
@@ -854,7 +854,7 @@ class LeoApp:
             try:
                 # Work around pylint/qt problem: import QtGui before QtCore:
                 # http://lists.logilab.org/pipermail/python-projects/2013-January/003383.html
-                # Take care to try the same imports as in qtGui.py.
+                # Take care to try the same imports as in qt_frame.py.
                 import PyQt4.QtGui
                 import PyQt4.QtCore    
                 import leo.plugins.qt_gui as qt_gui
@@ -864,7 +864,7 @@ class LeoApp:
         if qt_gui:
             qt_gui.init()
             if app.gui and fileName and verbose:
-                print('qtGui created in %s' % fileName)
+                print('Qt Gui created in %s' % fileName)
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 

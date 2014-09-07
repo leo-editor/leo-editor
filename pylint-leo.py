@@ -149,11 +149,6 @@ def getPluginsList():
             # No name 'leoScriptModule' in module 'leo.core'
         'nav_qt',
         'nested_splitter',
-        'qtGui',
-            # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-            # E0611: No name 'xxx' in module 'urllib'
-            # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-            # R0923: Interface not implemented
         'quicksearch',
         'todo',
         # 'toolbar',
@@ -166,64 +161,6 @@ def getPluginsList():
         'xemacs.py',
     ])
     return aList
-#@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
-def getRecentCoreList():
-    '''Return the list of core files processed by the -r option.'''
-    return (
-        # 'runLeo',
-        # 'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        # 'leoCache',
-        # 'leoChapters',
-        # 'leoCommands',
-        # 'leoConfig',
-        # 'leoEditCommands',
-        # 'leoFileCommands',
-        # 'leoFind',
-        # 'leoFrame',
-        # 'leoGlobals',
-        # 'leoGui',
-        # 'leoImport',
-        # 'leoIPython',
-        # 'leoKeys',
-        # 'leoMenu',
-        # 'leoNodes',
-        # 'leoPersistence',
-        # 'leoPlugins',
-        # 'leoQt',
-        # 'leoRope',
-        # 'leoRst',
-        # 'leoSessions',
-        # 'leoShadow',
-        # 'leoSTC',
-        # 'leoTangle',
-        # 'leoTest',
-        # 'leoUndo',
-        # 'leoViews',
-        # 'leoVim',
-)
-#@+node:ekr.20120528063627.10137: ** getRecentPluginsList
-def getRecentPluginsList ():
-
-    return (
-        # 'baseNativeTree',
-        # 'contextmenu',
-        # 'codewisecompleter',
-        # 'free_layout',
-        # 'internal_ipkernel',
-        # 'leo_interface',
-        # 'leoOPML',
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
-        # 'plugins_menu',
-        # 'quicksearch',
-        # 'screencast',
-        # 'todo',
-        # 'viewrendered',
-        # 'viewrendered2',
-    )
 #@+node:ekr.20140331201252.16861: ** getTable
 def getTable(scope):
     
@@ -549,8 +486,6 @@ guiPluginsList      = getGuiPluginsList()
 modesList           = getModesList()
 passList            = getPassList()
 pluginsList         = getPluginsList()
-# recentCoreList      = getRecentCoreList()
-# recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
 if scope == 'version':
     report_version()

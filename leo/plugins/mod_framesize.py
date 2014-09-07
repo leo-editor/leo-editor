@@ -14,15 +14,12 @@ document)
 def init():
 
     from leo.core import leoGlobals as g
-
+    import leo.plugins.qt_frame as qt_frame
     ok = g.app.gui.guiName() == "qt"
-    if not ok:
-        return False
-
-    from leo.plugins import qtGui    
-    setattr(qtGui.leoQtFrame, 'setTopGeometry', setTopGeometry_mod_framesize)
-    g.plugin_signon(__name__)
-    return True
+    if ok:
+        setattr(qt_frame.LeoQtFrame,'setTopGeometry',setTopGeometry_mod_framesize)
+        g.plugin_signon(__name__)
+    return ok
 #@+node:ville.20090726125902.5294: ** setTopGeometry_mod_framesize
 def setTopGeometry_mod_framesize(self, *args):
 

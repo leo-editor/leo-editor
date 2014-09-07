@@ -3639,7 +3639,7 @@ class InspectTraverser (AstTraverser):
 #@+node:ekr.20111116103733.10312: ** class LeoCoreFiles
 class LeoCoreFiles(object):
 
-    '''A class representing Leo's core files, including qtGui.py'''
+    '''A class representing Leo's core files, including qt gui-related files'''
 
     def __init__ (self):
 

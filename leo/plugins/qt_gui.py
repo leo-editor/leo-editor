@@ -5,10 +5,10 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
 from leo.plugins.qt_events import LeoQtEventFilter
+from leo.plugins.qt_frame import LeoQtFrame,LeoQtSpellTab
+from leo.plugins.qt_frame import SDIFrameFactory,TabbedFrameFactory
 from leo.plugins.qt_idle_time import IdleTime
 from leo.plugins.qt_text import LeoQTextBrowser,PlainTextWrapper,QTextMixin
-from leo.plugins.qtGui import LeoQtFrame,LeoQtSpellTab
-from leo.plugins.qtGui import SDIFrameFactory,TabbedFrameFactory
 import datetime
 import os
 import sys
@@ -16,7 +16,7 @@ import sys
 #@+node:ekr.20110605121601.18134: ** init
 def init():
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace and g.trace_startup: print('qtGui.__init__')
+    if trace and g.trace_startup: print('gt_gui.py:init')
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
     if not QtCore:
@@ -174,10 +174,10 @@ class LeoQtGui(leoGui.LeoGui):
     #@+others
     #@+node:ekr.20110605121601.18477: *3*  LeoQtGui.__init__
     def __init__ (self):
-        '''Ctor for qtGui class.'''
+        '''Ctor for LeoQtGui class.'''
         # Initialize the base class.
         leoGui.LeoGui.__init__(self,'qt')
-        # g.trace('(qtGui)',g.callers())
+        # g.trace('(LeoQtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.bodyTextWidget = QTextMixin ### BaseQTextWrapper
         self.iconimages = {}
@@ -304,7 +304,7 @@ class LeoQtGui(leoGui.LeoGui):
         filters = ['%s (%s)' % (z) for z in filetypes]
 
         return ';;'.join(filters)
-    #@+node:ekr.20110605121601.18492: *4* LeoQtGui.qtGui panels
+    #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self,c):
 
         """Create a qt color picker panel."""
@@ -729,7 +729,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
-        if trace: g.trace('(qtGui)',w.__class__.__name__,g.callers())
+        if trace: g.trace('(LeoQtGui)',w.__class__.__name__,g.callers())
         return w
 
     def set_focus(self,c,w):
@@ -738,7 +738,7 @@ class LeoQtGui(leoGui.LeoGui):
         gui = self
         if w:
             if hasattr(w,'widget') and w.widget: w = w.widget
-            if trace: g.trace('(qtGui)',w.__class__.__name__)
+            if trace: g.trace('(LeoQtGui)',w.__class__.__name__)
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
@@ -1080,7 +1080,7 @@ class LeoQtGui(leoGui.LeoGui):
                 log.c.executeScript(script=self.script)
                 g.pr('End of batch script')
             else:
-                g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+                g.pr('no log, no commander for executeScript in LeoQtGui.runMainLoop')
         elif g.app.useIpython and g.app.ipython_inited:
             self.runWithIpythonKernel()
         else:
