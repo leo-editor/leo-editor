@@ -204,7 +204,7 @@ class BaseEditCommandsClass:
     #@-others
 #@-<< define class BaseEditCommandsClass >>
 #@+others
-#@+node:ekr.20120315062642.9746: ** Module-level commands
+#@+node:ekr.20120315062642.9746: **  Commands defined by @g.command
 #@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event):
