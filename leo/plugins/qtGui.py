@@ -46,8 +46,9 @@ from collections import defaultdict
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
 
-from leo.plugins.qt_text import PlainTextWrapper # BaseQTextWrapper,
-from leo.plugins.qt_text import QTextMixin,LeoQTextBrowser
+# from leo.plugins.qt_text import PlainTextWrapper # BaseQTextWrapper,
+# from leo.plugins.qt_text import QTextMixin,
+from leo.plugins.qt_text import LeoQTextBrowser
 from leo.plugins.qt_text import QHeadlineWrapper,QMinibufferWrapper
 from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 

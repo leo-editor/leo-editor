@@ -313,7 +313,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1128,7 +1127,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1770,40 +1769,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
-
-import glob
-import inspect
-
-# Get a list of all plugins.
-plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-plugins = g.os_path_abspath(plugins)
-files = glob.glob(plugins)
-files = [g.os_path_abspath(z) for z in files]
-files = [z for z in files if not z.endswith('__init__.py')]
-files.sort()
-
-exclude = [
-    # These are not real plugins...
-    'baseNativeTree.py','leocursor.py',
-    'qtGui.py',
-    'qt_frame.py',
-    'qt_main.py',
-    'qt_text.py',
-    'qt_quicksearch.py',
-    'swing_gui.py',
-]
-
-for fn in files:
-    if not g.shortFileName(fn) in exclude:
-        f = open(fn,'r')
-        s = f.read()
-        f.close()
-        ok1 = s.find('def init():') &gt; -1
-        ok2 = s.find('def init ():') &gt; -1
-        assert ok1 or ok2,'fail: %s' % (fn)
-    
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
