@@ -990,7 +990,7 @@ passList = (
     'nav_qt','niceNosent','nodeActions',
     'open_shell','outline_export','quit_leo',
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'qt_main','qt_quicksearch','qtframecommands',
     'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
     'screenshots',
     # 'scrolledmessage',
@@ -1287,20 +1287,15 @@ if g.app.isExternalUnitTest:
     pass
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
-    
-    # These commands are implemented by qtGui.py
     def closeEnough(f1,f2):
         return abs(f1-f2) < 0.0001
-    
     f = c.frame
     ratio,ratio2 = f.ratio,f.secondary_ratio
-    
     table = (
         c.bodyWantsFocusNow,
         c.logWantsFocusNow,
         c.treeWantsFocusNow,
     )
-    
     for func in table:
         func()
         f.contractPane()
@@ -11701,9 +11696,7 @@ except ImportError:
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
     QtWidgets = QtGui
-
 import leo.plugins.qt_events as qt_events
-import leo.plugins.qtGui as leoQtGui
 
 if g.app.isExternalUnitTest:
     pass
@@ -20759,7 +20752,7 @@ for a,b,in table:
         s[i1:i2],expected,got)
 #@+node:ekr.20050120095423: ** Plugins
 # Do this last.
-#@+node:ekr.20110610082755.3362: *3*  qtGui.py
+#@+node:ekr.20110610082755.3362: *3*  qt gui
 #@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
 trace = False
 if trace: print('=' * 20)
@@ -21198,6 +21191,7 @@ exclude = [
     'qt_frame.py',
     'qt_idle_time.py',
     'qt_main.py',
+    'qt_quickheadlines.py',
     'qt_text.py',
     'qt_quicksearch.py',
     'swing_gui.py',

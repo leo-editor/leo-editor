@@ -1470,20 +1470,15 @@ if g.app.isExternalUnitTest:
     pass
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
-    
-    # These commands are implemented by qtGui.py
     def closeEnough(f1,f2):
         return abs(f1-f2) &lt; 0.0001
-    
     f = c.frame
     ratio,ratio2 = f.ratio,f.secondary_ratio
-    
     table = (
         c.bodyWantsFocusNow,
         c.logWantsFocusNow,
         c.treeWantsFocusNow,
     )
-    
     for func in table:
         func()
         f.contractPane()
