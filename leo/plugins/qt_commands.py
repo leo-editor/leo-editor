@@ -3,6 +3,7 @@
 '''Leo's Qt-related commands defined by @g.command.'''
 
 import leo.core.leoGlobals as g
+import datetime
 
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
@@ -210,25 +211,5 @@ def style_reload(kwargs):
     else:
         g.es("Styles reloaded")
         return True
-#@+node:tbrown.20130411145310.18857: ** zoom_in & zoom_out
-@g.command("zoom-in")
-def zoom_in(event=None, delta=1):
-    """increase body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    c = event.get('c')
-    if c:
-        c._style_deltas['font-size-body'] += delta
-        ss = g.expand_css_constants(c, c.active_stylesheet)
-        c.frame.body.wrapper.widget.setStyleSheet(ss)
-    
-@g.command("zoom-out")
-def zoom_out(event=None):
-    """decrease body font size by one
-    
-    requires that @font-size-body is being used in stylesheet
-    """
-    zoom_in(event=event, delta=-1)
 #@-others
 #@-leo

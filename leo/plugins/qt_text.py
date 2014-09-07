@@ -1632,5 +1632,25 @@ class QTextEditWrapper(QTextMixin):
         col = i - bl.position()
         return i,row,col
     #@-others
+#@+node:tbrown.20130411145310.18857: ** zoom_in & zoom_out commands
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+    c = event.get('c')
+    if c:
+        c._style_deltas['font-size-body'] += delta
+        ss = g.expand_css_constants(c, c.active_stylesheet)
+        c.frame.body.wrapper.widget.setStyleSheet(ss)
+    
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+    zoom_in(event=event, delta=-1)
 #@-others
 #@-leo

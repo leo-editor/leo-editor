@@ -990,7 +990,7 @@ passList = (
     'nav_qt','niceNosent','nodeActions',
     'open_shell','outline_export','quit_leo',
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qt_main','qt_quicksearch','qtframecommands',
+    'qt_main','qt_quicksearch','qt_commands',
     'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
     'screenshots',
     # 'scrolledmessage',
