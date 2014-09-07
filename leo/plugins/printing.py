@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20130514093558.4062: * @file printing.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20130513115943.16252: ** << docstring >>
 '''Supports printing for the Qt GUI.
@@ -119,24 +116,14 @@ fashion, using scripts to define your document.
 #@+<< version history >>
 #@+node:peckj.20130513115943.16254: ** << version history >>
 #@+at
-# 
 # version 0.1 (2013-05-14) - initial release
 # version 0.2 (2013-08-14) - added print-html-node (rich text) commands
 # version 0.3 (2014-08-11) - use leoQt instead of PyQt4
-# 
 #@@c
 #@-<< version history >>
-#@+<< imports >>
-#@+node:peckj.20130513115943.16253: ** << imports >>
-import leo.core.leoGlobals as g
-import leo.plugins.qtGui as qtGui
-#from PyQt4 import QtGui
-#from PyQt4 import QtCore
-from leo.core.leoQt import QtWidgets, QtCore
-#@-<< imports >>
-
 __version__ = '0.3'
-
+import leo.core.leoGlobals as g
+from leo.core.leoQt import QtWidgets
 #@+others
 #@+node:peckj.20130513115943.16247: ** init
 def init ():
@@ -153,14 +140,11 @@ def init ():
     return ok
 #@+node:peckj.20130513115943.16248: ** onCreate
 def onCreate (tag, keys):
-    
     '''Handle the onCreate event in the printing plugin.'''
-
     c = keys.get('c')
-    
     if c:
-       pc = printingController(c)
-       c.thePrintingController = pc 
+        pc = printingController(c)
+        c.thePrintingController = pc 
        
 #@+node:peckj.20130513115943.16249: ** class printingController
 class printingController:
@@ -361,4 +345,6 @@ class printingController:
         self.print_preview_doc(doc)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
