@@ -77,15 +77,15 @@ def getExternalList():
 def getGuiPluginsList ():
 
     return (
-        'baseNativeTree',
+        # 'baseNativeTree',
         'free_layout',
         'nested_splitter',
-        'qtGui', # To be removed, eventually.
         'qt_events',
         'qt_frame.',
         'qt_idle_time',
         'qt_gui',
         'qt_text',
+        'qt_tree',
     )
 #@+node:ekr.20140727180847.17983: ** getModesList
 def getModesList():

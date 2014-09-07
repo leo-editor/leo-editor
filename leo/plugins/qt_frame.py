@@ -11,16 +11,13 @@ import leo.core.leoColor as leoColor
 import leo.core.leoColorizer as leoColorizer
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
-import leo.core.leoPlugins as leoPlugins # Uses leoPlugins.TryNext.
 
 from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 from leo.core.leoQt import Qsci,uic
-from leo.plugins.qt_text import LeoQTextBrowser
-from leo.plugins.qt_text import QHeadlineWrapper,QMinibufferWrapper
-from leo.plugins.qt_text import QScintillaWrapper,QTextEditWrapper
 
-import leo.plugins.baseNativeTree as baseNativeTree
 import leo.plugins.qt_events as qt_events
+import leo.plugins.qt_text as qt_text
+import leo.plugins.qt_tree as qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
 
 import os
@@ -479,7 +476,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = Qsci.QsciScintilla(parent)
             self.scintilla_widget = w
         else:
-            w = LeoQTextBrowser(parent,c,None)
+            w = qt_text.LeoQTextBrowser(parent,c,None)
             # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
             w.setFrameShape(shape)
             w.setFrameShadow(shadow)
@@ -1476,11 +1473,11 @@ class LeoQtBody (leoFrame.LeoBody):
             self.widget = c.frame.top.scintilla_widget
                 # A Qsci.QsciSintilla object.
                 # dw.createText sets self.scintilla_widget
-            self.wrapper = QScintillaWrapper(self.widget,name='body',c=c)
+            self.wrapper = qt_text.QScintillaWrapper(self.widget,name='body',c=c)
             self.colorizer = leoColorizer.QScintillaColorizer(c,self.widget)
         else:
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
-            self.wrapper = QTextEditWrapper(self.widget,name='body',c=c)
+            self.wrapper = qt_text.QTextEditWrapper(self.widget,name='body',c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.LeoQtColorizer(c,self.wrapper.widget)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
@@ -1549,9 +1546,9 @@ class LeoQtBody (leoFrame.LeoBody):
             # Valid regardless of qt_frame.useUI
         # Step 1: create the editor.
         # w = QtWidgets.QTextBrowser(f)
-        w = LeoQTextBrowser(f,c,self)
+        w = qt_text.LeoQTextBrowser(f,c,self)
         w.setObjectName('richTextEdit') # Will be changed later.
-        wrapper = QTextEditWrapper(w,name='body',c=c)
+        wrapper = qt_text.QTextEditWrapper(w,name='body',c=c)
         self.packLabel(w)
         # Step 2: inject ivars, set bindings, etc.
         self.injectIvars(f,name,p,wrapper)
@@ -1686,11 +1683,6 @@ class LeoQtBody (leoFrame.LeoBody):
             if trace: g.trace('**busy')
             return
         w = wrapper.widget
-        # assert isinstance(wrapper,(QScintillaWrapper,QTextEditWrapper)),wrapper
-        # if Qsci:
-            # assert isinstance(w,(Qsci.QsciScintilla,QtWidgets.QTextEdit)),w
-        # else:
-            # assert isinstance(w,QtWidgets.QTextEdit),w
         assert g.isTextWrapper(wrapper),wrapper
         assert g.isTextWidget(w),w
         def report(s):
@@ -2115,9 +2107,9 @@ class LeoQtBody (leoFrame.LeoBody):
 
         if not self.textRenderer:
             name = 'Text Renderer'
-            self.textRenderer = w = LeoQTextBrowser(f,c,self)
+            self.textRenderer = w = qt_text.LeoQTextBrowser(f,c,self)
             w.setObjectName(name)
-            self.textRendererWrapper = QTextEditWrapper(
+            self.textRendererWrapper = qt_text.QTextEditWrapper(
                 w,name='text-renderer',c=c)
 
         if not self.textRendererVisible:
@@ -2203,17 +2195,15 @@ class LeoQtFrame (leoFrame.LeoFrame):
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = LeoQtMenu(c,f,label='top-level-menu')
         g.app.windowList.append(f)
-        f.miniBufferWidget = QMinibufferWrapper(c)
+        f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* createSplitterComponents (qtFrame)
     def createSplitterComponents (self):
 
         f = self ; c = f.c
-
-        f.tree  = LeoQtTree(c,f)
+        f.tree  = qt_tree.LeoQtTree(c,f)
         f.log   = LeoQtLog(f,None)
         f.body  = LeoQtBody(f,None)
-
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(f.ratio,f.secondary_ratio)
     #@+node:ekr.20110605121601.18252: *4* initCompleteHint
@@ -3451,9 +3441,9 @@ class LeoQtLog (leoFrame.LeoLog):
         c = self.c
         if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
         if widget is None:
-            widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+            widget = qt_text.LeoQTextBrowser(parent=None,c=c,wrapper=self)
                 # widget is subclass of QTextBrowser.
-            contents = QTextEditWrapper(widget=widget,name='log',c=c)
+            contents = qt_text.QTextEditWrapper(widget=widget,name='log',c=c)
                 # contents a wrapper.
             widget.leo_log_wrapper = contents
                 # Inject an ivar into the QTextBrowser that points to the wrapper.
@@ -4499,455 +4489,6 @@ class LeoQtSpellTab:
         ui.leo_spell_btn_FindChange.setDisabled(not state)
 
         return state
-    #@-others
-#@+node:ekr.20110605121601.18403: ** class LeoQtTree (baseNativeTree)
-class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
-
-    """Leo qt tree class, a subclass of BaseNativeTreeWidget."""
-
-    callbacksInjected = False # A class var.
-
-    #@+others
-    #@+node:ekr.20110605121601.18404: *3*  Birth (LeoQtTree)
-    #@+node:ekr.20110605121601.18405: *4* ctor (LeoQtTree)
-    def __init__(self,c,frame):
-
-        # Init the base class.
-        baseNativeTree.BaseNativeTreeWidget.__init__(self,c,frame)
-
-        # Components.
-        self.headlineWrapper = QHeadlineWrapper # This is a class.
-        self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
-            # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-            
-        # g.trace('LeoQtTree',w)
-
-        if 0: # Drag and drop
-            w.setDragEnabled(True)
-            w.viewport().setAcceptDrops(True)
-            w.showDropIndicator = True
-            w.setAcceptDrops(True)
-            w.setDragDropMode(w.InternalMove)
-
-            if 1: # Does not work
-                def dropMimeData(self,data,action,row,col,parent):
-                    g.trace()
-                # w.dropMimeData = dropMimeData
-
-                def mimeData(self,indexes):
-                    g.trace()
-
-        # Early inits...
-        try: w.headerItem().setHidden(True)
-        except Exception: pass
-
-        w.setIconSize(QtCore.QSize(160,16))
-    #@+node:ekr.20110605121601.18406: *4* qtTree.initAfterLoad
-    def initAfterLoad (self):
-        '''Do late-state inits.'''
-        # Called by Leo's core.
-        c = self.c
-        w = c.frame.top
-        tw = self.treeWidget
-        if not LeoQtTree.callbacksInjected:
-            LeoQtTree.callbacksInjected = True
-            self.injectCallbacks() # A base class method.
-        tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
-        tw.itemClicked.connect(self.onItemClicked)
-        tw.itemSelectionChanged.connect(self.onTreeSelect)
-        tw.itemCollapsed.connect(self.onItemCollapsed)
-        tw.itemExpanded.connect(self.onItemExpanded)
-        tw.customContextMenuRequested.connect(self.onContextMenu)
-        # tw.onItemChanged.connect(self.onItemChanged)
-        g.app.gui.setFilter(c,tw,self,tag='tree')
-        # 2010/01/24: Do not set this here.
-        # The read logic sets c.changed to indicate nodes have changed.
-        # c.setChanged(False)
-    #@+node:ekr.20110605121601.18407: *3* Widget-dependent helpers (LeoQtTree)
-    #@+node:ekr.20110605121601.18408: *4* Drawing
-    def clear (self):
-        '''Clear all widgets in the tree.'''
-        w = self.treeWidget
-        w.clear()
-
-    def repaint (self):
-        '''Repaint the widget.'''
-        w = self.treeWidget
-        w.repaint()
-        w.resizeColumnToContents(0) # 2009/12/22
-    #@+node:ekr.20110605121601.18409: *4* Icons (LeoQtTree)
-    #@+node:ekr.20110605121601.18410: *5* drawIcon
-    def drawIcon (self,p):
-
-        '''Redraw the icon at p.'''
-
-        w = self.treeWidget
-        itemOrTree = self.position2item(p) or w
-        item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        icon = self.getIcon(p)
-        self.setItemIcon(item,icon)
-
-    #@+node:ekr.20110605121601.18411: *5* getIcon & helper (qtTree)
-    def getIcon(self,p):
-
-        '''Return the proper icon for position p.'''
-
-        p.v.iconVal = val = p.v.computeIcon()
-        return self.getCompositeIconImage(p,val)
-    #@+node:ekr.20110605121601.18412: *6* getCompositeIconImage
-    def getCompositeIconImage(self,p,val):
-        '''Get the icon at position p.'''
-        trace = False and not g.unitTesting
-        userIcons = self.c.editCommands.getIconList(p)
-        # don't take this shortcut - not theme aware, see getImageImage()
-        # which is called below - TNB 20130313
-        # if not userIcons:
-        #     # if trace: g.trace('no userIcons')
-        #     return self.getStatusIconImage(p)
-        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-        hash.append(str(val))
-        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-        hash = ':'.join(hash)
-        if hash in g.app.gui.iconimages:
-            icon = g.app.gui.iconimages[hash]
-            if trace: g.trace('cached %s' % (icon))
-            return icon
-        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                 if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
-        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                      if i['where'] == 'beforeHeadline'])
-        images = [z for z in images if z] # 2013/12/23: Remove missing images.
-        if not images:
-            return None
-        width = sum([i.width() for i in images])
-        height = max([i.height() for i in images])
-        pix = QtGui.QPixmap(width,height)
-        pix.fill(QtGui.QColor(0,0,0,0))  # transparent fill, rgbA
-        painter = QtGui.QPainter(pix)
-        x = 0
-        for i in images:
-            painter.drawPixmap(x,(height-i.height())//2,i)
-            x += i.width()
-        painter.end()
-        icon = QtGui.QIcon(pix)
-        g.app.gui.iconimages[hash] = icon
-        if trace: g.trace('new %s' % (icon))
-        return icon
-    #@+node:ekr.20110605121601.18413: *5* setItemIconHelper (qtTree)
-    def setItemIconHelper (self,item,icon):
-
-        # Generates an item-changed event.
-        # g.trace(id(icon))
-        if item:
-            item.setIcon(0,icon)
-    #@+node:ekr.20110605121601.18414: *4* Items (LeoQtTree)
-    #@+node:ekr.20110605121601.18415: *5* childIndexOfItem
-    def childIndexOfItem (self,item):
-
-        parent = item and item.parent()
-
-        if parent:
-            n = parent.indexOfChild(item)
-        else:
-            w = self.treeWidget
-            n = w.indexOfTopLevelItem(item)
-
-        return n
-
-    #@+node:ekr.20110605121601.18416: *5* childItems
-    def childItems (self,parent_item):
-
-        '''Return the list of child items of the parent item,
-        or the top-level items if parent_item is None.'''
-
-        if parent_item:
-            n = parent_item.childCount()
-            items = [parent_item.child(z) for z in range(n)]
-        else:
-            w = self.treeWidget
-            n = w.topLevelItemCount()
-            items = [w.topLevelItem(z) for z in range(n)]
-
-        return items
-    #@+node:ekr.20110605121601.18417: *5* closeEditorHelper (LeoQtTree)
-    def closeEditorHelper (self,e,item):
-        'End editing of the underlying QLineEdit widget for the headline.'''
-        w = self.treeWidget
-        if e:
-            w.closeEditor(e,QtWidgets.QAbstractItemDelegate.NoHint)
-            try:
-                # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
-                # underlying C/C++ object has been deleted
-                w.setItemWidget(item,0,None)
-                    # Make sure e is never referenced again.
-                w.setCurrentItem(item)
-            except RuntimeError:
-                if 1: # Testing.
-                    g.es_exception()
-                else:
-                    # Recover silently even if there is a problem.
-                    pass
-    #@+node:ekr.20110605121601.18418: *5* connectEditorWidget & helper
-    def connectEditorWidget(self,e,item):
-
-        if not e:
-            return g.trace('can not happen: no e')
-        # Hook up the widget.
-        wrapper = self.getWrapper(e,item)
-        def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
-            # g.trace(wrapper,g.callers(5))
-            c = self.c
-            w = self.treeWidget
-            self.onHeadChanged(p=c.p,e=e)
-            w.setCurrentItem(item)
-        e.editingFinished.connect(editingFinishedCallback)
-        return wrapper # 2011/02/12
-    #@+node:ekr.20110605121601.18419: *5* contractItem & expandItem
-    def contractItem (self,item):
-
-        # g.trace(g.callers(4))
-
-        self.treeWidget.collapseItem(item)
-
-    def expandItem (self,item):
-
-        # g.trace(g.callers(4))
-
-        self.treeWidget.expandItem(item)
-    #@+node:ekr.20110605121601.18420: *5* createTreeEditorForItem (LeoQtTree)
-    def createTreeEditorForItem(self,item):
-
-        trace = False and not g.unitTesting
-
-        w = self.treeWidget
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0)
-        e.setObjectName('headline')
-        wrapper = self.connectEditorWidget(e,item)
-
-        if trace: g.trace(e,wrapper)
-
-        return e,wrapper
-    #@+node:ekr.20110605121601.18421: *5* createTreeItem
-    def createTreeItem(self,p,parent_item):
-
-        trace = False and not g.unitTesting
-
-        w = self.treeWidget
-        itemOrTree = parent_item or w
-        item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-        if trace: g.trace(id(item),p.h,g.callers(4))
-        try:
-            g.visit_tree_item(self.c, p, item)
-        except leoPlugins.TryNext:
-            pass
-        #print "item",item
-        return item
-    #@+node:ekr.20110605121601.18422: *5* editLabelHelper (leoQtTree)
-    def editLabelHelper (self,item,selectAll=False,selection=None):
-        '''
-        Called by nativeTree.editLabel to do
-        gui-specific stuff.
-        '''
-        trace = False and not g.unitTesting
-        c,vc = self.c,self.c.vimCommands
-        w = self.treeWidget
-        w.setCurrentItem(item)
-            # Must do this first.
-            # This generates a call to onTreeSelect.
-        w.editItem(item)
-            # Generates focus-in event that tree doesn't report.
-        e = w.itemWidget(item,0) # A QLineEdit.
-        if e:
-            s = e.text() ; len_s = len(s)
-            if s == 'newHeadline': selectAll=True
-            if selection:
-                # pylint: disable=unpacking-non-sequence
-                i,j,ins = selection
-                start,n = i,abs(i-j)
-                    # Not right for backward searches.
-            elif selectAll: start,n,ins = 0,len_s,len_s
-            else:           start,n,ins = len_s,0,len_s
-            e.setObjectName('headline')
-            e.setSelection(start,n)
-            # e.setCursorPosition(ins) # Does not work.
-            e.setFocus()
-            wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
-            if vc and c.vim_mode: #  and selectAll
-                # For now, *always* enter insert mode.
-                if vc.is_text_wrapper(wrapper):
-                    vc.begin_insert_mode(w=wrapper)
-                else:
-                    g.trace('not a text widget!',wrapper)
-        if trace: g.trace(e,wrapper)
-        return e,wrapper # 2011/02/11
-    #@+node:ekr.20110605121601.18423: *5* getCurrentItem
-    def getCurrentItem (self):
-
-        w = self.treeWidget
-        return w.currentItem()
-    #@+node:ekr.20110605121601.18424: *5* getItemText
-    def getItemText (self,item):
-
-        '''Return the text of the item.'''
-
-        if item:
-            return g.u(item.text(0))
-        else:
-            return '<no item>'
-    #@+node:ekr.20110605121601.18425: *5* getParentItem
-    def getParentItem(self,item):
-
-        return item and item.parent()
-    #@+node:ekr.20110605121601.18426: *5* getSelectedItems
-    def getSelectedItems(self):
-        w = self.treeWidget    
-        return w.selectedItems()
-    #@+node:ekr.20110605121601.18427: *5* getTreeEditorForItem (LeoQtTree)
-    def getTreeEditorForItem(self,item):
-
-        '''Return the edit widget if it exists.
-        Do *not* create one if it does not exist.'''
-
-        trace = False and not g.unitTesting
-        w = self.treeWidget
-        e = w.itemWidget(item,0)
-        if trace and e: g.trace(e.__class__.__name__)
-        return e
-    #@+node:ekr.20110605121601.18428: *5* getWrapper (LeoQtTree)
-    def getWrapper (self,e,item):
-        '''Return headlineWrapper that wraps e (a QLineEdit).'''
-        trace = False and not g.unitTesting
-        c = self.c
-        if e:
-            wrapper = self.editWidgetsDict.get(e)
-            if wrapper:
-                pass # g.trace('old wrapper',e,wrapper)
-            else:
-                if item:
-                    # 2011/02/12: item can be None.
-                    wrapper = self.headlineWrapper(c,item,name='head',widget=e)
-                    if trace: g.trace('new wrapper',e,wrapper)
-                    self.editWidgetsDict[e] = wrapper
-                else:
-                    if trace: g.trace('no item and no wrapper',
-                        e,self.editWidgetsDict)
-            return wrapper
-        else:
-            g.trace('no e')
-            return None
-    #@+node:ekr.20110605121601.18429: *5* nthChildItem
-    def nthChildItem (self,n,parent_item):
-
-        children = self.childItems(parent_item)
-
-        if n < len(children):
-            item = children[n]
-        else:
-            # This is **not* an error.
-            # It simply means that we need to redraw the tree.
-            item = None
-
-        return item
-    #@+node:ekr.20110605121601.18430: *5* scrollToItem (LeoQtTree)
-    def scrollToItem (self,item):
-
-        w = self.treeWidget
-
-        # g.trace(self.traceItem(item),g.callers(4))
-
-        hPos,vPos = self.getScroll()
-
-        w.scrollToItem(item,w.PositionAtCenter)
-
-        self.setHScroll(0)
-    #@+node:ekr.20110605121601.18431: *5* setCurrentItemHelper (LeoQtTree)
-    def setCurrentItemHelper(self,item):
-
-        w = self.treeWidget
-        w.setCurrentItem(item)
-    #@+node:ekr.20110605121601.18432: *5* setItemText
-    def setItemText (self,item,s):
-
-        if item:
-            item.setText(0,s)
-    #@+node:ekr.20110605121601.18433: *4* Scroll bars (LeoQtTree)
-    #@+node:ekr.20110605121601.18434: *5* getSCroll
-    def getScroll (self):
-
-        '''Return the hPos,vPos for the tree's scrollbars.'''
-
-        w = self.treeWidget
-        hScroll = w.horizontalScrollBar()
-        vScroll = w.verticalScrollBar()
-        hPos = hScroll.sliderPosition()
-        vPos = vScroll.sliderPosition()
-        return hPos,vPos
-    #@+node:ekr.20110605121601.18435: *5* setH/VScroll
-    def setHScroll (self,hPos):
-        w = self.treeWidget
-        hScroll = w.horizontalScrollBar()
-        hScroll.setValue(hPos)
-
-    def setVScroll (self,vPos):
-        # g.trace(vPos)
-        w = self.treeWidget
-        vScroll = w.verticalScrollBar()
-        vScroll.setValue(vPos)
-    #@+node:btheado.20111110215920.7164: *5* scrollDelegate (LeoQtTree)
-    def scrollDelegate (self,kind):
-
-        '''Scroll a QTreeWidget up or down or right or left.
-        kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
-        '''
-        c = self.c ; w = self.treeWidget
-        if kind in ('left', 'right'):
-            hScroll = w.horizontalScrollBar()
-            if kind == 'right':
-                delta = hScroll.pageStep()
-            else: 
-                delta = -hScroll.pageStep()
-            hScroll.setValue(hScroll.value() + delta)
-        else:
-            vScroll = w.verticalScrollBar()
-            h = w.size().height()
-            lineSpacing = w.fontMetrics().lineSpacing()
-            n = h/lineSpacing
-            if   kind == 'down-half-page': delta = n/2
-            elif kind == 'down-line':      delta = 1
-            elif kind == 'down-page':      delta = n
-            elif kind == 'up-half-page':   delta = -n/2
-            elif kind == 'up-line':        delta = -1
-            elif kind == 'up-page':        delta = -n
-            else:
-                delta = 0 ; g.trace('bad kind:',kind)
-            val = vScroll.value()
-            # g.trace(kind,n,h,lineSpacing,delta,val)
-            vScroll.setValue(val+delta)
-        c.treeWantsFocus()
-    #@+node:ekr.20110605121601.18437: *4* onContextMenu (LeoQtTree)
-    def onContextMenu(self, point):
-        c = self.c
-        w = self.treeWidget
-        handlers = g.tree_popup_handlers    
-        menu = QtWidgets.QMenu()
-        menuPos = w.mapToGlobal(point)
-        if not handlers:
-            menu.addAction("No popup handlers")
-        p = c.p.copy()
-        done = set()
-        for h in handlers:
-            # every handler has to add it's QActions by itself
-            if h in done:
-                # do not run the same handler twice
-                continue
-            h(c,p,menu)
-        menu.popup(menuPos)
-        self._contextmenu = menu
     #@-others
 #@+node:ekr.20110605121601.18438: ** class LeoQtTreeTab
 class LeoQtTreeTab:

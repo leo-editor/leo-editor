@@ -1231,7 +1231,7 @@ class LeoTree(object):
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
-    def onHeadChanged (self,p,undoType='Typing',s=None,e=None): # e used in baseNativeTree.
+    def onHeadChanged (self,p,undoType='Typing',s=None,e=None): # e used in qt_tree.py.
         '''
         Officially change a headline.
         Set the old undo text to the previous revert point.

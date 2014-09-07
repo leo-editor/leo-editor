@@ -21187,12 +21187,14 @@ exclude = [
     # These are not real plugins...
     'baseNativeTree.py','leocursor.py',
     'qtGui.py',
+    'qt_commands.py',
     'qt_events.py',
     'qt_frame.py',
     'qt_idle_time.py',
     'qt_main.py',
     'qt_quickheadlines.py',
     'qt_text.py',
+    'qt_tree.py',
     'qt_quicksearch.py',
     'swing_gui.py',
 ]

@@ -58,8 +58,6 @@ todo_calendar_cols
 
 
 #@-<< docstring >>
-#@@language python
-#@@tabwidth -4
 # pylint: disable=unnecessary-lambda
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
@@ -85,7 +83,6 @@ __version__ = "0.30"
 #   - fork from cleo.py to todo.py
 #   - Qt interface in a tab
 #@-<< version history >>
-
 #@+others
 #@+node:tbrown.20090119215428.6: ** init
 def init():
@@ -1170,7 +1167,7 @@ class todoController:
             except Exception:
                 created = None
             if created:
-                self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?"))
+                self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?")) 
                 self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
             else:
                 self.ui.UI.createdTxt.setText("")
@@ -1247,4 +1244,6 @@ def todo_dec_pri(event, direction=1):
 def todo_inc_pri(event):
     todo_dec_pri(event, direction=-1)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
