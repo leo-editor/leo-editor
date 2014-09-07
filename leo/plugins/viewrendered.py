@@ -180,12 +180,11 @@ Jacob Peck added markdown support to this plugin.
 __version__ = '1.0'
 
 #@+<< imports >>
-#@+node:tbrown.20100318101414.5993: ** << imports >>
+#@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
 import leo.core.leoGlobals as g
-import leo.plugins.qtGui as qtGui
-g.assertUi('qt')
-import os
-
+import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import QtCore,QtGui,QtWidgets
+from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets
 # docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
 try:
     import docutils
@@ -205,16 +204,14 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-
 ## markdown support, non-vital
 try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
+import os
     
-from leo.core.leoQt import QtCore,QtGui,QtWidgets
-from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets
 #@-<< imports >>
 
 #@+<< define stylesheet >>
@@ -675,7 +672,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             w.setReadOnly(True)
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qtGui.QTextEditWrapper(w,wrapper_name,c)
+            wrapper = qt_text.QTextEditWrapper(w,wrapper_name,c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)

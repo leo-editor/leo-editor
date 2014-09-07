@@ -195,11 +195,11 @@ See the viewrendered.py plugin for additional acknowledgments.
 #@-<< docstring >>
 __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
 #@+<< imports >>
-#@+node:ekr.20140226074510.4188: ** << imports >>
+#@+node:ekr.20140226074510.4188: ** << imports >> (viewrendered2.py)
 import leo.core.leoGlobals as g
-import leo.plugins.qtGui as qtGui
-g.assertUi('qt')
-
+import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets,QUrl
 try:
     import docutils
     import docutils.core
@@ -219,29 +219,21 @@ if docutils:
 else:
     g.es_print('viewrendered2.py: docutils not found',color='red')
     got_docutils = False
-
 # markdown support, non-vital
 try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-
 try:
     import pygments
 except ImportError:
     pygments = None
-    
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
-from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets,QUrl
-
 import os
-
 if g.isPython3:
     from io import StringIO
 else:
     from StringIO import StringIO
-
 import sys
 import traceback
 #@-<< imports >>
@@ -1727,34 +1719,26 @@ class ViewRenderedController(QtWidgets.QWidget):
             # if trace: g.trace('no update')
     #@+node:ekr.20140226074510.4221: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None):
-        
         '''Embed widget w in the free_layout splitter.'''
-        
-        pc = self ; c = pc.c #X ; splitter = pc.splitter
-        
+        pc = self ; c = pc.c
         pc.w = w
         layout = self.layout()
         for i in range(layout.count()):
             layout.removeItem(layout.itemAt(0))
         self.layout().addWidget(w)
         w.show()
-
         # Special inits for text widgets...
         if w.__class__ == pc.text_class:
             text_name = 'body-text-renderer'
-            # pc.w = w = widget_class()
             w.setObjectName(text_name)
             pc.setBackgroundColor(pc.background_color,text_name,w)
             w.setReadOnly(True)
-            
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qtGui.LeoQTextEditWidget(w,wrapper_name,c)
+            wrapper = qt_text.QTextEditWrapper(w,wrapper_name,c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtWidgets.QTextOption.WrapAtWordBoundaryOrAnywhere)
-              
-        return
     #@+node:ekr.20140226074510.4222: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         
