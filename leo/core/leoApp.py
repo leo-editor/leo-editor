@@ -845,7 +845,7 @@ class LeoApp:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
-        import pdb ; pdb.set_trace()
+        # import pdb ; pdb.set_trace()
         try:
             import PyQt5.QtGui
             import PyQt5.QtCore    
