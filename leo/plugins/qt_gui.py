@@ -4,14 +4,18 @@
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
-from leo.plugins.qt_events import LeoQtEventFilter
-from leo.plugins.qt_frame import LeoQtFrame,LeoQtSpellTab
-from leo.plugins.qt_frame import SDIFrameFactory,TabbedFrameFactory
-from leo.plugins.qt_idle_time import IdleTime
-from leo.plugins.qt_text import LeoQTextBrowser,PlainTextWrapper,QTextMixin
+
+import leo.plugins.qt_events as qt_events
+import leo.plugins.qt_frame as qt_frame
+import leo.plugins.qt_idle_time as qt_idle_time
+import leo.plugins.qt_text as qt_text
 import datetime
 import os
 import sys
+if 1:
+    # This defines the commands defined by @g.command.
+    # pylint: disable=unused-import
+    import leo.plugins.qt_commands
 #@+others
 #@+node:ekr.20110605121601.18134: ** init
 def init():
@@ -39,11 +43,11 @@ class LeoQtGui(leoGui.LeoGui):
         leoGui.LeoGui.__init__(self,'qt')
         # g.trace('(LeoQtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
-        self.bodyTextWidget = QTextMixin ### BaseQTextWrapper
+        self.bodyTextWidget = qt_text.QTextMixin
         self.iconimages = {}
-        self.idleTimeClass = IdleTime
+        self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
-        self.plainTextWidget = PlainTextWrapper ### BaseQTextWrapper
+        self.plainTextWidget = qt_text.PlainTextWrapper
         self.mGuiName = 'qt'
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
         # Communication between idle_focus_helper and activate/deactivate events.
@@ -56,9 +60,9 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.app.qt_use_tabs:    
-            self.frameFactory = TabbedFrameFactory()
+            self.frameFactory = qt_frame.TabbedFrameFactory()
         else:
-            self.frameFactory = SDIFrameFactory()
+            self.frameFactory = qt_frame.SDIFrameFactory()
     #@+node:ekr.20110605121601.18484: *3*  LeoQtGui.destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
@@ -166,10 +170,8 @@ class LeoQtGui(leoGui.LeoGui):
         return ';;'.join(filters)
     #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self,c):
-
         """Create a qt color picker panel."""
         return None # This window is optional.
-        # return leoQtComparePanel(c)
 
     def createFindTab (self,c,parentFrame):
         """Create a qt find tab in the indicated frame."""
@@ -178,11 +180,10 @@ class LeoQtGui(leoGui.LeoGui):
     def createLeoFrame(self,c,title):
         """Create a new Leo frame."""
         gui = self
-        return LeoQtFrame(c,title,gui)
+        return qt_frame.LeoQtFrame(c,title,gui)
 
     def createSpellTab(self,c,spellHandler,tabName):
-        return LeoQtSpellTab(c,spellHandler,tabName)
-
+        return qt_frame.LeoQtSpellTab(c,spellHandler,tabName)
     #@+node:ekr.20110605121601.18493: *4* LeoQtGui.runAboutLeoDialog
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
 
@@ -569,7 +570,7 @@ class LeoQtGui(leoGui.LeoGui):
                 isinstance(w,QtWidgets.QWidget),w.__class__.__name__))
         assert isinstance(obj,QtWidgets.QWidget),obj
         gui = self
-        theFilter = LeoQtEventFilter(c,w=w,tag=tag)
+        theFilter = qt_events.LeoQtEventFilter(c,w=w,tag=tag)
         obj.installEventFilter(theFilter)
         w.ev_filter = theFilter
             # Set the official ivar in w.
@@ -581,7 +582,7 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         app = QtWidgets.QApplication
         w = app.focusWidget()
-        if w and not raw and isinstance(w,LeoQTextBrowser):
+        if w and not raw and isinstance(w,qt_text.LeoQTextBrowser):
             has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
             if has_w:
                 if trace: g.trace(w)

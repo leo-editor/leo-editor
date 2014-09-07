@@ -113,7 +113,7 @@ def getPassList():
         'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
         'open_shell','open_with','outline_export','quit_leo',
         'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-        'qt_main','qt_quicksearch','qtframecommands',
+        'qt_main','qt_quicksearch','qt_commands',
         'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',

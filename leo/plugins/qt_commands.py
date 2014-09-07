@@ -7,7 +7,7 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init ():
-    '''Top-level init function for qtframecommands.py.'''
+    '''Top-level init function for qt_commands.py.'''
     ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
