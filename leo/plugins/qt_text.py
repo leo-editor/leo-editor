@@ -1483,7 +1483,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
     def setAllText(self,s):
         '''Set the text of body pane.'''
-        traceTime = True and not g.unitTesting
+        traceTime = False and not g.unitTesting
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter

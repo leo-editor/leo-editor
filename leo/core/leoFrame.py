@@ -8,6 +8,7 @@ These classes should be overridden to create frames for a particular gui.
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+big_text_buttons = False # Show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import leo.core.leoGlobals as g
@@ -1507,19 +1508,21 @@ class LeoTree(object):
     def is_big_text(self,p):
         '''True if p.b is large and the text widgets supports big text buttons.'''
         c = self.c
-        if 1:
-            return False # Disable the big-text feature.
-        else:
-            w = c.frame.body and c.frame.body.widget
+        if big_text_buttons:
+            wrapper = c.frame.body.wrapper
+            w = wrapper and wrapper.widget
             return (
                 w and hasattr(w,'leo_load_button') and
-                len(p.b) > c.max_pre_loaded_body_chars)
+                len(p.b) > c.max_pre_loaded_body_chars > 0)
+        else:
+            return False
     #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body
     def is_qt_body(self):
         '''Return True if the body widget is a QTextEdit.'''
         c = self.c
-        return c.frame.body and c.frame.body.widget
-            # c.frame.body.widget is a LeoQTextBrowser.
+        import leo.plugins.qt_text as qt_text
+        return isinstance(c.frame.body.wrapper.widget,qt_text.LeoQTextBrowser)
+            # c.frame.body.wrapper.widget is a LeoQTextBrowser.
             # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
     def unselect_helper(self,old_p,p,traceTime):
@@ -1563,6 +1566,7 @@ class LeoTree(object):
             if hasattr(w,'leo_load_button') and w.leo_load_button:
                 w.leo_load_button.deleteLater()
                 w.leo_load_button = None
+        # else: g.trace('not a qt body')
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self,old_p):
         '''Stop colorizing the present node.'''
@@ -1609,10 +1613,12 @@ class LeoTree(object):
             g.trace('undoing')
             return
         if self.is_qt_body() and not g.app.unitTesting:
-            w = c.frame.body.widget.widget
+            w = c.frame.body.wrapper.widget
             frame = w.parent() # A QWidget
             layout = frame.layout()
             s = p.b
+            if hasattr(w,'leo_copy_button') and w.leo_copy_button:
+                return
             w.leo_copy_button = b1 = QtGui.QPushButton('Copy body to clipboard: %s' % (p.h))
             w.leo_load_button = b2 = QtGui.QPushButton('Load Text: %s' % (p.h))
             b1.setObjectName('big-text-copy-button')
@@ -2248,6 +2254,7 @@ class StringTextWrapper:
         self.sel = 0,0
         self.s = ''
         self.supportsHighLevelInterface = True
+        self.widget = None # This ivar must exist, and be None.
         self.trace = False
 
     def __repr__(self):
