@@ -41,11 +41,9 @@ import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import string
 import sys
-#@+others
-#@+node:ekr.20140907103315.18773: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
     #@+others
-    #@+node:ekr.20110605121601.18539: *3* LeoQtEventFilter.ctor
+    #@+node:ekr.20110605121601.18539: ** LeoQtEventFilter.ctor
     def __init__(self,c,w,tag=''):
         '''Ctor for LeoQtEventFilter class.'''
         # g.trace('LeoQtEventFilter',tag,w)
@@ -63,7 +61,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
-    #@+node:ekr.20110605121601.18540: *3* LeoQtEventFilter.eventFilter
+    #@+node:ekr.20110605121601.18540: ** LeoQtEventFilter.eventFilter
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
@@ -150,7 +148,7 @@ class LeoQtEventFilter(QtCore.QObject):
             # Trace non-key events.
             self.traceEvent(obj,event,tkKey,override)
         return override
-    #@+node:ekr.20110605195119.16937: *3* LeoQtEventFilter.create_key_event
+    #@+node:ekr.20110605195119.16937: ** LeoQtEventFilter.create_key_event
     def create_key_event (self,event,c,w,ch,tkKey,shortcut):
 
         trace = False and not g.unitTesting ; verbose = False
@@ -198,8 +196,8 @@ class LeoQtEventFilter(QtCore.QObject):
             repr(ch),repr(shortcut),ch in string.printable))
 
         return leoGui.LeoKeyEvent(c,char,event,shortcut,w,x,y,x_root,y_root)
-    #@+node:ekr.20120204061120.10088: *3* Key construction
-    #@+node:ekr.20110605121601.18543: *4* LeoQtEventFilter.toTkKey & helpers (must not change!)
+    #@+node:ekr.20120204061120.10088: ** Key construction
+    #@+node:ekr.20110605121601.18543: *3* LeoQtEventFilter.toTkKey & helpers (must not change!)
     def toTkKey (self,event):
 
         '''Return tkKey,ch,ignore:
@@ -222,7 +220,7 @@ class LeoQtEventFilter(QtCore.QObject):
             event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18546: *5* LeoQtEventFilter.tkKey & helper
+    #@+node:ekr.20110605121601.18546: *4* LeoQtEventFilter.tkKey & helper
     def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
@@ -275,7 +273,7 @@ class LeoQtEventFilter(QtCore.QObject):
         ignore = not ch # Essential
         ch = text or toString
         return tkKey,ch,ignore
-    #@+node:ekr.20110605121601.18547: *6* LeoQtEventFilter.char2tkName
+    #@+node:ekr.20110605121601.18547: *5* LeoQtEventFilter.char2tkName
     char2tkNameDict = {
         # Part 1: same as g.app.guiBindNamesDict
         "&" : "ampersand",
@@ -341,15 +339,15 @@ class LeoQtEventFilter(QtCore.QObject):
         val = self.char2tkNameDict.get(ch)
         # g.trace(repr(ch),repr(val))
         return val
-    #@+node:ekr.20120204061120.10087: *4* LeoQtEventFilter.Common key construction helpers
-    #@+node:ekr.20110605121601.18541: *5* LeoQtEventFilter.isSpecialOverride
+    #@+node:ekr.20120204061120.10087: *3* LeoQtEventFilter.Common key construction helpers
+    #@+node:ekr.20110605121601.18541: *4* LeoQtEventFilter.isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
         '''Return True if tkKey is a special Tk key name.
         '''
 
         return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *5* LeoQtEventFilter.toStroke
+    #@+node:ekr.20110605121601.18542: *4* LeoQtEventFilter.toStroke
     def toStroke (self,tkKey,ch):  # ch is unused
 
         '''Convert the official tkKey name to a stroke.'''
@@ -368,7 +366,7 @@ class LeoQtEventFilter(QtCore.QObject):
             s = s.replace(a,b)
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
-    #@+node:ekr.20110605121601.18544: *5* LeoQtEventFilter.qtKey
+    #@+node:ekr.20110605121601.18544: *4* LeoQtEventFilter.qtKey
     def qtKey (self,event):
 
         '''Return the components of a Qt key event.
@@ -425,7 +423,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 keynum,repr(ch),mods,repr(toString)))
 
         return keynum,text,toString,ch
-    #@+node:ekr.20120204061120.10084: *5* LeoQtEventFilter.qtMods
+    #@+node:ekr.20120204061120.10084: *4* LeoQtEventFilter.qtMods
     def qtMods (self,event):
 
         '''Return the text version of the modifiers of the key event.'''
@@ -457,8 +455,8 @@ class LeoQtEventFilter(QtCore.QObject):
 
         mods = [b for a,b in table if (modifiers & a)]
         return mods
-    #@+node:ekr.20140907103315.18767: *3* Tracing
-    #@+node:ekr.20110605121601.18548: *4* LeoQtEventFilter.traceEvent
+    #@+node:ekr.20140907103315.18767: ** Tracing
+    #@+node:ekr.20110605121601.18548: *3* LeoQtEventFilter.traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
         if g.unitTesting: return
@@ -545,7 +543,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 return
         if eventType not in ignore:
             g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-    #@+node:ekr.20131121050226.16331: *4* LeoQtEventFilter.traceWidget
+    #@+node:ekr.20131121050226.16331: *3* LeoQtEventFilter.traceWidget
     def traceWidget(self,event):
         '''Show unexpected events in unusual widgets.'''
         # pylint: disable=E1101
@@ -651,7 +649,6 @@ class LeoQtEventFilter(QtCore.QObject):
                 t = focus_d.get(et) or et
                 g.trace('%20s %s' % (t,w.__class__))
     #@-others
-#@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
