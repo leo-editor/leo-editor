@@ -79,7 +79,7 @@ class LeoGui:
     def __init__ (self,guiName):
         '''Ctor for the LeoGui class.'''
         # g.trace("LeoGui",guiName,g.callers())
-        self.active = None # Used only by qtGui.
+        self.active = None # Used only by qt_gui.
         self.bodyTextWidget = None
         self.idleTimeClass = None
         self.isNullGui = False

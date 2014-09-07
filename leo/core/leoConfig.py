@@ -6,7 +6,6 @@
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
-# from leo.plugins.qtGui import LeoQtFrame 
 from leo.plugins.mod_scripting import build_rclick_tree
 import sys
 #@-<< imports >>

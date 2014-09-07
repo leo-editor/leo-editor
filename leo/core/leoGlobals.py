@@ -4017,7 +4017,7 @@ def idleTimeHookHandler(*args,**keys):
         if trace: g.pr('%3s calling g.doHook(c=%s)' % (
             trace_count,c.shortFileName()))
         g.doHook("idle",c=c)
-    # qtGui.setIdleTimeHook now manages the idle-time timer
+    # qt_gui.setIdleTimeHook now manages the idle-time timer
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c,p,event):
     pass

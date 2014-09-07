@@ -847,10 +847,11 @@ class LeoApp:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
+        # import pdb ; pdb.set_trace()
         try:
             import PyQt5.QtGui
             import PyQt5.QtCore    
-            import leo.plugins.qtGui as qtGui
+            import leo.plugins.qt_gui as qt_gui
         except ImportError:
             try:
                 # Work around pylint/qt problem: import QtGui before QtCore:
@@ -858,12 +859,12 @@ class LeoApp:
                 # Take care to try the same imports as in qtGui.py.
                 import PyQt4.QtGui
                 import PyQt4.QtCore    
-                import leo.plugins.qtGui as qtGui
+                import leo.plugins.qt_gui as qt_gui
                 if 0: g.trace(PyQt4) # To remove a pyflakes warning.
             except ImportError:
-                qtGui = None
-        if qtGui:
-            qtGui.init()
+                qt_gui = None
+        if qt_gui:
+            qt_gui.init()
             if app.gui and fileName and verbose:
                 print('qtGui created in %s' % fileName)
     #@+node:ekr.20090126063121.3: *4* app.createWxGui

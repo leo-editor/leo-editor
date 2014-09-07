@@ -21193,6 +21193,8 @@ files.sort()
 exclude = [
     # These are not real plugins...
     'baseNativeTree.py','leocursor.py',
+    'qtGui.py',
+    'qt_frame.py',
     'qt_main.py',
     'qt_text.py',
     'qt_quicksearch.py',

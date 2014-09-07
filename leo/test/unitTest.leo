@@ -165,13 +165,6 @@
 <v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20140906073339.5229"><vh>Fixed</vh>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
-<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-N key is completely ignored</vh></v>
-</v>
 <v t="ekr.20140906072925.5224"><vh>Scintilla fails</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20111112171235.3854"><vh>@test add/delete html comments</vh>
@@ -317,6 +310,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1131,7 +1128,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="1"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1774,6 +1771,40 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'baseNativeTree.py','leocursor.py',
+    'qtGui.py',
+    'qt_frame.py',
+    'qt_main.py',
+    'qt_text.py',
+    'qt_quicksearch.py',
+    'swing_gui.py',
+]
+
+for fn in files:
+    if not g.shortFileName(fn) in exclude:
+        f = open(fn,'r')
+        s = f.read()
+        f.close()
+        ok1 = s.find('def init():') &gt; -1
+        ok2 = s.find('def init ():') &gt; -1
+        assert ok1 or ok2,'fail: %s' % (fn)
+    
+</t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 # run-selected-unit-tests-externally = Alt-5 # Standard binding, unchanged.
@@ -1891,63 +1922,6 @@ def deleteCommentTest():
 12.8
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111120124051.3992">try:
-    import PyQt5.QtCore as QtCore
-    import PyQt5.QtGui as QtGui
-    from PyQt5 import QtWidgets
-except ImportError:
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
-    QtWidgets = QtGui
-
-import leo.plugins.qtGui as leoQtGui
-
-if g.app.isExternalUnitTest:
-    pass
-else:
-    def setup(p):
-        delete_children(p)
-        p2 = p.insertAsLastChild()
-        c.selectPosition(p2)
-        p2.h = 'first-child'
-    
-    def delete_children(p):
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    
-    app = g.app.gui.qtApp
-    assert issubclass(app.__class__,QtWidgets.QApplication)
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    # w_name = w.__class__.__name__
-    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
-    p1 = p.copy()
-    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
-    try:
-        ev = QtCore.QEvent
-        table = (
-            ev.KeyPress,
-            # ev.KeyRelease, # Ignored except in QLineEdit's.
-            # ev.ShortcutOverride, # Ignored everywhere.
-        )
-        for theType in table:
-            # Create the event.
-            setup(p1)
-            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
-            # Pass it to eventFilter.
-            filter_obj.eventFilter(w,e)
-            # Check the results.
-            c.redraw()
-            n = p1.numberOfChildren()
-            assert n==2,'%s children' % (n)
-            delete_children(p1)
-    finally:
-        delete_children(p1)
-        c.redraw()
-</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -1966,33 +1940,6 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
-</t>
-<t tx="ekr.20111123214629.3941">try:
-    import PyQt5.QtCore as QtCore
-    import PyQt5.QtGui as QtGui
-    from PyQt5 import QtWidgets
-except ImportError:
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
-    QtWidgets = QtGui
-
-import leo.plugins.qtGui as leoQtGui
-
-if g.app.isExternalUnitTest:
-    pass
-else:
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
-    # Create an Alt-7 key event.
-    ev = QtCore.QEvent
-    e = QtGui.QKeyEvent(ev.KeyPress,ord('7'),QtCore.Qt.AltModifier)
-    filter_obj.eventFilter(w,e)
-    # Assert that handleUnboundChar actually ignored it.
-    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -2338,7 +2285,6 @@ unl: organizer node--&gt;child2
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
 <t tx="ekr.20140906073339.5226"># The add/delete comments command actually do not work.</t>
-<t tx="ekr.20140906073339.5229"></t>
 <t tx="ekr.20140906074600.4697"># Create unit tests in g.app.scriptDict["suite"]
 
 suite = c.testManager.makeEditBodySuite(p)

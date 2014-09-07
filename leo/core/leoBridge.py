@@ -198,9 +198,9 @@ class BridgeController:
             log.enabled = True # Allow prints from NullLog.
             log.logInited = True # Bug fix: 2012/10/17.
         elif self.guiName == 'qt':
-            import leo.plugins.qtGui as qtGui
-            g.app.gui = qtGui.LeoQtGui()
-            print('qtGui created')
+            import leo.plugins.qt_gui as qt_gui
+            g.app.gui = qt_gui.LeoQtGui()
+            print('Qt gui created')
         else:
             assert False,'leoBridge.py: unsupported gui: %s' % self.guiName
 
