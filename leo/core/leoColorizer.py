@@ -125,7 +125,7 @@ class PythonQSyntaxHighlighter:
         if 0 <= pos < len(self.formatChanges):
             return self.formatChanges[pos]
         else:
-            return QtWidgets.QTextCharFormat()
+            return QtGui.QTextCharFormat()
     #@+node:ekr.20140825132752.18576: *4* pqsh.setCurrentBlockState & setCurrentBlockUserData
     def setCurrentBlockState(self,newState):
         '''Sets the state of the current text block.'''
@@ -264,7 +264,7 @@ class PythonQSyntaxHighlighter:
             self.formats = []
             for i in range(block.length()):
                 r = QtGui.QTextLayout.FormatRange()
-                r.start,r.length,r.format = i,1,QtWidgets.QTextCharFormat()
+                r.start,r.length,r.format = i,1,QtGui.QTextCharFormat()
                 self.formats.append(r)
             if trace: g.trace(str(block.text()))
             self.highlightBlock(block.text())
@@ -2696,7 +2696,7 @@ class LeoQtColorizer:
                     # ranges2 = []
                     # for r in ranges:
                         # # Hold the format in memory by copying it.
-                        # r.format = QtWidgets.QTextCharFormat(r.format)
+                        # r.format = QtGui.QTextCharFormat(r.format)
                         # ranges2.append(r)
                     # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
         p.v.colorCache = g.bunch(aList=aList,n=doc.blockCount(),v=p.v)
