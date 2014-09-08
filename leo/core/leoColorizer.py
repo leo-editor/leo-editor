@@ -2824,31 +2824,34 @@ class LeoQtSyntaxHighlighter(base_highlighter):
             g.trace('%2.3f sec' % (time.time()-t1))
     #@-others
 #@+node:ekr.20140906095826.18717: ** class NullScintillaLexer
-class NullScintillaLexer(Qsci.QsciLexerCustom):
-    
-    def __init__(self,c,parent=None):
-        Qsci.QsciLexerCustom.__init__(self,parent)
-            # Init the pase class
-        self.leo_c = c
-        self.configure_lexer()
-        
-    def description(self,style):
-        return 'NullScintillaLexer'
+if Qsci:
 
-    def setStyling(self,length,style):
-        g.trace('(NullScintillaLexer)',length,style)
-        
-    def styleText(self,start,end):
-        '''Style the text from start to end.'''
-        # g.trace('(NullScintillaLexer)',start,end)
-        
-    def configure_lexer(self):
-        '''Configure the QScintilla lexer.'''
-        c = self.leo_c
-        lexer = self
-        ### To do: use c.config setting.
-        font = QtWidgets.QFont("DejaVu Sans Mono",14)
-        lexer.setFont(font)
+    class NullScintillaLexer(Qsci.QsciLexerCustom):
+        '''A do-nothing colorizer for Scintilla.'''
+
+        def __init__(self,c,parent=None):
+            Qsci.QsciLexerCustom.__init__(self,parent)
+                # Init the pase class
+            self.leo_c = c
+            self.configure_lexer()
+            
+        def description(self,style):
+            return 'NullScintillaLexer'
+    
+        def setStyling(self,length,style):
+            g.trace('(NullScintillaLexer)',length,style)
+            
+        def styleText(self,start,end):
+            '''Style the text from start to end.'''
+            # g.trace('(NullScintillaLexer)',start,end)
+            
+        def configure_lexer(self):
+            '''Configure the QScintilla lexer.'''
+            c = self.leo_c
+            lexer = self
+            ### To do: use c.config setting.
+            font = QtWidgets.QFont("DejaVu Sans Mono",14)
+            lexer.setFont(font)
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(ColorizerMixin)
 # This is c.frame.body.colorizer
 
@@ -2875,13 +2878,18 @@ class QScintillaColorizer(ColorizerMixin):
         self.showInvisibles = False
         widget.leo_colorizer = self
         # Define/configure various lexers.
-        self.lexersDict = {
-            'python': Qsci.QsciLexerPython(parent=c.frame.body.wrapper.widget),
-            # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
-        }
+        if Qsci:
+            self.lexersDict = {
+                'python': Qsci.QsciLexerPython(parent=c.frame.body.wrapper.widget),
+                # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
+            }
+            self.nullLexer = NullScintillaLexer(c)
+        else:
+            self.lexersDict = {}
+            self.nullLexer = None
         lexer = self.lexersDict.get('python')
         self.configure_lexer(lexer)
-        self.nullLexer = NullScintillaLexer(c)
+        
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self,language):
         '''Set the lexer for the given language.'''
@@ -2971,39 +2979,40 @@ class QScintillaColorizer(ColorizerMixin):
     #@-others
 #@+node:ekr.20140906143232.18697: ** class PythonLexer (does not work)
 # Stuck: regardless of class: there seems to be no way to force a recolor.
-class PythonLexer(Qsci.QsciLexerCustom):
-    '''A subclass of the Python lexer that colorizers section references.'''
+if Qsci:
+    class PythonLexer(Qsci.QsciLexerCustom):
+        '''A subclass of the Python lexer that colorizers section references.'''
+        
+        def __init__(self,parent=None):
+            '''Ctor for PythonLexer class.'''
+            Qsci.QsciLexerCustom.__init__(self,parent)
+                # Init the base class.
+            self.lexer = None
+            self.parent = parent
+            self.tag = '(PythonLexer)'
+            
+        def setStringsOverNewlineAllowed(self,aBool):
+            pass
+            
+        def description(self,style):
+            return self.tag
     
-    def __init__(self,parent=None):
-        '''Ctor for PythonLexer class.'''
-        Qsci.QsciLexerCustom.__init__(self,parent)
-            # Init the base class.
-        self.lexer = None
-        self.parent = parent
-        self.tag = '(PythonLexer)'
-        
-    def setStringsOverNewlineAllowed(self,aBool):
-        pass
-        
-    def description(self,style):
-        return self.tag
-
-    def setStyling(self,length,style):
-        g.trace(self.tag,length,style)
-        
-    def styleText(self,start,end):
-        '''Style the text from start to end.'''
-        g.trace(self.tag,start,end)
-        self.lexer = Qsci.QsciLexerPython(parent=self.parent)
-        self.lexer.setStringsOverNewlineAllowed(True)
-        ### self.lexer.styleText(start,end)
-
-    def configure_lexer(self):
-        '''Configure the QScintilla lexer.'''
-        c = self.leo_c
-        lexer = self
-        ### To do: use c.config setting.
-        font = QtWidgets.QFont("DejaVu Sans Mono",14)
-        lexer.setFont(font)
+        def setStyling(self,length,style):
+            g.trace(self.tag,length,style)
+            
+        def styleText(self,start,end):
+            '''Style the text from start to end.'''
+            g.trace(self.tag,start,end)
+            self.lexer = Qsci.QsciLexerPython(parent=self.parent)
+            self.lexer.setStringsOverNewlineAllowed(True)
+            ### self.lexer.styleText(start,end)
+    
+        def configure_lexer(self):
+            '''Configure the QScintilla lexer.'''
+            c = self.leo_c
+            lexer = self
+            ### To do: use c.config setting.
+            font = QtWidgets.QFont("DejaVu Sans Mono",14)
+            lexer.setFont(font)
 #@-others
 #@-leo
