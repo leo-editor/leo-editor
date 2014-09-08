@@ -1168,7 +1168,7 @@ class QTextEditWrapper(QTextMixin):
             w.updateMicroFocus()
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-    #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed)
+    #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
     def set_signals(self):
         '''Set up signals.'''
         c,name = self.c,self.name
