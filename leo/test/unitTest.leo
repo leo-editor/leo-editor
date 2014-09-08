@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.54" body_secondary_ratio="0.62">
-	<global_window_position top="82" left="724" height="993" width="1137"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -313,6 +313,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1127,7 +1128,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2243,6 +2244,52 @@ gnx: ekr.20140712142620.4581
 unl: organizer node--&gt;child2
 </t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20140904060337.4476">import leo.core.leoFrame as leoFrame
+import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import Qsci,QtWidgets
+
+if Qsci:
+    w = Qsci.QsciScintilla()
+    q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
+    q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
+# Check the text wrappers.
+W = leoFrame.WrapperAPI(c)
+tw = QtWidgets.QTextBrowser()
+t = qt_text.QTextEditWrapper(widget=tw,name='test2')
+W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
+ignore = [
+    'set_focus', # synonym for setFocus
+    'mutable_methods', # maybe for unit test, not actually used.
+]
+for z in W_list:
+    if z not in t_list and z not in ignore:
+        assert False,'In WrapperAPI but not in QTextEditWrapper: %s' % z
+if Qsci:
+    for z in W_list:
+        if z not in q_list and z not in ignore:
+            assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
+# Check Null classes that are not subclasses of a base type:
+table = (
+    ('NullColorizer',leoFrame.NullColorizer(c),
+     # 'c.frame.body.colorizer',c.frame.body.colorizer,
+     'ColorizerAPI', leoFrame.ColorizerAPI(c,None),
+    ),
+    ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
+     # 'c.frame.iconBar',c.frame.iconBar,
+     'IconBarAPI',leoFrame.IconBarAPI(c,None),
+    ),
+    ('NullStatusLineClass',leoFrame.NullStatusLineClass(c,None),
+     # 'c.frame.statusLine',c.frame.statusLine,
+     'StatusLineAPI',leoFrame.StatusLineAPI(c,None)
+    )
+)
+for name1,L,name2,W in table:
+    W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+    L_list = [z for z in sorted(dir(L)) if not z.startswith('__')]
+    for z in W_list:
+        assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
+</t>
 <t tx="ekr.20140906072925.5224"></t>
 <t tx="ekr.20140906073339.5226"># The add/delete comments command actually do not work.</t>
 <t tx="ekr.20140906074600.4697"># Create unit tests in g.app.scriptDict["suite"]
