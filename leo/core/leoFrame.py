@@ -47,7 +47,10 @@ import time
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
 #@+others
-#@+node:ekr.20140904043623.18535: ** class ColorizerAPI
+#@+node:ekr.20140907201613.18660: ** API classes
+# These classes are for documentation and unit testing.
+# They are the base class for no class.
+#@+node:ekr.20140904043623.18535: *3* class ColorizerAPI
 class ColorizerAPI:
     '''The required API of c.frame.body.colorizer.'''
     def __init__ (self,c,widget): pass
@@ -60,6 +63,82 @@ class ColorizerAPI:
     def updateSyntaxColorer (self,p): return True
     def useSyntaxColoring (self,p): return True
     def write_colorizer_cache (self,p): pass
+#@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
+class StatusLineAPI:
+    '''The required API for c.frame.statusLine.'''
+    def __init__ (self,c,parentFrame): pass
+    def clear (self): pass
+    def disable (self,background=None): pass
+    def enable (self,background="white"): pass
+    def get (self): return ''
+    def isEnabled(self): return False
+    def put(self,s,color=None): pass
+    def setFocus (self): pass
+    def update(self): pass
+#@+node:ekr.20140907201613.18663: *3* class TreeAPI
+class TreeAPI:
+    '''The required API for c.frame.tree.'''
+    def __init__ (self,frame): pass
+    # Must be defined in subclasses.
+    def drawIcon(self,p): pass
+    def editLabel(self,v,selectAll=False,selection=None): pass
+    def edit_widget (self,p): return None
+    def redraw(self,p=None,scroll=True,forceDraw=False): pass
+    def redraw_now(self,p=None,scroll=True,forceDraw=False): pass
+    def scrollTo(self,p): pass
+    # May be defined in subclasses.
+    def initAfterLoad (self): pass
+    def afterSelectHint(self,p,old_p): pass
+    def beforeSelectHint (self,p,old_p): pass
+    def onHeadChanged (self,p,undoType='Typing',s=None,e=None): pass
+    # Hints for optimization. The proper default is c.redraw()
+    def redraw_after_contract(self,p=None): pass
+    def redraw_after_expand(self,p=None): pass
+    def redraw_after_head_changed(self): pass
+    def redraw_after_icons_changed(self): pass
+    def redraw_after_select(self,p=None): pass
+    # Must be defined in the LeoTree class...
+    # def OnIconDoubleClick (self,p):
+    def OnIconCtrlClick (self,p): pass
+    def editPosition(self): return None
+    def endEditLabel (self): pass
+    def getEditTextDict(self,v): return None
+    def injectCallbacks(self): pass
+    def onHeadlineKey (self,event): pass
+    def select (self,p,scroll=True): pass
+    def setEditPosition(self,p): pass
+    def updateHead (self,event,w): pass
+#@+node:ekr.20140903025053.18631: *3* class WrapperAPI
+class WrapperAPI(object):
+    '''A class specifying the wrapper api used throughout Leo's core.'''
+    def __init__ (self,c): pass
+    def appendText(self,s): pass
+    def clipboard_append(self,s): pass
+    def clipboard_clear (self): pass
+    def delete(self,i,j=None): pass
+    def deleteTextSelection (self): pass
+    def disable (self): pass
+    def enable (self,enabled=True): pass
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): pass
+    def get(self,i,j): return ''
+    def getAllText(self): return ''
+    def getInsertPoint(self): return 0
+    def getSelectedText(self): return ''
+    def getSelectionRange (self): return (0,0)
+    def getYScrollPosition (self): return 0
+    def hasSelection(self): return False
+    def insert(self,i,s): pass
+    def see(self,i): pass
+    def seeInsertPoint (self): pass
+    def selectAllText (self,insert=None): pass
+    def setAllText (self,s): pass
+    def setFocus(self): pass # Required: sets the focus to wrapper.widget.
+    def setInsertPoint(self,pos,s=None): pass
+    def setSelectionRange (self,i,j,insert=None): pass
+    def setYScrollPosition (self,i): pass
+    def tag_configure (self,colorName,**keys): pass
+    def toPythonIndex (self,index): return 0
+    def toPythonIndexRowCol(self,index): return (0,0,0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
     '''The required API for c.frame.iconBar.'''
@@ -1187,48 +1266,39 @@ class LeoLog(object):
 class LeoTree(object):
     '''The base class for the outline pane in Leo windows.'''
     #@+others
-    #@+node:ekr.20031218072017.3705: *3*   tree.__init__ (base class)
+    #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
     def __init__ (self,frame):
-
+        '''Ctor for the LeoTree class.'''
         self.frame = frame
         self.c = frame.c
         self.edit_text_dict = {}
             # New in 3.12: keys vnodes, values are edit_widgets.
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self._editPosition = None
         self.redrawCount = 0 # For traces
         self.revertHeadline = None
         self.use_chapters = False # May be overridden in subclasses.
-
         # Define these here to keep pylint happy.
         self.canvas = None
         self.trace_select = None
-    #@+node:ekr.20031218072017.3706: *3*  Must be defined in subclasses (LeoTree)
-    # Drawing & scrolling.
-    def drawIcon(self,p):                                       self.oops()
-    def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
-    def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-    def scrollTo(self,p):                                       self.oops()
-    idle_scrollTo = scrollTo # For compatibility.
-    # Headlines.
-    def editLabel(self,v,selectAll=False,selection=None):       self.oops()
-    def edit_widget (self,p):                                   self.oops()
-    #@+node:ekr.20061109165848: *3* Must be defined in base class
-    #@+node:ekr.20031218072017.3716: *4* Getters/Setters (tree)
-    def getEditTextDict(self,v):
-        # New in 4.2: the default is an empty list.
-        return self.edit_text_dict.get(v,[])
+    #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
+    # These are new in Leo 4.6.
 
-    def editPosition(self):
-        return self._editPosition
-
-    def setEditPosition(self,p):
-        self._editPosition = p
-    #@+node:ekr.20040803072955.90: *4* head key handlers (LeoTree)
-    #@+node:ekr.20040803072955.91: *5* onHeadChanged (LeoTree Not used: see nativeTree)
+    def initAfterLoad (self):
+        '''Do late initialization. Called in g.openWithFileName after a successful load.'''
+    def afterSelectHint(self,p,old_p):
+        '''Called at end of tree.select.'''
+    def beforeSelectHint (self,p,old_p):
+        '''Called at start of tree.select.'''
+    # Hints for optimization. The proper default is c.redraw()
+    def redraw_after_contract(self,p=None): self.c.redraw()
+    def redraw_after_expand(self,p=None):   self.c.redraw()
+    def redraw_after_head_changed(self):    self.c.redraw()
+    def redraw_after_icons_changed(self):   self.c.redraw()
+    def redraw_after_select(self,p=None):   self.c.redraw()
+    #@+node:ekr.20040803072955.91: *4* onHeadChanged (Used by the leoBridge module)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
@@ -1254,7 +1324,7 @@ class LeoTree(object):
             g.trace('*** LeoTree',g.callers(5))
             g.trace(p and p.h,'w',repr(w),'s',repr(s))
         #@+<< truncate s if it has multiple lines >>
-        #@+node:ekr.20040803072955.94: *6* << truncate s if it has multiple lines >>
+        #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
         # for i in (0,1):
             # if s and s[-1] == '\n':
@@ -1297,58 +1367,8 @@ class LeoTree(object):
             c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
-    #@+node:ekr.20040803072955.88: *5* onHeadlineKey
-    def onHeadlineKey (self,event):
-
-        '''Handle a key event in a headline.'''
-
-        w = event and event.widget or None
-        ch = event and event.char or ''
-
-        # g.trace(repr(ch),g.callers())
-
-        # Testing for ch here prevents flashing in the headline
-        # when the control key is held down.
-        if ch:
-            # g.trace(repr(ch),g.callers())
-            self.updateHead(event,w)
-
-        return # (for Tk) 'break' # Required
-    #@+node:ekr.20051026083544.2: *5* updateHead
-    def updateHead (self,event,w):
-
-        '''Update a headline from an event.
-
-        The headline officially changes only when editing ends.'''
-
-        c = self.c ; k = c.k
-        ch = event and event.char or ''
-        i,j = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        if i != j: ins = i
-
-        # g.trace('w',w,'ch',repr(ch),g.callers())
-
-        if ch == '\b':
-            if i != j:  w.delete(i,j)
-            else:       w.delete(ins-1)
-            w.setSelectionRange(i-1,i-1,insert=i-1)
-        elif ch and ch not in ('\n','\r'):
-            if i != j:                              w.delete(i,j)
-            elif k.unboundKeyAction == 'overwrite': w.delete(i,i+1)
-            w.insert(ins,ch)
-            w.setSelectionRange(ins+1,ins+1,insert=ins+1)
-
-        s = w.getAllText()
-        if s.endswith('\n'):
-            s = s[:-1]
-
-        # 2011/11/14: Not used at present.
-        # w.setWidth(self.headWidth(s=s))
-
-        if ch in ('\n','\r'):
-            self.endEditLabel() # Now calls self.onHeadChanged.
-    #@+node:ekr.20040803072955.126: *5* endEditLabel
+    #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
+    #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel (self):
 
         '''End editing of a headline and update p.h.'''
@@ -1365,7 +1385,17 @@ class LeoTree(object):
 
         if 0: # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()
-    #@+node:ekr.20040803072955.21: *4* tree.injectCallbacks
+    #@+node:ekr.20031218072017.3716: *4* LeoTree.Getters/Setters
+    def getEditTextDict(self,v):
+        # New in 4.2: the default is an empty list.
+        return self.edit_text_dict.get(v,[])
+
+    def editPosition(self):
+        return self._editPosition
+
+    def setEditPosition(self,p):
+        self._editPosition = p
+    #@+node:ekr.20040803072955.21: *4* LeoTree.injectCallbacks
     def injectCallbacks(self):
 
         c = self.c
@@ -1412,37 +1442,75 @@ class LeoTree(object):
         for f in (OnHyperLinkControlClick,OnHyperLinkEnter,OnHyperLinkLeave):
 
             g.funcToMethod(f,leoNodes.position)
-    #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick
-    def OnIconDoubleClick (self,p):
+    #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
+    def onHeadlineKey (self,event):
 
-        if 0: g.trace(p and p.h)
-    #@+node:ekr.20120314064059.9739: *4* tree.OnIconCtrlClick (@url)
+        '''Handle a key event in a headline.'''
+
+        w = event and event.widget or None
+        ch = event and event.char or ''
+
+        # g.trace(repr(ch),g.callers())
+
+        # Testing for ch here prevents flashing in the headline
+        # when the control key is held down.
+        if ch:
+            # g.trace(repr(ch),g.callers())
+            self.updateHead(event,w)
+
+        return # (for Tk) 'break' # Required
+    #@+node:ekr.20120314064059.9739: *4* LeoTree.OnIconCtrlClick (@url)
     def OnIconCtrlClick (self,p):
 
         g.openUrl(p)
-    #@+node:ekr.20081005065934.8: *3* May be defined in subclasses
-    # These are new in Leo 4.6.
+    #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
+    def OnIconDoubleClick (self,p):
 
-    def initAfterLoad (self):
-        '''Do late initialization.
-        Called in g.openWithFileName after a successful load.'''
+        if 0: g.trace(p and p.h)
+    #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
+    def updateHead (self,event,w):
 
-    def afterSelectHint(self,p,old_p):
-        '''Called at end of tree.select.'''
-        pass
+        '''Update a headline from an event.
 
-    def beforeSelectHint (self,p,old_p):
-        '''Called at start of tree.select.'''
-        pass
+        The headline officially changes only when editing ends.'''
 
-    # These are hints for optimization.
-    # The proper default is c.redraw()
-    def redraw_after_clone(self):           self.c.redraw()
-    def redraw_after_contract(self,p=None): self.c.redraw()
-    def redraw_after_expand(self,p=None):   self.c.redraw()
-    def redraw_after_head_changed(self):    self.c.redraw()
-    def redraw_after_icons_changed(self):   self.c.redraw()
-    def redraw_after_select(self,p=None):   self.c.redraw()
+        c = self.c ; k = c.k
+        ch = event and event.char or ''
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        if i != j: ins = i
+
+        # g.trace('w',w,'ch',repr(ch),g.callers())
+
+        if ch == '\b':
+            if i != j:  w.delete(i,j)
+            else:       w.delete(ins-1)
+            w.setSelectionRange(i-1,i-1,insert=i-1)
+        elif ch and ch not in ('\n','\r'):
+            if i != j:                              w.delete(i,j)
+            elif k.unboundKeyAction == 'overwrite': w.delete(i,i+1)
+            w.insert(ins,ch)
+            w.setSelectionRange(ins+1,ins+1,insert=ins+1)
+
+        s = w.getAllText()
+        if s.endswith('\n'):
+            s = s[:-1]
+
+        # 2011/11/14: Not used at present.
+        # w.setWidth(self.headWidth(s=s))
+
+        if ch in ('\n','\r'):
+            self.endEditLabel() # Now calls self.onHeadChanged.
+    #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
+    # Drawing & scrolling.
+    def drawIcon(self,p): self.oops()
+    def redraw(self,p=None,scroll=True,forceDraw=False): self.oops()
+    def redraw_now(self,p=None,scroll=True,forceDraw=False): self.oops()
+    def scrollTo(self,p): self.oops()
+    # idle_scrollTo = scrollTo # For compatibility.
+    # Headlines.
+    def editLabel(self,v,selectAll=False,selection=None): self.oops()
+    def edit_widget (self,p): self.oops()
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -2229,18 +2297,6 @@ class NullTree (LeoTree):
         else:
             g.trace('-'*20,'oops')
     #@-others
-#@+node:ekr.20140904043623.18576: ** class StatusLineAPI
-class StatusLineAPI:
-    '''The required API for c.frame.statusLine.'''
-    def __init__ (self,c,parentFrame): pass
-    def clear (self): pass
-    def disable (self,background=None): pass
-    def enable (self,background="white"): pass
-    def get (self): return ''
-    def isEnabled(self): return False
-    def put(self,s,color=None): pass
-    def setFocus (self): pass
-    def update(self): pass
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper:
     '''A class that represents text as a Python string.'''
@@ -2401,36 +2457,5 @@ class StringTextWrapper:
         row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
     #@-others
-#@+node:ekr.20140903025053.18631: ** class WrapperAPI class
-class WrapperAPI(object):
-    '''A class specifying the wrapper api used throughout Leo's core.'''
-    def __init__ (self,c): pass
-    def appendText(self,s): pass
-    def clipboard_append(self,s): pass
-    def clipboard_clear (self): pass
-    def delete(self,i,j=None): pass
-    def deleteTextSelection (self): pass
-    def disable (self): pass
-    def enable (self,enabled=True): pass
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): pass
-    def get(self,i,j): return ''
-    def getAllText(self): return ''
-    def getInsertPoint(self): return 0
-    def getSelectedText(self): return ''
-    def getSelectionRange (self): return (0,0)
-    def getYScrollPosition (self): return 0
-    def hasSelection(self): return False
-    def insert(self,i,s): pass
-    def see(self,i): pass
-    def seeInsertPoint (self): pass
-    def selectAllText (self,insert=None): pass
-    def setAllText (self,s): pass
-    def setFocus(self): pass # Required: sets the focus to wrapper.widget.
-    def setInsertPoint(self,pos,s=None): pass
-    def setSelectionRange (self,i,j,insert=None): pass
-    def setYScrollPosition (self,i): pass
-    def tag_configure (self,colorName,**keys): pass
-    def toPythonIndex (self,index): return 0
-    def toPythonIndexRowCol(self,index): return (0,0,0)
 #@-others
 #@-leo
