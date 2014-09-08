@@ -14,7 +14,7 @@ python_qsh = True
 #@+node:ekr.20140827092102.18575: ** << imports >>
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import Qsci,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
 
 import re
 import string
@@ -257,7 +257,7 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18560: *4* pqsh.reformatBlock
     def reformatBlock(self,block):
         trace = False and not g.unitTesting
-        if self.is_valid(self.cb):
+        if self.is_valid(self.cb) and not isQt5:
             g.trace('can not happen: called recursively')
         else:
             self.cb = block
