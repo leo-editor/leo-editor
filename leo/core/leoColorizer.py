@@ -2359,7 +2359,7 @@ class JEditColorizer:
             format.setForeground(color)
         self.highlighter.setFormat (i,j-i,format)
     #@-others
-#@+node:ekr.20110605121601.18551: ** class LeoQtColorizer # (ColorizerMixin)
+#@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
 # This is c.frame.body.colorizer
 
 class LeoQtColorizer:
@@ -2395,7 +2395,7 @@ class LeoQtColorizer:
         self.oldV = None
         self.showInvisibles = False
         # Step 2: create the highlighter.
-        if isinstance(widget,QtGui.QTextEdit):
+        if isinstance(widget,QtWidgets.QTextEdit):
             self.highlighter = LeoQtSyntaxHighlighter(c,widget,colorizer=self)
             self.colorer = self.highlighter.colorer
         else:

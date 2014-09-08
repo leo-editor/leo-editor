@@ -1505,7 +1505,6 @@ class QTextEditWrapper(QTextMixin):
                 delta_t = time.time()-t1
                 if False or delta_t > 0.1:
                     g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
-                    # g.trace('isinstance(w,QTextEdit)',isinstance(w,QtGui.QTextEdit))
         finally:
             self.changingText = False
             colorizer.changingText = False

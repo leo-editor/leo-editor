@@ -2350,7 +2350,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             # 2010/02/19: Fix bug 525090
             # An added editor window doesn't display line/col
             te = body.widget
-            if isinstance(te,QtGui.QTextEdit):
+            if isinstance(te,QtWidgets.QTextEdit):
                 cr = te.textCursor()
                 bl = cr.block()
                 col = cr.columnNumber()
