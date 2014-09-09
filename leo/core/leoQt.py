@@ -12,9 +12,6 @@ Callers are expected to use the *PyQt5* spellings of modules:
 '''
 # import leo.core.leoGlobals as g
     # Warning: importing leoGlobals can crash pylint!
-    
-# On windows, the following files crash pylint when importing QtCore from this file:
-# leoBridge.py,qt_events.py, qt_idle_time.py, qt_gui.py.
 
 # pylint: disable=unused-import
 # Define isQt,Qt,QtConst,QtCore,QtGui,QtWidgets,QUrl
