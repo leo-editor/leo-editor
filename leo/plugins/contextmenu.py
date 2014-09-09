@@ -41,20 +41,15 @@ And call this in your plugin *once*::
 '''
 #@-<< docstring >>
 # Original version by Ville M. Vainio.
-#@+<< imports >>
-#@+node:ville.20090630210947.5462: ** << imports >>
-from leo.core.leoQt import QtCore
-    # Crashes pylint.
 
+# Imports.
+import leo.core.leoGlobals as g
 import os
 import subprocess
-
-import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
 g.assertUi('qt')
 
-#@-<< imports >>
 # Globals
-# print "Importing contextmenu"
 inited = False
 
 #@+others
