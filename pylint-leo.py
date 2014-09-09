@@ -80,7 +80,7 @@ def getGuiPluginsList ():
         'free_layout',
         'nested_splitter',
         'qt_events',
-        'qt_frame.',
+        'qt_frame',
         'qt_idle_time',
         'qt_gui',
         'qt_text',
