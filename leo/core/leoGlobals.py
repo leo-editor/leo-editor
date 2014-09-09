@@ -6486,6 +6486,7 @@ def os_startfile(fname):
         quoted_fname = '"%s"' % fname
 
     if sys.platform.startswith('win'):
+        # pylint: disable=no-member
         os.startfile(quoted_fname)
             # Exists only on Windows.
     elif sys.platform == 'darwin':

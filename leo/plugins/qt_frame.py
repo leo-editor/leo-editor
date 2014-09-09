@@ -3160,7 +3160,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         theFile = g.os_path_join(g.app.loadDir,"..","doc","sbooks.chm")
 
-        if g.os_path_exists(theFile):
+        if g.os_path_exists(theFile) and sys.platform.startswith('win'):
+            # pylint: disable=no-member
             os.startfile(theFile)
         else:
             answer = g.app.gui.runAskYesNoDialog(c,

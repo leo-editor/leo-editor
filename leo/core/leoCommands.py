@@ -1625,6 +1625,8 @@ class Commands (object):
             if openType == 'os.startfile':
                 command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)
+                # pylint: disable=no-member
+                # trust the user not to use this option on Linux.
                 if not testing: os.startfile(join(arg,fn))
             elif openType == 'exec':
                 command = 'exec(%s)' % join(arg,fn)
