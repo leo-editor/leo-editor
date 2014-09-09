@@ -978,9 +978,9 @@ class QScintillaWrapper(QTextMixin):
                 w = self.widget
                 self.setSelectionRange(i,i+1)
                 if self.flashBg:
-                    w.setSelectionBackgroundColor(QtWidgets.QColor(self.flashBg))
+                    w.setSelectionBackgroundColor(QtGui.QColor(self.flashBg))
                 if self.flashFg:
-                    w.setSelectionForegroundColor(QtWidgets.QColor(self.flashFg))
+                    w.setSelectionForegroundColor(QtGui.QColor(self.flashFg))
                 self.flashCount -= 1
                 after(removeFlashCallback)
             #@+node:ekr.20140902084950.18637: *5* removeFlashCallback
@@ -1283,8 +1283,8 @@ class QTextEditWrapper(QTextMixin):
             cursor.movePosition(e.Right,e.KeepAnchor,1)
             extra = w.ExtraSelection()
             extra.cursor = cursor
-            if self.flashBg: extra.format.setBackground(QtWidgets.QColor(self.flashBg))
-            if self.flashFg: extra.format.setForeground(QtWidgets.QColor(self.flashFg))
+            if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
+            if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
             self.extraSelList = [extra] # keep the reference.
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1

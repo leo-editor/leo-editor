@@ -687,11 +687,11 @@ class LeoQtGui(leoGui.LeoGui):
                 fullname = g.os_path_finalize_join(theDir,name)
                 if g.os_path_exists(fullname):
                     if 0: # Not needed: use QTreeWidget.setIconsize.
-                        pixmap = QtWidgets.QPixmap()
+                        pixmap = QtGui.QPixmap()
                         pixmap.load(fullname)
-                        image = QtWidgets.QIcon(pixmap)
+                        image = QtGui.QIcon(pixmap)
                     else:
-                        image = QtWidgets.QIcon(fullname)
+                        image = QtGui.QIcon(fullname)
                         if trace: g.trace('name',fullname,'image',image)
 
                     self.iconimages[name] = image
@@ -851,7 +851,7 @@ class LeoQtGui(leoGui.LeoGui):
         import leo.core.leoGui as leoGui
         assert isinstance(event,leoGui.LeoKeyEvent)
         qevent = event.event
-        assert isinstance(qevent,QtWidgets.QKeyEvent)
+        assert isinstance(qevent,QtGui.QKeyEvent)
         qw = hasattr(event.w,'widget') and event.w.widget or None
         if qw and isinstance(qw,QtWidgets.QTextEdit):
             g.trace(i,qevent.modifiers(),g.u(qevent.text()))
@@ -1073,7 +1073,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         if colorName in self.badWidgetColors:
             pass
-        elif QtWidgets.QColor(colorName).isValid():
+        elif QtGui.QColor(colorName).isValid():
             g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
         else:
             self.badWidgetColors.append(colorName)

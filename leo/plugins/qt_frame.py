@@ -379,9 +379,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # A kludge.  g.app.gui.innerBodyFrameColor is set by paint_qframe.
                     if hasattr(g.app.gui,'innerBodyFrameColor'):
                         color = g.app.gui.innerBodyFrameColor
-                        painter = QtWidgets.QPainter()
+                        painter = QtGui.QPainter()
                         painter.begin(w)
-                        painter.fillRect(w.rect(),QtWidgets.QColor(color))
+                        painter.fillRect(w.rect(),QtGui.QColor(color))
                         painter.end()
             w = InnerBodyFrame(parent)
         else:
@@ -487,10 +487,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createTreeWidget (self,parent,name):
 
         c = self.leo_c
-        # w = QtWidgets.QTreeWidget(parent)
         w = LeoQTreeWidget(c,parent)
         self.setSizePolicy(w)
-
         # 12/01/07: add new config setting.
         multiple_selection = c.config.getBool('qt-tree-multiple-selection',default=True)
         if multiple_selection:
@@ -1545,7 +1543,6 @@ class LeoQtBody (leoFrame.LeoBody):
         f = c.frame.top.leo_ui.leo_body_inner_frame
             # Valid regardless of qt_frame.useUI
         # Step 1: create the editor.
-        # w = QtWidgets.QTextBrowser(f)
         w = qt_text.LeoQTextBrowser(f,c,self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w,name='body',c=c)

@@ -379,7 +379,7 @@ class LeoQtEventFilter(QtCore.QObject):
         ch:     g.u(chr(keynum)) or '' if there is an exception.
         toString:
             For special keys: made-up spelling that become part of the setting.
-            For all others:   QtWidgets.QKeySequence(keynum).toString()
+            For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         '''
 

@@ -187,7 +187,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             tip = ""
         else:
             tip = action.toolTip()
-        pos = QtWidgets.QCursor.pos()
+        pos = QtGui.QCursor.pos()
         x = pos.x()
         y = pos.y()
         rect = QtCore.QRect(x-5, y-5, x+5, y+5)

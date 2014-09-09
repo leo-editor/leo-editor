@@ -2907,7 +2907,7 @@ class QScintillaColorizer(ColorizerMixin):
             g.trace('bad @data qt-scintilla-styles:',s)
         # A small font size, to be magnified.
         c = self.c
-        qcolor,qfont = QtWidgets.QColor,QtGui.QFont
+        qcolor,qfont = QtGui.QColor,QtGui.QFont
         # font = qfont("Courier New",8,qfont.Bold)
         font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
         lexer.setFont(font)
