@@ -15,16 +15,16 @@
 
 First:
 - Document template system more clearly in leoSettings.leo.
-
-Finish Scintialla
-- Add support for all scintilla lexers.
-- Fix all Scintilla unit-test failures.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+- Replace PyQt4 imports in plugins with leoQt imports.
+* Remove leoSTC.
 
 Next:
+- Fix all Scintilla unit-test failures.
+- Add support for all scintilla lexers.
 - Fix recursive import bug.
 - Fix to-do problem.
-* Remove leoInspect and leoSTC
+
 .. @+node:ekr.20140824043305.18300: *3* Bugs for b1
 Fix all git bugs:
 https://github.com/leo-editor/leo-editor/labels/bug
