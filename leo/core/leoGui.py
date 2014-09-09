@@ -307,6 +307,7 @@ class NullGui(LeoGui):
         self.focusWidget = None
         self.frameFactory = g.NullObject()
         self.iconimages = {}
+        self.insert_char_flag = False
         self.script = None
         self.lastFrame = None
         self.isNullGui = True
@@ -314,9 +315,7 @@ class NullGui(LeoGui):
         self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.2229: *4* NullGui.runMainLoop
     def runMainLoop(self):
-
-        """Run the gui's main loop."""
-
+        """Run the null gui's main loop."""
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log

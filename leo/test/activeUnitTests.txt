@@ -2290,8 +2290,7 @@ for p2,h2 in table:
 import leo.core.leoBridge as leoBridge
 
 if g.app.isExternalUnitTest:
-
-    # This can not be run locally: it contains another Tk event loop.
+    # This can not be run locally!
     b = leoBridge.controller(gui='nullGui',verbose=False)
     g = b.globals()
     path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
