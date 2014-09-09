@@ -168,6 +168,7 @@ def getTable(scope):
         'all': (
             (coreList,'core'),
             # (guiPluginsList,'plugins'),
+            (guiPluginsList,'plugins'),
             (pluginsList,'plugins'),
             (externalList,'external'),
         ),
@@ -192,16 +193,6 @@ def getTable(scope):
             (pluginsList,'plugins'),
             # (passList,'plugins'),
         ),
-        # 'recent': (
-            # (recentCoreList,'core'),
-            # (recentPluginsList,'plugins'),
-        # ),
-        # 'stc': (
-            # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-        # ),
-        # 'stc-test': (
-            # (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-        # ),
     }
     tables_table = d.get(scope)
     if not tables_table:
