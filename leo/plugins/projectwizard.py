@@ -1,34 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090622063842.5264: * @file projectwizard.py
-#@+<< docstring >>
-#@+node:ville.20090614224528.8136: ** << docstring >>
 ''' Creates a wizard that creates @auto nodes.
 
 Opens a file dialog and recursively creates @auto & @path nodes from the path
 where the selected file is (the selected file itself doesn't matter.)
 
 '''
-#@-<< docstring >>
+# Written by VMV.
 
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20090614224528.8137: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 First released version (VMV)
-#@-<< version history >>
-
-#@+<< imports >>
-#@+node:ville.20090614224528.8138: ** << imports >>
 import leo.core.leoGlobals as g
-
 g.assertUi('qt')
-
-from PyQt4 import QtCore
-
-# Whatever other imports your plugins uses.
-#@-<< imports >>
+from leo.core.leoQt import QtCore
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init
