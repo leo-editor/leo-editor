@@ -60,7 +60,6 @@ def getCoreList():
         'leoRst', 
         'leoSessions',
         'leoShadow',
-        'leoSTC',
         'leoTangle',
         'leoTest',
         'leoUndo',
