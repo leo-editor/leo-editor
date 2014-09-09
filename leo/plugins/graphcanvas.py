@@ -1,10 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20090206153748.1: * @file graphcanvas.py
-#@@language python
-#@@tabwidth -4
+#@+<< docstring >>
+#@+node:ekr.20140909072923.18135: ** << docstring >>
 """
 Provides a widget for displaying graphs (networks) in Leo.
-Interacts with the backlinks.py plugin (same linkage data).
+
+Requires Qt and the backlink.py plugin.
 
 Implementation notes
 --------------------
@@ -15,46 +16,35 @@ but pydot and pygraphviz are two of the more common and pydot is easier to insta
 in windows.  This plugin started out supporting both, but it seems (TNB 20120511) to
 make sense to focus on pydot.
 """
-#@+others
-#@+node:bob.20110119123023.7392: ** graphcanvas declarations
-"""Adds a graph layout for nodes in a tab.
-Requires Qt and the backlink.py plugin.
-"""
-
-__version__ = '0.1'
-# 
-# 0.1 - initial release - TNB
-
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:bob.20110119123023.7392: ** << imports >> graphcanvas
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 from math import atan2, sin, cos
-
-import time
-import os
-
+# import time
 import os
 import tempfile
 
 if g.isPython3:
     import urllib.request as urllib
-    import urllib.parse as urlparse
+    # import urllib.parse as urlparse
 else:
     import urllib2 as urllib
-    import urlparse
+    # import urlparse
     
-from xml.sax.saxutils import quoteattr
+# from xml.sax.saxutils import quoteattr
 
 try:
+    # pylint: disable=unused-import
     import pydot
     import dot_parser
 except ImportError:
     pydot = None
 
 g.assertUi('qt')
-
-from PyQt4 import QtCore, QtGui, uic
-Qt = QtCore.Qt
+from leo.core.leoQt import Qt, QtCore, QtGui, uic
 
 pygraphviz = None
 if not pydot:
@@ -62,8 +52,10 @@ if not pydot:
         import pygraphviz
     except ImportError:
         pygraphviz = None
-    
+#@-<< imports >>
 c_db_key = '_graph_canvas_gnx'
+# pylint: disable=maybe-no-member
+#@+others
 #@+node:bob.20110119123023.7393: ** init
 def init ():
 
@@ -375,7 +367,7 @@ class nodeBase(QtGui.QGraphicsItemGroup):
     #@+node:tbrown.20110407091036.17539: *3* do_update
     def do_update(self):
 
-        raise NotImplemented
+        raise NotImplementedError
     #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
     def mouseMoveEvent(self, event):
         
@@ -1319,12 +1311,12 @@ class graphcanvasController(object):
         if 'color' in node.u['_bklnk']:
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
+            del node.u['_bklnk']['tcolor']
         if 'type' in node.u['_bklnk']:
             del node.u['_bklnk']['type']
 
         del node.u['_bklnk']
-        
+
         self.unLoad()
     #@+node:bob.20110202125047.4170: *5* exportGraph
     def exportGraph(self):
@@ -1379,20 +1371,19 @@ class graphcanvasController(object):
 
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
-        
         # FIXME: need node.clear_formatting()
         if hasattr(item, 'bg'):
             item.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         if hasattr(item, 'text'):
             item.text.setDefaultTextColor(QtGui.QColor(0,0,0))
-
         if 'color' in node.u['_bklnk']:
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
-
+            del node.u['_bklnk']['tcolor']
         self.releaseNode(self.nodeItem[node])
     #@-others
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
