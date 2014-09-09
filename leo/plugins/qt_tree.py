@@ -13,18 +13,7 @@ import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins # Uses leoPlugins.TryNext.
 import leo.plugins.qt_text as qt_text
 
-# This crashes pylint, although that's not really all that serious.
-    # from leo.core.leoQt import QtConst,QtGui,QtWidgets
-try:
-    from PyQt5 import QtCore
-    from PyQt5 import QtGui
-    from PyQt5 import QtWidgets
-    QtConst = QtCore.Qt
-except ImportError:
-    import PyQt4.QtGui as QtGui
-    import PyQt4.QtCore as QtCore
-    QtConst = QtCore.Qt
-    QtWidgets = QtGui
+from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets
 #@-<< imports >>
 
 class LeoQtTree(leoFrame.LeoTree):

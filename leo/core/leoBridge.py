@@ -103,6 +103,9 @@ class BridgeController:
 
         # Create the application object.
         try:
+            leoGlobals.in_bridge = True
+                # Tell leoApp.createDefaultGui not to create a gui.
+                # This module will create the gui later.
             import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:

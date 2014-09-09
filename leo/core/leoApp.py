@@ -820,16 +820,17 @@ class LeoApp:
         """A convenience routines for plugins to create the default gui class."""
         app = self
         argName = app.guiArgName
-        # This method can be called twice if we had to get .leoID.txt.
+        if g.in_bridge:
+             # print('createDefaultGui: g.in_bridge: %s' % g.in_bridge)
+            return # The bridge will create the gui later.
         if app.gui:
-            return
+            return # This method can be called twice if we had to get .leoID.txt.
         if argName in ('qt','qttabs'): # 2011/06/15.
             app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
-
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
@@ -845,23 +846,19 @@ class LeoApp:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
-        # import pdb ; pdb.set_trace()
+        # Do the minimal import first.
+        # This prevents a crash in pylint.
         try:
-            import PyQt5.QtGui
-            import PyQt5.QtCore    
-            import leo.plugins.qt_gui as qt_gui
+            from PyQt5 import Qt
         except ImportError:
             try:
-                # Work around pylint/qt problem: import QtGui before QtCore:
-                # http://lists.logilab.org/pipermail/python-projects/2013-January/003383.html
-                # Take care to try the same imports as in qt_frame.py.
-                import PyQt4.QtGui
-                import PyQt4.QtCore    
-                import leo.plugins.qt_gui as qt_gui
-                if 0: g.trace(PyQt4) # To remove a pyflakes warning.
+                from PyQt4 import Qt
             except ImportError:
-                qt_gui = None
-        if qt_gui:
+                Qt = None
+        if Qt:
+            # Now do the complete imports, as a check.
+            from leo.core.leoQt import Qt
+            import leo.plugins.qt_gui as qt_gui
             qt_gui.init()
             if app.gui and fileName and verbose:
                 print('Qt Gui created in %s' % fileName)
