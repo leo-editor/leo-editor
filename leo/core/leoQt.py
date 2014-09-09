@@ -14,7 +14,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
     # Warning: importing leoGlobals can crash pylint!
 
 # pylint: disable=unused-import
-# Define isQt,Qt,QtConst,QtCore,QtGui,QtWidgets,QUrl
+# Define isQt,Qt,QtConst,QtCore,QtDeclarative,QtGui,QtWidgets,QUrl
 try:
     isQt5 = True
     from PyQt5 import Qt
@@ -53,6 +53,10 @@ if 0:
 # These imports may fail without affecting the isQt5 constant.
 if isQt5:
     try:
+        import PyQt5.QtDeclarative as QtDeclarative
+    except ImportError:
+        QtDeclarative = None
+    try:
         import PyQt5.phonon as phonon
         phonon = phonon.Phonon
     except ImportError:
@@ -74,6 +78,10 @@ if isQt5:
     except ImportError:
         QtWebKitWidgets = None
 else:
+    try:
+        import PyQt4.QtDeclarative as QtDeclarative
+    except ImportError:
+        QtDeclarative = None
     try:
         import PyQt4.phonon as phonon
         phonon = phonon.Phonon
