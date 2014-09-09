@@ -608,7 +608,13 @@ class VimCommands:
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
         vc.command_w = w
-        vc.accept(handler=vc.do_insert_mode,add_to_dot=True)
+        if 1:
+            # Add the starting character to the dot, but don't show it.
+            vc.accept(handler=vc.do_insert_mode,add_to_dot=False)
+            vc.show_status()
+            vc.add_to_dot()
+        else:
+            vc.accept(handler=vc.do_insert_mode,add_to_dot=True)
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(vc,motion_func):
         '''Start an inner motion.'''
