@@ -1,39 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ville.20120604212857.4215: * @file notebook.py
-#@+<< docstring >>
-#@+node:ville.20120604212857.4216: ** << docstring >>
 ''' QML Notebook
 
 Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
-
-
 '''
-#@-<< docstring >>
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20120604212857.4217: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Functionally complete version
-# 0.2 EKR: check p before calling c.selectPosition(p)
-#@-<< version history >>
-
-#@+<< imports >>
-#@+node:ville.20120604212857.4218: ** << imports >>
 import leo.core.leoGlobals as g
-
 g.assertUi('qt')
-
-from PyQt4.QtCore import QUrl, QObject
-
-from PyQt4.QtDeclarative import QDeclarativeView
-from PyQt4.QtGui import QStandardItemModel,QStandardItem
-
-#@-<< imports >>
+from leo.core.leoQt import QtCore,QtDeclarative,QtGui
 
 controllers = {}
     # keys are c.hash(), values are NavControllers
@@ -74,13 +49,13 @@ class ModelWrapper:
             rid = n + 100
             rn[rid] = f
             ri[f] = rid
-        self.model = mo = QStandardItemModel()
+        self.model = mo = QtGui.QStandardItemModel()
         mo.setRoleNames(rn)
 
     #@+node:ville.20120604212857.4229: *3* mkitem
     def mkitem(self, d):
         """ dict with field->value """        
-        si = QStandardItem()
+        si = QtGui.QStandardItem()
         for k,v in d.items():
             rid = self.roleids[k]
             si.setData(v, rid)
@@ -123,7 +98,7 @@ class NbController:
 
         #self.add_all_nodes()       
         #self.add_subtree(p)       
-        self.view = view = QDeclarativeView()
+        self.view = view = QtDeclarative.QDeclarativeView()
         ctx = view.rootContext()        
         
         @g.command("nb-all")
@@ -141,8 +116,8 @@ class NbController:
         ctx.setContextProperty("nodesModel", self.mw.model)
                 
         path = g.os_path_join(g.computeLeoDir(), 'plugins', 'qmlnb', 'qml', 'leonbmain.qml')
-        view.setSource(QUrl(path))
-        view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
+        view.setSource(QtCore.QUrl(path))
+        view.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
         # Display the user interface and allow the user to interact with it.
         view.hide()
         view.setGeometry(100, 100, 800, 600)
