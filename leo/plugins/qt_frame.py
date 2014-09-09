@@ -3300,7 +3300,7 @@ class LeoQtLog (leoFrame.LeoLog):
     def createFontPicker (self,tabName):
 
         # log = self
-        QFont = QtWidgets.QFont
+        QFont = QtGui.QFont
         font,ok = QtWidgets.QFontDialog.getFont()
         if not (font and ok): return
         style = font.style()

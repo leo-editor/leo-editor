@@ -2850,7 +2850,7 @@ if Qsci:
             c = self.leo_c
             lexer = self
             ### To do: use c.config setting.
-            font = QtWidgets.QFont("DejaVu Sans Mono",14)
+            font = QtGui.QFont("DejaVu Sans Mono",14)
             lexer.setFont(font)
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(ColorizerMixin)
 # This is c.frame.body.colorizer
@@ -2907,7 +2907,7 @@ class QScintillaColorizer(ColorizerMixin):
             g.trace('bad @data qt-scintilla-styles:',s)
         # A small font size, to be magnified.
         c = self.c
-        qcolor,qfont = QtWidgets.QColor,QtWidgets.QFont
+        qcolor,qfont = QtWidgets.QColor,QtGui.QFont
         # font = qfont("Courier New",8,qfont.Bold)
         font = qfont ("DejaVu Sans Mono",14) ###,qfont.Bold)
         lexer.setFont(font)
@@ -3012,7 +3012,7 @@ if Qsci:
             c = self.leo_c
             lexer = self
             ### To do: use c.config setting.
-            font = QtWidgets.QFont("DejaVu Sans Mono",14)
+            font = QtGui.QFont("DejaVu Sans Mono",14)
             lexer.setFont(font)
 #@-others
 #@-leo
