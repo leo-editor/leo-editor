@@ -101,36 +101,11 @@ plugins. Here are some points of interest:
 
 '''
 #@-<< docstring >>
+# Written by TNB.
 
-#@@language python
-#@@tabwidth -4
-
-#@+<< imports >>
-#@+node:tbrown.20091009210724.10973: ** << imports >>
 import leo.core.leoGlobals as g
-import re
-
 if g.app.gui.guiName() == "qt":
-    import os
-    try:
-        from PyQt5 import QtCore, QtWidgets
-        isQt5 = True
-    except ImportError:
-        from PyQt4 import QtCore, QtGui
-        QtWidgets = QtGui
-        isQt5 = False
-    Qt = QtCore.Qt
-#@-<< imports >>
-__version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20091009210724.10974: ** << version history >>
-#@@killcolor
-
-#@+at Use and distribute under the same terms as leo itself.
-# 
-# 0.1 TNB
-#   - initial version
-#@-<< version history >>
+    from leo.core.leoQt import isQt5,QtCore,QtWidgets
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -171,11 +146,11 @@ class AttributeGetter(object):
         return "ABSTRACT VIRTUAL BASE CLASS"
 
     def getAttribs(self, v):
-        raise NotImplemented
+        raise NotImplementedError
     def setAttrib(self, v, path, value):
-        raise NotImplemented
+        raise NotImplementedError
     def delAttrib(self, v, path):
-        raise NotImplemented
+        raise NotImplementedError
 
     def helpCreate(self):
         """either a string telling user how to add an attribute, or
@@ -189,7 +164,7 @@ class AttributeGetter(object):
 
         E.g. attribute named 'count' might be described as 'address.people.count'
         """
-        raise NotImplemented
+        raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
 
@@ -469,7 +444,7 @@ class ListDialog(QtWidgets.QDialog):
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setCheckState(Qt.Checked)
+                cb.setCheckState(cb.Checked)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
@@ -491,7 +466,7 @@ class ListDialog(QtWidgets.QDialog):
     def writeBack(self, event=None):
 
         for n,i in enumerate(self.buttons):
-            self.entries[n][1] = (i.checkState() == Qt.Checked)
+            self.entries[n][1] = (i.checkState() == i.Checked)
         self.accept()
     #@-others
 #@+node:tbrown.20091010211613.5257: ** class editWatcher
@@ -592,9 +567,9 @@ class attrib_edit_Controller:
         if self.guiMode == 'body':
             self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
             self.holder.setMinimumWidth(300)
-            os = c.frame.top.leo_body_frame.parent()
+            parent = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)
-            os.addWidget(self.holder)
+            parent.addWidget(self.holder)
             self.parent = self.holder
         elif self.guiMode == 'tab':
             self.parent = QtWidgets.QFrame()
@@ -810,18 +785,20 @@ class attrib_edit_Controller:
     #@-others
 #@+node:tbrown.20091029101116.1415: ** cmd_Modes
 def cmd_Modes(c):
-   c.attribEditor.manageModes()
+    c.attribEditor.manageModes()
 #@+node:tbrown.20091103080354.1413: ** cmd_Manage
 def cmd_Manage(c):
-   c.attribEditor.manageAttrib()
+    c.attribEditor.manageAttrib()
 #@+node:tbrown.20091029101116.1419: ** cmd_Create
 def cmd_Create(c):
-   c.attribEditor.createAttrib()
+    c.attribEditor.createAttrib()
 #@+node:tbrown.20091029101116.1421: ** cmd_CreateReadonly
 def Xcmd_CreateReadonly(c):
-   c.attribEditor.createAttrib(readonly=True)
+    c.attribEditor.createAttrib(readonly=True)
 #@+node:tbrown.20091029101116.1426: ** cmd_Scan
 def cmd_Scan(c):
-   c.attribEditor.scanAttribs()
+    c.attribEditor.scanAttribs()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
