@@ -4,7 +4,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
-    # This import causes pylint to fail on leoBridge.py.
+    # This import causes pylint to fail on this file and on leoBridge.py.
 
 import leo.plugins.qt_events as qt_events
 import leo.plugins.qt_frame as qt_frame
