@@ -2,7 +2,7 @@
 #@+node:tbrown.20080613095157.2: * @file active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >>
-'''Synchronizes \@path nodes with folders.
+r'''Synchronizes \@path nodes with folders.
 
 If a node is named '\@path *<path_to_folder>*', the content (file and folder names)
 of the folder and the children of that node will synchronized whenever you double-click
@@ -88,27 +88,9 @@ import time # for recursion bailout
 from leo.plugins.plugins_menu import PlugIn
 
 if g.app.gui.guiName() == "qt":
-    # for the right click context menu
-    try:
-        from PyQt5 import QtCore
-        isQt5 = True
-    except ImportError:
-        from PyQt4 import QtCore
-        isQt5 = False
+    from leo.core.leoQt import isQt5,QtCore
 #@-<< imports >>
-
-#@@language python
-#@@tabwidth -4
-
 testing = False
-__version__ = "0.2"
-#@+<< version history >>
-#@+node:ekr.20090120065737.1: ** << version history >>
-#@@nocolor-node
-#@+at
-# 
-# 0.2 EKR: replaced begin/endUpdate with c.redraw(p)
-#@-<< version history >>
 #@+others
 #@+node:tbrown.20091128094521.15048: ** init
 def init():
@@ -123,6 +105,7 @@ def init():
 def attachToCommander(t,k):
     c = k.get('c')
     event = c.config.getString('active_path_event') or "icondclick1"
+    # pylint: disable=unnecessary-lambda
     g.registerHandler(event, lambda t,k: onSelect(t,k))
 
     # not using a proper class, so
@@ -751,4 +734,6 @@ if testing:
     cmd_MakeTestHierachy = makeTestHierachy
     cmd_DeleteFromTestHierachy = deleteTestHierachy
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
