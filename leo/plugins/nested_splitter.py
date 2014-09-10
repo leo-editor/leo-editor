@@ -10,11 +10,8 @@ except ImportError:
     g = None
         # This will fail when run from main function.
         # this import should be removed anyway
-
-from leo.core.leoQt import Qt,QtCore,QtConst,QtWidgets
-
+from leo.core.leoQt import Qt,QtCore,QtConst,QtGui,QtWidgets 
 import sys
-
 # from inspect import isclass
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
