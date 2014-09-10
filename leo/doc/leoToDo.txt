@@ -6,6 +6,12 @@
 .. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
 @language rest
 
+- Search for PyQt4/5 here and in plugins.
+- Clean email.
+
+- Test and enable big_text_buttons.
+    * Big-text dummy text should contain the "wait" warning.
+
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
@@ -15,7 +21,6 @@ Next:
 - Fix recursive import bug.
 
 Stashed bugs:
-- Test and enable big_text_buttons.
 - Vim borders don't work with my standard settings and python3.4 and Qt5
 - Python colorizing spoiled after colorizing other languages
 .. @+node:ekr.20140910065834.18125: *3* Delegated

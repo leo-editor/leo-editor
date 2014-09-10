@@ -846,22 +846,17 @@ class LeoApp:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
-        # Do the minimal import first.
-        # This prevents a crash in pylint.
         try:
-            from PyQt5 import Qt
-        except ImportError:
-            try:
-                from PyQt4 import Qt
-            except ImportError:
-                Qt = None
-        if Qt:
-            # Now do the complete imports, as a check.
             from leo.core.leoQt import Qt
             import leo.plugins.qt_gui as qt_gui
+        except ImportError:
+            Qt = None
+        if Qt:
             qt_gui.init()
             if app.gui and fileName and verbose:
                 print('Qt Gui created in %s' % fileName)
+        else:
+            print('createQtGui: can not create Qt gui.')
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 

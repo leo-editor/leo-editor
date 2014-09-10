@@ -31,29 +31,21 @@ class DemoWidget(QtWidgets.QWidget):
     #@+others
     #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
     def __init__(self, parent=None, color=None):
-
-        # pylint: disable=E1101
-        # E1101: DemoWidget.__init__: Module 'PyQt4.QtCore' has no 'QMargins' member
-
+        '''Ctor for DemoWidget class.'''
         QtWidgets.QWidget.__init__(self, parent)
-
+            # Init the base class.
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(QtCore.QMargins(0,0,0,0))
         self.layout().setSpacing(0)
-
         text = QtWidgets.QTextEdit()
         self.layout().addWidget(text)
         DemoWidget.count += 1
         text.setPlainText("#%d" % DemoWidget.count)
-
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.setContentsMargins(QtCore.QMargins(5,5,5,5))
         self.layout().addLayout(button_layout)
-
-
         button_layout.addWidget(QtWidgets.QPushButton("Go"))
         button_layout.addWidget(QtWidgets.QPushButton("Stop"))
-
         if color:
             self.setStyleSheet("background-color: %s;"%color)
     #@-others
@@ -1215,33 +1207,25 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
-
+    '''The main top-level function executed when this file is executed stand-alone.'''
     app = Qt.QApplication(sys.argv)
-
     wdg = DemoWidget()
     wdg2 = DemoWidget()
-
     splitter = NestedSplitter()
     splitter.addWidget(wdg)
     splitter.addWidget(wdg2)
-
     class DemoProvider:
         def ns_provides(self):
             return[('Add demo widget', '_add_demo_widget')] 
         def ns_provide(self,id_):
             if id_ == '_add_demo_widget':
                 return DemoWidget()
-
     splitter.register_provider(DemoProvider())
-
-    # pylint: disable=E1101
-    # E1101:main: Module 'PyQt4.QtCore' has no 'QMargins' member
     holder = QtWidgets.QWidget()
     holder.setLayout(QtWidgets.QVBoxLayout())
     holder.layout().setContentsMargins(QtCore.QMargins(0,0,0,0))
     holder.layout().addWidget(splitter)
     holder.show()
-
     app.exec_()
 #@-others
 if __name__ == "__main__":

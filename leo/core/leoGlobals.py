@@ -716,12 +716,9 @@ class SherlockTracer:
         self.trace_lines = True         # True: trace lines in enabled functions.
         self.verbose = verbose          # True: print filename:func
         self.set_patterns(patterns)
-        try:
-            from PyQt4 import QtGui # Work-around a pylint/pyqt issue.
-            from PyQt4 import QtCore
+        from leo.core.leoQt import QtCore
+        if QtCore:
             QtCore.pyqtRemoveInputHook()
-        except Exception:
-            pass
     #@+node:ekr.20140326100337.16844: *4* __call__
     def __call__(self,frame,event,arg):
         '''Exists so that self.dispatch can return self.'''
@@ -1528,6 +1525,8 @@ def pdb (message=''):
     import pdb # Required: we have just defined pdb as a function!
 
     if app and not app.useIpython:
+        # from leo.core.leoQt import QtCore
+        # This is more portable.
         try:
             import PyQt5.QtCore as QtCore
         except ImportError:
