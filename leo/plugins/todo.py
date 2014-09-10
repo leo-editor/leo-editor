@@ -1155,7 +1155,9 @@ class todoController:
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
         # pylint: disable=maybe-no-member
         created = self.getat(v,'created')
-        if created:
+        if created and \
+           isinstance(created, datetime.datetime) and \
+           created.year >= 1900:  # .strftime doesn't work if not, has happened
             got_created = True
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
