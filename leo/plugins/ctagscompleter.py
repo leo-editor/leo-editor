@@ -25,36 +25,16 @@ search.
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.3'
-#@+<< version history >>
-#@+node:ville.20090317180704.9: ** << version history >>
-#@@nocolor-node
-#@+at
-# 
-# 0.1 EKR: place helpers as children of callers.
-# 0.2 EKR: Don't crash if the ctags file doesn't exist.
-# 0.3 EKR: A complete refactoring using CtagsController class.
-#     This anticipates that eventFiler will call onKey during completion.
-#@-<< version history >>
-#@+<< imports >>
-#@+node:ville.20090317180704.10: ** << imports >>
 import leo.core.leoGlobals as g
-
-from PyQt4.QtGui import QCompleter
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-
+from leo.core.leoQt import QtCore,QtGui
+from QtGui import QCompleter
 import os
 import re
-#@-<< imports >>
-
 # Global variables
 controllers = {} # Keys are commanders, values are controllers.
 tagLines = []
     # The saved contents of the tags file.
     # This is used only if keep_tag_lines is True
-
 keep_tag_lines = True
     # True:  Read the tags file only once, keeping
     #        the contents of the tags file in memory.
@@ -64,9 +44,6 @@ keep_tag_lines = True
     #        results of running grep on the file.
     #        This saves lots of memory, but reads the
     #        tags file many times.
-    
-
-
 #@+others
 #@+node:ekr.20110307092028.14155: ** Module level...
 #@+node:ville.20090317180704.11: *3* init
@@ -233,6 +210,7 @@ class CtagsController:
         desc = []
         for h in hits:
             s = h[0]
+            # pylint: disable=anomalous-backslash-in-string
             m = re.findall('class:(\w+)',h[1])
             if m:
                 s+= "\t" + m[0]

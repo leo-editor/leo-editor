@@ -3,25 +3,19 @@
 #@@language python
 #@@tabwidth -4
 
-from PyQt4 import QtCore, QtGui
+from leo.core.leoQt import QtCore, QtGui
 import logging
 import time
 import leo.core.leoGlobals as g
 from collections import deque
-#log = logging.getLogger("out")
-
 #@+others
-#@+node:ekr.20121126102050.10135: ** init
-def init():
-
-    return True
 #@+node:ekr.20121126095734.12419: ** class ThreadQueue
 class ThreadQueue:
     #@+others
     #@+node:ekr.20121126095734.12420: *3* __init__
     def __init__(self):
+        '''Ctor for ThreadQueue class.'''
         self.threads = []
-
     #@+node:ekr.20121126095734.12421: *3* add
     def add(self,r):
         empty = not self.threads
@@ -37,8 +31,6 @@ class ThreadQueue:
             ne.start()
 
     #@-others
-
-#_tq = ThreadQueue()
 #@+node:ekr.20121126095734.12423: ** enq_task
 def enq_task(r):
     _tq.add(r)
@@ -88,18 +80,18 @@ def log_filedes(f, level):
     def reader():
         line = f.readline()
         if not line:
-
             raise StopIteration
         return line
 
     def output(line):
-        log.log(level, line.rstrip())
+        if log:
+            log.log(level, line.rstrip())
 
     def finished():
-        log.log(logging.INFO, "<EOF>")
+        if log:
+            log.log(logging.INFO, "<EOF>")
 
     rr = Repeater(reader)
-
     rr.fragment.connect(output)
     rr.finished.connect(finished)
     garbage.append(rr)
@@ -220,14 +212,22 @@ class UnitWorker(QtCore.QThread):
                 self.do_work(inp)
 
 
+
+
+init()
+
+
+
+    #@-others
+#@+node:ekr.20140910173844.17824: ** class SysProcessRunner
 class SysProcessRunner:
     def __init__(self):
         # dict of lists (queues)
         self.q = {}
         self.cur = {}
         self.default_cb = None
-
-
+    
+    
     def add(self, argv, key = "", cb = None):
         """ argv = [program, arg1, ...] """
         ent = {
@@ -236,17 +236,17 @@ class SysProcessRunner:
         }
         self.q.setdefault(key, deque()).append(ent)
         self.sched()
-
+    
     def sched(self):
         for k,q in self.q.items():
             if q and k not in self.cur:
                 ent = q.popleft()
                 self.cur[k] = ent
                 self.run_one(ent, k)
-
+    
     def run_one(self, ent, key):
         p = ent['proc'] = QtCore.QProcess()
-
+    
         def fini(code, status):
             del self.cur[key]
             out = str(p.readAllStandardOutput())
@@ -254,13 +254,14 @@ class SysProcessRunner:
             cb = ent['cb'] or self.default_cb
             later(self.sched)
             cb(out, err, status, ent)
-
-
+    
+    
         cmd = ent['arg'][0]
         args = ent['arg'][1:]
         p.start(cmd, args)
         p.finished.connect(fini)
 
+#@+node:ekr.20140910173844.17825: ** leo_echo_cb
 def leo_echo_cb(out, err, code, ent):
     arg = ent['arg']
     g.es("> " + arg[0] + " " + repr(arg[1:])    )
@@ -269,18 +270,12 @@ def leo_echo_cb(out, err, code, ent):
     if err:
         g.es_error(err)
 
+#@+node:ekr.20140910173844.17826: ** init
 def init():
     """ set up leo runner instance """
     g.procs = SysProcessRunner()
     g.procs.default_cb = leo_echo_cb
-
-
-
-init()
-
-
-
-    #@-others
+    return True
 #@+node:ekr.20121126095734.12443: ** main
 def main():
     # stupid test
@@ -292,7 +287,12 @@ def main():
     b.show()
     a.exec_()
 #@-others
-
+_tq = ThreadQueue()
+if 1:
+    log = None
+else:
+    log = logging.getLogger("out")
+init()
 if __name__ == "__main__":
     main()
 #@-leo

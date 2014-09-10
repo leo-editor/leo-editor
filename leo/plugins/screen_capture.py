@@ -1,9 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20130420091241.44181: * @file screen_capture.py
-#@@language python
-#@@tabwidth -4
-#@+others
-#@+node:tbrown.20130419143128.29668: ** screen_capture declarations
+#@+<< docstring >>
+#@+node:ekr.20140910173844.17823: ** << docstring >> (screen_capture.py)
 """
 screen_capture.py
 =================
@@ -32,14 +30,12 @@ Settings
 
 Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 """
-
-import os
-import sys
-
+#@-<< docstring >>
 import leo.core.leoGlobals as g
-
+from leo.core.leoQt import QtCore, QtGui
+import os
 import time
-from PyQt4 import QtCore, QtGui
+#@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():
     
@@ -59,39 +55,38 @@ def init():
 #@+node:tbrown.20130419143128.29669: ** class Recorder
 class Recorder(object):
     """Recorder - record video of Leo
+    
+    These shell commands convert saved frames to video
+    
+    ls /tmp/image*.ppm | xargs -IFILE -n1 -P4 mogrify -format png FILE
+    mencoder mf:///tmp/image*.png -mf fps=12:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o output.avi
+    rm -k /tmp/image*.ppm /tmp/image*.png
     """
     #@+others
     #@+node:tbrown.20130419143128.29670: *3* __init__
-
     def __init__(self):
-        """init.
-        """
+        '''Ctor for Recorder class.'''
         self.recording = False
         self.frame = 0
         self.pointer_pmap = self.make_pointer()
         self.pointer_img = self.pointer_pmap.toImage()
         self.last_time = 0
-        
         c = g.app.commanders()[0]
         w = c.frame.body.wrapper.widget
         while w.parent():
             w = w.parent()
-        
         self.widget = w
         self.winId = w.winId()
-        
         # re-enable this to restore video function
-        # self.timer = QtCore.QTimer()
-        # self.timer.setInterval(25)
-        # self.timer.timeout.connect(self.grab_frame)
-        
+            # self.timer = QtCore.QTimer()
+            # self.timer.setInterval(25)
+            # self.timer.timeout.connect(self.grab_frame)
         # performance testing
         self.times = []
 
     #@+node:tbrown.20130419143128.29671: *3* grab_frame
     def grab_frame(self, filename=None):
-        """grab_frame - grab one frame
-        """
+        """Grab one frame."""
 
         if not self.recording and not filename:
             return
@@ -136,40 +131,24 @@ class Recorder(object):
         # self.last_time = time.time()
     #@+node:tbrown.20130419143128.29672: *3* make_pointer
     def make_pointer(self):
-        """make_pointer - Return a pixmap for a pointer
-        """
-
+        """Return a pixmap for a pointer."""
         path = g.computeLeoDir()
         path = g.os_path_join(path, 'Icons', 'recorder', 'pointer.png')
         return QtGui.QPixmap(path)
     #@+node:tbrown.20130419143128.29673: *3* run
     def run(self):
-        """run - start recording
-        """
-
+        """Start recording."""
         self.recording = True
         self.last_time = time.time()
-        self.timer.start()
-        
+        # self.timer.start()
     #@+node:tbrown.20130419143128.29674: *3* stop
     def stop(self):
-        """stop - stop recording
-        """
-
-        self.timer.stop()
-        
+        """Stop recording"""
+        # self.timer.stop()
         mean = sum(self.times) / float(len(self.times))
         print("\nMean seconds: %0.3f = %0.3f fps" % (mean, 1./mean))
         self.times = []
-
     #@-others
-    """
-    # these shell commands convert saved frames to video
-    
-    ls /tmp/image*.ppm | xargs -IFILE -n1 -P4 mogrify -format png FILE
-    mencoder mf:///tmp/image*.png -mf fps=12:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o output.avi
-    rm -k /tmp/image*.ppm /tmp/image*.png
-    """
 
 #@+node:tbrown.20130419143128.29677: ** screen_capture_now
 @g.command('screen-capture-now')
@@ -214,4 +193,7 @@ def screen_capture_5sec(kwargs):
 
     QtCore.QTimer.singleShot(5000, screen_capture_now)
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

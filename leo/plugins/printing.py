@@ -113,15 +113,6 @@ fashion, using scripts to define your document.
 
 '''
 #@-<< docstring >>
-#@+<< version history >>
-#@+node:peckj.20130513115943.16254: ** << version history >>
-#@+at
-# version 0.1 (2013-05-14) - initial release
-# version 0.2 (2013-08-14) - added print-html-node (rich text) commands
-# version 0.3 (2014-08-11) - use leoQt instead of PyQt4
-#@@c
-#@-<< version history >>
-__version__ = '0.3'
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets
 #@+others

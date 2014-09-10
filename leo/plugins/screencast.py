@@ -4,7 +4,7 @@
 #@+node:ekr.20120913110135.10589: ** << docstring >>
 #@@language rest
 
-'''
+r'''
 
 Overview
 ========
@@ -219,11 +219,8 @@ You will find this stylesheet in the node @data
 import random
 
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui # for leoKeyEvents.
-
-# import PyQt4.Qt as Qt
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import leo.core.leoGui as leoGui # for LeoKeyEvents.
+from leo.core.leoQt import QtCore,QtGui
 #@-<< imports >>
 
 #@+at
@@ -399,9 +396,7 @@ class ScreenCastController:
                 return p
             else:
                 p.moveToThreadNext()
-        else:
-            return None
-        
+        return None
     #@+node:ekr.20120916193057.10609: *5* find_prev_screencast
     def find_prev_screencast(self,p):
         
@@ -412,8 +407,7 @@ class ScreenCastController:
                 return p
             else:
                 p.moveToThreadBack()
-        else:
-            return None
+        return None
     #@+node:ekr.20120913110135.10582: *4* focus
     def focus(self,pane):
         
@@ -822,7 +816,7 @@ class ScreenCastController:
             
         # g.trace(ch,key,stroke)
         
-        return leoGui.leoKeyEvent(c,key,stroke,w=w,
+        return leoGui.LeoKeyEvent(c,key,stroke,w=w,
             x=0,y=0,x_root=0,y_root=0) # These are required.
     #@+node:ekr.20120914163440.10581: *4* delete_widgets
     def delete_widgets (self):

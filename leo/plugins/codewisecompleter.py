@@ -18,40 +18,20 @@ Instructions:
 
 '''
 #@-<< docstring >>
-
 # See http://ctags.sourceforge.net/ctags.html#TAG%20FILE%20FORMAT for the file format:
 # tag_name<TAB>file_name<TAB>ex_cmd;"<TAB>extension_fields
 # Example
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20091204224145.5357: ** << version history >>
-#@@nocolor-node
-#@+at
-# 
-# 0.1 EKR: place helpers as children of callers.
-# 0.2 EKR: Don't crash if the ctags file doesn't exist.
-# 0.3 EKR 2011/03/09: refactored using per-commander controllers.
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
-
+from leo.core.leoQt import QtCore,QtGui
+from QtGui import QCompleter
 import leo.external.codewise as codewise
     # The code that interfaces with ctags.
     # It contains commands that can be run stand-alone,
     # or imported as is done here.
-
 import os
 import re
-
-try:
-    from PyQt4.QtGui import QCompleter
-    from PyQt4 import QtCore
-    from PyQt4 import QtGui
-except ImportError:
-    # no qt available - some functionality should still exist
-    pass
 #@-<< imports >>
 
 # Global variables
@@ -70,7 +50,6 @@ keep_tag_lines = True
     #        results of running grep on the file.
     #        This saves lots of memory, but reads the
     #        tags file many times.
-
 #@+others
 #@+node:ville.20091205173337.10141: ** class ContextSniffer
 class ContextSniffer:
@@ -324,10 +303,10 @@ class CodewiseController:
             # Return the nearest enclosing class.
             for par in p.parents():
                 h = par.h
+                # pylint: disable=anomalous-backslash-in-string
                 m = re.search('class\s+(\w+)', h)
                 if m:
                     return [m.group(1)]
-
         # Do a 'real' analysis
         aList = ContextSniffer().get_classes(p.b,varname)
         g.trace(varname,aList)
@@ -383,6 +362,7 @@ class CodewiseController:
         
         # Create the callback to insert the selected completion.
         def completion_callback(completion,self=self):
+            # pylint: disable=maybe-no-member
             self.end(completion)
         
         # Create the completer.

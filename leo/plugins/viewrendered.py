@@ -176,9 +176,6 @@ Jacob Peck added markdown support to this plugin.
 
 '''
 #@-<< docstring >>
-
-__version__ = '1.0'
-
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
 import leo.core.leoGlobals as g
@@ -213,7 +210,6 @@ except ImportError:
 import os
     
 #@-<< imports >>
-
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
 stickynote_stylesheet = """
@@ -232,7 +228,6 @@ QPlainTextEdit {
 #@-<< define stylesheet >>
 
 #@+at
-# 
 # To do:
 # 
 # - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
@@ -866,10 +861,10 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
-        # pylint: disable=E1103
-        # E1103:update_movie: Module 'PyQt4.phonon' has no 'VideoPlayer' member
-        # E1103:update_movie: Module 'PyQt4.phonon' has no 'VideoCategory' member
-        # E1103:update_movie: Module 'PyQt4.phonon' has no 'MediaSource' member
+        # pylint: disable=maybe-no-member
+            # 'PyQt4.phonon' has no 'VideoPlayer' member
+            # 'PyQt4.phonon' has no 'VideoCategory' member
+            # 'PyQt4.phonon' has no 'MediaSource' member
 
         pc = self
         
@@ -1130,4 +1125,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         return ''.join(result)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
