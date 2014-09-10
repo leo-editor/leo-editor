@@ -7,8 +7,6 @@
 @language rest
 
 First:
-* Change Leo's official namespace
-    xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 * richtext.py has PyQt5 problems.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.

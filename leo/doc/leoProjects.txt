@@ -764,6 +764,14 @@ It would be good if LeoQTextEditWidget.setSelectionRangeHelper could handle
 insert points in the middle of a text selection, but at present it can't.
 .. @+node:ekr.20140828033858.18516: *4* Added clone-find-parents command
 Added c.cloneFindParents.
+.. @+node:ekr.20140910065834.18127: *4* Changed Leo's namespace in .leo files
+The xml namespace line at the start of .leo files has been:
+
+    <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+
+The new line line is:
+
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
