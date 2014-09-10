@@ -280,6 +280,17 @@ g.insertCodingLine adds coding line to start of all python scripts, except when 
 dw.createGrid now honors the margin argument.
 .. @+node:ekr.20140905085028.18560: *4* Reported QTextEdit bug
 https://bugreports.qt-project.org/browse/QTBUG-41153
+.. @+node:ekr.20140825124443.18548: *4* Fixed tab cycling
+@nocolor-node
+
+As of rev 6bc05ce Leo build: 20140826115101:
+
+Tab cycling now works as expected in all my tests.
+
+- Reset tab cycling if the user types backspace or any plain character.
+- Start cycling *only* if len(label) == len(common_prefix)
+
+These restriction appear to be essential.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
@@ -451,6 +462,9 @@ What I did
 - Removed wrapper.getFocus method.
 - Removed all references to HighLevelInterface class in the core.
 - Removed the evil set_focus synonym in the HighLevelInterface class.
+.. @+node:ekr.20140909072923.18136: *4* Converted 7 plugins so they work with PyQt5
+active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
+notebook.py, projectwizard.py, stickynotes.py
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

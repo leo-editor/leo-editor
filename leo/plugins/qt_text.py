@@ -908,7 +908,13 @@ class QMinibufferWrapper (QLineEditWrapper):
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 #@+node:ekr.20110605121601.18103: ** class QScintillaWrapper(QTextMixin)
 class QScintillaWrapper(QTextMixin):
-    '''A wrapper for QsciSinctilla supporting the high-level interface.'''
+    '''A wrapper for QsciSinctilla supporting the high-level interface.
+    
+    This widget will likely always be less capable the QTextEditWrapper.
+    To do:
+    - Fix all Scintilla unit-test failures.
+    - Add support for all scintilla lexers.
+    '''
     #@+others
     #@+node:ekr.20110605121601.18105: *3* qsciw.ctor & helpers
     def __init__ (self,widget,c,name=None):
