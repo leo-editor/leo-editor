@@ -122,8 +122,8 @@ import traceback
 import types
 
 if isPython3:
-    # E0611: No name 'parse' in urllib.
-    import urllib.parse as urlparse # pylint: disable=E0611
+    # pylint: disable=no-name-in-module
+    import urllib.parse as urlparse
 else:
     import urlparse
 
@@ -6898,12 +6898,13 @@ kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn,c=None,p=None):
-
-    '''Compute finalized url for filename fn.
-    This involves adding url escapes and evaluating Leo expressions.'''
-
-    # Module 'urllib' has no 'parse' member.
-    unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
+    '''
+    Compute finalized url for filename fn.
+    This involves adding url escapes and evaluating Leo expressions.
+    '''
+    if 1:
+        # pylint: disable=no-member
+        unquote = urllib.parse.unquote if isPython3 else urllib.unquote
     # First, replace special characters (especially %20, by their equivalent).
     url = unquote(fn)
     # Finalize the path *before* parsing the url.
@@ -6979,9 +6980,10 @@ def getUrlFromNode(p):
 #@@c
 
 def handleUrl(url,c=None,p=None):
-
-    # E1101: Module 'urllib' has no 'parse' member
-    unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
+    '''Open an url.'''
+    if 1:
+        # pylint: disable=no-member
+        unquote = urllib.parse.unquote if isPython3 else urllib.unquote
     trace = False and not g.unitTesting ; verbose = False
     if c and not p:
         p = c.p

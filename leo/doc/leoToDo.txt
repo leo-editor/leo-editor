@@ -6,10 +6,12 @@
 .. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
 @language rest
 
-First:
-* richtext.py has PyQt5 problems.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+
+Next:
+- Create minimal bridge app for testing.
+- Create minimal tests of recently-changed plugins.
 - Fix recursive import bug.
 
 Stashed bugs:
