@@ -5402,7 +5402,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                 w.insert(i,arg)
                 if g.app.gui.widget_name(w) == 'body':
                     c.frame.body.onBodyChanged(undoType='Typing')
-            c.k.getFileName(callback=callback)
+            c.k.getFileName(event,callback=callback)
     #@+node:ekr.20050920084036.88: *3* line...
     #@+node:ekr.20050920084036.90: *4* flushLines
     def flushLines (self,event):
