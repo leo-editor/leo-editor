@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20130813134319.11942: * @file richtext.py
-#@@language python
-#@@tabwidth -4
 #@+<< docstring >>
 #@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
 """
@@ -60,17 +58,17 @@ To make a button to toggle the editor on and off, use::
 """
 #@-<< docstring >>
 #@+<< imports >>
-#@+node:tbrown.20130813134319.14335: ** << imports >>
+#@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
-import sys
-py3 = sys.version_info.major == 3
-
-from PyQt4 import QtGui, QtWebKit, QtCore, Qt, QtXml
-from PyQt4.QtCore import Qt as QtConst
-from collections import OrderedDict
+from leo.core.leoQt import isQt5,QtCore,QtGui
+if isQt5:
+    from PyQt5 import QtWebKit
+else:
+    from PyQt4 import QtWebKit
+# from collections import OrderedDict
 import time
-
-if py3:
+if g.isPython3:
+    # pylint: disable=no-name-in-module
     from urllib.parse import unquote
 else:
     from urllib import unquote
@@ -340,4 +338,6 @@ def cmd_ToggleAutosave(kwargs):
     g.es("Rich text autosave " + 
          ("ENABLED" if c._ckeeditor_autosave else "disabled"))
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
