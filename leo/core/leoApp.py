@@ -36,7 +36,7 @@ class LeoApp:
     Ivars of this class are Leo's global variables."""
 
     #@+others
-    #@+node:ekr.20031218072017.1416: *3* app.__init__
+    #@+node:ekr.20031218072017.1416: *3* app.__init__ (helpers contain langauge dicts)
     def __init__(self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -263,7 +263,7 @@ class LeoApp:
             "eiffel"             : "--",
             "elisp"              : ";",
             "erlang"             : "%",
-            "factor"             : "! ( )",
+            "factor"             : "!_ ( )", # Use the rem hack.
             "forth"              : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"            : "C",
             "fortran90"          : "!",
