@@ -76,7 +76,6 @@ def getExternalList():
 def getGuiPluginsList ():
 
     return (
-        # 'baseNativeTree',
         'free_layout',
         'nested_splitter',
         'qt_events',
@@ -138,25 +137,15 @@ def getPluginsList():
         'baseNativeTree',
         'bookmarks',
         'contextmenu',
-            # Crashes pylint.
-        # 'internal_ipkernel.py',
         'leoOPML',
         'lineNumbers',
         # 'mod_http',
         'mod_scripting',
-            # E0611:489:scriptingController.runDebugScriptCommand:
-            # No name 'leoScriptModule' in module 'leo.core'
         'nav_qt',
-        'nested_splitter',
         'quicksearch',
         'todo',
-        # 'toolbar',
-            # Dangerous: many erroneous E1101 errors
-            # Harmless: W0221: Arguments number differs from overridden method
-            # Harmless: W0511: Fixme and to-do.
         'vim.py',
         'viewrendered.py',
-            # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
     ])
     return aList
