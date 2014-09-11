@@ -9742,23 +9742,23 @@ than none, below.  'solid' works.</t>
 <t tx="tbrown.20140514191846.42170"></t>
 <t tx="tbrown.20140514191846.42171"></t>
 <t tx="tbrown.20140514191846.42173"></t>
-<t tx="tbrown.20140609102412.32426">from PyQt4 import QtGui
+<t tx="tbrown.20140609102412.32426">from leo.core.leoQt import QtWidgets
 
 date = g.app.gui.runAskDateTimeDialog(
     c, "Select date, will be copied to clipboard")
 if date:
     text = date.strftime("%Y-%m-%d %I:%M:%S %p")
-    QtGui.QApplication.clipboard().setText(text)
+    QtWidgets.QApplication.clipboard().setText(text)
     g.es("%s\ncopied to clipboard"%text)
 else:
     g.es("No date selected")
 </t>
-<t tx="tbrown.20140609102412.32428">from PyQt4 import QtGui, QtCore
+<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets, QtCore
 
-picker = QtGui.QColorDialog()
-text = QtGui.QApplication.clipboard().text()
+picker = QtWidgets.QColorDialog()
+text = QtWidgets.QApplication.clipboard().text()
 try:
-    color = QtGui.QColor(text)
+    color = QtWidgets.QColor(text)
     picker.setCurrentColor(color)
 except ValueError:
     pass
@@ -9768,14 +9768,14 @@ if not picker.exec_():
 else:
     text = picker.selectedColor().name()
     g.es("%s\ncopied to clipboard"%text)
-    QtGui.QApplication.clipboard().setText(text)
+    QtWidgets.QApplication.clipboard().setText(text)
 </t>
-<t tx="tbrown.20140609102412.32430">from PyQt4 import QtGui, QtCore
+<t tx="tbrown.20140609102412.32430">from leo.core.leoQt import QtWidgets, QtCore
 
-picker = QtGui.QFontDialog()
-text = QtGui.QApplication.clipboard().text()
+picker = QtWidgets.QFontDialog()
+text = QtWidgets.QApplication.clipboard().text()
 try:
-    font = QtGui.QFont(text)
+    font = QtWidgets.QFont(text)
     picker.setCurrentFont(font)
 except ValueError:
     pass
@@ -9785,7 +9785,7 @@ if not picker.exec_():
 else:
     text = picker.selectedFont().family()
     g.es("%s\ncopied to clipboard"%text)
-    QtGui.QApplication.clipboard().setText(text)
+    QtWidgets.QApplication.clipboard().setText(text)
 </t>
 <t tx="tbrown.20140609102412.32431"></t>
 <t tx="tbrown.20140814090009.57475"></t>
