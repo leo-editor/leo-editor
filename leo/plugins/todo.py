@@ -1166,6 +1166,8 @@ class todoController:
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
                 created = datetime.datetime.strptime(gdate, '%Y%m%d%H%M')
+                if created.year < 1900:
+                    created = None
             except Exception:
                 created = None
             if created:
