@@ -1428,7 +1428,6 @@
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
-<v t="tbrown.20131122091143.22659"><vh>@button reload-styles</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -9581,38 +9580,6 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.22659"># this @button script should be included in any file containing @settings
-# and being used to set styles related to appearance
-
-# remember where we are
-current_v = c.p.v
-
-if c.font_size_delta:
-    # doesn't make a lot of sense to edit font size settings while
-    # font zooming is in effect
-    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
-
-# first, rebuild the stylesheet template from the tree, if
-# the stylesheet source is in tree form, .e.g. dark themes, currently the
-# default light theme uses a single @data qt-gui-plugin-style-sheet node
-nd = g.findNodeAnywhere(c, '@settings')
-if nd:
-    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
-if nd:
-    c.selectPosition(nd)  # needs to be the selected node
-    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
-    # this executes the node `nd`, finding it a second time
-
-# then, reload settings from this file
-shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
-c.config.settingsDict.update(settings)
-
-# apply the stylesheet
-c.frame.top.setStyleSheets()
-
-# go back where we started
-c.selectPosition(c.vnode2position(current_v))
-</t>
 <t tx="tbrown.20131122091143.23828">These are definitions of colors not defined by default, so
 you can refer to "solarized-red" as "@solarized-red" instead
 of "#dc322f".  You probably don't need to touch these, although

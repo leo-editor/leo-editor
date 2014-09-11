@@ -184,6 +184,8 @@ def style_reload(kwargs):
                   if i.h == '@data qt-gui-plugin-style-sheet']
         if not sheets:
             g.es("Didn't find '@data qt-gui-plugin-style-sheet' node")
+            g.es("Typically 'Reload Settings' is used in the Global or Personal "
+                 "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
             return False
         if len(sheets) > 1:
             g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
