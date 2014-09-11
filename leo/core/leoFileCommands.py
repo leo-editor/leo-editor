@@ -1742,22 +1742,18 @@ class BaseFileCommands:
         self.put_nl()
     #@+node:ekr.20031218072017.1246: *4* fc.putProlog
     def putProlog (self):
-
+        '''Put the prolog of the xml file.'''
         c = self.c
-
+        # tag = 'http://www.leo-editor.org/2011/leo'
+        tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
-
         # Put "created by Leo" line.
-        self.put('<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->')
+        self.put('<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->')
         self.put_nl()
-
         if c.config.stylesheet or c.frame.stylesheet:
             self.putStyleSheetLine()
-
-        # Put the <leo_file> element.
-        # New in Leo 4.9: this element contains a namespace.
-        self.put('<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >')
-        # self.put("<leo_file>")
+        # Put the namespace
+        self.put('<leo_file xmlns:leo="%s" >' % tag)
         self.put_nl()
     #@+node:ekr.20031218072017.1248: *4* fc.putStyleSheetLine
     def putStyleSheetLine (self):
