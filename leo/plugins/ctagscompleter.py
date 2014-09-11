@@ -26,8 +26,11 @@ search.
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore,QtGui
-from QtGui import QCompleter
+from leo.core.leoQt import isQt5,QtCore,QtGui
+if isQt5:
+    from PyQt5.QtGui import QCompleter
+else:
+    from PyQt4.QtGui import QCompleter
 import os
 import re
 # Global variables
