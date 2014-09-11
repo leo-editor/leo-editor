@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -40,7 +40,7 @@
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
 <v t="tbrown.20140609102412.32431"><vh>Tools</vh>
-<v t="tbrown.20140609102412.32426"><vh>@button pick-date</vh></v>
+<v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
 <v t="tbrown.20140609102412.32428"><vh>@button pick-color</vh></v>
 <v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
 </v>
