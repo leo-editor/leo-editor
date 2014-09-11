@@ -6,21 +6,15 @@
 .. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
 @language rest
 
-- Search for PyQt4/5 here and in plugins.
-- Clean email.
-
+- Post: next release called 5.0.0?
+- Create minimal bridge app for testing.
 - Test and enable big_text_buttons.
     * Big-text dummy text should contain the "wait" warning.
-
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
-Next:
-- Create minimal bridge app for testing.
-- Create minimal tests of recently-changed plugins.
-- Fix recursive import bug.
-
 Stashed bugs:
+- Fix recursive import bug.
 - Vim borders don't work with my standard settings and python3.4 and Qt5
 - Python colorizing spoiled after colorizing other languages
 .. @+node:ekr.20140910065834.18125: *3* Delegated
@@ -3807,6 +3801,9 @@ https://groups.google.com/forum/#!topic/leo-editor/Bpc67qPNeJA
 Apparently, there are problems with importing launchpand bug tracker items.
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 .. @+node:ekr.20140521095206.16728: *3* * Important
+.. @+node:ekr.20140910140737.17820: *4* Make Leo settings easier for newbies
+A good thread: Help! Messing with UI settings.
+https://groups.google.com/forum/#!topic/leo-editor/2xB258NjR4s
 .. @+node:ekr.20140402091953.16863: *4* Add rope to Leo
 # http://rope.sourceforge.net/library.html
 
