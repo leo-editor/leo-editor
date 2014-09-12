@@ -12,6 +12,9 @@
     * Big-text dummy text should contain the "wait" warning.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+- Improve find buttons:
+    - Don't show find buttons in minibuffer-find mode.
+    - Give find buttons less space.
 
 Stashed bugs:
 - Fix recursive import bug.
