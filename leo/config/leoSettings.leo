@@ -1621,12 +1621,137 @@
 </v>
 </v>
 <v t="ekr.20140912072521.19150"><vh>Proposal (For Terry)</vh>
+<v t="ekr.20140912073148.19150"><vh>@button body2settings</vh></v>
 <v t="ekr.20140912072521.19151"><vh>Changed</vh>
 <v t="tbrown.20131122091143.23828"></v>
 </v>
 <v t="ekr.20140912072521.19159"><vh>New/changed selectors</vh></v>
 <v t="ekr.20140912072521.19160"><vh>New qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20140912073148.19150"><vh>@button body2settings</vh></v>
+<v t="ekr.20140912075503.19369"><vh>New settings nodes</vh>
+<v t="ekr.20140912075503.19262"><vh>General text styles</vh>
+<v t="ekr.20140912075503.19263"><vh>@string @text-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19264"><vh>@string @text-size = 14 # or 10 or 12</vh></v>
+<v t="ekr.20140912075503.19265"><vh>@string @text-weight = normal # (normal,bold,100,..,900)</vh></v>
+<v t="ekr.20140912075503.19266"><vh>@string @text-style = normal # (normal,italic,oblique)</vh></v>
+</v>
+<v t="ekr.20140912075503.19267"><vh>Simple widgets</vh>
+<v t="ekr.20140912075503.19268"><vh>@color @scroll-area-bg = white</vh></v>
+<v t="ekr.20140912075503.19269"><vh>@color @find-tab-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19270"><vh>Stacked widgets</vh>
+<v t="ekr.20140912075503.19271"><vh>@color @stacked-border-color = white</vh></v>
+<v t="ekr.20140912075503.19272"><vh>@string @stacked-padding = 0px</vh></v>
+</v>
+<v t="ekr.20140912075503.19273"><vh>Splitters</vh>
+<v t="ekr.20140912075503.19274"><vh>@color @splitter-bg = LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19275"><vh>@color @splitter-border-color = white</vh></v>
+<v t="ekr.20140912075503.19276"><vh>@string @splitter-border-style = solid</vh></v>
+</v>
+<v t="ekr.20140912075503.19277"><vh>The Find Panel</vh>
+<v t="ekr.20140912075503.19278"><vh>@string @find-pattern-text-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19279"><vh>@string @find-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19280"><vh>@string @find-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19281"><vh>@string @find-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19282"><vh>@string @find-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19283"><vh>The Leo outline</vh>
+<v t="ekr.20140912075503.19284"><vh>@string @tree-fg = black</vh></v>
+<v t="ekr.20140912075503.19285"><vh>@color @tree-bg = LeoYellow</vh></v>
+<v t="ekr.20140912075503.19286"><vh>@color @tree-sel-fg = black</vh></v>
+<v t="ekr.20140912075503.19287"><vh>@color @tree-sel-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19288"><vh>@string @tree-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19289"><vh>@string @tree-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19290"><vh>@string @tree-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19291"><vh>@string @tree-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19292"><vh>Headlines that *are* being edited</vh>
+<v t="ekr.20140912075503.19293"><vh>@color @head-fg = black</vh></v>
+<v t="ekr.20140912075503.19294"><vh>@color @head-bg = cornsilk</vh></v>
+<v t="ekr.20140912075503.19295"><vh>@color @head-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19296"><vh>@color @head-sel-bg = blue</vh></v>
+<v t="ekr.20140912075503.19297"><vh>@string @head-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19298"><vh>@string @head-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19299"><vh>@string @head-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19300"><vh>@string @head-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19301"><vh>Headlines that are *not* being edited</vh>
+<v t="ekr.20140912075503.19302"><vh>@string @edit-label-border = 2px</vh></v>
+<v t="ekr.20140912075503.19303"><vh>@string @edit-label-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19304"><vh>@color @edit-label-bg = LeoYellow</vh></v>
+<v t="ekr.20140912075503.19305"><vh>@string @edit-label-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19306"><vh>@string @edit-label-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19307"><vh>@string @edit-label-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19308"><vh>@string @edit-label-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19309"><vh>The log pane</vh>
+<v t="ekr.20140912075503.19310"><vh>@color @log-fg = black</vh></v>
+<v t="ekr.20140912075503.19311"><vh>@color @log-bg = white</vh></v>
+<v t="ekr.20140912075503.19312"><vh>@color @log-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19313"><vh>@color @log-sel-bg = blue</vh></v>
+<v t="ekr.20140912075503.19314"><vh>@string @log-font-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19315"><vh>@string @log-font-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19316"><vh>@string @log-font-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19317"><vh>@string @log-font-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19318"><vh>Body pane</vh>
+<v t="ekr.20140912075503.19319"><vh>@color @body-bg = white</vh></v>
+<v t="ekr.20140912075503.19320"><vh>@color @body-fg = black</vh></v>
+<v t="ekr.20140912075503.19321"><vh>@color @body-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19322"><vh>@color @body-sel-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19323"><vh>@string @body-font-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19324"><vh>@string @body-font-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19325"><vh>@string @body-font-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19326"><vh>@string @body-font-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19327"><vh>Minibuffer</vh>
+<v t="ekr.20140912075503.19328"><vh>@string @minibuffer-border = 2px</vh></v>
+<v t="ekr.20140912075503.19329"><vh>@string @minibuffer-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19330"><vh>@string @minibuffer-fg = black</vh></v>
+<v t="ekr.20140912075503.19331"><vh>@string @minibuffer-bg = LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19332"><vh>@string @minibuffer-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19333"><vh>@string @minibuffer-sel-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19334"><vh>@string @minibuffer-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19335"><vh>@string @minibuffer-text-size = 10pt</vh></v>
+<v t="ekr.20140912075503.19336"><vh>@string @minibuffer-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19337"><vh>@string @minibuffer-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19338"><vh>Dialogs (not used)</vh>
+<v t="ekr.20140912075503.19339"><vh>@string @dialog-border = 2px</vh></v>
+<v t="ekr.20140912075503.19340"><vh>@string @dialog-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19341"><vh>@string @dialog-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19342"><vh>@string @dialog-text-size = 10pt</vh></v>
+<v t="ekr.20140912075503.19343"><vh>@string @dialog-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19344"><vh>@string @dialog-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19345"><vh>Status areas</vh>
+<v t="ekr.20140912075503.19346"><vh>@color @status-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19347"><vh>@string @status-border-width = 1px</vh></v>
+<v t="ekr.20140912075503.19348"><vh>@string @status-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19349"><vh>@string @status-border-color = darkgrey</vh></v>
+<v t="ekr.20140912075503.19350"><vh>@string @status-text-family = @text-family</vh></v>
+<v t="ekr.20140912075503.19351"><vh>@string @status-text-size = @text-size</vh></v>
+<v t="ekr.20140912075503.19352"><vh>@string @status-text-weight = @text-weight</vh></v>
+<v t="ekr.20140912075503.19353"><vh>@string @status-text-style = @text-style</vh></v>
+</v>
+<v t="ekr.20140912075503.19354"><vh>Buttons (These nodes already exist)</vh></v>
+<v t="ekr.20140912075503.19355"><vh>Bookmarks plugin</vh>
+<v t="ekr.20140912075503.19356"><vh>@string @bookmarks_base_margin = 0</vh></v>
+<v t="ekr.20140912075503.19357"><vh>@string @bookmarks_base_padding = 1</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string @bookmarks_base_border = none</vh></v>
+</v>
+<v t="ekr.20140912075503.19359"><vh>Screencast plugin</vh>
+<v t="ekr.20140912075503.19360"><vh>@color @screencast-bg = yellow</vh></v>
+<v t="ekr.20140912075503.19361"><vh>@string @screencast-text-family = Times New Roman</vh></v>
+<v t="ekr.20140912075503.19362"><vh>@string @screencaset-text-size = 18pt</vh></v>
+<v t="ekr.20140912075503.19363"><vh>@string @screencast-text-weight = normal</vh></v>
+<v t="ekr.20140912075503.19364"><vh>@string @screencaset-text-style = normal</vh></v>
+</v>
+<v t="ekr.20140912075503.19365"><vh>Vim mode</vh>
+<v t="ekr.20140912075503.19366"><vh>@string @vim-mode-normal-border = 3px solid @Salmon</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string @vim-mode-insert-border = 3px solid blue</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string @vim-mode-visual-border = 3px solid gray</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -9705,25 +9830,133 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 <t tx="ekr.20140912073148.19150">@color
 @language python
 g.cls()
-safe = True
+safe = False
 lines = g.splitLines(p.b)
 for s in lines:
     if s.strip() and not s.startswith(' '):
         for tag in ('#','@color','@string'):
             if s.startswith(tag):
                 if tag == '#':
-                    h = s[1:].strip().rstrip('.')+'...'
+                    h = s[1:].strip().rstrip('.')
                 else:
                     h = tag + ' ' + s[len(tag):].strip()
                 if safe:
                     print('create: %s' % h)
                 else:
-                    p2 = p.insertAfter()
+                    p2 = p.insertAsLastChild()
                     p2.h = h
                 break
         else:
             print('unexpected line: %s' % s)
 c.redraw()</t>
+<t tx="ekr.20140912075503.19262"></t>
+<t tx="ekr.20140912075503.19263"></t>
+<t tx="ekr.20140912075503.19264"></t>
+<t tx="ekr.20140912075503.19265"></t>
+<t tx="ekr.20140912075503.19266"></t>
+<t tx="ekr.20140912075503.19267"></t>
+<t tx="ekr.20140912075503.19268"></t>
+<t tx="ekr.20140912075503.19269"></t>
+<t tx="ekr.20140912075503.19270"></t>
+<t tx="ekr.20140912075503.19271"></t>
+<t tx="ekr.20140912075503.19272"></t>
+<t tx="ekr.20140912075503.19273"></t>
+<t tx="ekr.20140912075503.19274"></t>
+<t tx="ekr.20140912075503.19275"></t>
+<t tx="ekr.20140912075503.19276"></t>
+<t tx="ekr.20140912075503.19277"></t>
+<t tx="ekr.20140912075503.19278"></t>
+<t tx="ekr.20140912075503.19279"></t>
+<t tx="ekr.20140912075503.19280"></t>
+<t tx="ekr.20140912075503.19281"></t>
+<t tx="ekr.20140912075503.19282"></t>
+<t tx="ekr.20140912075503.19283"></t>
+<t tx="ekr.20140912075503.19284"></t>
+<t tx="ekr.20140912075503.19285"></t>
+<t tx="ekr.20140912075503.19286"></t>
+<t tx="ekr.20140912075503.19287"></t>
+<t tx="ekr.20140912075503.19288"></t>
+<t tx="ekr.20140912075503.19289"></t>
+<t tx="ekr.20140912075503.19290"></t>
+<t tx="ekr.20140912075503.19291"></t>
+<t tx="ekr.20140912075503.19292"></t>
+<t tx="ekr.20140912075503.19293"></t>
+<t tx="ekr.20140912075503.19294"></t>
+<t tx="ekr.20140912075503.19295"></t>
+<t tx="ekr.20140912075503.19296"></t>
+<t tx="ekr.20140912075503.19297"></t>
+<t tx="ekr.20140912075503.19298"></t>
+<t tx="ekr.20140912075503.19299"></t>
+<t tx="ekr.20140912075503.19300"></t>
+<t tx="ekr.20140912075503.19301"></t>
+<t tx="ekr.20140912075503.19302"></t>
+<t tx="ekr.20140912075503.19303"></t>
+<t tx="ekr.20140912075503.19304"></t>
+<t tx="ekr.20140912075503.19305"></t>
+<t tx="ekr.20140912075503.19306"></t>
+<t tx="ekr.20140912075503.19307"></t>
+<t tx="ekr.20140912075503.19308"></t>
+<t tx="ekr.20140912075503.19309"></t>
+<t tx="ekr.20140912075503.19310"></t>
+<t tx="ekr.20140912075503.19311"></t>
+<t tx="ekr.20140912075503.19312"></t>
+<t tx="ekr.20140912075503.19313"></t>
+<t tx="ekr.20140912075503.19314"></t>
+<t tx="ekr.20140912075503.19315"></t>
+<t tx="ekr.20140912075503.19316"></t>
+<t tx="ekr.20140912075503.19317"></t>
+<t tx="ekr.20140912075503.19318"></t>
+<t tx="ekr.20140912075503.19319"></t>
+<t tx="ekr.20140912075503.19320"></t>
+<t tx="ekr.20140912075503.19321"></t>
+<t tx="ekr.20140912075503.19322"></t>
+<t tx="ekr.20140912075503.19323"></t>
+<t tx="ekr.20140912075503.19324"></t>
+<t tx="ekr.20140912075503.19325"></t>
+<t tx="ekr.20140912075503.19326"></t>
+<t tx="ekr.20140912075503.19327"></t>
+<t tx="ekr.20140912075503.19328"></t>
+<t tx="ekr.20140912075503.19329"></t>
+<t tx="ekr.20140912075503.19330"></t>
+<t tx="ekr.20140912075503.19331"></t>
+<t tx="ekr.20140912075503.19332"></t>
+<t tx="ekr.20140912075503.19333"></t>
+<t tx="ekr.20140912075503.19334"></t>
+<t tx="ekr.20140912075503.19335"></t>
+<t tx="ekr.20140912075503.19336"></t>
+<t tx="ekr.20140912075503.19337"></t>
+<t tx="ekr.20140912075503.19338"></t>
+<t tx="ekr.20140912075503.19339"></t>
+<t tx="ekr.20140912075503.19340"></t>
+<t tx="ekr.20140912075503.19341"></t>
+<t tx="ekr.20140912075503.19342"></t>
+<t tx="ekr.20140912075503.19343"></t>
+<t tx="ekr.20140912075503.19344"></t>
+<t tx="ekr.20140912075503.19345"></t>
+<t tx="ekr.20140912075503.19346"></t>
+<t tx="ekr.20140912075503.19347"></t>
+<t tx="ekr.20140912075503.19348"></t>
+<t tx="ekr.20140912075503.19349"></t>
+<t tx="ekr.20140912075503.19350"></t>
+<t tx="ekr.20140912075503.19351"></t>
+<t tx="ekr.20140912075503.19352"></t>
+<t tx="ekr.20140912075503.19353"></t>
+<t tx="ekr.20140912075503.19354"></t>
+<t tx="ekr.20140912075503.19355"></t>
+<t tx="ekr.20140912075503.19356"></t>
+<t tx="ekr.20140912075503.19357"></t>
+<t tx="ekr.20140912075503.19358"></t>
+<t tx="ekr.20140912075503.19359"></t>
+<t tx="ekr.20140912075503.19360"></t>
+<t tx="ekr.20140912075503.19361"></t>
+<t tx="ekr.20140912075503.19362"></t>
+<t tx="ekr.20140912075503.19363"></t>
+<t tx="ekr.20140912075503.19364"></t>
+<t tx="ekr.20140912075503.19365"></t>
+<t tx="ekr.20140912075503.19366"></t>
+<t tx="ekr.20140912075503.19367"></t>
+<t tx="ekr.20140912075503.19368"></t>
+<t tx="ekr.20140912075503.19369"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
