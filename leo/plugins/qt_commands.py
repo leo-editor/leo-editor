@@ -101,117 +101,170 @@ for vis in 'hide', 'show', 'toggle':
                 vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
     g.command("gui-all-%s"%vis)(doall)
-#@+node:tbrown.20140814090009.55874: ** style_reload command
+#@+node:tbrown.20140814090009.55874: ** style_reload command & helpers
 @g.command('style-reload')
 def style_reload(kwargs):
-    """reload_styles - recompile, if necessary, the stylesheet, and re-apply
+    """reload-styles command.
     
-    This method, added 20140814, is intended to replace execution of the
-    `stylesheet & source` node in (my)LeoSettings.leo, and the script in the
-    `@button reload-styles` node, which should just become
-    `c.k.simulateCommand('style-reload')`.
+    Find the appropriate style sheet and re-apply it.
 
-    :Parameters:
-    - `kwargs`: kwargs from Leo command
-    
-    Returns True on success, otherwise False
+    The ReloadStyle clss replaces execution of the `stylesheet & source` node in settings files.
     """
-    
+    safe = True
     c = kwargs['c']
-    
-    # first, rebuild the stylesheet template from the tree, if
-    # the stylesheet source is in tree form, e.g. dark themes, currently the
-    # default light theme uses a single @data qt-gui-plugin-style-sheet node
-    settings_p = g.findNodeAnywhere(c, '@settings')
-    if not settings_p:
-        # pylint: disable=fixme
-        g.es("No '@settings' node found in outline")
-        g.es("Please see http://leoeditor.com/FIXME.html")
-        return False
-    themes = []
-    theme_name = 'unknown'
-    for i in settings_p.subtree_iter():
-        if i.h.startswith('@string color_theme'):
-            theme_name = i.h.split()[-1]
-        if i.h == 'stylesheet & source':
-            themes.append((theme_name, i.copy()))
-            theme_name = 'unknown'
-    if themes:
-        g.es("Found theme(s):")
-        for i in themes:
-            g.es("   "+i[0])
-        if len(themes) > 1:
-            g.es("WARNING: using the *last* theme found")
-        theme_p = themes[-1][1]
-        unl = theme_p.get_UNL()+'-->'
-        seen = 0
-        for i in theme_p.subtree_iter():
-            if i.h == '@data qt-gui-plugin-style-sheet':
-                i.h = '@@data qt-gui-plugin-style-sheet'
-                seen += 1
-        if seen == 0:
-            g.es("NOTE: Did not find compiled stylesheet for theme")
-        if seen > 1:
-            g.es("NOTE: Found multiple compiled stylesheets for theme")
-        text = [
-            "/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
-            "('stylesheet & source')\n  AND RECREATE THIS BY "
-            "Alt-X style-reload"
-            "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
-            % (
-                theme_p.get_UNL(with_proto=True),
-                datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-            )]
-        for i in theme_p.subtree_iter():
-            src = i.get_UNL().replace(unl, '')
-            if i.h.startswith('@data '):
-                i.h = '@'+i.h
-            if ('@ignore' in src) or ('@data' in src):
-                continue
-            text.append("/*### %s %s*/\n%s\n\n" % (
-                src, '#'*(70-len(src)),
-                i.b.strip()
-            ))
-            
-        data_p = theme_p.insertAsLastChild()
-        data_p.h = '@data qt-gui-plugin-style-sheet'
-        data_p.b = '\n'.join(text)
-        g.es("Stylesheet compiled")
-        
-    else:
-        g.es("No theme found, assuming static stylesheet")
-        sheets = [i.copy() for i in settings_p.subtree_iter()
-                  if i.h == '@data qt-gui-plugin-style-sheet']
-        if not sheets:
-            g.es("Didn't find '@data qt-gui-plugin-style-sheet' node")
-            g.es("Typically 'Reload Settings' is used in the Global or Personal "
-                 "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
-            return False
-        if len(sheets) > 1:
-            g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
-            g.es("Using the *last* node found")
-        else:
-            g.es("Stylesheet found")
-        data_p = sheets[-1]
-
-    # then, reload settings from this file
-    shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
-    c.config.settingsDict.update(settings)
-    
-    # apply the stylesheet
-    c.frame.top.setStyleSheets()
-    # check that our styles were applied
-    used = str(g.app.gui.frameFactory.masterFrame.styleSheet())
-    sheet = g.expand_css_constants(c, data_p.b)
-    # Qt normalizes whitespace, so we must too
-    used = ' '.join(used.split())
-    sheet = ' '.join(sheet.split())
-    c.redraw()
-    if used != sheet:
-        g.es("WARNING: styles in use do not match applied styles")
-        return False
-    else:
-        g.es("Styles reloaded")
-        return True
+    if c:
+        class ReloadStyle:
+            #@+others
+            #@+node:ekr.20140912110338.19371: *3* rs.__init__
+            def __init__(self,c,safe):
+                '''Ctor the ReloadStyle class.'''
+                self.c = c
+                self.safe = safe
+                self.settings_p = g.findNodeAnywhere(c,'@settings')
+                if not self.settings_p:
+                    g.es("No '@settings' node found in outline.  See:")
+                    g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
+            #@+node:ekr.20140912110338.19369: *3* check_stylesheet
+            def check_stylesheet(self,stylesheet):
+                '''check/trace the stylesheet.'''
+                check = True
+                trace = True and not g.unitTesting
+                c = self.c
+                if check:
+                    sheet = g.expand_css_constants(c,stylesheet)
+                    if self.safe:
+                        from leo.core.leoQt import QtWidgets
+                        w = QtWidgets.QFrame()
+                        w.setStyleSheet(sheet)
+                        used = str(w.styleSheet())
+                    else:
+                        c.frame.top.setStyleSheets()
+                            # Calls g.expand_css_constants
+                        used = str(g.app.gui.frameFactory.masterFrame.styleSheet())
+                    sheet,used = self.munge(sheet),self.munge(used)
+                    ok = len(sheet) == len(used)
+                    if trace:
+                        g.trace('match',ok,'len(sheet)',len(sheet),'len(used)',len(used))
+                        if not ok:
+                            g.trace('\n\n===== input stylesheet =====\n\n',sheet)
+                            g.trace('\n\n===== output stylesheet =====\n\n',used)
+                    return ok
+                else:
+                    return True
+            #@+node:ekr.20140912110338.19368: *3* find_themes
+            def find_themes(self):
+                '''Find all theme-related nodes in the @settings tree.'''
+                themes,theme_name = [],'unknown'
+                for p in self.settings_p.subtree_iter():
+                    if p.h.startswith('@string color_theme'):
+                        theme_name = p.h.split()[-1]
+                        themes.append((theme_name,p.copy()))
+                    elif p.h == 'stylesheet & source':
+                        theme_name = 'unknown'
+                        themes.append((theme_name,p.copy()))
+                return themes,theme_name
+            #@+node:ekr.20140912110338.19367: *3* get_last_style_sheet
+            def get_last_style_sheet(self):
+                '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
+                sheets = [p.copy() for p in self.settings_p.subtree_iter()
+                    if p.h == '@data qt-gui-plugin-style-sheet']
+                if sheets:
+                    if len(sheets) > 1:
+                        g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
+                        g.es("Using the *last* node found")
+                    else:
+                        g.es("Stylesheet found")
+                    data_p = sheets[-1]
+                    return data_p.b
+                else:
+                    g.es("No '@data qt-gui-plugin-style-sheet' node")
+                    # g.es("Typically 'Reload Settings' is used in the Global or Personal "
+                         # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
+                    return None
+            #@+node:ekr.20140912110338.19366: *3* get_last_theme
+            def get_last_theme(self,themes,theme_name):
+                '''Return the stylesheet of the last theme.'''
+                g.es("Found theme(s):")
+                for name,p in themes:
+                    g.es('found theme:',name)
+                if len(themes) > 1:
+                    g.es("WARNING: using the *last* theme found")
+                theme_p = themes[-1][1]
+                unl = theme_p.get_UNL()+'-->'
+                seen = 0
+                for i in theme_p.subtree_iter():
+                    # Disable any @data qt-gui-plugin-style-sheet nodes in theme's tree.
+                    if i.h == '@data qt-gui-plugin-style-sheet':
+                        i.h = '@@data qt-gui-plugin-style-sheet'
+                        seen += 1
+                if seen == 0:
+                    g.es("NOTE: Did not find compiled stylesheet for theme")
+                elif seen > 1:
+                    g.es("NOTE: Found multiple compiled stylesheets for theme")
+                text = [
+                    "/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
+                    "('stylesheet & source')\n  AND RECREATE THIS BY "
+                    "Alt-X style-reload"
+                    "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
+                    % (
+                        theme_p.get_UNL(with_proto=True),
+                        datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    )]
+                for i in theme_p.subtree_iter():
+                    src = i.get_UNL().replace(unl, '')
+                    if i.h.startswith('@data '):
+                        i.h = '@'+i.h
+                    if ('@ignore' in src) or ('@data' in src):
+                        continue
+                    text.append("/*### %s %s*/\n%s\n\n" % (
+                        src, '#'*(70-len(src)),
+                        i.b.strip()
+                    ))
+                stylesheet = '\n'.join(text)
+                if self.safe:
+                    g.trace('Stylesheet:\n' % stylesheet)
+                else:
+                    data_p = theme_p.insertAsLastChild()
+                    data_p.h = '@data qt-gui-plugin-style-sheet'
+                    data_p.b = stylesheet
+                    g.es("Stylesheet compiled")
+                return stylesheet
+            #@+node:ekr.20140912110338.19365: *3* get_stylesheet
+            def get_stylesheet(self):
+                '''
+                Scan for themes or @data qt-gui-plugin-style-sheet nodes.
+                Return the text of the relevant node.
+                '''
+                themes,theme_name = self.find_themes()
+                if themes:
+                    return self.get_last_theme(themes,theme_name)
+                else:
+                    g.es("No theme found, assuming static stylesheet")
+                    return self.get_last_style_sheet()
+            #@+node:ekr.20140912110338.19372: *3* munge
+            def munge(self,stylesheet):
+                '''Return the stylesheet without extra whitespace.'''
+                return ''.join([s.lstrip() #.replace('  ',' ')
+                    for s in g.splitLines(stylesheet)])
+            #@+node:ekr.20140912110338.19370: *3* run
+            def run(self):
+                '''The main line of the style-reload command.'''
+                if not self.settings_p:
+                    return
+                c = self.c
+                stylesheet = self.get_stylesheet()
+                if not stylesheet:
+                    return
+                ok = self.check_stylesheet(stylesheet)
+                if self.safe:
+                    g.es('safe mode: no settings changed',color='blue')
+                else:
+                    # Reload the settings from this file.
+                    g.es('reloading settings',color='blue')
+                    shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
+                    c.config.settingsDict.update(settings)
+                    c.redraw()
+            #@-others
+        ReloadStyle(c,safe).run()
 #@-others
 #@-leo
