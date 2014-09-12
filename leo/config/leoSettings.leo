@@ -1626,6 +1626,7 @@
 </v>
 <v t="ekr.20140912072521.19159"><vh>New/changed selectors</vh></v>
 <v t="ekr.20140912072521.19160"><vh>New qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20140912073148.19150"><vh>@button body2settings</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -9701,6 +9702,28 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
   border:   @vim-mode-visual-border;
 }
 </t>
+<t tx="ekr.20140912073148.19150">@color
+@language python
+g.cls()
+safe = True
+lines = g.splitLines(p.b)
+for s in lines:
+    if s.strip() and not s.startswith(' '):
+        for tag in ('#','@color','@string'):
+            if s.startswith(tag):
+                if tag == '#':
+                    h = s[1:].strip().rstrip('.')+'...'
+                else:
+                    h = tag + ' ' + s[len(tag):].strip()
+                if safe:
+                    print('create: %s' % h)
+                else:
+                    p2 = p.insertAfter()
+                    p2.h = h
+                break
+        else:
+            print('unexpected line: %s' % s)
+c.redraw()</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
