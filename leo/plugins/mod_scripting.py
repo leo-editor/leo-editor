@@ -427,7 +427,7 @@ class scriptingController:
                 self.deleteButton(b)
 
         if 0: # Do *not* set focus here: the script may have changed the focus.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20080312071248.2: *4* createCommonCommands (mod_scripting)
     def createCommonCommands (self):
         '''Handle all global @command nodes.'''
@@ -458,18 +458,15 @@ class scriptingController:
         )
     #@+node:ekr.20060328125248.21: *5* runScriptCommand (mod_scripting)
     def runScriptCommand (self,event=None):
-
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
-
         c = self.c
         p = c.p
         h = p.h
         args = self.getArgs(h)
         c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
-
         if 0:
             # Do not assume the script will want to remain in this commander.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20060522105937: *4* createDebugIconButton 'debug-script' & callback
     def createDebugIconButton (self):
         '''Create the 'debug-script' button and the debug-script command.'''
@@ -480,11 +477,8 @@ class scriptingController:
             kind='debug-script')
     #@+node:ekr.20060522105937.1: *5* runDebugScriptCommand
     def runDebugScriptCommand (self,event=None):
-
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
-
         c = self.c ; p = c.p
-
         script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
         if script:
             #@+<< set debugging if debugger is active >>
@@ -538,8 +532,7 @@ class scriptingController:
                 import leo.core.leoScriptModule as leoScriptModule      
             else:
                 g.error('No debugger active')
-
-        c.frame.bodyWantsFocus()
+        c.bodyWantsFocus()
     #@+node:ekr.20060328125248.22: *4* createScriptButtonIconButton 'script-button' & callback
     def createScriptButtonIconButton (self):
         '''Create the 'script-button' button and the script-button command.'''
@@ -550,9 +543,7 @@ class scriptingController:
             kind="script-button-button")
     #@+node:ekr.20060328125248.23: *5* addScriptButtonCommand
     def addScriptButtonCommand (self,event=None):
-
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
-
         c = self.c ; p = c.p; h = p.h
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)
@@ -560,7 +551,7 @@ class scriptingController:
         if shortcut:
             statusLine = statusLine + " @key=" + shortcut
         b = self.createAtButtonHelper(p,h,statusLine,kind='script-button',verbose=True)
-        c.frame.bodyWantsFocus()
+        c.bodyWantsFocus()
     #@+node:ekr.20060328125248.12: *4* handleAtButtonNode @button
     def handleAtButtonNode (self,p):
 
@@ -660,25 +651,21 @@ class scriptingController:
 
     #@+node:ekr.20060328125248.14: *4* handleAtScriptNode @script (mod_scripting)
     def handleAtScriptNode (self,p):
-
         '''Handle @script nodes.'''
-
         c = self.c
         tag = "@script"
         h = p.h
         assert(g.match(h,0,tag))
         name = h[len(tag):].strip()
         args = self.getArgs(h)
-
         if self.atScriptNodes:
             g.blue("executing script %s" % (name))
             c.executeScript(args=args,p=p,useSelectedText=False,silent=True)
         else:
             g.warning("disabled @script: %s" % (name))
-
         if 0:
             # Do not assume the script will want to remain in this commander.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20061014075212: *3* Utils
     #@+node:ekr.20060929135558: *4* cleanButtonText
     def cleanButtonText (self,s,minimal=False):
@@ -837,9 +824,7 @@ class scriptingController:
             self.c.bodyWantsFocus()
     #@+node:ekr.20060328125248.28: *4* executeScriptFromButton (mod_scripting)
     def executeScriptFromButton (self,b,buttonText,gnx):
-
         '''Called from callbacks to execute the script in node p whose gnx is given.'''
-
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
@@ -854,7 +839,7 @@ class scriptingController:
                     g.es("Removing '%s' button at its request" % buttonText)
                     self.deleteButton(b)
         # Do *not* set focus here: the script may have changed the focus.
-        # c.frame.bodyWantsFocus()
+            # c.bodyWantsFocus()
     #@+node:ekr.20130912061655.11294: *4* find_gnx
     def find_gnx(self,gnx):
         
