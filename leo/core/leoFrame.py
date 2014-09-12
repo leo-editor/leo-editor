@@ -1675,6 +1675,7 @@ class LeoTree(object):
     #@+node:ekr.20140829172618.18478: *6* LeoTree.add_big_text_buttons
     def add_big_text_buttons(self,old_p,p,traceTime):
         '''Add the load and copy buttons.'''
+        trace = False and not g.unitTesting
         from leo.core.leoQt import QtGui
         c = self.c
         if c.undoer.undoing:
@@ -1767,7 +1768,9 @@ class LeoTree(object):
             wrapper = c.frame and c.frame.body and c.frame.body.wrapper
             s = p.b
             w.leo_big_text = p.b # Save the original text
-            wrapper.setAllText("To load the body text, click the 'load' button.")
+            wrapper.setAllText(
+                "To load the body text, click the 'load' button.\n"
+                "Warning: make sure the text is fully loaded before using it!.")
             assert p.b == s
                 # There will be data loss if this assert fails.
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
