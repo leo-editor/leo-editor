@@ -755,7 +755,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
             if i is not None:
-                w = c.frame.body
+                w = c.frame.body.wrapper
                 c.selectPosition(p)
                 oldSel = w.getSelectionRange()
                 w.setAllText(new_s)
