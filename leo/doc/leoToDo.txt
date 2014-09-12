@@ -6,20 +6,18 @@
 .. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
 @language rest
 
-- Post: next release called 5.0.0?
 - Create minimal bridge app for testing.
 - Test and enable big_text_buttons.
     * Big-text dummy text should contain the "wait" warning.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-- Improve find buttons:
-    - Don't show find buttons in minibuffer-find mode.
-    - Give find buttons less space.
 
 Stashed bugs:
 - Fix recursive import bug.
 - Vim borders don't work with my standard settings and python3.4 and Qt5
 - Python colorizing spoiled after colorizing other languages
+.. @+node:ekr.20140912073148.19149: *3* * What to do about the new icons
+See home/Leo-Recent/Iconts
 .. @+node:ekr.20140910065834.18125: *3* Delegated
 To Terry:
 

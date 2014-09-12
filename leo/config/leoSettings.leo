@@ -1621,7 +1621,7 @@
 </v>
 </v>
 <v t="ekr.20140912072521.19150"><vh>Proposal (For Terry)</vh>
-<v t="ekr.20140912073148.19150"><vh>@button body2settings</vh></v>
+<v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
 <v t="ekr.20140912072521.19151"><vh>Changed</vh>
 <v t="tbrown.20131122091143.23828"></v>
 </v>
@@ -1630,9 +1630,9 @@
 <v t="ekr.20140912075503.19369"><vh>New settings nodes</vh>
 <v t="ekr.20140912075503.19262"><vh>General text styles</vh>
 <v t="ekr.20140912075503.19263"><vh>@string @text-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20140912075503.19264"><vh>@string @text-size = 14 # or 10 or 12</vh></v>
-<v t="ekr.20140912075503.19265"><vh>@string @text-weight = normal # (normal,bold,100,..,900)</vh></v>
-<v t="ekr.20140912075503.19266"><vh>@string @text-style = normal # (normal,italic,oblique)</vh></v>
+<v t="ekr.20140912075503.19264"><vh>@string @text-size = 14 </vh></v>
+<v t="ekr.20140912075503.19265"><vh>@string @text-weight = normal</vh></v>
+<v t="ekr.20140912075503.19266"><vh>@string @text-style = normal</vh></v>
 </v>
 <v t="ekr.20140912075503.19267"><vh>Simple widgets</vh>
 <v t="ekr.20140912075503.19268"><vh>@color @scroll-area-bg = white</vh></v>
@@ -9827,8 +9827,7 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
   border:   @vim-mode-visual-border;
 }
 </t>
-<t tx="ekr.20140912073148.19150">@color
-@language python
+<t tx="ekr.20140912073148.19150">'''Converts p, that is, "New/Changed selectors" to settings and organizer nodes.'''
 g.cls()
 safe = False
 lines = g.splitLines(p.b)
@@ -9848,12 +9847,14 @@ for s in lines:
                 break
         else:
             print('unexpected line: %s' % s)
-c.redraw()</t>
+c.redraw()
+@color
+@language python</t>
 <t tx="ekr.20140912075503.19262"></t>
 <t tx="ekr.20140912075503.19263"></t>
-<t tx="ekr.20140912075503.19264"></t>
-<t tx="ekr.20140912075503.19265"></t>
-<t tx="ekr.20140912075503.19266"></t>
+<t tx="ekr.20140912075503.19264">or 10 or 12</t>
+<t tx="ekr.20140912075503.19265">normal,bold,100,..,900</t>
+<t tx="ekr.20140912075503.19266">normal,italic,oblique</t>
 <t tx="ekr.20140912075503.19267"></t>
 <t tx="ekr.20140912075503.19268"></t>
 <t tx="ekr.20140912075503.19269"></t>
