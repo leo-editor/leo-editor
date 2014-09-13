@@ -1232,11 +1232,7 @@ class StyleSheetManager:
             else:
                 self.set_style_sheets(all=False)
                     # Calls g.expand_css_constants
-                # For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-                # For --gui=qt,     c.frame.top is a DynamicWindow.
-                # used = str(g.app.gui.frameFactory.masterFrame.styleSheet())
-                top = c.frame.top
-                master = top.leo_master or top
+                master = self.get_master_widget()
                 used = g.u(master.styleSheet())
             sheet,used = self.munge(sheet),self.munge(used)
             ok = len(sheet) == len(used)
@@ -1356,6 +1352,16 @@ class StyleSheetManager:
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
+    #@+node:ekr.20140913054442.19390: *3* sssm.get_master_widget
+    def get_master_widget(self,top=None):
+        '''
+        Carefully return the master widget.
+        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+        For --gui=qt,     c.frame.top is a DynamicWindow.
+        '''
+        if top is None: top = self.c.frame.top
+        master = top.leo_master or top
+        return master
     #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet
     def get_stylesheet(self):
         '''
@@ -1425,14 +1431,9 @@ class StyleSheetManager:
             c.active_stylesheet = sheet
             sheet = g.expand_css_constants(c,sheet)
             if trace: g.trace(len(sheet))
-            # # # if g.app.qt_use_tabs:
-                # # # w = g.app.gui.frameFactory.masterFrame
-            # # # else:
-                # # # w = top.leo_ui
-            # For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-            # For --gui=qt,     c.frame.top is a DynamicWindow.
-            w = top.leo_master or top
-            a = w.setStyleSheet(sheet or self.default_style_sheet())
+            if not sheet: sheet = self.default_style_sheet()
+            w = self.get_master_widget(top)
+            a = w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')
     #@-others
