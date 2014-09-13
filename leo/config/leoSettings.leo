@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="113" left="353" height="930" width="1454"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -39,6 +39,7 @@
 <v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
+<v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
 <v t="tbrown.20140609102412.32431"><vh>Tools</vh>
 <v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
 <v t="tbrown.20140609102412.32428"><vh>@button pick-color</vh></v>
@@ -1620,6 +1621,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20131115092802.18224"></v>
 <v t="ekr.20140912072521.19150"><vh>Proposal (For Terry)</vh>
 <v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
 <v t="ekr.20140912072521.19151"><vh>Changed</vh>
@@ -3689,7 +3691,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="5">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -9827,11 +9829,10 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
   border:   @vim-mode-visual-border;
 }
 </t>
-<t tx="ekr.20140912073148.19150">'''Converts p, that is, "New/Changed selectors" to settings and organizer nodes.'''
+<t tx="ekr.20140912073148.19150">'''Converts p.b, that is, "New/Changed selectors" to settings and organizer nodes.'''
 g.cls()
 safe = False
-lines = g.splitLines(p.b)
-for s in lines:
+for s in g.splitLines(p.b):
     if s.strip() and not s.startswith(' '):
         for tag in ('#','@color','@string'):
             if s.startswith(tag):
@@ -9958,6 +9959,7 @@ c.redraw()
 <t tx="ekr.20140912075503.19367"></t>
 <t tx="ekr.20140912075503.19368"></t>
 <t tx="ekr.20140912075503.19369"></t>
+<t tx="ekr.20140912105440.19376">c.k.simulateCommand('style-reload')</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

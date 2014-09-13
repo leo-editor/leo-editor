@@ -37,8 +37,8 @@ except ImportError:
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
-
-    '''A class representing all parts of the main Qt window.
+    '''
+    A class representing all parts of the main Qt window.
     
     **Important**: when using tabs, the LeoTabbedTopLevel widget
     is the top-level window, **not** this QMainWindow!
@@ -55,14 +55,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     #@+others
     #@+node:ekr.20110605121601.18138: *3*  ctor (DynamicWindow)
-    # Called from LeoQtFrame.finishCreate.
-
     def __init__(self,c,parent=None):
-
-        '''Create Leo's main window, c.frame.top'''
-
-        # For qttabs gui, parent is a LeoTabbedTopLevel.
-
+        '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
+            # Called from LeoQtFrame.finishCreate.
+            # For qttabs gui, parent is a LeoTabbedTopLevel.
         # g.trace('(DynamicWindow)',g.callers())
         QtWidgets.QMainWindow.__init__(self,parent)
         self.leo_c = c
@@ -71,36 +67,35 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
-    #@+node:ekr.20110605121601.18140: *3* dw.closeEvent
-    def closeEvent (self,event):
+    #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
+    def doSpellBtn(self, btn):
+        getattr(self.leo_c.spellCommands.handler.tab, btn)() 
 
-        trace = False and not g.unitTesting
+    def do_leo_spell_btn_Add(self):
+        self.doSpellBtn('onAddButton')
 
-        c = self.leo_c
+    def do_leo_spell_btn_Change(self):
+        self.doSpellBtn('onChangeButton')
 
-        if not c.exists:
-            # Fixes double-prompt bug on Linux.
-            if trace: g.trace('destroyed')
-            event.accept()
-            return
+    def do_leo_spell_btn_Find(self):
+        self.doSpellBtn('onFindButton')
 
-        if c.inCommand:
-            if trace: g.trace('in command')
-            c.requestCloseWindow = True
-        else:
-            if trace: g.trace('closing')
-            ok = g.app.closeLeoWindow(c.frame)
-            if ok:
-                event.accept()
-            else:
-                event.ignore()
+    def do_leo_spell_btn_FindChange(self):
+        self.doSpellBtn('onChangeThenFindButton')
+
+    def do_leo_spell_btn_Hide(self):
+        self.doSpellBtn('onHideButton')
+
+    def do_leo_spell_btn_Ignore(self):
+        self.doSpellBtn('onIgnoreButton')
     #@+node:ekr.20110605121601.18139: *3* dw.construct
     def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
-
         c = self.leo_c
         # top = c.frame.top
-        self.leo_master=master # A LeoTabbedTopLevel for tabbed windows.
+        self.leo_master=master
+            # A LeoTabbedTopLevel for tabbed windows.
+            # None for non-tabbed windows.
         # g.trace('(DynamicWindow)',g.callers())
         # Init the base class.
         ui_file_name = c.config.getString('qt_ui_file_name')
@@ -132,21 +127,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setStatusBar(self.statusBar)
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
-        self.setStyleSheets()
-        
+        g.app.gui.setStyleSheets(c,top=self,all=True)
         # self.setLeoWindowIcon()
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
-    # Called instead of uic.loadUi(ui_description_file, self)
-
     def createMainWindow (self):
-
-        '''Create the component ivars of the main window.
-
-        Copied/adapted from qt_main.py'''
-
-        MainWindow = self
+        '''
+        Create the component ivars of the main window.
+        Copied/adapted from qt_main.py.
+        Called instead of uic.loadUi(ui_description_file, self)
+        '''
+        dw = self
         self.leo_ui = self
-
         self.setMainWindowOptions()
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
@@ -164,10 +155,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createBodyPane(self.splitter_2)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
-        self.createStatusBar(MainWindow)
-
+        self.createStatusBar(dw)
         # Signals
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(dw)
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane (self,parent):
@@ -197,19 +187,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_body_inner_frame = innerFrame
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget (self):
-
-        MainWindow = self
-
-        w = QtWidgets.QWidget(MainWindow)
+        '''Create the central widget.'''
+        dw = self
+        w = QtWidgets.QWidget(dw)
         w.setObjectName("centralwidget")
-
-        MainWindow.setCentralWidget(w)
-
+        dw.setCentralWidget(w)
         # Official ivars.
         self.centralwidget = w
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helper
     def createLogPane (self,parent):
-
+        '''Create all parts of Leo's log pane.'''
         # Create widgets.
         logFrame = self.createFrame(parent,'logFrame',
             vPolicy = QtWidgets.QSizePolicy.Minimum)
@@ -250,7 +237,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout (self,parent):
-
+        '''Create the layout for Leo's main window.'''
         # c = self.leo_c
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
         # Splitter two is the "main" splitter, containing splitter.
@@ -271,18 +258,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(self.splitter_2)
     #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
     def createMenuBar (self):
-
-        MainWindow = self
-        w = QtWidgets.QMenuBar(MainWindow)
+        '''Create Leo's menu bar.'''
+        dw = self
+        w = QtWidgets.QMenuBar(dw)
         w.setNativeMenuBar(False)
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
-        MainWindow.setMenuBar(w)
+        dw.setMenuBar(w)
         # Official ivars.
         self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer
     def createMiniBuffer (self,parent):
-
+        '''Create the widgets for Leo's minibuffer area.'''
         # Create widgets.
         frame = self.createFrame(self.centralwidget,'minibufferFrame',
             hPolicy = QtWidgets.QSizePolicy.MinimumExpanding,
@@ -297,7 +284,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # EKR: 2014/06/28: Call the base class method.
         lineEdit = VisLineEdit(frame)
         lineEdit.setObjectName('lineEdit') # name important.
-
         # Pack.
         hLayout = self.createHLayout(frame,'minibufferHLayout',spacing=4)
         hLayout.setContentsMargins(3, 2, 2, 0)
@@ -305,49 +291,42 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout.addWidget(lineEdit)
         self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
-
         # Official ivars.
         self.lineEdit = lineEdit
         # self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
     def createOutlinePane (self,parent):
-
+        '''Create the widgets and ivars for Leo's outline.'''
         # Create widgets.
         treeFrame = self.createFrame(parent,'outlineFrame',
             vPolicy = QtWidgets.QSizePolicy.Expanding)
         innerFrame = self.createFrame(treeFrame,'outlineInnerFrame',
             hPolicy = QtWidgets.QSizePolicy.Preferred)
-
         treeWidget = self.createTreeWidget(innerFrame,'treeWidget')
-
         grid = self.createGrid(treeFrame,'outlineGrid')
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         innerGrid = self.createGrid(innerFrame,'outlineInnerGrid')
         innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-
         # Official ivars...
         self.treeWidget = treeWidget
-
         return treeFrame
     #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar
     def createStatusBar (self,parent):
-
+        '''Create the widgets and ivars for Leo's status area.'''
         w = QtWidgets.QStatusBar(parent)
         w.setObjectName("statusbar")
         parent.setStatusBar(w)
-
         # Official ivars.
         self.statusBar = w
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions (self):
-
-        MainWindow = self
-
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(691, 635)
-        MainWindow.setDockNestingEnabled(False)
-        MainWindow.setDockOptions(
+        '''Set default options for Leo's main window.'''
+        dw = self
+        dw.setObjectName("MainWindow")
+        dw.resize(691, 635)
+        dw.setDockNestingEnabled(False)
+        dw.setDockOptions(
             QtWidgets.QMainWindow.AllowTabbedDocks |
             QtWidgets.QMainWindow.AnimatedDocks)
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
@@ -505,7 +484,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab (self,parent):
 
-        # MainWindow = self
+        # dw = self
         vLayout = self.createVLayout(parent,'spellVLayout',margin=2)
         spellFrame = self.createFrame(parent,'spellFrame')
         vLayout2 = self.createVLayout(spellFrame,'spellVLayout')
@@ -875,14 +854,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
         if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
-
         sizePolicy = QtWidgets.QSizePolicy(kind1,kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-
         sizePolicy.setHeightForWidth(
             widget.sizePolicy().hasHeightForWidth())
-
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self,s):
@@ -893,33 +869,48 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             return QtWidgets.QApplication.translate(
                 'MainWindow',s,None,QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
-    def doSpellBtn(self, btn):
-        getattr(self.leo_c.spellCommands.handler.tab, btn)() 
+    #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
+    #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
+    def closeEvent (self,event):
+        '''Handle a close event in the Leo window.'''
+        trace = False and not g.unitTesting
+        c = self.leo_c
+        if not c.exists:
+            # Fixes double-prompt bug on Linux.
+            if trace: g.trace('destroyed')
+            event.accept()
+        elif c.inCommand:
+            if trace: g.trace('in command')
+            c.requestCloseWindow = True
+        else:
+            if trace: g.trace('closing')
+            ok = g.app.closeLeoWindow(c.frame)
+            if ok:
+                event.accept()
+            else:
+                event.ignore()
+    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1Moved
+    def onSplitter1Moved (self,pos,index):
+        '''Handle a moved event in splitter1.'''
+        c = self.leo_c
+        c.frame.secondary_ratio = self.splitterMovedHelper(
+            self.splitter,pos,index)
+    #@+node:ekr.20140913054442.17864: *4* dw.onSplitter2Moved
+    def onSplitter2Moved (self,pos,index):
+        '''Handle a moved event in splitter2.'''
+        c = self.leo_c
+        c.frame.ratio = self.splitterMovedHelper(
+            self.splitter_2,pos,index)
 
-    def do_leo_spell_btn_Add(self):
-        self.doSpellBtn('onAddButton')
-
-    def do_leo_spell_btn_Change(self):
-        self.doSpellBtn('onChangeButton')
-
-    def do_leo_spell_btn_Find(self):
-        self.doSpellBtn('onFindButton')
-
-    def do_leo_spell_btn_FindChange(self):
-        self.doSpellBtn('onChangeThenFindButton')
-
-    def do_leo_spell_btn_Hide(self):
-        self.doSpellBtn('onHideButton')
-
-    def do_leo_spell_btn_Ignore(self):
-        self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18173: *3* select (DynamicWindow)
+    #@+node:ekr.20140913054442.17865: *4* dw.splitterMovedHelper
+    def splitterMovedHelper(self,splitter,pos,index):
+        '''Return the ratio of pos to the total.'''
+        i,j = splitter.getRange(index)
+        ratio = float(pos)/float(j-i)
+        return ratio
+    #@+node:ekr.20110605121601.18173: *3* dw.select
     def select (self,c):
-
-        '''Select the window or tab for c.'''
-
-        # self is c.frame.top
+        '''Select the window or tab for c. self is c.frame.top.'''
         if self.leo_master:
             # A LeoTabbedTopLevel.
             self.leo_master.select(c)
@@ -927,17 +918,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = c.frame.body.wrapper
             g.app.gui.set_focus(c,w)
 
-    #@+node:ekr.20110605121601.18178: *3* setGeometry (DynamicWindow)
+    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
     def setGeometry (self,rect):
-
         '''Set the window geometry, but only once when using the qttabs gui.'''
-
-        # g.trace('(DynamicWindow)',rect,g.callers())
-
         if g.app.qt_use_tabs:
             m = self.leo_master
             assert self.leo_master
-
             # Only set the geometry once, even for new files.
             if not hasattr(m,'leo_geom_inited'):
                 m.leo_geom_inited = True
@@ -945,111 +931,25 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 QtWidgets.QMainWindow.setGeometry(self,rect)
         else:
             QtWidgets.QMainWindow.setGeometry(self,rect)
-    #@+node:ekr.20110605121601.18177: *3* setLeoWindowIcon
+    #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
-        # xxx do not use 
         self.setWindowIcon(QtWidgets.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
-    #@+node:ekr.20110605121601.18174: *3* setSplitDirection (DynamicWindow)
+    #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
     def setSplitDirection (self,orientation='vertical'):
-
+        '''Set the splitter orientation for the Leo main window.'''
         vert = orientation and orientation.lower().startswith('v')
         h,v = QtCore.Qt.Horizontal,QtCore.Qt.Vertical
-
         orientation1 = h if vert else v
         orientation2 = v if vert else h
-
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
-
-        # g.trace('vert',vert)
-
-    #@+node:ekr.20110605121601.18175: *3* setStyleSheets & helper (DynamicWindow)
-    def setStyleSheets(self):
-
-        trace = False
-        c = self.leo_c
-        
-        sheets = []
-        for name in 'qt-gui-plugin-style-sheet', 'qt-gui-user-style-sheet':
-            sheet = c.config.getData(name, strip_comments=False)
-            # don't strip `#selector_name { ...` type syntax
-            if sheet:
-                if '\n' in sheet[0]:
-                    sheet = ''.join(sheet)
-                else:
-                    sheet = '\n'.join(sheet)
-            if sheet and sheet.strip():
-                sheets.append(sheet)
-
-        if not sheets:
-            if trace: g.trace('no style sheet')
-            return
-        
-        sheet = "\n".join(sheets)
-
-        # store *before* expanding, so later expansions get new zoom
-        c.active_stylesheet = sheet
-
-        sheet = g.expand_css_constants(c, sheet)
-        
-        if trace: g.trace(len(sheet))
-        w = self.leo_ui
-        if g.app.qt_use_tabs:
-            w = g.app.gui.frameFactory.masterFrame
-        a = w.setStyleSheet(sheet or self.default_sheet())
-    #@+node:ekr.20110605121601.18176: *4* defaultStyleSheet
-    def defaultStyleSheet (self):
-
-        '''Return a reasonable default style sheet.'''
-
-        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-        return '''\
-
-    /* A QWidget: supports only background attributes.*/
-    QSplitter::handle {
-
-        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-    }
-    QSplitter {
-        border-color: white;
-        background-color: white;
-        border-width: 3px;
-        border-style: solid;
-    }
-    QTreeWidget {
-        background-color: #ffffec; /* Leo's traditional tree color */
-    }
-    /* Not supported. */
-    QsciScintilla {
-        background-color: pink;
-    }
-    '''
-    #@+node:ekr.20130804061744.12425: *3* setWindowTitle (DynamicWindow)
+    #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
     if 0: # Override for debugging only.
         def setWindowTitle (self,s):
             g.trace('***(DynamicWindow)',s,self.parent())
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self,s)
-    #@+node:ekr.20110605121601.18179: *3* splitter event handlers
-    def onSplitter1Moved (self,pos,index):
-
-        c = self.leo_c
-        c.frame.secondary_ratio = self.splitterMovedHelper(
-            self.splitter,pos,index)
-
-    def onSplitter2Moved (self,pos,index):
-
-        c = self.leo_c
-        c.frame.ratio = self.splitterMovedHelper(
-            self.splitter_2,pos,index)
-
-    def splitterMovedHelper(self,splitter,pos,index):
-
-        i,j = splitter.getRange(index)
-        ratio = float(pos)/float(j-i)
-        # g.trace(pos,j,ratio)
-        return ratio
     #@-others
 
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
@@ -4716,7 +4616,8 @@ class QtSearchWidget:
         self.text = None
 #@+node:ekr.20110605121601.18462: ** class SDIFrameFactory
 class SDIFrameFactory:
-    """ 'Toplevel' frame builder 
+    """
+    Top-level frame builder for Qt Gui without tabs.
 
     This only deals with Qt level widgets, not Leo wrappers
     """

@@ -999,6 +999,14 @@ class LeoQtGui(leoGui.LeoGui):
             finally:
                 sys.stdout.flush()
                 # sys.stderr.flush()
+    #@+node:ekr.20140913054442.17862: *3* LeoQtGui.reloadStyleSheets & setStyleSheets
+    def reloadStyleSheets(self,c,safe=False):
+        '''Set the style sheets from user settings.'''
+        StyleSheetManager(c,safe=safe).reload_style_sheets()
+
+    def setStyleSheets(self,c,all=True,top=None):
+        '''Set the style sheets from user settings.'''
+        StyleSheetManager(c,safe=False).set_style_sheets(all=all,top=top)
     #@+node:ekr.20111215193352.10220: *3* LeoQtGui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
     def createSplashScreen (self):
@@ -1194,6 +1202,239 @@ class LeoQtGui(leoGui.LeoGui):
                 self._oldEmit(self, *args)
         
             QtCore.QObject.emit = new_emit
+    #@-others
+#@+node:ekr.20140913054442.17860: ** class StyleSheetManager
+class StyleSheetManager:
+    '''A class to manage (reload) Qt style sheets.'''
+    #@+others
+    #@+node:ekr.20140912110338.19371: *3* ssm.__init__
+    def __init__(self,c,safe):
+        '''Ctor the ReloadStyle class.'''
+        self.c = c
+        self.safe = safe
+        self.settings_p = g.findNodeAnywhere(c,'@settings')
+        if not self.settings_p:
+            g.es("No '@settings' node found in outline.  See:")
+            g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
+    #@+node:ekr.20140912110338.19369: *3* ssm.check_stylesheet
+    def check_stylesheet(self,stylesheet):
+        '''check/trace the stylesheet.'''
+        check = True
+        trace = True and not g.unitTesting
+        c = self.c
+        if check:
+            sheet = g.expand_css_constants(c,stylesheet)
+            if self.safe:
+                from leo.core.leoQt import QtWidgets
+                w = QtWidgets.QFrame()
+                w.setStyleSheet(sheet)
+                used = g.u(w.styleSheet())
+            else:
+                self.set_style_sheets(all=False)
+                    # Calls g.expand_css_constants
+                # For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+                # For --gui=qt,     c.frame.top is a DynamicWindow.
+                # used = str(g.app.gui.frameFactory.masterFrame.styleSheet())
+                top = c.frame.top
+                master = top.leo_master or top
+                used = g.u(master.styleSheet())
+            sheet,used = self.munge(sheet),self.munge(used)
+            ok = len(sheet) == len(used)
+            if trace:
+                g.trace('match',ok,'len(sheet)',len(sheet),'len(used)',len(used))
+                if not ok:
+                    for i,ch in enumerate(sheet):
+                        if sheet[i] != used[i]:
+                            # n1,n2 = g.getLine(sheet,i)
+                            g.trace('first mismatch at',i,repr(sheet[i]))
+                            g.trace(sheet[0:i],'\n=====\n',sheet[i:i+30])
+                            g.trace( used[0:i],'\n=====\n', used[i:i+30])
+                            break
+                    # g.trace('\n\n===== input stylesheet =====\n\n',sheet)
+                    # g.trace('\n\n===== output stylesheet =====\n\n',used)
+            return ok
+        else:
+            return True
+    #@+node:ekr.20110605121601.18176: *3* ssm.default_style_sheet
+    def default_style_sheet (self):
+        '''Return a reasonable default style sheet.'''
+        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        return '''\
+
+    /* A QWidget: supports only background attributes.*/
+    QSplitter::handle {
+        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    }
+    QSplitter {
+        border-color: white;
+        background-color: white;
+        border-width: 3px;
+        border-style: solid;
+    }
+    QTreeWidget {
+        background-color: #ffffec; /* Leo's traditional tree color */
+    }
+    QsciScintilla {
+        background-color: pink;
+    }
+    '''
+    #@+node:ekr.20140912110338.19368: *3* ssm.find_themes
+    def find_themes(self):
+        '''Find all theme-related nodes in the @settings tree.'''
+        themes,theme_name = [],'unknown'
+        for p in self.settings_p.subtree_iter():
+            if p.h.startswith('@string color_theme'):
+                theme_name = p.h.split()[-1]
+                themes.append((theme_name,p.copy()))
+            elif p.h == 'stylesheet & source':
+                theme_name = 'unknown'
+                themes.append((theme_name,p.copy()))
+        return themes,theme_name
+    #@+node:ekr.20140912110338.19367: *3* ssm.get_last_style_sheet
+    def get_last_style_sheet(self):
+        '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
+        sheets = [p.copy() for p in self.settings_p.subtree_iter()
+            if p.h == '@data qt-gui-plugin-style-sheet']
+        if sheets:
+            if len(sheets) > 1:
+                g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
+                g.es("Using the *last* node found")
+            else:
+                g.es("Stylesheet found")
+            data_p = sheets[-1]
+            return data_p.b
+        else:
+            g.es("No '@data qt-gui-plugin-style-sheet' node")
+            # g.es("Typically 'Reload Settings' is used in the Global or Personal "
+                 # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
+            return None
+    #@+node:ekr.20140912110338.19366: *3* ssm.get_last_theme
+    def get_last_theme(self,themes,theme_name):
+        '''Return the stylesheet of the last theme.'''
+        g.es("Found theme(s):")
+        for name,p in themes:
+            g.es('found theme:',name)
+        if len(themes) > 1:
+            g.es("WARNING: using the *last* theme found")
+        theme_p = themes[-1][1]
+        unl = theme_p.get_UNL()+'-->'
+        seen = 0
+        for i in theme_p.subtree_iter():
+            # Disable any @data qt-gui-plugin-style-sheet nodes in theme's tree.
+            if i.h == '@data qt-gui-plugin-style-sheet':
+                i.h = '@@data qt-gui-plugin-style-sheet'
+                seen += 1
+        if seen == 0:
+            g.es("NOTE: Did not find compiled stylesheet for theme")
+        elif seen > 1:
+            g.es("NOTE: Found multiple compiled stylesheets for theme")
+        text = [
+            "/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
+            "('stylesheet & source')\n  AND RECREATE THIS BY "
+            "Alt-X style-reload"
+            "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
+            % (
+                theme_p.get_UNL(with_proto=True),
+                datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+            )]
+        for i in theme_p.subtree_iter():
+            src = i.get_UNL().replace(unl, '')
+            if i.h.startswith('@data '):
+                i.h = '@'+i.h
+            if ('@ignore' in src) or ('@data' in src):
+                continue
+            text.append("/*### %s %s*/\n%s\n\n" % (
+                src, '#'*(70-len(src)),
+                i.b.strip()
+            ))
+        stylesheet = '\n'.join(text)
+        if self.safe:
+            g.trace('Stylesheet:\n' % stylesheet)
+        else:
+            data_p = theme_p.insertAsLastChild()
+            data_p.h = '@data qt-gui-plugin-style-sheet'
+            data_p.b = stylesheet
+            g.es("Stylesheet compiled")
+        return stylesheet
+    #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet
+    def get_stylesheet(self):
+        '''
+        Scan for themes or @data qt-gui-plugin-style-sheet nodes.
+        Return the text of the relevant node.
+        '''
+        themes,theme_name = self.find_themes()
+        if themes:
+            return self.get_last_theme(themes,theme_name)
+        else:
+            g.es("No theme found, assuming static stylesheet")
+            return self.get_last_style_sheet()
+    #@+node:ekr.20140913054442.17861: *3* ssm.is_valid_stylesheet (to do)
+    #@+node:ekr.20140912110338.19372: *3* ssm.munge
+    def munge(self,stylesheet):
+        '''
+        Return the stylesheet without extra whitespace.
+
+        To avoid false mismatches, this should approximate what Qt does.
+        To avoid false matches, this should not munge too much.
+        '''
+        s = ''.join([s.lstrip().replace('  ',' ').replace(' \n','\n')
+            for s in g.splitLines(stylesheet)])
+        return s.rstrip()
+            # Don't care about ending newline.
+    #@+node:ekr.20140912110338.19370: *3* ssm.reload_style_sheets
+    def reload_style_sheets(self):
+        '''The main line of the style-reload command.'''
+        if not self.settings_p:
+            return
+        c = self.c
+        stylesheet = self.get_stylesheet()
+        if not stylesheet:
+            return
+        ok = self.check_stylesheet(stylesheet)
+        if self.safe:
+            g.es('safe mode: no settings changed',color='blue')
+        else:
+            # Reload the settings from this file.
+            g.es('reloading settings',color='blue')
+            shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
+            c.config.settingsDict.update(settings)
+            c.redraw()
+    #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
+    def set_style_sheets(self,all=True,top=None):
+        '''Set the master style sheet for all widgets using config settings.'''
+        trace = False
+        c = self.c
+        if top is None: top=c.frame.top
+        selectors = ['qt-gui-plugin-style-sheet']
+        if all:
+            selectors.append('qt-gui-user-style-sheet')
+        sheets = []
+        for name in selectors:
+            sheet = c.config.getData(name,strip_comments=False)
+                # don't strip `#selector_name { ...` type syntax
+            if sheet:
+                if '\n' in sheet[0]:
+                    sheet = ''.join(sheet)
+                else:
+                    sheet = '\n'.join(sheet)
+            if sheet and sheet.strip():
+                sheets.append(sheet)
+        if sheets:
+            sheet = "\n".join(sheets)
+            # store *before* expanding, so later expansions get new zoom
+            c.active_stylesheet = sheet
+            sheet = g.expand_css_constants(c,sheet)
+            if trace: g.trace(len(sheet))
+            # # # if g.app.qt_use_tabs:
+                # # # w = g.app.gui.frameFactory.masterFrame
+            # # # else:
+                # # # w = top.leo_ui
+            # For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+            # For --gui=qt,     c.frame.top is a DynamicWindow.
+            w = top.leo_master or top
+            a = w.setStyleSheet(sheet or self.default_style_sheet())
+        else:
+            if trace: g.trace('no style sheet')
     #@-others
 #@-others
 #@@language python
