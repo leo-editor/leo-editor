@@ -3821,10 +3821,16 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213062019.7"></t>
 <t tx="ekr.20071213062019.8"></t>
 <t tx="ekr.20071213062019.9"></t>
-<t tx="ekr.20071217093419">
+<t tx="ekr.20071217093419">The body text should contain the data, one string per line.
 
-The body text should contain the data, one string per line.
-Comments lines starting with '#' are ignored.</t>
+New in Leo 4.12: Lines starting with '#' are *included* in the data.
+
+New in Leo 4.12: @data nodes may be split: the data consists of the body text of
+the @data node itself and the body text of all descendant nodes, in outline
+order.
+
+However, descendant nodes whose headlines start with '@' do not become part of the data.
+</t>
 <t tx="ekr.20080204124255"># For testing only.
 
 start-ipython           = Alt-Ctrl-Shift-i
