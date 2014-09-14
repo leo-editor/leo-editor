@@ -4670,19 +4670,15 @@ def ensureTrailingNewlines (s,n):
 
 #@+node:tbrown.20130411121812.28336: *4* g.expand_css_constants
 def expand_css_constants(c, sheet, font_size_delta=None):
-    
+    '''Expand @ settings into their corresponding constants.'''
     constants = find_constants_defined(sheet)
-    
     whine = None
     # whine at the user if they use old style style-sheet comment 
     # definition, but only once
-    
     deltas = c._style_deltas
-    
     # legacy
     if font_size_delta:
         deltas['font-size-body'] = font_size_delta
-        
     for delta in c._style_deltas:
         # adjust @font-size-body by font_size_delta
         # easily extendable to @font-size-*
@@ -4699,7 +4695,6 @@ def expand_css_constants(c, sheet, font_size_delta=None):
             units = ''.join(i for i in val if i not in '01234567890.')
             size = max(1, int(size) + deltas[delta])
             constants["@"+delta] = "%s%s" % (size, units)
-
     passes = 10
     to_do = find_constants_referenced(sheet)
     changed = True
