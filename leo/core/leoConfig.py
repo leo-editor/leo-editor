@@ -254,6 +254,8 @@ class ParserBaseClass:
             if not p2.h.startswith('@'):
                 if p2.b:
                     data.extend(g.splitLines(p2.b))
+                    if not p2.b.endswith('\n'):
+                        data.append('\n')
         self.set(p,kind,name,data)
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData (self,p,kind,name,val):

@@ -9676,7 +9676,6 @@ Apparently, Leo directives don't spoil stylesheets, but just to be sure...
 @nocolor
 @language stylesheet (To do)
 */
-
 </t>
 <t tx="ekr.20140914042331.19477">/* The body pane */
 
