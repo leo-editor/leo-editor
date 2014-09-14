@@ -304,36 +304,28 @@ def vs_eval(kwargs):
     ``g``, ``c``, and ``p`` are available to executing code, assignments
     are made in the ``c.vs`` namespace and persist for the life of ``c``.
     """
-    
     c = kwargs['c']
     vsc = get_vs(c)
     cvs = vsc.d
-    txt = c.frame.body.getSelectedText()
-
+    w = c.frame.body.wrapper
+    txt = w.getSelectedText()
     # select next line ready for next select/send cycle
     # copied from .../plugins/leoscreen.py
-    b = c.frame.body.getAllText()
-    i = c.frame.body.getInsertPoint()
+    b = w.getAllText()
+    i = w.getInsertPoint()
     try:
         j = b[i:].index('\n')+i+1
-        c.frame.body.setSelectionRange(i,j)
+        w.setSelectionRange(i,j)
     except ValueError:  # no more \n in text
-        c.frame.body.setSelectionRange(i,i)
+        w.setSelectionRange(i,i)
         pass
-        
     if not txt:
         return
-    
     txt = textwrap.dedent(txt)
-        
     blocks = re.split('\n(?=[^\\s])', txt)
-
     leo_globals = {'c':c, 'p':c.p, 'g':g}
-    
     ans = None
-    
     dbg = False
-    
     redirects = c.config.getBool('valuespace_vs_eval_redirect')
     if redirects:
         old_stderr = g.stdErrIsRedirected()
@@ -342,7 +334,6 @@ def vs_eval(kwargs):
             g.redirectStderr()
         if not old_stdout:
             g.redirectStdout()
-    
     try:
         # execute all but the last 'block'
         if dbg: print('all but last')

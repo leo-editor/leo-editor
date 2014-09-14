@@ -148,7 +148,7 @@ def install_qt_quicksearch_tab(c):
         wdg.ui.listWidget.setFocus()
         
     def find_selected(event):
-        text = c.frame.body.getSelectedText()
+        text = c.frame.body.wrapper.getSelectedText()
         if text.strip():
             wdg.ui.lineEdit.setText(text)
             wdg.returnPressed()
