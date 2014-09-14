@@ -242,13 +242,18 @@ class ParserBaseClass:
         aList = d.get(key,[])
         aList.append(c.shortFileName())
         d[key] = aList
-    #@+node:ekr.20071214140900: *4* doData
+    #@+node:ekr.20071214140900: *4* doData (ParserBaseClass)
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
         # New in Leo 4.12.1: strip *nothing* here.
-        # data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
+        # New in Leo 4.12.1: Append all text in descendants in outline order.
+        # data = g.splitLines(p.b)
         data = g.splitLines(p.b)
+        for p2 in p.subtree():
+            if not p2.h.startswith('@'):
+                if p2.b:
+                    data.extend(g.splitLines(p2.b))
         self.set(p,kind,name,data)
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData (self,p,kind,name,val):

@@ -9238,6 +9238,323 @@ This case subtracts one from d.get(p.parent())
 # - an ordinary organizer node,
 # - a bare existing organizer node
 # - an existing organizer node that is a child of another organizer node.
+.. @+node:ekr.20140914042331.19494: ** @@data OLD qt-gui-plugin-style-sheet
+/* Documentation of Qt stylesheets at http://qt-project.org/doc/qt-4.8/stylesheet.html */
+
+/* 
+   Buttons may be styled by name:
+      QPushButton#<button text>-button { <style> }
+   or by kind:
+      QPushButton[button_kind="<button kind>"] { <style> }
+   Button kinds are:
+   'run-script' (the singleton run-script button),
+   'debug-script',
+   'script-button-button' (the singleton script-button button), 
+   'script-button' (buttons created by the script-button button),
+   'generic-button' (default), 
+   'quick-move' from the quickMove plugin,
+   'interact' from the interact plugin,
+   'at-button' (created from @button nodes)
+   Search 'button_kind' below for button styling examples.
+   
+*/
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/*
+    Important: this stylesheets is responsible for most, but *not* all, of Leos appearance.
+    See also settings in "Colorizer and colors" 
+*/
+
+QScrollArea {
+    background-color: white;
+}
+
+/* Components of the Find Tab */
+
+QWidget#findTab {
+    background-color: white;
+}
+
+QLabel#findHeading {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel#findLabel {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel#changeLabel {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel#findHelp {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#findPattern {
+    font-family: DejaVu Sans Mono;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#findChange {
+    font-family: DejaVu Sans Mono;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-style: solid;
+}
+
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    color: @text-foreground-tree;
+    background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: black; /* was white */
+    selection-background-color: lightgrey;
+    /* font-family: SansSerif; */
+    font-family: @font-family;
+    font-size: @font-size-tree;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+    show-decoration-selected: 1 /* 1: select entire row */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit {
+    background-color: cornsilk;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: @font-family;
+    font-size: @font-size-tree;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The log panes */
+QTextEdit {
+    background-color: white; /* #f2fdff; */
+    color: @text-foreground-log;
+    selection-color: white;
+    selection-background-color: blue;
+    /* font-family: Courier New; */
+    font-family: @font-family;
+    font-size: @font-size-log;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The body pane */
+QTextEdit#richTextEdit {
+    background-color: white; /* #fdf5f5; A kind of pink. */
+    color: @text-foreground-body;
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: @font-family;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
+}
+
+/* The text "Minibuffer" in the minibuffer area.
+
+Do not overide QLabel directly.  It is used for dialog text.
+*/
+
+QLabel#minibufferLabel {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 
+QLabel {
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal;
+    font-style: normal;
+    border: 2px;
+    margin: 2px;
+}
+*/
+
+
+/* The mini-buffer
+
+**Important**: Because Leo changes the color of the minibuffer dynamically,
+stylesheets can not be used. Instead, set the desired colors using one of the
+following settings, with defaults as shown::
+
+    @color minibuffer-background-color = lightblue
+    @color minibuffer-error-color = red
+    @color minibuffer-foreground-color = black
+    @color minibuffer-warning-color = lightgrey
+*/
+
+QLineEdit#lineEdit {
+    color: @minibuffer_foreground_color;
+    background-color: @minibuffer_background_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+
+
+QLineEdit#lineEdit {
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: @font-family;
+    font-size: 10pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+    font-size: 10pt;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+    font-size: 10pt;
+}
+
+/* button_kind based button coloring */
+QPushButton[button_kind="run-script"] { 
+    background-color: @run-script-btn-bg; }
+QPushButton[button_kind="debug-script"] { 
+    background-color: @debug-script-btn-bg; }
+QPushButton[button_kind="generic-button"] { 
+    background-color: @generic-button-btn-bg; }
+QPushButton[button_kind="quick-move"] { 
+    background-color: @quick-move-btn-bg; }
+QPushButton[button_kind="interact"] { 
+    background-color: @interact-btn-bg; }
+QPushButton[button_kind="at-button"] { 
+    background-color: @at-button-btn-bg; }
+QPushButton[button_kind="script-button"] { 
+    background-color: @script-button-btn-bg; }
+/* example of name based button coloring.  Coincidentally, the
+   name and button_kind of this button are the same */
+QPushButton#script-button-button { 
+    background-color: @script-button-button-btn-bg; }
+
+QPlainTextEdit#screencastcaption {
+    background-color: yellow;
+    font-family: @font-family; /* Times New Roman; */
+    font-size: 18pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* focused pane border highlight */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
+
+/* bookmarks plugin styling */
+#show_bookmarks QPushButton { 
+    margin: 0; padding: 1; border: none;
+    font-size: @bookmarks_base_size;
+    color: @bookmarks_base_color;
+    font-weight: @bookmarks_base_weight;
+    text-decoration: @bookmarks_base_decoration;
+}
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    font-size: @bookmarks_children_size;
+    color: @bookmarks_children_color;
+    font-weight: @bookmarks_children_weight;
+    text-decoration: @bookmarks_children_decoration;
+}
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
+
+/* Borders for vim mode. */
+
+QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+  border: 3px solid #FA8072; /* Salmon */
+}
+QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+  border: 3px solid blue;
+}
+QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+  border: 3px solid gray;
+}
+
 .. @+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python

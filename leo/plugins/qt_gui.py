@@ -1374,7 +1374,6 @@ class StyleSheetManager:
         else:
             g.es("No theme found, assuming static stylesheet")
             return self.get_last_style_sheet()
-    #@+node:ekr.20140913054442.17861: *3* ssm.is_valid_stylesheet (to do)
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self,stylesheet):
         '''
@@ -1433,6 +1432,7 @@ class StyleSheetManager:
             if trace: g.trace(len(sheet))
             if not sheet: sheet = self.default_style_sheet()
             w = self.get_master_widget(top)
+            if trace: g.trace(w,len(sheet))
             a = w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')

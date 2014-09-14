@@ -6,11 +6,14 @@
 .. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
 @language rest
 
-- Create minimal bridge app for testing.
-- Test and enable big_text_buttons.
-    * Big-text dummy text should contain the "wait" warning.
+Settings:
+- Test new settings.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+
+Next:
+- Create minimal bridge app for testing.
+- Enable and test big_text_buttons.
 
 Stashed bugs:
 - Fix recursive import bug.
