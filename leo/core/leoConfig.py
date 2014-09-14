@@ -247,15 +247,15 @@ class ParserBaseClass:
 
         # New in Leo 4.11: do not strip lines.
         # New in Leo 4.12.1: strip *nothing* here.
-        # New in Leo 4.12.1: Append all text in descendants in outline order.
-        # data = g.splitLines(p.b)
+        # New in Leo 4.12.1: allow composition of nodes:
+        # - Append all text in descendants in outline order.
+        # - Ensure all fragments end with a newline.
         data = g.splitLines(p.b)
         for p2 in p.subtree():
-            if not p2.h.startswith('@'):
-                if p2.b:
-                    data.extend(g.splitLines(p2.b))
-                    if not p2.b.endswith('\n'):
-                        data.append('\n')
+            if p2.b and not p2.h.startswith('@'):
+                data.extend(g.splitLines(p2.b))
+                if not p2.b.endswith('\n'):
+                    data.append('\n')
         self.set(p,kind,name,data)
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData (self,p,kind,name,val):
