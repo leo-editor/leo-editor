@@ -13,6 +13,7 @@ import leo.plugins.qt_idle_time as qt_idle_time
 import leo.plugins.qt_text as qt_text
 import datetime
 import os
+import re
 import sys
 if 1:
     # This defines the commands defined by @g.command.
@@ -999,14 +1000,6 @@ class LeoQtGui(leoGui.LeoGui):
             finally:
                 sys.stdout.flush()
                 # sys.stderr.flush()
-    #@+node:ekr.20140913054442.17862: *3* LeoQtGui.reloadStyleSheets & setStyleSheets
-    def reloadStyleSheets(self,c,safe=False):
-        '''Set the style sheets from user settings.'''
-        StyleSheetManager(c,safe=safe).reload_style_sheets()
-
-    def setStyleSheets(self,c,all=True,top=None):
-        '''Set the style sheets from user settings.'''
-        StyleSheetManager(c,safe=False).set_style_sheets(all=all,top=top)
     #@+node:ekr.20111215193352.10220: *3* LeoQtGui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
     def createSplashScreen (self):
@@ -1051,6 +1044,20 @@ class LeoQtGui(leoGui.LeoGui):
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
     #@+node:ekr.20110605121601.18523: *3* LeoQtGui.Style Sheets
+    #@+node:ekr.20140915062551.17961: *4* Wrappers for StyleSheetManager methods
+    #@+node:ekr.20140915062551.17959: *5* LeoQtGui.reloadStyleSheets
+    def reloadStyleSheets(self,c,safe=False):
+        '''Set the style sheets from user settings.'''
+        StyleSheetManager(c,safe=safe).reload_style_sheets()
+
+    #@+node:ekr.20140915062551.17962: *5* LeoQtGui.setSelectedStyleSheet
+    def setSelectedStyleSheet(self,c):
+        '''Set the style sheets from c.p.b.'''
+        StyleSheetManager(c,safe=False).set_selected_style_sheet()
+    #@+node:ekr.20140915062551.17960: *5* LeoQtGui.setStyleSheets
+    def setStyleSheets(self,c,all=True,top=None):
+        '''Set the style sheets from user settings.'''
+        StyleSheetManager(c,safe=False).set_style_sheets(all=all,top=top)
     #@+node:ekr.20110605121601.18524: *4* LeoQtGui.setStyleSetting
     def setStyleSetting(self,w,widgetKind,selector,val):
 
@@ -1235,6 +1242,7 @@ class StyleSheetManager:
                 master = self.get_master_widget()
                 used = g.u(master.styleSheet())
             sheet,used = self.munge(sheet),self.munge(used)
+            # Warning: this length check can succeed for bad style sheets!
             ok = len(sheet) == len(used)
             if trace:
                 g.trace('match',ok,'len(sheet)',len(sheet),'len(used)',len(used))
@@ -1255,6 +1263,7 @@ class StyleSheetManager:
     def default_style_sheet (self):
         '''Return a reasonable default style sheet.'''
         # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        g.trace('===== using default style sheet =====')
         return '''\
 
     /* A QWidget: supports only background attributes.*/
@@ -1286,6 +1295,134 @@ class StyleSheetManager:
                 theme_name = 'unknown'
                 themes.append((theme_name,p.copy()))
         return themes,theme_name
+    #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
+    def expand_css_constants(self,sheet,font_size_delta=None):
+        '''Expand @ settings into their corresponding constants.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        constants = self.find_constants_defined(sheet)
+        whine = None
+        # whine at the user if they use old style style-sheet comment 
+        # definition, but only once
+        deltas = c._style_deltas
+        # legacy
+        if font_size_delta:
+            deltas['font-size-body'] = font_size_delta
+        if trace: g.trace('c._style_deltas',c._style_deltas)
+        for delta in c._style_deltas:
+            # adjust @font-size-body by font_size_delta
+            # easily extendable to @font-size-*
+            val = c.config.getString(delta)
+            passes = 10
+            while passes and val.startswith('@'):
+                key = g.app.config.canonicalizeSettingName(val[1:])
+                val = c.config.settingsDict.get(key)
+                if val:
+                    val = val.val
+                passes -= 1
+            if deltas[delta] and (val is not None):
+                size = ''.join(i for i in val if i in '01234567890.')
+                units = ''.join(i for i in val if i not in '01234567890.')
+                size = max(1, int(size) + deltas[delta])
+                constants["@"+delta] = "%s%s" % (size, units)
+        passes = 10
+        to_do = self.find_constants_referenced(sheet)
+        changed = True
+        while passes and to_do and changed:
+            changed = False
+            to_do.sort(key=len, reverse=True)
+            for const in to_do:
+                
+                value = None
+                if const in constants:
+                    value = constants[const]
+                    if const[1:] not in deltas and not whine:
+                        whine = ("'%s' from style-sheet comment definition, "
+                            "please use regular @string / @color type @settings."
+                            % const)
+                        g.es(whine)
+                        print(whine)
+                else:
+                    key = g.app.config.canonicalizeSettingName(const[1:])  # without '@'
+                    value = c.config.settingsDict.get(key)
+                    if value is not None:
+                        value = str(value.val)
+                if value:      
+                    sheet = re.sub(
+                        const+"(?![-A-Za-z0-9_])",  
+                        # don't replace shorter constants occuring in larger
+                        value,
+                        sheet
+                    )
+                    changed = True
+                else:
+                    pass
+                    # tricky, might be an undefined identifier, but it might
+                    # also be a @foo in a /* comment */, where it's harmless.
+                    # So rely on whoever calls .setStyleSheet() to do the right thing.
+            passes -= 1
+            to_do = self.find_constants_referenced(sheet)
+        if not passes and to_do:
+            g.es("To many iterations of substitution")
+        sheet = sheet.replace('\\\n', '')  # join lines ending in \
+        if trace: g.trace('returns...\n',sheet)
+        return sheet
+    #@+node:tbrown.20131120093739.27085: *4* ssm.find_constants_referenced
+    def find_constants_referenced(self,text):
+        """find_constants - Return a list of constants referenced in the supplied text,
+        constants match::
+        
+            @[A-Za-z_][-A-Za-z0-9_]*
+            i.e. @foo_1-5
+
+        :Parameters:
+        - `text`: text to search
+        """
+        return re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)
+    #@+node:tbrown.20130411121812.28335: *4* ssm.find_constants_defined
+    def find_constants_defined(self,text):
+        r"""find_constants - Return a dict of constants defined in the supplied text.
+        
+        NOTE: this supports a legacy way of specifying @<identifiers>, regular
+        @string and @color settings should be used instead, so calling this
+        wouldn't be needed.  expand_css_constants() issues a warning when
+        @<identifiers> are found in the output of this method.
+        
+        Constants match::
+        
+            ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+            i.e.
+            @foo_1-5=a
+                @foo_1-5 = a more here
+
+        :Parameters:
+        - `text`: text to search
+        """
+        pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+        ans = {}
+        text = text.replace('\\\n', '')  # merge lines ending in \
+        for line in text.split('\n'):
+            test = pattern.match(line)
+            if test:
+                ans.update([test.groups()])
+        # constants may refer to other constants, de-reference here    
+        change = True
+        level = 0
+        while change and level < 10:
+            level += 1
+            change = False
+            for k in ans:
+                # pylint: disable=unnecessary-lambda
+                # process longest first so @solarized-base0 is not replaced
+                # when it's part of @solarized-base03
+                for o in sorted(ans, key=lambda x:len(x), reverse=True):
+                    if o in ans[k]:
+                        change = True
+                        ans[k] = ans[k].replace(o, ans[o])
+        if level == 10:
+            print("Ten levels of recursion processing styles, abandoned.")
+            g.es("Ten levels of recursion processing styles, abandoned.")
+        return ans
     #@+node:ekr.20140912110338.19367: *3* ssm.get_last_style_sheet
     def get_last_style_sheet(self):
         '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
@@ -1352,16 +1489,6 @@ class StyleSheetManager:
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
-    #@+node:ekr.20140913054442.19390: *3* sssm.get_master_widget
-    def get_master_widget(self,top=None):
-        '''
-        Carefully return the master widget.
-        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-        For --gui=qt,     c.frame.top is a DynamicWindow.
-        '''
-        if top is None: top = self.c.frame.top
-        master = top.leo_master or top
-        return master
     #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet
     def get_stylesheet(self):
         '''
@@ -1404,6 +1531,15 @@ class StyleSheetManager:
             shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
             c.config.settingsDict.update(settings)
             c.redraw()
+    #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
+    def set_selected_style_sheet(self):
+        '''For manual testing: update the stylesheet using c.p.b.'''
+        if not g.unitTesting:
+            c = self.c
+            sheet = c.p.b
+            sheet = self.expand_css_constants(sheet)
+            w = self.get_master_widget(c.frame.top)
+            a = w.setStyleSheet(sheet)
     #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
     def set_style_sheets(self,all=True,top=None):
         '''Set the master style sheet for all widgets using config settings.'''
@@ -1429,13 +1565,22 @@ class StyleSheetManager:
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
             sheet = g.expand_css_constants(c,sheet)
-            if trace: g.trace(len(sheet))
             if not sheet: sheet = self.default_style_sheet()
             w = self.get_master_widget(top)
             if trace: g.trace(w,len(sheet))
             a = w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')
+    #@+node:ekr.20140913054442.19390: *3* sssm.get_master_widget
+    def get_master_widget(self,top=None):
+        '''
+        Carefully return the master widget.
+        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+        For --gui=qt,     c.frame.top is a DynamicWindow.
+        '''
+        if top is None: top = self.c.frame.top
+        master = top.leo_master or top
+        return master
     #@-others
 #@-others
 #@@language python

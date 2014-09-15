@@ -3032,63 +3032,6 @@ def utils_stat (fileName):
 
     return mode
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
-#@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
-def find_constants_defined(text):
-    r"""find_constants - Return a dict of constants defined in the supplied text.
-    
-    NOTE: this supports a legacy way of specifying @<identifiers>, regular
-    @string and @color settings should be used instead, so calling this
-    wouldn't be needed.  expand_css_constants() issues a warning when
-    @<identifiers> are found in the output of this method.
-    
-    Constants match::
-    
-        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
-        i.e.
-        @foo_1-5=a
-            @foo_1-5 = a more here
-
-    :Parameters:
-    - `text`: text to search
-    """
-    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
-    ans = {}
-    text = text.replace('\\\n', '')  # merge lines ending in \
-    for line in text.split('\n'):
-        test = pattern.match(line)
-        if test:
-            ans.update([test.groups()])
-    # constants may refer to other constants, de-reference here    
-    change = True
-    level = 0
-    while change and level < 10:
-        level += 1
-        change = False
-        for k in ans:
-            # pylint: disable=W0108
-            #   lambda may not be necessary (it is).
-            # process longest first so @solarized-base0 is not replaced
-            # when it's part of @solarized-base03
-            for o in sorted(ans, key=lambda x:len(x), reverse=True):
-                if o in ans[k]:
-                    change = True
-                    ans[k] = ans[k].replace(o, ans[o])
-    if level == 10:
-        print("Ten levels of recursion processing styles, abandoned.")
-        g.es("Ten levels of recursion processing styles, abandoned.")
-    return ans
-#@+node:tbrown.20131120093739.27085: *3* g.find_constants_referenced
-def find_constants_referenced(text):
-    """find_constants - Return a list of constants referenced in the supplied text,
-    constants match::
-    
-        @[A-Za-z_][-A-Za-z0-9_]*
-        i.e. @foo_1-5
-
-    :Parameters:
-    - `text`: text to search
-    """
-    return re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s,word,i=0):
     '''
@@ -4669,79 +4612,11 @@ def ensureTrailingNewlines (s,n):
 
 
 #@+node:tbrown.20130411121812.28336: *4* g.expand_css_constants
-def expand_css_constants(c, sheet, font_size_delta=None):
+def expand_css_constants(c,sheet,font_size_delta=None):
     '''Expand @ settings into their corresponding constants.'''
-    constants = find_constants_defined(sheet)
-    whine = None
-    # whine at the user if they use old style style-sheet comment 
-    # definition, but only once
-    deltas = c._style_deltas
-    # legacy
-    if font_size_delta:
-        deltas['font-size-body'] = font_size_delta
-    for delta in c._style_deltas:
-        # adjust @font-size-body by font_size_delta
-        # easily extendable to @font-size-*
-        val = c.config.getString(delta)
-        passes = 10
-        while passes and val.startswith('@'):
-            key = g.app.config.canonicalizeSettingName(val[1:])
-            val = c.config.settingsDict.get(key)
-            if val:
-                val = val.val
-            passes -= 1
-        if deltas[delta] and (val is not None):
-            size = ''.join(i for i in val if i in '01234567890.')
-            units = ''.join(i for i in val if i not in '01234567890.')
-            size = max(1, int(size) + deltas[delta])
-            constants["@"+delta] = "%s%s" % (size, units)
-    passes = 10
-    to_do = find_constants_referenced(sheet)
-    changed = True
-    while passes and to_do and changed:
-        changed = False
-        to_do.sort(key=len, reverse=True)
-        for const in to_do:
-            
-            value = None
-            if const in constants:
-                value = constants[const]
-                if const[1:] not in deltas and not whine:
-                    whine = ("'%s' from style-sheet comment definition, "
-                        "please use regular @string / @color type @settings."
-                        % const)
-                    g.es(whine)
-                    print(whine)
-            else:
-                key = g.app.config.canonicalizeSettingName(const[1:])  # without '@'
-                value = c.config.settingsDict.get(key)
-                if value is not None:
-                    value = str(value.val)
-
-            if value:      
-                sheet = re.sub(
-                    const+"(?![-A-Za-z0-9_])",  
-                    # don't replace shorter constants occuring in larger
-                    value,
-                    sheet
-                )
-                changed = True
-            else:
-                pass
-                # tricky, might be an undefined identifier, but
-                # might also be a @foo in a /* comment */, where it's harmless
-                # so rely on whoever calls .setStyleSheet() to do the
-                # right thing.
-            
-        passes -= 1
-        to_do = find_constants_referenced(sheet)
-    
-    if not passes and to_do:
-        g.es("To many iterations of substitution")
-        
-    sheet = sheet.replace('\\\n', '')  # join lines ending in \
-
-    return sheet
+    import leo.plugins.qt_gui as qt_gui
+    ssm = qt_gui.StyleSheetManager(c,safe=False)
+    return ssm.expand_css_constants(sheet,font_size_delta)
 #@+node:ekr.20050920084036.4: *4* g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix (s1,s2):
 

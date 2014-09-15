@@ -1181,7 +1181,7 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
             menu.exec_(self.mapToGlobal(point))
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
-    #@+node:ekr.20131115120119.17391: *3* detach
+    #@+node:ekr.20131115120119.17391: *3* detach (LeoBaseTabWidget)
     def detach(self, index):
         """detach tab (from tab's context menu)"""
         w = self.widget(index)

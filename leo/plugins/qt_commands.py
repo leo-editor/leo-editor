@@ -100,7 +100,7 @@ for vis in 'hide', 'show', 'toggle':
                 vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
     g.command("gui-all-%s"%vis)(doall)
-#@+node:tbrown.20140814090009.55874: ** style_reload command
+#@+node:tbrown.20140814090009.55874: ** style_sheet commands
 @g.command('style-reload')
 def style_reload(kwargs):
     """reload-styles command.
@@ -112,5 +112,12 @@ def style_reload(kwargs):
     c = kwargs['c']
     if c:
         g.app.gui.reloadStyleSheets(c,safe=False)
+        
+@g.command('style-set-selected')
+def style_set_selected(kwargs):
+    '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
+    c = kwargs['c']
+    if c:
+        g.app.gui.setSelectedStyleSheet(c)
 #@-others
 #@-leo
