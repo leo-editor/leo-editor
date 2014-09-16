@@ -1404,7 +1404,8 @@
 </v>
 <v t="ekr.20140912075503.19369"><vh>Stylesheet settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = # 00AA00</vh></v>
+<v t="ekr.20140916110656.20410"><vh>@color Burlywood = #DEB887</vh></v>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 <v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
@@ -1455,7 +1456,7 @@
 </v>
 <v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
 <v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
-<v t="ekr.20140912075503.19294"><vh>@color head-bg = cornsilk</vh></v>
+<v t="ekr.20140912075503.19294"><vh>@color head-bg = pink</vh></v>
 <v t="ekr.20140912075503.19295"><vh>@color head-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
 </v>
@@ -9184,7 +9185,8 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19291"></t>
 <t tx="ekr.20140912075503.19292"></t>
 <t tx="ekr.20140912075503.19293"></t>
-<t tx="ekr.20140912075503.19294"></t>
+<t tx="ekr.20140912075503.19294">cornsilk, @LeoYellow, @Burlywood
+</t>
 <t tx="ekr.20140912075503.19295"></t>
 <t tx="ekr.20140912075503.19296"></t>
 <t tx="ekr.20140912075503.19297"></t>
@@ -9992,6 +9994,7 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140915194122.24266"></t>
 <t tx="ekr.20140915194122.24267"></t>
 <t tx="ekr.20140915194122.24268"></t>
+<t tx="ekr.20140916110656.20410"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -10359,6 +10362,10 @@ by the stylesheet and could be considered for removal.</t>
 For example, you can use @LeoYellow instead of #ffffec
 
 Please don't change these, but feel free to add your own color names in myLeoSettings.leo.
+
+Important: depending on your platform, the color names defined here:
+http://en.wikipedia.org/wiki/X11_color_names
+may work without being explicitly defined.
 </t>
 <t tx="tbrown.20131122091143.23829">Here you can edit the colors by Leo, just edit the
 node headings, and click the reload-style button.
