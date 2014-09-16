@@ -1236,22 +1236,32 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             if fn in aList:
-                result = g.app.gui.runAskYesNoDialog(c,
-                    title='Open Leo File Again?',
-                    message='%s is already open.  Open it again?' % (fn),
-                )
-                if result == 'yes':
-                    clear = g.app.gui.runAskYesNoDialog(c,
-                        title='Reset open count?',
-                        message='Reset open count for %s?' \
-                            "\nSay yes if you know this outline" \
-                            "\nis not really open elsewhere"% (fn),
+                result = getattr(g.app, '_open_again_always', None)
+                if result is None:
+                    result = g.app.gui.runAskYesNoDialog(c,
+                        title='Open Leo File Again?',
+                        message='%s is already open.  Open it again?' % (fn),
+                        yes_all=True, no_all=True
                     )
-                    if clear == 'yes':
+                if '-all' in result:
+                    g.app._open_again_always = result
+                if result.startswith('yes'):  # 'yes' or 'yes-all'
+                    clear = getattr(g.app, '_open_again_clear_always', None)
+                    if clear is None:
+                        clear = g.app.gui.runAskYesNoDialog(c,
+                            title='Reset open count?',
+                            message='Reset open count for %s?' \
+                                "\nSay yes if you know this outline" \
+                                "\nis not really open elsewhere"% (fn),
+                                yes_all=True, no_all=True
+                        )
+                    if '-all' in clear:
+                        g.app._open_again_clear_always = clear
+                    if clear.startswith('yes'):
                         d[tag] = [i for i in d[tag] if i != fn]
                         # IMPORTANT - rest of load process will add another
                         # entry for this Leo instance, don't do it here
-                return result == 'yes'
+                return result.startswith('yes')
             else:
                 return True
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
