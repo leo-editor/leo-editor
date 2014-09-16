@@ -1401,7 +1401,7 @@ class StyleSheetManager:
             if aList2: aList1.extend(aList2)
             sheet = ''.join(aList1)
             sheet = self.expand_css_constants(sheet)
-        g.trace(len(sheet))
+        # g.trace(len(sheet))
         return sheet
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self,stylesheet):
