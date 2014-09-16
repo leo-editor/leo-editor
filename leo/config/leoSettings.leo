@@ -149,6 +149,13 @@
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
+<v t="ekr.20140916113003.20415"><vh>Bracket matching</vh>
+<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
+<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
+<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
+<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
+<v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
+</v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
@@ -1795,11 +1802,6 @@
 <v t="ekr.20041119034357.39"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
 <v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
-<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
-<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
-<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
-<v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 <v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
 <v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
@@ -1886,7 +1888,8 @@ vertical: body pane on the botton
 This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
-</t>
+
+The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
@@ -5554,7 +5557,14 @@ outline to discover tree-valued abbreviations, and then *deletes* the tree.
 </t>
 <t tx="ekr.20131119143342.18879">@language rest
 
-The following settings determine the appearance of most of Leo.</t>
+The following settings determine the appearance of most of Leo.
+
+Users **should not** change this stylesheet directly.
+
+Instead, change the following setting, or create an
+@@data qt-gui-user-style-sheet in myLeoSettings.leo.
+
+</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
@@ -9987,6 +9997,7 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140915194122.24268"></t>
 <t tx="ekr.20140916110656.20410"></t>
 <t tx="ekr.20140916113003.19609"></t>
+<t tx="ekr.20140916113003.20415"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
