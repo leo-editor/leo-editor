@@ -345,23 +345,42 @@ class LeoQtGui(leoGui.LeoGui):
         else: val = 'cancel'
         return val
     #@+node:ekr.20110605121601.18498: *4* LeoQtGui.runAskYesNoDialog
-    def runAskYesNoDialog(self,c,title,message=None):
+    def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
 
-        """Create and run an askYesNo dialog."""
+        """Create and run an askYesNo dialog.  Return 'yes', 'yes-all',
+        'no', 'no-all'.
+
+        :Parameters:
+        - `c`: commander
+        - `title`: dialog title
+        - `message`: dialog message
+        - `yes_all`: bool - show YesToAll button
+        - `no_all`: bool - show NoToAll button
+        """
 
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
+        buttons = b.Yes | b.No
+        if yes_all:
+            buttons |= b.YesToAll
+        if no_all:
+            buttons |= b.NoToAll
         d = b(c.frame.top)
+        d.setStandardButtons(buttons)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
-        yes = d.addButton('&Yes',b.YesRole)
-        d.addButton('&No',b.NoRole)
-        d.setDefaultButton(yes)
+        d.setDefaultButton(b.Yes)
         c.in_qt_dialog = True
         val = d.exec_()
         c.in_qt_dialog = False
-        return 'yes' if val == 0 else 'no'
+        return {
+            b.Yes: 'yes',
+            b.No: 'no',
+            b.YesToAll: 'yes-all',
+            b.NoToAll: 'no-all'
+        }.get(val, 'no')
+
     #@+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self,title,startdir):
 
