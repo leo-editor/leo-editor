@@ -1624,7 +1624,7 @@
 <v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
 </v>
 </v>
-<v t="ekr.20140915194122.23442"><vh>Margings &amp; borders</vh>
+<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
 <v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
 <v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
 <v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
@@ -1835,6 +1835,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20131119143342.18879"></v>
+<v t="ekr.20140912075503.19369"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9118,15 +9120,15 @@ Clicking the 'load' button will load the body text and remove the buttons.</t>
 <t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
 <t tx="ekr.20140912072521.19158"></t>
 <t tx="ekr.20140912072521.19160">/*
-    =========== New: fully parameterized ===========
+    =========== Leo's new, fully parameterized, stylesheet. ===========
     
     This stylesheet is responsible for most of Leo's appearance.
-    Other settings also have an effect: see "Colorizer and colors"
-    
     This stylesheet is composed of this nodes and all its descendants, in outline order.
     
+    Leo inserts the settings in the tree "Qt Gui Stylesheet settings" into this stylesheet.
+    Modify those settings, *not* this stylesheet.
+    
     About Qt stylesheets: http://qt-project.org/doc/qt-4.8/stylesheet.html
-    Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
     
 Apparently, Leo directives don't spoil stylesheets,
 but just to be sure, put them inside this comment.
@@ -9626,10 +9628,7 @@ QTextEdit#richTextEdit {
     selection-background-color: @body-sel-bg;
     font-family:                @body-font-family;
     font-size:                  @font-size-body;
-        /*
-            Warning: Don't use @body-font-size here.
-            smm.expand_css_constants uses the @font-size-body name.
-        */
+    /* Don't use body-font-size for the font-size. */
     font-weight:                @body-font-weight;
     font-style:                 @body-font-style;
 }

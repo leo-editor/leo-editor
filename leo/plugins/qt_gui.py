@@ -1273,7 +1273,34 @@ class StyleSheetManager:
             print("Ten levels of recursion processing styles, abandoned.")
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
-    #@+node:ekr.20140912110338.19368: *3* ssm.find_themes
+    #@+node:ekr.20140916170549.19551: *3* ssm.get_data
+    def get_data(self,setting):
+        '''Return the value of the @data node for the setting.'''
+        c = self.c
+        return c.config.getData(setting,strip_comments=False,strip_data=False) or []
+    #@+node:ekr.20140913054442.19390: *3* ssm.get_master_widget
+    def get_master_widget(self,top=None):
+        '''
+        Carefully return the master widget.
+        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+        For --gui=qt,     c.frame.top is a DynamicWindow.
+        '''
+        if top is None: top = self.c.frame.top
+        master = top.leo_master or top
+        return master
+    #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet & helpers
+    def get_stylesheet(self):
+        '''
+        Scan for themes or @data qt-gui-plugin-style-sheet nodes.
+        Return the text of the relevant node.
+        '''
+        themes,theme_name = self.find_themes()
+        if themes:
+            return self.get_last_theme(themes,theme_name)
+        else:
+            g.es("No theme found, assuming static stylesheet")
+            return self.get_last_style_sheet()
+    #@+node:ekr.20140912110338.19368: *4* ssm.find_themes
     def find_themes(self):
         '''Find all theme-related nodes in the @settings tree.'''
         themes,theme_name = [],'unknown'
@@ -1285,7 +1312,7 @@ class StyleSheetManager:
                 theme_name = 'unknown'
                 themes.append((theme_name,p.copy()))
         return themes,theme_name
-    #@+node:ekr.20140912110338.19367: *3* ssm.get_last_style_sheet
+    #@+node:ekr.20140912110338.19367: *4* ssm.get_last_style_sheet
     def get_last_style_sheet(self):
         '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
         sheets = [p.copy() for p in self.settings_p.subtree_iter()
@@ -1303,7 +1330,7 @@ class StyleSheetManager:
             # g.es("Typically 'Reload Settings' is used in the Global or Personal "
                  # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
             return None
-    #@+node:ekr.20140912110338.19366: *3* ssm.get_last_theme
+    #@+node:ekr.20140912110338.19366: *4* ssm.get_last_theme
     def get_last_theme(self,themes,theme_name):
         '''Return the stylesheet of the last theme.'''
         g.es("Found theme(s):")
@@ -1351,28 +1378,31 @@ class StyleSheetManager:
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
-    #@+node:ekr.20140913054442.19390: *3* ssm.get_master_widget
-    def get_master_widget(self,top=None):
-        '''
-        Carefully return the master widget.
-        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-        For --gui=qt,     c.frame.top is a DynamicWindow.
-        '''
-        if top is None: top = self.c.frame.top
-        master = top.leo_master or top
-        return master
-    #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet
-    def get_stylesheet(self):
+    #@+node:ekr.20140916170549.19552: *3* ssm.get_style_sheet_from_settings
+    def get_style_sheet_from_settings(self):
         '''
         Scan for themes or @data qt-gui-plugin-style-sheet nodes.
         Return the text of the relevant node.
         '''
-        themes,theme_name = self.find_themes()
-        if themes:
-            return self.get_last_theme(themes,theme_name)
+        if 0: # not ready yet
+            d = c.config.settingsDict
+            for key in sorted(d.keys()):
+                gs = d.get(key)
+                if gs.kind == 'string':
+                    setting = g.toUnicode(gs.setting)
+                    val = g.toUnicode(gs.val)
+                    if setting and val and val.startswith('color_theme'):
+                        sheet = setting
+                        break
         else:
-            g.es("No theme found, assuming static stylesheet")
-            return self.get_last_style_sheet()
+            # No setting found
+            aList1 = self.get_data('qt-gui-plugin-style-sheet')
+            aList2 = self.get_data('qt-gui-user-style-sheet')
+            if aList2: aList1.extend(aList2)
+            sheet = ''.join(aList1)
+            sheet = self.expand_css_constants(sheet)
+        g.trace(len(sheet))
+        return sheet
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self,stylesheet):
         '''
@@ -1395,42 +1425,19 @@ class StyleSheetManager:
     def reload_style_sheets(self):
         '''The main line of the style-reload command.'''
         c = self.c
-        if 1: # New code
-            lm = g.app.loadManager
-            # Reread all settings.
-            lm.readGlobalSettingsFiles()
-            fn = c.shortFileName()
-            if fn not in ('leoSettings.leo','myLeoSettings.leo'):
-                shortcuts,settings = lm.createSettingsDicts(c,localFlag=True)
-                c.config.settingsDict.update(settings)
-            # Recompute and apply the stylesheet.
-            if 1: # testing: ignore themes for now
-                # Now that the setting have been reloaded, just get the @data nodes.
-                aList1 = c.config.getData('qt-gui-plugin-style-sheet') or []
-                aList2 = c.config.getData('qt-gui-user-style-sheet') or []
-                aList1.extend(aList2)
-                sheet = '\n'.join(aList1)
-                sheet = self.expand_css_constants(sheet)
-                g.trace(sheet)
-            else:
-                sheet = self.get_stylesheet()
-            if sheet:
-                w = self.get_master_widget()
-                w.setStyleSheet(sheet)
-            c.redraw()
-        else: # Old code
-            if not self.settings_p:
-                return
-            stylesheet = self.get_stylesheet()
-            if stylesheet:
-                if self.safe:
-                    g.es('safe mode: no settings changed',color='blue')
-                else:
-                    # Reload the settings from this file.
-                    g.es('reloading settings',color='blue')
-                    shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
-                    c.config.settingsDict.update(settings)
-                    c.redraw()
+        lm = g.app.loadManager
+        # Reread *all* settings.
+        lm.readGlobalSettingsFiles()
+        fn = c.shortFileName()
+        if fn not in ('leoSettings.leo','myLeoSettings.leo'):
+            shortcuts,settings = lm.createSettingsDicts(c,localFlag=True)
+            c.config.settingsDict.update(settings)
+        # Recompute and apply the stylesheet.
+        sheet = self.get_style_sheet_from_settings()
+        if sheet:
+            w = self.get_master_widget()
+            w.setStyleSheet(sheet)
+        # c.redraw()
     #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''
