@@ -101,7 +101,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20140915194122.23416"><vh>Not used</vh>
+<v t="ekr.20140915194122.23416"><vh>Not used (contains old qt style sheet)</vh>
 <v t="ekr.20140915194122.23421"><vh>No longer used colors</vh>
 <v t="tbrown.20131122104251.2537"><vh>@color minibuffer-background-color = lightblue</vh></v>
 <v t="tbrown.20131122104251.2538"><vh>@color minibuffer-error-color = red</vh></v>
@@ -109,6 +109,25 @@
 <v t="tbrown.20131122104251.2540"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="tbrown.20131122094200.2515"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
+<v t="ekr.20140914042331.19476"><vh>OLD qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20140914042331.19477"><vh>Body pane</vh></v>
+<v t="ekr.20140914042331.19479"><vh>Find tab</vh></v>
+<v t="ekr.20140914042331.19478"><vh>Focus borders</vh></v>
+<v t="ekr.20140914042331.19480"><vh>Log panes</vh></v>
+<v t="ekr.20140914042331.19481"><vh>Minibuffer</vh></v>
+<v t="ekr.20140914042331.19482"><vh>Plugins</vh>
+<v t="ekr.20140914042331.19483"><vh>Bookmarks plugin</vh></v>
+<v t="ekr.20140914042331.19484"><vh>Screencast plugin</vh></v>
+</v>
+<v t="ekr.20140914042331.19485"><vh>QLabel</vh></v>
+<v t="ekr.20140914042331.19486"><vh>QPushButton</vh></v>
+<v t="ekr.20140914042331.19487"><vh>QScrollArea</vh></v>
+<v t="ekr.20140914042331.19488"><vh>QSplitter</vh></v>
+<v t="ekr.20140914042331.19489"><vh>QStackedWidget</vh></v>
+<v t="ekr.20140914042331.19490"><vh>Status area (works)</vh></v>
+<v t="ekr.20140914042331.19491"><vh>Tree and headlines</vh></v>
+<v t="ekr.20140914042331.19492"><vh>Vim mode borders</vh></v>
+</v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
@@ -1371,7 +1390,7 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui Stylesheet</vh>
 <v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
@@ -1392,17 +1411,8 @@
 <v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
 </v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 15000</vh></v>
-<v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
-<v t="ekr.20081018053140.11"><vh>For developers only</vh>
-<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
-<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles (may not work)</vh></v>
 </v>
-<v t="ekr.20140915194122.23420"><vh>Scintilla settings</vh>
-<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
-</v>
-<v t="ekr.20140912075503.19369"><vh>Stylesheet settings</vh>
+<v t="ekr.20140912075503.19369"><vh>Qt Gui Stylesheet settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140916110656.20410"><vh>@color Burlywood = #DEB887</vh></v>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -1633,6 +1643,15 @@
 </v>
 </v>
 </v>
+<v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 15000</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
+<v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
+<v t="ekr.20081018053140.11"><vh>For developers only</vh>
+<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles (may not work)</vh></v>
+</v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -1642,7 +1661,6 @@
 <v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
 <v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
-<v t="ekr.20140912075503.19369"></v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
@@ -1815,29 +1833,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"></v>
-<v t="ekr.20140915194122.23419"><vh>To do</vh></v>
-<v t="ekr.20140912072521.19160"></v>
-<v t="ekr.20140914042331.19476"><vh>OLD qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20140914042331.19477"><vh>Body pane</vh></v>
-<v t="ekr.20140914042331.19479"><vh>Find tab</vh></v>
-<v t="ekr.20140914042331.19478"><vh>Focus borders</vh></v>
-<v t="ekr.20140914042331.19480"><vh>Log panes</vh></v>
-<v t="ekr.20140914042331.19481"><vh>Minibuffer</vh></v>
-<v t="ekr.20140914042331.19482"><vh>Plugins</vh>
-<v t="ekr.20140914042331.19483"><vh>Bookmarks plugin</vh></v>
-<v t="ekr.20140914042331.19484"><vh>Screencast plugin</vh></v>
-</v>
-<v t="ekr.20140914042331.19485"><vh>QLabel</vh></v>
-<v t="ekr.20140914042331.19486"><vh>QPushButton</vh></v>
-<v t="ekr.20140914042331.19487"><vh>QScrollArea</vh></v>
-<v t="ekr.20140914042331.19488"><vh>QSplitter</vh></v>
-<v t="ekr.20140914042331.19489"><vh>QStackedWidget</vh></v>
-<v t="ekr.20140914042331.19490"><vh>Status area (works)</vh></v>
-<v t="ekr.20140914042331.19491"><vh>Tree and headlines</vh></v>
-<v t="ekr.20140914042331.19492"><vh>Vim mode borders</vh></v>
-</v>
-<v t="ekr.20140912075503.19369"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4431,7 +4426,8 @@ True: @shadow and @auto create a single node for the entire file.</t>
 If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.11">Don't change these unless you know what you are doing.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
-This allows you to increase the font size.</t>
+This allows you to increase the font size.
+</t>
 <t tx="ekr.20081022181056.10"># Lines have the form: color, style
 # color may be any kind of Qt color specifier
 # See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
@@ -9945,11 +9941,6 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 <t tx="ekr.20140915194122.23413">A small font size used by default in the check boxes in the Find tab.</t>
 <t tx="ekr.20140915194122.23416"></t>
 <t tx="ekr.20140915194122.23418"></t>
-<t tx="ekr.20140915194122.23419">@nocolor-node
-
-- @string -&gt; @color
-- Comments for most settings.</t>
-<t tx="ekr.20140915194122.23420"></t>
 <t tx="ekr.20140915194122.23421"></t>
 <t tx="ekr.20140915194122.23422"></t>
 <t tx="ekr.20140915194122.23424"></t>
@@ -9995,6 +9986,7 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140915194122.24267"></t>
 <t tx="ekr.20140915194122.24268"></t>
 <t tx="ekr.20140916110656.20410"></t>
+<t tx="ekr.20140916113003.19609"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
