@@ -7,7 +7,6 @@
 @language rest
 
 Settings:
-- Test new settings.
 - Document template system more clearly in leoSettings.leo.
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
@@ -21,6 +20,11 @@ Stashed bugs:
 - Python colorizing spoiled after colorizing other languages
 .. @+node:ekr.20140912073148.19149: *3* * What to do about the new icons
 See home/Leo-Recent/Iconts
+.. @+node:ekr.20140915062551.19503: *3* ** Fix scrolling problems
+@language rest
+
+Abbreviations do unwanted scrolling.
+Find doesn't scroll match into view.
 .. @+node:ekr.20140910065834.18125: *3* Delegated
 To Terry:
 

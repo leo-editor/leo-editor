@@ -1163,15 +1163,12 @@ class QTextEditWrapper(QTextMixin):
         '''Set configuration options for QTextEdit.'''
         c = self.c
         w = self.widget
-        n = c.config.getInt('qt-rich-text-zoom-in')
         w.setWordWrapMode(QtGui.QTextOption.NoWrap)
-        # w.zoomIn(1)
-        # w.updateMicroFocus()
-        if n not in (None,0):
-            # This only works when there is no style sheet.
-            # g.trace('zoom-in',n)
-            w.zoomIn(n)
-            w.updateMicroFocus()
+        if 0: # This only works when there is no style sheet.
+            n = c.config.getInt('qt-rich-text-zoom-in')
+            if n not in (None,0):
+                w.zoomIn(n)
+                w.updateMicroFocus()
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
     #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
@@ -1649,7 +1646,7 @@ def zoom_in(event=None, delta=1):
         c._style_deltas['font-size-body'] += delta
         sheet = c.styleSheetManager.expand_css_constants(c.active_stylesheet)
         c.frame.body.wrapper.widget.setStyleSheet(sheet)
-    
+
 @g.command("zoom-out")
 def zoom_out(event=None):
     """decrease body font size by one

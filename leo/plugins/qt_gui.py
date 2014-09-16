@@ -1099,45 +1099,10 @@ class StyleSheetManager:
         self.c = c
         self.safe = safe
         self.settings_p = g.findNodeAnywhere(c,'@settings')
-        if not self.settings_p:
-            g.es("No '@settings' node found in outline.  See:")
-            g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
-    #@+node:ekr.20140912110338.19369: *3* ssm.check_stylesheet
-    def check_stylesheet(self,stylesheet):
-        '''check/trace the stylesheet.'''
-        check = True
-        trace = True and not g.unitTesting
-        c = self.c
-        if check:
-            sheet = self.expand_css_constants(stylesheet)
-            if self.safe:
-                from leo.core.leoQt import QtWidgets
-                w = QtWidgets.QFrame()
-                w.setStyleSheet(sheet)
-                used = g.u(w.styleSheet())
-            else:
-                self.set_style_sheets(all=False)
-                    # Calls expand_css_constants
-                master = self.get_master_widget()
-                used = g.u(master.styleSheet())
-            sheet,used = self.munge(sheet),self.munge(used)
-            # Warning: this length check can succeed for bad style sheets!
-            ok = len(sheet) == len(used)
-            if trace:
-                g.trace('match',ok,'len(sheet)',len(sheet),'len(used)',len(used))
-                if not ok:
-                    for i,ch in enumerate(sheet):
-                        if sheet[i] != used[i]:
-                            # n1,n2 = g.getLine(sheet,i)
-                            g.trace('first mismatch at',i,repr(sheet[i]))
-                            g.trace(sheet[0:i],'\n=====\n',sheet[i:i+30])
-                            g.trace( used[0:i],'\n=====\n', used[i:i+30])
-                            break
-                    # g.trace('\n\n===== input stylesheet =====\n\n',sheet)
-                    # g.trace('\n\n===== output stylesheet =====\n\n',used)
-            return ok
-        else:
-            return True
+        # This warning is inappropriate in some contexts.
+            # if not self.settings_p:
+                # g.es("No '@settings' node found in outline.  See:")
+                # g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
     #@+node:ekr.20110605121601.18176: *3* ssm.default_style_sheet
     def default_style_sheet (self):
         '''Return a reasonable default style sheet.'''
@@ -1162,22 +1127,11 @@ class StyleSheetManager:
         background-color: pink;
     }
     '''
-    #@+node:ekr.20140912110338.19368: *3* ssm.find_themes
-    def find_themes(self):
-        '''Find all theme-related nodes in the @settings tree.'''
-        themes,theme_name = [],'unknown'
-        for p in self.settings_p.subtree_iter():
-            if p.h.startswith('@string color_theme'):
-                theme_name = p.h.split()[-1]
-                themes.append((theme_name,p.copy()))
-            elif p.h == 'stylesheet & source':
-                theme_name = 'unknown'
-                themes.append((theme_name,p.copy()))
-        return themes,theme_name
     #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
     def expand_css_constants(self,sheet,font_size_delta=None):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c
         constants = self.find_constants_defined(sheet)
         whine = None
@@ -1193,7 +1147,7 @@ class StyleSheetManager:
             # easily extendable to @font-size-*
             val = c.config.getString(delta)
             passes = 10
-            while passes and val.startswith('@'):
+            while passes and val and val.startswith('@'):
                 key = g.app.config.canonicalizeSettingName(val[1:])
                 val = c.config.settingsDict.get(key)
                 if val:
@@ -1244,7 +1198,7 @@ class StyleSheetManager:
         if not passes and to_do:
             g.es("To many iterations of substitution")
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
-        if trace: g.trace('returns...\n',sheet)
+        if trace and verbose: g.trace('returns...\n',sheet)
         return sheet
     #@+node:tbrown.20131120093739.27085: *4* ssm.find_constants_referenced
     def find_constants_referenced(self,text):
@@ -1302,6 +1256,18 @@ class StyleSheetManager:
             print("Ten levels of recursion processing styles, abandoned.")
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
+    #@+node:ekr.20140912110338.19368: *3* ssm.find_themes
+    def find_themes(self):
+        '''Find all theme-related nodes in the @settings tree.'''
+        themes,theme_name = [],'unknown'
+        for p in self.settings_p.subtree_iter():
+            if p.h.startswith('@string color_theme'):
+                theme_name = p.h.split()[-1]
+                themes.append((theme_name,p.copy()))
+            elif p.h == 'stylesheet & source':
+                theme_name = 'unknown'
+                themes.append((theme_name,p.copy()))
+        return themes,theme_name
     #@+node:ekr.20140912110338.19367: *3* ssm.get_last_style_sheet
     def get_last_style_sheet(self):
         '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
@@ -1368,6 +1334,16 @@ class StyleSheetManager:
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
+    #@+node:ekr.20140913054442.19390: *3* ssm.get_master_widget
+    def get_master_widget(self,top=None):
+        '''
+        Carefully return the master widget.
+        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+        For --gui=qt,     c.frame.top is a DynamicWindow.
+        '''
+        if top is None: top = self.c.frame.top
+        master = top.leo_master or top
+        return master
     #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet
     def get_stylesheet(self):
         '''
@@ -1392,6 +1368,12 @@ class StyleSheetManager:
             for s in g.splitLines(stylesheet)])
         return s.rstrip()
             # Don't care about ending newline.
+    #@+node:ekr.20140915194122.19476: *3* ssm.print_style_sheet
+    def print_style_sheet(self):
+        '''Show the top-level style sheet.'''
+        w = self.get_master_widget()
+        sheet = w.styleSheet()
+        print('style sheet for: %s...\n\n%s' % (w,sheet))
     #@+node:ekr.20140912110338.19370: *3* ssm.reload_style_sheets
     def reload_style_sheets(self):
         '''The main line of the style-reload command.'''
@@ -1401,7 +1383,6 @@ class StyleSheetManager:
         stylesheet = self.get_stylesheet()
         if not stylesheet:
             return
-        ok = self.check_stylesheet(stylesheet)
         if self.safe:
             g.es('safe mode: no settings changed',color='blue')
         else:
@@ -1451,16 +1432,6 @@ class StyleSheetManager:
             a = w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')
-    #@+node:ekr.20140913054442.19390: *3* sssm.get_master_widget
-    def get_master_widget(self,top=None):
-        '''
-        Carefully return the master widget.
-        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-        For --gui=qt,     c.frame.top is a DynamicWindow.
-        '''
-        if top is None: top = self.c.frame.top
-        master = top.leo_master or top
-        return master
     #@-others
 #@-others
 #@@language python

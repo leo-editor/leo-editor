@@ -19142,5 +19142,41 @@ def setSelectedStyleSheet(self,c):
 def setStyleSheets(self,c,all=True,top=None):
     '''Set the style sheets from user settings.'''
     StyleSheetManager(c,safe=False).set_style_sheets(all=all,top=top)
+.. @+node:ekr.20140912110338.19369: *3* ssm.check_stylesheet
+def check_stylesheet(self,stylesheet):
+    '''check/trace the stylesheet.'''
+    check = True
+    trace = True and not g.unitTesting
+    c = self.c
+    if check:
+        sheet = self.expand_css_constants(stylesheet)
+        if self.safe:
+            from leo.core.leoQt import QtWidgets
+            w = QtWidgets.QFrame()
+            w.setStyleSheet(sheet)
+            used = g.u(w.styleSheet())
+        else:
+            self.set_style_sheets(all=False)
+                # Calls expand_css_constants
+            master = self.get_master_widget()
+            used = g.u(master.styleSheet())
+        sheet,used = self.munge(sheet),self.munge(used)
+        # Warning: this length check can succeed for bad style sheets!
+        ok = len(sheet) == len(used)
+        if trace:
+            g.trace('match',ok,'len(sheet)',len(sheet),'len(used)',len(used))
+            if not ok:
+                for i,ch in enumerate(sheet):
+                    if sheet[i] != used[i]:
+                        # n1,n2 = g.getLine(sheet,i)
+                        g.trace('first mismatch at',i,repr(sheet[i]))
+                        g.trace(sheet[0:i],'\n=====\n',sheet[i:i+30])
+                        g.trace( used[0:i],'\n=====\n', used[i:i+30])
+                        break
+                # g.trace('\n\n===== input stylesheet =====\n\n',sheet)
+                # g.trace('\n\n===== output stylesheet =====\n\n',used)
+        return ok
+    else:
+        return True
 .. @-all
 .. @-leo
