@@ -105,7 +105,7 @@ class LeoGui:
         """Create and run askOkCancelString dialog ."""
         self.oops()
 
-    def runAskYesNoDialog(self,c,title,message=None):
+    def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
         """Create and run an askYesNo dialog."""
         self.oops()
 
@@ -412,7 +412,7 @@ class NullGui(LeoGui):
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
         return self.simulateDialog("saveFileDialog")
 
-    def runAskYesNoDialog(self,c,title,message=None):
+    def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
         return self.simulateDialog("yesNoDialog","no")
 
     def runAskYesNoCancelDialog(self,c,title,

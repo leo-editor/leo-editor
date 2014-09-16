@@ -346,9 +346,9 @@ class LeoQtGui(leoGui.LeoGui):
         return val
     #@+node:ekr.20110605121601.18498: *4* LeoQtGui.runAskYesNoDialog
     def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
-
-        """Create and run an askYesNo dialog.  Return 'yes', 'yes-all',
-        'no', 'no-all'.
+        """
+        Create and run an askYesNo dialog.
+        Return one of ('yes','yes-all','no','no-all')
 
         :Parameters:
         - `c`: commander
@@ -357,7 +357,6 @@ class LeoQtGui(leoGui.LeoGui):
         - `yes_all`: bool - show YesToAll button
         - `no_all`: bool - show NoToAll button
         """
-
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
         buttons = b.Yes | b.No
@@ -380,7 +379,6 @@ class LeoQtGui(leoGui.LeoGui):
             b.YesToAll: 'yes-all',
             b.NoToAll: 'no-all'
         }.get(val, 'no')
-
     #@+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self,title,startdir):
 
@@ -1396,20 +1394,43 @@ class StyleSheetManager:
     #@+node:ekr.20140912110338.19370: *3* ssm.reload_style_sheets
     def reload_style_sheets(self):
         '''The main line of the style-reload command.'''
-        if not self.settings_p:
-            return
         c = self.c
-        stylesheet = self.get_stylesheet()
-        if not stylesheet:
-            return
-        if self.safe:
-            g.es('safe mode: no settings changed',color='blue')
-        else:
-            # Reload the settings from this file.
-            g.es('reloading settings',color='blue')
-            shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
-            c.config.settingsDict.update(settings)
+        if 1: # New code
+            lm = g.app.loadManager
+            # Reread all settings.
+            lm.readGlobalSettingsFiles()
+            fn = c.shortFileName()
+            if fn not in ('leoSettings.leo','myLeoSettings.leo'):
+                shortcuts,settings = lm.createSettingsDicts(c,localFlag=True)
+                c.config.settingsDict.update(settings)
+            # Recompute and apply the stylesheet.
+            if 1: # testing: ignore themes for now
+                # Now that the setting have been reloaded, just get the @data nodes.
+                aList1 = c.config.getData('qt-gui-plugin-style-sheet') or []
+                aList2 = c.config.getData('qt-gui-user-style-sheet') or []
+                aList1.extend(aList2)
+                sheet = '\n'.join(aList1)
+                sheet = self.expand_css_constants(sheet)
+                g.trace(sheet)
+            else:
+                sheet = self.get_stylesheet()
+            if sheet:
+                w = self.get_master_widget()
+                w.setStyleSheet(sheet)
             c.redraw()
+        else: # Old code
+            if not self.settings_p:
+                return
+            stylesheet = self.get_stylesheet()
+            if stylesheet:
+                if self.safe:
+                    g.es('safe mode: no settings changed',color='blue')
+                else:
+                    # Reload the settings from this file.
+                    g.es('reloading settings',color='blue')
+                    shortcuts,settings = g.app.loadManager.createSettingsDicts(c,True)
+                    c.config.settingsDict.update(settings)
+                    c.redraw()
     #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''
