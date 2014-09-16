@@ -10360,34 +10360,23 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.23828">Additional definitions of colors not defined by Qt.
+<t tx="tbrown.20131122091143.23828">@nocolor
+@
+Additional definitions of colors not defined by Qt.
 
 For example, you can use @LeoYellow instead of #ffffec
 
 Please don't change these, but feel free to add your own color names in myLeoSettings.leo.
+@c
+@color
+@language python
 
-Important: depending on your platform, the color names defined here:
-http://en.wikipedia.org/wiki/X11_color_names
-may work without being explicitly defined.
+# This script prints the list of known Qt names. Case seems to be important.
+from leo.core.leoQt import QtGui
+aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
+print('\n'.join(aList))
 </t>
-<t tx="tbrown.20131122091143.23829">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-
-Examples:
-    
-    @color text-foreground = white
-    
-    @color text-foreground = #ffffff
-    
-    @color text-foreground = @solarized-red
-
-Most common color names are recognized.  The #RRGGBB format works, and
-you can use reference to @settings defined elsehere, starting with an
-'@', e.g. @solarized-red if a color called @solarized-red is defined
-by a setting somewhere else.
-
-Config. menu entry: Styles / Colors
-</t>
+<t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23830"></t>
 <t tx="tbrown.20131122091143.23831"></t>
 <t tx="tbrown.20131122091143.23832"></t>
