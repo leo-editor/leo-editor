@@ -143,7 +143,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         '''Ctor for NestedSplitterHandle class.'''
         # g.trace('NestedSplitterHandle')
         QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
-        self.setStyleSheet("background-color: green;")
+        # self.setStyleSheet("background-color: green;")
+            # Confusing!
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.splitter_menu)
         
@@ -181,7 +182,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         y = pos.y()
         rect = QtCore.QRect(x-5, y-5, x+5, y+5)
         QtWidgets.QToolTip.showText(pos, tip, action.parentWidget(), rect)
-    #@+node:ekr.20110605121601.17965: *3* splitter_menu
+    #@+node:ekr.20110605121601.17965: *3* splitter_menu (NesetedSplitterHandler)
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
         splitter = self.splitter()
@@ -743,32 +744,23 @@ class NestedSplitter(QtWidgets.QSplitter):
         free-layout in addition to the one in the outline's main window"""
 
         ns = NestedSplitter(root=self.root)
-
         window = NestedSplitterTopLevel(owner=self.root, window_title=ns.get_title(action))
-        # window.setStyleSheet(
-        #     '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
         hbox = QtWidgets.QHBoxLayout()
         window.setLayout(hbox)
         hbox.setContentsMargins(0,0,0,0)
         window.resize(400,300)
-
         hbox.addWidget(ns)
-
         # NestedSplitters must have two widgets so the handle carrying
         # the all important context menu exists
         ns.addWidget(NestedSplitterChoice(ns))  
         button = NestedSplitterChoice(ns)
         ns.addWidget(button)
-
         if action == '_move_marked_there':
             ns.replace_widget(button, ns.root.marked[3])
         elif action is not None:
             ns.place_provided(action, 1)
-
         ns.setSizes([0,1])  # but hide one initially
-
         self.root.windows.append(window)
-
         window.show()
     #@+node:tbrown.20110627201141.11744: *3* register_provider
     def register_provider(self, provider):

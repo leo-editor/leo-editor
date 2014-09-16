@@ -4525,11 +4525,6 @@ class KeyHandlerClass:
 
         c,k = self.c,self
         k.unboundKeyAction = state
-
-        if set_border and c.frame and c.frame.body:
-            w = c.frame.body.wrapper
-            if hasattr(w,'widget'):
-                g.app.gui.add_border(c,w.widget)
     #@+node:ekr.20061031131434.199: *4* k.setState
     def setState (self,kind,n,handler=None):
 

@@ -51,6 +51,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
         self.plainTextWidget = qt_text.PlainTextWrapper
+        self.styleSheetManagerClass = StyleSheetManager
         self.mGuiName = 'qt'
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
         # Communication between idle_focus_helper and activate/deactivate events.
@@ -70,51 +71,6 @@ class LeoQtGui(leoGui.LeoGui):
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
-    #@+node:ekr.20111022215436.16685: *3* LeoQtGui.Borders
-    #@+node:ekr.20120927164343.10092: *4* LeoQtGui.add_border
-    def add_border(self,c,w):
-        
-        trace = False and not g.unitTesting
-        state = c.k and c.k.unboundKeyAction
-        if state and c.use_focus_border:
-            d = {
-                'command':  c.focus_border_command_state_color,
-                'insert':   c.focus_border_color,
-                'overwrite':c.focus_border_overwrite_state_color,
-            }
-            color = d.get(state,c.focus_border_color)
-            name = g.u(w.objectName())
-            if trace: g.trace(name,'color',color)
-            # if name =='richTextEdit':
-                # w = c.frame.top.leo_body_inner_frame
-                # self.paint_qframe(w,color)
-            # elif
-            if not name.startswith('head'):
-                selector = w.__class__.__name__
-                color = c.focus_border_color
-                sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-                self.update_style_sheet(w,'border',sheet,selector=selector)
-    #@+node:ekr.20120927164343.10093: *4* LeoQtGui.remove_border
-    def remove_border(self,c,w):
-
-        if c.use_focus_border:
-            name = g.u(w.objectName())
-            # if w.objectName()=='richTextEdit':
-                # w = c.frame.top.leo_body_inner_frame
-                # self.paint_qframe(w,'white')
-            # elif
-            if not name.startswith('head'):
-                selector = w.__class__.__name__
-                sheet = "border: %spx solid white" % c.focus_border_width
-                self.update_style_sheet(w,'border',sheet,selector=selector)
-    #@+node:ekr.20120927164343.10094: *4* LeoQtGui.paint_qframe
-    def paint_qframe (self,w,color):
-
-        assert isinstance(w,QtWidgets.QFrame)
-
-        # How's this for a kludge.
-        # Set this ivar for InnerBodyFrame.paintEvent.
-        g.app.gui.innerBodyFrameColor = color
     #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
     def replaceClipboardWith (self,s):
 
@@ -1043,83 +999,6 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20110605121601.18523: *3* LeoQtGui.Style Sheets
-    #@+node:ekr.20140915062551.17961: *4* Wrappers for StyleSheetManager methods
-    #@+node:ekr.20140915062551.17959: *5* LeoQtGui.reloadStyleSheets
-    def reloadStyleSheets(self,c,safe=False):
-        '''Set the style sheets from user settings.'''
-        StyleSheetManager(c,safe=safe).reload_style_sheets()
-
-    #@+node:ekr.20140915062551.17962: *5* LeoQtGui.setSelectedStyleSheet
-    def setSelectedStyleSheet(self,c):
-        '''Set the style sheets from c.p.b.'''
-        StyleSheetManager(c,safe=False).set_selected_style_sheet()
-    #@+node:ekr.20140915062551.17960: *5* LeoQtGui.setStyleSheets
-    def setStyleSheets(self,c,all=True,top=None):
-        '''Set the style sheets from user settings.'''
-        StyleSheetManager(c,safe=False).set_style_sheets(all=all,top=top)
-    #@+node:ekr.20110605121601.18524: *4* LeoQtGui.setStyleSetting
-    def setStyleSetting(self,w,widgetKind,selector,val):
-
-        '''Set the styleSheet for w to
-           "%s { %s: %s; }  % (widgetKind,selector,val)"
-        '''
-
-        s = '%s { %s: %s; }' % (widgetKind,selector,val)
-
-        try:
-            w.setStyleSheet(s)
-        except Exception:
-            g.es_print('bad style sheet: %s' % s)
-            g.es_exception()
-    #@+node:ekr.20110605121601.18525: *4* LeoQtGui.setWidgetColor
-    badWidgetColors = []
-
-    def setWidgetColor (self,w,widgetKind,selector,colorName):
-
-        if not colorName: return
-
-        # g.trace(widgetKind,selector,colorName,g.callers(4))
-
-        # A bit of a hack: Qt color names do not end with a digit.
-        # Remove them to avoid annoying qt color warnings.
-        if colorName[-1].isdigit():
-            colorName = colorName[:-1]
-
-        if colorName in self.badWidgetColors:
-            pass
-        elif QtGui.QColor(colorName).isValid():
-            g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
-        else:
-            self.badWidgetColors.append(colorName)
-            g.warning('bad widget color %s for %s' % (colorName,widgetKind))
-    #@+node:ekr.20111026115337.16528: *4* LeoQtGui.update_style_sheet
-    def update_style_sheet (self,w,key,value,selector=None):
-        
-        # NOT USED / DON'T USE - interferes with styles, zooming etc.
-
-        trace = False and not g.unitTesting
-
-        # Step one: update the dict.
-        d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-        d[key] = value
-        aList = [d.get(z) for z in list(d.keys())]
-        w.leo_styles_dict = d
-
-        # Step two: update the stylesheet.
-        s = '; '.join(aList)
-        if selector:
-            s = '%s { %s }' % (selector,s)
-        old = str(w.styleSheet())
-        if old == s:
-            # if trace: g.trace('no change')
-            return
-        if trace:
-            # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
-            g.trace(s)
-        # This call is responsible for the unwanted scrolling!
-        # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
-        w.setStyleSheet(s)
     #@+node:ekr.20140825042850.18411: *3* LeoQtGui.Utils...
     #@+node:ekr.20110605121601.18522: *4* LeoQtGui.isTextWidget/Wrapper
     def isTextWidget(self,w):
@@ -1215,7 +1094,7 @@ class StyleSheetManager:
     '''A class to manage (reload) Qt style sheets.'''
     #@+others
     #@+node:ekr.20140912110338.19371: *3* ssm.__init__
-    def __init__(self,c,safe):
+    def __init__(self,c,safe=False):
         '''Ctor the ReloadStyle class.'''
         self.c = c
         self.safe = safe
@@ -1230,7 +1109,7 @@ class StyleSheetManager:
         trace = True and not g.unitTesting
         c = self.c
         if check:
-            sheet = g.expand_css_constants(c,stylesheet)
+            sheet = self.expand_css_constants(stylesheet)
             if self.safe:
                 from leo.core.leoQt import QtWidgets
                 w = QtWidgets.QFrame()
@@ -1238,7 +1117,7 @@ class StyleSheetManager:
                 used = g.u(w.styleSheet())
             else:
                 self.set_style_sheets(all=False)
-                    # Calls g.expand_css_constants
+                    # Calls expand_css_constants
                 master = self.get_master_widget()
                 used = g.u(master.styleSheet())
             sheet,used = self.munge(sheet),self.munge(used)
@@ -1541,7 +1420,7 @@ class StyleSheetManager:
             w = self.get_master_widget(c.frame.top)
             a = w.setStyleSheet(sheet)
     #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
-    def set_style_sheets(self,all=True,top=None):
+    def set_style_sheets(self,all=True,top=None,w=None):
         '''Set the master style sheet for all widgets using config settings.'''
         trace = False
         c = self.c
@@ -1564,9 +1443,10 @@ class StyleSheetManager:
             sheet = "\n".join(sheets)
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(c,sheet)
+            sheet = self.expand_css_constants(sheet)
             if not sheet: sheet = self.default_style_sheet()
-            w = self.get_master_widget(top)
+            if w is None:
+                w = self.get_master_widget(top)
             if trace: g.trace(w,len(sheet))
             a = w.setStyleSheet(sheet)
         else:

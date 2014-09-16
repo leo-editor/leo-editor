@@ -345,8 +345,6 @@ class NullGui(LeoGui):
         if 1:
             g.trace("NullGui",g.callers(4))
     #@+node:ekr.20070301171901: *3* do nothings (NullGui)
-    def add_border(self,c,w):
-        pass
     def alert (self,message):
         pass
     def attachLeoIcon (self,w):
@@ -370,8 +368,6 @@ class NullGui(LeoGui):
         return g.app.config.defaultFont
     def get_window_info (self,window):
         return 0,0,0,0
-    def remove_border (self,c,w):
-        pass
     def replaceClipboardWith (self,s):
         self.clipboardContents = s
     def set_focus(self,commander,widget):

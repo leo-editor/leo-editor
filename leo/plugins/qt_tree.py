@@ -1347,7 +1347,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e       
         # 2012/09/27.
-        g.app.gui.add_border(c,c.frame.tree.treeWidget)
+        ### g.app.gui.add_border(c,c.frame.tree.treeWidget)
         return e,wrapper # 2011/02/12
     #@+node:ekr.20110605121601.17910: *3* qtree.editPosition
     def editPosition(self):

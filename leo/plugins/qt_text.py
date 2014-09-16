@@ -1637,7 +1637,7 @@ class QTextEditWrapper(QTextMixin):
         col = i - bl.position()
         return i,row,col
     #@-others
-#@+node:tbrown.20130411145310.18857: ** zoom_in & zoom_out commands
+#@+node:tbrown.20130411145310.18857: ** zoom_in & zoom_out commands (qt_text.py)
 @g.command("zoom-in")
 def zoom_in(event=None, delta=1):
     """increase body font size by one
@@ -1647,8 +1647,8 @@ def zoom_in(event=None, delta=1):
     c = event.get('c')
     if c:
         c._style_deltas['font-size-body'] += delta
-        ss = g.expand_css_constants(c, c.active_stylesheet)
-        c.frame.body.wrapper.widget.setStyleSheet(ss)
+        sheet = c.styleSheetManager.expand_css_constants(c.active_stylesheet)
+        c.frame.body.wrapper.widget.setStyleSheet(sheet)
     
 @g.command("zoom-out")
 def zoom_out(event=None):
@@ -1656,6 +1656,6 @@ def zoom_out(event=None):
     
     requires that @font-size-body is being used in stylesheet
     """
-    zoom_in(event=event, delta=-1)
+    zoom_in(event=event,delta=-1)
 #@-others
 #@-leo

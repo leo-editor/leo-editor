@@ -93,8 +93,6 @@ class LeoQtEventFilter(QtCore.QObject):
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
-            if self.tag in ('body','tree','log'):
-                g.app.gui.remove_border(c,obj)
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -112,16 +110,9 @@ class LeoQtEventFilter(QtCore.QObject):
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
                 if eventType == ev.FocusIn:
-                    g.app.gui.add_border(c,obj)
                     c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
-                    g.app.gui.remove_border(c,obj)
                     c.frame.body.onFocusOut(obj)
-            elif self.tag in ('log','tree'):
-                if eventType == ev.FocusIn:
-                    g.app.gui.add_border(c,obj)
-                elif eventType == ev.FocusOut:
-                    g.app.gui.remove_border(c,obj)
         if self.keyIsActive:
             shortcut = self.toStroke(tkKey,ch) # ch is unused.
             if override:

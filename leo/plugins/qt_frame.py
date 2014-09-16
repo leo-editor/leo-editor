@@ -88,15 +88,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helper
     def construct(self,master=None):
-        """ Factor 'heavy duty' code out from ctor """
+        """ Factor 'heavy duty' code out from the DynamicWindow ctor """
+        # g.trace('(DynamicWindow)',g.callers())
         c = self.leo_c
-        # top = c.frame.top
         self.leo_master=master
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
-        # g.trace('(DynamicWindow)',g.callers())
         # Init the base class.
         ui_file_name = c.config.getString('qt_ui_file_name')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
@@ -111,24 +110,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
-        # Set orientation if requested.
-        d = {
-            'bottom':QtCore.Qt.BottomToolBarArea,
-            'left':QtCore.Qt.LeftToolBarArea,
-            'right':QtCore.Qt.RightToolBarArea,
-            'top':QtCore.Qt.TopToolBarArea,
-        }
-        where = c.config.getString('qt-toolbar-location')
-        if where:
-            where = d.get(where)
-            if where: self.addToolBar(where,self.iconBar)
+        self.set_icon_bar_orientation(c)
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
-        g.app.gui.setStyleSheets(c,top=self,all=True)
-        # self.setLeoWindowIcon()
+        if hasattr(c,'styleSheetManager'):
+            c.styleSheetManager.set_style_sheets(top=self,all=True)
+    #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
+    def set_icon_bar_orientation(self,c):
+        '''Set the orientation of the icon bar based on settings.'''
+        d = {
+            'bottom': QtCore.Qt.BottomToolBarArea,
+            'left':   QtCore.Qt.LeftToolBarArea,
+            'right':  QtCore.Qt.RightToolBarArea,
+            'top':    QtCore.Qt.TopToolBarArea,
+        }
+        where = c.config.getString('qt-toolbar-location')
+        if where:
+            where = d.get(where)
+            if where: self.addToolBar(where,self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
     def createMainWindow (self):
         '''
@@ -351,20 +353,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         shadow = QtWidgets.QFrame.Plain,
         shape = QtWidgets.QFrame.NoFrame,
     ):
-
-        if name == 'innerBodyFrame':
-            class InnerBodyFrame(QtWidgets.QFrame):
-                def paintEvent(self,event):
-                    # A kludge.  g.app.gui.innerBodyFrameColor is set by paint_qframe.
-                    if hasattr(g.app.gui,'innerBodyFrameColor'):
-                        color = g.app.gui.innerBodyFrameColor
-                        painter = QtGui.QPainter()
-                        painter.begin(w)
-                        painter.fillRect(w.rect(),QtGui.QColor(color))
-                        painter.end()
-            w = InnerBodyFrame(parent)
-        else:
-            w = QtWidgets.QFrame(parent)
+        '''Create a Qt Frame.'''
+        w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -1188,31 +1178,15 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
         name = self.tabText(index)
         self.detached.append((name, w))
         self.factory.detachTab(w)
-        
         icon = g.app.gui.getImageImageFinder("application-x-leo-outline.png")
         icon = QtWidgets.QIcon(icon)
-        
         w.window().setWindowIcon(icon)
-        
         c = w.leo_c
-       
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        
-        if sheet:
-            if '\n' in sheet[0]:
-                sheet = ''.join(sheet)
-            else:
-                sheet = '\n'.join(sheet)
-            c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(c, sheet)
-            w.setStyleSheet(sheet)
-        else:
-            main = g.app.gui.frameFactory.masterFrame
-            w.setStyleSheet(main.styleSheet())
-
+        if c.styleSheetManager:
+            c.styleSheetManager.set_style_sheets(w=w)
         if platform.system() == 'Windows':
-            w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
-            
+            w.move(20,20)
+                # Windows (XP and 7) put the windows title bar off screen.
         return w
     #@+node:ekr.20131115120119.17392: *3* tile
     def tile(self, index, orientation='V'):
@@ -2176,13 +2150,12 @@ class LeoQtFrame (leoFrame.LeoFrame):
         #@+others
         #@+node:ekr.20110605121601.18258: *4* ctor (qtFrame)
         def __init__ (self,c,parentFrame):
-
+            '''Ctor for LeoQtFrame class.'''
             self.c = c
             self.statusBar = c.frame.top.statusBar
             self.lastFcol= 0
             self.lastRow = 0
             self.lastCol = 0
-
             # Create the text widgets.
             self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
             self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
@@ -2190,7 +2163,6 @@ class LeoQtFrame (leoFrame.LeoFrame):
             w2.setObjectName('status2')
             splitter = QtWidgets.QSplitter()
             self.statusBar.addWidget(splitter, True)
-            
             sizes = c.config.getString('status_line_split_sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
             for n, i in enumerate(sizes):
@@ -2199,11 +2171,10 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 policy.setHorizontalStretch(i)
                 policy.setHorizontalPolicy(policy.Minimum)
                 w.setSizePolicy(policy)
-
             splitter.addWidget(w1)
             splitter.addWidget(w2)
-
             c.status_line_unl_mode = 'original'
+
             def cycle_unl_mode():
                 if c.status_line_unl_mode == 'original':
                     c.status_line_unl_mode = 'canonical'
@@ -2219,10 +2190,9 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 menu.exec_(event.globalPos())
 
             w2.contextMenuEvent = add_item
-
             self.put('')
             self.update()
-            #X c.frame.top.setStyleSheets()
+           
         #@+node:ekr.20110605121601.18260: *4* clear, get & put/1
         def clear (self):
             self.put('')

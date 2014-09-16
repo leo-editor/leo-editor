@@ -78,6 +78,7 @@ def getGuiPluginsList ():
     return (
         'free_layout',
         'nested_splitter',
+        'qt_commands',
         'qt_events',
         'qt_frame',
         'qt_idle_time',

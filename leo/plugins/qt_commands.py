@@ -18,7 +18,7 @@ def onSelect(tag,keywords):
     wdg = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 
-#@+node:ekr.20110605121601.18001: ** detach-editor-toggle
+#@+node:ekr.20110605121601.18001: ** detach-editor-toggle (qt_commands.py)
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
@@ -27,7 +27,6 @@ def detach_editor_toggle_max(event):
     if c.frame.detached_body_info is not None:
         wdg = c.frame.top.leo_body_frame
         wdg.showMaximized()
-
 
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event):
@@ -39,7 +38,6 @@ def detach_editor_toggle(event):
             detach = False
     except AttributeError:
         pass
-
     if detach:
         detach_editor(c)
     else:
@@ -51,17 +49,14 @@ def detach_editor(c):
     if parent is None:
         # just show if already detached
         wdg.show()
-        return
-
-    c.frame.detached_body_info = parent, parent.sizes()
-    wdg.setParent(None)
-
-    sheet = c.config.getData('qt-gui-plugin-style-sheet')
-    if sheet:
-        sheet = '\n'.join(sheet)
-        wdg.setStyleSheet(sheet)
-
-    wdg.show()
+    else:
+        c.frame.detached_body_info = parent, parent.sizes()
+        wdg.setParent(None)
+        sheet = c.config.getData('qt-gui-plugin-style-sheet')
+        if sheet:
+            sheet = '\n'.join(sheet)
+            wdg.setStyleSheet(sheet)
+        wdg.show()
 
 def undetach_editor(c):
     wdg = c.frame.top.leo_body_frame
@@ -70,8 +65,7 @@ def undetach_editor(c):
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
-
-#@+node:tbrown.20140620095406.40066: ** gui-show/hide/toggle commands
+#@+node:tbrown.20140620095406.40066: ** gui-show/hide/toggle (qt_commands.py)
 # create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
 widgets = [
     ('menu', lambda c: c.frame.top.menuBar()),
@@ -100,7 +94,7 @@ for vis in 'hide', 'show', 'toggle':
                 vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
     g.command("gui-all-%s"%vis)(doall)
-#@+node:tbrown.20140814090009.55874: ** style_sheet commands
+#@+node:tbrown.20140814090009.55874: ** style_sheet commands (qt_commands.py)
 @g.command('style-reload')
 def style_reload(kwargs):
     """reload-styles command.
@@ -111,13 +105,13 @@ def style_reload(kwargs):
     """
     c = kwargs['c']
     if c:
-        g.app.gui.reloadStyleSheets(c,safe=False)
+        c.styleSheetManager.reload_style_sheets()
         
 @g.command('style-set-selected')
 def style_set_selected(kwargs):
     '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
     c = kwargs['c']
     if c:
-        g.app.gui.setSelectedStyleSheet(c)
+        c.styleSheetManager.set_selected_style_sheet()
 #@-others
 #@-leo

@@ -308,6 +308,10 @@ class Commands (object):
         self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
+        if hasattr(g.app.gui,'styleSheetManagerClass'):
+            self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+        else:
+            self.styleSheetManager = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self,previousSettings):
         '''Init the settings *before* initing the objects.'''

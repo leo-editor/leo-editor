@@ -167,7 +167,7 @@ app = None # The singleton app object. Set by runLeo.py.
 inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 #@+others
-#@+node:ekr.20140711071454.17644: ** g.Classes
+#@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
 def isTextWidget(w):
     return g.app.gui.isTextWidget(w)
@@ -4611,12 +4611,6 @@ def ensureTrailingNewlines (s,n):
     return s + '\n' * n
 
 
-#@+node:tbrown.20130411121812.28336: *4* g.expand_css_constants
-def expand_css_constants(c,sheet,font_size_delta=None):
-    '''Expand @ settings into their corresponding constants.'''
-    import leo.plugins.qt_gui as qt_gui
-    ssm = qt_gui.StyleSheetManager(c,safe=False)
-    return ssm.expand_css_constants(sheet,font_size_delta)
 #@+node:ekr.20050920084036.4: *4* g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix (s1,s2):
 
