@@ -484,15 +484,14 @@ class ColorizerMixin:
 # This is c.frame.body.colorizer.highlighter.colorer
 
 class JEditColorizer:
-
-    '''This class contains jEdit pattern matchers adapted
-    for use with QSyntaxHighlighter.'''
-
+    '''
+    This class contains jEdit pattern matchers adapted
+    for use with QSyntaxHighlighter.
+    '''
     #@+<< about the line-oriented jEdit colorizer >>
     #@+node:ekr.20110605121601.18570: *3* << about the line-oriented jEdit colorizer >>
     #@@nocolor-node
     #@+at
-    # 
     # The aha behind the line-oriented jEdit colorizer is that we can define one or
     # more *restarter* methods for each pattern matcher that could possibly match
     # across line boundaries. I say "one or more" because we need a separate restarter
@@ -516,9 +515,9 @@ class JEditColorizer:
 
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  Birth & init
-    #@+node:ekr.20110605121601.18572: *4* __init__ (jeditColorizer)
+    #@+node:ekr.20110605121601.18572: *4* __init__ (JeditColorizer)
     def __init__(self,c,colorizer,highlighter,wrapper):
-
+        '''Ctor for JEditColorizer class.'''
         # Basic data...
         self.c = c
         self.colorizer = colorizer
@@ -661,7 +660,7 @@ class JEditColorizer:
             'literal4'  :('literal4_color', '#00aa00'),
             'markup'    :('markup_color',   'red'),
             'null'      :('null_color',     None), #'black'),
-            'operator'  :('operator_color', None), #'black'),
+            'operator'  :('operator_color', 'black'), # 2014/09/17
         }
     #@+node:ekr.20110605121601.18575: *5* defineDefaultFontDict
     def defineDefaultFontDict (self):
@@ -816,9 +815,9 @@ class JEditColorizer:
         wrapper.widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *4* configure_tags
     def configure_tags (self):
-
+        '''Configure all tags.'''
         trace = False and not g.unitTesting
-        traceColors = False
+        traceColors = True
         traceFonts = False
         c = self.c
         wrapper = self.wrapper
@@ -834,7 +833,6 @@ class JEditColorizer:
                 "body_text_font_slant",  "body_text_font_weight",
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
-
         # Configure fonts.
         if trace and traceFonts: g.trace('*'*10,'configuring fonts')
         keys = list(self.default_font_dict.keys()) ; keys.sort()
@@ -866,7 +864,6 @@ class JEditColorizer:
                             g.trace('**found',key,name,family,size,slant,weight,id(font))
                         wrapper.tag_configure(key,font=font)
                         break
-
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
                     if trace and traceFonts:
@@ -879,26 +876,21 @@ class JEditColorizer:
 
             if isQt and key == 'url' and font:
                 font.setUnderline(True) # 2011/03/04
-
-        if trace and traceColors: g.trace('*'*10,'configuring colors')
-        keys = list(self.default_colors_dict.keys()) ; keys.sort()
+        keys = sorted(self.default_colors_dict.keys())
         for name in keys:
             # if name == 'operator': g.pdb()
             option_name,default_color = self.default_colors_dict[name]
             color = (
                 c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
                 c.config.getColor(option_name) or
-                default_color
-            )
+                default_color)
             if trace and traceColors: g.trace(option_name,color)
-
             # Must use foreground, not fg.
             try:
                 wrapper.tag_configure(name, foreground=color)
             except: # Recover after a user error.
                 g.es_exception()
                 wrapper.tag_configure(name, foreground=default_color)
-
         # underline=var doesn't seem to work.
         if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
             wrapper.tag_configure("link",underline=1) # defined
@@ -909,9 +901,7 @@ class JEditColorizer:
                 wrapper.tag_configure("name",underline=1)
             else:
                 wrapper.tag_configure("name",underline=0)
-
         self.configure_variable_tags()
-
         try:
             wrapper.end_tag_configure()
         except AttributeError:
@@ -935,28 +925,23 @@ class JEditColorizer:
                 wrapper.tag_configure(name,background=color)
             except: # A user error.
                 wrapper.tag_configure(name,background=default_color)
-
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide",elide="1")
     #@+node:ekr.20110605121601.18580: *4* init (jeditColorizer)
     def init (self,p,s):
-
+        '''Init the colorizer.'''
         trace = False and not g.unitTesting
-
         if p: self.p = p.copy()
         self.all_s = s or ''
-
         if trace: g.trace('='*20,
             'tabwidth',self.c.tab_width,
             self.colorizer.language) #,g.callers(4))
-
         # State info.
         self.all_s = s
         self.global_i,self.global_j = 0,0
         self.global_offset = 0
         self.lineCount = 0
-
         # These *must* be recomputed.
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
@@ -966,14 +951,12 @@ class JEditColorizer:
         self.clearState()
         self.showInvisibles = self.colorizer.showInvisibles
             # The show/hide-invisible commands changes this.
-
         # Used by matchers.
         self.prev = None
         if self.last_language != self.colorizer.language:
             # Must be done to support per-language @font/@color settings.
             self.configure_tags()
             self.last_language = self.colorizer.language
-
         self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20110605121601.18581: *4* init_mode & helpers
     def init_mode (self,name):
@@ -2315,7 +2298,7 @@ class JEditColorizer:
             self.setState(n) # Required
     #@+node:ekr.20110605121601.18641: *3* setTag
     def setTag (self,tag,s,i,j):
-
+        '''Set the tag in the highlighter.'''
         trace = False and not g.unitTesting
         if i == j:
             if trace: g.trace('empty range')
