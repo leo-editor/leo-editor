@@ -291,6 +291,22 @@ Tab cycling now works as expected in all my tests.
 - Start cycling *only* if len(label) == len(common_prefix)
 
 These restriction appear to be essential.
+.. @+node:ekr.20140910140737.17821: *4* Fixed autocompleter bug
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/NGbogCgVmx4/nsJGngrS8BgJ
+
+When I hit <enter> after selecting "selectPosition," I get the following
+error message in the log pane:
+
+Unexpected exception...
+Traceback (most recent call last):
+  File "/home/ldi/git/leo-editor/leo/core/leoUndo.py", line 1323, in
+setUndoTypingParams
+    old_start,old_end = oldSel
+TypeError: 'NoneType' object is not iterable
+
+@language python
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
