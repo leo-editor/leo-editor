@@ -67,7 +67,7 @@
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -101,34 +101,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20140915194122.23416"><vh>Not used (contains old qt style sheet)</vh>
-<v t="ekr.20140915194122.23421"><vh>No longer used colors</vh>
-<v t="tbrown.20131122104251.2537"><vh>@color minibuffer-background-color = lightblue</vh></v>
-<v t="tbrown.20131122104251.2538"><vh>@color minibuffer-error-color = red</vh></v>
-<v t="tbrown.20131122104251.2539"><vh>@color minibuffer-foreground-color = black</vh></v>
-<v t="tbrown.20131122104251.2540"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
-</v>
-<v t="tbrown.20131122094200.2515"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
-<v t="ekr.20140914042331.19476"><vh>OLD qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20140914042331.19477"><vh>Body pane</vh></v>
-<v t="ekr.20140914042331.19479"><vh>Find tab</vh></v>
-<v t="ekr.20140914042331.19478"><vh>Focus borders</vh></v>
-<v t="ekr.20140914042331.19480"><vh>Log panes</vh></v>
-<v t="ekr.20140914042331.19481"><vh>Minibuffer</vh></v>
-<v t="ekr.20140914042331.19482"><vh>Plugins</vh>
-<v t="ekr.20140914042331.19483"><vh>Bookmarks plugin</vh></v>
-<v t="ekr.20140914042331.19484"><vh>Screencast plugin</vh></v>
-</v>
-<v t="ekr.20140914042331.19485"><vh>QLabel</vh></v>
-<v t="ekr.20140914042331.19486"><vh>QPushButton</vh></v>
-<v t="ekr.20140914042331.19487"><vh>QScrollArea</vh></v>
-<v t="ekr.20140914042331.19488"><vh>QSplitter</vh></v>
-<v t="ekr.20140914042331.19489"><vh>QStackedWidget</vh></v>
-<v t="ekr.20140914042331.19490"><vh>Status area (works)</vh></v>
-<v t="ekr.20140914042331.19491"><vh>Tree and headlines</vh></v>
-<v t="ekr.20140914042331.19492"><vh>Vim mode borders</vh></v>
-</v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
@@ -140,6 +112,260 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
+</v>
+<v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
+<v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
+<v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+<v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
+<v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
+<v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
+<v t="ekr.20140912072521.19158"><vh>@color Salmon = #FA8072</vh></v>
+</v>
+<v t="ekr.20140915194122.23431"><vh>Colors</vh>
+<v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
+<v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
+<v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
+<v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgrey</vh></v>
+</v>
+<v t="ekr.20140915194122.23439"><vh>Border colors</vh>
+<v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
+<v t="tbrown.20140514191846.42173"><vh>@color focused-border-unfocus-color = white</vh></v>
+</v>
+<v t="tbrown.20131122091143.23829"><vh>Button colors</vh>
+<v t="tbrown.20131122091143.23833"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23834"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23835"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
+<v t="tbrown.20131122091143.23836"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23837"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23838"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
+<v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
+</v>
+<v t="ekr.20140915194122.23445"><vh>Find tab colors</vh>
+<v t="ekr.20140912075503.19269"><vh>@color find-tab-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19309"><vh>Log pane colors</vh>
+<v t="ekr.20140912075503.19310"><vh>@color log-fg = black</vh></v>
+<v t="ekr.20140912075503.19311"><vh>@color log-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19327"><vh>Minibuffer colors</vh>
+<v t="ekr.20140912075503.19330"><vh>@color minibuffer-fg = black</vh></v>
+<v t="ekr.20140912075503.19331"><vh>@color minibuffer-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19332"><vh>@color minibuffer-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19333"><vh>@color minibuffer-sel-bg = lightgrey</vh></v>
+</v>
+<v t="ekr.20140912075503.19283"><vh>Outline colors</vh>
+<v t="ekr.20140915194122.23437"><vh>Basic outline colors</vh>
+<v t="ekr.20140915194122.23426"><vh>@color tree-item-selected-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19284"><vh>@color tree-fg = black</vh></v>
+<v t="ekr.20140912075503.19285"><vh>@color tree-bg = @LeoYellow</vh></v>
+<v t="ekr.20140912075503.19286"><vh>@color tree-sel-fg = black</vh></v>
+<v t="ekr.20140912075503.19287"><vh>@color tree-sel-bg = lightgrey</vh></v>
+</v>
+<v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
+<v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
+<v t="ekr.20140912075503.19294"><vh>@color head-bg = pink</vh></v>
+<v t="ekr.20140912075503.19295"><vh>@color head-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
+</v>
+<v t="ekr.20140912075503.19301"><vh>Colors for headlines that are *not* being edited</vh>
+<v t="ekr.20140912075503.19302"><vh>@color edit-label-border = 2px</vh></v>
+<v t="ekr.20140912075503.19303"><vh>@color edit-label-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19304"><vh>@color edit-label-bg = @LeoYellow</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.24238"><vh>Plugin colors (deprecated)</vh>
+<v t="ekr.20140915194122.24250"><vh>@color text-foreground = black</vh></v>
+<v t="ekr.20140915194122.24251"><vh>@color text-foreground-body = @text-foreground</vh></v>
+<v t="ekr.20140915194122.24252"><vh>@color text-foreground-tree = @text-foreground</vh></v>
+<v t="ekr.20140915194122.24253"><vh>@color text-foreground-log = @text-foreground</vh></v>
+</v>
+<v t="ekr.20140915194122.23446"><vh>Scroll area colors</vh>
+<v t="ekr.20140912075503.19268"><vh>@color scroll-area-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19273"><vh>Splitter colors</vh>
+<v t="ekr.20140912075503.19274"><vh>@color splitter-bg = white</vh></v>
+<v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
+<v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+</v>
+<v t="ekr.20140915194122.23447"><vh>Stacked widget colors</vh>
+<v t="ekr.20140912075503.19271"><vh>@color stacked-border-color = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
+<v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
+</v>
+</v>
+<v t="ekr.20140912075503.19262"><vh>Fonts</vh>
+<v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
+<v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
+<v t="ekr.20140915194122.23413"><vh>@string medium-font-size = 10pt</vh></v>
+<v t="ekr.20140915194122.21837"><vh>@string small-font-size = 10pt</vh></v>
+<v t="ekr.20140912075503.19266"><vh>@string font-style = normal</vh></v>
+<v t="ekr.20140912075503.19265"><vh>@string font-weight = normal</vh></v>
+</v>
+<v t="ekr.20140915194122.23427"><vh>Body Fonts</vh>
+<v t="ekr.20140912075503.19323"><vh>@string body-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19324"><vh>@string body-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19326"><vh>@string body-font-style = @font-style</vh></v>
+<v t="ekr.20140912075503.19325"><vh>@string body-font-weight = @font-weight</vh></v>
+<v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @body-font-size</vh></v>
+</v>
+<v t="ekr.20140915194122.23441"><vh>Dialog fonts</vh>
+<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = None</vh></v>
+<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = None</vh></v>
+<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
+<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
+</v>
+<v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
+<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
+<v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
+<v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19280"><vh>@string find-font-size = @medium-font-size</vh></v>
+<v t="ekr.20140912075503.19282"><vh>@string find-font-style = @font-style</vh></v>
+<v t="ekr.20140912075503.19281"><vh>@string find-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19278"><vh>@string find-pattern-font-family = @font-family</vh></v>
+</v>
+<v t="ekr.20140915194122.23429"><vh>Log pane fonts</vh>
+<v t="ekr.20140912075503.19312"><vh>@string log-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19313"><vh>@string log-sel-bg = blue</vh></v>
+<v t="ekr.20140912075503.19314"><vh>@string log-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19315"><vh>@string log-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19316"><vh>@string log-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19317"><vh>@string log-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23430"><vh>Minibuffer fonts</vh>
+<v t="ekr.20140912075503.19334"><vh>@string minibuffer-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19335"><vh>@string minibuffer-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19336"><vh>@string minibuffer-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19337"><vh>@string minibuffer-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23432"><vh>Outline pane fonts</vh>
+<v t="ekr.20140915194122.23436"><vh>Basic outline fonts</vh>
+<v t="ekr.20140912075503.19288"><vh>@string tree-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19289"><vh>@string tree-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19290"><vh>@string tree-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19291"><vh>@string tree-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23433"><vh>Fonts for headlines that *are* being edited</vh>
+<v t="ekr.20140912075503.19297"><vh>@string head-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19298"><vh>@string head-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19299"><vh>@string head-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19300"><vh>@string head-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23435"><vh>Fonts for headlines that are *not* being edited</vh>
+<v t="ekr.20140912075503.19305"><vh>@string edit-label-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19306"><vh>@string edit-label-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19307"><vh>@string edit-label-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19308"><vh>@string edit-label-font-style = @font-style</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23443"><vh>Status area fonts</vh>
+<v t="ekr.20140912075503.19350"><vh>@string status-font-family = None</vh></v>
+<v t="ekr.20140912075503.19351"><vh>@string status-font-size = @small-font-size</vh></v>
+<v t="ekr.20140912075503.19352"><vh>@string status-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23440"><vh>Plugins</vh>
+<v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
+<v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
+<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = none</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
+<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
+<v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
+<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="ekr.20140915194122.24265"><vh>@string bookmarks_base_style = normal</vh></v>
+<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
+</v>
+<v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
+<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
+</v>
+<v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
+<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
+<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
+</v>
+<v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="ekr.20140915194122.24268"><vh>@string bookmarks_expanded_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
+</v>
+</v>
+<v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
+<v t="ekr.20140912075503.19360"><vh>@string screencast-bg = yellow</vh></v>
+<v t="ekr.20140912075503.19361"><vh>@string screencast-font-family = Times New Roman</vh></v>
+<v t="ekr.20140912075503.19362"><vh>@string screencaset-font-size = 18pt</vh></v>
+<v t="ekr.20140912075503.19363"><vh>@string screencast-font-weight = normal</vh></v>
+<v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
+<v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
+<v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
+<v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
+</v>
+<v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
+<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
+<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
+</v>
+<v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
+<v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
+<v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
+</v>
+<v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
+<v t="ekr.20140912075503.19272"><vh>@string stacked-padding = 0px</vh></v>
+</v>
+<v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
+<v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
+</v>
+<v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui styles sheet</vh>
+<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
+<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
+<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
+<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
+<v t="ekr.20140915194122.19460"><vh>Focus borders</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
+<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
+<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
+<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
+<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
+<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
+<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
+</v>
+<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
+<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
+<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
+<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
@@ -1397,259 +1623,6 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui Stylesheet</vh>
-<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
-<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
-<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
-<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
-<v t="ekr.20140915194122.19460"><vh>Focus borders</vh></v>
-<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
-<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
-<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
-<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
-<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
-<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
-<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
-</v>
-<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
-<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
-<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
-<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
-</v>
-</v>
-<v t="ekr.20140912075503.19369"><vh>Qt Gui Stylesheet settings</vh>
-<v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
-<v t="ekr.20140916110656.20410"><vh>@color Burlywood = #DEB887</vh></v>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
-<v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
-<v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
-<v t="ekr.20140912072521.19158"><vh>@color Salmon = #FA8072</vh></v>
-</v>
-<v t="ekr.20140915194122.23431"><vh>Colors</vh>
-<v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
-<v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
-<v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
-<v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgrey</vh></v>
-</v>
-<v t="ekr.20140915194122.23439"><vh>Border colors</vh>
-<v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
-<v t="tbrown.20140514191846.42173"><vh>@color focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="tbrown.20131122091143.23829"><vh>Button colors</vh>
-<v t="tbrown.20131122091143.23833"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23834"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23835"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
-<v t="tbrown.20131122091143.23836"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23837"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
-<v t="tbrown.20131122091143.23838"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
-<v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
-<v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
-</v>
-<v t="ekr.20140915194122.23445"><vh>Find tab colors</vh>
-<v t="ekr.20140912075503.19269"><vh>@color find-tab-bg = white</vh></v>
-</v>
-<v t="ekr.20140912075503.19309"><vh>Log pane colors</vh>
-<v t="ekr.20140912075503.19310"><vh>@color log-fg = black</vh></v>
-<v t="ekr.20140912075503.19311"><vh>@color log-bg = white</vh></v>
-</v>
-<v t="ekr.20140912075503.19327"><vh>Minibuffer colors</vh>
-<v t="ekr.20140912075503.19330"><vh>@color minibuffer-fg = black</vh></v>
-<v t="ekr.20140912075503.19331"><vh>@color minibuffer-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20140912075503.19332"><vh>@color minibuffer-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19333"><vh>@color minibuffer-sel-bg = lightgrey</vh></v>
-</v>
-<v t="ekr.20140912075503.19283"><vh>Outline colors</vh>
-<v t="ekr.20140915194122.23437"><vh>Basic outline colors</vh>
-<v t="ekr.20140915194122.23426"><vh>@color tree-item-selected-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20140912075503.19284"><vh>@color tree-fg = black</vh></v>
-<v t="ekr.20140912075503.19285"><vh>@color tree-bg = @LeoYellow</vh></v>
-<v t="ekr.20140912075503.19286"><vh>@color tree-sel-fg = black</vh></v>
-<v t="ekr.20140912075503.19287"><vh>@color tree-sel-bg = lightgrey</vh></v>
-</v>
-<v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
-<v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
-<v t="ekr.20140912075503.19294"><vh>@color head-bg = pink</vh></v>
-<v t="ekr.20140912075503.19295"><vh>@color head-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
-</v>
-<v t="ekr.20140912075503.19301"><vh>Colors for headlines that are *not* being edited</vh>
-<v t="ekr.20140912075503.19302"><vh>@color edit-label-border = 2px</vh></v>
-<v t="ekr.20140912075503.19303"><vh>@color edit-label-margin = 2px</vh></v>
-<v t="ekr.20140912075503.19304"><vh>@color edit-label-bg = @LeoYellow</vh></v>
-</v>
-</v>
-<v t="ekr.20140915194122.24238"><vh>Plugin colors (deprecated)</vh>
-<v t="ekr.20140915194122.24250"><vh>@color text-foreground = black</vh></v>
-<v t="ekr.20140915194122.24251"><vh>@color text-foreground-body = @text-foreground</vh></v>
-<v t="ekr.20140915194122.24252"><vh>@color text-foreground-tree = @text-foreground</vh></v>
-<v t="ekr.20140915194122.24253"><vh>@color text-foreground-log = @text-foreground</vh></v>
-</v>
-<v t="ekr.20140915194122.23446"><vh>Scroll area colors</vh>
-<v t="ekr.20140912075503.19268"><vh>@color scroll-area-bg = white</vh></v>
-</v>
-<v t="ekr.20140912075503.19273"><vh>Splitter colors</vh>
-<v t="ekr.20140912075503.19274"><vh>@color splitter-bg = white</vh></v>
-<v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
-<v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
-</v>
-<v t="ekr.20140915194122.23447"><vh>Stacked widget colors</vh>
-<v t="ekr.20140912075503.19271"><vh>@color stacked-border-color = white</vh></v>
-</v>
-<v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
-<v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
-<v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
-<v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
-</v>
-</v>
-<v t="ekr.20140912075503.19262"><vh>Fonts</vh>
-<v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
-<v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
-<v t="ekr.20140915194122.23413"><vh>@string medium-font-size = 10pt</vh></v>
-<v t="ekr.20140915194122.21837"><vh>@string small-font-size = 10pt</vh></v>
-<v t="ekr.20140912075503.19266"><vh>@string font-style = normal</vh></v>
-<v t="ekr.20140912075503.19265"><vh>@string font-weight = normal</vh></v>
-</v>
-<v t="ekr.20140915194122.23427"><vh>Body Fonts</vh>
-<v t="ekr.20140912075503.19323"><vh>@string body-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19324"><vh>@string body-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19326"><vh>@string body-font-style = @font-style</vh></v>
-<v t="ekr.20140912075503.19325"><vh>@string body-font-weight = @font-weight</vh></v>
-<v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @body-font-size</vh></v>
-</v>
-<v t="ekr.20140915194122.23441"><vh>Dialog fonts</vh>
-<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = None</vh></v>
-<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = None</vh></v>
-<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
-<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
-</v>
-<v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
-<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
-<v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
-<v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19280"><vh>@string find-font-size = @medium-font-size</vh></v>
-<v t="ekr.20140912075503.19282"><vh>@string find-font-style = @font-style</vh></v>
-<v t="ekr.20140912075503.19281"><vh>@string find-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19278"><vh>@string find-pattern-font-family = @font-family</vh></v>
-</v>
-<v t="ekr.20140915194122.23429"><vh>Log pane fonts</vh>
-<v t="ekr.20140912075503.19312"><vh>@string log-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19313"><vh>@string log-sel-bg = blue</vh></v>
-<v t="ekr.20140912075503.19314"><vh>@string log-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19315"><vh>@string log-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19316"><vh>@string log-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19317"><vh>@string log-font-style = @font-style</vh></v>
-</v>
-<v t="ekr.20140915194122.23430"><vh>Minibuffer fonts</vh>
-<v t="ekr.20140912075503.19334"><vh>@string minibuffer-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19335"><vh>@string minibuffer-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19336"><vh>@string minibuffer-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19337"><vh>@string minibuffer-font-style = @font-style</vh></v>
-</v>
-<v t="ekr.20140915194122.23432"><vh>Outline pane fonts</vh>
-<v t="ekr.20140915194122.23436"><vh>Basic outline fonts</vh>
-<v t="ekr.20140912075503.19288"><vh>@string tree-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19289"><vh>@string tree-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19290"><vh>@string tree-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19291"><vh>@string tree-font-style = @font-style</vh></v>
-</v>
-<v t="ekr.20140915194122.23433"><vh>Fonts for headlines that *are* being edited</vh>
-<v t="ekr.20140912075503.19297"><vh>@string head-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19298"><vh>@string head-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19299"><vh>@string head-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19300"><vh>@string head-font-style = @font-style</vh></v>
-</v>
-<v t="ekr.20140915194122.23435"><vh>Fonts for headlines that are *not* being edited</vh>
-<v t="ekr.20140912075503.19305"><vh>@string edit-label-font-family = @font-family</vh></v>
-<v t="ekr.20140912075503.19306"><vh>@string edit-label-font-size = @font-size</vh></v>
-<v t="ekr.20140912075503.19307"><vh>@string edit-label-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19308"><vh>@string edit-label-font-style = @font-style</vh></v>
-</v>
-</v>
-<v t="ekr.20140915194122.23443"><vh>Status area fonts</vh>
-<v t="ekr.20140912075503.19350"><vh>@string status-font-family = None</vh></v>
-<v t="ekr.20140912075503.19351"><vh>@string status-font-size = @small-font-size</vh></v>
-<v t="ekr.20140912075503.19352"><vh>@string status-font-weight = @font-weight</vh></v>
-<v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
-</v>
-</v>
-<v t="ekr.20140915194122.23440"><vh>Plugins</vh>
-<v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
-<v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
-<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = none</vh></v>
-<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = none</vh></v>
-<v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
-<v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
-<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="ekr.20140915194122.24265"><vh>@string bookmarks_base_style = normal</vh></v>
-<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
-</v>
-<v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = none</vh></v>
-<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
-</v>
-<v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
-<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
-</v>
-<v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="ekr.20140915194122.24268"><vh>@string bookmarks_expanded_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
-</v>
-</v>
-<v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
-<v t="ekr.20140912075503.19360"><vh>@string screencast-bg = yellow</vh></v>
-<v t="ekr.20140912075503.19361"><vh>@string screencast-font-family = Times New Roman</vh></v>
-<v t="ekr.20140912075503.19362"><vh>@string screencaset-font-size = 18pt</vh></v>
-<v t="ekr.20140912075503.19363"><vh>@string screencast-font-weight = normal</vh></v>
-<v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
-</v>
-</v>
-<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
-<v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
-<v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
-<v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
-</v>
-<v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
-<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
-<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
-</v>
-<v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
-<v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
-<v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
-</v>
-<v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
-<v t="ekr.20140912075503.19272"><vh>@string stacked-padding = 0px</vh></v>
-</v>
-<v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
-<v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
-</v>
-<v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
-<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
-<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
-<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 15000</vh></v>
@@ -1835,8 +1808,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"></v>
-<v t="ekr.20140912075503.19369"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3458,9 +3429,8 @@ Settings in myLeoSettings.leo override the settings in this file.
 
 Put myLeoSettigns.leo in your home (~) directory or in the ~/.leo directory.
 
-Distributions of Leo do not contain myLeoSettings.leo.
-
-Leo never changesyour personal myLeoSettings.leo file.
+Distributions of Leo do not contain myLeoSettings.leo; Leo never
+changesyour personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
@@ -5559,13 +5529,19 @@ outline to discover tree-valued abbreviations, and then *deletes* the tree.
 </t>
 <t tx="ekr.20131119143342.18879">@language rest
 
-The following settings determine the appearance of most of Leo.
+Please *do not* change this style sheet, nor any of its descendants.
 
-Users **should not** change this stylesheet directly.
+Instead, copy the *settings* you want to change from the node::
 
-Instead, change the following setting, or create an
-@@data qt-gui-user-style-sheet in myLeoSettings.leo.
+    Qt Gui settings
 
+to myLeoSettings.leo.
+
+Advanced users may create an additional style sheet, called::
+
+    @data qt-gui-user-style-sheet
+
+in myLeoSettings.leo.  But most users will never need to do this.
 </t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
 False: start-find commands puts focus in Find panel.</t>
@@ -9193,7 +9169,8 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19291"></t>
 <t tx="ekr.20140912075503.19292"></t>
 <t tx="ekr.20140912075503.19293"></t>
-<t tx="ekr.20140912075503.19294">cornsilk, @LeoYellow, @Burlywood
+<t tx="ekr.20140912075503.19294">cornsilk
+
 </t>
 <t tx="ekr.20140912075503.19295"></t>
 <t tx="ekr.20140912075503.19296"></t>
@@ -9282,343 +9259,6 @@ Many users will want to change the settings in the Fonts section, especially the
 - @string small-font-size:  A small font size used in buttons.
 </t>
 <t tx="ekr.20140912105440.19376">c.k.simulateCommand('style-reload')</t>
-<t tx="ekr.20140914042331.19476">/*
-    =========== OLD =============
-
-    This stylesheet is responsible for most of Leo's appearance.
-    Other settings also have an effect: see "Colorizer and colors"
-    
-    This stylesheet is composed of this nodes and all its descendants, in outline order.
-    
-    About Qt stylesheets: http://qt-project.org/doc/qt-4.8/stylesheet.html
-    Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-    
-Apparently, Leo directives don't spoil stylesheets, but just to be sure...
-@nocolor
-@language stylesheet (To do)
-*/
-</t>
-<t tx="ekr.20140914042331.19477">/* The body pane */
-
-QTextEdit#richTextEdit {
-    background-color: white; /* #fdf5f5; A kind of pink. */
-    color: @text-foreground-body;
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: @font-family;
-    /* font-family: Courier New; */
-    font-size: @font-size-body;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-</t>
-<t tx="ekr.20140914042331.19478">/* Focused pane border highlight */
-
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
-}
-</t>
-<t tx="ekr.20140914042331.19479">/* Components of the Find Tab... */
-
-QWidget#findTab {
-    background-color: white;
-}
-
-QLabel#findHeading {
-    background-color: white;
-    border: none;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#findLabel {
-    background-color: white;
-    border: none;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#changeLabel {
-    background-color: white;
-    border: none;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#findHelp {
-    background-color: white;
-    border: none;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#findPattern {
-    font-family: DejaVu Sans Mono;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#findChange {
-    font-family: DejaVu Sans Mono;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QCheckBox, QRadioButton {
-    font-size: 12pt;
-}
-</t>
-<t tx="ekr.20140914042331.19480">/* The log panes */
-
-QTextEdit {
-    background-color: white; /* #f2fdff; */
-    color: @text-foreground-log;
-    selection-color: white;
-    selection-background-color: blue;
-    /* font-family: Courier New; */
-    font-family: @font-family;
-    font-size: @font-size-log;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-</t>
-<t tx="ekr.20140914042331.19481">/* The minbuffer area... */
-
-/* The minibuffer itself. */
-
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* The label of the minibuffer. */
-
-QLabel#minibufferLabel {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal;
-    font-style: normal;
-}
-
-/* Coloring */
-
-QLineEdit#lineEdit {
-    color:              @minibuffer_foreground_color;
-    background-color:   @minibuffer_background_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color:   @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color:              @minibuffer_error_color;
-    background-color:   @minibuffer_warning_color;
-}
-</t>
-<t tx="ekr.20140914042331.19482"></t>
-<t tx="ekr.20140914042331.19483">/* bookmarks plugin styling */
-
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-</t>
-<t tx="ekr.20140914042331.19484">QPlainTextEdit#screencastcaption {
-    background-color: yellow;
-    font-family: @font-family; /* Times New Roman; */
-    font-size: 18pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-</t>
-<t tx="ekr.20140914042331.19485">/* Do not change these basic QLabel settings.  They are used for dialog text. */
-
-/* -----
-    QLabel {
-        font-family: @font-family;
-        font-size: 10pt;
-        font-weight: normal;
-        font-style: normal;
-        border: 2px;
-        margin: 2px;
-    }
------ */
-</t>
-<t tx="ekr.20140914042331.19486">/* 
-   Buttons may be styled by name::
-       
-      QPushButton#&lt;button text&gt;-button { &lt;style&gt; }
-    
-   or by kind::
-
-      QPushButton[button_kind="&lt;button kind&gt;"] { &lt;style&gt; }
-*/
-
-QPushButton[button_kind="at-button"] {
-    /* Buttons created by @button nodes. */
-    background-color: @at-button-btn-bg;
-}
-
-QPushButton[button_kind="debug-script"] {
-    background-color: @debug-script-btn-bg;
-}
-
-QPushButton[button_kind="generic-button"] {
-    /* The default styling for buttons. */
-    background-color: @generic-button-btn-bg;
-}
-
-QPushButton[button_kind="interact"] {
-    /* Buttons from the interact plugin. */
-    background-color: @interact-btn-bg;
-}
-
-QPushButton[button_kind="quick-move"] { 
-    /* Buttons from the quickmove plugin. */
-    background-color: @quick-move-btn-bg;
-}
-
-QPushButton[button_kind="run-script"] {
-    /* The singleton run-script button. */
-    background-color: @run-script-btn-bg;
-}
-
-QPushButton[button_kind="script-button"] {
-    /* Buttons created by the script-button button. */
-    background-color: @script-button-btn-bg;
-}
-
-QPushButton#script-button-button { 
-    /* The singleton script-button button. */
-    background-color: @script-button-button-btn-bg;
-}
-</t>
-<t tx="ekr.20140914042331.19487">QScrollArea {
-    background-color: white;
-}
-</t>
-<t tx="ekr.20140914042331.19488">QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QSplitter::handle {
-    /* A QWidget: supports only background attributes.*/
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-</t>
-<t tx="ekr.20140914042331.19489">QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-</t>
-<t tx="ekr.20140914042331.19490">QLineEdit#status1, QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 10pt;
-}
-</t>
-<t tx="ekr.20140914042331.19491">QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    color: @text-foreground-tree;
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: @font-family;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-    show-decoration-selected: 1 /* 1: select entire row */
- }
-
-/* Headlines in editing mode. */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: @font-family;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* Headlines when *not* in editing mode. */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-</t>
-<t tx="ekr.20140914042331.19492">/* Borders for vim mode. */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: 3px solid #FA8072; /* Salmon */
-}
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: 3px solid blue;
-}
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: 3px solid gray;
-}
-</t>
 <t tx="ekr.20140915194122.19458">/* ========== Body pane ========== */
 
 QTextEdit#richTextEdit {
@@ -9948,9 +9588,7 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 </t>
 <t tx="ekr.20140915194122.21837">A small font size used by default in the status area.</t>
 <t tx="ekr.20140915194122.23413">A small font size used by default in the check boxes in the Find tab.</t>
-<t tx="ekr.20140915194122.23416"></t>
 <t tx="ekr.20140915194122.23418"></t>
-<t tx="ekr.20140915194122.23421"></t>
 <t tx="ekr.20140915194122.23422"></t>
 <t tx="ekr.20140915194122.23424"></t>
 <t tx="ekr.20140915194122.23426"></t>
@@ -9994,9 +9632,9 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140915194122.24266"></t>
 <t tx="ekr.20140915194122.24267"></t>
 <t tx="ekr.20140915194122.24268"></t>
-<t tx="ekr.20140916110656.20410"></t>
 <t tx="ekr.20140916113003.19609"></t>
 <t tx="ekr.20140916113003.20415"></t>
+<t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -10370,7 +10008,7 @@ Please don't change these, but feel free to add your own color names in myLeoSet
 @color
 @language python
 
-# This script prints the list of known Qt names. Case seems to be important.
+# This script prints the list of known Qt names. Qt seems to ignore case.
 from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
@@ -10389,14 +10027,6 @@ print('\n'.join(aList))
 <t tx="tbrown.20131122091143.23840"></t>
 <t tx="tbrown.20131122094200.2512">This setting must exist for Ctrl-mousewheel font zooming to work.
 </t>
-<t tx="tbrown.20131122094200.2515">@nocolor-node
-
-Disabled in qtew.set_config: apparently this only works when there's no stylesheet.
-</t>
-<t tx="tbrown.20131122104251.2537"></t>
-<t tx="tbrown.20131122104251.2538"></t>
-<t tx="tbrown.20131122104251.2539"></t>
-<t tx="tbrown.20131122104251.2540"></t>
 <t tx="tbrown.20140101093550.25136"></t>
 <t tx="tbrown.20140101093550.25138">Huh?
 valid values are: normal,bold,100,..,900
