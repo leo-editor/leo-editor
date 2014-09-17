@@ -1215,10 +1215,17 @@ class FileNameChooser:
         common_prefix,tabList = fnc.compute_tab_list()
         fnc.show_tab_list(tabList)
         if common_prefix:
-            fnc.set_label(common_prefix)
+            if 0:
+                # This is a bit *too* helpful.
+                # It's too easy to type ahead by mistake.
+                # Instead, completion should happen only when the user types <tab>.
+                fnc.set_label(common_prefix)
             # Recompute the tab list.
-            junk_common_prefix,tabList = fnc.compute_tab_list()
+            common_prefix,tabList = fnc.compute_tab_list()
             fnc.show_tab_list(tabList)
+            if len(tabList) == 1:
+                # Automatically complete the typing only if there is only one item in the list.
+                fnc.set_label(common_prefix)
         else:
             # Restore everything.
             fnc.set_label(fnc.get_label()[:-1])

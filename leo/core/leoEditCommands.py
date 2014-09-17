@@ -7403,7 +7403,8 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20060419123128: *3* openOutlineByName (EditFileCommandsClass)
     def openOutlineByName (self,event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
-        c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
+        c,k = self.c,self.k
+        fileName = ''.join(k.givenArgs)
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if fileName and g.os_path_exists(fileName):
             g.openWithFileName(fileName,old_c=c)
