@@ -750,7 +750,6 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
-        trace = False and not g.unitTesting
         c = self.c
         s = p.b
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
@@ -758,7 +757,6 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             if i is not None:
                 w = c.frame.body.wrapper
                 switch = p != c.p
-                g.trace('switch',switch)
                 if switch:
                     c.selectPosition(p)
                 oldSel = w.getSelectionRange()
