@@ -1266,10 +1266,9 @@ class LeoApp:
                 return True
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile (self,fn,force=False):
-
+        '''Forget the open file, so that is no longer considered open.'''
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
-
         if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             pass
         else:
@@ -1878,34 +1877,25 @@ class LoadManager:
         return ok and c or None
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles (self):
-
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
-
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
         tag = 'lm.readGlobalSettingsFiles'
         lm = self
-
         if trace and g.trace_startup:
             print('\n<<<<< %s' % tag)
-
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        commanders = [
-            lm.openSettingsFile(path) for path in (
-                lm.computeLeoSettingsPath(),
-                lm.computeMyLeoSettingsPath())]
-
+        paths = [lm.computeLeoSettingsPath(),lm.computeMyLeoSettingsPath()]
+        old_commanders = g.app.commanders()
+        commanders = [lm.openSettingsFile(path) for path in paths]
         settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
-
         for c in commanders:
             if c:
                 settings_d,shortcuts_d = lm.computeLocalSettings(
                     c,settings_d,shortcuts_d,localFlag=False)
-
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcutsDict')
-
         if trace:
             if verbose:
                 for c in commanders:
@@ -1913,9 +1903,13 @@ class LoadManager:
             lm.traceSettingsDict(settings_d,verbose)
             lm.traceShortcutsDict(shortcuts_d,verbose)
             print('\n>>>>>%s...' % tag)
-
         lm.globalSettingsDict = settings_d
         lm.globalShortcutsDict = shortcuts_d
+        # Clear the cache entries for the commanders.
+        # This allows this method to be called outside the startup logic.
+        for c in commanders:
+            if c not in old_commanders:
+                g.app.forgetOpenFile(c.fileName())
     #@+node:ekr.20120214165710.10838: *4* lm.traceSettingsDict
     def traceSettingsDict (self,d,verbose=False):
 
