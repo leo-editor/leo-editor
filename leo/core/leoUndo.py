@@ -1320,8 +1320,8 @@ class Undoer:
                 try:
                     #@+<< set newBead if the change does not continue a word >>
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
-                    old_start,old_end = oldSel
-                    new_start,new_end = newSel
+                    old_start,old_end = oldSel if oldSel else 0,0
+                    new_start,new_end = newSel if newSel else 0,0
                     prev_start,prev_end = u.prevSel
                     # g.trace('new_start',new_start,'old_start',old_start)
                     if old_start != old_end or new_start != new_end:
