@@ -8,7 +8,7 @@ These classes should be overridden to create frames for a particular gui.
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-big_text_buttons = False # Show buttons instead of immediately loading big text.
+big_text_buttons = True # Show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import leo.core.leoGlobals as g

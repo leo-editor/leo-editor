@@ -802,6 +802,16 @@ The new line line is:
     <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 .. @+node:ekr.20140917063815.18007: *4* Leo's main style sheet is fully parameterized
 All aspects of the style sheet can now be altered using normal user settings.
+.. @+node:ekr.20140828033858.18521: *4* Enabled big-text buttons
+@language rest
+
+The user can lose tail text if they start typing before the body text completely loads!
+
+- Added c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars')
+
+- The "dummy" body text now contains a warning to wait until the text fully loads.
+
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
