@@ -307,6 +307,16 @@ setUndoTypingParams
 TypeError: 'NoneType' object is not iterable
 
 @language python
+.. @+node:ekr.20140910173844.17822: *4* Fixed find bug
+@language rest
+
+https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+
+Another example of the wretched newline problem. @edit nodes preserve '\r'
+characters, and that messes up the counts in the find command.
+
+The fix was a hack to find.search: it removes '\r' characters.
+
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

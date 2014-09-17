@@ -1305,7 +1305,7 @@ class LeoFind:
                 if self.mark_finds:
                     p.setMarked()
                     c.frame.tree.drawIcon(p) # redraw only the icon.
-                if trace: g.trace('success',pos,newpos,p)
+                if trace: g.trace('success',pos,newpos,p.h)
                 return pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self.shouldStayInNode(p):
@@ -1486,7 +1486,14 @@ class LeoFind:
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
-        if trace: g.trace(index,repr(s[index-10:index+10]))
+        s = s.replace('\r','')
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+        if s:
+            if trace: g.trace('=====',index,repr(s[max(0,index-10):index+40]))
+        else:
+            if trace: g.trace('returning: no text',p.h)
+            return None,None
         stopindex = 0 if self.reverse else len(s)
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
         if trace: g.trace('pos,newpos',pos,newpos)
@@ -1498,7 +1505,7 @@ class LeoFind:
             if trace: g.trace('not searching bodies')
             return None,None
         if pos == -1:
-            if trace: g.trace('** pos is -1',pos,newpos)
+            if trace: g.trace('Returning: pos is -1')
             return None,None
         if self.passedWrapPoint(p,pos,newpos):
             if trace:
