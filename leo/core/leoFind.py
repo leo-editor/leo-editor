@@ -1927,6 +1927,7 @@ class LeoFind:
             c.bodyWantsFocusNow()
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
+            w.seeInsertPoint() # 2014/09/17
             c.outerUpdate()
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
