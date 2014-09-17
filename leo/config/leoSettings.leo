@@ -816,6 +816,7 @@
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
+<v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
@@ -9635,6 +9636,7 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.19609"></t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
+<t tx="ekr.20140917063815.21917"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
