@@ -775,7 +775,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20131114051702.22731: *4* make_script_substitutions
     def make_script_substitutions(self,i,j,val):
         '''Make scripting substitutions in node p.'''
-        trace = False and not g.unitTestingt
+        trace = False and not g.unitTesting
         c = self.c
         if not c.abbrev_subst_start:
             if trace: g.trace('no subst_start')
