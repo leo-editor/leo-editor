@@ -1385,6 +1385,7 @@ class StyleSheetManager:
         Return the text of the relevant node.
         '''
         if 0: # not ready yet
+            c = self.c
             d = c.config.settingsDict
             for key in sorted(d.keys()):
                 gs = d.get(key)
