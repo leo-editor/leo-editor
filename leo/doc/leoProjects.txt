@@ -317,6 +317,8 @@ characters, and that messes up the counts in the find command.
 
 The fix was a hack to find.search: it removes '\r' characters.
 
+.. @+node:ekr.20140917101732.27900: *4* Fixed unwanted scrolling in abbreviations
+Saved and restored the y-scroll position in find_place_holder.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -750,25 +750,32 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
+        trace = False and not g.unitTesting
         c = self.c
         s = p.b
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
             if i is not None:
                 w = c.frame.body.wrapper
-                c.selectPosition(p)
+                switch = p != c.p
+                g.trace('switch',switch)
+                if switch:
+                    c.selectPosition(p)
                 oldSel = w.getSelectionRange()
                 w.setAllText(new_s)
+                scroll = w.getYScrollPosition()
                 c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
                 c.p.b = new_s
-                c.redraw()
+                if switch:
+                    c.redraw()
                 self.set_selection(i,j)
+                w.setYScrollPosition(scroll)
                 return True
         return False
     #@+node:ekr.20131114051702.22731: *4* make_script_substitutions
     def make_script_substitutions(self,i,j,val):
         '''Make scripting substitutions in node p.'''
-        trace = False
+        trace = False and not g.unitTestingt
         c = self.c
         if not c.abbrev_subst_start:
             if trace: g.trace('no subst_start')
@@ -793,6 +800,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
+            # Huh?
             oldSel = i,j
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
         if trace: g.trace(do_placeholder,val)
