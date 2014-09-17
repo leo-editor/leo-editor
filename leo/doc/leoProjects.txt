@@ -772,6 +772,8 @@ The xml namespace line at the start of .leo files has been:
 The new line line is:
 
     <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+.. @+node:ekr.20140917063815.18007: *4* Leo's main style sheet is fully parameterized
+All aspects of the style sheet can now be altered using normal user settings.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
