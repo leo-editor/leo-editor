@@ -1627,11 +1627,10 @@ class LeoImportCommands:
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
-    # There is no ctor.
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
     def __init__ (self,c,one_file=False,theTypes=None,safe_at_file=True,use_at_edit=False):
-        
+        '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.one_file = one_file
         self.recursive = not one_file
@@ -1640,12 +1639,16 @@ class RecursiveImportController:
         self.use_at_edit = use_at_edit
     #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir
     def import_dir(self,root,dir_):
-
+        '''Import selected files from dir_, a directory.'''
+        trace = False and not g.unitTesting
         c = self.c
         g.es("dir: " + dir_,color="blue")
-        dirs,files,files2 = [],os.listdir(dir_),[]
+        files = os.listdir(dir_)
+        if trace: g.trace(sorted(files))
+        dirs,files2 = [],[]
         for f in files:
-            path = g.os_path_join(dir_,f)
+            path = g.os_path_join(dir_,f,expanduser=False)
+            if trace: g.trace('is_file',g.os_path_isfile(path),path)
             if g.os_path_isfile(path):
                 name, ext = g.os_path_splitext(f)
                 if ext in self.theTypes:
@@ -1675,7 +1678,7 @@ class RecursiveImportController:
                 self.import_dir(child,dir_)
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
     def clean_all (self,p):
-
+        '''Clean all imported nodes.'''
         for p in p.self_and_subtree():
             h = p.h
             if h.startswith('@file') or h.startswith('@@file'):
@@ -1895,16 +1898,13 @@ class RecursiveImportController:
             root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
     #@+node:ekr.20130823083943.12607: *3* Pass 3: post_process & helpers
     def post_process (self,p,prefix):
-        
-        '''Traverse p's tree, replacing all nodes that start with prefix
-           by the smallest equivalent @path or @file node.
         '''
-
+        Traverse p's tree, replacing all nodes that start with prefix
+        by the smallest equivalent @path or @file node.
+        '''
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        
-        # self.dump_headlines(root.copy())
         if not self.use_at_edit:
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
@@ -1988,9 +1988,7 @@ class RecursiveImportController:
         
     #@+node:ekr.20130823083943.12613: *3* run
     def run (self,dir_):
-        
         '''Import all the .py files in dir_.'''
-
         try:
             c = self.c
             p = c.p

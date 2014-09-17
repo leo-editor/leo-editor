@@ -6182,34 +6182,30 @@ def os_path_expanduser(path):
     result = os.path.normpath(os.path.expanduser(path))
 
     return result
-#@+node:ekr.20080921060401.14: *3* g.os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14: *3* g.os_path_finalize
 def os_path_finalize (path,**keys):
-
     '''
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
+    There is no corresponding os.path method
+    '''
     c = keys.get('c')
-
+    expanduser = keys.get('expanduser',True)
+        # 2014/09/17: Allow expanduser to be False.
     if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
+    if expanduser:
+        path = g.os_path_expanduser(path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
 
+#@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join (*args,**keys):
-
     '''Do os.path.join(*args), then finalize the result.'''
-
     c = keys.get('c')
-
     if c:
         args = [g.os_path_expandExpression(z,**keys)
             for z in args if z]
-
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
@@ -6246,22 +6242,21 @@ def os_path_isdir(path):
     return os.path.isdir(path)
 #@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
 def os_path_isfile(path):
-
     """Return True if path is a file."""
-
     path = g.toUnicodeFileEncoding(path)
-
     return os.path.isfile(path)
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args,**keys):
-
+    '''
+    The same as os.path.join, but safe for unicode.
+    In addition, it supports the !! and . conventions.
+    '''
     trace = False and not g.unitTesting
     c = keys.get('c')
-
+    expanduser = keys.get('expanduser',True)
+        # 2014/09/17: Allow expanduser to be False.
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
     if trace: g.trace('1',uargs)
-
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
         uargs[0] = g.app.loadDir
@@ -6270,15 +6265,11 @@ def os_path_join(*args,**keys):
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
+    if expanduser:
+        uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if trace: g.trace('2',uargs)
-
     path = os.path.join(*uargs)
-
     if trace: g.trace('3',path)
-
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
     return path

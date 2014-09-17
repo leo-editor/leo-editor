@@ -322,6 +322,19 @@ Saved and restored the y-scroll position in find_place_holder.
 .. @+node:ekr.20140827092102.18576: *4* Set the default syntax color for operators to black
 This is required so that, for example, python coloring is correct after
 selecting a node that sets another color for operators.
+.. @+node:ekr.20140906152857.18699: *4* Fixed recursive import bug
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/49
+
+The file import code as found in scripts fails on reaching
+Word backup files (file names prefixed with a ~)
+
+The problem was that g.os_path_join automatically called
+os.path.expanduser, which converts ~ to the users home directory.
+
+The fix was to disable the call to os.pathexpanduser in g.os_path_join &
+g.os_path_finalize if the new expanduser keyword argument is False.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -3155,6 +3155,37 @@ boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
+.. @+node:ekr.20140917154740.19477: *3* Installer bugs
+.. @+node:ekr.20120401144849.10037: *4* Fix installer problem
+@language rest
+
+Leo 4.10 final released
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
+
+EKR: One of these might work better.
+
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
+
+From Viktor
+
+> I tried to install Leo 4.10 final from Sourceforge via
+"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
+and running I tried to install this into a completely new separate user
+account.
+
+> After trying several variations it looks like that the "LeoSetup Script"
+requires a Python installation which is available to all users and not just
+to this one new separate account.
+
+I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
+
+If you mean setup.py, you shouldn't use it.
+
+> If this is done intentionally, what is the rationale for it.
+
+It wasn't done intentionally. There may be an nsi option to get around this
+problem, but I'm not sure about it. I'll look at this soon.
 .. @+node:ekr.20130926053913.11562: *3* Bug-tracker: Hard
 .. @+node:ekr.20140824163757.20587: *4* Bug 1022140: scroll problem in the body pane (Hard)
 @language rest
@@ -3416,36 +3447,6 @@ The examples in the IPython chapter seem to be out of date.
 http://leoeditor.com/IPythonBridge.html
 
 Requires that IPython work with Leo using the --ipython option.
-.. @+node:ekr.20120401144849.10037: *4* Fix installer problem
-@language rest
-
-Leo 4.10 final released
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
-
-EKR: One of these might work better.
-
-; RequestExecutionLevel highest
-; RequestExecutionLevel admin
-
-From Viktor
-
-> I tried to install Leo 4.10 final from Sourceforge via
-"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
-and running I tried to install this into a completely new separate user
-account.
-
-> After trying several variations it looks like that the "LeoSetup Script"
-requires a Python installation which is available to all users and not just
-to this one new separate account.
-
-I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
-
-If you mean setup.py, you shouldn't use it.
-
-> If this is done intentionally, what is the rationale for it.
-
-It wasn't done intentionally. There may be an nsi option to get around this
-problem, but I'm not sure about it. I'll look at this soon.
 .. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
 Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
 From: Eoin <eoinmccarthy@fastmail.fm>
