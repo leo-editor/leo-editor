@@ -1388,7 +1388,7 @@ class StyleSheetManager:
             c = self.c
             d = c.config.settingsDict
             for key in sorted(d.keys()):
-                gs = d.get(key)
+                gs = d.get(key) # A GeneralSetting object.
                 if gs.kind == 'string':
                     setting = g.toUnicode(gs.setting)
                     val = g.toUnicode(gs.val)
