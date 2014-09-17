@@ -3,56 +3,10 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20131114124839.16664: ** * To do: Leo 4.12b1
+.. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
-
-Settings:
-- Document template system more clearly in leoSettings.leo.
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-
-Next:
-- Create minimal bridge app for testing.
-- Enable and test big_text_buttons.
-
-Stashed bugs:
-- Fix recursive import bug.
-- Vim borders don't work with my standard settings and python3.4 and Qt5
-- Python colorizing spoiled after colorizing other languages
-.. @+node:ekr.20140912073148.19149: *3* * What to do about the new icons
-See home/Leo-Recent/Icons
-.. @+node:ekr.20140910065834.18125: *3* Delegated
-To Terry:
-
-todo.py bug: https://groups.google.com/forum/#!topic/leo-editor/-Tqxudn-6eM
-.. @+node:ekr.20140824043305.18300: *3* Bugs for b1
-Fix all git bugs:
-https://github.com/leo-editor/leo-editor/labels/bug
-.. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
-https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
-
- ​It works for me, but only in special cases.
-
-The reason the *exact* example above works is that:
-
-a) c.atFileCommands.write is *already* a valid completion and
-b) c.atFileCommands.write is *also* a prefix of other at.fileCommands methods.
-
-In that case, ​
- 
-​auto_completer_state_handler is still active, and the '?' characters works.
-
-Obviously, there are many other situations where you have typed a unique method name, which causes auto_completer_state_handler to exit.  In those more common cases, the '?' character won't work.
-
-There is no quick fix for this.  Probably a new command is needed.
-.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
-.. @+node:ekr.20131025044901.17146: *4* Clone-to-last-node
-# Don't change selected node!
-.. @+node:ekr.20131219102947.16571: *4* Weird clone bug
-I got bit by the cloned-headline not updated bug
-.. @+node:ekr.20140824043305.18293: *3* Docs for b1
-***** Add all items in the to-be-documented mailbox to docs.
+.. @+node:ekr.20140824043305.18293: *3* Docs for a1
+* Add all items in the to-be-documented mailbox to docs.
 .. @+node:ekr.20140910065834.18124: *4* Document recent tags work
 .. @+node:ekr.20130806072439.20414: *4* Document: Cannot open Leo files by double-click in Windows Explorer?
 From: Nick_H <nah@plextek.co.uk>
@@ -2807,6 +2761,38 @@ screenshots
 todo
 valuespace
 .. @+node:ekr.20131220065609.16590: *4* Add docstrings for all commands in leoSessions.py.
+.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
+All bugs must be fixed for b1.
+I'll fix as many bugs as I can for a1.
+
+Fix all git bugs:
+https://github.com/leo-editor/leo-editor/labels/bug
+
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+
+- Vim borders don't work with my standard settings and python3.4 and Qt5
+.. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
+https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
+
+ ​It works for me, but only in special cases.
+
+The reason the *exact* example above works is that:
+
+a) c.atFileCommands.write is *already* a valid completion and
+b) c.atFileCommands.write is *also* a prefix of other at.fileCommands methods.
+
+In that case, ​
+ 
+​auto_completer_state_handler is still active, and the '?' characters works.
+
+Obviously, there are many other situations where you have typed a unique method name, which causes auto_completer_state_handler to exit.  In those more common cases, the '?' character won't work.
+
+There is no quick fix for this.  Probably a new command is needed.
+.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
+.. @+node:ekr.20131025044901.17146: *4* Clone-to-last-node
+# Don't change selected node!
 .. @+node:ekr.20050509085713: *3* Installer (wishlist)
 .. @+node:ekr.20050328093147.1: *4* Report: improving installer
 @killcolor

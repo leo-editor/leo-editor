@@ -9248,10 +9248,15 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19368"></t>
 <t tx="ekr.20140912075503.19369">@language rest
 
-These settings are automagically inserted into the style sheets in:
+This tree contains settings that are inserted style sheets. For example,
+given the setting::
 
-- @data qt-gui-plugin-style-sheet *and*
-- @data qt-gui-user-style-sheet.
+    @color body-bg = white
+    
+Leo will substitute "white" everywhere that "@body-bg" appears in the following two trees:
+
+    @data qt-gui-plugin-style-sheet
+    @data qt-gui-user-style-sheet
 
 Many users will want to change the settings in the Fonts section, especially these:
 
