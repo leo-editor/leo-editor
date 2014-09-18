@@ -2,13 +2,10 @@
 #@+node:ekr.20060123151617: * @file leoFind.py
 '''Leo's gui-independent find classes.'''
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes # 2014/04/24
 import re
+import sys
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -63,7 +60,6 @@ import re
 # findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
 #@-<< Theory of operation of find/change >>
-
 #@+others
 #@+node:ekr.20070105092022.1: ** class SearchWidget
 class SearchWidget:
@@ -1486,9 +1482,11 @@ class LeoFind:
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
-        s = s.replace('\r','')
-            # Ignore '\r' characters, which may appear in @edit nodes.
-            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+        if sys.platform.lower().startswith('win'):
+            s = s.replace('\r','')
+                # Ignore '\r' characters, which may appear in @edit nodes.
+                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if s:
             if trace: g.trace('=====',index,repr(s[max(0,index-10):index+40]))
         else:
@@ -1605,9 +1603,14 @@ class LeoFind:
                 # Bug fix: 10/5/06: At last the bug is found!
         pattern = self.replaceBackSlashes(pattern)
         n = len(pattern)
-        if i < 0 or i > len(s) or j < 0 or j > len(s):
-            g.trace('bad index: i = %s, j = %s' % (i,j))
-            i = 0 ; j = len(s)
+        # 2014/09/18: Put the indices in range.  Indices can get out of range
+        # because the search code strips '\r' characters when searching @edit nodes.
+        i = max(0,i)
+        j = min(len(s),j)
+        # Old code:
+            # if i < 0 or i > len(s) or j < 0 or j > len(s):
+                # g.trace('bad index: i = %s, j = %s' % (i,j))
+                # i = 0 ; j = len(s)
         if trace and (s and i == 0 and j == 0):
             g.trace('two zero indices')
         # short circuit the search: helps debugging.
@@ -1960,4 +1963,7 @@ class LeoFind:
         if trace: g.trace('change',repr(s))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo
