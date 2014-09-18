@@ -4112,8 +4112,9 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     theFile,pathname,description = data
                     if trace and verbose: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
-                    if module: 
-                        if trace: g.es("%s loaded" % moduleName)
+                    if module:
+                        # This trace is usually annoying.
+                        if trace and verbose: g.es("%s loaded" % moduleName)
                         break
                 except Exception:
                     t, v, tb = sys.exc_info()
@@ -5274,18 +5275,15 @@ def es(*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-
     trace = False
-
     if not app or app.killed: return
+    if app.gui and app.gui.consoleOnly: return
     log = app.log
-
     if trace: # Effective for debugging.
         print()
         print('***es',args,keys)
         print('***es','logInited',app.logInited,'log',log and id(log))
         print('***es',g.callers())
-
     # Compute the effective args.
     d = {
         'color':None,
@@ -5407,14 +5405,13 @@ def es_exception_type (c=None,color="red"):
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def es_print(*args,**keys):
+    '''
+    Print all non-keyword args, and put them to the log pane.
 
-    '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-
     g.pr(*args,**keys)
-
     if not g.app.unitTesting:
         g.es(*args,**keys)
 #@+node:ekr.20111107181638.9741: *3* g.es_print_exception

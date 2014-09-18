@@ -30,6 +30,7 @@ class LeoGui:
         # g.trace("LeoGui",guiName,g.callers())
         self.active = None # Used only by qt_gui.
         self.bodyTextWidget = None
+        self.consoleOnly = True # True if g.es goes to console.
         self.idleTimeClass = None
         self.isNullGui = False
         self.lastFrame = None

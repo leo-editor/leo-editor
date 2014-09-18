@@ -47,6 +47,7 @@ class LeoQtGui(leoGui.LeoGui):
         # g.trace('(LeoQtGui)',g.callers())
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.bodyTextWidget = qt_text.QTextMixin
+        self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
