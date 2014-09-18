@@ -4084,13 +4084,13 @@ def cantImport (moduleName,pluginName=None,verbose=True):
 
 #@+node:ekr.20041219095213.1: *3* g.importModule
 def importModule (moduleName,pluginName=None,verbose=False):
+    '''
+    Try to import a module as Python's import command does.
 
-    '''Try to import a module as Python's import command does.
-
-    moduleName is the module's name, without file extension.'''
-
+    moduleName is the module's name, without file extension.
+    '''
     # Important: g is Null during startup.
-    trace = False and not g.unitTesting
+    trace = g.app.trace_plugins and not g.unitTesting
     module = sys.modules.get(moduleName)
     if module:
         return module
@@ -4113,7 +4113,7 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     if trace: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
                     if module: 
-                        g.es("%s loaded" % moduleName)
+                        if trace: g.es("%s loaded" % moduleName)
                         break
                 except Exception:
                     t, v, tb = sys.exc_info()
@@ -4141,12 +4141,12 @@ def importModule (moduleName,pluginName=None,verbose=False):
     return module
 #@+node:ekr.20041219071407: *3* g.importExtension
 def importExtension (moduleName,pluginName=None,verbose=False,required=False):
+    '''
+    Try to import a module. If that fails, try to import the module from
+    Leo's extensions directory.
 
-    '''Try to import a module.  If that fails,
-    try to import the module from Leo's extensions directory.
-
-    moduleName is the module's name, without file extension.'''
-
+    moduleName is the module's name, without file extension.
+    '''
     module = g.importModule(moduleName,pluginName=pluginName,verbose=verbose)
     if not module and verbose:
         g.pr("Warning: '%s' failed to import '%s'" % (
@@ -4160,7 +4160,7 @@ def importFromPath (moduleName,path,verbose=False):
     **Warning**: This is a thin wrapper for imp.load_module, which is
     equivalent to reload! Reloading Leo files while running will crash Leo.
     '''
-    trace = False and not g.unitTesting
+    trace = g.app.trace_plugins and not g.unitTesting
     path = g.os_path_normpath(path)
     if g.isPython3:
         assert g.isString(path)

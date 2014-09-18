@@ -508,8 +508,8 @@ class LeoPluginsController:
                 self.loadOnePlugin(plugin.strip(), tag = tag)
     #@+node:ekr.20100908125007.6024: *4* loadOnePlugin
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
-
-        trace = False and not g.unitTesting
+        '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
+        trace = g.app.trace_plugins and not g.unitTesting
         verbose = True or verbose
         if not g.app.enablePlugins:
             if trace: g.trace('plugins disabled')
@@ -535,7 +535,7 @@ class LeoPluginsController:
             # need to look up through sys.modules, __import__ returns toplevel package
             result = sys.modules[moduleName]
         except g.UiTypeException:
-            if trace or (not g.unitTesting and not g.app.batchMode):
+            if trace: # or (not g.unitTesting and not g.app.batchMode):
                 g.es_print('Plugin %s does not support %s gui' % (
                     moduleName,g.app.gui.guiName()))
             result = None
@@ -584,7 +584,7 @@ class LeoPluginsController:
                     result = None
                     self.loadedModules[moduleName] = None
                 else:
-                    g.trace('no init()',moduleName)
+                    if trace: g.trace('no init()',moduleName)
                     self.loadedModules[moduleName] = result
             self.loadingModuleNameStack.pop()
         if g.app.batchMode or g.app.inBridge or g.unitTesting:

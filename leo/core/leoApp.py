@@ -58,6 +58,7 @@ class LeoApp:
         self.start_fullscreen = False   # For qt_frame plugin.
         self.start_maximized = False    # For qt_frame plugin.
         self.start_minimized = False    # For qt_frame plugin.
+        self.trace_plugins = False      # True: trace imports of plugins.
         self.translateToUpperCase = False # Never set to True.
         self.useIpython = False         # True: add support for IPython.
         self.use_psyco = False          # True: use psyco optimization.
@@ -759,8 +760,7 @@ class LeoApp:
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
-
-        return [f.c for f in g.app.windowList]    
+        return [f.c for f in g.app.windowList]
     #@+node:ekr.20090717112235.6007: *3* app.computeSignon
     def computeSignon (self):
 
@@ -1889,11 +1889,11 @@ class LoadManager:
         paths = [lm.computeLeoSettingsPath(),lm.computeMyLeoSettingsPath()]
         old_commanders = g.app.commanders()
         commanders = [lm.openSettingsFile(path) for path in paths]
+        commanders = [z for z in commanders if z]
         settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
         for c in commanders:
-            if c:
-                settings_d,shortcuts_d = lm.computeLocalSettings(
-                    c,settings_d,shortcuts_d,localFlag=False)
+            settings_d,shortcuts_d = lm.computeLocalSettings(
+                c,settings_d,shortcuts_d,localFlag=False)
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcutsDict')
         if trace:
@@ -2143,6 +2143,8 @@ class LoadManager:
             help = 'save session tabs on exit')
         add('--silent', action="store_true", dest="silent",
             help = 'disable all log messages')
+        add('--trace-plugins', action="store_true", dest='trace_plugins',
+            help = 'trace imports of plugins')
         add('-v', '--version', action="store_true", dest="version",
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2226,6 +2228,8 @@ class LoadManager:
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-plugins
+        g.app.trace_plugins = options.trace_plugins
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
