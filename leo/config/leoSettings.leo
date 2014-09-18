@@ -11,7 +11,32 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
+<v t="ekr.20111017082630.16086"><vh>Disabled buttons</vh>
+<v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
+<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
+<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
+<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
+<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
+<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
+<v t="ekr.20111017082630.16085"><vh>main</vh></v>
+</v>
+<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
+<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
+<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
+<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
+<v t="ekr.20110612074140.16416"><vh>init</vh></v>
+<v t="ekr.20110612074140.16415"><vh>run</vh></v>
+</v>
+<v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
+</v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
+<v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
+<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
+<v t="ekr.20060112104333"><vh>doSet</vh></v>
+<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
+<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
+<v t="ekr.20060112104823"><vh>main</vh></v>
+</v>
 <v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
@@ -32,36 +57,10 @@
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
-<v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
-<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
-<v t="ekr.20060112104333"><vh>doSet</vh></v>
-<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
-<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
-<v t="ekr.20060112104823"><vh>main</vh></v>
-</v>
 <v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
-<v t="tbrown.20140609102412.32431"><vh>Tools</vh>
-<v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
-<v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
-<v t="tbrown.20140609102412.32428"><vh>@button pick-color</vh></v>
 <v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
-</v>
-<v t="ekr.20111017082630.16086"><vh>Disabled/old</vh>
-<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
-<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
-<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
-<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
-<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
-<v t="ekr.20111017082630.16085"><vh>main</vh></v>
-</v>
-<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
-<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
-<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
-<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
-<v t="ekr.20110612074140.16416"><vh>init</vh></v>
-<v t="ekr.20110612074140.16415"><vh>run</vh></v>
-</v>
-</v>
+<v t="ekr.20140918165611.38050"><vh>@button color-wheel</vh></v>
+<v t="tbrown.20140609102412.32428"><vh>@button pick-color-name</vh></v>
 </v>
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
@@ -9637,6 +9636,21 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
 <t tx="ekr.20140917063815.21917"></t>
+<t tx="ekr.20140918165611.38050">from leo.core.leoQt import QtWidgets,QtCore
+picker = QtWidgets.QColorDialog()
+text = QtWidgets.QApplication.clipboard().text()
+try:
+    color = QtWidgets.QColor(text)
+    picker.setCurrentColor(color)
+except ValueError:
+    pass
+if not picker.exec_():
+    g.es("No color selected")
+else:
+    text = picker.selectedColor().name()
+    g.es("%s\ncopied to clipboard"%text)
+    QtWidgets.QApplication.clipboard().setText(text)
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -10006,9 +10020,8 @@ For example, you can use @LeoYellow instead of #ffffec
 Leo style sheets now support all colors names in Leo's color_db, defined in
 leoColor.py. Case is not important in such definitions.
 
-Here's a semi-interactive color map for these colors:
-http://leo-editor.github.io/snippets/colormap.html
-Hover over a color to get Leo's color name for each color.
+To see the names for the colors, click the pick-color-name button.
+This creates a color picker in the icon area.
 
 For example, the following setting works without any explicit
 definition of mistyrose2.
@@ -10017,6 +10030,10 @@ definition of mistyrose2.
     
 These colors are (mostly) the same as:
 http://www.yourhtmlsource.com/stylesheets/namedcolours.html
+
+Finally, there is a semi-interactive color map for these colors here:
+http://leo-editor.github.io/snippets/colormap.html
+Hover over a color to get Leo's color name for each color.
 
 Please don't change the following definitions, but feel free to add your
 own color names in myLeoSettings.leo.
@@ -10075,22 +10092,38 @@ if date:
 else:
     g.es("No date selected")
 </t>
-<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets, QtCore
-
-picker = QtWidgets.QColorDialog()
-text = QtWidgets.QApplication.clipboard().text()
-try:
-    color = QtWidgets.QColor(text)
-    picker.setCurrentColor(color)
-except ValueError:
-    pass
-
-if not picker.exec_():
-    g.es("No color selected")
-else:
-    text = picker.selectedColor().name()
-    g.es("%s\ncopied to clipboard"%text)
-    QtWidgets.QApplication.clipboard().setText(text)
+<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets,QtCore
+import leo.core.leoColor as leoColor
+template = '''
+QComboBox {
+    background-color: %s;
+    selection-background-color: %s;
+    selection-color: black;
+}''' 
+ivar = 'settings-color-picker'
+if not hasattr(c,ivar):
+    setattr(c,ivar,True)
+    color_list = []
+    ivar = 'settings_color_picker'
+    box = QtWidgets.QComboBox()
+    def onActivated(n,*args,**keys):
+        icon = box.itemIcon(n)
+        color = color_list[n]
+        sheet = template % (color,color)
+        box.setStyleSheet(sheet)
+    box.activated.connect(onActivated)
+    color_db = leoColor.leo_color_database
+    for key in sorted(color_db):
+        if not key.startswith('grey'): # Use gray, not grey.
+            val = color_db.get(key)
+            if val:
+                color = QtWidgets.QColor(val)
+                color_list.append(val)
+                pixmap = QtWidgets.QPixmap(40,40)
+                pixmap.fill(color)
+                icon = QtWidgets.QIcon(pixmap)
+                box.addItem(icon,key)
+    c.frame.iconBar.addWidget(box)
 </t>
 <t tx="tbrown.20140609102412.32430">from leo.core.leoQt import QtWidgets, QtCore
 
@@ -10109,7 +10142,6 @@ else:
     g.es("%s\ncopied to clipboard"%text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
-<t tx="tbrown.20140609102412.32431"></t>
 <t tx="tbrown.20140814090009.57475"></t>
 <t tx="tbrown.20140814090009.57476">Reload Styles</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
