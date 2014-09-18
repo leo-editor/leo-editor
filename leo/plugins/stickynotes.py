@@ -56,8 +56,9 @@ process for each one.
 #@+node:vivainio2.20091008133028.5823: ** << imports >>
 import leo.core.leoGlobals as g
 
-# Whatever other imports your plugins uses.
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
+
 import os
 import time
 # import webbrowser
@@ -121,13 +122,10 @@ def decorate_window(w):
 
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
-
-    ok = True
-
+    '''Return True if the plugin has loaded successfully.'''
+    ok = g.app.gui.guiName() == 'qt'  
     if ok:
-        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-
     g.app.stickynotes = {}    
     return ok
 #@+node:ville.20091008210853.7616: ** class FocusingPlainTextEdit

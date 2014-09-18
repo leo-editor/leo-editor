@@ -12,40 +12,25 @@ will be available. The buttons use the icon specified in the active Qt style
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20090518182905.5421: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Functionally complete version
-# 0.2 EKR: check p before calling c.selectPosition(p)
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
-from leo.core.leoQt import QtWidgets # , QtCore
+from leo.core.leoQt import QtWidgets
 #@-<< imports >>
-
 controllers = {}
     # keys are c.hash(), values are NavControllers
-
 #@+others
 #@+node:ville.20090518182905.5423: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ville.20090518182905.5424: ** onCreate
 def onCreate (tag, keys):
@@ -94,4 +79,6 @@ class NavController:
         self.c.frame.iconBar.add(qaction = act_r) #, command = self.clickNext)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

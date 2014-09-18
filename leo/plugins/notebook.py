@@ -7,6 +7,8 @@ Edit several nodes at once, in a pannable "notebook" view.
 Use <Alt-x>nb-<tab> to see the list of commands.
 '''
 import leo.core.leoGlobals as g
+
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore,QtDeclarative,QtGui
 
@@ -16,14 +18,11 @@ controllers = {}
 #@+others
 #@+node:ville.20120604212857.4219: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ville.20120604212857.4231: ** onCreate
 def onCreate (tag, keys):

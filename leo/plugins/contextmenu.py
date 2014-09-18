@@ -47,6 +47,8 @@ import leo.core.leoGlobals as g
 import os
 import subprocess
 from leo.core.leoQt import QtCore
+
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
 # Globals
@@ -55,7 +57,7 @@ inited = False
 #@+others
 #@+node:ville.20090630210947.5463: **  init & helper
 def init ():
-    '''The top-level init function. Return True on successful install.'''
+    '''Return True if the plugin has loaded successfully.'''
     global inited
     # print "contextmenu init()"
     if g.app.gui.guiName() != "qt":

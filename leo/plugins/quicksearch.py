@@ -53,45 +53,32 @@ This plugin defines the following commands that can be bound to keys:
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20090314215508.6: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Ville M. Vainio <vivainio@gmail.com>: Fully functional version,
-# 
-#@-<< version history >>
-
+# Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
+
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
+from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets
 
 from leo.core import leoNodes
     # Uses leoNodes.PosList.
-    
-from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets
-
 import fnmatch, re
-
 from leo.plugins import threadutil
     # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch
 #@-<< imports >>
-
 #@+others
 #@+node:ville.20090314215508.8: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
-
     return ok
+
 #@+node:ville.20090314215508.9: ** onCreate
 def onCreate (tag, keys):
 
@@ -594,4 +581,6 @@ class QuickSearchController:
         c.bodyWantsFocusNow()
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

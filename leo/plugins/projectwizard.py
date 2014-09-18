@@ -9,18 +9,18 @@ where the selected file is (the selected file itself doesn't matter.)
 # Written by VMV.
 
 import leo.core.leoGlobals as g
+
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init
 def init ():
-
-    ok = True # This might depend on imports, etc.
-
+    '''Return True if the plugin has loaded successfully.'''
+    ok = g.app.gui.guiName() == "qt"
     if ok:
         g.plugin_signon(__name__)
-
     install_contextmenu_handlers()
     return ok
 #@+node:ville.20090614224528.8141: ** auto_walk() and g.command('projectwizard')

@@ -24,12 +24,7 @@ free-layout-zoom
 
 """
 #@-<< docstring >>
-
-__version__ = '0.1'
-    # 0.1 - initial release - TNB
-
-# print('free_layout imported')
-
+# Written by Terry Brown.
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
@@ -39,9 +34,6 @@ from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json
 #@-<< imports >>
-
-# controllers = {}  # Keys are c.hash(), values are PluginControllers.
-
 #@+others
 #@+node:tbrown.20110203111907.5521: ** init (free_layout.py)
 def init():
@@ -72,25 +64,24 @@ if 0:
             FreeLayoutController(c) 
     #@+node:tbrown.20110714155709.22852: *3* loadLayouts
     def loadLayouts(tag, keys):
-
+        '''Load layouts from the given commander.'''
         c = keys.get('c')
         if c:
-
             layout = c.config.getData("free-layout-layout")
-
             if layout:
                 layout = json.loads('\n'.join(layout))
-
             if '_ns_layout' in c.db:
                 name = c.db['_ns_layout']
                 if layout:
                     g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
                         "overrides saved layout "+name)
-                else:
+                elif g.app and g.app.db:
                     layout = g.app.db['ns_layouts'][name]
-
+                else:
+                    # We may be in the Leo bridge.
+                    layout = None
             if layout:
-                # Careful: we could be unit testing.
+                # Careful: we could be unit testing, or in the Leo bridge.
                 splitter = c.free_layout.get_top_splitter()
                 if splitter:
                     splitter.load_layout(layout)
@@ -249,6 +240,8 @@ class FreeLayoutController:
         back, without having to remember the original layouts name.
         """
         c = self.c
+        if not (g.app and g.app.db):
+            return # Can happen when running from the Leo bridge.
         d = g.app.db.get('ns_layouts', {})
         if c != keys.get('c'):
             return
@@ -280,7 +273,7 @@ class FreeLayoutController:
                         g.trace('no layout',name)
                 commandName = 'free-layout-load-%s' % name.strip().lower().replace(' ','-')
                 c.k.registerCommand(commandName,shortcut=None,func=func,wrap=True)
-        # Careful: we could be unit testing.
+        # Careful: we could be unit testing or in the Leo bridge.
         if layout:
             splitter = c.free_layout.get_top_splitter()
             if splitter:

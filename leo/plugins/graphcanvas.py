@@ -43,6 +43,7 @@ try:
 except ImportError:
     pydot = None
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import Qt, QtCore, QtGui, uic
 
@@ -58,16 +59,13 @@ c_db_key = '_graph_canvas_gnx'
 #@+others
 #@+node:bob.20110119123023.7393: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui.guiName() != "qt":
         return False
-
     g.visit_tree_item.add(colorize_headlines_visitor)
-    
     g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
-
     return True
 #@+node:bob.20110121094946.3410: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
@@ -724,7 +722,6 @@ class graphcanvasController(object):
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""
-
         self.node = {}  # item to vnode map
         self.nodeItem = {}  # vnode to item map
         self.link = {}
@@ -732,7 +729,6 @@ class graphcanvasController(object):
         self.hierarchyLink = {}
         self.hierarchyLinkItem = {}
         self.lastNodeItem = None
-        
         self.internal_select = False  
         # avoid selection of a @graph node on the graph triggering onSelect2
     #@+node:tbrown.20110122085529.15402: *3* layouts

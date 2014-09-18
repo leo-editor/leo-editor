@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090815203828.5235: * @file spydershell.py
-#@+<< docstring >>
-#@+node:ville.20090815203828.5236: ** << docstring >>
 ''' Launches the spyder environment with access to Leo instance.
 See http://packages.python.org/spyder/
 
@@ -10,34 +8,21 @@ current c,p,g to spyder interactive session. spyder-update also shows the window
 if it was closed before.
 
 '''
-#@-<< docstring >>
-
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20090815203828.5237: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 VMV First version
-# 
-# 0.2 VMV name changed to "spyder' (was "pydee")
-#@-<< version history >>
-
+# Written by VMV.
 #@+<< imports >>
 #@+node:ville.20090815203828.5238: ** << imports >>
 import sys
 
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 #@-<< imports >>
-
 #@+others
 #@+node:ville.20090815203828.5239: ** init
 def init ():
-    ok = g.app.gui.guiName() == 'qt'    
-    return ok
-
+    '''Return True if the plugin has loaded successfully.'''
+    return g.app.gui.guiName() == 'qt'    
 #@+node:ville.20090815203828.5240: ** Leo commands
 @g.command('spyder-launch')
 def spyder_launch(event):
@@ -84,4 +69,6 @@ def spyder_update(event):
     ns['p'] = c.p
     g.spyder.show()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

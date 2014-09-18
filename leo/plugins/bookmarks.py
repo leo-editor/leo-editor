@@ -169,30 +169,25 @@ How the 'tabs' are displayed (one or more levels at once etc.) and how you edit 
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
 import leo.core.leoGlobals as g
-use_qt = False
-if g.app.gui.guiName() == 'qt':
-    try:
-        from leo.core.leoQt import QtCore, QtWidgets
-        import hashlib
-        use_qt = True
-    except ImportError:
-        use_qt = False
+
+# Fail gracefully if the gui is not qt.
+g.assertUi('qt')
+
+from leo.core.leoQt import QtCore, QtWidgets
+
+import hashlib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100128073941.5371: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    if g.unitTesting:
-        return False
-    ok = bool(use_qt)
+    ok = not g.unitTesting
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         # temporary until double-click is bindable in user settings
         if g.app.config.getBool('bookmarks-grab-dblclick'):
             g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k['c']))
-    # Not needed: return False suffices.
-    # else: g.es_print("Requires Qt GUI")
-    g.plugin_signon(__name__)
+        g.plugin_signon(__name__)
     return ok
 #@+node:tbrown.20110712121053.19751: ** onCreate
 def onCreate(tag, keys):
@@ -226,10 +221,7 @@ def cmd_open_node(c):
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 def cmd_show(c):
     
-    if not use_qt: return 
-    
     bmd = BookMarkDisplay(c)
-    
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
@@ -339,92 +331,91 @@ def cmd_use_other_outline(c):
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:ekr.20140917180536.17896: ** class FlowLayout
-if use_qt:
-    class FlowLayout(QtWidgets.QLayout):
-        """from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py"""
-        #@+others
-        #@+node:ekr.20140917180536.17897: *3* __init__
-        def __init__(self, parent=None, margin=0, spacing=-1):
-            '''Ctor for FlowLayout class.'''
-            super(FlowLayout, self).__init__(parent)
-            if parent is not None:
-                self.setMargin(margin)
-            self.setSpacing(spacing)
-            self.itemList = []
+class FlowLayout(QtWidgets.QLayout):
+    """from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py"""
+    #@+others
+    #@+node:ekr.20140917180536.17897: *3* __init__
+    def __init__(self, parent=None, margin=0, spacing=-1):
+        '''Ctor for FlowLayout class.'''
+        super(FlowLayout, self).__init__(parent)
+        if parent is not None:
+            self.setMargin(margin)
+        self.setSpacing(spacing)
+        self.itemList = []
 
-        #@+node:ekr.20140917180536.17898: *3* __del__
-        def __del__(self):
+    #@+node:ekr.20140917180536.17898: *3* __del__
+    def __del__(self):
+        item = self.takeAt(0)
+        while item:
             item = self.takeAt(0)
-            while item:
-                item = self.takeAt(0)
-        #@+node:ekr.20140917180536.17899: *3* addItem
-        def addItem(self, item):
-            self.itemList.append(item)
-        #@+node:ekr.20140917180536.17900: *3* insertWidget
-        def insertWidget(self, index, item):
-            x = QtWidgets.QWidgetItem(item)
-            # item.setParent(x)
-            # self.itemList.insert(index, x)
-        #@+node:ekr.20140917180536.17901: *3* count
-        def count(self):
-            return len(self.itemList)
-        #@+node:ekr.20140917180536.17902: *3* itemAt
-        def itemAt(self, index):
-            if index >= 0 and index < len(self.itemList):
-                return self.itemList[index]
-            return None
-        #@+node:ekr.20140917180536.17903: *3* takeAt
-        def takeAt(self, index):
-            if index >= 0 and index < len(self.itemList):
-                return self.itemList.pop(index)
-            return None
-        #@+node:ekr.20140917180536.17904: *3* expandingDirections
-        def expandingDirections(self):
-            return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
-        #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
-        def hasHeightForWidth(self):
-            return True
-        #@+node:ekr.20140917180536.17906: *3* heightForWidth
-        def heightForWidth(self, width):
-            height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
-            return height
-        #@+node:ekr.20140917180536.17907: *3* setGeometry
-        def setGeometry(self, rect):
-            super(FlowLayout, self).setGeometry(rect)
-            self.doLayout(rect, False)
-        #@+node:ekr.20140917180536.17908: *3* sizeHint
-        def sizeHint(self):
-            return self.minimumSize()
-        #@+node:ekr.20140917180536.17909: *3* minimumSize
-        def minimumSize(self):
+    #@+node:ekr.20140917180536.17899: *3* addItem
+    def addItem(self, item):
+        self.itemList.append(item)
+    #@+node:ekr.20140917180536.17900: *3* insertWidget
+    def insertWidget(self, index, item):
+        x = QtWidgets.QWidgetItem(item)
+        # item.setParent(x)
+        # self.itemList.insert(index, x)
+    #@+node:ekr.20140917180536.17901: *3* count
+    def count(self):
+        return len(self.itemList)
+    #@+node:ekr.20140917180536.17902: *3* itemAt
+    def itemAt(self, index):
+        if index >= 0 and index < len(self.itemList):
+            return self.itemList[index]
+        return None
+    #@+node:ekr.20140917180536.17903: *3* takeAt
+    def takeAt(self, index):
+        if index >= 0 and index < len(self.itemList):
+            return self.itemList.pop(index)
+        return None
+    #@+node:ekr.20140917180536.17904: *3* expandingDirections
+    def expandingDirections(self):
+        return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
+    #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
+    def hasHeightForWidth(self):
+        return True
+    #@+node:ekr.20140917180536.17906: *3* heightForWidth
+    def heightForWidth(self, width):
+        height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
+        return height
+    #@+node:ekr.20140917180536.17907: *3* setGeometry
+    def setGeometry(self, rect):
+        super(FlowLayout, self).setGeometry(rect)
+        self.doLayout(rect, False)
+    #@+node:ekr.20140917180536.17908: *3* sizeHint
+    def sizeHint(self):
+        return self.minimumSize()
+    #@+node:ekr.20140917180536.17909: *3* minimumSize
+    def minimumSize(self):
 
-            size = QtCore.QSize()
-            for item in self.itemList:
-                size = size.expandedTo(item.minimumSize())
-            size += QtCore.QSize(2 * self.margin(), 2 * self.margin())
-            return size
-        #@+node:ekr.20140917180536.17910: *3* doLayout
-        def doLayout(self, rect, testOnly):
-            
-            x = rect.x()
-            y = rect.y()
-            lineHeight = 0
-            for item in self.itemList:
-                wid = item.widget()
-                spaceX = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
-                spaceY = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Vertical)
+        size = QtCore.QSize()
+        for item in self.itemList:
+            size = size.expandedTo(item.minimumSize())
+        size += QtCore.QSize(2 * self.margin(), 2 * self.margin())
+        return size
+    #@+node:ekr.20140917180536.17910: *3* doLayout
+    def doLayout(self, rect, testOnly):
+        
+        x = rect.x()
+        y = rect.y()
+        lineHeight = 0
+        for item in self.itemList:
+            wid = item.widget()
+            spaceX = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
+            spaceY = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Vertical)
+            nextX = x + item.sizeHint().width() + spaceX
+            if nextX - spaceX > rect.right() and lineHeight > 0:
+                x = rect.x()
+                y = y + lineHeight + spaceY
                 nextX = x + item.sizeHint().width() + spaceX
-                if nextX - spaceX > rect.right() and lineHeight > 0:
-                    x = rect.x()
-                    y = y + lineHeight + spaceY
-                    nextX = x + item.sizeHint().width() + spaceX
-                    lineHeight = 0
-                if not testOnly:
-                    item.setGeometry(QtCore.QRect(QtCore.QPoint(x, y), item.sizeHint()))
-                x = nextX
-                lineHeight = max(lineHeight, item.sizeHint().height())
-            return y + lineHeight - rect.y()
-        #@-others
+                lineHeight = 0
+            if not testOnly:
+                item.setGeometry(QtCore.QRect(QtCore.QPoint(x, y), item.sizeHint()))
+            x = nextX
+            lineHeight = max(lineHeight, item.sizeHint().height())
+        return y + lineHeight - rect.y()
+    #@-others
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""

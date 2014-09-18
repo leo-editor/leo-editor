@@ -38,20 +38,12 @@ import time
 #@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():
-    
+    '''Return True if the plugin has loaded successfully.'''
     if g.unitTesting:
         return False
-
     ok = g.app.gui.guiName() == 'qt'
-    
-    if not ok:
-        g.es_print("Requires Qt GUI")
-
     g.plugin_signon(__name__)
-
     return ok
-    
-
 #@+node:tbrown.20130419143128.29669: ** class Recorder
 class Recorder(object):
     """Recorder - record video of Leo
