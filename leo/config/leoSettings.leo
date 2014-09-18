@@ -118,10 +118,6 @@
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
-<v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
-<v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
-<v t="ekr.20140912072521.19158"><vh>@color Salmon = #FA8072</vh></v>
 </v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
@@ -1626,7 +1622,7 @@
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 15000</vh></v>
+<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 20000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
@@ -9095,7 +9091,6 @@ If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons
 Clicking the 'load' button will load the body text and remove the buttons.</t>
 <t tx="ekr.20140912072521.19153"></t>
 <t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
-<t tx="ekr.20140912072521.19158"></t>
 <t tx="ekr.20140912072521.19160">/*
     =========== Leo's new, fully parameterized, stylesheet. ===========
     
@@ -10004,26 +9999,21 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.23828">@nocolor
-@
-Additional definitions of colors not defined by Qt.
+<t tx="tbrown.20131122091143.23828">This section defines color values not defined by Qt.
+
+Leo style sheets now support all colors in Leo's color_db.  See leoColor.py.
+These colors are mostly the same as listed here:
+http://www.yourhtmlsource.com/stylesheets/namedcolours.html
+
 
 For example, you can use @LeoYellow instead of #ffffec
 
 Please don't change these, but feel free to add your own color names in myLeoSettings.leo.
 @c
-@color
-@language python
 
-# This script prints the list of known Qt names. Qt seems to ignore case.
-from leo.core.leoQt import QtGui
-aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
-print('\n'.join(aList))
+
 </t>
 <t tx="tbrown.20131122091143.23829"></t>
-<t tx="tbrown.20131122091143.23830"></t>
-<t tx="tbrown.20131122091143.23831"></t>
-<t tx="tbrown.20131122091143.23832"></t>
 <t tx="tbrown.20131122091143.23833"></t>
 <t tx="tbrown.20131122091143.23834"></t>
 <t tx="tbrown.20131122091143.23835"></t>

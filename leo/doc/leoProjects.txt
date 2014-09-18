@@ -833,6 +833,11 @@ The user can lose tail text if they start typing before the body text completely
 .. @+node:ekr.20140917180536.17912: *4* Added --trace-plugins option & corresponding leoBridge option
 - Added --trace-plugins option
 - The leoBridge now supports the tracePlugins keyword option.
+.. @+node:ekr.20140918060252.19480: *4* Leo stylesheets now support all color names in leoColor.py
+For example, this setting works without any explicit definition of mistyrose2.
+    
+    @color head-bg = @mistyrose2
+    
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

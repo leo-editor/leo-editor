@@ -1,12 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
 '''This file contains the gui wrapper for Qt: g.app.gui.'''
+#@+<< imports >>
+#@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
+import leo.core.leoColor as leoColor
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
-
 import leo.plugins.qt_events as qt_events
 import leo.plugins.qt_frame as qt_frame
 import leo.plugins.qt_idle_time as qt_idle_time
@@ -19,6 +21,7 @@ if 1:
     # This defines the commands defined by @g.command.
     # pylint: disable=unused-import
     import leo.plugins.qt_commands
+#@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init
 def init():
@@ -1115,6 +1118,7 @@ class StyleSheetManager:
     def __init__(self,c,safe=False):
         '''Ctor the ReloadStyle class.'''
         self.c = c
+        self.color_db = leoColor.leo_color_database
         self.safe = safe
         self.settings_p = g.findNodeAnywhere(c,'@settings')
         # This warning is inappropriate in some contexts.
@@ -1151,7 +1155,10 @@ class StyleSheetManager:
         trace = False and not g.unitTesting
         verbose = False
         c = self.c
-        constants = self.find_constants_defined(sheet)
+        if 1:
+            constants = []
+        else:
+            constants = self.find_constants_defined(sheet)
         whine = None
         # whine at the user if they use old style style-sheet comment 
         # definition, but only once
@@ -1183,9 +1190,9 @@ class StyleSheetManager:
             changed = False
             to_do.sort(key=len, reverse=True)
             for const in to_do:
-                
                 value = None
                 if const in constants:
+                    # This is about to be removed.
                     value = constants[const]
                     if const[1:] not in deltas and not whine:
                         whine = ("'%s' from style-sheet comment definition, "
@@ -1198,6 +1205,10 @@ class StyleSheetManager:
                     value = c.config.settingsDict.get(key)
                     if value is not None:
                         value = str(value.val)
+                    elif key in self.color_db:
+                        value = self.color_db.get(key)
+                        value = '%s /* %s */' % (value,key)
+                        if trace: g.trace('found color',key,value)
                 if value:      
                     sheet = re.sub(
                         const+"(?![-A-Za-z0-9_])",  
@@ -1230,7 +1241,7 @@ class StyleSheetManager:
         - `text`: text to search
         """
         return re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)
-    #@+node:tbrown.20130411121812.28335: *4* ssm.find_constants_defined
+    #@+node:tbrown.20130411121812.28335: *4* ssm.find_constants_defined (no longer used)
     def find_constants_defined(self,text):
         r"""find_constants - Return a dict of constants defined in the supplied text.
         

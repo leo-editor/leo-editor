@@ -95,6 +95,14 @@ for vis in 'hide', 'show', 'toggle':
             getattr(w, vis)()
     g.command("gui-all-%s"%vis)(doall)
 #@+node:tbrown.20140814090009.55874: ** style_sheet commands (qt_commands.py)
+#@+node:ekr.20140918124632.17893: *3* print-style-sheet
+@g.command('print-style-sheet')
+def print_style_sheet(kwargs):
+    '''print-style-sheet command.'''
+    c = kwargs['c']
+    if c:
+        c.styleSheetManager.print_style_sheet()
+#@+node:ekr.20140918124632.17891: *3* style-reload
 @g.command('style-reload')
 def style_reload(kwargs):
     """reload-styles command.
@@ -107,6 +115,7 @@ def style_reload(kwargs):
     if c:
         c.styleSheetManager.reload_style_sheets()
         
+#@+node:ekr.20140918124632.17892: *3* style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(kwargs):
     '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
