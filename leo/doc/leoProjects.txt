@@ -335,6 +335,8 @@ os.path.expanduser, which converts ~ to the users home directory.
 
 The fix was to disable the call to os.pathexpanduser in g.os_path_join &
 g.os_path_finalize if the new expanduser keyword argument is False.
+.. @+node:ekr.20140918072425.17930: *4* Suppressed duplicate console messages
+g.es does nothing when g.app.gui.consoleOnly is True
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
@@ -828,6 +830,9 @@ The user can lose tail text if they start typing before the body text completely
 - The "dummy" body text now contains a warning to wait until the text fully loads.
 
 @language python
+.. @+node:ekr.20140917180536.17912: *4* Added --trace-plugins option & corresponding leoBridge option
+- Added --trace-plugins option
+- The leoBridge now supports the tracePlugins keyword option.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
