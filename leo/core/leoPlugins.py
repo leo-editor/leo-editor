@@ -511,19 +511,20 @@ class LeoPluginsController:
         '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
             # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins and not g.unitTesting
+        def report(message):
+            g.es_print('loadOnePlugin: %s' % message)
         if not g.app.enablePlugins:
-            if trace: g.trace('plugins disabled')
+            if trace: report('plugins disabled: %s' % moduleOrFileName)
             return None
         if moduleOrFileName.startswith('@'):
-            if trace: g.trace('ignoring Leo directive')
+            if trace: report('ignoring Leo directive: %s' % moduleOrFileName)
             return None
                 # Return None, not False, to keep pylint happy.
                 # Allow Leo directives in @enabled-plugins nodes.
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
-            if trace:
-                g.warning('loadOnePlugin: plugin',moduleName,'already loaded')
+            if trace: report('already loaded: %s' % moduleName)
             return module
         assert g.app.loadDir
         moduleName = g.toUnicode(moduleName)
@@ -535,22 +536,20 @@ class LeoPluginsController:
             # need to look up through sys.modules, __import__ returns toplevel package
             result = sys.modules[moduleName]
         except g.UiTypeException:
-            if trace: # or (not g.unitTesting and not g.app.batchMode):
-                g.es_print('Plugin %s does not support %s gui' % (
-                    moduleName,g.app.gui.guiName()))
+            if trace: report('plugin %s does not support %s gui' % (moduleName,g.app.gui.guiName()))
             result = None
         except ImportError:
             if trace or tag == 'open0': # Just give the warning once.
-                g.error('error importing plugin:',moduleName)
+                report('error importing plugin: %s' % moduleName)
                 g.es_exception()
             result = None
         except SyntaxError:
             if trace or tag == 'open0': # Just give the warning once.
-                g.error('syntax error importing plugin:',moduleName)
+                report('syntax error importing plugin: %s' % moduleName)
                 # g.es_exception()
             result = None
         except Exception:
-            g.error('exception importing plugin ' + moduleName)
+            report('exception importing plugin: %s' % moduleName)
             g.es_exception()
             result = None
         self.loadingModuleNameStack.pop()
@@ -564,16 +563,16 @@ class LeoPluginsController:
                     # Indicate success only if init_result is True.
                     init_result = result.init()
                     if init_result not in (True,False):
-                        g.error('Error: %s.init did not return a bool' % (moduleName))
+                        report('%s.init() did not return a bool' % moduleName)
                     if init_result:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                     else:
                         if trace: # not g.app.initing:
-                            g.error('loadOnePlugin: failed to load module',moduleName)
+                            report('%s.init() returned False' % moduleName)
                         result = None
                 except Exception:
-                    g.error('exception loading plugin')
+                    report('exception loading plugin: %s' % moduleName)
                     g.es_exception()
                     result = None
             else:
@@ -584,17 +583,16 @@ class LeoPluginsController:
                     result = None
                     self.loadedModules[moduleName] = None
                 else:
-                    if trace: g.trace('no init()',moduleName)
+                    if trace: report('fyi: no top-level init() function in %s' % moduleName)
                     self.loadedModules[moduleName] = result
             self.loadingModuleNameStack.pop()
         if g.app.batchMode or g.app.inBridge or g.unitTesting:
             pass
         elif result:
-            if trace:
-                g.blue('loadOnePlugin: loaded',moduleName)
-        elif trace or self.warn_on_failure: # or (trace and verbose and not g.app.initing):
+            if trace: report('loaded: %s' % moduleName)
+        elif trace or self.warn_on_failure:
             if trace or tag == 'open0':
-                g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
+                report('can not load enabled plugin: %s' % moduleName)
         return result
     #@+node:ekr.20031218072017.1318: *4* plugin_signon
     def plugin_signon(self,module_name,verbose=False):
