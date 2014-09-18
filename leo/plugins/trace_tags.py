@@ -1,36 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.738: * @file trace_tags.py
-''' Traces most common hooks, but not key, drag or idle hooks.'''
-
-#@@language python
-#@@tabwidth -4
+''' Trace most common hooks, but not key, drag or idle hooks.'''
 
 import leo.core.leoGlobals as g
-
-__version__ = "1.3" # Set version for the plugin handler.
-#@+<< version history >>
-#@+node:ekr.20050303073056: ** << version history >>
-#@@killcolor
-
-#@+at
-# 
-# 1.3 EKR:
-#     - Don't trace drawing events.
-#     - Added init function.
-#@-<< version history >>
-
 tagCount = 0
 
 #@+others
 #@+node:ekr.20050303073056.1: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
-
     if ok:
         g.registerHandler("all",trace_tags)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.739: ** trace_tags
 def trace_tags (tag,keywords):
@@ -74,4 +56,6 @@ def trace_tags (tag,keywords):
             g.pr(tagCount,tag,key,value)
         g.pr('')
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

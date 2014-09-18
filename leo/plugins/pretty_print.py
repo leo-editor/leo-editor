@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20041021120118: * @file pretty_print.py
-#@+<< docstring >>
-#@+node:ekr.20050912180735: ** << docstring >>
 '''Customizes pretty printing.
 
 The plugin creates a do-nothing subclass of the default pretty printer. To
@@ -12,19 +10,9 @@ override any methods you like. You could even define your own class entirely,
 provided you implement the prettyPrintNode method.
 
 '''
-#@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
-#@+<< imports >>
-#@+node:ekr.20041021120859: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoCommands as leoCommands
-#@-<< imports >>
-
-__version__ = "1.1" # 8/1/05: updated example code to match latest code in leoCommands.py.
-
 oldPrettyPrinter = leoCommands.Commands.prettyPrinter
 
 #@+others
@@ -260,4 +248,6 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                 ))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

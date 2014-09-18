@@ -1,43 +1,25 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20140806084727.30174: * @file livecode.py
-#@+<< docstring >>
-#@+node:tbrown.20140806084727.30175: ** << docstring >>
-"""
-Show results of code in another pane as it's edited.
-"""
-#@-<< docstring >>
+"""Show results of code in another pane as it's edited."""
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20140806084727.30176: ** << version history >>
-#@+at
-# 0.1 -- first release - TNB
-#@-<< version history >>
-#@+<< imports >>
-#@+node:tbrown.20140806084727.30177: ** << imports >>
-import ast
-from collections import namedtuple
-
-from meta import asttools
+# By TNB
 
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
-#@-<< imports >>
+from leo.core.leoQt import QtWidgets
+import ast
+from collections import namedtuple
+from meta import asttools
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init
 def init():
-    
+    '''Return True if the plugin has loaded successfully.'''
     if g.unitTesting:
         return False
-
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.plugin_signon(__name__)
-
-    return True
+    else:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
+        return True
 #@+node:tbrown.20140806084727.30179: ** onCreate
 def onCreate(tag, keys):
     
@@ -242,4 +224,7 @@ class LiveCodeDisplayProvider:
             return c._livecode.w
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

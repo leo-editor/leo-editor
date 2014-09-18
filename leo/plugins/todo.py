@@ -58,7 +58,11 @@ todo_calendar_cols
 
 
 #@-<< docstring >>
+
+# TNB: derived from cleo.py.
+
 # pylint: disable=unnecessary-lambda
+
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
 import leo.core.leoGlobals as g
@@ -72,27 +76,15 @@ NO_TIME = datetime.date(3000, 1, 1)
 if g.app.gui.guiName() == "qt":
     from leo.core.leoQt import isQt5,QtConst,QtCore,QtGui,QtWidgets,uic
 #@-<< imports >>
-__version__ = "0.30"
-#@+<< version history >>
-#@+node:tbrown.20090119215428.5: ** << version history >>
-#@@killcolor
-
-#@+at Use and distribute under the same terms as leo itself.
-# 
-# 0.30 TNB
-#   - fork from cleo.py to todo.py
-#   - Qt interface in a tab
-#@-<< version history >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
     if name != "qt":
         if name != 'nullGui':
             print('todo.py plugin not loading because gui is not Qt')
         return False
-
     g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
