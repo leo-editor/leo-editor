@@ -1201,10 +1201,11 @@ class StyleSheetManager:
                         g.es(whine)
                         print(whine)
                 else:
-                    key = g.app.config.canonicalizeSettingName(const[1:])  # without '@'
+                    key = g.app.config.canonicalizeSettingName(const[1:])
+                        # lowercase, without '@','-','_', etc.
                     value = c.config.settingsDict.get(key)
                     if value is not None:
-                        value = str(value.val)
+                        value = '%s /* %s */' % (g.u(value.val),key)
                     elif key in self.color_db:
                         value = self.color_db.get(key)
                         value = '%s /* %s */' % (value,key)
