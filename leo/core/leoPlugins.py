@@ -509,8 +509,8 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6024: *4* loadOnePlugin
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
         '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
+            # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins and not g.unitTesting
-        verbose = True or verbose
         if not g.app.enablePlugins:
             if trace: g.trace('plugins disabled')
             return None
@@ -522,7 +522,7 @@ class LeoPluginsController:
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
-            if trace and verbose:
+            if trace:
                 g.warning('loadOnePlugin: plugin',moduleName,'already loaded')
             return module
         assert g.app.loadDir
@@ -569,7 +569,7 @@ class LeoPluginsController:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                     else:
-                        if trace and verbose and not g.app.initing:
+                        if trace: # not g.app.initing:
                             g.error('loadOnePlugin: failed to load module',moduleName)
                         result = None
                 except Exception:
@@ -590,9 +590,9 @@ class LeoPluginsController:
         if g.app.batchMode or g.app.inBridge or g.unitTesting:
             pass
         elif result:
-            if trace and verbose:
+            if trace:
                 g.blue('loadOnePlugin: loaded',moduleName)
-        elif trace or self.warn_on_failure or (trace and verbose and not g.app.initing):
+        elif trace or self.warn_on_failure: # or (trace and verbose and not g.app.initing):
             if trace or tag == 'open0':
                 g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
         return result

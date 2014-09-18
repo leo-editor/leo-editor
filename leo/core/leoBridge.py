@@ -55,11 +55,18 @@ gBridgeController = None # The singleton bridge controller.
 
 #@+others
 #@+node:ekr.20070227092442: ** controller
-def controller(gui='nullGui',loadPlugins=True,readSettings=True,silent=False,verbose=False):
+def controller(
+    gui='nullGui',
+    loadPlugins=True,
+    readSettings=True,
+    silent=False,
+    tracePlugins=False,
+    verbose=False
+):
     '''Create an singleton instance of a bridge controller.'''
     global gBridgeController
     if not gBridgeController:
-        gBridgeController = BridgeController(gui,loadPlugins,readSettings,silent,verbose)
+        gBridgeController = BridgeController(gui,loadPlugins,readSettings,silent,tracePlugins,verbose)
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class BridgeController
 class BridgeController:
@@ -68,7 +75,7 @@ class BridgeController:
 
     #@+others
     #@+node:ekr.20070227092442.3: *3* ctor (BridgeController)
-    def __init__ (self,guiName,loadPlugins,readSettings,silent,verbose):
+    def __init__ (self,guiName,loadPlugins,readSettings,silent,tracePlugins,verbose):
         '''Ctor for the BridgeController class.'''
         self.g = None
         self.gui = None
@@ -76,6 +83,7 @@ class BridgeController:
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
         self.silent = silent
+        self.tracePlugins = tracePlugins
         self.verbose = verbose
         self.mainLoop = False # True only if a non-null-gui mainloop is active.
         self.initLeo()
@@ -100,7 +108,6 @@ class BridgeController:
             import leo.core.leoGlobals as leoGlobals
         except ImportError:
             print("Error importing leoGlobals.py")
-
         # Create the application object.
         try:
             leoGlobals.in_bridge = True
@@ -110,12 +117,11 @@ class BridgeController:
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
-
         # NOW we can set g.
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
-
+        g.app.trace_plugins = self.tracePlugins # 2014/09/18
         g.app.silentMode = self.silent # 2011/11/02.
         if trace:
             import sys
@@ -124,19 +130,16 @@ class BridgeController:
         # 2010/09/09: create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
-
         try:
             import leo.core.leoNodes as leoNodes
         except ImportError:
             print("Error importing leoNodes.py")
             import traceback ; traceback.print_exc()
-
         try:
             import leo.core.leoConfig as leoConfig
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
-
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< initLeo imports >>

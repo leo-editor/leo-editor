@@ -4106,11 +4106,11 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     findPath2 = g.os_path_finalize_join(
                         g.app.loadDir,'..',findPath)
                     findPath = [findPath2]
-                if trace: g.trace('findPath',findPath)
+                if trace and verbose: g.trace('findPath',findPath)
                 try:
                     data = imp.find_module(moduleName,findPath) # This can open the file.
                     theFile,pathname,description = data
-                    if trace: g.trace(theFile,moduleName,pathname)
+                    if trace and verbose: g.trace(theFile,moduleName,pathname)
                     module = imp.load_module(moduleName,theFile,pathname,description)
                     if module: 
                         if trace: g.es("%s loaded" % moduleName)
@@ -4135,7 +4135,6 @@ def importModule (moduleName,pluginName=None,verbose=False):
                 g.es_exception(v)
     finally:
         if theFile: theFile.close()
-
     if not module and verbose:
         g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
     return module
