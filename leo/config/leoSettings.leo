@@ -10001,17 +10001,18 @@ stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
 <t tx="tbrown.20131122091143.23828">This section defines color values not defined by Qt.
 
-Leo style sheets now support all colors in Leo's color_db.  See leoColor.py.
-These colors are mostly the same as listed here:
-http://www.yourhtmlsource.com/stylesheets/namedcolours.html
-
-
 For example, you can use @LeoYellow instead of #ffffec
 
+Leo style sheets now support all colors names in Leo's color_db, defined in
+leoColor.py. For example, the following setting works without any explicit
+definition of mistyrose2.
+    
+    @color head-bg = @mistyrose2
+    
+These colors are (mostly) the same as:
+http://www.yourhtmlsource.com/stylesheets/namedcolours.html
+
 Please don't change these, but feel free to add your own color names in myLeoSettings.leo.
-@c
-
-
 </t>
 <t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
