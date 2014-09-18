@@ -9999,12 +9999,18 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.23828">This section defines color values not defined by Qt.
+<t tx="tbrown.20131122091143.23828">This section defines color values not necessarily defined by Qt.
 
 For example, you can use @LeoYellow instead of #ffffec
 
 Leo style sheets now support all colors names in Leo's color_db, defined in
-leoColor.py. For example, the following setting works without any explicit
+leoColor.py. Case is not important in such definitions.
+
+Here's a semi-interactive color map for these colors:
+http://leo-editor.github.io/snippets/colormap.html
+Hover over a color to get Leo's color name for each color.
+
+For example, the following setting works without any explicit
 definition of mistyrose2.
     
     @color head-bg = @mistyrose2
@@ -10012,7 +10018,8 @@ definition of mistyrose2.
 These colors are (mostly) the same as:
 http://www.yourhtmlsource.com/stylesheets/namedcolours.html
 
-Please don't change these, but feel free to add your own color names in myLeoSettings.leo.
+Please don't change the following definitions, but feel free to add your
+own color names in myLeoSettings.leo.
 </t>
 <t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
