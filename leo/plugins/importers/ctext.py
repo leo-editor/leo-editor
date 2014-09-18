@@ -62,17 +62,18 @@ class CTextScanner(BaseScanner):
             if line.startswith(cchar*3):
                 word = line.split()
                 if word[0].strip(cchar) == '':
+                    self.write_lines(nd, lines)
                     new_level = len(word[0]) - 3
                     if new_level > level:
+                        # go down one level
                         level = new_level
-                        self.write_lines(nd, lines)
                         nd = nd.insertAsLastChild()
                         nd.h = ' '.join(word[1:]).strip(cchar+' ')
                     else:
+                        # go up zero or more levels
                         while level > new_level and level > 0:
                             level -= 1
                             nd = nd.parent()
-                        self.write_lines(nd, lines)
                         nd = nd.insertAfter()
                         nd.h = ' '.join(word[1:]).strip(cchar+' ')
             else:
