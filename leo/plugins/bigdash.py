@@ -1,49 +1,30 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120309073748.9872: * @file bigdash.py
-#@@language python
-
-#@+<< docstring >>
-#@+node:ville.20120302233106.3583: ** << docstring >>
 ''' Global search window
 
 To use full text search, you need to install Whoosh library ('easy_install Whoosh').
-
 The fts_max_hits setting controls the maximum hits returned.
-
-Implemenation note:
-    
-    I (Terry) added an index of the oulines containing hits at the top of
-    the output.  Because the link handling is already handled by BigDash
-    and not the WebView widget, I couldn't find a way to use the normal
-    "#id" <href>/<a> index jumping, so I extended the link handling to
-    re-run the search and render hits in the outline of interest at the
-    top.
-
 '''
-#@-<< docstring >>
-
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20120302233106.3585: ** << version history >>
-#@@killcolor
+# By VMV.
+#@+<< implementation notes >>
+#@+node:ville.20120302233106.3583: ** << implementation notes >>
+#@@nocolor-node
 #@+at
+# I (Terry) added an index of the oulines containing hits at the top of the
+# output. Because the link handling is already handled by BigDash and not the
+# WebView widget, I couldn't find a way to use the normal "#id" <href>/<a>
+# index jumping, so I extended the link handling to re-run the search and
+# render hits in the outline of interest at the top.
 # 
-# 0.1 First released version (VMV)
-#@-<< version history >>
+# 
+#@-<< implementation notes >>
 
-#@+<< imports >>
-#@+node:ville.20120302233106.3581: ** << imports >>
-import sys
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
-
+from leo.core.leoQt import QtCore,QtGui,QtWidgets,QtWebKitWidgets
 try:
     import leo.plugins.leofts as leofts    
 except ImportError:
     leofts = None
-#@-<< imports >>
+import sys
 
 #@+others
 #@+node:ville.20120302233106.3580: ** init
@@ -74,53 +55,7 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ville.20120225144051.3580: ** Content
-
-#!/usr/bin/env python
-
-g = None
-
-def set_leo(gg):
-    global g
-    g = gg
-
-
-def all_positions_global():
-    for c in g.app.commanders():
-        for p in c.all_unique_positions():
-            yield (c,p)
-
-
-def open_unl(unl):
-    parts = unl.split("#",1)
-        
-    c = g.openWithFileName(parts[0])
-    if len(parts) > 1:
-        segs = parts[1].split("-->")
-        g.recursiveUNLSearch(segs, c)
-    
-    
-
-class LeoConnector(QObject):
-    pass
-
-def matchlines(b, miter):
-
-    res = []
-    for m in miter:
-        st, en = g.getLine(b, m.start())
-        li = b[st:en]
-        ipre = b.rfind("\n", 0, st-2)
-        ipost = b.find("\n", en +1 )
-        spre = b[ipre +1 : st-1] + "\n"
-        spost = b[en : ipost]
-        
-        res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
-    return res
-
-def add_anchor(l,tgt, text):
-    l.append('<a href="%s">%s</a>' % (tgt, text))    
-    
+#@+node:ekr.20140919153343.17913: ** newHeadline
 class GlobalSearch:
     def __init__(self):
         self.bd = BigDash()
@@ -128,8 +63,6 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_search)
         self.bd.add_cmd_handler(self.do_fts)
         self.bd.add_cmd_handler(self.do_stats)
-        
-        
         self.anchors = {}        
         
     def show(self):
@@ -146,9 +79,7 @@ class GlobalSearch:
         return leofts.get_fts()
 
     def do_fts(self, tgt, qs):
-        ## ss = unicode(qs)
         ss = g.toUnicode(qs)
-        
         q = None
         if ss.startswith("f "):
             q = ss[2:]
@@ -185,8 +116,6 @@ class GlobalSearch:
             gc = g._gnxcache            
             gc.clear()
             gc.update_new_cs()
-            
-                
         if q:
             self.do_find(tgt, q)
     
@@ -197,12 +126,9 @@ class GlobalSearch:
             hitparas.append(l)
         if not ss.startswith("s "):
             return False
-
         s = ss[2:]
-                
         for ndxc,c2 in enumerate(g.app.commanders()):
-            hits = c2.find_b(s)                
-                            
+            hits = c2.find_b(s)                          
             for ndxh, h in enumerate(hits):
                 b = h.b
                 mlines = matchlines(b, h.matchiter)
@@ -215,23 +141,22 @@ class GlobalSearch:
                     em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
                     em(post)
                     em("</pre>")
-                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
-                       
+                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL()) 
         html = "".join(hitparas)
         tgt.web.setHtml(html)     
         self.bd.set_link_handler(self.do_link)
+
     def do_link(self,l):
         a = self.anchors[l]
         c, p = a
         c.selectPosition(p)
         c.bringToFront()
+
     def do_link_jump_gnx(self, l):
         print ("jumping to", l)
-        
         if l.startswith("about:blank#"):
             target_outline = l.split('#', 1)[1]
             self.do_find(self._old_tgt, self._old_q, target_outline=target_outline)
-            
         if l.startswith("unl!"):
             l = l[4:]
             open_unl(l)
@@ -245,7 +170,6 @@ class GlobalSearch:
             c.selectPosition(p)
             c.bringToFront()
             return
-        
         print("Not found in any open document")        
             
     def do_find(self, tgt, q, target_outline=None):
@@ -262,22 +186,17 @@ class GlobalSearch:
                 pre { margin-top: 0; margin-bottom: 0; }
             </style></head><body>
         """]
-            
         fts_max_hits = limit=g.app.config.getInt('fts_max_hits') or 30
         res = fts.search(q, fts_max_hits)
         outlines = {}
         for r in res:
-            
             if '#' in r["parent"]:
                 file_name, node = r["parent"].split('#', 1)
             else:
                 file_name, node = r["parent"], None                
-            
             outlines.setdefault(file_name, []).append(r)
-            
         hits.append("<p>%d hits (max. hits reported = %d)</p>"%
             (len(res), fts_max_hits))
-            
         if len(outlines) > 1:
             hits.append("<p><div>Hits in:</div>")
             for outline in outlines:
@@ -286,32 +205,24 @@ class GlobalSearch:
                     hits.append("<b> (moved to top)</b>")
                 hits.append("</div>")       
             hits.append("</p>")
-            
         outline_order = outlines.keys()
         outline_order.sort(key=lambda x:'' if x==target_outline else x)
-            
         for outline in outline_order:
-            
             hits.append("<div id='%s'><p><b>%s</b></p>"%(outline, outline))
-            
             res = outlines[outline]
-            
             for r in res:
                 #print("hit", r)
                 hits.append("<p>")
                 hits.append("<div>")
                 add_anchor(hits, r["gnx"], r["h"])
                 hits.append("</div>")
-                
                 # always show opener link because r['f'] is True when
                 # outline was open but isn't any more (GnxCache stale)
                 if False and r['f']:
                     opener = ""
                 else:
                     opener = ' (<a href="unl!%s">open</a>)' % r["parent"]
-                    
                 hl = r.get("highlight")
-                
                 if hl:
                     hits.append("<pre>%s</pre>" % hl)
                     
@@ -324,6 +235,51 @@ class GlobalSearch:
         html = "".join(hits)
         tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link_jump_gnx)
+#@+node:ville.20120225144051.3580: ** Content
+
+#!/usr/bin/env python
+
+g = None
+
+def set_leo(gg):
+    global g
+    g = gg
+
+
+def all_positions_global():
+    for c in g.app.commanders():
+        for p in c.all_unique_positions():
+            yield (c,p)
+
+def open_unl(unl):
+    parts = unl.split("#",1)
+        
+    c = g.openWithFileName(parts[0])
+    if len(parts) > 1:
+        segs = parts[1].split("-->")
+        g.recursiveUNLSearch(segs, c)
+
+class LeoConnector(QtCore.QObject):
+    pass
+
+def matchlines(b, miter):
+
+    res = []
+    for m in miter:
+        st, en = g.getLine(b, m.start())
+        li = b[st:en]
+        ipre = b.rfind("\n", 0, st-2)
+        ipost = b.find("\n", en +1 )
+        spre = b[ipre +1 : st-1] + "\n"
+        spost = b[en : ipost]
+        
+        res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
+    return res
+
+def add_anchor(l,tgt, text):
+    l.append('<a href="%s">%s</a>' % (tgt, text))    
+    
+
     
 class BigDash:
     def docmd(self):
@@ -361,22 +317,18 @@ class BigDash:
                     """)
         
     def create_ui(self):
-        self.w = w = QWidget()
+        self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
-        lay = QVBoxLayout()
-            
-        self.web = web = QWebView(w)
-        
+        lay = QtWidgets.QVBoxLayout()
+        self.web = web = QtWebKitWidgets.QWebView(w)
         self.web.linkClicked.connect(self._lnk_handler)
-
-        self.led = led = QLineEdit(w)
+        self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
         self.lc = lc = LeoConnector()
-        web.page().mainFrame().addToJavaScriptWindowObject("leo", 
-                                                       lc);
-        web.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        web.page().mainFrame().addToJavaScriptWindowObject("leo",lc)
+        web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
         w.setLayout(lay)
         #web.load(QUrl("http://google.fi"))
         self.show_help()
@@ -390,18 +342,15 @@ class BigDash:
         self.led.setFocus()
         
     def __init__(self):
-        
         self.handlers = []
         self.link_handler = lambda x : 1
         self.create_ui()
 
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
     bd = GlobalSearch()
-    
-    
     sys.exit(app.exec_())
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
