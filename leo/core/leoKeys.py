@@ -1201,10 +1201,17 @@ class FileNameChooser:
     #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
     def do_back_space (fnc):
         '''Handle a back space.'''
-        s = fnc.get_label()
-        if s:
-            s = s[:-1]
-        fnc.set_label(s)
+        w = fnc.c.k.w
+        if w and w.hasSelection:
+            # s = w.getAllText()
+            i,j = w.getSelectionRange()
+            w.delete(i,j)
+            s = fnc.get_label()
+        else:
+            s = fnc.get_label()
+            if s:
+                s = s[:-1]
+            fnc.set_label(s)
         if s:
             common_prefix,tabList = fnc.compute_tab_list()
             # Do *not* extend the label to the common prefix.
@@ -1214,7 +1221,15 @@ class FileNameChooser:
     #@+node:ekr.20140813052702.18198: *3* fnc.do_char
     def do_char (fnc,char):
         '''Handle a non-special character.'''
-        fnc.extend_label(char)
+        w = fnc.c.k.w
+        if w and w.hasSelection:
+            # s = w.getAllText()
+            i,j = w.getSelectionRange()
+            w.delete(i,j)
+            w.setInsertPoint(i)
+            w.insert(i,char)
+        else:
+            fnc.extend_label(char)
         common_prefix,tabList = fnc.compute_tab_list()
         fnc.show_tab_list(tabList)
         if common_prefix:
@@ -1286,8 +1301,10 @@ class FileNameChooser:
         elif char in ('\b','BackSpace'):
             fnc.do_back_space() 
             c.minibufferWantsFocus()
-        else:
+        elif k.isPlainKey(char):
             fnc.do_char(char)
+        else:
+            pass
     #@+node:ekr.20140813052702.18201: *3* fnc.extend/get/set_label
     def extend_label(fnc,s):
         '''Extend the label by s.'''
