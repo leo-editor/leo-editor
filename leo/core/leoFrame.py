@@ -1573,12 +1573,12 @@ class LeoTree(object):
     def is_big_text(self,p):
         '''True if p.b is large and the text widgets supports big text buttons.'''
         c = self.c
-        if big_text_buttons:
+        if big_text_buttons and c.max_pre_loaded_body_chars > 0:
             wrapper = c.frame.body.wrapper
             w = wrapper and wrapper.widget
             return (
                 w and hasattr(w,'leo_load_button') and
-                len(p.b) > c.max_pre_loaded_body_chars > 0)
+                len(p.b) > c.max_pre_loaded_body_chars)
         else:
             return False
     #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body
@@ -1614,6 +1614,7 @@ class LeoTree(object):
     #@+node:ekr.20140829172618.18477: *6* LeoTree.remove_big_text_buttons
     def remove_big_text_buttons(self,old_p):
         '''Remove the load and paste buttons created for large text.'''
+        trace = False and not g.unitTesting
         c = self.c
         if self.is_qt_body():
             w = c.frame.body.widget
@@ -1621,7 +1622,7 @@ class LeoTree(object):
                 s = w.leo_big_text
                 w.leo_big_text = None
                 if old_p and old_p.b != s:
-                    g.trace('===== restoring big text',len(s),old_p.h)
+                    if trace: g.trace('===== restoring big text',len(s),old_p.h)
                     old_p.b = s
                     if hasattr(c.frame.tree,'updateIcon'):
                         c.frame.tree.updateIcon(old_p,force=True)
@@ -1701,6 +1702,8 @@ class LeoTree(object):
                 # Recreate the entire select code.
                 self.set_body_text_after_select(p,old_p,traceTime)
                 self.scroll_cursor(p,traceTime)
+                g.trace('calling onBodyChanged')
+                c.frame.body.onBodyChanged (undoType='Typing')# ,oldSel=None,oldText=None,oldYview=None):
             layout.addWidget(w)
             layout.removeWidget(w.leo_copy_button)
             layout.removeWidget(w.leo_load_button)

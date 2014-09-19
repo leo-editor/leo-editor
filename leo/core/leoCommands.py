@@ -469,7 +469,7 @@ class Commands (object):
             'focus_border_overwrite_state_color') or 'green'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.forceExecuteEntireBody    = getBool('force_execute_entire_body',default=False)
-        c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 10000
+        c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
             # g.trace('c.max_pre_loaded_body_chars',c.max_pre_loaded_body_chars)
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
         # c.showMinibuffer          = getBool('useMinibuffer')
