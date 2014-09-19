@@ -556,7 +556,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         #@+node:tbrown.20111011094944.27031: *5* lqlw.tab_callback
         def tab_callback(self):  
             '''Called when user hits tab on an item in the QListWidget.'''
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             c = self.leo_c
             w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
             if trace: g.trace(w)
