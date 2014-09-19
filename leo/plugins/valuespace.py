@@ -382,7 +382,7 @@ def vs_last(kwargs):
         txt = kwargs['text']
     else:
         txt = str(get_vs(c).d.get('_last'))
-    editor = c.frame.body
+    editor = c.frame.body.wrapper
     insert_point = editor.getInsertPoint()
     editor.insert(insert_point, txt+'\n')
     editor.setInsertPoint(insert_point+len(txt)+1)
