@@ -111,8 +111,7 @@ class slideshowController:
         for p2 in p.self_and_parents():
             if g.match_word(p2.h,0,'@ignore') or g.match_word(p2.h,0,'@noslide'):
                 return True
-        else:
-            return False
+        return False
     #@+node:ekr.20060831171016.5: *3* nextSlide
     def nextSlide (self,event=None):
 
@@ -136,8 +135,7 @@ class slideshowController:
             # elif h.startswith('@slide'):
                 # return self.select(p)
             # else: p = p.threadNext()
-        else:
-            return g.es('At end of slide show' if self.slideShowRoot else 'Not in any slide show')
+        return g.es('At end of slide show' if self.slideShowRoot else 'Not in any slide show')
     #@+node:ekr.20060901142848: *3* nextSlideShow
     def nextSlideShow (self,event=None):
 
@@ -186,13 +184,12 @@ class slideshowController:
             # elif h.startswith('@slide'):
                 # return self.select(p)
             # else: p = p.threadBack()
+        p = self.findFirstSlideShow()
+        if p:
+            self.select(p)
+            return g.es('At start of first slide show')
         else:
-            p = self.findFirstSlideShow()
-            if p:
-                self.select(p)
-                return g.es('At start of first slide show')
-            else:
-                return g.es('No slide show found')
+            return g.es('No slide show found')
     #@+node:ekr.20060901142848.1: *3* prevSlideShow
     def prevSlideShow (self,event=None):
 

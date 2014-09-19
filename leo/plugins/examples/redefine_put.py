@@ -12,30 +12,25 @@ __version__ = "1.4"
 #@+others
 #@+node:ekr.20111104210837.9690: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
         # Not for unit testing: overrides core methods.
-
     if ok:
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.922: ** onStart
-#@+at
 # This code illustrates how to redefine _any_ method of Leo.
 # Python makes this is almost too easy :-)
-#@@c
-
 def onStart (tag,keywords):
-    
-    log = c.frame.log
-
-    # Replace frame.put with newPut.
-    g.funcToMethod(newPut,log,"put")
-
-    # Replace frame.putnl with newPutNl.
-    g.funcToMethod(newPutNl,log,"putnl")
+    '''redefine methods when Leo starts.'''
+    c = keywords.get('c')
+    if c:
+        log = c.frame.log
+        # Replace frame.put with newPut.
+        g.funcToMethod(newPut,log,"put")
+        # Replace frame.putnl with newPutNl.
+        g.funcToMethod(newPutNl,log,"putnl")
 #@+node:edream.110203113231.923: ** newPut and newPutNl
 # Contrived examples of how to redefine frame.put and frame.putnl
 

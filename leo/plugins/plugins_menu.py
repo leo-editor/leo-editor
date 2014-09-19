@@ -64,9 +64,8 @@ if g.isPython3:
     import configparser as ConfigParser
 else:
     import ConfigParser
-import glob
 import os
-import sys
+
 #@-<< imports >>
 __version__ = "2.3"
 __plugin_name__ = "Plugins Menu"

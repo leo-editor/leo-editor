@@ -12,15 +12,13 @@ __version__ = "1.2"
 #@+others
 #@+node:ekr.20111104210837.9691: ** init
 def init():
-    
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.unitTesting
         # Not for unit testing: overrides core methods.
-
     if ok:
         # Register the handlers...
         g.registerHandler("command1", onCommand)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.920: ** onCommand
 def onCommand (tag,keywords):
