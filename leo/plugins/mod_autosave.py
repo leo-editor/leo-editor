@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.724: * @file mod_autosave.py
-#@+<< docstring >>
-#@+node:ekr.20060108123253: ** << docstring >>
 """ Autosaves the Leo outline every so often.
 
 The time between saves is given by the setting, with default as shown::
@@ -12,36 +10,11 @@ This plugin is active only if::
 
     @bool mod_autosave_active = True
 
- """
-#@-<< docstring >>
+"""
 
-#@@language python
-#@@tabwidth -4
-
-#@+<< imports >>
-#@+node:ekr.20060108123141: ** << imports >>
+# By Paul Paterson.
 import leo.core.leoGlobals as g
-
-import os
 import time
-#@-<< imports >>
-#@+<< version history >>
-#@+node:ekr.20060108123141.1: ** << version history >>
-#@@nocolor
-#@+at
-# 
-# 0.1, 0.2 By Paul Paterson.
-# 0.3 EKR:
-# - Removed calls to g.top.
-# - Added init function.
-# 0.4 EKR: call g.enableIdleTimeHook() in init.
-# 1.0 EKR: A complete rewrite:
-#     - Don't use .ini file.  Use Leo settings, as described in the docstring.
-#     - Separate the code into onCreate (handles settings) and onIdle.
-#     - Use the global gDict to maintain per-commander values.
-#@-<< version history >>
-
-__version__ = "1.0" # EKR: a complete rewrite using only Leo settings.
 
 # The global settings dict.
 gDict = {} # Keys are commanders, values are settings dicts.
@@ -49,14 +22,13 @@ gDict = {} # Keys are commanders, values are settings dicts.
 #@+others
 #@+node:ekr.20060108123141.2: ** init
 def init ():
-
-    ok = not g.app.unitTesting # Don't want autosave after unit testing.
-
+    '''Return True if the plugin has loaded successfully.'''
+    ok = not g.app.unitTesting
+        # Don't want autosave after unit testing.
     if ok:
         # Register the handlers...
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon( __name__ )
-
     return ok
 #@+node:edream.110203113231.726: ** onCreate
 def onCreate(tag, keywords):
@@ -88,7 +60,7 @@ def onCreate(tag, keywords):
         g.registerHandler('idle',onIdle)
         g.enableIdleTimeHook()
     else:
-         g.es("@bool mod_autosave_active=False",color='orange')
+        g.es("@bool mod_autosave_active=False",color='orange')
 #@+node:ekr.20100904062957.10654: ** onIdle
 def onIdle (tag,keywords):
 
@@ -133,4 +105,6 @@ def onIdle (tag,keywords):
     elif trace:
         g.trace('not time',c.shortFileName())
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

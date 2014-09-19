@@ -4,10 +4,10 @@
 
 import leo.core.leoGlobals as g
 
-__version__ = "1.1"
-
 def onStart(tag,keywords):
     pass
+    
+# pylint: disable=unused-import
 
 try:
     import xyzzy
