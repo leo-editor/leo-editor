@@ -7,9 +7,8 @@
 
 import leo.core.leoGlobals as g
 
-__version__ = "1.3"
-
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit tests.
     if ok: # Register the handlers...
         g.registerHandler("start2", onStart)
