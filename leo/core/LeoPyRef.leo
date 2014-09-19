@@ -39,7 +39,8 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329"
+expanded="ekr.20090202064534.4,"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -54,7 +55,8 @@
 <v t="ekr.20140831085423.18631"><vh>&lt;&lt; official ivars &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2608" a="E"
+expanded="ekr.20120209051836.10242,ekr.20120215062153.10740,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
@@ -87,7 +89,8 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3655"
+expanded="ekr.20040803072955.128,ekr.20070423101911,ekr.20140829053801.18453,ekr.20140829053801.18455,"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
@@ -95,6 +98,7 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
+<v t="tbrown.20140919160718.9297"><vh>@file ../plugins/qt_big_text.py</vh></v>
 <v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
 <v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
 <v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>

@@ -1618,6 +1618,10 @@ class LeoTree(object):
         if not self.is_qt_body():
             return
         c = self.c
+
+        if not self.is_qt_body():
+            return
+
         w = c.frame.body.widget
         if old_p and hasattr(w,'leo_big_text') and w.leo_big_text is not None:
             s = w.leo_big_text
@@ -1627,12 +1631,10 @@ class LeoTree(object):
                 if hasattr(c.frame.tree,'updateIcon'):
                     c.frame.tree.updateIcon(old_p,force=True)
             w.leo_big_text = None # 2014/09/19: Allow further changes to w!
-        if hasattr(w,'leo_copy_button') and w.leo_copy_button:
-            w.leo_copy_button.deleteLater()
-            w.leo_copy_button = None
-        if hasattr(w,'leo_load_button') and w.leo_load_button:
-            w.leo_load_button.deleteLater()
-            w.leo_load_button = None
+
+        if hasattr(w,'leo_big_text_w') and w.leo_big_text_w:
+            w.leo_big_text_w.deleteLater()
+            w.leo_big_text_w = None
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self,old_p):
         '''Stop colorizing the present node.'''
@@ -1674,7 +1676,7 @@ class LeoTree(object):
     def add_big_text_buttons(self,old_p,p,traceTime):
         '''Add the load and copy buttons.'''
         trace = False and not g.unitTesting
-        from leo.core.leoQt import QtGui
+        from leo.plugins.qt_big_text import LeoBigTextDialog
         c = self.c
         if c.undoer.undoing:
             g.trace('undoing')
@@ -1684,48 +1686,18 @@ class LeoTree(object):
             frame = w.parent() # A QWidget
             layout = frame.layout()
             s = p.b
-            if hasattr(w,'leo_copy_button') and w.leo_copy_button:
+            if hasattr(w,'leo_big_text_w') and w.leo_big_text_w:
                 return
-            w.leo_copy_button = b1 = QtGui.QPushButton('Copy body to clipboard: %s' % (p.h))
-            w.leo_load_button = b2 = QtGui.QPushButton('Load Text: %s' % (p.h))
-            b1.setObjectName('big-text-copy-button')
-            b2.setObjectName('big-text-load-button')
-            self.add_load_button(layout,old_p,p,s,traceTime,w)
-            self.add_copy_button(layout,s,w)
+            w.leo_big_text_w = LeoBigTextDialog(
+                c=c, p=p, s=s, w=w,
+                layout=layout,
+                old_p=old_p,
+                traceTime=traceTime,
+                owner=self
+            )
+
+            layout.addWidget(w.leo_big_text_w)
             layout.removeWidget(w)
-                # Evenly space the buttons in the body pane.
-    #@+node:ekr.20140829172618.19888: *7* add_load_button
-    def add_load_button(self,layout,old_p,p,s,traceTime,w):
-        '''Create a 'load' button in the body text area.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(len(s),p.h)
-        def onClicked(arg,c=self.c,p=p.copy(),w=w):
-            assert hasattr(w,'leo_big_text')
-            if c.positionExists(p):
-                # Recreate the entire select code.
-                self.set_body_text_after_select(p,old_p,traceTime,force=True)
-                self.scroll_cursor(p,traceTime)
-            w.leo_big_text = None # 2014/09/19: Allow further changes to w!
-            layout.addWidget(w)
-            layout.removeWidget(w.leo_copy_button)
-            layout.removeWidget(w.leo_load_button)
-            w.leo_copy_button.deleteLater()
-            w.leo_load_button.deleteLater()
-            w.leo_copy_button = None
-            w.leo_load_button = None
-            c.bodyWantsFocusNow()
-            c.recolor_now()
-                # Unlike set_body_text_after_select, we can call
-                # c.recolor_now because the new node has been inited.
-        w.leo_load_button.clicked.connect(onClicked)
-        layout.addWidget(w.leo_load_button)
-    #@+node:ekr.20140829172618.19890: *7* add_copy_button
-    def add_copy_button(self,layout,s,w):
-        '''Create a 'copy to clipboard' button in the body area.'''
-        def onClicked(checked=False):
-            g.app.gui.replaceClipboardWith(s)
-        w.leo_copy_button.clicked.connect(onClicked)
-        layout.addWidget(w.leo_copy_button)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ****
     def set_body_text_after_select (self,p,old_p,traceTime,force=False):
         '''Set the text after selecting a node.'''
@@ -1736,6 +1708,43 @@ class LeoTree(object):
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         old_s = w.getAllText()
+        
+        if not force and p and p == old_p and s == old_s:
+            if trace: g.trace('*pass',len(s),p.h,old_p.h)
+        else:
+            # w.setAllText destroys all color tags, so do a full recolor.
+            if trace: g.trace('*reload',len(s),p.h,old_p and old_p.h)
+            w.setAllText(s) # ***** Very slow
+            if traceTime:
+                delta_t = time.time()-t1
+                if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
+            # Part 2:
+            if traceTime: t2 = time.time()
+            # We can't call c.recolor_now here.
+            colorizer = c.frame.body.colorizer
+            if hasattr(colorizer,'setHighlighter'):
+                if colorizer.setHighlighter(p):
+                    self.frame.body.recolor(p)
+            else:
+                self.frame.body.recolor(p)
+            if traceTime:
+                delta_t = time.time()-t2
+                tot_t = time.time()-t1
+                if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
+                if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
+        # This is now done after c.p has been changed.
+            # p.restoreCursorAndScroll()
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ****
+    def set_body_text_after_select (self,p,old_p,traceTime,force=False):
+        '''Set the text after selecting a node.'''
+        trace = True and force and not g.unitTesting
+        if traceTime: t1 = time.time()
+        # Always do this.  Otherwise there can be problems with trailing newlines.
+        c = self.c
+        w = c.frame.body.wrapper
+        s = p.v.b # Guaranteed to be unicode.
+        old_s = w.getAllText()
+        
         if not force and p and p == old_p and s == old_s:
             if trace: g.trace('*pass',len(s),p.h,old_p.h)
         else:
@@ -1770,9 +1779,14 @@ class LeoTree(object):
             wrapper = c.frame and c.frame.body and c.frame.body.wrapper
             s = p.b
             w.leo_big_text = p.b # Save the original text
-            wrapper.setAllText(
-                "To load the body text, click the 'load' button.\n"
-                "Warning: make sure the text is fully loaded before using it!.")
+            # wrapper.setAllText(
+            #     "%d character text exceeds %d limit, not shown.\n\n"
+            #     "To load the body text, click the 'load' button.\n"
+            #     "Warning: make sure the text is fully loaded before using it!.\n\n"
+            #     "Set @int max-pre-loaded-body-chars in @settings\n"
+            #     "to permanently change limit."
+            #     % (len(s), c.max_pre_loaded_body_chars))
+            wrapper.setAllText('')
             assert p.b == s
                 # There will be data loss if this assert fails.
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
