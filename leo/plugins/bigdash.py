@@ -18,19 +18,15 @@ The fts_max_hits setting controls the maximum hits returned.
 # WebView widget, I couldn't find a way to use the normal "#id" <href>/<a>
 # index jumping, so I extended the link handling to re-run the search and
 # render hits in the outline of interest at the top.
-# 
-# 
 #@-<< implementation notes >>
 
-import leo.core.leoGlobals as g
+g = None # set in set_leo
 from leo.core.leoQt import QtCore,QtGui,QtWidgets,QtWebKitWidgets
 try:
     import leo.plugins.leofts as leofts    
 except ImportError:
     leofts = None
 import sys
-
-g = None
 
 #@+others
 #@+node:ville.20120225144051.3580: ** top-level functions
@@ -47,6 +43,8 @@ def all_positions_global():
 #@+node:ville.20120302233106.3580: *3* init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
+    
+    import leo.core.leoGlobals as g
     set_leo(g)
     ok = g.app.gui.guiName() == "qt"
     g._global_search = None
@@ -89,6 +87,8 @@ def open_unl(unl):
         segs = parts[1].split("-->")
         g.recursiveUNLSearch(segs, c)
 #@+node:ekr.20140919160020.17917: *3* set_leo
+g = None
+
 def set_leo(gg):
     global g
     g = gg
@@ -173,12 +173,10 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_fts)
         self.bd.add_cmd_handler(self.do_stats)
         self.anchors = {}        
-        
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
-
+        '''Show the global search window.'''
         self.bd.w.show()
-        
     #@+node:ekr.20140919160020.17900: *3* do_stats
     def do_stats(self, tgt, qs):
 
@@ -200,7 +198,6 @@ class GlobalSearch:
         q = None
         if ss.startswith("f "):
             q = ss[2:]
-            
         if not (q or ss.startswith("fts ")):
             return False
         if not leofts:
@@ -209,7 +206,7 @@ class GlobalSearch:
         print("Doing fts", qs)
         fts = self.get_fts()
         if ss.strip() == "fts init":
-            print("init!")
+            # print("init!")
             fts.create()
             for c2 in g.app.commanders():
                 print("Scanning",c2)
@@ -362,7 +359,6 @@ class GlobalSearch:
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
 class LeoConnector(QtCore.QObject):
     pass
-
 #@-others
 
 if __name__ == '__main__':
