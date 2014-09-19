@@ -512,7 +512,7 @@ class AutoCompleterClass:
 
         self.insert_string("(",select=False)
         self.insert_string(s,select=True)
-    #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper
+    #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper (to do: remove klass hack)
     def compute_completion_list (self):
 
         trace = False and not g.unitTesting

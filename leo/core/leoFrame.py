@@ -1615,24 +1615,24 @@ class LeoTree(object):
     def remove_big_text_buttons(self,old_p):
         '''Remove the load and paste buttons created for large text.'''
         trace = False and not g.unitTesting
+        if not self.is_qt_body():
+            return
         c = self.c
-        if self.is_qt_body():
-            w = c.frame.body.widget
-            if old_p and hasattr(w,'leo_big_text') and w.leo_big_text:
-                s = w.leo_big_text
-                w.leo_big_text = None
-                if old_p and old_p.b != s:
-                    if trace: g.trace('===== restoring big text',len(s),old_p.h)
-                    old_p.b = s
-                    if hasattr(c.frame.tree,'updateIcon'):
-                        c.frame.tree.updateIcon(old_p,force=True)
-            if hasattr(w,'leo_copy_button') and w.leo_copy_button:
-                w.leo_copy_button.deleteLater()
-                w.leo_copy_button = None
-            if hasattr(w,'leo_load_button') and w.leo_load_button:
-                w.leo_load_button.deleteLater()
-                w.leo_load_button = None
-        # else: g.trace('not a qt body')
+        w = c.frame.body.widget
+        if old_p and hasattr(w,'leo_big_text') and w.leo_big_text is not None:
+            s = w.leo_big_text
+            if old_p and old_p.b != s:
+                if trace: g.trace('===== restoring big text',len(s),old_p.h)
+                old_p.b = s
+                if hasattr(c.frame.tree,'updateIcon'):
+                    c.frame.tree.updateIcon(old_p,force=True)
+            w.leo_big_text = None # 2014/09/19: Allow further changes to w!
+        if hasattr(w,'leo_copy_button') and w.leo_copy_button:
+            w.leo_copy_button.deleteLater()
+            w.leo_copy_button = None
+        if hasattr(w,'leo_load_button') and w.leo_load_button:
+            w.leo_load_button.deleteLater()
+            w.leo_load_button = None
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self,old_p):
         '''Stop colorizing the present node.'''
@@ -1697,13 +1697,15 @@ class LeoTree(object):
     #@+node:ekr.20140829172618.19888: *7* add_load_button
     def add_load_button(self,layout,old_p,p,s,traceTime,w):
         '''Create a 'load' button in the body text area.'''
-        def onClicked(arg,c=self.c,p=p.copy()):
+        trace = False and not g.unitTesting
+        if trace: g.trace(len(s),p.h)
+        def onClicked(arg,c=self.c,p=p.copy(),w=w):
+            assert hasattr(w,'leo_big_text')
             if c.positionExists(p):
                 # Recreate the entire select code.
-                self.set_body_text_after_select(p,old_p,traceTime)
+                self.set_body_text_after_select(p,old_p,traceTime,force=True)
                 self.scroll_cursor(p,traceTime)
-                g.trace('calling onBodyChanged')
-                c.frame.body.onBodyChanged (undoType='Typing')# ,oldSel=None,oldText=None,oldYview=None):
+            w.leo_big_text = None # 2014/09/19: Allow further changes to w!
             layout.addWidget(w)
             layout.removeWidget(w.leo_copy_button)
             layout.removeWidget(w.leo_load_button)
@@ -1724,21 +1726,21 @@ class LeoTree(object):
             g.app.gui.replaceClipboardWith(s)
         w.leo_copy_button.clicked.connect(onClicked)
         layout.addWidget(w.leo_copy_button)
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select (self,p,old_p,traceTime):
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ****
+    def set_body_text_after_select (self,p,old_p,traceTime,force=False):
         '''Set the text after selecting a node.'''
-        trace = False and not g.unitTesting
+        trace = True and force and not g.unitTesting
         if traceTime: t1 = time.time()
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         old_s = w.getAllText()
-        if p and p == old_p and s == old_s:
-            if trace: g.trace('*pass',p.h,old_p.h)
+        if not force and p and p == old_p and s == old_s:
+            if trace: g.trace('*pass',len(s),p.h,old_p.h)
         else:
             # w.setAllText destroys all color tags, so do a full recolor.
-            if trace: g.trace('*reload',p.h,old_p and old_p.h)
+            if trace: g.trace('*reload',len(s),p.h,old_p and old_p.h)
             w.setAllText(s) # ***** Very slow
             if traceTime:
                 delta_t = time.time()-t1
