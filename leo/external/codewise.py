@@ -100,6 +100,7 @@ import sqlite3
 import sys
 import types
 
+from sqlite3 import ProgrammingError
 
 # A hack to get this module without actually importing it.
 def get_module():
@@ -713,7 +714,12 @@ class CodeWise:
 
     #@+node:ekr.20110310091639.14261: *3* cursor
     def cursor(self):
-        return self.dbconn and self.dbconn.cursor()
+        if self.dbconn:
+            try:
+                return self.dbconn.cursor()
+            except ProgrammingError:
+                g.es("No cursor for codewise DB, closed database?")
+
 
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):
