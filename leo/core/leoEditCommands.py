@@ -290,7 +290,7 @@ def pylint_command(event):
             table = (
                 g.os_path_finalize_join(g.app.homeDir,'.leo',base),
                     # In ~/.leo
-                g.os_path_finalize_join(g.app.loadDir,'..','leo','test',base),
+                g.os_path_finalize_join(g.app.loadDir,'..','..','leo','test',base),
                     # In leo/test
             )
             for fn in table:
