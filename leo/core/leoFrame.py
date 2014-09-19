@@ -203,9 +203,6 @@ class LeoBody(object):
     def createTextWidget (self,parentFrame,p,name):
         self.oops()
 
-    def getInsertPoint(self):
-        self.oops()
-
     def packEditorLabelWidget (self,w):
         self.oops()
     #@+node:ekr.20060528100747: *3* LeoBody.Editors

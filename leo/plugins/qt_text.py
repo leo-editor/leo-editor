@@ -469,11 +469,11 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
 
     __str__ = __repr__
     #@+node:ekr.20110605121601.18008: *3* lqtb.Auto completion
-    #@+node:ekr.20110605121601.18009: *4* lqtb.class LeoQListWidget(QListWidget)
+    #@+node:ekr.20110605121601.18009: *4* class LeoQListWidget(QListWidget)
     class LeoQListWidget(QtWidgets.QListWidget):
 
         #@+others
-        #@+node:ekr.20110605121601.18010: *5* ctor (LeoQListWidget)
+        #@+node:ekr.20110605121601.18010: *5* lqlw.ctor
         def __init__(self,c):
             '''ctor for LeoQListWidget class'''
             QtWidgets.QListWidget.__init__(self)
@@ -492,30 +492,23 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             # A weird hack.
             self.leo_geom_set = False # When true, self.geom returns global coords!
             self.itemClicked.connect(self.select_callback)
-        #@+node:ekr.20110605121601.18011: *5* closeEvent
+        #@+node:ekr.20110605121601.18011: *5* lqlw.closeEvent
         def closeEvent(self,event):
-
             '''Kill completion and close the window.'''
-
             self.leo_c.k.autoCompleter.abort()
-        #@+node:ekr.20110605121601.18012: *5* end_completer
+        #@+node:ekr.20110605121601.18012: *5* lqlw.end_completer
         def end_completer(self):
-
+            '''End completion.'''
             # g.trace('(LeoQListWidget)')
-
             c = self.leo_c
             c.in_qt_dialog = False
-
             # This is important: it clears the autocompletion state.
             c.k.keyboardQuit()
             c.bodyWantsFocusNow()
-
             self.deleteLater()
-        #@+node:ekr.20110605121601.18013: *5* keyPressEvent (LeoQListWidget)
+        #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
         def keyPressEvent(self,event):
-
             '''Handle a key event from QListWidget.'''
-
             trace = False and not g.unitTesting
             c = self.leo_c
             w = c.frame.body.wrapper
@@ -535,26 +528,21 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             else:
                 # Pass all other keys to the autocompleter via the event filter.
                 w.ev_filter.eventFilter(obj=self,event=event)
-        #@+node:ekr.20110605121601.18014: *5* select_callback
+        #@+node:ekr.20110605121601.18014: *5* lqlw.select_callback
         def select_callback(self):  
-
             '''Called when user selects an item in the QListWidget.'''
-
             trace = False and not g.unitTesting
-            c = self.leo_c ; w = c.frame.body
-
+            c = self.leo_c
+            w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
             # Replace the tail of the prefix with the completion.
             completion = self.currentItem().text()
             prefix = c.k.autoCompleter.get_autocompleter_prefix()
-
             parts = prefix.split('.')
             if len(parts) > 1:
                 tail = parts[-1]
             else:
                 tail = prefix
-
             if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
-
             if tail != completion:
                 j = w.getInsertPoint()
                 i = j - len(tail)
@@ -564,22 +552,21 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
                 c.setChanged(True)
                 w.setInsertPoint(j)
                 c.frame.body.onBodyChanged('Typing')
-
             self.end_completer()
-        #@+node:tbrown.20111011094944.27031: *5* tab_callback
+        #@+node:tbrown.20111011094944.27031: *5* lqlw.tab_callback
         def tab_callback(self):  
-
             '''Called when user hits tab on an item in the QListWidget.'''
-
-            trace = False and not g.unitTesting
-            c = self.leo_c ; w = c.frame.body
+            trace = True and not g.unitTesting
+            c = self.leo_c
+            w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
+            if trace: g.trace(w)
+            if w is None: return
             # Replace the tail of the prefix with the completion.
-            completion = self.currentItem().text()
+            completion = g.u(self.currentItem().text())
             prefix = c.k.autoCompleter.get_autocompleter_prefix()
             parts = prefix.split('.')
             if len(parts) < 2:
                 return
-            # var = parts[-2]
             if len(parts) > 1:
                 tail = parts[-1]
             else:
@@ -587,7 +574,6 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             if trace: g.trace(
                 'prefix',repr(prefix),'tail',repr(tail),
                 'completion',repr(completion))
-            w = c.k.autoCompleter.w
             i = j = w.getInsertPoint()
             s = w.getAllText()
             while (0 <= i < len(s) and s[i] != '.'):
@@ -596,66 +582,58 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             if j > i:
                 w.delete(i,j)
             w.setInsertPoint(i)
-            c.k.autoCompleter.klass = completion
+            ### This makes no sense.
+            ### c.k.autoCompleter.klass = completion
             c.k.autoCompleter.compute_completion_list()
-        #@+node:ekr.20110605121601.18015: *5* set_position (LeoQListWidget)
+        #@+node:ekr.20110605121601.18015: *5* lqlw.set_position
         def set_position (self,c):
-
+            '''Set the position of the QListWidget.'''
             trace = False and not g.unitTesting
-            w = self.leo_w
-
+            
             def glob(obj,pt):
                 '''Convert pt from obj's local coordinates to global coordinates.'''
                 return obj.mapToGlobal(pt)
 
+            w = self.leo_w
             vp = self.viewport()
             r = w.cursorRect()
             geom = self.geometry() # In viewport coordinates.
-
             gr_topLeft = glob(w,r.topLeft())
-
-            # As a workaround to the setGeometry bug,
+            # As a workaround to the Qt setGeometry bug,
             # The window is destroyed instead of being hidden.
-            assert not self.leo_geom_set
-
-            # This code illustrates the bug...
-            # if self.leo_geom_set:
-                # # Unbelievable: geom is now in *global* coords.
-                # gg_topLeft = geom.topLeft()
-            # else:
-                # # Per documentation, geom in local (viewport) coords.
-                # gg_topLeft = glob(vp,geom.topLeft())
-
+            if self.leo_geom_set:
+                g.trace('Error: leo_geom_set')
+                return
+            # This code illustrates the Qt bug...
+                # if self.leo_geom_set:
+                    # # Unbelievable: geom is now in *global* coords.
+                    # gg_topLeft = geom.topLeft()
+                # else:
+                    # # Per documentation, geom in local (viewport) coords.
+                    # gg_topLeft = glob(vp,geom.topLeft())
             gg_topLeft = glob(vp,geom.topLeft())
-
             delta_x = gr_topLeft.x() - gg_topLeft.x() 
             delta_y = gr_topLeft.y() - gg_topLeft.y()
-
-            # These offset are reasonable.
-            # Perhaps they should depend on font size.
+            # These offset are reasonable. Perhaps they should depend on font size.
             x_offset,y_offset = 10,60
-
             # Compute the new geometry, setting the size by hand.
             geom2_topLeft = QtCore.QPoint(
                 geom.x()+delta_x+x_offset,
                 geom.y()+delta_y+y_offset)
-
             geom2_size = QtCore.QSize(400,100)
-
             geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
-
-            # These assert's fail once offsets are added.
+            # These tests fail once offsets are added.
             if x_offset == 0 and y_offset == 0:
                 if self.leo_geom_set:
-                    assert geom2.topLeft() == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                        geom2.topLeft(),glob(w,r.topLeft()))
+                    if geom2.topLeft() != glob(w,r.topLeft()):
+                        g.trace('Error: geom.topLeft: %s, geom2.topLeft: %s' % (
+                            geom2.topLeft(),glob(w,r.topLeft())))
                 else:
-                    assert glob(vp,geom2.topLeft()) == glob(w,r.topLeft()),'geom.topLeft: %s, geom2.topLeft: %s' % (
-                        glob(vp,geom2.topLeft()),glob(w,r.topLeft()))
-
+                    if glob(vp,geom2.topLeft()) != glob(w,r.topLeft()):
+                        g.trace('Error 2: geom.topLeft: %s, geom2.topLeft: %s' % (
+                            glob(vp,geom2.topLeft()),glob(w,r.topLeft())))
             self.setGeometry(geom2)
             self.leo_geom_set = True
-
             if trace:
                 g.trace(self,
                     # '\n viewport:',vp,
@@ -666,13 +644,10 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
                     '\n geom:  ',geom.x(),geom.y(),   glob(vp,geom.topLeft()),
                     '\n geom2: ',geom2.x(),geom2.y(), glob(vp,geom2.topLeft()),
                 )
-        #@+node:ekr.20110605121601.18016: *5* show_completions
+        #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
         def show_completions(self,aList):
-
             '''Set the QListView contents to aList.'''
-
             # g.trace('(qc) len(aList)',len(aList))
-
             self.clear()
             self.addItems(aList)
             self.setCurrentRow(0)

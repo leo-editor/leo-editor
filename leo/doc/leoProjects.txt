@@ -337,6 +337,18 @@ The fix was to disable the call to os.pathexpanduser in g.os_path_join &
 g.os_path_finalize if the new expanduser keyword argument is False.
 .. @+node:ekr.20140918072425.17930: *4* Suppressed duplicate console messages
 g.es does nothing when g.app.gui.consoleOnly is True
+.. @+node:ekr.20140919050334.17884: *4* ** Fixed QCompleter bug
+@language rest
+
+http://i.imgur.com/1ZV45oB.png
+
+There was a problem with hitting tab, and possibly with using the mouse in the QListWidget.
+
+The fix was to define w as follows in lqlw.select_callback and lqlw.tab_callback:
+    
+    w = c.k.autoCompleter.w or c.frame.body.wrapper
+
+In addition, I changed assert in lqlw.set_position to calls to g.trace.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

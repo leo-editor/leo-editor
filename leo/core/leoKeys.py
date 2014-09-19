@@ -153,27 +153,33 @@ class AutoCompleterClass:
     #@+others
     #@+node:ekr.20061031131434.5: *3*  ctor (autocompleter)
     def __init__ (self,k):
-
+        '''Ctor for AutoCompleterClass class.'''
         # Ivars...
         self.c = c = k.c
         self.k = k
         self.force = None
-        self.language = None
-        self.qw = None # The object that supports qcompletion methods.
-        self.tabName = None # The name of the main completion tab.
-        self.verbose = False # True: print all members, regardless of how many there are.
-        self.w = None # The widget that gets focus after autocomplete is done.
-        self.warnings = {} # Keys are language names.
         self.klass = None
-        self.namespaces = [] # additional namespaces to search for objects, other code
-                             # can append namespaces to this to extend scope of search
-
+            # This is some kind of weird hack, set only by the LeoQListWidget class.
+            # At present it is always None
+        self.language = None
+        self.namespaces = []
+            # additional namespaces to search for objects, other code
+            # can append namespaces to this to extend scope of search
+        self.qw = None
+            # The object that supports qcompletion methods.
+        self.tabName = None
+            # The name of the main completion tab.
+        self.verbose = False
+            # True: print all members, regardless of how many there are.
+        self.w = None
+            # The widget that gets focus after autocomplete is done.
+        self.warnings = {}
+            # Keys are language names.
         # Codewise pre-computes...
         self.codewiseSelfList = []
             # The (global) completions for "self."
         self.completionsDict = {}
             # Keys are prefixes, values are completion lists.
-
         # Options...
         self.auto_tab       = c.config.getBool('auto_tab_complete',False)
         self.forbid_invalid = c.config.getBool('forbid_invalid_completions',False)
@@ -594,7 +600,7 @@ class AutoCompleterClass:
             common_prefix,prefix,tabList = self.compute_completion_list()
             if not prefix:
                 self.exit()
-    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab
+    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab (not used)
     def do_qcompleter_tab(self,prefix,options):
 
         '''Return the longest common prefix of all the options.'''
@@ -1142,12 +1148,9 @@ class ContextSniffer:
     #@+node:ekr.20110312162243.14264: *4* declare
     def declare(self, var, klass):
 
-        # g.trace(var,klass) # Very large trace.
-
         vars = self.vars.get(var, [])
         if not vars:
             self.vars[var] = vars
-
         vars.append(klass)
     #@-others
 #@+node:ekr.20140813052702.18194: ** class FileNameChooser
