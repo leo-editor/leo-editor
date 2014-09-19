@@ -9,12 +9,19 @@ import sys
 # Do not define g here.  Use the g returned by the bridge.
 #@+others
 #@+node:ekr.20080730161153.3: ** main & helpers
-def main (gui='nullGui'):
+def main ():
     '''The main line of leoBridgeTest.py.'''
     trace = False
     tag = 'leoTestBridge'
-    # Setting verbose=True prints messages that would be sent to the log pane.
-    bridge = leoBridge.controller(gui=gui,verbose=False)
+    options = scanOptions()
+    bridge = leoBridge.controller(
+        gui         =options.gui,
+        loadPlugins =options.load_plugins,
+        readSettings=options.read_settings, # adds  0.3 sec. Useful!
+        silent      =options.silent,
+        tracePlugins=options.trace_plugins,
+        verbose     =options.verbose, # True: prints log messages.
+    )
     if bridge.isOpen():
         g = bridge.globals()
         path = g.os_path_finalize_join(
@@ -42,31 +49,26 @@ def runUnitTests (c,g):
         raise
 #@+node:ekr.20090121164439.6177: *3* scanOptions
 def scanOptions():
-
     '''Handle all options and remove them from sys.argv.'''
-
     parser = optparse.OptionParser()
-    parser.add_option('--gui',dest="gui")
-    parser.add_option('--silent',action="store_true",dest="silent")
-
+    parser.add_option('--gui',          dest='gui')
+    parser.add_option('--load-plugins', action='store_true',dest='load_plugins')
+    parser.add_option('--read-settings',action='store_true',dest='read_settings')
+    parser.add_option('--silent',       action='store_true',dest='silent')
+    parser.add_option('--trace-plugins',action='store_true',dest='trace_plugins')
+    parser.add_option('--verbose',      action='store_true',dest='verbose')
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
     sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-
     # -- gui
     gui = options.gui
     if gui: gui = gui.lower()
     if gui not in ('qttabs','qt'):
-        gui = None
-
-    # --silent
-    silent = options.silent
-
-    return gui,silent
+        options.gui = None
+    return options
 #@-others
 
 if __name__ == '__main__':
     print ('leoBridgeTest.py: argv: %s' % repr(sys.argv))
-    gui = scanOptions()
-    main(gui=gui)
+    main()
 #@-leo

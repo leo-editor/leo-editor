@@ -550,30 +550,26 @@ class RunTestExternallyHelperClass:
     #@+others
     #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
     def __init__(self,c,all,marked):
-
+        '''Ctor for RunTextExternallyHelperClass class.'''
         self.c = c
         self.all = all
-        self.marked = marked
-
         self.copyRoot = None # The root of copied tree.
         self.fileName = 'dynamicUnitTest.leo'
+        self.marked = marked
         self.root = None # The root of the tree to copy when self.all is False.
         self.seen = [] # The list of nodes to be added to the outline.
         self.tags = ('@test','@suite','@unittests','@unit-tests')
     #@+node:ekr.20070627140344.2: *3* runTests & helpers
     def runTests (self):
         # 2010/09/09: removed the gui arg: there is no way to set it.
-
         '''
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
         '''
-
-        trace = False
+        trace = True
         import time
         c = self.c ; p = c.p
         t1 = time.time()
-
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=g.app.nullGui)
@@ -586,11 +582,11 @@ class RunTestExternallyHelperClass:
                 kind = 'all' if self.all else 'selected'
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
-                g.blue('created %s unit tests' % (kind))
+                # g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.UnitTestGui or 'nullGui'
-            self.runUnitTestLeoFile(gui=gui,
-                path='dynamicUnitTest.leo',silent=True)
+            self.runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo')
+                # Let runUitTestLeoFile determine most defaults.
             c.selectPosition(p.copy())
         else:
             g.es_print('no %s@test or @suite nodes in %s outline' % (
@@ -598,29 +594,24 @@ class RunTestExternallyHelperClass:
                 'entire' if self.all else 'selected'))
     #@+node:ekr.20070627135336.10: *4* createFileFromOutline (RunTestExternallyHelperClass)
     def createFileFromOutline (self,c2):
-
         '''Write c's outline to test/dynamicUnitTest.leo.'''
-
         path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
-
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
         c2.fileCommands.save(path,silent=True)
         c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
     #@+node:ekr.20070627135336.9: *4* createOutline & helpers (RunTestExternallyHelperClass)
     def createOutline (self,c2):
-
-        '''Create a unit test ouline containing
-
+        '''
+        Create a unit test ouline containing:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
-        - all @test and @suite nodes in p's outline.'''
-
+        - all @test and @suite nodes in p's outline.
+        '''
         c = self.c
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
         self.copyRoot.expand()
-
         self.seen = [] # The list of nodes to be added.
         aList  = c.testManager.findMarkForUnitTestNodes()
         aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
@@ -655,38 +646,42 @@ class RunTestExternallyHelperClass:
                 return True
         return False
     #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (RunTestExternallyHelperClass)
-    def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,silent=True):
-
+    def runUnitTestLeoFile (self,
+        # Except for the path arg, these are the arguments to the leoBridge.
+        gui='qt',
+        path='unitTest.leo',
+        loadPlugins=True,
+        readSettings=True,
+        silent=True,
+        tracePlugins=True,
+        verbose=True,
+    ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
-
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        trace = False
+        trace = True
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
-
         if sys.platform.startswith('win'): 
             if ' ' in leo: leo = '"' + leo + '"'
             if ' ' in path: path = '"' + path + '"'
-
-        guiArg = '--gui=%s' % gui
-        pathArg = '--path=%s' % path
-        args = [sys.executable,leo,path,guiArg,pathArg]
-        if readSettings: args.append('--read-settings')
-        if silent: args.append('--silent')
-        if trace: g.trace(args)
-
-        # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+        args = [sys.executable,leo]
+        args.append('--gui=%s' % gui)
+        args.append('--path=%s' % path)
+        if loadPlugins:     args.append('--load-plugins')
+        if readSettings:    args.append('--read-settings')
+        if silent:          args.append('--silent')
+        if tracePlugins:    args.append('--trace-plugins')
+        if verbose:         args.append('--verbose')
+        if trace: g.trace('args...\n  %s' % '\n  '.join(args))
+        # Set the current directory so that importing leo.core.whatever works.
         leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
-
         # os.chdir(leoDir)
         # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
         env = dict(os.environ)
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
-
-        if False:
+        if False and trace:
             for z in sorted(os.environ.keys()):
                 print(z,os.environ.get(z))
-
         if trace: g.trace('*** spawning test process',path)
         os.spawnve(os.P_NOWAIT,sys.executable,args,env)
     #@-others
@@ -707,25 +702,21 @@ class TestManager:
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
     def doTests(self,all=None,marked=None,verbosity=1):
-
-        '''Run any kind of local unit test.
+        '''
+        Run any kind of local unit test.
 
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
-
         trace = False
         c,tm = self.c,self
-
-        # 2013/02/25: clear the screen before running multiple unit tests locally.
-        if all or marked: g.cls()
+        # Clear the screen before running multiple unit tests locally.
+        # if all or marked: g.cls()
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-
         # This seems a bit risky when run in unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
-
         if trace: g.trace('marked',marked,'c',c)
         try:
             g.unitTesting = g.app.unitTesting = True
@@ -734,7 +725,6 @@ class TestManager:
             g.app.unitTestDict['c'] = c
             g.app.unitTestDict['g'] = g
             g.app.unitTestDict['p'] = c.p.copy()
-
             # c.undoer.clearUndoState() # New in 4.3.1.
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)

@@ -510,7 +510,8 @@ class LeoPluginsController:
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
         '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
             # verbose is no longer used: all traces are verbose
-        trace = g.app.trace_plugins and not g.unitTesting
+        trace = g.app.trace_plugins
+            # This trace can be useful during unit testing.
         def report(message):
             g.es_print('loadOnePlugin: %s' % message)
         if not g.app.enablePlugins:

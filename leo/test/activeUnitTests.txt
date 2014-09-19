@@ -607,51 +607,54 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20140904060337.4476: *3* @test interfaces using API classes
-import leo.core.leoFrame as leoFrame
-import leo.plugins.qt_text as qt_text
-from leo.core.leoQt import Qsci,QtWidgets
-
-if Qsci:
-    w = Qsci.QsciScintilla()
-    q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
-    q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
-# Check the text wrappers.
-W = leoFrame.WrapperAPI(c)
-tw = QtWidgets.QTextBrowser()
-t = qt_text.QTextEditWrapper(widget=tw,name='test2')
-W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
-t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
-ignore = [
-    'set_focus', # synonym for setFocus
-    'mutable_methods', # maybe for unit test, not actually used.
-]
-for z in W_list:
-    if z not in t_list and z not in ignore:
-        assert False,'In WrapperAPI but not in QTextEditWrapper: %s' % z
-if Qsci:
-    for z in W_list:
-        if z not in q_list and z not in ignore:
-            assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
-# Check Null classes that are not subclasses of a base type:
-table = (
-    ('NullColorizer',leoFrame.NullColorizer(c),
-     # 'c.frame.body.colorizer',c.frame.body.colorizer,
-     'ColorizerAPI', leoFrame.ColorizerAPI(c,None),
-    ),
-    ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
-     # 'c.frame.iconBar',c.frame.iconBar,
-     'IconBarAPI',leoFrame.IconBarAPI(c,None),
-    ),
-    ('NullStatusLineClass',leoFrame.NullStatusLineClass(c,None),
-     # 'c.frame.statusLine',c.frame.statusLine,
-     'StatusLineAPI',leoFrame.StatusLineAPI(c,None)
-    )
-)
-for name1,L,name2,W in table:
+if g.app.isExternalUnitTest:
+    pass # Can not be run externally.
+else:
+    import leo.core.leoFrame as leoFrame
+    import leo.plugins.qt_text as qt_text
+    from leo.core.leoQt import Qsci,QtWidgets
+    
+    if Qsci:
+        w = Qsci.QsciScintilla()
+        q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
+        q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
+    # Check the text wrappers.
+    W = leoFrame.WrapperAPI(c)
+    tw = QtWidgets.QTextBrowser()
+    t = qt_text.QTextEditWrapper(widget=tw,name='test2')
     W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
-    L_list = [z for z in sorted(dir(L)) if not z.startswith('__')]
+    t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
+    ignore = [
+        'set_focus', # synonym for setFocus
+        'mutable_methods', # maybe for unit test, not actually used.
+    ]
     for z in W_list:
-        assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
+        if z not in t_list and z not in ignore:
+            assert False,'In WrapperAPI but not in QTextEditWrapper: %s' % z
+    if Qsci:
+        for z in W_list:
+            if z not in q_list and z not in ignore:
+                assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
+    # Check Null classes that are not subclasses of a base type:
+    table = (
+        ('NullColorizer',leoFrame.NullColorizer(c),
+         # 'c.frame.body.colorizer',c.frame.body.colorizer,
+         'ColorizerAPI', leoFrame.ColorizerAPI(c,None),
+        ),
+        ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
+         # 'c.frame.iconBar',c.frame.iconBar,
+         'IconBarAPI',leoFrame.IconBarAPI(c,None),
+        ),
+        ('NullStatusLineClass',leoFrame.NullStatusLineClass(c,None),
+         # 'c.frame.statusLine',c.frame.statusLine,
+         'StatusLineAPI',leoFrame.StatusLineAPI(c,None)
+        )
+    )
+    for name1,L,name2,W in table:
+        W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+        L_list = [z for z in sorted(dir(L)) if not z.startswith('__')]
+        for z in W_list:
+            assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
 #@+node:ekr.20111118125141.3879: *4* @@@test bodyCtrl property
 # Test that changing c.frame.body.bodyCtrl also changes c.frame.body.wrapper.
@@ -2290,8 +2293,14 @@ for p2,h2 in table:
 import leo.core.leoBridge as leoBridge
 
 if g.app.isExternalUnitTest:
+    print('running @test leoBridge init logic')
     # This can not be run locally!
-    b = leoBridge.controller(gui='nullGui',verbose=False)
+    b = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,
+        readSettings=True,
+        silent=False,
+        tracePlugins=True,
+        verbose=True)
     g = b.globals()
     path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
     assert g.os_path_exists(path)
