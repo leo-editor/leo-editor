@@ -55,10 +55,9 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20060831165845.4: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler(('open2','new2'),onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20060831165845.5: ** onCreate
 def onCreate (tag, keys):

@@ -91,13 +91,11 @@ __version__ = '0.6'
 #@+others
 #@+node:ekr.20050226120104.1: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = Ft
-
     if ok:
         g.registerHandler(('menu2',"new"),addMenu)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:mork.20041025115037: ** xslt elements
 #This dict contains elements that go into a stylesheet
@@ -316,8 +314,9 @@ def addMenu( tag, keywords ):
 # To test this plugin, set the xslt node to be the xslt node.
 # 
 # Process it against the table.leo node.
-# 
 #@@c
+
+# pylint: disable=pointless-string-statement
 
 r'''
 #@+others

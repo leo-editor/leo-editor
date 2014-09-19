@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20140804114520.9427: * @file nodetags.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
 '''Provides node tagging capabilities to Leo
@@ -53,26 +50,6 @@ Tag Limitations
 The API is unlimited in tagging abilities.  If you do not wish to use the UI, then the API may be used to tag nodes with any arbitrary strings.  The UI, however, due to searching capabilities, may *not* be used to tag (or search for) nodes with tags containing the special search characters, `&|-^`.  The UI also cannot search for tags of zero-length, and it automatically removes surrounding whitespace (calling .strip()).
 '''
 #@-<< docstring >>
-
-__version__ = '1.0'
-#@+<< version history >>
-#@+node:peckj.20140804103733.9243: ** << version history >>
-#@+at
-# 
-# Version 0.1 - initial release, API only
-# Version 0.2 - add a minimal jumplist-only GUI  (still need to use API for add/remove of tags)
-# Version 0.3 - add query-based searching (set algebra) of tagged nodes
-# Version 0.4 - fix a small issue w/r/t v.u vs v.unknownAttributes
-# Version 0.5 - add a display/jump list of tags on currently selected node
-# Version 0.6 - fix several edge cases caused by me using a stupid mapping method.  Internally uses vnodes now for speed.
-# Version 0.7 - fix a paste-related bug by adding a command2 hook
-# Version 0.8 - able to remove tags from nodes by right-clicking on them in the tag explorer
-# Version 0.9 - complete functionality!  Adding tags is easy, click the '+'
-# Version 1.0 - use leoQt instead of PyQt4
-# 
-#@@c
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:peckj.20140804103733.9241: ** << imports >>
 import leo.core.leoGlobals as g
@@ -80,23 +57,19 @@ import re
 #from PyQt4 import QtGui, QtCore
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
-
 #@+others
 #@+node:peckj.20140804103733.9244: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         #g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Plugin %s not loaded.' % __name__, color='red')
-
     return ok
 #@+node:peckj.20140804103733.9245: ** onCreate
 def onCreate (tag, keys):
@@ -183,8 +156,7 @@ class TagController:
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
 class LeoTagWidget(QtWidgets.QWidget):
     #@+others
-    #@+node:peckj.20140804114520.15201: *3* initialization
-    #@+node:peckj.20140804114520.15200: *4* __init__
+    #@+node:peckj.20140804114520.15200: *3* __init__
     def __init__(self,c,parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.c = c
@@ -192,12 +164,13 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.initUI()
         self.registerCallbacks()
         self.mapping = {}
+        # pylint: disable=anomalous-backslash-in-string
         #self.search_chars = ['&','|','-','^']
         self.search_re = '(&|\||-|\^)'
         self.custom_searches = []
         g.registerHandler('select2', self.select2_hook)
         g.registerHandler('command2', self.command2_hook)
-    #@+node:peckj.20140804114520.15202: *5* initUI
+    #@+node:peckj.20140804114520.15202: *4* initUI
     def initUI(self):
         # create GUI components
         ## this code is atrocious... don't look too closely
@@ -256,7 +229,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.verticalLayout.addWidget(self.label)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:peckj.20140804114520.15203: *5* registerCallbacks
+    #@+node:peckj.20140804114520.15203: *4* registerCallbacks
     def registerCallbacks(self):
         self.listWidget.itemSelectionChanged.connect(self.item_selected)
         self.listWidget.itemClicked.connect(self.item_selected)
@@ -395,4 +368,6 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.update_all()
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

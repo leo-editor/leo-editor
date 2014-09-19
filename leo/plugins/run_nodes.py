@@ -36,11 +36,7 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.16"
-    # At present, this plugin is experimental, that is, broken.
+# At present, this plugin is experimental, that is, broken.
 
 #@+<< version history >>
 #@+node:ekr.20040910070811.3: ** << version history >>
@@ -215,12 +211,12 @@ def OnIdle(tag,keywords):
 def OnQuit(tag,keywords=None):
 
     global RunNode,RunList
-
-    if RunList:
+    c = keywords.get('c')
+    if c and RunList:
         RunList = None
         g.disableIdleTimeHook()
         if RunNode:
-            CloseProcess()
+            CloseProcess(c)
         g.error("@run: forced quit!")
 #@+node:ekr.20040910070811.6: ** class readingThread
 class readingThread(threading.Thread):
@@ -397,4 +393,6 @@ def UpdateText(t,wcolor="black"):
 
     return True
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

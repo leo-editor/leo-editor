@@ -96,7 +96,7 @@ These commands attempt to deal with all of this.
 
 """
 
-import time
+# import time
 import os
 import traceback  # for XML parse error display
 import leo.core.leoGlobals as g

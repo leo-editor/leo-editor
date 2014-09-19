@@ -27,15 +27,15 @@ class AttribManager(object):
         """Return the body string without any parts used to store
         attributes, if this flavor of attribute manager stores attributes
         in the body.  If not, just return the whole body string."""
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def getAttrib(self, v, what):
         """Get an attribute value from a vnode"""
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def keys(self, v):
         """Get list of attribute keys from a vnode"""
-        raise NotImplemented()
+        raise NotImplementedError()
 #@+node:tbrown.20100206093439.5453: ** class AM_Colon
 class AM_Colon(AttribManager):
 
@@ -250,4 +250,6 @@ class LeoCursor(object):
         self.__attribManagers = list(mngrs)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -226,6 +226,7 @@ class RSSController:
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
         
         # process entries
+        # pylint: disable=unnecessary-lambda
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
         if sort_newest_first:
             stories.reverse()

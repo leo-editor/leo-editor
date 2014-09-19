@@ -164,15 +164,13 @@ controllers = {} # For use by @button rst3 code.
 #@+node:ekr.20050805162550.4: ** Module level
 #@+node:ekr.20050805162550.5: *3*  init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = docutils is not None # Ok for unit testing.
-
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         g.error('rst3 plugin not loaded: can not load docutils')
-
     return ok
 #@+node:ekr.20050805162550.6: *3* onCreate
 def onCreate(tag, keywords):

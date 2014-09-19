@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:danr7.20060902215215.2: ** << docstring >>
-''' Converts a leo outline to an html web page.
+r''' Converts a leo outline to an html web page.
 
 This plugin takes an outline stored in Leo and converts it to html which is then
 either saved in a file or shown in a browser. It is based on the original
