@@ -155,10 +155,11 @@ class GlobalSearch:
             # A default: will be overridden by the global-search command.
         self.bd = BigDash()
         self.gnxcache = GnxCache()
-        self.fts = LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
+        self.fts = whoosh and LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
-        self.bd.add_cmd_handler(self.do_fts)
+        if whoosh:
+            self.bd.add_cmd_handler(self.do_fts)
         self.bd.add_cmd_handler(self.do_stats)
         self.anchors = {}        
     #@+node:ekr.20140919160020.17922: *3* add_anchor
@@ -170,6 +171,8 @@ class GlobalSearch:
         self._old_tgt = tgt
         self._old_q = q
         fts = self.fts
+        if not fts:
+            return
         hits = ["""
             <html><head><style>
                 * { font-family: sans-serif; background: white; }
@@ -393,8 +396,6 @@ class LeoFts:
         
         schema = self.schema()
         self.ix = ix = create_in(self.idx_dir, schema)
-        
-        
     #@+node:ekr.20140920041848.17943: *3* index_nodes
     def index_nodes(self,c):
         writer = self.ix.writer()
@@ -408,14 +409,12 @@ class LeoFts:
             writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par, doc=doc)
         writer.commit()
         self.gnxcache.clear()
-
     #@+node:ekr.20140920041848.17944: *3* drop_document
     def drop_document(self, docfile):
         writer = self.ix.writer()
         g.es_print("Drop index: %s" % g.shortFileName(docfile))
         writer.delete_by_term("doc", docfile)
         writer.commit()
-        
     #@+node:ekr.20140920041848.17945: *3* statistics
     def statistics(self):
         r = {}
@@ -423,8 +422,6 @@ class LeoFts:
             r['documents'] = list(s.lexicon("doc"))
         # print("stats: %s" % r)
         return r
-        
-        
     #@+node:ekr.20140920041848.17946: *3* search
     def search(self, searchstring, limit=30):        
                 
