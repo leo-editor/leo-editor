@@ -31,7 +31,9 @@ class LeoBigTextDialog(QtGui.QWidget):
             "to permanently change limit."
             % (len(self.s), self.c.max_pre_loaded_body_chars))
         layout.addWidget(text)
-        if not self.s.startswith('@nocolor'):
+        if self.s.startswith('@nocolor'):
+            self.leo_load_nc_button = None
+        else:
             self.leo_load_nc_button = QtGui.QPushButton(
             'Load Text with @nocolor: %s' % (self.p.h))
             layout.addWidget(self.leo_load_nc_button)
@@ -43,9 +45,13 @@ class LeoBigTextDialog(QtGui.QWidget):
             'Double limit for this session')
         self.leo_copy_button = QtGui.QPushButton(
             'Copy body to clipboard: %s' % (self.p.h))
-        for w in [self.leo_load_button, 
-                  self.leo_copy_button, self.leo_more_button]:
-            layout.addWidget(w)
+        # Put the @nocolor button second: it should not be the "default".
+        for w in (
+            self.leo_load_button, self.leo_load_nc_button,
+            self.leo_copy_button, self.leo_more_button,
+        ):
+            if w:
+                layout.addWidget(w)
         layout.addItem(QtGui.QSpacerItem(
             10, 10, vPolicy=QtGui.QSizePolicy.Expanding))
         self.leo_copy_button.clicked.connect(lambda checked: self.copy())
@@ -74,7 +80,7 @@ class LeoBigTextDialog(QtGui.QWidget):
             bt.owner.set_body_text_after_select(bt.p,bt.old_p,bt.traceTime,force=True)
             bt.owner.scroll_cursor(bt.p,bt.traceTime)
             # g.trace('calling onBodyChanged')
-            bt.c.frame.body.onBodyChanged(undoType='Typing')
+            ### bt.c.frame.body.onBodyChanged(undoType='Typing')
         bt.go_away()
         bt.c.bodyWantsFocusNow()
         bt.c.recolor_now()
