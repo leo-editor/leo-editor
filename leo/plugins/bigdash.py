@@ -70,7 +70,7 @@ def global_search_f(event):
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = whoosh and g.app.gui.guiName() == "qt"
+    ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
         g.plugin_signon(__name__)
