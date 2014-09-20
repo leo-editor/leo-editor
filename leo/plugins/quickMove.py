@@ -144,7 +144,6 @@ __version__ = '0.7'
 
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
-import types
 from copy import deepcopy
 
 import leo.core.leoGlobals as g
@@ -153,7 +152,7 @@ from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
-    from PyQt4 import QtGui, QtCore
+    from leo.core.leoQt import QtCore,QtGui
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 
@@ -307,12 +306,12 @@ class quickMove(object):
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
 
         if g.app.gui.guiName() == "qt":
-                g.tree_popup_handlers.append(self.popup)
+            g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c):
 
         if g.app.gui.guiName() == "qt":
-                g.tree_popup_handlers.remove(self.popup)
+            g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton
     def addButton (self, first, type_="move", v=None, parent=None):
 
@@ -436,22 +435,19 @@ class quickMove(object):
     #@+node:tbrown.20091207102637.11494: *3* context menu popup
     def popup(self, c, p, menu):
         """make popup menu entry for tree context menu"""
-
+        # pylint: disable=function-redefined
+        # several callbacks have the same name.
         if c != self.c:
             return  # wrong commander
-            
         for cb, name in reversed(self.recent_moves):
             a = QtGui.QAction(name, menu)
             a.connect(a, QtCore.SIGNAL("triggered()"), 
                       lambda cb=cb, name=name: self.do_wrap(cb, name))
             menu.insertAction(menu.actions()[0], a)
-
         pathmenu = menu.addMenu("Move")
-        
         # copy / cut to other outline
         for txt, cut in ("Copy to...", False), ("Move to...", True):
             sub = pathmenu.addMenu(txt)
-            
             # global targets
             for target in g.app.db['_quickmove']['global_targets']:
                 a = sub.addAction(target['name'])
@@ -460,7 +456,6 @@ class quickMove(object):
                 def wrap(cb=cb, name=txt.strip('.')+' '+target['name']):
                     self.do_wrap(cb, name)
                 a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-            
             # top of open outlines
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
@@ -470,7 +465,6 @@ class quickMove(object):
                 def wrap(cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
                     self.do_wrap(cb, name)
                 a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-                    
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
         # global targets
@@ -489,7 +483,6 @@ class quickMove(object):
             def wrap(cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
                 self.do_wrap(cb, name)
             a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-
         # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
@@ -500,7 +493,6 @@ class quickMove(object):
         a = pathmenu.addAction("Read targets")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
              lambda p=p: self.read_targets())
-
         # actions within this outline
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
