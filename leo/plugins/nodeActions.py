@@ -220,6 +220,10 @@ import sys
 import tempfile
 #@-<< imports >>
 
+# pylint: disable=bad-indentation
+    # The indentation is almost impossible to fix.
+    # It would be dangerous to try.
+
 atFileTypes = [
     "@file", "@thin", "@file-thin",   "@thinfile",
     "@asis",   "@file-asis","@silentfile",
