@@ -5,9 +5,6 @@ Adds the Plugins\:Word Export\:Export menu item to format and export
 the selected outline to a Word document, starting Word if necessary.
 '''
 
-#@@language python
-#@@tabwidth -4
-
 __plugin_name__ = "Word Export"
 __version__ = "0.8"
 
@@ -51,13 +48,11 @@ import sys
 #@+others
 #@+node:ekr.20050311165238: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = client is not None # Ok for unit test: just uses Plugins menu.
-
     if ok:
         # No hooks, we just use the cmd_Export to trigger an export
         g.plugin_signon(__name__)
-
     return ok
 #@+node:EKR.20040517075715.15: ** getConfiguration
 def getConfiguration():
@@ -153,4 +148,6 @@ def cmd_Export(c):
         g.error("Exception writing Word")
         g.es_exception()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -123,7 +123,6 @@ Tags
 
 """
 #@-<< docstring >>
-
 __version__ = '0.7'
 #@+<< version history >>
 #@+node:tbrown.20070117104409.6: ** << version history >>
@@ -141,7 +140,6 @@ __version__ = '0.7'
 # 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
 # 0.7 TNB: Added "clone to" as well as "move to"
 #@-<< version history >>
-
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
@@ -155,16 +153,14 @@ if g.app.gui.guiName() == "qt":
     from leo.core.leoQt import QtCore,QtGui
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
-
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
-    
     if '_quickmove' not in g.app.db:
         g.app.db['_quickmove'] = {'global_targets': []}
-    
     return True
 
 def onCreate(tag, keywords):
@@ -898,4 +894,6 @@ class quickMoveButton:
         return "#"+"-->".join(heads)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
