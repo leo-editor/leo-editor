@@ -33,15 +33,14 @@ is required at the end of SQL statements.
 
 Requires `pexpect` module.
 """
-
 #@-<< docstring >>
 
 #@@language python
 #@@tabwidth -4
 
-# 0.1 by Terry Brown, 2009-05-12
+# By Terry Brown, 2009-05-12
 import leo.core.leoGlobals as g
-from mod_scripting import scriptingController
+from leo.plugins.mod_scripting import scriptingController
 import pexpect
 import time
 import os
@@ -53,7 +52,6 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
-
 #@+node:tbrown.20090603104805.4939: ** onCreate
 def onCreate(tag, keywords):
     InteractController(keywords['c'])
@@ -142,6 +140,7 @@ class InteractPSQL(Interact):
     def psqlReader(self, proc):
         cnt = 0
         timeout = False
+        # pylint: disable=maybe-no-member
         while not timeout:
             dat = []
             try:
@@ -245,6 +244,7 @@ class InteractBASH(Interact):
     def bashReader(self, proc):
         cnt = 0
         timeout = False
+        # pylint: disable=maybe-no-member
         while not timeout:
             dat = []
             try:
@@ -316,15 +316,11 @@ class InteractController:
     def addToLastChildButton (self,event=None):
         self.addButton(first=False)
     #@+node:tbrown.20090603104805.4965: *3* addButton
-    def addButton(self, class_):
-
+    def addButton(self,first):
         '''Add a button for an interact class.'''
-
         c = self.c ; p = c.p
         sc = scriptingController(c)
-
-        mb = InteractButton(c, class_)
-
+        mb = InteractButton(c,class_=first)
         if mb.available():
             b = sc.createIconButton(
                 text = mb.interactor.buttonText(),
