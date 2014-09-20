@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.873: * @file at_folder.py
-#@+<< docstring >>
-#@+node:edream.110203113231.874: ** << docstring >>
-'''Synchronizes @folder nodes with folders.
+r'''Synchronizes @folder nodes with folders.
 
 If a node is named '\@folder *<path_to_folder>*', the content (filenames) of the
 folder and the children of that node will be sync. Whenever a new file is put
@@ -15,18 +13,25 @@ children of another group. This will help when there are many files in that
 folder. You can logically group it in leo (or even clone it to many groups),
 while keep every files in a flat/single directory on your computer.
 '''
-#@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
 
 import leo.core.leoGlobals as g
-
 import os
-
 __version__ = "1.4"
-
 #@+others
+#@+node:ekr.20140920173002.17961: ** init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("select1", onSelect)
+    g.plugin_signon(__name__)
+#@+node:ekr.20140920173002.17960: ** onSelect
+def onSelect (tag,keywords):
+    c = keywords.get('c') or keywords.get('new_c')
+    if not c: return
+    v = keywords.get("new_v")
+    h = v.h
+    if g.match_word(h,0,"@folder"):
+        sync_node_to_folder(c,v,h[8:])
+
 #@+node:edream.110203113231.875: ** sync_node_to_folder
 def sync_node_to_folder(c,parent,d):
 
@@ -56,16 +61,7 @@ def sync_node_to_folder(c,parent,d):
     if len(oldlist)>0:
         g.es('missing: '+','.join(oldlist.keys()))
 #@-others
+#@@language python
+#@@tabwidth -4
 
-def onSelect (tag,keywords):
-    c = keywords.get('c') or keywords.get('new_c')
-    if not c: return
-    v = keywords.get("new_v")
-    h = v.h
-    if g.match_word(h,0,"@folder"):
-        sync_node_to_folder(c,v,h[8:])
-
-def init():
-    g.registerHandler("select1", onSelect)
-    g.plugin_signon(__name__)
 #@-leo
