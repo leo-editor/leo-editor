@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ktenney.20041211072654.1: * @file at_view.py
-#@+<< docstring >>
-#@+node:ekr.20041231104454: ** << docstring >>
-''' Adds support for \@clip, \@view and \@strip nodes.
+r''' Adds support for \@clip, \@view and \@strip nodes.
 
 - Selecting a headline containing \@clip appends the contents of the clipboard to
   the end of the body pane.
@@ -15,65 +13,23 @@
   sentinels removed.
 
 This plugin also accumulates the effect of all \@path nodes.
-
 '''
-#@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 80
-
-__version__ = "0.8"
-#@+<< version history >>
-#@+node:ktenney.20041211072654.3: ** << version history >>
-#@+at
-# 
-# 0.1 KT 2004/12/07 begin converting @button to plugin
-# 
-# 0.2 EKR style changes:
-#     - Uses g.trace to simplify all traces.
-#     - Removed comments originating from style guide.
-#     - Defined __version__ only in root node.
-# 0.3 EKR:
-#     - Used g.importExtension to import path and win32clipboard.
-#     - Added extensive comments to module's doc string.
-#     - Added comments to class View node.
-#     - Commented out several traces.
-#     - Handle @verbatim sentinels in strip()
-#     - Fix bug in strip: set path = currentPath.abspath()
-# 0.4 EKR:
-#     - Handle case where self.c has been destroyed in idle handler.
-# 0.5 EKR:
-#     - Corrected and expanded doc string.
-# 0.6 EKR:
-#     - Added better error message if can't load extensions.
-# 0.7 EKR:
-#     - Simplified code, fixed bugs and improved error messages.
-# 0.8 EKR:
-#     - Added init method.
-#@-<< version history >>
-#@+<< imports >>
-#@+node:ktenney.20041211072654.4: ** << imports >>
+__version__ = "0.9"
 import leo.core.leoGlobals as g
-
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
 win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)
-#@-<< imports >>
 
 #@+others
 #@+node:ekr.20111104210837.9693: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = path and win32clipboard
         # Ok for unit testing.
-        
     if ok:
         g.registerHandler("after-create-leo-frame",onCreate)
-    else:
-        if not g.app.unitTesting:
-            s = 'at_view plugin not loaded: win32Clipboard not present.'
-            g.es_print(s)
-
+    elif not g.app.unitTesting:
+        s = 'at_view plugin not loaded: win32Clipboard not present.'
+        g.es_print(s)
     return ok
 #@+node:ktenney.20041211072654.6: ** onCreate
 def onCreate(tag, keywords):
@@ -273,4 +229,7 @@ class View:
             c.setHeadString(child,'@view %s' % file.name)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 80
 #@-leo
