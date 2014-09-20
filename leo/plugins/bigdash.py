@@ -128,21 +128,30 @@ class BigDash:
         self.link_handler = lh
     #@+node:ekr.20140919160020.17914: *3* show_help
     def show_help(self):
-        
-        self.web.setHtml("""\
-            <h12>Dashboard</h2>
-            <table cellspacing="10">
-            <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
-            <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
-            <tr><td> <b>fts add</b></td><td>   <i>Add currently open, still unindexed leo files to index</i></td></tr>                    
-            <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
-            <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
-            <tr><td> <b>help</b></td><td>   <i>Show this help</i></td></tr>
-            <tr><td> <b>stats</b></td><td>   <i>List indexed files</i></td></tr>
-            <tr><td> <b>fts refresh</b></td><td>   <i>re-index files</i></td></tr>
-            </table>
-            
-            """)
+        '''Show the contents of the help panel.'''
+        if whoosh:
+            s = """
+    <h12>Dashboard</h2>
+    <table cellspacing="10">
+    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
+    <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
+    <tr><td> <b>fts add</b></td><td>    <i>Add currently open, still unindexed leo files to index</i></td></tr>                    
+    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
+    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
+    <tr><td> <b>help</b></td><td>       <i>Show this help</i></td></tr>
+    <tr><td> <b>stats</b></td><td>      <i>List indexed files</i></td></tr>
+    <tr><td> <b>fts refresh</b></td><td><i>re-index files</i></td></tr>
+    </table>
+    """
+        else:
+            s = """
+    <h12>Dashboard (whoosh disabled)</h2>
+    <table cellspacing="10">
+    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
+    <tr><td> <b>help</b></td><td>       <i>Show this help</i></td></tr>
+    </table>
+    """
+        self.web.setHtml(s)
         
     #@-others
 #@+node:ekr.20140919160020.17897: ** class GlobalSearch
@@ -155,12 +164,14 @@ class GlobalSearch:
             # A default: will be overridden by the global-search command.
         self.bd = BigDash()
         self.gnxcache = GnxCache()
-        self.fts = whoosh and LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
         if whoosh:
+            self.fts = LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
             self.bd.add_cmd_handler(self.do_fts)
-        self.bd.add_cmd_handler(self.do_stats)
+            self.bd.add_cmd_handler(self.do_stats)
+        else:
+            self.fts = None
         self.anchors = {}        
     #@+node:ekr.20140919160020.17922: *3* add_anchor
     def add_anchor(self,l,tgt, text):
