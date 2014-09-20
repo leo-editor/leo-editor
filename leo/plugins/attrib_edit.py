@@ -2,7 +2,7 @@
 #@+node:tbrown.20091029123555.5319: * @file attrib_edit.py
 #@+<< docstring >>
 #@+node:tbrown.20091009210724.10972: ** << docstring >>
-''' Edits user attributes in a Qt frame.
+r''' Edits user attributes in a Qt frame.
 
 This plugin creates a frame for editing attributes similar to::
 
@@ -623,29 +623,29 @@ class attrib_edit_Controller:
                 self.editors.append(editor)
 
                 self.form.addRow(QtWidgets.QLabel(name), editor.widget())
-    #@+node:tbrown.20091103080354.1405: *3* recSearch
-    def JUNKrecSearch(self, d, path, ans):
-        """recursive search of tree of dicts for values whose
-        key path is like [*][*][*]['_edit'][*] or
-        [*][*][*]['_edit']['_int'][*]
+    #@+node:tbrown.20091103080354.1405: *3* recSearch (not used)
+    # def JUNKrecSearch(self, d, path, ans):
+        # """recursive search of tree of dicts for values whose
+        # key path is like [*][*][*]['_edit'][*] or
+        # [*][*][*]['_edit']['_int'][*]
 
-        Modifies list ans
-        """
-        for k in d:
-            if isinstance(d[k], dict):
-                if k not in ('_edit', '_view'):
-                    self.recSearch(d[k], path+[k], ans)
-                else:
-                    # k == '_edit' or '_view'
-                    for ek in d[k]:
-                        if ek in self.typeMap:
-                            # ek is '_int' or similar
-                            type_ = self.typeMap[ek]
-                            for ekt in d[k][ek]:
-                                ans.append((ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
-                                    type_, k != '_edit'))
-                        else:
-                            ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
+        # Modifies list ans
+        # """
+        # for k in d:
+            # if isinstance(d[k], dict):
+                # if k not in ('_edit', '_view'):
+                    # self.recSearch(d[k], path+[k], ans)
+                # else:
+                    # # k == '_edit' or '_view'
+                    # for ek in d[k]:
+                        # if ek in self.typeMap:
+                            # # ek is '_int' or similar
+                            # type_ = self.typeMap[ek]
+                            # for ekt in d[k][ek]:
+                                # ans.append((ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
+                                    # type_, k != '_edit'))
+                        # else:
+                            # ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
     #@+node:tbrown.20091103080354.1406: *3* getAttribs
     def getAttribs(self, v = None):
         """Return a list of tuples describing editable uAs.
