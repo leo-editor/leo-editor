@@ -2,7 +2,7 @@
 #@+node:ekr.20040916084945: * @file macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-''' Creates new nodes containing parameterized section reference.
+r''' Creates new nodes containing parameterized section reference.
 
 .. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 
@@ -64,37 +64,16 @@ It's a lot easier to use than to explain!
 '''
 #@-<< docstring >>
 
-__version__ = "1.8"
-#@+<< version history >>
-#@+node:ekr.20040916091520: ** << version history >>
-#@+at
-# 
-# 1.2 EKR:
-# - Converted to outline.
-# - Use g.angleBrackets to enclose lines with < < and > >.
-# - Use new instead of start2 hook.
-# - onCreate creates a new class for each commander.
-# - Removed all globals.
-# 1.3 EKR: Changed 'new_c' logic to 'c' logic.
-# 1.4 EKR: Replaced tree.begin/endUpdate by c.beginEndUpdate.
-# 1.5 EKR: Added event param to parameterize.
-# 1.6 EKR: imported leoNodes.
-# 1.7 Rich Ries: improved the docstring.
-# 1.8 EKR: Add the menu only for the tkinter gui.
-#@-<< version history >>
-
 import leo.core.leoGlobals as g
-
 import re
 
 #@+others
 #@+node:ekr.20070302121133: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: adds command to Outline menu.
     g.registerHandler( ('new','menu2') ,onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):
@@ -208,4 +187,6 @@ class paramClass:
         c.frame.menu.createMenuItemsFromTable("Outline",table,dynamicMenu=True)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
