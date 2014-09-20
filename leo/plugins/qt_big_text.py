@@ -82,9 +82,10 @@ class LeoBigTextDialog(QtGui.QWidget):
     def more(self):
         bt = self
         bt.c.max_pre_loaded_body_chars *= 2
-        bt.wait()
-        bt.go_away()
-        bt.c.selectPosition(bt.p)
+        if bt.p.b < bt.c.max_pre_loaded_body_chars:
+            bt.wait()
+            bt.go_away()
+            bt.c.selectPosition(bt.p)
     #@+node:tbrown.20140919120654.24044: *3* wait
     def wait(self):
         bt = self
