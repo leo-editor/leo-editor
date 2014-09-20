@@ -1698,7 +1698,7 @@ class LeoTree(object):
 
             layout.addWidget(w.leo_big_text_w)
             layout.removeWidget(w)
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ****
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select (self,p,old_p,traceTime,force=False):
         '''Set the text after selecting a node.'''
         trace = True and force and not g.unitTesting
@@ -1734,42 +1734,25 @@ class LeoTree(object):
                 if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ****
-    def set_body_text_after_select (self,p,old_p,traceTime,force=False):
-        '''Set the text after selecting a node.'''
-        trace = True and force and not g.unitTesting
-        if traceTime: t1 = time.time()
-        # Always do this.  Otherwise there can be problems with trailing newlines.
+    #@+node:ekr.20140829172618.18479: *6* LeoTree.set_not_loaded_text
+    def set_not_loaded_text(self,p):
+        '''Set the body text to a "not loaded" message.'''
         c = self.c
-        w = c.frame.body.wrapper
-        s = p.v.b # Guaranteed to be unicode.
-        old_s = w.getAllText()
-        
-        if not force and p and p == old_p and s == old_s:
-            if trace: g.trace('*pass',len(s),p.h,old_p.h)
-        else:
-            # w.setAllText destroys all color tags, so do a full recolor.
-            if trace: g.trace('*reload',len(s),p.h,old_p and old_p.h)
-            w.setAllText(s) # ***** Very slow
-            if traceTime:
-                delta_t = time.time()-t1
-                if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
-            # Part 2:
-            if traceTime: t2 = time.time()
-            # We can't call c.recolor_now here.
-            colorizer = c.frame.body.colorizer
-            if hasattr(colorizer,'setHighlighter'):
-                if colorizer.setHighlighter(p):
-                    self.frame.body.recolor(p)
-            else:
-                self.frame.body.recolor(p)
-            if traceTime:
-                delta_t = time.time()-t2
-                tot_t = time.time()-t1
-                if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
-                if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
-        # This is now done after c.p has been changed.
-            # p.restoreCursorAndScroll()
+        if self.is_qt_body():
+            w = c.frame.body.wrapper.widget
+            wrapper = c.frame and c.frame.body and c.frame.body.wrapper
+            s = p.b
+            w.leo_big_text = p.b # Save the original text
+            # wrapper.setAllText(
+            #     "%d character text exceeds %d limit, not shown.\n\n"
+            #     "To load the body text, click the 'load' button.\n"
+            #     "Warning: make sure the text is fully loaded before using it!.\n\n"
+            #     "Set @int max-pre-loaded-body-chars in @settings\n"
+            #     "to permanently change limit."
+            #     % (len(s), c.max_pre_loaded_body_chars))
+            wrapper.setAllText('')
+            assert p.b == s
+                # There will be data loss if this assert fails.
     #@+node:ekr.20140829172618.18479: *6* LeoTree.set_not_loaded_text
     def set_not_loaded_text(self,p):
         '''Set the body text to a "not loaded" message.'''
