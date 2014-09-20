@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517075715.14: * @file word_export.py
-''' Adds the Plugins\:Word Export\:Export menu item to format and export
+r'''
+Adds the Plugins\:Word Export\:Export menu item to format and export
 the selected outline to a Word document, starting Word if necessary.
 '''
 
