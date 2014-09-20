@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20140919160718.9297: * @file ../plugins/qt_big_text.py
+#@+node:ekr.20140919181357.24956: * @file ../plugins/qt_big_text.py
 """Leo aware Qt Dialog for delaying loading of big text"""
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtGui
@@ -73,7 +73,7 @@ class LeoBigTextDialog(QtGui.QWidget):
                 bt.p.b = "@nocolor\n"+bt.p.b
             bt.owner.set_body_text_after_select(bt.p,bt.old_p,bt.traceTime,force=True)
             bt.owner.scroll_cursor(bt.p,bt.traceTime)
-            g.trace('calling onBodyChanged')
+            # g.trace('calling onBodyChanged')
             bt.c.frame.body.onBodyChanged(undoType='Typing')
         bt.go_away()
         bt.c.bodyWantsFocusNow()
