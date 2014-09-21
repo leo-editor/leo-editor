@@ -108,36 +108,19 @@ class ContextSniffer:
 #@+node:ekr.20110309051057.14267: ** Module level...
 #@+node:ville.20091204224145.5359: *3* init & helper
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     global tagLines
-
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         if keep_tag_lines:
             tagLines = read_tags_file()
             if not tagLines:
                 print('ctagscompleter: can not read ~/.leo/tags')
                 ok = False
-
         if ok:
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
-
     return ok
-
-
-# def init ():
-
-    # global tagLines
-
-    # ok = g.app.gui.guiName() == "qt"
-
-    # if ok:
-        # g.registerHandler('after-create-leo-frame',onCreate)
-        # g.plugin_signon(__name__)
-
-    # return ok
 #@+node:ville.20091204224145.5362: *3* install_codewise_completer
 # def install_codewise_completer(c):
 
@@ -148,21 +131,12 @@ def init ():
             # 'codewise-suggest',None, codewise_suggest)
 
 #@+node:ville.20091204224145.5361: *3* onCreate
-def onCreate (tag, keys):
-    
+def onCreate (tag, keys): 
     '''Register the ctags-complete command for the newly-created commander.'''
-
     c = keys.get('c')
     if c:
         c.k.registerCommand('ctags-complete','Alt-0',start)
         c.k.registerCommand('codewise-suggest',None, suggest)
-
-# def onCreate (tag, keys):
-
-    # c = keys.get('c')
-    # if not c: return
-
-    # install_codewise_completer(c)
 #@+node:ekr.20110309051057.14287: *3* read_tags_file
 def read_tags_file():
 
@@ -250,7 +224,7 @@ class CodewiseController:
         if m:
             obj = m.group(1)
             prefix = m.group(3)
-            klasses = guess_class(c,p, obj)
+            klasses = self.guess_class(c,p, obj)
         else:
             klasses = []
 
@@ -373,7 +347,8 @@ class CodewiseController:
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
         self.ev_filter.ctagscompleter_active = True
-        self.ev_filter.ctagscompleter_onKey = self.onKey
+        self.ev_filter.ctagscompleter_onKey = self.complete
+            # EKR: was self.onKey, which does not exist.
         
         # Show the completions.
         self.complete(event)
