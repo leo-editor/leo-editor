@@ -667,10 +667,11 @@ if g.app.gui.guiName() == "qt":
             self.UI.linkList.addItems(lst)
         #@+node:ekr.20140920145803.17992: *3* showMessage
         def showMessage(self, msg, color='black'):
-            
-            fg = Qt.black # pylint: disable=maybe-no-member
-            if hasattr(Qt, color):
-                fg = getattr(Qt, color)
+            '''Show the message in the label area.'''
+            try:
+                fg = QtGui.QColor(color)
+            except Exception:
+                fg = QtQui.QColor('black')
             pal = QtGui.QPalette(self.UI.label.palette())
             pal.setColor(QtGui.QPalette.WindowText, fg)
             self.UI.label.setPalette(pal)
