@@ -497,14 +497,12 @@ class notetextedit(QTextEdit):
         #print("mouseReleaseEvent")
         pos = event.pos()
         url = g.u(self.anchorAt(pos))
-
         if url:            
             if not url.startswith('http://'): #linux seems to need this
                 url = 'http://{0}'.format(url)
-            webbrowser.open(g.u(x), new=2, autoraise=True)
+            webbrowser.open(g.u(url),new=2,autoraise=True)
         else:
-            QTextEdit.mouseReleaseEvent(self, event)
-
+            QTextEdit.mouseReleaseEvent(self,event)
     #@+node:ekr.20100103100944.5418: *3* insertFromMimeData
     def insertFromMimeData(self, source):
         # not sure really necessary since it actually appears to paste URLs correctly
@@ -548,7 +546,11 @@ class notetextedit(QTextEdit):
                     fragment = iterator.fragment()
                     if fragment.isValid():
                         char_format = fragment.charFormat()
-                        text = g.u(Qt.escape(fragment.text())) # turns chars like < into entities &lt;
+                        # pylint: disable=no-member
+                        # EKR: I'm not sure whether this warning is valid.
+                        # I'm going to kill it because this is an experimental plugin.
+                        text = g.u(Qt.escape(fragment.text()))
+                            # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold
                         if char_format.isAnchor():
@@ -649,8 +651,7 @@ def stickynoter_f(event):
         if p.v is v:
             c.selectPosition(c.p)
 
-
-    nf = LessSimpleRichText(focusin, focusout)
+    nf = SimpleRichText(focusin, focusout)
     nf.dirty = False
     decorate_window(nf)
     nf.setWindowTitle(p.h)
@@ -713,5 +714,6 @@ def stickynoteplus_f(event):
 #@-others
 #@@language python
 #@@tabwidth -4
+
 
 #@-leo
