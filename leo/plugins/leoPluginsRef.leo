@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -27,16 +27,8 @@
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
 </v>
-<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
-</v>
-<v t="ekr.20100909111553.5583"><vh>Unit tests</vh>
-<v t="ekr.20100909121239.5797"><vh>@ignore</vh>
-<v t="ekr.20100909121239.5670"><vh>@test get_directive_path</vh></v>
-<v t="ekr.20100909121239.5951"><vh>@test find_at_screenshot_tree_node</vh></v>
-<v t="ekr.20100909193419.5596"><vh>set g.app.unitTestGui</vh></v>
-</v>
-<v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="edream.110203113231.618"><vh>Plugins</vh>
@@ -45,14 +37,11 @@
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
 <v t="ekr.20050306071629"><vh>Template for plugins that override commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20050306071629.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.4"><vh>init</vh></v>
 <v t="ekr.20050306071540"><vh>onStart2</vh></v>
 </v>
 <v t="ekr.20050303051035.2"><vh>Template for plugins with per-commander controller class</vh>
-<v t="ekr.20050303051035.3"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20050303051035.4"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050303051035.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050303051101"><vh>init</vh></v>
 <v t="ekr.20050303051150"><vh>onCreate</vh></v>
@@ -62,7 +51,7 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -114,7 +103,7 @@
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="edream.110203113231.916"><vh>@file examples/__overrideClasses.py</vh></v>
+<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
 <v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
 <v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
 <v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
@@ -135,7 +124,6 @@
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
 <v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
-<v t="ekr.20130927071752.11380"><vh>@file internal_ipkernel.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
@@ -164,7 +152,6 @@
 <v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
-<v t="peckj.20140811080604.9496"><vh>@file sftp.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
@@ -173,8 +160,7 @@
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
-<v t="ekr.20140727075002.18109"
-expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
+<v t="ekr.20140727075002.18109"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
 <v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
@@ -193,13 +179,10 @@ expanded="ekr.20140727075002.18258,"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
-<v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
-<v t="ekr.20080201143145"><vh>@file ./obsolete/ipython.py</vh></v>
-</v>
+<v t="ekr.20130927050813.13031"><vh>Obsolete</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="tbrown.20140806084727.30174" a="E"
-expanded="tbrown.20140806084727.30187,tbrown.20140806084727.30203,"><vh>@file livecode.py</vh></v>
+<v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
@@ -255,7 +238,6 @@ expanded="tbrown.20140806084727.30187,tbrown.20140806084727.30203,"><vh>@file li
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20090119215428.2"></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
@@ -292,8 +274,7 @@ in LeoDocs.leo for full details.
 </t>
 <t tx="edream.110203113231.618" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">@language python
 @tabwidth -4
-@pagewidth 80
-</t>
+@pagewidth 80</t>
 <t tx="edream.110203113231.667"></t>
 <t tx="edream.110203113231.729"></t>
 <t tx="edream.110203113231.872">@nocolor-node
@@ -335,7 +316,7 @@ describing what the plugin does and how to use it.
 Directives
 ----------
 
-Please put the following immediately following the plugin's docstring::
+Please put the following at the end of the plugin's top-level node.
 
     @language python
     @tabwidth -4
@@ -343,21 +324,17 @@ Please put the following immediately following the plugin's docstring::
 Imports
 -------
     
-- Do *not* assume that modules like Tkinter, Pmw, etc. are always available. Use
-  g.importExtension.
+- Do *not* assume that modules like Qt are always available.
 
-- Do *not* use either of the following kinds of imports::
-
-    from m import *
-    from m import x,y,z
+- Do *not* use from m import *
 
 - Your code should test whether modules have been imported only if those modules
   may not be available on all platforms.
-
-Use the following lines only if your plugin uses a gui::
-
-    if g.app.gui.guiName() == "qt":
-        ...
+  
+- To fail gracefully if the Qt gui is not in effect, put the following at
+  the top level::
+      
+      g.assertUi('qt')
         
 Exceptions
 ----------
@@ -372,9 +349,9 @@ failure by returning False.
 Use separate nodes
 ------------------
 
-**Please** define each function or method in a separate node! To make this work,
-just put @others in the root of your plugin as shown. Note that @others may be
-nested, as shown in class myClass.
+**Please** define each class, function or method in a separate node! To
+make this work, just put @others in the root of your plugin as shown. Note
+that @others may be nested, as shown in class myClass.
 </t>
 <t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
@@ -382,35 +359,26 @@ nested, as shown in class myClass.
 <t tx="ekr.20050303051035">@nocolor-node
 
 The following nodes show recommended style when writing plugins.</t>
-<t tx="ekr.20050303051035.2">&lt;&lt; docstring &gt;&gt;
-
-__version__ = '0.0'
-&lt;&lt; version history &gt;&gt;
-
-&lt;&lt; imports &gt;&gt;
-
-@others</t>
-<t tx="ekr.20050303051035.3">'''This docstring should be a clear, concise description of
-what the plugin does and how to use it.
+<t tx="ekr.20050303051035.2">'''
+A docstring describing your plugin and how to use it.
+If it's long, you might put it in a separate section.
 '''
+&lt;&lt; imports &gt;&gt;
+@others
+@language python
+@tabwidth -4
 </t>
-<t tx="ekr.20050303051035.4">@
-
-Put notes about each version here.</t>
 <t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
 
 # Whatever other imports your plugins uses.</t>
 <t tx="ekr.20050303051101">def init ():
-        
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() in ('qt','qttabs')
-
     if ok:
         if 1: # Use this if you want to create the commander class before the frame is fully created.
             g.registerHandler('before-create-leo-frame',onCreate)
         else: # Use this if you want to create the commander class after the frame is fully created.
             g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon(__name__)
-        
     return ok</t>
 <t tx="ekr.20050303051150">def onCreate (tag, keys):
     
@@ -436,33 +404,27 @@ Put notes about each version here.</t>
     
     # Replace frame.put with newPut (not shown).
     g.funcToMethod(newPut,log,"put")</t>
-<t tx="ekr.20050306071629">&lt;&lt; docstring &gt;&gt;
-
-__version__ = '0.0'
-&lt;&lt; version history &gt;&gt;
-
+<t tx="ekr.20050306071629">'''
+A docstring describing your plugin and how to use it.
+If it's long, you might put it in a separate section.
+'''
 &lt;&lt; imports &gt;&gt;
-
-@others</t>
+@others
+@language python
+@tabwidth -4</t>
 <t tx="ekr.20050306071629.1">'''This docstring should be a clear, concise description of
 what the plugin does and how to use it.
 '''
 </t>
-<t tx="ekr.20050306071629.2">@
-
-Put notes about each version here.</t>
 <t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
 
 # Whatever other imports your plugins uses.
 </t>
 <t tx="ekr.20050306071629.4">def init ():
-    
+    '''Return True if the plugin has loaded successfully.'''
     ok = True # This might depend on imports, etc.
-    
     if ok:
         g.registerHandler('start2',onStart2)
-        g.plugin_signon(__name__)
-        
     return ok</t>
 <t tx="ekr.20050306081349"></t>
 <t tx="ekr.20050328101812"> 
@@ -519,30 +481,6 @@ w.bind\(.*,.*,.*$
 <t tx="ekr.20081121105001.2080"># All gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090430075506.4"></t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.</t>
-<t tx="ekr.20100909111553.5583"></t>
-<t tx="ekr.20100909111553.5588"># Add the tree to the external unit test</t>
-<t tx="ekr.20100909121239.5670"># Works in external unit tests.
-g.loadOnePlugin(c,'screenshots')
-sc = c.screenshotController
-assert sc
-
-fn = sc.get_directive_path(p)
-assert fn</t>
-<t tx="ekr.20100909121239.5797"></t>
-<t tx="ekr.20100909121239.5951">g.loadOnePlugin(c,'screenshots')
-sc = c.screenshotController
-
-h = 'Headline and body text'
-p2 = g.findNodeAnywhere(c,h)
-assert p2
-
-root,h = sc.find_at_screenshot_tree_node(p2)
-assert root
-assert h == 'Urgent'
-
-</t>
-<t tx="ekr.20100909193419.5596">if 0: # Doesn't work well.
-    g.app.unitTestGui = 'qt'</t>
 <t tx="ekr.20100910115903.5597"></t>
 <t tx="ekr.20100910115903.5599"></t>
 <t tx="ekr.20101004082701.5674"></t>
