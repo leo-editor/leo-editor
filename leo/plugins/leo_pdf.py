@@ -283,14 +283,14 @@ import types
 #@+node:ekr.20140920145803.17996: ** top-level functions
 #@+node:ekr.20090704103932.5178: *3* init
 def init ():
-
-    '''This file may be distributed in Leo's plugin folder, but this file is NOT
+    '''
+    This file may be distributed in Leo's plugin folder, but this file is NOT
     a Leo plugin!
 
-    The init method returns None to tell Leo's plugin manager and unit tests to
-    skip this file.'''
-
-    return None
+    The init method returns False to tell Leo's plugin manager and unit tests to
+    skip this file.
+    '''
+    return False
 #@+node:ekr.20111103154150.9647: *3* getStyleSheet
 # Copied from stylesheet.py, from # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
 # standard stylesheet for our manuals

@@ -29,7 +29,7 @@ else:
 #@+others
 #@+node:ekr.20100128073941.5373: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: creates menu.
     g.registerHandler("create-optional-menus",createExportMenu)
     g.plugin_signon(__name__)

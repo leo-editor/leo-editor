@@ -11,16 +11,13 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20060621123339.4: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         # g.registerHandler('after-create-leo-frame',onCreate)
         g.registerHandler(('new','open2'),onCreate)
-
     return ok
 #@+node:ekr.20060621123339.5: ** onCreate
 def onCreate (tag, keys):

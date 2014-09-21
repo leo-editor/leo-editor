@@ -18,7 +18,7 @@ except ImportError:
 #@+others
 #@+node:ville.20090712141419.5253: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = pudb is not None
     if ok:
         def pudb_set_trace(*args):

@@ -16,13 +16,12 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20130808211520.15895: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('new', new_hook)
     g.registerHandler('create-node', create_node_hook)
     g.registerHandler('select1', select1_hook)
     g.plugin_signon(__name__)
     return True
-
 #@+node:ekr.20130808211520.15896: ** get_timestamp_now
 def get_timestamp_now():
     '''Use standard Unix timestamps

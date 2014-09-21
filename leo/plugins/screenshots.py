@@ -396,12 +396,10 @@ def slide_show_info_command(event):
         sc.slide_show_info_command(c.p)
 #@+node:ekr.20100908110845.5606: *3* init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = got_qt
-
     if ok:
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20100914090933.5770: *3* make_screen_shot
 def make_screen_shot (path):

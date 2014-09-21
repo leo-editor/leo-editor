@@ -80,12 +80,10 @@ import datetime
 #@+others
 #@+node:bobjack.20080615065747.2: ** init
 def init():
-    if 1: # OK for unit testing.
-
-        g.registerHandler("after-create-leo-frame", on_create)
-        g.plugin_signon(__name__)
-
-        return True
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("after-create-leo-frame", on_create)
+    g.plugin_signon(__name__)
+    return True # OK for unit testing.
 #@+node:gfunch.20041207100416.5: ** class DateNodes
 class DateNodes:
     """Main DateNodes class"""

@@ -236,13 +236,11 @@ from leo.core.leoQt import QtCore,QtGui
 #@+node:ekr.20120913110135.10608: ** top-level
 #@+node:ekr.20120913110135.10603: *3* init
 def init ():
-        
+    '''Return True if the plugin has loaded successfully.'''  
     ok = g.app.gui.guiName() in ('qt','qttabs')
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20120913110135.10604: *3* onCreate
 def onCreate (tag, keys):

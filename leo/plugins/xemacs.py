@@ -78,6 +78,7 @@ else:
 #@+others
 #@+node:ekr.20050218023308: ** init
 def init ():
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
     if ok:
         # g.registerHandler("icondclick2", open_in_emacs)

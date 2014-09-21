@@ -12,7 +12,7 @@ __version__ = '0.1'
 #@+others
 #@+node:ekr.20051016161205: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True

@@ -183,13 +183,8 @@ __version__ = '2.3'
 #@+others
 #@+node:bob.20080107154936: ** module level functions
 #@+node:bob.20080107154936.1: *3* init
-
 def init ():
-    """Initialize and register plugin.
-
-    Hooks create-optional-menus and after-create-leo-frame.
-
-    """
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("create-optional-menus",createExportMenus)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)

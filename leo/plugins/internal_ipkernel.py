@@ -37,7 +37,7 @@ if 0: # No longer used.
     #@+others
     #@+node:ekr.20130408094309.8748: ** init
     def init():
-        
+        '''Return True if the plugin has loaded successfully.'''
         return True # Required for Leo's unit tests.
     #@+node:ekr.20130408094309.8749: ** pylab_kernel
     def pylab_kernel(gui):

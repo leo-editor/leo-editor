@@ -106,15 +106,13 @@ OwnIdleHook = False
 #@+others
 #@+node:ekr.20060108160737: ** init
 def init ():
-
-    if 1: # Ok for unit testing.
-        g.registerHandler("bodykey2",OnBodyKey)
-        g.registerHandler("icondclick2",OnIconDoubleClick)
-        g.registerHandler("end1",OnQuit)
-        g.registerHandler("idle",OnIdle)
-        g.plugin_signon(__name__)
-
-    return True
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("bodykey2",OnBodyKey)
+    g.registerHandler("icondclick2",OnIconDoubleClick)
+    g.registerHandler("end1",OnQuit)
+    g.registerHandler("idle",OnIdle)
+    g.plugin_signon(__name__)
+    return True  # Ok for unit testing.
 #@+node:ekr.20060108160737.1: ** Hooks
 #@+node:ekr.20040910070811.12: *3* OnBodyKey
 def OnBodyKey(tag,keywords):

@@ -141,7 +141,7 @@ entrytypes.append('@string')
 #@+others
 #@+node:ekr.20100128073941.5370: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
     if ok:
         # Register the handlers...

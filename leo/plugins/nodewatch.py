@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20131130132659.5964: * @file nodewatch.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
 '''Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
@@ -73,45 +70,25 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.6'
-#@+<< version history >>
-#@+node:peckj.20131101132841.6446: ** << version history >>
-#@+at
-# 
-# Version 0.1 - initial release
-# Version 0.2 - a few bug fixes, same basic behavior
-# Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
-# Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
-# Version 0.5 - added 'Total: N items' label to bottom of nodewatch pane
-# Version 0.6 - use leoQt to ensure PyQt5 compatibility
-# 
-#@@c
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>
 import leo.core.leoGlobals as g
 #from PyQt4 import QtGui, QtCore
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
-
 #@+others
 #@+node:peckj.20131101132841.6448: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         #g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
     else:
-        g.es('Plugin %s not loaded.' % __name__, color='red')
-
+        g.es('nodewatch.py not loaded',color='red')
     return ok
 #@+node:peckj.20131101132841.6449: ** onCreate
 def onCreate (tag, keys):
@@ -269,4 +246,6 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         return nodes
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

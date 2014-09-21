@@ -111,18 +111,15 @@ from leo.external import leosax
 #@+others
 #@+node:peckj.20140113131037.5795: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Error loading plugin nodediff.py', color='red')
-
     return ok
 #@+node:peckj.20140113131037.5796: ** onCreate
 def onCreate (tag, keys):

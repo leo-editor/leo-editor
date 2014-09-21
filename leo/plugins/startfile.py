@@ -53,15 +53,13 @@ import os
 #@+others
 #@+node:ekr.20100128073941.5379: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = hasattr(os,"startfile")
         # Ok for unit testing, but may be icondclick1 conflicts.
-
     if ok:
         # Register the handlers...
         g.registerHandler("icondclick1",onIconDoubleClick)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20040828103325.3: ** onIconDoubleClick
 def onIconDoubleClick(tag,keywords):

@@ -18,21 +18,16 @@ __version__ = "0.1"
 #@+others
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     if not hasattr(g, 'pygeotag'):
-
         try:
             g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
             g.pygeotag.start_server()
-
             g.registerHandler('after-create-leo-frame',onCreate)
             g.registerHandler('end1',onQuit)
             g.plugin_signon(__name__)
-
         except socket.error:
-
             g.es('Geotag plugin init failed, perhaps port in use')
-
     return True
 #@+node:tbrown.20091214233510.5352: ** onCreate
 def onCreate (tag,key):

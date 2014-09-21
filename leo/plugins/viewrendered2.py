@@ -444,7 +444,7 @@ def decorate_window(w):
     w.resize(600, 300)
 #@+node:ekr.20140226074510.4192: *3* init
 def init():
-    '''top-level init function for viewrendered2.py.'''
+    '''Return True if the plugin has loaded successfully.'''
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)

@@ -40,6 +40,7 @@ __version__ = "0.3"
 linere = re.compile("^#line 1 \".*\"$")
 
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not safe for unit testing.  Changes core class.
     if ok:
         #@+<< override write methods >>

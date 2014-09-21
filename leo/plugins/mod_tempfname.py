@@ -30,15 +30,13 @@ __version__ = "1.3"
 #@+others
 #@+node:ekr.20100128091412.5382: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
         # Not Ok for unit testing: it changes Leo's core.
-
     if ok:
         # Register the handlers...
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:EKR.20040517075715.2: ** onStart
 def onStart (tag,keywords):

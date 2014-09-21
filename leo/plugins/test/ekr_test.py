@@ -3,6 +3,7 @@
 import leo.core.leoGlobals as g
 
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.unitTesting: return False
     g.registerHandler('before-create-leo-frame',onCreate)
     g.registerHandler('after-create-leo-frame',onCreate)

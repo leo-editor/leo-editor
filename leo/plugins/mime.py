@@ -86,17 +86,12 @@ def exec_string_cmd(cmd):
     return f
 #@+node:dan.20090203174248.30: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
-
     if ok:
-        #print('mime.py enabled')
-
         # Open on double click
         g.registerHandler('icondclick1', open_mimetype)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):

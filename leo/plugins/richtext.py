@@ -76,17 +76,16 @@ else:
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
-    if name != "qt":
-        if name != 'nullGui':
-            print('richtext.py plugin not loading because gui is not Qt')
-        return False
-
-    g.registerHandler('after-create-leo-frame',onCreate)
-    g.registerHandler('select3', at_rich_check)
-    g.plugin_signon(__name__)
-    return True
+    ok = name == 'qt'
+    if ok:
+        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('select3', at_rich_check)
+        g.plugin_signon(__name__)
+    elif name != 'nullGui':
+        print('richtext.py plugin not loading because gui is not Qt')
+    return ok
 #@+node:tbrown.20130813134319.5691: ** class CKEEditor
 class CKEEditor(QtGui.QWidget):
     #@+others

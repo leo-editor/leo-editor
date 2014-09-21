@@ -10,5 +10,6 @@ It is used for testing Leo's plugin loading logic.
 a = # This is the syntax error
 
 def init ():
+    '''Return True if the plugin has loaded successfully.'''
     return True
 #@-leo

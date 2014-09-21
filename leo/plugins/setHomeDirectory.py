@@ -5,6 +5,7 @@
 import leo.core.leoGlobals as g
 
 def init ():
+    '''Return True if the plugin has loaded successfully.'''
     g.app.homeDir = path = 'c:\\'
     print('setHomeDirectory.py g.app.homeDir set to %s' % path)
     return True

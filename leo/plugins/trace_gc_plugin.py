@@ -15,20 +15,16 @@ gcCount = 0
 #@+others
 #@+node:ekr.20100128091412.5386: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit testing.
-
     if ok: # Register the handlers...
-
         if 1: # Very effective.
             g.registerHandler("idle", printIdleGC)
         else: # Very precise.
             g.registerHandler("all", printIdleGC)
         if 0: # Another idea.
             g.registerHandler("command2", printIdleRefs)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20050111084900: ** printIdleRefs
 def printIdleRefs(tag,keywords):

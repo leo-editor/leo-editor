@@ -100,22 +100,18 @@ gIP = None
 #@+node:ekr.20080201144219: ** Module-level functions
 #@+node:ekr.20080201143145.4: *3* init
 def init ():
-    
+    '''Return True if the plugin has loaded successfully.'''
     print('**Important**: Use Leo\'s --ipython option instead of the ipython.py plugin.')
-
-    if not import_ok: return False
-
+    if not import_ok:
+        return False
     # This plugin depends on the properties of the gui's event loop.
     # It may work for other gui's, but this is not guaranteed.
-
     if g.app.gui and g.app.gui.guiName() == 'qt' and not g.app.useIpython:
         g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
         return False
-
     # Call onCreate after the commander and the key handler exist.
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20080201143145.5: *3* onCreate
 def onCreate (tag, keys):

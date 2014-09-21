@@ -251,13 +251,10 @@ def decorate_window(w):
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
-    
+    '''Return True if the plugin has loaded successfully.'''
     g.plugin_signon(__name__)
-
     g.registerHandler('after-create-leo-frame', onCreate)
-    
     g.registerHandler('scrolledMessage', show_scrolled_message)
-
     return True
 #@+node:ekr.20110317024548.14376: *3* onCreate
 def onCreate(tag, keys):

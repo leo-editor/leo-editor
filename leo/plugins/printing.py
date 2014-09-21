@@ -118,16 +118,13 @@ from leo.core.leoQt import QtWidgets
 #@+others
 #@+node:peckj.20130513115943.16247: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:peckj.20130513115943.16248: ** onCreate
 def onCreate (tag, keys):

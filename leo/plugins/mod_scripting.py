@@ -169,13 +169,11 @@ __version__ = '2.5'
 #@+others
 #@+node:ekr.20060328125248.4: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     # This plugin is now gui-independent.            
     ok = g.app.gui and g.app.gui.guiName() in ('qt','qttabs','nullGui')
-
     if ok:
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc)
@@ -186,7 +184,6 @@ def init ():
         # That is, the 'after-create-leo-frame' hook is too early!
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20060328125248.5: ** onCreate
 def onCreate (tag, keys):

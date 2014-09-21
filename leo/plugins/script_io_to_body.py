@@ -23,10 +23,9 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20071025195133: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20071212092332: ** onCreate
 def onCreate (tag, keys):

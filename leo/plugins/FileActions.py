@@ -87,7 +87,7 @@ file_directives = [
 #@+others
 #@+node:ekr.20060108162524: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Dangerous for unit testing.
     if ok:
         g.registerHandler("icondclick1", onIconDoubleClick)

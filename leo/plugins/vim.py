@@ -38,11 +38,6 @@ Leo cursor in file.
 
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
-__version__ = "2.0" # EKR
 #@+<< version history >>
 #@+node:ekr.20050226184411.1: ** << version history >>
 #@@killcolor
@@ -181,9 +176,8 @@ locationMessageGiven = False
 #@+others
 #@+node:ekr.20050226184624: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
-
     if ok:
         # print ('vim.py enabled')
         # Register the handlers...
@@ -193,11 +187,8 @@ def init ():
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
-        if 0:
-            os.system(_vim_cmd)
-
+        if 0: os.system(_vim_cmd)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20120315101404.9745: ** g.command('vim-open-node')
 @g.command('vim-open-node')
@@ -293,4 +284,6 @@ def open_in_vim_helper (c):
         # Reopen the old temp file.
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

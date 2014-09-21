@@ -202,23 +202,15 @@ def colorize_headlines_visitor(c,p, item):
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: *3* init
 def init ():
-    
+    '''Return True if the plugin has loaded successfully.'''
     # vs_reset(None)
-    
     global controllers
-    #g.vs = {} # A dictionary of dictionaries, one for each commander.
-
+    # g.vs = {} # A dictionary of dictionaries, one for each commander.
     # create global valuaspace controller for ipython
-        
     g.visit_tree_item.add(colorize_headlines_visitor)
-    
     g.registerHandler('after-create-leo-frame',onCreate)
-
     g.plugin_signon(__name__)
-
     return True
-
-#init()
 #@+node:ekr.20110408065137.14222: *3* onCreate
 def onCreate (tag,key):
     

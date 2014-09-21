@@ -51,22 +51,18 @@ keep_tag_lines = True
 #@+node:ekr.20110307092028.14155: ** Module level...
 #@+node:ville.20090317180704.11: *3* init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     global tagLines
-
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         if keep_tag_lines:
             tagLines = read_tags_file()
             if not tagLines:
                 print('ctagscompleter: can not read ~/.leo/tags')
                 ok = False
-
         if ok:
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
-
     return ok
 #@+node:ville.20090317180704.12: *3* onCreate
 def onCreate (tag, keys):

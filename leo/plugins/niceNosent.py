@@ -38,14 +38,12 @@ nosentNodes = []
 #@+others
 #@+node:ekr.20050917082031: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
-
     if ok:
         g.registerHandler("save1",onPreSave)
         g.registerHandler("save2",onPostSave)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20040331151007.1: ** onPreSave
 def onPreSave(tag=None, keywords=None):

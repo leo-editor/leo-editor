@@ -118,15 +118,12 @@ else:
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Override the base class
     leoPlugins.registerHandler('start1',onStart2)
-
     # Register the commands.
     leoPlugins.registerHandler(('open2','new'),onCreate)
-
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20060904103412.5: *3* onCreate
 def onCreate (tag, keys):

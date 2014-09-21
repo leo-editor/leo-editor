@@ -597,18 +597,14 @@ class LeoPluginsController:
         return result
     #@+node:ekr.20031218072017.1318: *4* plugin_signon
     def plugin_signon(self,module_name,verbose=False):
-
+        '''Print the plugin signon.'''
         # This is called from as the result of the imports
         # in self.loadOnePlugin
-
         m = self.signonModule
-
         if verbose:
             g.es('',"...%s.py v%s: %s" % (
                 m.__name__, m.__version__, g.plugin_date(m)))
-
             g.pr(m.__name__, m.__version__)
-
         self.signonModule = None # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* unloadOnePlugin
     def unloadOnePlugin (self,moduleOrFileName,verbose=False):

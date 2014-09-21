@@ -14,14 +14,8 @@ directives = ("markup",) # A tuple with one string.
 #@+others
 #@+node:ekr.20070725103420: ** init
 def init ():
-
-    ok = True # not  g.app.unitTesting:
-
-    # Register the handlers...
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start1",addPluginDirectives)
-    # g.registerHandler("scan-directives",scanPluginDirectives)
-    g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.742: ** addPluginDirectives
 def addPluginDirectives (tag,keywords):

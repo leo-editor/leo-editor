@@ -34,13 +34,12 @@ __version__ = "0.2"
 #@+others
 #@+node:ekr.20100128091412.5381: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start1", onStart)
     g.registerHandler("create-optional-menus",create_UserMenu)
     g.registerHandler("iconrclick2", onRclick)
     g.plugin_signon(__name__)
     g.es('mnplug OK+Commands+Menu aktiv',color='green')
-
     return True
 #@+node:ekr.20040205071616.1: ** mnstamp
 def mnstamp():

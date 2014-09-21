@@ -94,6 +94,7 @@ testing = False
 #@+others
 #@+node:tbrown.20091128094521.15048: ** init
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority = 90)
     g.plugin_signon(__name__)
