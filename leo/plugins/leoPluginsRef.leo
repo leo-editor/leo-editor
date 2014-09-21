@@ -205,7 +205,6 @@
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
 <v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
 <v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
-<v t="ekr.20071113084440.1"><vh>@file test/syntax_error_plugin.py</vh></v>
 <v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>

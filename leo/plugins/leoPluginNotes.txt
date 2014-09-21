@@ -446,6 +446,19 @@ class LeoInterface:
     def __init__(self,c,g,tag='@ipython-results'):
         self.c = c
         self.g = g
+#@+node:ekr.20071113084440.1: ** @file test/syntax_error_plugin.py
+# pylint: disable=syntax-error
+
+'''
+This plugin intentially has a syntax error.
+It is used for testing Leo's plugin loading logic.
+'''
+
+a = # This is the syntax error
+
+def init ():
+    '''Return True if the plugin has loaded successfully.'''
+    return True
 #@-all
 This file contains unused plugins and code
 #@-leo
