@@ -146,7 +146,7 @@ def timer_callback_helper(c,t,timer):
     if t.isAlive():
         c._at_produce_count += 1
         if (c._at_produce_count % c._at_produce_max) == 0:
-            g.es_print('at-produce: %s' % c.at_produce_command)
+            g.es_print(c.at_produce_command)
     else:
         f = open('produce.log','r')
         s = f.read()
@@ -160,7 +160,7 @@ def timer_callback_helper(c,t,timer):
         p.b = s
         c.redraw()
         timer.stop()
-        g.es_print('at-produce done')
+        g.es_print('at-produce: done')
 #@-others
 #@@language python
 #@@tabwidth -4
