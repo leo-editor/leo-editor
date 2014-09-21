@@ -50,10 +50,10 @@ def addMenu( tag, keywords ):
     m = mc.createNewMenu ('Produce',parentName="outline",before=None)
     c.add_command(m,
         label = "Execute All Produce",
-        command = lambda c = c: exeProduce(c,all=True))
+        command = lambda c = c: run(c,all=True))
     c.add_command(m,
         label = "Execute Tree Produce",
-        command = lambda c = c: exeProduce(c,all=False ) )
+        command = lambda c = c: run(c,all=False ) )
 #@+node:ekr.20140920173002.17965: ** at-produce commands
 @g.command('at-produce-all')
 def produce_all_f(event):
