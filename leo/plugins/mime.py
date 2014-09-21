@@ -37,30 +37,16 @@ association handler" and either define a default _mime_open_cmd string, where
 filename string as its only argument and set as open_func.
 '''
 #@-<< docstring >>
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:dan.20090203174248.28: ** << version history >>
-#@+at
-# 
-# Contributed by Dan White <etihwnad _at_ gmail _dot_ com>.
-# 
-# 0.1 - Initial plugin
-# 0.2 - DJW:  -changed open file architecture
-#             -added support for win32 platform
-# 0.3 - DJW:  -remove explicit "__name__" assignment
-#             -quiet signon
-#             -rearrange sections for easier reading
-#@-<< version history >>
-#@+<< imports >>
-#@+node:dan.20090203174248.29: ** << imports >>
-import leo.core.leoGlobals as g
 
+# By Dan White <etihwnad _at_ gmail _dot_ com>.
+
+import leo.core.leoGlobals as g
 import mailcap
 import mimetypes
 import os
 import subprocess
 import sys
-#@-<< imports >>
+
 #@+others
 #@+node:dan.20090210183435.1: ** exec_full_cmd
 def exec_full_cmd(cmd):
@@ -194,9 +180,9 @@ if sys.platform == 'linux2':
 
     else:
         pass
-
 elif sys.platform == 'win32':
-    #use this directly as 1-arg fn, default action is 'open'
+    # Use this directly as 1-arg fn, default action is 'open'
+    # pylint: disable=no-member
     open_func = os.startfile
 #@-<< guess file association handler >>
 #@-leo
