@@ -1,14 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20090206153748.1: * @file graphcanvas.py
-#@+<< docstring >>
-#@+node:ekr.20140909072923.18135: ** << docstring >>
 """
 Provides a widget for displaying graphs (networks) in Leo.
 
 Requires Qt and the backlink.py plugin.
-
-Implementation notes
---------------------
 
 There are various bindings for graphviz:
 http://blog.holkevisser.nl/2011/01/24/how-to-use-graphvize-with-python-on-windows/
@@ -16,7 +11,7 @@ but pydot and pygraphviz are two of the more common and pydot is easier to insta
 in windows.  This plugin started out supporting both, but it seems (TNB 20120511) to
 make sense to focus on pydot.
 """
-#@-<< docstring >>
+
 #@+<< imports >>
 #@+node:bob.20110119123023.7392: ** << imports >> graphcanvas
 import leo.core.leoGlobals as g
@@ -28,11 +23,10 @@ import os
 import tempfile
 
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     import urllib.request as urllib
-    # import urllib.parse as urlparse
 else:
     import urllib2 as urllib
-    # import urlparse
     
 # from xml.sax.saxutils import quoteattr
 
