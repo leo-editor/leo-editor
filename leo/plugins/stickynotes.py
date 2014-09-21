@@ -544,9 +544,10 @@ class Tabula(QMainWindow):
             n = self.notes[gnx]
             n.show()
             return n
-
         n = mknote(self.c, p, parent = self.mdi)
         sw = self.mdi.addSubWindow(n)
+        # pylint: disable=maybe-no-member
+        # Qt.WA_DeleteOnClose does exist.
         sw.setAttribute(Qt.WA_DeleteOnClose, False)
         self.notes[gnx] = n
         n.show()
