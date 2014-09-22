@@ -55,7 +55,7 @@ expanded="ekr.20090202064534.4,"><vh>@file ../doc/leoNotes.txt</vh></v>
 <v t="ekr.20140831085423.18631"><vh>&lt;&lt; official ivars &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608" a="E"
+<v t="ekr.20031218072017.2608"
 expanded="ekr.20120209051836.10242,ekr.20120215062153.10740,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -220,12 +220,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240">def relink(self):
-    '''Relink all unlinked clones.'''
-    d = self.d
-    # Find original cloned nodes.
-    for key in sorted(d.keys()):
-        g.trace(key,d.get(key))</t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.5">
 
 
