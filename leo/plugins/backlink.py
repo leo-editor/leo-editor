@@ -671,7 +671,7 @@ if g.app.gui.guiName() == "qt":
             try:
                 fg = QtGui.QColor(color)
             except Exception:
-                fg = QtQui.QColor('black')
+                fg = QtGui.QColor('black')
             pal = QtGui.QPalette(self.UI.label.palette())
             pal.setColor(QtGui.QPalette.WindowText, fg)
             self.UI.label.setPalette(pal)
