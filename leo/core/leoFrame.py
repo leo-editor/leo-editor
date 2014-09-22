@@ -12,6 +12,8 @@ big_text_buttons = True # Show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import leo.core.leoGlobals as g
+import leo.core.leoColorizer as leoColorizer
+    # NullColorizer is a subclass of ColorizerMixin
 import leo.core.leoMenu as LeoMenu
 import leo.core.leoNodes as leoNodes
 
@@ -1946,8 +1948,11 @@ class NullBody (LeoBody):
     def setFocus (self):                        pass
     #@-others
 #@+node:ekr.20031218072017.2218: ** class NullColorizer
-class NullColorizer(object):
-    '''A do-nothing colorer class'''
+class NullColorizer(leoColorizer.ColorizerMixin):
+    '''
+    A colorizer class that doesn't color,
+    but does support methods 
+    '''
     #@+others
     #@+node:ekr.20031218072017.2219: *3* __init__ (NullColorizer)
     def __init__ (self,c):
@@ -1966,12 +1971,14 @@ class NullColorizer(object):
     def disable(self): pass
     def enable(self): pass
     def kill (self): pass
-    def scanColorDirectives(self,p): pass
     def setHighlighter (self,p): return False
     def showInvisibles(self): pass
-    def updateSyntaxColorer (self,p): pass
-    def useSyntaxColoring(self,p): return False
     def write_colorizer_cache (self,p): pass
+
+    # External unit tests require the standard (ColorizerMixin) methods for these:
+        # def scanColorDirectives(self,p): pass
+        # def updateSyntaxColorer (self,p): pass
+        # def useSyntaxColoring(self,p): return False
     #@-others
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame (LeoFrame):
@@ -2212,15 +2219,14 @@ class NullStatusLineClass(object):
     #@-others
 #@+node:ekr.20031218072017.2233: ** class NullTree (LeoTree)
 class NullTree (LeoTree):
-    '''A do-nothing tree class.'''
+    '''A do-almost-nothing tree class.'''
     #@+others
     #@+node:ekr.20031218072017.2234: *3*  NullTree.__init__
     def __init__ (self,frame):
-
+        '''Ctor for NullTree class.'''
         LeoTree.__init__(self,frame) # Init the base class.
-
         assert(self.frame)
-
+        self.c = frame.c
         self.editWidgetsDict = {} # Keys are tnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
@@ -2240,15 +2246,17 @@ class NullTree (LeoTree):
             g.pr('w',w,'v.h:',key.headString,'s:',repr(w.s))
 
     #@+node:ekr.20031218072017.2236: *3* Overrides
+    #@+node:ekr.20140921184356.17921: *4* NullTree.redraw
     #@+node:ekr.20070228163350.1: *4* Drawing & scrolling (NullTree)
     def drawIcon(self,p):
         pass
-
+        
     def redraw(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
+        # g.trace(p and p.h, self.c.p.h)
 
     def redraw_now(self,p=None,scroll=True,forceDraw=False):
-        self.redrawCount += 1
+        self.redraw(p)
 
     def redraw_after_contract(self,p=None): self.redraw()
     def redraw_after_expand(self,p=None):   self.redraw()
@@ -2273,12 +2281,18 @@ class NullTree (LeoTree):
     #@+node:ekr.20070228164730: *5* editLabel (NullTree)
     def editLabel (self,p,selectAll=False,selection=None):
         '''Start editing p's headline.'''
+        
         self.endEditLabel()
         self.setEditPosition(p)
             # That is, self._editPosition = p
         if p:
             self.revertHeadline = p.h
                 # New in 4.4b2: helps undo.
+            wrapper = StringTextWrapper(c=self.c,name='head-wrapper')
+            e = None
+            return e,wrapper
+        else:
+            return None,None
     #@+node:ekr.20070228160345: *5* setHeadline (NullTree)
     def setHeadline (self,p,s):
 
