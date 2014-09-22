@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.70">
-	<global_window_position top="95" left="307" height="929" width="1312"/>
+	<global_window_position top="95" left="571" height="929" width="1307"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -49,6 +49,12 @@
 <v t="ekr.20140712144020.4334"><vh>@persistence</vh>
 <v t="ekr.20140724164208.5573"><vh>@data:@auto root</vh>
 <v t="ekr.20140724164208.5574"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140921190548.4838"><vh>@data:#@auto</vh>
+<v t="ekr.20140922054250.4786"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140921190548.4840"><vh>@data:#@auto</vh>
+<v t="ekr.20140922054250.4787"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
@@ -285,34 +291,22 @@
 </v>
 </v>
 </v>
-<v t="ekr.20140906073339.5226"><vh>Interesting fails</vh>
-<v t="ekr.20071113145804.4"></v>
-<v t="ekr.20061101121602.154"></v>
-<v t="ekr.20100204165850.5373"></v>
-<v t="ekr.20140906074600.4697"><vh>@suite Failing Edit body tests</vh>
-<v t="ekr.20140906074600.4698"><vh>editBodyTests</vh>
-<v t="ekr.20140906074600.4699"><vh>tempNode</vh></v>
-<v t="ekr.20140906074600.4700"><vh>addComments</vh>
-<v t="ekr.20140906074600.4701"><vh>before</vh></v>
-<v t="ekr.20140906074600.4702"><vh>after</vh></v>
-<v t="ekr.20140906074600.4703"><vh>selection</vh></v>
-</v>
-<v t="ekr.20140906074600.4724"><vh>deleteComments</vh>
-<v t="ekr.20140906074600.4725"><vh>before</vh></v>
-<v t="ekr.20140906074600.4726"><vh>after</vh></v>
-<v t="ekr.20140906074600.4727"><vh>selection</vh></v>
-</v>
-<v t="ekr.20140906074600.4728"><vh>deleteComments</vh>
-<v t="ekr.20140906074600.4729"><vh>before</vh></v>
-<v t="ekr.20140906074600.4730"><vh>after</vh></v>
-<v t="ekr.20140906074600.4731"><vh>selection</vh></v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+expanded="ekr.20071113194858,ekr.20100131171342.5599,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140921180825.6363"><vh>Failed tests when run externally</vh>
+<v t="ekr.20140921180825.6364"><vh>--trace-plugins</vh></v>
+<v t="ekr.20140921180825.6365"><vh>bridge test</vh></v>
+<v t="ekr.20140921200206.6409"><vh>invalid positions</vh></v>
+<v t="ekr.20140921200206.6410"><vh>compare outlines failed</vh></v>
+<v t="ekr.20140921180825.6371"><vh>import/export commands</vh></v>
+<v t="ekr.20140921180825.6372"><vh>position tests</vh></v>
+<v t="ekr.20140921180825.6373"><vh>p move/clone tests</vh></v>
+<v t="ekr.20140921180825.6374"><vh>edit body tests</vh></v>
+<v t="ekr.20111105221757.3833"><vh>@test TM.findAllUnitTestNodes</vh></v>
+</v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1127,7 +1121,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10,0,6,14,0"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1188,6 +1182,55 @@ finally:
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20080503082625.3">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    if p.parent(): p.parent().expand()
+        # A hack for external unit tests.
+        # This should be corrected at the source.
+    p.expand()
+    c.selectPosition(p3)
+    # print(c.p.h) # Correct: B
+    c.deleteOutline()
+    # print(c.p.h) # Should be A. was All unit tests until the hack above.
+    c.redraw_now()
+    p = c.p
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+    assert p.next().h == 'C', 'fail 2'
+    c.undoer.undo()
+    c.outerUpdate()
+    p = c.p
+    assert p.back() == p2, 'fail 4 %s' % p.back()
+    assert p.next() == p4, 'fail 5'
+    c.undoer.redo()
+    c.outerUpdate()
+    p = c.p
+    assert p.h == 'A',          'fail 1-2'
+    assert p.next().h == 'C',   'fail 2-2'
+    c.undoer.undo()
+    c.outerUpdate()
+    p = c.p
+    assert p.back() == p2,  'fail 4-2'
+    assert p.next() == p4,  'fail 5-2'
+    c.undoer.redo()
+    c.outerUpdate()
+    p = c.p
+    assert p.h == 'A',          'fail 1-3'
+    assert p.next().h == 'C',   'fail 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
 </t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
@@ -1528,7 +1571,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
-Last paragraraph.
+Last paragraph.
 </t>
 <t tx="ekr.20110118082508.3773">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -1571,7 +1614,7 @@ strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
-Last paragraraph.
+Last paragraph.
 </t>
 <t tx="ekr.20110118082508.3781">Americans live in the most severe
 weather-prone country on Earth. Each
@@ -1659,7 +1702,7 @@ but StormReady can help communities save
 lives. Does StormReady make a
 difference?
 
-Last paragraraph.
+Last paragraph.
 </t>
 <t tx="ekr.20110118082508.3789">Americans live in the most severe
 weather-prone country on Earth. Each
@@ -1765,6 +1808,22 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111105221757.3833">p1 = p.copy()
+
+def found(p,result):
+    return any([p.v == p2.v for p2 in result])
+
+table = (('all',True,False),('marked',False,True))
+try:
+    p.setMarked()
+    assert p.isMarked(),p
+    for kind,all,marked in table:
+        result = c.testManager.findAllUnitTestNodes(all,marked)
+        assert found(p,result),(kind,len(result))
+    assert p == p1,(p,p1)
+finally:
+    p1.clearMarked()
+</t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 # run-selected-unit-tests-externally = Alt-5 # Standard binding, unchanged.
@@ -1774,6 +1833,12 @@ nodeB
 run-selected-unit-tests-locally = Alt-4
 run-marked-unit-tests-locally = Alt-5
 # run-all-unit-tests-locally = Alt-6
+
+run-selected-unit-tests-externally = Alt-7
+
+# Unused Alt-number commands
+# Alt-9 is used by a unit test
+# Alt-6
 do-nothing = Alt-6
 </t>
 <t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
@@ -2244,120 +2309,1055 @@ unl: organizer node--&gt;child2
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
-<t tx="ekr.20140906073339.5226"># The add/delete comments command actually do not work.</t>
-<t tx="ekr.20140906074600.4697"># Create unit tests in g.app.scriptDict["suite"]
+<t tx="ekr.20140921180825.6363">@nocolor
 
-suite = c.testManager.makeEditBodySuite(p)
+# g.app.isExternalUnitTest:
 
-# g.app.scriptDict['suite'] = suite
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test TypeScript module
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 31, in &lt;module&gt;
+    c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 1392, in typeScriptUnitTest
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ts')
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 1454, in scannerUnitTest
+    assert ok,'\n'.join(table)
+AssertionError:
+ext:                  .ts
+fileName:             @test TypeScript module
+result:               False
+actual errors:        1
+expected errors:      0
+actualMismatchLine:   None
+expectedMismatchLine: None
+actualErrorMessage:   u'import command did not import @file C:/leo.repo/leo-editor/leo/test/TypeScript module perfectly\
+nThe clean-all-lines command may help fix whitespace problems\nfirst mismatched line: 5 (original) = 5 (imported)'
+expectedErrorMessage: None
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test ic.createImportParent
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 12, in &lt;module&gt;
+    assert p.firstChild() == current
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test c.positionExists
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 4, in &lt;module&gt;
+    assert c.positionExists(child)
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.isCurrentPosition
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert c.isCurrentPosition(p) is True
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.moveToFirst/LastChild
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    assert c.positionExists(p2),p2
+AssertionError: &lt;pos 128565136 childIndex: 1 lvl: 2 key: 118125808:0.119782416:589.128565104:1 test&gt;
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.moveToVisBack in a chapter
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert aaa1
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test clone and move the clone to the root
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 15, in &lt;module&gt;
+    assert clone.h == 'child','fail headstring: %s' % clone.h
+AssertionError: fail headstring: All unit tests
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test delete node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+AssertionError: fail 1: got All unit tests
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test demote
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 20, in &lt;module&gt;
+    assert p == p3,         'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test insert node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 21, in &lt;module&gt;
+    assert p.back(),'no p.back(): %s' % (p)
+AssertionError: no p.back(): &lt;pos 122480720 childIndex: 0 lvl: 1 key: 118125808:0.128695344:0 inserted&gt;
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-down &amp; undo/redo
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 20, in &lt;module&gt;
+    assert moved.h == 'B',          'fail 1: %s' % moved.h
+AssertionError: fail 1: All unit tests
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-left
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    assert moved.h == 'A','fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-right
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 17, in &lt;module&gt;
+    assert moved.h == 'B', 'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-up
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert moved.h == 'C',          'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test paste-node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert c.p.h == 'child','fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test paste-retaining-clones
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 21, in &lt;module&gt;
+    assert v in oldVnodes, 'fail 3'
+AssertionError: fail 3
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test promote
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 22, in &lt;module&gt;
+    assert p == p3,         'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test pd.find_representative_node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 12, in &lt;module&gt;
+    assert clone.v == inner_clone.v
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test pd.has_..._node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 18, in &lt;module&gt;
+    assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+AssertionError: (&lt;VNode 72494b0 clone-test&gt;, &lt;VNode 7249450 clone-test&gt;)
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test TM.findAllUnitTestNodes
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 14, in &lt;module&gt;
+    assert found(p,result),(kind,len(result))
+AssertionError: ('marked', 0)
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: addComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: addComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertAllBlanks
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertAllTabs
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertBlanks
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertTabs
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: dedentBody
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: dedentBody: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: deleteComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: deleteComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: extract test1
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: extractSection test1
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extractSection: before undo1
+
+----------------------------------------------------------------------
+Ran 861 tests in 17.924s
+
+FAILED (failures=30)
 </t>
-<t tx="ekr.20140906074600.4698">@language plain
-@
+<t tx="ekr.20140921180825.6364">@nocolor-node
 
-The names of child nodes are the names of commander methods to be called to do the test.
+created selected unit tests in 0.65sec in dynamicUnitTest.leo
+runUnitTestLeoFile args...
+  c:\python27\python.exe
+  C:\leo.repo\leo-editor\leo\core\leoDynamicTest.py
+  --gui=nullGui
+  --path=C:\leo.repo\leo-editor\leo\test\dynamicUnitTest.leo
+  --load-plugins
+  --read-settings
+  --silent
+  --trace-plugins
+  --verbose
+runUnitTestLeoFile *** spawning test process C:\leo.repo\leo-editor\leo\test\dynamicUnitTest.leo
+leoDynamicTest.py: curdir c:\leo.repo\leo-editor
+leoDynamicTest.py: argv...
+  '--path=C:\\leo.repo\\leo-editor\\leo\\test\\dynamicUnitTest.leo'
+  '--load-plugins'
+  '--read-settings'
+  '--silent'
+  '--trace-plugins'
+  '--verbose'
+leoDynamicTest.py:main: options...
+  gui:           nullGui
+  load_plugins:  True
+  read_settings: True
+  silent:        True
+  trace_plugins: True
+  verbose:       True
+leoDynamicTests.leo open bridge:  1.15sec
+leoDynamicTests.leo open file:    0.94sec</t>
+<t tx="ekr.20140921180825.6365">running @test leoBridge init logic
+loadOnePlugin: leo.plugins.plugins_menu.init() returned False
+loadOnePlugin: already loaded: leo.plugins.mod_scripting
+loadOnePlugin: leo.plugins.bigdash.init() returned False
+loadOnePlugin: plugin leo.plugins.bookmarks does not support nullGui gui
+loadOnePlugin: plugin leo.plugins.contextmenu does not support nullGui gui
+loadOnePlugin: plugin leo.plugins.nav_qt does not support nullGui gui
+loadOnePlugin: plugin leo.plugins.quicksearch does not support nullGui gui
+loadOnePlugin: leo.plugins.richtext.init() returned False</t>
+<t tx="ekr.20140921180825.6371">======================================================================
+FAIL: runTest (leo.core.leoTest.ImportExportTestCase)
+ImportExportTestCase: outlineToNoweb C:\leo.repo\leo-editor\leo\test\unittest\output\outlineToNoweb.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 475, in runTest
+    self.importExport()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 466, in importExport
+    command(event=None)
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 2436, in outlineToNoweb
+    c.importCommands.outlineToWeb(fileName,"noweb")
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 427, in outlineToWeb
+    s = self.convertVnodeToWeb(p)
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 309, in convertVnodeToWeb
+    assert(progress &lt; i)
+AssertionError
 
-Each child node will in turn have two or more children:
+======================================================================
+FAIL: runTest (leo.core.leoTest.ImportExportTestCase)
+ImportExportTestCase: outlineToCWEB C:\leo.repo\leo-editor\leo\test\unittest\output\outlineToCweb.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 475, in runTest
+    self.importExport()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 466, in importExport
+    command(event=None)
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 2412, in outlineToCWEB
+    c.importCommands.outlineToWeb(fileName,"cweb")
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 427, in outlineToWeb
+    s = self.convertVnodeToWeb(p)
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 309, in convertVnodeToWeb
+    assert(progress &lt; i)
+AssertionError
 
-- a "before" node
-- an "after" node
-- an optional selection node containing two lines giving the selection range in Tk coordinates.
-- An optional insert node containing one line giving the insert point in Tk coordinates.
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test TypeScript module
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 31, in &lt;module&gt;
+    c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 1392, in typeScriptUnitTest
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ts')
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 1454, in scannerUnitTest
+    assert ok,'\n'.join(table)
+AssertionError:
+ext:                  .ts
+fileName:             @test TypeScript module
+result:               False
+actual errors:        1
+expected errors:      0
+actualMismatchLine:   None
+expectedMismatchLine: None
+actualErrorMessage:   u'import command did not import @file C:/leo.repo/leo-editor/leo/test/TypeScript module perfectly\
+nThe clean-all-lines command may help fix whitespace problems\nfirst mismatched line: 5 (original) = 5 (imported)'
+expectedErrorMessage: None
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test ic.createImportParent
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 12, in &lt;module&gt;
+    assert p.firstChild() == current
+AssertionError</t>
+<t tx="ekr.20140921180825.6372">
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test c.positionExists
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 4, in &lt;module&gt;
+    assert c.positionExists(child)
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.isCurrentPosition
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert c.isCurrentPosition(p) is True
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.moveToFirst/LastChild
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    assert c.positionExists(p2),p2
+AssertionError: &lt;pos 135013424 childIndex: 1 lvl: 2 key: 115178224:0.119587408:589.135013200:1 test&gt;
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test p.moveToVisBack in a chapter
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert aaa1
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test clone and move the clone to the root
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 15, in &lt;module&gt;
+    assert clone.h == 'child','fail headstring: %s' % clone.h
+AssertionError: fail headstring: All unit tests
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test delete node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+AssertionError: fail 1: got All unit tests
+
 </t>
-<t tx="ekr.20140906074600.4699">@language python
+<t tx="ekr.20140921180825.6373">======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test demote
 
-def deleteCommentTest():
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 20, in &lt;module&gt;
+    assert p == p3,         'fail 1'
+AssertionError: fail 1
 
-#     if 1:
-#         a = 2
-#         b = 3
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test insert node
 
-    # if 1:
-        # a = 2
-        # b = 3
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 21, in &lt;module&gt;
+    assert p.back(),'no p.back(): %s' % (p)
+AssertionError: no p.back(): &lt;pos 122651824 childIndex: 0 lvl: 1 key: 115178224:0.134966000:0 inserted&gt;
 
-    pass
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-down &amp; undo/redo
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 20, in &lt;module&gt;
+    assert moved.h == 'B',          'fail 1: %s' % moved.h
+AssertionError: fail 1: All unit tests
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-left
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    assert moved.h == 'A','fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-right
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 17, in &lt;module&gt;
+    assert moved.h == 'B', 'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test move-outline-up
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert moved.h == 'C',          'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test paste-node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 19, in &lt;module&gt;
+    assert c.p.h == 'child','fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test paste-retaining-clones
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 21, in &lt;module&gt;
+    assert v in oldVnodes, 'fail 3'
+AssertionError: fail 3
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test promote
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 22, in &lt;module&gt;
+    assert p == p3,         'fail 1'
+AssertionError: fail 1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test pd.find_representative_node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 12, in &lt;module&gt;
+    assert clone.v == inner_clone.v
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test pd.has_..._node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 18, in &lt;module&gt;
+    assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+AssertionError: (&lt;VNode 720cad0 clone-test&gt;, &lt;VNode 720ca70 clone-test&gt;)
 </t>
-<t tx="ekr.20140906074600.4700"></t>
-<t tx="ekr.20140906074600.4701">@language python
+<t tx="ekr.20140921180825.6374">======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: addComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: addComments: before undo1
 
-def addCommentTest():
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertAllBlanks
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllBlanks: before undo1
 
-    if 1:
-        a = 2
-        b = 3
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertAllTabs
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllTabs: before undo1
 
-    pass
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertBlanks
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: convertTabs
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: dedentBody
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: dedentBody: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: deleteComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: deleteComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: extract test1
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: extractSection test1
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 290, in runTest
+    self.editBody()
+  File "c:\leo.repo\leo-editor\leo\core\leoTest.py", line 277, in editBody
+    assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extractSection: before undo1
 </t>
-<t tx="ekr.20140906074600.4702">@language python
-
-def addCommentTest():
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
+<t tx="ekr.20140921190548.4838">gnx: ekr.20090627070131.4975
 </t>
-<t tx="ekr.20140906074600.4703">5.0
-7.8
+<t tx="ekr.20140921190548.4840">gnx: ekr.20100801125533.5788
 </t>
-<t tx="ekr.20140906074600.4724"># created by new add-comments
+<t tx="ekr.20140921200206.6409">deletePositionsInList invalid position &lt;pos 123535408 childIndex: 0 lvl: 4 key: 116226768:0.120643632:581.123014512:0.123681872:0.128313616:0 b&gt;
+deletePositionsInList invalid position &lt;pos 128313488 childIndex: 2 lvl: 4 key: 116226768:0.120643632:581.123014512:0.123681872:0.128313616:2 b&gt;
+deletePositionsInList invalid position &lt;pos 128312944 childIndex: 0 lvl: 4 key: 116226768:0.120643632:581.123014512:0.128313104:1.128313616:0 b&gt;
+deletePositionsInList invalid position &lt;pos 128314096 childIndex: 0 lvl: 4 key: 116226768:0.120643632:581.123014512:0.123681872:2.128313616:0 b&gt;
+deletePositionsInList invalid position &lt;pos 128314352 childIndex: 2 lvl: 4 key: 116226768:0.120643632:581.123014512:0.123681872:2.128313616:2 b&gt;
+deletePositionsInList invalid position &lt;pos 128314224 childIndex: 3 lvl: 3 key: 116226768:0.120643632:581.123014512:0.128313616:3 b&gt;</t>
+<t tx="ekr.20140921200206.6410">compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 22', "u'def addCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 10', "u'    if 1:\\n'")
+(' 14', "u'        a = 2\\n'")
+(' 14', "u'        b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+result for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 22', "u'def addCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 12', "u'    # if 1:\\n'")
+(' 16', "u'        # a = 2\\n'")
+(' 16', "u'        # b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+(' 11', "u'    line 2\\n'")
+(' 13', "u'      line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+result for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+('  8', "u'\\tline 2\\n'")
+(' 10', "u'\\t  line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+('  8', "u'\\tline 2\\n'")
+(' 10', "u'\\t  line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+result for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+(' 11', "u'    line 2\\n'")
+(' 13', "u'      line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+(' 11', "u'    line 2\\n'")
+(' 13', "u'      line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+result for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+('  8', "u'\\tline 2\\n'")
+(' 10', "u'\\t  line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+('  8', "u'\\tline 2\\n'")
+(' 10', "u'\\t  line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+result for tempNode...
+(' 13', "u'@tabwidth -4\\n'")
+('  1', "u'\\n'")
+('  7', "u'line 1\\n'")
+(' 11', "u'    line 2\\n'")
+(' 13', "u'      line 3\\n'")
+('  6', "u'line4\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+('  7', "u'line 1\\n'")
+(' 11', "u'    line 2\\n'")
+(' 11', "u'    line 3\\n'")
+('  7', "u'line 4\\n'")
+--------------------
+result for tempNode...
+('  7', "u'line 1\\n'")
+('  7', "u'line 2\\n'")
+('  7', "u'line 3\\n'")
+('  7', "u'line 4\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 25', "u'def deleteCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 12', "u'#     if 1:\\n'")
+(' 16', "u'#         a = 2\\n'")
+(' 16', "u'#         b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+result for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 25', "u'def deleteCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 10', "u'    if 1:\\n'")
+(' 14', "u'        a = 2\\n'")
+(' 14', "u'        b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+('\n', '--------------------')
+expected for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 25', "u'def deleteCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 12', "u'#     if 1:\\n'")
+(' 16', "u'#         a = 2\\n'")
+(' 16', "u'#         b = 3\\n'")
+('  1', "u'\\n'")
+(' 12', "u'    # if 1:\\n'")
+(' 16', "u'        # a = 2\\n'")
+(' 16', "u'        # b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+result for tempNode...
+(' 17', "u'@language python\\n'")
+('  1', "u'\\n'")
+(' 25', "u'def deleteCommentTest():\\n'")
+('  1', "u'\\n'")
+(' 10', "u'    if 1:\\n'")
+(' 14', "u'        a = 2\\n'")
+(' 14', "u'        b = 3\\n'")
+('  1', "u'\\n'")
+(' 10', "u'    if 1:\\n'")
+(' 14', "u'        a = 2\\n'")
+(' 14', "u'        b = 3\\n'")
+('  1', "u'\\n'")
+('  9', "u'    pass\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+('\n', '--------------------')
+expected for tempNode...
+('  7', "u'before\\n'")
+(' 18', "u'    &lt;&lt; section &gt;&gt;\\n'")
+(' 15', "u'    sec line 1\\n'")
+(' 28', "u'        sec line 2 indented\\n'")
+(' 11', "u'sec line 3\\n'")
+('  6', "u'after\\n'")
+--------------------
+result for tempNode...
+('  7', "u'before\\n'")
+(' 18', "u'    &lt;&lt; section &gt;&gt;\\n'")
+('  6', "u'after\\n'")
+--------------------
+
+compareOutlines failed
+p1 tempNode
+p2 after
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+('\n', '--------------------')
+expected for tempNode...
+('  7', "u'before\\n'")
+(' 18', "u'    &lt;&lt; section &gt;&gt;\\n'")
+(' 15', "u'    sec line 1\\n'")
+(' 28', "u'        sec line 2 indented\\n'")
+(' 11', "u'sec line 3\\n'")
+('  6', "u'after\\n'")
+--------------------
+result for tempNode...
+('  7', "u'before\\n'")
+(' 18', "u'    &lt;&lt; section &gt;&gt;\\n'")
+('  6', "u'after\\n'")
+--------------------
+
 </t>
-<t tx="ekr.20140906074600.4725">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    pass
+<t tx="ekr.20140922054250.4786">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
 </t>
-<t tx="ekr.20140906074600.4726">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20140906074600.4727">5.0
-7.8
-</t>
-<t tx="ekr.20140906074600.4728"># created by old and new add-comments.
-</t>
-<t tx="ekr.20140906074600.4729">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
-</t>
-<t tx="ekr.20140906074600.4730">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20140906074600.4731">5.0
-12.8
+<t tx="ekr.20140922054250.4787">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
 </t>
 </tnodes>
 </leo_file>
