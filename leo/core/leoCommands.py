@@ -179,12 +179,14 @@ class Commands (object):
             # True: prevent setting c.changed when switching chapters.
 
         # Flags for c.outerUpdate...
+        self.incrementalRecolorFlag = False
         self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
-        self.requestedFocusWidget = None
-        self.requestRedrawFlag = False
-        self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
+        self.requestRedrawFlag = False
+        self.requestedFocusWidget = None
+        self.requestedIconify = '' # 'iconify','deiconify'
+
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self,fileName,relativeFileName):
 
@@ -4448,6 +4450,8 @@ class Commands (object):
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
+        
+        # g.trace(bool(p.hasVisBack(c)),p.h,newNode.h)
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
