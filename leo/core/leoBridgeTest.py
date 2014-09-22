@@ -1,17 +1,23 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.2: * @file leoBridgeTest.py
-'''A program to run unit tests with the leoBridge module.'''
+'''
+A module that runs unit tests with the leoBridge module.
+
+All options come from sys.argv.  See scan_options for the available options.
+
+**Important**: Leo's core does not use this module in any way.
+'''
+
+trace = True # True: enable traces in main.
 
 import leo.core.leoBridge as leoBridge
 import optparse
 import sys
-
 # Do not define g here.  Use the g returned by the bridge.
 #@+others
 #@+node:ekr.20080730161153.3: ** main & helpers
 def main ():
     '''The main line of leoBridgeTest.py.'''
-    trace = False
     tag = 'leoTestBridge'
     options = scanOptions()
     bridge = leoBridge.controller(
@@ -24,11 +30,11 @@ def main ():
     )
     if bridge.isOpen():
         g = bridge.globals()
-        path = g.os_path_finalize_join(
-            g.app.loadDir,'..','test','unitTest.leo')
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test',relative_path)
         c = bridge.openLeoFile(path)
         if trace: g.es('%s %s' % (tag,c.shortFileName()))
-        runUnitTests(c,g)
+        if c:
+            runUnitTests(c,g)
     g.pr(tag,'done')
 #@+node:ekr.20080730161153.4: *3* runUnitTests
 def runUnitTests (c,g):
@@ -52,6 +58,7 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
     parser = optparse.OptionParser()
     parser.add_option('--gui',          dest='gui')
+    parser.add_option('--path',         dest='path')
     parser.add_option('--load-plugins', action='store_true',dest='load_plugins')
     parser.add_option('--read-settings',action='store_true',dest='read_settings')
     parser.add_option('--silent',       action='store_true',dest='silent')
@@ -67,7 +74,6 @@ def scanOptions():
         options.gui = None
     return options
 #@-others
-
 if __name__ == '__main__':
     print ('leoBridgeTest.py: argv: %s' % repr(sys.argv))
     main()

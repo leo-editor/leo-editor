@@ -659,6 +659,9 @@ class RunTestExternallyHelperClass:
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
         trace = True
+        verbose = False
+            # The verbose trace is pretty much a duplicate of the trace in
+            # leoDynamicTest.py:main()
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
         if sys.platform.startswith('win'): 
@@ -672,17 +675,16 @@ class RunTestExternallyHelperClass:
         if silent:          args.append('--silent')
         if tracePlugins:    args.append('--trace-plugins')
         if verbose:         args.append('--verbose')
-        if trace: g.trace('args...\n  %s' % '\n  '.join(args))
+        if trace and verbose:
+            g.trace('args...\n  %s' % '\n  '.join(args))
         # Set the current directory so that importing leo.core.whatever works.
         leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
-        # os.chdir(leoDir)
-        # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
         env = dict(os.environ)
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
         if False and trace:
             for z in sorted(os.environ.keys()):
                 print(z,os.environ.get(z))
-        if trace: g.trace('*** spawning test process',path)
+        if trace: print('\n\nrunUnitTestLeoFile: spawning separate process: %s\n\n' % path)
         os.spawnve(os.P_NOWAIT,sys.executable,args,env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager

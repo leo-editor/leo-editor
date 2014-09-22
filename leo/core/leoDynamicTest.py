@@ -1,10 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.5: * @file leoDynamicTest.py
-'''A program to run dynamic unit tests with the leoBridge module.'''
+'''
+A module to run unit tests with the leoBridge module.
+Leo's unit test code uses this module when running unit tests externally.
+'''
 
 trace = True
-trace_args = True
+    # Enables the trace in main.
+trace_argv = False
+    # Enable trace of argv. For debugging this file: it duplicate of the trace in main()
+trace_main = True
+    # Enable trace of options in main().
 trace_time = True
+    # Enables tracing of the overhead take to run tests externally.
 
 #@+<< imports >>
 #@+node:ekr.20120220125945.10419: ** << imports >> (leoDynamicTest.py)
@@ -16,8 +24,6 @@ import time
 cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
-if trace and trace_args:
-    print('leoDynamicTest.py: curdir %s' % cwd)
 import leo.core.leoBridge as leoBridge
 #@-<< imports >>
 # Do not define g here. Use the g returned by the bridge.
@@ -30,8 +36,10 @@ def main ():
     tag = 'leoDynamicTests.leo'
     if trace: t1 = time.time()
     options = scanOptions()
-    if trace:
+    if trace and trace_main:
         print('leoDynamicTest.py:main: options...')
+        print('  curdir         %s' % cwd)
+        print('  path:          %s' % options.path)
         print('  gui:           %s' % options.gui)
         print('  load_plugins:  %s' % options.load_plugins)
         print('  read_settings: %s' % options.read_settings)
@@ -46,7 +54,7 @@ def main ():
         tracePlugins=options.trace_plugins,
         verbose     =options.verbose, # True: prints log messages.
     )
-    if trace:
+    if trace and trace_time:
         t2 = time.time()
         print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
     if bridge.isOpen():
@@ -96,12 +104,12 @@ def scanOptions():
 if __name__ == '__main__':
     if trace and trace_time:
         t1 = time.time()
-    if trace and trace_args:
+    if trace and trace_argv:
         print('leoDynamicTest.py: argv...')
-        for z in sys.argv[2:]: print('  %s' % repr(z))
+        for z in sys.argv[2:]:
+            print('  %s' % repr(z))
     main()
     if trace and trace_time:
         t2 = time.time()
         print('leoDynamicUnittest.py: %0.2fsec' % (t2-t1))
-
 #@-leo
