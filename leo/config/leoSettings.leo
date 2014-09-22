@@ -187,13 +187,16 @@
 <v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
 <v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
 </v>
-<v t="ekr.20140915194122.23447"><vh>Stacked widget colors</vh>
-<v t="ekr.20140912075503.19271"><vh>@color stacked-border-color = white</vh></v>
-</v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
+</v>
+<v t="ekr.20140915194122.23447"><vh>Widget colors (simple widgets)</vh>
+<v t="ekr.20140922124047.19517"><vh>@color frame-bg = white</vh></v>
+<v t="ekr.20140912075503.19271"><vh>@color stacked-widget-border-color = white</vh></v>
+<v t="ekr.20140922124047.20313"><vh>@color stacked-widget-bg = white</vh></v>
+<v t="ekr.20140922124047.19516"><vh>@color tabbed-widget-bg = white</vh></v>
 </v>
 </v>
 <v t="ekr.20140912075503.19262"><vh>Fonts</vh>
@@ -327,7 +330,7 @@
 <v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
 </v>
 <v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
-<v t="ekr.20140912075503.19272"><vh>@string stacked-padding = 0px</vh></v>
+<v t="ekr.20140912075503.19272"><vh>@string stacked-widget-padding = 0px</vh></v>
 </v>
 <v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
 <v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
@@ -1804,6 +1807,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20140917051508.19548"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9498,18 +9502,27 @@ QPushButton[button_kind="quick-move"] {
 }</t>
 <t tx="ekr.20140915194122.19470">/* ========== Widgets ========== */
 
+QFrame {
+    background-color: @frame-bg;
+}
+
 QScrollArea {
     background-color: @scroll-area-bg;
 }
 
+QTabbedWidget {
+    background-color: @tabbed-widget-bg;
+}
+
 QStackedWidget {
-    border-color:   @stacked-border-color;
-    padding:        @stacked-padding;
+    border-color:       @stacked-widget-border-color;
+    background-color:   @stacked-widget-bg;
+    padding:            @stacked-widget-padding;
 }
 </t>
 <t tx="ekr.20140915194122.19471">QSplitter {
     border-color:       @splitter-border-fg;
-    background-color:   white; /* @splitter-bg; */
+    background-color:   @splitter-bg;
     border-style:       @splitter-border-style;
 }
 
@@ -9653,6 +9666,9 @@ else:
     g.es("%s\ncopied to clipboard"%text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
+<t tx="ekr.20140922124047.19516"></t>
+<t tx="ekr.20140922124047.19517"></t>
+<t tx="ekr.20140922124047.20313"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

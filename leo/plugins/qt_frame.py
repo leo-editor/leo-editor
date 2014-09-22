@@ -523,7 +523,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_spell_label = lab # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
     def createFindTab (self,parent,tab_widget):
-        # g.trace('***(DynamicWindow)***',g.callers())
+        # g.trace('***(DynamicWindow)***',parent,tab_widget)
         c,dw = self.leo_c,self
         fc = c.findCommands
         assert not fc.ftm
