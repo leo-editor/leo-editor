@@ -19,17 +19,17 @@ if 0:
 
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-verbose = False
 import leo.core.leoGlobals as g
-
+verbose = g.app.trace_plugins
 try:
     import docutils
     import docutils.core
 except ImportError:
     docutils = None
+if verbose:
+    print('leoRst3.py: docutils: %s' % docutils)
 if docutils:
     try:
-        if verbose: print('leoRst.py',docutils)
         from docutils import parsers
         if verbose or not parsers: print('leoRst.py',parsers)
         from docutils.parsers import rst

@@ -4070,15 +4070,12 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     """Print a "Can't Import" message and return None."""
 
     s = "Can not import %s" % moduleName
-    if pluginName: s = s + " from plugin %s" % pluginName
-
+    if pluginName: s = s + " from %s" % pluginName
     if not g.app or not g.app.gui:
         print (s)
     elif g.unitTesting:
         # print s
         return
-    # elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
-        # return
     else:
         g.warning('',s)
 
@@ -4120,7 +4117,7 @@ def importModule (moduleName,pluginName=None,verbose=False):
                     t, v, tb = sys.exc_info()
                     del tb  # don't need the traceback
                     v = v or str(t) # in case v is empty, we'll at least have the execption type
-                    if trace: g.trace(v,moduleName,findPath)
+                    if trace and verbose: g.trace(v,moduleName,findPath)
                     if v not in exceptions:
                         exceptions.append(v)
             else:

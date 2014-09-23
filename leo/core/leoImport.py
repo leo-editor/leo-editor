@@ -11,7 +11,13 @@
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
-docutils = g.importExtension('docutils',pluginName='leoImport.py')
+try:
+    import docutils
+    import docutils.core
+    # print('leoImport.py:',docutils)
+except ImportError:
+    docutils = None
+    # print('leoImport.py: can not import docutils')
 import glob
 import importlib
 import os
