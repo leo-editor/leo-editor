@@ -608,17 +608,31 @@ class RunTestExternallyHelperClass:
         '''
         c = self.c
         self.copyRoot = root = c2.rootPosition()
-        root.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
         root.expand()
-        aList  = c.testManager.findMarkForUnitTestNodes()
-        aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
-        last = root
-        if aList2:
-            for p in aList:  last = self.addNode(p,last)
-            for p in aList2: last = self.addNode(p,last)
-        # g.trace('aList',len(aList),'aList2',len(aList2))
-        return bool(aList2)
+        root.initHeadString('%s unit tests' % ('All' if self.all else 'Selected'))
+        if self.all:
+            last = root
+            for p in c.rootPosition().self_and_siblings():
+                # Last is in c2, so there is no problem.
+                last = self.addNode(p,last)
+            return True
+        elif 1:
+            last = root
+            current = c.p
+            aList = c.testManager.findMarkForUnitTestNodes()
+            for p in aList: last = self.addNode(p,last)
+            self.addNode(current,last)
+            return True
+        else: # old code
+            aList  = c.testManager.findMarkForUnitTestNodes()
+            aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+            last = root
+            if aList2:
+                for p in aList:  last = self.addNode(p,last)
+                for p in aList2: last = self.addNode(p,last)
+            # g.trace('aList',len(aList),'aList2',len(aList2))
+            return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self,p,last):
         '''
