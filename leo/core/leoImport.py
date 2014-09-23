@@ -1386,7 +1386,8 @@ class LeoImportCommands:
         return self.scannerUnitTest (p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
     def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
-        if g.app.isExternalUnitTest:
+        if False: # and g.app.isExternalUnitTest:
+            # Disable the tests in the unit tests themselves, not here.
             # These tests cause mysterious problem when run externally.
             # This trace will probably not be used: the tests are skipped explicitly.
             g.trace('skipping test',p.h)
