@@ -21171,7 +21171,9 @@ controller.parameterize()
     # However, this does test recent changes.
 #@+node:ekr.20140217055617.4230: *3* @test c.theScriptingController.atScriptNodes
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
-assert not c.theScriptingController.atScriptNodes
+if hasattr(c,'theScriptingController'):
+    # mod_scripting may be disabled when running tests externally.
+    assert not c.theScriptingController.atScriptNodes
 #@+node:ekr.20111104214341.3835: *3* @test all plugins have top-level init method
 '''Ensure all plugins have top-level init method *without* importing them.'''
 

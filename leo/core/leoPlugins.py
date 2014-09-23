@@ -512,6 +512,8 @@ class LeoPluginsController:
             # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins
             # This trace can be useful during unit testing.
+            # The proper way to disable this while running unit tests
+            # externally is to g.app.trace_plugins off.
         def report(message):
             g.es_print('loadOnePlugin: %s' % message)
         if not g.app.enablePlugins:

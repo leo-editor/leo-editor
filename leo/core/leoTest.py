@@ -633,10 +633,10 @@ class RunTestExternallyHelperClass:
         # Except for the path arg, these are the arguments to the leoBridge.
         gui='qt',
         path='unitTest.leo',
-        loadPlugins=True,
+        loadPlugins=False, # Plugins probably should not be enable by default.
         readSettings=True,
         silent=True,
-        tracePlugins=True,
+        tracePlugins=False, # This is a bit too much.
         verbose=True,
     ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
