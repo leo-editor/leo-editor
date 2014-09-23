@@ -557,7 +557,6 @@ class RunTestExternallyHelperClass:
         self.fileName = 'dynamicUnitTest.leo'
         self.marked = marked
         self.root = None # The root of the tree to copy when self.all is False.
-        self.seen = [] # The list of nodes to be added to the outline.
         self.tags = ('@test','@suite','@unittests','@unit-tests')
     #@+node:ekr.20070627140344.2: *3* runTests & helpers
     def runTests (self):
@@ -608,43 +607,27 @@ class RunTestExternallyHelperClass:
         - all @test and @suite nodes in p's outline.
         '''
         c = self.c
-        self.copyRoot = c2.rootPosition()
-        self.copyRoot.initHeadString('All unit tests')
+        self.copyRoot = root = c2.rootPosition()
+        root.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-        self.copyRoot.expand()
-        self.seen = [] # The list of nodes to be added.
+        root.expand()
         aList  = c.testManager.findMarkForUnitTestNodes()
         aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+        last = root
         if aList2:
-            for p in aList:  self.addNode(p)
-            for p in aList2: self.addNode(p)
+            for p in aList:  last = self.addNode(p,last)
+            for p in aList2: last = self.addNode(p,last)
+        # g.trace('aList',len(aList),'aList2',len(aList2))
         return bool(aList2)
-    #@+node:ekr.20070705080413: *5* addMarkTree
-    def addMarkTree (self,p):
-
-        # Add the entire @mark-for-unit-tests tree.
-        self.addNode(p)
     #@+node:ekr.20070705065154.1: *5* addNode
-    def addNode(self,p):
-
+    def addNode(self,p,last):
         '''
-        Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+        Copy p's tree as the last child of root.
+        Warning: p is a position in self.c, **not** c2.
         '''
-
-        p2 = p.copyTreeAfter()
-        p2.moveToLastChildOf(self.copyRoot)
-
-        for p2 in p.self_and_subtree():
-            self.seen.append(p2.v)
-    #@+node:ekr.20070705075604.3: *5* isUnitTestNode
-    def isUnitTestNode (self,p):
-
-        h = p.h.lower()
-
-        for tag in self.tags:
-            if h.startswith(tag):
-                return True
-        return False
+        p2 = last.insertAfter()
+        p.copyTreeFromSelfTo(p2)
+        return p2
     #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (RunTestExternallyHelperClass)
     def runUnitTestLeoFile (self,
         # Except for the path arg, these are the arguments to the leoBridge.

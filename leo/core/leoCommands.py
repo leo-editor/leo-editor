@@ -6516,7 +6516,7 @@ class Commands (object):
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1774: *6* c.promote
-    def promote (self,event=None,undoFlag=True):
+    def promote (self,event=None,undoFlag=True,redrawFlag=True):
         '''Make all children of the selected nodes siblings of the selected node.'''
         c = self ; u = c.undoer ; p = c.p
         if not p or not p.hasChildren():
@@ -6548,8 +6548,9 @@ class Commands (object):
             else: # No need to mark descendents dirty.
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             u.afterPromote(p,children,dirtyVnodeList)
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        if redrawFlag:
+            c.redraw(p,setFocus=True)
+            c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20071213185710: *6* c.toggleSparseMove
     def toggleSparseMove (self,event=None):
 

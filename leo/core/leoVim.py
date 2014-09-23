@@ -1984,7 +1984,7 @@ class VimCommands:
         __name__ = ':r'
             # Required.
         #@+others
-        #@+node:ekr.20140820034724.18316: *5* :r.__call__ 
+        #@+node:ekr.20140820034724.18316: *5* :r.__call__
         def __call__ (self,event=None):
             '''Prompt for a file name, then load it at the cursor.'''
             self.vc.c.k.getFileName(event,callback=self.load_file_at_cursor)

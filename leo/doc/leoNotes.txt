@@ -19022,5 +19022,14 @@ def lengthHelper(self):
 .. @+node:ekr.20140918124632.19459: *4* @@@color LightSteelBlue1 = #CAE1FF
 .. @+node:ekr.20140918124632.19460: *4* @@@color MistyRose1 = #FFE4E1
 .. @+node:ekr.20140918124632.19461: *4* @@@color Salmon = #FA8072
+.. @+node:ekr.20070705075604.3: *3* isUnitTestNode (not used)
+def isUnitTestNode (self,p):
+
+    h = p.h.lower()
+
+    for tag in self.tags:
+        if h.startswith(tag):
+            return True
+    return False
 .. @-all
 .. @-leo

@@ -1755,25 +1755,6 @@ class LeoTree(object):
             wrapper.setAllText('')
             assert p.b == s
                 # There will be data loss if this assert fails.
-    #@+node:ekr.20140829172618.18479: *6* LeoTree.set_not_loaded_text
-    def set_not_loaded_text(self,p):
-        '''Set the body text to a "not loaded" message.'''
-        c = self.c
-        if self.is_qt_body():
-            w = c.frame.body.wrapper.widget
-            wrapper = c.frame and c.frame.body and c.frame.body.wrapper
-            s = p.b
-            w.leo_big_text = p.b # Save the original text
-            # wrapper.setAllText(
-            #     "%d character text exceeds %d limit, not shown.\n\n"
-            #     "To load the body text, click the 'load' button.\n"
-            #     "Warning: make sure the text is fully loaded before using it!.\n\n"
-            #     "Set @int max-pre-loaded-body-chars in @settings\n"
-            #     "to permanently change limit."
-            #     % (len(s), c.max_pre_loaded_body_chars))
-            wrapper.setAllText('')
-            assert p.b == s
-                # There will be data loss if this assert fails.
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self,old_p,p,traceTime):
         '''Select the new node, part 2.'''

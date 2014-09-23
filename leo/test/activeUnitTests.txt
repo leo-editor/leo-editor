@@ -12646,66 +12646,6 @@ console.log("Listening on " + port);
 
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20121011094154.3906: *5* TypeScript tests
-@language python
-#@+node:ekr.20121011094154.3911: *6* @test TypeScript class
-s = '''
-
-class Greeter {
-    greeting: string;
-    constructor (message: string) {
-        this.greeting = message;
-    }
-    greet() {
-        return "Hello, " + this.greeting;
-    }
-}
-
-var greeter = new Greeter("world");
-
-var button = document.createElement('button')
-button.innerText = "Say Hello"
-button.onclick = function() {
-    alert(greeter.greet())
-}
-
-document.body.appendChild(button)
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20121011100210.4035: *6* @test TypeScript module
-s = '''
-
-module Sayings {
-    export class Greeter {
-        greeting: string;
-        constructor (message: string) {
-            this.greeting = message;
-        }
-        greet() {
-            return "Hello, " + this.greeting;
-        }
-    }
-}
-var greeter = new Sayings.Greeter("world");
-
-var button = document.createElement('button')
-button.innerText = "Say Hello"
-button.onclick = function() {
-	alert(greeter.greet())
-}
-
-document.body.appendChild(button)
-
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 s = '''
@@ -13386,6 +13326,67 @@ if showTree:
             while p.hasChildren():
                 p.firstChild().doDelete()
         c.redraw(p)
+#@+node:ekr.20121011094154.3906: *5* TypeScript tests
+@language python
+#@+node:ekr.20121011094154.3911: *6* @test TypeScript class
+s = '''
+
+class Greeter {
+    greeting: string;
+    constructor (message: string) {
+        this.greeting = message;
+    }
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+}
+
+var greeter = new Greeter("world");
+
+var button = document.createElement('button')
+button.innerText = "Say Hello"
+button.onclick = function() {
+    alert(greeter.greet())
+}
+
+document.body.appendChild(button)
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20121011100210.4035: *6* @test TypeScript module
+s = '''
+
+module Sayings {
+    export class Greeter {
+        greeting: string;
+        constructor (message: string) {
+            this.greeting = message;
+        }
+        greet() {
+            return "Hello, " + this.greeting;
+        }
+    }
+}
+var greeter = new Sayings.Greeter("world");
+
+var button = document.createElement('button')
+button.innerText = "Say Hello"
+button.onclick = function() {
+	alert(greeter.greet())
+}
+
+document.body.appendChild(button)
+
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+### g.app.unitTestDict['testingLeoImport.py'] = False # Added
+
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4780: *5* xml tests
 #@+node:ekr.20090529141856.4781: *6* @test xml 1
 s = '''\
@@ -13575,41 +13576,6 @@ The top section.
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
-d = g.app.extra_extension_dict
-
-for ext in g.app.extension_dict.keys():
-    language =  c.importCommands.languageForExtension(ext)
-    language2 = c.importCommands.languageForExtension('.'+ext)
-    assert language == language2
-
-    # Now a many-one relationship.
-    if language:
-        # Do not test extensions that have 'none' as the value of d.get(ext)
-        # Otherwise, test only d.get(ext).
-        language2 = d.get(ext)
-        if language2 in ('None','none'):  continue
-        if language2: language = language2
-        # Made-up languages do not have mode files.
-        if not language.endswith('_language') and language not in ('autohotkey','rest',):
-            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
-            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
-
-    if 0:
-        if language is None:
-            print('no language for ext=%s' % (ext))
-#@+node:ekr.20140723134017.4464: *4* @test @auto importers
-# This causes problems!
-import glob
-import importlib
-path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
-# print('path: %s' % path)
-assert g.os_path_exists(path)
-pattern = g.os_path_finalize_join(path,'*.py')
-for fn in glob.glob(pattern):
-    sfn = g.shortFileName(fn)
-    m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
-    assert m
 #@+node:ekr.20140724220921.5199: *4*  Tests of individual methods
 #@+node:ekr.20111228125719.3909: *5* @test ic.BaseScanner.insertIgnoreDirective
 import leo.core.leoImport as leoImport
@@ -13960,6 +13926,41 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
+#@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
+d = g.app.extra_extension_dict
+
+for ext in g.app.extension_dict.keys():
+    language =  c.importCommands.languageForExtension(ext)
+    language2 = c.importCommands.languageForExtension('.'+ext)
+    assert language == language2
+
+    # Now a many-one relationship.
+    if language:
+        # Do not test extensions that have 'none' as the value of d.get(ext)
+        # Otherwise, test only d.get(ext).
+        language2 = d.get(ext)
+        if language2 in ('None','none'):  continue
+        if language2: language = language2
+        # Made-up languages do not have mode files.
+        if not language.endswith('_language') and language not in ('autohotkey','rest','rst','typescript',):
+            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+
+    if 0:
+        if language is None:
+            print('no language for ext=%s' % (ext))
+#@+node:ekr.20140723134017.4464: *4* @test @auto importers
+# This causes problems!
+import glob
+import importlib
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
+# print('path: %s' % path)
+assert g.os_path_exists(path)
+pattern = g.os_path_finalize_join(path,'*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+    assert m
 #@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -14776,16 +14777,19 @@ finally:
 #@+node:ekr.20120212130242.4755: *5* test
 #@+node:ekr.20131227150324.3983: *4* @test p.moveToVisBack in a chapter
 # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
-aaa1 = g.findNodeAnywhere(c,'@chapter aaa')
-assert aaa1
-try:
-    c.chapterController.selectChapterByName('aaa',collapse=True,create=False)
-    aaa = c.p
-    assert aaa.h == 'aaa node 1',repr(aaa)
-    p2 = p.moveToVisBack(c)
-    assert p2 is None,p2
-finally:
-    c.chapterController.selectChapterByName('main',collapse=True,create=False)
+if g.app.isExternalUnitTest:
+    pass # There is no @chapter node in the copied file.
+else:
+    aaa1 = g.findNodeAnywhere(c,'@chapter aaa')
+    assert aaa1
+    try:
+        c.chapterController.selectChapterByName('aaa',collapse=True,create=False)
+        aaa = c.p
+        assert aaa.h == 'aaa node 1',repr(aaa)
+        p2 = p.moveToVisBack(c)
+        assert p2 is None,p2
+    finally:
+        c.chapterController.selectChapterByName('main',collapse=True,create=False)
 #@+node:ekr.20140218045755.4348: *4* @test p.nosentinels
 @language python
 @tabwidth -4
@@ -14911,9 +14915,6 @@ try:
     p3.setHeadString('B')
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
-    if p.parent(): p.parent().expand()
-        # A hack for external unit tests.
-        # This should be corrected at the source.
     p.expand()
     c.selectPosition(p3)
     # print(c.p.h) # Correct: B
@@ -15031,7 +15032,6 @@ assert p.h == '@test insert node',repr(p.h)
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     assert p.h == '@test insert node',repr(p.h)
     p2 = p.insertAsNthChild(0)
@@ -15052,12 +15052,17 @@ try:
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    c.undoer.undo() 
+    if g.app.isExternalUnitTest:
+        # The situation is different in a null Gui.
+        pass
+    else:
+        c.undoer.undo() 
     p = c.p
     assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
     assert p.next() == p3,  'fail 4'
     c.undoer.redo()
     p = c.p
+    assert p.back(),          'fail 0-2'
     assert p.back().h == 'A', 'fail 1-2'
     assert p.next().h == 'B', 'fail 2-2'
     c.undoer.undo()
@@ -15068,12 +15073,14 @@ try:
     p = c.p
     assert p.back().h == 'A', 'fail 1-3'
     assert p.next().h == 'B', 'fail 2-3'
-
 finally:
-    if 1:
+    if 0:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
+#@+node:ekr.20140923083354.6274: *6* A
+#@+node:ekr.20140923083354.6276: *6* inserted
+#@+node:ekr.20140923083354.6275: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -15573,27 +15580,31 @@ for unl,expected in table:
 #@+node:ekr.20140715080507.4341: *6* node3_child1
 #@+node:ekr.20140715080507.4339: *7* child21
 #@+node:ekr.20140712142620.4546: *4* @test pd.find_representative_node
-pd = c.persistenceController
-root = g.findNodeInTree(c,p,'root')
-assert root
-root.h = '@auto root'
-try:
-    clone = root.next()
-    assert clone and clone.h == 'clone'
-    inner_clone = root.firstChild()
-    assert inner_clone
-    assert clone.v == inner_clone.v
-    rep = pd.find_representative_node(root,inner_clone)
-    # Careful: cloning this test can cause problems.
-    oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
-        rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
-    if True: ### p.isCloned():
-        assert rep.v == clone.v and rep.parent().v == clone.parent().v,oops
-    else:
-        assert rep == clone
-finally:
-    root.h = 'root' # root must not be an @auto node.
-    c.redraw()
+if g.app.isExternalUnitTest:
+    # There will not be a proper cloned node in the copy of these tests.
+    pass
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    root.h = '@auto root'
+    try:
+        clone = root.next()
+        assert clone and clone.h == 'clone'
+        inner_clone = root.firstChild()
+        assert inner_clone
+        assert clone.v == inner_clone.v
+        rep = pd.find_representative_node(root,inner_clone)
+        # Careful: cloning this test can cause problems.
+        oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
+            rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
+        if g.app.isExternalUnitTest:
+            pass
+        else:
+            assert rep == clone
+    finally:
+        root.h = 'root' # root must not be an @auto node.
+        c.redraw()
 #@+node:ekr.20140712142620.4547: *5* root
 #@+node:ekr.20140712142620.4549: *6* clone
 #@+node:ekr.20140712142620.4549: *5* clone
@@ -15612,24 +15623,27 @@ root = g.findNodeInTree(c,p,'root')
 assert root
 # The representative of clone_test node must appear outside of root's tree.
 clone_test = g.findNodeInTree(c,p,'clone-test')
-assert clone_test
-assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
-try:
-    root.h = '@auto root' # Make root look like an @auto node.
-    pd.update_before_write_foreign_file(root)
-    data = g.findNodeInTree(c,persistence,'@data:@auto root')
-    assert data
-    data2 = pd.has_at_data_node(root)
-    assert data2
-    assert data == data2,(data,data2)
-    gnxs = g.findNodeInTree(c,persistence,'@gnxs')
-    assert gnxs
-    gnxs2 = pd.has_at_gnxs_node(root)
-    assert gnxs2
-    assert gnxs == gnxs2,(gnxs,gnxs2)
-finally:
-    root.h = 'root' # Make the root *not* an @auto node.
-    c.redraw()
+if g.app.isExternalUnitTest:
+    pass # There will not be a proper node in the copied tree.
+else:
+    assert clone_test
+    assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+    try:
+        root.h = '@auto root' # Make root look like an @auto node.
+        pd.update_before_write_foreign_file(root)
+        data = g.findNodeInTree(c,persistence,'@data:@auto root')
+        assert data
+        data2 = pd.has_at_data_node(root)
+        assert data2
+        assert data == data2,(data,data2)
+        gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+        assert gnxs
+        gnxs2 = pd.has_at_gnxs_node(root)
+        assert gnxs2
+        assert gnxs == gnxs2,(gnxs,gnxs2)
+    finally:
+        root.h = 'root' # Make the root *not* an @auto node.
+        c.redraw()
 #@+node:ekr.20140712142620.4558: *5* root
 @others
 #@+node:ekr.20140712142620.4559: *6* aClass
@@ -15646,25 +15660,7 @@ def spam():
 def clone_test():
     pass
 #@+node:ekr.20140712142620.4564: *4* @auto-rst test_rst.py
-pd = c.persistenceController
-p.deleteAllChildren()
-table = (
-    '@auto test.py',
-    '@auto-otl otl_test.py',
-    '@auto-vim-outline vo_test.py',
-    '@auto-org-mode test_org.py',
-    '@auto-rst test_rst.py',
-)
-try:
-    for h in table:
-        p.insertAsLastChild()
-        p.h = h
-        assert pd.is_at_auto_node(p),p.h
-finally:
-    # This is required.
-    p.deleteAllChildren()
-    c.redraw()
-#@+node:ekr.20140716115306.4345: *4* @test pd.recovery_ua_for_gnx (fails)
+#@+node:ekr.20140716115306.4345: *4* @test pd.recovery_ua_for_gnx
 pd = c.persistenceController
 at_persistence = pd.find_at_persistence_node()
 assert at_persistence
@@ -15709,15 +15705,16 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *5* @gnxs
-gnx: ekr.20140724163840.5572
+gnx: ekr.20140923080452.6343
 unl: node1
-#@+node:ekr.20140724164208.5572: *5* node1
+#@+node:ekr.20140923080452.6565: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
-#@+node:ekr.20140724164208.5572: *6* node1
+#@+node:ekr.20140923080452.6565: *6* node1
 #@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
-assert unl.endswith('-->'+p.h),repr(unl)
+expected = p.h if g.app.isExternalUnitTest else '-->'+p.h
+assert unl.endswith(expected),repr(unl)
 #@+node:ekr.20140712142620.4575: *4* @test pd.update_before_write_foreign_file
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')

@@ -357,6 +357,15 @@ In addition, I changed assert in lqlw.set_position to calls to g.trace.
   This is an edge case, unless everything to the end of the text is selected.
 .. @+node:ekr.20140919093158.17872: *4* Fixed bug: it's now possible to change big-text nodes
 The fix was to set w.leo_big_text = None in remove_big_text_buttons and add_load_button.
+.. @+node:ekr.20140919160020.17927: *4* All unit tests now pass when run externally
+@language rest
+
+Fixed an important bug in addNode, a helper of createOutline: There was a
+confusion about commanders: p is in the old commander. p2 must be in the
+new commander.
+
+Disabled a few unit tests when run externally:
+This was due to missing nodes or copies of clones not being cloned.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
