@@ -123,7 +123,7 @@
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
 <v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
 </v>
 <v t="ekr.20140915194122.23439"><vh>Border colors</vh>
 <v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
@@ -150,7 +150,7 @@
 <v t="ekr.20140912075503.19330"><vh>@color minibuffer-fg = black</vh></v>
 <v t="ekr.20140912075503.19331"><vh>@color minibuffer-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19332"><vh>@color minibuffer-sel-fg = white</vh></v>
-<v t="ekr.20140912075503.19333"><vh>@color minibuffer-sel-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19333"><vh>@color minibuffer-sel-bg = lightgray</vh></v>
 </v>
 <v t="ekr.20140912075503.19283"><vh>Outline colors</vh>
 <v t="ekr.20140915194122.23437"><vh>Basic outline colors</vh>
@@ -1807,7 +1807,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20140917051508.19548"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3356,9 +3355,9 @@ macro-call-last     = Alt-Ctrl-M
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = Alt-4 # The new standard
+run-marked-unit-tests-externally    = None
 run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = Alt-5 # The new standard
+run-selected-unit-tests-externally  = None
 run-selected-unit-tests-locally     = None
 
 show-calltips               = parenleft
