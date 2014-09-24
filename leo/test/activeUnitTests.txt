@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140923124633.4779: * @file activeUnitTests.txt
+#@+node:ekr.20070114140212: * @file activeUnitTests.txt
 # All the following should pass when run locally (Alt-4).
 #@@language python
 #@+all
@@ -13425,7 +13425,7 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst (skipped when running externally)
+#@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\
 .. toc
@@ -13469,12 +13469,9 @@ section 3.1.1
 section 3.1.1, line 1
 '''
 
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -13487,12 +13484,9 @@ Chapter
 
 The top chapter.
 '''
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 s = '''\
 .. toc
@@ -13534,12 +13528,9 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 s = '''\
 .. toc
@@ -13549,12 +13540,9 @@ top
 
 The top section
 '''
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
 s = '''\
 .. toc
@@ -13565,12 +13553,9 @@ top
 
 The top section
 '''
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4789: *5* @test rST import test: trailing whitespace
 s = '''\
 .. toc
@@ -13583,12 +13568,9 @@ top
 
 The top section.
 '''
-if g.app.isExternalUnitTest:
-    pass
-else:
-    g.app.unitTestDict ['expectedErrors'] = None
-    g.app.unitTestDict ['expectedMismatchLine'] = None
-    c.importCommands.rstUnitTest(p,s=s,showTree=False)
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140724220921.5199: *4*  Tests of individual methods
 #@+node:ekr.20111228125719.3909: *5* @test ic.BaseScanner.insertIgnoreDirective
 import leo.core.leoImport as leoImport

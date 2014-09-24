@@ -1479,7 +1479,7 @@ False:
     be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6013"># Some of these tests give warnings.</t>
-<t tx="ekr.20101220161557.6016">Some tests depend on g.app.isExternalUnitTest</t>
+<t tx="ekr.20101220161557.6016"># Some tests are disabled when g.app.isExternalUnitTest is True.</t>
 <t tx="ekr.20110118082508.3766"># Required when running tests externally
 @language plain
 @pagewidth 40
