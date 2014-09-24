@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20100318101414.5990: * @file viewrendered.py
 #@+<< docstring >>
-#@+node:tbrown.20100318101414.5991: ** << docstring >>
+#@+node:tbrown.20100318101414.5991: ** << docstring >> (viewrendered.py)
 '''
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -45,24 +45,24 @@ viewrendered.py creates the following (``Alt-X``) commands:
 ``hide-rendering-pane``
     Makes the rendering pane invisible, but does not destroy it.
 
-``lock-unlock-rendering-pane``
-    Toggles the locked state of the rendering pane.
+``vr-lock`` and ``vr-unlock``
+    Locks and unlocks the rendering pane.
     When unlocked (the initial state), the rendering pane renders the contents
     of the presently selected node.
     When locked, the rendering pane does not change when other nodes are selected.
     This is useful for playing movies in the rendering pane.
     
-``pause-play-movie``
+``vr-pause-play-movie``
     This command has effect only if the rendering pane is presently showing a movie.
     It pauses the movie if playing, or resumes the movie if paused.
 
-``show-rendering-pane``
+``vr-show``
     Makes the rendering pane visible.
 
-``toggle-rendering-pane``
+``vr-toggle``
     Shows the rendering pane if invisible, otherwise hides it.
     
-``update-rendering-pane``
+``vr-update``
     Forces an update of the rendering pane.
     This is especially useful for @graphics-script nodes:
     such nodes are update automatically only when selected,
@@ -135,7 +135,6 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   render the body text as a networkx graph.
   See http://networkx.lanl.gov/
 
-
 - ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
@@ -176,6 +175,22 @@ Jacob Peck added markdown support to this plugin.
 
 '''
 #@-<< docstring >>
+#@+<< to do >>
+#@+node:ekr.20140924060835.19485: ** << to do >>
+#@+at
+# To do:
+# 
+# - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
+# - Add dict to allow customize must_update.
+# - Lock movies automatically until they are finished?
+# - Render @url nodes as html?
+# - Support uA's that indicate the kind of rendering desired.
+# - (Failed) Make viewrendered-big work.
+#@-<< to do >>
+
+trace = False
+    # This global trace is convenient.
+
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
 import leo.core.leoGlobals as g
@@ -201,6 +216,8 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
+if trace:
+    print('===== viewrendered.py: got_docutils: %s' % got_docutils)
 ## markdown support, non-vital
 try:
     from markdown import markdown
@@ -208,6 +225,8 @@ try:
 except ImportError:
     got_markdown = False
 import os
+if trace:
+    print('===== viewrendered.py: got_markdown: %s' % got_markdown)
     
 #@-<< imports >>
 #@+<< define stylesheet >>
@@ -226,18 +245,6 @@ QPlainTextEdit {
 }
 """
 #@-<< define stylesheet >>
-
-#@+at
-# To do:
-# 
-# - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
-# - Add dict to allow customize must_update.
-# - Lock movies automatically until they are finished?
-# - Render @url nodes as html?
-# - Support uA's that indicate the kind of rendering desired.
-# - (Failed) Make viewrendered-big work.
-#@@c
-
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
@@ -292,11 +299,9 @@ def preview(event):
 @g.command('vr')
 def viewrendered(event):
     """Open render view for commander"""
-    
-    trace = False and not g.unitTesting
     c = event.get('c')
-    if not c: return None
-   
+    if not c:
+        return None
     global controllers
     vr = controllers.get(c.hash())
     if vr:
@@ -324,9 +329,7 @@ def viewrendered(event):
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event):
-    
-    '''Expand the rendering pane.'''
-
+    '''Contract the rendering pane.'''
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
@@ -351,9 +354,7 @@ def expand_rendering_pane(event):
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
-    
     '''Close the rendering pane.'''
-
     global controllers
     c = event.get('c')
     if c:
@@ -376,20 +377,16 @@ close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
-
+    '''Lock rendereing pane.'''
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr and not vr.locked:
             vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
-@g.command('vr-pause-play')
+@g.command('vr-pause-play-movie')
 def pause_play_movie(event):
-    
     '''Pause or play a movie in the rendering pane.'''
-
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
@@ -484,40 +481,39 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@+others
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
     def __init__ (self, c, parent=None):
-        
+        '''Ctor for ViewRenderedController class.'''
+        self.c = c
+        # Create the widget.
         QtWidgets.QWidget.__init__(self, parent)
         self.setObjectName('viewrendered_pane')
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
-        
+        # Set the ivars.
         self.active = False
-        self.c = c
         self.badColors = []
         self.delete_callback = None
         self.gnx = None
-        self.inited = False
+        self.graphics_class = QtWidgets.QGraphicsWidget
         self.gs = None # For @graphics-script: a QGraphicsScene 
         self.gv = None # For @graphics-script: a QGraphicsView
-        #self.kind = 'rst' # in self.dispatch_dict.keys()
+        self.html_class = QtWebKitWidgets.QWebView
+        self.inited = False
         self.length = 0 # The length of previous p.b.
         self.locked = False
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtWidgets.QTextBrowser 
-        self.html_class = QtWebKitWidgets.QWebView
-        self.graphics_class = QtWidgets.QGraphicsWidget
+        self.text_class = QtWidgets.QTextBrowser
+        self.title = None
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
-        self.title = None
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
         # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.node_changed = True
-        
         # Init.
         self.create_dispatch_dict()
         self.activate()
@@ -540,9 +536,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         }
     #@+node:tbrown.20110621120042.22676: *3* closeEvent
     def closeEvent(self, event):
-        
+        '''Close the vr window.'''
         self.deactivate()
-
     #@+node:ekr.20130413061407.10363: *3* contract & expand
     def contract(self):
         self.change_size(-100)
@@ -565,40 +560,39 @@ class ViewRenderedController(QtWidgets.QWidget):
             splitter.setSizes(sizes)
     #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook)
     def activate (self):
-        
+        '''Activate the vr-window.'''
         pc = self
-        
         if pc.active: return
-        
+        if trace: g.trace('=====')
         pc.inited = True
         pc.active = True
-        
         g.registerHandler('select2',pc.update)
         g.registerHandler('idle',pc.update)
-        
         # Enable the idle-time hook if it has not already been enabled.
         if not g.app.idleTimeHook:
             g.enableIdleTimeHook(idleTimeDelay=1000)
     #@+node:ekr.20110317080650.14382: *3* deactivate
     def deactivate (self):
-        
+        '''Deactivate the vr window.'''
         pc = self
-        
         # Never disable the idle-time hook: other plugins may need it.
+        if trace: g.trace('=====')
         g.unregisterHandler('select2',pc.update)
         g.unregisterHandler('idle',pc.update)
         pc.active = False
     #@+node:ekr.20110321072702.14508: *3* lock/unlock
     def lock (self):
+        '''Lock the vr pane.'''
         g.note('rendering pane locked')
         self.locked = True
         
     def unlock (self):
+        '''Unlock the vr pane.'''
         g.note('rendering pane unlocked')
         self.locked = False
     #@+node:ekr.20110319143920.14466: *3* underline
     def underline (self,s):
-        
+        '''Generate rST underlining for s.'''
         ch = '#'
         n = max(4,len(g.toEncodedString(s,reportErrors=False)))
         # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
@@ -607,20 +601,17 @@ class ViewRenderedController(QtWidgets.QWidget):
     # Must have this signature: called by leoPlugins.callTagHandler.
 
     def update(self,tag,keywords):
-        
-        trace = False and not g.unitTesting
+        '''Update the vr pane.'''
         pc = self
         c,p = pc.c,pc.c.p
-        
         if pc.must_update(keywords):
-
+            if trace: g.trace('===== updating',keywords)
             # Suppress updates until we change nodes.
             pc.node_changed = pc.gnx != p.v.gnx
             pc.gnx = p.v.gnx
             pc.length = len(p.b) # not s
-        
             # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b.splitlines()[0] if p.b.splitlines() else ""
+            s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
             kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
@@ -671,18 +662,13 @@ class ViewRenderedController(QtWidgets.QWidget):
         return
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
-        
+        '''Set the background color of the vr pane.'''
         pc = self
-        
         if not colorName: return
-
         styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name,colorName)
-            
         # g.trace(name,colorName)
-
         if QtGui.QColor(colorName).isValid():
             w.setStyleSheet(styleSheet)
-
         elif colorName not in pc.badColors:
             pc.badColors.append(colorName)
             g.warning('invalid body background color: %s' % (colorName))
@@ -690,8 +676,6 @@ class ViewRenderedController(QtWidgets.QWidget):
     def must_update (self,keywords):
         
         '''Return True if we must update the rendering pane.'''
-        
-        trace = False and not g.unitTesting
         pc = self
         c,p = pc.c,pc.c.p
         if g.unitTesting:
@@ -717,66 +701,55 @@ class ViewRenderedController(QtWidgets.QWidget):
         return False
     #@+node:ekr.20110321151523.14463: *4* update_graphics_script
     def update_graphics_script (self,s,keywords):
-        
+        '''Update the graphics script in the vr pane.'''
         pc = self ; c = pc.c
-        
         force = keywords.get('force')
-        
         if pc.gs and not force:
             return
-
         if not pc.gs:
-            
             splitter = c.free_layout.get_top_splitter()
-
             # Careful: we may be unit testing.
             if not splitter:
                 g.trace('no splitter')
                 return
-
             # Create the widgets.
             pc.gs = QtWidgets.QGraphicsScene(splitter)
             pc.gv = QtWidgets.QGraphicsView(pc.gs)
             w = pc.gv.viewport() # A QWidget
-            
             # Embed the widgets.
             def delete_callback():
                 for w in (pc.gs,pc.gv):
                     w.deleteLater()
                 pc.gs = pc.gv = None
-
             pc.embed_widget(w,delete_callback=delete_callback)
-
         c.executeScript(
             script=s,
             namespace={'gs':pc.gs,'gv':pc.gv})
     #@+node:ekr.20110321005148.14534: *4* update_html
     def update_html (self,s,keywords):
-        
+        '''Update html in the vr pane.'''
         pc = self
-        
         if pc.must_change_widget(pc.html_class):
             w = pc.html_class()
             pc.embed_widget(w)
             assert (w == pc.w)
         else:
             w = pc.w
-
         pc.show()
         w.setHtml(s)
     #@+node:ekr.20110320120020.14482: *4* update_image
     def update_image (self,s,keywords):
-        
+        '''Update an image in the vr pane.'''
         pc = self
-        
+        lines = g.splitLines(s) or []
+        g.trace(lines)
+        fn = lines and lines[0].strip()
         w = pc.ensure_text_widget()
-        ok,path = pc.get_fn(s,'@image')
+        ok,path = pc.get_fn(fn,'@image')
         if not ok:
-            w.setPlainText('@image: file not found:\n%s' % (path))
+            w.setPlainText('@image: file not found: %s' % (fn))
             return
-            
-        path = path.replace('\\','/')
-            
+        path = fn.replace('\\','/')
         template = '''\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -798,13 +771,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         
     #@+node:peckj.20130207132858.3671: *4* update_md
     def update_md (self,s,keywords):
-        
-        trace = False and not g.unitTesting
+        '''Update markdown text in the vr pane.'''
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         if trace: g.trace('isHtml',isHtml)
-        
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
         assert pc.w
@@ -835,7 +806,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'MD error:\n%s\n\n%s' % (msg,s)
-
         sb = w.verticalScrollBar()
         if sb:
             d = pc.scrollbar_pos_dict
@@ -857,64 +827,56 @@ class ViewRenderedController(QtWidgets.QWidget):
             sb.setSliderPosition(pos)
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
-        
+        '''Update a movie in the vr pane.'''
         # pylint: disable=maybe-no-member
             # 'PyQt4.phonon' has no 'VideoPlayer' member
             # 'PyQt4.phonon' has no 'VideoCategory' member
             # 'PyQt4.phonon' has no 'MediaSource' member
-
         pc = self
-        
         ok,path = pc.get_fn(s,'@movie')
         if not ok:
             w = pc.ensure_text_widget()
             w.setPlainText('Movie\n\nfile not found: %s' % (path))
             return
-        
         if not phonon:
             w = pc.ensure_text_widget()
             w.setPlainText('Movie\n\nno movie player: %s' % (path))
             return
-            
         if pc.vp:
             vp = pc.vp
             pc.vp.stop()
             pc.vp.deleteLater()
-       
         # Create a fresh player.
         pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
         vw = vp.videoWidget()
         vw.setObjectName('video-renderer')
-            
         # Embed the widgets
         def delete_callback():
             if pc.vp:
                 pc.vp.stop()
                 pc.vp.deleteLater()
                 pc.vp = None
-
         pc.embed_widget(vp,delete_callback=delete_callback)
-
         pc.show()
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
         vp.play()
     #@+node:ekr.20110320120020.14484: *4* update_networkx
     def update_networkx (self,s,keywords):
-        
+        '''Update a networkx graphic in the vr pane.'''
         pc = self
         w = pc.ensure_text_widget()
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
         pc.show()
     #@+node:ekr.20110320120020.14477: *4* update_rst
     def update_rst (self,s,keywords):
-        
-        trace = False and not g.unitTesting
-        pc = self ; c = pc.c ;  p = c.p
+        '''Update rst in the vr pane.'''
+        pc = self
+        c = pc.c
+        p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         if trace: g.trace('isHtml',isHtml,p.h)
-        
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
         assert pc.w
@@ -937,6 +899,7 @@ class ViewRenderedController(QtWidgets.QWidget):
                     pc.title = None
                 # Call docutils to get the string.
                 s = publish_string(s,writer_name='html')
+                if trace: g.trace('after docutils',len(s))
                 s = g.toUnicode(s) # 2011/03/15
                 show = True
             except SystemMessage as sm:
@@ -944,7 +907,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
-
         sb = w.verticalScrollBar()
         if sb:
             d = pc.scrollbar_pos_dict
@@ -955,7 +917,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             else:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
-
         if pc.default_kind in ('big','rst','html', 'md'):
             w.setHtml(s)
             if pc.default_kind == 'big':
