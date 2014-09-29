@@ -759,6 +759,7 @@ class Commands (object):
         undoType2 = 'Insert Node In Hierarchy'
         u_node = parent or self.rootPosition()
         undoData = u.beforeChangeGroup(u_node,undoType)
+        changed_node = False
         for idx,head in enumerate(heads):
             if parent is None and idx == 0: # if parent = None, create top level node for first head
                 if not forcecreate:
@@ -777,13 +778,15 @@ class Commands (object):
                     for ch in parent.children():
                         if ch.h == head:
                             parent = ch
+                            changed_node = True
                             break
-                if parent.h != head or forcecreate:
+                if parent.h != head or not changed_node or forcecreate:
                     u_d = u.beforeInsertNode(parent)
                     n = parent.insertAsLastChild()
                     n.h = head
                     u.afterInsertNode(n, undoType2, u_d)
                     parent = n
+            changed_node = False
         u.afterChangeGroup(parent,undoType,undoData)
         return parent # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
