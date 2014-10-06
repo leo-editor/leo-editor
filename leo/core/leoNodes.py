@@ -1824,14 +1824,9 @@ class PosList(list):
     #@-others
 Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
-if use_zodb and ZODB:
-    class BaseVnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class BaseVnode (object):
-        pass
+vnode_base = ZODB.Persistence.Persistent if use_zodb and ZODB else object
 
-class VNode (BaseVnode):
+class VNode (vnode_base):
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
@@ -2573,6 +2568,7 @@ class VNode (BaseVnode):
         __get_gnx, # __set_gnx,
         doc = "VNode gnx property")
     #@-others
+
 vnode = VNode # compatibility.
 #@-others
 #@-leo
