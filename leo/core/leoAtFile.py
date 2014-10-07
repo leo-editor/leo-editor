@@ -547,6 +547,7 @@ class AtFile:
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.inputFile = g.FileLikeObject(fromString=fromString)
+            at.initReadLine(fromString) # 2014/10/07
             fn = None
         else:
             fn = at.fullPath(at.root)
@@ -591,9 +592,7 @@ class AtFile:
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
     ):
-
         """Read an @thin or @file tree."""
-
         trace = False and not g.unitTesting
         if trace: g.trace(root.h)
         at = self ; c = at.c
@@ -604,7 +603,6 @@ class AtFile:
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(at.fullPath(root),root)
-
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
             g.es("reading:",root.h)
@@ -786,7 +784,7 @@ class AtFile:
         return callback
     #@+node:ekr.20041005105605.22: *5* at.initFileName
     def initFileName (self,fromString,importFileName,root):
-
+        '''Return the fileName to be used in messages.'''
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
@@ -795,7 +793,6 @@ class AtFile:
             fileName = root.anyAtFileNodeName()
         else:
             fileName = None
-
         return fileName
     #@+node:ekr.20100224050618.11547: *5* at.isFileLike
     def isFileLike (self,s):
@@ -1047,11 +1044,11 @@ class AtFile:
         return ic.errors == 0
     #@+node:ekr.20041005105605.27: *4* at.readOpenFile & helpers
     def readOpenFile(self,root,theFile,fileName,deleteNodes=False):
+        '''
+        Read an open derived file.
 
-        '''Read an open derived file.
-
-        Leo 4.5 and later can only read 4.x derived files.'''
-
+        Leo 4.5 and later can only read 4.x derived files.
+        '''
         trace = False and not g.unitTesting
         at = self
         firstLines,read_new,thinFile = at.scanHeader(theFile,fileName)
@@ -2730,45 +2727,21 @@ class AtFile:
             return '' # Not an error.
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName,giveErrors=True):
-
-        """Scan the @+leo sentinel.
+        """
+        Scan the @+leo sentinel.
 
         Sets self.encoding, and self.start/endSentinelComment.
 
         Returns (firstLines,new_df,isThinDerivedFile) where:
         firstLines        contains all @first lines,
         new_df            is True if we are reading a new-format derived file.
-        isThinDerivedFile is True if the file is an @thin file."""
-
-        trace = False and not g.unitTesting
-        # if trace: g.trace('=====',fileName)
+        isThinDerivedFile is True if the file is an @thin file.
+        """
         at = self
+        new_df,isThinDerivedFile = False,False
         firstLines = [] # The lines before @+leo.
-        tag = "@+leo"
-        valid = True ; new_df = False ; isThinDerivedFile = False
-        #@+<< skip any non @+leo lines >>
-        #@+node:ekr.20041005105605.130: *5* << skip any non @+leo lines >>
-        #@+at Queue up the lines before the @+leo.
-        # 
-        # These will be used to add as parameters to the @first directives, if any.
-        # Empty lines are ignored (because empty @first directives are ignored).
-        # NOTE: the function now returns a list of the lines before @+leo.
-        # 
-        # We can not call sentinelKind here because that depends on
-        # the comment delimiters we set here.
-        # 
-        # at-first lines are written "verbatim", so nothing more needs to be done!
-        #@@c
-
-        s = at.readLine()
-        if trace: g.trace(fileName,'first line',repr(s))
-        while s and s.find(tag) == -1:
-            firstLines.append(s) # Queue the line
-            s = at.readLine()
-
-        n = len(s)
-        valid = n > 0
-        #@-<< skip any non @+leo lines >>
+        s = self.scanFirstLines(firstLines)
+        valid = len(s) > 0
         if valid:
             valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
         if valid:
@@ -2781,6 +2754,23 @@ class AtFile:
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         # g.trace(fileName,firstLines)
         return firstLines,new_df,isThinDerivedFile
+    #@+node:ekr.20041005105605.130: *5* at.scanFirstLines
+    def scanFirstLines(self,firstLines):
+        '''
+        Append all lines before the @+leo line to firstLines.
+
+        Empty lines are ignored because empty @first directives are
+        ignored.
+        
+        We can not call sentinelKind here because that depends on the comment
+        delimiters we set here.
+        '''
+        at = self
+        s = at.readLine()
+        while s and s.find("@+leo") == -1:
+            firstLines.append(s)
+            s = at.readLine()
+        return s
     #@+node:ekr.20050103163224: *4* at.scanHeaderForThin (used by import code)
     def scanHeaderForThin (self,fileName):
 
