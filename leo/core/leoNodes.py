@@ -41,12 +41,13 @@ class NodeIndices (object):
 
     #@+others
     #@+node:ekr.20031218072017.1992: *3* NodeIndices.__init__
-    def __init__ (self,id):
+    def __init__ (self,id_):
 
         """ctor for NodeIndices class"""
 
-        self.userId = id
-        self.defaultId = id
+        self.userId = id_
+        self.defaultId = id_
+        self.lastIndex = 0
 
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()
@@ -100,7 +101,7 @@ class NodeIndices (object):
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
 
-        # g.trace(self.timeString,self.lastIndex,g.callers(4))
+        g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20031218072017.1999: *3* ni.toString
@@ -1824,9 +1825,9 @@ class PosList(list):
     #@-others
 Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
-vnode_base = ZODB.Persistence.Persistent if use_zodb and ZODB else object
+# vnode_base = ZODB.Persistence.Persistent if use_zodb and ZODB else object
 
-class VNode (vnode_base):
+class VNodeBase (object):
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
@@ -2568,6 +2569,15 @@ class VNode (vnode_base):
         __get_gnx, # __set_gnx,
         doc = "VNode gnx property")
     #@-others
+    
+if use_zodb and ZODB:
+    
+    class VNode(ZODB.Persistence.Persistent,VNodeBase):
+        pass
+        
+else:
+    
+    VNode = VNodeBase
 
 vnode = VNode # compatibility.
 #@-others
