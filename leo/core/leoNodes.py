@@ -1825,8 +1825,6 @@ class PosList(list):
     #@-others
 Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
-# vnode_base = ZODB.Persistence.Persistent if use_zodb and ZODB else object
-
 class VNodeBase (object):
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
@@ -2571,12 +2569,9 @@ class VNodeBase (object):
     #@-others
     
 if use_zodb and ZODB:
-    
     class VNode(ZODB.Persistence.Persistent,VNodeBase):
-        pass
-        
+        pass  
 else:
-    
     VNode = VNodeBase
 
 vnode = VNode # compatibility.

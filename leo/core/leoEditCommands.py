@@ -273,10 +273,12 @@ def pylint_command(event):
             '''Check a single node.  Return True if it is a Python @<file> node.'''
             found = False
             if p.isAnyAtFileNode():
+                # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+                aList = g.get_directives_dict_list(p)
+                path = c.scanAtPathDirectives(aList)
                 fn = p.anyAtFileNodeName()
                 if fn.endswith('.py'):
-                    theDir = g.os_path_dirname(c.fileName())
-                    fn = g.os_path_finalize_join(theDir,fn)
+                    fn = g.os_path_finalize_join(path,fn)
                     if p.v not in self.seen:
                         self.seen.append(p.v)
                         self.run_pylint(fn,rc_fn)
