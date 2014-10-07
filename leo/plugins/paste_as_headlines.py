@@ -39,12 +39,10 @@ __version__ = "1.1"
 #@+others
 #@+node:ekr.20100128073941.5377: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("create-optional-menus",
         createPasteAsHeadlinesMenu)
-
     g.plugin_signon(__name__)
-
     return True # Ok for unit testing: creates menu.
 #@+node:danr7.20060912105041.5: ** createPasteAsHeadlinesMenu
 def createPasteAsHeadlinesMenu (tag,keywords):

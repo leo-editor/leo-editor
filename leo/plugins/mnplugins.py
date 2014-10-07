@@ -34,13 +34,12 @@ __version__ = "0.2"
 #@+others
 #@+node:ekr.20100128091412.5381: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start1", onStart)
     g.registerHandler("create-optional-menus",create_UserMenu)
     g.registerHandler("iconrclick2", onRclick)
     g.plugin_signon(__name__)
     g.es('mnplug OK+Commands+Menu aktiv',color='green')
-
     return True
 #@+node:ekr.20040205071616.1: ** mnstamp
 def mnstamp():
@@ -70,7 +69,7 @@ def setHeadOK(c,v):
 #@+node:ekr.20040205071616.5: ** mnplugins.insertBodystamp
 def insertBodystamp (c,v):
 
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
     stamp = mnOKstamp() + '\n'
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
@@ -113,7 +112,7 @@ def insertUser (self,event=None):
     """Handle the Insert User command."""
 
     c = self ; v = c.currentVnode()
-    w = c.frame.body.bodyCtrl
+    w = c.frame.body.wrapper
 
     oldSel = w.getSelectionRange()
     w.deleteTextSelection() # Works if nothing is selected.

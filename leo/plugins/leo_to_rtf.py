@@ -2,7 +2,7 @@
 #@+node:danr7.20060902083957: * @file leo_to_rtf.py
 #@+<< docstring >>
 #@+node:danr7.20060902085340: ** << docstring >>
-''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
+r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
 loaded into Microsoft Word and formatted as a proper outline.
 
 If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
@@ -18,39 +18,18 @@ you may need to modify it depending on your system.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
 # leoToRTF 1.0 plugin by Dan Rahmel
 
-#@+<< version history >>
-#@+node:danr7.20060902085055: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 1.00 - Cleaned up code and commented difficult passages
-# 0.92 - Added INI file settings
-# 0.91 - Added RTF output code
-# 0.90 - Created initial plug-in framework
-#@-<< version history >>
-#@+<< imports >>
-#@+node:danr7.20060902083957.1: ** << imports >>
 import leo.core.leoGlobals as g
-
 if g.isPython3:
     import configparser as ConfigParser
 else:
     import ConfigParser
 
-
-#@-<< imports >>
-
-__version__ = "1.0"
-
 #@+others
-#@+node:ekr.20100128073941.5373: ** newHeadline
+#@+node:ekr.20100128073941.5373: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: creates menu.
     g.registerHandler("create-optional-menus",createExportMenu)
     g.plugin_signon(__name__)
@@ -175,4 +154,6 @@ def export_rtf( c ):
     f.close()
     g.es(" Leo -> RTF completed.",color="turquoise4")
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

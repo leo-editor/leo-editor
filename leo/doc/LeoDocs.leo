@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -611,23 +611,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
-<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
-<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
-<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
-</v>
-<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
-<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
-<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
-<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
-</v>
-</v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
@@ -646,13 +629,6 @@
 <v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
 <v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
-<v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
-<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
-<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
-</v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
@@ -660,6 +636,13 @@
 <v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
 <v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
 <v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
+</v>
+<v t="EKR.20040524104904.118"><vh>Search commands</vh>
+<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
+<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
+<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
 </v>
 <v t="EKR.20040524104904.143"><vh>Outline commands</vh>
 <v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
@@ -672,10 +655,26 @@
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
 <v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
 <v t="EKR.20040524104904.144"><vh>Checking outlines</vh></v>
-<v t="ekr.20120319170934.6108"><vh>Resizing panes</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
 <v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
+</v>
+</v>
+<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
+<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
+<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
+<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
+<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
+</v>
+<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
+<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
+<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
+<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
 </v>
 </v>
 </v>
@@ -684,9 +683,30 @@
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
 <v t="ekr.20061025065357.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
 <v t="ekr.20061025142434"><vh>The minibuffer</vh></v>
+</v>
+</v>
+<v t="TL.20080804095315.1"><vh>Leo and Vim</vh>
+<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh>
+<v t="ekr.20140810153947.6747"><vh>Supported commands</vh></v>
+<v t="ekr.20140810153947.6752"><vh>Differences from the real vim</vh></v>
+<v t="ekr.20140810153947.6749"><vh>Abbreviations</vh></v>
+<v t="ekr.20140810153947.6750"><vh>Colon commands</vh></v>
+<v t="ekr.20140810153947.6751"><vh>Settings</vh></v>
+</v>
+<v t="ekr.20140720203932.17748"><vh>Using vimoutline (.otl) files in Leo</vh></v>
+<v t="ekr.20140810085801.18231"><vh>Using stand-alone vim bindings</vh>
+<v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
+<v t="TL.20080804095315.5"><vh>General commands</vh></v>
+<v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
+<v t="TL.20080804095315.7"><vh>Outline commands</vh></v>
+<v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
+<v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
@@ -708,17 +728,7 @@
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
-<v t="TL.20080804095315.1"><vh>Using Vim with Leo</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
-<v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
-<v t="TL.20080804095315.5"><vh>General commands</vh></v>
-<v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
-<v t="TL.20080804095315.7"><vh>Outline commands</vh></v>
-<v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
-<v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
-</v>
-</v>
-<v t="ekr.20060913164304"><vh>Using ZODB with Leo</vh>
+<v t="ekr.20060913164304"><vh>Leo and ZODB</vh>
 <v t="ekr.20060913164304.1"><vh>@rst html\zodb.html</vh>
 <v t="ekr.20060913164311"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060913170145"><vh>Configuring Leo to use zodb</vh></v>
@@ -845,6 +855,26 @@
 <v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
 <v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140810085801.18216"><vh>Vim Mode Theory of Operation</vh>
+<v t="ekr.20140810085801.18232"><vh>@rst html/vim-theory.html</vh>
+<v t="ekr.20140810085801.18217"><vh>The big picture</vh></v>
+<v t="ekr.20140811083910.18246"><vh>A simple key handler</vh></v>
+<v t="ekr.20140810085801.18221"><vh>A more complex key handler</vh>
+<v t="ekr.20140810085801.18222"><vh>vim_d</vh></v>
+<v t="ekr.20140810085801.18223"><vh>vim_d2</vh></v>
+<v t="ekr.20140810085801.18224"><vh>vim_d3</vh></v>
+<v t="ekr.20140810085801.18225"><vh>vis_d</vh></v>
+</v>
+<v t="ekr.20140810085801.18226"><vh>Code level details</vh>
+<v t="ekr.20140810085801.18227"><vh>Initialization</vh></v>
+<v t="ekr.20140810085801.18228"><vh>Dispatchers</vh></v>
+<v t="ekr.20140810085801.18218"><vh>About key handlers</vh></v>
+<v t="ekr.20140810085801.18219"><vh>Ivars for key handlers</vh></v>
+<v t="ekr.20140810085801.18220"><vh>API's for key handlers</vh></v>
+<v t="ekr.20140810085801.18229"><vh>vc.return_value and internal error checking</vh></v>
 </v>
 </v>
 </v>
@@ -1119,6 +1149,8 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140810085801.18216"></v>
+<v t="ekr.20140810085801.18230"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -1904,11 +1936,15 @@ g.toUnicode.
 </t>
 <t tx="EKR.20040524104904.99"></t>
 <t tx="TL.20080804095315.1"></t>
-<t tx="TL.20080804095315.2">###########################
-Using Vim Bindings with Leo
-###########################
+<t tx="TL.20080804095315.2">###################
+Using Vim with Leo
+###################
 
-This chapter describes Leo's vim-like bindings, including how to install them.
+This chapter discusses these topics:
+
+- How to enable and use Leo's new vim-emulation mode.
+- How to import and export vim's .otl files.
+- How to install and use stand-alone vim-like bindings.
 
 .. contents::
     :depth: 3
@@ -8484,7 +8520,7 @@ Scripts can get or change the context of the body as follows::
 
 - Added `autoCompleter.getExternalCompletions`_.
 
-- Added g.posList.
+- Added g.PosList.
 
 - c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
 
@@ -15075,6 +15111,7 @@ Downloading Leo
 .. links
 
 .. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.11%20final/
+.. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
 .. _`GitHub`: https://github.com/leo-editor
@@ -15568,10 +15605,6 @@ shows the content of the selected outline node; the other body editors
 continue to show the node contents they last had when they had the body
 editor focus.
 </t>
-<t tx="ekr.20120319170934.6108">You can change the relative sizes of the outline and body panes by dragging
-the splitter bar. The ``equal-sized-panes`` command resizes the panes so
-that each fills half of the main window.
-</t>
 <t tx="ekr.20120319170934.6109">Leo checks that the URL is valid before attempting to open it. A valid
 URL is:
 
@@ -16048,9 +16081,11 @@ in the minibuffer. |br|
 operations. |br|
 You control those operations from the minibuffer.
 
-**Note**: You can toggle the radio buttons and check boxes in the Find Tab
-with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
-toggles the Regexp checkbox.
+**Note**: You can select radio buttons and toggle check boxes in the
+Find Tab with Ctrl-Alt keys. The capitalized words of the radio
+buttons or check boxes indicate which Ctrl-Alt key to use. For
+example, Ctrl-Alt-X (toggle-find-regex-option) toggles the Regexp
+checkbox.
 
 After typing Ctrl-F, type the search string, say "def", in the minibuffer.
 
@@ -16909,7 +16944,7 @@ Preliminaries
    license
 
 .. ..  :titlesonly: </t>
-<t tx="ekr.20131008041326.16080"></t>
+<t tx="ekr.20131008041326.16080">Do *not* nest any @rst nodes.</t>
 <t tx="ekr.20131008041326.16082">.. |---| unicode:: U+02015
    :trim:
 
@@ -16934,8 +16969,9 @@ This is Leo's Users Guide. It covers additional material not covered in the
    customizing
    rstplugin3
    plugins
-   directives
    commands
+   directives
+
 </t>
 <t tx="ekr.20131008041326.16091"></t>
 <t tx="ekr.20131008041326.16092"></t>
@@ -16985,6 +17021,7 @@ Advanced Topics
    atShadow
    scripting-miscellany
    theory
+   vim-theory
    leonine-world
 </t>
 <t tx="ekr.20131008041326.16100">######################
@@ -16995,9 +17032,9 @@ Leo and Other Programs
    :maxdepth: 2
 
    emacs
-   IPythonBridge
-   leoBridge
    vimBindings
+   leoBridge
+   IPythonBridge
    zodb
 
 </t>
@@ -19806,6 +19843,464 @@ requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
 </t>
 <t tx="ekr.20140216125129.16666"></t>
+<t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
+
+    @auto-org-mode &lt;path to .org file&gt;
+
+or equivalently::
+
+    @auto-org &lt;path to .org file&gt;
+    
+import the org-mode file as a Leo outline. 
+
+These nodes work like other @auto nodes: when Leo loads an outline, Leo
+reads the .org file into the @auto-org-mode tree. When Leo writes an
+outline, Leo writes any @auto-org-mode tree back to the org-mode file.
+
+After creating an @auto-org-mode node by hand, be sure to use Leo's
+refresh-from-disk command to populate the node. Do this *before* saving the
+.leo file. If you try to save an empty @auto-org-mode node Leo will warn
+you that you are about to overwrite the file.
+
+The refresh-from-disck command creates an @auto-otl node whose **children**
+represent the contents of the external .org file. Leo does *not* write the
+\@auto-org-mode node itself. This allows you to put Leo directives in the
+node.
+</t>
+<t tx="ekr.20140720203932.17748">Leo can automatically import and export vimoutline (.otl) files. Nodes like::
+
+    @auto-otl &lt;path to .otl file&gt;
+
+or equivalently::
+
+    @auto-vimoutline &lt;path to .otl file&gt;
+    
+import the .otl as a Leo outline.
+
+These nodes work like other @auto nodes: when Leo loads an outline, Leo
+reads the .otl file into the @auto-otl tree. When Leo writes an outline,
+Leo writes any @auto-otl tree back to the .otl file.
+
+After creating an @auto-otl node by hand, be sure to use Leo's
+refresh-from-disk command to populate the node. Do this *before* saving the
+.leo file. If you try to save an empty @auto-otl node Leo will warn you
+that you are about to overwrite the file.
+
+The refresh-from-disck command creates an @auto-otl node whose **children**
+represent the contents of the external .otl file. Leo does *not* write the
+\@auto-otl node itself. This allows you to put Leo directives in the node.
+</t>
+<t tx="ekr.20140810085801.18216"></t>
+<t tx="ekr.20140810085801.18217">Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to
+**key handlers**.
+
+Each key handler handles the incoming key and then calls either
+vc.accept(), vc.done(), vc.ignore() or vc.quit(). These methods tell
+k.masterKeyHandler whether vim-mode has completely handled the key. If so,
+k.masterKeyHandler simply returns. Otherwise, k.masterKeyHandler handles
+the key as usual.
+</t>
+<t tx="ekr.20140810085801.18218">Key handlers handle a single key during the parsing of a vim command. Key
+handlers can either complete a command, thereby actually doing something,
+or change state so as to be able to parse (and possibly complete) the next
+incoming keystroke.
+
+For example, the key handler for the G command handles the command
+completely. In contrast, two key handlers are needed to handle the gg
+command. The first handler, vc.vim_g, simply calls
+vc.accept(handler=vc.vim_g2). This call changes the vc.handler ivar to
+point to the **follow-on handler**, vim_g2. vim_g2 handles all commands
+after the user has typed 'g' in normal mode.
+
+Each key handler must end with a call to an **acceptance method**.
+vc.accept is one such method. Acceptance methods prepare for the next
+keystroke by setting internal state ivars used by the various dispatchers.
+
+Many key handlers simply call vc.done(). This method handles all the
+details of completing a key handler: it hides the details of parsing vim
+command.
+
+**Important**: Any key handler that wants to change vc.state should
+set vc.state *before* calling vc.done()
+
+Key handlers can call either **direct acceptance methods**, vc.accept,
+vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or
+**indirect acceptance methods**: vc.begin_insert_mode, vc.begin_motion,
+vc.end_insert_mode, and vc.vim_digits. Indirect acceptance methods must
+eventually call direct acceptance methods.
+</t>
+<t tx="ekr.20140810085801.18219">Dispatchers set the following ivars for each key handler:
+
+**vc.w** is the widget that has focus. Key handlers may use convenience
+methods to determine the location and type of vc.w. The most important are:
+
+- vc.is_text_widget(w): True if w is any text widget, including headlines,
+  body text and log pane.
+  
+- vc.in_headline(w): True if w is a headline widget in edit mode.
+
+**vc.stroke** is a standard Leo stroke representing the incoming key. Note
+that the spelling of the stoke using the Tk spellings. Take a look at
+entries in the dispatch dicts to see such spellings. When in doubt, enable
+the trace in vc.do_key to see the incoming strokes.
+
+**vc.n1** and **vc.n** are the repeat counts in effect for each key
+handler. Dispatchers and their allies handle most details of setting these
+repeat counts, so most key handlers can simply use vc.n1*vc.n as the
+ultimate repeat count.
+
+**vc.motion_i** is the insertion point *before* the motion has taken place.
+</t>
+<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do
+method, a thin wrapper for c.k.simulateCommand.  For example::
+
+    if vc.state == 'visual':
+        vc.do('end-of-buffer-extend-selection')
+    else:
+        vc.do('end-of-buffer')
+
+Key handlers may also use the **high-level interface**. This is the API
+used throughout Leo's core. For details, see the HighLevelInterface class
+in leoFrame.py and various subclasses in qtGui.py.
+</t>
+<t tx="ekr.20140810085801.18221">The vc.vim_d method and its follow-on methods handle vim's d commands.
+
+The vc.vis_d method handles the d keystroke that ends visual mode.
+
+The following sections examine each piece of the code in detail. If you
+understand how it works you should know everything you need to write any
+other key handler.
+</t>
+<t tx="ekr.20140810085801.18222">@language python
+::
+
+    def vim_d(vc):
+        '''
+        N dd      delete N lines
+        d{motion} delete the text that is moved over with {motion}
+        '''
+        if vc.is_text_widget(vc.w):
+            vc.n = 1
+            vc.accept(handler=vc.vim_d2)
+        else:
+            vc.quit()
+@language rest
+
+This is the key handler for the 'd' key in normal mode.
+
+The entry in vc.normal_dispatch_d for 'd' is: 'd':vc.vim_d.
+
+Because this command changes text, vc.is_text_widget(vc.w) must be True. If
+so, this handler simply calls vc.accept(handler=vc.vim_d2) to queue up the
+follow-on handler. Otherwise, the handler calls vc.quit() to end the
+command.
+
+</t>
+<t tx="ekr.20140810085801.18223">@language python
+::
+
+    def vim_d2(vc):
+        if vc.is_text_widget(vc.w):
+            if vc.stroke == 'd':
+                w = vc.w
+                i = w.getInsertPoint()
+                for z in range(vc.n1*vc.n):
+                    # It's simplest just to get the text again.
+                    s = w.getAllText()
+                    i,j = g.getLine(s,i)
+                    # Special case for end of buffer only for n == 1.
+                    # This is exactly how vim works.
+                    if vc.n1*vc.n == 1 and i == j == len(s):
+                        i = max(0,i-1)
+                    w.delete(i,j)
+                vc.done()
+            else:
+                vc.d_stroke = vc.stroke # A scratch var.
+                vc.begin_motion(vc.vim_d3)
+        else:
+            vc.quit()
+@language rest
+
+This is the follow-on handler for the 'd' command. It will be called when
+the user types a *second* character following the 'd' command in normal
+mode.
+
+All forms of the 'd' command alter text, so this handler calls vc.quit if
+vc.w is not a text widget.
+
+If the second character is another 'd', we have the 'dd' command. The code
+uses the high-level interface to delete a line, then calls vc.done() to end
+the command.
+
+If the second character is *not* a 'd', it should be a following motion,
+such as "2j" in "d2j".
+
+vc.vim_d2 remembers the character that started the motion in a **scratch
+ivar**, vc.d_stroke. Such ivars are not inited or touched outside of vim_d
+and its follow-on key handlers. This code must remember this character so
+that the vim_d3 handler will know whether to expand the deleted text to a
+line.
+
+Finally, vc.vim_d2 calls vc.begin_motion, which does the following:
+
+- Calls vc.ignore if the second character doesn't really start a motion.
+- Sets vc.handler to vc.do_inner_motion.  This handles the motion.
+- Sets the vc.after_motion to the next follow-on handler: vc.vim_d3.
+  vc.vim_d3 will be called when the motion is complete. The details are
+  complicated, but happily the key handlers don't have to know about them!
+</t>
+<t tx="ekr.20140810085801.18224">@language python
+::
+
+    def vim_d3(vc):
+        '''Complete the d command after the cursor has moved.'''
+        # d2w doesn't extend to line.  d2j does.
+        trace = False and not g.unitTesting
+        if vc.is_text_widget(vc.w):
+            extend_to_line = vc.d_stroke in ('jk')
+            w = vc.w
+            s = w.getAllText()
+            i1,i2 = vc.motion_i,w.getInsertPoint()
+            if i1 == i2:
+                if trace: g.trace('no change')
+            elif i1 &lt; i2:
+                for z in range(vc.n1*vc.n):
+                    if extend_to_line:
+                        i2 = vc.to_eol(s,i2)
+                        if i2 &lt; len(s) and s[i2] == '\n':
+                            i2 += 1
+                        if trace: g.trace('extend i2 to eol',i1,i2)
+                w.delete(i1,i2)
+            else: # i1 &gt; i2
+                i1,i2 = i2,i1
+                for z in range(vc.n1*vc.n):
+                    if extend_to_line:
+                        i1 = vc.to_bol(s,i1)
+                        if trace: g.trace('extend i1 to bol',i1,i2)
+                w.delete(i1,i2)
+            vc.done()
+        else:
+            vc.quit()
+@language rest
+
+This is the second and last follow-on handler for the d command. The
+dispatcher that handles vim motions will call this handler after the
+motions **have actually happened**.
+
+First, the code double-checks that we are still in a text widget, calling
+vc.quit() if not.
+
+Next, the code compares the present insertion point, w,getInsertPoint(),
+with the insertion point before the motion happened, vc.motion_i. It
+extends the selection range if the scratch ivar, vc.d_stroke, is in ('jk').
+The code then deletes the selected text.
+
+Finally, this method calls vc.done().
+</t>
+<t tx="ekr.20140810085801.18225">@language python
+::
+
+    def vis_d(vc):
+        '''Delete the highlighted text and terminate visual mode.'''
+        w  = vc.vis_mode_w
+        if vc.is_text_widget(w):
+            i1 = vc.vis_mode_i
+            i2 = w.getInsertPoint()
+            w.delete(i1,i2)
+            vc.state = 'normal'
+            vc.done()
+        else:
+            vc.quit()
+@language rest 
+
+This is the key handler for the 'd' key in normal mode.
+
+It is *not* a follow-on method of vim_d. The dispatcher calls this method
+after visual mode has highlighted text. Here is the entry for 'd' in
+vc.visual_dispatch_d: 'd':vc.vis_d.
+
+Visual mode has already highlighted the text to be deleted, so this code
+simply deletes the highlighted text and calls vc.done().
+
+</t>
+<t tx="ekr.20140810085801.18226">The VimCommands class in leoVim.py implements Leo's vim mode.
+Vim mode is active only if @bool vim-mode = True.
+
+The following sections will be of interest only to those seeking a deep
+knowledge of how vim mode's dispatchers work. Such knowledge should rarely
+be required because dispatchers and key handlers are completely unaware of
+each other. Dispatch dicts and acceptance methods shield dispatchers and
+key handlers of all knowledge of each other. In particular, acceptance
+methods handle the sometimes tricky details of ending a key handler.
+
+Leo's vim code is spectacularly different from the real vim's code.
+Wherever possible, Leo uses methods to hide implementation details.
+
+Ironically, now that everything is hard coded in tables, it would be easy
+for plugins to customize the workings of vim-mode.
+</t>
+<t tx="ekr.20140810085801.18227">The init code for each Leo commander c assigns an instance of VimCommands
+to c.vimCommands. This is done regardless of the @bool vim-mode setting.
+
+Each ivar of the VimCommands class is inited by exactly one of the following::
+
+    vc.init_constant_ivars()
+    vc.init_dot_ivars()
+    vc.init_persistent_ivars()
+    vc.init_state_ivars()
+    vc.create_dispatch_dicts()
+    
+In effect, this code partitions each ivar into disjoint sets. This
+partitioning simplifies code that must re-init some ivars but not others.
+
+The init code creates **dispatch dicts** used by dispatchers.  
+</t>
+<t tx="ekr.20140810085801.18228">Depending on various state date, dispatchers route incoming keys to the
+proper **key handler**. Dispatchers use **dispatch dicts** to assign
+handlers to incoming keys. These dicts eliminate almost all special case
+code.
+   
+vc.do_key is the top-level dispatcher. k.masterKeyHandler calls it for all
+keys *except* Ctrl-G. **Note**: k.masterKeyHandler calls vc.do_key only
+when there no key state in effect, that is, when the minibuffer is not
+active.
+
+As discussed below, the value returned by vc.do_key tells k.masterKeyHandler
+whether vim mode has completely handled the key.
+
+Depending on the vc.handler ivar, vc.do_key can route the incoming key
+either to an **inner dispatcher** or directly to a key handler.
+
+Inner dispatchers handle keys for a particular vim mode using dispatch
+dicts. Inner dispatchers the following ivars behind the scenes::
+
+    vc.handler, vc.next_func, vc.return_value
+    vc.in_motion and vc.motion_func
+    
+Handling these ivars can be tricky; hiding the details greatly simplifies all
+key handlers.
+</t>
+<t tx="ekr.20140810085801.18229">vc.do_key returns the value of vc.return_value. Most the acceptance
+functions set vc.return_value to True, indicating that vim mode has
+completely handled the key and that k.masterKeyHandler should simply
+return. k.masterKeyHandler handles the key as usual if vc.do_key returns
+False.
+
+Each key handler sets vc.return_value indirectly by calling an acceptance
+method. A simple check in vc.do_key ensures that every key handler, has, in
+fact, called an acceptance method. In practice, this check has been very
+effective.
+</t>
+<t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three
+modes, insert, normal and visual.
+
+
+    
+</t>
+<t tx="ekr.20140810085801.18231"></t>
+<t tx="ekr.20140810085801.18232">#############################
+Vim Mode: Theory of Operation
+#############################
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
+   
+This is the theory of operation of Leo's vim mode, contained in
+leo/core/leoVim.py. It discusses everything you need to understand the code
+and to add new vim commands.
+
+.. contents::
+    :depth: 3
+</t>
+<t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,T,w.
+- The gb,ge,gh commands are synonyms for 0,$,^.
+- The h,j,k,l commands work on outlines when entered in the outline pane.
+- 0 in outline pane: goto-first-visible-node
+- e in outline pane: goto-last-visible-node.
+- Deleting text: d{motion},{motion}d,v{motion}d,diw,x.
+- Insert commands: a,A,i,o,O and switch to insert mode if entered in the outline pane.
+- Yank &amp; paste commands: y,p. These act on outlines if entered in the outline pane.
+- Search commands: /,?,n,*,#.  These commands are node-only searches.
+- The dot command '.' works for motions, but not yet for inserts or searches.
+- v: start/end visual mode.
+
+Notes:
+
+- Except as noted above, all vim-mode commands must be entered in the body pane.
+- &lt;Return&gt; in headlines switches to the outline pane.
+- &lt;Return&gt; in the outline pane switches to the body pane.
+</t>
+<t tx="ekr.20140810153947.6749">- The ``jj`` abbreviation switches to normal mode,
+  preserving the changed status of the .leo file.
+- Return in visual/normal mode enters insert mode.
+
+..  - ``,,`` in normal mode now moves to insert mode.
+..  ``,,`` in insert mode does nothing, unless there is an abbreviation template available.
+</t>
+<t tx="ekr.20140810153947.6750">The ':' command enters Leo's minibuffer, with ':' pre-inserted.
+You may backspace over the ':'. Here are the commands::
+  
+    :! Execute a shell command.
+    :e! Revert all changes to a .leo file, prompting if there have been changes.
+    :gt cycle-focus
+    :gT cycle-all-focus
+    :q Quit, prompting for saves.
+    :qa Quit only if there are no unsaved changes.
+    :r Prompt for a file name.  Insert it at the cursor.
+    :tabnew Prompt for a file name, and open a new tab.
+    :w Save the .leo file.
+    :wa Save all changed  .leo files.
+    :wq Save all open files and exit.
+    :xa ave all open files and exit.
+    
+The following colon commands are unique to Leo::
+
+    :print-vim-dot
+    :toggle-vim-mode
+    :toggle-vim-trainer-mode
+
+</t>
+<t tx="ekr.20140810153947.6751">**@bool vim-mode = False**: Enables Leo's vim mode when True.
+
+**@bool vim-crosses-lines = True**: When True the f,F,h,l,t,T,x
+commands may cross line boundaries.
+</t>
+<t tx="ekr.20140810153947.6752">- The gb,ge,gh commands are synonyms for 0,$,^.
+- The h,j,k,l commands work on outlines when entered in the outline pane.
+- The a,A,i,o,O commands switch to insert mode if entered in the outline pane.
+- The y,p commands act on outlines if entered in the outline pane.
+- Ending visual mode with 'v' retains the selection range.
+- Ctrl-H puts the headline in insert mode.
+- Mouse clicks never change vim's state.
+
+</t>
+<t tx="ekr.20140811083910.18246">@language rest
+
+The handler for the G command moves or extends the cursor depending on
+vc.state.
+
+@language python
+::
+
+    def vim_G(vc):
+        '''Put the cursor on the last character of the body pane.'''
+        if vc.is_text_widget(vc.w):
+            if vc.state == 'visual':
+                vc.do('end-of-buffer-extend-selection')
+            else:
+                vc.do('end-of-buffer')
+            vc.done()
+        else:
+            vc.quit()
+            
+@language rest
+
+On entry, the dispatcher has set vc.w to the widget with focus. First, the
+code ensures that this widget is a text widget. If so, the code uses the
+vc.do method, a thin wrapper for c.k.simulateCommand, to execute Leo
+commands by name.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
@@ -19867,7 +20362,7 @@ os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
-<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from gitbub, no
+<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from github, no
 account required.  The downloaded file will have a name like::
 
   leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip

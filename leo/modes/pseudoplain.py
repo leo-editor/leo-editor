@@ -1,7 +1,7 @@
 # Leo colorizer control file for pseudoplain mode.
 # This file is in the public domain.
 
-import leo.core.leoGlobals as g
+# import leo.core.leoGlobals as g
 
 # Properties for plain mode.
 properties = {}

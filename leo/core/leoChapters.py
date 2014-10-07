@@ -11,8 +11,8 @@ import leo.core.leoGlobals as g
 # To do later or never: Make body editors persistent. Create @body-editor node?
 
 #@+others
-#@+node:ekr.20070317085437: ** class chapterController
-class chapterController:
+#@+node:ekr.20070317085437: ** class ChapterController
+class ChapterController:
 
     '''A per-commander controller that manages chapters and related nodes.'''
 
@@ -45,7 +45,7 @@ class chapterController:
                 if not cc.tt:
                     cc.tt = c.frame.iconBar.createChaptersIcon()
         # Create the main chapter
-        cc.chaptersDict['main'] = chapter(c,cc,'main')
+        cc.chaptersDict['main'] = Chapter(c,cc,'main')
         tag = '@chapter'
         for p in c.all_unique_positions():
             h = p.h
@@ -56,7 +56,7 @@ class chapterController:
                     if cc.chaptersDict.get(tabName):
                         self.error('duplicate chapter name: %s' % tabName)
                     else:
-                        cc.chaptersDict[tabName] = chapter(c,cc,tabName)
+                        cc.chaptersDict[tabName] = Chapter(c,cc,tabName)
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main',collapse=False)
@@ -74,7 +74,7 @@ class chapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Clone node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
+            k.setLabelBlue(prefix)
             k.getArg(event,tag,1,self.cloneNodeToChapter,prefix=prefix,tabList=names)
         else:
             k.clearState()
@@ -133,7 +133,7 @@ class chapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Convert node to chapter: ',protect=True)
+            k.setLabelBlue('Convert node to chapter: ')
             k.getArg(event,tag,1,self.convertNodeToChapter,tabList=names)
         else:
             k.clearState()
@@ -152,8 +152,8 @@ class chapterController:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Copy node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.copyNodeToChapter,prefix=prefix,tabList=names)
+            k.setLabelBlue(prefix)
+            k.getArg(event,tag,1,self.copyNodeToChapter,tabList=names)
         else:
             k.clearState()
             k.resetLabel()
@@ -197,7 +197,7 @@ class chapterController:
         state = k.getState(tag)
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter: ',protect=True)
+            k.setLabelBlue('Create chapter: ')
             k.getArg(event,tag,1,self.createChapter,tabList=names)
         else:
             k.clearState()
@@ -208,13 +208,16 @@ class chapterController:
     def createChapterByName (self,name,p,undoType='Create Chapter'):
 
         cc,c = self,self.c
+        if type(name) == type(9):
+            return cc.note('PyQt5 chapters not supported yet.')
         if not name:
             return cc.note('no name')
         oldChapter = cc.getSelectedChapter()
         theChapter = cc.chaptersDict.get(name)
         if theChapter:
             return cc.note('duplicate chapter name: %s' % (name),killUnitTest=True)
-        bunch = cc.beforeCreateChapter(c.p,oldChapter.name,name,undoType)
+        oldName = oldChapter.name if oldChapter else ''
+        bunch = cc.beforeCreateChapter(c.p,oldName,name,undoType)
         if undoType == 'Convert Node To Chapter':
             root = p.insertAfter()
             root.initHeadString('@chapter %s' % name)
@@ -225,7 +228,7 @@ class chapterController:
             root = cc.getChapterNode(name,p=p)
         else:
             return g.trace('Can not happen: bad undoType: %s' % undoType)
-        cc.chaptersDict[name] = chapter(c,cc,name)
+        cc.chaptersDict[name] = Chapter(c,cc,name)
         cc.selectChapterByName(name)
         cc.afterCreateChapter(bunch,c.p)
         return True
@@ -243,7 +246,7 @@ class chapterController:
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
-            k.setLabelBlue('Create chapter from node: ',protect=True)
+            k.setLabelBlue('Create chapter from node: ')
             k.getArg(event,tag,1,self.createChapterFromNode,tabList=names)
         else:
             k.clearState()
@@ -261,9 +264,8 @@ class chapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            prefix = 'Move node to chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.moveNodeToChapter,prefix=prefix,tabList=names)
+            k.setLabelBlue('Move node to chapter: ')
+            k.getArg(event,tag,1,self.moveNodeToChapter,tabList=names)
         else:
             k.clearState()
             k.resetLabel()
@@ -366,9 +368,8 @@ class chapterController:
                 return cc.note('can not rename the main chapter')
             else:
                 names = list(cc.chaptersDict.keys())
-                prefix = 'Rename this chapter: '
-                k.setLabelBlue(prefix,protect=True)
-                k.getArg(event,tag,1,self.renameChapter,prefix=prefix,tabList=names)
+                k.setLabelBlue('Rename this chapter: ')
+                k.getArg(event,tag,1,self.renameChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()
@@ -411,9 +412,8 @@ class chapterController:
         if state == 0:
             names = list(cc.chaptersDict.keys())
             g.es('Chapters:\n' + '\n'.join(names))
-            prefix = 'Select chapter: '
-            k.setLabelBlue(prefix,protect=True)
-            k.getArg(event,tag,1,self.selectChapter,prefix=prefix,tabList=names)
+            k.setLabelBlue('Select chapter: ')
+            k.getArg(event,tag,1,self.selectChapter,tabList=names) # prefix=prefix,
         else:
             k.clearState()
             k.resetLabel()
@@ -424,8 +424,10 @@ class chapterController:
 
         '''Select a chapter.  Return True if a redraw is needed.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         cc,c = self,self.c
+        if type(name) == type(9):
+            return cc.note('PyQt5 chapaters not supported')
         chapter = cc.chaptersDict.get(name)
         if chapter:
             cc.selectChapterByNameHelper(chapter,collapse=collapse)
@@ -676,7 +678,7 @@ class chapterController:
             return
         if theChapter.positionIsInChapter(p):
             if trace: g.trace('position found in chapter:',theChapter.name,p.h)
-            cc.selectChapterByName(theChapter.name) ### New.
+            cc.selectChapterByName(theChapter.name)
             return
         for name in cc.chaptersDict:
             if name not in (firstName,'main'):
@@ -832,11 +834,11 @@ class chapterController:
 
         # Now recreate the chapter.
         name = u.newChapterName
-        cc.chaptersDict[name] = chapter(c,cc,name)
+        cc.chaptersDict[name] = Chapter(c,cc,name)
         cc.selectChapterByName(name)
     #@-others
-#@+node:ekr.20070317085708: ** class chapter
-class chapter:
+#@+node:ekr.20070317085708: ** class Chapter
+class Chapter:
 
     '''A class representing the non-gui data of a single chapter.'''
 
@@ -894,7 +896,6 @@ class chapter:
             self.chapterSelectHelper(w,selectEditor)
             if tt:
                 # A bad kludge: update all the chapter names *after* the selection.
-                ### tt.setNames()
                 tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
@@ -908,13 +909,15 @@ class chapter:
                 name,c.positionExists(self.p),self.p))
         cc.selectedChapter = self
         root = self.findRootNode()
+        if not root:
+            return # New. Might happen during unit testing or startup.
         if self.p and not c.positionExists(self.p):
             self.p = root.copy()
             if trace: g.trace('*** switching to root',self.p)
         p = self.p
         # Next, recompute p and possibly select a new editor.
         if w:
-            assert w == c.frame.body.bodyCtrl
+            assert w == c.frame.body.wrapper
             assert w.leo_p
             self.p = p = self.findPositionInChapter(w.leo_p) or root.copy()
             if trace: g.trace('recomputed: %s' % (self.p))
@@ -972,7 +975,7 @@ class chapter:
             theIter = root.self_and_subtree
         for p in theIter():
             if p.v == p1.v:
-                if trace: g.trace('*** found Vnode match',p1.h)
+                if trace: g.trace('*** found VNode match',p1.h)
                 return p.copy()
         if trace: g.trace('*** not found',p1.h)
         return None
@@ -983,8 +986,9 @@ class chapter:
 
         chapter,c = self,self.c
         w = c.frame.body.findEditorForChapter(chapter,p)
-        w.leo_chapter = chapter
-        w.leo_p = p and p.copy()
+        if w:
+            w.leo_chapter = chapter
+            w.leo_p = p and p.copy()
         return w
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter (self,p):
@@ -1009,11 +1013,11 @@ class chapter:
 
         trace = False and not g.unitTesting
         c = self.c
-        if self.name != 'main':
+        if self.name != 'main' and c.hoistStack:
             try:
                 c.hoistStack.pop()
             except Exception:
-                g.trace('c.hoistStack underflow')
+                g.trace('c.hoistStack underflow',g.callers())
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))
     #@-others

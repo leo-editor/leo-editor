@@ -1,0 +1,127 @@
+leo/plugins/importers/howto.txt
+
+This is the "howto" file for Leo's importers in the leo/plugins/importers folder.
+
+This file tells how to write your own @auto importer for a new language.
+
+===== Overview
+
+Each .py file in this folder (except basescanner.py) is an **importer** for a single computer language.
+
+Leo uses an importer when explicitly importing a file, and when reading any kind of @auto tree.
+
+Each importer must have a top-level Python dictionary named importer_dict.
+
+At startup, Leo creates internal tables using the importers_dict dictionary in each importer.
+
+basescanner.py defines the BaseScanner class used by all the other importers.
+The basescanner.py file is not an importer and has no importers_dict dictionary.
+
+Writing an importer requires substantial knowledge of the BaseScanner class.
+
+===== Getting help
+
+Writing an importer requires substantial knowledge.
+
+Feel free to ask questions at https://groups.google.com/forum/#!forum/leo-editor
+
+===== Interface
+
+Each importer must have a top-level Python dictionary named importer_dict.
+
+Here is an example from the org-mode importer, org.py::
+
+    importer_dict = {
+        '@auto': ['@auto-org','@auto-org-mode',],
+        'class': OrgModeScanner,
+        'extensions': ['.org',],
+    }
+    
+The 'class' entry is required.  It names the scanner class defined in the file.
+
+The '@auto' entry is optional. If present, it is a list of @auto spellings. Leo will use the importer when Leo finds a headline that matches any of the @auto spellings in the list.
+
+The 'extensions' entry is optional.  If present, it must be a list of file extensions.
+Leo will use the importer when Leo finds a headline, say X filename.Y, only if:
+
+A) no '@auto' entry is found in *any* importer for X (a spelling of @auto) and
+
+B) '.Y' appears in the 'extensions' list for *this* importer.
+
+===== Writing an importer
+
+Each importer should be a subclass of the BaseScanner class, defined in
+leo/plugins/importers/basecanner.py. With luck, your subclass might be very
+simple, as with class CScanner. In other words, BaseScanner is supposed to
+do almost all the work.
+
+**Important** I actually remember very little about the code, but I do
+remember its general organization and the process of creating a new
+importer. Here is all I remember, and it should be all you need to write
+any importer.
+
+This base class has two main parts:
+
+1. The "parser" that recognizes where nodes begin and end.
+
+2. The "code generator" the actually creates the imported nodes.
+
+You should never have to change the code generators.  Confine your
+attention to the parser.
+
+The parser thinks it is looking for classes, and within classes,
+method definitions.  Your job is to tell the parser how to do this.
+Let's look at the ctor for BaseScanner for clues:
+
+    # May be overridden in subclasses.
+    self.anonymousClasses = [] # For Delphi Pascal interfaces.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.blockCommentDelim1_2 = None
+    self.blockCommentDelim2_2 = None
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+    self.classTags = ['class',] # tags that start a tag.
+    self.functionTags = []
+    self.hasClasses = True
+    self.hasFunctions = True
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = True
+    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+    self.sigFailTokens = []
+        # A list of strings that abort a signature when seen in a tail.
+        # For example, ';' and '=' in C.
+
+    self.strict = False # True if leading whitespace is very significant.
+
+Yes, this looks like gibberish at first. I do *not* remember what all
+these things do in detail, although obviously the names mean
+something. What I *do* remember is that these ivars control the
+operation of the startsFunction and startsClass methods and their
+helpers (children) *especially startsHelper* and the methods that call
+them, scan and scanHelper. Oh, and one more thing. You may want to set
+hasClasses = False.
+
+Most of these methods have a trace var that will enable tracing during
+importing. The high-level strategy is simple: study startsHelper in
+detail, set the ivars above to make startsHelper do what you want, and
+trace until things work as you want :-)
+
+There is one more part of this high-level strategy. Sometimes the
+ivars above are not sufficient to make startsHelper work properly. In
+that case, subclasses will override various methods of the parser, but
+*not* the code generator.
+
+For example, if indentation affects parsing, you will want to look at
+the Python importer to see how it works--it overrides skipCodeBlock, a
+helper of startsHelper. Others common overrides redefine what a
+comment or string is. For more details, look at the various scanners
+to see the kinds of tricks they use.
+
+That's it. It would be pointless to give you more details, because
+those details would lead you *away* from the process you need to
+follow.  It's this process/strategy that is important.

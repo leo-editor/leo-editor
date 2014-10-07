@@ -4,19 +4,18 @@
 
 import leo.core.leoGlobals as g
 
-__version__ = "1.1"
-
 def onStart(tag,keywords):
     pass
-
+    
+# pylint: disable=unused-import
 try:
     import xyzzy
 except ImportError:
     g.cantImport('xyzzy',pluginName='failed_import')
     
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start2", onStart)
-        # Needed to have the plugin show in the Plugin Manager list.
     g.plugin_signon(__name__)
     return True
 #@-leo

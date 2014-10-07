@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:danr7.20060902215215.2: ** << docstring >>
-''' Converts a leo outline to an html web page.
+r''' Converts a leo outline to an html web page.
 
 This plugin takes an outline stored in Leo and converts it to html which is then
 either saved in a file or shown in a browser. It is based on the original
@@ -183,13 +183,8 @@ __version__ = '2.3'
 #@+others
 #@+node:bob.20080107154936: ** module level functions
 #@+node:bob.20080107154936.1: *3* init
-
 def init ():
-    """Initialize and register plugin.
-
-    Hooks create-optional-menus and after-create-leo-frame.
-
-    """
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("create-optional-menus",createExportMenus)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)

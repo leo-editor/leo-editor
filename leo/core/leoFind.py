@@ -2,25 +2,19 @@
 #@+node:ekr.20060123151617: * @file leoFind.py
 '''Leo's gui-independent find classes.'''
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes # 2014/04/24
 import re
+import sys
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
 #@@nocolor-node
 #@+at
 # 
-# leoFind.py contains the gui-independant part of all of Leo's
-# find/change code.
-# 
-# Such code is tricky, which is why it should be gui-independent code!
-# 
-# Here are the governing principles:
+# LeoFind.py contains the gui-independant part of all of Leo's
+# find/change code. Such code is tricky, which is why it should be
+# gui-independent code! Here are the governing principles:
 # 
 # 1. Find and Change commands initialize themselves using only the state
 #    of the present Leo window. In particular, the Find class must not
@@ -56,34 +50,35 @@ import re
 # window. Using the same kind of text widget for both headlines and body
 # text results in a huge simplification of the code.
 # 
-# Indeed, the searching code does not know whether it is searching
-# headline or body text. The search code knows only that self.s_text is
-# a text widget that contains the text to be searched or changed and the
-# insert and sel attributes of self.search_text indicate the range of
-# text to be searched. Searching headline and body text simultaneously
-# is complicated. The selectNextVnode() method handles the many details
+# The searching code does not know whether it is searching headline or
+# body text. The search code knows only that self.s_text is a text
+# widget that contains the text to be searched or changed and the insert
+# and sel attributes of self.search_text indicate the range of text to
+# be searched.
+# 
+# Searching headline and body text simultaneously is complicated. The
+# findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
 #@-<< Theory of operation of find/change >>
-
 #@+others
-#@+node:ekr.20070105092022.1: ** class searchWidget
-class searchWidget:
+#@+node:ekr.20070105092022.1: ** class SearchWidget
+class SearchWidget:
     '''A class to simulating high-level interface widget.'''
-    # This could be a stringTextWidget, but this code is simple and good.
+    # This could be a StringTextWrapper, but this code is simple and good.
     def __init__ (self,*args,**keys):
-        # g.trace ('searchWidget',g.callers())
+        # g.trace ('SearchWidget',g.callers())
         self.s = ''    # The widget text
         self.i = 0     # The insert point
         self.sel = 0,0 # The selection range
     def __repr__(self):
-        return 'searchWidget id: %s' % (id(self))
+        return 'SearchWidget id: %s' % (id(self))
 
     #@+others
-    #@+node:ekr.20070105093138: *3* getters
+    #@+node:ekr.20070105093138: *3* getters (LeoFind)
     def getAllText (self):          return self.s
     def getInsertPoint (self):      return self.i       # Returns Python index.
     def getSelectionRange(self):    return self.sel     # Returns Python indices.
-    #@+node:ekr.20070105102419: *3* setters (leoFind)
+    #@+node:ekr.20070105102419: *3* setters (LeoFind)
     def delete(self,i,j=None):
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -105,28 +100,28 @@ class searchWidget:
         self.i = 0
         self.sel = 0,0
 
-    def setInsertPoint (self,i):
+    def setInsertPoint (self,i,s=None):
         self.i = i
 
     def setSelectionRange (self,i,j,insert=None):
         self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
         if insert is not None:
             self.i = self.toPythonIndex(insert)
-    #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
+    #@+node:ekr.20070105092022.4: *3* toPythonIndex (LeoFind)
     def toPythonIndex (self,i):
 
         return g.toPythonIndex(self.s,i)
     #@-others
-#@+node:ekr.20061212084717: ** class leoFind (leoFind.py)
-class leoFind:
+#@+node:ekr.20061212084717: ** class LeoFind (LeoFind.py)
+class LeoFind:
 
     """The base class for Leo's Find commands."""
 
     #@+others
-    #@+node:ekr.20131117164142.17021: *3* leoFind.birth
+    #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
     #@+node:ekr.20031218072017.3053: *4* find.__init__ & helpers
     def __init__ (self,c):
-        # g.trace('(leoFind)',c.shortFileName(),id(self),g.callers())
+        # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
         self.errors = 0
         self.expert_mode = False # set in finishCreate.
@@ -157,12 +152,14 @@ class leoFind:
         self.changeTextList = []
         # Widget ivars.
         self.change_ctrl = None
-        self.s_ctrl = searchWidget() # For searches.
+        self.s_ctrl = SearchWidget() # For searches.
         self.find_text = ""
         self.change_text = ""
         self.radioButtonsChanged = False # Set by ftm.radio_button_callback
         # Ivars containing internal state...
         self.p = None # The position being searched.  Never saved between searches!
+        self.changeAllFlag = False
+        self.findAllFlag = False
         self.in_headline = False # True: searching headline text.
         # For suboutline-only
         self.onlyPosition = None # The starting node for suboutline-only searches.
@@ -171,7 +168,7 @@ class leoFind:
             # This must be different from self.wrap, which is set by the checkbox.
         self.wrapPosition = None # The start of wrapped searches: persists between calls.
         self.wrapPos = None # The starting position of the wrapped search: persists between calls.
-    #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate
+    #@+node:ekr.20131117164142.17022: *4* LeoFind.finishCreate
     def finishCreate(self):
         
         # New in 4.11.1.
@@ -182,7 +179,7 @@ class leoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
-    #@+node:ekr.20060123065756.1: *3* leoFind.Buttons (immediate execution)
+    #@+node:ekr.20060123065756.1: *3* LeoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* find.changeAllButton
     def changeAllButton(self,event=None):
         '''Handle Replace All button.'''
@@ -203,7 +200,6 @@ class leoFind:
     #@+node:ekr.20031218072017.3060: *4* find.findAllButton
     def findAllButton(self,event=None):
         '''Handle Find All button.'''
-        c = self.c
         self.setup_button()
         self.findAll()
     #@+node:ekr.20031218072017.3059: *4* find.findButton
@@ -211,7 +207,7 @@ class leoFind:
         '''Handle pressing the "Find" button in the find panel.'''
         self.setup_button()
         self.findNext()
-    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton (new in 4.11.1)
+    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton
     def findPreviousButton(self,event=None):
         '''Handle the Find Previous button.'''
         self.setup_button()
@@ -229,7 +225,7 @@ class leoFind:
         if 0: # We _must_ retain the editing status for incremental searches!
             c.endEditing()
         self.update_ivars()
-    #@+node:ekr.20031218072017.3055: *3* leoFind.Commands (immediate execution)
+    #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20031218072017.3061: *4* find.changeCommand
     def changeCommand(self,event=None):
         '''Handle replace command.'''
@@ -240,25 +236,24 @@ class leoFind:
         '''Handle the replace-then-find command.'''
         self.setup_command()
         self.changeThenFind()
-    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand (4.11.1)
+    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand
     def cloneFindAllCommand(self,event=None):
      
         self.setup_command()
         self.findAll(clone_find_all=True)
-    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand (4.11.1)
+    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand
     def cloneFindAllFlattenedCommand(self,event=None):
         
         self.setup_command()
         self.findAll(clone_find_all=True,clone_find_all_flattened=True)
-    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand (4.11.1)
+    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
     def findAllCommand(self,event=None):
         
         self.setup_command()
         self.findAll()
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
-    # The user has selected the "Find Next" menu item.
-
     def findNextCommand(self,event=None):
+        '''The find-next command.'''
         self.setup_command()
         self.findNext()
     #@+node:ekr.20031218072017.3064: *4* find.findPrevCommand
@@ -287,7 +282,7 @@ class leoFind:
     def openFindTab (self,event=None,show=True):
         '''Open the Find tab in the log pane.'''
         self.c.frame.log.selectTab('Find')
-    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (4.11.1)
+    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
     def changeAllCommand(self,event=None):
         
         self.setup_command()
@@ -301,7 +296,7 @@ class leoFind:
             self.c.endEditing()
         # Fix bug 
         self.update_ivars()
-    #@+node:ekr.20131119060731.22452: *4* find.startSearch (4.11.1)
+    #@+node:ekr.20131119060731.22452: *4* find.startSearch
     def startSearch(self,event):
         
         if self.minibuffer_mode:
@@ -310,7 +305,7 @@ class leoFind:
         else:
             self.openFindTab(event)
             self.ftm.init_focus()
-    #@+node:ekr.20131117164142.16939: *3* leoFind.ISearch
+    #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
     def isearchForward (self,event):
 
@@ -386,12 +381,12 @@ class leoFind:
 
         self.startIncremental(event,'isearch-with-present-options',
             forward=None,ignoreCase=None,regexp=None)
-    #@+node:ekr.20131117164142.16946: *3* leoFind.Isearch utils
+    #@+node:ekr.20131117164142.16946: *3* LeoFind.Isearch utils
     #@+node:ekr.20131117164142.16947: *4* find.abortSearch (incremental)
     def abortSearch (self):
         '''Restore the original position and selection.'''
         c = self.c ; k = self.k
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         k.clearState()
         k.resetLabel()
         p,i,j,in_headline = self.stack[0]
@@ -519,7 +514,7 @@ class leoFind:
                 keepMinibuffer=True)
         else:
             c.selectPosition(p)
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             c.bodyWantsFocus()
             if i > j: i,j = j,i
             w.setSelectionRange(i,j)
@@ -549,7 +544,7 @@ class leoFind:
     def setWidget (self):
 
         c = self.c ; p = c.currentPosition()
-        bodyCtrl = c.frame.body.bodyCtrl
+        wrapper = c.frame.body.wrapper
         if self.in_headline:
             w = c.edit_widget(p)
             if not w:
@@ -560,10 +555,10 @@ class leoFind:
                 w = c.edit_widget(p)
             if not w: # Should never happen.
                 g.trace('**** no edit widget!')
-                self.in_headline = False ; w = bodyCtrl
+                self.in_headline = False ; w = wrapper
         else:
-            w = bodyCtrl
-        if w == bodyCtrl:
+            w = wrapper
+        if w == wrapper:
             c.bodyWantsFocus()
         return w
     #@+node:ekr.20131117164142.16955: *4* find.startIncremental
@@ -576,7 +571,7 @@ class leoFind:
         self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
         # Note: the word option can't be used with isearches!
-        self.w = w = c.frame.body.bodyCtrl
+        self.w = w = c.frame.body.wrapper
         self.p1 = c.p.copy()
         self.sel1 = w.getSelectionRange(sort=False)
         i,j = self.sel1
@@ -584,13 +579,13 @@ class leoFind:
         self.inverseBindingDict = k.computeInverseBindingDict()
         self.iSearchStrokes = self.getStrokes(commandName)
         k.setLabelBlue('Isearch%s%s%s: ' % (
-                '' if self.isearch_forward else ' Backward',
-                ' Regexp' if self.isearch_regexp else '',
-                ' NoCase' if self.isearch_ignore_case else '',
-            ),protect=True)
+            '' if self.isearch_forward else ' Backward',
+            ' Regexp' if self.isearch_regexp else '',
+            ' NoCase' if self.isearch_ignore_case else '',
+        ))
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
-    #@+node:ekr.20131117164142.17013: *3* leoFind.Minibuffer commands
+    #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
     def minibufferCloneFindAll (self,event=None):
         c = self.c ; k = self.k ; tag = 'clone-find-all'
@@ -598,7 +593,7 @@ class leoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             # Init the pattern from the search pattern.
             self.stateZeroHelper(event,tag,'Clone Find All: ',self.minibufferCloneFindAll)
         else:
@@ -615,7 +610,7 @@ class leoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             # Init the pattern from the search pattern.
             self.stateZeroHelper(
                 event,tag,'Clone Find All Flattened: ',self.minibufferCloneFindAllFlattened)
@@ -627,46 +622,20 @@ class leoFind:
             c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     def minibufferFindAll (self,event=None):
-
-        k = self.k ; state = k.getState('find-all')
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w: return
-            self.setupArgs(forward=True,regexp=False,word=True)
-            k.setLabelBlue('Find All: ',protect=True)
-            k.getArg(event,'find-all',1,self.minibufferFindAll)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg,findAll=True)
+        '''handle the find-all command.'''
+        self.ftm.clear_focus()
+        self.searchWithPresentOptions(event,findAllFlag=True)
+        
     #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll
     def minibufferReplaceAll (self,event=None):
-
-        k = self.k ; tag = 'replace-all' ; state = k.getState(tag)
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w: return
-            # Bug fix: 2009-5-31.
-            # None denotes that we use the present value of the option.
-            self.setupArgs(forward=None,regexp=None,word=None)
-            k.setLabelBlue('Replace All From: ',protect=True)
-            k.getArg(event,tag,1,self.minibufferReplaceAll)
-        elif state == 1:
-            self._sString = k.arg
-            self.updateFindList(k.arg)
-            s = 'Replace All: %s With: ' % (self._sString)
-            k.setLabelBlue(s,protect=True)
-            self.addChangeStringToLabel()
-            k.getArg(event,tag,2,self.minibufferReplaceAll,completion=False,prefix=s)
-        elif state == 2:
-            self.updateChangeList(k.arg)
-            self.lastStateHelper()
-            self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-    #@+node:ekr.20131117164142.16983: *3* leoFind.Minibuffer utils
+        '''Handle the change-all command.'''
+        self.ftm.clear_focus()
+        self.searchWithPresentOptions(event,changeAllFlag=True)
+        
+    #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
-    def addChangeStringToLabel (self,protect=True):
-
+    def addChangeStringToLabel (self):
+        '''Add an unprotected change string to the minibuffer label.'''
         c = self.c
         ftm = c.findCommands.ftm
         s = ftm.getChangeText()
@@ -674,7 +643,7 @@ class leoFind:
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]
-        c.k.extendLabel(s,select=True,protect=protect)
+        c.k.extendLabel(s,select=True,protect=False)
     #@+node:ekr.20131117164142.16993: *4* find.addFindStringToLabel
     def addFindStringToLabel (self,protect=True):
 
@@ -688,20 +657,17 @@ class leoFind:
         k.extendLabel(s,select=True,protect=protect)
     #@+node:ekr.20131117164142.16985: *4* find.editWidget
     def editWidget (self,event,forceFocus=True):
+        '''
+        An override of baseEditCommands.editWidget that does *not* set
+        focus when using anything other than the tk gui.
 
-        '''An override of baseEditCommands.editWidget
-
-        that does *not* set focus when using anything other than the tk gui.
-
-        This prevents this class from caching an edit widget
-        that is about to be deallocated.'''
-
+        This prevents this class from caching an edit widget that is about
+        to be deallocated.
+        '''
         c = self.c
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-
         # Do not cache a pointer to a headline!
         # It will die when the minibuffer is selected.
-        self.w = bodyCtrl
+        self.w = c.frame.body.wrapper
         return self.w
     #@+node:ekr.20131117164142.16999: *4* find.generalChangeHelper
     def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
@@ -709,6 +675,9 @@ class leoFind:
         c = self.c
         self.setupSearchPattern(find_pattern)
         self.setupChangePattern(change_pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_before_search(
+                find_pattern=find_pattern,change_pattern=change_pattern)
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
         if changeAll:
@@ -724,6 +693,10 @@ class leoFind:
     ):
         c = self.c
         self.setupSearchPattern(pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_before_search(
+                find_pattern=pattern,
+                change_pattern=None) # A flag indicating not a change command.
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
         if findAll:
@@ -810,30 +783,30 @@ class leoFind:
             self.updateFindList(k.arg)
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20131117164142.17002: *4* find.setReplaceString (delete??)
+    #@+node:ekr.20131117164142.17002: *4* find.setReplaceString
     def setReplaceString (self,event):
-
+        '''A state handler to get the replacement string.'''
         trace = False and not g.unitTesting
         k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
         prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
         if trace: g.trace(state)
         if state == 0:
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             prefix = '%s: ' % prompt
             self.stateZeroHelper(event,tag,prefix,self.setReplaceString)
         elif state == 1:
             self._sString = k.arg
             self.updateFindList(k.arg)
             s = '%s: %s With: ' % (prompt,self._sString)
-            k.setLabelBlue(s,protect=True)
+            k.setLabelBlue(s)
             self.addChangeStringToLabel()
-            k.getArg(event,'replace-string',2,self.setReplaceString,completion=False,prefix=s)
+            k.getArg(event,'replace-string',2,self.setReplaceString,completion=False)
         elif state == 2:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
-            self.generalChangeHelper(self._sString,k.arg)
+            self.generalChangeHelper(self._sString,k.arg,changeAll=self.changeAllFlag)
     #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions
-    def searchWithPresentOptions (self,event):
+    def searchWithPresentOptions (self,event,findAllFlag=False,changeAllFlag=False):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
         k = self.k ; tag = 'search-with-present-options'
@@ -841,13 +814,16 @@ class leoFind:
         if trace: g.trace('state',state,k.getArgEscapeFlag)
         if state == 0:
             # Remember the entry focus, just as when using the find pane.
+            self.changeAllFlag = changeAllFlag
+            self.findAllFlag = findAllFlag
             self.ftm.set_entry_focus()
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchWithPresentOptions,
                 escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
+            if self.findAllFlag: self.changeAllFlag = True
             self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
             k.setState('replace-string',1,self.setReplaceString)
             if trace: g.trace(k.getState('replace-string'))
@@ -857,8 +833,11 @@ class leoFind:
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
-            self.generalSearchHelper(k.arg)
-        
+            if self.findAllFlag:
+                self.setupSearchPattern(k.arg)
+                self.findAllCommand()
+            else:
+                self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
 
@@ -867,14 +846,14 @@ class leoFind:
         if not self.w:
             g.trace('no self.w')
             return
-        k.setLabelBlue(prefix,protect=True)
+        k.setLabelBlue(prefix)
         self.addFindStringToLabel(protect=False)
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
         k.getArgEscapeFlag = False # k.getArg may set this.
         k.getArg(event,tag,1,handler, # enter state 1
-            tabList=self.findTextList,completion=True,prefix=prefix)
+            tabList=self.findTextList,completion=True)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
     def updateChangeList (self,s):
 
@@ -907,8 +886,8 @@ class leoFind:
         else:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20131117164142.16915: *3* leoFind.Option commands
-    #@+node:ekr.20131117164142.16919: *4* leoFind.toggle checkbox commands
+    #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
+    #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle checkbox commands
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         c = self.c
@@ -941,7 +920,7 @@ class leoFind:
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
         self.ftm.toggle_checkbox(checkbox_name)
-    #@+node:ekr.20131117164142.17019: *4* leoFind.setFindScope...
+    #@+node:ekr.20131117164142.17019: *4* LeoFind.setFindScope...
     def setFindScopeEveryWhere (self,event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
@@ -954,9 +933,12 @@ class leoFind:
     def setFindScope(self,where):
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
-    #@+node:ekr.20131117164142.16989: *4* leoFind.showFindOptions
+    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions
     def showFindOptions (self,event=None):
-        '''Show the present find options in the status line.'''
+        '''
+        Show the present find options in the status line.
+        This is useful for commands like search-forward that do not show the Find Panel.
+        '''
         frame = self.c.frame ; z = []
         # Set the scope field.
         head = self.search_headline
@@ -991,15 +973,15 @@ class leoFind:
             val = getattr(self,ivar)
             if val: z.append(s)
         frame.putStatusLine(' '.join(z))
-    #@+node:ekr.20131117164142.16990: *4* leoFind.setupChangePattern
+    #@+node:ekr.20131117164142.16990: *4* LeoFind.setupChangePattern
     def setupChangePattern (self,pattern):
 
         self.ftm.setChangeText(pattern)
-    #@+node:ekr.20131117164142.16991: *4* leoFind.setupSearchPattern
+    #@+node:ekr.20131117164142.16991: *4* LeoFind.setupSearchPattern
     def setupSearchPattern (self,pattern):
 
         self.ftm.setFindText(pattern)
-    #@+node:ekr.20031218072017.3067: *3* leoFind.Utils
+    #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20031218072017.2293: *4* find.batchChange (sets start of replace-all group)
     #@+at This routine performs a single batch change operation, updating the
     # head or body string of p and leaving the result in s_ctrl. We update
@@ -1089,7 +1071,7 @@ class leoFind:
             self.batchChange(pos1,pos2)
         p = c.p
         u.afterChangeGroup(p,undoType,reportFlag=True)
-        g.es("changed:",count,"instances")
+        g.es("changed:",count,"instances of",self.find_text,"to",self.change_text)
         c.redraw(p)
         self.restore(saveData)
     #@+node:ekr.20031218072017.3070: *4* find.changeSelection
@@ -1099,11 +1081,11 @@ class leoFind:
     def changeSelection(self):
 
         c = self.c ; p = self.p
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-        w = c.edit_widget(p) if self.in_headline else bodyCtrl
+        wrapper = c.frame.body and c.frame.body.wrapper
+        w = c.edit_widget(p) if self.in_headline else wrapper
         if not w:
             self.in_headline = False
-            w = bodyCtrl
+            w = wrapper
         if not w: return
 
         oldSel = sel = w.getSelectionRange()
@@ -1197,7 +1179,7 @@ class leoFind:
         skip = {} # Nodes that should be skipped.
             # Keys are vnodes, values not important.
         count,found = 0,None
-        if trace: g.trace(self.p and self.p.h)
+        if trace: g.trace(self.find_text)
         # 2014/04/24: Init suboutline-only for clone-find-all commands
         if clone_find_all or clone_find_all_flattened:
             self.p = c.p.copy()
@@ -1237,13 +1219,13 @@ class leoFind:
         else:
             self.restore(data)
         c.redraw()
-        g.es("found",count,"matches")
+        g.es("found",count,"matches for",self.find_text)
     #@+node:ekr.20051113110735: *5* createCloneFindAllNode
     def createCloneFindAllNode(self,flattened):
         '''Create a node, but do *not* link it into the outline yet.'''
         c = self.c
         # Don't link the node into the outline so that positions remain valid.
-        v = leoNodes.Vnode(context=c)
+        v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
         p.h = 'Found:%s %s' % (
             ' (flattened)' if  flattened else '',
@@ -1261,7 +1243,7 @@ class leoFind:
     def findNext(self,initFlag=True):
         '''Find the next instance of the pattern.'''
         if not self.checkArgs():
-            return
+            return False # for vim-mode find commands.
         # initFlag is False for change-then-find.
         if initFlag:
             self.initInHeadline()
@@ -1276,8 +1258,10 @@ class leoFind:
             else:
                 g.es("not found","'%s'" % (self.find_text))
             self.restore(data)
+            return False # for vim-mode find commands.
         else:
             self.showSuccess(pos,newpos)
+            return True # for vim-mode find commands.
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         '''
@@ -1286,7 +1270,7 @@ class leoFind:
         set_first_batch_search.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c ; p = self.p
         if trace:
             g.trace('*** entry','p',p,'\n',
@@ -1310,13 +1294,14 @@ class leoFind:
             if self.errors:
                 g.trace('find errors')
                 break # Abort the search.
-            if trace and verbose: g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
+            if trace and verbose:
+                g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
             if pos is not None:
                 # Success.
                 if self.mark_finds:
                     p.setMarked()
                     c.frame.tree.drawIcon(p) # redraw only the icon.
-                if trace: g.trace('success',pos,newpos,p)
+                if trace: g.trace('success',pos,newpos,p.h)
                 return pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self.shouldStayInNode(p):
@@ -1470,7 +1455,6 @@ class leoFind:
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode (self,p):
         '''Return True if the find should simply switch panes.'''
-        
         # Errors here cause the find command to fail badly.
         # Switch only if:
         #   a) searching both panes and,
@@ -1479,8 +1463,8 @@ class leoFind:
         # So simple in retrospect, so difficult to see.
         return (
             self.search_headline and self.search_body and (
-                (self.reverse and not self.in_headline) or
-                (not self.reverse and self.in_headline)))
+            (self.reverse and not self.in_headline) or
+            (not self.reverse and self.in_headline)))
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap (self,event=None):
 
@@ -1498,7 +1482,16 @@ class leoFind:
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
-        if trace: g.trace(index,repr(s[index-10:index+10]))
+        if sys.platform.lower().startswith('win'):
+            s = s.replace('\r','')
+                # Ignore '\r' characters, which may appear in @edit nodes.
+                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+        if s:
+            if trace: g.trace('=====',index,repr(s[max(0,index-10):index+40]))
+        else:
+            if trace: g.trace('returning: no text',p.h)
+            return None,None
         stopindex = 0 if self.reverse else len(s)
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
         if trace: g.trace('pos,newpos',pos,newpos)
@@ -1510,7 +1503,7 @@ class leoFind:
             if trace: g.trace('not searching bodies')
             return None,None
         if pos == -1:
-            if trace: g.trace('** pos is -1',pos,newpos)
+            if trace: g.trace('Returning: pos is -1')
             return None,None
         if self.passedWrapPoint(p,pos,newpos):
             if trace:
@@ -1610,9 +1603,14 @@ class leoFind:
                 # Bug fix: 10/5/06: At last the bug is found!
         pattern = self.replaceBackSlashes(pattern)
         n = len(pattern)
-        if i < 0 or i > len(s) or j < 0 or j > len(s):
-            g.trace('bad index: i = %s, j = %s' % (i,j))
-            i = 0 ; j = len(s)
+        # 2014/09/18: Put the indices in range.  Indices can get out of range
+        # because the search code strips '\r' characters when searching @edit nodes.
+        i = max(0,i)
+        j = min(len(s),j)
+        # Old code:
+            # if i < 0 or i > len(s) or j < 0 or j > len(s):
+                # g.trace('bad index: i = %s, j = %s' % (i,j))
+                # i = 0 ; j = len(s)
         if trace and (s and i == 0 and j == 0):
             g.trace('two zero indices')
         # short circuit the search: helps debugging.
@@ -1707,12 +1705,16 @@ class leoFind:
         return s
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs (self,forward=False,regexp=False,word=False):
-        
+        '''
+        Set up args for commands that force various values for commands
+        (re-/word-/search-backward/forward)
+        that force one or more of these values to be a spefic value.
+        '''
         if forward is not None: self.reverse = not forward
         if regexp  is not None: self.patern_match = True
         if word    is not None: self.whole_word = True
         self.showFindOptions()
-    #@+node:ekr.20031218072017.3082: *3* leoFind.Initing & finalizing
+    #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs (self):
 
@@ -1788,7 +1790,7 @@ class leoFind:
         ftm.entry_focus = None # Only use this focus widget once!
         w_name = w and g.app.gui.widget_name(w) or ''
         # Easy case: focus in body.
-        if w == c.frame.body.bodyCtrl:
+        if w == c.frame.body.wrapper:
             val = False
         elif w == c.frame.tree.treeWidget:
             val = True
@@ -1809,10 +1811,10 @@ class leoFind:
         trace = False and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
-        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+        wrapper = c.frame.body and c.frame.body.wrapper
         headCtrl = c.edit_widget(p)
         # w is the real widget.  It may not exist for headlines.
-        w = headCtrl if self.in_headline else bodyCtrl
+        w = headCtrl if self.in_headline else wrapper
         # We only use the insert point, *never* the selection range.
         # None is a signal to self.initNextText()
         ins = w.getInsertPoint() if w else None
@@ -1877,7 +1879,7 @@ class leoFind:
         if 1: # I prefer always putting the focus in the body.
             c.invalidateFocus()
             c.bodyWantsFocus()
-            c.k.showStateAndMode(c.frame.body.bodyCtrl)
+            c.k.showStateAndMode(c.frame.body.wrapper)
         else:
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save
@@ -1885,7 +1887,7 @@ class leoFind:
         '''Save everything needed to restore after a search fails.'''
         c = self.c
         p = self.p or c.p
-        w = c.edit_widget(p) if self.in_headline else c.frame.body.bodyCtrl
+        w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
         if w:
             insert = w.getInsertPoint()
             sel = w.getSelectionRange()
@@ -1918,7 +1920,7 @@ class leoFind:
                 keepMinibuffer=True)
             w = c.edit_widget(p)
         else:
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             # Bug fix: 2012/11/26: *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
             c.selectPosition(p)
@@ -1928,7 +1930,10 @@ class leoFind:
             c.bodyWantsFocusNow()
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
+            w.seeInsertPoint() # 2014/09/17
             c.outerUpdate()
+            if c.vim_mode and c.vimCommands:
+                c.vimCommands.update_selection_after_search()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars (self):
@@ -1958,4 +1963,7 @@ class leoFind:
         if trace: g.trace('change',repr(s))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

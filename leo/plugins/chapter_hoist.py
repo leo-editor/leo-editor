@@ -35,12 +35,11 @@ __version__ = "0.5"
 #@+others
 #@+node:ekr.20060328125925.4: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Note: call onCreate _after_ reading the .leo file.
     # That is, the 'after-create-leo-frame' hook is too early!
     g.registerHandler(('new','open2'),onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20060328125925.5: ** onCreate
 def onCreate (tag, keys):

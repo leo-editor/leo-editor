@@ -63,6 +63,8 @@ Nodes can be added and removed from the display with the following mouse actions
     in which case the existing link is highlighted.
 **control-left-click on bookmark**
     Remove bookmark.
+**shift-control-left-click on bookmark**
+    Rename bookmark.
 **alt-left-click on bookmark**
     Edit clicked bookmark in bookmark list, to change link text.
 **alt-shift-left-click on bookmark**
@@ -134,58 +136,58 @@ The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
 
+Bookmarks for tabbed body editors
++++++++++++++++++++++++++++++++++
+
+Create a new outline with the following nodes, as simple top level nodes::
+    
+    aardvarks
+    apples
+    autos
+    bats
+    bison
+    bunting
+    @bookmarks
+
+(pro-tip, with the paste_as_headlines plugin active, you can just copy the above and use `Edit -> Paste as headlines`, you'll need to promote them to top level again though).
+
+Select the ``@bookmarks`` node and then Alt-X `bookmarks-show`, which should create a new empty pane above the body pane.  Select the ``aardvarks`` node and click in the new empty pane, repeat
+for the ``bats`` node.
+
+Squish the new empty pane up so it's just high enough to hold the two bookmarks, or "tabs", and
+then right click a pane divider and save this layout as "Tabs" or whatever you want to call it.
+
+So now you have two tabs which jump between two nodes.  Click the ``aardvarks`` tab, then
+select the ``apples`` node.  Now shift-click the ``aardvarks`` tab.  Now you are entering sub tabs of the ``aardvarks`` tab.  You might want to repeat the ``aardvarks`` tab at this level, just select the node and click in the empty space in the bookmarks pane to repeat it here.  You could add ``autos`` at this level too.
+
+How the 'tabs' are displayed (one or more levels at once etc.) and how you edit them are described in the earlier parts of these docs.  For example at the top level the first time you click the ``aardvarks`` tab it just shows you the ``aardvarks`` node, it requires a second click to see its subtabs (aardvarks, apples, and autos), because the top level ``aardvarks`` tab is both a bookmark and an organizer node.  If you want it to be just and organizer node, alt-click it to edit the bookmark node itself, and delete the body text (UNL) there.
 
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20070322113635.2: ** << version history >>
-#@+at
-# 0.1 -- first release - TNB
-#@-<< version history >>
+# Written by Terry Brown.
 #@+<< imports >>
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
-
 import leo.core.leoGlobals as g
 
-use_qt = False
-if g.app.gui.guiName() == 'qt':
-    try:
-        from PyQt4 import QtGui, QtCore
-        import hashlib
-        use_qt = True
-    except ImportError:
-        use_qt = False
+# Fail gracefully if the gui is not qt.
+g.assertUi('qt')
 
+from leo.core.leoQt import QtCore, QtWidgets
 
+import hashlib
 #@-<< imports >>
-
 #@+others
 #@+node:ekr.20100128073941.5371: ** init
 def init():
-    
-    if g.unitTesting:
-        return False
-
-    ok = bool(use_qt)
-    
+    '''Return True if the plugin has loaded successfully.'''
+    ok = not g.unitTesting
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
-        
         # temporary until double-click is bindable in user settings
         if g.app.config.getBool('bookmarks-grab-dblclick'):
             g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k['c']))
-        
-    else:
-        g.es_print("Requires Qt GUI")
-
-    g.plugin_signon(__name__)
-
+        g.plugin_signon(__name__)
     return ok
 #@+node:tbrown.20110712121053.19751: ** onCreate
 def onCreate(tag, keys):
@@ -219,10 +221,7 @@ def cmd_open_node(c):
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 def cmd_show(c):
     
-    if not use_qt: return 
-    
     bmd = BookMarkDisplay(c)
-    
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
@@ -279,7 +278,11 @@ def cmd_bookmark(c, child=False):
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
-    nd.h = bm.fix_text(c.p.h)
+    nd.h = (
+        c.frame.body.hasSelection() and  
+        c.frame.body.getSelectedText() or
+        bm.fix_text(c.p.h)
+    )
     nd.b = bm.get_unl()
     
     bm.current = nd.v
@@ -327,96 +330,92 @@ def cmd_use_other_outline(c):
     splitter = c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
-#@+node:tbrown.20131227100801.23857: ** FlowLayout
-class FlowLayout(QtGui.QLayout):
+#@+node:ekr.20140917180536.17896: ** class FlowLayout
+class FlowLayout(QtWidgets.QLayout):
     """from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py"""
+    #@+others
+    #@+node:ekr.20140917180536.17897: *3* __init__
     def __init__(self, parent=None, margin=0, spacing=-1):
+        '''Ctor for FlowLayout class.'''
         super(FlowLayout, self).__init__(parent)
-
         if parent is not None:
             self.setMargin(margin)
-
         self.setSpacing(spacing)
-
         self.itemList = []
 
+    #@+node:ekr.20140917180536.17898: *3* __del__
     def __del__(self):
         item = self.takeAt(0)
         while item:
             item = self.takeAt(0)
-
+    #@+node:ekr.20140917180536.17899: *3* addItem
     def addItem(self, item):
         self.itemList.append(item)
-
+    #@+node:ekr.20140917180536.17900: *3* insertWidget
     def insertWidget(self, index, item):
-        x = QtGui.QWidgetItem(item)
+        x = QtWidgets.QWidgetItem(item)
         # item.setParent(x)
         # self.itemList.insert(index, x)
-
+    #@+node:ekr.20140917180536.17901: *3* count
     def count(self):
         return len(self.itemList)
-
+    #@+node:ekr.20140917180536.17902: *3* itemAt
     def itemAt(self, index):
         if index >= 0 and index < len(self.itemList):
             return self.itemList[index]
-
         return None
-
+    #@+node:ekr.20140917180536.17903: *3* takeAt
     def takeAt(self, index):
         if index >= 0 and index < len(self.itemList):
             return self.itemList.pop(index)
-
         return None
-
+    #@+node:ekr.20140917180536.17904: *3* expandingDirections
     def expandingDirections(self):
         return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
-
+    #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
     def hasHeightForWidth(self):
         return True
-
+    #@+node:ekr.20140917180536.17906: *3* heightForWidth
     def heightForWidth(self, width):
         height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
         return height
-
+    #@+node:ekr.20140917180536.17907: *3* setGeometry
     def setGeometry(self, rect):
         super(FlowLayout, self).setGeometry(rect)
         self.doLayout(rect, False)
-
+    #@+node:ekr.20140917180536.17908: *3* sizeHint
     def sizeHint(self):
         return self.minimumSize()
-
+    #@+node:ekr.20140917180536.17909: *3* minimumSize
     def minimumSize(self):
-        size = QtCore.QSize()
 
+        size = QtCore.QSize()
         for item in self.itemList:
             size = size.expandedTo(item.minimumSize())
-
         size += QtCore.QSize(2 * self.margin(), 2 * self.margin())
         return size
-
+    #@+node:ekr.20140917180536.17910: *3* doLayout
     def doLayout(self, rect, testOnly):
+        
         x = rect.x()
         y = rect.y()
         lineHeight = 0
-
         for item in self.itemList:
             wid = item.widget()
-            spaceX = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
-            spaceY = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Vertical)
+            spaceX = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
+            spaceY = self.spacing() + wid.style().layoutSpacing(QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Vertical)
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()
                 y = y + lineHeight + spaceY
                 nextX = x + item.sizeHint().width() + spaceX
                 lineHeight = 0
-
             if not testOnly:
                 item.setGeometry(QtCore.QRect(QtCore.QPoint(x, y), item.sizeHint()))
-
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
-
         return y + lineHeight - rect.y()
+    #@-others
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
@@ -445,8 +444,8 @@ class BookMarkDisplay:
         self.upwards = False  # moving upwards through hierarchy
         
         self.already = -1  # used to indicate existing link when same link added again
-           
-        self.w = QtGui.QWidget()
+        
+        self.w = QtWidgets.QWidget()
         
         self.dark = c.config.getBool("color_theme_is_dark")
         
@@ -462,7 +461,7 @@ class BookMarkDisplay:
         
         self.w.setObjectName('show_bookmarks')
         self.w.setMinimumSize(10, 10)
-        self.w.setLayout(QtGui.QVBoxLayout())
+        self.w.setLayout(QtWidgets.QVBoxLayout())
         self.w.layout().setContentsMargins(0,0,0,0)
 
         self.current_list = self.get_list()
@@ -495,7 +494,11 @@ class BookMarkDisplay:
         nd = p.insertAsNthChild(0)
         new_url = self.get_unl()
         nd.b = new_url
-        nd.h = self.fix_text(self.c.p.h)
+        nd.h = (
+            self.c.frame.body.hasSelection() and  
+            self.c.frame.body.getSelectedText() or
+            self.fix_text(self.c.p.h)
+        )
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
@@ -509,11 +512,18 @@ class BookMarkDisplay:
         - `but`: button widget
         """
         
+        if event.button() == QtCore.Qt.RightButton:
+            return self.button_menu(event, bm, but, up=up)
+        
         mods = event.modifiers()
         
         # Alt-Ctrl => update bookmark to point to current node
         if mods == (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier):
             self.update_bookmark(bm)
+            return
+        # Shift-Ctrl => rename bookmark
+        if mods == (QtCore.Qt.ShiftModifier | QtCore.Qt.ControlModifier):
+            self.rename_bookmark(bm)
             return
         # Alt => edit the bookmark in the outline
         if mods == QtCore.Qt.AltModifier:
@@ -539,6 +549,40 @@ class BookMarkDisplay:
         self.show_list(self.get_list(), up=up)
         if bm.url and not up and not no_move:
             g.handleUrl(bm.url, c=self.c)
+    #@+node:tbrown.20140807091931.30231: *3* button_menu
+    def button_menu(self, event, bm, but, up=False):
+        """button_menu - handle a button being right-clicked
+
+        :Parameters:
+        - `event`: QPushButton event
+        - `bm`: Bookmark associated with button
+        - `but`: button widget
+        """
+
+        menu = QtWidgets.QMenu()
+        
+        actions = [
+            ("Link bookmark to this node", self.update_bookmark),
+            ("Re-name bookmark", self.rename_bookmark),
+            ("Edit bookmark in tree", self.edit_bookmark),
+            ("Delete bookmark", self.delete_bookmark),
+            ("Add this node as child bookmark", self.add_child_bookmark),
+        ]
+        for action in actions:
+            act = QtWidgets.QAction(action[0], menu)
+            act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
+            menu.addAction(act)
+        
+        def follow(checked, bm=bm, manager=self):
+            manager.current = bm.v
+            manager.second = True
+            manager.upwards = False
+            manager.show_list(manager.get_list(), up=False)
+        act = QtWidgets.QAction("Show child bookmarks", menu)
+        act.triggered.connect(follow)
+        menu.addAction(act)
+       
+        menu.exec_(but.mapToGlobal(event.pos()))
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -663,14 +707,7 @@ class BookMarkDisplay:
             if cull.widget():
                 cull.widget().deleteLater()
             cull = w.layout().takeAt(0)        
-            
-        #X w.setStyleSheet("""
-        #X #show_bookmarks QPushButton { margin: 0; padding: 1; }
-        #X QPushButton[style_class~='bookmark_current'] { font-weight: bold; color: orange; }
-        #X QPushButton[style_class~='bookmark_expanded'] { font-weight: bold; }
-        #X QPushButton[style_class~='bookmark_children'] { text-decoration: underline; }
-        #X """)
-            
+      
         todo = [links or []]  # empty list to create container to click in to add first
         current_level = 1
         current_url = None
@@ -680,12 +717,20 @@ class BookMarkDisplay:
             
             links = todo.pop(0)
         
-            top = QtGui.QWidget()
+            top = QtWidgets.QWidget()
             # pylint: disable=E0202
             # pylint bug, fix released: http://www.logilab.org/ticket/89092
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
-            top.setMinimumSize(10,8)  # so there's something to click when empty
+            top.setMinimumSize(10,10)  # so there's something to click when empty
+
+            size_policy = QtWidgets.QSizePolicy(\
+                QtWidgets.QSizePolicy.Expanding,      
+                QtWidgets.QSizePolicy.Expanding
+            )
+            size_policy.setHorizontalStretch(1)
+            size_policy.setVerticalStretch(1)
+            top.setSizePolicy(size_policy)
 
             w.layout().addWidget(top)
         
@@ -694,7 +739,7 @@ class BookMarkDisplay:
             top.setLayout(layout)
             for bm in links:
                 
-                but = QtGui.QPushButton(bm.head)
+                but = QtWidgets.QPushButton(bm.head)
 
                 if bm.url:
                     but.setToolTip(bm.url)
@@ -746,7 +791,7 @@ class BookMarkDisplay:
                 
                 # add an up button to the second row...
                 next_row = self.w.layout().itemAt(1).widget().layout()
-                but = QtGui.QPushButton('^')
+                but = QtWidgets.QPushButton('^')
                 bm = showing_chain.pop(0)
                 but.mouseReleaseEvent = (lambda event, bm=bm, but=but: 
                     self.button_clicked(event, bm, but, up=True))
@@ -787,6 +832,21 @@ class BookMarkDisplay:
         c.redraw()
 
         self.show_list(self.get_list())
+    #@+node:tbrown.20140804215436.30052: *3* rename_bookmark
+    def rename_bookmark(self, bm):
+        """Rename bookmark"""
+
+        txt = g.app.gui.runAskOkCancelStringDialog(
+            self.c,
+            "Rename "+bm.head,
+            "New name for "+bm.head,
+            default=bm.head
+        )
+        
+        if txt:
+            bm.v.h = txt
+            bm.v.context.redraw()
+            self.show_list(self.get_list())
     #@+node:tbrown.20130601104424.55363: *3* update_bookmark
     def update_bookmark(self, bm):
         """Update *EXISTING* bookmark to current node"""
@@ -794,9 +854,11 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         if bm.v.b == new_url:
             g.es("Bookmark unchanged")
-        else:
-            g.es("Bookmark updated")
+            return
+        g.es("Bookmark updated")
         bm.v.b = new_url
+        bm.v.setDirty()
+        bm.v.context.setChanged(True)
         bm.v.context.redraw()
         self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
@@ -824,7 +886,12 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         nd = p.insertAsNthChild(0)
         nd.b = new_url
-        nd.h = self.fix_text(self.c.p.h)
+        nd.h = (
+            self.c.frame.body.hasSelection() and  
+            self.c.frame.body.getSelectedText() or
+            self.fix_text(self.c.p.h)
+        )    
+        
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
@@ -863,10 +930,19 @@ class BookMarkDisplayProvider:
                         v = i
                         break
                 else:  # use UNL lookup
-                    file_, UNL = gnx.split('#', 1)
-                    other_c = g.openWithFileName(file_, old_c=c)
+                    if '#' in gnx:
+                        file_, UNL = gnx.split('#', 1)
+                        other_c = g.openWithFileName(file_, old_c=c)
+                    else:
+                        file_, UNL = None, gnx
+                        other_c = c
                     if other_c != c:
-                        c.bringToFront()
+                        # don't use c.bringToFront(), it breaks --minimize
+                        if hasattr(g.app.gui,'frameFactory'):
+                            factory = g.app.gui.frameFactory
+                            if factory and hasattr(factory,'setTabForCommander'):
+                                factory.setTabForCommander(c)
+
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
                     
                     ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
@@ -882,4 +958,6 @@ class BookMarkDisplayProvider:
             return bmd.w
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -1,0 +1,75 @@
+leo/plugins/writers/howto.txt
+
+This is the "howto" file for Leo's writers in the leo/plugins/writers folder.
+
+This file tells how to create your own writer for @auto trees.
+
+===== Overview
+
+Each .py file in this folder (except basewriter.py) is a **writer** for a single kind of @auto node.
+
+baseswriter.py defines the BaseWriter class used by all the other writers.
+The basewriter.py file is not a writer and has no writers_dict dictionary.
+
+Each writer (.py file) should define a writer class, a subclass of the BaseWriter class.
+
+Every writer class must define a write method. The write method uses the
+put method (defined in the BaseWriter class) to write all output. All setup
+and teardown code is handled by Leo's core. As a result, creating a writer
+is much easier than creating an importer.
+
+There are many more importers than writers because each importer must parse
+the incoming text.
+
+In contrast, we only need writers for languages that define their own
+outline structures: we can use the "default" @auto write code for all other
+language, because the default @auto write code needs to know only the
+language delims in effect for the language.
+
+===== Getting help
+
+Feel free to ask questions at https://groups.google.com/forum/#!forum/leo-editor
+
+===== Interface: the writer_dict
+
+Each writer must have a top-level Python dictionary named writer_dict.
+
+Here is an example from the org-mode writer, plugins/writers/org.py::
+
+     writer_dict = {
+        '@auto': ['@auto-org-mode','@auto-org',],
+        'class': OrgModeWriter,
+        'extensions': ['.org',],
+    }
+
+The 'class' entry is required.  It names the writer class defined in the file.
+
+The '@auto' entry is optional. If present, it is a list of @auto spellings. Leo will use the importer when Leo finds a headline that matches any of the @auto spellings in the list.
+
+The 'extensions' entry is optional.  If present, it must be a list of file extensions.
+Leo will use the importer when Leo finds a headline, say X filename.Y, only if:
+
+A) no '@auto' entry is found in *any* importer for X (a spelling of @auto) and
+
+B) '.Y' appears in the 'extensions' list for *this* importer.
+
+==== Interface: the write method.
+
+The writer method simply traverses the @auto tree given by root,
+writing out headlines and body text using the put method, defined in the BaseWriter class.
+
+For example, here is the write method in plugins/writers/org.py::
+
+    def write (self,root):
+        """Write all the *descendants* of an @auto-org-mode node."""
+        at = self
+        root_level = root.level()
+        for p in root.subtree():
+            indent = p.level()-root_level
+            self.put('%s %s' % ('*'*indent,p.h))
+            for s in p.b.splitlines(False):
+                self.put(s)
+        root.setVisited()
+        return True
+        
+That's all there is to it.  All other writers look similar.

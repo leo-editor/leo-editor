@@ -141,6 +141,7 @@ import leo.core.leoGui as leoGui
 # import os
 import string
 import sys
+from collections import namedtuple
 #@-<< imports >>
 
 __version__ = '2.5'
@@ -168,24 +169,21 @@ __version__ = '2.5'
 #@+others
 #@+node:ekr.20060328125248.4: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     # This plugin is now gui-independent.            
     ok = g.app.gui and g.app.gui.guiName() in ('qt','qttabs','nullGui')
-
     if ok:
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc)
-            or getattr(g.app.gui, sc) is leoGui.nullScriptingControllerClass):
+            or getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass):
             setattr(g.app.gui, sc, scriptingController)
 
         # Note: call onCreate _after_ reading the .leo file.
         # That is, the 'after-create-leo-frame' hook is too early!
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20060328125248.5: ** onCreate
 def onCreate (tag, keys):
@@ -199,6 +197,53 @@ def onCreate (tag, keys):
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
+#@+node:tbrown.20140819100840.37720: ** type RClick
+# representation of an rclick node
+# this used to have more elements, but evolved to be simpler
+RClick = namedtuple('RClick', 'position,children')
+#@+node:tbrown.20140819100840.37719: ** build_rclick_tree
+def build_rclick_tree(command_p, rclicks=None, top_level=False):
+    """build_rclick_tree - Return a list of top level RClicks for the
+    button at command_p, which can be used later to add the rclick menus
+
+    After building a list of @rclick children and following siblings of the
+    @button this method applies itself recursively to each member of that
+    list to handle submenus.
+
+    :Parameters:
+    - `command_p`: node containing @button
+    - `rclicks`: list of RClicks to add to, created if needed
+    - `top_level`: is this the top level?
+    """
+
+    if rclicks is None:
+        rclicks = list()
+        
+    if top_level:
+        if '@others' not in command_p.b:
+            rclicks.extend([
+                RClick(position=i.copy(), children=[])
+                # -2 for top level entries, i.e. before "Remove button"
+                for i in command_p.children()
+                if i.h.startswith('@rclick ')
+            ])
+        for i in command_p.following_siblings():
+            if i.h.startswith('@rclick '):
+                rclicks.append(RClick(position=i.copy(), children=[]))
+            else:
+                break
+        for rc in rclicks:
+            build_rclick_tree(rc.position, rc.children, top_level=False)
+    else:  # recursive mode below top level
+        if command_p.b.strip():
+            return # sub menus can't have body text
+        for child in command_p.children():
+            # pylint: disable=no-member
+            rc = RClick(position=child.copy(), children=[])
+            rclicks.append(rc)
+            build_rclick_tree(rc.position, rc.children, top_level=False)
+
+    return rclicks
 #@+node:ekr.20060328125248.6: ** class scriptingController
 class scriptingController:
 
@@ -307,9 +352,9 @@ class scriptingController:
                     seen.append(p.v)
                     h = p.h
                     if trace: g.trace('global @button',h)
-                    self.handleAtButtonSetting(h,script)
+                    self.handleAtButtonSetting(h,script,rclicks=getattr(p, 'rclicks'))
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
-    def handleAtButtonSetting (self,h,script):
+    def handleAtButtonSetting (self,h,script,rclicks=None):
 
         '''Create a button in the icon area for a common @button node in an @setting tree.
 
@@ -323,9 +368,9 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        b = self.createAtButtonFromSettingHelper(h,script,statusLine)
+        b = self.createAtButtonFromSettingHelper(h,script,statusLine,rclicks=rclicks)
     #@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,h,script,statusLine,kind='at-button'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,rclicks=None,kind='at-button'):
 
         '''Create a button from an @button node.
 
@@ -353,6 +398,8 @@ class scriptingController:
             if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+        if rclicks:
+            self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
 
         # At last we can define the command.
         self.registerTwoCommands(h,func=atSettingButtonCallback,
@@ -377,7 +424,7 @@ class scriptingController:
                 self.deleteButton(b)
 
         if 0: # Do *not* set focus here: the script may have changed the focus.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20080312071248.2: *4* createCommonCommands (mod_scripting)
     def createCommonCommands (self):
         '''Handle all global @command nodes.'''
@@ -387,6 +434,7 @@ class scriptingController:
         if aList:
             seen = []
             for z in aList:
+                # pylint: disable=cell-var-from-loop
                 p,script = z
                 if p.v not in seen:
                     seen.append(p.v)
@@ -407,18 +455,15 @@ class scriptingController:
         )
     #@+node:ekr.20060328125248.21: *5* runScriptCommand (mod_scripting)
     def runScriptCommand (self,event=None):
-
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
-
         c = self.c
         p = c.p
         h = p.h
         args = self.getArgs(h)
         c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
-
         if 0:
             # Do not assume the script will want to remain in this commander.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20060522105937: *4* createDebugIconButton 'debug-script' & callback
     def createDebugIconButton (self):
         '''Create the 'debug-script' button and the debug-script command.'''
@@ -429,11 +474,8 @@ class scriptingController:
             kind='debug-script')
     #@+node:ekr.20060522105937.1: *5* runDebugScriptCommand
     def runDebugScriptCommand (self,event=None):
-
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
-
         c = self.c ; p = c.p
-
         script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
         if script:
             #@+<< set debugging if debugger is active >>
@@ -487,8 +529,7 @@ class scriptingController:
                 import leo.core.leoScriptModule as leoScriptModule      
             else:
                 g.error('No debugger active')
-
-        c.frame.bodyWantsFocus()
+        c.bodyWantsFocus()
     #@+node:ekr.20060328125248.22: *4* createScriptButtonIconButton 'script-button' & callback
     def createScriptButtonIconButton (self):
         '''Create the 'script-button' button and the script-button command.'''
@@ -499,9 +540,7 @@ class scriptingController:
             kind="script-button-button")
     #@+node:ekr.20060328125248.23: *5* addScriptButtonCommand
     def addScriptButtonCommand (self,event=None):
-
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
-
         c = self.c ; p = c.p; h = p.h
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)
@@ -509,7 +548,7 @@ class scriptingController:
         if shortcut:
             statusLine = statusLine + " @key=" + shortcut
         b = self.createAtButtonHelper(p,h,statusLine,kind='script-button',verbose=True)
-        c.frame.bodyWantsFocus()
+        c.bodyWantsFocus()
     #@+node:ekr.20060328125248.12: *4* handleAtButtonNode @button
     def handleAtButtonNode (self,p):
 
@@ -609,25 +648,21 @@ class scriptingController:
 
     #@+node:ekr.20060328125248.14: *4* handleAtScriptNode @script (mod_scripting)
     def handleAtScriptNode (self,p):
-
         '''Handle @script nodes.'''
-
         c = self.c
         tag = "@script"
         h = p.h
         assert(g.match(h,0,tag))
         name = h[len(tag):].strip()
         args = self.getArgs(h)
-
         if self.atScriptNodes:
             g.blue("executing script %s" % (name))
             c.executeScript(args=args,p=p,useSelectedText=False,silent=True)
         else:
             g.warning("disabled @script: %s" % (name))
-
         if 0:
             # Do not assume the script will want to remain in this commander.
-            c.frame.bodyWantsFocus()
+            c.bodyWantsFocus()
     #@+node:ekr.20061014075212: *3* Utils
     #@+node:ekr.20060929135558: *4* cleanButtonText
     def cleanButtonText (self,s,minimal=False):
@@ -786,9 +821,7 @@ class scriptingController:
             self.c.bodyWantsFocus()
     #@+node:ekr.20060328125248.28: *4* executeScriptFromButton (mod_scripting)
     def executeScriptFromButton (self,b,buttonText,gnx):
-
         '''Called from callbacks to execute the script in node p whose gnx is given.'''
-
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
@@ -803,7 +836,7 @@ class scriptingController:
                     g.es("Removing '%s' button at its request" % buttonText)
                     self.deleteButton(b)
         # Do *not* set focus here: the script may have changed the focus.
-        # c.frame.bodyWantsFocus()
+            # c.bodyWantsFocus()
     #@+node:ekr.20130912061655.11294: *4* find_gnx
     def find_gnx(self,gnx):
         

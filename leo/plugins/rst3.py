@@ -37,21 +37,12 @@ http://leoeditor.com//rstplugin3.html
 
 # Original rst code by Josef Dalcolmo:
 # contributed under the same licensed as Leo.py itself.
-
 # rst3.py based on rst2.py v2.4.
-
-from __future__ import generators # To make this plugin work with Python 2.2.
-
-bwm_file = None
-if 0:
-    bwm_file = open("bwm_file", "w")
-
-__version__ = '1.23'
+# This has largely been superceded by leo.core.leoRst.
 
 #@+<< imports >>
 #@+node:ekr.20050805162550.2: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
 
 if g.isPython3:
     import html.parser as HTMLParser
@@ -73,7 +64,7 @@ dir,junk = os.path.split(__file__)
 if dir not in sys.path: sys.path.append(dir)
 
 try:
-    import mod_http
+    import leo.plugins.mod_http as mod_http
 except ImportError:
     mod_http = None
 
@@ -94,25 +85,6 @@ except ImportError:
         g.pr('rst3 plugin: SilverCity not loaded')
     SilverCity = None
 #@-<< imports >>
-#@+<< change log >>
-#@+node:ekr.20050805162550.3: ** << change log >>
-#@@nocolor
-#@@color
-#@+at
-# 
-# 1.14 EKR: processTopTree ignores @rst- nodes so rst3 button works properly when such nodes are selected.
-# 1.15 EKR: added support for @rst-doc-only and doc_only_mode.  An important new feature.
-# 1.16 EKR: fixed bug that ignored whatever followed @space or @doc in doc-only mode.
-# 1.17 EKR:
-# - Support show_headlines in doc-only mode.
-# - .txt files are now written to default_path directory, just like special files.
-# 1.18 BWM: Added support for mod_scripting plugin.
-# 1.19 EKR: Fixed crash that happens when invoked from menu.
-# 1.20 EKR: Registers the write-restructured-text command.
-# 1.21 EKR: Added rst3-publish-argv-for-missing-stylesheets setting.
-# 1.22 EKR: Fixed bug that caused the plugin not to find default.css.
-# 1.23 EKR: Use g.makeAllNonExistentDirectories instead of os.mkdir.
-#@-<< change log >>
 #@+<< to do >>
 #@+node:ekr.20050806162146: ** << to do >>
 #@@nocolor
@@ -120,7 +92,6 @@ except ImportError:
 # 
 # - Specify option for the spelling of special doc parts.
 #     - The present code assumes to much about these commands.
-# 
 # - Warn if option gets set twice in same vnode.
 # 
 # Later or never:
@@ -184,21 +155,22 @@ except ImportError:
 #@-others
 #@-<< to do >>
 
+bwm_file = None
+if 0:
+    bwm_file = open("bwm_file", "w")
 controllers = {} # For use by @button rst3 code.
 
 #@+others
 #@+node:ekr.20050805162550.4: ** Module level
 #@+node:ekr.20050805162550.5: *3*  init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = docutils is not None # Ok for unit testing.
-
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         g.error('rst3 plugin not loaded: can not load docutils')
-
     return ok
 #@+node:ekr.20050805162550.6: *3* onCreate
 def onCreate(tag, keywords):
@@ -260,11 +232,10 @@ else:
 def runUnitTests(c):
 
     controller = rstClass(c)
-    p = g.findNodeAnywhere('UnitTests')
+    p = g.findNodeAnywhere(c,'UnitTests')
     if p:
-        leoTest.doTests(c,p=p
-        )
-
+        c.selectPosition(p)
+        c.testManager.doTests(all=None, marked=None, verbosity=1)
 #@+node:ekr.20050805162550.39: ** html parser classes
 #@+at
 # The parser classes are used to construct the html code for nodes. The algorithm has two phases:
@@ -811,24 +782,22 @@ class rstClass:
             self.tnodeOptionDict [p.v] = d
     #@+node:ekr.20050808072943.1: *5* parseOptionLine
     def parseOptionLine (self,s):
-
-        '''Parse a line containing name=val and return (name,value) or None.
-
-        If no value is found, default to True.'''
-
+        '''
+        Parse a line containing name=val and return (name,value) or None.
+        If no value is found, default to True.
+        '''
         s = s.strip()
         if s.endswith(','): s = s[:-1]
         # Get name.  Names may contain '-' and '_'.
         i = g.skip_id(s,0,chars='-_')
         name = s [:i]
-        if not name: return None
+        if not name:
+            return None,'False'
         j = g.skip_ws(s,i)
         if g.match(s,j,'='):
             val = s [j+1:].strip()
-            # g.trace(val)
             return name,val
         else:
-            # g.trace('*True')
             return name,'True'
     #@+node:ekr.20050808070018.2: *5* scanForOptionDocParts
     def scanForOptionDocParts (self,p,s):
@@ -928,14 +897,13 @@ class rstClass:
         return d
     #@+node:ekr.20050808070018: *5* scanOption
     def scanOption (self,p,s):
-
-        '''Return { name:val } if s is a line of the form name=val.
-        Otherwise return {}'''
-
-        if not s.strip() or s.strip().startswith('..'): return {}
-
+        '''
+        Return { name:val } if s is a line of the form name=val.
+        Otherwise return {}
+        '''
+        if not s.strip() or s.strip().startswith('..'):
+            return {}
         data = self.parseOptionLine(s)
-
         if data:
             name,val = data
             fullName = 'rst3_' + self.munge(name)
@@ -995,12 +963,10 @@ class rstClass:
             self.setOption("write_intermediate_file", True, "rst3_all")
     #@+node:ekr.20050805162550.13: *5* initOptionsFromSettings
     def initOptionsFromSettings (self):
-
-        c = self.c ; d = self.defaultOptionsDict
-        keys = list(d.keys())
-        keys.sort()
-
-        for key in keys:
+        '''Init all options from settings.'''
+        c = self.c
+        d = self.defaultOptionsDict
+        for key in sorted(d.keys()):
             for getter,kind in (
                 (c.config.getBool,'@bool'),
                 (c.config.getString,'@string'),
@@ -1013,7 +979,7 @@ class rstClass:
         # Special case.
         if self.getOption('http_server_support') and not mod_http:
             g.error('No http_server_support: can not import mod_http plugin')
-            self.setOption('http_server_support',False)
+            self.setOption('http_server_support',False,tag='initOptionsFromSettings')
     #@+node:ekr.20050810103731: *5* handleSingleNodeOptions
     def handleSingleNodeOptions (self,p):
 
@@ -1030,16 +996,13 @@ class rstClass:
 
     #@+node:ekr.20050811135526: *4* setOption
     def setOption (self,name,val,tag):
-
+        trace = False and not g.unitTesting
         ivar = self.munge(name)
-
-        bwm = False
-        if bwm:
+        if trace:
             if not self.optionsDict.has_key(ivar):
                 g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
             elif self.optionsDict.get(ivar) != val:
                 g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
-
         self.optionsDict [ivar] = val
     #@+node:ekr.20050809074827: *3* write methods
     #@+node:ekr.20050809082854: *4*  Top-level write code
@@ -1294,8 +1257,8 @@ class rstClass:
         return d
     #@+node:ekr.20060525102337: *5* writeNodeToString (New in 4.4.1)
     def writeNodeToString (self,p=None,ext=None):
-
-        '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
+        '''
+        Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
         Convert the first node found to an ouput of the type specified by ext.
 
         The @rst may or may not be followed by a filename; the filename is *ignored*,
@@ -1303,15 +1266,14 @@ class rstClass:
 
         ext should start with a period:  .html, .tex or None (specifies rst output).
 
-        Returns p, s, where p is the position of the @rst node and s is the converted text.'''
-
-        c = self.c ; current = p or c.p
-
+        Returns p, s, where p is the position of the @rst node and s is the converted text.
+        '''
+        c = self.c
+        current = p or c.p
         for p in current.self_and_parents():
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
-        else:
-            return self.processTree(current,ext=ext,toString=True,justOneFile=True)
+        return self.processTree(current,ext=ext,toString=True,justOneFile=True)
     #@+node:ekr.20050811154552: *4* getDocPart
     def getDocPart (self,lines,n):
 

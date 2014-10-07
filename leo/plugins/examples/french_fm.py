@@ -17,15 +17,13 @@ __version__ = "1.4" # Set version for the plugin handler.
 #@+others
 #@+node:ekr.20111104210837.9688: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.unitTesting
         # Unpleasant for unit testing.
-
     if ok:
         # Register the handlers...
         g.registerHandler("menu2", onMenu)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:EKR.20040517080202.4: ** onMenu
 def onMenu (tag,keywords):

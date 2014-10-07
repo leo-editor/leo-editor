@@ -49,13 +49,11 @@ except ImportError:
 #@+others
 #@+node:ville.20110409151021.5703: ** init
 def init ():
-    
+    '''Return True if the plugin has loaded successfully.'''
     ok = bool(Template)
-    
     if ok:
         g.plugin_signon(__name__)
         jinja_install()
-
     return ok
 #@+node:ville.20110409151021.5705: ** install & act-on-node
 #@+node:ekr.20120525090541.10863: *3* untangle

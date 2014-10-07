@@ -1,15 +1,26 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
-#@@language python
+'''
+This file runs pylint on predefined lists of files.
 
-# import these *after* clearing the screen.
-    # from pylint import lint
+The -r option no longer exists. Instead, use Leo's pylint command to run
+pylint on all Python @<file> nodes in a given tree.
+
+On windows, the following .bat file runs this file::
+    python27 pylint-leo.py %*
+
+On Ubuntu, the following alias runs this file::
+    pylint="python27 pylint-leo.py"
+'''
+#@@language python
+# pylint: disable=invalid-name
+    # pylint-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
+import glob
 import optparse
 import os
 import sys
 import time
-
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -20,6 +31,8 @@ def getCoreList():
         'leoAtFile',
         'leoBridge',
         'leoCache',
+        'leoColor',
+        'leoColorizer',
         'leoChapters',
         'leoCommands',
         'leoConfig',
@@ -40,24 +53,46 @@ def getCoreList():
         'leoMenu',
             # W0108: Lambda may not be necessary (it is).
         'leoNodes',
+        'leoQt',
+        'leoPersistence',
         'leoPlugins',
+        'leoRope',
         'leoRst', 
         'leoSessions',
         'leoShadow',
         'leoTangle',
         'leoTest',
         'leoUndo',
-            # WO511: TODO 
-        'leoViews',
     )
+#@+node:ekr.20140528065727.17960: ** getExternalList
+def getExternalList():
+    '''Return list of files in leo/external'''
+    return [
+        # 'ipy_leo',
+        'leosax',
+        'lproto',
+    ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
 
     return (
-        'baseNativeTree',
+        'free_layout',
         'nested_splitter',
-        'qtGui',
+        'qt_commands',
+        'qt_events',
+        'qt_frame',
+        'qt_idle_time',
+        'qt_gui',
+        'qt_text',
+        'qt_tree',
     )
+#@+node:ekr.20140727180847.17983: ** getModesList
+def getModesList():
+    pattern = g.os_path_finalize_join('.','leo','modes','*.py')
+    return [
+        g.shortFileName(fn)
+            for fn in glob.glob(pattern)
+                if g.shortFileName(fn) != '__init__.py']
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
 
@@ -77,7 +112,7 @@ def getPassList():
         'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
         'open_shell','open_with','outline_export','quit_leo',
         'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-        'qt_main','qt_quicksearch','qtframecommands',
+        'qt_main','qt_quicksearch','qt_commands',
         'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',
@@ -90,79 +125,69 @@ def getPassList():
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsList
 def getPluginsList():
-
-    return (
+    '''Return a list of all important plugins.'''
+    aList = []
+    # g.app.loadDir does not exist: use '.' instead.
+    for theDir in ('importers','writers'):
+        pattern = g.os_path_finalize_join('.','leo','plugins',theDir,'*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            if sfn != '__init__.py':
+                aList.append(os.sep.join([theDir,sfn]))
+    aList.extend([
         'baseNativeTree',
         'bookmarks',
-        # 'internal_ipkernel.py',
+        'contextmenu',
+        'leoOPML',
+        'lineNumbers',
         # 'mod_http',
         'mod_scripting',
-            # E0611:489:scriptingController.runDebugScriptCommand:
-            # No name 'leoScriptModule' in module 'leo.core'
-        'nested_splitter',
-        'qtGui',
-            # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-            # E0611: No name 'xxx' in module 'urllib'
-            # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-            # R0923: Interface not implemented
-        # 'toolbar',
-            # Dangerous: many erroneous E1101 errors
-            # Harmless: W0221: Arguments number differs from overridden method
-            # Harmless: W0511: Fixme and to-do.
+        'nav_qt',
+        'quicksearch',
+        'todo',
         'vim.py',
         'viewrendered.py',
-            # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
-    )
-#@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
-def getRecentCoreList():
-    '''Return the list of core files processed by the -r option.'''
-    return (
-        # 'runLeo',
-        # 'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        # 'leoCache',
-        # 'leoChapters',
-        # 'leoCommands',
-        # 'leoConfig',
-        # 'leoEditCommands',
-        # 'leoFileCommands',
-        # 'leoFind',
-        # 'leoFrame',
-        # 'leoGlobals',
-        # 'leoGui',
-        # 'leoImport',
-        # 'leoIPython',
-        # 'leoKeys',
-        # 'leoMenu',
-        'leoNodes',
-        # 'leoPlugins',
-        # 'leoRst',
-        # 'leoSessions',
-        # 'leoShadow',
-        # 'leoTangle',
-        # 'leoTest',
-        # 'leoUndo',
-        # 'leoViews',
-        # 'leoVim',
-)
-#@+node:ekr.20120528063627.10137: ** getRecentPluginsList
-def getRecentPluginsList ():
-
-    return (
-        # 'baseNativeTree',
-        # 'contextmenu',
-        # 'codewisecompleter',
-        # 'internal_ipkernel.py',
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
-        # 'plugins_menu',
-        # 'screencast',
-        # 'viewrendered',
-        # 'viewrendered2',
-    )
+    ])
+    return aList
+#@+node:ekr.20140331201252.16861: ** getTable
+def getTable(scope):
+    
+    d = {
+        'all': (
+            (coreList,'core'),
+            # (guiPluginsList,'plugins'),
+            (guiPluginsList,'plugins'),
+            (pluginsList,'plugins'),
+            (externalList,'external'),
+        ),
+        'core': (
+            (coreList,'core'),
+            (guiPluginsList,'plugins'),
+            (externalList,'external'),
+        ),
+        'external': (
+            (externalList,'external'),
+        ),
+        'file': (
+            ([g_option_fn],''), # Default directory is the leo directory (was leo/core)
+        ),
+        'gui': (
+            (guiPluginsList,'plugins'),
+        ),
+        'modes': (
+            (modesList,'modes'),
+        ),
+        'plugins': (
+            (pluginsList,'plugins'),
+            # (passList,'plugins'),
+        ),
+    }
+    tables_table = d.get(scope)
+    if not tables_table:
+        print('bad scope',scope)
+        tables_table = ()
+    return tables_table
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
 
@@ -183,117 +208,29 @@ def getTkPass():
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
    )
-#@+node:ekr.20140331201252.16861: ** getTable
-def getTable(scope):
-    
-    d = {
-        'all': (
-            (coreList,'core'),
-            # (guiPluginsList,'plugins'),
-            (pluginsList,'plugins'),
-            (externalList,'external'),
-        ),
-        'core': (
-            (coreList,'core'),
-            (guiPluginsList,'plugins'),
-            (externalList,'external'),
-        ),
-        'external': (
-            (externalList,'external'),
-        ),
-        'file': (
-            ([g_option_fn],'core'), # Default is a core file.
-        ),
-        'gui': (
-            (guiPluginsList,'plugins'),
-        ),
-        'plugins': (
-            (pluginsList,'plugins'),
-            # (passList,'plugins'),
-        ),
-        'recent': (
-            (recentCoreList,'core'),
-            (recentPluginsList,'plugins'),
-        ),
-        'stc': (
-            (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-        ),
-        'stc-test': (
-            (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-        ),
-    }
-    tables_table = d.get(scope)
-    if not tables_table:
-        print('bad scope',scope)
-        tables_table = ()
-    return tables_table
-    
-    # if scope == 'all':
-        # tables_table = (
-            # (coreList,'core'),
-            # # (guiPluginsList,'plugins'),
-            # (pluginsList,'plugins'),
-            # (externalList,'external'),
-        # )
-    # elif scope == 'core':
-        # tables_table =  (
-            # (coreList,'core'),
-            # (guiPluginsList,'plugins'),
-            # (externalList,'external'),
-        # )
-    # elif scope == 'external':
-        # tables_table = (
-            # (externalList,'external'),
-        # )
-    # elif scope == 'file':
-        # tables_table = (
-            # ([g_option_fn],'core'), # Default is a core file.
-        # )
-    # elif scope == 'gui':
-        # tables_table = (
-            # (guiPluginsList,'plugins'),
-    # )
-    # elif scope == 'plugins':
-        # tables_table = (
-            # (pluginsList,'plugins'),
-            # # (passList,'plugins'),
-        # )
-    # elif scope == 'recent':
-        # tables_table = (
-            # (recentCoreList,'core'),
-            # (recentPluginsList,'plugins'),
-        # )
-    # elif scope == 'stc':
-        # tables_table = (
-            # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-        # )
-    # elif scope == 'stc-test':
-        # tables_table = (
-            # (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-        # )
-    # else:
-        # print('bad scope',scope)
-        # tables_table = ()
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table):
     
     if tables_table and sys.platform.startswith('win'):
         if False and scope != 'file':
             g.cls()
-            # os.system('cls')
-
     # Do these imports **after** clearing the screen.
     from pylint import lint
         # in pythonN/Lib/site-packages.
-    
     t1 = time.clock()
     for table,theDir in tables_table:
         for fn in table:
             run(theDir,fn)
-    if 0:
-        print('astroid.bases.ekr_infer_stmts_items: %s' %
-            astroid.bases.ekr_infer_stmts_items)
     print('time: %s' % g.timeSince(t1))
+#@+node:ekr.20140526142452.17594: ** report_version
+def report_version():
+    try:
+        from pylint import lint
+        rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
+        rc_fn = rc_fn.replace('\\','/')
+        lint.Run(["--rcfile=%s" % (rc_fn),'--version',])
+    except ImportError:
+        g.trace('can not import pylint')
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
@@ -308,8 +245,11 @@ def run(theDir,fn,rpython=False):
     if not os.path.exists(fn):
         print('file not found:',fn)
         return
-    # Report the file name.
-    print('pylint-leo.py: %s' % (g.shortFileName(fn)))
+    # Report the file name and one level of directory.
+    path = g.os_path_dirname(fn)
+    dirs = path.split(os.sep)
+    theDir = dirs and dirs[-1] or ''
+    print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Create the required args.
     args = ','.join([
         "fn=r'%s'" % (fn),
@@ -488,13 +428,15 @@ def scanOptions():
     add('-a', action='store_true', help = 'all')
     add('-c', action='store_true', help = 'core')
     add('-e', action='store_true', help = 'external')
-    add('-f', dest='filename',     help = 'filename',)
+    add('-f', dest='filename',     help = 'filename')
     add('-g', action='store_true', help = 'gui plugins')
+    add('-m', action='store_true', help = 'modes')
     add('-p', action='store_true', help = 'plugins')
-    add('-r', action='store_true', help = 'recent')
-    #add('-s', action='store_true', help = 'suppressions')
-    add('-t', action='store_true', help = 'static type checking')
-    add('--tt',action='store_true', help = 'stc test')
+    # add('-r', action='store_true', help = 'recent')
+    # add('-s', action='store_true', help = 'suppressions')
+    # add('-t', action='store_true', help = 'stc')
+    # add('--tt',action='store_true', help = 'stc test')
+    add('-v',action='store_true',  help = 'report pylint version')
 
     # Parse the options.
     options,args = parser.parse_args()
@@ -507,24 +449,27 @@ def scanOptions():
         g_option_fn = fn.strip('"')
         return 'file'
     elif options.g: return 'gui'
+    elif options.m: return 'modes'
     elif options.p: return 'plugins'
-    elif options.r: return 'recent'
+    # elif options.r: return 'recent'
     # elif options.s: return 'suppressions'
-    elif options.t: return 'stc'
-    elif options.tt:return 'stc-test'
+    # elif options.t: return 'stc'
+    # elif options.tt:return 'stc-test'
+    elif options.v: return 'version'
     else:           return 'all'
 #@-others
 g_option_fn = None
 scope = scanOptions()
 coreList            = getCoreList()
-externalList        = ('lproto',) # 'ipy_leo',
+externalList        = getExternalList()
 guiPluginsList      = getGuiPluginsList()
+modesList           = getModesList()
 passList            = getPassList()
 pluginsList         = getPluginsList()
-recentCoreList      = getRecentCoreList()
-recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
-tables_table        = getTable(scope)
-
-main(tables_table)
+if scope == 'version':
+    report_version()
+else:
+    tables_table = getTable(scope)
+    main(tables_table)
 #@-leo

@@ -52,19 +52,16 @@ process for each one.
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.0'
-
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >>
 import leo.core.leoGlobals as g
 
-# Whatever other imports your plugins uses.
-
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
-import sys,os,time
-import webbrowser
+import os
+import time
+# import webbrowser
 
 encOK = False
 try:
@@ -76,22 +73,32 @@ try:
     encOK = True
 except ImportError:
     pass
-
-from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL, QTimer)
-
-try:
-   from PyQt4.QtCore import QString
-except ImportError:
-   QString = str
-
-
-from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
-        QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
-        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
-        QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea, QLineEdit)
-
+    
+from leo.core.leoQt import isQt5,Qt
+if isQt5:
+    from PyQt5.QtCore import SIGNAL, QTimer # QSize, QVariant, 
+    try:
+        from PyQt5.QtCore import QString
+    except ImportError:
+        QString = str
+    from PyQt5.QtGui import (
+        QAction,QFont,QIcon,QTextCharFormat, 
+        QInputDialog,QMainWindow,QMdiArea)
+        # QApplication,QColor,QFontMetrics,QKeySequence,QMenu,QPixmap,
+        # QTextBlockFormat,QTextCursor,QTextListFormat,
+    from PyQt5.QtWidgets import QLineEdit,QPlainTextEdit,QTextEdit
+else:
+    from PyQt4.QtCore import SIGNAL, QTimer # QSize, QVariant, 
+    try:
+        from PyQt4.QtCore import QString
+    except ImportError:
+        QString = str
+    from PyQt4.QtGui import (
+        QAction,QFont,QIcon,QTextCharFormat,QTextEdit,
+        QPlainTextEdit,QInputDialog,QMainWindow,QMdiArea,QLineEdit)
+        # QApplication,QColor,QFontMetrics,QKeySequence,QMenu,QPixmap,
+        # QTextBlockFormat,QTextCursor,QTextListFormat,
 #@-<< imports >>
-
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** styling
 stickynote_stylesheet = """
@@ -115,13 +122,10 @@ def decorate_window(w):
 
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
-
-    ok = True
-
+    '''Return True if the plugin has loaded successfully.'''
+    ok = g.app.gui.guiName() == 'qt'  
     if ok:
-        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-
     g.app.stickynotes = {}    
     return ok
 #@+node:ville.20091008210853.7616: ** class FocusingPlainTextEdit
@@ -188,9 +192,9 @@ class SimpleRichText(QTextEdit):
     def setBold(self):
         format = QTextCharFormat()
         if self.boldAct.isChecked():
-                weight = QFont.Bold
+            weight = QFont.Bold
         else:
-                weight = QFont.Normal
+            weight = QFont.Normal
         format.setFontWeight(weight)
         self.setFormat(format)
 
@@ -227,7 +231,7 @@ def stickynote_f(event):
     nf = mknote(c,p)
 #@+node:ville.20110304230157.6526: ** g.command('stickynote-new')
 @g.command('stickynote-new')
-def stickynote_f(event):
+def stickynote_new_f(event):
     """ Launch editable 'sticky note' for the node """
 
     c = event['c']
@@ -460,7 +464,7 @@ def mknote(c,p, parent=None):
 #@+node:ville.20100704010850.5589: *3* def tabula_show
 def tabula_show(c):
     try:
-       t = c.tabula
+        t = c.tabula
     except AttributeError:
         t = c.tabula = Tabula(c) 
     t.show()
@@ -540,9 +544,10 @@ class Tabula(QMainWindow):
             n = self.notes[gnx]
             n.show()
             return n
-
         n = mknote(self.c, p, parent = self.mdi)
         sw = self.mdi.addSubWindow(n)
+        # pylint: disable=maybe-no-member
+        # Qt.WA_DeleteOnClose does exist.
         sw.setAttribute(Qt.WA_DeleteOnClose, False)
         self.notes[gnx] = n
         n.show()
@@ -662,7 +667,7 @@ class Tabula(QMainWindow):
         active = [gnx for (gnx, n) in self.notes.items() if n.parent() == cur]
         if not active:
             g.trace("no node")
-            return
+            return None,None
         tgt = active[0]
 
         p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
@@ -681,54 +686,7 @@ class Tabula(QMainWindow):
         if self.c.cacher.db:
             self.c.cacher.db['tabulanotes'] = geoms
     #@-others
-#@+node:ville.20100703194946.5587: ** def mknote
-def mknote(c,p, parent=None):
-    """ Launch editable 'sticky note' for the node """
-
-    v = p.v
-    def focusin():
-        #print "focus in"
-        if v is c.p.v:
-            if v.b != nf.toPlainText():
-                # only when needed to avoid scroll jumping
-                nf.setPlainText(v.b)
-            nf.setWindowTitle(v.h)
-            nf.dirty = False
-
-    def focusout():
-        #print "focus out"
-        if not nf.dirty:
-            return
-        v.b = nf.toPlainText()
-        v.setDirty()
-        nf.dirty = False
-        p = c.p
-        if p.v is v:
-            c.selectPosition(c.p)
-
-
-    def closeevent():
-        pass
-        # print "closeevent"
-
-
-    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
-    nf.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
-    nf.dirty = False
-    nf.resize(600, 300)
-    nf.setWindowTitle(p.h)
-    nf.setPlainText(p.b)
-    p.setDirty()
-
-    def textchanged_cb():
-        nf.dirty = True
-
-    nf.connect(nf,
-        SIGNAL("textChanged()"),textchanged_cb)
-
-    nf.show()
-
-    g.app.stickynotes[p.gnx] = nf
-    return nf
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

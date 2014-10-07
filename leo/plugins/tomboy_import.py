@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090503124249.1: * @file tomboy_import.py
-#@+<< docstring >>
-#@+node:ville.20090503124249.2: ** << docstring >>
 ''' Allows imports of notes created in Tomboy / gnote.
 
 Usage:
@@ -13,20 +11,7 @@ Usage:
   be under 'tomboy' node anymore) and new notes added.
 
 '''
-#@-<< docstring >>
-
-__version__ = '0.1'
-#@+<< version history >>
-#@+node:ville.20090503124249.3: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Ville M. Vainio:
-# 
-#     * Functional version, has unidirectional (import) support with
-#       updates. Strips html.
-# 
-#@-<< version history >>
+# By Ville M. Vainio
 
 #@+<< imports >>
 #@+node:ville.20090503124249.4: ** << imports >>
@@ -46,14 +31,12 @@ if isPython3:
 else:
     import HTMLParser
 #@-<< imports >>
-
 #@+others
 #@+node:ville.20090503124249.5: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ville.20090503124249.6: ** onCreate
 def onCreate (tag, keys):
@@ -142,4 +125,6 @@ def tomboy_install():
 #capturenotes(p)
 #tomboy_install()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

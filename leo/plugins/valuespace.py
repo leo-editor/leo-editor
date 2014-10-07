@@ -163,15 +163,7 @@ different namespaces, while keeping namespaces generally separate.
 
 # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
 #@-<< docstring >>
-
-__version__ = '0.1'
-#@+<< version history >>
-#@+node:ville.20110403115003.10350: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# v 0.1 VMV: Initial version.
-#@-<< version history >>
+# By Ville M. Vainio.
 
 #@+<< imports >>
 #@+node:ville.20110403115003.10351: ** << imports >>
@@ -183,7 +175,8 @@ from leo.external.stringlist import SList
 import pprint
 import os
 import re
-import types, sys
+# import sys
+# import types
 import textwrap
 import json
 from io import BytesIO
@@ -209,23 +202,15 @@ def colorize_headlines_visitor(c,p, item):
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: *3* init
 def init ():
-    
+    '''Return True if the plugin has loaded successfully.'''
     # vs_reset(None)
-    
     global controllers
-    #g.vs = {} # A dictionary of dictionaries, one for each commander.
-
+    # g.vs = {} # A dictionary of dictionaries, one for each commander.
     # create global valuaspace controller for ipython
-        
     g.visit_tree_item.add(colorize_headlines_visitor)
-    
     g.registerHandler('after-create-leo-frame',onCreate)
-
     g.plugin_signon(__name__)
-
     return True
-
-#init()
 #@+node:ekr.20110408065137.14222: *3* onCreate
 def onCreate (tag,key):
     
@@ -241,31 +226,24 @@ def onCreate (tag,key):
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20130127115643.3695: *3* get_vs
 def get_vs(c):
-    # deal with singleton "ipython" controller
+    '''deal with singleton "ipython" controller'''
     if g.app.ipk:        
         vsc = controllers.get('ipython')
         if not vsc:
             controllers['ipython'] = vsc = ValueSpaceController(c = None,
                 ns = g.app.ipk.namespace)
-
         vsc.set_c(c) 
-        
-        return vsc
-                    
+        return vsc     
     return controllers[c.hash()]
-    
 #@+node:ville.20110407210441.5691: *3* vs-create-tree
 @g.command('vs-create-tree')
 def vs_create_tree(event):
-    
     """Create tree from all variables."""
-
     get_vs(event['c']).create_tree()
 
 #@+node:ekr.20110408065137.14227: *3* vs-dump
 @g.command('vs-dump')
 def vs_dump(event):
-    
     """Dump the valuespace for this commander."""
     get_vs(event['c']).dump()    
 #@+node:ekr.20110408065137.14220: *3* vs-reset
@@ -274,7 +252,6 @@ def vs_reset(event):
 
     # g.vs = types.ModuleType('vs')
     # sys.modules['vs'] = g.vs
-
     get_vs(event['c']).reset()    
 #@+node:ville.20110403115003.10356: *3* vs-update
 @g.command('vs-update')
@@ -284,7 +261,8 @@ def vs_update(event):
 #@+node:tbrown.20130227164110.21222: *3* vs-eval
 @g.command("vs-eval")
 def vs_eval(kwargs):
-    """Execute the selected text, if any.  Select next line of text.
+    """
+    Execute the selected text, if any.  Select next line of text.
     
     Tries hard to capture the result of from the last expression in the
     selected text::
@@ -304,36 +282,27 @@ def vs_eval(kwargs):
     ``g``, ``c``, and ``p`` are available to executing code, assignments
     are made in the ``c.vs`` namespace and persist for the life of ``c``.
     """
-    
     c = kwargs['c']
     vsc = get_vs(c)
     cvs = vsc.d
-    txt = c.frame.body.getSelectedText()
-
+    w = c.frame.body.wrapper
+    txt = w.getSelectedText()
     # select next line ready for next select/send cycle
     # copied from .../plugins/leoscreen.py
-    b = c.frame.body.getAllText()
-    i = c.frame.body.getInsertPoint()
+    b = w.getAllText()
+    i = w.getInsertPoint()
     try:
         j = b[i:].index('\n')+i+1
-        c.frame.body.setSelectionRange(i,j)
+        w.setSelectionRange(i,j)
     except ValueError:  # no more \n in text
-        c.frame.body.setSelectionRange(i,i)
-        pass
-        
+        w.setSelectionRange(i,i)
     if not txt:
         return
-    
     txt = textwrap.dedent(txt)
-        
     blocks = re.split('\n(?=[^\\s])', txt)
-
     leo_globals = {'c':c, 'p':c.p, 'g':g}
-    
     ans = None
-    
     dbg = False
-    
     redirects = c.config.getBool('valuespace_vs_eval_redirect')
     if redirects:
         old_stderr = g.stdErrIsRedirected()
@@ -342,7 +311,6 @@ def vs_eval(kwargs):
             g.redirectStderr()
         if not old_stdout:
             g.redirectStdout()
-    
     try:
         # execute all but the last 'block'
         if dbg: print('all but last')
@@ -360,7 +328,6 @@ def vs_eval(kwargs):
             # exec txt in leo_globals, c.vs
             exec(txt, leo_globals, cvs) # Compatible with Python 3.x.
         all_done = True  # either way, the last block is used now
-    
     if not all_done:  # last block still needs using
         try:
             if dbg: print('final expression')
@@ -370,52 +337,44 @@ def vs_eval(kwargs):
             if dbg: print('final statement')
             # exec blocks[-1] in leo_globals, c.vs
             exec(blocks[-1], leo_globals, cvs) # Compatible with Python 3.x.
-
     if redirects:
         if not old_stderr:
             g.restoreStderr()
         if not old_stdout:
             g.restoreStdout()
-
     if ans is None:  # see if last block was a simple "var =" assignment
         key = blocks[-1].split('=', 1)[0].strip()
         if key in cvs:
             ans = cvs[key]
-
     if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
         key = blocks[0].split('=', 1)[0].strip()
         if key in cvs:
             ans = cvs[key]
-
     cvs['_last'] = ans
-    
     if ans is not None:  
         # annoying to echo 'None' to the log during line by line execution
         txt = str(ans)
         lines = txt.split('\n')
         if len(lines) > 10:
             txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
-        
         if len(txt) > 500:
             txt = txt[:500] + ' <truncated>'
-    
         g.es(txt)
 #@+node:tbrown.20130227164110.21223: *3* vs-last
 @g.command("vs-last")
 def vs_last(kwargs):
-    """Insert the last result from ``vs-eval``.  Inserted as a string,
-    so ``"1\n2\n3\n4"`` will cover four lines and insert no quotes,
-    for ``repr()`` style insertion use ``vs-last-pretty``.
+    """
+    Insert the last result from ``vs-eval``.
+    
+    Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
+    insert no quotes, for ``repr()`` style insertion use ``vs-last-pretty``.
     """
     c = kwargs['c']
-
     if 'text' in kwargs:
         txt = kwargs['text']
     else:
         txt = str(get_vs(c).d.get('_last'))
-        
-    editor = c.frame.body
-
+    editor = c.frame.body.wrapper
     insert_point = editor.getInsertPoint()
     editor.insert(insert_point, txt+'\n')
     editor.setInsertPoint(insert_point+len(txt)+1)
@@ -423,11 +382,12 @@ def vs_last(kwargs):
 #@+node:tbrown.20130227164110.21224: *3* vs-last-pretty
 @g.command("vs-last-pretty")
 def vs_last_pretty(kwargs):
-    """Insert the last result from ``vs-eval``.  Formatted by
-    ``pprint.pformat()``,  so ``"1\n2\n3\n4"`` will appear as
+    """
+    Insert the last result from ``vs-eval``.
+    
+    Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
     '``"1\n2\n3\n4"``', see all ``vs-last``.
     """
-    
     c = kwargs['c']
     kwargs['text'] = pprint.pformat(get_vs(c).d.get('_last'))
     vs_last(kwargs)
@@ -449,11 +409,15 @@ class ValueSpaceController:
             self.d = {}
         else:
             self.d = ns
-        
+
         self.reset()    
         self.trace = False
         self.verbose = False
         
+        if c:
+            # important this come after self.reset()
+            c.keyHandler.autoCompleter.namespaces.append(self.d)
+
         # changed g.vs.__dict__ to self.d
         # Not strictly necessary, but allows cross-commander communication.
         #g.vs [c.hash()] = self.d
@@ -538,7 +502,6 @@ class ValueSpaceController:
     def update (self):
         
         '''The vs-update command.'''
-
 
         # names are reversed, xxx TODO fix later    
         self.render_phase() # Pass 1
@@ -689,12 +652,10 @@ class ValueSpaceController:
             useSentinels=False)
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
     def update_vs(self):    
-        
         '''
         Evaluate @r <expr> nodes, puting the result in their body text.
         Output @vso nodes, based on file extension    
         '''
-        
         c = self.c
         for p in c.all_unique_positions():
             h = p.h.strip()
@@ -704,11 +665,9 @@ class ValueSpaceController:
                 try:
                     result = eval(expr,self.d)
                 except:
-                    
                     g.es_exception()
                     g.es("Failed to render " + h)
                     continue
-                    
                 if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
             
@@ -718,7 +677,6 @@ class ValueSpaceController:
                 try:
                     result = eval(bname,self.d)
                 except:
-                    
                     g.es_exception()
                     g.es("@vso failed: " + h)
                     continue
@@ -728,19 +686,8 @@ class ValueSpaceController:
                     self.render_value(p, cnt)
                     g.es("Writing @vso: " + pth)
                     open(pth, "w").write(cnt)
-                    
-                    
                 else:
                     g.es_error("Unknown vso extension (should be .json, ...): " + ext)
-                                    
-                    
-                    
-                    # dump file as json
-                    
-                    
-                    
-                
-                pass
     #@+node:ekr.20110407174428.5784: *5* render_value
     def render_value(self,p,value):
         

@@ -12,13 +12,11 @@ __version__ = "1.2"
 #@+others
 #@+node:ekr.20100128091412.5387: ** newHeadline
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit testing.
-
     if ok:
         g.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.737: ** onKey
 def onKey (tag,keywords):

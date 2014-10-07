@@ -36,11 +36,7 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.16"
-    # At present, this plugin is experimental, that is, broken.
+# At present, this plugin is experimental, that is, broken.
 
 #@+<< version history >>
 #@+node:ekr.20040910070811.3: ** << version history >>
@@ -110,15 +106,13 @@ OwnIdleHook = False
 #@+others
 #@+node:ekr.20060108160737: ** init
 def init ():
-
-    if 1: # Ok for unit testing.
-        g.registerHandler("bodykey2",OnBodyKey)
-        g.registerHandler("icondclick2",OnIconDoubleClick)
-        g.registerHandler("end1",OnQuit)
-        g.registerHandler("idle",OnIdle)
-        g.plugin_signon(__name__)
-
-    return True
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("bodykey2",OnBodyKey)
+    g.registerHandler("icondclick2",OnIconDoubleClick)
+    g.registerHandler("end1",OnQuit)
+    g.registerHandler("idle",OnIdle)
+    g.plugin_signon(__name__)
+    return True  # Ok for unit testing.
 #@+node:ekr.20060108160737.1: ** Hooks
 #@+node:ekr.20040910070811.12: *3* OnBodyKey
 def OnBodyKey(tag,keywords):
@@ -215,12 +209,12 @@ def OnIdle(tag,keywords):
 def OnQuit(tag,keywords=None):
 
     global RunNode,RunList
-
-    if RunList:
+    c = keywords.get('c')
+    if c and RunList:
         RunList = None
         g.disableIdleTimeHook()
         if RunNode:
-            CloseProcess()
+            CloseProcess(c)
         g.error("@run: forced quit!")
 #@+node:ekr.20040910070811.6: ** class readingThread
 class readingThread(threading.Thread):
@@ -397,4 +391,6 @@ def UpdateText(t,wcolor="black"):
 
     return True
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

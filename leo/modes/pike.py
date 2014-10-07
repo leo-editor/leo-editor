@@ -109,6 +109,7 @@ pike_main_keywords_dict = {
 }
 
 # Keywords dict for pike_comment ruleset.
+# pylint: disable=fixme
 pike_comment_keywords_dict = {
 	"FIXME": "comment2",
 	"XXX": "comment2",

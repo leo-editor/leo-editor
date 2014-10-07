@@ -33,7 +33,7 @@ node's body is assumed to be a simple text listing of paths to .leo files).
 
 import sys
 # add folder containing 'leo' folder to path
-sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
+# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
 import leo.core.leoBridge as leoBridge
 import leo.plugins.leofts as leofts
 

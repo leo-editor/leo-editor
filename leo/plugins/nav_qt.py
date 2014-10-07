@@ -12,41 +12,25 @@ will be available. The buttons use the icon specified in the active Qt style
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20090518182905.5421: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Functionally complete version
-# 0.2 EKR: check p before calling c.selectPosition(p)
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+from leo.core.leoQt import QtWidgets
 #@-<< imports >>
-
 controllers = {}
     # keys are c.hash(), values are NavControllers
-
 #@+others
 #@+node:ville.20090518182905.5423: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ville.20090518182905.5424: ** onCreate
 def onCreate (tag, keys):
@@ -80,19 +64,21 @@ class NavController:
         w = c.frame.iconBar.w
         if not w: return # EKR: can be None when unit testing.
         
-        icon_l = w.style().standardIcon(QtGui.QStyle.SP_ArrowLeft)
-        icon_r = w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
+        icon_l = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowLeft)
+        icon_r = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowRight)
         
-        act_l = QtGui.QAction(icon_l,'prev',w)
-        act_r = QtGui.QAction(icon_r,'next',w)
+        act_l = QtWidgets.QAction(icon_l,'prev',w)
+        act_r = QtWidgets.QAction(icon_r,'next',w)
         
         # 2011/04/02: Use the new commands.
-        act_l.connect(act_l,QtCore.SIGNAL("triggered()"),c.goToPrevHistory)
-        act_r.connect(act_r,QtCore.SIGNAL("triggered()"),c.goToNextHistory)
+        act_l.triggered.connect(lambda checked: c.goToPrevHistory())
+        act_r.triggered.connect(lambda checked: c.goToNextHistory())
 
         # 2011/04/02: Don't execute the command twice.
         self.c.frame.iconBar.add(qaction = act_l) #, command = self.clickPrev)
         self.c.frame.iconBar.add(qaction = act_r) #, command = self.clickNext)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

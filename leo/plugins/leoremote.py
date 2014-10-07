@@ -26,33 +26,22 @@ Example client::
 '''
 #@-<< docstring >>
 
-__version__ = '0.0'
-
-#@+<< imports >>
-#@+node:ville.20091009202416.10043: ** << imports >>
 import leo.core.leoGlobals as g
-
 from leo.external import lproto
-
 import os
 import socket # For a test of its capabilities.
-import sys
 import tempfile
-#@-<< imports >>
 
 #@+others
 #@+node:ville.20091009202416.10045: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = True
-
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-
     #serve_thread()
     #g.app.remoteserver = ss = LeoSocketServer()
-
     return ok
 #@+node:ville.20091010231411.5262: ** g.command('leoserv-start')
 @g.command('leoserv-start')
@@ -98,4 +87,6 @@ def run_remote_script(fname):
     d = {'g': g }
     execfile(fname, d)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

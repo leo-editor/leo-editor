@@ -19,17 +19,17 @@ if 0:
 
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-verbose = False
 import leo.core.leoGlobals as g
-
+verbose = g.app.trace_plugins
 try:
     import docutils
     import docutils.core
 except ImportError:
     docutils = None
+if verbose:
+    print('leoRst3.py: docutils: %s' % docutils)
 if docutils:
     try:
-        if verbose: print('leoRst.py',docutils)
         from docutils import parsers
         if verbose or not parsers: print('leoRst.py',parsers)
         from docutils.parsers import rst
@@ -106,8 +106,8 @@ code_block.arguments = (
 if docutils:
     code_block.options = {
         'language':
-        docutils.parsers.rst.directives.unchanged # Return the text argument, unchanged.
-        ### rst.directives.unchanged # Return the text argument, unchanged.
+        docutils.parsers.rst.directives.unchanged
+            # Return the text argument, unchanged.
     }
     code_block.content = 1 # True if content is allowed.
 
@@ -115,7 +115,7 @@ if docutils:
     docutils.parsers.rst.directives.register_directive('code-block',code_block)
 else:
     code_block.options = {}
-#@+node:ekr.20090502071837.33: ** class rstCommands
+#@+node:ekr.20090502071837.33: ** class RstCommands
 #@+at This plugin optionally stores information for the http plugin. Each node can
 # have one additional attribute, with the name rst_http_attributename, which is a
 # list. The first three elements are stack of tags, the rest is html code::
@@ -127,12 +127,12 @@ else:
 #     [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
 #@@c
 
-class rstCommands:
+class RstCommands:
 
     '''A class to write rst markup in Leo outlines.'''
 
     #@+others
-    #@+node:ekr.20090502071837.34: *3*  Birth & init (rstCommands)
+    #@+node:ekr.20090502071837.34: *3*  Birth & init (RstCommands)
     #@+node:ekr.20090502071837.35: *4*  ctor (rstClass)
     def __init__ (self,c):
 
@@ -185,19 +185,13 @@ class rstCommands:
         self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
-    #@+node:ekr.20090502071837.102: *4*  getPublicCommands
-    def getPublicCommands (self):        
-
-        return {
+    #@+node:ekr.20090511055302.5792: *4* rst.getPublicCommands
+    def getPublicCommands(self):
+        '''Add the names of commands defined in this file to c.commandsDict'''
+        self.c.commandsDict.update({
             'rst3': self.rst3, # Formerly write-restructured-text.
             'code-to-rst': self.code_to_rst_command,
-        }
-    #@+node:ekr.20090511055302.5792: *4* finishCreate (rstCommands)
-    def finishCreate(self):
-
-        c = self.c
-        d = self.getPublicCommands()
-        c.commandsDict.update(d)
+        })
     #@+node:ekr.20090502071837.38: *4* initHeadlineCommands
     def initHeadlineCommands (self):
 
@@ -1132,7 +1126,7 @@ class rstCommands:
         after = p.nodeAfterTree()
         while p and p != after:
             self.writeNode(p) # Side effect: advances p.
-    #@+node:ekr.20090502071837.67: *4* writeNodeToString
+    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString
     def writeNodeToString (self,p=None,ext=None):
 
         '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -1151,7 +1145,7 @@ class rstCommands:
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-    #@+node:ekr.20090512153903.5803: *4* writeAtAutoFile
+    #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
     def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
         '''Write an @auto tree containing imported rST code.
@@ -1172,7 +1166,7 @@ class rstCommands:
         finally:
             self.atAutoWrite = False
         return ok
-    #@+node:ekr.20090513073632.5733: *5* initAtAutoWrite (rstCommands)
+    #@+node:ekr.20090513073632.5733: *5* rst.initAtAutoWrite (RstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
         # Set up for a standard write.
@@ -1204,7 +1198,7 @@ class rstCommands:
         self.atAutoWriteUnderlines   = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-    #@+node:ekr.20091228080620.6499: *5* isSafeWrite
+    #@+node:ekr.20091228080620.6499: *5* rst.isSafeWrite
     def isSafeWrite (self,p):
 
         '''Return True if node p contributes nothing but
@@ -1614,7 +1608,7 @@ class rstCommands:
     def set_initial_http_attributes (self,filename):
 
         f = open(filename)
-        parser = htmlParserClass(self)
+        parser = HtmlParserClass(self)
 
         for line in f.readlines():
             parser.feed(line)
@@ -1638,7 +1632,7 @@ class rstCommands:
                 # print >> bwm_file, "relocate_references(1): Position, attr:"
                 # pprint.pprint((p, attr), bwm_file)
                 # http_lines = attr [3:]
-            parser = link_htmlparserClass(self,p)
+            parser = LinkHtmlparserClass(self,p)
             for line in attr [3:]:
                 try:
                     parser.feed(line)
@@ -1682,7 +1676,7 @@ class rstCommands:
         for p1, attrs in self.http_attribute_iter(p):
             html = mod_http.reconstruct_html_from_attrs(attrs)
             # g.trace(pprint.pprint(html))
-            parser = anchor_htmlParserClass(self, p1)
+            parser = AnchorHtmlParserClass(self, p1)
             for line in html:
                 try:
                     parser.feed(line)
@@ -1705,7 +1699,7 @@ class rstCommands:
             attr = mod_http.get_http_attribute(p1)
             if attr:
                 yield (p1.copy(),attr)
-    #@+node:ekr.20090502071837.60: *4* init_write (rstCommands)
+    #@+node:ekr.20090502071837.60: *4* init_write (RstCommands)
     def init_write (self,p):
 
         self.initOptionsFromSettings() # Still needed.
@@ -1838,9 +1832,8 @@ class rstCommands:
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         if ext == '.pdf':
             module = g.importFromPath(
-                name = 'leo_pdf.py',
+                moduleName = 'leo_pdf',
                 path = g.os_path_finalize_join(g.app.loadDir,'..','plugins'),
-                pluginName = 'leo_pdf',
                 verbose = False)
             if not module:
                 return None
@@ -2072,12 +2065,12 @@ class rstCommands:
 #     1. In the first phase, the html code for each node is identified.
 #     2. The second phase identifies all links and checks if these links need to be modified.
 # The first phase of scanning is done by the anchor_hmlParserClass. The second phase of this algorithm is
-# done with the link_htmlParserClass.
+# done with the LinkHtmlParserClass.
 #@@c
 
-#@+<< class linkAnchorParserClass >>
-#@+node:ekr.20120219194520.10445: *3*  << class linkAnchorParserClass >>
-class linkAnchorParserClass (HTMLParser.HTMLParser):
+#@+<< class LinkAnchorParserClass >>
+#@+node:ekr.20120219194520.10445: *3*  << class LinkAnchorParserClass >>
+class LinkAnchorParserClass (HTMLParser.HTMLParser):
 
     '''
     A class to recognize anchors and links in HTML documents.
@@ -2136,9 +2129,9 @@ class linkAnchorParserClass (HTMLParser.HTMLParser):
             return d['id']
         return result
     #@-others
-#@-<< class linkAnchorParserClass >>
-#@+node:ekr.20120219194520.10450: *3* class htmlParserClass (linkAnchorParserClass)
-class htmlParserClass (linkAnchorParserClass):
+#@-<< class LinkAnchorParserClass >>
+#@+node:ekr.20120219194520.10450: *3* class HtmlParserClass (LinkAnchorParserClass)
+class HtmlParserClass (LinkAnchorParserClass):
 
     '''
     The responsibility of the html parser is:
@@ -2157,7 +2150,7 @@ class htmlParserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10451: *4* __init__
     def __init__ (self,rst):
 
-        linkAnchorParserClass.__init__(self,rst) # Init the base class.
+        LinkAnchorParserClass.__init__(self,rst) # Init the base class.
 
         self.stack = None
         # The stack contains lists of the form:
@@ -2168,11 +2161,11 @@ class htmlParserClass (linkAnchorParserClass):
 
         self.node_marker_stack = []
         # self.node_marker_stack.pop() returns True for a closing
-        # tag if the opening tag identified an anchor belonging to a Vnode.
+        # tag if the opening tag identified an anchor belonging to a VNode.
 
         self.node_code = []
             # Accumulated html code.
-            # Once the hmtl code is assigned a Vnode, it is deleted here.
+            # Once the hmtl code is assigned a VNode, it is deleted here.
 
         self.deleted_lines = 0 # Number of lines deleted in self.node_code
 
@@ -2254,8 +2247,8 @@ class htmlParserClass (linkAnchorParserClass):
 
         HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().
     #@-others
-#@+node:ekr.20120219194520.10456: *3* class anchor_htmlParserClass (linkAnchorParserClass)
-class anchor_htmlParserClass (linkAnchorParserClass):
+#@+node:ekr.20120219194520.10456: *3* class AnchorHtmlParserClass (LinkAnchorParserClass)
+class AnchorHtmlParserClass (LinkAnchorParserClass):
 
     '''
     This htmlparser does the first step of relocating: finding all the anchors within the html nodes.
@@ -2270,7 +2263,7 @@ class anchor_htmlParserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10457: *4*  __init__
     def __init__ (self,rst,p):
 
-        linkAnchorParserClass.__init__(self,rst)
+        LinkAnchorParserClass.__init__(self,rst)
 
         self.p = p.copy()
         self.anchor_map = rst.anchor_map
@@ -2298,8 +2291,8 @@ class anchor_htmlParserClass (linkAnchorParserClass):
                     if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
                     self.anchor_map[value] = (self.current_file, self.p.copy())
     #@-others
-#@+node:ekr.20120219194520.10459: *3* class link_htmlParserClass (linkAnchorParserClass)
-class link_htmlparserClass (linkAnchorParserClass):
+#@+node:ekr.20120219194520.10459: *3* class LinkHtmlParserClass (LinkAnchorParserClass)
+class LinkHtmlparserClass (LinkAnchorParserClass):
 
     '''This html parser does the second step of relocating links:
     1. It scans the html code for links.
@@ -2311,7 +2304,7 @@ class link_htmlparserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10460: *4* __init__
     def __init__ (self,rst,p):
 
-        linkAnchorParserClass.__init__(self,rst)
+        LinkAnchorParserClass.__init__(self,rst)
 
         self.p = p.copy()
         self.anchor_map = rst.anchor_map

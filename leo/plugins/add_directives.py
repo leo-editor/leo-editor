@@ -2,11 +2,6 @@
 #@+node:edream.110203113231.741: * @file add_directives.py
 """Allows users to define new @direcives."""
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "1.2"
-
 import leo.core.leoGlobals as g
 
 directives = ("markup",) # A tuple with one string.
@@ -14,15 +9,9 @@ directives = ("markup",) # A tuple with one string.
 #@+others
 #@+node:ekr.20070725103420: ** init
 def init ():
-
-    ok = True # not  g.app.unitTesting:
-
-    # Register the handlers...
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start1",addPluginDirectives)
-    # g.registerHandler("scan-directives",scanPluginDirectives)
-    g.plugin_signon(__name__)
-
-    return ok
+    return True
 #@+node:edream.110203113231.742: ** addPluginDirectives
 def addPluginDirectives (tag,keywords):
 
@@ -53,4 +42,6 @@ def scanPluginDirectives (tag, keywords):
             kind = d
             pluginsList.append((kind,p.v,s),)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

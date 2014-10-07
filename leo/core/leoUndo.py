@@ -54,26 +54,26 @@ import leo.core.leoGlobals as g
 # pylint: disable=unpacking-non-sequence
 
 #@+others
-#@+node:ekr.20031218072017.3605: ** class undoer
-class undoer:
+#@+node:ekr.20031218072017.3605: ** class Undoer
+class Undoer:
     """A class that implements unlimited undo and redo."""
     #@+others
     #@+node:ekr.20031218072017.3606: *3* undo.__init__
     def __init__ (self,c):
 
         self.c = c
-        self.debug_undoer = False # True: enable debugging code in new undo scheme.
+        self.debug_Undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
 
         self.granularity = c.config.getString('undo_granularity')
         if self.granularity: self.granularity = self.granularity.lower()
         if self.granularity not in ('node','line','word','char'):
             self.granularity = 'line'
-        # g.trace('undoer',self.granularity)
+        # g.trace('Undoer',self.granularity)
 
         self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
 
-        # Statistics comparing old and new ways (only if self.debug_undoer is on).
+        # Statistics comparing old and new ways (only if self.debug_Undoer is on).
         self.new_mem = 0
         self.old_mem = 0
 
@@ -197,7 +197,7 @@ class undoer:
     #@+node:EKR.20040526150818: *4* getBead
     def getBead (self,n):
 
-        '''Set undoer ivars from the bunch at the top of the undo stack.'''
+        '''Set Undoer ivars from the bunch at the top of the undo stack.'''
 
         u = self
         if n < 0 or n >= len(u.beads):
@@ -376,7 +376,7 @@ class undoer:
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
     def restoreTree (self,treeInfo):
 
-        """Use the tree info to restore all Vnode data,
+        """Use the tree info to restore all VNode data,
         including all links."""
 
         u = self
@@ -428,7 +428,7 @@ class undoer:
         # 
         # Instead of creating new nodes, the new code creates all information
         # needed to properly restore the vnodes and tnodes. It creates a list of
-        # tuples, on tuple for each Vnode in the tree. Each tuple has the form,
+        # tuples, on tuple for each VNode in the tree. Each tuple has the form,
         # 
         # (vnodeInfo, tnodeInfo)
         # 
@@ -458,7 +458,7 @@ class undoer:
     #@+node:ekr.20050415170737.1: *5* createVnodeUndoInfo
     def createVnodeUndoInfo (self,v):
 
-        """Create a bunch containing all info needed to recreate a Vnode for undo."""
+        """Create a bunch containing all info needed to recreate a VNode for undo."""
 
         bunch = g.Bunch(
             v = v,
@@ -474,7 +474,7 @@ class undoer:
     #@+node:ekr.20050415170812.1: *5* createTnodeUndoInfo
     def createTnodeUndoInfo (self,v):
 
-        """Create a bunch containing all info needed to recreate a Vnode."""
+        """Create a bunch containing all info needed to recreate a VNode."""
 
         bunch = g.Bunch(
             v = v,
@@ -522,7 +522,7 @@ class undoer:
     def afterChangeGroup (self,p,undoType,reportFlag=False,dirtyVnodeList=[]):
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
         u = self ; c = self.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
@@ -556,7 +556,7 @@ class undoer:
     #@+node:ekr.20050315134017.2: *5* afterChangeNodeContents
     def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[],inHead=False):
         '''Create an undo node using d created by beforeChangeNode.'''
-        u = self ; c = self.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = self.c ; w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # Set the type & helpers.
@@ -577,7 +577,7 @@ class undoer:
     #@+node:ekr.20050315134017.3: *5* afterChangeTree
     def afterChangeTree (self,p,command,bunch):
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
-        u = self ; c = self.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = self.c ; w = c.frame.body.wrapper
         if u.redoing or u.undoing: return
         # Set the types & helpers.
         bunch.kind = 'tree'
@@ -935,7 +935,7 @@ class undoer:
     def beforeChangeTree (self,p):
 
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
         bunch.oldSel = w.getSelectionRange()
         bunch.oldText = w.getAllText()
@@ -1036,7 +1036,7 @@ class undoer:
         '''Return a bunch containing all common undo info.
         This is mostly the info for recreating an empty node at position p.'''
 
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
 
         return g.Bunch(
             oldChanged = c.isChanged(),
@@ -1241,7 +1241,7 @@ class undoer:
         # The "given" texts for the undo and redo routines are simply p.b.
         #@@c
 
-        if u.debug_undoer:
+        if u.debug_Undoer:
             # Remember the complete text for comparisons...
             u.oldText = oldText
             u.newText = newText
@@ -1272,7 +1272,7 @@ class undoer:
         if oldYview:
             u.yview = oldYview
         else:
-            u.yview = c.frame.body.getYScrollPosition()
+            u.yview = c.frame.body.wrapper.getYScrollPosition()
         #@-<< save the selection and scrolling position >>
         #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
@@ -1320,8 +1320,8 @@ class undoer:
                 try:
                     #@+<< set newBead if the change does not continue a word >>
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
-                    old_start,old_end = oldSel
-                    new_start,new_end = newSel
+                    old_start,old_end = oldSel if oldSel else 0,0
+                    new_start,new_end = newSel if newSel else 0,0
                     prev_start,prev_end = u.prevSel
                     # g.trace('new_start',new_start,'old_start',old_start)
                     if old_start != old_end or new_start != new_end:
@@ -1416,7 +1416,7 @@ class undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         if not c.p:
             if trace: g.trace('no current position')
@@ -1581,7 +1581,7 @@ class undoer:
         c.selectPosition(p)
         if newSel:
             i,j = newSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:ekr.20050412085138.1: *4* redoHoistNode & redoDehoistNode
     def redoHoistNode (self):
 
@@ -1667,7 +1667,7 @@ class undoer:
     #@+node:ekr.20050318085432.7: *4* redoNodeContents
     def redoNodeContents (self):
 
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
@@ -1741,37 +1741,32 @@ class undoer:
         c.selectPosition(u.p) # Does full recolor.
         if u.newSel:
             i,j = u.newSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:EKR.20040526075238.5: *4* redoTyping
     def redoTyping (self):
 
         u = self ; c = u.c ; current = c.p
-        w = c.frame.body.bodyCtrl
-
+        w = c.frame.body.wrapper
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
             c.selectPosition(u.p)
         elif u.undoType in ('Cut','Paste','Clear Recent Files'):
             c.frame.body.forceFullRecolor()
-
         self.undoRedoText(
             u.p,u.leading,u.trailing,
             u.newMiddleLines,u.oldMiddleLines,
             u.newNewlines,u.oldNewlines,
             tag="redo",undoType=u.undoType)
-
         u.updateMarks('new')
-
         for v in u.dirtyVnodeList:
             v.setDirty()
-
         if u.newSel:
             c.bodyWantsFocus()
             i,j = u.newSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
             c.bodyWantsFocus()
-            c.frame.body.setYScrollPosition(u.yview)
+            w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* undo
     def undo (self,event=None):
 
@@ -1779,7 +1774,7 @@ class undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
 
         if not c.p:
             return g.trace('no current position')
@@ -1922,22 +1917,16 @@ class undoer:
         c.setCurrentPosition(u.p)
     #@+node:ekr.20050318085713: *4* undoGroup
     def undoGroup (self):
-
         '''Process beads until the matching 'beforeGroup' bead is seen.'''
-
         trace = False and not g.unitTesting
         u = self
-
         # Remember these values.
         c = u.c
         dirtyVnodeList = u.dirtyVnodeList or []
         oldSel = u.oldSel
         p = u.p.copy()
-
         u.groupCount += 1
-
         bunch = u.beads[u.bead] ; count = 0
-
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
             g.trace(bunch)
@@ -1952,21 +1941,16 @@ class undoer:
                     z.undoHelper() ; count += 1
                 else:
                     g.trace('oops: no undo helper for %s %s' % (u.undoType,p.v))
-
         u.groupCount -= 1
-
         u.updateMarks('old') # Bug fix: Leo 4.4.6.
-
         for v in dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
-
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo",count,"instances")
-
         c.selectPosition(p)
         if oldSel:
             i,j = oldSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:ekr.20050412083244: *4* undoHoistNode & undoDehoistNode
     def undoHoistNode (self):
 
@@ -2058,7 +2042,7 @@ class undoer:
 
         trace = False and not g.unitTesting
         u = self ; c = u.c
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p,incremental=False)
@@ -2134,7 +2118,7 @@ class undoer:
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
         # newNewlines is unused, but it has symmetry.
         trace = False and not g.unitTesting
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+        u = self ; c = u.c ; w = c.frame.body.wrapper
         #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
         # Recreate the text using the present body text.
@@ -2202,46 +2186,38 @@ class undoer:
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* undoTree
     def undoTree (self):
-
         '''Redo replacement of an entire tree.'''
-
         u = self ; c = u.c
-
         u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
         c.selectPosition(u.p) # Does full recolor.
         if u.oldSel:
             i,j = u.oldSel
-            c.frame.body.setSelectionRange(i,j)
+            c.frame.body.wrapper.setSelectionRange(i,j)
     #@+node:EKR.20040526090701.4: *4* undoTyping
     def undoTyping (self):
 
         u = self ; c = u.c ; current = c.p
-        w = c.frame.body.bodyCtrl
-
+        w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:
             c.selectPosition(u.p)
         elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
             c.frame.body.forceFullRecolor()
-
         self.undoRedoText(
             u.p,u.leading,u.trailing,
             u.oldMiddleLines,u.newMiddleLines,
             u.oldNewlines,u.newNewlines,
             tag="undo",undoType=u.undoType)
-
         u.updateMarks('old')
-
         for v in u.dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
-
         if u.oldSel:
             c.bodyWantsFocus()
             i,j = u.oldSel
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
             c.bodyWantsFocus()
-            c.frame.body.setYScrollPosition(u.yview)
+            w.setYScrollPosition(u.yview)
     #@-others
 #@-others
 #@-leo

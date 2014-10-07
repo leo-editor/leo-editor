@@ -3,14 +3,12 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
-
+from leo.plugins.mod_scripting import build_rclick_tree
 import sys
 #@-<< imports >>
-
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:
@@ -44,6 +42,7 @@ class ParserBaseClass:
     def __init__ (self,c,localFlag):
 
         self.c = c
+        self.clipBoard = []
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
@@ -179,7 +178,10 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
-                    aList.append((p.copy(),script),)
+                    command_p = p.copy()
+                    aList.append((command_p,script),)
+                    rclicks = build_rclick_tree(command_p, top_level=True)
+                    command_p.rclicks = rclicks
                 p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
@@ -240,13 +242,20 @@ class ParserBaseClass:
         aList = d.get(key,[])
         aList.append(c.shortFileName())
         d[key] = aList
-    #@+node:ekr.20071214140900: *4* doData
+    #@+node:ekr.20071214140900: *4* doData (ParserBaseClass)
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
         # New in Leo 4.12.1: strip *nothing* here.
-        # data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
+        # New in Leo 4.12.1: allow composition of nodes:
+        # - Append all text in descendants in outline order.
+        # - Ensure all fragments end with a newline.
         data = g.splitLines(p.b)
+        for p2 in p.subtree():
+            if p2.b and not p2.h.startswith('@'):
+                data.extend(g.splitLines(p2.b))
+                if not p2.b.endswith('\n'):
+                    data.append('\n')
         self.set(p,kind,name,data)
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData (self,p,kind,name,val):
@@ -429,19 +438,16 @@ class ParserBaseClass:
             self.set(p,kind,name,val)
     #@+node:tbrown.20080514112857.124: *4* doMenuat
     def doMenuat (self,p,kind,name,val):
-        
+        '''Handle @menuat setting.'''
         trace = False and not g.unitTesting
-
         if g.app.config.menusList:
             if trace: g.es_print("Patching menu tree: " + name)
-
             # get the patch fragment
             patch = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(),patch)
                 if trace: self.dumpMenuTree(patch)
-
             # setup        
             parts = name.split()
             if len(parts) != 3:
@@ -484,6 +490,9 @@ class ParserBaseClass:
                     list_.extend(use)
             else:
                 g.es_print("ERROR: didn't find menu path " + targetPath)
+        elif g.app.inBridge:
+            pass # Not an error.
+                # Fix: https://github.com/leo-editor/leo-editor/issues/48
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* getName (ParserBaseClass)
@@ -1131,7 +1140,6 @@ class ParserBaseClass:
         self.oops()
     #@-others
 #@-<< class ParserBaseClass >>
-
 #@+others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
@@ -1563,7 +1571,6 @@ class GlobalConfigManager:
             data = [z for z in data if not z.startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
-        ### return self.get(setting,"data")
         return data
         
     def getOutlineData (self,setting):

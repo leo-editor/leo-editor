@@ -3,15 +3,6 @@
 #@+node:ekr.20130805134749.12436: * @file ../external/edb.py
 #@@first
 
-# edb: pdb modified by EKR.
-
-# Fix bug: invalid syntax on print statement
-# https://bugs.launchpad.net/leo-editor/+bug/1184605
-from __future__ import print_function
-
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:ekr.20110914171443.7240: ** << docstring >>
 """
@@ -81,6 +72,16 @@ Debugger commands
 # NOTE: the actual command documentation is collected from docstrings of the
 # commands and is appended to __doc__ after the class has been defined.
 #@-<< docstring >>
+
+# edb: pdb modified by EKR.'''
+
+# from __future__ import print_function
+    # Fix bug: invalid syntax on print statement
+    # https://bugs.launchpad.net/leo-editor/+bug/1184605
+
+#@@language python
+#@@tabwidth -4
+
 #@+<< imports >>
 #@+node:ekr.20110914171443.7241: ** << imports >>
 from __future__ import print_function
@@ -125,11 +126,6 @@ __all__ = [
            "post_mortem", "help",
 ]
 
-# List of all the commands making the program resume execution.
-commands_resuming = [
-    'do_continue', 'do_step', 'do_next', 'do_return',
-    'do_quit', 'do_jump',
-]
 #@-<< data >>
 
 #@+others
@@ -193,6 +189,12 @@ class _rstr(str):
 line_prefix = '\n-> '   # Probably a better default
 
 class Pdb(bdb.Bdb, cmd.Cmd):
+    
+    # List of all the commands making the program resume execution.
+    commands_resuming = [
+        'do_continue', 'do_step', 'do_next', 'do_return',
+        'do_quit', 'do_jump',
+    ]
     
     #@+others
     #@+node:ekr.20110914171443.7251: *3* __init__ (edb.Pdb)
@@ -703,7 +705,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         print(msg, file=self.stdout)
     #@+node:ekr.20110914171443.7280: *4* error
     def error(self, msg):
-        print('***', msg, file=self.stdout)
+        print('***',msg,file=self.stdout)
     #@+node:ekr.20110914171443.7281: *3* Command definitions...
     # Command definitions, called by cmdloop()
     # The argument is the remaining string on the command line
@@ -874,7 +876,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             # now set the break point
             err = self.set_break(filename, line, temporary, cond, funcname)
             if err:
-                self.error(err, file=self.stdout)
+                self.error(err)
             else:
                 bp = self.get_breaks(filename, line)[-1]
                 self.message("Breakpoint %d at %s:%d" %
@@ -1445,7 +1447,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 return
         else:
             lineno = None
-        self.set_until(self.curframe, lineno)
+        self.set_until(self.curframe)
         return 1
 
     do_unt = do_until
@@ -1645,8 +1647,11 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         if os.path.isabs(filename):
             return filename
         for dirname in sys.path:
-            while os.path.islink(dirname):
-                dirname = os.readlink(dirname)
+            if hasattr(os,'readlink'):
+                # pylint: disable=no-member
+                # we have just checked to see that readlink exists.
+                while os.path.islink(dirname):
+                    dirname = os.readlink(dirname)
             fullname = os.path.join(dirname, filename)
             if os.path.exists(fullname):
                 return fullname
@@ -1679,7 +1684,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                         (fp.read(), self.mainpyfile)
         self.run(statement)
     #@-others
-    
+
 #@+<< Collect all command help into docstring >>
 #@+node:ekr.20110914171443.7330: *3* << Collect all command help into docstring >>
 # Collect all command help into docstring, if not run with -OO

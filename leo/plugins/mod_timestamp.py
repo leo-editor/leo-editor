@@ -15,12 +15,9 @@ __version__ = "0.1"
 #@+others
 #@+node:ekr.20100128073941.5374: ** init
 def init():
-
-    # Register the handlers...
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("command1", timestamp)
-
     g.plugin_signon(__name__)
-
     return True # OK for unit testing.
 #@+node:edream.110203113231.728: ** timestamp
 def timestamp(tag=None, keywords=None):

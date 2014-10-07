@@ -53,51 +53,32 @@ This plugin defines the following commands that can be bound to keys:
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20090314215508.6: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Ville M. Vainio <vivainio@gmail.com>: Fully functional version,
-# 
-#@-<< version history >>
-
+# Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
+from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets
 
 from leo.core import leoNodes
-    # Uses leoNodes.posList.
-
-from PyQt4.QtGui import QListWidget, QListWidgetItem
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from PyQt4.QtCore import Qt
-
+    # Uses leoNodes.PosList.
 import fnmatch, re
-
 from leo.plugins import threadutil
     # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch
-
-global qsWidget
 #@-<< imports >>
-
 #@+others
 #@+node:ville.20090314215508.8: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
-
     return ok
+
 #@+node:ville.20090314215508.9: ** onCreate
 def onCreate (tag, keys):
 
@@ -154,7 +135,7 @@ def install_qt_quicksearch_tab(c):
         wdg.ui.listWidget.setFocus()
         
     def find_selected(event):
-        text = c.frame.body.getSelectedText()
+        text = c.frame.body.wrapper.getSelectedText()
         if text.strip():
             wdg.ui.lineEdit.setText(text)
             wdg.returnPressed()
@@ -195,7 +176,6 @@ def install_qt_quicksearch_tab(c):
         #c.frame.log.selectTab('Nav')
         wdg.scon.doShowMarked()
 
-
     @g.command('go-anywhere')
     def find_popout_f(event):
         c = event['c']
@@ -204,14 +184,12 @@ def install_qt_quicksearch_tab(c):
         wid = topgeo.width()
         w.setGeometry(wid/2,0, wid/2, 500)
         #w.setParent(c.frame.top)
-        #w.setWindowFlags(Qt.FramelessWindowHint)
+        #w.setWindowFlags(QtConst.FramelessWindowHint)
         w.show()
-        w.setFocus(Qt.OtherFocusReason)
+        w.setFocus(QtConst.OtherFocusReason)
         #w.setGeometry(100,0,800,500)
         c._popout = w
-        
-        
-        
+
     c.frame.nav = wdg            
 
     # make activating this tab activate the input box
@@ -257,18 +235,15 @@ class QuickSearchEventFilter(QtCore.QObject):
             lw = self.listWidget
             k = event.key()
             moved = False
-            if k == Qt.Key_Up:
+            if k == QtConst.Key_Up:
                 lw.setCurrentRow(lw.currentRow()-1)
                 moved = True            
-            if k == Qt.Key_Down:
+            if k == QtConst.Key_Down:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-
-            if k == Qt.Key_Return:
+            if k == QtConst.Key_Return:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-
-                
                 
             if moved:
                 self.lineEdit.setFocus(True)
@@ -462,7 +437,7 @@ class QuickSearchController:
     def addBodyMatches(self, poslist):
                 
         for p in poslist:
-            it = QListWidgetItem(p.h, self.lw)
+            it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -471,21 +446,19 @@ class QuickSearchController:
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 #print "ml",ml,"pos",pos
-                it = QListWidgetItem(ml, self.lw)   
+                it = QtWidgets.QListWidgetItem(ml, self.lw)   
                 self.its[id(it)] = (p,pos)
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
-        
         """ Add generic callback """
-
-        it = id(QListWidgetItem(text, self.lw))
+        it = id(QtWidgets.QListWidgetItem(text, self.lw))
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
     def addHeadlineMatches(self, poslist):
 
         for p in poslist:
-            it = QListWidgetItem(p.h, self.lw)   
+            it = QtWidgets.QListWidgetItem(p.h, self.lw)   
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -499,7 +472,7 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15693: *3* doNodeHistory
     def doNodeHistory(self):
 
-        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
+        nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -566,7 +539,7 @@ class QuickSearchController:
 
         self.clear()
         c = self.c
-        pl = leoNodes.poslist()
+        pl = leoNodes.PosList()
         for p in c.all_positions():
             if p.isMarked():
                 pl.append(p.copy())
@@ -586,10 +559,16 @@ class QuickSearchController:
             tgt()
         elif len(tgt) == 2:            
             p, pos = tgt
+            if not c.positionExists(p):
+                g.es(
+                    "Node moved or deleted.\nMaybe re-do search.",
+                    color='red'
+                )
+                return
             c.selectPosition(p)
             if pos is not None:
                 st, en = pos
-                w = c.frame.body.bodyCtrl
+                w = c.frame.body.wrapper
                 w.setSelectionRange(st,en)
                 w.seeInsertPoint()
                 
@@ -602,4 +581,6 @@ class QuickSearchController:
         c.bodyWantsFocusNow()
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

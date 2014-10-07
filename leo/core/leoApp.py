@@ -36,7 +36,7 @@ class LeoApp:
     Ivars of this class are Leo's global variables."""
 
     #@+others
-    #@+node:ekr.20031218072017.1416: *3* app.__init__
+    #@+node:ekr.20031218072017.1416: *3* app.__init__ (helpers contain langauge dicts)
     def __init__(self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -55,9 +55,10 @@ class LeoApp:
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.
         self.silentMode = False         # True: no signon.
-        self.start_fullscreen = False   # For qtGui plugin.
-        self.start_maximized = False    # For qtGui plugin.
-        self.start_minimized = False    # For qtGui plugin.
+        self.start_fullscreen = False   # For qt_frame plugin.
+        self.start_maximized = False    # For qt_frame plugin.
+        self.start_minimized = False    # For qt_frame plugin.
+        self.trace_plugins = False      # True: trace imports of plugins.
         self.translateToUpperCase = False # Never set to True.
         self.useIpython = False         # True: add support for IPython.
         self.use_psyco = False          # True: use psyco optimization.
@@ -70,6 +71,7 @@ class LeoApp:
         self.debugSwitch = 0            # For g.es_exception: 0: Brief; 1: Full.
         self.disable_redraw = False     # True: disable all redraws.
         self.disableSave = False        # May be set by plugins.
+        self.idle_timers = []           # A list of IdleTime instances, so they persist.
         self.positions = 0              # The number of positions generated.
         self.scanErrors = 0             # The number of errors seen by g.scanError.
         self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
@@ -90,6 +92,8 @@ class LeoApp:
         self.machineDir = None      # The machine-specific directory.
 
         # Global data...
+        self.atAutoNames = set()        # The set of all @auto spellings.
+        self.atFileNames = set()        # The set of all built-in @<file> spellings.
         self.globalKillBuffer = []      # The global kill buffer.
         self.globalRegisters = {}       # The global register list.
         self.leoID = None               # The id part of gnx's.
@@ -138,8 +142,8 @@ class LeoApp:
         # Global types.
         import leo.core.leoFrame as leoFrame
         import leo.core.leoGui as leoGui
-        self.nullGui = leoGui.nullGui()
-        self.nullLog = leoFrame.nullLog()
+        self.nullGui = leoGui.NullGui()
+        self.nullLog = leoFrame.NullLog()
 
         #### To be moved to OpenWithManager.
 
@@ -152,16 +156,17 @@ class LeoApp:
         #### To be moved to to the pluginsController.
 
         # Plugins and event handlers...
-        self.afterHandler = None
         self.hookError = False      # True: suppress further calls to hooks.
         self.hookFunction = None    # Application wide hook function.
         self.idle_imported = False  # True: we have done an import idle
-        self.idleTimeDelay = 100    # Delay in msec between calls to "idle time" hook.
-        self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
+        self.idleTimeDelay = 500    # Delay in msec between calls to "idle time" hook.
+        self.idleTimeHook = None    # The global idle time event handler.
+        self.trace_idle_time = False # True: enable a trace in g.idleTimeHookHandler
 
         # Support for scripting...
         self.searchDict = {}          # For communication between find/change scripts.
         self.scriptDict = {}          # For use by scripts. Cleared before running each script.
+        self.scriptResult = None      # For use by leoPymacs.
         self.permanentScriptDict = {} # For use by scrips. Never cleared automatically.
 
         # Unit testing...
@@ -169,13 +174,15 @@ class LeoApp:
         self.runningAllUnitTests = False    # True: we are running all unit tests (Only for local tests).
         self.suppressImportChecks = False   # True: suppress importCommands.check
         self.unitTestDict = {}          # For communication between unit tests and code.
-        self.unitTestGui = None         # A way to override the gui in external unit tests.
+        self.UnitTestGui = None         # A way to override the gui in external unit tests.
         self.unitTesting = False        # True if unit testing.
         self.unitTestMenusDict = {}
-            # Created in leoMenu.createMenuEntries for a unit test.
+            # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
 
-        # Define all global data.        
+        # Define all global data.
+        self.init_at_auto_names()
+        self.init_at_file_names()  
         self.define_global_constants()
         self.define_language_delims_dict()
         self.define_language_extension_dict()
@@ -183,6 +190,26 @@ class LeoApp:
         self.global_commands_dict = {}
 
         self.ipk = None   # python kernel instance
+    #@+node:ekr.20140729162415.18086: *4* app.init_at_auto_names
+    def init_at_auto_names(self):
+        '''Init the app.atAutoNames set.'''
+        self.atAutoNames = set([
+            "@auto-rst","@auto",
+        ])
+    #@+node:ekr.20140729162415.18091: *4* app.init_at_file_names
+    def init_at_file_names(self):
+        '''Init the app.atFileNames set.'''
+        self.atFileNames = set([
+            "@asis",
+            "@edit",
+            "@file-asis","@file-thin","@file-nosent","@file",
+            "@nosent",
+            # "@nosentinelsfile",
+            # "@silentfile",
+            "@shadow",
+            # "@thinfile", 
+            "@thin", 
+        ])
     #@+node:ekr.20031218072017.1417: *4* app.define_global_constants
     def define_global_constants(self):
 
@@ -237,7 +264,7 @@ class LeoApp:
             "eiffel"             : "--",
             "elisp"              : ";",
             "erlang"             : "%",
-            "factor"             : "! ( )",
+            "factor"             : "!_ ( )", # Use the rem hack.
             "forth"              : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"            : "C",
             "fortran90"          : "!",
@@ -350,6 +377,7 @@ class LeoApp:
             "xml"                : "<!-- -->",
             "xsl"                : "<!-- -->",
             "xslt"               : "<!-- -->",
+            "yaml"               : "#",
             "zpt"                : "<!-- -->",
 
             # These aren't real languages, or have no delims...
@@ -505,6 +533,7 @@ class LeoApp:
             "xml"           : "xml",
             "xsl"           : "xsl",
             "xslt"          : "xsl",
+            "yaml"          : "yaml",
             "zpt"           : "zpt",
         }
 
@@ -657,6 +686,7 @@ class LeoApp:
             "xml":      "xml",
             "xom":      "omnimark",
             "xsl":      "xsl",
+            "yaml":     "yaml",
             "zpt":      "zpt",
         }
 
@@ -730,8 +760,7 @@ class LeoApp:
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
-
-        return [f.c for f in g.app.windowList]    
+        return [f.c for f in g.app.windowList]
     #@+node:ekr.20090717112235.6007: *3* app.computeSignon
     def computeSignon (self):
 
@@ -739,6 +768,7 @@ class LeoApp:
 
         import leo.core.leoVersion as leoVersion
         build,date  = leoVersion.build,leoVersion.date
+        git_info = leoVersion.git_info
         guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer      = leoVersion.version
         n1,n2,n3,junk,junk=sys.version_info
@@ -766,6 +796,14 @@ class LeoApp:
 
         else: sysVersion = sys.platform
 
+        branch = git_info.get('branch', None)
+        commit = git_info.get('commit', None)
+        
+        if branch is None or commit is None:
+            app.signon1 = 'Not running running from a cloned git repo'
+        else:
+            app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
+                branch, commit)
         app.signon = 'Leo %s, build %s, %s' % (
             leoVer,build,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
@@ -779,23 +817,22 @@ class LeoApp:
         app.pluginsController.loadOnePlugin('leo.plugins.cursesGui',verbose=verbose)
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
-
         """A convenience routines for plugins to create the default gui class."""
-
-        app = self ; argName = app.guiArgName
-
-        # This method can be called twice if we had to get .leoID.txt.
-        if app.gui: return
-
+        app = self
+        argName = app.guiArgName
+        if g.in_bridge:
+             # print('createDefaultGui: g.in_bridge: %s' % g.in_bridge)
+            return # The bridge will create the gui later.
+        if app.gui:
+            return # This method can be called twice if we had to get .leoID.txt.
         if argName in ('qt','qttabs'): # 2011/06/15.
             app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
-
         if not app.gui:
-            print('Leo requires Qt to be installed.')
+            print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
     def createNullGuiWithScript (self,script=None):
 
@@ -810,19 +847,16 @@ class LeoApp:
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
         try:
-            # Work around pylint/qt problem: import QtGui before QtCore:
-            # http://lists.logilab.org/pipermail/python-projects/2013-January/003383.html
-            # Take care to try the same imports as in qtGui.py.
-            import PyQt4.QtGui
-            import PyQt4.QtCore    
-            import leo.plugins.qtGui as qtGui
-            if 0: g.trace(PyQt4) # To remove a pyflakes warning.
+            from leo.core.leoQt import Qt
+            import leo.plugins.qt_gui as qt_gui
         except ImportError:
-            qtGui = None
-        if qtGui:
-            qtGui.init()
+            Qt = None
+        if Qt:
+            qt_gui.init()
             if app.gui and fileName and verbose:
-                print('qtGui created in %s' % fileName)
+                print('Qt Gui created in %s' % fileName)
+        else:
+            print('createQtGui: can not create Qt gui.')
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui (self,fileName='',verbose=False):
 
@@ -917,8 +951,7 @@ class LeoApp:
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
             # even after the following code.
-        if g.app.afterHandler:
-            g.app.afterHandler = None
+        g.app.idleTimeHook = None
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown
     def forceShutdown (self):
 
@@ -994,10 +1027,9 @@ class LeoApp:
             g.app.db['hello'] = [1,2,5]
 
         """
-
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.db = leoCache.cacher().initGlobalDB()
+        g.app.db = leoCache.Cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID
     def setLeoID (self,verbose=True):
 
@@ -1160,7 +1192,8 @@ class LeoApp:
         table = [
             ('Leo Log Window','red'),
             (app.signon,None),
-            (app.signon2,None),
+            (app.signon1,None),
+            (app.signon2,None)
         ]
         table.reverse()
 
@@ -1175,6 +1208,7 @@ class LeoApp:
                 if not g.enableDB:
                     print('** caching disabled')
                 print(app.signon)
+                print(app.signon1)
                 print(app.signon2)
         if not app.silentMode: # 2011/11/02:
             for s in app.printWaiting:
@@ -1202,31 +1236,40 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             if fn in aList:
-                result = g.app.gui.runAskYesNoDialog(c,
-                    title='Open Leo File Again?',
-                    message='%s is already open.  Open it again?' % (fn),
-                )
-                if result == 'yes':
-                    clear = g.app.gui.runAskYesNoDialog(c,
-                        title='Reset open count?',
-                        message='Reset open count for %s?' \
-                            "\nSay yes if you know this outline" \
-                            "\nis not really open elsewhere"% (fn),
+                result = getattr(g.app, '_open_again_always', None)
+                if result is None:
+                    result = g.app.gui.runAskYesNoDialog(c,
+                        title='Open Leo File Again?',
+                        message='%s is already open.  Open it again?' % (fn),
+                        yes_all=True, no_all=True
                     )
-                    if clear == 'yes':
+                if '-all' in result:
+                    g.app._open_again_always = result
+                if result.startswith('yes'):  # 'yes' or 'yes-all'
+                    clear = getattr(g.app, '_open_again_clear_always', None)
+                    if clear is None:
+                        clear = g.app.gui.runAskYesNoDialog(c,
+                            title='Reset open count?',
+                            message='Reset open count for %s?' \
+                                "\nSay yes if you know this outline" \
+                                "\nis not really open elsewhere"% (fn),
+                                yes_all=True, no_all=True
+                        )
+                    if '-all' in clear:
+                        g.app._open_again_clear_always = clear
+                    if clear.startswith('yes'):
                         d[tag] = [i for i in d[tag] if i != fn]
                         # IMPORTANT - rest of load process will add another
                         # entry for this Leo instance, don't do it here
-                return result == 'yes'
+                return result.startswith('yes')
             else:
                 return True
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile (self,fn):
-
+    def forgetOpenFile (self,fn,force=False):
+        '''Forget the open file, so that is no longer considered open.'''
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
-
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             pass
         else:
             aList = d.get(tag) or []
@@ -1558,25 +1601,21 @@ class LoadManager:
             return None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self,verbose):
-
+        '''Report directories.'''
         if not verbose: return
-
         if 1: # old
-
-            if verbose:
-                for kind,theDir in (
-                    ("load",g.app.loadDir),
-                    ("global config",g.app.globalConfigDir),
-                    ("home",g.app.homeDir),
-                ):
-                    g.blue("%s dir:" % (kind),theDir)
-
+            for kind,theDir in (
+                ("load",g.app.loadDir),
+                ("global config",g.app.globalConfigDir),
+                ("home",g.app.homeDir),
+            ):
+                # g.blue calls g.es_print, and that's annoying.
+                g.es("%s dir:" % (kind),theDir,color='blue')
         else:
             aList = (
                 'homeDir','homeLeoDir',
                 'leoDir','loadDir',
                 'extensionsDir','globalConfigDir')
-
             for ivar in aList:
                 val = getattr(g.app,ivar)
                 g.trace('%20s' % (ivar),val)
@@ -1838,34 +1877,25 @@ class LoadManager:
         return ok and c or None
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles (self):
-
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
-
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
         tag = 'lm.readGlobalSettingsFiles'
         lm = self
-
         if trace and g.trace_startup:
             print('\n<<<<< %s' % tag)
-
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        commanders = [
-            lm.openSettingsFile(path) for path in (
-                lm.computeLeoSettingsPath(),
-                lm.computeMyLeoSettingsPath())]
-
+        paths = [lm.computeLeoSettingsPath(),lm.computeMyLeoSettingsPath()]
+        old_commanders = g.app.commanders()
+        commanders = [lm.openSettingsFile(path) for path in paths]
+        commanders = [z for z in commanders if z]
         settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
-
         for c in commanders:
-            if c:
-                settings_d,shortcuts_d = lm.computeLocalSettings(
-                    c,settings_d,shortcuts_d,localFlag=False)
-
+            settings_d,shortcuts_d = lm.computeLocalSettings(
+                c,settings_d,shortcuts_d,localFlag=False)
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcutsDict')
-
         if trace:
             if verbose:
                 for c in commanders:
@@ -1873,9 +1903,13 @@ class LoadManager:
             lm.traceSettingsDict(settings_d,verbose)
             lm.traceShortcutsDict(shortcuts_d,verbose)
             print('\n>>>>>%s...' % tag)
-
         lm.globalSettingsDict = settings_d
         lm.globalShortcutsDict = shortcuts_d
+        # Clear the cache entries for the commanders.
+        # This allows this method to be called outside the startup logic.
+        for c in commanders:
+            if c not in old_commanders:
+                g.app.forgetOpenFile(c.fileName())
     #@+node:ekr.20120214165710.10838: *4* lm.traceSettingsDict
     def traceSettingsDict (self,d,verbose=False):
 
@@ -2063,7 +2097,7 @@ class LoadManager:
         # Create early classes *after* doing plugins.init()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
-        g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
@@ -2109,6 +2143,8 @@ class LoadManager:
             help = 'save session tabs on exit')
         add('--silent', action="store_true", dest="silent",
             help = 'disable all log messages')
+        add('--trace-plugins', action="store_true", dest='trace_plugins',
+            help = 'trace imports of plugins')
         add('-v', '--version', action="store_true", dest="version",
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2192,6 +2228,8 @@ class LoadManager:
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-plugins
+        g.app.trace_plugins = options.trace_plugins
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
@@ -2238,35 +2276,17 @@ class LoadManager:
         return [lm.completeFileName(z) for z in files]
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
-
         '''Create a Leo window for each file in the lm.files list.'''
-
         # Clear g.app.initing _before_ creating commanders.
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
-        # g.trace(lm.files)
+        c = c1 = None
         if lm.files:
-            # A terrible kludge for Linux only:
-            # When using tabs, the first tab has no menu, so
-            # create a temp tab during loading and then delete it.
-            kludge = sys.platform.lower().startswith('linux') and g.app.qt_use_tabs
-            c1 = None
-            if kludge:
-                c0 = g.app.newCommander(fileName='loading...',gui=g.app.gui,
-                    previousSettings=None)
             for fn in lm.files:
                 c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
-                    # Will give a "not found" message.
-                # This can fail if the file is open in another instance of Leo.
-                # assert c
-                if not c1: c1 = c
-                if kludge:
-                    # Now destroy the dummy frame, leaving menus in all real frames.
-                    g.app.destroyWindow(c0.frame)
-                    kludge = False
-        else:
-            c = c1 = None
+                    # Returns None if the file is open in another instance of Leo.
+                if not c1: c1 = c 
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
@@ -2298,7 +2318,8 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
-        return True
+        else:
+            return True
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self,c,fileName):
 
@@ -2308,7 +2329,7 @@ class LoadManager:
             c.redraw()
 
         # Respect c's focus wishes if posssible.
-        if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        if w != c.frame.body.wrapper and w != c.frame.tree.canvas:
             c.bodyWantsFocus()
             c.k.showStateAndMode(w)
 
@@ -2379,7 +2400,7 @@ class LoadManager:
                     import Tkinter as Tk
                     #@+<< define emergency dialog class >>
                     #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
-                    class emergencyDialog:
+                    class EmergencyDialog:
 
                         """A class that creates an Tkinter dialog with a single OK button."""
 
@@ -2480,7 +2501,7 @@ class LoadManager:
                             self.root.wait_window(self.top)
                         #@-others
                     #@-<< define emergency dialog class >>
-                    d = emergencyDialog(
+                    d = EmergencyDialog(
                         title='Python Version Error',
                         message=message)
                     d.run()
@@ -2497,7 +2518,7 @@ class LoadManager:
         '''Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo file (possibly zipped), read it twice:
-        the first time with a nullGui to discover settings,
+        the first time with a NullGui to discover settings,
         the second time with the requested gui to create the outline.
 
         2. If fn is an external file:
@@ -2611,7 +2632,7 @@ class LoadManager:
         for frame in g.app.windowList:
             c = frame.c
             if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
-                frame.bringToFront()
+                # don't frame.bringToFront(), it breaks --minimize
                 c.setLog()
                 # 2011/11/21: selecting the new tab ensures focus is set.
                 master = hasattr(frame.top,'leo_master') and frame.top.leo_master
@@ -2665,6 +2686,9 @@ class LoadManager:
             # 2011/10/10: Create an @file node.
             p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
                 paths=[fn],command=None) # Not undoable.
+            if p and p.hasBack():
+                p.back().doDelete()
+                p = c.rootPosition()
             if not p: return None
         else:
             # Create an @edit node.
@@ -3003,17 +3027,14 @@ class RecentFilesManager:
                 dirCount[baseName]['dirs'].append(dirName)
 
         for name in rf.getRecentFiles()[:n]:
+            # pylint: disable=cell-var-from-loop
             if name.strip() == "":
                 continue  # happens with empty list/new file
-
             def recentFilesCallback (event=None,c=c,name=name):
                 c.openRecentFile(name)
-
             if groupedEntries:
                 dirName, baseName = g.os_path_split(name)
-
                 entry = dirCount[baseName]
-
                 if len(entry['dirs']) > 1 or rf_always:  # sub menus
                     if entry['entry'] is None:
                         entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
@@ -3023,7 +3044,6 @@ class RecentFilesManager:
                 else:  # single occurence, no submenu
                     c.add_command(recentFilesMenu,label=baseName,
                         command=recentFilesCallback,underline=0)
-
             else:  # original behavior
                 label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
                 c.add_command(recentFilesMenu,label=label,

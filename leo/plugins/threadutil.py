@@ -3,112 +3,18 @@
 #@@language python
 #@@tabwidth -4
 
-from PyQt4 import QtCore, QtGui
+from leo.core.leoQt import QtCore, QtGui
 import logging
 import time
 import leo.core.leoGlobals as g
 from collections import deque
-#log = logging.getLogger("out")
-
+if 1:
+    log = None
+else:
+    log = logging.getLogger("out")
 #@+others
-#@+node:ekr.20121126102050.10135: ** init
-def init():
-
-    return True
-#@+node:ekr.20121126095734.12419: ** class ThreadQueue
-class ThreadQueue:
-    #@+others
-    #@+node:ekr.20121126095734.12420: *3* __init__
-    def __init__(self):
-        self.threads = []
-
-    #@+node:ekr.20121126095734.12421: *3* add
-    def add(self,r):
-        empty = not self.threads
-        self.threads.append(r)
-        r.finished.connect(self.pop)
-        if empty:
-            r.start()
-
-    #@+node:ekr.20121126095734.12422: *3* pop
-    def pop(self):
-        if self.threads:
-            ne = self.threads.pop()
-            ne.start()
-
-    #@-others
-
-#_tq = ThreadQueue()
-#@+node:ekr.20121126095734.12423: ** enq_task
-def enq_task(r):
-    _tq.add(r)
-
-#@+node:ekr.20121126095734.12424: ** class RRunner
-class RRunner(QtCore.QThread):
-    #@+others
-    #@+node:ekr.20121126095734.12425: *3* __init__
-    def __init__(self, f, parent = None):
-
-        QtCore.QThread.__init__(self, parent)
-        self.f = f
-
-    #@+node:ekr.20121126095734.12426: *3* run
-    def run(self):
-        self.res = self.f()
-
-    #@-others
-#@+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):
-    """ execute f forever, signal on every run """
-
-    fragment = QtCore.pyqtSignal(object)
-
-    #@+others
-    #@+node:ekr.20121126095734.12428: *3* __init__
-    def __init__(self, f, parent = None):
-
-        QtCore.QThread.__init__(self, parent)
-        self.f = f
-
-    #@+node:ekr.20121126095734.12429: *3* run
-    def run(self):
-        while 1:
-            try:
-                res = self.f()
-            except StopIteration:
-                return
-            self.fragment.emit(res)
-
-    #@-others
-#@+node:ekr.20121126095734.12430: ** log_filedes
-garbage = []
-
-def log_filedes(f, level):
-
-    def reader():
-        line = f.readline()
-        if not line:
-
-            raise StopIteration
-        return line
-
-    def output(line):
-        log.log(level, line.rstrip())
-
-    def finished():
-        log.log(logging.INFO, "<EOF>")
-
-    rr = Repeater(reader)
-
-    rr.fragment.connect(output)
-    rr.finished.connect(finished)
-    garbage.append(rr)
-    rr.start()
-#@+node:ekr.20121126095734.12431: ** later
-def later(f):
-    QtCore.QTimer.singleShot(0,f)
-
-#@+node:ekr.20121126095734.12432: ** async_syscmd
+#@+node:ekr.20140911023403.17845: **  top-level
+#@+node:ekr.20121126095734.12432: *3* async_syscmd
 def async_syscmd(cmd, onfinished):
     proc = QtCore.QProcess()
 
@@ -123,6 +29,63 @@ def async_syscmd(cmd, onfinished):
     proc.start(cmd)
     #garbage.append(proc)
 
+#@+node:ekr.20121126095734.12423: *3* enq_task
+def enq_task(r):
+    _tq.add(r)
+
+#@+node:ekr.20140910173844.17826: *3* init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    g.procs = SysProcessRunner()
+    g.procs.default_cb = leo_echo_cb
+    return True
+#@+node:ekr.20121126095734.12431: *3* later
+def later(f):
+    QtCore.QTimer.singleShot(0,f)
+
+#@+node:ekr.20140910173844.17825: *3* leo_echo_cb
+def leo_echo_cb(out, err, code, ent):
+    arg = ent['arg']
+    g.es("> " + arg[0] + " " + repr(arg[1:])    )
+    if out:
+        g.es(out)
+    if err:
+        g.es_error(err)
+
+#@+node:ekr.20121126095734.12430: *3* log_filedes
+garbage = []
+
+def log_filedes(f, level):
+
+    def reader():
+        line = f.readline()
+        if not line:
+            raise StopIteration
+        return line
+
+    def output(line):
+        if log:
+            log.log(level, line.rstrip())
+
+    def finished():
+        if log:
+            log.log(logging.INFO, "<EOF>")
+
+    rr = Repeater(reader)
+    rr.fragment.connect(output)
+    rr.finished.connect(finished)
+    garbage.append(rr)
+    rr.start()
+#@+node:ekr.20121126095734.12443: *3* main
+def main():
+    # stupid test
+    a = QtGui.QApplication([])
+    b = QtGui.QPushButton("Say hello", None)
+    g.procs.add(['ls', '/tmp'])
+    g.procs.add(['ls', '-la'])
+    #a.setMainWidget(b)
+    b.show()
+    a.exec_()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others
@@ -163,6 +126,107 @@ class NowOrLater:
                 pass
                 #print "already sched"
 
+
+    #@-others
+#@+node:ekr.20121126095734.12427: ** class Repeater
+class Repeater(QtCore.QThread):
+    """ execute f forever, signal on every run """
+
+    fragment = QtCore.pyqtSignal(object)
+
+    #@+others
+    #@+node:ekr.20121126095734.12428: *3* __init__
+    def __init__(self, f, parent = None):
+
+        QtCore.QThread.__init__(self, parent)
+        self.f = f
+
+    #@+node:ekr.20121126095734.12429: *3* run
+    def run(self):
+        while 1:
+            try:
+                res = self.f()
+            except StopIteration:
+                return
+            self.fragment.emit(res)
+
+    #@-others
+#@+node:ekr.20121126095734.12424: ** class RRunner
+class RRunner(QtCore.QThread):
+    #@+others
+    #@+node:ekr.20121126095734.12425: *3* __init__
+    def __init__(self, f, parent = None):
+
+        QtCore.QThread.__init__(self, parent)
+        self.f = f
+
+    #@+node:ekr.20121126095734.12426: *3* run
+    def run(self):
+        self.res = self.f()
+
+    #@-others
+#@+node:ekr.20140910173844.17824: ** class SysProcessRunner
+class SysProcessRunner:
+    def __init__(self):
+        # dict of lists (queues)
+        self.q = {}
+        self.cur = {}
+        self.default_cb = None
+    
+    
+    def add(self, argv, key = "", cb = None):
+        """ argv = [program, arg1, ...] """
+        ent = {
+            'arg' : argv,
+            'cb' : cb
+        }
+        self.q.setdefault(key, deque()).append(ent)
+        self.sched()
+    
+    def sched(self):
+        for k,q in self.q.items():
+            if q and k not in self.cur:
+                ent = q.popleft()
+                self.cur[k] = ent
+                self.run_one(ent, k)
+    
+    def run_one(self, ent, key):
+        p = ent['proc'] = QtCore.QProcess()
+    
+        def fini(code, status):
+            del self.cur[key]
+            out = str(p.readAllStandardOutput())
+            err = str(p.readAllStandardError())
+            cb = ent['cb'] or self.default_cb
+            later(self.sched)
+            cb(out, err, status, ent)
+    
+    
+        cmd = ent['arg'][0]
+        args = ent['arg'][1:]
+        p.start(cmd, args)
+        p.finished.connect(fini)
+
+#@+node:ekr.20121126095734.12419: ** class ThreadQueue
+class ThreadQueue:
+    #@+others
+    #@+node:ekr.20121126095734.12420: *3* __init__
+    def __init__(self):
+        '''Ctor for ThreadQueue class.'''
+        self.threads = []
+    #@+node:ekr.20121126095734.12421: *3* add
+    def add(self,r):
+        empty = not self.threads
+        self.threads.append(r)
+        r.finished.connect(self.pop)
+        if empty:
+            r.start()
+
+    #@+node:ekr.20121126095734.12422: *3* pop
+    def pop(self):
+        if self.threads:
+            ne = self.threads.pop()
+            ne.start()
 
     #@-others
 #@+node:ekr.20121126095734.12436: ** class UnitWorker
@@ -208,8 +272,8 @@ class UnitWorker(QtCore.QThread):
 
     #@+node:ekr.20121126095734.12442: *3* run
     def run(self):
-        m = self.mutex
 
+        m = self.mutex
         while 1:
             m.lock()
             self.cond.wait(m)
@@ -220,79 +284,11 @@ class UnitWorker(QtCore.QThread):
                 self.do_work(inp)
 
 
-class SysProcessRunner:
-    def __init__(self):
-        # dict of lists (queues)
-        self.q = {}
-        self.cur = {}
-        self.default_cb = None
-
-
-    def add(self, argv, key = "", cb = None):
-        """ argv = [program, arg1, ...] """
-        ent = {
-            'arg' : argv,
-            'cb' : cb
-        }
-        self.q.setdefault(key, deque()).append(ent)
-        self.sched()
-
-    def sched(self):
-        for k,q in self.q.items():
-            if q and k not in self.cur:
-                ent = q.popleft()
-                self.cur[k] = ent
-                self.run_one(ent, k)
-
-    def run_one(self, ent, key):
-        p = ent['proc'] = QtCore.QProcess()
-
-        def fini(code, status):
-            del self.cur[key]
-            out = str(p.readAllStandardOutput())
-            err = str(p.readAllStandardError())
-            cb = ent['cb'] or self.default_cb
-            later(self.sched)
-            cb(out, err, status, ent)
-
-
-        cmd = ent['arg'][0]
-        args = ent['arg'][1:]
-        p.start(cmd, args)
-        p.finished.connect(fini)
-
-def leo_echo_cb(out, err, code, ent):
-    arg = ent['arg']
-    g.es("> " + arg[0] + " " + repr(arg[1:])    )
-    if out:
-        g.es(out)
-    if err:
-        g.es_error(err)
-
-def init():
-    """ set up leo runner instance """
-    g.procs = SysProcessRunner()
-    g.procs.default_cb = leo_echo_cb
-
-
-
-init()
-
-
 
     #@-others
-#@+node:ekr.20121126095734.12443: ** main
-def main():
-    # stupid test
-    a = QtGui.QApplication([])
-    b = QtGui.QPushButton("Say hello", None)
-    g.procs.add(['ls', '/tmp'])
-    g.procs.add(['ls', '-la'])
-    #a.setMainWidget(b)
-    b.show()
-    a.exec_()
 #@-others
-
+_tq = ThreadQueue()
+init()
 if __name__ == "__main__":
     main()
 #@-leo

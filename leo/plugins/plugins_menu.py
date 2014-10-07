@@ -56,30 +56,21 @@ __plugin_priority__
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.
 
-#@@language python
-#@@tabwidth -4
-
+# **Important**: this plugin is gui-independent.
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
-
-# **Important**: this plugin is gui-independent.
-
 if g.isPython3:
     import configparser as ConfigParser
 else:
     import ConfigParser
-
-import glob
 import os
-import sys
+
 #@-<< imports >>
 __version__ = "2.3"
-
 __plugin_name__ = "Plugins Menu"
 __plugin_priority__ = -100
 __plugin_group__ = "Core"
-
 #@+others
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
@@ -182,18 +173,16 @@ def add_menu_from_settings(c):
                 return
 #@+node:ekr.20070302175530: *3* init
 def init ():
-    if g.app.unitTesting: return None
-
+    '''Return True if the plugin has loaded successfully.'''
+    if g.app.unitTesting:
+        return False
     if not g.app.gui:
         g.app.createDefaultGui()
-
-    if g.app.gui.guiName() not in ('qt','qttabs',):
-        return False
-
-    g.registerHandler("create-optional-menus",createPluginsMenu)
-    g.plugin_signon(__name__)
-
-    return True
+    ok = g.app.gui.guiName() in ('qt','qttabs')
+    if ok:
+        g.registerHandler("create-optional-menus",createPluginsMenu)
+        g.plugin_signon(__name__)
+    return ok
 #@+node:pap.20050305152751: ** class PluginDatabase
 class _PluginDatabase:
     """Stores information on Plugins"""
@@ -456,4 +445,6 @@ class PlugIn:
     #@-others
 
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

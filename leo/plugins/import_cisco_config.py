@@ -28,35 +28,15 @@ All created sections are alphabetically ordered.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
 import leo.core.leoGlobals as g
-
-__version__ = "2.0"
-
-#@+<< version history >>
-#@+node:ekr.20050311102853: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 1.4 EKR:
-# - Added init function.
-# - Use only 'new' and 'open2' hooks.
-# 1.5 EKR:
-# - Removed all calls to g.top().
-# - Fixed bug: return ok in init.
-# 2.0 EKR: now gui independent.
-#@-<< version history >>
 
 #@+others
 #@+node:ekr.20050311102853.1: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     # This plugin is gui-independent.
     g.registerHandler(('new','menu2'),create_import_cisco_menu)
     g.plugin_signon(__name__)
-
     return True
 #@+node:edream.110203113231.671: ** create_import_cisco_menu
 def create_import_cisco_menu (tag,keywords):
@@ -214,4 +194,6 @@ def importCiscoConfig(c):
     c.redraw_now()
     #@-<< complete outline >>
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

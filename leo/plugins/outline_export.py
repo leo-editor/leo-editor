@@ -12,15 +12,11 @@ __version__ = "1.2" # Set version for the plugin handler.
 #@+others
 #@+node:ekr.20100128073941.5375: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit testing: modifies core class.
-
     if ok:
-
-        # Register the handlers...
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.721: ** newMoreHead
 # Returns the headline string in MORE format.
@@ -46,6 +42,6 @@ def onStart (tag,keywords):
 
     import leo.core.leoNodes as leoNodes
 
-    g.funcToMethod(newMoreHead,leoNodes.Vnode,"moreHead")
+    g.funcToMethod(newMoreHead,leoNodes.VNode,"moreHead")
 #@-others
 #@-leo

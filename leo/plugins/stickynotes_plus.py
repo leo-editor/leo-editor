@@ -8,18 +8,14 @@ alt-x stickynote to pop out current node as a note.
 
 '''
 #@-<< docstring >>
-
-# print('stickynotes_plus.py')
-
-__version__ = '0.0'
-
 #@+<< imports >>
 #@+node:ekr.20100103100944.5391: ** << imports >>
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
-import sys
+# import sys
 import webbrowser
 
 try:
@@ -31,12 +27,11 @@ except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
 
-from PyQt4.QtCore import (QSize, QVariant, Qt, SIGNAL,QTimer) # QString, 
-from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
-        QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
-        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,QPlainTextEdit)
+from PyQt4.QtCore import (QSize,QVariant, Qt,SIGNAL,QTimer,QString)
+from PyQt4.QtGui import (QAction,QFont,QIcon,QMenu,QTextCursor,
+    QTextCharFormat,QTextBlockFormat,QTextListFormat,QTextEdit,QPlainTextEdit)
+    # QApplication,QColor,QFontMetrics,QKeySequence, QPixmap, 
 #@-<< imports >>
-
 #@+others
 #@+node:ekr.20100103100944.5392: ** styling
 stickynote_stylesheet = """
@@ -60,14 +55,12 @@ def decorate_window(w):
 
 #@+node:ekr.20100103100944.5393: ** init
 def init ():
-
-    ok = markdown is not None
+    '''Return True if the plugin has loaded successfully.'''
+    ok = markdown is not None and g.app.gui.guiName() == "qt"
         # Markdown fails on Python 3k at present.
-
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-
     g.app.stickynotes = {}    
     return ok
 #@+node:ekr.20100103100944.5394: ** class FocusingPlainTextEdit
@@ -133,9 +126,9 @@ class SimpleRichText(QTextEdit):
     def setBold(self):
         format = QTextCharFormat()
         if self.boldAct.isChecked():
-                weight = QFont.Bold
+            weight = QFont.Bold
         else:
-                weight = QFont.Normal
+            weight = QFont.Normal
         format.setFontWeight(weight)
         self.setFormat(format)
 
@@ -504,14 +497,12 @@ class notetextedit(QTextEdit):
         #print("mouseReleaseEvent")
         pos = event.pos()
         url = g.u(self.anchorAt(pos))
-
         if url:            
             if not url.startswith('http://'): #linux seems to need this
                 url = 'http://{0}'.format(url)
-            webbrowser.open(g.u(x), new=2, autoraise=True)
+            webbrowser.open(g.u(url),new=2,autoraise=True)
         else:
-            QTextEdit.mouseReleaseEvent(self, event)
-
+            QTextEdit.mouseReleaseEvent(self,event)
     #@+node:ekr.20100103100944.5418: *3* insertFromMimeData
     def insertFromMimeData(self, source):
         # not sure really necessary since it actually appears to paste URLs correctly
@@ -555,7 +546,11 @@ class notetextedit(QTextEdit):
                     fragment = iterator.fragment()
                     if fragment.isValid():
                         char_format = fragment.charFormat()
-                        text = g.u(Qt.escape(fragment.text())) # turns chars like < into entities &lt;
+                        # pylint: disable=no-member
+                        # EKR: I'm not sure whether this warning is valid.
+                        # I'm going to kill it because this is an experimental plugin.
+                        text = g.u(Qt.escape(fragment.text()))
+                            # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold
                         if char_format.isAnchor():
@@ -656,8 +651,7 @@ def stickynoter_f(event):
         if p.v is v:
             c.selectPosition(c.p)
 
-
-    nf = LessSimpleRichText(focusin, focusout)
+    nf = SimpleRichText(focusin, focusout)
     nf.dirty = False
     decorate_window(nf)
     nf.setWindowTitle(p.h)
@@ -675,7 +669,7 @@ def stickynoter_f(event):
     g.app.stickynotes[p.gnx] = nf
 #@+node:ekr.20100103100944.5422: ** g.command('stickynoteplus')
 @g.command('stickynoteplus')
-def stickynoter_f(event):
+def stickynoteplus_f(event):
     """ Launch editable 'sticky note' for the node """
 
     c= event['c']
@@ -718,4 +712,8 @@ def stickynoter_f(event):
 
     g.app.stickynotes[p.gnx] = nf
 #@-others
+#@@language python
+#@@tabwidth -4
+
+
 #@-leo

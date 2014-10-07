@@ -758,30 +758,25 @@ get = getColor
 #@+node:bob.20080115070511.4: *3* getRGB / getColorRGB
 def getColorRGB(name, default=None):
     """Convert a named color into an (r, g, b) tuple."""
-
     s = getColor(name, default)
-
     try:
         color = int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
     except:
         color = None
-
     return color
 
 getRGB = getColorRGB
 
 #@+node:bob.20080115072302: *3* getCairo / getColorCairo
 def getColorCairo(name, default=None):
-
     """Convert a named color into a cairo color tuple."""
-
+    # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)
     if color is None:
         return
-
-    r, g, b = color
-
-    return r/255.0, g/255.0, b/255.0
+    else:
+        r, g, b = color
+        return r/255.0, g/255.0, b/255.0
 
 getCairo = getColorCairo
 

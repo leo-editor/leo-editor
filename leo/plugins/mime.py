@@ -2,7 +2,7 @@
 #@+node:dan.20090217132953.1: * @file mime.py
 #@+<< docstring >>
 #@+node:dan.20090203174248.27: ** << docstring >>
-''' Opens files with their default platform program.
+r''' Opens files with their default platform program.
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
 from a file manager. \@path parent nodes are used to find the full filename
@@ -38,35 +38,14 @@ filename string as its only argument and set as open_func.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
+# By Dan White <etihwnad _at_ gmail _dot_ com>.
 
-__version__ = '0.2'
-
-#@+<< version history >>
-#@+node:dan.20090203174248.28: ** << version history >>
-#@+at
-# 
-# Contributed by Dan White <etihwnad _at_ gmail _dot_ com>.
-# 
-# 0.1 - Initial plugin
-# 0.2 - DJW:  -changed open file architecture
-#             -added support for win32 platform
-# 0.3 - DJW:  -remove explicit "__name__" assignment
-#             -quiet signon
-#             -rearrange sections for easier reading
-#@-<< version history >>
-
-#@+<< imports >>
-#@+node:dan.20090203174248.29: ** << imports >>
 import leo.core.leoGlobals as g
-
 import mailcap
 import mimetypes
 import os
 import subprocess
 import sys
-#@-<< imports >>
 
 #@+others
 #@+node:dan.20090210183435.1: ** exec_full_cmd
@@ -93,17 +72,12 @@ def exec_string_cmd(cmd):
     return f
 #@+node:dan.20090203174248.30: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
-
     if ok:
-        #print('mime.py enabled')
-
         # Open on double click
         g.registerHandler('icondclick1', open_mimetype)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):
@@ -176,7 +150,8 @@ def open_mimetype(tag, keywords, val=None):
     return val
 
 #@-others
-
+#@@language python
+#@@tabwidth -4
 #@+<< guess file association handler >>
 #@+node:dan.20090203174248.35: ** << guess file association handler >>
 #@+at Search for the best method of opening files.  If running a desktop manager,
@@ -205,10 +180,9 @@ if sys.platform == 'linux2':
 
     else:
         pass
-
 elif sys.platform == 'win32':
-    #use this directly as 1-arg fn, default action is 'open'
+    # Use this directly as 1-arg fn, default action is 'open'
+    # pylint: disable=no-member
     open_func = os.startfile
-
 #@-<< guess file association handler >>
 #@-leo

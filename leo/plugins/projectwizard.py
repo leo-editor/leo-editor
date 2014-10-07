@@ -1,44 +1,26 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090622063842.5264: * @file projectwizard.py
-#@+<< docstring >>
-#@+node:ville.20090614224528.8136: ** << docstring >>
 ''' Creates a wizard that creates @auto nodes.
 
 Opens a file dialog and recursively creates @auto & @path nodes from the path
 where the selected file is (the selected file itself doesn't matter.)
 
 '''
-#@-<< docstring >>
+# Written by VMV.
 
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20090614224528.8137: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 First released version (VMV)
-#@-<< version history >>
-
-#@+<< imports >>
-#@+node:ville.20090614224528.8138: ** << imports >>
 import leo.core.leoGlobals as g
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-
-from PyQt4 import QtCore
-
-# Whatever other imports your plugins uses.
-#@-<< imports >>
+from leo.core.leoQt import QtCore
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init
 def init ():
-
-    ok = True # This might depend on imports, etc.
-
+    '''Return True if the plugin has loaded successfully.'''
+    ok = g.app.gui.guiName() == "qt"
     if ok:
         g.plugin_signon(__name__)
-
     install_contextmenu_handlers()
     return ok
 #@+node:ville.20090614224528.8141: ** auto_walk() and g.command('projectwizard')

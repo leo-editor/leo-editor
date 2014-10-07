@@ -49,9 +49,6 @@ Davide Salomoni
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
 # Contributed by Davide Salomoni <dsalomoni@yahoo.com>
 
 #@+<< imports >>
@@ -67,9 +64,11 @@ else:
 
 import ftplib
 import os
+import sys
 import urllib
 
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     import urllib.parse as urlparse
 else:
     import urlparse 
@@ -81,38 +80,22 @@ if g.isPython3:
 else:
     from htmllib   import HTMLParser
 #@-<< imports >>
-__version__ = '2.0'
-#@+<< version history >>
-#@+node:ekr.20050311091110: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 1.6 EKR:
-#     - Changed 'new_c' logic to 'c' logic.
-#     - Added init function.
-# 1.7 EKR: Use 'new' and 'open2' hooks.
-# 1.8 EKR: Moved documentation into docstring so it is visible from the plugins manager.
-# 2.0 EKR: The code is now gui-independent.
-#@-<< version history >>
-
+insertOnTime = None
+insertOffTime = None
 #@+others
 #@+node:ekr.20050311092840: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
         # Not Ok for unit testing.
-
     if ok:
         g.registerHandler(('new','open2'), on_open)
         g.registerHandler("bodykey1", on_bodykey1)
         g.registerHandler("headkey2", on_headkey2)
-
         if 0: # doesn't work: the cursor stops blinking.
             g.registerHandler("select1", on_select1)
             g.registerHandler("select2", on_select2)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:edream.110203113231.879: ** class FTPurl
 class FTPurl:
@@ -137,7 +120,8 @@ class FTPurl:
     #@+others
     #@+node:edream.110203113231.880: *3* __init__
     def __init__(self, ftpURL, mode=''):
-        parse = urlparse.urlparse(ftpURL)
+        
+        parse = urlparse(ftpURL)
         if parse[0] != 'ftp':
             raise IOError("error reading %s: malformed ftp URL" % ftpURL)
 
@@ -227,10 +211,10 @@ class FTPurl:
             raise IOError(msg)
     #@+node:edream.110203113231.886: *3* Utilities
     #@+node:edream.110203113231.887: *4* seek
-    def seek(offset=0):
+    def seek(self,offset=0):
         self.currentLine = 0  # we don't support fancy seeking via FTP
     #@+node:edream.110203113231.888: *4* flush
-    def flush():
+    def flush(self):
         pass # no fancy stuff here.
     #@+node:edream.110203113231.889: *4* dir
     def dir(self, path=None):
@@ -392,9 +376,9 @@ def on_bodykey1 (tag,keywords):
         # but perhaps that is obvious anyway...
         if 0: # Davide Salomoni requests that this code be eliminated.
             # An @read-only node: do not change its text.
-            body = c.frame.body.bodyCtrl
-            body.delete("1.0","end")
-            body.insert("1.0",p.b)
+            w = c.frame.body.wrapper
+            w.delete("1.0","end")
+            w.insert("1.0",p.b)
         return 1 # Override the body key event handler.
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter
@@ -429,5 +413,6 @@ def on_select2 (tag,keywords):
     else:
         enable_body(c.frame.body)
 #@-others
-
+#@@language python
+#@@tabwidth -4
 #@-leo

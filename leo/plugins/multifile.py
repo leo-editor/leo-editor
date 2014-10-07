@@ -92,25 +92,19 @@ originalOpenFileForWriting = None
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers
 def init ():
-
-    ok = True # Now gui-independent.
-
-    if ok:
-        # Append to the module list, not to the g.copy.
-        g.globalDirectiveList.append('multipath')
-        g.globalDirectiveList.append('multiprefix')
-
-        # Override all instances of leoAtFile.atFile.
-        at = leoAtFile.atFile
-        global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
-        g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
-
-        # g.registerHandler('save1',start)
-        g.registerHandler('save2',stop)
-        g.registerHandler(('new','menu2'),addMenu)
-        g.plugin_signon(__name__)
-
-    return ok
+    '''Return True if the plugin has loaded successfully.'''
+    # Append to the module list, not to the g.copy.
+    g.globalDirectiveList.append('multipath')
+    g.globalDirectiveList.append('multiprefix')
+    # Override all instances of leoAtFile.AtFile.
+    at = leoAtFile.AtFile
+    global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
+    g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
+    # g.registerHandler('save1',start)
+    g.registerHandler('save2',stop)
+    g.registerHandler(('new','menu2'),addMenu)
+    g.plugin_signon(__name__)
+    return True # Now gui-independent.
 #@+node:mork.20041019091317: *3* addMenu
 haveseen = weakref.WeakKeyDictionary()
 
@@ -133,7 +127,7 @@ def insertDirectoryString (c):
         startdir=os.curdir)
 
     if d:
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         ins = w.getInsertPoint()
         w.insert(ins,d)
         #w.event_generate('<Key>')

@@ -32,72 +32,52 @@ else:
 
 #@-<< imports >>
 #@+others
-#@+node:ekr.20031218072017.1991: ** class nodeIndices
+#@+node:ekr.20031218072017.1991: ** class NodeIndices
 # Indices are Python dicts containing 'id','loc','time' and 'n' keys.
 
-class nodeIndices (object):
+class NodeIndices (object):
 
     """A class to implement global node indices (gnx's)."""
 
     #@+others
-    #@+node:ekr.20031218072017.1992: *3* nodeIndices.__init__
-    def __init__ (self,id):
+    #@+node:ekr.20031218072017.1992: *3* NodeIndices.__init__
+    def __init__ (self,id_):
 
-        """ctor for nodeIndices class"""
+        """ctor for NodeIndices class"""
 
-        self.userId = id
-        self.defaultId = id
+        self.userId = id_
+        self.defaultId = id_
+        self.lastIndex = 0
 
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()
         self.lastIndex = 0
-    #@+node:ekr.20031218072017.1993: *3* areEqual (no longer used)
-    def areEqual (self,gnx1,gnx2):
-
-        """Return True if all fields of gnx1 and gnx2 are equal"""
-
-        # works whatever the format of gnx1 and gnx2.
-        # This should never throw an exception.
-        return gnx1 == gnx2
-    #@+node:ekr.20031218072017.1994: *3* get/setDefaultId
-    # These are used by the fileCommands read/write code.
+    #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
+    # These are used by the FileCommands read/write code.
 
     def getDefaultId (self):
-
         """Return the id to be used by default in all gnx's"""
         return self.defaultId
 
     def setDefaultId (self,theId):
-
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
-    #@+node:ekr.20031218072017.1995: *3* getNewIndex
+    #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex (self):
-
         '''Create a new gnx.'''
-
         self.lastIndex += 1
         d = (self.userId,self.timeString,self.lastIndex)
-        # g.trace(d)
-        return d
-    #@+node:ekr.20031218072017.1996: *3* isGnx (not used)
-    def isGnx (self,gnx):
-        try:
-            theId,t,n = gnx
-            return t != None
-        except Exception:
-            return False
-    #@+node:ekr.20031218072017.1997: *3* scanGnx
-    def scanGnx (self,s,i):
-
-        """Create a gnx from its string representation"""
-
+        # new gnxs:
+        return g.toUnicode("%s.%s.%d" % d)
+        # old gnxs: retain for reference:
+        # return d
+    #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
+    def scanGnx (self,s,i=0):
+        """Create a gnx from its string representation."""
         if not g.isString(s):
             g.error("scanGnx: unexpected index type:",type(s),'',s)
             return None,None,None
-
         s = s.strip()
-
         theId,t,n = None,None,None
         i,theId = g.skip_to_char(s,i,'.')
         if g.match(s,i,'.'):
@@ -111,9 +91,8 @@ class nodeIndices (object):
         if n:
             try: n = int(n)
             except Exception: pass
-
         return theId,t,n
-    #@+node:ekr.20031218072017.1998: *3* setTimeStamp
+    #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp (self):
 
         """Set the timestamp string to be used by getNewIndex until further notice"""
@@ -122,32 +101,39 @@ class nodeIndices (object):
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
 
-        # g.trace(self.timeString,self.lastIndex,g.callers(4))
+        g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
-    #@+node:ekr.20031218072017.1999: *3* toString
+    #@+node:ekr.20031218072017.1999: *3* ni.toString
     def toString (self,index):
-
-        """Convert a gnx (a tuple) to its string representation"""
-
+        '''
+        Convert a tuple, string or None to its string representation.
+        *Important* the present sax code and earlier versions of Leo
+        use various kinds of tuples.  Do *not* change the tuple-related code!
+        '''
+        if g.isString(index): # new gnxs:
+            return g.toUnicode(index)
+        elif index is None: # new gnxs:
+            return self.getNewIndex() 
         try:
             theId,t,n = index
             if n in (None,0,'',):
-                return "%s.%s" % (theId,t)
+                s = "%s.%s" % (theId,t)
             else:
-                return "%s.%s.%d" % (theId,t,n)
+                s = "%s.%s.%d" % (theId,t,n)
         except Exception:
             if not g.app.unitTesting:
                 g.trace('unusual gnx',repr(index),g.callers()) 
             try:
                 theId,t,n = self.getNewIndex()
                 if n in (None,0,'',):
-                    return "%s.%s" % (theId,t)
+                    s = "%s.%s" % (theId,t)
                 else:
-                    return "%s.%s.%d" % (theId,t,n)
+                    s = "%s.%s.%d" % (theId,t,n)
             except Exception:
-                g.trace('double exception: returning original index')
-                return repr(index)
+                s = repr(index)
+                g.trace('double exception: returning repr(index)',s)
+        return g.toUnicode(s)
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
 #@+<< about the position class >>
@@ -155,7 +141,7 @@ class nodeIndices (object):
 #@@killcolor
 #@+at
 # 
-# A position marks the spot in a tree traversal. A position p consists of a Vnode
+# A position marks the spot in a tree traversal. A position p consists of a VNode
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
 # each ancestor **at the spot in tree traversal. Positions p has a unique set of
 # parents.
@@ -172,10 +158,10 @@ class Position (object):
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__ (self,v,childIndex=0,stack=None,trace=False):
+    def __init__ (self,v,childIndex=0,stack=None):
         '''Create a new position with the given childIndex and parent stack.'''
         # To support ZODB the code must set v._p_changed = 1
-        # whenever any mutable Vnode object changes.
+        # whenever any mutable VNode object changes.
         self._childIndex = childIndex
         self.v = v
         # New in Leo 4.5: stack entries are tuples (v,childIndex).
@@ -309,13 +295,9 @@ class Position (object):
         aList.reverse()
         return aList
     #@+node:ekr.20040117171654: *4* p.copy
-    # Using this routine can generate huge numbers of temporary positions during a tree traversal.
-
     def copy (self):
-
         """"Return an independent copy of a position."""
-
-        return Position(self.v,self._childIndex,self.stack,trace=False)
+        return Position(self.v,self._childIndex,self.stack)
     #@+node:ekr.20040310153624: *4* p.dump
     def dumpLink (self,link):
 
@@ -382,7 +364,10 @@ class Position (object):
     #@+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self):
         p = self
-        return g.app.nodeIndices.toString(p.v.fileIndex)
+        # new gnxs:
+        return p.v.fileIndex
+        # old gnxs: retain for reference.
+        # return g.app.nodeIndices.toString(p.v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
@@ -407,7 +392,7 @@ class Position (object):
         __get_nosentinels, # __set_nosentinels
         doc = "position property returning the body text without sentinels")
     #@+node:ekr.20040306212636: *3* p.Getters
-    #@+node:ekr.20040306210951: *4* p.Vnode proxies
+    #@+node:ekr.20040306210951: *4* p.VNode proxies
     #@+node:ekr.20040306211032: *5* p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
@@ -426,14 +411,12 @@ class Position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
-    def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
     def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
-    # def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
     def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
@@ -488,7 +471,7 @@ class Position (object):
 
         p = self
         return len(p.v.children)
-    #@+node:ekr.20031218072017.915: *4* p.getX & Vnode compatibility traversal routines
+    #@+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
 
@@ -750,7 +733,7 @@ class Position (object):
 
         return p.txtOffset         
     #@+node:ekr.20040305222924: *3* p.Setters
-    #@+node:ekr.20040306220634: *4* p.Vnode proxies
+    #@+node:ekr.20040306220634: *4* p.VNode proxies
     #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
     def contract (self):
         '''Contract p.v and clear p.v.expandedPositions list.'''
@@ -852,8 +835,9 @@ class Position (object):
     #@+node:ekr.20040305162628: *4* p.Dirty bits
     #@+node:ekr.20040311113514: *5* p.clearDirty
     def clearDirty (self):
-
+        '''(p) Set p.v dirty.'''
         p = self
+        # g.trace(p.h)
         p.v.clearDirty()
     #@+node:ekr.20040318125934: *5* p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
@@ -901,27 +885,22 @@ class Position (object):
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty (self,setDescendentsDirty=True):
-
         '''Mark a node and all ancestor @file nodes dirty.'''
-
+        trace = False and not g.unitTesting
         p = self ; dirtyVnodeList = []
-
-        # g.trace('dirty: %s, setDescendentsDirty: %s' % (
-            # p.v.isDirty(),setDescendentsDirty),p.h)
-
+        if trace and p.h.startswith('@auto'):
+            g.trace('(p) %5s %30s' % (p.isDirty(),p.h))
         if not p.v.isDirty():
             p.v.setDirty()
             dirtyVnodeList.append(p.v)
-
         # Important: this must be called even if p.v is already dirty.
         # Typing can change the @ignore state!
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
         dirtyVnodeList.extend(dirtyVnodeList2)
-
         return dirtyVnodeList
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
-    # - convertTreeToString and moreHead can't be Vnode methods because they uses level().
+    # - convertTreeToString and moreHead can't be VNode methods because they uses level().
     # - moreBody could be anywhere: it may as well be a postion method.
     #@+node:ekr.20040315023430.1: *4* p.convertTreeToString
     def convertTreeToString (self):
@@ -978,9 +957,7 @@ class Position (object):
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self):
-
-        '''Return all children of p.'''
-
+        '''Yield all child positions of p.'''
         p = self
         p = p.firstChild()
         while p:
@@ -992,12 +969,10 @@ class Position (object):
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
     def following_siblings(self):
-        '''
-        Return all siblings that follow p, not including p.
-        '''
-
+        '''Yield all siblings positions that follow p, not including p.'''
         p = self
-        p = p.copy() # Always include the original node.
+        # 2014/06/29: This extra copy is not needed: p.next() creates a copy.
+        # p = p.copy() # Always include the original node.
         p = p.next()
         while p:
             yield p
@@ -1008,7 +983,7 @@ class Position (object):
     following_siblings_iter = following_siblings
     #@+node:ekr.20091002083910.6104: *4* p.nodes
     def nodes (self):
-
+        '''Yield p.v and all vnodes in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1021,9 +996,7 @@ class Position (object):
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
     def parents(self):
-
-        '''Return all parents of p.'''
-
+        '''Yield all parent positions of p.'''
         p = self
         p = p.parent()
         while p:
@@ -1035,9 +1008,7 @@ class Position (object):
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
     def self_and_parents(self):
-
-        '''Return p and all parents of p.'''
-
+        '''Yield p and all parent positions of p.'''
         p = self
         p = p.copy()
         while p:
@@ -1049,9 +1020,7 @@ class Position (object):
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self):
-        '''Return all siblings of p including p.
-        '''
-
+        '''Yield all sibling positions of p including p.'''
         p = self
         p = p.copy()
         while p.hasBack():
@@ -1065,9 +1034,7 @@ class Position (object):
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self):
-
-        '''Return p's entire subtree, including p.'''
-
+        '''Yield p and all positions in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1080,9 +1047,7 @@ class Position (object):
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self):
-
-        '''Return all descendants of p, not including p.'''
-
+        '''Yield all positions in p's subtree, but not p.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1096,7 +1061,7 @@ class Position (object):
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes (self):
-        
+        '''Yield p.v and all unique vnodes in p's subtree.'''
         p = self
         seen = set()
         for p in p.self_and_subtree():
@@ -1109,8 +1074,7 @@ class Position (object):
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
     def unique_subtree (self):
-        '''Return unique positions in p's entire subtree, including p.'''
-
+        '''Yield p and all other unique positions in p's subtree.'''
         p = self
         seen = set()
         for p in p.subtree():
@@ -1132,7 +1096,7 @@ class Position (object):
         Returns the newly created position."""
 
         p = self
-        p2 = p.copy() # Do *not* copy the Vnode!
+        p2 = p.copy() # Do *not* copy the VNode!
         p2._linkAfter(p) # This should "just work"
         return p2
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
@@ -1211,7 +1175,7 @@ class Position (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        p2.v = Vnode(context=context)
+        p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAfter(p)
 
@@ -1219,7 +1183,7 @@ class Position (object):
     #@+node:ekr.20040303175026.4: *4* p.insertAsLastChild
     def insertAsLastChild (self):
 
-        """Inserts a new Vnode as the last child of self.
+        """Inserts a new VNode as the last child of self.
 
         Returns the newly created position."""
 
@@ -1238,7 +1202,7 @@ class Position (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        p2.v = Vnode(context=context)
+        p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAsNthChild(p,n)
 
@@ -1730,7 +1694,7 @@ class Position (object):
     #@+node:ekr.20080416161551.212: *4* p._parentVnode
     def _parentVnode (self):
 
-        '''Return the parent Vnode.
+        '''Return the parent VNode.
         Return the hiddenRootNode if there is no other parent.'''
 
         p = self
@@ -1804,62 +1768,28 @@ class Position (object):
             if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
     #@-others
 position = Position # compatibility.
-#@+node:ville.20090311190405.68: ** class poslist
-class poslist(list):
-    #@+<< poslist doc >>
-    #@+node:bob.20101215134608.5898: *3* << poslist doc >>
-    #@@nocolor-node
-    #@+at 
-    # List of positions 
-    # 
-    # Functions find_h() and find_b() both return an instance of poslist.
-    # 
-    # Methods filter_h() and filter_b() refine a poslist.
-    # 
-    # Method children() generates a new poslist by descending one level from
-    # all the nodes in a poslist.
-    # 
-    # A chain of poslist method calls must begin with find_h() or find_b().
-    # The rest of the chain can be any combination of filter_h(),
-    # filter_b(), and children(). For example:
-    # 
-    #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
-    # 
-    # For each position, pos, in the poslist returned, find_h() and
-    # filter_h() set attribute pos.mo to the match object (see Python
-    # Regular Expression documentation) for the pattern match.
-    # 
-    # Caution: The pattern given to find_h() or filter_h() must match zero
-    # or more characters at the beginning of the headline.
-    # 
-    # For each position, pos, the postlist returned, find_b() and filter_b()
-    # set attribute pos.matchiter to an iterator that will return a match
-    # object for each of the non-overlapping matches of the pattern in the
-    # body of the node.
-    #@-<< poslist doc >>
-
+#@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
+class PosList(list):
     #@+others
     #@+node:bob.20101215134608.5897: *3* children
     def children(self):
-        """ Return a poslist instance containing pointers to
-        all the immediate children of nodes in poslist self.
-
+        """ Return a PosList instance containing pointers to
+        all the immediate children of nodes in PosList self.
         """
-
-        res = poslist()
+        res = PosList()
         for p in self:
             for child_p in p.children():
                 res.append(child_p.copy())            
         return res
     #@+node:ville.20090311190405.69: *3* filter_h
     def filter_h(self, regex, flags = re.IGNORECASE):
-        """ Find all the nodes in poslist self where zero or more characters at
+        """ Find all the nodes in PosList self where zero or more characters at
         the beginning of the headline match regex
 
         """
 
         pat = re.compile(regex, flags)
-        res = poslist()
+        res = PosList()
         for p in self:
             mo = re.match(pat, p.h)
             if mo:
@@ -1869,13 +1799,13 @@ class poslist(list):
         return res
     #@+node:ville.20090311195550.1: *3* filter_b
     def filter_b(self, regex, flags = re.IGNORECASE ):
-        """ Find all the nodes in poslist self where body matches regex
+        """ Find all the nodes in PosList self where body matches regex
         one or more times.
 
         """
 
         pat = re.compile(regex, flags)
-        res = poslist()
+        res = PosList()
         for p in self:
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -1893,39 +1823,33 @@ class poslist(list):
         return res
 
     #@-others
-#@+node:ekr.20031218072017.3341: ** class Vnode
-if use_zodb and ZODB:
-    class BaseVnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class BaseVnode (object):
-        pass
-
-class Vnode (BaseVnode):
-    #@+<< Vnode constants >>
-    #@+node:ekr.20031218072017.951: *3* << Vnode constants >>
+Poslist = PosList # compatibility.
+#@+node:ekr.20031218072017.3341: ** class VNode
+class VNodeBase (object):
+    #@+<< VNode constants >>
+    #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
 
     # Archived...
-    clonedBit   = 0x01 # True: Vnode has clone mark.
+    clonedBit   = 0x01 # True: VNode has clone mark.
     # unused      0x02
-    expandedBit = 0x04 # True: Vnode is expanded.
-    markedBit   = 0x08 # True: Vnode is marked
-    orphanBit   = 0x10 # True: Vnode saved in .leo file, not derived file.
-    selectedBit = 0x20 # True: Vnode is current Vnode.
-    topBit      = 0x40 # True: Vnode was top Vnode when saved.
+    expandedBit = 0x04 # True: VNode is expanded.
+    markedBit   = 0x08 # True: VNode is marked
+    orphanBit   = 0x10 # True: VNode saved in .leo file, not derived file.
+    selectedBit = 0x20 # True: VNode is current VNode.
+    topBit      = 0x40 # True: VNode was top VNode when saved.
 
     # Not archived...
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
     dirtyBit    = 0x200
     writeBit    = 0x400
-    #@-<< Vnode constants >>
+    #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
     # To support ZODB, the code must set v._p_changed = 1 whenever
-    # v.unknownAttributes or any mutable Vnode object changes.
+    # v.unknownAttributes or any mutable VNode object changes.
 
     def __init__ (self,context):
 
@@ -1937,7 +1861,7 @@ class Vnode (BaseVnode):
         self.parents = [] # Unordered list of all parents of this node.
         # Other essential data...
         self.fileIndex = g.app.nodeIndices.getNewIndex()
-            # The immutable file index for this Vnode.
+            # The immutable file index for this VNode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
@@ -1953,7 +1877,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
-        return "<Vnode %d:'%s'>" % (id(self),self.cleanHeadString())
+        return "<VNode %7x %s>" % (id(self),self.cleanHeadString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -1975,16 +1899,12 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName (self,names,h=''):
-
-        """Return the name following one of the names in nameList.
-        Return an empty string."""
-
+        '''Return the name following one of the names in nameList or ""'''
         # Allow h argument for unit testing.
         if not h: h = self.headString()
-
+        # if h.startswith('@auto-test'): g.trace(h,'@auto-test' in names)
         if not g.match(h,0,'@'):
             return ""
-
         i = g.skip_id(h,1,'-')
         word = h[:i]
         if word in names and g.match_word(h,0,word):
@@ -1993,37 +1913,22 @@ class Vnode (BaseVnode):
             return name
         else:
             return ""
-    #@+node:ekr.20031218072017.3350: *4* anyAtFileNodeName
+    #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
     def anyAtFileNodeName (self):
-
         """Return the file name following an @file node or an empty string."""
-
-        names = (
-            "@auto",
-            "@auto-otl",
-            "@auto-rst",
-            "@edit",
-            "@file",
-            "@thin",   "@file-thin",   "@thinfile",
-            "@asis",   "@file-asis",   "@silentfile",
-            "@nosent", "@file-nosent", "@nosentinelsfile",
-            "@shadow",)
-
-        return self.findAtFileName(names)
-    #@+node:ekr.20031218072017.3348: *4* at...FileNodeName
+        return (
+            self.findAtFileName(g.app.atAutoNames) or
+            self.findAtFileName(g.app.atFileNames))
+    #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
     def atAutoNodeName (self,h=None):
-        # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
-        # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        names = ("@auto","@auto-otl","@auto-rst",)
-        return self.findAtFileName(names,h=h)
+        return self.findAtFileName(g.app.atAutoNames,h=h)
 
-    def atAutoOtlNodeName (self,h=None):
-        names = ("@auto-otl",)
-        return self.findAtFileName(names,h=h)
-
+    # Retain this special case as part of the "escape hatch".
+    # That is, we fall back on code in leoRst.py if no 
+    # importer or writer for reStructuredText exists.
     def atAutoRstNodeName (self,h=None):
         names = ("@auto-rst",)
         return self.findAtFileName(names,h=h)
@@ -2037,7 +1942,7 @@ class Vnode (BaseVnode):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        names = ("@nosent", "@file-nosent", "@nosentinelsfile")
+        names = ("@nosent", "@file-nosent",) # "@nosentinelsfile")
         return self.findAtFileName(names)
 
     def atShadowFileNodeName (self):
@@ -2045,39 +1950,36 @@ class Vnode (BaseVnode):
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
-        names = ("@asis", "@file-asis", "@silentfile")
+        names = ("@asis", "@file-asis",) # "@silentfile")
         return self.findAtFileName(names)
 
     def atThinFileNodeName (self):
-        names = ("@thin", "@file-thin", "@thinfile")
+        names = ("@thin", "@file-thin",) # "@thinfile")
         return self.findAtFileName(names)
 
     # New names, less confusing
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
-    #@+node:EKR.20040430152000: *4* isAtAllNode
+    #@+node:EKR.20040430152000: *4* v.isAtAllNode
     def isAtAllNode (self):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""
 
         flag, i = g.is_special(self._bodyString,0,"@all")
         return flag
-    #@+node:ekr.20040326031436: *4* isAnyAtFileNode
+    #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode (self):
 
         """Return True if v is any kind of @file or related node."""
 
         # This routine should be as fast as possible.
-        # It is called once for every Vnode when writing a file.
+        # It is called once for every VNode when writing a file.
 
         h = self.headString()
         return h and h[0] == '@' and self.anyAtFileNodeName()
-    #@+node:ekr.20040325073709: *4* isAt...FileNode (Vnode)
+    #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
-
-    def isAtAutoOtlNode (self):
-        return True if self.atAutoOtlNodeName() else False
 
     def isAtAutoRstNode (self):
         return True if self.atAutoRstNodeName() else False
@@ -2103,7 +2005,7 @@ class Vnode (BaseVnode):
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
     isAtAsisFileNode   = isAtSilentFileNode
-    #@+node:ekr.20031218072017.3351: *4* isAtIgnoreNode
+    #@+node:ekr.20031218072017.3351: *4* v.isAtIgnoreNode
     def isAtIgnoreNode (self):
 
         """Returns True if the receiver contains @ignore in its body at the start of a line.
@@ -2118,7 +2020,7 @@ class Vnode (BaseVnode):
         else:
             flag, i = g.is_special(self._bodyString, 0,"@ignore")
             return flag
-    #@+node:ekr.20031218072017.3352: *4* isAtOthersNode
+    #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
     def isAtOthersNode (self):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""
@@ -2141,13 +2043,17 @@ class Vnode (BaseVnode):
         return h.startswith(pattern)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
+    body_unicode_warning = False
+
     def bodyString (self):
 
         # This message should never be printed and we want to avoid crashing here!
         if g.isUnicode(self._bodyString):
             return self._bodyString
         else:
-            g.internalError('not unicode:',repr(self._bodyString))
+            if not self.body_unicode_warning:
+                self.body_unicode_warning = True
+                g.internalError('not unicode:',repr(self._bodyString))
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -2188,29 +2094,31 @@ class Vnode (BaseVnode):
     #@+node:ekr.20040323100443: *4* v.directParents
     def directParents (self):
 
-        """(New in 4.2) Return a list of all direct parent vnodes of a Vnode.
+        """(New in 4.2) Return a list of all direct parent vnodes of a VNode.
 
-        This is NOT the same as the list of ancestors of the Vnode."""
+        This is NOT the same as the list of ancestors of the VNode."""
 
         v = self
         return v.parents
     #@+node:ekr.20080429053831.6: *4* v.hasBody
     def hasBody (self):
 
-        '''Return True if this Vnode contains body text.'''
+        '''Return True if this VNode contains body text.'''
 
         s = self._bodyString
 
         return s and len(s) > 0
     #@+node:ekr.20031218072017.1581: *4* v.headString & v.cleanHeadString
+    head_unicode_warning = False
+
     def headString (self):
 
         """Return the headline string."""
-
         # This message should never be printed and we want to avoid crashing here!
         if not g.isUnicode(self._headString):
-            g.internalError('not unicode',repr(self._headString))
-
+            if not self.head_unicode_warning:
+                self.head_unicode_warning = True
+                g.internalError('not unicode',repr(self._headString))
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
 
@@ -2240,15 +2148,15 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3371: *5* v.isMarked
     def isMarked (self):
 
-        return ( self.statusBits & Vnode.markedBit ) != 0
+        return ( self.statusBits & VNode.markedBit ) != 0
     #@+node:ekr.20031218072017.3372: *5* v.isOrphan
     def isOrphan (self):
 
-        return ( self.statusBits & Vnode.orphanBit ) != 0
+        return ( self.statusBits & VNode.orphanBit ) != 0
     #@+node:ekr.20031218072017.3373: *5* v.isSelected
     def isSelected (self):
 
-        return ( self.statusBits & Vnode.selectedBit ) != 0
+        return ( self.statusBits & VNode.selectedBit ) != 0
     #@+node:ekr.20031218072017.3374: *5* v.isTopBitSet
     def isTopBitSet (self):
 
@@ -2256,7 +2164,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3376: *5* v.isVisited
     def isVisited (self):
 
-        return ( self.statusBits & Vnode.visitedBit ) != 0
+        return ( self.statusBits & VNode.visitedBit ) != 0
     #@+node:ekr.20080429053831.10: *5* v.isWriteBit
     def isWriteBit (self):
 
@@ -2270,9 +2178,9 @@ class Vnode (BaseVnode):
     #@+node:ekr.20090830051712.6151: *4*  v.Dirty bits
     #@+node:ekr.20031218072017.3390: *5* v.clearDirty
     def clearDirty (self):
-
+        '''Clear the vnode dirty bit.'''
         v = self
-        # g.trace(v,g.callers())
+        # g.trace(v.h,g.callers())
         v.statusBits &= ~ v.dirtyBit
 
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
@@ -2295,7 +2203,7 @@ class Vnode (BaseVnode):
                         addedNodes.append(v2)
             newNodes = addedNodes[:]
 
-        # Remove the hidden Vnode.
+        # Remove the hidden VNode.
         if c.hiddenRootNode in nodes:
             if trace: g.trace('removing hidden root',c.hiddenRootNode)
             nodes.remove(c.hiddenRootNode)
@@ -2326,7 +2234,9 @@ class Vnode (BaseVnode):
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty (self):
-
+        '''Set the vnode dirty bit.'''
+        # if self.h.startswith('@auto'):
+        # g.trace('(v) %5s %30s' % (self.isDirty(),self.h),g.callers())
         self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
@@ -2358,7 +2268,7 @@ class Vnode (BaseVnode):
     def expand(self):
         '''Expand the node.'''
         # trace = False and not g.unitTesting
-        # if trace: g.trace('Vnode',g.callers())
+        # if trace: g.trace('VNode',g.callers())
         self.statusBits |= self.expandedBit
 
     def initExpandedBit (self):
@@ -2366,7 +2276,7 @@ class Vnode (BaseVnode):
         self.statusBits |= self.expandedBit
         
     def isExpanded (self):
-        '''Return True if the Vnode expansion bit is set.'''
+        '''Return True if the VNode expansion bit is set.'''
         return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus (self, status):
@@ -2426,32 +2336,35 @@ class Vnode (BaseVnode):
 
         pass # Compatibility routine for old scripts
     #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
-    # Called only by leoTree.selectHelper.
+    # Called only by LeoTree.selectHelper.
 
     def restoreCursorAndScroll (self):
-
+        '''Restore the cursor position and scroll so it is visible.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
-        v = self ; c = self.context
+        traceTime = False and not g.unitTesting
+        v = self
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
-        w = c.frame.body
-
+        body = self.context.frame.body
+        w = body.wrapper
         # Fix bug 981849: incorrect body content shown.
         if ins is None: ins = 0
-        w.setInsertPoint(ins)
-
+        # This is very expensive for large text.
+        if traceTime: t1 = time.time()
+        if hasattr(body.wrapper,'setInsertPoint'):
+            w.setInsertPoint(ins,s=v._bodyString)
+        if traceTime: 
+            delta_t = time.time()-t1
+            if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
         if g.no_scroll:
             return
-
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
-
         if trace: g.trace(spot,v.h)
-
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):
@@ -2522,7 +2435,7 @@ class Vnode (BaseVnode):
     def insertAsNthChild(self,n):
         v = self
         assert 0 <= n <= len(v.children)
-        v2 = Vnode(v.context)
+        v2 = VNode(v.context)
         v2._linkAsNthChild(v,n)
         assert v.children[n] == v2
         return v2
@@ -2595,7 +2508,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
-        """Links self as the n'th child of Vnode pv"""
+        """Links self as the n'th child of VNode pv"""
 
         v = self # The child node.
         v._addLink(n,parent_v)
@@ -2613,7 +2526,7 @@ class Vnode (BaseVnode):
 
     b = property(
         __get_b, __set_b,
-        doc = "Vnode body string property")
+        doc = "VNode body string property")
     #@+node:ekr.20090130125002.1: *4* v.h property
     def __get_h(self):
 
@@ -2627,7 +2540,7 @@ class Vnode (BaseVnode):
 
     h = property(
         __get_h, __set_h,
-        doc = "Vnode headline string property")  
+        doc = "VNode headline string property")  
     #@+node:ekr.20090130114732.6: *4* v.u Property
     def __get_u(self):
         v = self
@@ -2647,16 +2560,26 @@ class Vnode (BaseVnode):
 
     u = property(
         __get_u, __set_u,
-        doc = "Vnode unknownAttribute property")
+        doc = "VNode unknownAttribute property")
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
-        return g.app.nodeIndices.toString(v.fileIndex)
+        # new gnxs:
+        return v.fileIndex
+        # old gnxs: retain for reference.
+        # return g.app.nodeIndices.toString(v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
-        doc = "Vnode gnx property")
+        doc = "VNode gnx property")
     #@-others
-vnode = Vnode # compatibility.
+    
+if use_zodb and ZODB:
+    class VNode(ZODB.Persistence.Persistent,VNodeBase):
+        pass  
+else:
+    VNode = VNodeBase
+
+vnode = VNode # compatibility.
 #@-others
 #@-leo

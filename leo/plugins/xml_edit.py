@@ -96,7 +96,7 @@ These commands attempt to deal with all of this.
 
 """
 
-import time
+# import time
 import os
 import traceback  # for XML parse error display
 import leo.core.leoGlobals as g
@@ -218,10 +218,9 @@ def get_tag(xml_node, attrib=None):
             # don't break here, this loop also updates NSMAP for later
     return name
     
-#@+node:ekr.20110523130519.18190: ** def init
+#@+node:ekr.20110523130519.18190: ** init
 def init ():
-    
-    # Suppresses a warning from leoPlugins.py.
+    '''Return True if the plugin has loaded successfully.'''
     return True
 #@+node:tbrown.20110428102237.20329: ** leo2xml
 @g.command('leo2xml')

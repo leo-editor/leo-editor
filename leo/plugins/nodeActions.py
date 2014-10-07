@@ -2,7 +2,7 @@
 #@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >>
-""" Allows the definition of double-click actions.
+r""" Allows the definition of double-click actions.
 
 When the user double-clicks a node this plugin checks for a match of the clicked
 node's headline text with a list of patterns. If a match occurs, the plugin
@@ -200,9 +200,6 @@ execute a command in the first line of the body of a double-clicked node::
 # Derived from the fileActions plugin.
 # Distributed under the same licence as Leo.
 
-#@@language python
-#@@tabwidth -4
-
 __version__ = "0.4"
 #@+<< version history >>
 #@+node:TL.20080507213950.4: ** << version history >>
@@ -222,6 +219,10 @@ import re
 import sys
 import tempfile
 #@-<< imports >>
+
+# pylint: disable=bad-indentation
+    # The indentation is almost impossible to fix.
+    # It would be dangerous to try.
 
 atFileTypes = [
     "@file", "@thin", "@file-thin",   "@thinfile",
@@ -248,13 +249,13 @@ def onIconDoubleClickNA(tag, keywords):
 
 #@+node:TL.20080507213950.7: ** init
 def init():
-
-	 g.blue("nodeActions: Init")
-	 ok = not g.app.unitTesting # Dangerous for unit testing.
-	 if ok:
-		  g.registerHandler("icondclick1", onIconDoubleClickNA)
-		  g.plugin_signon(__name__)
-	 return ok
+    '''Return True if the plugin has loaded successfully.'''
+    g.blue("nodeActions: Init")
+    ok = not g.app.unitTesting # Dangerous for unit testing.
+    if ok:
+        g.registerHandler("icondclick1", onIconDoubleClickNA)
+        g.plugin_signon(__name__)
+    return ok
 #@+node:TL.20080507213950.9: ** doNodeAction
 def doNodeAction(pClicked, c):
 
@@ -301,6 +302,7 @@ def doNodeAction(pClicked, c):
             g.blue( "nA: Checking pattern '" + pattern)
 
          #if directives exist, parse them and set directive flags for later use
+         # pylint: disable=anomalous-backslash-in-string
          directiveExists = re.search( " \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
          if directiveExists:
             directives = directiveExists.group(0)
@@ -449,4 +451,7 @@ def shellScriptInWindowNA(c,script):
         #@-<< write script to temporary Unix file >>
         os.system("xterm -e sh  " + path)
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

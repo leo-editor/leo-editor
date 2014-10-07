@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20131130132659.5964: * @file nodewatch.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
 '''Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
@@ -73,44 +70,25 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.5'
-#@+<< version history >>
-#@+node:peckj.20131101132841.6446: ** << version history >>
-#@+at
-# 
-# Version 0.1 - initial release
-# Version 0.2 - a few bug fixes, same basic behavior
-# Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
-# Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
-# Version 0.5 - added 'Total: N items' label to bottom of nodewatch pane
-# 
-#@@c
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>
 import leo.core.leoGlobals as g
-from PyQt4 import QtGui, QtCore
-
+#from PyQt4 import QtGui, QtCore
+from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
-
 #@+others
 #@+node:peckj.20131101132841.6448: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         #g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
     else:
-        g.es('Plugin %s not loaded.' % __name__, color='red')
-
+        g.es('nodewatch.py not loaded',color='red')
     return ok
 #@+node:peckj.20131101132841.6449: ** onCreate
 def onCreate (tag, keys):
@@ -136,11 +114,11 @@ class NodewatchController:
         self.watchlists[key]=list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
-class LeoNodewatchWidget(QtGui.QWidget):
+class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self,c,parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.c = c
         self.initUI()
         self.registerCallbacks()
@@ -162,14 +140,14 @@ class LeoNodewatchWidget(QtGui.QWidget):
         
         # verticalLayout_2: contains
         # verticalLayout
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         
@@ -177,22 +155,22 @@ class LeoNodewatchWidget(QtGui.QWidget):
         # horizontalLayout
         # listWidget
         # label
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         
-        self.comboBox = QtGui.QComboBox(self)
+        self.comboBox = QtWidgets.QComboBox(self)
         self.comboBox.setObjectName("comboBox")
         self.horizontalLayout.addWidget(self.comboBox)
-        self.pushButton = QtGui.QPushButton("Refresh", self)
+        self.pushButton = QtWidgets.QPushButton("Refresh", self)
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setMinimumSize(50,24)
         self.pushButton.setMaximumSize(50,24)
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.listWidget = QtGui.QListWidget(self)
+        self.listWidget = QtWidgets.QListWidget(self)
         self.listWidget.setObjectName("listWidget")
         self.verticalLayout.addWidget(self.listWidget)
-        self.label = QtGui.QLabel(self)
+        self.label = QtWidgets.QLabel(self)
         self.label.setObjectName("label")
         self.label.setText("Total: 0 items")
         self.verticalLayout.addWidget(self.label)
@@ -200,19 +178,11 @@ class LeoNodewatchWidget(QtGui.QWidget):
         QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:peckj.20131101132841.6457: *4* registerCallbacks
     def registerCallbacks(self):
-        self.connect(self.listWidget, 
-            QtCore.SIGNAL("itemSelectionChanged()"), 
-            self.item_selected)
-        self.connect(self.listWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-            self.item_selected)
-        self.connect(self.comboBox,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-            self.update_list)
-        self.connect(self.pushButton,
-            QtCore.SIGNAL("clicked(bool)"),
-            self.update_all)
-        self.c.k.registerCommand('nodewatch-refresh', shortcut=None, func=self.update_all)
+        self.listWidget.itemSelectionChanged.connect(self.item_selected)
+        self.listWidget.itemClicked.connect(self.item_selected)
+        self.comboBox.currentIndexChanged.connect(self.update_list)
+        self.pushButton.clicked.connect(self.update_all)
+
     #@+node:peckj.20131101132841.6463: *3* updates + interaction
     #@+node:peckj.20131101132841.6459: *4* item_selected
     def item_selected(self):
@@ -276,4 +246,6 @@ class LeoNodewatchWidget(QtGui.QWidget):
         return nodes
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -19,30 +19,21 @@ free-layout-load
     conventient keyboard shortcut target.
 free-layout-restore
     Use the layout this outline had when it was opened.
+free-layout-zoom
+    Zoom or unzoom the current pane
 
 """
 #@-<< docstring >>
-
-__version__ = '0.1'
-    # 0.1 - initial release - TNB
-
-# print('free_layout imported')
-
+# Written by Terry Brown.
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
 
-# g.assertUi('qt')
-
-from PyQt4 import QtCore, QtGui, Qt
-
-from leo.plugins.nested_splitter import NestedSplitter, NestedSplitterChoice
+from leo.core.leoQt import QtWidgets
+from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json
 #@-<< imports >>
-
-# controllers = {}  # Keys are c.hash(), values are PluginControllers.
-
 #@+others
 #@+node:tbrown.20110203111907.5521: ** init (free_layout.py)
 def init():
@@ -73,25 +64,24 @@ if 0:
             FreeLayoutController(c) 
     #@+node:tbrown.20110714155709.22852: *3* loadLayouts
     def loadLayouts(tag, keys):
-
+        '''Load layouts from the given commander.'''
         c = keys.get('c')
         if c:
-
             layout = c.config.getData("free-layout-layout")
-
             if layout:
                 layout = json.loads('\n'.join(layout))
-
             if '_ns_layout' in c.db:
                 name = c.db['_ns_layout']
                 if layout:
                     g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
                         "overrides saved layout "+name)
-                else:
+                elif g.app and g.app.db:
                     layout = g.app.db['ns_layouts'][name]
-
+                else:
+                    # We may be in the Leo bridge.
+                    layout = None
             if layout:
-                # Careful: we could be unit testing.
+                # Careful: we could be unit testing, or in the Leo bridge.
                 splitter = c.free_layout.get_top_splitter()
                 if splitter:
                     splitter.load_layout(layout)
@@ -202,27 +192,27 @@ class FreeLayoutController:
         # them, or move them to another designated widget.  Here we set
         # up two designated widgets
 
-        logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
+        logTabWidget = splitter.findChild(QtWidgets.QWidget, "logTabWidget")
         splitter.root.holders['_is_from_tab'] = logTabWidget
         splitter.root.holders['_is_permanent'] = 'TOP'
 
         # allow body and tree widgets to be "removed" to tabs on the log tab panel    
-        bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
+        bodyWidget = splitter.findChild(QtWidgets.QFrame, "bodyFrame")
         bodyWidget._is_from_tab = "Body"
 
-        treeWidget = splitter.findChild(QtGui.QFrame, "outlineFrame")
+        treeWidget = splitter.findChild(QtWidgets.QFrame, "outlineFrame")
         treeWidget._is_from_tab = "Tree"
         # also the other tabs will have _is_from_tab set on them by the
         # offer_tabs menu callback above
 
         # if the log tab panel is removed, move it back to the top splitter
-        logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
+        logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
         logWidget._is_permanent = True
 
         # tag core Leo components (see ns_provides)
-        splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
-        splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
-        splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+        splitter.findChild(QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+        splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+        splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
 
         splitter.register_provider(self)
     #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
@@ -249,35 +239,42 @@ class FreeLayoutController:
         Useful if you want to temporarily switch to a different layout and then
         back, without having to remember the original layouts name.
         """
-
         c = self.c
-
+        if not (g.app and g.app.db):
+            return # Can happen when running from the Leo bridge.
+        d = g.app.db.get('ns_layouts', {})
         if c != keys.get('c'):
             return
-
         # g.trace(c.frame.title)
-
         layout = c.config.getData("free-layout-layout")
-
         if layout:
             layout = json.loads('\n'.join(layout))
-
-        if '_ns_layout' in c.db:
-            if not reloading: 
-                name = c.db['_ns_layout']
-                c.free_layout.original_layout = name
-            else:
+        name = c.db.get('_ns_layout')
+        if name:
+            # g.trace('Layout:',name,'reloading',reloading)
+            if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name
-
+            else:
+                c.free_layout.original_layout = name
             if layout:
                 g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
                     "overrides saved layout "+name)
             else:
-                layout = g.app.db['ns_layouts'][name]
-
+                layout = d.get(name)
+        # EKR: Create commands that will load each layout.
+        if d:
+            for name in sorted(d.keys()):
+                def func(event,c=c,d=d,name=name):
+                    layout = d.get(name)
+                    if layout:
+                        c.free_layout.get_top_splitter().load_layout(layout)
+                    else:
+                        g.trace('no layout',name)
+                commandName = 'free-layout-load-%s' % name.strip().lower().replace(' ','-')
+                c.k.registerCommand(commandName,shortcut=None,func=func,wrap=True)
+        # Careful: we could be unit testing or in the Leo bridge.
         if layout:
-            # Careful: we could be unit testing.
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
@@ -287,7 +284,7 @@ class FreeLayoutController:
         ans = []
 
         # list of things in tab widget
-        logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
+        logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))  # not QString
@@ -310,7 +307,7 @@ class FreeLayoutController:
 
             id_ = id_.split(':', 1)[1]
 
-            logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
+            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
 
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
@@ -326,7 +323,7 @@ class FreeLayoutController:
         if id_.startswith('_leo_pane:'):
 
             id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().find_child(QtGui.QWidget, id_)
+            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
             if w:
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20,20)
@@ -456,8 +453,22 @@ class FreeLayoutController:
 
         c.redraw()
     #@-others
+#@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
+@g.command('free-layout-context-menu')
+def free_layout_context_menu(kwargs):
+    """free_layout_context_menu - open free layout's context menu, using
+    the first divider of the top splitter for context, for now.
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+    c = kwargs['c']
+    
+    splitter = c.free_layout.get_top_splitter()
+    handle = splitter.handle(1)
+    handle.splitter_menu(handle.rect().topLeft())
 #@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
-@g.command('free_layout_restore')
+@g.command('free-layout-restore')
 def free_layout_restore(kwargs):
     """free_layout_restore - restore layout outline had when it was loaded
 
@@ -477,7 +488,7 @@ def free_layout_load(kwargs):
     """
     c = kwargs['c']
     d = g.app.db.get('ns_layouts', {})
-    menu = QtGui.QMenu(c.frame.top)
+    menu = QtWidgets.QMenu(c.frame.top)
     for k in d:
         menu.addAction(k)
     pos = c.frame.top.window().frameGeometry().center()
@@ -488,5 +499,16 @@ def free_layout_load(kwargs):
     c.db['_ns_layout'] = name
     layout = g.app.db['ns_layouts'][name]
     c.free_layout.get_top_splitter().load_layout(layout)
+#@+node:tbrown.20140522153032.32658: ** @g.command free-layout-zoom
+@g.command('free-layout-zoom')
+def free_layout_zoom(kwargs):
+    """free_layout_zoom - (un)zoom the current pane
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+
+    c = kwargs['c']
+    c.free_layout.get_top_splitter().zoom_toggle()
 #@-others
 #@-leo

@@ -1,46 +1,27 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110110105526.5463: * @file ftp.py
-#@+<< docstring >>
-#@+node:ekr.20110110105526.5464: ** << docstring >>
-'''Uploading of file by ftp
-'''
-#@-<< docstring >>
+'''Uploading of file by ftp.'''
 
-__version__ = '0.01'
-#@+<< version history >>
-#@+node:ekr.20110110105526.5465: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 05.01.2011 Ivanov Dmitriy:
-#     - Minimal working version
-# 
-#@-<< version history >>
+# 0.1 05.01.2011 by Ivanov Dmitriy.
 
-#@+<< imports >>
-#@+node:ekr.20110110105526.5466: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-from PyQt4 import QtGui, QtCore
+from leo.core.leoQt import QtGui
 
 import json
 import os
-import pprint
 from ftplib import FTP
-#@-<< imports >>
-
 #@+others
 #@+node:ekr.20110110105526.5467: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui.guiName() != "qt":
         print('ftp.py plugin not loading because gui is not Qt')
         return False
-
-    leoPlugins.registerHandler("after-create-leo-frame", onCreate)
-    g.plugin_signon(__name__)
-
-    return True
+    else:
+        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
+        g.plugin_signon(__name__)
+        return True
 #@+node:ekr.20110110105526.5468: ** onCreate
 def onCreate (tag, keys):
     c = keys.get('c')
@@ -114,4 +95,6 @@ class pluginController:
             g.es("Upload complete")
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

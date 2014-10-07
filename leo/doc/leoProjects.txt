@@ -4,7 +4,544 @@
 
 .. @+all
 .. @+node:ekr.20131225061403.16376: ** 4.11.1
-.. @+node:ekr.20131105020211.18059: *3* Added per-node expansions!
+.. @+node:ekr.20140702131031.16726: *3* Bugs
+.. @+node:ekr.20131124060912.16475: *4* Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
+https://bugs.launchpad.net/leo-editor/+bug/1228457
+
+This appears to have been fixed.
+.. @+node:ekr.20131124060912.16477: *4* Cleared bug 1228713: Find-backward skips headlines under some conditions
+https://bugs.launchpad.net/leo-editor/+bug/1228713
+
+This appears to have been fixed at some time in the past, possibly as the result of fixing another bug.
+.. @+node:ekr.20140702131031.16723: *4* Cleared bug 1254864: Can't search from current cursor position downward in body text
+https://bugs.launchpad.net/leo-editor/+bug/1254864
+.. @+node:ekr.20140531073052.16701: *4* find-all now uses exising find pattern
+.. @+node:ekr.20140205074001.16358: *4* Fixed a startup error involving --ipython
+Fixed a bug that caused Leo to exit during startup when
+--python given on the command line but IPython is not installed.
+.. @+node:ekr.20140727055826.18129: *4* Fixed annoyance: shift-ctrl-w leaves .leo file as dirty
+@language rest
+  
+- pd.update_before_write_foreign_file tells when an @data node has been
+  changed. This explains why the .leo file is now dirty.
+- at.saveOutlineIfPossible automatically saves the .leo file if only
+  unchanged persistence nodes remain.
+  
+at.saveOutlineIfPossible makes the following hacks unnecessary:
+    
+- at.writeAllHelper writes an unchanged @auto file only if it is
+  selected explicitly.
+- Changed at.writeAll so that the no @<file> node written message now says
+  that you must selected an unchanged @auto node directly in order to write
+  it with the write-at-files-nodes command.
+
+@language python
+.. @+node:ekr.20140809063010.18177: *4* Fixed autocompleter bug
+@language rest
+
+The problem was in ic.createImporterData, not at.createWritesData.
+A trace in get_leo_namespace pinpointed the problem.
+
+ 
+.. @+node:ekr.20130908104426.11234: *4* Fixed bug 1041906: underlying C/C++ object has been deleted
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1041906
+
+Changed LeoQtTree.closeEditorHelper as follows:
+    
+- Call w.setItemWidget(item,0,None) to make sure e is never referenced again.
+    
+- Catch RuntimeError exceptions.
+.. @+node:ekr.20140714090832.17762: *4* Fixed bug 1090950: refresh from disk - cut node resurrection
+Fixed bug 1090950: refresh from disk - cut node resurrection.
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+refresh_rclick_cb in contextmenu.py now just calls c.refreshFromDisk,
+which calls c.recreateGnxDict() before reading any file.
+
+Also created the new refresh-from-disk command and the corresponding item in the File menu.
+.. @+node:ekr.20140718092511.17736: *5* print gnxs & gnxDict
+@language python
+'''A script used while investigating this bug.'''
+# g.cls()
+d = {}
+x = g.app.nodeIndices
+result = []
+for v in c.all_unique_nodes():
+    gnx = v.fileIndex
+    assert g.isUnicode(gnx),gnx
+    d [gnx] = v
+    result.append('%s %s' % (gnx,v))
+print('%s v.fileIndex\'s...' % len(result))
+print('\n'.join(sorted(result)))
+if 1:
+    d = c.fileCommands.gnxDict
+    print('old: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
+if 1:
+    c.recreateGnxDict()
+    d = c.fileCommands.gnxDict
+    print('new: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
+.. @+node:ekr.20131124060912.16474: *4* Fixed bug 1228312: Find tab selected in log pane disables Minibuffer
+https://bugs.launchpad.net/leo-editor/+bug/1228312
+
+When the find tab is selected in the log pane, Alt-X complements the Regexp
+flag--instead of enabling use of the Minibuffer. It doesn't matter where
+focus is. Focus can be in the outline pane or body pane, Alt-X still just
+complements the Regexp flag.
+
+Fixed at rev 6351.
+
+This was the so-called "greedy checkbox bug".
+.. @+node:ekr.20131124060334.16469: *4* Fixed bug 1228458: Inconsistency between Find-forward and Find-backward
+https://bugs.launchpad.net/leo-editor/+bug/1228458
+
+The fix was made to firstSearchPane:
+
+In a Leo-Editor file containing exactly one node, there is no way to search
+the headline.
+
+Suggested fix: Backward search should search the body and then the headline.
+.. @+node:ekr.20140702131031.16725: *4* Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible
+https://bugs.launchpad.net/leo-editor/+bug/1254861
+
+The fix was to LeoQtLog.selectHelper.
+.. @+node:ekr.20140824163757.20586: *4* Fixed bug 1260415: exception writing external files" is insufficient
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1260415
+
+Added more informative error messages in at.writeAllAtFileNodesHelper.
+This is the direct response to the bug report.  A typical message::
+
+    Internal error writing one or more external files.
+    Please report this error to:
+    https://groups.google.com/forum/#!forum/leo-editor
+    All changes will be lost unless you
+    can save each changed file.
+    
+A much better fix: catch all exceptions in at.writeAll.
+A typical message::
+
+    Internal error writing: @<file> node
+    Please report this error to:
+    https://groups.google.com/forum/#!forum/leo-editor
+    Warning: changes to this file will be lost
+    unless you can save the file successfully.
+.. @+node:ekr.20131225061403.16378: *4* Fixed bug 1264350
+@language rest
+
+Up-arrow on the first node in a chapter switches to another chapter 
+https://bugs.launchpad.net/leo-editor/+bug/1264350
+
+Solution:
+
+1. The "fix" at rev 6472 was wrong: The original code was correct.
+2. Added a unit test.
+.. @+node:ekr.20140827092102.18572: *4* Fixed bug: activate events now properly restore focus
+Previously, Ctrl-F Alt-tab Alt-tab would put focus in an inactive minibuffer.
+
+The fix involved rewriting onActivate/DeactivateEvent.
+.. @+node:ekr.20140424102007.16873: *4* Fixed clone-find-all command
+Changed find.findAll and helpers as follows:
+    
+- findAll inits onlyPosition for the clone-find-all commands.
+    
+- createCloneFindAllNode does not link the node into the outline.
+  To do this, leoFind.py imports leo.core.leoNodes.
+
+- linkCloneFindAllNode does this *after* the command completes. This keeps
+  all positions unchanged while they are being scanned.
+   
+- The code now tests for either clone_find_all or clone_find_all_flattened
+  in various places.
+.. @+node:ekr.20130502102046.10578: *4* Fixed Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20131124060912.16476: *4* Fixed doc bug 1228452: related to the radio buttons in the Find pane
+https://bugs.launchpad.net/leo-editor/+bug/1228452
+
+.. @+node:ekr.20140114145953.16693: *4* Fixed important security hole in mod_scripting plugin
+The ctor of the scriptingController does not allow::
+
+    @bool scripting-at-script-nodes = True
+    
+in local .leo files. 
+.. @+node:ekr.20140313100328.16825: *4* Fixed leoGlobals bug (per Reinhard Engle)
+@language rest
+
+Reinhard Engel reinhard.engel.de@googlemail.com
+
+There seems to be a subtle bug in leoGlobals.py:
+
+In the 'globalDirectiveList', the directive 'command' is missing. This
+seems not to cause problems, because of the way 'aList' in
+'compute_directives_re' is constructed. Then in 'get_directives_dict' the
+directive is silently skipped.
+
+The following pattern in 'compute_directives_re' solves this problem:
+
+@language python
+
+aList = [x for x in globalDirectiveList if z != 'others']
+aList.sort(lambda a,b: len(b)-len(a))
+    # Sort by length, longest first
+pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+.. @+node:ekr.20140729055228.17976: *4* Fixed modes/md.py
+import glob
+pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    f = open(fn)
+    s = f.read()
+    f.close()
+    if s.find(r'regexp="\\') > -1:
+        g.es(sfn)
+
+@
+
+Possible automatic computation of First sets:
+http://stackoverflow.com/questions/787134/can-i-determine-the-set-of-first-chars-matched-by-regex-pattern
+http://www.cs.uky.edu/~lewis/texts/theory/automata/reg-sets.pdf
+
+found: Rules indicated are dubious or broken
+
+md.py:
+    disabled: 6,7,
+    changed: 8,12,20,21,23,24,25,47
+    [ \t]   leadins: 8,20,24,25,50,51
+    space   leadins: 23,46,49
+    [=-]    leadins: 21,47
+    [\\_]   leadins: 54,55
+    other   leadins: 12,19,53
+
+moin.py:
+    [ \t]           rule 3.
+    single-quote    rule 6.
+
+erlang.py:  no obvious problem.
+lilypond.py:no obvious problem.
+perl.py:    no obvious problem.
+pl1.py:     no obvious problm.
+rest.py:    no obvious problem.
+rtf.py:     no obvious problem.
+scala.py:   no obvious problem.
+yaml.py:    fixed
+.. @+node:ekr.20131225045014.16398: *4* Fixed problem with 1-character reverse searches!
+The problem was an off-by-one test in regexHelper.
+.. @+node:ekr.20131224124822.16717: *4* Fixed problems with clone-expansion
+@language rest
+
+Alt-End when the last top-level node was a clone caused all clones to expand.
+
+The fix was in p.isAncestorOf.
+
+Also, changed p.all_unique_positions() to p.all_positions() in places where p.contract was called.
+
+I started this project by doing a clone-find-all for isExpanded.
+
+@language python
+.. @+node:ekr.20140825212426.18671: *4* Fixed recent bug in change command
+@language rest
+
+The change pattern doesn't always get set properly.
+
+The fix was in find.addChangeStringToLabel. It must never protect the
+change string!
+.. @+node:ekr.20140313100328.16828: *4* Fixed serious c.deletePositionsInList bug
+@nocolor-node
+
+https://groups.google.com/forum/#!topic/leo-editor/Uoa7ifVV_Aw
+
+I selected ALL nodes, and deleted them. (I think I used the context menu
+delete) Then the outline window was red, could not insert any nodes, could
+not Undo. Todd. Had to abandon the outline and start again.
+
+# Breaks Leo HARD:
+# c.deletePositionsInList(c.all_positions())
+.. @+node:ekr.20140209065845.16766: *4* Fixed unicode problem in the log pane
+
+@language rest
+
+Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
+
+g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
+.. @+node:ekr.20140824161117.18385: *4* Gave the Find Tab the intended amount of border
+dw.createGrid now honors the margin argument.
+.. @+node:ekr.20140905085028.18560: *4* Reported QTextEdit bug
+https://bugreports.qt-project.org/browse/QTBUG-41153
+.. @+node:ekr.20140825124443.18548: *4* Fixed tab cycling
+@nocolor-node
+
+As of rev 6bc05ce Leo build: 20140826115101:
+
+Tab cycling now works as expected in all my tests.
+
+- Reset tab cycling if the user types backspace or any plain character.
+- Start cycling *only* if len(label) == len(common_prefix)
+
+These restriction appear to be essential.
+.. @+node:ekr.20140910140737.17821: *4* Fixed autocompleter bug
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/NGbogCgVmx4/nsJGngrS8BgJ
+
+When I hit <enter> after selecting "selectPosition," I get the following
+error message in the log pane:
+
+Unexpected exception...
+Traceback (most recent call last):
+  File "/home/ldi/git/leo-editor/leo/core/leoUndo.py", line 1323, in
+setUndoTypingParams
+    old_start,old_end = oldSel
+TypeError: 'NoneType' object is not iterable
+
+@language python
+.. @+node:ekr.20140910173844.17822: *4* Fixed find bug
+@language rest
+
+https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+
+Another example of the wretched newline problem. @edit nodes preserve '\r'
+characters, and that messes up the counts in the find command.
+
+The fix was a hack to find.search: it removes '\r' characters.
+
+.. @+node:ekr.20140917101732.27900: *4* Fixed unwanted scrolling in abbreviations
+Saved and restored the y-scroll position in find_place_holder.
+.. @+node:ekr.20140827092102.18576: *4* Set the default syntax color for operators to black
+This is required so that, for example, python coloring is correct after
+selecting a node that sets another color for operators.
+.. @+node:ekr.20140906152857.18699: *4* Fixed recursive import bug
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/49
+
+The file import code as found in scripts fails on reaching
+Word backup files (file names prefixed with a ~)
+
+The problem was that g.os_path_join automatically called
+os.path.expanduser, which converts ~ to the users home directory.
+
+The fix was to disable the call to os.pathexpanduser in g.os_path_join &
+g.os_path_finalize if the new expanduser keyword argument is False.
+.. @+node:ekr.20140918072425.17930: *4* Suppressed duplicate console messages
+g.es does nothing when g.app.gui.consoleOnly is True
+.. @+node:ekr.20140919050334.17884: *4* Fixed QCompleter bug
+@language rest
+
+http://i.imgur.com/1ZV45oB.png
+
+There was a problem with hitting tab, and possibly with using the mouse in the QListWidget.
+
+The fix was to define w as follows in lqlw.select_callback and lqlw.tab_callback:
+    
+    w = c.k.autoCompleter.w or c.frame.body.wrapper
+
+In addition, I changed assert in lqlw.set_position to calls to g.trace.
+.. @+node:ekr.20140917180536.17913: *4* Improved ctrl-o code
+@language rest
+
+- Non-plain keys are now ignored.
+- Backspace and other characters now do something fairly reasonable when text is selected.
+  This is an edge case, unless everything to the end of the text is selected.
+.. @+node:ekr.20140919093158.17872: *4* Fixed bug: it's now possible to change big-text nodes
+The fix was to set w.leo_big_text = None in remove_big_text_buttons and add_load_button.
+.. @+node:ekr.20140919160020.17927: *4* All unit tests now pass when run externally
+@language rest
+
+Fixed an important bug in addNode, a helper of createOutline: There was a
+confusion about commanders: p is in the old commander. p2 must be in the
+new commander.
+
+Disabled a few unit tests when run externally:
+This was due to missing nodes or copies of clones not being cloned.
+.. @+node:ekr.20140819050118.18319: *3* Code
+.. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
+.. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
+.. @+node:ekr.20140702124615.16727: *4* Added support for html handlebar syntax coloring
+These are colored with the previously unused literal3 tag,
+so you specify the color with:
+
+    @color html_literal3_color = pink
+.. @+node:ekr.20140427131738.16870: *4* Added support for qt5
+@language rest
+
+It is not possible to use both the PyQt4 and PyQt5 installers at the same
+time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
+only.
+.. @+node:ekr.20140426105101.16868: *4* Converted all class names to pep8 style
+Capitalized, no underscores.
+.. @+node:ekr.20131223064351.16352: *4* Improved p.isAncestorOf and c.positionExists
+- Added test for c.positionExists to p.isAncestorOf.
+- Added v.isNthChildOf
+- Rewrote c.positionsExists using v.isNthChildOf
+.. @+node:ekr.20140426052603.18136: *4* Removed g.choose from Leo's core & plugins
+This function is deprecated: use Python's ternary operator instead.
+.. @+node:ekr.20140816165728.18938: *4* Rewrote & simplified k.getArg
+What I did:
+- Removed prefix arg to all calls to k.getArg.
+  Not needed now that there is better convention for k.setLabelBlue.
+- Removed protect argument from k.setLabelBlue.
+  Some code now uses k.extendLabel to mix protect and unprotected parts of the label.
+  
+- k.fnc and k.getArgInstance now created by finishCreate.
+  This guarantees that the c,k and log ivars are inited properly.
+- Allow <tab> to escape to :r and :tabname code.
+  This required several kludges.
+
+.. @+node:ekr.20140821112622.18367: *4* Changed most calls to k.setLabel to k.setStatusLabel
+@nocolor-node
+
+Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
+of a Leo command. This allows an option (does not exist yet) to use g.es
+instead of the minibuffer to report status.
+.. @+node:ekr.20140825071827.18528: *4* Created g.IdleTime and qtGui.IdleTime
+@language rest
+
+Rev 060c33a...Leo build: 20140825070951 contains a spectacular collapse in
+complexity in idle-time handling. Instantly, registering idle-time event
+handlers can be considered deprecated, though I have no plans to remove the
+horrendous older code.
+
+The new pattern allows multiple, independent (or cooperating) idle-time
+handlers, created at will as needed.
+
+The new code is based on the IdleTime class in qtGui.py. Rather than access
+this directly, code should use the g.IdleTime proxy:: g.IdleTime ensures
+that all is well when using gui's that don't have an IdleTime class.
+
+Here is how to use the new code::
+
+    def handler(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+    it = g.IdleTime(c,handler,delay=500)
+    if it: it.start()
+
+The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+
+Timer instances are completely independent.  For example:
+
+    def handler1(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+
+    def handler2(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 10:
+            g.trace('done')
+            it.stop()
+
+    it1 = g.IdleTime(c,handler1,delay=500)
+    it2 = g.IdleTime(c,handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
+.. @+node:ekr.20140827123957.18478: *4* Improved speed of selection logic
+@nocolor-node
+
+0. Added details timing traces throughout the selectHelper logic.
+   These traces showed precisely where the performance bugs were.
+
+1. updateSyntaxColorer now does nothing if the body text starts with @killcolor.
+
+2. w.setSelectionRangeHelper and v.restoreCursorAndScroll had performance bugs
+because they called code that computed the length of text slowly.
+
+3. The solution: w.setSelectionRangeHelper and all setInsertPoint methods
+now take an 's' keyword arg. In the selection logic, s is set to p.b.
+If s is not None, the desired length is simply len(s)
+
+As a result, w.setSelectionRangeHelper no longer calls lengthHelper.
+lengthHelper used QTextCursor, which is *much* slower than getAllText.
+
+4. Even though all w.setInsertPoint methods have an s keyword arg,
+   v.restoreCursorAndScroll uses the following defensive code::
+       
+    try:
+        w.widget.setInsertPoint(ins,s=v._bodyString)
+    except TypeError:
+        w.setInsertPoint(ins)
+.. @+node:ekr.20140905070127.18559: *4* A major reorg of Leo's code
+@language rest
+
+One change is required to all plugins and scripts:
+
+    body.bodyCtrl.x -> body.wrapper.x
+    
+There is a script that does this automatically.
+
+
+What I did
+- Created "@test interfaces using API classes" based on the checking script.
+- The various isTextWidget methods now check for the existence of a supportsHighLevelInterface ivar.
+- StringTextWrapper is now a stand-alone class.
+- Removed BaseTextWrapper.
+- LeoLog is no longer a subclass of the HighLevelInterface class.
+  This required a hack to handle keystrokes in the log pane:
+  k.masterKeyHandler sends strokes to c.frame.log.logWidget (a QTextEditWrapper)
+  by changing event.widget.
+  QTextMixin sets supportsHighLevelInterface = True as a signal to k.handleDefaultChar.
+- Eliminated redirection code from LeoQtBody class.
+- LeoBody is no longer a subclass of the HighLevelInterface class.
+    - The only changes, one or two new guards.
+- Create WrapperAPI class whose text indicates expected type of the result.
+- Removed wrapper.getFocus method.
+- Removed all references to HighLevelInterface class in the core.
+- Removed the evil set_focus synonym in the HighLevelInterface class.
+.. @+node:ekr.20140909072923.18136: *4* Converted 7 plugins so they work with PyQt5
+active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
+notebook.py, projectwizard.py, stickynotes.py
+.. @+node:ekr.20140702131031.16727: *3* Features
+.. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
 https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
@@ -17,7 +554,7 @@ What I did:
 - p.expand & p.contract maintain p.v.expandedPositions list.
 - Rewrote & simplified p.isVisible.
 - Left c.positionExists and p.isAncestorOf unchanged.
-.. @+node:ekr.20131222112420.16373: *4* Notes
+.. @+node:ekr.20131222112420.16373: *5* Notes
 The idea is store "ephemeral" or position-related data **in vnodes*. This
 is a completely new idea in Leo's history!
 
@@ -39,52 +576,7 @@ c.p and all it's ancestors are always expanded, the worst that can happen
 when an outline changes is that some positions that *aren't* the present
 position will contract unexpectedly. Most such contraction will occur off
 screen.
-.. @+node:ekr.20131223064351.16352: *3* Improved p.isAncestorOf and c.positionExists
-- Added test for c.positionExists to p.isAncestorOf.
-- Added v.isNthChildOf
-- Rewrote c.positionsExists using v.isNthChildOf
-.. @+node:ekr.20131224124822.16717: *3* Fixed problems with clone-expansion
-@language rest
-
-Alt-End when the last top-level node was a clone caused all clones to expand.
-
-The fix was in p.isAncestorOf.
-
-Also, changed p.all_unique_positions() to p.all_positions() in places where p.contract was called.
-
-I started this project by doing a clone-find-all for isExpanded.
-
-@language python
-.. @+node:ekr.20131225061403.16378: *3* Fixed bug 1264350
-@language rest
-
-Up-arrow on the first node in a chapter switches to another chapter 
-https://bugs.launchpad.net/leo-editor/+bug/1264350
-
-Solution:
-
-1. The "fix" at rev 6472 was wrong: The original code was correct.
-2. Added a unit test.
-.. @+node:ekr.20131225045014.16398: *3* Fixed problem with 1-character reverse searches!
-The problem was an off-by-one test in regexHelper.
-.. @+node:ekr.20140114145953.16692: *3* Added c.config.isLocalSetting
-.. @+node:ekr.20140114145953.16693: *3* Fixed important security hole in mod_scripting plugin
-The ctor of the scriptingController does not allow::
-
-    @bool scripting-at-script-nodes = True
-    
-in local .leo files. 
-.. @+node:ekr.20140205074001.16358: *3* Fixed a startup error involving --ipython
-Fixed a bug that caused Leo to exit during startup when
---python given on the command line but IPython is not installed.
-.. @+node:ekr.20140209065845.16766: *3* Fixed unicode problem in the log pane
-
-@language rest
-
-Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
-
-g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
-.. @+node:ekr.20140212082408.16406: *3* Added spell-as-you-type commands
+.. @+node:ekr.20140212082408.16406: *4* Added spell-as-you-type commands
 Thanks to Terry Brown for these commands::
 
 spell-as-you-type-toggle
@@ -99,19 +591,7 @@ spell-as-you-type-next
 
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
-.. @+node:ekr.20140218040104.16759: *3* added p.nosentinels
-.. @+node:ekr.20140313100328.16828: *3* Fixed serious c.deletePositionsInList bug
-@nocolor-node
-
-https://groups.google.com/forum/#!topic/leo-editor/Uoa7ifVV_Aw
-
-I selected ALL nodes, and deleted them. (I think I used the context menu
-delete) Then the outline window was red, could not insert any nodes, could
-not Undo. Todd. Had to abandon the outline and start again.
-
-# Breaks Leo HARD:
-# c.deletePositionsInList(c.all_positions())
-.. @+node:ekr.20140401054342.16845: *3* Created g.run_pylint so pylint can run unmodified
+.. @+node:ekr.20140401054342.16845: *4* Created g.run_pylint so pylint can run unmodified
 @language rest
 
 This runs pylint (with optional Sherlock tracing) in
@@ -127,101 +607,266 @@ What I did:
 2. g.run_pylint uses Sherlock tracing if requested.
 
     
-.. @+node:ekr.20140424102007.16873: *3* Fixed clone-find-all command
-Changed find.findAll and helpers as follows:
-    
-- findAll inits onlyPosition for the clone-find-all commands.
-    
-- createCloneFindAllNode does not link the node into the outline.
-  To do this, leoFind.py imports leo.core.leoNodes.
+.. @+node:ekr.20140601151054.17620: *4* Improved find/replace-all commands
+@nocolor-node
 
-- linkCloneFindAllNode does this *after* the command completes. This keeps
-  all positions unchanged while they are being scanned.
-   
-- The code now tests for either clone_find_all or clone_find_all_flattened
-  in various places.
-.. @+node:ekr.20031218072017.3073: *4* find.findAll & helper
-def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
-    trace = False and not g.unitTesting
-    c = self.c ; w = self.s_ctrl ; u = c.undoer
-    if clone_find_all_flattened:
-        undoType = 'Clone Find All Flattened'
-    elif clone_find_all:
-        undoType = 'Clone Find All'
-    else:
-        undoType = 'Find All'
-    if not self.checkArgs():
-        return
-    self.initInHeadline()
-    if clone_find_all or clone_find_all_flattened:
-        self.p = None # Restore will select the root position.
-    data = self.save()
-    self.initBatchCommands()
-    skip = {} # Nodes that should be skipped.
-        # Keys are vnodes, values not important.
-    count,found = 0,None
-    if trace: g.trace(self.p and self.p.h)
-    # 2014/04/24: Init suboutline-only for clone-find-all commands
-    if clone_find_all or clone_find_all_flattened:
-        self.p = c.p.copy()
-        if self.suboutline_only:
-            self.onlyPosition = self.p.copy()
-    while 1:
-        pos, newpos = self.findNextMatch() # sets self.p.
-        if not self.p: self.p = c.p.copy()
-        if pos is None: break
-        if clone_find_all and self.p.v in skip:
-            continue
-        count += 1
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if clone_find_all or clone_find_all_flattened:
-            if not skip:
-                # Nothing has been created yet.
-                undoData = u.beforeInsertNode(c.p)
-                found = self.createCloneFindAllNode(flattened = clone_find_all_flattened)
-            if clone_find_all_flattened:
-                skip[self.p.v] = True
-            else:
-                # Don't look at the node or it's descendants.
-                for p2 in self.p.self_and_subtree():
-                    skip[p2.v] = True
-            # Create a clone of self.p under the find node.
-            p2 = self.p.clone()
-            p2.moveToLastChildOf(found)
-        else:
-            self.printLine(line,allFlag=True)
-    if found and (clone_find_all or clone_find_all_flattened):
-        self.linkCloneFindAllNode(found)
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-    else:
-        self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-.. @+node:ekr.20051113110735: *5* createCloneFindAllNode
-def createCloneFindAllNode(self,flattened):
-    '''Create a node, but do *not* link it into the outline yet.'''
-    c = self.c
-    # Don't link the node into the outline so that positions remain valid.
-    v = leoNodes.Vnode(context=c)
-    p = leoNodes.Position(v)
-    p.h = 'Found:%s %s' % (
-        ' (flattened)' if  flattened else '',
-        self.find_text)
-    return p
-.. @+node:ekr.20140424102007.16875: *5* linkCloneFindAllNode
-def linkCloneFindAllNode(self,p):
-    '''Link p into the outline as the last top-level node.'''
-    c = self.c
-    top = c.rootPosition()
-    while top.hasNext():
-        top.moveToNext()
-    p._linkAfter(top)
-.. @+node:ekr.20140426052603.18136: *3* Removed g.choose from Leo's core & plugins
-This function is deprecated: use Python's ternary operator instead.
+These commands now get their arguments from the Find Panel.
+
+Changed the following methods:
+
+generalChangeHelper,
+minibufferFind/ReplaceAll,
+searchWithPresentOptions,
+setReplaceString,
+
+Also fixed the bindings in create_find_buttons so buttons
+are bound to the proper button-related methods. As a result,
+the find-all and change-all buttons now work as expected.
+.. @+node:ekr.20140702091137.16754: *4* Improved idle-time handling and added new commands
+@language rest
+
+Added the following commands:
+    
+disable-idle-time-tracing
+enable-idle-time-tracing
+toggle-idle-time-tracing
+disable-idle-time-events
+enable-idle-time-events
+toggle-idle-time-events
+
+Simplified and generalized idle-time handling as follows:
+    
+- Removed g.app.afterHandler: g.app.idleTimeHook does the same thing now.
+- The timer callback now calls g.app.idleTimeHook() if it exists.
+- g.enableIdleTimeHook now has the following signature::
+    
+    def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
+        
+  The two args set g.app.idleTimeDelay and g.app.idleTimeHandler respectively.
+  g.idleTimeHookHandler is used if idleTimeHandler is None.
+
+The new code has these properties:
+    
+1. g.app.idleTimeHook() actually gets called only at idle-time,
+2. There is no busy waiting, and
+3. There is at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
+
+Here is an script illustrating the possibilities::
+
+@language python
+
+'''
+A script illustrating interacting idle-time handlers.
+Do Alt-x enable-idle-time-tracing before executing this script
+'''
+class Handlers:
+    def h1(self):
+        g.trace()
+        g.enableIdleTimeHook(1000,self.h2)
+    def h2(self):
+        g.trace()
+        g.enableIdleTimeHook(500,self.h1)
+h = Handlers()
+if g.app.idleTimeHook:
+    g.disableIdleTimeHook()
+else:
+    g.enableIdleTimeHook(1000,h.h1)
+.. @+node:ekr.20140402091953.16865: *4* Added pylint command
+@language rest
+
+When pylint is available on your machine, Leo's pylint
+command will execute run pylint on all @<file> nodes in the
+selected tree. This command is now available from the popup
+menus created by the contextmenu plugin.
+
+This command is a dynamic way of selecting files to check
+with pylint. It is *much* easier to use than the old pylint
+-r option in pylint-leo.py. There is no longer any need to
+update a list of "recent" files. Hooray.
+
+The command has significantly changed my work flow. I use
+pylint much more often.
+
+The details of the search process are as follows:
+
+1. The command looks down the tree of the selected node,
+   looking for @<file> nodes.
+2. If now @<file> nodes are found, it looks up the tree,
+   looking for @<file> nodes.
+3. If the selected node is a clone, and no @<file> nodes
+   have yet been found, it expands the search to all
+   ancestors of all positions cloned to the selected node.
+
+This means that you can check a file by selecting any
+(possibly clone) node of the file.
+
+**Important**: running pylint-leo.py is still often very
+useful. In particular, I often run python pylint-leo.py -a
+to check all files. Here is the recently improved docstring
+for pylint-leo.py::
+
+    '''
+    This file runs pylint on predefined lists of files.
+    
+    The -r option no longer exists. Instead, use Leo's pylint command to run
+    pylint on all Python @<file> nodes in a given tree.
+    
+    On windows, the following .bat file runs this file::
+        python27 pylint-leo.py %*
+    
+    On Ubuntu, the following alias runs this file::
+        pylint="python27 pylint-leo.py"
+    '''
+.. @+node:ekr.20140720065949.17739: *4* Created @auto-org-mode
+@language rest
+
+Note: persistence applies to @auto-vimoutline-mode and @auto-org-mode
+
+Done:
+- Added @auto-org-mode to list of valid @auto nodes.
+- Created org-mode importer.
+- Create at.writeOneOrgModeNode, called from at.writeOneAtAutoNode
+
+@language python
+.. @+node:ekr.20140727180847.17989: *4* Completed generalization of importers
+@language rest
+
+- ic.createOutline and its helper, ic.dispatch, now use tables
+  created by ic.createImporterData and its helper.
+
+- Eliminated odious special cases involving self.treeType in
+  ic.create_top_node and ic.init_import.
+  
+- self.treeType is used only in a limited way in the scanner classes:
+  The only tests are against '@root' and '@file'.
+  
+- For now, the unit-tests wrappers are hard-coded.
+.. @+node:ekr.20140723120730.17921: *4* The @auto write code now uses writer plugins
+@language rest
+
+What I did:
+- at.createWritersData inits tables using the writers_dict in each plugin.
+- at.writeOnAtAutoNode calls at.dispatch to find writers.
+  An important escape hatch: at.writeOnAtAutoNode calls the *existing* rst.writer
+  if the user deletes plugins/writers/rst.py.
+
+Won't do:
+- at.writeAllHelper has lots of special-case code, but that probably can't be helped.
+- It would be way too dangerous to refactor the write code for @file, @shadow, etc.
+    
+@language python
+.. @+node:ekr.20140729162415.18088: *4* Leo now supports dynamic @auto names
+@language rest
+
+The leo/plugins/importers folders now contains importer plugins.
+
+The leo/plugins/writers folders now contain writer plugins.
+
+Both importer and writer plugins can defined new kinds of @auto nodes.
+
+Importers and writers can register either @auto-names or
+file extensions. I have just verified that @auto x.xyzzy
+will use both the importer and the writer for the .xyzzy
+extension, that is, importers/test.py and writers/test.py.
+So, for *unique* extensions, there is no need to use a
+separate @auto name, you can just use @auto.
+
+What I did:
+
+- atFile.ctor sets two sets of spellings of @auto names: g.app.atAutoNames
+  & g.app.atFileNames
+
+- Loading importer & writer plugins updates g.app.atAutoNames:
+    - at.parse_writer_dict sets at.atAutoWritersDict & at.writersDispatchDict
+    - ic.parse_importer_dict sets ic.atAutoDict and ic.classDispatchDict
+
+@language python
+.. @+node:ekr.20140730072544.17981: *4* Leo imports importers & writers from home/.leo
+@language rest
+
+Leo now imports from ~/.leo/plugins before importing from leo/plugins.
+
+The new code is in at.createWritersData & helper and ic.at.createImportersData & their helpers.
+.. @+node:ekr.20140730081842.17990: *5*  demo script
+'''Load each plugins ~/.leo/plugins if possible, then from leo/plugins.'''
+import glob
+def report(message,kind,folder,name):
+    g.trace('%7s: %5s %9s %s' % (message,kind,folder,name))
+g.cls()
+plugins1 = g.os_path_finalize_join(g.app.homeDir,'.leo','plugins')
+plugins2 = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+seen = set() # set of (folder,sfn)
+for kind,plugins in (('home',plugins1),('leo',plugins2)):
+    if g.os_path_exists(plugins):
+        for folder in ('importers','writers'):
+            path = g.os_path_finalize_join(plugins,folder)
+            pattern = g.os_path_finalize_join(plugins,folder,'*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if g.os_path_exists(fn) and sfn != '__init__.py':
+                    moduleName = sfn[:-3]
+                    if moduleName:
+                        data = (folder,sfn)
+                        if data in seen:
+                            report('seen',kind,folder,sfn)
+                        else:
+                            m = g.importFromPath(moduleName,path) # Uses imp.
+                            if m:
+                                seen.add(data)
+                                report('loaded',kind,folder,m.__name__)
+                            else:
+                                report('error',kind,folder,sfn)
+                # else: report('skipped',kind,folder,sfn)
+.. @+node:ekr.20140815081211.18471: *4* Cleaned up command-name handling a bit
+Changed k.inverseCommandsDict to c.inverseCommandsDict.
+Called vc.define commands from c.finishCreate.
+Changed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
+The new c.createCommandNames copies entries in g.app.global_commands_dict to commander c.
+    Note: @g.command makes entries in g.app.global_commands_dict.
+.. @+node:ekr.20140813144229.19018: *4* Added insert-file-name command
+# The code is in leoEditCommands.py::insertFileName.
+.. @+node:ekr.20140821164256.18294: *4* Added vim mode
+See: http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
+.. @+node:ekr.20140821115448.18291: *5* Support visual line mode
+@nocolor-node
+
+
+do_visual_mode will extend the selection if visual_line_mode is True.
+
+Affected methods: vc.vim_V and vc>do_visual_mode.
+
+It would be good if LeoQTextEditWidget.setSelectionRangeHelper could handle
+insert points in the middle of a text selection, but at present it can't.
+.. @+node:ekr.20140828033858.18516: *4* Added clone-find-parents command
+Added c.cloneFindParents.
+.. @+node:ekr.20140910065834.18127: *4* Changed Leo's namespace in .leo files
+The xml namespace line at the start of .leo files has been:
+
+    <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+
+The new line line is:
+
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+.. @+node:ekr.20140917063815.18007: *4* Leo's main style sheet is fully parameterized
+All aspects of the style sheet can now be altered using normal user settings.
+.. @+node:ekr.20140828033858.18521: *4* Enabled big-text buttons
+@language rest
+
+The user can lose tail text if they start typing before the body text completely loads!
+
+- Added c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars')
+
+- The "dummy" body text now contains a warning to wait until the text fully loads.
+
+@language python
+.. @+node:ekr.20140917180536.17912: *4* Added --trace-plugins option & corresponding leoBridge option
+- Added --trace-plugins option
+- The leoBridge now supports the tracePlugins keyword option.
+.. @+node:ekr.20140918060252.19480: *4* Leo stylesheets now support all color names in leoColor.py
+For example, this setting works without any explicit definition of mistyrose2.
+    
+    @color head-bg = @mistyrose2
+    
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

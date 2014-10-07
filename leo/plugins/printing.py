@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20130514093558.4062: * @file printing.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20130513115943.16252: ** << docstring >>
 '''Supports printing for the Qt GUI.
@@ -116,49 +113,26 @@ fashion, using scripts to define your document.
 
 '''
 #@-<< docstring >>
-#@+<< version history >>
-#@+node:peckj.20130513115943.16254: ** << version history >>
-#@+at
-# 
-# version 0.1 (2013-05-14) - initial release
-# version 0.2 (2013-08-14) - added print-html-node (rich text) commands
-# 
-#@@c
-#@-<< version history >>
-#@+<< imports >>
-#@+node:peckj.20130513115943.16253: ** << imports >>
 import leo.core.leoGlobals as g
-import leo.plugins.qtGui as qtGui
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-#@-<< imports >>
-
-__version__ = '0.1'
-
+from leo.core.leoQt import QtWidgets
 #@+others
 #@+node:peckj.20130513115943.16247: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt')
-
     if ok:
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:peckj.20130513115943.16248: ** onCreate
 def onCreate (tag, keys):
-    
     '''Handle the onCreate event in the printing plugin.'''
-
     c = keys.get('c')
-    
     if c:
-       pc = printingController(c)
-       c.thePrintingController = pc 
+        pc = printingController(c)
+        c.thePrintingController = pc 
        
 #@+node:peckj.20130513115943.16249: ** class printingController
 class printingController:
@@ -209,7 +183,7 @@ class printingController:
         return s
     #@+node:peckj.20130513115943.22459: *4* construct document
     def construct_document(self, text, head=None):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         text = self.sanitize_html(text)
         if head:
@@ -221,13 +195,13 @@ class printingController:
         return doc
     #@+node:peckj.20130814150446.4883: *4* construct html document
     def construct_html_document(self, text):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         doc.setHtml(text)
         return doc
     #@+node:peckj.20130514082859.5603: *4* construct complex document
     def construct_complex_document(self, nodes, heads=False):
-        doc = QtGui.QTextDocument()
+        doc = QtWidgets.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         contents = ''
         for n in nodes:
@@ -238,12 +212,12 @@ class printingController:
         return doc
     #@+node:peckj.20130513115943.22661: *4* print dialog
     def print_doc(self, doc):
-        dialog = QtGui.QPrintDialog()
-        if dialog.exec_() == QtGui.QDialog.Accepted:
+        dialog = QtWidgets.QPrintDialog()
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
             doc.print_(dialog.printer())
     #@+node:peckj.20130513115943.22662: *4* print preview dialog
     def print_preview_doc(self, doc):
-        dialog = QtGui.QPrintPreviewDialog()
+        dialog = QtWidgets.QPrintPreviewDialog()
         dialog.paintRequested.connect(doc.print_)
         dialog.exec_()
     #@+node:peckj.20130514082859.5604: *4* sanitize html
@@ -359,4 +333,6 @@ class printingController:
         self.print_preview_doc(doc)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

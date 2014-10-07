@@ -40,9 +40,6 @@ actions, Leo does not do anything with or to such files.
 # Written by Konrad Hinsen <konrad.hinsen@laposte.net>
 # Distributed under the same licence as Leo.
 
-#@@language python
-#@@tabwidth -4
-
 __version__ = "0.4"
 #@+<< version history >>
 #@+node:ekr.20040915110738: ** << version history >>
@@ -90,7 +87,7 @@ file_directives = [
 #@+others
 #@+node:ekr.20060108162524: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Dangerous for unit testing.
     if ok:
         g.registerHandler("icondclick1", onIconDoubleClick)
@@ -219,4 +216,7 @@ def shellScriptInWindow(c,script):
         #@-<< write script to temporary Unix file >>
         os.system("xterm -e sh  " + path)
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

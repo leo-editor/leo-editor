@@ -40,18 +40,18 @@ normcase    = g.os_path_normcase
 split       = g.os_path_split
 
 #@+others
-#@+node:ekr.20100208062523.5885: ** class cacher
-class cacher:
+#@+node:ekr.20100208062523.5885: ** class Cacher
+class Cacher:
 
     '''A class that encapsulates all aspects of Leo's file caching.'''
 
     #@+others
-    #@+node:ekr.20100208082353.5919: *3*  Birth (cacher)
-    #@+node:ekr.20100208062523.5886: *4*  ctor (cacher)
+    #@+node:ekr.20100208082353.5919: *3*  Birth (Cacher)
+    #@+node:ekr.20100208062523.5886: *4*  ctor (Cacher)
     def __init__ (self,c=None):
 
         trace = False and not g.unitTesting
-        if trace: g.trace('cacher','c',c)
+        if trace: g.trace('Cacher','c',c)
 
         self.c = c
 
@@ -104,12 +104,12 @@ class cacher:
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100210163813.5747: *4* save (cacher)
+    #@+node:ekr.20100210163813.5747: *4* save (Cacher)
     def save (self,fn,changeName):
 
         if changeName or not self.inited:
             self.initFileDB(fn)
-    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (cacher)
+    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (Cacher)
     def clearCache (self):
         if self.db:
             # 2011/07/30: Be careful about calling db.clear.
@@ -124,14 +124,15 @@ class cacher:
 
     def clearAllCaches (self):
 
-        # Clear the cachers *only* for all open windows.
+        # Clear the Cachers *only* for all open windows.
         # This is much safer than tryting to Kill all db's.
         for frame in g.windows():
             c = frame.c
             if c.cacher:
                 c.cacher.clearCache()
+        g.es('done',color='blue')
     #@+node:ekr.20100208071151.5907: *3* fileKey
-    # was atFile._contentHashFile
+    # was AtFile._contentHashFile
 
     def fileKey(self,s,content,requireEncodedString=False):
 
@@ -152,7 +153,7 @@ class cacher:
         m.update(content)
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* Reading
-    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
+    #@+node:ekr.20100208071151.5910: *4* Cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
 
         """ Create outline structure from recursive aList
@@ -186,14 +187,14 @@ class cacher:
     #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
-        '''Create new Vnode as last child of the receiver.
-
-        If the gnx exists already, create a clone instead of new Vnode.
         '''
-
+        Create new VNode as last child of the receiver.
+        If the gnx exists already, create a clone instead of new VNode.
+        '''
         trace = False and not g.unitTesting
         c = self.c
         indices = g.app.nodeIndices
+        gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         if gnxString is None: v = None
         else:                 v = gnxDict.get(gnxString)
@@ -204,11 +205,15 @@ class cacher:
         if is_clone:
             pass
         else:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             if gnxString:
-                gnx = indices.scanGnx(gnxString,0)
-                v.fileIndex = gnx
+                # new gnxs:
+                assert g.isUnicode(gnxString)
+                # old gnxs: retain for reference
+                # gnxString = indices.scanGnx(gnxString,0)
+                v.fileIndex = gnxString
                 gnxDict[gnxString] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:
                 g.trace('**** no gnx for',v)
         child_v = v
@@ -312,7 +317,7 @@ class cacher:
             d = {}
         if trace: g.trace(fn,key,data)
         return d
-    #@+node:ekr.20100208071151.5905: *4* readFile (cacher)
+    #@+node:ekr.20100208071151.5905: *4* readFile (Cacher)
     def readFile (self,fileName,root):
 
         trace = False and not g.unitTesting
@@ -396,8 +401,8 @@ class cacher:
         self.db['current_position_%s' % key] = str_pos
 
         if trace: g.trace(str_pos,key)
-    #@+node:ekr.20100208071151.5903: *4* writeFile (cacher)
-    # Was atFile.writeCachedTree
+    #@+node:ekr.20100208071151.5903: *4* writeFile (Cacher)
+    # Was AtFile.writeCachedTree
 
     def writeFile(self,p,fileKey):
 
@@ -414,7 +419,7 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-    #@+node:ekr.20100208065621.5890: *3* test (cacher)
+    #@+node:ekr.20100208065621.5890: *3* test (Cacher)
     def test(self):
 
         if g.app.gui.guiName() == 'nullGui':

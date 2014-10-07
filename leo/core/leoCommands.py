@@ -11,15 +11,9 @@
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
-
-# if g.app and g.app.use_psyco:
-    # # g.pr("enabled psyco classes",__file__)
-    # try: from psyco.classes import *
-    # except ImportError: pass
-
+import leo.core.leoNodes as leoNodes
 # The leoCommands ctor now does these imports.
 # This breaks circular dependencies.
-
     # import leo.core.leoAtFile as leoAtFile
     # import leo.core.leoCache as leoCache
     # import leo.core.leoChapters as leoChapters
@@ -33,11 +27,6 @@ import leo.core.leoGlobals as g
     # import leo.core.leoTest as leoTest
     # import leo.core.leoUndo as leoUndo
 
-import leo.core.leoNodes as leoNodes
-
-# import leo.external.pickleshare as pickleshare
-
-# import hashlib
 import imp
 import itertools
 import keyword
@@ -47,16 +36,13 @@ import subprocess
 import sys
 import tempfile
 import time
+import token    # for Check Python command
 import tokenize # for Check Python command
-# import unittest
-
 try:
     import tabnanny # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
-
-# The following import _is_ used.
-import token    # for Check Python command
+    
 #@-<< imports >>
 
 #@+others
@@ -90,24 +76,16 @@ class Commands (object):
         c.initFileIvars(fileName,relativeFileName)
         c.initOptionsIvars()
         c.initObjectIvars()
-
-        # Init the settings *before* initing the objects.
-        import leo.core.leoConfig as leoConfig
-        self.config = leoConfig.LocalConfigManager(c,previousSettings)
-        g.app.config.setIvarsFromSettings(c)
-
+        c.initSettings(previousSettings)
+            # Init the settings *before* initing the objects.
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
-
         assert c.frame
         assert c.frame.c
-
         if trace and not g.trace_startup:
             g.printDiffTime('%s: after controllers created' % (tag),t1)
-
         # Complete the init!
         c.finishCreate()
-
         if trace and not g.trace_startup:
             g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
@@ -129,6 +107,9 @@ class Commands (object):
     def initCommandIvars(self):
         '''Init ivars used while executing a command.'''
         self.commandsDict = {}
+        self.inverseCommandsDict = {}
+            # Completed in k.createInverseCommandsDict,
+            # but leoCommands.getPublicCommands adds entries first.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None
@@ -198,12 +179,14 @@ class Commands (object):
             # True: prevent setting c.changed when switching chapters.
 
         # Flags for c.outerUpdate...
+        self.incrementalRecolorFlag = False
         self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
-        self.requestedFocusWidget = None
-        self.requestRedrawFlag = False
-        self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
+        self.requestRedrawFlag = False
+        self.requestedFocusWidget = None
+        self.requestedIconify = '' # 'iconify','deiconify'
+
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self,fileName,relativeFileName):
 
@@ -264,7 +247,7 @@ class Commands (object):
         self.macroCommands = None
         self.miniBufferWidget = None
         self.queryReplaceCommands = None
-        self.rectangleCommands = None
+        self.recTangleCommands = None
         self.registerCommands = None
         self.searchCommands = None
         self.spellCommands = None
@@ -277,8 +260,8 @@ class Commands (object):
         c = self
         if trace:
             print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
-        self.hiddenRootNode = leoNodes.Vnode(context=c)
-        self.hiddenRootNode.setHeadString('<hidden root Vnode>')
+        self.hiddenRootNode = leoNodes.VNode(context=c)
+        self.hiddenRootNode.setHeadString('<hidden root VNode>')
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:
@@ -286,7 +269,7 @@ class Commands (object):
         self.frame = gui.createLeoFrame(c,title)
         assert self.frame
         assert self.frame.c == c
-        self.nodeHistory = nodeHistory(c)
+        self.NodeHistory = NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
         # Break circular import dependencies by importing here.
@@ -299,39 +282,52 @@ class Commands (object):
         import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
+        import leo.core.leoPersistence as leoPersistence
         import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
-        import leo.core.leoViews as leoViews
+        # import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
-        self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
-        self.chapterController  = leoChapters.chapterController(c)
-        self.shadowController   = leoShadow.shadowController(c)
-        self.fileCommands       = leoFileCommands.fileCommands(c)
-        self.findCommands       = leoFind.leoFind(c)
-        self.atFileCommands     = leoAtFile.atFile(c)
-        self.importCommands     = leoImport.leoImportCommands(c)
-        self.rstCommands        = leoRst.rstCommands(c)
-        self.tangleCommands     = leoTangle.tangleCommands(c)
+        self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
+        self.chapterController  = leoChapters.ChapterController(c)
+        self.shadowController   = leoShadow.ShadowController(c)
+        self.fileCommands       = leoFileCommands.FileCommands(c)
+        self.findCommands       = leoFind.LeoFind(c)
+        self.atFileCommands     = leoAtFile.AtFile(c)
+        self.importCommands     = leoImport.LeoImportCommands(c)
+        self.persistenceController = leoPersistence.PersistenceDataController(c)
+        self.rstCommands        = leoRst.RstCommands(c)
+        self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
-        self.viewController     = leoViews.ViewController(c)
+        # self.viewController     = leoViews.ViewController(c)
         self.vimCommands        = leoVim.VimCommands(c)
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
-        self.cacher = leoCache.cacher(c)
+        self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
-        self.undoer = leoUndo.undoer(self)
+        self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
+        if hasattr(g.app.gui,'styleSheetManagerClass'):
+            self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+        else:
+            self.styleSheetManager = None
+    #@+node:ekr.20140815160132.18837: *5* c.initSettings
+    def initSettings(self,previousSettings):
+        '''Init the settings *before* initing the objects.'''
+        c = self
+        import leo.core.leoConfig as leoConfig
+        c.config = leoConfig.LocalConfigManager(c,previousSettings)
+        g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__ (self):
 
         return "Commander %d: %s" % (id(self),repr(self.mFileName))
 
     __str__ = __repr__
-    #@+node:ekr.20050920093543: *4* c.finishCreate & helper
+    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers
     def finishCreate (self):
         '''
         Finish creating the commander and all sub-objects.
@@ -346,12 +342,7 @@ class Commands (object):
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
         # This costs little.
-        c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
-        self.rstCommands.finishCreate()
-        # copy global commands to this controller    
-        for name,f in g.app.global_commands_dict.items():
-            k.registerCommand(name,
-                shortcut=None,func=f,pane='all',verbose=False)        
+        c.createCommandNames()   
         k.finishCreate()
         c.findCommands.finishCreate() # 2013/11/17
         if not c.gui.isNullGui:
@@ -359,11 +350,44 @@ class Commands (object):
         c.frame.menu.finishCreate()
         c.frame.log.finishCreate()
         c.undoer.clearUndoState()
+        if c.vimCommands and c.vim_mode:
+            c.vimCommands.finishCreate()
             # Menus must exist at this point.
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
         c.bodyWantsFocus()
-    #@+node:ekr.20051007143620: *5* printCommandsDict
+    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames & helper
+    def createCommandNames(self):
+        '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
+        c,k = self,self.k
+        c.commandsDict = {}
+        # A list of all subcommanders with a getPublicCommands method.
+        # c.editCommandsManager.getPublicCommands handles all
+        # subcommanders in leoEditCommands.py.
+        for o in (c.editCommandsManager,c.rstCommands,c.vimCommands):
+            if o: o.getPublicCommands()
+        # copy global commands to this controller    
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
+        # Create the inverse dict last.
+        c.createInverseCommandsDict()
+    #@+node:ekr.20061031131434.81: *6* c.createInverseCommandsDict
+    def createInverseCommandsDict (self):
+        '''Add entries to k.inverseCommandsDict using c.commandsDict.
+
+        c.commandsDict:        keys are command names, values are funcions f.
+        c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+        '''
+        c = self
+        for name in c.commandsDict:
+            f = c.commandsDict.get(name)
+            try:
+                c.inverseCommandsDict [f.__name__] = name
+                # g.trace('%24s = %s' % (f.__name__,name))
+            except Exception:
+                # g.es_exception()
+                g.trace(repr(name),repr(f))
+    #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 
         c = self
@@ -422,21 +446,16 @@ class Commands (object):
         pass
     #@+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings (self):
-
         '''Init all cached commander config settings.'''
-
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-
         if trace:
             print('c.initConfigSettings: c.configInited: %s %s' % (
-                c.configInited,c.shortFileName()))
-
+            c.configInited,c.shortFileName()))
         getBool = c.config.getBool
         getColor = c.config.getColor
         getData  = c.config.getData
         getInt = c.config.getInt
-
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -452,8 +471,10 @@ class Commands (object):
             'focus_border_overwrite_state_color') or 'green'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.forceExecuteEntireBody    = getBool('force_execute_entire_body',default=False)
+        c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
+            # g.trace('c.max_pre_loaded_body_chars',c.max_pre_loaded_body_chars)
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
-        # c.showMinibuffer            = getBool('useMinibuffer')
+        # c.showMinibuffer          = getBool('useMinibuffer')
             # This option is a bad idea.
         c.page_width                = getInt('page_width') or 132
             # 2012/02/27: this appears to be a fix of an *ancient* bug.
@@ -470,9 +491,8 @@ class Commands (object):
         c.use_focus_border          = getBool('use_focus_border',default=True)
         c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
-
-        # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
-        # g.trace(c.sparse_move)
+            # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+            # g.trace(c.sparse_move)
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition (self):
 
@@ -576,7 +596,6 @@ class Commands (object):
             g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
-                ### c.frame.bringToFront()
                 c.requestBringToFront.frame.bringToFront()
                     # c.requestBringToFront is a commander.
             c.requestBringToFront = None
@@ -650,7 +669,7 @@ class Commands (object):
         if not event:
             return
 
-        isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
+        isLeoKeyEvent = isinstance(event,leoGui.LeoKeyEvent)
         stroke = event.stroke
         got = event.char
 
@@ -678,6 +697,45 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
+    #@+node:ekr.20140828080010.18532: *3* c.cloneFindParents
+    def cloneFindParents(self,event=None):
+        '''Create a "Found: parents of p.h for all parents of p or c.p.'''
+        c,u = self,self.undoer
+        p = c.p
+        if not p: return
+        if not p.isCloned():
+            g.es('not a clone: %s' % p.h)
+            return
+        p0 = p.copy()
+        undoType = 'Find Clone Parents'
+        aList = c.vnode2allPositions(p.v)
+        if not aList:
+            g.trace('can not happen: no parents')
+            return
+        # Create the node as the last top-level node.
+        # All existing positions remain valid.
+        u.beforeChangeGroup(p0,undoType)
+        top = c.rootPosition()
+        while top.hasNext():
+            top.moveToNext()
+        b = u.beforeInsertNode(p0)
+        found = top.insertAfter()
+        found.h = 'Found: parents of %s' % p.h
+        u.afterInsertNode(found,'insert',b)
+        seen = []
+        for p2 in aList:
+            parent = p2.parent()
+            if parent and parent.v not in seen:
+                seen.append(parent.v)
+                b = u.beforeCloneNode(parent)
+                clone = parent.clone()
+                clone.moveToLastChildOf(found)
+                u.afterCloneNode(clone,'clone',b,dirtyVnodeList=[])
+        u.afterChangeGroup(p0,undoType)
+        c.selectPosition(found)
+        c.setChanged(True)
+        c.redraw()
+       
     #@+node:peckj.20131023115434.10114: *3* c.createNodeHierarchy
     def createNodeHierarchy(self, heads, parent=None, forcecreate=False):
         
@@ -701,6 +759,7 @@ class Commands (object):
         undoType2 = 'Insert Node In Hierarchy'
         u_node = parent or self.rootPosition()
         undoData = u.beforeChangeGroup(u_node,undoType)
+        changed_node = False
         for idx,head in enumerate(heads):
             if parent is None and idx == 0: # if parent = None, create top level node for first head
                 if not forcecreate:
@@ -719,13 +778,15 @@ class Commands (object):
                     for ch in parent.children():
                         if ch.h == head:
                             parent = ch
+                            changed_node = True
                             break
-                if parent.h != head or forcecreate:
+                if parent.h != head or not changed_node or forcecreate:
                     u_d = u.beforeInsertNode(parent)
                     n = parent.insertAsLastChild()
                     n.h = head
                     u.afterInsertNode(n, undoType2, u_d)
                     parent = n
+            changed_node = False
         u.afterChangeGroup(parent,undoType,undoData)
         return parent # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
@@ -765,7 +826,7 @@ class Commands (object):
                     if trace: g.trace('can not happen',p and p.h)
         # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             v._addLink(childIndex=0,parent_v=c.hiddenRootNode,adjust=False)
             if trace: g.trace('new root',v)
         c.selectPosition(c.rootPosition())
@@ -1017,26 +1078,26 @@ class Commands (object):
             g.error('no such command: %s %s' % (commandName,g.callers()))
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
-    #@+<< poslist doc >>
-    #@+node:bob.20101215134608.5898: *4* << poslist doc >>
+    #@+<< PosList doc >>
+    #@+node:bob.20101215134608.5898: *4* << PosList doc >>
     #@@nocolor-node
     #@+at 
     # List of positions 
     # 
-    # Functions find_h() and find_b() both return an instance of poslist.
+    # Functions find_h() and find_b() both return an instance of PosList.
     # 
-    # Methods filter_h() and filter_b() refine a poslist.
+    # Methods filter_h() and filter_b() refine a PosList.
     # 
-    # Method children() generates a new poslist by descending one level from
-    # all the nodes in a poslist.
+    # Method children() generates a new PosList by descending one level from
+    # all the nodes in a PosList.
     # 
-    # A chain of poslist method calls must begin with find_h() or find_b().
+    # A chain of PosList method calls must begin with find_h() or find_b().
     # The rest of the chain can be any combination of filter_h(),
     # filter_b(), and children(). For example:
     # 
     #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
     # 
-    # For each position, pos, in the poslist returned, find_h() and
+    # For each position, pos, in the PosList returned, find_h() and
     # filter_h() set attribute pos.mo to the match object (see Python
     # Regular Expression documentation) for the pattern match.
     # 
@@ -1047,16 +1108,16 @@ class Commands (object):
     # set attribute pos.matchiter to an iterator that will return a match
     # object for each of the non-overlapping matches of the pattern in the
     # body of the node.
-    #@-<< poslist doc >>
+    #@-<< PosList doc >>
     #@+node:ville.20090311190405.70: *4* c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a poslist) of all nodes where zero or more characters at
+        """ Return list (a PosList) of all nodes where zero or more characters at
         the beginning of the headline match regex
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
+        res = leoNodes.PosList()
         for p in c.all_positions():
             m = re.match(pat, p.h)
             if m:
@@ -1067,14 +1128,14 @@ class Commands (object):
 
     #@+node:ville.20090311200059.1: *4* c.find_b
     def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a poslist) of all nodes whose body matches regex
+        """ Return list (a PosList) of all nodes whose body matches regex
         one or more times.
 
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
+        res = leoNodes.PosList()
         for p in c.all_positions():
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -1148,12 +1209,11 @@ class Commands (object):
         doc = "commander current position property")
     #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
     def putHelpFor(self,s,short_title=''):
-
+        '''Helper for various help commands.'''
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
-
         pc = g.app.pluginsController
         if pc.isLoaded('viewrendered2.py'):
             vr = pc.loadOnePlugin('viewrendered2.py')
@@ -1175,6 +1235,21 @@ class Commands (object):
                 vr.close_rendering_pane(event={'c':c})
         else:
             g.es(s)
+    #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
+    def recreateGnxDict(self):
+        '''Recreate the gnx dict prior to refreshing nodes from disk.'''
+        trace = False and not g.unitTesting
+        c,d,x = self,{},g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            # new gnxs:
+            gnxString = v.fileIndex
+            assert g.isUnicode(gnxString)
+            # old gnxs: retain for reference.
+            # gnx = v.fileIndex
+            # gnxString = x.toString(gnx)
+            d[gnxString] = v
+            if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+        c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self,dir_,
         one_file=False,
@@ -1208,7 +1283,7 @@ class Commands (object):
             # Import all files in dir_ after c.p.
             try:
                 import leo.core.leoImport as leoImport
-                cc = leoImport.recursiveImportController(c,
+                cc = leoImport.RecursiveImportController(c,
                     one_file = one_file,
                     safe_at_file = safe_at_file,
                     theTypes = ['.py'] if theTypes is None else theTypes,
@@ -1463,7 +1538,7 @@ class Commands (object):
         p2 = c.insertHeadline(op_name='Open File', as_child=False)
         p2.h = '@edit %s' % fn # g.shortFileName(fn)
         p2.b = prefix + s
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if w: w.setInsertPoint(0)
         c.redraw()
         c.recolor()
@@ -1559,6 +1634,8 @@ class Commands (object):
             if openType == 'os.startfile':
                 command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)
+                # pylint: disable=no-member
+                # trust the user not to use this option on Linux.
                 if not testing: os.startfile(join(arg,fn))
             elif openType == 'exec':
                 command = 'exec(%s)' % join(arg,fn)
@@ -1768,6 +1845,37 @@ class Commands (object):
             g.error('exception creating temp file')
             g.es_exception()
             return None
+    #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
+    def refreshFromDisk(self,event=None):
+        '''Refresh and @<file> node from disk.'''
+        c,p = self,self.p
+        fn = p.anyAtFileNodeName()
+        if fn:
+            at = c.atFileCommands
+            c.recreateGnxDict()
+                # Fix bug 1090950 refresh from disk: cut node ressurection.
+            i = g.skip_id(p.h,0,chars='@')
+            word=p.h[0:i]
+            if word == '@auto':
+                p.deleteAllChildren()
+                at.readOneAtAutoNode(fn,p)
+                c.redraw()
+            elif word in ('@thin','@file'):
+                p.deleteAllChildren()
+                at.read(p,force=True)
+                c.redraw()
+            elif word == '@shadow ':
+                p.deleteAllChildren()
+                at.read(p,force=True,atShadow=True)
+                c.redraw()
+            elif word == '@edit':
+                p.deleteAllChildren()
+                at.readOneAtEditNode(fn,p)
+                c.redraw()
+            else:
+                g.trace('can not refresh from disk:',p.h)
+        else:
+            g.warning('not an @<file> node:\n%s' % (p.h))
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None,fileName=None):
 
@@ -1835,7 +1943,7 @@ class Commands (object):
                 g.app.recentFilesManager.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        # Done in fileCommands.save.
+        # Done in FileCommands.save.
         # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
@@ -1903,7 +2011,7 @@ class Commands (object):
             c.fileCommands.saveAs(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-        # Done in fileCommands.saveAs.
+        # Done in FileCommands.saveAs.
         # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
@@ -2119,7 +2227,7 @@ class Commands (object):
 
         g.chdir(fileName)
         s = '@nocolor\n' + s
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         p = c.insertHeadline(op_name=undoType)
         p.setHeadString('@read-file-into-node ' + fileName)
         p.setBodyString(s)
@@ -2418,7 +2526,8 @@ class Commands (object):
             g.app.log = log
             if script.strip():
                 # print('***executeScript***',c.frame.openDirectory)
-                sys.path.insert(0,g.toEncodedString(c.frame.openDirectory))
+                # 2014/05/20: Bug fix, per SegundoBob: use c.frame.openDirectory as is.
+                sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
                 try:
                     # We *always* execute the script with p = c.p.
@@ -2527,7 +2636,7 @@ class Commands (object):
         c = self
 
         scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
-        c.goToLineNumber(c).go(n=n,scriptData=scriptData)
+        c.GoToLineNumber(c).go(n=n,scriptData=scriptData)
     #@+node:ekr.20031218072017.2086: *6* c.preferences
     def preferences (self,event=None):
 
@@ -2604,8 +2713,8 @@ class Commands (object):
                 # c.config.getString('script_file_path'))
             path = None
         return path
-    #@+node:ekr.20100216141722.5620: *6* class goToLineNumber and helpers (commands)
-    class goToLineNumber:
+    #@+node:ekr.20100216141722.5620: *6* class GoToLineNumber and helpers (commands)
+    class GoToLineNumber:
 
         '''A class implementing goto-global-line.'''
 
@@ -2781,20 +2890,21 @@ class Commands (object):
             return p,-1,effective_lines,False # i does not matter.
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
-
-            '''Scan root's tree for a node with the given gnx and vnodeName.
-
-            return (p,found)'''
-
+            '''
+            Scan root's tree for a node with the given gnx and vnodeName.
+            return (p,found)
+            '''
             trace = False and not g.unitTesting
-
             if delim and gnx:
-                gnx = g.app.nodeIndices.scanGnx(gnx,0)
+                # new gnxs:
+                assert g.isString(gnx)
+                gnx = g.toUnicode(gnx)
+                # old gnxs: retain for reference.
+                # gnx = g.app.nodeIndices.scanGnx(gnx,0)
                 for p in root.self_and_subtree():
                     if p.matchHeadline(vnodeName):
                         if p.v.fileIndex == gnx:
                             return p.copy(),True
-
                 if trace: g.trace('not found! %s, %s' % (gnx,repr(vnodeName)))
                 return None,False
             else:
@@ -2828,7 +2938,7 @@ class Commands (object):
         #@+node:ekr.20100216141722.5628: *7* findVnode & helpers
         def findVnode (self,root,lines,n,ignoreSentinels):
 
-            '''Search the lines of a derived file containing sentinels for a Vnode.
+            '''Search the lines of a derived file containing sentinels for a VNode.
             return (vnodeName,gnx,offset,delim):
 
             vnodeName:  the name found in the previous @+body sentinel.
@@ -2866,8 +2976,8 @@ class Commands (object):
 
             '''
             Scan backwards from the line n, looking for an @-body line. When found,
-            get the Vnode's name from that line and set p to the indicated Vnode. This
-            will fail if Vnode names have been changed, and that can't be helped.
+            get the VNode's name from that line and set p to the indicated VNode. This
+            will fail if VNode names have been changed, and that can't be helped.
 
             We compute the offset of the requested line **within the found node**.
             '''
@@ -2934,7 +3044,7 @@ class Commands (object):
                 else:
                     i = len(s) # Force an error.
 
-            # old sentinels: Vnode name is everything following the first or second':'
+            # old sentinels: VNode name is everything following the first or second':'
             i = s.find(':',i)
             if i > -1:
                 vnodeName = s[i+1:].strip()
@@ -3108,11 +3218,10 @@ class Commands (object):
         def showResults(self,found,p,n,n2,lines):
 
             trace = False and not g.unitTesting
-            c = self.c ; w = c.frame.body.bodyCtrl
-
+            c = self.c
+            w = c.frame.body.wrapper
             # Select p and make it visible.
             c.redraw(p)
-
             # Put the cursor on line n2 of the body text.
             s = w.getAllText()
             if found:
@@ -3126,23 +3235,19 @@ class Commands (object):
                 i,j = g.getLine(s,ins)
                 g.trace('found: %5s %2s %2s %15s %s' % (
                     found,n,n2,p.h,repr(s[i:j])))  
-
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
-            c.frame.body.seeInsertPoint()
+            w.seeInsertPoint()
         #@-others
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
     def findMatchingBracket (self,event=None):
-
         '''Select the text between matching brackets.'''
-
-        c = self ; w = c.frame.body.bodyCtrl
-
+        c = self
+        w = c.frame.body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode("Match Brackets")
             return
-
         brackets = "()[]{}<>"
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -3494,7 +3599,6 @@ class Commands (object):
         if not lines:
             g.warning('No lines selected')
             return
-
         u.beforeChangeGroup(current,undoType)
         found = False
         for s in lines:
@@ -3505,7 +3609,6 @@ class Commands (object):
                 u.afterInsertNode(p,undoType,undoData)
                 found = True
         c.validateOutline()
-
         if found:
             u.afterChangeGroup(current,undoType)
             c.redraw(p)
@@ -3514,8 +3617,10 @@ class Commands (object):
 
         # Restore the selection.
         i,j = oldSel
-        body.setSelectionRange(i,j)
-        body.setFocus()
+        w = body.wrapper
+        if w:
+            w.setSelectionRange(i,j)
+            w.setFocus()
     #@+node:ekr.20031218072017.1711: *8* findSectionName
     def findSectionName(self,s):
 
@@ -3535,18 +3640,20 @@ class Commands (object):
         return name
     #@+node:ekr.20031218072017.1829: *6* c.getBodyLines
     def getBodyLines (self,expandSelection=False):
-
-        """Return head,lines,tail where:
+        """
+        Return head,lines,tail where:
 
         before is string containg all the lines before the selected text
-        (or the text before the insert point if no selection)
-        lines is a list of lines containing the selected text (or the line containing the insert point if no selection)
-        after is a string all lines after the selected text
-        (or the text after the insert point if no selection)"""
-
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
-        oldVview = body.getYScrollPosition()
-
+        (or the text before the insert point if no selection) lines is a
+        list of lines containing the selected text (or the line containing
+        the insert point if no selection) after is a string all lines
+        after the selected text (or the text after the insert point if no
+        selection)
+        """
+        c = self
+        body = c.frame.body
+        w = body.wrapper
+        oldVview = w.getYScrollPosition()
         if expandSelection:
             s = w.getAllText()
             head = tail = ''
@@ -3556,12 +3663,10 @@ class Commands (object):
             # Note: lines is the entire line containing the insert point if no selection.
             head,s,tail = body.getSelectionLines()
             lines = g.splitLines(s) # Retain the newlines of each line.
-
             # Expand the selection.
             i = len(head)
             j = max(i,len(head)+len(s)-1)
             oldSel = i,j
-
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
     #@+node:ekr.20031218072017.1830: *6* indentBody (indent-region)
     def indentBody (self,event=None):
@@ -3606,7 +3711,7 @@ class Commands (object):
         '''
         c = self
         tag = '@language'     
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         ins = w.getInsertPoint()
         n = 0
         for s in g.splitLines(p.b):
@@ -3735,22 +3840,17 @@ class Commands (object):
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
     #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests
     def insertBodyTime (self,event=None):
-
         '''Insert a time/date stamp at the cursor.'''
-
         c = self ; undoType = 'Insert Body Time'
-        w = c.frame.body.bodyCtrl
-
+        w = c.frame.body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
             return
-
-        oldSel = c.frame.body.getSelectionRange()
+        oldSel = w.getSelectionRange()
         w.deleteTextSelection()
         s = self.getTime(body=True)
         i = w.getInsertPoint()
         w.insert(i,s)
-
         c.frame.body.onBodyChanged(undoType,oldSel=oldSel)
     #@+node:ekr.20031218072017.1832: *7* getTime
     def getTime (self,body=True):
@@ -3784,13 +3884,11 @@ class Commands (object):
         return s
     #@+node:ekr.20131002055813.19033: *6* c.reformatBody (can hang)
     def reformatBody (self,event=None):
-        
         '''Reformat all paragraphs in the body.'''
-        
         # New in Leo 4.11
         c,p = self,self.p
         undoType = 'reformat-body'
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         c.undoer.beforeChangeGroup(p,undoType)
         w.setInsertPoint(0)
         while 1:
@@ -3817,11 +3915,13 @@ class Commands (object):
 
         """
         trace = False and not g.unitTesting
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        c = self
+        body = c.frame.body
+        w = body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode("reformat-paragraph")
             return
-        if body.hasSelection():
+        if w.hasSelection():
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
         oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
@@ -3927,12 +4027,10 @@ class Commands (object):
         return val
     #@+node:ekr.20101118113953.5840: *7* rp_get_args
     def rp_get_args (self):
-
         '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-
         c = self
         body = c.frame.body
-        w = body.bodyCtrl
+        w = body.wrapper
         d = c.scanAllDirectives()
         # g.trace(c.editCommands.fillColumn)
         if c.editCommands.fillColumn > 0:
@@ -3942,7 +4040,7 @@ class Commands (object):
         tabWidth  = d.get("tabwidth")
         original = w.getAllText()
         oldSel =  w.getSelectionRange()
-        oldYview = body.getYScrollPosition()
+        oldYview = w.getYScrollPosition()
         return oldSel,oldYview,original,pageWidth,tabWidth
     #@+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
     def rp_get_leading_ws (self,lines,tabWidth):
@@ -3966,14 +4064,11 @@ class Commands (object):
         return indents,leading_ws
     #@+node:ekr.20101118113953.5842: *7* rp_reformat
     def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
-
         '''Reformat the body and update the selection.'''
-
-        c = self ; body = c.frame.body ; w = body.bodyCtrl
+        c = self ; body = c.frame.body ; w = body.wrapper
         s = w.getAllText()
         # This destroys recoloring.
         junk, ins = body.setSelectionAreas(head,result,tail)
-        
         changed = original != head + result + tail
         if changed:
             # 2013/09/14: fix an annoying glitch when there is no
@@ -4039,14 +4134,13 @@ class Commands (object):
         result = '\n'.join(paddedResult)
         if trailingNL: result = result + '\n'
         return result
-    #@+node:ekr.20031218072017.1838: *6* updateBodyPane (handles changeNodeContents)
+    #@+node:ekr.20031218072017.1838: *6* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
-
-        c = self ; body = c.frame.body ; p = c.p
-
+        '''Handle changed text in the body pane.'''
+        c,p = self,self.p
+        body = c.frame.body
         # Update the text and notify the event handler.
         body.setSelectionAreas(head,middle,tail)
-
         # Expand the selection.
         head = head or ''
         middle = middle or ''
@@ -4054,27 +4148,22 @@ class Commands (object):
         i = len(head)
         j = max(i,len(head)+len(middle)-1)
         newSel = i,j
-        body.setSelectionRange(i,j)
-
+        body.wrapper.setSelectionRange(i,j)
         # This handles the undo.
         body.onBodyChanged(undoType,oldSel=oldSel or newSel,oldYview=oldYview)
-
         # Update the changed mark and icon.
         c.setChanged(True)
         if p.isDirty():
             dirtyVnodeList = []
         else:
             dirtyVnodeList = p.setDirty()
-
         c.redraw_after_icons_changed()
-
         # Scroll as necessary.
         if oldYview:
-            body.setYScrollPosition(oldYview)
+            body.wrapper.setYScrollPosition(oldYview)
         else:
-            body.seeInsertPoint()
-
-        body.setFocus()
+            body.wrapper.seeInsertPoint()
+        body.wrapper.setFocus()
         c.recolor()
         return dirtyVnodeList
     #@+node:ekr.20031218072017.2885: *5* Edit Headline submenu
@@ -4149,7 +4238,13 @@ class Commands (object):
     #@+node:ekr.20031218072017.1551: *7* c.pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
-    def pasteOutline(self,event=None,reassignIndices=True,redrawFlag=True,s=None,undoFlag=True):
+    def pasteOutline(self,event=None,
+        reassignIndices=True,
+        redrawFlag=True,
+        s=None,
+        tempOutline=False, # True: don't make entries in the gnxDict.
+        undoFlag=True
+    ):
         '''
         Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.
@@ -4166,7 +4261,7 @@ class Commands (object):
         vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
         # create a *position* to be pasted.
         if isLeo:
-            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices,tempOutline)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
         if not pasted: return None
@@ -4205,7 +4300,7 @@ class Commands (object):
     # everything. This is expensive, but foolproof.
     # 
     # The alternative is to try to remember the 'before' values of nodes in the
-    # fileCommands read logic. Several experiments failed, and the code is very ugly.
+    # FileCommands read logic. Several experiments failed, and the code is very ugly.
     # In short, it seems wise to do things the foolproof way.
     # 
     #@@c
@@ -4358,6 +4453,8 @@ class Commands (object):
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
+        
+        # g.trace(bool(p.hasVisBack(c)),p.h,newNode.h)
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -4501,14 +4598,14 @@ class Commands (object):
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
 
-    def sortChildren (self,event=None,key=None):
+    def sortChildren (self,event=None,key=None,reverse=False):
 
         '''Sort the children of a node.'''
 
         c = self ; p = c.p
 
         if p and p.hasChildren():
-            c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key)
+            c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key,reverse=reverse)
     #@+node:ekr.20050415134809.1: *7* c.sortSiblings
     # New in Leo 4.7 final: this method no longer supports
     # the 'cmp' keyword arg.
@@ -4782,7 +4879,7 @@ class Commands (object):
 
         # c = self
         try:
-            readline = g.readLinesClass(body).next
+            readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
         except IndentationError:
@@ -5246,7 +5343,7 @@ class Commands (object):
             s = p.b
             if not s: return
 
-            readlines = g.readLinesClass(s).next
+            readlines = g.ReadLinesClass(s).next
 
             try:
                 self.clear()
@@ -5477,7 +5574,6 @@ class Commands (object):
         def replaceBody (self,p,lines):
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            # sel = c.frame.body.getInsertPoint()
             oldBody = p.b
             body = ''.join(lines)
             if oldBody != body:
@@ -5616,7 +5712,7 @@ class Commands (object):
 
         c = self
 
-        for p in c.all_positions(): ### c.all_unique_positions():
+        for p in c.all_positions():
             p.contract()
         # Select the topmost ancestor of the presently selected node.
         p = c.p
@@ -6423,7 +6519,7 @@ class Commands (object):
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1774: *6* c.promote
-    def promote (self,event=None,undoFlag=True):
+    def promote (self,event=None,undoFlag=True,redrawFlag=True):
         '''Make all children of the selected nodes siblings of the selected node.'''
         c = self ; u = c.undoer ; p = c.p
         if not p or not p.hasChildren():
@@ -6455,8 +6551,9 @@ class Commands (object):
             else: # No need to mark descendents dirty.
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             u.afterPromote(p,children,dirtyVnodeList)
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        if redrawFlag:
+            c.redraw(p,setFocus=True)
+            c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20071213185710: *6* c.toggleSparseMove
     def toggleSparseMove (self,event=None):
 
@@ -6476,14 +6573,14 @@ class Commands (object):
 
         c = self
 
-        p = c.nodeHistory.goNext()
+        p = c.NodeHistory.goNext()
 
         if p:
-            c.nodeHistory.skipBeadUpdate = True
+            c.NodeHistory.skipBeadUpdate = True
             try:
                 c.selectPosition(p)
             finally:
-                c.nodeHistory.skipBeadUpdate = False
+                c.NodeHistory.skipBeadUpdate = False
                 c.redraw_after_select(p)
 
     #@+node:ekr.20031218072017.1627: *6* goPrevVisitedNode
@@ -6493,14 +6590,14 @@ class Commands (object):
 
         c = self
 
-        p = c.nodeHistory.goPrev()
+        p = c.NodeHistory.goPrev()
 
         if p:
-            c.nodeHistory.skipBeadUpdate = True
+            c.NodeHistory.skipBeadUpdate = True
             try:
                 c.selectPosition(p)
             finally:            
-                c.nodeHistory.skipBeadUpdate = False
+                c.NodeHistory.skipBeadUpdate = False
                 c.redraw_after_select(p)
     #@+node:ekr.20031218072017.2914: *6* goToFirstNode
     def goToFirstNode (self,event=None):
@@ -6767,7 +6864,7 @@ class Commands (object):
         p.moveToVisNext(c)
         c.treeSelectHelper(p)
     #@+node:ekr.20070417112650: *6* utils
-    #@+node:ekr.20070226121510: *7*  c.xFocusHelper
+    #@+node:ekr.20070226121510: *7*  c.xFocusHelper & initialFocusHelper
     def treeFocusHelper (self):
         c = self
         if c.stayInTreeAfterSelect:
@@ -7077,12 +7174,12 @@ class Commands (object):
     def goToNextHistory (self,event=None):
         '''Go to the next node in the history list.'''
         c = self
-        c.nodeHistory.goNext()
+        c.NodeHistory.goNext()
 
     def goToPrevHistory (self,event=None):
         '''Go to the previous node in the history list.'''
         c = self
-        c.nodeHistory.goPrev()
+        c.NodeHistory.goPrev()
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self,commandName):
         '''Make commandName the command to be executed by repeat-complex-command.'''
@@ -7252,7 +7349,7 @@ class Commands (object):
         c2 = c2 or c
         c.requestBringToFront = c2
         c.requestedIconify = 'deiconify'
-        c.requestedFocusWidget = c2.frame.body.bodyCtrl
+        c.requestedFocusWidget = c2.frame.body.wrapper
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
@@ -7303,11 +7400,11 @@ class Commands (object):
         trace = False and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,g.callers())
-                # w,c.shortFileName())
+            if trace: g.trace('(c)',
+                g.app.gui.widget_name(w),w)
             g.app.gui.set_focus(c,w)
         else:
-            if trace: print('c.set_focus: no w')
+            if trace: g.trace('(c) no w')
 
         c.requestedFocusWidget = None
     #@+node:ekr.20080514131122.10: *4* c.invalidateFocus
@@ -7340,7 +7437,7 @@ class Commands (object):
             c.frame.tree.select(p)
         # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
-        # Be careful.  nullTree.redraw returns None.
+        # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
         if trace: g.trace('setFocus',setFocus,p2 and p2.h or p and p.h)
         if setFocus: c.treeFocusHelper()
@@ -7428,9 +7525,7 @@ class Commands (object):
     def traceFocus (self,w):
 
         c = self
-
         if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-            ### import pdb ; pdb.set_trace() # Drop into pdb.
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@+node:ekr.20080514131122.17: *4* c.widget_name
@@ -7442,7 +7537,7 @@ class Commands (object):
 
     def bodyWantsFocus(self):
         c = self ; body = c.frame.body
-        c.request_focus(body and body.bodyCtrl)
+        c.request_focus(body and body.wrapper)
 
     def logWantsFocus(self):
         c = self ; log = c.frame.log
@@ -7468,7 +7563,7 @@ class Commands (object):
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
     def bodyWantsFocusNow(self):
         c = self ; body = c.frame.body
-        c.widgetWantsFocusNow(body and body.bodyCtrl)
+        c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self):
         c = self ; log = c.frame.log
@@ -7611,19 +7706,19 @@ class Commands (object):
     #@+node:ekr.20031218072017.2287: *4* canExtract, canExtractSection & canExtractSectionNames
     def canExtract (self):
 
-        c = self ; body = c.frame.body
-        return body and body.hasSelection()
+        c = self
+        w = c.frame.body.wrapper
+        return w and w.hasSelection()
 
     canExtractSectionNames = canExtract
 
     def canExtractSection (self):
 
-        c = self ; body = c.frame.body
-        if not body: return False
-
-        s = body.getSelectedText()
+        c = self
+        w = c.frame.body.wrapper
+        if not w: return False
+        s = w.getSelectedText()
         if not s: return False
-
         line = g.get_line(s,0)
         i1 = line.find("<<")
         j1 = line.find(">>")
@@ -7633,13 +7728,13 @@ class Commands (object):
     #@+node:ekr.20031218072017.2965: *4* canFindMatchingBracket
     def canFindMatchingBracket (self):
 
-        c = self ; brackets = "()[]{}"
-        body = c.frame.body
-        s = body.getAllText()
-        ins = body.getInsertPoint()
+        c = self
+        brackets = "()[]{}"
+        w = c.frame.body.wrapper
+        s = w.getAllText()
+        ins = w.getInsertPoint()
         c1 = 0 <= ins   < len(s) and s[ins] or ''
         c2 = 0 <= ins-1 < len(s) and s[ins-1] or ''
-
         val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
         return bool(val)
     #@+node:ekr.20040303165342: *4* canHoist & canDehoist
@@ -7761,8 +7856,9 @@ class Commands (object):
     #@+node:ekr.20031218072017.2978: *4* canShiftBodyLeft/Right
     def canShiftBodyLeft (self):
 
-        c = self ; body = c.frame.body
-        return body and body.getAllText()
+        c = self
+        w = c.frame.body.wrapper
+        return w and w.getAllText()
 
     canShiftBodyRight = canShiftBodyLeft
     #@+node:ekr.20031218072017.2979: *4* canSortChildren, canSortSiblings
@@ -8060,7 +8156,7 @@ class Commands (object):
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions (self,v):
 
-        '''Given a Vnode v, find all valid positions p such that p.v = v.
+        '''Given a VNode v, find all valid positions p such that p.v = v.
 
         Not really all, just all for each of v's distinct immediate parents.
         '''
@@ -8091,7 +8187,7 @@ class Commands (object):
     #@+node:ekr.20090107113956.1: *5* c.vnode2position
     def vnode2position (self,v):
 
-        '''Given a Vnode v, construct a valid position p such that p.v = v.
+        '''Given a VNode v, construct a valid position p such that p.v = v.
         '''
 
         c = self
@@ -8109,7 +8205,7 @@ class Commands (object):
 
         # v.parents includes the hidden root node.
         if not stack:
-            # a Vnode not in the tree
+            # a VNode not in the tree
             return c.nullPosition()
         v,n = stack.pop()
         p = leoNodes.Position(v,n,stack)
@@ -8162,13 +8258,13 @@ class Commands (object):
         if current and p.v==current.v:
             # Revert to previous code, but force an empty selection.
             c.frame.body.setSelectionAreas(s,None,None)
-            w = c.frame.body.bodyCtrl
+            w = c.frame.body.wrapper
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
             # This code destoys all tags, so we must recolor.
             c.recolor()
 
-        # Keep the body text in the Vnode up-to-date.
+        # Keep the body text in the VNode up-to-date.
         if v.b != s:
             v.setBodyString(s)
             v.setSelection(0,0)
@@ -8178,8 +8274,9 @@ class Commands (object):
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged (self,changedFlag):
-
-        trace = False and not g.unitTesting
+        '''Set or clear the marker that indicates that the .leo file has been changed.'''
+        trace = False and not g.unitTesting # and changedFlag
+        if trace: g.trace(g.callers())
         c = self
         if not c.frame:
             return
@@ -8202,16 +8299,16 @@ class Commands (object):
             # Call LeoTabbedTopLevel.setChanged.
             master.setChanged(c,changedFlag)
         s = c.frame.getTitle()
-        if trace: g.trace(changedFlag,repr(s))
+        # if trace: g.trace(changedFlag,repr(s))
         if len(s) > 2:
             if changedFlag:
                 if s [0] != '*':
                     c.frame.setTitle("* " + s)
-                    if trace: g.trace('(c)',"* " + s)
+                    # if trace: g.trace('(c)',"* " + s)
             else:
                 if s[0:2]=="* ":
                     c.frame.setTitle(s[2:])
-                    if trace: g.trace('(c)',s[2:])
+                    # if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
@@ -8383,7 +8480,7 @@ class Commands (object):
         # if k:
             # k.setDefaultInputState()
             # # Recolor the *body* text, **not** the headline.
-            # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
     def selectPosition(self,p,enableRedrawFlag=True):
         """Select a new position."""
@@ -8507,7 +8604,7 @@ class Commands (object):
         return ''
     #@+node:ville.20090525205736.12325: *4* c.getSelectedPositions
     def getSelectedPositions(self):
-        """ Get list (poslist) of currently selected positions
+        """ Get list (PosList) of currently selected positions
 
         So far only makes sense on qt gui (which supports multiselection)
         """
@@ -8572,13 +8669,13 @@ class Commands (object):
         # g.trace('%20s' % (timeStamp),fn)
 
     #@-others
-#@+node:ekr.20070615131604: ** class nodeHistory
-class nodeHistory:
+#@+node:ekr.20070615131604: ** class NodeHistory
+class NodeHistory:
 
     '''A class encapsulating knowledge of visited nodes.'''
 
     #@+others
-    #@+node:ekr.20070615131604.1: *3*  ctor (nodeHistory)
+    #@+node:ekr.20070615131604.1: *3*  ctor (NodeHistory)
     def __init__ (self,c):
 
         self.c = c
@@ -8586,7 +8683,7 @@ class nodeHistory:
             # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
-    #@+node:ekr.20070615134813: *3* goNext (nodeHistory)
+    #@+node:ekr.20070615134813: *3* goNext (NodeHistory)
     def goNext (self):
         '''Select the next node, if possible.'''
         if self.beadPointer + 1 < len(self.beadList):
@@ -8594,7 +8691,7 @@ class nodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11288: *3* goPrev (nodeHistory)
+    #@+node:ekr.20130915111638.11288: *3* goPrev (NodeHistory)
     def goPrev (self):
         '''Select the previously visited node, if possible.'''
         if self.beadPointer > 0:
@@ -8602,7 +8699,7 @@ class nodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11294: *3* select (nodeHistory)
+    #@+node:ekr.20130915111638.11294: *3* select (NodeHistory)
     def select (self,p,chapter):
         '''
         if p.v exists anywhere, select p in chapter p if possible.
@@ -8623,7 +8720,7 @@ class nodeHistory:
         else:
             self.beadList = [data for data in self.beadList if data[0].v != p.v]
             self.beadPointer = len(self.beadList)-1
-    #@+node:ville.20090724234020.14676: *3* update (nodeHistory)
+    #@+node:ville.20090724234020.14676: *3* update (NodeHistory)
     def update (self,p):
         '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
         trace = False and not g.unitTesting

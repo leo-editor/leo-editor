@@ -21,32 +21,9 @@ Current limitations:
 #@-<< docstring >>
 
 # Written by Ed Taekema.  Modified by EKR
-
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.7"
-
-#@+<< version history >>
-#@+node:ekr.20040909100119: ** << version history >>
-#@+at
-# 
-# 0.5 EKR:
-#     - Generalized the code for any kind of @file node.
-#     - Changed _getpath so that explicit paths in @file nodes override @path directives.
-# 0.6 EKR:
-#     - Moved most docs into the docstring.
-# 0.7 EKR: (Removed g.top)
-#     - Added init function.
-#     - Created per-commander pluginController class.
-#@-<< version history >>
-#@+<< imports >>
-#@+node:ekr.20040909100226: ** << imports >>
 import leo.core.leoGlobals as g
-
 import os
 import sys
-#@-<< imports >>
 
 # Changes these as required.
 if sys.platform == "win32":
@@ -60,13 +37,11 @@ else:
 #@+others
 #@+node:ekr.20060107110126: ** init
 def init ():
-
-    if 1: # Ok for unit testing: creates a new menu.
-
-        # Register the handlers...
-        g.registerHandler("after-create-leo-frame", onCreate)
-        g.plugin_signon(__name__)
-        return True
+    '''Return True if the plugin has loaded successfully.'''
+    # Ok for unit testing: creates a new menu.
+    g.registerHandler("after-create-leo-frame", onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20060107110126.1: ** onCreate
 def onCreate (tag, keywords):
 
@@ -145,4 +120,7 @@ class pluginController:
         os.chdir(curdir)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

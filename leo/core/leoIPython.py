@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
 #@@first
-
 '''
 Support for the --ipython command-line option and the IPython bridge:
 http://leoeditor.com/IPythonBridge.html
@@ -10,9 +9,8 @@ http://leoeditor.com/IPythonBridge.html
 This code will run on IPython 1.0 and higher, as well as the IPython 0.x
 versions that define the IPKernelApp class.
 
+This module replaces leo.external.ipy_leo and leo.plugins.internal_ipkernel.
 '''
-
-# This module replaces leo.external.ipy_leo and leo.plugins.internal_ipkernel.
 
 #@@language python
 #@@tabwidth -4
@@ -185,29 +183,5 @@ class LeoNameSpace(object):
         self.commanders_list = [frame.c for frame in g.app.windowList]
     #@-others
     
-#@+node:ekr.20130930062914.16010: ** exec_helper
-def exec_helper(self,event):
-    '''This helper is required because an unqualified "exec"
-    may not appear in a nested function.
-    
-    '''
-    c = event and event.get('c')
-    ipk = g.app.ipk
-    ns = ipk.namespace # The actual IPython namespace.
-    ipkernel = ipk.ipkernel # IPKernelApp
-    shell = ipkernel.shell # ZMQInteractiveShell
-    if c and ns is not None:
-        try:
-            script = g.getScript(c,c.p)
-            if 1:
-                code = compile(script,c.p.h,'exec')
-                shell.run_code(code) # Run using IPython.
-            else:
-                exec(script,ns) # Run in Leo in the IPython namespace.
-        except Exception:
-            g.es_exception()
-        finally:
-            sys.stdout.flush()
-            # sys.stderr.flush()
 #@-others
 #@-leo

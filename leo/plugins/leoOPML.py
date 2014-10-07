@@ -118,15 +118,12 @@ else:
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Override the base class
     leoPlugins.registerHandler('start1',onStart2)
-
     # Register the commands.
     leoPlugins.registerHandler(('open2','new'),onCreate)
-
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20060904103412.5: *3* onCreate
 def onCreate (tag, keys):
@@ -140,11 +137,13 @@ def onStart2 (tag,keys):
     # Override the fileCommands class by opmlFileCommandsClass.
     leoFileCommands.fileCommands = opmlFileCommandsClass
 #@+node:ekr.20060919172012.1: ** class opmlFileCommandsClass (fileCommands)
-class opmlFileCommandsClass (leoFileCommands.fileCommands):
-
-    '''An subclass of Leo's core fileCommands class that
-    should do *nothing* other than override putToOPML.'''
-
+class opmlFileCommandsClass (leoFileCommands.FileCommands):
+    '''
+    An subclass of Leo's core fileCommands class that
+    should do *nothing* other than override putToOPML.
+    '''
+    # pylint:disable=no-member
+    # setattr creates the various opml_xxx members
     #@+others
     #@+node:ekr.20060919172012.2: *3* putToOPML & helpers
     # All elements and attributes prefixed by 'leo:' are leo-specific.
@@ -368,10 +367,9 @@ class opmlController:
         def createVnodeTree (self,node,parent_v):
 
             v = self.createVnode(node,parent_v)
-
+            c = v.context
             # To do: create the children only if v is not a clone.
-            self.createChildren(node,v)
-
+            self.createChildren(c,node,v)
             return v
         #@+node:ekr.20060914174806: *4* linkParentAndChildren
         def linkParentAndChildren (self, parent_v, children):
@@ -413,6 +411,7 @@ class opmlController:
                 g.trace('can not open %s' % path)
                 return None
             try:
+                # pylint:disable=catching-non-exception
                 try:
                     node = None
                     parser = xml.sax.make_parser()
@@ -426,14 +425,14 @@ class opmlController:
                 except xml.sax.SAXParseException:
                     g.error('Error parsing %s' % (inputFileName))
                     g.es_exception()
-                    return None
+                    node = None
                 except Exception:
                     g.error('Unexpected exception parsing %s' % (inputFileName))
                     g.es_exception()
-                    return None
+                    node = None
             finally:
                 f.close()
-                return node
+            return node
         #@-others
         
     #@+node:ekr.20060914163456: *3* createVnodes & helpers
@@ -450,7 +449,7 @@ class opmlController:
         assert c.hiddenRootNode.children == children
         return children
     #@+node:ekr.20060914171659.2: *4* createChildren
-    # node is a nodeClass object, parent_v is a Vnode.
+    # node is a nodeClass object, parent_v is a VNode.
 
     def createChildren (self,c,node,parent_v):
 
@@ -474,7 +473,7 @@ class opmlController:
     def createVnode (self,c,node,v=None):
         
         if not v:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             v.b,v.h = node.bodyString,node.headString
             
         if node.gnx:
@@ -528,13 +527,12 @@ class opmlController:
             s = self.cleanSaxInputString(s)
         except IOError:
             return g.trace('can not open %s' % path)
-
+        # pylint:disable=catching-non-exception
         try:
             if g.isPython3:
                 theFile = BytesIO(s)
             else:
                 theFile = cStringIO.StringIO(s)
-
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
             # Do not include external general entities.
@@ -568,7 +566,7 @@ class opmlController:
 
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-
+        # pylint:disable=no-member
         if g.isPython3:
             flatten = bytes(flatten,'utf-8')
             pad = bytes(pad,'utf-8')
@@ -617,7 +615,7 @@ class opmlController:
     def createTnodesDict (self):
 
         ''' c.tnodesDict by from self.generated_gnxs
-        by converting Vnode entries to tnodes.'''
+        by converting VNode entries to tnodes.'''
 
         d = {}
 
@@ -845,7 +843,7 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
         return g.toEncodedString(s,"ascii")
     #@+node:ekr.20060904134958.174: *3*  Do nothing...
     #@+node:ekr.20060904134958.175: *4* other methods
-    def ignorableWhitespace(self):
+    def ignorableWhitespace(self,ws):
         g.trace()
 
     def processingInstruction (self,target,data):

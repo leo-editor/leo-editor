@@ -5,8 +5,6 @@
 #@@first
 #@@first
 
-#@+<< docstring >>
-#@+node:ekr.20090704103932.5161: ** << docstring >>
 ''' This NOT a Leo plugin: this is a docutils writer for .pdf files.  
 
 That file uses the reportlab module to convert html markup to pdf.
@@ -15,15 +13,12 @@ The original code written by Engelbert Gruber.
 
 Rewritten by Edward K. Ream for the Leo rst3 plugin.
 '''
-#@-<< docstring >>
 
 # Note: you must copy this file to the Python/Lib/site-packages/docutils/writers folder.
 
-#@@language python
-#@@tabwidth -4
-
 #@+<< about this code >>
 #@+node:ekr.20090704103932.5163: ** << about this code >>
+#@@nocolor
 #@+at
 # I. Bugs and bug fixes
 # 
@@ -92,6 +87,7 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@-<< about this code >>
 #@+<< copyright >>
 #@+node:ekr.20090704103932.5164: ** << copyright >>
+#@@nocolor
 #####################################################################################
 #
 #	Copyright (c) 2000-2001, ReportLab Inc.
@@ -232,21 +228,13 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@+<< to do >>
 #@+node:ekr.20090704103932.5177: ** << to do >>
 #@@nocolor
-
-#@+others
-#@-others
-
 #@+at
 # 
 # - Bullets show up as a black 2 ball.
-# 
 # - More flexible handling of style sheets.
-# 
 # - Auto-footnote numbering does not work.
-# 
 # - Test rST raw: pdf feature.
 #@-<< to do >>
-
 __version__ = '1.0'
 __docformat__ = 'reStructuredText'
 
@@ -258,19 +246,13 @@ sys.path.append(r'c:\reportlab_1_20')
 if 1: # This dependency could easily be removed.
     # Used only for tracing and error reporting.
     import leo.core.leoGlobals as g
-
 try:
-    # from reportlab.lib.enums import *
-    # from reportlab.platypus import *
-
-    # Formatting imports...
     import docutils
-
 except ImportError:
     print('leo_pdf.py: can not import docutils')
     docutils = None
     raise
-    
+import operator
 try:
     import reportlab.platypus
     import reportlab.platypus.para
@@ -278,42 +260,38 @@ except ImportError:
     print('leo_pdf.py: can not import reportlab.platypus')
     reportlab = None
     raise
-    
 try:
     #copyright ReportLab Inc. 2000
     #see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
     from reportlab.lib.styles import StyleSheet1, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
+    from reportlab.lib.enums import TA_CENTER # , TA_LEFT, TA_RIGHT, TA_JUSTIFY
     from reportlab.lib import colors
-
 except ImportError:
     print('leo_pdf.py: can not import reportlab.lib styles info')
     stylesheet = None
     raise
-
 if g.isPython3:
     import io
     StringIO = io.StringIO
 else:
     import StringIO
-
 import types
 
 #@-<< imports >>
-
 #@+others
-#@+node:ekr.20090704103932.5178: ** init
+#@+node:ekr.20140920145803.17996: ** top-level functions
+#@+node:ekr.20090704103932.5178: *3* init
 def init ():
-
-    '''This file may be distributed in Leo's plugin folder, but this file is NOT
+    '''
+    This file may be distributed in Leo's plugin folder, but this file is NOT
     a Leo plugin!
 
-    The init method returns None to tell Leo's plugin manager and unit tests to
-    skip this file.'''
-
-    return None
-#@+node:ekr.20111103154150.9647: ** getStyleSheet
+    The init method returns False to tell Leo's plugin manager and unit tests to
+    skip this file.
+    '''
+    return False
+#@+node:ekr.20111103154150.9647: *3* getStyleSheet
 # Copied from stylesheet.py, from # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
 # standard stylesheet for our manuals
 
@@ -519,13 +497,12 @@ def getStyleSheet():
                                   ))
     
     return stylesheet
-#@+node:ekr.20111106070228.12430: ** get_language
+#@+node:ekr.20111106070228.12430: *3* get_language
 def get_language (doctree):
-    
     '''A wrapper for changing docutils get_language method.'''
-    
+
     class Reporter (object):
-        def warning(s):
+        def warning(self,s):
             g.es_print('Reporter.warning',s)
     
     try:
@@ -593,19 +570,13 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
-#@-others
-
+#@+node:ekr.20090704103932.5181: ** class Writer (docutils.writers.Writer)
 if docutils:
-    #@+<< define subclasses of docutils classes >>
-    #@+node:ekr.20111103122912.9783: ** << define subclasses of docutils classes >>
-    #@+others
-    #@+node:ekr.20090704103932.5181: *3* class Writer (docutils.writers.Writer)
     class Writer (docutils.writers.Writer):
-
         #@+<< class Writer declarations >>
-        #@+node:ekr.20090704103932.5182: *4* << class Writer declarations >>
+        #@+node:ekr.20090704103932.5182: *3* << class Writer declarations >>
         supported = ('pdf','rlpdf')
-        """Formats this writer supports."""
+            # Formats this writer supports.
 
         settings_spec = (
             'PDF-Specific Options',
@@ -633,17 +604,16 @@ if docutils:
         )
 
         output = None
-        """Final translated form of `document`."""
+            # Final translated form of `document`.
         #@-<< class Writer declarations >>
-
         #@+others
-        #@+node:ekr.20090704103932.5183: *4* __init__ (Writer)
+        #@+node:ekr.20090704103932.5183: *3* __init__ (Writer)
         def __init__(self):
 
             docutils.writers.Writer.__init__(self)
 
             # self.translator_class = PDFTranslator
-        #@+node:ekr.20090704103932.5184: *4* createParagraphsFromIntermediateFile
+        #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile
         def createParagraphsFromIntermediateFile (self,s,story,visitor):
 
             if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
@@ -664,7 +634,7 @@ if docutils:
                 
             else:
                 return ''
-        #@+node:ekr.20090704103932.5185: *4* createPDF_usingPlatypus
+        #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
         def createPDF_usingPlatypus (self,story):
             
             if reportlab:
@@ -680,11 +650,11 @@ if docutils:
                 
             else:
                 return ''
-        #@+node:ekr.20090704103932.5186: *4* lower
+        #@+node:ekr.20090704103932.5186: *3* lower
         def lower(self):
 
             return 'pdf'
-        #@+node:ekr.20090704103932.5187: *4* translate
+        #@+node:ekr.20090704103932.5187: *3* translate
         def translate(self):
 
             '''Do final translation of self.document into self.output.'''
@@ -722,11 +692,11 @@ if docutils:
                 lines = g.splitLines(self.output)
                 g.printList(lines)
         #@-others
-    #@+node:ekr.20090704103932.5188: *3* class dummyPDFTranslator (docutils.nodes.NodeVisitor)
+#@+node:ekr.20090704103932.5188: ** class dummyPDFTranslator (docutils.nodes.NodeVisitor)
+if docutils:
     class dummyPDFTranslator (docutils.nodes.NodeVisitor):
-
         #@+others
-        #@+node:ekr.20090704103932.5189: *4*    __init__ (dummyPDFTranslator)
+        #@+node:ekr.20090704103932.5189: *3*    __init__ (dummyPDFTranslator)
         def __init__(self, writer,doctree,contents):
 
             self.writer = writer
@@ -740,11 +710,11 @@ if docutils:
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
             self.language = get_language(doctree)
                 ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
-        #@+node:ekr.20090704103932.5190: *4* as_what
+        #@+node:ekr.20090704103932.5190: *3* as_what
         def as_what(self):
 
             return self.story
-        #@+node:ekr.20090704103932.5191: *4* encode (dummyPDFTranslator)
+        #@+node:ekr.20090704103932.5191: *3* encode (dummyPDFTranslator)
         def encode(self, text):
 
             """Encode special characters in `text` & return."""
@@ -756,7 +726,7 @@ if docutils:
 
             return text
 
-        #@+node:ekr.20090704103932.5192: *4* visit/depart_document
+        #@+node:ekr.20090704103932.5192: *3* visit/depart_document
         def visit_document(self, node):
 
             self.buildFromIntermediateFile()
@@ -766,7 +736,7 @@ if docutils:
         def depart_document(self, node):
 
             pass
-        #@+node:ekr.20090704103932.5193: *4* buildFromIntermediateFile
+        #@+node:ekr.20090704103932.5193: *3* buildFromIntermediateFile
         def buildFromIntermediateFile (self):
 
             'Synthesize calls to reportlab.platypus.para.Paragraph from an intermediate file.'
@@ -787,7 +757,7 @@ if docutils:
                         para.append(line)
             if para:
                 self.putParaFromIntermediateFile(para,style)
-        #@+node:ekr.20090704103932.5194: *4* putParaFromIntermediateFile
+        #@+node:ekr.20090704103932.5194: *3* putParaFromIntermediateFile
         def putParaFromIntermediateFile (self,lines,style):
             
             if not reportlab:
@@ -804,11 +774,12 @@ if docutils:
                     bulletText = bulletText,
                     context = self.styleSheet))
         #@-others
-    #@+node:ekr.20090704103932.5195: *3* class PDFTranslator (docutils.nodes.NodeVisitor)
+#@+node:ekr.20090704103932.5195: ** class PDFTranslator (docutils.nodes.NodeVisitor)
+if docutils:
     class PDFTranslator (docutils.nodes.NodeVisitor):
-
+        # pylint: disable=abstract-class-not-used
         #@+others
-        #@+node:ekr.20090704103932.5196: *4*    __init__ (PDFTranslator)
+        #@+node:ekr.20090704103932.5196: *3* __init__ (PDFTranslator)
         def __init__(self, writer,doctree):
 
             self.writer = writer
@@ -818,24 +789,21 @@ if docutils:
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
             self.language = get_language(doctree)
                 ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
-
             self.in_docinfo = False
             self.head = [] # Set only by meta() method.  
             self.body = [] # The body text being accumulated.
             self.foot = []
             self.sectionlevel = 0
             self.context = []
-
             self.story = []
             self.bulletText = '•' # Bullet: U+2022
-
             if 0: # no longer used.
                 self.topic_class = ''
                 self.bulletlevel = 0
-        #@+node:ekr.20090704103932.5197: *4* Complex
-        #@+node:ekr.20090704103932.5198: *5* footnotes
-        #@+node:ekr.20090704103932.5199: *6* footnote_reference
-        #@+node:ekr.20090704103932.5200: *7* visit_footnote_reference
+        #@+node:ekr.20090704103932.5197: *3* Complex
+        #@+node:ekr.20090704103932.5198: *4* footnotes
+        #@+node:ekr.20090704103932.5199: *5* footnote_reference
+        #@+node:ekr.20090704103932.5200: *6* visit_footnote_reference
         #@+at Bug fixes, EKR 8/22/05:
         #     - Get attributes from node.attributes, not node.
         #     - The proper key is 'ids', not 'id'
@@ -874,14 +842,14 @@ if docutils:
 
             markup.reverse()
             self.push(kind='footnote-ref',markup=markup)
-        #@+node:ekr.20090704103932.5201: *7* depart_footnote_reference
+        #@+node:ekr.20090704103932.5201: *6* depart_footnote_reference
         def depart_footnote_reference(self, node):
 
             b = self.pop('footnote-ref')
 
             for z in b.markup:
                 self.body.append(z)
-        #@+node:ekr.20090704103932.5202: *6* footnote & helpers
+        #@+node:ekr.20090704103932.5202: *5* footnote & helpers
         def visit_footnote(self, node):
 
             self.push(kind='footnotes',context=[])
@@ -893,7 +861,7 @@ if docutils:
             self.pop('footnotes')
 
             self.footnote_backrefs_depart(node)
-        #@+node:ekr.20090704103932.5203: *7* footnote_backrefs
+        #@+node:ekr.20090704103932.5203: *6* footnote_backrefs
         #@+at Bug fixes, EKR 8/22/05:
         #     - Get attributes from node.attributes, not node.
         #     - The proper key is 'ids', not 'id'
@@ -920,13 +888,13 @@ if docutils:
                     b.links.append(
                         self.starttag(
                             {},'link',suffix='',destination=backref))
-        #@+node:ekr.20090704103932.5204: *7* footnote_backrefs_depart
+        #@+node:ekr.20090704103932.5204: *6* footnote_backrefs_depart
         def footnote_backrefs_depart(self, node):
 
             if not self.context and self.body:
                 self.createParagraph(self.body)
                 self.body = []
-        #@+node:ekr.20090704103932.5205: *6* label
+        #@+node:ekr.20090704103932.5205: *5* label
         def visit_label(self, node):
 
             b = self.inContext('footnotes')
@@ -948,8 +916,8 @@ if docutils:
                     self.body.append('</link>')
                 # Who knows why this is here...
                 self.body.append('   ')
-        #@+node:ekr.20090704103932.5206: *5* reference...
-        #@+node:ekr.20090704103932.5207: *6* visit_reference
+        #@+node:ekr.20090704103932.5206: *4* reference...
+        #@+node:ekr.20090704103932.5207: *5* visit_reference
         def visit_reference (self,node):
 
             markup = [] ; caller = 'visit_reference'
@@ -974,14 +942,14 @@ if docutils:
                 markup.append('</link>')
 
             self.push(kind='a',markup=markup)
-        #@+node:ekr.20090704103932.5208: *6* depart_reference
+        #@+node:ekr.20090704103932.5208: *5* depart_reference
         def depart_reference(self, node):
 
             b = self.pop('a')
 
             for s in b.markup:
                 self.body.append(s)
-        #@+node:ekr.20090704103932.5209: *5* target
+        #@+node:ekr.20090704103932.5209: *4* target
         def visit_target (self,node):
 
             if not (
@@ -1002,8 +970,8 @@ if docutils:
 
         def depart_target (self,node):
             pass
-        #@+node:ekr.20090704103932.5210: *5* title
-        #@+node:ekr.20090704103932.5211: *6* visit_title
+        #@+node:ekr.20090704103932.5210: *4* title
+        #@+node:ekr.20090704103932.5211: *5* visit_title
         def visit_title (self,node):
 
             caller='visit_title'
@@ -1033,7 +1001,7 @@ if docutils:
                 markup.append('</setLink>')
 
             self.push(kind='title',markup=markup,start=start,style=style)
-        #@+node:ekr.20090704103932.5212: *6* depart_title
+        #@+node:ekr.20090704103932.5212: *5* depart_title
         def depart_title (self,node):
 
             b = self.pop('title')
@@ -1047,8 +1015,8 @@ if docutils:
                 style = 'Normal'
                 
             self.putTail(b.start,style)
-        #@+node:ekr.20090704103932.5213: *4* Helpers
-        #@+node:ekr.20090704103932.5214: *5*  starttag
+        #@+node:ekr.20090704103932.5213: *3* Helpers
+        #@+node:ekr.20090704103932.5214: *4*  starttag
         # The suffix is always '\n' except for a cant-happen situation.
 
         def starttag (self,node,tagname,suffix='\n',caller='',**attributes):
@@ -1084,11 +1052,11 @@ if docutils:
             val = '<%s>%s' % (' '.join(parts),suffix)
             # g.trace('%-24s %s' % (caller,val))
             return val
-        #@+node:ekr.20090704103932.5215: *5* as_what
+        #@+node:ekr.20090704103932.5215: *4* as_what
         def as_what(self):
 
             return self.story
-        #@+node:ekr.20090704103932.5216: *5* createParagraph
+        #@+node:ekr.20090704103932.5216: *4* createParagraph
         def createParagraph (self,text,style='Normal',bulletText=None):
             
             if not reportlab:
@@ -1122,7 +1090,7 @@ if docutils:
                 print(repr(text))
                 
                 # self.dumpContext()
-        #@+node:ekr.20090704103932.5217: *5* dumpContext
+        #@+node:ekr.20090704103932.5217: *4* dumpContext
         def dumpContext (self):
             
             if self.context:
@@ -1134,11 +1102,11 @@ if docutils:
                 for bunch in self.context:
                     print('%2d %s' % (i,bunch))
                     i += 1
-        #@+node:ekr.20090704103932.5218: *5* dumpNode
+        #@+node:ekr.20090704103932.5218: *4* dumpNode
         def dumpNode (self,node,tag=''):
 
             #@+<< define keys to be printed >>
-            #@+node:ekr.20090704103932.5219: *6* << define keys to be printed >>
+            #@+node:ekr.20090704103932.5219: *5* << define keys to be printed >>
             keys = (
                 #'anonymous_refs'
                 #'anonymous_targets'
@@ -1194,7 +1162,7 @@ if docutils:
                     g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
 
             g.pr('\ndone', '-' * 25)
-        #@+node:ekr.20090704103932.5220: *5* encode (PDFTranslator) (No longer used)
+        #@+node:ekr.20090704103932.5220: *4* encode (PDFTranslator) (No longer used)
         def encode(self, text):
 
             """Encode special characters in `text` & return."""
@@ -1203,11 +1171,11 @@ if docutils:
                 ###text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
             return text
-        #@+node:ekr.20111107181638.9742: *5* escape (PDFTranslator)
+        #@+node:ekr.20111107181638.9742: *4* escape (PDFTranslator)
         def escape (self,s):
             
             return s.replace('<','&lt').replace('>','&gt')
-        #@+node:ekr.20090704103932.5221: *5* inContext
+        #@+node:ekr.20090704103932.5221: *4* inContext
         def inContext (self,kind):
 
             '''Return the most recent bunch having the indicated kind, or None.'''
@@ -1221,7 +1189,7 @@ if docutils:
                 i -= 1
 
             return None
-        #@+node:ekr.20090704103932.5222: *5* pdfMunge
+        #@+node:ekr.20090704103932.5222: *4* pdfMunge
         def pdfMunge (self,s):
 
             '''Duplicate the munging done (somewhere in docutils) of section names.
@@ -1234,7 +1202,7 @@ if docutils:
                 s = s.replace('  ',' ')
 
             return s.replace(' ','-')
-        #@+node:ekr.20090704103932.5223: *5* push, pop, peek
+        #@+node:ekr.20090704103932.5223: *4* push, pop, peek
         def push (self,**keys):
 
             bunch = Bunch(**keys)
@@ -1258,7 +1226,7 @@ if docutils:
                 'peek at wrong bunch.  Expected: %s Got: %s' % (
                     kind, bunch.kind)
             return bunch
-        #@+node:ekr.20090704103932.5224: *5* putHead & putTail
+        #@+node:ekr.20090704103932.5224: *4* putHead & putTail
         def putHead (self,start,style='Normal',bulletText=None):
 
             self.createParagraph(self.body[:start],
@@ -1273,165 +1241,165 @@ if docutils:
                 style=style,bulletText=bulletText)
 
             self.body = self.body[:start]
-        #@+node:ekr.20090704103932.5225: *4* Simple...
-        #@+node:ekr.20090704103932.5226: *5*  do nothings...
-        #@+node:ekr.20090704103932.5227: *6* authors
+        #@+node:ekr.20090704103932.5225: *3* Simple...
+        #@+node:ekr.20090704103932.5226: *4*  do nothings...
+        #@+node:ekr.20090704103932.5227: *5* authors
         def visit_authors(self, node):
             pass
 
         def depart_authors(self, node):
             pass
-        #@+node:ekr.20090704103932.5228: *6* block_quote
+        #@+node:ekr.20090704103932.5228: *5* block_quote
         def visit_block_quote(self, node):
             pass
 
         def depart_block_quote(self, node):
             pass
-        #@+node:ekr.20090704103932.5229: *6* caption
+        #@+node:ekr.20090704103932.5229: *5* caption
         def visit_caption(self, node):
             pass
 
         def depart_caption(self, node):
             pass
-        #@+node:ekr.20090704103932.5230: *6* citation
+        #@+node:ekr.20090704103932.5230: *5* citation
         def visit_citation(self, node):
             pass
 
         def depart_citation(self, node):
             pass
-        #@+node:ekr.20090704103932.5231: *6* citation_reference
+        #@+node:ekr.20090704103932.5231: *5* citation_reference
         def visit_citation_reference(self, node):
             pass
 
         def depart_citation_reference(self, node):
             pass
-        #@+node:ekr.20090704103932.5232: *6* classifier
+        #@+node:ekr.20090704103932.5232: *5* classifier
         def visit_classifier(self, node):
             pass
 
         def depart_classifier(self, node):
             pass
-        #@+node:ekr.20090704103932.5233: *6* colspec
+        #@+node:ekr.20090704103932.5233: *5* colspec
         def visit_colspec(self, node):
             pass
 
         def depart_colspec(self, node):
             pass
-        #@+node:ekr.20090704103932.5234: *6* definition_list_item
+        #@+node:ekr.20090704103932.5234: *5* definition_list_item
         def visit_definition_list_item(self, node):
             pass
 
         def depart_definition_list_item(self, node):
             pass
-        #@+node:ekr.20090704103932.5235: *6* description
+        #@+node:ekr.20090704103932.5235: *5* description
         def visit_description(self, node):
             pass
 
         def depart_description(self, node):
             pass
-        #@+node:ekr.20090704103932.5236: *6* document
+        #@+node:ekr.20090704103932.5236: *5* document
         def visit_document(self, node):
             pass
 
         def depart_document(self, node):
             pass
-        #@+node:ekr.20090704103932.5237: *6* entry
+        #@+node:ekr.20090704103932.5237: *5* entry
         def visit_entry(self, node):
             pass
 
         def depart_entry(self, node):
             pass
-        #@+node:ekr.20090704103932.5238: *6* field_argument
+        #@+node:ekr.20090704103932.5238: *5* field_argument
         def visit_field_argument(self, node):
             pass
 
         def depart_field_argument(self, node):
             pass
-        #@+node:ekr.20090704103932.5239: *6* field_body
+        #@+node:ekr.20090704103932.5239: *5* field_body
         def visit_field_body(self, node):
             pass
 
         def depart_field_body(self, node):
             pass
-        #@+node:ekr.20090704103932.5240: *6* generated
+        #@+node:ekr.20090704103932.5240: *5* generated
         def visit_generated(self, node):
             pass
 
         def depart_generated(self, node):
             pass
-        #@+node:ekr.20090704103932.5241: *6* image
+        #@+node:ekr.20090704103932.5241: *5* image
         def visit_image(self, node):
             pass
 
         def depart_image(self, node):
             pass
-        #@+node:ekr.20090704103932.5242: *6* interpreted
+        #@+node:ekr.20090704103932.5242: *5* interpreted
         def visit_interpreted(self, node):
             pass
 
         def depart_interpreted(self, node):
             pass
-        #@+node:ekr.20090704103932.5243: *6* legend
+        #@+node:ekr.20090704103932.5243: *5* legend
         def visit_legend(self, node):
             pass
 
         def depart_legend(self, node):
             pass
-        #@+node:ekr.20090704103932.5244: *6* option
+        #@+node:ekr.20090704103932.5244: *5* option
         def visit_option(self, node):
             pass
 
         def depart_option(self, node):
             pass
-        #@+node:ekr.20090704103932.5245: *6* option_argument
+        #@+node:ekr.20090704103932.5245: *5* option_argument
         def visit_option_argument(self, node):
             pass
 
         def depart_option_argument(self, node):
             pass
-        #@+node:ekr.20090704103932.5246: *6* option_group
+        #@+node:ekr.20090704103932.5246: *5* option_group
         def visit_option_group(self, node):
             pass
 
         def depart_option_group(self, node):
             pass
-        #@+node:ekr.20090704103932.5247: *6* option_list_item
+        #@+node:ekr.20090704103932.5247: *5* option_list_item
         def visit_option_list_item(self, node):
             pass
 
         def depart_option_list_item(self, node):
             pass
-        #@+node:ekr.20090704103932.5248: *6* option_string
+        #@+node:ekr.20090704103932.5248: *5* option_string
         def visit_option_string(self, node):
             pass
 
         def depart_option_string(self, node):
             pass
-        #@+node:ekr.20090704103932.5249: *6* problematic
+        #@+node:ekr.20090704103932.5249: *5* problematic
         def visit_problematic(self, node):
             pass
 
         def depart_problematic(self, node):
             pass
-        #@+node:ekr.20090704103932.5250: *6* system_message
+        #@+node:ekr.20090704103932.5250: *5* system_message
         def visit_system_message(self, node):
             pass
 
         def depart_system_message(self, node):
             pass
-        #@+node:ekr.20090704103932.5251: *6* visit_row
+        #@+node:ekr.20090704103932.5251: *5* visit_row
         def visit_row(self, node):
             pass
 
         def depart_row(self, node):
             pass
-        #@+node:ekr.20090704103932.5252: *5* admonitions...
+        #@+node:ekr.20090704103932.5252: *4* admonitions...
         def visit_admonition(self, node, name):
             pass
 
         def depart_admonition(self):
             pass
-        #@+node:ekr.20090704103932.5253: *6* attention
+        #@+node:ekr.20090704103932.5253: *5* attention
         def visit_attention(self, node):
 
             self.visit_admonition(node, 'attention')
@@ -1439,13 +1407,13 @@ if docutils:
         def depart_attention(self, node):
 
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5254: *6* caution
+        #@+node:ekr.20090704103932.5254: *5* caution
         def visit_caution(self, node):
             self.visit_admonition(node, 'caution')
 
         def depart_caution(self, node):
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5255: *6* danger
+        #@+node:ekr.20090704103932.5255: *5* danger
         def visit_danger(self, node):
 
             self.visit_admonition(node, 'danger')
@@ -1453,25 +1421,25 @@ if docutils:
         def depart_danger(self, node):
 
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5256: *6* error
+        #@+node:ekr.20090704103932.5256: *5* error
         def visit_error(self, node):
             self.visit_admonition(node, 'error')
 
         def depart_error(self, node):
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5257: *6* hint
+        #@+node:ekr.20090704103932.5257: *5* hint
         def visit_hint(self, node):
             self.visit_admonition(node, 'hint')
 
         def depart_hint(self, node):
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5258: *6* important
+        #@+node:ekr.20090704103932.5258: *5* important
         def visit_important(self, node):
             self.visit_admonition(node, 'important')
 
         def depart_important(self, node):
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5259: *6* note
+        #@+node:ekr.20090704103932.5259: *5* note
         def visit_note(self, node):
 
             self.visit_admonition(node, 'note')
@@ -1479,7 +1447,7 @@ if docutils:
         def depart_note(self, node):
 
             self.depart_admonition()
-        #@+node:ekr.20090704103932.5260: *5* bullet_list
+        #@+node:ekr.20090704103932.5260: *4* bullet_list
         def visit_bullet_list(self, node):
 
             self.push(kind='ul',start=len(self.body))
@@ -1495,7 +1463,7 @@ if docutils:
 
             if not self.inContext('ul'):
                 self.putTail(b.start)
-        #@+node:ekr.20090704103932.5261: *5* definition
+        #@+node:ekr.20090704103932.5261: *4* definition
         def visit_definition(self, node):
 
             self.push(kind='dd')
@@ -1508,7 +1476,7 @@ if docutils:
 
             self.pop('dd')
             self.body.append('</dd>')
-        #@+node:ekr.20090704103932.5262: *5* definition_list
+        #@+node:ekr.20090704103932.5262: *4* definition_list
         def visit_definition_list(self, node):
 
             self.push(kind='dl',start=len(self.body))
@@ -1523,20 +1491,20 @@ if docutils:
 
             if not self.inContext('dl'):
                 self.putTail(b.start)
-        #@+node:ekr.20090704103932.5263: *5* docinfos...
-        #@+node:ekr.20090704103932.5264: *6* address
+        #@+node:ekr.20090704103932.5263: *4* docinfos...
+        #@+node:ekr.20090704103932.5264: *5* address
         def visit_address(self, node):
             self.visit_docinfo_item(node, 'address')
 
         def depart_address(self, node):
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5265: *6* author
+        #@+node:ekr.20090704103932.5265: *5* author
         def visit_author(self, node):
             self.visit_docinfo_item(node, 'author')
 
         def depart_author(self, node):
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5266: *6* contact
+        #@+node:ekr.20090704103932.5266: *5* contact
         def visit_contact(self, node):
 
             self.visit_docinfo_item(node, 'contact')
@@ -1544,7 +1512,7 @@ if docutils:
         def depart_contact(self, node):
 
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5267: *6* copyright
+        #@+node:ekr.20090704103932.5267: *5* copyright
         def visit_copyright(self, node):
 
             self.visit_docinfo_item(node, 'copyright')
@@ -1552,7 +1520,7 @@ if docutils:
         def depart_copyright(self, node):
 
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5268: *6* date
+        #@+node:ekr.20090704103932.5268: *5* date
         def visit_date(self, node):
 
             self.visit_docinfo_item(node, 'date')
@@ -1561,7 +1529,7 @@ if docutils:
 
             self.depart_docinfo_item()
 
-        #@+node:ekr.20090704103932.5269: *6* docinfo
+        #@+node:ekr.20090704103932.5269: *5* docinfo
         def visit_docinfo(self, node):
 
             self.push(kind='docinfo',start=len(self.body))
@@ -1572,7 +1540,7 @@ if docutils:
             b = self.pop('docinfo')
             self.putHead(b.start)
             self.in_docinfo = False
-        #@+node:ekr.20090704103932.5270: *6* docinfo_item
+        #@+node:ekr.20090704103932.5270: *5* docinfo_item
         def visit_docinfo_item(self, node, name):
 
             self.body.append(
@@ -1582,7 +1550,7 @@ if docutils:
         def depart_docinfo_item(self):
 
             self.body.append('</para>')
-        #@+node:ekr.20090704103932.5271: *6* organization
+        #@+node:ekr.20090704103932.5271: *5* organization
         def visit_organization(self, node):
 
             self.visit_docinfo_item(node, 'organization')
@@ -1590,7 +1558,7 @@ if docutils:
         def depart_organization(self, node):
 
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5272: *6* revision
+        #@+node:ekr.20090704103932.5272: *5* revision
         def visit_revision(self, node):
 
             self.visit_docinfo_item(node, 'revision')
@@ -1598,7 +1566,7 @@ if docutils:
         def depart_revision(self, node):
 
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5273: *6* status
+        #@+node:ekr.20090704103932.5273: *5* status
         def visit_status(self, node):
 
             self.visit_docinfo_item(node, 'status')
@@ -1606,13 +1574,13 @@ if docutils:
         def depart_status(self, node):
 
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5274: *6* version
+        #@+node:ekr.20090704103932.5274: *5* version
         def visit_version(self, node):
             self.visit_docinfo_item(node, 'version')
 
         def depart_version(self, node):
             self.depart_docinfo_item()
-        #@+node:ekr.20090704103932.5275: *5* emphasis
+        #@+node:ekr.20090704103932.5275: *4* emphasis
         def visit_emphasis(self, node):
 
             self.push(kind='i')
@@ -1624,7 +1592,7 @@ if docutils:
             self.pop('i')
 
             self.body.append('</i>')
-        #@+node:ekr.20090704103932.5276: *5* enumerated_list
+        #@+node:ekr.20090704103932.5276: *4* enumerated_list
         def visit_enumerated_list(self, node):
 
             self.push(kind='ol',start=len(self.body))
@@ -1639,7 +1607,7 @@ if docutils:
 
             if not self.inContext('ol'):
                 self.putTail(b.start)
-        #@+node:ekr.20090704103932.5277: *5* field_list
+        #@+node:ekr.20090704103932.5277: *4* field_list
         def visit_field_list(self, node):
 
             self.push(kind='<para>',start=len(self.body))
@@ -1651,7 +1619,7 @@ if docutils:
             self.body.append('</para>')
 
             self.putTail(b.start)
-        #@+node:ekr.20090704103932.5278: *5* list_item
+        #@+node:ekr.20090704103932.5278: *4* list_item
         def visit_list_item(self, node):
 
             self.push(kind='li')
@@ -1663,7 +1631,7 @@ if docutils:
             self.pop('li')
 
             self.body.append('</li>')
-        #@+node:ekr.20090704103932.5279: *5* option_list
+        #@+node:ekr.20090704103932.5279: *4* option_list
         def visit_option_list(self, node):
 
             self.push(kind='option-list',start=len(self.body))
@@ -1674,7 +1642,7 @@ if docutils:
 
             if not self.inContext('option_list'):
                 self.putTail(b.start)
-        #@+node:ekr.20090704103932.5280: *5* paragraph...
+        #@+node:ekr.20090704103932.5280: *4* paragraph...
         def visit_paragraph(self, node):
 
             self.push(kind='p',start=len(self.body))
@@ -1685,7 +1653,7 @@ if docutils:
 
             if not self.context and self.body:
                 self.putTail(b.start)
-        #@+node:ekr.20090704103932.5281: *5* strong
+        #@+node:ekr.20090704103932.5281: *4* strong
         def visit_strong(self, node):
 
             self.push(kind='b')
@@ -1698,7 +1666,7 @@ if docutils:
 
             self.body.append('</b>')
 
-        #@+node:ekr.20090704103932.5282: *5* subtitle
+        #@+node:ekr.20090704103932.5282: *4* subtitle
         def visit_subtitle(self, node):
 
             self.push(kind='subtitle',start=len(self.body))
@@ -1713,7 +1681,7 @@ if docutils:
                 style = 'Normal'
 
             self.putTail(b.start,style)
-        #@+node:ekr.20090704103932.5283: *5* term
+        #@+node:ekr.20090704103932.5283: *4* term
         def visit_term (self,node):
 
             self.push(kind='dt')
@@ -1724,7 +1692,7 @@ if docutils:
         def depart_term (self,node):
 
             self.pop('dt')
-        #@+node:ekr.20090704103932.5284: *5* Text...
+        #@+node:ekr.20090704103932.5284: *4* Text...
         def visit_Text (self,node):
 
             self.push(kind='#text')
@@ -1734,7 +1702,7 @@ if docutils:
         def depart_Text (self,node):
 
             self.pop('#text')
-        #@+node:ekr.20090704103932.5285: *5* topic
+        #@+node:ekr.20090704103932.5285: *4* topic
         def visit_topic (self,node):
 
             if node.hasattr('id'):
@@ -1748,9 +1716,9 @@ if docutils:
                 b = self.pop('topic-id')
                 self.body.append(b.markup)
 
-        #@+node:ekr.20090704103932.5286: *4* Unusual...
-        #@+node:ekr.20090704103932.5287: *5*  Does not set context
-        #@+node:ekr.20090704103932.5288: *6* field
+        #@+node:ekr.20090704103932.5286: *3* Unusual...
+        #@+node:ekr.20090704103932.5287: *4*  Does not set context
+        #@+node:ekr.20090704103932.5288: *5* field
         def visit_field(self, node):
 
             self.body.append('<para>')
@@ -1758,7 +1726,7 @@ if docutils:
         def depart_field(self, node):
 
             self.body.append('</para>')
-        #@+node:ekr.20090704103932.5289: *6* field_name
+        #@+node:ekr.20090704103932.5289: *5* field_name
         def visit_field_name(self, node):
 
             self.body.append('<b>')
@@ -1766,12 +1734,12 @@ if docutils:
         def depart_field_name(self, node):
 
             self.body.append(': </b>')
-        #@+node:ekr.20090704103932.5290: *5*  Raises SkipNode
-        #@+node:ekr.20090704103932.5291: *6* comment
+        #@+node:ekr.20090704103932.5290: *4*  Raises SkipNode
+        #@+node:ekr.20090704103932.5291: *5* comment
         def visit_comment(self, node):
 
             raise docutils.nodes.SkipNode
-        #@+node:ekr.20090704103932.5292: *6*  literal_blocks...
+        #@+node:ekr.20090704103932.5292: *5*  literal_blocks...
         def visit_literal_block(self, node):
             
             if reportlab:
@@ -1783,7 +1751,7 @@ if docutils:
 
         def depart_literal_block(self, node):
             pass
-        #@+node:ekr.20090704103932.5293: *7* doctest_block
+        #@+node:ekr.20090704103932.5293: *6* doctest_block
         def visit_doctest_block(self, node):
 
             self.visit_literal_block(node)
@@ -1792,18 +1760,18 @@ if docutils:
 
             self.depart_literal_block(node)
 
-        #@+node:ekr.20090704103932.5294: *7* line_block
+        #@+node:ekr.20090704103932.5294: *6* line_block
         def visit_line_block(self, node):
             self.visit_literal_block(node)
 
         def depart_line_block(self, node):
             self.depart_literal_block(node)
-        #@+node:ekr.20090704103932.5295: *5* invisible_visit
+        #@+node:ekr.20090704103932.5295: *4* invisible_visit
         def invisible_visit(self, node):
 
             """Invisible nodes should be ignored."""
             pass
-        #@+node:ekr.20090704103932.5296: *5* literal (only changes context)
+        #@+node:ekr.20090704103932.5296: *4* literal (only changes context)
         def visit_literal(self, node):
 
             self.push(kind='literal')
@@ -1811,7 +1779,7 @@ if docutils:
         def depart_literal(self, node):
 
             self.pop('literal')
-        #@+node:ekr.20090704103932.5297: *5* meta (appends to self.head)
+        #@+node:ekr.20090704103932.5297: *4* meta (appends to self.head)
         def visit_meta(self, node):
 
             g.trace(**node.attributes)
@@ -1822,7 +1790,7 @@ if docutils:
         def depart_meta(self, node):
 
             pass
-        #@+node:ekr.20090704103932.5298: *5* section
+        #@+node:ekr.20090704103932.5298: *4* section
         def visit_section(self, node):
 
             self.sectionlevel += 1
@@ -1830,12 +1798,12 @@ if docutils:
         def depart_section(self, node):
 
             self.sectionlevel -= 1
-        #@+node:ekr.20090704103932.5299: *5* unimplemented_visit
+        #@+node:ekr.20090704103932.5299: *4* unimplemented_visit
         def unimplemented_visit(self, node):
 
             raise NotImplementedError(
                 'visiting unimplemented node type: %s' % node.__class__.__name__)
-        #@+node:ekr.20090704103932.5300: *5* visit_raw
+        #@+node:ekr.20090704103932.5300: *4* visit_raw
         def visit_raw(self, node):
 
             if node.has_key('format') and node['format'] == 'html':
@@ -1843,13 +1811,12 @@ if docutils:
 
             raise docutils.nodes.SkipNode
         #@-others
-
         depart_comment = invisible_visit
         visit_substitution_definition = visit_comment
         depart_substitution_definition = depart_comment
         visit_figure = visit_comment
         depart_figure = depart_comment
-
+    
         visit_sidebar = invisible_visit
         visit_warning = invisible_visit
         visit_tip = invisible_visit
@@ -1870,6 +1837,8 @@ if docutils:
         depart_tip = invisible_visit
         depart_warning = invisible_visit
         depart_sidebar = invisible_visit
-    #@-others
-    #@-<< define subclasses of docutils classes >>
+#@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

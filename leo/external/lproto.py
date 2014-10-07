@@ -12,21 +12,20 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20091009234538.1373: ** << imports >>
-# todo move out qt dep
-
-# pylint: disable=unused-import
-
-import PyQt4.QtGui
-    # This is required to work around pylint/qt problem.
-import PyQt4.QtCore as QtCore
-from PyQt4 import QtNetwork
-    
+# todo remove dependency on Qt.
+import leo.core.leoGlobals as g
+from leo.core.leoQt import isQt5,QtCore
+if isQt5:
+    from PyQt5 import QtNetwork
+else:
+    from PyQt4 import QtNetwork
+import os   
 import socket
 import struct
 
-import os
 
-import leo.core.leoGlobals as g
+
+
 #@-<< imports >>
 
 # EKR: use this by default.

@@ -149,18 +149,15 @@ except ImportError:
 #@+others
 #@+node:peckj.20131002201824.5542: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
-
     ok = g.app.gui.guiName().startswith('qt') and feedparser is not None
-
     if ok:
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Module \'feedparser\' not installed.  Plugin rss.py not loaded.', color='red')
-
     return ok
 #@+node:peckj.20131002201824.5543: ** onCreate
 def onCreate (tag, keys):
@@ -226,6 +223,7 @@ class RSSController:
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
         
         # process entries
+        # pylint: disable=unnecessary-lambda
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
         if sort_newest_first:
             stories.reverse()

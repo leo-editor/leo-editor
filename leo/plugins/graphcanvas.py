@@ -1,13 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20090206153748.1: * @file graphcanvas.py
-#@@language python
-#@@tabwidth -4
 """
 Provides a widget for displaying graphs (networks) in Leo.
-Interacts with the backlinks.py plugin (same linkage data).
 
-Implementation notes
---------------------
+Requires Qt and the backlink.py plugin.
 
 There are various bindings for graphviz:
 http://blog.holkevisser.nl/2011/01/24/how-to-use-graphvize-with-python-on-windows/
@@ -15,46 +11,35 @@ but pydot and pygraphviz are two of the more common and pydot is easier to insta
 in windows.  This plugin started out supporting both, but it seems (TNB 20120511) to
 make sense to focus on pydot.
 """
-#@+others
-#@+node:bob.20110119123023.7392: ** graphcanvas declarations
-"""Adds a graph layout for nodes in a tab.
-Requires Qt and the backlink.py plugin.
-"""
 
-__version__ = '0.1'
-# 
-# 0.1 - initial release - TNB
-
+#@+<< imports >>
+#@+node:bob.20110119123023.7392: ** << imports >> graphcanvas
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 from math import atan2, sin, cos
-
-import time
-import os
-
+# import time
 import os
 import tempfile
 
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     import urllib.request as urllib
-    import urllib.parse as urlparse
 else:
     import urllib2 as urllib
-    import urlparse
     
-from xml.sax.saxutils import quoteattr
+# from xml.sax.saxutils import quoteattr
 
 try:
+    # pylint: disable=unused-import
     import pydot
     import dot_parser
 except ImportError:
     pydot = None
 
+# Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-
-from PyQt4 import QtCore, QtGui, uic
-Qt = QtCore.Qt
+from leo.core.leoQt import QtConst, QtCore, QtGui, uic
 
 pygraphviz = None
 if not pydot:
@@ -62,20 +47,19 @@ if not pydot:
         import pygraphviz
     except ImportError:
         pygraphviz = None
-    
+#@-<< imports >>
 c_db_key = '_graph_canvas_gnx'
+# pylint: disable=maybe-no-member
+#@+others
 #@+node:bob.20110119123023.7393: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui.guiName() != "qt":
         return False
-
     g.visit_tree_item.add(colorize_headlines_visitor)
-    
     g.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
-
     return True
 #@+node:bob.20110121094946.3410: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
@@ -243,13 +227,13 @@ class GraphicsView(QtGui.QGraphicsView):
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
         
-        if int(event.modifiers() & Qt.ControlModifier):
+        if int(event.modifiers() & QtConst.ControlModifier):
 
             scale = 1.+0.1*(event.delta() / 120)
             
             self.scale(scale, scale)
 
-        elif int(event.modifiers() & Qt.AltModifier):
+        elif int(event.modifiers() & QtConst.AltModifier):
             
             self.glue.scale_centers(event.delta() / 120)
             
@@ -375,7 +359,7 @@ class nodeBase(QtGui.QGraphicsItemGroup):
     #@+node:tbrown.20110407091036.17539: *3* do_update
     def do_update(self):
 
-        raise NotImplemented
+        raise NotImplementedError
     #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
     def mouseMoveEvent(self, event):
         
@@ -407,7 +391,7 @@ class nodeRect(nodeBase):
         self.setZValue(20)
         self.bg.setZValue(10)
         self.text.setZValue(15)
-        self.bg.setPen(QtGui.QPen(Qt.NoPen))
+        self.bg.setPen(QtGui.QPen(QtConst.NoPen))
     
         self.text.setPos(QtCore.QPointF(0, self.iconVPos))
         self.addToGroup(self.text)
@@ -673,7 +657,7 @@ class linkItem(QtGui.QGraphicsItemGroup):
         else:
             self.head.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
             
-        self.head.setPen(QtGui.QPen(Qt.NoPen))
+        self.head.setPen(QtGui.QPen(QtConst.NoPen))
         self.addToGroup(self.head)
     #@+node:bob.20110119123023.7406: *3* mousePressEvent
     def mousePressEvent(self, event):
@@ -732,7 +716,6 @@ class graphcanvasController(object):
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""
-
         self.node = {}  # item to vnode map
         self.nodeItem = {}  # vnode to item map
         self.link = {}
@@ -740,7 +723,6 @@ class graphcanvasController(object):
         self.hierarchyLink = {}
         self.hierarchyLinkItem = {}
         self.lastNodeItem = None
-        
         self.internal_select = False  
         # avoid selection of a @graph node on the graph triggering onSelect2
     #@+node:tbrown.20110122085529.15402: *3* layouts
@@ -851,7 +833,7 @@ class graphcanvasController(object):
         self.center_graph()
         
         # self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
-        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
+        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), QtConst.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create = True, pnt=None):
 
@@ -1038,7 +1020,7 @@ class graphcanvasController(object):
         if (lastNode and 
             not isinstance(lastNode, nodeNone) and
             not isinstance(lastNode, nodeImage)):
-            lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
+            lastNode.bg.setPen(QtGui.QPen(QtConst.NoPen))
 
         if  (not isinstance(nodeItem, nodeNone) and
              not isinstance(nodeItem, nodeImage)):
@@ -1056,7 +1038,7 @@ class graphcanvasController(object):
         if not blc:
             return
 
-        if event and event.modifiers() & Qt.ShiftModifier:
+        if event and event.modifiers() & QtConst.ShiftModifier:
             links = blc.linksFrom(self.node[oldItem])
             if self.node[nodeItem] not in links:
                 blc.vlink(self.node[oldItem], self.node[nodeItem])
@@ -1079,7 +1061,7 @@ class graphcanvasController(object):
         if not blc:
             return
 
-        if not (event.modifiers() & Qt.ControlModifier):
+        if not (event.modifiers() & QtConst.ControlModifier):
             return
 
         if linkItem in self.link:
@@ -1225,7 +1207,7 @@ class graphcanvasController(object):
         bbox = self.ui.canvas.itemsBoundingRect()           
         self.ui.canvas.setSceneRect(bbox)      
         self.ui.canvasView.updateSceneRect(bbox)
-        self.ui.canvasView.fitInView(bbox, Qt.KeepAspectRatio)
+        self.ui.canvasView.fitInView(bbox, QtConst.KeepAspectRatio)
         self.ui.canvasView.centerOn(bbox.center())
         
         # and add space around it for movement
@@ -1319,12 +1301,12 @@ class graphcanvasController(object):
         if 'color' in node.u['_bklnk']:
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
+            del node.u['_bklnk']['tcolor']
         if 'type' in node.u['_bklnk']:
             del node.u['_bklnk']['type']
 
         del node.u['_bklnk']
-        
+
         self.unLoad()
     #@+node:bob.20110202125047.4170: *5* exportGraph
     def exportGraph(self):
@@ -1379,20 +1361,19 @@ class graphcanvasController(object):
 
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
-        
         # FIXME: need node.clear_formatting()
         if hasattr(item, 'bg'):
             item.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         if hasattr(item, 'text'):
             item.text.setDefaultTextColor(QtGui.QColor(0,0,0))
-
         if 'color' in node.u['_bklnk']:
             del node.u['_bklnk']['color']
         if 'tcolor' in node.u['_bklnk']:
-                del node.u['_bklnk']['tcolor']
-
+            del node.u['_bklnk']['tcolor']
         self.releaseNode(self.nodeItem[node])
     #@-others
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

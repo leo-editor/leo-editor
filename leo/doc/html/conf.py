@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# 2014/02/14: Replaced cr/lf by lf.
+# 2014/02/14: -----> Replaced cr/lf by lf.
 
 import sys, os
 
@@ -36,7 +36,7 @@ source_suffix = '.html.txt'
 #source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'leo_toc' # don't use any prefix.
+master_doc = 'leo_toc' # don't use any suffix.
 
 # General information about the project.
 project = 'Leo'

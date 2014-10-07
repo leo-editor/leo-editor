@@ -63,6 +63,7 @@ def InitInClass(tag, keywords):
         i._unlink()
 #@+node:ekr.20101110093301.5817: ** init
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     leoPlugins.registerHandler("after-auto", InitInClass)
     g.plugin_signon(__name__)
     return True

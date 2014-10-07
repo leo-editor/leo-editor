@@ -29,9 +29,9 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20070119094733.2: ** <<imports>>
-import leo.core.leoPlugins as leoPlugins
-    # Uses baseLeoPlugin.
-from leo.core.leoPlugins import baseLeoPlugin
+# import leo.core.leoPlugins as leoPlugins
+    # Uses BaseLeoPlugin.
+from leo.core.leoPlugins import BaseLeoPlugin
 
 import doctest
 import os
@@ -51,13 +51,12 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20070119094733.5: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame', DT)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20070119094733.6: ** class DT
-class DT(baseLeoPlugin):
+class DT(BaseLeoPlugin):
 
     """Sends code to the doctest module and reports the result
     If text is selected, tests only the selection.
@@ -80,7 +79,7 @@ class DT(baseLeoPlugin):
 
         """Init doctest plugin
         """
-        baseLeoPlugin.__init__(self, tag, keywords)
+        BaseLeoPlugin.__init__(self, tag, keywords)
         self.setCommand('dt', self.dtest)
 
         self.c = keywords['c']

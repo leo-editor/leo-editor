@@ -8,7 +8,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20110310091639.14291: ** << docstring >>
-""" CodeWise - global code intelligence database
+r""" CodeWise - global code intelligence database
 
 Why this module
 ===============
@@ -100,6 +100,7 @@ import sqlite3
 import sys
 import types
 
+from sqlite3 import ProgrammingError
 
 # A hack to get this module without actually importing it.
 def get_module():
@@ -372,10 +373,10 @@ def pr(*args,**keys): # (codewise!)
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
 
     if 1: # Good for production: queues 'reading settings' until after signon.
-        if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
+        if g.app.logInited and sys.stdout: # Bug fix: 2012/11/13.
             sys.stdout.write(s2)
         else:
-            app.printWaiting.append(s2)
+            g.app.printWaiting.append(s2)
     else:
         # Good for debugging: prints messages immediately.
         print(s2)
@@ -713,7 +714,12 @@ class CodeWise:
 
     #@+node:ekr.20110310091639.14261: *3* cursor
     def cursor(self):
-        return self.dbconn and self.dbconn.cursor()
+        if self.dbconn:
+            try:
+                return self.dbconn.cursor()
+            except ProgrammingError:
+                g.es("No cursor for codewise DB, closed database?")
+
 
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):

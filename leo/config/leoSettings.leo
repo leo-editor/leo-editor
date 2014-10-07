@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -11,7 +11,32 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
+<v t="ekr.20111017082630.16086"><vh>Disabled buttons</vh>
+<v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
+<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
+<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
+<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
+<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
+<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
+<v t="ekr.20111017082630.16085"><vh>main</vh></v>
+</v>
+<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
+<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
+<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
+<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
+<v t="ekr.20110612074140.16416"><vh>init</vh></v>
+<v t="ekr.20110612074140.16415"><vh>run</vh></v>
+</v>
+<v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
+</v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
+<v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
+<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
+<v t="ekr.20060112104333"><vh>doSet</vh></v>
+<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
+<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
+<v t="ekr.20060112104823"><vh>main</vh></v>
+</v>
 <v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
@@ -32,35 +57,16 @@
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
-<v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
-<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
-<v t="ekr.20060112104333"><vh>doSet</vh></v>
-<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
-<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
-<v t="ekr.20060112104823"><vh>main</vh></v>
-</v>
-<v t="ekr.20111017082630.16086"><vh>Disabled/old</vh>
-<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
-<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
-<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
-<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
-<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
-<v t="ekr.20111017082630.16085"><vh>main</vh></v>
-</v>
-<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
-<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
-<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
-<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
-<v t="ekr.20110612074140.16416"><vh>init</vh></v>
-<v t="ekr.20110612074140.16415"><vh>run</vh></v>
-</v>
-</v>
+<v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
+<v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
+<v t="ekr.20140918165611.38050"><vh>@button color-wheel</vh></v>
+<v t="tbrown.20140609102412.32428"><vh>@button pick-color-name</vh></v>
 </v>
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -106,6 +112,259 @@
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
 </v>
+<v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
+<v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
+<v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+</v>
+<v t="ekr.20140915194122.23431"><vh>Colors</vh>
+<v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
+<v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
+<v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
+<v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
+</v>
+<v t="ekr.20140915194122.23439"><vh>Border colors</vh>
+<v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
+<v t="tbrown.20140514191846.42173"><vh>@color focused-border-unfocus-color = white</vh></v>
+</v>
+<v t="tbrown.20131122091143.23829"><vh>Button colors</vh>
+<v t="tbrown.20131122091143.23833"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23834"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23835"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
+<v t="tbrown.20131122091143.23836"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23837"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23838"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
+<v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
+</v>
+<v t="ekr.20140915194122.23445"><vh>Find tab colors</vh>
+<v t="ekr.20140912075503.19269"><vh>@color find-tab-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19309"><vh>Log pane colors</vh>
+<v t="ekr.20140912075503.19310"><vh>@color log-fg = black</vh></v>
+<v t="ekr.20140912075503.19311"><vh>@color log-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19327"><vh>Minibuffer colors</vh>
+<v t="ekr.20140912075503.19330"><vh>@color minibuffer-fg = black</vh></v>
+<v t="ekr.20140912075503.19331"><vh>@color minibuffer-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19332"><vh>@color minibuffer-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19333"><vh>@color minibuffer-sel-bg = lightgray</vh></v>
+</v>
+<v t="ekr.20140912075503.19283"><vh>Outline colors</vh>
+<v t="ekr.20140915194122.23437"><vh>Basic outline colors</vh>
+<v t="ekr.20140915194122.23426"><vh>@color tree-item-selected-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19284"><vh>@color tree-fg = black</vh></v>
+<v t="ekr.20140912075503.19285"><vh>@color tree-bg = @LeoYellow</vh></v>
+<v t="ekr.20140912075503.19286"><vh>@color tree-sel-fg = black</vh></v>
+<v t="ekr.20140912075503.19287"><vh>@color tree-sel-bg = lightgrey</vh></v>
+</v>
+<v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
+<v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
+<v t="ekr.20140912075503.19294"><vh>@color head-bg = pink</vh></v>
+<v t="ekr.20140912075503.19295"><vh>@color head-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
+</v>
+<v t="ekr.20140912075503.19301"><vh>Colors for headlines that are *not* being edited</vh>
+<v t="ekr.20140912075503.19302"><vh>@color edit-label-border = 2px</vh></v>
+<v t="ekr.20140912075503.19303"><vh>@color edit-label-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19304"><vh>@color edit-label-bg = @LeoYellow</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.24238"><vh>Plugin colors (deprecated)</vh>
+<v t="ekr.20140915194122.24250"><vh>@color text-foreground = black</vh></v>
+<v t="ekr.20140915194122.24251"><vh>@color text-foreground-body = @text-foreground</vh></v>
+<v t="ekr.20140915194122.24252"><vh>@color text-foreground-tree = @text-foreground</vh></v>
+<v t="ekr.20140915194122.24253"><vh>@color text-foreground-log = @text-foreground</vh></v>
+</v>
+<v t="ekr.20140915194122.23446"><vh>Scroll area colors</vh>
+<v t="ekr.20140912075503.19268"><vh>@color scroll-area-bg = white</vh></v>
+</v>
+<v t="ekr.20140912075503.19273"><vh>Splitter colors</vh>
+<v t="ekr.20140912075503.19274"><vh>@color splitter-bg = white</vh></v>
+<v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
+<v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+</v>
+<v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
+<v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
+<v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
+</v>
+<v t="ekr.20140915194122.23447"><vh>Widget colors (simple widgets)</vh>
+<v t="ekr.20140922124047.19517"><vh>@color frame-bg = white</vh></v>
+<v t="ekr.20140912075503.19271"><vh>@color stacked-widget-border-color = white</vh></v>
+<v t="ekr.20140922124047.20313"><vh>@color stacked-widget-bg = white</vh></v>
+<v t="ekr.20140922124047.19516"><vh>@color tabbed-widget-bg = white</vh></v>
+</v>
+</v>
+<v t="ekr.20140912075503.19262"><vh>Fonts</vh>
+<v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
+<v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
+<v t="ekr.20140915194122.23413"><vh>@string medium-font-size = 10pt</vh></v>
+<v t="ekr.20140915194122.21837"><vh>@string small-font-size = 10pt</vh></v>
+<v t="ekr.20140912075503.19266"><vh>@string font-style = normal</vh></v>
+<v t="ekr.20140912075503.19265"><vh>@string font-weight = normal</vh></v>
+</v>
+<v t="ekr.20140915194122.23427"><vh>Body Fonts</vh>
+<v t="ekr.20140912075503.19323"><vh>@string body-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19324"><vh>@string body-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19326"><vh>@string body-font-style = @font-style</vh></v>
+<v t="ekr.20140912075503.19325"><vh>@string body-font-weight = @font-weight</vh></v>
+<v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @body-font-size</vh></v>
+</v>
+<v t="ekr.20140915194122.23441"><vh>Dialog fonts</vh>
+<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = None</vh></v>
+<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = None</vh></v>
+<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
+<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
+</v>
+<v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
+<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
+<v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
+<v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19280"><vh>@string find-font-size = @medium-font-size</vh></v>
+<v t="ekr.20140912075503.19282"><vh>@string find-font-style = @font-style</vh></v>
+<v t="ekr.20140912075503.19281"><vh>@string find-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19278"><vh>@string find-pattern-font-family = @font-family</vh></v>
+</v>
+<v t="ekr.20140915194122.23429"><vh>Log pane fonts</vh>
+<v t="ekr.20140912075503.19312"><vh>@string log-sel-fg = white</vh></v>
+<v t="ekr.20140912075503.19313"><vh>@string log-sel-bg = blue</vh></v>
+<v t="ekr.20140912075503.19314"><vh>@string log-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19315"><vh>@string log-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19316"><vh>@string log-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19317"><vh>@string log-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23430"><vh>Minibuffer fonts</vh>
+<v t="ekr.20140912075503.19334"><vh>@string minibuffer-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19335"><vh>@string minibuffer-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19336"><vh>@string minibuffer-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19337"><vh>@string minibuffer-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23432"><vh>Outline pane fonts</vh>
+<v t="ekr.20140915194122.23436"><vh>Basic outline fonts</vh>
+<v t="ekr.20140912075503.19288"><vh>@string tree-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19289"><vh>@string tree-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19290"><vh>@string tree-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19291"><vh>@string tree-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23433"><vh>Fonts for headlines that *are* being edited</vh>
+<v t="ekr.20140912075503.19297"><vh>@string head-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19298"><vh>@string head-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19299"><vh>@string head-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19300"><vh>@string head-font-style = @font-style</vh></v>
+</v>
+<v t="ekr.20140915194122.23435"><vh>Fonts for headlines that are *not* being edited</vh>
+<v t="ekr.20140912075503.19305"><vh>@string edit-label-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19306"><vh>@string edit-label-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19307"><vh>@string edit-label-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19308"><vh>@string edit-label-font-style = @font-style</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23443"><vh>Status area fonts</vh>
+<v t="ekr.20140912075503.19350"><vh>@string status-font-family = None</vh></v>
+<v t="ekr.20140912075503.19351"><vh>@string status-font-size = @small-font-size</vh></v>
+<v t="ekr.20140912075503.19352"><vh>@string status-font-weight = @font-weight</vh></v>
+<v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23440"><vh>Plugins</vh>
+<v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
+<v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
+<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = none</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
+<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
+<v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
+<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="ekr.20140915194122.24265"><vh>@string bookmarks_base_style = normal</vh></v>
+<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
+</v>
+<v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
+<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
+</v>
+<v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
+<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
+<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
+</v>
+<v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="ekr.20140915194122.24268"><vh>@string bookmarks_expanded_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
+</v>
+</v>
+<v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
+<v t="ekr.20140912075503.19360"><vh>@string screencast-bg = yellow</vh></v>
+<v t="ekr.20140912075503.19361"><vh>@string screencast-font-family = Times New Roman</vh></v>
+<v t="ekr.20140912075503.19362"><vh>@string screencaset-font-size = 18pt</vh></v>
+<v t="ekr.20140912075503.19363"><vh>@string screencast-font-weight = normal</vh></v>
+<v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
+</v>
+</v>
+<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
+<v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
+<v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
+<v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
+</v>
+<v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
+<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
+<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
+</v>
+<v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
+<v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
+<v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
+</v>
+<v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
+<v t="ekr.20140912075503.19272"><vh>@string stacked-widget-padding = 0px</vh></v>
+</v>
+<v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
+<v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
+</v>
+<v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui styles sheet</vh>
+<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
+<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
+<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
+<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
+<v t="ekr.20140915194122.19460"><vh>Focus borders</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
+<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
+<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
+<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
+<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
+<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
+<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
+</v>
+<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
+<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
+<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
+<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
@@ -113,6 +372,13 @@
 <v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
+</v>
+<v t="ekr.20140916113003.20415"><vh>Bracket matching</vh>
+<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
+<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
+<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
+<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
+<v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 </v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -334,6 +600,206 @@
 <v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20140721165014.19146"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20140721165014.19313"><vh>Vim emulation</vh>
+<v t="ekr.20140721165014.19147"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
+<v t="ekr.20140721165014.19159"><vh>@keys Vim bindings</vh>
+<v t="ekr.20140721165014.19160"><vh>Vim User Documentation</vh></v>
+<v t="ekr.20140721165014.19161"><vh>Vim History</vh></v>
+<v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
+<v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
+<v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20140721165014.19166"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+</v>
+<v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
+<v t="ekr.20140721165014.19169"><vh>@mode tree-undo</vh></v>
+<v t="ekr.20140721165014.19170"><vh>@mode tree-redo</vh></v>
+<v t="ekr.20140721165014.19171"><vh>@mode focus-to-tree</vh></v>
+<v t="ekr.20140721165014.19172"><vh>@mode focus-to-body</vh></v>
+<v t="ekr.20140721165014.19173"><vh>@mode body-command-line</vh>
+<v t="ekr.20140721165014.19174"><vh>@mode body-command-revert</vh></v>
+<v t="ekr.20140721165014.19175"><vh>@mode body-command-save</vh>
+<v t="ekr.20140721165014.19176"><vh>@mode body-command-save-quit</vh>
+<v t="ekr.20140721165014.19177"><vh>@mode body-command-save-quit-return</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19178"><vh>@mode body-command-quit</vh></v>
+</v>
+<v t="ekr.20140721165014.19179"><vh>@mode tree-command-line</vh>
+<v t="ekr.20140721165014.19180"><vh>@mode tree-command-revert</vh></v>
+<v t="ekr.20140721165014.19181"><vh>@mode tree-command-save</vh>
+<v t="ekr.20140721165014.19182"><vh>@mode tree-command-save-only</vh></v>
+<v t="ekr.20140721165014.19183"><vh>@mode tree-command-save-quit</vh>
+<v t="ekr.20140721165014.19184"><vh>@mode tree-command-save-quit-return</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19185"><vh>@mode tree-command-quit</vh></v>
+</v>
+<v t="ekr.20140721165014.19186"><vh>@mode body-shift-z</vh>
+<v t="ekr.20140721165014.19187"><vh>@mode body-shift-z-save-quit</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19188"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="ekr.20140721165014.19189"><vh>@mode tree-yank-object</vh></v>
+<v t="ekr.20140721165014.19190"><vh>@mode tree-change-object</vh></v>
+<v t="ekr.20140721165014.19191"><vh>@mode tree-delete-text-object</vh></v>
+<v t="ekr.20140721165014.19192"><vh>@mode tree-copy-node</vh></v>
+<v t="ekr.20140721165014.19193"><vh>@mode tree-paste-node</vh></v>
+<v t="ekr.20140721165014.19194"><vh>@mode tree-delete-node</vh></v>
+<v t="ekr.20140721165014.19195"><vh>@mode tree-goto-last-node</vh></v>
+<v t="ekr.20140721165014.19196"><vh>@mode tree-goto</vh>
+<v t="ekr.20140721165014.19197"><vh>@mode node-goto-first-node</vh></v>
+</v>
+<v t="ekr.20140721165014.19198"><vh>@mode tree-goto-next-visible</vh></v>
+<v t="ekr.20140721165014.19199"><vh>@mode tree-goto-prev-visible</vh></v>
+<v t="ekr.20140721165014.19200"><vh>@mode tree-search-forward</vh></v>
+<v t="ekr.20140721165014.19201"><vh>@mode tree-replace-string</vh></v>
+<v t="ekr.20140721165014.19202"><vh>@mode tree-contract-or-go-left</vh></v>
+<v t="ekr.20140721165014.19203"><vh>@mode tree-contract-node</vh></v>
+<v t="ekr.20140721165014.19204"><vh>@mode tree-expand-and-go-right</vh></v>
+<v t="ekr.20140721165014.19205"><vh>@mode tree-move-outline-up</vh></v>
+<v t="ekr.20140721165014.19206"><vh>@mode tree-move-outline-down</vh></v>
+<v t="ekr.20140721165014.19207"><vh>@mode tree-move-outline-left</vh></v>
+<v t="ekr.20140721165014.19208"><vh>@mode tree-move-outline-right</vh></v>
+<v t="ekr.20140721165014.19209"><vh>@mode tree-clone-node</vh></v>
+<v t="ekr.20140721165014.19210"><vh>@mode tree-goto-next-clone-node</vh></v>
+<v t="ekr.20140721165014.19211"><vh>@mode tree-mark-node</vh></v>
+<v t="ekr.20140721165014.19212"><vh>@mode tree-goto-next-marked-node</vh></v>
+<v t="ekr.20140721165014.19213"><vh>@mode tree-unmark-all-nodes</vh></v>
+<v t="ekr.20140721165014.19214"><vh>Body actions from Tree pane</vh>
+<v t="ekr.20140721165014.19215"><vh>@mode tree-goto-next-line</vh></v>
+<v t="ekr.20140721165014.19216"><vh>@mode tree-goto-prev-line</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19217"><vh>@shortcuts - vi in Body pane</vh>
+<v t="ekr.20140721165014.19218"><vh>@mode body-search-forward</vh></v>
+<v t="ekr.20140721165014.19219"><vh>@mode body-search-backward</vh></v>
+<v t="ekr.20140721165014.19220"><vh>@mode body-search-everywhere</vh></v>
+<v t="ekr.20140721165014.19221"><vh>@mode body-search-options</vh>
+<v t="ekr.20140721165014.19222"><vh>@mode body-search-all-nodes</vh></v>
+<v t="ekr.20140721165014.19223"><vh>@mode body-search-toggle-headline</vh></v>
+<v t="ekr.20140721165014.19224"><vh>@mode body-search-toggle-body</vh></v>
+<v t="ekr.20140721165014.19225"><vh>@mode body-search-toggle-mark</vh>
+<v t="ekr.20140721165014.19226"><vh>@mode body-search-toggle-mark-finds</vh></v>
+<v t="ekr.20140721165014.19227"><vh>@mode body-search-toggle-mark-changes</vh></v>
+</v>
+<v t="ekr.20140721165014.19228"><vh>@mode body-search-toggle-regex</vh></v>
+</v>
+<v t="ekr.20140721165014.19229"><vh>@mode body-replace-string</vh></v>
+<v t="ekr.20140721165014.19230"><vh>@mode body-paste-then-find</vh></v>
+<v t="ekr.20140721165014.19231"><vh>@mode body-goto-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19232"><vh>@mode body-g</vh>
+<v t="ekr.20140721165014.19233"><vh>@mode body-g-beginning-of-buffer</vh>
+<v t="ekr.20140721165014.19234"><vh>@mode body-g-q</vh></v>
+<v t="ekr.20140721165014.19235"><vh>@mode body-g-w</vh>
+<v t="ekr.20140721165014.19236"><vh>@mode body-g-wq-a</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140721165014.19237"><vh>@mode body-new-line-below</vh></v>
+<v t="ekr.20140721165014.19238"><vh>@mode body-new-line-above</vh></v>
+<v t="ekr.20140721165014.19239"><vh>@mode body-append</vh></v>
+<v t="ekr.20140721165014.19240"><vh>@mode body-insert-at-indent</vh></v>
+<v t="ekr.20140721165014.19241"><vh>@mode body-delete-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19242"><vh>@mode body-delete-object</vh>
+<v t="ekr.20140721165014.19243"><vh>@mode body-delete-line</vh></v>
+<v t="ekr.20140721165014.19244"><vh>@mode body-delete-to-end-of-word</vh></v>
+<v t="ekr.20140721165014.19245"><vh>@mode body-delete-to-begin-of-word</vh></v>
+<v t="ekr.20140721165014.19246"><vh>@mode body-delete-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19247"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19248"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19249"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19250"><vh>@mode body-delete-to-g-object</vh>
+<v t="ekr.20140721165014.19251"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19252"><vh>@mode body-delete-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19253"><vh>@mode body-delete-section</vh></v>
+<v t="ekr.20140721165014.19254"><vh>@mode body-delete-to-char</vh></v>
+<v t="ekr.20140721165014.19255"><vh>@mode body-delete-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19256"><vh>@mode body-yank-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19257"><vh>@mode body-yank-object</vh>
+<v t="ekr.20140721165014.19258"><vh>@mode body-yank-line</vh></v>
+<v t="ekr.20140721165014.19259"><vh>@mode body-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20140721165014.19260"><vh>@mode body-yank-to-beginning-of-current-word</vh></v>
+<v t="ekr.20140721165014.19261"><vh>@mode body-yank-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19262"><vh>@mode body-yank-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19263"><vh>@mode body-yank-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19264"><vh>@mode body-yank-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19265"><vh>@mode body-yank-to-g-object</vh>
+<v t="ekr.20140721165014.19266"><vh>@mode body-yank-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19267"><vh>@mode body-yank-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19268"><vh>@mode body-yank-section</vh></v>
+<v t="ekr.20140721165014.19269"><vh>@mode body-yank-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19270"><vh>@mode body-change-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19271"><vh>@mode body-change-object</vh>
+<v t="ekr.20140721165014.19272"><vh>@mode body-change-line</vh></v>
+<v t="ekr.20140721165014.19273"><vh>@mode body-change-to-end-of-word</vh></v>
+<v t="ekr.20140721165014.19274"><vh>@mode body-change-to-beginning-of-word</vh></v>
+<v t="ekr.20140721165014.19275"><vh>@mode body-change-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19276"><vh>@mode body-change-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19277"><vh>@mode body-change-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19278"><vh>@mode body-change-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19279"><vh>@mode body-change-to-g-object</vh>
+<v t="ekr.20140721165014.19280"><vh>@mode body-change-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19281"><vh>@mode body-change-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19282"><vh>@mode body-change-section</vh></v>
+<v t="ekr.20140721165014.19283"><vh>@mode body-change-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19284"><vh>@mode body-substitute-char</vh></v>
+<v t="ekr.20140721165014.19285"><vh>@mode body-substitute-line</vh></v>
+<v t="ekr.20140721165014.19286"><vh>@mode body-indent</vh>
+<v t="ekr.20140721165014.19287"><vh>@mode body-indent-line</vh></v>
+<v t="ekr.20140721165014.19288"><vh>@mode body-indent-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19289"><vh>@mode body-indent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19290"><vh>@mode body-indent-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19291"><vh>@mode body-indent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19292"><vh>@mode body-indent-to-beginning-of-buffer</vh></v>
+<v t="ekr.20140721165014.19293"><vh>@mode body-indent-to-end-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19294"><vh>@mode body-unindent</vh>
+<v t="ekr.20140721165014.19295"><vh>@mode body-unindent-less</vh></v>
+<v t="ekr.20140721165014.19296"><vh>@mode body-unindent-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19297"><vh>@mode body-unindent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19298"><vh>@mode body-unindent-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19299"><vh>@mode body-unindent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19300"><vh>@mode body-unindent-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19301"><vh>@mode body-unindent-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19302"><vh>@mode body-goto-indent-previous-line</vh></v>
+<v t="ekr.20140721165014.19303"><vh>@mode body-goto-after-paragraph</vh></v>
+<v t="ekr.20140721165014.19304"><vh>@mode body-goto-before-paragraph</vh></v>
+<v t="ekr.20140721165014.19305"><vh>@mode body-join</vh></v>
+<v t="ekr.20140721165014.19306"><vh>@mode body-match</vh></v>
+<v t="ekr.20140721165014.19307"><vh>Tree actions from Body pane</vh>
+<v t="ekr.20140721165014.19308"><vh>@mode body-goto-next-visible</vh></v>
+<v t="ekr.20140721165014.19309"><vh>@mode body-goto-prev-visible</vh></v>
+<v t="ekr.20140721165014.19310"><vh>@mode body-expand-and-go-right</vh></v>
+<v t="ekr.20140721165014.19311"><vh>@mode body-contract-or-go-left</vh></v>
+</v>
+<v t="ekr.20140721165014.19312"><vh>@mode vim-window-commands</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140721165014.19148"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20140721165014.19149"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20140721165014.19150"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20140721165014.19151"><vh>@shortcuts Emacs: N-Z</vh></v>
+<v t="ekr.20140721165014.19152"><vh>@shortcuts Emacs: missing</vh></v>
+<v t="ekr.20140721165014.19153"><vh>@shortcuts shift-f-keys</vh></v>
+</v>
+<v t="ekr.20140721165014.19154"><vh>@keys No bindings</vh>
+<v t="ekr.20140721165014.19155"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20140721165014.19156"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20140721165014.19157"><vh>@shortcuts No bindings: N-Z</vh></v>
+<v t="ekr.20140721165014.19158"><vh>@shortcuts shift-f-keys</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20110611092035.16491"><vh>Leo Directives</vh>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
@@ -348,6 +814,7 @@
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
+<v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
@@ -357,6 +824,8 @@
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-unzipped</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
+<v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20131213135427.21840"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write</vh>
@@ -482,6 +951,8 @@
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
+<v t="tbrown.20140814090009.57476"><vh>@item style-reload</vh></v>
+<v t="tbrown.20140814090009.57475"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21957"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item *print-c&amp;ommands</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item *print-&amp;plugins-info</vh></v>
@@ -1151,68 +1622,15 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
-<v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
-<v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
-<v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
-<v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
-</v>
-<v t="tbrown.20131122091143.23829"><vh>Colors</vh>
-<v t="tbrown.20131122094200.2523"><vh>@color text-foreground = black</vh></v>
-<v t="tbrown.20131122094200.2524"><vh>@color text-foreground-body = @text-foreground</vh></v>
-<v t="tbrown.20131122094200.2526"><vh>@color text-foreground-tree = @text-foreground</vh></v>
-<v t="tbrown.20131122094200.2528"><vh>@color text-foreground-log = @text-foreground</vh></v>
-<v t="tbrown.20131122104251.2537"><vh>@color minibuffer-background-color = lightblue</vh></v>
-<v t="tbrown.20131122104251.2538"><vh>@color minibuffer-error-color = red</vh></v>
-<v t="tbrown.20131122104251.2539"><vh>@color minibuffer-foreground-color = black</vh></v>
-<v t="tbrown.20131122104251.2540"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
-<v t="tbrown.20131122091143.23833"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23834"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23835"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
-<v t="tbrown.20131122091143.23836"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
-<v t="tbrown.20131122091143.23837"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
-<v t="tbrown.20131122091143.23838"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
-<v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
-<v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
-</v>
-<v t="tbrown.20131122094200.2511"><vh>Fonts</vh>
-<v t="tbrown.20131122094200.2520"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="tbrown.20131122094200.2518"><vh>@string font-size = 12pt</vh></v>
-<v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @font-size</vh></v>
-<v t="tbrown.20131122094200.2514"><vh>@string font-size-tree = @font-size</vh></v>
-<v t="tbrown.20131122094200.2517"><vh>@string font-size-log = @font-size</vh></v>
-</v>
-<v t="tbrown.20140101093550.22678"><vh>Plugins</vh>
-<v t="tbrown.20140101093550.22679"><vh>bookmarks</vh>
-<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
-<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
-<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
-<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
-</v>
-</v>
-<v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
-<v t="tbrown.20131122094200.2515"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
-<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles (may not work)</vh></v>
 </v>
-<v t="tbrown.20131122091143.22659"><vh>@button reload-styles</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -1356,24 +1774,11 @@
 <v t="ekr.20041119034357.39"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
 <v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
-<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
-<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
-<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
-<v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 <v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
 <v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
 <v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
-</v>
-<v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
-<v t="ekr.20111023095357.16694"><vh>@@bool use_focus_border = True</vh></v>
-<v t="ekr.20111103073536.16580"><vh>@@bool use_body_focus_border = True</vh></v>
-<v t="ekr.20111023095357.16695"><vh>@@int focus_border_width = 1</vh></v>
-<v t="ekr.20111023095357.16696"><vh>@@color focus_border_color = blue</vh></v>
-<v t="ekr.20120519193555.11830"><vh>@@color focus_border_command_state_color = red</vh></v>
-<v t="ekr.20120520053551.11241"><vh>@@color focus_border_overwrite_state_color = green</vh></v>
 </v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh>
 <v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
@@ -1402,7 +1807,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -1456,7 +1860,8 @@ vertical: body pane on the botton
 This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
-</t>
+
+The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
@@ -2150,6 +2555,8 @@ optionalCommandNames = [
     'prev-slide-command','prev-slide-show-command',
     # The ipython plugin.
     'start-ipython','get-ipython-results','push-to-ipython',
+    # The viewrendered plugin.
+    'vr-toggle',
 ]
 
 setNames = []
@@ -2948,9 +3355,9 @@ macro-call-last     = Alt-Ctrl-M
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = Alt-4 # The new standard
+run-marked-unit-tests-externally    = None
 run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = Alt-5 # The new standard
+run-selected-unit-tests-externally  = None
 run-selected-unit-tests-locally     = None
 
 show-calltips               = parenleft
@@ -3021,9 +3428,8 @@ Settings in myLeoSettings.leo override the settings in this file.
 
 Put myLeoSettigns.leo in your home (~) directory or in the ~/.leo directory.
 
-Distributions of Leo do not contain myLeoSettings.leo.
-
-Leo never changesyour personal myLeoSettings.leo file.
+Distributions of Leo do not contain myLeoSettings.leo; Leo never
+changesyour personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
@@ -3189,6 +3595,8 @@ printing.py
 # nested_splitter.py
 # niceNosent.py
 # nodeActions.py
+# nodediff.py
+# nodetags.py
 # nodewatch.py
 # notebook.py
 # open_shell.py
@@ -3448,7 +3856,15 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213062019.8"></t>
 <t tx="ekr.20071213062019.9"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line.
-Comments lines starting with '#' are ignored.</t>
+
+New in Leo 4.12: Lines starting with '#' are *included* in the data.
+
+New in Leo 4.12: @data nodes may be split: the data consists of the body text of
+the @data node itself and the body text of all descendant nodes, in outline
+order.
+
+However, descendant nodes whose headlines start with '@' do not become part of the data.
+</t>
 <t tx="ekr.20080204124255"># For testing only.
 
 start-ipython           = Alt-Ctrl-Shift-i
@@ -3633,10 +4049,9 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
 # These all cause problems on Ubuntu...
-do-nothing  = Ctrl-DnArrow  
-do-nothing  = Ctrl-UpArrow
-# do-nothing  = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
-# do-nothing  = Ctrl-PageDn  # working in Xfce at least
+
+# do-nothing    = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
+# do-nothing    = Ctrl-PageDn  # working in Xfce at least
 
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
@@ -3674,6 +4089,11 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
+
+do-nothing                  ! tree = Ctrl-DnArrow
+do-nothing                  ! tree = Ctrl-UpArrow
+move-lines-up               ! body = Ctrl-UpArrow
+move-lines-down             ! body = Ctrl-DnArrow 
   
 goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
@@ -3980,26 +4400,38 @@ True: @shadow and @auto create a single node for the entire file.</t>
 If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.11">Don't change these unless you know what you are doing.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
-This allows you to increase the font size.</t>
+This allows you to increase the font size.
+</t>
 <t tx="ekr.20081022181056.10"># Lines have the form: color, style
 # color may be any kind of Qt color specifier
-# The valid sytles are as follows: (capitalization is significant).
-# Default Comment Number Keyword
-# DoubleQuotedString SingleQuotedString
-# TripleSingleQuotedString TripleDoubleQuotedString
-# ClassName FunctionMethodName
-# Operator Identifier
-# CommentBlock UnclosedString
-# HighlightedIdentifier Decorator
+# See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
+# for list of selector names.
 
- red,   Comment
- green, SingleQuotedString
- green, DoubleQuotedString
- green, TripleSingleQuotedString
- green, TripleDoubleQuotedString
- green, UnclosedString
- green, Decorator
- blue,  Keyword</t>
+# Firebrick3: #CD2626
+# Black: #000000
+# Green: #008000
+# Leo Green: # 00AA00
+# Red: #FF0000
+# Blue: #0000FF
+
+# Note: the following lines must be indented.
+
+    black, ClassName
+    #CD2626, Comment
+    #CD2626, CommentBlock
+    #00AA00, Decorator
+    #00AA00, DoubleQuotedString
+    black, FunctionMethodName
+    black, HighlightedIdentifier
+    black, Identifier
+    blue,  Keyword
+    black, Number
+    black, Operator
+    #00AA00, SingleQuotedString
+    #00AA00, TripleSingleQuotedString
+    #00AA00, TripleDoubleQuotedString
+    #00AA00, UnclosedString
+</t>
 <t tx="ekr.20081023060109.14"></t>
 <t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
 
@@ -4850,27 +5282,6 @@ main()
     g.es('Check Bindings done')
 </t>
 <t tx="ekr.20111017082630.16086"></t>
-<t tx="ekr.20111023095357.16693">These setting no longer do anything...
-Instead, please edit::
-
-  @data qt-gui-plugin-style-sheet
-
-and change::
-
-  @focused-border-style = none
-
-to::
-
-  @focused-border-style = solid
-
-for the default theme.
-
-If you're using the dark theme, now known as leo_dark_0, same deal but
-after editing as above remember to select and run the 'stylesheet &amp; source'
-node of that theme.</t>
-<t tx="ekr.20111023095357.16694"></t>
-<t tx="ekr.20111023095357.16695"></t>
-<t tx="ekr.20111023095357.16696"></t>
 <t tx="ekr.20111024091133.16650"></t>
 <t tx="ekr.20111024091133.16651"></t>
 <t tx="ekr.20111024091133.16671"></t>
@@ -4985,7 +5396,6 @@ tt
 u
 ul
 var</t>
-<t tx="ekr.20111103073536.16580"></t>
 <t tx="ekr.20111109104336.12503">New in Leo 4.9.1.
 
 True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
@@ -5035,8 +5445,6 @@ do-nothing = Shift-F9
 do-nothing = Shift-F10
 do-nothing = Shift-F11
 do-nothing = Shift-F12</t>
-<t tx="ekr.20120519193555.11830"></t>
-<t tx="ekr.20120520053551.11241"></t>
 <t tx="ekr.20120926072255.11432"></t>
 <t tx="ekr.20120928142052.11488"></t>
 <t tx="ekr.20130503155210.16364">\@menuat modifies the menu tree created by \@menus. This allows settings in
@@ -5118,311 +5526,22 @@ abbrevCommandsClass pastes the outline into the present outline, uses the pasted
 outline to discover tree-valued abbreviations, and then *deletes* the tree.
 
 </t>
-<t tx="ekr.20131115092802.18224">/* Documentation of Qt stylesheets at http://qt-project.org/doc/qt-4.8/stylesheet.html */
+<t tx="ekr.20131119143342.18879">@language rest
 
-/* 
-   Buttons may be styled by name:
-      QPushButton#&lt;button text&gt;-button { &lt;style&gt; }
-   or by kind:
-      QPushButton[button_kind="&lt;button kind&gt;"] { &lt;style&gt; }
-   Button kinds are:
-   'run-script' (the singleton run-script button),
-   'debug-script',
-   'script-button-button' (the singleton script-button button), 
-   'script-button' (buttons created by the script-button button),
-   'generic-button' (default), 
-   'quick-move' from the quickMove plugin,
-   'interact' from the interact plugin,
-   'at-button' (created from @button nodes)
-   Search 'button_kind' below for button styling examples.
-   
-*/
+Please *do not* change this style sheet, nor any of its descendants.
 
-/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+Instead, copy the *settings* you want to change from the node::
 
-/*
-    Important: this stylesheets is responsible for most, but *not* all, of Leos appearance.
-    See also settings in "Colorizer and colors" 
-*/
+    Qt Gui settings
 
-QScrollArea {
-    background-color: white;
-}
+to myLeoSettings.leo.
 
-/* Components of the Find Tab */
+Advanced users may create an additional style sheet, called::
 
-QWidget#findTab {
-    background-color: white;
-}
+    @data qt-gui-user-style-sheet
 
-QLabel#findHeading {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#findLabel {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#changeLabel {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel#findHelp {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#findPattern {
-    font-family: DejaVu Sans Mono;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#findChange {
-    font-family: DejaVu Sans Mono;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* A QWidget: supports only background attributes.*/
-
-QSplitter::handle {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    color: @text-foreground-tree;
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: @font-family;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-    show-decoration-selected: 1 /* 1: select entire row */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: @font-family;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The log panes */
-QTextEdit {
-    background-color: white; /* #f2fdff; */
-    color: @text-foreground-log;
-    selection-color: white;
-    selection-background-color: blue;
-    /* font-family: Courier New; */
-    font-family: @font-family;
-    font-size: @font-size-log;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The body pane */
-QTextEdit#richTextEdit {
-    background-color: white; /* #fdf5f5; A kind of pink. */
-    color: @text-foreground-body;
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: @font-family;
-    /* font-family: Courier New; */
-    font-size: @font-size-body;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* Editor labels */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-
-/* The text "Minibuffer" in the minibuffer area.
-
-Do not overide QLabel directly.  It is used for dialog text.
-*/
-
-QLabel#minibufferLabel {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal;
-    font-style: normal;
-}
-
-/* 
-QLabel {
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal;
-    font-style: normal;
-    border: 2px;
-    margin: 2px;
-}
-*/
-
-
-/* The mini-buffer
-
-**Important**: Because Leo changes the color of the minibuffer dynamically,
-stylesheets can not be used. Instead, set the desired colors using one of the
-following settings, with defaults as shown::
-
-    @color minibuffer-background-color = lightblue
-    @color minibuffer-error-color = red
-    @color minibuffer-foreground-color = black
-    @color minibuffer-warning-color = lightgrey
-*/
-
-QLineEdit#lineEdit {
-    color: @minibuffer_foreground_color;
-    background-color: @minibuffer_background_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
-
-
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: @font-family;
-    font-size: 10pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#status1 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 10pt;
-}
-
-QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 10pt;
-}
-
-/* button_kind based button coloring */
-QPushButton[button_kind="run-script"] { 
-    background-color: @run-script-btn-bg; }
-QPushButton[button_kind="debug-script"] { 
-    background-color: @debug-script-btn-bg; }
-QPushButton[button_kind="generic-button"] { 
-    background-color: @generic-button-btn-bg; }
-QPushButton[button_kind="quick-move"] { 
-    background-color: @quick-move-btn-bg; }
-QPushButton[button_kind="interact"] { 
-    background-color: @interact-btn-bg; }
-QPushButton[button_kind="at-button"] { 
-    background-color: @at-button-btn-bg; }
-QPushButton[button_kind="script-button"] { 
-    background-color: @script-button-btn-bg; }
-/* example of name based button coloring.  Coincidentally, the
-   name and button_kind of this button are the same */
-QPushButton#script-button-button { 
-    background-color: @script-button-button-btn-bg; }
-
-QPlainTextEdit#screencastcaption {
-    background-color: yellow;
-    font-family: @font-family; /* Times New Roman; */
-    font-size: 18pt;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* focused pane border highlight */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
-}
-
-/* bookmarks plugin styling */
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
+in myLeoSettings.leo.  But most users will never need to do this.
 </t>
-<t tx="ekr.20131119143342.18879">This is the "default" theme.</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
@@ -5440,7 +5559,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
 <t tx="ekr.20131213135427.21837">Save As &amp;Zipped...</t>
 <t tx="ekr.20131213135427.21838">Save &amp;To...</t>
-<t tx="ekr.20131213135427.21839">Re&amp;vert To Saved</t>
+<t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21840"></t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
@@ -5942,6 +6061,3613 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131215083347.18147"></t>
 <t tx="ekr.20131215083347.18148"></t>
 <t tx="ekr.20131215083347.18154"></t>
+<t tx="ekr.20140718064506.18998"></t>
+<t tx="ekr.20140718064506.18999">&amp;Refresh From Disk</t>
+<t tx="ekr.20140721165014.19146">This node contains unused key bindings. To make them active, copy them to
+your copy of myLeoSettings.leo.
+</t>
+<t tx="ekr.20140721165014.19147">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20140721165014.19148"></t>
+<t tx="ekr.20140721165014.19149">abbrev-list                         = None
+abbrev-read                         = None
+abbrev-write                        = None
+abort-edit-headline                 = Shift-Esc
+about-leo                           = None
+add-comments                        = Ctrl-(
+abbrev-add-global                   = None
+abbrev-kill-all                     = None
+advertised-undo                     = Ctrl-underscore
+auto-complete                       = None
+back-char                           = Ctrl-b
+back-char-extend-selection          = None
+back-paragraph                      = Alt-braceleft
+back-paragraph-extend-selection     = None
+back-sentence                       = Alt-a
+back-sentence-extend-selection      = None
+back-to-indentation                 = Alt-m
+back-word                           = Alt-b          
+back-word                           = Ctrl-Left
+back-word-extend-selection          = None
+backward-delete-char                = Delete
+backward-delete-char                = Shift-Delete
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                 ! text =  Alt-less
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = Alt-Up        
+beginning-of-line                   = Ctrl-a
+beginning-of-line-extend-selection  = None
+buffer-append-to                    = None
+buffer-kill                         = None
+buffer-prepend-to                   = None
+buffer-switch-to                    = None
+buffers-list                        = None
+buffers-list-alphabetically         = None
+capitalize-word                     = Alt-c
+cascade-windows                     = None
+center-line                         = Alt-s
+center-region                       = None
+#check-all-python-code              = None
+check-outline                       = None
+# check-python-code                 = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clone-node                          = Ctrl-`
+close-window                        = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt+F4 is not the same as Alt+F, c
+contract-all                        = None      # Alt-- conflicts with negative-arg.
+contract-node                       = Alt-[
+contract-or-go-left                 = Alt-LtArrow
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-text                           = None      # Ctrl-C conflicts with quick-command.
+count-region                        = Alt-equal
+cut-node                            = Shift-Ctrl-X
+cut-text                            = None      # Ctrl-X (possible)
+cycle-focus                         = None
+dabbrev-completion                  = Alt-Ctrl-slash
+dabbrev-expands                     = Alt-slash
+de-hoist                            = None
+delete-char                         = Ctrl-d
+delete-comments                     = Ctrl-)
+delete-indentation                  = Alt-asciicircum
+delete-node                         = Shift-Ctrl-BkSp
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+digit-argument                      = None
+directory-make                      = None
+directory-remove                    = None
+downcase-region                     = None
+downcase-word                       = Alt-l
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   = None             # Esc conflicts with watch-escape.
+end-of-buffer                       ! text = Alt-greater
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+end-of-line                         = Alt-Down      
+end-of-line                         = Ctrl-e
+end-of-line-extend-selection        = None
+equal-sized-panes                   = Alt-Shift-E
+escape                              = Escape
+eval-expression                     = Alt-colon
+eval-expression                     = None
+exchange-point-mark                 = None  # Should be Ctrl-X Ctrl-X.
+execute-script                      = None             # Ctrl-e conflicts with end-of-line
+exit-leo                            = Ctrl-Q
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = Alt-]
+expand-or-go-right                  = Alt-RtArrow
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-paragraph                 = Alt-h
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+# extract-python-method               = None
+# extract-section                     = Shift-Ctrl-E</t>
+<t tx="ekr.20140721165014.19150">file-delete                         = None
+file-diff-files                     = None
+file-insert                         = None
+fill-paragraph                      = Alt-q
+fill-region                         = None
+fill-region-as-paragraph            = None
+find-tab-hide                       = None
+replace                             = Ctrl-=
+replace-all                         = None  # Not recommended to bind this to a shortcut.
+replace-then-find                   = Ctrl--
+find-next                           = F3
+find-prev                           = F2
+find-tab-open                       = None
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+forward-char                        = Ctrl-f
+forward-char-extend-selection       = None
+forward-paragraph                   = Alt-braceright
+forward-paragraph-extend-selection  = None
+forward-sentence                    = Alt-e
+forward-sentence-extend-selection   = None
+forward-word                        = Alt-f
+forward-word                        = Ctrl-Right
+forward-word-extend-selection       = None
+full-command                        = Alt-x
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = Alt-Shift-G
+goto-first-sibling                  = None
+goto-last-node                      = Alt-Shift-H
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = Alt-g
+goto-line                           = None         # Emacs version is less powerful than Leo version
+goto-next-changed                   = None         # Alt-D conflicts with kill-word
+goto-next-clone                     = None         # Removed Alt-N: not useful enough.
+goto-next-marked                    = None         # Alt-M conflicts with back-to-indentation.
+goto-next-node                      = Alt-Shift-DnArrow
+goto-next-sibling                   = Alt-Shift-S
+goto-next-visible                   = None         # Alt-DnArrow conflicts with end-of-line.
+goto-parent                         = Alt-Shift-P
+goto-prev-node                      = Alt-Shift-UpArrow
+goto-prev-sibling                   = Alt-Shift-R
+goto-prev-visible                   = None         # Alt-UpArrow conflicts with beginning-of-line.
+help-for-minibuffer                 = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = Ctrl-z
+import-file                         = None
+# import-at-file                      = None         # Removed Shift-Ctrl-F: not useful enough.
+# import-at-root                      = None
+# import-cweb-files                   = None
+# import-derived-file                 = None
+# import-flattened-outline            = None
+# import-noweb-files                  = None
+indent-region                       = Alt-Ctrl-backslash
+indent-region                       = Ctrl-]
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = Alt-semicolon
+insert-body-time                    = None         # Removed Shift-Ctrl-G: not useful enough.
+insert-child                        = None
+insert-headline-time                = None         # Removed Shift-Ctrl-H: not useful enough.
+insert-newline                      = Ctrl-o
+insert-node                         = Ctrl-I
+insert-node                         = Insert
+insert-node                         = Shift-Insert
+insert-parentheses                  = Alt-parenleft
+abbrev-inverse-add-global           = None
+isearch-backward                    = Ctrl-R
+isearch-backward-regexp             = Alt-Ctrl-r
+isearch-forward                     = Ctrl-S
+isearch-forward-regexp              = Alt-Ctrl-s
+keep-lines                          = None
+keyboard-quit                       = Ctrl-g
+kill-line                           = Ctrl-k
+kill-paragraph                      = None
+kill-region                         = Ctrl-w
+kill-region-save                    = Alt-w
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+line-number                         = None
+mode-help                           = None
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20140721165014.19151">mark                            = Ctrl-M
+mark-changed-items              = None         # Alt-C: now quick-command.
+mark-subheads                   = None         # Alt-S conflicts with center-line.
+match-brackets                  = None         # Ctrl-K conflicts with kill-line.
+minimize-all                    = None
+move-outline-down               = None         # Removed Ctrl-D: no point if other moves are not defined.
+move-outline-left               = None         # Removed Ctrl-L: no point if other moves are not defined.
+move-outline-right              = None         # Ctrl-R conflicts with search-backward.
+move-outline-up                 = None         # Ctrl-U confllicts with universal-argument.
+move-past-close                 = Alt-parenright
+negative-argument               = Alt-minus
+new                             = None         # Ctrl-n conflicts with next-line.
+newline-and-indent              = Ctrl-j
+next-line                       = Ctrl-n
+next-line-extend-selection      = None
+number-command                  = None
+number-command-0                = Alt-0
+number-command-1                = Alt-1
+number-command-2                = Alt-2
+number-command-3                = Alt-3
+number-command-4                = Alt-4
+number-command-5                = Alt-5
+number-command-6                = Alt-6
+number-command-7                = Alt-7
+number-command-8                = Alt-8
+number-command-9                = Alt-9 
+# open-compare-window             = None
+open-leoDocs-leo                = None
+open-leoPlugins-leo             = None
+open-leoSettings-leo            = None
+open-scripts-leo                = None
+open-offline-tutorial           = None
+open-online-home                = None
+# open-online-tutorial            = None
+open-outline                    = None         # Ctrl-O conflicts with insert-newline
+open-python-window              = None         # Removed Alt-P: not useful enough.
+open-spell-tab                  = None
+open-with                       = None
+outline-to-cweb                 = None
+outline-to-noweb                = None
+paste-node                      = Shift-Ctrl-V
+paste-retaining-clones          = None
+paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
+pretty-print-all-python-code    = None
+pretty-print-python-code        = None
+previous-line                   = Ctrl-p
+previous-line-extend-selection  = None
+print-bindings                  = None
+print-commands                  = None
+promote                         = Ctrl-{            
+# query-replace                   = Alt-percent
+# query-replace-regex             = None
+quick-command                   = Ctrl-c
+register-append-to              = None
+re-search-backward              = None
+re-search-forward               = None
+read-at-file-nodes              = None
+read-outline-only               = None         # Removed Shift-Ctrl-R: not useful enough.
+redo                            = None         # Ctrl-Z not defined, so Shift-Ctrl-Z less useful.
+rectangle-clear                 = None
+rectangle-close                 = None
+rectangle-delete                = None
+rectangle-kill                  = None
+rectangle-open                  = None
+rectangle-string                = None
+rectangle-yank                  = None
+reformat-paragraph              = Shift-Ctrl-P
+register-copy-to                = None
+register-copy-rectangle-to      = None
+register-jump-to                = None
+register-increment              = None
+register-insert                 = None
+register-point-to               = None
+register-prepend-to             = None
+register-view                   = None
+remove-blank-lines              = None
+remove-sentinels                = None
+repeat-complex-command          = None
+# replace-string                  = None
+resize-to-screen                = None
+reverse-region                  = None
+revert                          = None
+save-buffers-kill-leo           = None # Should be Ctrl-x Ctrl-c
+save-file                       = None         # Ctrl-s conflicts with isearch-forward.
+save-file-as                    = Shift-Ctrl-S
+save-file-to                    = None
+scroll-down-half-page           = None
+scroll-down-line                = None
+scroll-down-page                = Ctrl-v
+scroll-up-half-page             = None
+scroll-up-line                  = None
+scroll-up-page                  = Alt-v
+search-backward                 = None
+search-forward                  = None
+# select-all                    = Ctrl-a # Was beginning-of-line.
+set-colors                      = None
+set-comment-column              = None
+set-extend-mode                 = None
+set-fill-column                 = None
+set-fill-prefix                 = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                        = None
+set-command-state               = None
+set-insert-state                = None
+# set-mark-command              = Ctrl-Shift-at
+set-overwrite-state             = None
+settings                        = None  # Ctrl-Y conflicts with yank.
+shell-command                   = Alt-exclam
+shell-command-on-region         = Alt-bar
+show-colors                     = None
+show-fonts                      = None
+# show-invisibles                 = Alt-V
+show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
+sort-children                   = None
+sort-columns                    = None
+sort-fields                     = None
+sort-lines                      = None
+sort-siblings                   = Shift-Alt-A  # Alt-A conflicts with back-sentence.
+spell-change                    = None
+spell-change-then-find          = None
+spell-find                      = None
+spell-ignore                    = None
+split-line                      = Alt-Ctrl-o
+suspend                         = None
+tabify                          = None
+tangle                          = None      
+tangle-all                      = None
+tangle-marked                   = None
+toggle-abbrev-mode              = None
+toggle-active-pane              = None      # Ctrl-T conflicts with swap-characters.
+toggle-angle-brackets           = None
+toggle-extend-mode              = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+# toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-split-direction          = None
+transpose-chars                 = Ctrl-t
+transpose-lines                 = None
+transpose-words                 = Alt-t
+undo                            = None         # Ctrl-Z conflicts with suspend.
+unindent-region                 = None
+universal-argument              = Ctrl-u
+unmark-all                      = None         # Alt-U: conflicts with upcase-word.
+untabify                        = None
+untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
+untangle-all                    = None
+untangle-marked                 = None
+upcase-region                   = None
+upcase-word                     = Alt-u
+view-lossage                    = None
+weave                           = None
+what-line                       = None
+word-search-backward            = None
+word-search-forward             = None
+write-at-file-nodes             = Shift-Ctrl-W
+write-dirty-at-file-nodes       = None
+write-missing-at-file-nodes     = None
+write-outline-only              = None 
+yank                            = Ctrl-y
+yank-pop                        = Alt-y
+zap-to-character                = Alt-z
+</t>
+<t tx="ekr.20140721165014.19152"></t>
+<t tx="ekr.20140721165014.19153">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
+<t tx="ekr.20140721165014.19154">These are no options for this keyset: we assume other options sets will also be in effect.
+
+**Important**:
+    
+- With this keyset in effect other binding sets need only specify the commands
+that actually have bindings.
+    
+- These definitions do not interfere with other settings, and do not cause
+warnings about duplicate bindings.
+
+- The Check Bindings script only checks for missing bindings in this set.
+</t>
+<t tx="ekr.20140721165014.19155">abbrev-kill-all                     = None
+abbrev-list                         = None
+abbrev-read                         = None
+abbrev-write                        = None
+abort-edit-headline                 = None
+about-leo                           = None
+activate-cmds-menu                  = None
+activate-edit-menu                  = None
+activate-file-menu                  = None
+activate-help-menu                  = None
+activate-outline-menu               = None
+activate-plugins-menu               = None
+activate-window-menu                = None
+add-comments                        = None
+add-editor                          = None
+abbrev-add-global                   = None
+add-space-to-lines                  = None
+add-tab-to-lines                    = None
+advertised-undo                     = None
+auto-complete                       = None
+auto-complete-force                 = None
+back-char                           = None
+back-char-extend-selection          = None
+back-page                           = None
+back-page-extend-selection          = None
+back-paragraph                      = None
+back-paragraph-extend-selection     = None
+back-sentence                       = None
+back-sentence-extend-selection      = None
+back-to-home                        = None
+back-to-indentation                 = None
+back-word                           = None
+back-word-extend-selection          = None
+backward-delete-char                = None
+backward-delete-word                = None
+backward-find-character                     = None
+backward-find-character-extend-selection    = None
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = None
+beginning-of-buffer                 = None
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = None
+beginning-of-line-extend-selection  = None
+buffer-append-to                    = None
+buffer-kill                         = None
+buffer-prepend-to                   = None
+buffer-switch-to                    = None
+buffers-list                        = None
+buffers-list-alphabetically         = None
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+chapter-clone-node-to               = None
+chapter-copy-node-to                = None
+chapter-create                      = None
+chapter-move-node-to                = None
+chapter-remove                      = None
+chapter-select                      = None
+# check-all-python-code             = None
+check-outline                       = None
+# check-python-code                 = None
+# check-spelling                    = None
+clean-all-lines                     = None
+clean-lines                         = None
+clean-recent-files                  = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-selected-text                 = None
+click-click-box                     = None
+click-headline                      = None
+click-icon-box                      = None
+clone-find-all                      = None
+clone-node                          = None
+close-window                        = None
+# cm-external-editor                  = None
+contract-all                        = None
+contract-node                       = None
+contract-or-go-left                 = None
+contract-body-pane                  = None
+contract-log-pane                   = None
+contract-outline-pane               = None
+contract-pane                       = None
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = None
+convert-tabs                        = None
+copy-node                           = None
+copy-text                           = None
+# copy-to-buffer                      = None
+count-region                        = None
+cut-node                            = None
+cut-text                            = None
+cycle-all-focus                     = None
+cycle-focus                         = None
+cycle-editor-focus                  = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+debug                               = None
+de-hoist                            = None
+delete-char                         = None
+delete-comments                     = None
+delete-editor                       = None
+delete-first-icon                   = None
+delete-indentation                  = None
+delete-last-icon                    = None
+delete-node                         = None
+delete-spaces                       = None
+delete-word                         = None
+demote                              = None
+digit-argument                      = None
+directory-make                      = None
+directory-remove                    = None
+disable-autocompleter               = None
+disable-calltips                    = None
+do-nothing                          = None
+downcase-region                     = None
+downcase-word                       = None
+double-click-headline               = None
+double-click-icon-box               = None
+dump-outline                        = None
+edit-headline                       = None
+enable-autocompleter                = None
+enable-calltips                     = None
+end-edit-headline                   = None
+# end-kbd-macro                     = None
+end-of-buffer                       = None
+end-of-buffer-extend-selection      = None
+end-of-line                         = None
+end-of-line-extend-selection        = None
+equal-sized-panes                   = None
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None
+push-to-ipython                     = None
+execute-script                      = None
+exit-leo                            = None
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = None
+expand-or-go-right                  = None
+expand-body-pane                    = None
+expand-log-pane                     = None
+expand-outline-pane                 = None
+expand-pane                         = None
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-line                      = None
+extend-to-paragraph                 = None
+extend-to-sentence                  = None
+extend-to-word                      = None
+extract                             = None
+extract-names                       = None
+# extract-python-method               = None
+# extract-section                     = None
+</t>
+<t tx="ekr.20140721165014.19156">file-delete                         = None
+file-diff-files                     = None
+file-insert                         = None
+fill-paragraph                      = None
+fill-region                         = None
+fill-region-as-paragraph            = None
+find-character                      = None
+find-character-extend-selection     = None
+find-clone-all                      = None
+find-next-clone                     = None
+find-next                           = None
+find-all                            = None
+find-prev                           = None
+find-tab-hide                       = None
+find-tab-open                       = None
+find-word                           = None
+find-word-in-line                   = None
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+forward-char                        = None
+forward-char-extend-selection       = None
+forward-end-word                    = None
+forward-end-word-extend-selection   = None
+forward-page                        = None
+forward-page-extend-selection       = None
+forward-paragraph                   = None
+forward-paragraph-extend-selection  = None
+forward-sentence                    = None
+forward-sentence-extend-selection   = None
+forward-word                        = None
+forward-word-extend-selection       = None
+full-command                        = None
+fully-expand-body-pane              = None
+fully-expand-log-pane               = None
+fully-expand-outline-pane           = None
+fully-expand-pane                   = None
+gc-collect-garbage                  = None
+gc-dump-all-objects                 = None
+gc-dump-new-objects                 = None
+gc-dump-objects-verbose             = None
+gc-print-summary                    = None
+gc-trace-disable                    = None
+gc-trace-enable                     = None
+get-ipython-results                 = None
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = None
+goto-first-visible-node             = None
+goto-first-sibling                  = None
+goto-global-line                    = None
+goto-last-node                      = None
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = None # Leo's goto-line is better.
+goto-next-changed                   = None
+goto-next-clone                     = None
+goto-next-marked                    = None
+goto-next-node                      = None
+goto-next-sibling                   = None
+goto-next-visible                   = None
+goto-parent                         = None
+goto-prev-node                      = None
+goto-prev-sibling                   = None
+goto-prev-visible                   = None
+group-operations-clear-marked       = None
+group-operations-mark-for-clone     = None
+group-operations-mark-for-copy      = None
+group-operations-mark-for-move      = None
+group-operations-mark-target        = None
+group-operations-operate-on-marked  = None
+group-operations-transfer           = None
+toggle-input-state                  = None
+help                                = None
+help-for-autocompletion             = None
+help-for-bindings                   = None
+help-for-command                    = None
+help-for-find-commands              = None
+help-for-minibuffer                 = None
+help-for-python                     = None
+hide-body-pane                      = None
+hide-log-pane                       = None
+hide-pane                           = None
+hide-outline-pane                   = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = None
+import-file                         = None
+# import-at-file                      = None
+# import-at-root                      = None
+# import-cweb-files                   = None
+# import-derived-file                 = None
+# import-flattened-outline            = None
+# import-noweb-files                  = None
+indent-region                       = None
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = None
+insert-body-time                    = None
+insert-child                        = None
+insert-icon                         = None
+insert-headline-time                = None
+# insert-kbd-macro                  = None
+insert-newline                      = None
+insert-node                         = None
+insert-parentheses                  = None
+# insert-to-buffer                  = None
+abbrev-inverse-add-global           = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+isearch-forward-regexp              = None
+isearch-with-present-options        = None
+keep-lines                          = None
+keyboard-quit                       = None
+kill-line                           = None
+kill-paragraph                      = None
+kill-region                         = None
+kill-region-save                    = None
+kill-sentence                       = None
+kill-to-end-of-line                 = None
+kill-word                           = None
+line-number                         = None
+macro-call-last                     = None
+macro-end-recording                 = None
+macro-name-last                     = None
+macro-start-recording               = None
+mark                                = None
+mark-changed-items                  = None
+mark-subheads                       = None
+match-brackets                      = None
+menu-shortcut                       = None
+minimize-all                        = None
+mode-help                           = None
+move-lines-down                     = None
+move-lines-up                       = None
+move-outline-down                   = None
+move-outline-left                   = None
+move-outline-right                  = None
+move-outline-up                     = None
+move-past-close                     = None
+move-past-close-extend-selection    = None
+</t>
+<t tx="ekr.20140721165014.19157">negative-argument                   = None
+new                                 = None
+newline-and-indent                  = None
+next-line                           = None
+next-line-extend-selection          = None
+number-command                      = None
+number-command-0                    = None
+number-command-1                    = None
+number-command-2                    = None
+number-command-3                    = None
+number-command-4                    = None
+number-command-5                    = None
+number-command-6                    = None
+number-command-7                    = None
+number-command-8                    = None
+number-command-9                    = None
+# number-to-register                = None
+# open-compare-window               = None
+# open-find-dialog                  = None
+open-leoDocs-leo                    = None
+open-leoPlugins-leo                 = None
+open-leoSettings-leo                = None
+open-scripts-leo                    = None
+open-offline-tutorial               = None
+open-online-home                    = None
+# open-online-tutorial              = None
+open-outline                        = None
+open-python-window                  = None
+open-spell-tab                      = None
+open-with                           = None
+outline-to-cweb                     = None
+outline-to-noweb                    = None
+paste-node                          = None
+paste-retaining-clones              = None
+paste-text                          = None
+pretty-print-all-python-code        = None
+pretty-print-python-code            = None
+previous-line                       = None
+previous-line-extend-selection      = None
+print-bindings                      = None
+print-commands                      = None
+print-focus                         = None
+promote                             = None
+# propagate-key-event               = None
+# query-replace                     = None
+# query-replace-regex               = None
+quick-command                       = None
+re-search-backward                  = None
+re-search-forward                   = None
+read-at-file-nodes                  = None
+read-outline-only                   = None
+rectangle-clear                     = None
+rectangle-close                     = None
+rectangle-delete                    = None
+rectangle-kill                      = None
+rectangle-open                      = None
+rectangle-string                    = None
+rectangle-yank                      = None
+redo                                = None
+reformat-paragraph                  = None
+register-append-to                  = None
+register-copy-to                    = None
+register-copy-rectangle-to          = None
+register-jump-to                    = None
+register-increment                  = None
+register-insert                     = None
+register-point-to                   = None
+register-prepend-to                 = None
+register-view                       = None
+remove-blank-lines                  = None
+remove-sentinels                    = None
+remove-space-from-lines             = None
+remove-tab-from-lines               = None
+repeat-complex-command              = None
+replace                             = None
+replace-all                         = None
+# replace-string                    = None
+replace-then-find                   = None
+resize-to-screen                    = None
+reverse-region                      = None
+reverse-sort-lines                  = None
+reverse-sort-lines-ignoring-case    = None
+revert                              = None
+run-all-unit-tests-externally       = None
+run-all-unit-tests-locally          = None
+run-marked-unit-tests-externally    = None
+run-marked-unit-tests-locally       = None
+run-selected-unit-tests-externally  = None
+run-selected-unit-tests-locally     = None
+save-buffers-kill-leo               = None
+save-file                           = None
+save-file-as                        = None
+save-file-to                        = None
+# scan-for-autocompleter            = None
+scroll-down-half-page               = None
+scroll-down-line                    = None
+scroll-down-page                    = None
+scroll-outline-down-line            = None
+scroll-outline-down-page            = None
+scroll-outline-left                 = None
+scroll-outline-right                = None
+scroll-outline-up-line              = None
+scroll-outline-up-page              = None
+scroll-up-half-page                 = None
+scroll-up-line                      = None
+scroll-up-page                      = None
+search-backward                     = None
+search-forward                      = None
+search-with-present-options         = None
+select-all                          = None
+set-colors                          = None
+set-comment-column                  = None
+set-extend-mode                     = None
+set-fill-column                     = None
+set-fill-prefix                     = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                            = None
+set-command-state                   = None
+set-insert-state                    = None
+# set-mark-command                  = None
+set-overwrite-state                 = None
+set-replace-string                  = None
+settings                            = None
+shell-command                       = None
+shell-command-on-region             = None
+show-calltips                       = None
+show-calltips-force                 = None
+show-colors                         = None
+show-find-options                   = None
+show-fonts                          = None
+show-invisibles                     = None
+simulate-begin-drag                 = None
+simulate-end-drag                   = None
+sort-children                       = None
+sort-columns                        = None
+sort-fields                         = None
+sort-lines                          = None
+sort-lines-ignoring-case            = None
+sort-recent-files                   = None
+sort-siblings                       = None
+spell-change                        = None
+spell-change-then-find              = None
+spell-find                          = None
+spell-ignore                        = None
+split-line                          = None
+start-ipython                       = None
+start-search                        = None
+suspend                             = None
+tab-cycle-next                      = None
+tab-cycle-previous                  = None
+tabify                              = None
+tangle                              = None
+tangle-all                          = None
+tangle-marked                       = None
+toggle-abbrev-mode                  = None
+toggle-active-pane                  = None
+toggle-angle-brackets               = None
+toggle-autocompleter                = None
+toggle-calltips                     = None
+toggle-extend-mode                  = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+# toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-split-direction              = None
+transpose-chars                     = None
+transpose-lines                     = None
+transpose-words                     = None
+undo                                = None
+unindent-region                     = None
+universal-argument                  = None
+unmark-all                          = None
+untabify                            = None
+untangle                            = None
+untangle-all                        = None
+untangle-marked                     = None
+upcase-region                       = None
+upcase-word                         = None
+view-lossage                        = None
+vr-toggle                           = None
+weave                               = None
+what-line                           = None
+word-search-backward                = None
+word-search-forward                 = None
+write-at-file-nodes                 = None
+write-dirty-at-file-nodes           = None
+write-missing-at-file-nodes         = None
+write-outline-only                  = None
+yank                                = None
+yank-pop                            = None
+zap-to-character                    = None</t>
+<t tx="ekr.20140721165014.19158">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
+<t tx="ekr.20140721165014.19159">To enable vim emulation, place a copy of this node (and its sub-nodes) into
+your myLeoSettings.leo file under the "@settings" node.
+</t>
+<t tx="ekr.20140721165014.19160">Vi emulation - User documentation:
+	Installation
+	| Place a copy of the "@keys Vim bindings" node and its sub-nodes,
+	| located in the leoSettings.leo file, under the "@settings" node
+	| in the myLeoSettings.leo file
+	|
+	| The same procedure is performed to upgrade to a new version.
+	| Note: Place any local customized key bindings in a "@keys My Vi" node
+	|       below (not underneath) the "@keys Vim bindings" node in the
+	|       myLeoSettings.leo file.
+
+	Commands supported
+	| Documentation of the supported vi commands is provided in Chapter 22 of
+	| Leo's User Guide (http://webpages.charter.net/edreamleo/vimBindings.html).
+
+	Commands not supported
+	| Most unsupported Vi commands are either due to a Leo architecture problem
+	| or the lack of an equivelent Leo function.
+	| (See the Vim Developer Documentation for a detailed list of open issues)
+	|
+	| Most extensions to the Vi editor implemented in Vim are not supported
+	| by Leo's Vi/Vim emulation at this time.
+
+	Vi emulation in the Outline pane:
+		Editing the headline text:
+		| Only Vi commands that operate on a single line of text are supported.
+		| Some workarounds were required due to the current Leo implementation.
+		| Problems associated with editing a node's headline text are documented
+		| in the "Open issues" section in the Vim Developer Documentation node.
+
+		Traversing and reorganizing the outline:
+		| Outline navigation and manipulation are mapped to keys based on Vi's
+		| use of the H, J, K, and L key to move left, down, up, and right.  Refer
+		| to Leo's User Guide for details on the operation's supported and their
+		| key mappings.
+
+		Outline traversing from the Body pane:
+		| Outline navigation commands can also be invoked while in the body
+		| panes' command mode.  This reduces the keystrokes necessary to switch
+		| to Outline pane, select another node, and switch back to the body pane.
+		| (Refer to Chapter 22 of the Leo User Guide for more details)
+</t>
+<t tx="ekr.20140721165014.19161">History
+	Version 03-07-10
+		Assigned line scroll by one line to 'j' and 'k' keys when the
+		   focus is in the outline 
+		Fixed unexpected switch from Body to Outline focus when inserting
+			character into 1st column of 1st row.
+		Removed duplicate key bindings
+			'p' and 'P' commands in "@shortcuts - vi in Outline pane" node
+	Version 10-06-09
+		Restored buffer 'scroll' by page in body pane (works in Tk GUI)
+			(Moves cursor, scrolling to keep cursor visible)
+		Added buffer 'scroll' by half-page and line in body pane
+			(Moves cursor, scrolling to keep cursor visible)
+		Added paragraph reformating using 'gqq' and 'gqap' commands
+			Also added 'gww' and 'gwap' (should not move cursor but does)
+		Mapped period key to repeat-complex-command.
+			Repeats Leo's command line. Should repeat key commands.
+		Removed mapping of Ctrl-[ to "Promote" function.
+			Using Ctrl-[ to exit a search string entry was promoting the node.
+	Version 12-Jul-09
+		Fixed commands using beginning-of-line and end-of-line.  Functions
+			in leoEditCommands.py were updated in past months to stay on
+			current line when called when cursor at beginning/end of line.
+		Effected commands:
+			beginning-of-line function (&lt;vi command&gt; - &lt;node changed&gt;)
+				|   - @mode body-beginning-of-line-mode
+				O   - @mode body-new-line-above
+				dd  - @mode body-delete-line
+				dG  - @mode body-delete-to-end-of-buffer
+				yy  - @mode body-yank-line
+				yG  - @mode body-yank-to-end-of-buffer
+				cc  - @mode body-change-line
+				cG  - @mode body-change-to-end-of-buffer
+				-   - @mode body-goto-indent-previous-line
+			end-of-line function (&lt;vi command&gt; - &lt;node changed&gt;)
+				o   - @mode body-new-line-below
+				A   - @mode body-append
+				dgg - @mode body-delete-to-beginning-of-buffer
+				ygg - @mode body-yank-to-beginning-of-buffer
+				cgg - @mode body-change-to-beginning-of-buffer
+				$   - @mode body-end-of-line
+				J   - @mode body-join
+	Version 07-Mar-09
+		Added "Vim Settings" node containing the Leo settings needed/used to
+			support Vim emulation.
+		Removed binding of '=' key to "double-click-icon-box" function
+		| It is not a Vi/Vim related function
+		| Re-enable it by placing the following bindings in an "@keys" node
+		|   double-click-icon-box  ! body = equal
+		|   enter-tree-double-click-node-mode ! tree = equal        
+		Corrected installation procedure in the Vim User Documentation node
+		Clarified descriptions in the User and Developer documentation nodes.
+	Version 21-Oct-08
+		Split the "Vim documentation" node into "Vim User Documentation"
+			and "Vim Developer Documentation" nodes.
+		Updated User and Developer documentation.
+		Fixed '|' to not go to previous line if key pressed while at column 1
+		Fixed '-' to go to previous line (Goes to column 1 instead of indent)
+	Version 06-Aug-08
+		Removed mapping of 'Ctrl-v' in the outline to toggle select mode.
+			'Ctrl-v' already assigned to paste a node into the outline.
+	Version 05-Aug-08
+		Updated Vim documentation in the Users Guide.
+		Changed key mapped to insert-node from 'Ctrl-o' to 'o'.
+		Added mapping of 'Ctrl-v' in addition to 'v' to toggle select mode.
+		Fixed unindent, now shifts one tab width instead of all.
+		Added unindent by sentence, paragraph, and buffer support.
+		Removed 'Ctrl-n' and 'Alt-n' as alternatives for 'n'.
+		Removed '' and `` to go to last edit, use Undo/Redo (Leo limitation)
+	Version 23-Jul-08
+		Updated Vim documentation in the Users Guide.
+		Added '^' key to move to the first column when in the outline pane.
+		Modified 'Ctrl-/' to set one of multiple search options (see User Guide).
+		Fixed move backward to beginning of word in headline text ('b' key).
+		Fixed yank to end of paragraph to not yank trailing blank line ("y}" key).
+		Removed selecting of text when using W,B,E keys in outline.
+		Removed binding of "goto-line" to Ctrl-G as "&lt;num&gt;G" replacement (broken).
+	Version 22-Jul-08
+		Updated Vim documentation in the Users Guide.
+		Added support for vi's Mark and Go To Mark commands in body pane.
+		Added support for deleting selected text in body pane ("d&lt;cr&gt;").
+		Added support for changing selected text in body pane ("c&lt;cr&gt;").
+		Modified yank-selected-text ("y&lt;cr&gt;"), now exits select mode (body pane).
+		Modified searches in outline to limit search to node and its subnodes.
+		Modified searches in node's body to limit search to node's body.
+		Added command to set search scope to "everything" ('Ctrl-/')
+		Added command to "paste from clipboard then find next" ('Ctrl-p')
+		Added command to prompt user for search and replace strings ('Alt-/')
+		Added command to "replace then search" using 'Alt-/' strings ('Alt-p')
+		Fixed ':w' (tree pane) and ':wq' (tree and body panes) commands
+	Version 22-Jun-08
+		Updated Vim documentation in the Users Guide.
+		Improved "dd" command (handles blank lines correctly)
+		added "'." and "`." commands to go to location of last edit.
+		Added y&lt;cr&gt; mapping to yank selected text (removed Alt-Y).
+		Added paste text support for node headlines.
+		Added Delete,Yank,Change to beginning and end of buffer.
+		Added &lt;cr&gt; to :wq command.
+		Added text selection workaround for yt&lt;char&gt; and ct&lt;char&gt;.
+		Added j and k to move to next/previous node when outline in focus.
+		Added Ctrl-w j and Crl-w k to switch active view in a split window.
+		Added Alt-G support when outline in focus.
+		Removed binding of Ctrl-s to save-file (Not Vi, done by default).
+		Removed all arrow key bindings (see open issues section) 
+	Version 27-May-08
+		Newly found commands
+			| Additional commands were found that are available for mapping to
+			| keys.  The "@shortcuts - unbind all commands" node has been
+			| updated.
+		Added Vim's window support (basic) to the body pane (Leo's editors)
+			| 'Ctrl-w s' or 'Ctrl-w n' will add another editing window.
+			| 'Ctrl-w w' or 'Ctrl-w p' will cycle focus between editor windows.
+			| 'Ctrl-w c' or 'Ctrl-w q' will close the editor window with focus.
+		Fixed Arrow mappings
+			| All arrows were mapped to a goto-node command in outline pane.
+			| Left and right arrows in outline pane move cursor one character.
+		Added Ctrl-Arrow support in Outline and Body pane.
+			| Ctrl-Arrow keys are also mapped to the goto-node commands
+		Added Ctrl-Shift-Arrow support in Outline pane
+			| Ctrl-Shift-Arrow keys are also mapped to the move-node commands
+		Added vi's 'e' key mapping to move to the end of the current word.
+			| Made possible by the newly found forward-end-word command.
+		Added 'Shift-e' key mapping to select to the end of the current word.
+			| Not-vi but useful until text editing commands work in headlines.
+			| Made possible by the newly found forward-end-word-extend-select
+		Added vi's Shift-f key mapping to go backwards to a character.
+			| Made possible by the newly found backward-to-character command.
+		Mapped '=' to double-click-icon-box command (Not Vi/Vim)
+			| Use open-with plug-in to invoke external Vim editor without
+			| mouse. Made possible by the newly found double-click-icon-box
+			| command.
+		Added vi's Ctrl-y and Ctrl-e to scroll outline up and down by lines.
+			| Made possible by newly found scroll-outline-up/down-line commands
+			| Also mapped vi's Ctrl-d,-u,-f,-b to same (until implemented).
+		Removed Ctrl-y,Ctrl-d,Ctrl-p in outline to copy,delete,paste nodes.
+			| Keys are used in vi for other functions. Use Ctrl-c,Ctrl-x,Ctrl-v
+		Remapped copy-text to Alt-y to avoid use of vi key mappings
+			| copy-text yanks the currently selected text into the clipboard.
+			| Vi doesn't have a concept of "selected text" but it is useful.
+		Mapped vi's Ctrl-d,-u,-e,-y to Ctrl-f,-b in body (until implemented)
+		Fixed missing @mode node mapped to Ctrl-Shift-l
+	Version 26-May-08
+		Body pane key mappings - added and corrected
+		Outline pane key mappings - initial release
+		non-vi support key mappings - merged into Body and Outline mappings
+		Documentation - Added
+	Version 22-May-08
+		Body pane key mappings - Released
+		non-vi support key mappings - Released
+	Version 18-May-08
+		Body pane key mappings - Updated
+		non-vi support key mappings - Updated
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
+</t>
+<t tx="ekr.20140721165014.19162">Vi emulation - Developer documentation:
+	Realization:
+		Leo Configuration:
+		| The following configuration was used for all testing:
+			@strings top_level_unbound_key_action = command
+			@bool stayInTreeAfterEditHeadline = True
+			@bool stayInTreeAfterSelect = True
+			@bool outline_pane_has_initial_focus = True
+		
+		Leo's Panes:
+		| A "pane" is a area of the screen containing a user interface dedicated
+		| to supporting a common set of tasks.  Vi key mappings are associated
+		| with the Outline pane, the Body pane, or to the entire Leo program.
+		| (See the "Leo's @mode nodes" section bellow)
+		
+		Leo's Command/Insert States:
+			Command state - Denoted by a blue background color (Outline,Body pane)
+			| Keys are mapped to commands.
+			Insert state - Denoted by a red background color (Outline,Body pane)
+			| Keys pressed are inserted into the text.
+			Grayed state - Denoted by a gray background color (Outline pane)
+			| Keys pressed will cause the next node with a headline starting with
+			| that key to be selected.  This "select node by first character"
+			| feature is built into Leo. It is not part of the vi support.
+			| 
+			| This state is intentionally avoided in the vi based outline key
+			| mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+			| "Command" state.  The "Grayed" state can be entered from the
+			| outline's "Command" state by pressing the Ctrl-] key.
+		
+		Leo's @mode nodes:
+		| Most vi commands are implemented using Leo's @mode nodes to execute
+		| macros or to implement Vi's multi-key commands.
+		| 
+		| Functions that act on the Outline pane are implemented in the
+		| "@shortcuts - vi in Outline pane" node and its sub-nodes.
+		| Modes associated with functions invoked when the Outline pane has
+		| focus begin with "tree-".
+		| Modes associated with functions invoked when the Body pane has
+		| focus begin with "body-".
+		|
+		| Functions that act on the Body pane are implemented in the
+		| "@shortcuts - vi in Body pane" node and its sub-nodes.
+		|
+		| Functions with both an Outline and a Body pane component are
+		| implemented in the "@shortcuts - vi miscellaneous" node and
+		| its sub-nodes.
+
+			Multi-key Vi commands:
+			| Vi has many commands that require multiple keys to invoke.
+			| Each key except the last in the command are assigned to an
+			| @mode node that, when executed, maps the subsequent allowed
+			| keys in the command sequence.
+			| The last key in the sequence is mapped directly to a Leo
+			| command or to a "Macro" mode (see below). Any modes mapped
+			| to a key by another mode are located in a child node of the
+			| @mode node doing the mapping.
+			| 
+			| Example:
+			| The "dtw" key sequence, which performs a "Delete To the 'W'
+			| character" command (note the capital letters) has the following
+			| key bindings:
+			|   The 'd' key is mapped to the "vi-delete-object" @mode node.
+			|   The "vi-delete-object" node binds the 't' key to the
+			|       "vi-delete-to-char" @mode node.
+			|   The "vi-delete-to-char" contains the Leo commands to emulate
+			|       the vi "Delete to &lt;character&gt;" command.
+
+			Macros
+			| Many vi commands do not have an equivalent Leo command.
+			| Instead, an @mode node is used to store a macro containing
+			| a series of Leo commands that, when executed, emulates the
+			| Vi functionality.
+
+	Open issues
+		Current character:
+		| Vi normally uses two different "current character" designators
+		| depending on the current state.
+
+			Insert state:
+			| In the Insert state, a vertical bar is placed between two
+			| characters to indicate where the next key will be inserted.
+			| Leo's cursor is of this type.
+
+			Command state: 
+			| In the Command state, vi expects that the cursor is highlighting
+			| a current character and provides commands to enter the insert
+			| state or paste text either before or after that current
+			| character.  Leo's vi emulation currently does not support a
+			| "current character" cursor. As a result, inserting and pasting
+			| before or after is replaced by inserting or pasting "at" the
+			| current cursor location.  For example, the 'i' and 'a' command
+			| are both mapped to enter the insert state at the current cursor
+			| location.
+
+		Commands requesting user input:
+		| Commands requesting user input must be the last command executed within
+		| an @mode node.  This prevents the implementation of commands such as
+		| "yank to &lt;character&gt;" that requires a "copy to clipboard" operation
+		| after the "find-character" command.
+
+		Editing node headlines using @mode nodes:
+		| Commands modifying or selecting headline text do not work correctly
+		| within a @mode node.  This eliminates accurate implementation of
+		| vi's delete/change/substitute/yank object commands.  As a workaround,
+		| the commands are currently written to only select the text.  The user
+		| must perform the subsequent delete, change, substitute, and yank.
+
+		Repeat last editing command:
+		| The ability to repeat the last editing related command by pressing the
+		| period key is not supported and there is no workaround in place.
+
+		Repeat last cursor movement command:
+		| The ability to repeat the last "To character" or "Find character"
+		| command by selecting the ";" key is not supported and there is no
+		| workaround in place.
+
+		Range prefix to commands:
+		| The ability to specify a numeric range prefix is not supported.  For
+		| example, entering "3dd" will not delete the next three lines and "20G"
+		| will not move the cursor to the 20th line in the file.
+
+		Range prefix to objects:
+		| The ability to specify a numeric range prefix to an object is not
+		| supported.  For example, the "d2fx" command should Delete up to and
+		| including the 2nd Found "x" character.
+
+		Binding numeric keys:
+		| Mapping a number to a command or an @mode node works but can not be
+		| used as it prevents the number from being entered as text while in Vi's
+		| insert state.
+
+		Binding Arrow keys:
+		| Binding arrow keys, with or without Shift, Ctrl, Alt, and their
+		| combinations, to commands or @mode nodes have no effect. 
+
+		Binding 'bksp' key:
+		| Binding 'bksp' key to back-char to move back a character in command
+		| mode prevents 'bksp' from deleting characters in text edit mode.
+
+		Undo command:
+		| Using the "undo" command (key 'u') to undo a change to a node's
+		| headline text only works correctly after another node has been
+		| selected.  It appears that changes made to a node's headline text are
+		| not recorded in Leo's change history until the edited node has lost
+		| focus.
+
+		Functions missing or require changes:
+			Toggle case:
+			| Leo provides support for switching to upper or lower case but no
+			| method exists to toggle between cases (used by Vi's "~" command).
+
+			Replace current character:
+			| Vi's "r" command allows user to replace the current character with
+			| the next entered character.
+
+			Move current line:
+			| Vi has a collection of "z&lt;movement&gt;" commands that will move the
+			| current line to the top, middle, and bottom of the screen.  They are
+			| not supported in Leo.
+
+			Move buffer up/down:
+			| Vi maps keys to scroll the text up/down one line and by half the
+			| number of visible lines.  Leo does not support this.
+
+			Word related commands:
+			| Vi supports two types of words in its commands: Words that consist
+			| of only a subset of the character set and words that considers all
+			| characters except the space and tab characters as part of a word.
+			|
+			| Leo's always considers a word to consist of a subset of characters
+			| although some word related commands include different characters
+			| than others.
+
+			Forward and backward by sentences:
+			| Leo's sentence related functions do not stop at empty lines nor do
+			| they skip over periods within words nor do they stop at sentences
+			| ending in non-periods nor do they stop at the end or beginning of
+			| the buffer. Note: see forwardSentenceHelper and backSentenceHelper
+			| functions.
+
+			Focus to Body pane:
+			| Leo functions exist which unconditionally set focus to the body pane
+			| regardless of the active pane.
+			|
+			| For example, bracket matching commands ("%" key) do not work within
+			| a node's headline text.  Instead, the command is performed on the
+			| node's body text.
+
+			Displaying mode help:
+			| The "--&gt; mode-help" command has the following issues related to the
+			| display of the "Help" tab:
+				Key label always capitalized:
+				| Vim commands are mapped to both lower-case and upper-case keys
+				| but always appear mapped to upper-case keys within the "Help"
+				| tab.
+				Layout of tab's contents:
+				| To improve readability and better support narrow tab cards,
+				| display the mode's label without the "enter-" and "-mode" text
+				| and place the key label before the mode label.
+				|
+				| For example, the following entries would change from:
+				| 		enter-vi-delete-line-mode d
+				| 		enter-vi-delete-to-begin-of-word-mode b
+				| to:
+				| 		d : vi-delete-line
+				| 		b : vi-delete-to-begin-of-word
+
+	Notes:
+		Yank vs. Yank:
+		| Vi's "yank" commands copy the selected text TO the clipboard.
+		| Leo's "yank" commands insert text FROM the clipboard.
+
+		copy-text in modes:
+		| Leo's copy-text command does not work within a mode.  As a result,
+		| all "copy to clipboard" capability is being implemented using the
+		| kill-&lt;object&gt; command followed by Leo's "yank" command to put the
+		| text back.
+
+		paste-text in modes:
+		| The paste-text command does not work within an @mode node.  Leo's
+		| "yank" command is used instead.
+
+		delete-node does not copy node to clipboard:
+		| A copy-node command is issued to copy the node to the clipboard
+		| followed by the delete-node command.
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
+</t>
+<t tx="ekr.20140721165014.19163"></t>
+<t tx="ekr.20140721165014.19164">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20140721165014.19165">This allows the newline character to switch from the outline pane to the body pane.</t>
+<t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
+False: Body pane gets focus when a new window is opened.</t>
+<t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
+
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
+<t tx="ekr.20140721165014.19168">#Miscellaneous vi commands
+#---------------------------------
+
+#Prevent Ctrl-[ (= Esc) from promoting node when invoked to exit entry of search string
+promote                           ! kill = Ctrl-[
+
+enter-focus-to-tree-mode          ! body = Tab      #Focus to Outline pane
+enter-focus-to-body-mode          ! tree = Tab
+
+enter-body-command-line-mode      ! body = colon    #Enter vi's command line
+enter-tree-command-line-mode      ! tree = colon
+full-command                      = Ctrl-colon      #Enter Leo's command mode
+
+#undo/redo commands (vim commands using multiple Leo commands will need multiple undo commands)
+undo                              = u               #Undo last command
+enter-tree-undo-mode              ! tree = u
+redo                              ! body = Ctrl-r   #Re-do undone command
+enter-tree-redo-mode              ! tree = Ctrl-r
+repeat-complex-command            = period          #Re-do last command
+
+goto-global-line                  = Alt-g           #Goto line (in derived file)
+
+enter-body-shift-z-mode           = Shift-z         #ZZ command - Save file and exit
+</t>
+<t tx="ekr.20140721165014.19169">#Undo last headline edit
+#Bind: u
+#Note: undo only seems to work from body pane
+--&gt; focus-to-body
+--&gt; undo
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19170">#Redo last headline edit
+#Bind: Ctrl-r
+#Note: redo only seems to work from body pane
+--&gt; focus-to-body
+--&gt; redo
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19171">#Focus to Outline pane
+#Bind: &lt;Tab&gt;
+
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19172">#Focus to Body pane
+#Bind: &lt;Tab&gt;
+
+--&gt; end-edit-headline
+--&gt; focus-to-body
+#   exit-named-mode: Prevents focus returning to outline
+#                    when inserting character in 1st row/col.
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19173">#Enter vi's command line
+#Bind: :
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-command-revert-mode = e
+enter-body-command-save-mode = w
+enter-body-command-quit-mode = q
+</t>
+<t tx="ekr.20140721165014.19174">#Reload current file
+#Bind: :e&lt;cr&gt;
+#Note: Vi command is :e!&lt;cr&gt;.
+#      '!' not used since Leo prompts to save file changes.
+
+revert = return</t>
+<t tx="ekr.20140721165014.19175">#Save current file (and maybe quit)
+#Bind: :w[q]&lt;cr&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+save-file                           = return
+enter-body-command-save-quit-mode   = q</t>
+<t tx="ekr.20140721165014.19176">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+enter-body-command-save-quit-return-mode = return
+</t>
+<t tx="ekr.20140721165014.19177">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19178">#Exit Leo
+#Bind: :q&lt;cr&gt;
+
+exit-leo = return</t>
+<t tx="ekr.20140721165014.19179">#Enter vi's command line
+#Bind: :
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+--&gt; focus-to-body
+enter-tree-command-revert-mode   = e
+enter-tree-command-save-mode     = w
+enter-tree-command-quit-mode     = q
+</t>
+<t tx="ekr.20140721165014.19180">#Reload current file
+#Bind: :e&lt;cr&gt;
+#Note: Vi command is :e!&lt;cr&gt;.
+#      '!' not used since Leo prompts to save file changes.
+
+revert = return</t>
+<t tx="ekr.20140721165014.19181">#Save current file (and maybe quit)
+#Bind: :w[q]&lt;cr&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-tree-command-save-only-mode      = return
+enter-tree-command-save-quit-mode   = q
+</t>
+<t tx="ekr.20140721165014.19182">#Not in use, see "@mode tree-comm#Save file
+#Bind: :w&lt;cr&gt;
+
+--&gt; save-file
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19183">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+enter-tree-command-save-quit-return-mode = return
+</t>
+<t tx="ekr.20140721165014.19184">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19185">#Exit Leo
+#Bind: :q&lt;cr&gt;
+
+exit-leo = return</t>
+<t tx="ekr.20140721165014.19186">#Save buffers and exit Leo
+#Bind: ZZ
+
+enter-body-shift-z-save-quit-mode = Shift-Z</t>
+<t tx="ekr.20140721165014.19187">#Save file and exit Leo
+#Bind: ZZ
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19188"># vi key bindings - Outline pane #
+ ################################
+
+#State change commands
+#--------------------------------
+set-insert-state                 ! tree = i        #To insert from command state
+set-insert-state                 ! tree = a        #To insert from command state
+
+edit-headline                    ! tree = Ctrl-i   #To command from grayed state
+#end-edit-headline                ! tree = Ctrl-]   #To grayed from command state
+
+set-command-state                ! tree = Ctrl-[   #To command from insert state
+set-command-state                ! tree = Esc      #To command from insert state
+set-command-state                ! tree = return   #To command from insert state
+
+#Yank text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-y  #Select to end of line
+enter-tree-yank-object-mode      ! tree = y        #'yy' selects line, 'y&lt;return&gt;' yanks selected text
+toggle-extend-mode               ! tree = v        #select characters on/off (Vim selects lines)
+#toggle-extend-mode              ! tree = Ctrl-v   #Not used. Leo uses Ctrl-v to paste nodes.
+
+#Change text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-c  #Select to end of line
+enter-tree-change-object-mode    ! tree = c        #Only 'cc' supported, follow with 'i'
+
+#Substitute text commands
+#--------------------------------
+forward-char-extend-selection    ! tree = s
+#kill-line                        ! tree = Shift-s #kill-line seems to only work within @mode
+
+#Delete text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-d  #Temporary workaround, follow with 'i'
+enter-tree-delete-text-object-mode ! tree = d      #Only 'dd' supported
+
+delete-char                      ! tree = x
+delete-char                      ! tree = delete
+
+#Scroll commands
+#--------------------------------
+scroll-outline-up-page           ! tree = Ctrl-b   #Scroll full window
+scroll-outline-down-page         ! tree = Ctrl-f
+
+scroll-outline-up-page           ! tree = Ctrl-u   #Should scroll 1/2 window
+scroll-outline-down-page         ! tree = Ctrl-d
+
+scroll-outline-up-line           ! tree = Ctrl-y   #Scroll 1 line
+scroll-outline-down-line         ! tree = Ctrl-e
+
+#Move within line commands
+#--------------------------------
+forward-char                     ! tree = RtArrow
+forward-char                     ! tree = l
+back-char                        ! tree = Left     #LtArrow
+back-char                        ! tree = h
+
+forward-word                     ! tree = w
+forward-word                     ! tree = Shift-w  #no before/after support.
+back-word                        ! tree = b
+back-word                        ! tree = Shift-b  #no before/after support.
+forward-end-word                 ! tree = e        #no before/after support.
+forward-end-word                 ! tree = Shift-e
+
+beginning-of-line                ! tree = bar      #beginning-of-line (Vi style)
+beginning-of-line                ! tree = ^        #beginning-of-line (Vi style)
+end-of-line                      ! tree = $        #end-of-line (Vi style)
+
+match-brackets                   ! tree = %        #Go to matching bracket
+
+#Move within tree commands
+#--------------------------------
+enter-tree-goto-mode                ! tree = g        #gg command (go to first)
+enter-tree-goto-last-node-mode      ! tree = Shift-g
+
+enter-tree-goto-next-visible-mode   ! tree = Ctrl-j
+enter-tree-goto-next-visible-mode   ! tree = DnArrow
+enter-tree-goto-next-visible-mode   ! tree = Ctrl-DnArrow
+
+enter-tree-goto-prev-visible-mode   ! tree = Ctrl-k
+enter-tree-goto-prev-visible-mode   ! tree = UpArrow
+enter-tree-goto-prev-visible-mode   ! tree = Ctrl-UpArrow
+
+enter-tree-contract-or-go-left-mode ! tree = Ctrl-h
+enter-tree-contract-or-go-left-mode ! tree = Ctrl-LtArrow
+enter-tree-expand-and-go-right-mode ! tree = Ctrl-l
+enter-tree-expand-and-go-right-mode ! tree = Ctrl-RtArrow
+
+#Move with body pane (focus remains in tree pane)
+#------------------------------------------------
+enter-tree-goto-next-line-mode      ! tree = j
+enter-tree-goto-prev-line-mode      ! tree = k
+
+#Find character commands
+#-----------------------
+find-character                      ! tree = f
+backward-find-character             ! tree = Shift-f
+
+#search text commands (limited to node and subnodes unless stated otherwise)
+#  Note: Backward searches ('?') not supported. They do not go beyond current node's body pane.
+#---------------------------
+enter-tree-search-forward-mode      ! tree = /        #Search forward within node and subnodes
+do-nothing                          ! tree = ?        #Does not work, scope only current body
+do-nothing                          ! tree = Ctrl-?   #Does not work, scope only current body
+find-next                           ! tree = n        #Find next (same scope, same direction)
+find-prev                           ! tree = Shift-n  #Find next (same scope, other direction)
+enter-body-search-options-mode      ! tree = Ctrl-/   #Change search options
+#Note: changing options puts cursor in body and exits @mode macro. Use &lt;tab&gt; to go to headline.
+
+#Replace [and find next (scope set by search command)] using paste buffer (clipboard)
+#  Note: Scope and direction set by last search command '/', '?' or 'Ctrl-/'(scope only)
+#  Note: Same replace commands implemented for both "tree" and "body" panes
+#--------------------------------
+paste-text                          ! tree = p        #Paste text before cursor.
+paste-text                          ! tree = Shift-p  #Paste after not supported
+do-nothing                          ! tree = Ctrl-p   #Does not work in headlines, use 'pn'
+
+#Replace and find next (user prompted) (search direction taken from last use of '/' or '?')
+enter-tree-replace-string-mode      ! tree = Alt-/    #Prompt for search &amp; replace string
+replace-then-find                   ! tree = Alt-p    #Replace then search (use after Alt-/)
+
+#Node create/delete/copy/paste commands
+#--------------------------------------
+insert-node                      ! tree = o
+
+enter-tree-copy-node-mode        ! tree = Ctrl-c
+enter-tree-delete-node-mode      ! tree = Ctrl-x
+enter-tree-paste-node-mode       ! tree = Ctrl-v
+
+#Move nodes
+#--------------------------------
+enter-tree-move-outline-down-mode   ! tree = Ctrl-Shift-j
+enter-tree-move-outline-left-mode   ! tree = Ctrl-Shift-h
+enter-tree-move-outline-right-mode  ! tree = Ctrl-Shift-l
+enter-tree-move-outline-up-mode     ! tree = Ctrl-Shift-k
+
+enter-tree-move-outline-down-mode   ! tree = Ctrl-Shift-DnArrow
+enter-tree-move-outline-left-mode   ! tree = Ctrl-Shift-LtArrow
+enter-tree-move-outline-right-mode  ! tree = Ctrl-Shift-RtArrow
+enter-tree-move-outline-up-mode     ! tree = Ctrl-Shift-UpArrow
+
+#Transclude nodes commands
+#--------------------------------
+enter-tree-clone-node-mode             ! tree = t        #Clone current node
+enter-tree-goto-next-clone-node-mode   ! tree = Ctrl-t
+
+#Mark nodes commands
+#--------------------------------
+enter-tree-mark-node-mode              ! tree = m
+enter-tree-goto-next-marked-node-mode  ! tree = Ctrl-m
+enter-tree-unmark-all-nodes-mode       ! tree = Alt-m
+</t>
+<t tx="ekr.20140721165014.19189">#Yank &lt;obj&gt; (vi's yank is the same as Leo's copy-text)
+#Bind: y&lt;obj&gt;
+#Note: Problem, all comamnds that select text switch to body pane.
+      
+--&gt; set-silent-mode
+
+copy-text   = return
+select-all  = y
+</t>
+<t tx="ekr.20140721165014.19190">#Change &lt;object&gt;
+#Bind: c&lt;obj&gt;
+#Note: Problem, any select text commands switches focus to body pane.
+
+--&gt; set-silent-mode
+
+kill-line = c	   #follow with 'i' to enter text
+</t>
+<t tx="ekr.20140721165014.19191">--&gt; set-silent-mode
+kill-line = d
+</t>
+<t tx="ekr.20140721165014.19192">--&gt; end-edit-headline
+--&gt; copy-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19193">#Paste node
+#Bind: Ctrl-v
+
+--&gt; end-edit-headline
+--&gt; paste-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19194">--&gt; end-edit-headline
+--&gt; copy-node
+--&gt; delete-node         #Does not copy to clipboard
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19195">#Go to first node
+#Bind: gg 
+
+--&gt; set-silent-mode
+--&gt; goto-last-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19196">#Go to specified node location
+#Bind: g&lt;location&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-node-goto-first-node-mode     = g</t>
+<t tx="ekr.20140721165014.19197">#Go to first node
+#Bind: gg 
+
+--&gt; set-silent-mode
+--&gt; goto-first-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19198">--&gt; goto-next-visible
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19199">--&gt; goto-prev-visible
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19200">#Search forward within suboutline
+#Bind: /
+--&gt; set-find-suboutline-only
+--&gt; search-forward</t>
+<t tx="ekr.20140721165014.19201">#Specify search and replace string
+#  then Search in direction of last '/', '?' command within suboutline
+#  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
+#Bind: Ctrl-/
+
+--&gt; set-find-suboutline-only
+--&gt; replace-string</t>
+<t tx="ekr.20140721165014.19202">--&gt; contract-or-go-left
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19203">--&gt; contract-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode 
+</t>
+<t tx="ekr.20140721165014.19204">--&gt; expand-and-go-right
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19205">--&gt; move-outline-up
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19206">--&gt; move-outline-down
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19207">--&gt; move-outline-left
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19208">--&gt; move-outline-right
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19209">#Clone current node
+#Bind: t
+
+--&gt; clone-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19210">#Go to next cloned node
+#Bind: ctrl-t
+
+--&gt; goto-next-clone
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19211">#Mark current node
+#Bind: m
+
+--&gt; mark
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19212">#Go to next marked node
+#Bind: ctrl-m
+
+--&gt; goto-next-marked
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19213">#Unmark all nodes
+#Bind: Alt-m
+
+--&gt; unmark-all
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19214"></t>
+<t tx="ekr.20140721165014.19215">#Scroll body up one page when focus is in the outline pane
+#Bind: j
+
+#--&gt; focus-to-body
+--&gt; next-line
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode   #Runs faster when used
+</t>
+<t tx="ekr.20140721165014.19216">#Scroll body up one line when focus is in the outline pane
+#Bind: k
+
+#--&gt; focus-to-body
+--&gt; previous-line
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19217"># vi key bindings - body pane #
+ ##############################
+
+#State change commands
+#--------------------------------
+set-insert-state                 ! body = i        #Insert at cursor
+set-insert-state                 ! body = a        #Insert at cursor
+enter-body-insert-at-indent-mode ! body = Shift-i  #Insert at first non-space
+enter-body-append-mode           ! body = Shift-a  #Insert at end of line
+set-overwrite-state              ! body = Shift-r  #Overwrite text
+enter-body-new-line-below-mode   ! body = o        #Open new line below
+enter-body-new-line-above-mode   ! body = Shift-o  #Open new line above
+keyboard-quit                    ! body = Ctrl-[   #Exit insert state
+keyboard-quit                    ! body = esc      #Exit insert state
+
+#Change commands
+#--------------------------------
+enter-body-change-to-end-of-line-mode ! body = Shift-c
+enter-body-change-object-mode         ! body = c        #Supports 'cd','cw','cb'
+
+#Substitute commands
+#--------------------------------
+enter-body-substitute-char-mode    ! body = s        #Replace current character
+enter-body-substitute-line-mode    ! body = Shift-s  #Replace current line
+
+#Delete commands
+#--------------------------------
+enter-body-delete-object-mode    ! body = d        #Supports 'dd','dw','db'
+enter-body-delete-to-end-of-line-mode ! body = Shift-d
+delete-char                      ! body = x
+delete-char                      ! body = delete
+
+#Yank text commands
+#--------------------------------
+enter-body-yank-to-end-of-line-mode   ! body = Shift-y
+enter-body-yank-object-mode      ! body = y        #Yank objects
+toggle-extend-mode               ! body = Ctrl-v   #select characters-on/off
+toggle-extend-mode               ! body = v        #select characters-on/off (Vim selects lines)
+
+#Indent line commands
+#--------------------------------
+enter-body-indent-mode           ! body = greater  #&gt;&lt;obj&gt; commands
+enter-body-unindent-mode         ! body = less     #&lt;&lt;obj&gt; command
+
+#Join lines
+#--------------------------------
+enter-body-join-mode             ! body = Shift-j
+
+#Move within line commands
+#--------------------------------
+back-char                        ! body = h
+back-char                        ! body = LtArrow
+#back-char                       ! body = bksp     #Prob: Effects bksp in edit
+forward-char                     ! body = l
+forward-char                     ! body = RtArrow
+
+forward-word                     ! body = w        #no before/after support.
+forward-word                     ! body = Shift-w
+back-word                        ! body = b        #no before/after support.
+back-word                        ! body = Shift-b  #
+forward-end-word                 ! body = e        #no before/after support.
+forward-end-word                 ! body = Shift-e
+
+beginning-of-line											  ! body = |
+back-to-indentation                ! body = ^
+end-of-line									        ! body = $
+enter-body-goto-indent-previous-line-mode   !body = minus
+
+#Move within tree commands (while focus is in body pane)
+#-------------------------------------------------------
+enter-body-goto-prev-visible-mode   ! body = Ctrl-k
+enter-body-goto-prev-visible-mode   ! body = Ctrl-UpArrow
+enter-body-contract-or-go-left-mode ! body = Ctrl-h
+enter-body-contract-or-go-left-mode ! body = Ctrl-LtArrow
+enter-body-expand-and-go-right-mode ! body = Ctrl-l
+enter-body-expand-and-go-right-mode ! body = Ctrl-RtArrow
+enter-body-goto-next-visible-mode   ! body = Ctrl-j
+enter-body-goto-next-visible-mode   ! body = Ctrl-DnArrow
+
+#Move within buffer commands
+#--------------------------------
+next-line                         ! body = j
+next-line                         ! body = DnArrow
+previous-line                     ! body = k
+previous-line                     ! body = UpArrow
+
+forward-sentence                  ! body = )
+back-sentence                     ! body = (
+enter-body-goto-after-paragraph-mode  ! body = }
+enter-body-goto-before-paragraph-mode ! body = {
+
+enter-body-g-mode                   ! body = g        #g commands - Goto line, reformat text)
+enter-body-goto-end-of-buffer-mode  ! body = Shift-g
+
+enter-body-match-mode               ! body = %
+
+#Scroll commands
+#--------------------------------
+scroll-up-page                           ! body = Ctrl-b   #Scrolls full window
+scroll-down-page                         ! body = Ctrl-f
+
+scroll-up-half-page                      ! body = Ctrl-u   #should scroll 1/2
+scroll-down-half-page                    ! body = Ctrl-d
+
+scroll-up-line                           ! body = Ctrl-y   #should scroll 1 line
+scroll-down-line                         ! body = Ctrl-e
+
+#Find character commands
+#--------------------------------
+find-character                      ! body = f
+backward-find-character             ! body = Shift-f
+
+#search text commands (limited to current node's body text unless stated otherwise)
+#---------------------------
+enter-body-search-forward-mode      ! body = /        #Search forward within node's body text
+enter-body-search-backward-mode     ! body = ?        #Search backward within node's body text
+find-next                           ! body = n        #Find next (same scope, same direction)
+find-prev                           ! body = Shift-n  #Find next (same scope, other direction)
+enter-body-search-options-mode      ! body = Ctrl-/   #Change search options
+
+#Replace [and find next] using paste buffer (clipboard)
+#  Note: Scope and direction set by last search command '/', '?' or 'Ctrl-/'(scope only)
+#--------------------------------
+paste-text                          ! body = p        #To paste a line before current: use '|p'
+paste-text                          ! body = Shift-p  #Paste text before cursor.
+enter-body-paste-then-find-mode     ! body = Ctrl-p   #Replace then find next from last /,?
+
+#Replace and find next 'simple' string (search direction taken from last use of '/' or '?')
+enter-body-replace-string-mode      ! body = Alt-/    #Prompt for search &amp; replace string
+replace-then-find                   ! body = Alt-p    #Replace then search (use after Alt-/)
+
+#Mark and go to mark commands
+#----------------------------
+# point-to-register    ! body = m
+# jump-to-register     ! body = quoteright  # '
+# jump-to-register     ! body = quoteleft   # `
+
+#Window commands
+#--------------------------------
+enter-vim-window-commands-mode      ! body = Ctrl-w
+</t>
+<t tx="ekr.20140721165014.19218">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-forward
+</t>
+<t tx="ekr.20140721165014.19219">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-backward
+</t>
+<t tx="ekr.20140721165014.19220">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-forward
+</t>
+<t tx="ekr.20140721165014.19221">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+enter-body-search-all-nodes-mode          = return
+enter-body-search-all-nodes-mode          = a
+
+enter-body-search-toggle-headline-mode    = h
+enter-body-search-toggle-headline-mode    = o
+enter-body-search-toggle-body-mode        = b
+enter-body-search-toggle-mark-mode        = m
+enter-body-search-toggle-regex-mode       = r
+</t>
+<t tx="ekr.20140721165014.19222">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ &lt;cr&gt;
+
+--&gt; set-find-everywhere
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19223">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ h
+#      Ctrl-/ o
+
+--&gt; toggle-find-in-headline-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19224">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ b
+
+--&gt; toggle-find-in-body-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19225">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m
+
+enter-body-search-toggle-mark-finds-mode   = f
+enter-body-search-toggle-mark-changes-mode = c
+</t>
+<t tx="ekr.20140721165014.19226">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m f
+
+--&gt; toggle-find-mark-finds-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19227">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m c
+
+--&gt; toggle-find-mark-changes-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19228">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ r
+
+--&gt; toggle-find-regex-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19229">#Specify search and replace string
+#  then search in direction of last '/', '?' command within node
+#  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
+#Bind: Alt-/
+
+--&gt; set-find-node-only
+--&gt; replace-string
+</t>
+<t tx="ekr.20140721165014.19230">#Paste then search in current direction
+#  (Preceeded by '/' or '?' to find first occurance)
+#Bind: Alt-p
+
+--&gt; yank
+--&gt; find-next
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19231">#Go to end of buffer
+#Bind: G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer
+--&gt; beginning-of-line   #vi puts curser in first column of last row
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19232">#Go to &lt;object&gt;
+#Bind: g&lt;obj&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-g-beginning-of-buffer-mode   ! body = g
+
+#Reformat text - cursor moved to end of formated text
+enter-body-g-q-mode                        ! body = q
+
+#Reformat text - cursor remains at current location (not supported)
+enter-body-g-w-mode                        ! body = w
+</t>
+<t tx="ekr.20140721165014.19233">#Go to top of buffer
+#Bind: gg (Vim)
+#Note: Vi key binding of '1G' not used. Bound numbers are not entered when editing.
+#Note: Vim also supports 'gg' to go to top of buffer.
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19234">#Format text &lt;object&gt; (Moving cursor to end of formatted text)
+#Bind: gq&lt;obj&gt;
+
+fill-paragraph ! body = q		       #gqq - Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+
+enter-body-g-wq-a-mode ! body = a		#gqa&lt;obj&gt; - Format all of the specified scope</t>
+<t tx="ekr.20140721165014.19235">#Format text &lt;object&gt; - Keeping cursor at same location (not supported yet)
+#Bind: gw&lt;obj&gt;
+
+fill-paragraph ! body = w	#gww - Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+
+enter-body-g-wq-a-mode ! body = a		#gqa&lt;obj&gt; - Format all of the specified scope</t>
+<t tx="ekr.20140721165014.19236">#Format paragraph
+#Bind: gqap
+
+fill-paragraph ! body = p		#Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+</t>
+<t tx="ekr.20140721165014.19237">#Open new line below current line
+#Bind: o
+
+--&gt; set-silent-mode
+--&gt; end-of-line
+--&gt; insert-newline   #Enter insert mode
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19238">#Open new line above current line
+#Bind: O
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; insert-newline
+--&gt; keyboard-quit
+--&gt; previous-line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19239">#Append text to end of current line
+#Bind: A
+
+--&gt; set-silent-mode
+--&gt; end-of-line      #Delete the &lt;cr&gt;&lt;lf&gt; at the end of the line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19240">#Insert text at first non-blank character in current line
+#Bind: I
+
+--&gt; set-silent-mode
+--&gt; back-char        #Move cursor to cancel any selected text.
+--&gt; forward-char     #  otherwise insert will replace selected text.
+--&gt; back-to-indentation #cursor to beginning of first word in line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19241">#Delete to the end of the current line
+#Bind: D
+#Note: If cursor at end of line, command will delete next line
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19242">#Delete &lt;obj&gt; command
+#Bind: d&lt;obj&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-delete-line-mode      = d
+enter-body-delete-selected-mode  = return       #Delete selected text(exit select mode)
+
+
+enter-body-delete-to-end-of-word-mode           = w
+enter-body-delete-to-end-of-word-mode           = Shift-w
+enter-body-delete-to-begin-of-word-mode         = b
+enter-body-delete-to-begin-of-word-mode         = Shift-b
+enter-body-delete-to-end-of-sentence-mode       = )
+enter-body-delete-to-beginning-of-sentence-mode = (
+enter-body-delete-to-end-of-paragraph-mode      = }
+enter-body-delete-to-beginning-of-paragraph-mode  = {
+enter-body-delete-section-mode                  = %
+enter-body-delete-to-g-object-mode              = g
+enter-body-delete-to-end-of-buffer-mode         = shift-g
+
+enter-body-delete-to-char-mode     = t</t>
+<t tx="ekr.20140721165014.19243">#Deleted current line
+#Bind: dd
+#Note: Last line in file will not be deleted.
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line               #   on beginning of current line
+
+--&gt; next-line-extend-selection      #Select line and the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19244">#Deleted to end of word
+#Bind: dw
+#Note: Travels past end of line.
+#Note: Forward-word-extend-selection not used, it consumes all
+#      trailing non-alpha-numeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line       #Split word (kill-word only deletes whole words)
+--&gt; kill-word        #Delete to end of word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19245">#Delete to beginning of word.i
+#Bind: db
+#Note: Travels past beginning of line.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19246">#Delete to end of sentence
+#Bind: d)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19247">#Delete to beginning of sentence
+#Bind: d(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19248">#Delete to end of paragraph
+#Bind: d}
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19249">#Delete to beginning of paragraph
+#Bind: d{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19250">#Delete to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: dg
+
+enter-body-delete-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19251">#Delete to beginning of buffer (including all of current line)
+#Bind: dgg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19252">#Delete to end of buffer
+#Bind: dG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; beginning-of-line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19253">#Delete from current bracket type to its apposing bracket
+#Bind: d%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19254">#Delete to character
+#Bind: dt&lt;character&gt;
+#Note: Character search not limited to current line.
+
+--&gt; set-silent-mode
+--&gt; zap-to-character
+
+</t>
+<t tx="ekr.20140721165014.19255">#Delete selected text
+#Bind: d&lt;cr&gt;
+
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19256">#Yank text to the end of the current line
+#Bind: Y
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+--&gt; yank
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19257">#Yank &lt;obj&gt; (Leo's copy-text)
+#Bind: y&lt;obj&gt;
+#Note: yank-to-character not supported.  Can not issue yank command.
+      #Leo's zap-to-character must be last command (needs user input)
+      #Issue 'dt&lt;char&gt;' followed by 'p'
+      
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-yank-selected-mode                     = return #Yank selected text(exit select mode)
+enter-body-yank-line-mode                         = y
+enter-body-yank-to-beginning-of-next-word-mode    = w
+enter-body-yank-to-beginning-of-current-word-mode = b
+enter-body-yank-to-end-of-sentence-mode           = )
+enter-body-yank-to-beginning-of-sentence-mode     = (
+enter-body-yank-to-end-of-paragraph-mode          = }
+enter-body-yank-to-beginning-of-paragraph-mode    = {
+enter-body-yank-to-g-object-mode                  = g
+enter-body-yank-to-end-of-buffer-mode             = Shift-g
+enter-body-yank-section-mode                      = %
+
+#Yank to user specified character
+#Workaround used until @mode's execute commands after
+#command requesting user input.
+#follow command with "y&lt;cr&gt;" to yank &amp; "v" to unselect
+find-character-extend-selection                 = t
+backward-find-character-extend-selection        = Shift-t
+</t>
+<t tx="ekr.20140721165014.19258">#Yank current line
+#Bind: yy
+#Note: Problem yanking empty line. Also yanks line below it.
+#Note: Problem yanking last line.  Does not yank a trailing &lt;cr&gt;
+
+--&gt; set-silent-mode
+
+#body-delete-line macro
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; end-of-line-extend-selection    #Select all text on current line and
+--&gt; forward-char-extend-selection   #  select the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; beginning-of-line
+#--&gt; forward-char
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19259">#Yank to beginning of next word
+#Bind: dw
+#Note: Travels past end of line.
+#Note: Forward-word-extend-selection not used, it consumes all
+#      trailing non-alpha-numeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; kill-word        #Delete to beginning of next word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19260">#Yank to beginning of current word.
+#Bind: yb
+#Note: Travels past beginning of line.
+#Note: AlphaNumeric word in contact with a non-alphanumeric word
+      #is not handled correctly. Can cause text to be deleted or replicated.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19261">#Yank to end of sentence
+#Bind: y)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19262">#Yank to beginning of sentence
+#Bind: y(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19263">#Yank to end of paragraph
+#Bind: y}
+#Note: Yanking paragraph at end of body will not yank 1 or
+#      two characters (Characters after final cursor position)
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19264">#Yank to beginning of paragraph
+#Bind: y{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19265">#Yank to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: yg
+
+enter-body-yank-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19266">#Yank to beginning of buffer
+#Bind: ygg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; yank
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19267">#Yank to end of buffer
+#Bind: yG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; yank                #Put text back
+--&gt; beginning-of-line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19268">#Yank from current bracket type to its opposing bracket
+#Bind: y%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+--&gt; yank
+
+#Remove highlighting of selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19269">#Yank selected text
+#Bind: y&lt;cr&gt;
+
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+--&gt; yank
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+#Remove highlighting of selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19270">#Change to end of line
+#Bind: C
+#Note: If cursor at end of line, command will delete next line and enter insert mode
+#      Use 'i' command instead (enter insert mode)
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19271">#Change &lt;object&gt;
+#Bind: c&lt;obj&gt;
+#Note: change-to-character not supported.  Can not issue set-insert-state.
+      #Leo's zap-to-character must be last command (needs user input)
+      #Emulate command by issuing 'dt&lt;char&gt;' followed by 'i'
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-change-selected-mode                     = return #Change selected text(exit select mode)
+enter-body-change-line-mode                         = c
+enter-body-change-to-end-of-word-mode               = w
+enter-body-change-to-beginning-of-word-mode         = b
+enter-body-change-to-end-of-sentence-mode           = )
+enter-body-change-to-beginning-of-sentence-mode     = (
+enter-body-change-to-end-of-paragraph-mode          = }
+enter-body-change-to-beginning-of-paragraph-mode    = {
+enter-body-change-to-g-object-mode                  = g
+enter-body-change-to-end-of-buffer-mode             = Shift-g
+enter-body-change-section-mode                      = %
+
+#Change to specified character
+#Workaround used until @mode's execute commands after
+#command requesting user input.
+#follow command with "i" to change the text.
+find-character-extend-selection                 = t
+backward-find-character-extend-selection        = Shift-t
+</t>
+<t tx="ekr.20140721165014.19272">#Change to end of line
+#Bind: cc
+#Note: Performs body-delete-line followed by a an insert-newline
+
+#Note: Problem deleting empty line. Also deletes line below it.
+      #Use Join function instead (key 'J')
+#Note: Problem deleting last line.  Also deletes line above it.
+      #Invoke undo one time to restore line ('u' key)
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; end-of-line-extend-selection    #Select all text on current line and
+--&gt; forward-char-extend-selection   #  select the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19273">#Change to end of word
+#Bind: cw
+#Note: Travels past end of line.
+#Note: forward-word-extend-selection not used,
+#      it skips non-alphanumeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; kill-word        #Delete to end of word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19274">#Change to beginning of word
+#Bind: cb
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19275">#Delete to end of sentence
+#Bind: d)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19276">#Delete to beginning of sentence
+#Bind: d(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19277">#Delete to end of paragraph
+#Bind: d}
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19278">#Delete to beginning of paragraph
+#Bind: d{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19279">#Change to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: cg
+
+enter-body-change-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19280">#Change to beginning of buffer
+#Bind: cgg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19281">#Delete to end of buffer
+#Bind: cG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+
+--&gt; insert-newline   #Enter insert mode
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19282">#Change from current bracket type its matching bracket type
+#Bind: c%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+--&gt; kill-region
+--&gt; yank             #Show what text will be replaced
+
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19283">#Yank selected text
+#Bind: c&lt;cr&gt;
+
+
+#Delete selected text (keeping copy in paste buffer)
+--&gt; kill-region
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19284">#Substitute character
+#Bind: s
+
+--&gt; set-silent-mode
+--&gt; delete-char
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19285">#Substitute line
+#Bind: S
+
+--&gt; set-silent-mode
+--&gt; kill-line
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19286">#Indent &lt;object&gt;
+#Bind: &gt;&lt;obj&gt;
+
+--&gt; set-silent-mode
+
+enter-body-indent-line-mode = greater
+enter-body-indent-to-end-of-sentence-mode = )
+enter-body-indent-to-beginning-of-sentence-mode = (
+enter-body-indent-to-end-of-paragraph-mode = }
+enter-body-indent-to-beginning-of-paragraph-mode = {
+enter-body-indent-to-beginning-of-buffer-mode = g
+enter-body-indent-to-end-of-buffer-mode = Shift-g
+</t>
+<t tx="ekr.20140721165014.19287">#Indent line
+#Bind: &gt;&gt;
+
+--&gt; set-silent-mode
+--&gt; back-to-indentation #cursor to beginning of first word in line
+--&gt; forward-char-extend-selection
+
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19288">#Indent to beginning of sentence
+#Bind: &gt;(
+
+--&gt; forward-sentence-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19289">#Indent to beginning of sentence
+#Bind: &gt;)
+
+--&gt; back-sentence-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19290">#Indent to end of paragraph
+#Bind: &gt;}
+
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19291">#Indent to beginning of paragraph
+#Bind: &gt;{
+
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19292">#Indent to end of buffer
+#Bind: &gt;G
+
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19293">#Indent to end of buffer
+#Bind: &gt;G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19294">#Unindent object
+#Bind: &lt;&lt;obj&gt;
+
+--&gt; set-silent-mode
+
+enter-body-unindent-less-mode = less
+
+enter-body-unindent-to-end-of-sentence-mode = )
+enter-body-unindent-to-beginning-of-sentence-mode = (
+enter-body-unindent-to-end-of-paragraph-mode = }
+enter-body-unindent-to-beginning-of-paragraph-mode = {
+enter-body-unindent-to-beginning-of-buffer-mode = g
+enter-body-unindent-to-end-of-buffer-mode = Shift-g
+</t>
+<t tx="ekr.20140721165014.19295">#Unindent current line
+#Bind: &lt;&lt;
+#Note: Unindents to first column instead of previous tab stop
+
+#--&gt; set-silent-mode
+#--&gt; back-to-indentation #cursor to beginning of first word in line
+
+--&gt; unindent-region
+#--&gt; delete-indentation
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19296">#Indent to end of paragraph
+#Bind: &lt;}
+
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19297">#Indent to beginning of paragraph
+#Bind: &lt;{
+
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19298">#Indent to end of sentence
+#Bind: &lt;)
+
+--&gt; forward-sentence-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19299">#Indent to beginning of sentence
+#Bind: &lt;(
+
+--&gt; back-sentence-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19300">#Unindent to end of buffer
+#Bind: &lt;G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19301">#Unindent to end of buffer
+#Bind: &lt;G
+
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19302">#Goto first visible charecter on previous line
+#Bind: -
+#Note: No indent performed, using back-char, forward-word will
+#      not skip over blank lines, goes to 2nd word on first line.
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line		#Now at beginning of current line.
+
+--&gt; previous-line
+# --&gt; back-char
+# --&gt; forward-word			#Skips over visible non-alpha-numeric characters
+
+
+--&gt; exit-named-mode
+
+</t>
+<t tx="ekr.20140721165014.19303">#Go to end of paragraph
+#Bind: }
+
+--&gt; set-silent-mode
+
+--&gt; forward-char        #Be sure cursor in a paragraph
+--&gt; forward-paragraph
+--&gt; back-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19304">#Go to beginning of paragraph
+#Bind: {
+
+--&gt; set-silent-mode
+
+--&gt; back-char        #Be sure cursor in a paragraph
+--&gt; back-paragraph
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19305">#Join next line to end of current line
+#Bind: J
+
+--&gt; set-silent-mode
+--&gt; end-of-line      #Delete the &lt;cr&gt;&lt;lf&gt; at the end of the line
+--&gt; delete-char
+
+--&gt; exit-named-mode
+
+</t>
+<t tx="ekr.20140721165014.19306">#Goto matching bracket: () [] {}
+#Bind: %
+
+--&gt; set-silent-mode
+--&gt; match-brackets
+--&gt; forward-char
+--&gt; back-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19307"></t>
+<t tx="ekr.20140721165014.19308">--&gt; focus-to-tree
+--&gt; goto-next-visible
+--&gt; edit-headline
+--&gt; focus-to-body
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19309">--&gt; focus-to-tree
+--&gt; goto-prev-visible
+--&gt; edit-headline
+--&gt; focus-to-body
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19310">--&gt; focus-to-tree
+--&gt; expand-and-go-right
+--&gt; edit-headline
+--&gt; focus-to-body
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19311">--&gt; focus-to-tree
+--&gt; contract-or-go-left
+--&gt; edit-headline
+--&gt; focus-to-body
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19312">#Window commands
+#Bind: Ctrl-w
+
+add-editor           = s   #Open another view to current node
+add-editor           = n   #Open another view to current node
+
+cycle-editor-focus   = w   #Vim goes to next below-right window (wraps)
+cycle-editor-focus   = p   #Vim goes to previous window with focus
+cycle-editor-focus   = k   #Vim goes to window above current window
+cycle-editor-focus   = j   #Vim goes to window below current window
+
+delete-editor        = c   #Close current window (if more than one)
+delete-editor        = q   #Close current window (if more than one)
+</t>
+<t tx="ekr.20140721165014.19313">This node and its descendants contains settings that make Leo work somewhat
+like vim.
+
+To enable vim emulation, place a copy this "@keys Vim bindings" node and
+its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
+</t>
+<t tx="ekr.20140829172618.19886">The maximum number of characters that will be automatically load into the body text.
+If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons.
+Clicking the 'load' button will load the body text and remove the buttons.
+
+A value of zero disables this feature.</t>
+<t tx="ekr.20140912072521.19153"></t>
+<t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
+<t tx="ekr.20140912072521.19160">/*
+    =========== Leo's new, fully parameterized, stylesheet. ===========
+    
+    This stylesheet is responsible for most of Leo's appearance.
+    This stylesheet is composed of this nodes and all its descendants, in outline order.
+    
+    Leo inserts the settings in the tree "Qt Gui Stylesheet settings" into this stylesheet.
+    Modify those settings, *not* this stylesheet.
+    
+    About Qt stylesheets: http://qt-project.org/doc/qt-4.8/stylesheet.html
+    
+Apparently, Leo directives don't spoil stylesheets,
+but just to be sure, put them inside this comment.
+
+@nocolor
+@language stylesheet (To do)
+
+*/
+
+</t>
+<t tx="ekr.20140912073148.19150">'''Converts p.b, that is, "New/Changed selectors" to settings and organizer nodes.'''
+g.cls()
+safe = False
+for s in g.splitLines(p.b):
+    if s.strip() and not s.startswith(' '):
+        for tag in ('#','@color','@string'):
+            if s.startswith(tag):
+                if tag == '#':
+                    h = s[1:].strip().rstrip('.')
+                else:
+                    h = tag + ' ' + s[len(tag):].strip()
+                if safe:
+                    print('create: %s' % h)
+                else:
+                    p2 = p.insertAsLastChild()
+                    p2.h = h
+                break
+        else:
+            print('unexpected line: %s' % s)
+c.redraw()
+@color
+@language python</t>
+<t tx="ekr.20140912075503.19262">Important: changing the Basic Font settings below should be all you need to
+do at first. All other font settings are defined in terms of the basic fonts.</t>
+<t tx="ekr.20140912075503.19263"></t>
+<t tx="ekr.20140912075503.19264">**Important**: This should be set by each user.</t>
+<t tx="ekr.20140912075503.19265">valid values are: normal,bold,100,..,900</t>
+<t tx="ekr.20140912075503.19266">Valid values are: normal,italic,oblique</t>
+<t tx="ekr.20140912075503.19268"></t>
+<t tx="ekr.20140912075503.19269"></t>
+<t tx="ekr.20140912075503.19270"></t>
+<t tx="ekr.20140912075503.19271"></t>
+<t tx="ekr.20140912075503.19272"></t>
+<t tx="ekr.20140912075503.19273"></t>
+<t tx="ekr.20140912075503.19274">Should be white: it shows in the log pane.</t>
+<t tx="ekr.20140912075503.19275"></t>
+<t tx="ekr.20140912075503.19276"></t>
+<t tx="ekr.20140912075503.19277"></t>
+<t tx="ekr.20140912075503.19278">DejaVu Sans Mono</t>
+<t tx="ekr.20140912075503.19279"></t>
+<t tx="ekr.20140912075503.19280"></t>
+<t tx="ekr.20140912075503.19281"></t>
+<t tx="ekr.20140912075503.19282"></t>
+<t tx="ekr.20140912075503.19283"></t>
+<t tx="ekr.20140912075503.19284"></t>
+<t tx="ekr.20140912075503.19285"></t>
+<t tx="ekr.20140912075503.19286"></t>
+<t tx="ekr.20140912075503.19287"></t>
+<t tx="ekr.20140912075503.19288"></t>
+<t tx="ekr.20140912075503.19289"></t>
+<t tx="ekr.20140912075503.19290"></t>
+<t tx="ekr.20140912075503.19291"></t>
+<t tx="ekr.20140912075503.19292"></t>
+<t tx="ekr.20140912075503.19293"></t>
+<t tx="ekr.20140912075503.19294">cornsilk
+
+</t>
+<t tx="ekr.20140912075503.19295"></t>
+<t tx="ekr.20140912075503.19296"></t>
+<t tx="ekr.20140912075503.19297"></t>
+<t tx="ekr.20140912075503.19298"></t>
+<t tx="ekr.20140912075503.19299"></t>
+<t tx="ekr.20140912075503.19300"></t>
+<t tx="ekr.20140912075503.19301"></t>
+<t tx="ekr.20140912075503.19302"></t>
+<t tx="ekr.20140912075503.19303"></t>
+<t tx="ekr.20140912075503.19304"></t>
+<t tx="ekr.20140912075503.19305"></t>
+<t tx="ekr.20140912075503.19306"></t>
+<t tx="ekr.20140912075503.19307"></t>
+<t tx="ekr.20140912075503.19308"></t>
+<t tx="ekr.20140912075503.19309"></t>
+<t tx="ekr.20140912075503.19310"></t>
+<t tx="ekr.20140912075503.19311"></t>
+<t tx="ekr.20140912075503.19312"></t>
+<t tx="ekr.20140912075503.19313"></t>
+<t tx="ekr.20140912075503.19314"></t>
+<t tx="ekr.20140912075503.19315"></t>
+<t tx="ekr.20140912075503.19316"></t>
+<t tx="ekr.20140912075503.19317"></t>
+<t tx="ekr.20140912075503.19318"></t>
+<t tx="ekr.20140912075503.19319"></t>
+<t tx="ekr.20140912075503.19320"></t>
+<t tx="ekr.20140912075503.19321"></t>
+<t tx="ekr.20140912075503.19322"></t>
+<t tx="ekr.20140912075503.19323"></t>
+<t tx="ekr.20140912075503.19324"></t>
+<t tx="ekr.20140912075503.19325"></t>
+<t tx="ekr.20140912075503.19326"></t>
+<t tx="ekr.20140912075503.19327"></t>
+<t tx="ekr.20140912075503.19328"></t>
+<t tx="ekr.20140912075503.19329"></t>
+<t tx="ekr.20140912075503.19330"></t>
+<t tx="ekr.20140912075503.19331"></t>
+<t tx="ekr.20140912075503.19332"></t>
+<t tx="ekr.20140912075503.19333"></t>
+<t tx="ekr.20140912075503.19334"></t>
+<t tx="ekr.20140912075503.19335"></t>
+<t tx="ekr.20140912075503.19336"></t>
+<t tx="ekr.20140912075503.19337"></t>
+<t tx="ekr.20140912075503.19338"></t>
+<t tx="ekr.20140912075503.19339"></t>
+<t tx="ekr.20140912075503.19340"></t>
+<t tx="ekr.20140912075503.19341">@font-family</t>
+<t tx="ekr.20140912075503.19342">10pt</t>
+<t tx="ekr.20140912075503.19343">@font-weight</t>
+<t tx="ekr.20140912075503.19344"> @font-style</t>
+<t tx="ekr.20140912075503.19345"></t>
+<t tx="ekr.20140912075503.19346"></t>
+<t tx="ekr.20140912075503.19347"></t>
+<t tx="ekr.20140912075503.19348"></t>
+<t tx="ekr.20140912075503.19349"></t>
+<t tx="ekr.20140912075503.19350">None: Use the default platform font.</t>
+<t tx="ekr.20140912075503.19351"></t>
+<t tx="ekr.20140912075503.19352"></t>
+<t tx="ekr.20140912075503.19353"></t>
+<t tx="ekr.20140912075503.19355"></t>
+<t tx="ekr.20140912075503.19356"></t>
+<t tx="ekr.20140912075503.19357"></t>
+<t tx="ekr.20140912075503.19358"></t>
+<t tx="ekr.20140912075503.19359"></t>
+<t tx="ekr.20140912075503.19360"></t>
+<t tx="ekr.20140912075503.19361"></t>
+<t tx="ekr.20140912075503.19362"></t>
+<t tx="ekr.20140912075503.19363"></t>
+<t tx="ekr.20140912075503.19364"></t>
+<t tx="ekr.20140912075503.19365">These must be @string settings, even though they do affect colors.</t>
+<t tx="ekr.20140912075503.19366"></t>
+<t tx="ekr.20140912075503.19367"></t>
+<t tx="ekr.20140912075503.19368"></t>
+<t tx="ekr.20140912075503.19369">@language rest
+
+This tree contains settings that are inserted style sheets. For example,
+given the setting::
+
+    @color body-bg = white
+    
+Leo will substitute "white" everywhere that "@body-bg" appears in the following two trees:
+
+    @data qt-gui-plugin-style-sheet
+    @data qt-gui-user-style-sheet
+
+Many users will want to change the settings in the Fonts section, especially these:
+
+- @string font-size:        The base font size, the largest of the font-size settings.
+- @string medium-font-size: An intermediate font sized used by default in the Find Panel.
+- @string small-font-size:  A small font size used in buttons.
+</t>
+<t tx="ekr.20140912105440.19376">c.k.simulateCommand('style-reload')</t>
+<t tx="ekr.20140915194122.19458">/* ========== Body pane ========== */
+
+QTextEdit#richTextEdit {
+    background-color:           @body-bg;
+    color:                      @body-fg;
+    selection-color:            @body-sel-fg;
+    selection-background-color: @body-sel-bg;
+    font-family:                @body-font-family;
+    font-size:                  @font-size-body;
+    /* Don't use body-font-size for the font-size. */
+    font-weight:                @body-font-weight;
+    font-style:                 @body-font-style;
+}
+</t>
+<t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
+
+QWidget#findTab {
+    background-color: @find-tab-bg;
+}
+
+QLabel#findHeading, QLabel#findHelp {
+    font-family:    @find-font-family;
+    font-size:      @find-font-size; 
+    font-weight:    @find-font-weight;
+    font-style:     @find-font-style; 
+}
+
+QLabel#findLabel, QLabel#changeLabel {
+    font-family:    @find-font-family;
+    font-size:      @find-font-size;
+    font-weight:    @find-font-weight;
+    font-style:     @find-font-style;
+}
+
+QLineEdit#findPattern, QLineEdit#findChange {
+    font-family:    @find-pattern-font-family;
+    font-size:      @find-font-size;
+    font-weight:    @find-font-weight;
+    font-style:     @find-font-style;
+}
+
+QCheckBox, QRadioButton {
+    /* For the Find Tab. */
+    font-family:    @checkbox-font-family;
+    font-size:      @checkbox-font-size;
+}
+</t>
+<t tx="ekr.20140915194122.19460">/* ========== Focused &amp; unfocused pane border highlighting ========== */
+
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
+</t>
+<t tx="ekr.20140915194122.19461">/* ========== The log panes ========== 
+
+   Yes, all unmodified QTextEdit's are assumed to be in the log pane.
+*/
+
+QTextEdit {
+    background-color:           @log-bg;
+    color:                      @log-fg;
+    selection-color:            @log-sel-fg;
+    selection-background-color: @log-sel-bg;
+    font-family:                @log-font-family;
+    font-size:                  @log-font-size;
+    font-weight:                @log-font-weight;
+    font-style:                 @log-font-style;
+}
+</t>
+<t tx="ekr.20140915194122.19462">/* ==========  Minibuffer ========== */
+
+/* ----- The minibuffer itself ----- */
+
+QLineEdit#lineEdit {
+    color:                      @minibuffer-fg;
+    background-color:           @minibuffer-bg;
+    selection-color:            @minibuffer-sel-fg;
+    selection-background-color: @minibuffer-sel-bg;
+    font-family:                @minibuffer-font-family;
+    font-size:                  @minibuffer-font-size;
+    font-weight:                @minibuffer-font-weight;
+    font-style:                 @minibuffer-font-style;
+}
+
+/* ----- The label of the minibuffer ----- */
+
+QLabel#minibufferLabel {
+    border:         @minibuffer-border;
+    margin:         @minibuffer-margin;
+    font-family:    @minibuffer-font-family;
+    font-size:      @minibuffer-font-size;
+    font-weight:    @minibuffer-font-weight;
+    font-style:     @minibuffer-font-style;
+}
+
+/* ----- Minibuffer ----- */
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+</t>
+<t tx="ekr.20140915194122.19463"></t>
+<t tx="ekr.20140915194122.19464">/* ========== bookmarks.py plugin ========== */
+
+#show_bookmarks QPushButton {
+    color:              @bookmarks_base_color;
+    margin:             @bookmarks_base_margin;
+    padding:            @bookmarks_base_padding;
+    border:             @bookmarks_base_border;
+    font-family:        @bookmarks_base_family;
+    font-size:          @bookmarks_base_size;
+    font-style:         @bookmarks_base_style;
+    font-weight:        @bookmarks_base_weight;
+    text-decoration:    @bookmarks_base_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    color:              @bookmarks_children_color;
+    font-family:        @bookmarks_children_family;
+    font-size:          @bookmarks_children_size;
+    font-weight:        @bookmarks_children_weight;
+    text-decoration:    @bookmarks_children_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size:          @bookmarks_expanded_size;
+    color:              @bookmarks_expanded_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_expanded_weight;
+    text-decoration:    @bookmarks_expanded_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size:          @bookmarks_current_size;
+    color:              @bookmarks_current_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_current_weight;
+    text-decoration:    @bookmarks_current_decoration;
+}
+</t>
+<t tx="ekr.20140915194122.19465">/* ========== screencast.py plugin========== */
+
+QPlainTextEdit#screencastcaption {
+    background-color:   @screencast-bg;
+    font-family:        @screencast-font-family;
+    font-size:          @screencaset-font-size;
+    font-weight:        @screencast-font-weight;
+    font-style:         @screencaset-font-style;
+}
+</t>
+<t tx="ekr.20140915194122.19466">/*  ========== Dialogs (QLabel) ========== 
+
+    Use care when changing these settings: they are used for dialog text. 
+*/
+
+QLabel {
+    border:         @dialog-border;
+    margin:         @dialog-margin;
+    font-family:    @dialog-font-family;
+    font-size:      @dialog-font-size;
+    font-weight:    @dialog-font-weight;
+    font-style:     @dialog-font-style;
+}
+
+</t>
+<t tx="ekr.20140915194122.19467">/* ========== Buttons ========== 
+
+    Examples::
+    
+        QPushButton#&lt;button text&gt;-button { &lt;style&gt; }
+        QPushButton[button_kind="&lt;button kind&gt;"] { &lt;style&gt; }
+*/
+
+/*
+    Default for all buttons.
+    If you specify the size, you should also specify the font.
+*/
+
+/* -----
+QPushButton {
+    font-family: @push-button-font-family;
+    font-size:   @push-button-font-size;
+}
+----- */
+
+QPushButton[button_kind="at-button"] {
+    /* Buttons created by @button nodes. */
+    background-color: @at-button-btn-bg;
+}
+QPushButton[button_kind="debug-script"] {
+    background-color: @debug-script-btn-bg;
+}
+QPushButton[button_kind="generic-button"] {
+    /* The default styling for buttons. */
+    background-color: @generic-button-btn-bg;
+}
+QPushButton[button_kind="run-script"] {
+    /* The singleton run-script button. */
+    background-color: @run-script-btn-bg;
+}
+QPushButton[button_kind="script-button"] {
+    /* Buttons created by the script-button button. */
+    background-color: @script-button-btn-bg;
+}
+QPushButton#script-button-button { 
+    /* The singleton script-button button. */
+    background-color: @script-button-button-btn-bg;
+}
+</t>
+<t tx="ekr.20140915194122.19468">/* ========== interact.py plugin ========== */
+
+QPushButton[button_kind="interact"] {
+    /* Buttons from the interact plugin. */
+    background-color: @interact-btn-bg;
+}
+</t>
+<t tx="ekr.20140915194122.19469">/* ========== quickmove.py plugin ========== */
+
+QPushButton[button_kind="quick-move"] { 
+    /* Buttons from the quickmove plugin. */
+    background-color: @quick-move-btn-bg;
+}</t>
+<t tx="ekr.20140915194122.19470">/* ========== Widgets ========== */
+
+QFrame {
+    background-color: @frame-bg;
+}
+
+QScrollArea {
+    background-color: @scroll-area-bg;
+}
+
+QTabbedWidget {
+    background-color: @tabbed-widget-bg;
+}
+
+QStackedWidget {
+    border-color:       @stacked-widget-border-color;
+    background-color:   @stacked-widget-bg;
+    padding:            @stacked-widget-padding;
+}
+</t>
+<t tx="ekr.20140915194122.19471">QSplitter {
+    border-color:       @splitter-border-fg;
+    background-color:   @splitter-bg;
+    border-style:       @splitter-border-style;
+}
+
+QSplitter::handle {
+    /* Supports only background attributes. */
+    background-color:   @splitter-handle-bg;
+}
+</t>
+<t tx="ekr.20140915194122.19473">/* Status areas. */
+
+QLineEdit#status1, QLineEdit#status2 {
+    background-color:   @status-bg;
+    border-color:       @status-border-color;
+    border-width:       @status-border-width;
+    border-style:       @status-border-style;
+    font-family:        @status-font-family;
+    font-size:          @status-font-size;
+    font-weight:        @status-font-weight;
+    font-style:         @status-font-style;
+}
+
+</t>
+<t tx="ekr.20140915194122.19474">/* ========== Outline pane ========== */
+
+QTreeWidget {
+    /* The selected item, but not to editing items. */
+    color:                      @tree-fg;
+    background-color:           @tree-bg;
+    selection-color:            @tree-sel-fg;
+    selection-background-color: @tree-sel-bg;
+    font-family:                @tree-font-family;
+    font-size:                  @tree-font-size;
+    font-weight:                @tree-font-weight;
+    font-style:                 @tree-font-style;
+    show-decoration-selected:   1 /* 1: select entire row */
+ }
+
+QTreeWidget QLineEdit {
+    /* Headlines when they **are** being edited. */
+    background-color:           @head-bg;
+    selection-color:            @head-sel-fg; 
+    selection-background-color: @head-sel-bg;
+    font-family:                @head-font-family;
+    font-size:                  @head-font-size; 
+    font-weight:                @head-font-weight;
+    font-style:                 @head-font-style;
+}
+
+QLineEdit#editorLabel {
+    /* Headlines when they are **not** being edited. */
+    border:             @edit-label-border;
+    margin:             @edit-label-margin;
+    background-color:   @edit-label-bg;
+    font-family:        @edit-label-font-family;
+    font-size:          @edit-label-font-size;
+    font-weight:        @edit-label-font-weight;
+    font-style:         @edit-label-font-style;
+}
+
+QTreeView::item:selected {
+    background-color:   @tree-item-selected-bg;
+}
+
+</t>
+<t tx="ekr.20140915194122.19475">/* Vim mode borders... */
+
+QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+  border: @vim-mode-normal-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+  border: @vim-mode-insert-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+  border: @vim-mode-visual-border;
+}
+</t>
+<t tx="ekr.20140915194122.21837">A small font size used by default in the status area.</t>
+<t tx="ekr.20140915194122.23413">A small font size used by default in the check boxes in the Find tab.</t>
+<t tx="ekr.20140915194122.23418"></t>
+<t tx="ekr.20140915194122.23422"></t>
+<t tx="ekr.20140915194122.23424"></t>
+<t tx="ekr.20140915194122.23426"></t>
+<t tx="ekr.20140915194122.23427"></t>
+<t tx="ekr.20140915194122.23428"># All other fonts are defined in terms of these basic fonts.
+# Changing the basic fonts are all that most users will want to do.</t>
+<t tx="ekr.20140915194122.23429"></t>
+<t tx="ekr.20140915194122.23430"></t>
+<t tx="ekr.20140915194122.23431"></t>
+<t tx="ekr.20140915194122.23432"></t>
+<t tx="ekr.20140915194122.23433"></t>
+<t tx="ekr.20140915194122.23435"></t>
+<t tx="ekr.20140915194122.23436"></t>
+<t tx="ekr.20140915194122.23437"></t>
+<t tx="ekr.20140915194122.23439"></t>
+<t tx="ekr.20140915194122.23440"></t>
+<t tx="ekr.20140915194122.23441">Warning: These affect system dialogs.
+
+Don't change these unless you are aware of the consequences</t>
+<t tx="ekr.20140915194122.23442"># These control such things as margin width and style.
+# The most important settings are the Focused border styles.</t>
+<t tx="ekr.20140915194122.23443"></t>
+<t tx="ekr.20140915194122.23444"></t>
+<t tx="ekr.20140915194122.23445"></t>
+<t tx="ekr.20140915194122.23446"></t>
+<t tx="ekr.20140915194122.23447"></t>
+<t tx="ekr.20140915194122.24238"># These are provided for compatibility with old settings.
+</t>
+<t tx="ekr.20140915194122.24250"></t>
+<t tx="ekr.20140915194122.24251"></t>
+<t tx="ekr.20140915194122.24252"></t>
+<t tx="ekr.20140915194122.24253"></t>
+<t tx="ekr.20140915194122.24258"></t>
+<t tx="ekr.20140915194122.24259"></t>
+<t tx="ekr.20140915194122.24260"></t>
+<t tx="ekr.20140915194122.24261"></t>
+<t tx="ekr.20140915194122.24262"></t>
+<t tx="ekr.20140915194122.24263"></t>
+<t tx="ekr.20140915194122.24264"></t>
+<t tx="ekr.20140915194122.24265">Valid values are: normal,italic,oblique</t>
+<t tx="ekr.20140915194122.24266"></t>
+<t tx="ekr.20140915194122.24267"></t>
+<t tx="ekr.20140915194122.24268"></t>
+<t tx="ekr.20140916113003.19609"></t>
+<t tx="ekr.20140916113003.20415"></t>
+<t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
+<t tx="ekr.20140917063815.21917"></t>
+<t tx="ekr.20140918165611.38050">from leo.core.leoQt import QtWidgets,QtCore
+picker = QtWidgets.QColorDialog()
+text = QtWidgets.QApplication.clipboard().text()
+try:
+    color = QtWidgets.QColor(text)
+    picker.setCurrentColor(color)
+except ValueError:
+    pass
+if not picker.exec_():
+    g.es("No color selected")
+else:
+    text = picker.selectedColor().name()
+    g.es("%s\ncopied to clipboard"%text)
+    QtWidgets.QApplication.clipboard().setText(text)
+</t>
+<t tx="ekr.20140922124047.19516"></t>
+<t tx="ekr.20140922124047.19517"></t>
+<t tx="ekr.20140922124047.20313"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -6304,63 +10030,32 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.22659"># this @button script should be included in any file containing @settings
-# and being used to set styles related to appearance
+<t tx="tbrown.20131122091143.23828">This section defines color values not necessarily defined by Qt.
 
-# remember where we are
-current_v = c.p.v
+For example, you can use @LeoYellow instead of #ffffec
 
-if c.font_size_delta:
-    # doesn't make a lot of sense to edit font size settings while
-    # font zooming is in effect
-    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
+Leo style sheets now support all colors names in Leo's color_db, defined in
+leoColor.py. Case is not important in such definitions.
 
-# first, rebuild the stylesheet template from the tree, if
-# the stylesheet source is in tree form, .e.g. dark themes, currently the
-# default light theme uses a single @data qt-gui-plugin-style-sheet node
-nd = g.findNodeAnywhere(c, '@settings')
-if nd:
-    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
-if nd:
-    c.selectPosition(nd)  # needs to be the selected node
-    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
-    # this executes the node `nd`, finding it a second time
+To see the names for the colors, click the pick-color-name button.
+This creates a color picker in the icon area.
 
-# then, reload settings from this file
-shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
-c.config.settingsDict.update(settings)
+For example, the following setting works without any explicit
+definition of mistyrose2.
+    
+    @color head-bg = @mistyrose2
+    
+These colors are (mostly) the same as:
+http://www.yourhtmlsource.com/stylesheets/namedcolours.html
 
-# apply the stylesheet
-c.frame.top.setStyleSheets()
+Finally, there is a semi-interactive color map for these colors here:
+http://leo-editor.github.io/snippets/colormap.html
+Hover over a color to get Leo's color name for each color.
 
-# go back where we started
-c.selectPosition(c.vnode2position(current_v))
+Please don't change the following definitions, but feel free to add your
+own color names in myLeoSettings.leo.
 </t>
-<t tx="tbrown.20131122091143.23828">These are definitions of colors not defined by default, so
-you can refer to "solarized-red" as "@solarized-red" instead
-of "#dc322f".  You probably don't need to touch these, although
-you could add new color names of your own.</t>
-<t tx="tbrown.20131122091143.23829">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-
-Examples:
-    
-    @color text-foreground = white
-    
-    @color text-foreground = #ffffff
-    
-    @color text-foreground = @solarized-red
-
-Most common color names are recognized.  The #RRGGBB format works, and
-you can use reference to @settings defined elsehere, starting with an
-'@', e.g. @solarized-red if a color called @solarized-red is defined
-by a setting somewhere else.
-
-Config. menu entry: Styles / Colors
-</t>
-<t tx="tbrown.20131122091143.23830"></t>
-<t tx="tbrown.20131122091143.23831"></t>
-<t tx="tbrown.20131122091143.23832"></t>
+<t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
 <t tx="tbrown.20131122091143.23834"></t>
 <t tx="tbrown.20131122091143.23835"></t>
@@ -6369,71 +10064,12 @@ Config. menu entry: Styles / Colors
 <t tx="tbrown.20131122091143.23838"></t>
 <t tx="tbrown.20131122091143.23839"></t>
 <t tx="tbrown.20131122091143.23840"></t>
-<t tx="tbrown.20131122094200.2511">You can change all font sizes at once by changing @font-size, or set -body,
--tree and -log settings to individual 'XXpt' values.</t>
-<t tx="tbrown.20131122094200.2512">This setting must exists for Ctrl-mousewheel font zooming to work.</t>
-<t tx="tbrown.20131122094200.2514"></t>
-<t tx="tbrown.20131122094200.2515">See /mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/top_style/leo/core/LeoPyRef.leo#Code--&gt;Qt gui--&gt;@file ../plugins/qtGui.py--&gt; &lt;&lt; define text widget classes &gt;&gt;--&gt; &lt;&lt; define leoQTextEditWidget class &gt;&gt;--&gt;Birth (leoQTextEditWidget)--&gt;setConfig
-
-apparently this only works when there's no stylesheet, so probably not at all now.</t>
-<t tx="tbrown.20131122094200.2517"></t>
-<t tx="tbrown.20131122094200.2518">Size for primary text windows.</t>
-<t tx="tbrown.20131122094200.2520">test text</t>
-<t tx="tbrown.20131122094200.2523"></t>
-<t tx="tbrown.20131122094200.2524"></t>
-<t tx="tbrown.20131122094200.2526"></t>
-<t tx="tbrown.20131122094200.2528">Doesn't work just at the moment.</t>
-<t tx="tbrown.20131122104251.2537"></t>
-<t tx="tbrown.20131122104251.2538"></t>
-<t tx="tbrown.20131122104251.2539"></t>
-<t tx="tbrown.20131122104251.2540"></t>
-<t tx="tbrown.20140101093550.22678"></t>
-<t tx="tbrown.20140101093550.22679">Style settings for the bookmarks plugin, these control
-font size / weight / foreground / underline in four different
-cases:
-
-base
-  General settings
-current
-  Style for the 'current' bookmark
-expanded
-  Style for a bookmark whose children are shown
-children
-  Style for a bookmark which has children
-  
-`ignore` is not a valid setting, so Qt ignores it, which
-is useful for attributes you don't want to affect.
-
-NOTE: this is still in flux - `ignore` seems to be `black` for colors
-
-Given:
-
-    bookmarks_current
-      weight=bold
-      decoration=none
-    bookmarks_children
-      weight=normal
-      decoration=underline
-    
-whichever occurs last in the stylesheet will win, but with:
-
-    bookmarks_current
-      weight=bold
-      decoration=ignore
-    bookmarks_children
-      weight=ignore
-      decoration=underline
-
-you get what you want, the combination of the two, because
-`ignore` is ignored (because its invalid).
-
-Why not just leave the attributes you don't want to alter
-out of the stylesheet?  Because we want the user to be able
-to change only the @settings, and not need to edit the
-stylesheet.
+<t tx="tbrown.20131122094200.2512">This setting must exist for Ctrl-mousewheel font zooming to work.
 </t>
 <t tx="tbrown.20140101093550.25136"></t>
-<t tx="tbrown.20140101093550.25138">bold or regular</t>
+<t tx="tbrown.20140101093550.25138">Huh?
+valid values are: normal,bold,100,..,900
+</t>
 <t tx="tbrown.20140101093550.25140">none or underline</t>
 <t tx="tbrown.20140101093550.25146"></t>
 <t tx="tbrown.20140101093550.25147">bold or regular</t>
@@ -6456,6 +10092,75 @@ displayed at once, see bookmarks plugin docs.</t>
 <t tx="tbrown.20140505094209.37266">Show close box (the 'X') on outlien tabs - they can be closed with
 Ctrl-W or middle mouse click, so this optionally hides the
 redundant 'X'</t>
+<t tx="tbrown.20140514191846.42168">These give the width and style of the border surrounding the active pane.
+</t>
+<t tx="tbrown.20140514191846.42169"># Set to None to disable border styling.</t>
+<t tx="tbrown.20140514191846.42170"></t>
+<t tx="tbrown.20140514191846.42171"></t>
+<t tx="tbrown.20140514191846.42173"></t>
+<t tx="tbrown.20140609102412.32426">from leo.core.leoQt import QtWidgets
+
+date = g.app.gui.runAskDateTimeDialog(
+    c, "Select date, will be copied to clipboard")
+if date:
+    text = date.strftime("%Y-%m-%d %I:%M:%S %p")
+    QtWidgets.QApplication.clipboard().setText(text)
+    g.es("%s\ncopied to clipboard"%text)
+else:
+    g.es("No date selected")
+</t>
+<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets,QtCore
+import leo.core.leoColor as leoColor
+template = '''
+QComboBox {
+    background-color: %s;
+    selection-background-color: %s;
+    selection-color: black;
+}''' 
+ivar = 'settings-color-picker'
+if not hasattr(c,ivar):
+    setattr(c,ivar,True)
+    color_list = []
+    ivar = 'settings_color_picker'
+    box = QtWidgets.QComboBox()
+    def onActivated(n,*args,**keys):
+        icon = box.itemIcon(n)
+        color = color_list[n]
+        sheet = template % (color,color)
+        box.setStyleSheet(sheet)
+    box.activated.connect(onActivated)
+    color_db = leoColor.leo_color_database
+    for key in sorted(color_db):
+        if not key.startswith('grey'): # Use gray, not grey.
+            val = color_db.get(key)
+            if val:
+                color = QtWidgets.QColor(val)
+                color_list.append(val)
+                pixmap = QtWidgets.QPixmap(40,40)
+                pixmap.fill(color)
+                icon = QtWidgets.QIcon(pixmap)
+                box.addItem(icon,key)
+    c.frame.iconBar.addWidget(box)
+</t>
+<t tx="tbrown.20140609102412.32430">from leo.core.leoQt import QtWidgets, QtCore
+
+picker = QtWidgets.QFontDialog()
+text = QtWidgets.QApplication.clipboard().text()
+try:
+    font = QtWidgets.QFont(text)
+    picker.setCurrentFont(font)
+except ValueError:
+    pass
+
+if not picker.exec_():
+    g.es("No font selected")
+else:
+    text = picker.selectedFont().family()
+    g.es("%s\ncopied to clipboard"%text)
+    QtWidgets.QApplication.clipboard().setText(text)
+</t>
+<t tx="tbrown.20140814090009.57475"></t>
+<t tx="tbrown.20140814090009.57476">Reload Styles</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

@@ -23,10 +23,9 @@ import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20071025195133: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
-
     return True
 #@+node:ekr.20071212092332: ** onCreate
 def onCreate (tag, keys):
@@ -49,10 +48,8 @@ def onCreate (tag, keys):
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
-    body = self.frame.body ; w = body.bodyCtrl
-
-    # g.pr('newPut',repr(s),w,g.callers())
-
+    body = self.frame.body
+    w = body.wrapper
     if w:
         w.insert("end",s)
         body.onBodyChanged("Typing")

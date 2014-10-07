@@ -75,6 +75,8 @@ disable-checker=DESIGN,SIMILARITIES,IMPORTS
 disable=
    I0011,
 # I0011 locally-disabled
+   E0012,
+# Bad option value
    C0111,
 # C0111 Missing docstring
    C0301,
@@ -91,6 +93,8 @@ disable=
 # C0324 Comma not followed by a space
    C0325,
 # C0325 Unnecessary parens after print keyword
+###   C0330,
+# C0330 Bad Continuation
    C1001,
 # C1001 Old-style class defined
    F0401,

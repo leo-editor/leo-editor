@@ -34,7 +34,7 @@ import leo.core.leoPlugins as leoPlugins
 #@+others
 #@+node:Dmitry.20101128013501.1259: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     leoPlugins.registerHandler("after-create-leo-frame", maximize_window)
     g.plugin_signon(__name__)
     return True

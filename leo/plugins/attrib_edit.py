@@ -2,7 +2,7 @@
 #@+node:tbrown.20091029123555.5319: * @file attrib_edit.py
 #@+<< docstring >>
 #@+node:tbrown.20091009210724.10972: ** << docstring >>
-''' Edits user attributes in a Qt frame.
+r''' Edits user attributes in a Qt frame.
 
 This plugin creates a frame for editing attributes similar to::
 
@@ -101,41 +101,19 @@ plugins. Here are some points of interest:
 
 '''
 #@-<< docstring >>
+# Written by TNB.
 
-#@@language python
-#@@tabwidth -4
-
-#@+<< imports >>
-#@+node:tbrown.20091009210724.10973: ** << imports >>
 import leo.core.leoGlobals as g
-import re
-
 if g.app.gui.guiName() == "qt":
-
-    import os
-
-    from PyQt4 import QtCore, QtGui
-    Qt = QtCore.Qt
-#@-<< imports >>
-__version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20091009210724.10974: ** << version history >>
-#@@killcolor
-
-#@+at Use and distribute under the same terms as leo itself.
-# 
-# 0.1 TNB
-#   - initial version
-#@-<< version history >>
+    from leo.core.leoQt import isQt5,QtCore,QtWidgets
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     if g.app.gui.guiName() != "qt":
         print('attrib_edit.py plugin not loading because gui is not Qt')
         return False
-
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
@@ -167,11 +145,11 @@ class AttributeGetter(object):
         return "ABSTRACT VIRTUAL BASE CLASS"
 
     def getAttribs(self, v):
-        raise NotImplemented
+        raise NotImplementedError
     def setAttrib(self, v, path, value):
-        raise NotImplemented
+        raise NotImplementedError
     def delAttrib(self, v, path):
-        raise NotImplemented
+        raise NotImplementedError
 
     def helpCreate(self):
         """either a string telling user how to add an attribute, or
@@ -185,7 +163,7 @@ class AttributeGetter(object):
 
         E.g. attribute named 'count' might be described as 'address.people.count'
         """
-        raise NotImplemented
+        raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
 
@@ -275,7 +253,8 @@ class AttributeGetterUA(AttributeGetter):
     #@+node:tbrown.20091103080354.1432: *3* createAttrib
     def createAttrib(self, v, gui_parent=None):
 
-        path,ok = QtGui.QInputDialog.getText(gui_parent, "Enter attribute path",
+        path,ok = QtWidgets.QInputDialog.getText(gui_parent,
+            "Enter attribute path",
             "Enter path to attribute (space separated words)")
 
         ns = str(path).split()  # not the QString
@@ -445,59 +424,48 @@ class AttributeGetterColon(AttributeGetter):
 
 AttributeGetter.register(AttributeGetterColon)
 #@+node:tbrown.20091028131637.1353: ** class ListDialog
-class ListDialog(QtGui.QDialog):
+class ListDialog(QtWidgets.QDialog):
 
     #@+others
     #@+node:tbrown.20091028131637.1354: *3* __init__
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
-
-        QtGui.QDialog.__init__(self, parent)
-
-        vbox = QtGui.QVBoxLayout()
-
-
-        sa = QtGui.QScrollArea()
-        salo = QtGui.QVBoxLayout()
-        frame = QtGui.QFrame()
+        QtWidgets.QDialog.__init__(self, parent)
+        vbox = QtWidgets.QVBoxLayout()
+        sa = QtWidgets.QScrollArea()
+        salo = QtWidgets.QVBoxLayout()
+        frame = QtWidgets.QFrame()
         frame.setLayout(salo)
-
         self.buttons = []
-
         for entry in entries:
-            hbox = QtGui.QHBoxLayout()
-            cb = QtGui.QCheckBox(entry[0])
+            hbox = QtWidgets.QHBoxLayout()
+            cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setCheckState(Qt.Checked)
+                cb.setCheckState(cb.Checked)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
-
         sa.setWidget(frame)
         vbox.addWidget(sa)
-
-        hbox = QtGui.QHBoxLayout()
-
-        ok = QtGui.QPushButton("Ok")
-        cancel = QtGui.QPushButton("Cancel")
-
-        QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
-        QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
-
+        hbox = QtWidgets.QHBoxLayout()
+        ok = QtWidgets.QPushButton("Ok")
+        cancel = QtWidgets.QPushButton("Cancel")
+        if isQt5:
+            ok.clicked.connect(self.writeBack)
+            cancel.clicked.connect(self.reject)
+        else:
+            QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
+            QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
         hbox.addWidget(ok)
         hbox.addWidget(cancel)
         vbox.addLayout(hbox)
-
         self.setLayout(vbox)
-
-
     #@+node:tbrown.20091028131637.1359: *3* writeBack
     def writeBack(self, event=None):
 
         for n,i in enumerate(self.buttons):
-            self.entries[n][1] = (i.checkState() == Qt.Checked)
-
+            self.entries[n][1] = (i.checkState() == i.Checked)
         self.accept()
     #@-others
 #@+node:tbrown.20091010211613.5257: ** class editWatcher
@@ -524,9 +492,12 @@ class editWatcher(object):
     def widget(self):
         """return widget for editing this attribute"""
         if not self._widget:
-            self._widget = QtGui.QLineEdit(str(self.value))
-            QtCore.QObject.connect(self._widget, 
-                QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
+            self._widget = w = QtWidgets.QLineEdit(str(self.value))
+            if isQt5:
+                w.textChanged.connect(self.updateValue)
+            else:
+                QtCore.QObject.connect(w, 
+                    QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
             self._widget.focusOutEvent = self.lostFocus
             # see lostFocus()
         return self._widget
@@ -540,7 +511,7 @@ class editWatcher(object):
         """Can activate this in in widget(), but it stops tabbing through
         the attributes - unless we can check that none of our siblings
         has focus..."""
-        sibs = self._widget.parent().findChildren(QtGui.QLineEdit)
+        sibs = self._widget.parent().findChildren(QtWidgets.QLineEdit)
         for i in sibs:
             if i.hasFocus():
                 break
@@ -593,15 +564,15 @@ class attrib_edit_Controller:
         # body mode in not compatible with nested_splitter, causes hard crash
 
         if self.guiMode == 'body':
-            self.holder = QtGui.QSplitter(QtCore.Qt.Vertical)
+            self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
             self.holder.setMinimumWidth(300)
-            os = c.frame.top.leo_body_frame.parent()
+            parent = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)
-            os.addWidget(self.holder)
+            parent.addWidget(self.holder)
             self.parent = self.holder
         elif self.guiMode == 'tab':
-            self.parent = QtGui.QFrame()
-            self.holder = QtGui.QHBoxLayout()
+            self.parent = QtWidgets.QFrame()
+            self.holder = QtWidgets.QHBoxLayout()
             self.parent.setLayout(self.holder)
             c.frame.log.createTab('Attribs', widget = self.parent)
     #@+node:tbrown.20091009210724.10983: *3* __del__
@@ -620,9 +591,9 @@ class attrib_edit_Controller:
                 i.hide()
                 i.deleteLater()
 
-        pnl = QtGui.QFrame()
+        pnl = QtWidgets.QFrame()
         pnl.setObjectName(self.pname)
-        self.form = QtGui.QFormLayout()
+        self.form = QtWidgets.QFormLayout()
         self.form.setVerticalSpacing(0)
         pnl.setLayout(self.form)
         pnl.setAutoFillBackground(True)
@@ -644,36 +615,36 @@ class attrib_edit_Controller:
         for attr in self.getAttribs():
             class_, name, value, path, type_, readonly = attr
             if readonly:
-                self.form.addRow(QtGui.QLabel(name), QtGui.QLabel(str(value)))
+                self.form.addRow(QtWidgets.QLabel(name), QtWidgets.QLabel(str(value)))
 
             else:
                 editor = editWatcher(c, c.currentPosition().v, class_, name, value, path, type_)
                 self.editors.append(editor)
 
-                self.form.addRow(QtGui.QLabel(name), editor.widget())
-    #@+node:tbrown.20091103080354.1405: *3* recSearch
-    def JUNKrecSearch(self, d, path, ans):
-        """recursive search of tree of dicts for values whose
-        key path is like [*][*][*]['_edit'][*] or
-        [*][*][*]['_edit']['_int'][*]
+                self.form.addRow(QtWidgets.QLabel(name), editor.widget())
+    #@+node:tbrown.20091103080354.1405: *3* recSearch (not used)
+    # def JUNKrecSearch(self, d, path, ans):
+        # """recursive search of tree of dicts for values whose
+        # key path is like [*][*][*]['_edit'][*] or
+        # [*][*][*]['_edit']['_int'][*]
 
-        Modifies list ans
-        """
-        for k in d:
-            if isinstance(d[k], dict):
-                if k not in ('_edit', '_view'):
-                    self.recSearch(d[k], path+[k], ans)
-                else:
-                    # k == '_edit' or '_view'
-                    for ek in d[k]:
-                        if ek in self.typeMap:
-                            # ek is '_int' or similar
-                            type_ = self.typeMap[ek]
-                            for ekt in d[k][ek]:
-                                ans.append((ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
-                                    type_, k != '_edit'))
-                        else:
-                            ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
+        # Modifies list ans
+        # """
+        # for k in d:
+            # if isinstance(d[k], dict):
+                # if k not in ('_edit', '_view'):
+                    # self.recSearch(d[k], path+[k], ans)
+                # else:
+                    # # k == '_edit' or '_view'
+                    # for ek in d[k]:
+                        # if ek in self.typeMap:
+                            # # ek is '_int' or similar
+                            # type_ = self.typeMap[ek]
+                            # for ekt in d[k][ek]:
+                                # ans.append((ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
+                                    # type_, k != '_edit'))
+                        # else:
+                            # ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
     #@+node:tbrown.20091103080354.1406: *3* getAttribs
     def getAttribs(self, v = None):
         """Return a list of tuples describing editable uAs.
@@ -769,16 +740,16 @@ class attrib_edit_Controller:
 
         res.exec_()
 
-        if res.result() == QtGui.QDialog.Rejected:
+        if res.result() == QtWidgets.QDialog.Rejected:
             return
 
         # check for deletions
         for i in dat:
             if i[2] in attribs and not i[1]:
-                res = QtGui.QMessageBox(QtGui.QMessageBox.Question,
+                res = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
                     "Really delete attributes?","Really delete attributes?",
-                    QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel, self.parent)
-                if res.exec_() == QtGui.QMessageBox.Cancel:
+                    QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel, self.parent)
+                if res.exec_() == QtWidgets.QMessageBox.Cancel:
                     return
                 break
 
@@ -803,7 +774,7 @@ class attrib_edit_Controller:
 
         res.exec_()
 
-        if res.result() == QtGui.QDialog.Rejected:
+        if res.result() == QtWidgets.QDialog.Rejected:
             return
 
         for n,i in enumerate(modes):
@@ -813,18 +784,20 @@ class attrib_edit_Controller:
     #@-others
 #@+node:tbrown.20091029101116.1415: ** cmd_Modes
 def cmd_Modes(c):
-   c.attribEditor.manageModes()
+    c.attribEditor.manageModes()
 #@+node:tbrown.20091103080354.1413: ** cmd_Manage
 def cmd_Manage(c):
-   c.attribEditor.manageAttrib()
+    c.attribEditor.manageAttrib()
 #@+node:tbrown.20091029101116.1419: ** cmd_Create
 def cmd_Create(c):
-   c.attribEditor.createAttrib()
+    c.attribEditor.createAttrib()
 #@+node:tbrown.20091029101116.1421: ** cmd_CreateReadonly
 def Xcmd_CreateReadonly(c):
-   c.attribEditor.createAttrib(readonly=True)
+    c.attribEditor.createAttrib(readonly=True)
 #@+node:tbrown.20091029101116.1426: ** cmd_Scan
 def cmd_Scan(c):
-   c.attribEditor.scanAttribs()
+    c.attribEditor.scanAttribs()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

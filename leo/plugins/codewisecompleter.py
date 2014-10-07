@@ -18,40 +18,20 @@ Instructions:
 
 '''
 #@-<< docstring >>
-
 # See http://ctags.sourceforge.net/ctags.html#TAG%20FILE%20FORMAT for the file format:
 # tag_name<TAB>file_name<TAB>ex_cmd;"<TAB>extension_fields
 # Example
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20091204224145.5357: ** << version history >>
-#@@nocolor-node
-#@+at
-# 
-# 0.1 EKR: place helpers as children of callers.
-# 0.2 EKR: Don't crash if the ctags file doesn't exist.
-# 0.3 EKR 2011/03/09: refactored using per-commander controllers.
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
-
+from leo.core.leoQt import QtCore,QtGui
+from QtGui import QCompleter
 import leo.external.codewise as codewise
     # The code that interfaces with ctags.
     # It contains commands that can be run stand-alone,
     # or imported as is done here.
-
 import os
 import re
-
-try:
-    from PyQt4.QtGui import QCompleter
-    from PyQt4 import QtCore
-    from PyQt4 import QtGui
-except ImportError:
-    # no qt available - some functionality should still exist
-    pass
 #@-<< imports >>
 
 # Global variables
@@ -70,7 +50,6 @@ keep_tag_lines = True
     #        results of running grep on the file.
     #        This saves lots of memory, but reads the
     #        tags file many times.
-
 #@+others
 #@+node:ville.20091205173337.10141: ** class ContextSniffer
 class ContextSniffer:
@@ -129,36 +108,19 @@ class ContextSniffer:
 #@+node:ekr.20110309051057.14267: ** Module level...
 #@+node:ville.20091204224145.5359: *3* init & helper
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     global tagLines
-
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         if keep_tag_lines:
             tagLines = read_tags_file()
             if not tagLines:
                 print('ctagscompleter: can not read ~/.leo/tags')
                 ok = False
-
         if ok:
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
-
     return ok
-
-
-# def init ():
-
-    # global tagLines
-
-    # ok = g.app.gui.guiName() == "qt"
-
-    # if ok:
-        # g.registerHandler('after-create-leo-frame',onCreate)
-        # g.plugin_signon(__name__)
-
-    # return ok
 #@+node:ville.20091204224145.5362: *3* install_codewise_completer
 # def install_codewise_completer(c):
 
@@ -169,21 +131,12 @@ def init ():
             # 'codewise-suggest',None, codewise_suggest)
 
 #@+node:ville.20091204224145.5361: *3* onCreate
-def onCreate (tag, keys):
-    
+def onCreate (tag, keys): 
     '''Register the ctags-complete command for the newly-created commander.'''
-
     c = keys.get('c')
     if c:
         c.k.registerCommand('ctags-complete','Alt-0',start)
         c.k.registerCommand('codewise-suggest',None, suggest)
-
-# def onCreate (tag, keys):
-
-    # c = keys.get('c')
-    # if not c: return
-
-    # install_codewise_completer(c)
 #@+node:ekr.20110309051057.14287: *3* read_tags_file
 def read_tags_file():
 
@@ -252,7 +205,7 @@ class CodewiseController:
         self.completer = None
         self.popup = None
         self.popup_filter = None
-        self.w = c.frame.body.bodyCtrl # A leoQTextEditWidget
+        self.w = c.frame.body.wrapper # A LeoQTextBrowser
         
         # Init.
         self.ev_filter = self.w.ev_filter
@@ -271,7 +224,7 @@ class CodewiseController:
         if m:
             obj = m.group(1)
             prefix = m.group(3)
-            klasses = guess_class(c,p, obj)
+            klasses = self.guess_class(c,p, obj)
         else:
             klasses = []
 
@@ -324,10 +277,10 @@ class CodewiseController:
             # Return the nearest enclosing class.
             for par in p.parents():
                 h = par.h
+                # pylint: disable=anomalous-backslash-in-string
                 m = re.search('class\s+(\w+)', h)
                 if m:
                     return [m.group(1)]
-
         # Do a 'real' analysis
         aList = ContextSniffer().get_classes(p.b,varname)
         g.trace(varname,aList)
@@ -383,6 +336,7 @@ class CodewiseController:
         
         # Create the callback to insert the selected completion.
         def completion_callback(completion,self=self):
+            # pylint: disable=maybe-no-member
             self.end(completion)
         
         # Create the completer.
@@ -393,7 +347,8 @@ class CodewiseController:
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
         self.ev_filter.ctagscompleter_active = True
-        self.ev_filter.ctagscompleter_onKey = self.onKey
+        self.ev_filter.ctagscompleter_onKey = self.complete
+            # EKR: was self.onKey, which does not exist.
         
         # Show the completions.
         self.complete(event)

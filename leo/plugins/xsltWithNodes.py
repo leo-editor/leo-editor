@@ -91,13 +91,11 @@ __version__ = '0.6'
 #@+others
 #@+node:ekr.20050226120104.1: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = Ft
-
     if ok:
         g.registerHandler(('menu2',"new"),addMenu)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:mork.20041025115037: ** xslt elements
 #This dict contains elements that go into a stylesheet
@@ -203,10 +201,10 @@ def addXSLTNode (c):
 #@+node:mork.20041010110121: ** addXSLTElement
 def addXSLTElement( c , element):
     '''adds some xslt to the text node'''
-    bodyCtrl = c.frame.body.bodyCtrl
-    bodyCtrl.insert( 'insert', element )
-    ### bodyCtrl.event_generate( '<Key>' )
-    ### bodyCtrl.update_idletasks()
+    w = c.frame.body.wrapper
+    w.insert( 'insert', element )
+    ### w.event_generate( '<Key>' )
+    ### w.update_idletasks()
 
 #@+node:mork.20041025113021: ** getString
 def getString (c):
@@ -316,55 +314,16 @@ def addMenu( tag, keywords ):
 # To test this plugin, set the xslt node to be the xslt node.
 # 
 # Process it against the table.leo node.
-# 
-# 
 #@@c
+
+# pylint: disable=pointless-string-statement
 
 r'''
 #@+others
-#@+node:mork.20041025100851: *3* table.leo
+#@+node:ekr.20140906065955.18786: *3* table.leo
+#@@path /boboo/leo-4.2-final/plugins
+#@+node:ekr.20140906065955.18787: *4* @@nosent table.py
 
-<?xml version="1.0" encoding="UTF-8"?>
-<leo_file>
-<leo_header file_format="2" tnodes="0" max_tnode_index="3" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="43" left="161" height="600" width="800"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences>
-</preferences>
-<find_panel_settings>
-	<find_string></find_string>
-	<change_string></change_string>
-</find_panel_settings>
-<vnodes>
-<v t="mork.20041015144717" a="E"><vh>table</vh>
-<v t="mork.20041015144717.1" a="E" tnodeList="mork.20041015144717.1,mork.20041015163641,mork.20041015163641.1,mork.20041015154946,mork.20041015152916,mork.20041016141748,mork.20041017102304,mork.20041017102304.1,mork.20041016151554,mork.20041016152412,mork.20041017110545,mork.20041017105444,mork.20041015144717.2,mork.20041017111049,mork.20041017111248,mork.20041016180930,mork.20041016181326,mork.20041015144717.3,mork.20041015144717.4"><vh>@file-nosent table.py</vh>
-<v t="mork.20041015163641" a="E"><vh>class CSVVisualizer</vh>
-<v t="mork.20041015163641.1"><vh>init</vh></v>
-<v t="mork.20041015154946"><vh>addData</vh></v>
-<v t="mork.20041015152916"><vh>readData</vh></v>
-<v t="mork.20041016141748"><vh>writeData</vh></v>
-<v t="mork.20041017102304"><vh>addColumn</vh></v>
-<v t="mork.20041017102304.1"><vh>deleteColumn</vh></v>
-<v t="mork.20041016151554"><vh>addRow</vh></v>
-<v t="mork.20041016152412"><vh>deleteRow</vh></v>
-<v t="mork.20041017110545"><vh>createDefaultRecord</vh></v>
-</v>
-<v t="mork.20041017105444"><vh>newTable</vh></v>
-<v t="mork.20041015144717.2" a="TV"><vh>viewTable</vh></v>
-<v t="mork.20041017111049"><vh>fireButton</vh></v>
-<v t="mork.20041017111248"><vh>createDialog</vh></v>
-<v t="mork.20041016180930"><vh>createTable</vh></v>
-<v t="mork.20041016181326"><vh>createBBox</vh></v>
-<v t="mork.20041015144717.3"><vh>addMenu</vh></v>
-<v t="mork.20041015144717.4"><vh>if 1:</vh></v>
-</v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="mork.20041015144717">@path /boboo/leo-4.2-final/plugins</t>
-<t tx="mork.20041015144717.1">
 if g.isPython3:
     import io
     StringIO = io.StringIO
@@ -380,248 +339,236 @@ import csv
 import weakref
 import Pmw
 
-
-#@+others
-#@-others
-</t>
-<t tx="mork.20041015144717.2">def viewTable( c, new = False ):
-
-    pos = c.p
-    dialog = createDialog( pos )
-    csvv = CSVVisualizer( c )
-    sframe = Pmw.ScrolledFrame( dialog.interior() )
-    sframe.pack()
-    tab = createTable( sframe.interior(), csvv.arr )
-    createBBox( dialog.interior(), csvv, tab )
-    if not new:
-        n = csvv.addData()
-    else:
-        n = ( 4, 1 )
-        csvv.createDefaultRecord( n[ 1 ], n[ 0 ] )
-    tab.configure( cols = n[ 0 ], rows = n[ 1 ] )
-    dialog.configure( command = lambda name, d = dialog, csvv = csvv:
-                         fireButton( name, d, csvv ) )
-    dialog.activate()
-
-
-</t>
-<t tx="mork.20041015144717.3">haveseen = weakref.WeakKeyDictionary()
-def addMenu( tag, keywords ):
-    c = keywords.get('c') or keywords.get('new_c')
-    if haveseen.has_key( c ):
-        return
-    haveseen[ c ] = None
-    men = c.frame.menu
-    men = men.getMenu( 'Outline' )
-    tmen = Tk.Menu( men, tearoff = 0 )
-    men.add_cascade( menu = tmen, label = "Table Commands" )
-    c.add_command(tmen, label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
-    c.add_command(tmen, label = "Create New Table", command = lambda c = c: newTable( c ) )
-
-
-
-
-
-</t>
-<t tx="mork.20041015144717.4">if 1:
-
-    registerHandler( ('start2' , 'open2', "new") , addMenu )
-    __version__ = ".125"
-    g.plugin_signon( __name__ )  
-
-</t>
-<t tx="mork.20041015152916">def readData( self ):
-
-    c = self.c
-    pos = c.p
-    data = pos.b
-    cS = StringIO()
-    cS.write( data )
-    cS.seek( 0 )
-    sniff = csv.Sniffer()
-    self.type = sniff.sniff( data ) 
-    reader = csv.reader( cS, self.type ) 
-    return reader
-
-</t>
-<t tx="mork.20041015154946">def addData( self ):
-
-    arr = self.arr
-    reader = self.readData() 
-    hc = False
-    for n, d in enumerate( reader ):
-        for n1, d2 in enumerate( d ):
-            arr.set( "%s,%s" %( n, n1 ), str(d2) )
-
-    self.columns = n1 + 1
-    self.rows = n + 1
-    return self.columns, self.rows
-
-
-</t>
-<t tx="mork.20041015163641">class CSVVisualizer:
-
+class CSVVisualizer:
     arrays = []
-
     #@+others
+    #@+node:ekr.20140906065955.18788: *5* init
+    def __init__( self, c ):
+
+        self.c = c
+        self.arr = tktab.ArrayVar()
+        CSVVisualizer.arrays.append( self.arr )
+        self.rows = 0
+        self.columns = 0
+        self.type = 'excel'
+
+
+
+    #@+node:ekr.20140906065955.18789: *5* addData
+    def addData( self ):
+
+        arr = self.arr
+        reader = self.readData() 
+        hc = False
+        for n, d in enumerate( reader ):
+            for n1, d2 in enumerate( d ):
+                arr.set( "%s,%s" %( n, n1 ), str(d2) )
+
+        self.columns = n1 + 1
+        self.rows = n + 1
+        return self.columns, self.rows
+
+
+    #@+node:ekr.20140906065955.18790: *5* readData
+    def readData( self ):
+
+        c = self.c
+        pos = c.p
+        data = pos.b
+        cS = StringIO()
+        cS.write( data )
+        cS.seek( 0 )
+        sniff = csv.Sniffer()
+        self.type = sniff.sniff( data ) 
+        reader = csv.reader( cS, self.type ) 
+        return reader
+
+    #@+node:ekr.20140906065955.18791: *5* writeData
+    def writeData( self, save ):
+
+        pos = self.c.p
+        n2 = self.rows
+        n = self.columns
+        data = []
+        for z in range( n2 ):
+            ndata = []
+            for z2 in range( n ):
+                ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
+            data.append( ndata )
+        cS = StringIO()
+        csv_write = csv.writer( cS, self.type )
+        for z in data:
+            csv_write.writerow( z )
+        cS.seek( 0 )
+
+        if not save:
+            p2 = pos.insertAfter() #  tnd )
+            p2.setBodyString(cS.getvalue())
+            p2.setHeadString("Save of Edited " + str( pos.h))
+        else:
+            # pos.setTnodeText( cS.getvalue() )
+            pos.setBodyString(cS.getvalue())
+        self.c.redraw()
+
+
+    #@+node:ekr.20140906065955.18792: *5* addColumn
+    def addColumn( self, tab ):
+
+        self.columns = self.columns + 1
+        tab.configure( cols = self.columns )
+        for z in range( self.rows ):
+            self.arr.set( '%s,%s' %( z , self.columns -1 ), "" ) 
+
+
+
+    #@+node:ekr.20140906065955.18793: *5* deleteColumn
+    def deleteColumn( self, tab ):
+
+        i = tab.index( 'active' )
+        if i:
+            tab.delete_cols( i[ 1 ], 1 )
+            self.columns = self.columns - 1
+
+    #@+node:ekr.20140906065955.18794: *5* addRow
+    def addRow( self , tab ):
+
+        self.rows = self.rows + 1
+        tab.configure( rows = self.rows )
+        rc =  '%s,0' % (self.rows -1 )
+        for z in range( self.columns ):
+            self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
+        tab.activate( rc )
+        tab.focus_set()
+
+
+
+    #@+node:ekr.20140906065955.18795: *5* deleteRow
+    def deleteRow( self, tab ):
+
+        i = tab.index( 'active' )
+        if i:
+            tab.delete_rows( i[ 0 ], 1 )
+            self.rows = self.rows - 1
+    #@+node:ekr.20140906065955.18796: *5* createDefaultRecord
+    def createDefaultRecord( self, rows, columns ):
+
+        self.rows = rows
+        self.columns = columns
+        for z in range( rows ):
+            for z1 in range( columns ):
+                self.arr.set( '%s,%s' %( z, z1 ), "" )
+
+    #@+node:ekr.20140906065955.18797: *5* newTable
+    def newTable( c ):
+
+        pos = c.p
+        npos = pos.insertAfter() # tnd )
+        npos.setHeadString('New Table')
+        c.redraw()
+        c.selectPosition( npos )
+        viewTable( c , True )
+
+
+    #@+node:ekr.20140906065955.18798: *5* viewTable
+    def viewTable( c, new = False ):
+
+        pos = c.p
+        dialog = createDialog( pos )
+        csvv = CSVVisualizer( c )
+        sframe = Pmw.ScrolledFrame( dialog.interior() )
+        sframe.pack()
+        tab = createTable( sframe.interior(), csvv.arr )
+        createBBox( dialog.interior(), csvv, tab )
+        if not new:
+            n = csvv.addData()
+        else:
+            n = ( 4, 1 )
+            csvv.createDefaultRecord( n[ 1 ], n[ 0 ] )
+        tab.configure( cols = n[ 0 ], rows = n[ 1 ] )
+        dialog.configure( command = lambda name, d = dialog, csvv = csvv:
+                             fireButton( name, d, csvv ) )
+        dialog.activate()
+
+
+    #@+node:ekr.20140906065955.18799: *5* fireButton
+    def fireButton( name, dialog, csvv ):
+
+        if name == "Close":
+            dialog.deactivate()
+            dialog.destroy()
+        elif name == "Write To New":
+            csvv.writeData( False )
+        elif name == "Save To Current":
+            csvv.writeData( True )
+
+    #@+node:ekr.20140906065955.18800: *5* createDialog
+    def createDialog( pos ):
+
+        dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.h),
+                             buttons = [ 'Save To Current', 'Write To New', 'Close' ] )
+        dbbox = dialog.component( 'buttonbox' )
+        for z in range( dbbox.numbuttons() ):
+            dbbox.button( z ).configure( background = 'white', foreground = 'blue' )
+        return dialog
+
+
+    #@+node:ekr.20140906065955.18801: *5* createTable
+    def createTable( parent , arr ):
+
+        tab = tktab.Table( parent , rows = 0, cols = 0, variable = arr, sparsearray=1,
+        background = 'white', foreground = 'blue', selecttype = 'row' )
+        tab.tag_configure( 'active', background = '#FFE7C6', foreground = 'blue' )
+        tab.tag_configure( 'sel', background = '#FFE7C6', foreground = 'blue', bd =2 )
+        tab.pack()
+        return tab 
+
+    #@+node:ekr.20140906065955.18802: *5* createBBox
+    def createBBox( parent, csvv, tab ):
+
+        bbox = Pmw.ButtonBox( parent )
+        bconfig = ( ( "Add Row", lambda tab = tab : csvv.addRow( tab ) ),
+                    ( "Delete Row", lambda tab = tab: csvv.deleteRow( tab ) ),
+                    ( "Add Column", lambda tab = tab: csvv.addColumn( tab ) ),
+                    ( "Delete Column", lambda tab = tab: csvv.deleteColumn( tab ) ) )
+        for z in bconfig:
+            bbox.add( z[ 0 ], command = z[ 1 ], background = 'white', foreground = 'blue' )
+        bbox.pack()     
+
+
+    #@+node:ekr.20140906065955.18803: *5* addMenu
+    haveseen = weakref.WeakKeyDictionary()
+    def addMenu( tag, keywords ):
+        c = keywords.get('c') or keywords.get('new_c')
+        if haveseen.has_key( c ):
+            return
+        haveseen[ c ] = None
+        men = c.frame.menu
+        men = men.getMenu( 'Outline' )
+        tmen = Tk.Menu( men, tearoff = 0 )
+        men.add_cascade( menu = tmen, label = "Table Commands" )
+        c.add_command(tmen, label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
+        c.add_command(tmen, label = "Create New Table", command = lambda c = c: newTable( c ) )
+
+
+
+
+
+    #@+node:ekr.20140906065955.18804: *5* if 1:
+    if 1:
+
+        registerHandler( ('start2' , 'open2', "new") , addMenu )
+        __version__ = ".125"
+        g.plugin_signon( __name__ )  
+
     #@-others
-</t>
-<t tx="mork.20041015163641.1">def __init__( self, c ):
 
-    self.c = c
-    self.arr = tktab.ArrayVar()
-    CSVVisualizer.arrays.append( self.arr )
-    self.rows = 0
-    self.columns = 0
-    self.type = 'excel'
-
-
-
-</t>
-<t tx="mork.20041016141748">def writeData( self, save ):
-
-    pos = self.c.p
-    n2 = self.rows
-    n = self.columns
-    data = []
-    for z in range( n2 ):
-        ndata = []
-        for z2 in range( n ):
-            ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
-        data.append( ndata )
-    cS = StringIO()
-    csv_write = csv.writer( cS, self.type )
-    for z in data:
-        csv_write.writerow( z )
-    cS.seek( 0 )
-
-    if not save:
-        p2 = pos.insertAfter() #  tnd )
-        p2.setBodyString(cS.getvalue())
-        p2.setHeadString("Save of Edited " + str( pos.h))
-    else:
-        # pos.setTnodeText( cS.getvalue() )
-        pos.setBodyString(cS.getvalue())
-    self.c.redraw()
-
-
-</t>
-<t tx="mork.20041016151554">def addRow( self , tab ):
-
-    self.rows = self.rows + 1
-    tab.configure( rows = self.rows )
-    rc =  '%s,0' % (self.rows -1 )
-    for z in range( self.columns ):
-        self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
-    tab.activate( rc )
-    tab.focus_set()
-
-
-
-</t>
-<t tx="mork.20041016152412">def deleteRow( self, tab ):
-
-    i = tab.index( 'active' )
-    if i:
-        tab.delete_rows( i[ 0 ], 1 )
-        self.rows = self.rows - 1
-</t>
-<t tx="mork.20041016180930">def createTable( parent , arr ):
-
-    tab = tktab.Table( parent , rows = 0, cols = 0, variable = arr, sparsearray=1,
-    background = 'white', foreground = 'blue', selecttype = 'row' )
-    tab.tag_configure( 'active', background = '#FFE7C6', foreground = 'blue' )
-    tab.tag_configure( 'sel', background = '#FFE7C6', foreground = 'blue', bd =2 )
-    tab.pack()
-    return tab 
-
-</t>
-<t tx="mork.20041016181326">def createBBox( parent, csvv, tab ):
-
-    bbox = Pmw.ButtonBox( parent )
-    bconfig = ( ( "Add Row", lambda tab = tab : csvv.addRow( tab ) ),
-                ( "Delete Row", lambda tab = tab: csvv.deleteRow( tab ) ),
-                ( "Add Column", lambda tab = tab: csvv.addColumn( tab ) ),
-                ( "Delete Column", lambda tab = tab: csvv.deleteColumn( tab ) ) )
-    for z in bconfig:
-        bbox.add( z[ 0 ], command = z[ 1 ], background = 'white', foreground = 'blue' )
-    bbox.pack()     
-
-
-</t>
-<t tx="mork.20041017102304">def addColumn( self, tab ):
-
-    self.columns = self.columns + 1
-    tab.configure( cols = self.columns )
-    for z in range( self.rows ):
-        self.arr.set( '%s,%s' %( z , self.columns -1 ), "" ) 
-
-
-
-</t>
-<t tx="mork.20041017102304.1">def deleteColumn( self, tab ):
-
-    i = tab.index( 'active' )
-    if i:
-        tab.delete_cols( i[ 1 ], 1 )
-        self.columns = self.columns - 1
-
-</t>
-<t tx="mork.20041017105444">def newTable( c ):
-
-    pos = c.p
-    npos = pos.insertAfter() # tnd )
-    npos.setHeadString('New Table')
-    c.redraw()
-    c.selectPosition( npos )
-    viewTable( c , True )
-
-
-</t>
-<t tx="mork.20041017110545">def createDefaultRecord( self, rows, columns ):
-
-    self.rows = rows
-    self.columns = columns
-    for z in range( rows ):
-        for z1 in range( columns ):
-            self.arr.set( '%s,%s' %( z, z1 ), "" )
-
-</t>
-<t tx="mork.20041017111049">def fireButton( name, dialog, csvv ):
-
-    if name == "Close":
-        dialog.deactivate()
-        dialog.destroy()
-    elif name == "Write To New":
-        csvv.writeData( False )
-    elif name == "Save To Current":
-        csvv.writeData( True )
-
-</t>
-<t tx="mork.20041017111248">def createDialog( pos ):
-
-    dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.h),
-                         buttons = [ 'Save To Current', 'Write To New', 'Close' ] )
-    dbbox = dialog.component( 'buttonbox' )
-    for z in range( dbbox.numbuttons() ):
-        dbbox.button( z ).configure( background = 'white', foreground = 'blue' )
-    return dialog
-
-
-</t>
-</tnodes>
-</leo_file>
 #@+node:mork.20041025100851.1: *3* xslt to turn leo file into html
 <?xml version="1.0"?>
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method = 'xml' />
 <xsl:preserve-space elements='leo_file/tnodes/t'/>
-
-
 <xsl:template match='v'>
-
     <ul type='square'>
-
         <xsl:variable name ='t' select ='@t' />
             <h1><xsl:value-of select='vh'/></h1>
                 <xsl:for-each select='ancestor::leo_file/tnodes/t'>
@@ -633,14 +580,11 @@ def addMenu( tag, keywords ):
                     </li>
                     </xsl:if>
                 </xsl:for-each>
-
     <xsl:if test ='./v' >
         <xsl:apply-templates select = 'v'/>
      </xsl:if> 
      </ul>
       </xsl:template>
-
-
 <xsl:template match ='leo_file'>
     <html><head>
         <style>
@@ -655,7 +599,6 @@ def addMenu( tag, keywords ):
             </body>
     </html>
 </xsl:template>
-
 <xsl:template match = 'vnodes'>
     <xsl:for-each select = 'v'>
         <frame>
@@ -663,8 +606,6 @@ def addMenu( tag, keywords ):
         </frame>
     </xsl:for-each>
 </xsl:template>
-
-
 </xsl:transform>
 #@-others
 '''

@@ -11,7 +11,7 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 
-import leo.core.leoGui as leoGui # For unitTestGui.
+import leo.core.leoGui as leoGui # For UnitTestGui.
 
 import doctest
 import gc
@@ -221,13 +221,13 @@ def printGcRefs (verbose=True):
             g.pr(type(ref))
     else:
         g.pr("%d referrers" % len(refs))
-#@+node:ekr.20051104075904.70: ** class editBodyTestCase
-class editBodyTestCase(unittest.TestCase):
+#@+node:ekr.20051104075904.70: ** class EditBodyTestCase
+class EditBodyTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@+others
-    #@+node:ekr.20051104075904.71: *3*  __init__(editBodyTestCase)
+    #@+node:ekr.20051104075904.71: *3*  __init__(EditBodyTestCase)
     def __init__ (self,c,parent,before,after,sel,ins,tempNode):
 
         # Init the base class.
@@ -245,7 +245,7 @@ class editBodyTestCase(unittest.TestCase):
         # g.trace('parent',parent.h)
         # g.trace('before',before.h)
         # g.trace('after',after.h)
-    #@+node:ekr.20051104075904.72: *3*  fail (editBodyTestCase)
+    #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -272,7 +272,7 @@ class editBodyTestCase(unittest.TestCase):
         command()
 
         try:
-            # Don't call the undoer if we expect no change.
+            # Don't call the Undoer if we expect no change.
             if not tm.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
                 assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
                 c.undoer.undo()
@@ -305,7 +305,7 @@ class editBodyTestCase(unittest.TestCase):
         tempNode.setBodyString(text)
         c.selectPosition(self.tempNode)
 
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         if self.sel:
             s = str(self.sel.b) # Can't be unicode.
             lines = s.split('\n')
@@ -422,8 +422,8 @@ class GeneralTestCase(unittest.TestCase):
 
         return s + '\n'
     #@-others
-#@+node:ekr.20051104075904.79: ** class importExportTestCase
-class importExportTestCase(unittest.TestCase):
+#@+node:ekr.20051104075904.79: ** class ImportExportTestCase
+class ImportExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
@@ -489,7 +489,7 @@ class importExportTestCase(unittest.TestCase):
         c.selectPosition(child)
 
         # Get the dialog name and the fileName from the dialog node.
-        # This is used below to set up the dialog dict for nullGui.simulateDialog.
+        # This is used below to set up the dialog dict for NullGui.simulateDialog.
         s = d.bodyString()
         lines = s.split('\n')
         name = lines[0]
@@ -503,16 +503,16 @@ class importExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-        if trace: g.trace('(importExportTestCase',fileName)
+        if trace: g.trace('(ImportExportTestCase',fileName)
         
-        # Set the dict for unitTestGui, a subclass of nullGui.
-        # nullGui.simulateDialog uses this dict to return values for dialogs.
+        # Set the dict for UnitTestGui, a subclass of NullGui.
+        # NullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
             theDict = {name: [fileName]}
         else:
             theDict = {name: fileName}
         self.oldGui = g.app.gui
-        self.gui = leoGui.unitTestGui(theDict,trace=False)
+        self.gui = leoGui.UnitTestGui(theDict,trace=False)
     #@+node:ekr.20051104075904.85: *3* shortDescription
     def shortDescription (self):
 
@@ -542,38 +542,33 @@ class importExportTestCase(unittest.TestCase):
         g.app.gui = self.oldGui
         c.selectPosition(self.old_p)
     #@-others
-#@+node:ekr.20070627140344: ** class runTestExternallyHelperClass
-class runTestExternallyHelperClass:
+#@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
+class RunTestExternallyHelperClass:
 
     '''A helper class to run tests externally.'''
 
     #@+others
-    #@+node:ekr.20070627140344.1: *3*  ctor: runTestExternallyHelperClass
+    #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
     def __init__(self,c,all,marked):
-
+        '''Ctor for RunTextExternallyHelperClass class.'''
         self.c = c
         self.all = all
-        self.marked = marked
-
         self.copyRoot = None # The root of copied tree.
         self.fileName = 'dynamicUnitTest.leo'
+        self.marked = marked
         self.root = None # The root of the tree to copy when self.all is False.
-        self.seen = [] # The list of nodes to be added to the outline.
         self.tags = ('@test','@suite','@unittests','@unit-tests')
     #@+node:ekr.20070627140344.2: *3* runTests & helpers
     def runTests (self):
         # 2010/09/09: removed the gui arg: there is no way to set it.
-
         '''
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
         '''
-
-        trace = False
+        trace = True
         import time
         c = self.c ; p = c.p
         t1 = time.time()
-
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=g.app.nullGui)
@@ -586,108 +581,107 @@ class runTestExternallyHelperClass:
                 kind = 'all' if self.all else 'selected'
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
-                g.blue('created %s unit tests' % (kind))
+                # g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
-            gui = g.app.unitTestGui or 'nullGui'
-            self.runUnitTestLeoFile(gui=gui,
-                path='dynamicUnitTest.leo',silent=True)
+            gui = g.app.UnitTestGui or 'nullGui'
+            self.runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo')
+                # Let runUitTestLeoFile determine most defaults.
             c.selectPosition(p.copy())
         else:
             g.es_print('no %s@test or @suite nodes in %s outline' % (
                 'marked ' if self.marked else '',
                 'entire' if self.all else 'selected'))
-    #@+node:ekr.20070627135336.10: *4* createFileFromOutline (runTestExternallyHelperClass)
+    #@+node:ekr.20070627135336.10: *4* createFileFromOutline (RunTestExternallyHelperClass)
     def createFileFromOutline (self,c2):
-
         '''Write c's outline to test/dynamicUnitTest.leo.'''
-
         path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
-
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
         c2.fileCommands.save(path,silent=True)
         c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
-    #@+node:ekr.20070627135336.9: *4* createOutline & helpers (runTestExternallyHelperClass)
+    #@+node:ekr.20070627135336.9: *4* createOutline & helpers (RunTestExternallyHelperClass)
     def createOutline (self,c2):
-
-        '''Create a unit test ouline containing
-
+        '''
+        Create a unit test ouline containing:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
-        - all @test and @suite nodes in p's outline.'''
-
+        - all @test and @suite nodes in p's outline.
+        '''
         c = self.c
-        self.copyRoot = c2.rootPosition()
-        self.copyRoot.initHeadString('All unit tests')
+        self.copyRoot = root = c2.rootPosition()
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-        self.copyRoot.expand()
-
-        self.seen = [] # The list of nodes to be added.
-        aList  = c.testManager.findMarkForUnitTestNodes()
-        aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
-        if aList2:
-            for p in aList:  self.addNode(p)
-            for p in aList2: self.addNode(p)
-        return bool(aList2)
-    #@+node:ekr.20070705080413: *5* addMarkTree
-    def addMarkTree (self,p):
-
-        # Add the entire @mark-for-unit-tests tree.
-        self.addNode(p)
+        root.expand()
+        root.initHeadString('%s unit tests' % ('All' if self.all else 'Selected'))
+        if self.all:
+            last = root
+            for p in c.rootPosition().self_and_siblings():
+                # Last is in c2, so there is no problem.
+                last = self.addNode(p,last)
+            return True
+        elif 1:
+            last = root
+            current = c.p
+            aList = c.testManager.findMarkForUnitTestNodes()
+            for p in aList: last = self.addNode(p,last)
+            self.addNode(current,last)
+            return True
+        else: # old code
+            aList  = c.testManager.findMarkForUnitTestNodes()
+            aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+            last = root
+            if aList2:
+                for p in aList:  last = self.addNode(p,last)
+                for p in aList2: last = self.addNode(p,last)
+            # g.trace('aList',len(aList),'aList2',len(aList2))
+            return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
-    def addNode(self,p):
-
+    def addNode(self,p,last):
         '''
-        Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+        Copy p's tree as the last child of root.
+        Warning: p is a position in self.c, **not** c2.
         '''
-
-        p2 = p.copyTreeAfter()
-        p2.moveToLastChildOf(self.copyRoot)
-
-        for p2 in p.self_and_subtree():
-            self.seen.append(p2.v)
-    #@+node:ekr.20070705075604.3: *5* isUnitTestNode
-    def isUnitTestNode (self,p):
-
-        h = p.h.lower()
-
-        for tag in self.tags:
-            if h.startswith(tag):
-                return True
-        return False
-    #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (runTestExternallyHelperClass)
-    def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,silent=True):
-
+        p2 = last.insertAfter()
+        p.copyTreeFromSelfTo(p2)
+        return p2
+    #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (RunTestExternallyHelperClass)
+    def runUnitTestLeoFile (self,
+        # Except for the path arg, these are the arguments to the leoBridge.
+        gui='qt',
+        path='unitTest.leo',
+        loadPlugins=False, # Plugins probably should not be enable by default.
+        readSettings=True,
+        silent=True,
+        tracePlugins=False, # This is a bit too much.
+        verbose=True,
+    ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
-
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        trace = False
+        trace = True
+        verbose = False
+            # The verbose trace is pretty much a duplicate of the trace in
+            # leoDynamicTest.py:main()
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
-
         if sys.platform.startswith('win'): 
             if ' ' in leo: leo = '"' + leo + '"'
             if ' ' in path: path = '"' + path + '"'
-
-        guiArg = '--gui=%s' % gui
-        pathArg = '--path=%s' % path
-        args = [sys.executable,leo,path,guiArg,pathArg]
-        if readSettings: args.append('--read-settings')
-        if silent: args.append('--silent')
-        if trace: g.trace(args)
-
-        # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+        args = [sys.executable,leo]
+        args.append('--gui=%s' % gui)
+        args.append('--path=%s' % path)
+        if loadPlugins:     args.append('--load-plugins')
+        if readSettings:    args.append('--read-settings')
+        if silent:          args.append('--silent')
+        if tracePlugins:    args.append('--trace-plugins')
+        if verbose:         args.append('--verbose')
+        if trace and verbose:
+            g.trace('args...\n  %s' % '\n  '.join(args))
+        # Set the current directory so that importing leo.core.whatever works.
         leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
-
-        # os.chdir(leoDir)
-        # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
         env = dict(os.environ)
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
-
-        if False:
+        if False and trace:
             for z in sorted(os.environ.keys()):
                 print(z,os.environ.get(z))
-
-        if trace: g.trace('*** spawning test process',path)
+        if trace: print('\n\nrunUnitTestLeoFile: spawning separate process: %s\n\n' % path)
         os.spawnve(os.P_NOWAIT,sys.executable,args,env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
@@ -707,25 +701,21 @@ class TestManager:
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
     def doTests(self,all=None,marked=None,verbosity=1):
-
-        '''Run any kind of local unit test.
+        '''
+        Run any kind of local unit test.
 
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
-
         trace = False
         c,tm = self.c,self
-
-        # 2013/02/25: clear the screen before running multiple unit tests locally.
-        if all or marked: g.cls()
+        # Clear the screen before running multiple unit tests locally.
+        # if all or marked: g.cls()
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-
         # This seems a bit risky when run in unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
-
         if trace: g.trace('marked',marked,'c',c)
         try:
             g.unitTesting = g.app.unitTesting = True
@@ -734,7 +724,6 @@ class TestManager:
             g.app.unitTestDict['c'] = c
             g.app.unitTestDict['g'] = g
             g.app.unitTestDict['p'] = c.p.copy()
-
             # c.undoer.clearUndoState() # New in 4.3.1.
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)
@@ -910,7 +899,7 @@ class TestManager:
 
         # g.trace('all',all,'marked',marked)
 
-        runner = runTestExternallyHelperClass(c,all,marked)
+        runner = RunTestExternallyHelperClass(c,all,marked)
         runner.runTests()
 
         c.bodyWantsFocusNow()
@@ -1012,7 +1001,7 @@ class TestManager:
             sel    = tm.findNodeInTree(p,"selection")
             ins    = tm.findNodeInTree(p,"insert")
             if before and after:
-                test = editBodyTestCase(c,p,before,after,sel,ins,temp_p)
+                test = EditBodyTestCase(c,p,before,after,sel,ins,temp_p)
                 suite.addTest(test)
             else:
                 g.pr('missing "before" or "after" for', p.h)
@@ -1038,7 +1027,7 @@ class TestManager:
                 p2 = p.copy()
                 dialog = tm.findNodeInTree(p2,"dialog")
                 assert(dialog)
-                test = importExportTestCase(c,p2,dialog,temp,doImport)
+                test = ImportExportTestCase(c,p2,dialog,temp,doImport)
                 suite.addTest(test)
         return suite
     #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest
@@ -1097,7 +1086,7 @@ class TestManager:
         tm = self
         c = self.c
         atTest = p.copy()
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         h = atTest.h
         assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
         commandName = h[6:].strip()
@@ -1130,9 +1119,9 @@ class TestManager:
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
         assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
         c.selectPosition(atTest)
         atTest.contract()
@@ -1296,7 +1285,7 @@ class TestManager:
         c = self.c
         vc = c.vimCommands
         atTest = p.copy()
-        w = c.frame.body.bodyCtrl
+        w = c.frame.body.wrapper
         h = atTest.h
         assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
         s = h[6:].strip()
@@ -1334,9 +1323,9 @@ class TestManager:
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
         assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
         assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
         c.selectPosition(atTest)
         atTest.contract()
@@ -1372,7 +1361,7 @@ class TestManager:
             return
 
         try:
-            readline = g.readLinesClass(s).next
+            readline = g.ReadLinesClass(s).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
         except tokenize.TokenError as msg:
@@ -1839,29 +1828,29 @@ class TestManager:
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
     def writeNodeToNode (self,c,input,output,sentinels=True):
 
-        """Do an atFile.write the input tree to the body text of the output node."""
+        """Do an AtFile.write the input tree to the body text of the output node."""
 
         s = self.writeNodeToString(c,input,sentinels)
 
         output.scriptSetBodyString (s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
     def writeNodeToString (self,c,input,sentinels):
-
-        """Return an atFile.write of the input tree to a string."""
-
+        """Return an AtFile.write of the input tree to a string."""
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices
-
+        # new gnxs:
         for p in input.self_and_subtree():
-            try:
-                theId,time,n = p.v.fileIndex
-            except TypeError:
+            if not p.v.fileIndex:
                 p.v.fileIndex = nodeIndices.getNewIndex()
-
+        # old gnxs: retain for reference:
+            # for p in input.self_and_subtree():
+                # try:
+                    # theId,time,n = p.v.fileIndex
+                # except TypeError:
+                    # p.v.fileIndex = nodeIndices.getNewIndex()
         # Write the file to a string.
         df.write(input,thinFile=True,nosentinels= not sentinels,toString=True)
         s = df.stringOutput
-
         return s
     #@-others
 #@-others

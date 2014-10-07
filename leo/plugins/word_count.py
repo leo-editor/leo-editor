@@ -35,12 +35,10 @@ __version__ = "1.2"
 #@+others
 #@+node:ekr.20070301062245: ** init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = True # Ok for unit testing: creates menu.
-
     g.registerHandler("create-optional-menus",createWordCountMenu)
     g.plugin_signon(__name__)
-
     return ok
 #@+node:danr7.20061010105952.5: ** createWordCountMenu
 def createWordCountMenu (tag,keywords):

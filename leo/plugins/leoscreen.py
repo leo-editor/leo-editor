@@ -130,8 +130,8 @@ stdout is ignored, Popen() needs to ensure it's not just inherited.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
+# By TNB.
+# Use and distribute under the same terms as leo itself.
 
 #@+<< imports >>
 #@+node:tbrown.20100226095909.12779: ** << imports >>
@@ -144,29 +144,16 @@ import tempfile
 import difflib
 
 try:
-    import stickynotes
+    import leo.plugins.stickynotes as stickynotes
 except ImportError:
     stickynotes = None
 #@-<< imports >>
-__version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20100226095909.12780: ** << version history >>
-#@@killcolor
-
-#@+at Use and distribute under the same terms as leo itself.
-# 
-# 0.1 TNB
-#   - initial version
-#@-<< version history >>
-
 #@+others
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
-    """Leo plugin init. function"""
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
-
     g.plugin_signon(__name__)
-
     return True
 #@+node:tbrown.20100226095909.12782: ** onCreate
 def onCreate (tag,key):
@@ -272,7 +259,7 @@ class leoscreen_Controller:
         if not c:
             c = self.c
 
-        editor = c.frame.body
+        editor = c.frame.body.wrapper
 
         insert_point = editor.getInsertPoint()
         editor.insert(insert_point, self.get_line_prefix+line+'\n')
@@ -425,18 +412,16 @@ def cmd_show_all(c):
 #@+node:tbrown.20100226095909.12790: ** cmd_run_text
 def cmd_run_text(c):
     """pass selected text to shell app. via screen"""
-    txt = c.frame.body.getSelectedText()
-
+    w = c.frame.body.wrapper
+    txt = w.getSelectedText()
     # select next line ready for next select/send cycle
-    b = c.frame.body.getAllText()
-    i = c.frame.body.getInsertPoint()
+    b = w.getAllText()
+    i = w.getInsertPoint()
     try:
         j = b[i:].index('\n')+i+1
-        c.frame.body.setSelectionRange(i,j)
+        w.setSelectionRange(i,j)
     except ValueError:  # no more \n in text
-        c.frame.body.setSelectionRange(i,i)
-        pass
-
+        w.setSelectionRange(i,i)
     c.leo_screen.run_text(txt,c)
 #@+node:tbrown.20120905091352.20333: ** cmd_run_all_text
 def cmd_run_all_text(c, move=True):
@@ -515,4 +500,6 @@ def jump_to_error_internal(c):
     else:
         g.es("%d error frames found in console content"%skipped)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -12,22 +12,35 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20140916101615.24987"><vh>@string target_language = python</vh></v>
+<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
-<v t="ekr.20131109170017.46980"><vh>vim settings</vh>
-<v t="ekr.20131109170017.46978"><vh>@@@data vim-control-character-commands</vh></v>
-<v t="ekr.20131109170017.41921"><vh>@data vim-command-tails</vh></v>
-<v t="ekr.20131109170017.41922"><vh>@data vim-commands</vh></v>
-<v t="ekr.20131109170017.46979"><vh>@data vim-motions</vh></v>
-<v t="ekr.20131109170017.46981"><vh>@data vim-motion-tails</vh></v>
-</v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
 </v>
+<v t="ekr.20140808103117.18035"><vh>@persistence</vh>
+<v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
+<v t="ekr.20140907140717.18706"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
+<v t="ekr.20140907140717.18707"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
+<v t="ekr.20140907140717.18708"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
+<v t="ekr.20140907140717.18709"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
+<v t="ekr.20140907140717.18710"><vh>@gnxs</vh></v>
+</v>
+</v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329"
+expanded="ekr.20090202064534.4,"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -36,48 +49,65 @@
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20140902032918.18591"><vh> About this file</vh>
+<v t="ekr.20140831085423.18639"><vh>&lt;&lt; about widgets and wrappers &gt;&gt;</vh></v>
+<v t="ekr.20140831085423.18630"><vh>&lt;&lt; terminology &gt;&gt;</vh></v>
+<v t="ekr.20140831085423.18631"><vh>&lt;&lt; official ivars &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2608"
+expanded="ekr.20120209051836.10242,ekr.20120215062153.10740,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
+<v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"
+marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20111116103733.9817"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
+<v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
+<v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
+<v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285505302e332e3271017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6174696d657107580d000000313331393436373035302e34387108755505302e332e3371097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6174696d65710f580d000000313332303433343235372e33367110755505302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6174696d657117580d000000313331393534393339302e38397118755505302e332e3171197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6174696d65711f580c000000313332303432323637302e397120755505302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755505302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
-<v t="ekr.20131230090121.16504"><vh>@file leoViews.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3655"
+expanded="ekr.20040803072955.128,ekr.20070423101911,ekr.20140829053801.18453,ekr.20140829053801.18455,"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
-<v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
-<v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
+<v t="tbrown.20140919160718.9297"><vh>@file ../plugins/qt_big_text.py</vh></v>
+<v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
+<v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
+<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
+<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
+<v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
+<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
+<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
+<v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
-<v t="ekr.20130701072841.12673"><vh>@file qsyntaxhighlighter.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20110605121601.18698"><vh>@auto ../plugins/qt_main.py</vh></v>
@@ -110,41 +140,8 @@
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">@tabwidth -4
 @pagewidth 70
 
-@ 
-This outline contains all of Leo's core source code.
-
-Leo's code uses the following conventions throughout:
-
-c:  a commander.
-ch: a character.
-d:  a dialog or a dict.
-f:  an open file.
-fn: a file name.
-g:  the leoGlobals module.
-i, j, k: indices into a string.
-p:  a position.
-s:  a string.
-t:  a text widget.
-u:  an undoer.
-w:  a gui widget.
-v:  a vnode
-z:  a local temp.
-
-In more limited contexts, the following conventions apply:
-    
-si: a g.ShortcutInfo object.
-ks: a g.KeyStroke object
-stroke: a KeyStroke object.
-
-The following are 'official' ivars that will always exist:
-
-c.frame                 The frame containing the log,body,tree, etc.
-c.frame.body            The body pane.
-c.frame.body.bodyCtrl   The body widget.
-c.frame.iconBar         The icon bar.
-c.frame.log             The log pane.
-c.frame.tree            The tree pane.
-</t>
+# This file contains almost all of Leo's sources.
+# See the "About this file" node for important notes.</t>
 <t tx="ekr.20031218072017.2604">
 </t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
@@ -223,12 +220,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240">def relink(self):
-    '''Relink all unlinked clones.'''
-    d = self.d
-    # Find original cloned nodes.
-    for key in sorted(d.keys()):
-        g.trace(key,d.get(key))</t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.5">
 
 
@@ -261,278 +253,6 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20100120072650.6088"></t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
-<t tx="ekr.20131109170017.41921">char F
-char T
-char f
-char r
-char t
-letter m
-letter q
-motion &lt;
-motion &gt;
-motion c
-motion d
-motion g
-motion y
-pattern /
-pattern ?
-register @
-</t>
-<t tx="ekr.20131109170017.41922"># http://tnerual.eriogerg.free.fr/vimqrc.html
-vim_0 0
-vim_tilda ~
-vim_plus +
-vim_underscore _
-vim_minus -
-vim_comma ,
-vim_dot .
-vim_semicolon ;
-vim_lparen (
-vim_rparen )
-vim_lcurly {
-vim_rcurly }
-vim_vertical |
-vim_backtick `
-vim_dollar $
-vim_caret ^
-vim_percent %
-vim_langle &lt;
-vim_langle &lt;&lt;
-vim_rangle &gt;
-vim_rangle &gt;&gt;
-vim_pound #
-vim_star *
-vim_slash /\\n
-vim_slash /
-vim_question ?\\n
-vim_question ?
-vim_at @
-vim_at @@
-vim_dquote "
-vim_lsquare [#
-vim_lsquare [(
-vim_lsquare [*
-vim_lsquare [[
-vim_lsquare []
-vim_lsquare [p
-vim_lsquare [{
-vim_rsquare ]#
-vim_rsquare ])
-vim_rsquare ]*
-vim_rsquare ][
-vim_rsquare ]]
-vim_rsquare ]p
-vim_rsquare ]}
-vim_A A
-vim_B B
-vim_C C
-vim_D D
-vim_E E
-vim_F F
-vim_G G
-vim_H H
-vim_I I
-vim_J J
-vim_K K
-vim_M M
-vim_L L
-vim_N N
-vim_O O
-vim_P P
-vim_R R
-vim_S S
-vim_T T
-vim_U U
-vim_V V
-vim_W W
-vim_X X
-vim_Y Y
-vim_Z ZQ
-vim_Z ZZ
-vim_a a
-vim_b b
-vim_c c
-vim_d dd
-vim_d d
-vim_g g~
-vim_g g^
-vim_g g#
-vim_g g$
-vim_g g*
-vim_g g0
-vim_g gD
-vim_g gE
-vim_g gI
-vim_g gU
-vim_g ga
-vim_g gd
-vim_g ge
-vim_g gf
-vim_g gg
-vim_g gj
-vim_g gk
-vim_g gq
-vim_g gs
-vim_g gu
-vim_g gv
-vim_h h
-vim_i i
-vim_j j
-vim_k k
-vim_l l
-vim_n n
-vim_m m
-vim_o o
-vim_p p
-vim_q q
-vim_r r
-vim_s s
-vim_t t
-vim_u u
-vim_v v
-vim_w w
-vim_x x
-vim_y y
-vim_y yy
-vim_z z-
-vim_z z.
-vim_z z&lt;CR&gt;
-vim_z zb
-vim_z zh
-vim_z zl
-vim_z zt
-vim_z zz
-</t>
-<t tx="ekr.20131109170017.46978"># Not yet...
-
-    &lt;BS&gt;        delete the character in front of the cursor
-N   &lt;Del&gt;       delete N characters under and after the cursor
-    &lt;Del&gt;       delete the character under the cursor
-    &lt;Del&gt;       while entering a count: delete last character
-    &lt;Down&gt;      recall newer command-line that starts with current command
-    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
-    &lt;Left&gt;      (motion) cursor left
-    &lt;Right&gt;     (motion) cursor right
-    &lt;S-Down&gt;    recall newer command-line from history
-    &lt;S-Left&gt;    (motion) cursor one word left
-    &lt;S-Right&gt;   (motion) cursor one word right
-    &lt;S-Up&gt;      recall older command-line from history
-    &lt;Up&gt;        recall older command-line that starts with current command
-
-N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
-N   CTRL-A                  add N to the number at or after the cursor
-N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  (motion?) cursor to beginning of command-line
-    CTRL-BREAK              MS-DOS: during searches: interrupt the search
-    CTRL-C                  during searches: interrupt the search
-N   CTRL-D                  window N lines Downwards (default: 1/2 window)
-N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  (motion?) cursor to end of command-line
-N   CTRL-F                  (motion) window N pages Forwards (downwards)
-    CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  (motion) go to Nth newer position in jump list
-    CTRL-K {char1} {char2}  enter digraph
-    CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  (motion) go to Nth older position in jump list
-N   CTRL-R                  redo last N undone changes
-    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
-N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
-N   CTRL-U                  window N lines Upwards (default: 1/2 window)
-    CTRL-U                  remove all characters
-    CTRL-V                  highlight blockwise or stop highlighting
-    CTRL-V                  start highlighting blockwise   }  highlighted text
-    CTRL-V {char}           insert {char} literally
-    CTRL-V {number}         enter decimal value of character (up to three digits)
-    CTRL-W                  delete the word in front of the cursor
-    CTRL-W +                Increase current window height
-    CTRL-W -                Decrease current window height
-    CTRL-W =                Make all windows equal height
-    CTRL-W CTRL-W           Move cursor to window below (wrap)
-    CTRL-W CTRL-^           Split window and edit alternate file
-    CTRL-W R                Rotate windows upwards
-    CTRL-W W                Move cursor to window above (wrap)
-    CTRL-W ]                Split window and jump to tag under cursor
-    CTRL-W _                Set current window height (default: very high)
-    CTRL-W b                Move cursor to bottom window
-    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
-    CTRL-W f                Split window and edit file name under the cursor
-    CTRL-W j                Move cursor to window below
-    CTRL-W k                Move cursor to window above
-    CTRL-W n  or :new       Create new empty window
-    CTRL-W o  or :on[ly]    Make current window only one on the screen
-    CTRL-W p                Move cursor to previous active window
-    CTRL-W q  or :q[uit]    Quit editing and close window
-    CTRL-W r                Rotate windows downwards
-    CTRL-W s                Split window into two parts
-    CTRL-W t                Move cursor to top window
-    CTRL-W x                Exchange current window with next one
-N   CTRL-X                  subtract N from the number at or after the cursor
-N   CTRL-Y                  window N lines upwards (default: 1)
-    CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made
-</t>
-<t tx="ekr.20131109170017.46979"># CR
-# Ctrl-End
-# Ctrl-Home
-# Ctrl-Left
-# Ctrl-M
-# Ctrl-N
-# Ctrl-P
-# Ctrl-Right
-# End
-# Home
-# Shift-Left
-# Shift-Right
-
-( 	
-)
-{
-}
-[[
-[]
-][
-]]
-$
-^	
-+
-,
--
-;
-_
-0
-B
-E
-F
-G
-T
-W
-b
-e
-f
-g$
-g^
-g0
-gE
-# gEnd
-# gHome	
-ge
-gg
-h
-j
-k
-t
-w
-</t>
-<t tx="ekr.20131109170017.46980">@nocolor
-
-For testing, these are loaded "by hand" so that reloading this file is not
-needed.
-</t>
-<t tx="ekr.20131109170017.46981">char F
-char T
-char f
-char t
-</t>
 <t tx="ekr.20131111060930.18010"># Standard bindings...
 # run-selected-unit-tests-externally = Alt-4 
 # run-marked-unit-tests-externally = Alt-5
@@ -547,20 +267,6 @@ g.app.debug_widgets = not g.app.debug_widgets
 # Report the new settings.
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
-
-
-
-
-
-
-
-
-
-
-
-
-
-@language python
 </t>
 <t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
 unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
@@ -568,5 +274,126 @@ unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBa
 @language rest
 The parser for @data nodes, doData, no longer strips *anything*.</t>
 <t tx="ekr.20140103105930.16446"></t>
+<t tx="ekr.20140808103117.18035"></t>
+<t tx="ekr.20140808103117.18036">gnx: ekr.20110605121601.18696
+</t>
+<t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
+</t>
+<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
+</t>
+<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
+</t>
+<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
+</t>
+<t tx="ekr.20140831085423.18630">@language rest
+
+This outline contains all of Leo's core source code.
+
+Leo's code uses the following conventions throughout:
+
+c:  a commander.
+ch: a character.
+d:  a dialog or a dict.
+f:  an open file.
+fn: a file name.
+g:  the leoGlobals module.
+i, j, k: indices into a string.
+p:  a Position.
+s:  a string.
+t:  a text widget.
+u:  an undoer.
+w:  a gui widget.
+v:  a Vnode
+z:  a local temp.
+
+In more limited contexts, the following conventions apply:
+    
+si:     a g.ShortcutInfo object.
+ks:     a g.KeyStroke object
+stroke: a KeyStroke object.
+
+btw:    leoFrame.BaseTextWrapper
+stw:    leoFrame.StringTextWrapper
+
+bqtw:   qt_text.BaseQTextWrapper
+lqtb:   qt_text.LeoQTextBrowser
+qhlw:   qt_text.QHeadlineWrapper
+qmbw:   qt_text.QMinibufferWrapper
+qlew:   qt_text.QLineEditWrapper
+qsciw:  qt_text.QScintiallaWrapper
+qtew:   qt_text.QTextEditWrapper</t>
+<t tx="ekr.20140831085423.18631">@language rest
+
+The following are 'official' ivars that will always exist:
+
+c.frame                 The frame containing the log,body,tree, etc.
+c.frame.body            The body pane.
+c.frame.body.widget     The gui widget for the body pane.
+c.frame.body.wrapper    The high level interface for the body widget.
+c.frame.iconBar         The icon bar.
+c.frame.log             The log pane.
+c.frame.log.widget      The gui widget for the log pane.
+c.frame.log.wrapper     The high-level inteface for the log pane.
+c.frame.tree            The tree pane.
+
+The following ivars no longer exist:
+
+c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
+c.frame.log.logCtrl     Use c.frame.log.wrapper instead.</t>
+<t tx="ekr.20140831085423.18639">@language rest
+
+Here is what you *must know* to understand Leo's core:
+
+1. A **widget** is an actual Qt widget.
+
+Leo's core seldom accesses widgets directly.  Instead...
+
+2. A **wrapper class** defines a standard api that hides the details
+   of the underlying gui **text** widgets.
+
+Leo's core uses this api almost exclusively. That is, Leo's core code
+treats wrappers *as if* they were only text widgets there are!
+
+There is, however, a back door for (hopefully rare!) special cases.
+All wrapper classes define an official "widget" ivar, so core or
+plugin code can gain access to the real Qt widget using
+wrapper.widget. Searching for wrapper.widget will (or soon will) find
+all gui-dependent snippets of code in Leo's core.
+</t>
+<t tx="ekr.20140902032918.18591">@
+&lt;&lt; about widgets and wrappers &gt;&gt;
+&lt;&lt; terminology &gt;&gt;
+&lt;&lt; official ivars &gt;&gt;
+</t>
+<t tx="ekr.20140902155015.18674"></t>
+<t tx="ekr.20140907140717.18706">gnx: ekr.20140225224703.8169
+unl: qtui_generate declarations
+</t>
+<t tx="ekr.20140907140717.18707">gnx: ekr.20140225224703.8170
+unl: qt_main declarations
+gnx: ekr.20140225224703.8171
+unl: class Ui_MainWindow
+gnx: ekr.20140902074657.9511
+unl: class Ui_MainWindow--&gt;setupUi
+gnx: ekr.20140225224703.8173
+unl: class Ui_MainWindow--&gt;retranslateUi
+</t>
+<t tx="ekr.20140907140717.18708"></t>
+<t tx="ekr.20140907140717.18709">gnx: ekr.20140225224703.8174
+unl: qt_quicksearch declarations
+gnx: ekr.20140225224703.8175
+unl: class Ui_LeoQuickSearchWidget
+gnx: ekr.20140225224703.8176
+unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
+gnx: ekr.20140225224703.8177
+unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+</t>
+<t tx="ekr.20140907140717.18710"></t>
+<t tx="ekr.20140916101615.24987">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 </tnodes>
 </leo_file>

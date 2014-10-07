@@ -2,7 +2,7 @@
 #@+node:ekr.20101121031443.5330: * @file screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
-""" Creates stand-alone slideshows containing screenshots.
+r""" Creates stand-alone slideshows containing screenshots.
 
 This plugin defines five commands. The
 **help-for-slides** command prints this message to
@@ -329,12 +329,9 @@ try:
     got_pil = True
 except ImportError:
     got_pil = False
-
-try:
-    import PyQt4.QtGui
-    got_qt = True
-except ImportError:
-    got_qt = False
+    
+from leo.core.leoQt import QtGui
+got_qt = QtGui is not None
 
 import shutil
 import subprocess
@@ -399,12 +396,10 @@ def slide_show_info_command(event):
         sc.slide_show_info_command(c.p)
 #@+node:ekr.20100908110845.5606: *3* init
 def init ():
-
+    '''Return True if the plugin has loaded successfully.'''
     ok = got_qt
-
     if ok:
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ekr.20100914090933.5770: *3* make_screen_shot
 def make_screen_shot (path):
@@ -415,7 +410,7 @@ def make_screen_shot (path):
     # g.trace('screenshots.py:',path)
 
     app = g.app.gui.qtApp
-    pix = PyQt4.QtGui.QPixmap
+    pix = QtGui.QPixmap
     w = pix.grabWindow(app.activeWindow().winId())
     w.save(path,'png')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
@@ -439,12 +434,9 @@ class ScreenShotController(object):
             self.got_pil = True
         except ImportError:
             self.got_pil = False
-
-        try:
-            import PyQt4.QtGui
-            self.got_qt = True
-        except ImportError:
-            self.got_qt = False
+            
+        from leo.core.leoQt import QtGui
+        self.got_qt = QtGui is not None
 
         # Defaults.
         self.default_screenshot_height = 700
@@ -745,14 +737,11 @@ class ScreenShotController(object):
     #@+node:ekr.20101004082701.5734: *4* Finding nodes
     #@+node:ekr.20101008112639.5629: *5* find_node
     def find_node (self,p,h):
-
         '''Return the node in p's direct children whose headline matches h.'''
-
         for p2 in p.children():
             if g.match_word(p2.h,0,h):
                 return p2
-        else:
-            return None
+        return None
     #@+node:ekr.20100909121239.5742: *5* find_at_screenshot_node
     def find_at_screenshot_node (self,p):
 
@@ -805,16 +794,12 @@ class ScreenShotController(object):
         return None
     #@+node:ekr.20100913085058.5654: *5* find_slideshow_node
     def find_slideshow_node (self,p):
-
         '''Return the nearest ancestor @slideshow node.'''
-
         sc = self
-
         for p2 in p.self_and_parents():
             if g.match_word(p2.h,0,'@slideshow'):
                 return p2
-        else:
-            return None
+        return None
     #@+node:ekr.20101004082701.5735: *4* Path utils
     #@+node:ekr.20100908110845.5540: *5* finalize
     def finalize (self,fn):
@@ -864,14 +849,13 @@ class ScreenShotController(object):
         return g.shortFileName(sc.output_fn)
     #@+node:ekr.20100911044508.5627: *5* get_output_fn
     def get_output_fn (self,p):
-
-        '''Return the full, absolute, output file name.
+        '''
+        Return the full, absolute, output file name.
 
         An empty filename disables output.
 
         The default is 'slide-%03d.png' % (sc.slide_number)
         '''
-
         # Look for any @output nodes in p's children.
         sc = self ; tag = '@output'
         for child in p.children():
@@ -882,10 +866,9 @@ class ScreenShotController(object):
                     fn = sc.finalize(fn)
                 else:
                     fn = None
-        else:
-            fn = 'slide-%03d.png' % (sc.slide_number)
-            fn = sc.finalize(fn)
-
+        
+        fn = 'slide-%03d.png' % (sc.slide_number)
+        fn = sc.finalize(fn)
         return fn
     #@+node:ekr.20100911044508.5628: *5* get_screenshot_fn
     def get_screenshot_fn (self):
@@ -1131,9 +1114,8 @@ class ScreenShotController(object):
                     else:
                         g.warning('ignoring setting:',child.h)
                         return None
-        else:
-            # if trace: g.trace(option,repr(None))
-            return None
+        # if trace: g.trace(option,repr(None))
+        return None
     #@+node:ekr.20100913085058.5630: *5* get_pause_flag
     def get_pause_flag (self,p):
 
@@ -1141,17 +1123,15 @@ class ScreenShotController(object):
         for child in p.children():
             if g.match_word(child.h,0,'@pause'):
                 return True
-        else:
-            return False
+        return False
     #@+node:ekr.20100913085058.5628: *5* get_protect_flag
     def get_protect_flag (self,p):
 
-         # Look for any @protect or @ignore nodes in p's children.
+        # Look for any @protect or @ignore nodes in p's children.
         for child in p.children():
             if g.match_word(p.h,0,'@ignore') or g.match_word(p.h,0,'@protect'):
                 return True
-        else:
-            return False
+        return False
     #@+node:ekr.20101006060338.5704: *5* get_screenshot_height/width
     def get_screenshot_height (self):
 
@@ -1185,14 +1165,14 @@ class ScreenShotController(object):
                     try:
                         return s % d
                     except Exception:
-                        g.warning('bad %s' % repr(p.h))
+                        g.warning('bad %s' % repr(self.c.p.h))
+       
+        if slide_name and not slide_name.strip().startswith('(('):
+            return slide_name
         else:
-            if slide_name and not slide_name.strip().startswith('(('):
-                return slide_name
-            else:
-                s = sc.default_slide_pattern % d
-                # g.trace('using default title:',s)
-                return s
+            s = sc.default_slide_pattern % d
+            # g.trace('using default title:',s)
+            return s
     #@+node:ekr.20101006060338.5706: *5* get_verbose_flag
     def get_verbose_flag (self):
 
@@ -1200,17 +1180,6 @@ class ScreenShotController(object):
         val = sc.get_option('verbose')
         return sc.default_verbose_flag if val is None else val
     #@+node:ekr.20100911044508.5618: *3* utilities
-    #@+node:ekr.20100908110845.5594: *4* add_image_directive
-    def add_image_directive (self):
-
-        '''Add ".. image:: <sc.directive_fn>" to p.b if it is not already there.'''
-
-        sc = self ; p = sc.slide_node
-
-        s = '.. image:: %s' % sc.directive_fn.replace('\\','/')
-
-        if p.b.find(s) == -1:
-            p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
     #@+node:ekr.20100911044508.5637: *4* clear_cache
     def clear_cache (self):
 
@@ -1700,17 +1669,14 @@ class ScreenShotController(object):
     def make_working_file (self):
 
         sc = self
-
         sc.give_pil_warning()
-
         # Create the working file from the template.
         template = sc.make_dom()
         if template:
             sc.make_working_file_from_template(template)
             sc.make_at_url_node_for_working_file()
         else:
-            g.error('can not make template from:',template_fn)
-
+            g.error('can not make template from:',sc.template_fn)
         return bool(template)
     #@+node:ekr.20100908110845.5546: *5* make_dom & helpers
     def make_dom (self):
@@ -2174,12 +2140,14 @@ class ScreenShotController(object):
 
         return p2
     #@+node:ekr.20101113193341.5451: *6* add_image_directive
-    def add_image_directive (self,p,slide_number):
-
+    def add_image_directive (self,p=None,slide_number=None):
         '''Add an image directive in p if it is not there.'''
-
-        s = '.. image:: slide-%03d.png' % (slide_number)
-
+        sc = self
+        if not p: p = sc.slide_node
+        if slide_number:
+            s = '.. image:: slide-%03d.png' % (slide_number)
+        else:
+            s = '.. image:: %s' % sc.directive_fn.replace('\\','/')
         if p.b.find(s) == -1:
             p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
     #@+node:ekr.20101113193341.5452: *6* delete_at_url_built_slide_node
@@ -2343,12 +2311,10 @@ class ScreenShotController(object):
     def has_at_no_screenshot_node (self,p):
 
         sc = self
-
         for p in p.children():
             if sc.match(p,'@no-screenshot'):
                 return True
-        else:
-            return False
+        return False
     #@-others
 
 #@-others

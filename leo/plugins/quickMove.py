@@ -123,7 +123,6 @@ Tags
 
 """
 #@-<< docstring >>
-
 __version__ = '0.7'
 #@+<< version history >>
 #@+node:tbrown.20070117104409.6: ** << version history >>
@@ -141,10 +140,8 @@ __version__ = '0.7'
 # 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
 # 0.7 TNB: Added "clone to" as well as "move to"
 #@-<< version history >>
-
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
-import types
 from copy import deepcopy
 
 import leo.core.leoGlobals as g
@@ -153,19 +150,17 @@ from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
-    from PyQt4 import QtGui, QtCore
+    from leo.core.leoQt import QtCore,QtGui
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
-
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
+    '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
-    
     if '_quickmove' not in g.app.db:
         g.app.db['_quickmove'] = {'global_targets': []}
-    
     return True
 
 def onCreate(tag, keywords):
@@ -307,12 +302,12 @@ class quickMove(object):
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
 
         if g.app.gui.guiName() == "qt":
-                g.tree_popup_handlers.append(self.popup)
+            g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c):
 
         if g.app.gui.guiName() == "qt":
-                g.tree_popup_handlers.remove(self.popup)
+            g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton
     def addButton (self, first, type_="move", v=None, parent=None):
 
@@ -343,7 +338,7 @@ class quickMove(object):
         # createButton truncates text.  
 
         if parent and g.app.gui.guiName() == "qt":
-            # see qtGui.py/class leoQtFrame/class qtIconBarClass/setCommandForButton
+            # see setCommandForButton
             pb = parent.button
             rc = QtGui.QAction(text, pb)
             rc.connect(rc, QtCore.SIGNAL("triggered()"), mb.moveCurrentNodeToTarget)
@@ -436,22 +431,19 @@ class quickMove(object):
     #@+node:tbrown.20091207102637.11494: *3* context menu popup
     def popup(self, c, p, menu):
         """make popup menu entry for tree context menu"""
-
+        # pylint: disable=function-redefined
+        # several callbacks have the same name.
         if c != self.c:
             return  # wrong commander
-            
         for cb, name in reversed(self.recent_moves):
             a = QtGui.QAction(name, menu)
             a.connect(a, QtCore.SIGNAL("triggered()"), 
                       lambda cb=cb, name=name: self.do_wrap(cb, name))
             menu.insertAction(menu.actions()[0], a)
-
         pathmenu = menu.addMenu("Move")
-        
         # copy / cut to other outline
         for txt, cut in ("Copy to...", False), ("Move to...", True):
             sub = pathmenu.addMenu(txt)
-            
             # global targets
             for target in g.app.db['_quickmove']['global_targets']:
                 a = sub.addAction(target['name'])
@@ -460,7 +452,6 @@ class quickMove(object):
                 def wrap(cb=cb, name=txt.strip('.')+' '+target['name']):
                     self.do_wrap(cb, name)
                 a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-            
             # top of open outlines
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
@@ -470,7 +461,6 @@ class quickMove(object):
                 def wrap(cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
                     self.do_wrap(cb, name)
                 a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-                    
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
         # global targets
@@ -489,7 +479,6 @@ class quickMove(object):
             def wrap(cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
                 self.do_wrap(cb, name)
             a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
-
         # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
@@ -500,7 +489,6 @@ class quickMove(object):
         a = pathmenu.addAction("Read targets")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
              lambda p=p: self.read_targets())
-
         # actions within this outline
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
@@ -825,7 +813,7 @@ class quickMoveButton:
         p2.expand()
         nxt = p.visNext(c) or p.visBack(c)
         nxt = nxt.v
-        # store a Vnode instead of position as positions are too easily lost
+        # store a VNode instead of position as positions are too easily lost
 
         if self.type_ == 'clone':
             p = p.clone()
@@ -906,4 +894,6 @@ class quickMoveButton:
         return "#"+"-->".join(heads)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

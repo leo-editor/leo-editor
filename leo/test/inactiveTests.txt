@@ -181,7 +181,7 @@ passList = (
     'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
     'open_shell','outline_export','quit_leo',
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'qt_main','qt_quicksearch','qtframecommands',
     'quickMove',
         # Warning: changed this line by guessing!
         # func = types.MethodType(func, quickMove)
@@ -261,7 +261,7 @@ passList = (
     'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
     'open_shell','outline_export','quit_leo',
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'qt_main','qt_quicksearch','qtframecommands',
     'quickMove',
         # Warning: changed this line by guessing!
         # func = types.MethodType(func, quickMove)
@@ -6031,7 +6031,7 @@ def two():
 # tree = c.importCommands.pythonUnitTest(p,s=s,showTree=True)
 
 expected = s.find('# This is a comment')
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6063,7 +6063,7 @@ def two():
 # tree = c.importCommands.pythonUnitTest(p,s=s,showTree=True)
 
 expected = s.find('# This is a comment')
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6097,7 +6097,7 @@ if __name__ == '__main__':
 
 lastLine = 'pass\n'
 expected = s.find(lastLine) + len(lastLine) + 1
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6124,7 +6124,7 @@ if __name__ == '__main__':
 
 '''
 
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 expected = i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -7448,7 +7448,7 @@ for s in sorted(d.keys()):
 #@+node:ekr.20130503061511.4137: ** @ignore from leoPy.leo
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s1 = '''
 <table id="1"> <table id="2">
@@ -7553,10 +7553,10 @@ if showTree:
 <body class='bodystring'>
 <div id='bodydisplay'></div>
 </body>
-#@+node:ekr.20130503061511.4153: *3* @test htmlScanner.filterTokens
+#@+node:ekr.20130503061511.4153: *3* @test HtmlScanner.filterTokens
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 strip = hs.stripTokens
 dump  = hs.formatTokens
 
@@ -7644,8 +7644,8 @@ else:
     import leo.core.leoGui as leoGui
     
     # Important: external unit tests should execute in this environment.
-    nullGui   = leoGui.nullGui('null gui')
-    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui)
+    nullGui   = leoGui.NullGui('null gui')
+    nullFrame = leoFrame.NullFrame(title='nullFrame title',gui=nullGui)
     c2 = leoCommands.Commands(nullFrame,fileName='<empty fileName>')
     nullFrame.c = c2
     body = leoFrame.nullBody(frame=nullFrame,parentFrame=None)
@@ -8923,5 +8923,35 @@ else:
     error_table = (
         'gX','ZA',
     )
+#@+node:ekr.20111113194727.3869: ** @@@test BaseTextWrapper methods
+import leo.core.leoFrame as leoFrame
+
+w = leoFrame.BaseTextWrapper(c,'base-name','class-name',widget=None)
+
+def check(expected):
+    s = w.getAllText()
+    assert s == expected,'expected %s got %s' % (expected,s)
+
+w.setAllText('')        ; check('')
+w.appendText('abc')     ; check('abc')
+w.delete(1,2)           ; check('ac')
+w.insert(0,'xy')        ; check('xyac')
+w.insert(1,'z')         ; check('xzyac')
+    # w.replace(2,4,'ABCD') ; check('xzABCDc')
+        # This method no longer exists.  It is not used anywhere.
+    # w.setSelectionRange(3,6)
+    # s = w.getSelectedText()
+    # assert s == 'BCD',repr(s)
+
+w.deleteTextSelection() ; check('xzyac')
+#@+node:ekr.20100208230953.5383: ** Cache tests
+#@+node:ekr.20100208095817.5387: *3* @@test leoCache
+# Disabled this test because it's best to open this file without caching.
+
+import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+assert cacher.test()
 #@-all
 #@-leo

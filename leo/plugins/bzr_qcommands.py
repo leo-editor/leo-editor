@@ -1,42 +1,22 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110084839.5682: * @file bzr_qcommands.py
-#@+<< docstring >>
-#@+node:tbrown.20101101135104.15787: ** << docstring >>
 """ Adds a context menu to each node containing all the commands in the bzr Qt
 interface. Bzr is invoked based on the path of the current node.
 
 *Requires contextmenu.py.*
 
 """
-#@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
+# by TNB
 import subprocess
-
 from PyQt4 import QtCore
-
 import leo.core.leoGlobals as g
-
-__version__ = "0.1"
-
-#@+<< version history >>
-#@+node:tbrown.20101101135104.15788: ** << version history >>
-#@@nocolor-node
-#@+at
-# 
-# 0.1 TNB: first version
-#@-<< version history >>
-
 #@+others
 #@+node:tbrown.20101101135104.15789: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     g.tree_popup_handlers.append(bzr_qcommands)
-
     return True
-
+#@+node:ekr.20140918072425.17927: ** bzr_qcommands
 def bzr_qcommands(c, p, menu):
     """see module docs."""
 
@@ -64,4 +44,6 @@ def bzr_qcommands(c, p, menu):
         action = menu.addAction(qcom)
         action.connect(action, QtCore.SIGNAL("triggered()"), cmd)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

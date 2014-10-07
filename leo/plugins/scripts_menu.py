@@ -16,7 +16,7 @@ __version__ = "1.5"
 #@+others
 #@+node:ekr.20111104210837.9694: ** init
 def init():
-
+    '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: creates menu.
     g.registerHandler("create-optional-menus",createScriptsMenu)
     g.plugin_signon(__name__)

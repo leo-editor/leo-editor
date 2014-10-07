@@ -12,35 +12,41 @@
 #@+node:ekr.20070227091955.2: ** << about the leoBridge module >>
 #@@nocolor
 #@+at
+# A **host** program is a Python program separate from Leo. Host programs may
+# be created by Leo, but at the time they are run host programs must not be
+# part of Leo in any way. So if they are run from Leo, they must be run in a
+# separate process.
 # 
-# A **host** program is a Python program separate from Leo. Host programs may be
-# created by Leo, but at the time they are run host programs are not part of Leo in
-# any way. The leoBridge module gives host programs access to all aspects of Leo,
+# The leoBridge module gives host programs access to all aspects of Leo,
 # including all of Leo's source code, the contents of any .leo file, all
 # configuration settings in .leo files, etc.
 # 
 # Host programs will use the leoBridge module like this::
+# 
 #     import leo.core.leoBridge as leoBridge
 #     bridge = leoBridge.controller(gui='nullGui',verbose=False)
 #     if bridge.isOpen():
 #         g = bridge.globals()
 #         c = bridge.openLeoFile(path)
+#         
 # Notes:
 # 
 # - The leoBridge module imports no modules at the top level.
 # 
 # - leoBridge.controller creates a singleton *bridge controller* that grants
-# access to Leo's objects, including fully initialized g and c objects. In
-# particular, the g.app and g.app.gui vars are fully initialized.
+#   access to Leo's objects, including fully initialized g and c objects. In
+#   particular, the g.app and g.app.gui vars are fully initialized.
 # 
-# - By default, leoBridge.controller creates a null gui so that no Leo windows
-# appear on the screen.
+# - By default, leoBridge.controller creates a null gui so that no Leo
+#   windows appear on the screen.
 # 
-# - As shown above, the host program should gain access to Leo's leoGlobals module
-# using bridge.globals(). The host program should not import leo.core.leoGlobals as leoGlobals directly.
+# - As shown above, the host program should gain access to Leo's leoGlobals
+#   module using bridge.globals(). The host program should not import
+#   leo.core.leoGlobals as leoGlobals directly.
 # 
-# - bridge.openLeoFile(path) returns a completely standard Leo commander. Host
-# programs can use these commanders as described in Leo's scripting chapter.
+# - bridge.openLeoFile(path) returns a completely standard Leo commander.
+#   Host programs can use these commanders as described in Leo's scripting
+#   chapter.
 #@-<< about the leoBridge module >>
 
 gBridgeController = None # The singleton bridge controller.
@@ -49,35 +55,37 @@ gBridgeController = None # The singleton bridge controller.
 
 #@+others
 #@+node:ekr.20070227092442: ** controller
-def controller(gui='nullGui',loadPlugins=True,readSettings=True,silent=False,verbose=False):
-
+def controller(
+    gui='nullGui',
+    loadPlugins=True,
+    readSettings=True,
+    silent=False,
+    tracePlugins=False,
+    verbose=False
+):
     '''Create an singleton instance of a bridge controller.'''
-
     global gBridgeController
-
     if not gBridgeController:
-        gBridgeController = bridgeController(gui,loadPlugins,readSettings,silent,verbose)
-
+        gBridgeController = BridgeController(gui,loadPlugins,readSettings,silent,tracePlugins,verbose)
     return gBridgeController
-#@+node:ekr.20070227092442.2: ** class bridgeController
-class bridgeController:
+#@+node:ekr.20070227092442.2: ** class BridgeController
+class BridgeController:
 
     '''Creates a way for host programs to access Leo.'''
 
     #@+others
-    #@+node:ekr.20070227092442.3: *3* ctor (bridgeController)
-    def __init__ (self,guiName,loadPlugins,readSettings,silent,verbose):
-
+    #@+node:ekr.20070227092442.3: *3* ctor (BridgeController)
+    def __init__ (self,guiName,loadPlugins,readSettings,silent,tracePlugins,verbose):
+        '''Ctor for the BridgeController class.'''
         self.g = None
         self.gui = None
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
         self.silent = silent
+        self.tracePlugins = tracePlugins
         self.verbose = verbose
-
         self.mainLoop = False # True only if a non-null-gui mainloop is active.
-
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* globals
     def globals (self):
@@ -85,12 +93,12 @@ class bridgeController:
         '''Return a fully initialized leoGlobals module.'''
 
         return self.isOpen() and self.g
-    #@+node:ekr.20070227093530: *3* initLeo & helpers (bridgeController)
+    #@+node:ekr.20070227093530: *3* initLeo & helpers (BridgeController)
     def initLeo (self):
-
-        '''Init the Leo app to which this class gives access.
-        This code is based on leo.run().'''
-
+        '''
+        Init the Leo app to which this class gives access.
+        This code is based on leo.run().
+        '''
         trace = False
         if not self.isValidPython(): return
         #@+<< initLeo imports >>
@@ -100,19 +108,20 @@ class bridgeController:
             import leo.core.leoGlobals as leoGlobals
         except ImportError:
             print("Error importing leoGlobals.py")
-
         # Create the application object.
         try:
+            leoGlobals.in_bridge = True
+                # Tell leoApp.createDefaultGui not to create a gui.
+                # This module will create the gui later.
             import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
-
         # NOW we can set g.
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
-
+        g.app.trace_plugins = self.tracePlugins # 2014/09/18
         g.app.silentMode = self.silent # 2011/11/02.
         if trace:
             import sys
@@ -121,19 +130,16 @@ class bridgeController:
         # 2010/09/09: create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
-
         try:
             import leo.core.leoNodes as leoNodes
         except ImportError:
             print("Error importing leoNodes.py")
             import traceback ; traceback.print_exc()
-
         try:
             import leo.core.leoConfig as leoConfig
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
-
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< initLeo imports >>
@@ -142,9 +148,8 @@ class bridgeController:
         g.app.loadManager.computeStandardDirectories()
         if not self.getLeoID(): return
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
-        g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
-
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
@@ -155,12 +160,10 @@ class bridgeController:
             settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
             lm.globalSettingsDict = settings_d
             lm.globalShortcutsDict = shortcuts_d
-
         self.createGui() # Create the gui *before* loading plugins.
         if self.verbose: self.reportDirectories()
         self.adjustSysPath()
-
-        # 2011/11/07: Kill all event handling if plugins not loaded.
+        # Kill all event handling if plugins not loaded.
         if not self.loadPlugins:
             def dummyDoHook(tag,*args,**keys):
                 pass
@@ -186,7 +189,7 @@ class bridgeController:
             path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
             if path not in sys.path:
                 sys.path.append(path)
-    #@+node:ekr.20070227095743: *4* createGui (bridgeController)
+    #@+node:ekr.20070227095743: *4* createGui (BridgeController)
     def createGui (self):
 
         g = self.g
@@ -195,12 +198,12 @@ class bridgeController:
             g.app.gui = g.app.nullGui
             g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
-            log.enabled = True # Allow prints from nullLog.
+            log.enabled = True # Allow prints from NullLog.
             log.logInited = True # Bug fix: 2012/10/17.
         elif self.guiName == 'qt':
-            import leo.plugins.qtGui as qtGui
-            g.app.gui = qtGui.leoQtGui()
-            print('qtGui created')
+            import leo.plugins.qt_gui as qt_gui
+            g.app.gui = qt_gui.LeoQtGui()
+            print('Qt gui created')
         else:
             assert False,'leoBridge.py: unsupported gui: %s' % self.guiName
 
@@ -317,23 +320,17 @@ class bridgeController:
             g.blue('',kind,'directory','',':',theDir)
     #@+node:ekr.20070227093918: *3* isOpen
     def isOpen (self):
-
+        '''Return True if the bridge is open.'''
         g = self.g
-
         return bool(g and g.app and g.app.gui)
-    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (bridgeController)
+    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (BridgeController)
     def openLeoFile (self,fileName):
-
         '''Open a .leo file, or create a new Leo frame if no fileName is given.'''
-
         g = self.g
-
         useLog = False
-
         if self.isOpen():
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
-
             if useLog:
                 g.app.gui.log = log = c.frame.log
                 log.isNull = False
