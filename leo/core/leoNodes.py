@@ -2043,13 +2043,17 @@ class VNodeBase (object):
         return h.startswith(pattern)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
+    body_unicode_warning = False
+
     def bodyString (self):
 
         # This message should never be printed and we want to avoid crashing here!
         if g.isUnicode(self._bodyString):
             return self._bodyString
         else:
-            g.internalError('not unicode:',repr(self._bodyString))
+            if not self.body_unicode_warning:
+                self.body_unicode_warning = True
+                g.internalError('not unicode:',repr(self._bodyString))
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -2105,14 +2109,16 @@ class VNodeBase (object):
 
         return s and len(s) > 0
     #@+node:ekr.20031218072017.1581: *4* v.headString & v.cleanHeadString
+    head_unicode_warning = False
+
     def headString (self):
 
         """Return the headline string."""
-
         # This message should never be printed and we want to avoid crashing here!
         if not g.isUnicode(self._headString):
-            g.internalError('not unicode',repr(self._headString))
-
+            if not self.head_unicode_warning:
+                self.head_unicode_warning = True
+                g.internalError('not unicode',repr(self._headString))
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
 
