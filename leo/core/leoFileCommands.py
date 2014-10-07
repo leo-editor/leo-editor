@@ -528,8 +528,8 @@ if sys.platform != 'cli':
     #@-others
     #@-<< define sax classes >>
 
-class BaseFileCommands:
-    """A base class for the FileCommands subcommander."""
+class FileCommands:
+    """A class creating the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: ** fc.Birth
     #@+node:ekr.20031218072017.3019: *3* fc.ctor
@@ -2444,8 +2444,4 @@ class BaseFileCommands:
 
         # g.trace('c.fixed',c.fixed)
     #@-others
-
-class FileCommands (BaseFileCommands):
-    """A class creating the FileCommands subcommander."""
-    pass
 #@-leo
