@@ -4178,16 +4178,15 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18381: *3* utils...
     #@+node:ekr.20110605121601.18382: *4* dump
     def dump (self,ev,p,tag):
-
+        
         if ev:
             md = ev.mimeData()
-            assert md,'dump: no md'
-            fn,s = self.parseText(md)
-            if fn:
-                g.trace('',tag,'fn',repr(g.shortFileName(fn)),
-                    'len(s)',len(s),p and p.h)
-            else:
-                g.trace('',tag,'no fn! s:',repr(s))
+            s = g.toUnicode(md.text(),'utf-8')
+            g.trace('md.text:',repr(s) if len(s) < 100 else len(s))
+            for url in md.urls() or []:
+                g.trace('     url:',url)
+                g.trace('  url.fn:',url.toLocalFile())
+                g.trace('url.text:',url.toString())
         else:
             g.trace('',tag,'** no event!')
     #@+node:ekr.20110605121601.18383: *4* parseText
