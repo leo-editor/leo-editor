@@ -7491,6 +7491,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         'help-for-command':                 self.helpForCommand,
         'help-for-creating-external-files': self.helpForCreatingExternalFiles,
         'help-for-debugging-commands':      self.helpForDebuggingCommands,
+        'help-for-drag-and-drop':           self.helpForDragAndDrop,
         'help-for-dynamic-abbreviations':   self.helpForDynamicAbbreviations,
         'help-for-find-commands':           self.helpForFindCommands,
         'help-for-minibuffer':              self.helpForMinibuffer,
@@ -7599,9 +7600,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20060226131603.1: *3* helpForAutocompletion
     def helpForAutocompletion (self,event=None):
-
         '''Prints a discussion of autocompletion.'''
-
         #@+<< define s >>
         #@+node:ekr.20110530082209.18252: *4* << define s >> (helpForAutocompletion)
         # @pagewidth 40
@@ -7713,13 +7712,10 @@ class HelpCommandsClass (BaseEditCommandsClass):
         enable-calltips, disable-autocompleter
         and disable-calltips. '''
         #@-<< define s >>
-
         self.c.putHelpFor(s)
     #@+node:ekr.20060205170335: *3* helpForBindings
     def helpForBindings (self,event=None):
-
         '''Prints a discussion of keyboard bindings.'''
-
         #@+<< define s >>
         #@+node:ekr.20110530082209.18253: *4* << define s >> (helpForBindings)
         # @pagewidth 40
@@ -7800,13 +7796,10 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         '''
         #@-<< define s >>
-
         self.c.putHelpFor(s)
     #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
-
         '''Prompts for a command name and prints the help message for that command.'''
-
         k = self.k
         #@+<< define s >>
         #@+node:ekr.20130412180825.10342: *4* << define s >> (help-for-command)
@@ -7935,7 +7928,6 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20131213163822.16472: *3* helpForCreatingExternalFiles
     def helpForCreatingExternalFiles(self,event=None):
         '''Prints a discussion of creating external files.'''
-        
         #@+<< define s >>
         #@+node:ekr.20131213163822.16477: *4* << define s >> (helpForCreatingExternalFiles)
         #@@language rest
@@ -8070,9 +8062,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20070501092655: *3* helpForDebuggingCommands
     def helpForDebuggingCommands (self,event=None):
-
         '''Prints a discussion of of Leo's debugging commands.'''
-
         #@+<< define s >>
         #@+node:ekr.20070501092655.1: *4* << define s >> (helpForDebuggingCommands)
         # @pagewidth 40
@@ -8104,13 +8094,49 @@ class HelpCommandsClass (BaseEditCommandsClass):
         For details, see the node: @settings-->Debugging in leoSettings.leo.
         '''
         #@-<< define s >>
+        self.c.putHelpFor(s)
+    #@+node:ekr.20141008000933.20113: *3* helpForDragAndDrop
+    def helpForDragAndDrop (self,event=None):
+        '''Prints a discussion of of Leo's debugging commands.'''
+        #@+<< define s >>
+        #@+node:ekr.20141008000933.20114: *4* << define s >> (helpForDragAndDrop
+        # @pagewidth 40
+        #@@language rest
 
+        s = '''
+
+        About Drag and Drop
+        ===================
+
+        Nodes
+        -----
+
+        You may drag nodes from within a Leo outline or between Leo outlines,
+        including nodes from separately running copies of Leo.
+
+        To drag, click and hold on a headline and drag it over another headline.
+        Control-drags create clones; regular drags move the node.
+
+
+        Files
+        -----
+
+        You may also drag one or more files from a file folder over a headline.
+
+        For text files, Leo will create @auto, @edit or @file nodes as appropriate.
+
+        Dragging .leo files from a file folder to a Leo outline works like the
+        open-outline command. Control-dragging .leo files copies all nodes of the
+        .leo file to the receiving outline, under a single node called::
+
+            From <name of .leo file>
+
+        '''
+        #@-<< define s >>
         self.c.putHelpFor(s)
     #@+node:ekr.20131029061413.17094: *3* helpForDynamicAbbreviations
     def helpForDynamicAbbreviations (self,event=None):
-
         '''Prints a discussion of abbreviations.'''
-
         #@+<< define s >>
         #@+node:ekr.20131029061413.17095: *4* << define s >> (helpForDynamicAbbreviations)
         #@@language rest
@@ -8152,13 +8178,10 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         '''
         #@-<< define s >>
-
         self.c.putHelpFor(s)
     #@+node:ekr.20060205170335.1: *3* helpForFindCommands
     def helpForFindCommands (self, event=None):
-
         '''Prints a discussion of of Leo's find commands.'''
-
         #@+<< define s >>
         #@+node:ekr.20130411023826.16595: *4* << define s >> (help-for-find-commands)
         #@@language rest
@@ -8216,9 +8239,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20051014170754: *3* helpForMinibuffer
     def helpForMinibuffer (self,event=None):
-
         '''Print a messages telling you how to get started with Leo.'''
-
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c    
         #@+<< define s >>
@@ -8254,9 +8275,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         c.putHelpFor(s)
     #@+node:ekr.20120522024827.9897: *3* helpForRegularExpressions
     def helpForRegularExpressions (self, event=None):
-
         '''Prints a discussion of of Leo's find commands.'''
-
         #@+<< define s >>
         #@+node:ekr.20120522024827.9898: *4* << define s >> (helpForRegularExpressions)
         #@@language rest
@@ -8323,7 +8342,6 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         '''
         #@-<< define s >>
-
         self.c.putHelpFor(s)
     #@+node:ekr.20131213163822.16473: *3* helpForScripting
     def helpForScripting(self,event=None):
@@ -8547,25 +8565,21 @@ class HelpCommandsClass (BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
-
-        '''Prints the value of every setting, except key bindings and commands and open-with tables.
-        The following shows where the active setting came from:
+        '''
+        Prints the value of every setting, except key bindings and commands and
+        open-with tables. The following shows where the active setting came
+        from:
 
         -     leoSettings.leo,
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
-
         '''
-
         self.c.config.printSettings()
     #@+node:ekr.20060602154458: *3* pythonHelp
     def pythonHelp (self,event=None):
-
         '''Prompt for a arg for Python's help function, and put it to the log pane.'''
-
         c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
-
         if state == 0:
             c.minibufferWantsFocus()
             k.setLabelBlue('Python help: ')
