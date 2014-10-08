@@ -366,6 +366,21 @@ new commander.
 
 Disabled a few unit tests when run externally:
 This was due to missing nodes or copies of clones not being cloned.
+.. @+node:ekr.20141007082033.18003: *4* Fixed bug 61: errors inhibited read @auto foo.md.
+@language rest
+
+Fixed bug 61, https://github.com/leo-editor/leo-editor/issues/61
+errors inhibited read @auto foo.md.
+
+Modified dropEvent and its helpers.
+
+Added createLeoFileTree and isLeoFile.
+
+Regular drag of .leo files from a file folder works like the open-outline
+command.
+
+Ctrl-drag of .leo files from a file folder copies all nodes of the .leo
+file to the receiving outline.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

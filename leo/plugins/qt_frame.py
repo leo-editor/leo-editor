@@ -3743,10 +3743,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         QtWidgets.QTreeWidget.__init__(self, parent)
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
-        # g.trace(enable_drag,c)
-        self.setDragEnabled(bool(enable_drag)) # EKR.
+        self.setDragEnabled(bool(enable_drag))
         self.c = c
-
+        self.was_alt_drag = False
+        self.was_control_drag = False
+    
     def __repr__(self):
         return 'LeoQTreeWidget: %s' % id(self)
 
@@ -3798,7 +3799,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         trace = False and not g.unitTesting
         trace_dump = False
         if not ev: return
-        c = self.c ; tree = c.frame.tree
+        mods = int(ev.keyboardModifiers())
+        self.was_alt_drag = (mods & QtCore.Qt.AltModifier) != 0
+        self.was_control_drag = (mods & QtCore.Qt.ControlModifier) != 0
+        c,tree = self.c,self.c.frame.tree
         # Set p to the target of the drop.
         item = self.itemAt(ev.pos())
         if not item: return
@@ -3809,7 +3813,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return
         md = ev.mimeData()
         if not md:
-            g.trace('no mimeData!') ; return
+            g.trace('no mimeData!')
+            return
         formats = set(str(f) for f in md.formats())
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
@@ -3819,33 +3824,30 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return
         if trace and trace_dump: self.dump(ev,p,'drop ')
         if md.hasUrls():
-            self.urlDrop(ev,p)
+            self.urlDrop(md,p)
         else:
-            self.outlineDrop(ev,p)
-    #@+node:ekr.20110605121601.18366: *5* outlineDrop & helpers
-    def outlineDrop (self,ev,p):
+            self.nodeDrop(md,p)
+    #@+node:ekr.20110605121601.18366: *5* nodeDrop & helpers
+    def nodeDrop (self,md,p):
         '''
-        Handle a drop event arising when md.text() exists.
-        This text is assumed to be 
+        Handle a drop event when not md.urls().
+        This will happen when we drop an outline node.
+        We get the copied text from md.text().
         '''
         trace = False and not g.unitTesting
         c = self.c
-        mods = ev.keyboardModifiers()
-        md = ev.mimeData()
         fn,s = self.parseText(md)
         if not s or not fn:
-            if trace: g.trace('no fn or no s')
-            return
-        if fn == self.fileName():
+            if trace: g.trace('no fn or no s',fn,len(s or ''))
+        elif fn == self.fileName():
             if p and p == c.p:
-                if trace: g.trace('same node')
+                if trace: g.trace('drag to same node')
+            elif g.os_path_exists(fn):
+                if trace: g.trace('intra-file drop')
+                self.intraFileDrop(fn,c.p,p)
             else:
-                if trace: g.trace('intra-file drag')
-                cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
-                as_child = (int(mods) & QtCore.Qt.AltModifier) != 0
-                self.intraFileDrop(cloneDrag,fn,c.p,p,as_child)
+                if trace: g.trace('does not exist',fn)
         else:
-            # Clone dragging between files is not allowed.
             if trace: g.trace('inter-file drag')
             self.interFileDrop(fn,p,s)
     #@+node:ekr.20110605121601.18367: *6* interFileDrop
@@ -3860,6 +3862,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
+            # Paste the node after the presently selected node.
         if not pasted:
             if trace: g.trace('not pasted!')
             return
@@ -3894,10 +3897,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.redraw_now(pasted)
         c.recolor()
     #@+node:ekr.20110605121601.18368: *6* intraFileDrop
-    def intraFileDrop (self,cloneDrag,fn,p1,p2,as_child=False):
-
+    def intraFileDrop (self,fn,p1,p2):
         '''Move p1 after (or as the first child of) p2.'''
-
+        as_child = self.was_alt_drag
+        cloneDrag = self.was_control_drag
         c = self.c ; u = c.undoer
         c.selectPosition(p1)
         if as_child or p2.hasChildren() and p2.isExpanded():
@@ -3953,10 +3956,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = s[i+1:]
         return fn,s
     #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
-    def urlDrop (self,ev,p):
-
+    def urlDrop (self,md,p):
+        '''Handle a drop when md.urls().'''
         c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
-        md = ev.mimeData()
         urls = md.urls()
         if not urls:
             return
@@ -3977,8 +3979,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18370: *6* doFileUrl & helper
     def doFileUrl (self,p,url):
         '''Read the file given by the url and put it in the outline.'''
-        # 2014/06/06: Work around a possible bug in QUrl class.  str(aUrl) fails here.
-        # fn = str(url.path())
+        # 2014/06/06: Work around a possible bug in QUrl.
+            # fn = str(url.path()) # Fails.
         e = sys.getfilesystemencoding()
         fn = g.toUnicode(url.path(),encoding=e)
         if sys.platform.lower().startswith('win'):
@@ -4008,15 +4010,18 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         If fn is a .leo file, insert a node containing its top-level nodes as children.
         '''
         c = self.c
-        u,undoType = c.undoer,'Drag File'
-        undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
-        if p.hasChildren() and p.isExpanded():
-            p2 = p.insertAsNthChild(0)
+        if self.isLeoFile(fn,s) and not self.was_control_drag:
+            g.openWithFileName(fn,old_c=c)
         else:
-            p2 = p.insertAfter()
-        self.createAtFileNode(fn,p2,s)
-        u.afterInsertNode(p2,undoType,undoData)
-        c.selectPosition(p2)
+            u,undoType = c.undoer,'Drag File'
+            undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+            if p.hasChildren() and p.isExpanded():
+                p2 = p.insertAsNthChild(0)
+            else:
+                p2 = p.insertAfter()
+            self.createAtFileNode(fn,p2,s)
+            u.afterInsertNode(p2,undoType,undoData)
+            c.selectPosition(p2)
     #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers
     def createAtFileNode (self,fn,p,s):
         '''
@@ -4032,7 +4037,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         c.init_error_dialogs()
         if self.isLeoFile(fn,s):
-            self.createLeoFileTree(fn,p,s)
+            self.createLeoFileTree(fn,p)
         elif self.isThinFile(fn,s):
             self.createAtFileTree(fn,p,s)
         elif self.isAutoFile(fn):
@@ -4092,13 +4097,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20141007223054.18004: *9* createLeoFileTree
-    def createLeoFileTree(self,fn,p,s):
-        '''
-        Create a node whose children are the top-level nodes of the .leo file
-        whose file name is fn and whose contents are s.
-        '''
+    def createLeoFileTree(self,fn,p):
+        '''Copy all nodes from fn, a .leo file, to the children of p.'''
         c = self.c
-        g.trace(len(s),fn)
         p.h = 'From %s' % g.shortFileName(fn)
         c.selectPosition(p)
         # Create a dummy first child of p.
