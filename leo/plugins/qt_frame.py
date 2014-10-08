@@ -3758,7 +3758,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     #@+others
     #@+node:ekr.20111022222228.16980: *3* Event handlers (LeoQTreeWidget)
-    #@+node:ekr.20110605121601.18364: *4* dragEnterEvent
+    #@+node:ekr.20110605121601.18364: *4* dragEnterEvent & helper
     def dragEnterEvent(self,ev):
 
         '''Export c.p's tree as a Leo mime-data.'''
@@ -3782,6 +3782,16 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if trace: self.dump(ev,c.p,'enter')
         # Always accept the drag, even if we are already dragging.
         ev.accept()
+    #@+node:ekr.20110605121601.18384: *5* setText
+    def setText (self,md):
+
+        c = self.c
+        fn = self.fileName()
+        s = c.fileCommands.putLeoOutline()
+        if not g.isPython3:
+            s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+            fn = g.toEncodedString(fn,encoding='utf-8', reportErrors=True)
+        md.setText('%s,%s' % (fn,s))
     #@+node:ekr.20110605121601.18365: *4* dropEvent & helpers
     def dropEvent(self,ev):
         '''Handle a drop event in the QTreeWidget.'''
@@ -3841,7 +3851,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18367: *6* interFileDrop
     def interFileDrop (self,fn,p,s):
         '''Paste the mime data after (or as the first child of) p.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         u = c.undoer
         undoType = 'Drag Outline'
@@ -3928,6 +3938,20 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c.redraw_now(p1)
         elif not g.unitTesting:
             g.trace('** move failed')
+    #@+node:ekr.20110605121601.18383: *6* parseText
+    def parseText (self,md):
+        '''Parse md.text() into (fn,s)'''
+        fn = ''
+        # Fix bug 1046195: character encoding changes when dragging outline between leo files
+        s = g.toUnicode(md.text(),'utf-8')
+        if s:
+            i = s.find(',')
+            if i == -1:
+                pass
+            else:
+                fn = s[:i]
+                s = s[i+1:]
+        return fn,s
     #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
     def urlDrop (self,ev,p):
 
@@ -3952,7 +3976,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c.redraw_now()
     #@+node:ekr.20110605121601.18370: *6* doFileUrl & helper
     def doFileUrl (self,p,url):
-
+        '''Read the file given by the url and put it in the outline.'''
         # 2014/06/06: Work around a possible bug in QUrl class.  str(aUrl) fails here.
         # fn = str(url.path())
         e = sys.getfilesystemencoding()
@@ -3961,6 +3985,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             if fn.startswith('/'):
                 fn = fn[1:]
         if os.path.isdir(fn):
+            # Just insert an @path directory.
             self.doPathUrlHelper(fn,p)
             return True
         if g.os_path_exists(fn):
@@ -3978,9 +4003,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         return False
     #@+node:ekr.20110605121601.18371: *7* doFileUrlHelper & helper
     def doFileUrlHelper (self,fn,p,s):
-
-        '''Insert s in an @file, @auto or @edit node after p.'''
-
+        '''
+        Insert s in an @file, @auto or @edit node after p.
+        If fn is a .leo file, insert a node containing its top-level nodes as children.
+        '''
         c = self.c
         u,undoType = c.undoer,'Drag File'
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
@@ -4173,7 +4199,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.afterInsertNode(p2,undoType,undoData)
         return True
     #@+node:ekr.20110605121601.18381: *3* utils (LeoQTreeWidget)
-    #@+node:ekr.20110605121601.18382: *4* dump
+    #@+node:ekr.20110605121601.18382: *4* dump (LeoQTreeWidget)
     def dump (self,ev,p,tag):
         
         if ev:
@@ -4186,36 +4212,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 g.trace('url.text:',url.toString())
         else:
             g.trace('',tag,'** no event!')
-    #@+node:ekr.20110605121601.18383: *4* parseText
-    def parseText (self,md):
-
-        '''Parse md.text() into (fn,s)'''
-
-        fn = ''
-        # Fix bug 1046195: character encoding changes when dragging outline between leo files
-        s = g.toUnicode(md.text(),'utf-8')
-        if s:
-            i = s.find(',')
-            if i == -1:
-                pass
-            else:
-                fn = s[:i]
-                s = s[i+1:]
-        return fn,s
-    #@+node:ekr.20110605121601.18384: *4* setText & fileName
+    #@+node:ekr.20141007223054.18002: *4* fileName (LeoQTreeWidget)
     def fileName (self):
-
+        '''Return the commander's filename.'''
         return self.c.fileName() or '<unsaved file>'
-
-    def setText (self,md):
-
-        c = self.c
-        fn = self.fileName()
-        s = c.fileCommands.putLeoOutline()
-        if not g.isPython3:
-            s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
-            fn = g.toEncodedString(fn,encoding='utf-8', reportErrors=True)
-        md.setText('%s,%s' % (fn,s))
     #@-others
 #@+node:ekr.20110605121601.18385: ** class LeoQtSpellTab
 class LeoQtSpellTab:
