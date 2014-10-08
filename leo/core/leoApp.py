@@ -15,7 +15,6 @@ import os
 import optparse
 import string
 import sys
-import time
 import traceback
 import zipfile
 import platform
@@ -2742,15 +2741,6 @@ class LoadManager:
 
         # lm = self
         try:
-            mtimeSecs = int(os.path.getmtime(fn))
-            g.trace('mtimeSecs={0}'.format(mtimeSecs))
-            while True:
-                curTimeSecs = int(time.time())
-                g.trace('curTimeSecs={0}'.format(curTimeSecs))
-                if mtimeSecs == curTimeSecs:
-                    time.sleep(1)
-                else:
-                    break
             theFile = open(fn,'rb')
             return theFile
         except IOError:
