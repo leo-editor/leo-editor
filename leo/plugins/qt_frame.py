@@ -3851,7 +3851,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18367: *6* interFileDrop
     def interFileDrop (self,fn,p,s):
         '''Paste the mime data after (or as the first child of) p.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         u = c.undoer
         undoType = 'Drag Outline'
@@ -4019,8 +4019,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.selectPosition(p2)
     #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers
     def createAtFileNode (self,fn,p,s):
-
-        '''Set p's headline, body text and possibly descendants
+        '''
+        Set p's headline, body text and possibly descendants
         based on the file's name fn and contents s.
 
         If the file is an thin file, create an @file tree.
@@ -4029,10 +4029,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
         Give a warning if a node with the same headline already exists.
         '''
-
         c = self.c
         c.init_error_dialogs()
-        if self.isThinFile(fn,s):
+        if self.isLeoFile(fn,s):
+            self.createLeoFileTree(fn,p,s)
+        elif self.isThinFile(fn,s):
             self.createAtFileTree(fn,p,s)
         elif self.isAutoFile(fn):
             self.createAtAutoTree(fn,p)
@@ -4090,6 +4091,32 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             g.error('Error reading',fn)
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
+    #@+node:ekr.20141007223054.18004: *9* createLeoFileTree
+    def createLeoFileTree(self,fn,p,s):
+        '''
+        Create a node whose children are the top-level nodes of the .leo file
+        whose file name is fn and whose contents are s.
+        '''
+        c = self.c
+        g.trace(len(s),fn)
+        p.h = 'From %s' % g.shortFileName(fn)
+        c.selectPosition(p)
+        # Create a dummy first child of p.
+        dummy_p = p.insertAsNthChild(0)
+        c.selectPosition(dummy_p)
+        c2 = g.openWithFileName(fn,old_c=c,gui=g.app.nullGui)
+        for p2 in c2.rootPosition().self_and_siblings():
+            c2.selectPosition(p2)
+            s = c2.fileCommands.putLeoOutline()
+            # Paste the outline after the selected node.
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(
+                s,reassignIndices=True)
+        dummy_p.doDelete()
+        c.selectPosition(p)
+        p.v.contract()
+        c2.close()
+        g.app.forgetOpenFile(c2.fileName())
+            # Necessary.
     #@+node:ekr.20120309075544.9882: *9* createUrlForBinaryFile
     def createUrlForBinaryFile(self,fn,p):
 
@@ -4130,6 +4157,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
         # g.trace('binary',ext,val)
         return val
+    #@+node:ekr.20141007223054.18003: *9* isLeoFile
+    def isLeoFile(self,fn,s):
+        '''Return true if fn (a file name) represents an entire .leo file.'''
+        return fn.endswith('.leo') and s.startswith(g.app.prolog_prefix_string)
     #@+node:ekr.20110605121601.18376: *9* isThinFile
     def isThinFile (self,fn,s):
 
