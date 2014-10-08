@@ -3746,7 +3746,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         # g.trace(enable_drag,c)
         self.setDragEnabled(bool(enable_drag)) # EKR.
         self.c = c
-        self.trace = False
 
     def __repr__(self):
         return 'LeoQTreeWidget: %s' % id(self)
@@ -3775,37 +3774,32 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return
         c.endEditing()
         # if g.app.dragging:
-            # if trace or self.trace: g.trace('** already dragging')
+            # if trace: g.trace('** already dragging')
         # g.app.dragging = True
         g.app.drag_source = c, c.p
-        # if self.trace: g.trace('set g.app.dragging')
+        # if trace: g.trace('set g.app.dragging')
         self.setText(md)
-        if self.trace: self.dump(ev,c.p,'enter')
+        if trace: self.dump(ev,c.p,'enter')
         # Always accept the drag, even if we are already dragging.
         ev.accept()
     #@+node:ekr.20110605121601.18365: *4* dropEvent & helpers
     def dropEvent(self,ev):
-
+        '''Handle a drop event in the QTreeWidget.'''
         trace = False and not g.unitTesting
+        trace_dump = False
         if not ev: return
         c = self.c ; tree = c.frame.tree
-        # Always clear the dragging flag, no matter what happens.
-        # g.app.dragging = False
-        # if self.trace: g.trace('clear g.app.dragging')
         # Set p to the target of the drop.
         item = self.itemAt(ev.pos())
         if not item: return
         itemHash = tree.itemHash(item)
         p = tree.item2positionDict.get(itemHash)
         if not p:
-            if trace or self.trace: g.trace('no p!')
+            if trace: g.trace('no p!')
             return
         md = ev.mimeData()
-        #print "drop md",mdl
         if not md:
             g.trace('no mimeData!') ; return
-        # g.trace("t",str(md.text()))
-        # g.trace("h", str(md.html()))
         formats = set(str(f) for f in md.formats())
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
@@ -3813,37 +3807,40 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if hookres:
             # True => plugins handled the drop already
             return
-        if trace or self.trace: self.dump(ev,p,'drop ')
+        if trace and trace_dump: self.dump(ev,p,'drop ')
         if md.hasUrls():
             self.urlDrop(ev,p)
         else:
             self.outlineDrop(ev,p)
     #@+node:ekr.20110605121601.18366: *5* outlineDrop & helpers
     def outlineDrop (self,ev,p):
-
+        '''
+        Handle a drop event arising when md.text() exists.
+        This text is assumed to be 
+        '''
         trace = False and not g.unitTesting
         c = self.c
         mods = ev.keyboardModifiers()
         md = ev.mimeData()
         fn,s = self.parseText(md)
         if not s or not fn:
-            if trace or self.trace: g.trace('no fn or no s')
+            if trace: g.trace('no fn or no s')
             return
         if fn == self.fileName():
             if p and p == c.p:
-                if trace or self.trace: g.trace('same node')
+                if trace: g.trace('same node')
             else:
+                if trace: g.trace('intra-file drag')
                 cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
                 as_child = (int(mods) & QtCore.Qt.AltModifier) != 0
                 self.intraFileDrop(cloneDrag,fn,c.p,p,as_child)
         else:
             # Clone dragging between files is not allowed.
+            if trace: g.trace('inter-file drag')
             self.interFileDrop(fn,p,s)
     #@+node:ekr.20110605121601.18367: *6* interFileDrop
     def interFileDrop (self,fn,p,s):
-
         '''Paste the mime data after (or as the first child of) p.'''
-
         trace = False and not g.unitTesting
         c = self.c
         u = c.undoer
@@ -4175,7 +4172,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
         u.afterInsertNode(p2,undoType,undoData)
         return True
-    #@+node:ekr.20110605121601.18381: *3* utils...
+    #@+node:ekr.20110605121601.18381: *3* utils (LeoQTreeWidget)
     #@+node:ekr.20110605121601.18382: *4* dump
     def dump (self,ev,p,tag):
         
