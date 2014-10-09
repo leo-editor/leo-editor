@@ -5355,10 +5355,9 @@ class Commands (object):
         #@+node:ekr.20040711135244.9: *8* put & can_strip
         def put (self,s,strip=True):
             '''Put s to self.array. Strip previous whitespace if strip is True.'''
-            trace = False and not g.unitTesting
+            # g.trace(bool(self.can_strip()),repr(str(s)),repr(str(self.array and self.array[-1])))
             if self.can_strip():
                 self.array[-1] = self.array[-1].rstrip()
-            if trace: g.trace(int(strip),repr(str(s)))
             self.array.append(s)
             
         def can_strip(self):
@@ -5436,25 +5435,21 @@ class Commands (object):
         def doMultiLine (self):
 
             # Ensure a blank before comments not preceded entirely by whitespace.
-
             if self.val.startswith('#') and self.array:
                 prev = self.array[-1]
                 if prev and prev[-1] != ' ':
                     self.put(' ') 
-
             # These may span lines, so duplicate the end-of-line logic.
             lines = g.splitLines(self.val)
             for line in lines:
                 self.array.append(line)
                 if line and line[-1] == '\n':
                     self.putArray()
-
             # Add a blank after the string if there is something in the last line.
-            if self.array:
-                line = self.array[-1]
-                if line.strip():
-                    self.put(' ')
-
+            # if self.array:
+                # line = self.array[-1]
+                # if line.strip():
+                    # self.put(' ')
             # Suppress start-of-line logic.
             self.line = self.erow
         #@+node:ekr.20041021101911.5: *9* doName
