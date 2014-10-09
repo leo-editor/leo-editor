@@ -850,7 +850,8 @@ class LeoQtTree(leoFrame.LeoTree):
         width = sum([i.width() for i in images])
         height = max([i.height() for i in images])
         pix = QtGui.QImage(width,height,QtGui.QImage.Format_ARGB32_Premultiplied)
-        pix.fill(QtGui.QColor(0,0,0,0))  # transparent fill, rgbA
+        pix.fill(QtGui.QColor(0,0,0,0).rgba())  # transparent fill, rgbA
+        # .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
         if not painter.begin(pix):
             print("Failed to init. painter for icon")
