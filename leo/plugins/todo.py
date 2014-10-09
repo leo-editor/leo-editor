@@ -873,12 +873,6 @@ class todoController:
             toggle.setCheckState(QtConst.Checked)
             self.setat(v, field, val.toPyDate())
         
-        if (field == 'nextworkdate' and 
-            (not self.getat(v, 'duedate') or
-             str(self.getat(v, 'duedate')) < str(self.getat(v, 'nextworkdate'))
-             )):
-            self.setat(v, 'duedate', val.toPyDate())
-
         self.updateUI()  # if change was made to date with offset selector
         self.loadIcons(p)
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
@@ -1133,6 +1127,17 @@ class todoController:
             return  # wrong number
 
         v = self.c.currentPosition().v
+
+        # check work date < due date and do stylesheet re-evaluation stuff
+        nwd = self.getat(v, 'nextworkdate')
+        due = self.getat(v, 'duedate')
+        w = self.ui.UI.frmDates
+        if nwd and due and str(nwd) > str(due):
+            w.setProperty('style_class', 'tododate_error')
+        else:
+            w.setProperty('style_class', '')
+        w.setStyleSheet("/* */")
+
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
         
