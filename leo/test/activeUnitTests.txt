@@ -5121,7 +5121,7 @@ test2 = p.firstChild().next()
 
 c.prettyPrintPythonCode(p=test2,dump=False)
 
-assert(test2.b==test1.b)
+assert test2.b==test1.b,'\n%r\n%r' % (test1.b,test2.b)
 #@+node:ekr.20041019124050.1: *5* Original
 """
 line 1
@@ -11760,9 +11760,10 @@ else:
 fn = '<file name>'
 p2 = p.firstChild()
 tree = c.frame.tree
+w = tree.treeWidget
 if hasattr(tree,'treeWidget'):
-    for cloneDrag in (True,False):
-        tree.treeWidget.intraFileDrop(cloneDrag,fn,p,p2)
+    for w.was_control_drag in (True,False):
+        tree.treeWidget.intraFileDrop(fn,p,p2)
         assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20111123214629.3941: *4* @test unbound Alt-9 key is completely ignored

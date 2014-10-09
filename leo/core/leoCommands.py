@@ -5243,7 +5243,7 @@ class Commands (object):
         #@-others
     #@+node:ekr.20040711135244.5: *7* class PythonPrettyPrinter
     class PythonPrettyPrinter:
-
+        '''A class that implements *limited* pep-8 cleaning.'''
         #@+others
         #@+node:ekr.20040711135244.6: *8* __init__ (PythonPrettyPrinter)
         def __init__ (self,c):
@@ -5268,7 +5268,7 @@ class Commands (object):
             self.squareBracketLevel = 0
             self.srow = self.scol = 0 # The starting row/col of the token.
             self.startline = True # True: the token starts a line.
-            self.tracing = False
+            self.trailing_ws = '' # The whitespace following *this* token.
             #@+<< define dispatch dict >>
             #@+node:ekr.20041021100850: *9* << define dispatch dict >>
             self.dispatchDict = {
@@ -5329,63 +5329,65 @@ class Commands (object):
                 u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
         #@+node:ekr.20040711135244.8: *8* get
         def get (self):
-
-            if self.lastName != 'newline' and self.lines:
-                # Strip the trailing whitespace from the last line.
-                self.lines[-1] = self.lines[-1].rstrip()
-
+            '''Return the result of the beautify command.'''
             return self.lines
         #@+node:ekr.20040711135244.4: *8* prettyPrintNode
-        def prettyPrintNode(self,p,dump):
-
-            # c = self.c
-            h = p.h
-            s = p.b
-            if not s: return
-
-            readlines = g.ReadLinesClass(s).next
-
+        def prettyPrintNode(self,p,dump=False):
+            '''Pretty print a single node.'''
+            if not p.b: return
+            readlines = g.ReadLinesClass(p.b).next
             try:
                 self.clear()
                 for token5tuple in tokenize.generate_tokens(readlines):
                     self.putToken(token5tuple)
                 lines = self.get()
-
             except tokenize.TokenError:
-                g.warning("error pretty-printing",h,"not changed.")
+                g.warning("error pretty-printing",p.h,"not changed.")
                 return
-
+            except AssertionError:
+                g.warning("internal error pretty-printing",p.h,"not changed.")
+                g.es_exception()
+                return
             if dump:
                 self.dumpLines(p,lines)
             else:
                 self.replaceBody(p,lines)
-        #@+node:ekr.20040711135244.9: *8* put
+        #@+node:ekr.20040711135244.9: *8* put & can_strip
         def put (self,s,strip=True):
-
-            """Put s to self.array, and strip trailing whitespace if strip is True."""
-
-            if self.array and strip:
-                prev = self.array[-1]
-                if len(self.array) == 1:
-                    if prev.rstrip():
-                        # Stripping trailing whitespace doesn't strip leading whitespace.
-                        self.array[-1] = prev.rstrip()
-                else:
-                    # The previous entry isn't leading whitespace, so we can strip whitespace.
-                    self.array[-1] = prev.rstrip()
-
+            '''Put s to self.array. Strip previous whitespace if strip is True.'''
+            trace = False and not g.unitTesting
+            if self.can_strip():
+                self.array[-1] = self.array[-1].rstrip()
+            if trace: g.trace(int(strip),repr(str(s)))
             self.array.append(s)
+            
+        def can_strip(self):
+            '''
+            Return True if the previous token contains safely-strippable trailing
+            whitespace.
+
+            Do not change this method without *careful* thought.
+            '''
+            prev = self.array and self.array[-1]
+            return prev and prev.rstrip() and prev.rstrip() != prev
         #@+node:ekr.20041021104237: *8* putArray
         def putArray (self):
-
-            """Add the next text by joining all the strings is self.array"""
-
-            self.lines.append(''.join(self.array))
+            '''Add the next text by joining all the strings is self.array'''
+            s = ''.join(self.array)
+            if s:
+                # Check that leading whitespace has been preserved.
+                # Leading whitespace doesn't match for blank lines.
+                ws = self.leading_ws
+                if ws and s.strip():
+                    assert s.startswith(ws),'\n%s\n%s' % (
+                        repr(str(ws)),repr(str(s)))
+                self.lines.append(s)
             self.array = []
             self.lineParenLevel = 0
         #@+node:ekr.20040711135244.10: *8* putNormalToken & allies
         def putNormalToken (self,token5tuple):
-
+            '''Put the next token.'''
+            trace = False and not g.unitTesting
             t1,t2,t3,t4,t5 = token5tuple
             self.name = token.tok_name[t1].lower() # The token type
             self.val = t2  # the token string
@@ -5394,14 +5396,18 @@ class Commands (object):
             self.s = t5 # The line containing the token.
             self.startLine = self.line != self.srow
             self.line = self.srow
-
+            # Set self.tailing_ws for all tokens.
+            i = g.skip_ws(self.s,self.ecol)
+            self.trailing_ws = ' ' if self.s[self.ecol:i] else ''
             if self.startLine:
+                if trace: g.trace('\n\n%s\n' % repr(str(self.s)))
                 self.doStartLine()
-
             f = self.dispatchDict.get(self.name,self.oops)
-            self.trace()
+            if trace: g.trace("%10s: trail_ws: %3s %s" % (
+                self.name,repr(self.trailing_ws),repr(g.toEncodedString(self.val)[:60])))
             f()
             self.lastName = self.name
+            
         #@+node:ekr.20041021102938: *9* doEndMarker
         def doEndMarker (self):
 
@@ -5455,21 +5461,40 @@ class Commands (object):
         def doName(self):
 
             # Ensure whitespace or start-of-line precedes the name.
-            if self.array:
-                last = self.array[-1]
-                ch = last[-1]
-                outer = self.parenLevel == 0 and self.squareBracketLevel == 0
-                chars = '@ \t{([.'
-                if not outer: chars += ',=<>*-+&|/'
-                if ch not in chars:
-                    self.array.append(' ')
-
-            self.array.append("%s " % self.val)
-
-            if self.prevName == "def": # A personal idiosyncracy.
-                self.array.append(' ') # Retain the blank before '('.
-
-            self.prevName = self.val
+            # if self.array:
+                # last = self.array[-1]
+                # ch = last[-1]
+                # outer = self.parenLevel == 0 and self.squareBracketLevel == 0
+                # chars = '@ \t{([.'
+                # if not outer: chars += ',=<>*-+&|/'
+                # if ch not in chars:
+                    # g.trace('append space before',repr(str(last)))
+                    # self.array.append(' ')
+            val = self.val
+            if val in ('if','else','and','or','not'):
+                # self.put fails badly.
+                    # self.put(' %s ' % val,strip=True)
+                # 'if' and 'else' be part of a ternary operator.
+                # Make *sure* we never add an extra space.
+                if self.array and self.array[-1].endswith(' '):
+                    self.array.append('%s ' % val)
+                elif self.array:
+                    self.array.append(' %s ' % val)
+                else:
+                    self.array.append('%s ' % val)
+            # elif val == 'else':
+                # # Ensure leading space only.
+                # if self.array and self.array[-1].endswith(' '):
+                    # self.array.append('%s' % val)
+                # elif self.array:
+                    # self.array.append(' %s' % val)
+                # else:
+                    # self.array.append('%s' % val)
+            else:
+                s = '%s%s' % (val,self.trailing_ws)
+                # g.trace(repr(str(s)))
+                self.array.append(s)
+            self.prevName = val
         #@+node:ekr.20041021101911.3: *9* doNewline
         def doNewline (self):
 
@@ -5477,7 +5502,6 @@ class Commands (object):
             # This never removes trailing whitespace from multi-line tokens.
             if self.array:
                 self.array[-1] = self.array[-1].rstrip()
-
             self.array.append('\n')
             self.putArray()
         #@+node:ekr.20041021101911.6: *9* doNumber
@@ -5489,67 +5513,91 @@ class Commands (object):
 
             val = self.val
             outer = self.lineParenLevel <= 0 or (self.parenLevel == 0 and self.squareBracketLevel == 0)
-            # New in Python 2.4: '@' is an operator, not an error token.
-            if self.val == '@':
-                self.array.append(self.val)
-                # Preserve whitespace after @.
-                i = g.skip_ws(self.s,self.scol+1)
-                ws = self.s[self.scol+1:i]
-                if ws: self.array.append(ws)
-            elif val == '(':
-                # Nothing added; strip leading blank before function calls but not before Python keywords.
-                strip = self.lastName=='name' and not keyword.iskeyword(self.prevName)
-                self.put('(',strip=strip)
-                self.parenLevel += 1 ; self.lineParenLevel += 1
-            elif val in ('=','==','+=','-=','!=','<=','>=','<','>','<>','*','**','+','&','|','/','//'):
-                # Add leading and trailing blank in outer mode.
-                s = ' %s ' if outer else '%s'
-                self.put(s % val)
-            elif val in ('^','~','{','['):
-                # Add leading blank in outer mode.
-                s = ' %s' if outer else '%s'
-                self.put(s % val)
-                if val == '[': self.squareBracketLevel += 1
-            elif val in (',',':','}',']',')'):
-                # Add trailing blank in outer mode.
-                s = '%s ' if outer else '%s'
-                self.put(s % val)
-                if val == ']': self.squareBracketLevel -= 1
+            ws = self.trailing_ws
+            if val in '([{':
+                # From pep 8: Avoid extraneous whitespace immediately inside
+                # parentheses, brackets or braces.
+                self.put(val,strip=self.lastName=='name') # Strip blank before names.
+                if val == '(':
+                    self.parenLevel += 1
+                    self.lineParenLevel += 1
+                elif val == '[':
+                    self.squareBracketLevel += 1
+            elif val in '}])':
+                # From pep 8: Avoid extraneous whitespace immediately inside
+                # parentheses, brackets or braces.
+                self.put(val+ws,strip=True)
                 if val == ')':
-                    self.parenLevel -= 1 ; self.lineParenLevel -= 1
-            # ----- no difference between outer and inner modes ---
-            elif val in (';','%'):
+                    self.parenLevel -= 1
+                    self.lineParenLevel -= 1
+                elif val == ']':
+                    self.squareBracketLevel -= 1
+            elif val == '=':
+                # From pep 8: Don't use spaces around the = sign when used to indicate
+                # a keyword argument or a default parameter value.
+                if outer:
+                    # This is only an approximation.
+                    self.put(' %s ' % val)
+                else:
+                    self.put(val)
+            elif val in ('==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>','<>'):
+                # From pep 8: always surround these binary operators with a single space on either side.
+                self.put(' %s ' % val)
+            elif val in '+-':
+                # Special case for possible unary operator.
+                if ws:
+                    self.put(' %s ' % val,strip=True)
+                else:
+                    self.put(val,strip=False)
+            elif val in ('^','~','*','**','&','|','/','//'):
+                # From pep 8: If operators with different priorities are used,
+                # consider adding whitespace around the operators with the lowest priority(ies).
+                # g.trace(repr(str(val)),repr(str(ws)))
+                if val in ('*','**'):
+                    # Highest priority.
+                    self.put(val,strip=True)
+                else:
+                    # Lower priority:
+                    if 1:
+                        self.put(' %s ' % val,strip=True)
+                    elif 1:
+                        # Treat all operators the same.  Boo hoo.
+                        self.put(val,strip=True)
+                    else:
+                        # Alas, this does not play well with names.
+                        self.put(val+ws,strip=False)
+            elif val in ',;':
+                # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
+                self.put(val+ws,strip=True)
+            elif val == ':':
+                # A very hard case.
+                if self.array[-1] not in ('else ',':',': '):
+                    # g.trace(self.can_strip(),repr(str(self.s)))
+                    # g.trace(repr(str(self.array[-1])))
+                    # We can leave the whitespace.
+                    self.put(val+ws,strip=False)
+                else:
+                    self.put(val,strip=True)
+            elif val in ('%'):
                 # Add leading and trailing blank.
                 self.put(' %s ' % val)
             elif val == '>>':
-                # Add leading blank.
+                # Special Leo case: add leading blank.
                 self.put(' %s' % val)
             elif val == '<<':
-                # Add trailing blank.
+                # Special Leo case: add trailing blank.
                 self.put('%s ' % val)
-            elif val in ('-'):
-                # Could be binary or unary.  Or could be a hyphen in a section name.
-                # Add preceding blank only for non-id's.
-                if outer:
-                    if self.array:
-                        prev = self.array[-1].rstrip()
-                        if prev and not g.isWordChar(prev[-1]):
-                            self.put(' %s' % val)
-                        else: self.put(val)
-                    else: self.put(val) # Try to leave whitespace unchanged.
-                else:
-                    self.put(val)
             else:
                 self.put(val)
         #@+node:ekr.20041021112219: *9* doStartLine
         def doStartLine (self):
-
+            '''Put the leading whitespace at the start of a line.'''
             before = self.s[0:self.scol]
             i = g.skip_ws(before,0)
-            self.ws = self.s[0:i]
-
-            if self.ws:
-                self.array.append(self.ws)
+            self.leading_ws = self.s[0:i] or ''
+            if self.leading_ws:
+                self.array.append(self.leading_ws)
+            # g.trace(repr(str(self.leading_ws)))
         #@+node:ekr.20041021101911.1: *9* oops
         def oops(self):
 
