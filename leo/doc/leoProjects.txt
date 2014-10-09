@@ -381,6 +381,8 @@ command.
 
 Ctrl-drag of .leo files from a file folder copies all nodes of the .leo
 file to the receiving outline.
+
+Added help-for-drag-and-drop command.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
