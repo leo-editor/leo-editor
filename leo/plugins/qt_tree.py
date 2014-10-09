@@ -849,19 +849,19 @@ class LeoQtTree(leoFrame.LeoTree):
             return None
         width = sum([i.width() for i in images])
         height = max([i.height() for i in images])
-        pix = QtGui.QPixmap(width,height)
+        pix = QtGui.QImage(width,height,QtGui.QImage.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0,0,0,0))  # transparent fill, rgbA
         painter = QtGui.QPainter()
         if not painter.begin(pix):
             print("Failed to init. painter for icon")
-            return None
-
+            # don't return, the code still makes an icon for the cache
+            # which stops this being called again and again
         x = 0
         for i in images:
             painter.drawPixmap(x,(height-i.height())//2,i)
             x += i.width()
         painter.end()
-        icon = QtGui.QIcon(pix)
+        icon = QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
         g.app.gui.iconimages[hash] = icon
         if trace: g.trace('new %s' % (icon))
         return icon
