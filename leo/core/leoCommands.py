@@ -29,7 +29,7 @@ import leo.core.leoNodes as leoNodes
 
 import imp
 import itertools
-import keyword
+# import keyword # was used by pretty printer.
 import os
 import re
 import subprocess
@@ -5258,12 +5258,10 @@ class Commands (object):
             self.erow = self.ecol = 0 # The ending row/col of the token.
             self.lastName = None # The name of the previous token type.
             self.line = 0 # Same as self.srow
-            self.lineParenLevel = 0
             self.lines = [] # List of lines.
             self.name = None
             self.p = c.p
             self.parenLevel = 0
-            self.prevName = None
             self.s = None # The string containing the line.
             self.squareBracketLevel = 0
             self.srow = self.scol = 0 # The starting row/col of the token.
@@ -5355,8 +5353,8 @@ class Commands (object):
         #@+node:ekr.20040711135244.9: *8* put & can_strip
         def put (self,s,strip=True):
             '''Put s to self.array. Strip previous whitespace if strip is True.'''
-            # g.trace(bool(self.can_strip()),repr(str(s)),repr(str(self.array and self.array[-1])))
-            if self.can_strip():
+            # g.trace('%s %r %r' % (int(strip),str(self.array and self.array[-1]),str(s)))
+            if strip and self.can_strip():
                 self.array[-1] = self.array[-1].rstrip()
             self.array.append(s)
             
@@ -5367,9 +5365,11 @@ class Commands (object):
 
             Do not change this method without *careful* thought.
             '''
+            # This code must *never* changes leading whitespace on the line.
+            # The following is save because it returns True only if rstrip() is True.
             prev = self.array and self.array[-1]
             return prev and prev.rstrip() and prev.rstrip() != prev
-        #@+node:ekr.20041021104237: *8* putArray
+        #@+node:ekr.20041021104237: *8* putArray (crucial assert)
         def putArray (self):
             '''Add the next text by joining all the strings is self.array'''
             s = ''.join(self.array)
@@ -5378,11 +5378,11 @@ class Commands (object):
                 # Leading whitespace doesn't match for blank lines.
                 ws = self.leading_ws
                 if ws and s.strip():
-                    assert s.startswith(ws),'\n%s\n%s' % (
-                        repr(str(ws)),repr(str(s)))
+                    i = g.skip_ws(s,0)
+                    ws2 = s[:i]
+                    assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
                 self.lines.append(s)
             self.array = []
-            self.lineParenLevel = 0
         #@+node:ekr.20040711135244.10: *8* putNormalToken & allies
         def putNormalToken (self,token5tuple):
             '''Put the next token.'''
@@ -5402,8 +5402,8 @@ class Commands (object):
                 if trace: g.trace('\n\n%s\n' % repr(str(self.s)))
                 self.doStartLine()
             f = self.dispatchDict.get(self.name,self.oops)
-            if trace: g.trace("%10s: trail_ws: %3s %s" % (
-                self.name,repr(self.trailing_ws),repr(g.toEncodedString(self.val)[:60])))
+            if trace: g.trace("%10r: trail_ws: %3r %r" % (
+                self.name,self.trailing_ws,g.toEncodedString(self.val)[:60]))
             f()
             self.lastName = self.name
             
@@ -5454,22 +5454,10 @@ class Commands (object):
             self.line = self.erow
         #@+node:ekr.20041021101911.5: *9* doName
         def doName(self):
-
+            '''Handle a name, including keywords and operators.'''
             # Ensure whitespace or start-of-line precedes the name.
-            # if self.array:
-                # last = self.array[-1]
-                # ch = last[-1]
-                # outer = self.parenLevel == 0 and self.squareBracketLevel == 0
-                # chars = '@ \t{([.'
-                # if not outer: chars += ',=<>*-+&|/'
-                # if ch not in chars:
-                    # g.trace('append space before',repr(str(last)))
-                    # self.array.append(' ')
             val = self.val
             if val in ('if','else','and','or','not'):
-                # self.put fails badly.
-                    # self.put(' %s ' % val,strip=True)
-                # 'if' and 'else' be part of a ternary operator.
                 # Make *sure* we never add an extra space.
                 if self.array and self.array[-1].endswith(' '):
                     self.array.append('%s ' % val)
@@ -5477,19 +5465,10 @@ class Commands (object):
                     self.array.append(' %s ' % val)
                 else:
                     self.array.append('%s ' % val)
-            # elif val == 'else':
-                # # Ensure leading space only.
-                # if self.array and self.array[-1].endswith(' '):
-                    # self.array.append('%s' % val)
-                # elif self.array:
-                    # self.array.append(' %s' % val)
-                # else:
-                    # self.array.append('%s' % val)
             else:
                 s = '%s%s' % (val,self.trailing_ws)
-                # g.trace(repr(str(s)))
+                if s == 'lambda': g.trace(repr(str(s)),repr(str(self.trailing_ws)))
                 self.array.append(s)
-            self.prevName = val
         #@+node:ekr.20041021101911.3: *9* doNewline
         def doNewline (self):
 
@@ -5505,32 +5484,30 @@ class Commands (object):
             self.array.append(self.val)
         #@+node:ekr.20040711135244.11: *9* doOp
         def doOp (self):
-
+            '''Put an operator.'''
             val = self.val
-            outer = self.lineParenLevel <= 0 or (self.parenLevel == 0 and self.squareBracketLevel == 0)
+            outer = self.parenLevel == 0 and self.squareBracketLevel == 0
             ws = self.trailing_ws
             if val in '([{':
                 # From pep 8: Avoid extraneous whitespace immediately inside
                 # parentheses, brackets or braces.
-                self.put(val,strip=self.lastName=='name') # Strip blank before names.
-                if val == '(':
-                    self.parenLevel += 1
-                    self.lineParenLevel += 1
-                elif val == '[':
-                    self.squareBracketLevel += 1
+                prev = self.array and self.array[-1]
+                # strip = self.parenLevel > 0 and prev.strip() not in (',','lambda','else')
+                # g.trace('====',repr(prev))
+                strip = self.parenLevel > 0
+                self.put(val,strip=strip)
+                if   val == '(': self.parenLevel += 1
+                elif val == '[': self.squareBracketLevel += 1
             elif val in '}])':
                 # From pep 8: Avoid extraneous whitespace immediately inside
                 # parentheses, brackets or braces.
                 self.put(val+ws,strip=True)
-                if val == ')':
-                    self.parenLevel -= 1
-                    self.lineParenLevel -= 1
-                elif val == ']':
-                    self.squareBracketLevel -= 1
+                if   val == ')': self.parenLevel -= 1
+                elif val == ']': self.squareBracketLevel -= 1
             elif val == '=':
                 # From pep 8: Don't use spaces around the = sign when used to indicate
                 # a keyword argument or a default parameter value.
-                if outer:
+                if self.parenLevel == 0:
                     # This is only an approximation.
                     self.put(' %s ' % val)
                 else:
@@ -5540,10 +5517,13 @@ class Commands (object):
                 self.put(' %s ' % val)
             elif val in '+-':
                 # Special case for possible unary operator.
-                if ws:
-                    self.put(' %s ' % val,strip=True)
+                if self.parenLevel == 0:
+                    if ws:
+                        self.put(' %s ' % val,strip=True)
+                    else:
+                        self.put(val,strip=False)
                 else:
-                    self.put(val,strip=False)
+                    self.put(val,strip=True)
             elif val in ('^','~','*','**','&','|','/','//'):
                 # From pep 8: If operators with different priorities are used,
                 # consider adding whitespace around the operators with the lowest priority(ies).
@@ -5566,13 +5546,13 @@ class Commands (object):
                 self.put(val+ws,strip=True)
             elif val == ':':
                 # A very hard case.
-                if self.array[-1] not in ('else ',':',': '):
-                    # g.trace(self.can_strip(),repr(str(self.s)))
-                    # g.trace(repr(str(self.array[-1])))
-                    # We can leave the whitespace.
-                    self.put(val+ws,strip=False)
+                prev = self.array and self.array[-1]
+                # g.trace(repr(str(prev)),repr(str(ws)))
+                if prev in ('else ',':',': '):
+                    self.put(val+ws,strip=True)
                 else:
-                    self.put(val,strip=True)
+                    # We can leave the leading whitespace.
+                    self.put(val+ws,strip=False)
             elif val in ('%'):
                 # Add leading and trailing blank.
                 self.put(' %s ' % val)
@@ -5597,15 +5577,6 @@ class Commands (object):
         def oops(self):
 
             g.pr("unknown PrettyPrinting code: %s" % (self.name))
-        #@+node:ekr.20041021101911.2: *9* trace (PrettyPrint)
-        def trace(self):
-
-            if self.tracing:
-
-                g.trace("%10s: %s" % (
-                    self.name,
-                    repr(g.toEncodedString(self.val))
-                ))
         #@+node:ekr.20040711135244.12: *8* putToken
         def putToken (self,token5tuple):
 
