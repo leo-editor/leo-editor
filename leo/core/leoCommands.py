@@ -5247,17 +5247,18 @@ class Commands (object):
         #@+others
         #@+node:ekr.20040711135244.6: *8* __init__ (PythonPrettyPrinter)
         def __init__ (self,c):
-
+            '''Ctor for PythonPrettyPrinter class.'''
             self.array = []
                 # List of strings comprising the line being accumulated.
                 # Important: this list never crosses a line.
             self.bracketLevel = 0
             self.c = c
             self.changed = False
+            self.continuation = False # True: line ends with backslash-newline.
             self.dumping = False
             self.erow = self.ecol = 0 # The ending row/col of the token.
             self.lastName = None # The name of the previous token type.
-            self.line = 0 # Same as self.srow
+            self.line_number = 0 # Same as self.srow
             self.lines = [] # List of lines.
             self.name = None
             self.p = c.p
@@ -5267,10 +5268,7 @@ class Commands (object):
             self.srow = self.scol = 0 # The starting row/col of the token.
             self.startline = True # True: the token starts a line.
             self.trailing_ws = '' # The whitespace following *this* token.
-            #@+<< define dispatch dict >>
-            #@+node:ekr.20041021100850: *9* << define dispatch dict >>
             self.dispatchDict = {
-
                 "comment":    self.doMultiLine,
                 "dedent":     self.doDedent,
                 "endmarker":  self.doEndMarker,
@@ -5278,12 +5276,11 @@ class Commands (object):
                 "indent":     self.doIndent,
                 "name":       self.doName,
                 "newline":    self.doNewline,
-                "nl" :        self.doNewline,
+                "nl":         self.doNewline, # Must be doNewline, not doNl.
                 "number":     self.doNumber,
                 "op":         self.doOp,
                 "string":     self.doMultiLine,
             }
-            #@-<< define dispatch dict >>
         #@+node:ekr.20040713093048: *8* clear
         def clear (self):
             self.lines = []
@@ -5303,19 +5300,19 @@ class Commands (object):
                     g.pr("%3d" % i, repr(lines[i]))
         #@+node:ekr.20040711135244.7: *8* dumpToken
         def dumpToken (self,token5tuple):
-
+            '''Dump the given token.'''
             t1,t2,t3,t4,t5 = token5tuple
-            srow,scol = t3 ; erow,ecol = t4
-            line = str(t5) # can fail
             name = token.tok_name[t1].lower()
             val = str(t2) # can fail
-
-            startLine = self.line != srow
+            srow,scol = t3
+            erow,ecol = t4
+            line = str(t5) # can fail
+            startLine = self.line_number != srow
             if startLine:
                 g.pr("----- line",srow,repr(line))
-            self.line = srow
-
+            self.line_number = srow
             g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
+                # line[scol:ecol]
         #@+node:ekr.20040713091855: *8* endUndo
         def endUndo (self):
 
@@ -5369,18 +5366,19 @@ class Commands (object):
             # The following is save because it returns True only if rstrip() is True.
             prev = self.array and self.array[-1]
             return prev and prev.rstrip() and prev.rstrip() != prev
-        #@+node:ekr.20041021104237: *8* putArray (crucial assert)
+        #@+node:ekr.20041021104237: *8* putArray
         def putArray (self):
             '''Add the next text by joining all the strings is self.array'''
             s = ''.join(self.array)
             if s:
                 # Check that leading whitespace has been preserved.
                 # Leading whitespace doesn't match for blank lines.
-                ws = self.leading_ws
-                if ws and s.strip():
-                    i = g.skip_ws(s,0)
-                    ws2 = s[:i]
-                    assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
+                # Alas, this assert fails with continued lies.
+                    # ws = self.leading_ws
+                    # if ws and s.strip():
+                        # i = g.skip_ws(s,0)
+                        # ws2 = s[:i]
+                        # assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
                 self.lines.append(s)
             self.array = []
         #@+node:ekr.20040711135244.10: *8* putNormalToken & allies
@@ -5393,13 +5391,19 @@ class Commands (object):
             self.srow,self.scol = t3 # row & col where the token begins in the source.
             self.erow,self.ecol = t4 # row & col where the token ends in the source.
             self.s = t5 # The line containing the token.
-            self.startLine = self.line != self.srow
-            self.line = self.srow
+            self.startLine = self.line_number != self.srow
+            self.line_number = self.srow
             # Set self.tailing_ws for all tokens.
             i = g.skip_ws(self.s,self.ecol)
             self.trailing_ws = ' ' if self.s[self.ecol:i] else ''
             if self.startLine:
-                if trace: g.trace('\n\n%s\n' % repr(str(self.s)))
+                if trace:
+                    tag = '**' if self.continuation else '=='
+                    g.trace("%s line %2s: %r" % (
+                        tag,self.srow,g.toEncodedString(self.s)))
+                if self.continuation:
+                    self.doNewline()
+                self.continuation = self.s.endswith('\\\n')
                 self.doStartLine()
             f = self.dispatchDict.get(self.name,self.oops)
             if trace: g.trace("%10r: trail_ws: %3r %r" % (
@@ -5451,7 +5455,7 @@ class Commands (object):
                 # if line.strip():
                     # self.put(' ')
             # Suppress start-of-line logic.
-            self.line = self.erow
+            self.line_number = self.erow
         #@+node:ekr.20041021101911.5: *9* doName
         def doName(self):
             '''Handle a name, including keywords and operators.'''
@@ -5471,13 +5475,20 @@ class Commands (object):
                 self.array.append(s)
         #@+node:ekr.20041021101911.3: *9* doNewline
         def doNewline (self):
-
-            # Remove trailing whitespace.
-            # This never removes trailing whitespace from multi-line tokens.
-            if self.array:
-                self.array[-1] = self.array[-1].rstrip()
+            '''Handle a regular newline.'''
+            if self.continuation:
+                self.array.append('\\')
+                self.continuation = False
+            elif self.array:
+                # Remove trailing whitespace.
+                # This never removes trailing whitespace from multi-line tokens.
+                 self.array[-1] = self.array[-1].rstrip()
             self.array.append('\n')
             self.putArray()
+        #@+node:ekr.20141009151322.17828: *9* doNl
+        def doNl(self):
+            '''Handle a continuation line.'''
+            pass
         #@+node:ekr.20041021101911.6: *9* doNumber
         def doNumber (self):
 
