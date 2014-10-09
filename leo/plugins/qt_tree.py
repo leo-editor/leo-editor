@@ -851,7 +851,11 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         pix = QtGui.QPixmap(width,height)
         pix.fill(QtGui.QColor(0,0,0,0))  # transparent fill, rgbA
-        painter = QtGui.QPainter(pix)
+        painter = QtGui.QPainter()
+        if not painter.begin(pix):
+            print("Failed to init. painter for icon")
+            return None
+
         x = 0
         for i in images:
             painter.drawPixmap(x,(height-i.height())//2,i)
