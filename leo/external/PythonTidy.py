@@ -105,7 +105,7 @@ Collaborative International Dictionary of English v.0.48.
 #@+node:ekr.20141010061430.18247: ** << imports >>
 from __future__ import division
 
-# import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 
 import sys
 import os
@@ -123,6 +123,11 @@ VERSION = '1.2' # EKR
 
 #@@nocolor-node
 #@+at
+# 
+# 2014/10/10 EKR: Suppress features not appropriate for Leo:
+# - Added is_leo constant: search for it to find...
+# - Suppress shebang and encoding lines if is_module is False.
+# - Suppress extra spacing between classes & functions.
 # 
 # 2014/10/10 EKR: Initial Leonized version.
 # - Removed all pylint complaints.  Search for EKR to see the changes.
@@ -204,6 +209,9 @@ SHEBANG = '#!/usr/bin/python'
 CODING = 'utf-8'
 CODING_SPEC = '# -*- coding: %s -*-' % CODING
 BLANK_LINE = NULL
+#@-<< literals >>
+#@+<< preferences >>
+#@+node:ekr.20141010071140.31034: ** << preferences >>
 KEEP_BLANK_LINES = True
 ADD_BLANK_LINES_AROUND_COMMENTS = True
 MAX_SEPS_BEFORE_SPLIT_LINE = 8
@@ -213,7 +221,7 @@ LEFTJUST_DOC_STRINGS = False
 DOUBLE_QUOTED_STRINGS = False  # 2006 Dec 05
 RECODE_STRINGS = False  # 2006 Dec 01
 OVERRIDE_NEWLINE = None  # 2006 Dec 05
-#@-<< literals >>
+#@-<< preferences >>
 #@+<< global data >>
 #@+node:ekr.20141010061430.18253: ** << global data >>
 # Switches...
@@ -227,6 +235,7 @@ INPUT = None
 NAME_SPACE = None
 OUTPUT = None
 #@-<< global data >>
+is_leo = False # Switch to suppress features not appropriate for Leo.
 #@+others
 #@+node:ekr.20141010061430.17825: ** name-transformation functions
 #@+node:ekr.20141010061430.17826: *3* all_lower_case
@@ -585,6 +594,7 @@ class InputUnit(object):
         self.lines = UNIVERSAL_NEW_LINE_PATTERN.split(buffer)  # 2006 Dec 05
         if len(self.lines) > 2:
             if OVERRIDE_NEWLINE is None:
+                g.trace('override_newline',repr(self.lines[1]))
                 self.newline = self.lines[1]  # ... the first delimiter.
             else:
                 self.newline = OVERRIDE_NEWLINE
@@ -806,16 +816,18 @@ class Comments(dict):
     """
     #@+others
     #@+node:ekr.20141010061430.17865: *4* __init__
-
-    def __init__(self):
+    def __init__(self,is_module=True):
+        # EKR: added is_module argument.
+        trace = True and not g.unitTesting
         self.literal_pool = {}  # 2007 Jan 14
         lines = tokenize.generate_tokens(INPUT.readline)
         for (token_type, token_string, start, end, line) in lines:
-            if DEBUG:
+            if trace:
                 # EKR: import this here to remove a pylint warning.
                 import token
-                print (token.tok_name)[token_type], token_string, start, \
-                    end, line
+                name = (token.tok_name)[token_type]
+                if name.lower() in ('comment','name','string'):
+                    g.trace('%8s %8s %10s %s' % (name,start,end,repr(token_string)))
             (self.max_lineno, scol) = start
             (erow, ecol) = end
             if token_type in [tokenize.COMMENT, tokenize.NL]:
@@ -847,10 +859,10 @@ class Comments(dict):
         self.prev_lineno = NA
         self[self.prev_lineno] = (ZERO, SHEBANG)
         self[ZERO] = (ZERO, CODING_SPEC)
-        return 
-
     #@+node:ekr.20141010061430.17866: *4* merge
     def merge(self, lineno=None, fin=False):
+        
+        trace = True and not g.unitTesting
 
         def is_blank():
             return token_string in [NULL, BLANK_LINE]
@@ -863,6 +875,10 @@ class Comments(dict):
             lineno = self.max_lineno + 1
         on1 = True
         found = False
+        if trace and fin:
+            # self is a subclass of dict.
+            for key in sorted(self.keys()):
+                g.trace(key,self.get(key))
         while self.prev_lineno < lineno:
             if self.prev_lineno in self:
                 (scol, token_string) = self[self.prev_lineno]
@@ -881,7 +897,6 @@ class Comments(dict):
         if found and is_blank_line_needed() and not fin:
             OUTPUT.put_blank_line(3)
         return self
-
     #@+node:ekr.20141010061430.17867: *4* put_inline
     def put_inline(self, lineno):
         on1 = True
@@ -902,8 +917,6 @@ class Comments(dict):
         if on1:
             OUTPUT.line_term()
         return self
-
-
     #@-others
 #@+node:ekr.20141010061430.17868: *3* class Name
 class Name(list):  # 2006 Dec 14
@@ -1992,7 +2005,8 @@ class NodeClass(Node):
 
     #@+node:ekr.20141010061430.17983: *5* put
     def put(self, can_split=False):
-        self.line_init(need_blank_line=2)
+        need_blank_line = 0 if is_leo else 2 # EKR
+        self.line_init(need_blank_line=need_blank_line)
         self.line_more('class ')
         self.line_more(NAME_SPACE.get_name(self.name))
         if self.bases:
@@ -2607,7 +2621,9 @@ class NodeFunction(Node):
     #@+node:ekr.20141010061430.18044: *5* put
     def put(self, can_split=False):
 
-        if NAME_SPACE.is_global():
+        if is_leo: # EKR
+            spacing = 0
+        elif NAME_SPACE.is_global():
             spacing = 2
         else:
             spacing = 1
@@ -4448,7 +4464,8 @@ def main():
         file_out = sys.stdout
     tidy_up(file_in,file_out)
 #@+node:ekr.20141010061430.18244: ** tidy_up
-def tidy_up(file_in=sys.stdin, file_out=sys.stdout):  # 2007 Jan 22
+def tidy_up(file_in=sys.stdin,file_out=sys.stdout,is_module=True):
+    # EKR: added is_module argument.
 
     """Clean up, regularize, and reformat the text of a Python script.
 

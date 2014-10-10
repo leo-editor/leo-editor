@@ -5326,10 +5326,29 @@ class Commands (object):
         def get (self):
             '''Return the result of the beautify command.'''
             return self.lines
-        #@+node:ekr.20040711135244.4: *8* prettyPrintNode
+        #@+node:ekr.20040711135244.4: *8* prettyPrintNode & helpers
         def prettyPrintNode(self,p,dump=False):
             '''Pretty print a single node.'''
-            if not p.b: return
+            if p.b:
+                if 0:
+                    self.python_tidy(p)
+                else:
+                    self.token_tidy(p,dump)
+        #@+node:ekr.20141010071140.18268: *9* python_tidy (PythonPrettyPrinter)
+        def python_tidy(self,p):
+            '''Use PythonTidy to do the formatting.'''
+            import leo.external.PythonTidy as tidy
+            # import imp
+            # imp.reload(tidy)
+            file_in = g.fileLikeObject(fromString=p.b)
+            file_out = g.fileLikeObject()
+            is_module = p.isAnyAtFileNode()
+            tidy.tidy_up(file_in=file_in,file_out=file_out,is_module=is_module)
+            s = file_out.get()
+            self.replaceBody(p,lines=None,s=s)
+        #@+node:ekr.20141010071140.18267: *9* token_tidy
+        def token_tidy(self,p,dump):
+            
             readlines = g.ReadLinesClass(p.b).next
             try:
                 self.clear()
@@ -5596,11 +5615,12 @@ class Commands (object):
             else:
                 self.putNormalToken(token5tuple)
         #@+node:ekr.20040713070356: *8* replaceBody
-        def replaceBody (self,p,lines):
-
-            c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
+        def replaceBody (self,p,lines,s=None):
+            '''Replace the body with the pretty version.'''
+            c,u = self.c,self.c.undoer
+            undoType = 'Pretty Print'
             oldBody = p.b
-            body = ''.join(lines)
+            body = s if s else ''.join(lines)
             if oldBody != body:
                 if not self.changed:
                     # Start the group.
