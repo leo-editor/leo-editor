@@ -898,6 +898,19 @@ For example, this setting works without any explicit definition of mistyrose2.
     
     @color head-bg = @mistyrose2
     
+.. @+node:ekr.20141010095448.20599: *4* ** beautify command now uses PythonTidy
+@language rest
+
+This is a major upgrade to Leo's beautify command.
+
+- Added the following settings to leoSettings.leo:
+
+@bool tidy_add_blank_lines_around_comments =True
+@bool tidy_double_quoted_strings = False
+@bool tidy_keep_blank_lines = True
+@bool tidy_left_adjust_docstrings = False
+@int  tidy_lines_before_split_lit = 2
+@int  tidy_seps_before_split_line = 8
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -5344,7 +5344,7 @@ class Commands (object):
             file_in = g.fileLikeObject(fromString=p.b)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
-            tidy.tidy_up(c,file_in=file_in,file_out=file_out,is_module=is_module)
+            tidy.tidy_up(file_in=file_in,file_out=file_out,is_module=is_module,leo_c=c)
             s = file_out.get()
             self.replaceBody(p,lines=None,s=s)
         #@+node:ekr.20141010071140.18267: *9* token_tidy
