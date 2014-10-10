@@ -901,16 +901,34 @@ For example, this setting works without any explicit definition of mistyrose2.
 .. @+node:ekr.20141010095448.20599: *4* ** beautify command now uses PythonTidy
 @language rest
 
-This is a major upgrade to Leo's beautify command.
+This is a major upgrade to the beautify command.
 
-- Added the following settings to leoSettings.leo:
+PythonTidy (tidy for short) does a full parse of the Python sources: https://pypi.python.org/pypi/PythonTidy/
 
-@bool tidy_add_blank_lines_around_comments =True
-@bool tidy_double_quoted_strings = False
-@bool tidy_keep_blank_lines = True
-@bool tidy_left_adjust_docstrings = False
-@int  tidy_lines_before_split_lit = 2
-@int  tidy_seps_before_split_line = 8
+What I did today.  See the << version info >> section for all the details::
+
+1. Leonized tidy's sources: @file ../external/PythonTidy.py in in LeoPyRef.leo.
+
+- Removed all pylint complaints and made other minor mods.
+ 
+2. Suppressed features not appropriate for Leo:
+
+- Adds shebang and encoding lines only for @<file> nodes.
+- Suppress extra spacing between classes & functions.
+
+3. Added settings to leoSettings.leo that control tidy operation:
+
+    @bool tidy_add_blank_lines_around_comments =True
+    @bool tidy_double_quoted_strings = False
+    @bool tidy_keep_blank_lines = True
+    @bool tidy_left_adjust_docstrings = False
+    @int  tidy_lines_before_split_lit = 2
+    @int  tidy_seps_before_split_line = 8
+
+3. Fixed several important bugs:
+
+- The original code deleted all comments because of a botch in Comments__init__.
+- Tidy now properly handles the tidy_add_blank_lines_around_comments and tidy_double_quoted_strings settings.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
