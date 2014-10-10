@@ -124,6 +124,11 @@ VERSION = '1.2' # EKR
 #@@nocolor-node
 #@+at
 # 
+# 2014/10/10 EKR: Leo-related tweaks:
+# - Added c argument to tidy_up.
+# - Added set_args helper, called only when c is not None.
+# - NodeStr.set_as_str calls g.toUnicode when is_leo is True.
+# 
 # 2014/10/10 EKR: Suppress features not appropriate for Leo:
 # - Added is_leo constant: search for it to find...
 # - Suppress shebang and encoding lines if is_module is False.
@@ -191,6 +196,11 @@ SPACE = ' '
 NULL = ''
 NA = -1
 APOST = "'"
+LEFT_MARGIN = NULL
+
+# These probably should not be user prefs in Leo.
+OVERRIDE_NEWLINE = None
+RECODE_STRINGS = False # Not used when is_leo is True.
 
 # Old code is parsed.  New code is generated from the parsed version,
 # using these literals:
@@ -213,15 +223,13 @@ BLANK_LINE = NULL
 #@+<< preferences >>
 #@+node:ekr.20141010071140.31034: ** << preferences >>
 # All of these might become Leo preferences.
-KEEP_BLANK_LINES = True
 ADD_BLANK_LINES_AROUND_COMMENTS = True # EKR
-MAX_SEPS_BEFORE_SPLIT_LINE = 8
-MAX_LINES_BEFORE_SPLIT_LIT = 2
-LEFT_MARGIN = NULL
+DOUBLE_QUOTED_STRINGS = False
+KEEP_BLANK_LINES = True
 LEFTJUST_DOC_STRINGS = False
-DOUBLE_QUOTED_STRINGS = False  # 2006 Dec 05
-RECODE_STRINGS = False  # 2006 Dec 01
-OVERRIDE_NEWLINE = None  # 2006 Dec 05
+MAX_LINES_BEFORE_SPLIT_LIT = 2
+MAX_SEPS_BEFORE_SPLIT_LINE = 8
+OVERRIDE_NEWLINE = None
 #@-<< preferences >>
 #@afterref
  # 
@@ -231,7 +239,7 @@ OVERRIDE_NEWLINE = None  # 2006 Dec 05
 DEBUG = False
 PERSONAL = False
 
-# Data...
+# Global objects...
 # EKR: define these here to avoid a pylint warning.
 COMMENTS = None
 INPUT = None
@@ -1214,22 +1222,24 @@ class NodeStr(Node):
 
     #@+node:ekr.20141010061430.17907: *5* set_as_str
     def set_as_str(self, str_):
-        self.str = str_
-        if isinstance(self.str, unicode):
-            pass
-        elif not RECODE_STRINGS:  # 2006 Dec 01
-            pass
+        if is_leo:
+            self.str = g.toUnicode(str_)
         else:
-            try:
-                self.str = self.str.decode(INPUT.coding)
-            except UnicodeError:
+            self.str = str_
+            if isinstance(self.str, unicode):
                 pass
-            try:
-                self.str = str(self.str)
-            except UnicodeError:
+            elif not RECODE_STRINGS:  # 2006 Dec 01
                 pass
+            else:
+                try:
+                    self.str = self.str.decode(INPUT.coding)
+                except UnicodeError:
+                    pass
+                try:
+                    self.str = str(self.str)
+                except UnicodeError:
+                    pass
         return self
-
     #@+node:ekr.20141010061430.17908: *5* put_doc
     def put_doc(self, need_blank_line=ZERO):
         doc = self.get_as_str()
@@ -4466,10 +4476,11 @@ def main():
         file_out = '-'
     if file_out in ['-']:
         file_out = sys.stdout
-    tidy_up(file_in,file_out)
-#@+node:ekr.20141010061430.18244: ** tidy_up
-def tidy_up(file_in=sys.stdin,file_out=sys.stdout,is_module=True):
-    # EKR: added is_module argument.
+    c = None
+    tidy_up(c,file_in,file_out)
+#@+node:ekr.20141010061430.18244: ** tidy_up & helpers
+def tidy_up(c,file_in=sys.stdin,file_out=sys.stdout,is_module=True):
+    # EKR: added c and is_module arguments.
 
     """Clean up, regularize, and reformat the text of a Python script.
 
@@ -4481,6 +4492,7 @@ def tidy_up(file_in=sys.stdin,file_out=sys.stdout,is_module=True):
 
     """
     global INPUT, OUTPUT, COMMENTS, NAME_SPACE
+    set_prefs(c)
     INPUT = InputUnit(file_in)
     OUTPUT = OutputUnit(file_out)
     COMMENTS = Comments(is_module) # EKR
@@ -4491,7 +4503,32 @@ def tidy_up(file_in=sys.stdin,file_out=sys.stdout,is_module=True):
     module.push_scope().marshal_names().put().pop_scope()
     COMMENTS.merge(fin=True)
     OUTPUT.close()
-#@+node:ekr.20141010061430.17888: ** transform
+#@+node:ekr.20141010095448.18220: *3* set_prefs
+def set_prefs(c):
+    '''Set preferences from Leo configuration, if possible.'''
+    if not c:
+        return
+
+    global ADD_BLANK_LINES_AROUND_COMMENTS
+    global DOUBLE_QUOTED_STRINGS
+    global KEEP_BLANK_LINES
+    global LEFTJUST_DOC_STRINGS
+    global MAX_LINES_BEFORE_SPLIT_LIT
+    global MAX_SEPS_BEFORE_SPLIT_LINE
+    
+    ADD_BLANK_LINES_AROUND_COMMENTS = c.config.getBool(
+        'tidy_add_blank_lines_around_comments',default=True)
+    DOUBLE_QUOTED_STRINGS = c.config.getBool(
+        'tidy_double_quoted_strings',default=False)
+    KEEP_BLANK_LINES = c.config.getBool(
+        'tidy_keep_blank_lines',default=True)
+    LEFTJUST_DOC_STRINGS = c.config.getBool(
+        'tidy_left_adjust_docstrings',default=False)
+    MAX_LINES_BEFORE_SPLIT_LIT = c.config.getInt(
+        'tidy_lines_before_split_lit') or 2
+    MAX_SEPS_BEFORE_SPLIT_LINE = c.config.getInt(
+        'tidy_seps_before_split_line') or 8
+#@+node:ekr.20141010061430.17888: *3* transform
 def transform(indent, lineno, node):
     """Convert the nodes in the abstract syntax tree returned by the
     *compiler* module to objects with *put* methods.

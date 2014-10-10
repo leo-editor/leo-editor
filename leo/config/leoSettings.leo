@@ -388,6 +388,14 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+<v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
+<v t="ekr.20141010095448.19777"><vh>@bool tidy_add_blank_lines_around_comments =True</vh></v>
+<v t="ekr.20141010095448.19778"><vh>@bool tidy_double_quoted_strings = False</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
+<v t="ekr.20141010095448.19780"><vh>@bool tidy_left_adjust_docstrings = False</vh></v>
+<v t="ekr.20141010095448.19781"><vh>@int  tidy_lines_before_split_lit = 2</vh></v>
+<v t="ekr.20141010095448.19782"><vh>@int  tidy_seps_before_split_line = 8</vh></v>
+</v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
@@ -9668,6 +9676,13 @@ else:
 <t tx="ekr.20140922124047.19516"></t>
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
+<t tx="ekr.20141010095448.19776"></t>
+<t tx="ekr.20141010095448.19777"></t>
+<t tx="ekr.20141010095448.19778"></t>
+<t tx="ekr.20141010095448.19779"></t>
+<t tx="ekr.20141010095448.19780"></t>
+<t tx="ekr.20141010095448.19781"></t>
+<t tx="ekr.20141010095448.19782"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

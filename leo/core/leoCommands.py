@@ -5338,12 +5338,13 @@ class Commands (object):
         def python_tidy(self,p):
             '''Use PythonTidy to do the formatting.'''
             import leo.external.PythonTidy as tidy
+            c = self.c
             # import imp
             # imp.reload(tidy)
             file_in = g.fileLikeObject(fromString=p.b)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
-            tidy.tidy_up(file_in=file_in,file_out=file_out,is_module=is_module)
+            tidy.tidy_up(c,file_in=file_in,file_out=file_out,is_module=is_module)
             s = file_out.get()
             self.replaceBody(p,lines=None,s=s)
         #@+node:ekr.20141010071140.18267: *9* token_tidy
