@@ -5330,7 +5330,7 @@ class Commands (object):
         def prettyPrintNode(self,p,dump=False):
             '''Pretty print a single node.'''
             if p.b:
-                if 0:
+                if 1:
                     self.python_tidy(p)
                 else:
                     self.token_tidy(p,dump)
