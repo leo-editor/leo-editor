@@ -212,8 +212,9 @@ BLANK_LINE = NULL
 #@-<< literals >>
 #@+<< preferences >>
 #@+node:ekr.20141010071140.31034: ** << preferences >>
+# All of these might become Leo preferences.
 KEEP_BLANK_LINES = True
-ADD_BLANK_LINES_AROUND_COMMENTS = True
+ADD_BLANK_LINES_AROUND_COMMENTS = False # EKR
 MAX_SEPS_BEFORE_SPLIT_LINE = 8
 MAX_LINES_BEFORE_SPLIT_LIT = 2
 LEFT_MARGIN = NULL
@@ -222,6 +223,8 @@ DOUBLE_QUOTED_STRINGS = False  # 2006 Dec 05
 RECODE_STRINGS = False  # 2006 Dec 01
 OVERRIDE_NEWLINE = None  # 2006 Dec 05
 #@-<< preferences >>
+#@afterref
+ # 
 #@+<< global data >>
 #@+node:ekr.20141010061430.18253: ** << global data >>
 # Switches...
@@ -235,7 +238,7 @@ INPUT = None
 NAME_SPACE = None
 OUTPUT = None
 #@-<< global data >>
-is_leo = False # Switch to suppress features not appropriate for Leo.
+is_leo = True # Switch to suppress features not appropriate for Leo.
 #@+others
 #@+node:ekr.20141010061430.17825: ** name-transformation functions
 #@+node:ekr.20141010061430.17826: *3* all_lower_case
@@ -594,7 +597,7 @@ class InputUnit(object):
         self.lines = UNIVERSAL_NEW_LINE_PATTERN.split(buffer)  # 2006 Dec 05
         if len(self.lines) > 2:
             if OVERRIDE_NEWLINE is None:
-                g.trace('override_newline',repr(self.lines[1]))
+                # g.trace('override_newline',repr(self.lines[1]))
                 self.newline = self.lines[1]  # ... the first delimiter.
             else:
                 self.newline = OVERRIDE_NEWLINE
@@ -818,7 +821,7 @@ class Comments(dict):
     #@+node:ekr.20141010061430.17865: *4* __init__
     def __init__(self,is_module=True):
         # EKR: added is_module argument.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.literal_pool = {}  # 2007 Jan 14
         lines = tokenize.generate_tokens(INPUT.readline)
         for (token_type, token_string, start, end, line) in lines:
@@ -830,7 +833,7 @@ class Comments(dict):
                     g.trace('%8s %8s %10s %s' % (name,start,end,repr(token_string)))
             (self.max_lineno, scol) = start
             (erow, ecol) = end
-            if token_type in [tokenize.COMMENT, tokenize.NL]:
+            if token_type in [tokenize.COMMENT,]: ### tokenize.NL]:
                 token_string = token_string.strip().decode(INPUT.coding)
                 if SHEBANG_PATTERN.match(token_string) is not None:
                     pass
@@ -840,6 +843,7 @@ class Comments(dict):
                 else:
                     token_string = COMMENT_PATTERN.sub(COMMENT_PREFIX, 
                             token_string, 1)
+                    if trace: g.trace('*** token_string',token_string)
                     self[self.max_lineno] = [scol, token_string]
             elif token_type in [tokenize.NUMBER, tokenize.STRING]:  # 2007 Jan 14
                 try:
@@ -857,12 +861,13 @@ class Comments(dict):
                 except:
                     pass
         self.prev_lineno = NA
-        self[self.prev_lineno] = (ZERO, SHEBANG)
-        self[ZERO] = (ZERO, CODING_SPEC)
+        if is_module:
+            self[self.prev_lineno] = (ZERO, SHEBANG)
+            self[ZERO] = (ZERO, CODING_SPEC)
     #@+node:ekr.20141010061430.17866: *4* merge
     def merge(self, lineno=None, fin=False):
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         def is_blank():
             return token_string in [NULL, BLANK_LINE]
@@ -888,7 +893,6 @@ class Comments(dict):
                     if KEEP_BLANK_LINES:
                         OUTPUT.put_blank_line(2)
                 else:
-
                     OUTPUT.line_init().line_more('%s%s' % (SPACE * scol, 
                             token_string)).line_term()
                     found = True
@@ -2005,7 +2009,7 @@ class NodeClass(Node):
 
     #@+node:ekr.20141010061430.17983: *5* put
     def put(self, can_split=False):
-        need_blank_line = 0 if is_leo else 2 # EKR
+        need_blank_line = 1 if is_leo else 2 # EKR
         self.line_init(need_blank_line=need_blank_line)
         self.line_more('class ')
         self.line_more(NAME_SPACE.get_name(self.name))
@@ -2622,7 +2626,7 @@ class NodeFunction(Node):
     def put(self, can_split=False):
 
         if is_leo: # EKR
-            spacing = 0
+            spacing = 1
         elif NAME_SPACE.is_global():
             spacing = 2
         else:
@@ -4479,7 +4483,7 @@ def tidy_up(file_in=sys.stdin,file_out=sys.stdout,is_module=True):
     global INPUT, OUTPUT, COMMENTS, NAME_SPACE
     INPUT = InputUnit(file_in)
     OUTPUT = OutputUnit(file_out)
-    COMMENTS = Comments()
+    COMMENTS = Comments(is_module) # EKR
     NAME_SPACE = NameSpace()
     module = compiler.parse(str(INPUT))
     module = transform(indent=ZERO, lineno=ZERO, node=module)
