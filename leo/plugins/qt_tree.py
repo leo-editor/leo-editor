@@ -841,7 +841,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return icon
         images = [g.app.gui.getImageImage(i['file']) for i in userIcons
                  if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+        images.append(g.app.gui.getImageImage("box%02d.png" % val))
         images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
                       if i['where'] == 'beforeHeadline'])
         images = [z for z in images if z] # 2013/12/23: Remove missing images.
@@ -880,7 +880,7 @@ class LeoQtTree(leoFrame.LeoTree):
         val = p.v.computeIcon()
 
         r = g.app.gui.getIconImage(
-            "box%02d.GIF" % val)
+            "box%02d.png" % val)
 
         # g.trace(r)
 
