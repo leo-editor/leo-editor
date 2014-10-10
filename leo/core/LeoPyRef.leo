@@ -24,19 +24,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20141007223054.17997"><vh>@gnxs</vh></v>
+<v t="ekr.20141010071140.31027"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20141007223054.17998"><vh>@gnxs</vh></v>
+<v t="ekr.20141010071140.31028"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20141007223054.17999"><vh>@gnxs</vh></v>
+<v t="ekr.20141010071140.31029"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20141007223054.18000"><vh>@gnxs</vh></v>
+<v t="ekr.20141010071140.31030"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20141007223054.18001"><vh>@gnxs</vh></v>
+<v t="ekr.20141010071140.31031"><vh>@gnxs</vh></v>
 </v>
 </v>
 </v>
@@ -119,6 +119,7 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
+<v t="ekr.20141010061430.17823"><vh>@file ../external/PythonTidy.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
@@ -373,10 +374,10 @@ actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20141007223054.17997">gnx: ekr.20140225224703.8169
+<t tx="ekr.20141010071140.31027">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20141007223054.17998">gnx: ekr.20140225224703.8170
+<t tx="ekr.20141010071140.31028">gnx: ekr.20140225224703.8170
 unl: qt_main declarations
 gnx: ekr.20140225224703.8171
 unl: class Ui_MainWindow
@@ -385,8 +386,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20140225224703.8173
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20141007223054.17999"></t>
-<t tx="ekr.20141007223054.18000">gnx: ekr.20140225224703.8174
+<t tx="ekr.20141010071140.31029"></t>
+<t tx="ekr.20141010071140.31030">gnx: ekr.20140225224703.8174
 unl: qt_quicksearch declarations
 gnx: ekr.20140225224703.8175
 unl: class Ui_LeoQuickSearchWidget
@@ -395,6 +396,6 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20141007223054.18001"></t>
+<t tx="ekr.20141010071140.31031"></t>
 </tnodes>
 </leo_file>
