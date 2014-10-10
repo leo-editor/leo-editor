@@ -5346,6 +5346,8 @@ class Commands (object):
             is_module = p.isAnyAtFileNode()
             tidy.tidy_up(file_in=file_in,file_out=file_out,is_module=is_module,leo_c=c)
             s = file_out.get()
+            # End the body properly
+            s = s.rstrip()+'\n' if s.strip() else ''
             self.replaceBody(p,lines=None,s=s)
         #@+node:ekr.20141010071140.18267: *9* token_tidy
         def token_tidy(self,p,dump):
