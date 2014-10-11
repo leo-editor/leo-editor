@@ -1418,7 +1418,7 @@ class GetArg:
 
     def do_tab(ga,tabList,completion=True):
         '''Handle tab completion when the user hits a tab.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c,k = ga.c,ga.k
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
@@ -2677,7 +2677,13 @@ class KeyHandlerClass:
                 k.mb_history.insert(0,commandName)
             w = event and event.widget
             if hasattr(w,'permanent') and not w.permanent:
-                g.es('Can not execute commands from headlines')
+                # In a headline that is being edited.
+                ### g.es('Can not execute commands from headlines')
+                c.endEditing()
+                c.bodyWantsFocusNow()
+                # Change the event widget so we don't refer to the to-be-deleted headline widget.
+                event.w = event.widget = c.frame.body.wrapper.widget
+                func(event)
             else:
                 c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
                 func(event)
