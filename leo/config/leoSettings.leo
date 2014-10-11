@@ -389,6 +389,7 @@
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
+<v t="ekr.20141011084458.20513"><vh>@bool use_python_tidy = False</vh></v>
 <v t="ekr.20141010095448.19777"><vh>@bool tidy_add_blank_lines_around_comments =True</vh></v>
 <v t="ekr.20141010095448.19778"><vh>@bool tidy_double_quoted_strings = False</vh></v>
 <v t="ekr.20141010141310.21454"><vh>@bool tidy_java_style_list_dedent = True</vh></v>
@@ -9688,6 +9689,10 @@ else:
 <t tx="ekr.20141010141310.21454"></t>
 <t tx="ekr.20141010141310.21455"></t>
 <t tx="ekr.20141010141310.21456"></t>
+<t tx="ekr.20141011084458.20513">True:   Use PythonTidy (in leo/external/PythonTidy.py).
+        Experimental: use at your own risk.
+False:  Use the newly-improved legacy beautify code.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -5329,8 +5329,9 @@ class Commands (object):
         #@+node:ekr.20040711135244.4: *8* prettyPrintNode & helpers
         def prettyPrintNode(self,p,dump=False):
             '''Pretty print a single node.'''
+            c = self.c
             if p.b:
-                if 1:
+                if c.config.getBool('use_python_tidy',default=True):
                     self.python_tidy(p)
                 else:
                     self.token_tidy(p,dump)

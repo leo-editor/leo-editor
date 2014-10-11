@@ -2793,11 +2793,19 @@ There is no quick fix for this.  Probably a new command is needed.
 .. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
 .. @+node:ekr.20131025044901.17146: *4* Clone-to-last-node
 # Don't change selected node!
-.. @+node:ekr.20050509085713: *3* Installer (wishlist)
-.. @+node:ekr.20050328093147.1: *4* Report: improving installer
-@killcolor
+.. @+node:ekr.20141011053251.18205: *3* Installer for a1
+@language rest
+
+Explore:
+
+- Virtual machines
+- PortableFileAssociator
+- Homebrew install for Mac.
+.. @+node:ekr.20050328093147.1: *4* Report: improving installer (old??)
+@language rest
+
 http://sourceforge.net/forum/message.php?msg_id=3064212
-By: djsg
+By: djsg  David 
 
 The following applies to Leo 4.3, which is in alpha as I write this. It describes
 the LeoSetup routine that I submitted to Edward to solve the "can't find Python"
@@ -2811,7 +2819,14 @@ Before I start work on them, I would like to lay them out for your comment.
 Are they pains in the first place? Are my proposals good enough, and do they
 make sense?
 
-Issue 1. LeoSetup still thinks Leo's user is an Administrator who owns the whole
+===== Proposal (General)
+
+While LeoSetup should allow all accounts to share the Python code for core
+Leo and its plug-ins, my guess is that we don't want to enforce that, since
+Leo is a programmer's tool and the individual programmer will wish to
+modify Leo and its pieces for the programmer's use.
+
+===== Issue 1. LeoSetup still thinks Leo's user is an Administrator who owns the whole
 machine.
 
 For explanation, let's say that I log on as David to Windows 2000 or Windows
@@ -2824,24 +2839,13 @@ the account under which I installed it, which has Administrator rights to the
 computer. In other words, I can't use Leo without operating the computer in
 a mode that leaves it needlessly vulnerable to security violations.
 
-Issue 2. LeoSetup allows only one copy of Leo on a given computer. 
+===== Proposal Option 1.
 
-LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
-override that already. LeoSetup also goes to some trouble to set up the usual
-click-to-open behavior for .leo files. That behavior is tied to the copy of
-Python that was current when I ran LeoSetup, and tied to the copy of Leo that
-was installed most recently.
-
-Proposal: While LeoSetup should allow all accounts to share the Python code
-for core Leo and its plug-ins, my guess is that we don't want to enforce that,
-since Leo is a programmer's tool and the individual programmer will wish to
-modify Leo and its pieces for the programmer's use.
-
-Proposal Option 1. Setup should ask whether to install Leo for everyone or for
-the installer's account only. If the answer to that question is "yes," Setup
-should give the user a private copy of everything that comes with Leo -- the
-only application shared should be the current Python, assuming that it is installed
-for all users.
+Setup should ask whether to install Leo for everyone or for the installer's
+account only. If the answer to that question is "yes," Setup should give
+the user a private copy of everything that comes with Leo -- the only
+application shared should be the current Python, assuming that it is
+installed for all users.
 
 Python.org's installer for Python 2.4 allows the installed Python to work only
 for the account that installed it. I found this in December and wrote code to
@@ -2850,20 +2854,24 @@ check a computer with a single-account installation of Python in order to figure
 out how a single-account installation of Leo would have to handle the click-to-open
 behavior.
 
-Proposal Option 2. When LeoSetup finds Python installed for that single user,
-it should ask whether to install Leo for the installer's account only. If the
-answer to that question is "yes," Setup should give the user a private copy
-of everything that comes with Leo and use the single-user installation of Python.
-Why does this matter. If you need to test your plug-ins with different versions
-of Python, this would make that easier.
+===== Issue 2. LeoSetup allows only one copy of Leo on a given computer. 
 
-Issue 3. LeoSetup always installs Python MegaWidgets ("Pmw"), even on computers
-whose installed Python installation already includes it.
+LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
+override that already. LeoSetup also goes to some trouble to set up the usual
+click-to-open behavior for .leo files. That behavior is tied to the copy of
+Python that was current when I ran LeoSetup, and tied to the copy of Leo that
+was installed most recently.
 
-Proposal: put up a dialog box and ask whether Setup should install Pmw  I do
-not know whether doing this is a good idea.
+===== Proposal Option 2.
 
-Issue 4. LeoSetup does not run without human intervention. This complicates
+When LeoSetup finds Python installed for that single user, it should ask
+whether to install Leo for the installer's account only. If the answer to
+that question is "yes," Setup should give the user a private copy of
+everything that comes with Leo and use the single-user installation of
+Python. Why does this matter. If you need to test your plug-ins with
+different versions of Python, this would make that easier.
+
+===== Issue 3. LeoSetup does not run without human intervention. This complicates
 deploying Leo in multi-computer sites.
 
 The message box that displays the path of the Python installation found is one
@@ -2872,37 +2880,11 @@ nobody has complained about problems with the code I wrote to fix the problem
 installing with Python 2.4 and Active Python, Setup need no longer force the
 installer to review the message box's contents.
 
-Proposal: The message box needs to time out after, say, 15 seconds. 
+===== Proposal: The message box needs to time out after, say, 15 seconds. 
 
 I last looked at the installer three months ago so I would have to look at the
 rest of it for other barriers to automated installation.
-
-Let me know what you think. I won't be able to start work for a week or so,
-so there's no rush.
-
--- David
-.. @+node:ekr.20070929125944: *4* Emulate Orange's download philosophy
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4543089
-By: billp9619
-
-from the download page:
-
-If it's the first time you hear about Python, this is the installation for you.
-The packages includes complete Orange, Python, Windows Extensions for Python
-(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
-
-Leo should copy this download philosophy.
-
-
-
-.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
-
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
-.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file.
+.. @+node:ekr.20130806072439.20732: *4* ** Runnable Leo in one .zip file w/ virtual machine
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Summary - it's easy to make a .zip file containing Leo and all it's
@@ -3107,42 +3089,73 @@ I hope you (and others googling this later) find this useful.
 @language rest
 
 From the thread: "Associate .Leo files to open with Leo when double click"
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
 From: <fidelperez@gmail.com>
 
-I guess others have had this idea but It would be great to include a small
-file within the Quickstart guide which would associate files automatically.
-(Or maybe asking for imput, which can be done through a Leo node and this
-way the user learns about its functionality).
+1. Include a small file within the Quickstart guide which would associate
+   files automatically. (Or maybe asking for imput, which can be done
+   through a Leo node and this way the user learns about its
+   functionality).
 
-Also, I miss some more buttons or scripts in quick start guide, preferably
-before the "programming" section, so when a new user opens it, he has had
-the opportunity to do Ctrl+B on several scripts (for instance, showing in
-the log the name of all the nodes within the selected one, having some
-subnodes with numbers and doing math on them and showing the result on the
-log pane, and as much "silly" but visual functions as possible so the user,
-by going pressing ctrl+b on each, gets a bigger chance to understand what
-is Leo. In my oppinion some users will just stop in the quickguide if they
-are not presented with such a thing before going to docs.leo etc.
+2. More buttons or scripts in quick start guide, preferably before the
+   "programming" section, so when a new user opens it, he has had the
+   opportunity to do Ctrl+B on several scripts (for instance, showing in
+   the log the name of all the nodes within the selected one, having some
+   subnodes with numbers and doing math on them and showing the result on
+   the log pane, and as much "silly" but visual functions as possible so
+   the user, by going pressing ctrl+b on each, gets a bigger chance to
+   understand what is Leo. In my oppinion some users will just stop in the
+   quickguide if they are not presented with such a thing before going to
+   docs.leo etc.
 
-Another thing is the plugin activation, the description of the plugins is
-not as accessible as it should be (opinions here, focusing in new users,
-and as I always say, appreciating and fully grateful for Leo as is now),and
-a script for activating them easier, been a week using Leo and still cant
-quite activate, find the descriptions or use them freely... And if each
-plugin or script had an example of use that would be priceless, for
-instance, including them all in quickstart (both scripts, plugins branchs)
-and then the new user could just go through all clicking on the examples
-and just seeing Leo work and show its potential. I know some of those are
-done but as I said, after a week or so I still am very confused...
+3. The description of the plugins is not as accessible as it should be. A
+   script for activating them easier, been a week using Leo and still cant
+   quite activate, find the descriptions or use them freely... And if each
+   plugin or script had an example of use that would be priceless, for
+   instance, including them all in quickstart (both scripts, plugins
+   branchs) and then the new user could just go through all clicking on the
+   examples and just seeing Leo work and show its potential. I know some of
+   those are done but as I said, after a week or so I still am very
+   confused...
 
-Also, quickstartguide should be open by default (instead of current
-Leo workbook) at least until the user changes some config and prevents that
-from happening. Is there any "load previous tabs" functionality? (IE open
-the Leo files which where open when it was closed the last time)
-  
+4. Quickstart should be open by default (instead of current Leo workbook)
+   at least until the user changes some config and prevents that from
+   happening. Is there any "load previous tabs" functionality? (IE open the
+   Leo files which where open when it was closed the last time)
+.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
+possible built in options to install vim bindings.
+
+http://brew.sh/
+Homebrew formulae are simple Ruby scripts:
+
+require "formula"
+
+class Wget < Formula
+  homepage "http://www.gnu.org/software/wget/"
+  url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
+  sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+
+  def install
+    system "./configure", "--prefix=#{prefix}"
+    system "make", "install"
+  end
+end
+
+
+To install homebrew, paste this in a terminal:
+
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+The script explains what it will do and then pauses before it does it.
+There are more installation options here (needed on 10.5).
 .. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
 From the thread: Cannot open Leo files by double-click in Windows Explorer?
+https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
+
 From: HansBKK <hansbkk@gmail.com>
 
 For those like me who work in "portable" mode, there's a very cool tool
@@ -3152,7 +3165,6 @@ time, without messing with the local system's registry.
 
 Also handy for those not in portable mode, but working on different windows
 boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20140917154740.19477: *3* Installer bugs
@@ -10372,93 +10384,6 @@ Provide cascading rclick capability: rclick on an rclick list ...
 leoBridge.py requires the nullGui.
 .. @+node:ekr.20111019104425.15887: *5* Host the PyQt demo inside Leo
 .. @+node:ekr.20050509085713: *3* Installer (wishlist)
-.. @+node:ekr.20050328093147.1: *4* Report: improving installer
-@killcolor
-http://sourceforge.net/forum/message.php?msg_id=3064212
-By: djsg
-
-The following applies to Leo 4.3, which is in alpha as I write this. It describes
-the LeoSetup routine that I submitted to Edward to solve the "can't find Python"
-problem, and which Edward cleaned up for distribution.
-
-I think a few further issues need attention. I noticed them while working on
-the "can't find Python" problem, and deferred dealing with them. This appears
-to me to be a good time to pick them up.
-
-Before I start work on them, I would like to lay them out for your comment.
-Are they pains in the first place? Are my proposals good enough, and do they
-make sense?
-
-Issue 1. LeoSetup still thinks Leo's user is an Administrator who owns the whole
-machine.
-
-For explanation, let's say that I log on as David to Windows 2000 or Windows
-XP and install Leo 4.3. You then log out. You log in as Edward, and click Start,
-pick Programs... you have no visible entry for Leo!
-
-The current Setup routine allows no one but David to use Leo on this computer.
-To make things worse, when I go to use Leo, I have to log in to Windows using
-the account under which I installed it, which has Administrator rights to the
-computer. In other words, I can't use Leo without operating the computer in
-a mode that leaves it needlessly vulnerable to security violations.
-
-Issue 2. LeoSetup allows only one copy of Leo on a given computer. 
-
-LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
-override that already. LeoSetup also goes to some trouble to set up the usual
-click-to-open behavior for .leo files. That behavior is tied to the copy of
-Python that was current when I ran LeoSetup, and tied to the copy of Leo that
-was installed most recently.
-
-Proposal: While LeoSetup should allow all accounts to share the Python code
-for core Leo and its plug-ins, my guess is that we don't want to enforce that,
-since Leo is a programmer's tool and the individual programmer will wish to
-modify Leo and its pieces for the programmer's use.
-
-Proposal Option 1. Setup should ask whether to install Leo for everyone or for
-the installer's account only. If the answer to that question is "yes," Setup
-should give the user a private copy of everything that comes with Leo -- the
-only application shared should be the current Python, assuming that it is installed
-for all users.
-
-Python.org's installer for Python 2.4 allows the installed Python to work only
-for the account that installed it. I found this in December and wrote code to
-handle it, which I then commented out since the issue wasn't critical. I can
-check a computer with a single-account installation of Python in order to figure
-out how a single-account installation of Leo would have to handle the click-to-open
-behavior.
-
-Proposal Option 2. When LeoSetup finds Python installed for that single user,
-it should ask whether to install Leo for the installer's account only. If the
-answer to that question is "yes," Setup should give the user a private copy
-of everything that comes with Leo and use the single-user installation of Python.
-Why does this matter. If you need to test your plug-ins with different versions
-of Python, this would make that easier.
-
-Issue 3. LeoSetup always installs Python MegaWidgets ("Pmw"), even on computers
-whose installed Python installation already includes it.
-
-Proposal: put up a dialog box and ask whether Setup should install Pmw  I do
-not know whether doing this is a good idea.
-
-Issue 4. LeoSetup does not run without human intervention. This complicates
-deploying Leo in multi-computer sites.
-
-The message box that displays the path of the Python installation found is one
-issue. I put it in to allow the installer to cross-check Setup's behavior. Since
-nobody has complained about problems with the code I wrote to fix the problem
-installing with Python 2.4 and Active Python, Setup need no longer force the
-installer to review the message box's contents.
-
-Proposal: The message box needs to time out after, say, 15 seconds. 
-
-I last looked at the installer three months ago so I would have to look at the
-rest of it for other barriers to automated installation.
-
-Let me know what you think. I won't be able to start work for a week or so,
-so there's no rush.
-
--- David
 .. @+node:ekr.20070929125944: *4* Emulate Orange's download philosophy
 @nocolor
 
@@ -10475,261 +10400,6 @@ Leo should copy this download philosophy.
 
 
 
-.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
-
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
-.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file.
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Summary - it's easy to make a .zip file containing Leo and all it's
-dependencies.
-
-Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
-32 bit machines, I tried the following.
-
-Install Python (installer from python.org) 2.7.2 to 
-
-  C:\Docouments and Settings\someuser\Desktop\leo\python27
-
-Install PyQt (installer from Riverbank) 4.9 into the same folder (it
-goes there by default)
-
-Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
-
-  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
-
-Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
-
-Delete the virtual machine, purging any registry entries etc. created
-by the two installers.
-
-On a fresh machine, searched the registry for 'python' just to be sure,
-found nothing.
-
-Unzip the .zip file, then
-
-  cd C:\Docouments and Settings\someuser\Desktop\leo
-  python27\python.exe leo-editor-latest\launchLeo.py
-
-And Leo opens a blank outline, after asking for an ID, as it's supposed
-to.  Didn't test it beyond that.
-
-So, the .zip file contains all Leo needs to run, and obviously
-runLeo.bat could be added in the top level to actually launch it.
-
-Of course this is for Windows, so I think it's an improvement over
-asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.
-
-===== EKR
-
-Is this a technique that we could use for official Windows releases?
-If so, what exactly would we do?
-
-===== Terry
-
-I guess, perhaps as an all-in-one option with a system integrated
-option for those who want to use system python/qt.  Don't know if it
-violates and licensing on Python / Qt, everything's being distributed
-unaltered, so I wouldn't think so.
-
-So basically you'd give people a large .zip file and tell them to
-extract it to a folder and run the batchfile at the top level.  If they
-can't do that, they might not be ready for Leo :-)  I guess you could
-make it a self-extracting .zip, for that matter.
-
-Also, the daily snapshot could be made this way, seeing once Python and
-Qt are installed in the folder the Leo version can just be copied in.
-
-It's not uncommon for FLOSS to be distributed this way, both Blender
-and Inkscape use this approach, particularly for recent builds.
-
-===== From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which
-they can use for other things beyond Leo. Ending up with multiple instances
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO
-only for the clueless), but then of course that would be a doc that would
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
-From: Matt Wilkie <maphew@gmail.com>
-
-Since this topical today, almost a year later, I thought I'd take a run at 
-repeating this using Portable Python (http://www.portablepython.com) as a 
-base. It didn't work, but I think it should. Maybe someone else knows why. 
-
-I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
-time I selected only the Python and PyQt4 packages. Then from a fresh 
-command shell:
-
-{{{
-path=c:\windows;c:\windows\system32
-pushd x:\portapy27\App
-path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
-set pythonhome=%cd%
-set pythonpath=%cd%\Lib
-
-popd
-
-python --version
-Python 2.7.3
-
-python -c "import PyQt4"
-:: no error returned, we're good.
-
-python c:\apps\leo-editor-latest\launchLeo.py
-Leo requires Qt to be installed.
-}}}
-
-oh well.
-.. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-> PortableApps version would be FANTASTIC!!
-
-A couple of versions have been posted here already, including Terry's very
-simple sequence in the first message of this thread. Of course, we're only
-talking about Windows, but note that it works equally well either syncing
-with whatever tool (I favor Unison over SSH) or carrying around on an
-arbitrary-path'd external device, including flash drives (but they can be
-slow).
-
-Here's my more robust (hence more complex) version, xx indicating your 
-python version (mine is 27):
-
-Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
-version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
-test thoroughly. Note any new environment variables pointing to your new 
-binary locations.
-
-Now create a corresponding PythonXX folder in your "PortableApps" location 
-(I put it under "CommonFiles" along with GTK and Java) and copy everything 
-from your installed location to the portable one.
-
-You can then use the project-provided tools on the "master" computer to 
-keep your binaries updated, and they will see any local Registry entries 
-and the environment variables they created and operate normally wrt your 
-installed location (e.g. C:\PythonXX).
-
-If you have a local folder sync tool (I use Unison and WinMerge) you can 
-add to/remove from/configure your Python environment from either location, 
-otherwise just keep your installed location as the "master" and just copy 
-the whole stack over each time you do so.
-
-The whole PortableApps tree can then be sync'd/copied to any other 
-desktop(s) you like, either over the wire or via an external device, and 
-the latter can be carried for use in say an Internet cafe or client-site 
-situation.
-
-====================
-
-For use on those other computers, for running in portable mode, I use a
-"portable start menu" (PStart) which allows for its own "autolaunch" batch
-files, where I set some global environment variables to be used by
-app-specific launch batch files, including :
-
-%Path% (I add my batch folder and a general utility/tools folder)
-%HOME% (usually "E:\aasync\Data\H_HOME"
-and a custom one called %h_pa%, which points to the root of my PortableApps 
-parent (usually "D:\aasync\PortableApps")
-
-Then for each environment that requires its own custom settings, I create a 
-launch batch file that builds on that base. In the case of Python apps, 
-here's an example that opens a CMD console window:
-
-@ECHO OFF
-set 
-PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
-set PROMPT=$p_python$g
-E:
-cd \aasync
-CMD.exe
-
-I'm not sure which if any of the environment stuff Leo requires, but I 
-figure it might as well have the same environment as my Python CLI, since 
-I'll be testing shell integration, including iPython. In my leo-win.bat, 
-the last three lines above are replaced with:
-
-D:
-cd \aasync\PortableApps\leo-editor
-start "" "..\CommonFiles\Python27\pythonw.exe" 
-"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
-
-====================
-
-Note this is more than the minimum you need to just run Leo - you could of 
-course simplify it; for example, only set the environment variables Leo 
-requires, or you could just set the master computer' installation routines 
-to use a single location under PortableApps, but I prefer to keep them 
-separate for testing purposes.
-
-I hope you (and others googling this later) find this useful.
-.. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
-@language rest
-
-From the thread: "Associate .Leo files to open with Leo when double click"
-
-From: <fidelperez@gmail.com>
-
-I guess others have had this idea but It would be great to include a small
-file within the Quickstart guide which would associate files automatically.
-(Or maybe asking for imput, which can be done through a Leo node and this
-way the user learns about its functionality).
-
-Also, I miss some more buttons or scripts in quick start guide, preferably
-before the "programming" section, so when a new user opens it, he has had
-the opportunity to do Ctrl+B on several scripts (for instance, showing in
-the log the name of all the nodes within the selected one, having some
-subnodes with numbers and doing math on them and showing the result on the
-log pane, and as much "silly" but visual functions as possible so the user,
-by going pressing ctrl+b on each, gets a bigger chance to understand what
-is Leo. In my oppinion some users will just stop in the quickguide if they
-are not presented with such a thing before going to docs.leo etc.
-
-Another thing is the plugin activation, the description of the plugins is
-not as accessible as it should be (opinions here, focusing in new users,
-and as I always say, appreciating and fully grateful for Leo as is now),and
-a script for activating them easier, been a week using Leo and still cant
-quite activate, find the descriptions or use them freely... And if each
-plugin or script had an example of use that would be priceless, for
-instance, including them all in quickstart (both scripts, plugins branchs)
-and then the new user could just go through all clicking on the examples
-and just seeing Leo work and show its potential. I know some of those are
-done but as I said, after a week or so I still am very confused...
-
-Also, quickstartguide should be open by default (instead of current
-Leo workbook) at least until the user changes some config and prevents that
-from happening. Is there any "load previous tabs" functionality? (IE open
-the Leo files which where open when it was closed the last time)
-  
-.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
-From the thread: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
-
-For those like me who work in "portable" mode, there's a very cool tool
-called "PortableFileAssociator" that allows you to create a set of windows
-file associations, icons etc and enable/disable the whole profile at one
-time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows
-boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
 .. @+node:ekr.20140704052551.17950: *3* IPython
 .. @+node:ekr.20121005105428.12866: *4* Ipython notebook stuff
