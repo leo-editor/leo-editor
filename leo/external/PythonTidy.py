@@ -120,7 +120,9 @@ Collaborative International Dictionary of English v.0.48.
 '''
 #@-<< docstring >>
 from __future__ import division
-VERSION = '1.23.1'  # EKR: based on version 1.23, 2012 May 23
+VERSION = '1.23.1'
+    # EKR: based on version 1.23, 2012 May 23
+    # http://lacusveris.com/PythonTidy/PythonTidy-1.23.python
 DEBUG = False
 PERSONAL = False
 is_leo = True # Switch to suppress features not appropriate for Leo.
