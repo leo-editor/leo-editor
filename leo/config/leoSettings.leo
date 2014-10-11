@@ -391,8 +391,11 @@
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20141010095448.19777"><vh>@bool tidy_add_blank_lines_around_comments =True</vh></v>
 <v t="ekr.20141010095448.19778"><vh>@bool tidy_double_quoted_strings = False</vh></v>
+<v t="ekr.20141010141310.21454"><vh>@bool tidy_java_style_list_dedent = True</vh></v>
 <v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
+<v t="ekr.20141010141310.21455"><vh>@bool tidy_keep_unassigned_constants = False</vh></v>
 <v t="ekr.20141010095448.19780"><vh>@bool tidy_left_adjust_docstrings = False</vh></v>
+<v t="ekr.20141010141310.21456"><vh>@bool tidy_parenthesized_tuple_display = True</vh></v>
 <v t="ekr.20141010095448.19781"><vh>@int  tidy_lines_before_split_lit = 2</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
@@ -1814,6 +1817,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20141010095448.19776"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9681,6 +9685,9 @@ else:
 <t tx="ekr.20141010095448.19779"></t>
 <t tx="ekr.20141010095448.19780"></t>
 <t tx="ekr.20141010095448.19781"></t>
+<t tx="ekr.20141010141310.21454"></t>
+<t tx="ekr.20141010141310.21455"></t>
+<t tx="ekr.20141010141310.21456"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

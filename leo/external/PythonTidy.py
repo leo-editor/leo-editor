@@ -5244,12 +5244,11 @@ def set_prefs(c):
     global LEFTJUST_DOC_STRINGS
     global MAX_LINES_BEFORE_SPLIT_LIT
     
-    # OVERRIDE_NEWLINE = None
-    # KEEP_UNASSIGNED_CONSTANTS = False
-    # PARENTHESIZE_TUPLE_DISPLAY = True
-    # JAVA_STYLE_LIST_DEDENT = False
-    
-    
+    global JAVA_STYLE_LIST_DEDENT
+    global KEEP_UNASSIGNED_CONSTANTS
+    global OVERRIDE_NEWLINE
+    global PARENTHESIZE_TUPLE_DISPLAY
+
     if not c:
         return
     ADD_BLANK_LINES_AROUND_COMMENTS = c.config.getBool(
@@ -5262,6 +5261,13 @@ def set_prefs(c):
         'tidy_left_adjust_docstrings',default=False)
     MAX_LINES_BEFORE_SPLIT_LIT = c.config.getInt(
         'tidy_lines_before_split_lit') or 2
+    # 1.23 settings.
+    JAVA_STYLE_LIST_DEDENT = c.config.getBool(
+        'tidy_java_style_list_dedent',default=True)
+    KEEP_UNASSIGNED_CONSTANTS = c.config.getBool(
+        'tidy_keep_unassigned_constants',default=False)
+    PARENTHESIZE_TUPLE_DISPLAY = c.config.getBool(
+        'tidy_parenthesized_tuple_display',default= True)
     if trace:
         g.trace('tidy_add_blank_lines_around_comments',ADD_BLANK_LINES_AROUND_COMMENTS)
         g.trace('tidy_keep_blank_lines',KEEP_BLANK_LINES)
