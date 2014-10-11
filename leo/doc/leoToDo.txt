@@ -5,6 +5,39 @@
 .. @+all
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
+
+For a1:
+
+1. Fixing all bugs that could have a major impact on Leo's stability.
+
+For example, issue #35 re duplicate gnx's. I'll review all outstanding bugs
+for their effects on stability.
+
+I am dithering about what to do about #28 re large nodes. This must either
+become completely solid before a1 or it must be removed entirely from the
+5.0 release.
+
+2. Making the install process as easy as possible.
+
+The to-do list contains several good ideas, such as supporting homebrew
+install and making Leo a portable app. I'll do as many as possible.
+
+3. Making Leo as easy as possible for newbies.
+
+For example, Fidel made several good suggestions:
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+Fidel suggests quickstart guide should open by default instead of the
+user's workbook.
+
+4. Refine the "fit and finish" items as much as possible.
+
+Seemingly small issues such as focus issues are surprisingly important and
+difficult to test.
+
+5. Resolving *all* outstanding documentation issues, including summarizing
+   many previous conversations. This could take several days.
+.. @+node:ekr.20141011092854.18156: *3* ** List all bugs that impact Leo's stability
 .. @+node:ekr.20140824043305.18293: *3* Docs for a1
 * Add all items in the to-be-documented mailbox to docs.
 .. @+node:ekr.20140910065834.18124: *4* Document recent tags work
@@ -2801,6 +2834,7 @@ Explore:
 - Virtual machines
 - PortableFileAssociator
 - Homebrew install for Mac.
+
 .. @+node:ekr.20050328093147.1: *4* Report: improving installer (old??)
 @language rest
 

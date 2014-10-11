@@ -397,6 +397,12 @@ https://github.com/leo-editor/leo-editor/issues/68
 
 print(obj) is correct and PEP8 style in Python 3, in Python 2.7 runs
 correctly but print(obj) is not correct traditionally
+.. @+node:ekr.20141008185752.17804: *4* eliminated "can not exedute commands from headlines"
+Removed the odious "'Can not execute commands from headlines" message.
+
+Instead of this message, Leo ends editing, replaces the event.widget and
+event.w fields with c.frame.body.wrapper.widget and carries on. All tests
+pass.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
