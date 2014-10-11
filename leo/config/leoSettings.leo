@@ -394,7 +394,6 @@
 <v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
 <v t="ekr.20141010095448.19780"><vh>@bool tidy_left_adjust_docstrings = False</vh></v>
 <v t="ekr.20141010095448.19781"><vh>@int  tidy_lines_before_split_lit = 2</vh></v>
-<v t="ekr.20141010095448.19782"><vh>@int  tidy_seps_before_split_line = 8</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -9682,7 +9681,6 @@ else:
 <t tx="ekr.20141010095448.19779"></t>
 <t tx="ekr.20141010095448.19780"></t>
 <t tx="ekr.20141010095448.19781"></t>
-<t tx="ekr.20141010095448.19782"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
