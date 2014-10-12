@@ -716,46 +716,38 @@ class LeoApp:
 
     #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
     def closeLeoWindow (self,frame,new_c=None):
+        """
+        Attempt to close a Leo window.
 
-        """Attempt to close a Leo window.
-
-        Return False if the user veto's the close."""
-
+        Return False if the user veto's the close.
+        """
         trace = False and not g.unitTesting
         c = frame.c
-
         if trace: g.trace(frame.c,g.callers())
-
         c.endEditing() # Commit any open edits.
-
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False
-
         g.app.recentFilesManager.writeRecentFilesFile(c)
             # Make sure .leoRecentFiles.txt is written.
-
         if c.changed:
             c.promptingForClose = True
             veto = frame.promptForSave()
             c.promptingForClose = False
             if veto: return False
-
         g.app.setLog(None) # no log until we reactive a window.
-
         g.doHook("close-frame",c=c)
             # This may remove frame from the window list.
-
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
-
+        else:
+            # Fix bug https://github.com/leo-editor/leo-editor/issues/69
+            g.app.forgetOpenFile(fn=c.fileName(),force=True)
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
-
         elif not g.app.unitTesting:
             g.app.finishQuit()
-
         return True # The window has been closed.
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
@@ -1269,19 +1261,20 @@ class LeoApp:
         '''Forget the open file, so that is no longer considered open.'''
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
+        if not fn:
+            return
         if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
-            pass
+            return
+        aList = d.get(tag) or []
+        if fn in aList:
+            aList.remove(fn)
+            if trace:
+                g.trace('removed: %s' % (fn),g.callers())
+                for z in aList:
+                    print('  %s' % (z))
+            d[tag] = aList
         else:
-            aList = d.get(tag) or []
-            if fn in aList:
-                aList.remove(fn)
-                if trace:
-                    g.trace('removed: %s' % (fn),g.callers())
-                    for z in aList:
-                        print('  %s' % (z))
-                d[tag] = aList
-            else:
-                if trace: g.trace('did not remove: %s' % (fn))
+            if trace: g.trace('did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self,fn):
 
