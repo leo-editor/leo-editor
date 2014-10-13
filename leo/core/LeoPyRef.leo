@@ -39,6 +39,12 @@
 <v t="ekr.20141010071140.31031"><vh>@gnxs</vh></v>
 </v>
 </v>
+<v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
+<v t="ekr.20140905060158.18560"><vh>Script: change body.x to body.wrapper.x</vh>
+<v t="ekr.20140905060158.18561"><vh>test</vh></v>
+</v>
+<v t="ekr.20140918124632.19450"><vh>Script: print Qt color names</vh></v>
+</v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
@@ -57,6 +63,7 @@
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
@@ -116,10 +123,10 @@ marks="ekr.20130111185820.10194,"><vh>@file leoGlobals.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
-<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20141010061430.17823"><vh>@file ../external/PythonTidy.py</vh></v>
+<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
+<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
+<v t="ekr.20141010141310.18627"><vh>@file ../external/PythonTidy.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
@@ -366,14 +373,68 @@ all gui-dependent snippets of code in Leo's core.
 &lt;&lt; official ivars &gt;&gt;
 </t>
 <t tx="ekr.20140902155015.18674"></t>
+<t tx="ekr.20140905060158.18560">'''
+A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
+
+It is *not undoable* to save massive amounts of memory.
+Please run on an already-saved .leo file, and take all other reasonable precautions.
+
+If replace is False, it will just report the changes to be made.
+'''
+import leo.core.leoFrame as leoFrame
+replace = False
+aList = sorted([z for z in dir(leoFrame.WrapperAPI) if not z.startswith('__')])
+nodes = 0
+for p in c.all_unique_positions():
+    s = p.b
+    nodes += 1
+    found = False
+    for target in aList:
+        i = 0
+        pattern = 'body.' + target
+        while True:
+            i = s.find(pattern,i)
+            if i == -1:
+                break
+            if g.match_word(s,i,pattern):
+                if not found:
+                    print('In node: %s' % p.h)
+                    found = True
+                i1,i2 = g.getLine(s,i)
+                if replace:
+                    j = i + len('body.')
+                    s = s[:j] + 'wrapper.' + s[j:]
+                    print(s[i1:i2+len('wrapper.')].rstrip())
+                    i += len('wrapper.') + len(pattern)
+                else:
+                    print(s[i1:i2].rstrip())
+                    i += len(pattern)
+            else:
+                i += len(pattern)
+    if found and replace:
+        p.b = s
+print('searched %s nodes' % nodes)
+</t>
+<t tx="ekr.20140905060158.18561">a = c.frame.body.getInsertPoint()
+
+aBody.getInsertPoint()
+
+if 1:
+    c.frame.body.setInsertPoint(0)</t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20140918124632.19450"># This script prints the list of known Qt names. Qt seems to ignore case.
+from leo.core.leoQt import QtGui
+aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
+print('\n'.join(aList))
+</t>
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
+<t tx="ekr.20140923085942.17943"></t>
 <t tx="ekr.20141010071140.31027">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
