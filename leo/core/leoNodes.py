@@ -49,6 +49,7 @@ class NodeIndices (object):
         self.userId = id_
         self.defaultId = id_
         self.lastIndex = 0
+        self.timeString = '' # Set by setTimeStamp.
 
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()

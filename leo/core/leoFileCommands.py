@@ -67,17 +67,15 @@ if sys.platform != 'cli':
         '''A sax content handler class that reads Leo files.'''
 
         #@+others
-        #@+node:ekr.20060919110638.20: *4*  __init__ & helpers
+        #@+node:ekr.20060919110638.20: *4*  __init__ & helpers (SaxContentHandler)
         def __init__ (self,c,fileName,silent,inClipboard):
-
+            '''Ctor for SaxContentHandler class.'''
             self.c = c
             self.fileName = fileName
             self.silent = silent
             self.inClipboard = inClipboard
-
-            # Init the base class.
             xml.sax.saxutils.XMLGenerator.__init__(self)
-
+                # Init the base class.
             #@+<< define dispatch dict >>
             #@+node:ekr.20060919110638.21: *5* << define dispatch dict >>
             # There is no need for an 'end' method if all info is carried in attributes.
@@ -99,14 +97,11 @@ if sys.platform != 'cli':
                 'vnodes':                      (self.startVnodes,None), # Causes window to appear.
             }
             #@-<< define dispatch dict >>
-
             self.printElements = [] # 'all', 'v'
-
             # Global attributes of the .leo file...
             # self.body_outline_ratio = '0.5'
             self.global_window_position = {}
             self.encoding = 'utf-8' 
-
             # Semantics...
             self.content = None
             self.elementStack = []
@@ -418,7 +413,7 @@ if sys.platform != 'cli':
             self.content = []
 
             self.tnodeAttributes(attrs)
-        #@+node:ekr.20060919110638.42: *6* tnodeAttributes
+        #@+node:ekr.20060919110638.42: *6* tnodeAttributes (SaxContentHandler)
         def tnodeAttributes (self,attrs):
 
             # The VNode must have a tx attribute to associate content
@@ -724,10 +719,11 @@ class FileCommands:
 
         return True
     #@+node:ekr.20031218072017.1553: *4* fc.getLeoFile & helpers
-    # The caller should follow this with a call to c.redraw().
-
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
-
+        '''
+            Read a .leo file.
+            The caller should follow this with a call to c.redraw().
+        '''
         fc,c = self,self.c
         c.setChanged(False) # May be set when reading @file nodes.
         fc.warnOnReadOnlyFiles(fileName)
@@ -740,9 +736,8 @@ class FileCommands:
             if ok:
                 ok = fc.getLeoFileHelper(theFile,fileName,silent)
                     # Read the .leo file and create the outline.
-
-                # Remember the open file.
                 g.app.rememberOpenFile(fileName)
+                    # Remember the open file.
             else:
                 fc.mFileName = c.mFileName = None
                     # Bug fix. Clear the fileName so forgetOpenFile doesn't remove it.
@@ -757,6 +752,8 @@ class FileCommands:
                     fc.readExternalFiles(fileName)
                 if c.config.getBool('check_outline_after_read'):
                     c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+                fc.setMaxNodeIndex()
+                    # Fix bug https://github.com/leo-editor/leo-editor/issues/35
         finally:
             c.loading = False # reenable c.changed
             theFile.close()
@@ -871,6 +868,27 @@ class FileCommands:
 
         fc.setPositionsFromVnodes()
         c.selectVnode(recoveryNode or c.p) # load body pane
+    #@+node:ekr.20141012064706.18242: *5* fc.setMaxNodeIndex
+    def setMaxNodeIndex(self):
+        '''
+            Ensure that g.app.nodeIndices.lastIndex can collide with gnx.
+            Fixes bug https://github.com/leo-editor/leo-editor/issues/35
+        '''
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t = time.clock()
+        c,ni = self.c,g.app.nodeIndices
+        max_n,n,stamp = ni.lastIndex,0,ni.timeString
+        for v in c.all_unique_nodes():
+            stamp2,id2,n2 = ni.scanGnx(v.fileIndex)
+            if stamp == stamp2 and isinstance(n2,(int,long)) and n2 > max_n:
+                if trace: g.trace(stamp,n2)
+                max_n = n
+            n += 1
+        ni.lastIndex = max_n
+        if trace: g.trace('nodes: %s stamp0: %s max_n %s %4.2f sec.' % (
+            n,stamp,max_n,time.clock()-t))
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
@@ -1395,7 +1413,9 @@ class FileCommands:
             return None
     #@+node:ekr.20060919110638.11: *4* fc.resolveTnodeLists
     def resolveTnodeLists (self):
-
+        '''
+        Called *before* reading external files.
+        '''
         trace = False and not g.unitTesting
         c = self.c
 

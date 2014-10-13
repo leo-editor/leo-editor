@@ -37,7 +37,6 @@ difficult to test.
 
 5. Resolving *all* outstanding documentation issues, including summarizing
    many previous conversations. This could take several days.
-.. @+node:ekr.20141011092854.18156: *3* ** List all bugs that impact Leo's stability
 .. @+node:ekr.20140824043305.18293: *3* Docs for a1
 * Add all items in the to-be-documented mailbox to docs.
 .. @+node:ekr.20140910065834.18124: *4* Document recent tags work
@@ -2834,7 +2833,6 @@ Explore:
 - Virtual machines
 - PortableFileAssociator
 - Homebrew install for Mac.
-
 .. @+node:ekr.20050328093147.1: *4* Report: improving installer (old??)
 @language rest
 
