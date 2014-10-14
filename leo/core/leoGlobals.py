@@ -6483,7 +6483,7 @@ def execute_shell_commands(commands,trace = False):
     for command in commands:
         wait = not command.startswith('&')
         if command.startswith('&'): command = command[1:].strip()
-        if trace: g.trace('wait: %s command: %s' % (wait,command))
+        if trace: print('\n>%s%s\n' % ('' if wait else '&',command))
         proc = subprocess.Popen(command,shell=True)
         if wait: proc.communicate()
 #@+node:ekr.20050503112513.7: *3* g.executeFile

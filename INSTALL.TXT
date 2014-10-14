@@ -37,17 +37,17 @@ Installing Leo on Linux
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
 into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-4-11.
+will be called something like leo-5-0.
 
 You now have two choices:
 
 1. You can run Leo from your home directory.
-   Just add  ~/leo-4-11 to your path.
+   Just add  ~/leo-5-0 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin by running
    Leo's install script as follows::
 
-    cd ~/leo-4-11-a2 # Change version as appropriate.
+    cd ~/leo-5-0-a1 # Change version as appropriate.
     chmod u+x install
     sudo ./install
 

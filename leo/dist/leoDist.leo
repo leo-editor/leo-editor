@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -92,6 +92,9 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
 </v>
+<v t="ekr.20101105103524.1491"></v>
+<v t="ekr.20101105103524.1493"></v>
+<v t="ekr.20101027070126.1662"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -425,7 +428,7 @@ import sys
 import time</t>
 <t tx="ekr.20090905082405.1490">def unlink (self,fn):
 
-    print('command: unlink: %s' % fn)
+    # print('command: unlink: %s' % fn)
     os.remove(fn)
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
@@ -531,13 +534,13 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 </t>
 <t tx="ekr.20101027070126.1639">'''Make all variable Leo distribution files::
 
-        bzr-manifest.txt
+        git-manifest.txt
         leo\dist\nsi-install-files.txt
         leo\dist\nsi-uninstall-files.txt
         leo.zip.
 '''
 
-version = '4.11-final' ##version
+version = '5.0-a1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -551,7 +554,7 @@ g.es_print('done') # '@button make-leo done')
 
     '''A class to make Leo distribution files:
 
-    bzr-manifest.txt.
+    git-manifest.txt.
     leo\dist\nsi-install-files.txt
     leo\dist\nsi-uninstall-files.txt
     leo.zip
@@ -560,19 +563,15 @@ g.es_print('done') # '@button make-leo done')
     @others
 </t>
 <t tx="ekr.20101027070126.1662">def run (self):
-
     '''The top-level logic.'''
-
+    g.cls()
     self.clean_spellpyx()
     self.make_manifest()
     files = self.clean_manifest()
-
     # Compute the list of all the directories.
     dirs = self.directoryList(rootDir)
-
     # Compute dictionaries of directories and files.
     dirDict,filesDict = self.makeDicts(dirs,files)
-
     # Print manifest lines not in either dict.
     # This is a crucial check.
     errors = self.printMissing(files,dirDict,filesDict)
@@ -623,7 +622,9 @@ g.es_print('done') # '@button make-leo done')
     # Remove specific files.
     deleteList = (
         '.bzrignore',
+        '.gitignore',
         'bzr-manifest.txt',
+        'git-manifest.txt',
         'bzr-small-manifest.txt',
         'setup.py',
         'leo/test/unittest/.leo_shadow/',
@@ -780,7 +781,8 @@ def deleteTempFiles (self,lines):
 
     # Add some special cases:
     for fn in ('*.pyo','*.pyc',
-        'uninst.exe','setup.py','bzr-manifest.txt',
+        'uninst.exe','setup.py',
+        'bzr-manifest.txt', 'git-manifest.txt'
     ):
         if fn not in aList:
             aList.append(fn)
@@ -848,61 +850,46 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
 <t tx="ekr.20101105103524.1491">def make_manifest(self):
-
-    '''Make bzr-manifest.txt.'''
-    
-    # make-leo-manifest.bat contains the following:
-    #   cls
-    #   cd c:\leo.repo\trunk
-    #   del bzr-manifest.txt
-    #   bzr ls -V -R &gt;bzr-manifest.txt
-    #   dir bzr-manifest.txt
+    '''Create git-manifest.txt.'''
+    os.chdir(rootDir) # Can't be done below.
     commands = (
-        (r'c:\Scripts\make-leo-manifest.bat',False),
-            # This helper script does all the work.
+        # r'pwd',
+        r'del git-manifest.txt',
+        r'c:\apps\Git\bin\git.exe ls-files &gt; git-manifest.txt',
+        # r'dir git-manifest.txt',
+        # r'ed git-manifest.txt',     
     )
-    for command,shell in commands:
-        print('command: %s' % command)
-        proc = subprocess.Popen(command,shell=shell) # ,stderr=subprocess.PIPE)
-        proc.communicate()  # Wait for the process to terminate.
+    g.execute_shell_commands(commands,trace=True)
 </t>
 <t tx="ekr.20101105103524.1493">def make_zip(self):
-
+    '''Create the zip file.'''
     for z in (zipFile,zipFile2):
         if exists(z): self.unlink(z)
-
-    # Weird: system('cd x') doesn't seem to work here.
-    os.chdir(rootDir)
-    # g.trace(os.path.abspath('.'))
+    os.chdir(rootDir) # Required.
     commands = (
         # This commit ensures the proper files are included in the distribution.
-        # r'bzr commit -m "commit doc files during make"',
-        # r'bzr status',
-        r'bzr export "%s"' % (zipFile),
-        # r'bzr export --root="%s" "%s"' % (bzrRoot,zipFile2),
-        # r'dir %s' % (rootDir),
+        # r'git commit -m "commit doc files during make"',
+        # r'git status',
+        r'c:\apps\Git\bin\git.exe archive --format zip --output "%s" master' % (zipFile),
+        r'dir %s' % (zipFile),
     )
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
+    g.execute_shell_commands(commands,trace=True)
     # Remove the temporary zip file.
     if exists(zipFile2):
         self.unlink(zipFile2)
+    # g.trace(g.os_path_exists(zipFile),zipFile)
 </t>
 <t tx="ekr.20101105103524.1494">def clean_manifest(self):
-
-    # Create and filter the list of files from the manifest.
+    '''Create and filter the list of files from the manifest.'''
     f = open(manifest_fn)
     s = f.read()
     f.close()
     lines = g.splitLines(s)
     lines = self.filterLines(lines)
-
     # Write the file back.
     f = open(manifest_fn,'w')
     f.write('\n'.join(lines))
     f.close()
-
     return lines
 </t>
 <t tx="ekr.20101115090518.1494">Leo 4.8 final                               November 26, 2010
@@ -1037,7 +1024,7 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 # Next.
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
-manifest_fn =   abspath(join(rootDir,'bzr-manifest.txt'))
+manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
 install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
 uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
 zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
@@ -1146,17 +1133,17 @@ Installing Leo on Linux
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
 into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-4-11.
+will be called something like leo-5-0.
 
 You now have two choices:
 
 1. You can run Leo from your home directory.
-   Just add  ~/leo-4-11 to your path.
+   Just add  ~/leo-5-0 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin by running
    Leo's install script as follows::
 
-    cd ~/leo-4-11-a2 # Change version as appropriate.
+    cd ~/leo-5-0-a1 # Change version as appropriate.
     chmod u+x install
     sudo ./install
 
