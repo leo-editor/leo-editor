@@ -1560,7 +1560,10 @@ def run_pylint(fn,rc,
         return g.trace('does not exist:',fn)
     if not g.os_path_exists(rc):
         return g.trace('does not exist',rc)
+    # g.trace(rc)
     args = ['--rcfile=%s' % (rc)]
+    # Prints error number.
+    # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     args.append(fn)
     if sherlock:
         sherlock = g.SherlockTracer(
