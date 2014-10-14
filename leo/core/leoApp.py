@@ -920,8 +920,8 @@ class LeoApp:
 
         if frame in g.app.windowList:
             # g.trace(g.app.windowList)
-            g.app.windowList.remove(frame)
             g.app.forgetOpenFile(frame.c.fileName())
+            g.app.windowList.remove(frame)
 
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -935,8 +935,6 @@ class LeoApp:
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        if g.app.gui:
-            g.app.gui.destroySelf()
         # Don't use g.trace!
         # print('app.finishQuit: setting g.app.killed',g.callers())
         g.app.killed = True
@@ -944,22 +942,26 @@ class LeoApp:
             # Alas, "idle" events can still be called
             # even after the following code.
         g.app.idleTimeHook = None
+        if g.app.gui:
+            g.app.gui.destroySelf()
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown
     def forceShutdown (self):
+        """
+        Forces an immediate shutdown of Leo at any time.
 
-        """Forces an immediate shutdown of Leo at any time.
-
-        In particular, may be called from plugins during startup."""
-
+        In particular, may be called from plugins during startup.
+        """
+        trace = False
         # Wait until everything is quiet before really quitting.
+        if trace: print('forceShutdown: before end1')
         g.doHook("end1")
-
+        if trace: print('forceShutdown: after end1')
         self.log = None # Disable writeWaitingLog
         self.killed = True # Disable all further hooks.
-
         for w in self.windowList[:]:
+            if trace: print('forceShutdown: %s' % w)
             self.destroyWindow(w)
-
+        if trace: print('before finishQuit')
         self.finishQuit()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self,fileName,relativeFileName=None,gui=None,previousSettings=None):

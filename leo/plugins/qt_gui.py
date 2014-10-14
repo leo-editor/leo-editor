@@ -74,7 +74,9 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18484: *3*  LeoQtGui.destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
-        self.qtApp.exit()
+        # print('LeoQtGui.destroySelf: %s' % self.qtApp)
+        self.qtApp.exit(0)
+        self.qtApp.deleteLater()
     #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
     def replaceClipboardWith (self,s):
 
