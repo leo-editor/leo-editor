@@ -3490,6 +3490,7 @@ class AtFile:
             aClass = d.get(key)
             if aClass and g.match_word(root.h,0,key):
                 def writer_for_at_auto_cb(root):
+                    # pylint: disable=cell-var-from-loop
                     try:
                         return aClass(at.c).write(root)
                     except Exception:
