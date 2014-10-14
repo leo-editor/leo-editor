@@ -6,7 +6,7 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-
+# py--lint: disable=bad-continuation
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
@@ -1261,7 +1261,8 @@ class LeoApp:
         '''Forget the open file, so that is no longer considered open.'''
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
-        if not fn:
+        if not d or not fn:
+            # Fix https://github.com/leo-editor/leo-editor/issues/69
             return
         if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             return
