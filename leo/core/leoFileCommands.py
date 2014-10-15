@@ -1156,7 +1156,7 @@ class FileCommands:
                 x = g.app.nodeIndices
                 # new gnxs:
                 # Important: this should retain compatibility with old .leo files.
-                v.fileIndex = x.toString(x.scanGnx(sax_node.tnx,0))
+                v.fileIndex = x.tupleToString(x.scanGnx(sax_node.tnx))
                 # old gnxs: retain for reference.
                 # v.fileIndex = x.scanGnx(sax_node.tnx,0)
         index = self.canonicalTnodeIndex(sax_node.tnx)

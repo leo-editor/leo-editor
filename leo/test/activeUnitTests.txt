@@ -7974,9 +7974,11 @@ if not g.app.isExternalUnitTest:
     h = '@file unittest/at-file-line-number-test.py'
     target = g.findNodeAnywhere(c,h)
     assert target,'no target'
+    gnx = target.v.fileIndex
+    assert gnx
     
-    gnx = g.app.nodeIndices.toString(target.v.fileIndex)
-    assert gnx,'no gnx'
+    #gnx = g.app.nodeIndices.toString(target.v.fileIndex)
+    #assert gnx,'no gnx'
     
     delim = '#'
     found = c.GoToLineNumber(c).findGnx(delim,root,gnx,h)
@@ -14458,7 +14460,7 @@ c.redraw()
 #@+node:ekr.20140724164208.5505: *5* insertAsFirstChild
 #@+node:ekr.20140724164208.5507: *5* insertAsNthChild(1)
 #@+node:ekr.20140724164208.5506: *5* insertAsLastChild
-#@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
+#@+node:ekr.20080310073711.1: *4* @@@test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
 assert(len(gnx) > 1)

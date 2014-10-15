@@ -87,12 +87,12 @@ class NodeIndices (object):
             if g.match(s,i,'.'):
                 i,n = g.skip_to_char(s,i+1,'.')
         # Use self.defaultId for missing id entries.
-        if theId == None or len(theId) == 0:
+        if not theId:
             theId = self.defaultId
         # Convert n to int.
-        if n:
-            try: n = int(n)
-            except Exception: pass
+        # if n:
+            # try: n = int(n)
+            # except Exception: pass
         return theId,t,n
     #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp (self):
@@ -120,34 +120,49 @@ class NodeIndices (object):
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20031218072017.1999: *3* ni.toString
-    def toString (self,index):
-        '''
-        Convert a tuple, string or None to its string representation.
-        *Important* the present sax code and earlier versions of Leo
-        use various kinds of tuples.  Do *not* change the tuple-related code!
-        '''
-        if g.isString(index): # new gnxs:
-            return g.toUnicode(index)
-        elif index is None: # new gnxs:
-            return self.getNewIndex() 
-        try:
-            theId,t,n = index
-            if n in (None,0,'',):
-                s = "%s.%s" % (theId,t)
-            else:
-                s = "%s.%s.%d" % (theId,t,n)
-        except Exception:
-            if not g.app.unitTesting:
-                g.trace('unusual gnx',repr(index),g.callers()) 
+    if 0:
+        def toString (self,index):
+            '''
+            Convert a tuple, string or None to its string representation.
+            *Important* the present sax code and earlier versions of Leo
+            use various kinds of tuples.  Do *not* change the tuple-related code!
+            '''
+            if g.isString(index): # new gnxs:
+                return g.toUnicode(index)
+            elif index is None: # new gnxs:
+                return self.getNewIndex() 
             try:
-                theId,t,n = self.getNewIndex()
+                theId,t,n = index
                 if n in (None,0,'',):
                     s = "%s.%s" % (theId,t)
                 else:
-                    s = "%s.%s.%d" % (theId,t,n)
+                    s = "%s.%s.%s" % (theId,t,n)
             except Exception:
-                s = repr(index)
-                g.trace('double exception: returning repr(index)',s)
+                if not g.app.unitTesting:
+                    g.trace('unusual gnx',repr(index),g.callers()) 
+                try:
+                    theId,t,n = self.getNewIndex()
+                    if n in (None,0,'',):
+                        s = "%s.%s" % (theId,t)
+                    else:
+                        s = "%s.%s.%d" % (theId,t,n)
+                except Exception:
+                    s = repr(index)
+                    g.trace('double exception: returning repr(index)',s)
+            return g.toUnicode(s)
+    #@+node:ekr.20141015035853.18304: *3* ni.tupleToString
+    def tupleToString (self,aTuple):
+        '''
+        Convert a gnx tuple returned by scanGnx
+        to its string representation.
+        '''
+        theId,t,n = aTuple
+        # This logic must match the existing logic so that
+        # previously written gnx's can be found.
+        if n in (None,0,'',):
+            s = "%s.%s" % (theId,t)
+        else:
+            s = "%s.%s.%s" % (theId,t,n)
         return g.toUnicode(s)
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
