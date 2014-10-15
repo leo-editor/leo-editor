@@ -1151,6 +1151,76 @@
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
 <v t="ekr.20140810085801.18216"></v>
 <v t="ekr.20140810085801.18230"></v>
+<v t="ekr.20141015084905.18376"><vh>To FAQ</vh>
+<v t="ekr.20141015084905.18377"><vh>All about clone conflicts</vh>
+<v t="ekr.20141015084905.18378"><vh>Re: All about clone conflicts</vh></v>
+</v>
+<v t="ekr.20141015084905.18379"><vh>Unit-testing tutorial</vh></v>
+<v t="ekr.20141015084905.18380"><vh>Background Images in body pane?</vh>
+<v t="ekr.20141015084905.18381"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20141015084905.18382"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20141015084905.18383"><vh>Re: Background Images in body pane?</vh></v>
+</v>
+<v t="ekr.20141015084905.18384"><vh>Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?</vh></v>
+<v t="ekr.20141015084905.18385"><vh>Create Pane For matplotlib chart</vh>
+<v t="ekr.20141015084905.18386"><vh>Re: Create Pane For matplotlib chart</vh></v>
+<v t="ekr.20141015084905.18387"><vh>Re: Create Pane For matplotlib chart</vh></v>
+<v t="ekr.20141015084905.18388"><vh>Re: Create Pane For matplotlib chart</vh></v>
+</v>
+<v t="ekr.20141015084905.18389"><vh>How to call functions from LeoPyRef.Leo</vh>
+<v t="ekr.20141015084905.18390"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18391"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18392"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18393"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18394"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+</v>
+<v t="ekr.20141015084905.18395"><vh>How to make body text insertion at cursor permanent?</vh>
+<v t="ekr.20141015084905.18396"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20141015084905.18397"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20141015084905.18398"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20141015084905.18399"><vh>Re: the workflow of write leo scripts?</vh></v>
+</v>
+<v t="ekr.20141015084905.18400"><vh>How to use leo to make mathematical notes?</vh></v>
+<v t="ekr.20141015084905.18401"><vh>Parameterized template nodes</vh>
+<v t="ekr.20141015084905.18402"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141015084905.18403"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141015084905.18404"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141015084905.18405"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141015084905.18406"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141015084905.18407"><vh>Re: Parameterized template nodes</vh></v>
+</v>
+<v t="ekr.20141015084905.18408"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
+<v t="ekr.20141015084905.18409"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18410"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18411"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18412"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18413"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18414"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20141015084905.18415"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+</v>
+<v t="ekr.20141015084905.18416"><vh>the workflow of write leo scripts?</vh></v>
+<v t="ekr.20141015084905.18417"><vh>Document: Cannot open Leo files by double-click in Windows Explorer?</vh>
+<v t="ekr.20141015084905.18418"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18419"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18420"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18421"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18422"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18423"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18424"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18425"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18426"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18427"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18428"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20141015084905.18429"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+</v>
+<v t="ekr.20141015084905.18430"><vh>Newbie Leo questions for php projects</vh></v>
+</v>
+<v t="ekr.20141015084905.18436"><vh>To Release notes</vh>
+<v t="ekr.20141015084905.18437"><vh>Document four plugins</vh></v>
+<v t="ekr.20141015084905.18438"><vh>Document recent tags work</vh></v>
+<v t="ekr.20141015084905.18439"><vh>Tool for diffing Leo files</vh></v>
+<v t="ekr.20141015084905.18440"><vh>Indexing files for full text search</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20333,6 +20403,1834 @@ On entry, the dispatcher has set vc.w to the widget with focus. First, the
 code ensures that this widget is a text widget. If so, the code uses the
 vc.do method, a thin wrapper for c.k.simulateCommand, to execute Leo
 commands by name.
+</t>
+<t tx="ekr.20141015084905.18376"></t>
+<t tx="ekr.20141015084905.18377">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That's not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @&lt;file&gt; node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline, Leo
+   creates a "Recovered nodes" tree. This tree contains all the various
+   values for C, nicely formatted so that it is easy to determine where the
+   differences are.
+
+2. I've just refreshed my memory by looking at the code.  The relevant methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
+
+3. The present code is the simplest code that could possibly work. There is
+no way Leo is going to do AI in order to implement complex rules for which
+clones are "more important" than others. Thus, if you use cross-file
+clones, it is up to *you* to know these rules and handle any resulting
+conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
+Leo, and makes it impossible to lose data unless you willfully refuse to
+examine the data.
+</t>
+<t tx="ekr.20141015084905.18378">From: Joon Ro &lt;joonpyro@gmail.com&gt;
+
+Thanks for the explanation. As a matter of fact, I was having hard time 
+understanding this. 
+
+I had my source file in a @shadow node, and then I had a backup of that 
+file as @file node, which had clones of the nodes of the source @shadow 
+file and some other codes that I stashed. 
+
+Whenever I changed the source code externally with leo closed, when I open 
+leo, it made recovered nodes. The problem was since @file was placed 
+"later" in the outline, leo kept putting the new changes I made to old, 
+instead of new.
+
+Now I understand how this works. but I think in multiple external file 
+cases, it would make more sense if leo checks the file modification time 
+when it makes decision which node is new, instead of just depending on the 
+order of files in the outline. In above case, it is natural for me to have 
+actual source nodes on the top of the outline and backup nodes on the 
+bottom. Please let me know what you think. 
+</t>
+<t tx="ekr.20141015084905.18379">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+The following is a first draft of a unit-testing tutorial.  It will form 
+the basis of a new help-for-unit-testing command, and may also become the 
+introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+-----
+
+Leo makes it easy to create and run unit tests from individual outline 
+nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do:
+&lt;alt-x&gt;run-selected-unit-tests-locally.
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do:
+&lt;alt-x&gt;run&lt;tab&gt;
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+For more details about unit testing, see: 
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's.
+You only need to be concerned about unit tests that start failing after you 
+make your changes.
+
+</t>
+<t tx="ekr.20141015084905.18380">From: tfer &lt;tfetherston@aol.com&gt;
+
+I was wondering if the Qt widget used for body text has a provision for 
+background images?
+
+I'm thinking that it might be interesting to have some wallpapers/tiles to 
+visually represent various categories of methods, e.g. initors, setters, 
+getters, etc.  Maybe ones that hint at the uses of a particular design 
+pattern.  Maybe us a uA to control setting?
+</t>
+<t tx="ekr.20141015084905.18381">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
+
+&gt; I was wondering if the Qt widget used for body text has a provision for
+&gt; background images?
+&gt;
+
+Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
+http://qt-project.org/doc/qt-4.8/qtextbrowser.html
+a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
+QWidget, so there *might* be a way to have a background image "leak"
+through the text.
+</t>
+<t tx="ekr.20141015084905.18382">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+--MP_/NJ5QIult88.7_K/HpvnV2eA
+
+On Wed, 1 May 2013 04:19:52 -0500
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
+&gt; 
+&gt; &gt; I was wondering if the Qt widget used for body text has a provision for
+&gt; &gt; background images?
+&gt; &gt;
+&gt; 
+&gt; Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
+&gt; http://qt-project.org/doc/qt-4.8/qtextbrowser.html
+&gt; a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
+&gt; QWidget, so there *might* be a way to have a background image "leak"
+&gt; through the text.
+&gt; 
+&gt; Edward
+&gt; 
+
+QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
+
+in the stylesheet gives the effect attached (i.e. it works).
+
+If you wanted node specific backgrounds Leo would have to start setting
+an attribute on the body widget, probably the gnx, so you could do
+
+QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
+  background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
+}
+
+Cheers -Terry
+
+</t>
+<t tx="ekr.20141015084905.18383">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Wed, May 1, 2013 at 8:42 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt;
+&gt;
+&gt; QTextEdit#richTextEdit { background-image:
+&gt; url('/home/tbrown/Desktop/cow2.jpg'); }
+&gt;
+&gt; in the stylesheet gives the effect attached (i.e. it works).
+&gt;
+&gt; If you wanted node specific backgrounds Leo would have to start setting
+&gt; an attribute on the body widget, probably the gnx, so you could do
+&gt;
+&gt; QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
+&gt;   background-image: url('/home/tbrown/Desktop/cow2.jpg');
+&gt; }
+&gt;
+
+Wow!  Thanks for this.  LeoUser wrote a version of Leo in Jython (using the
+Swing classes), and he claimed that he could watch *movies* in the body
+pane :-)
+
+I'll add this to the Leo/To Document list.  Not sure yet how that list is
+going to get translated into action.  Still reading Getting Things Done :-)
+</t>
+<t tx="ekr.20141015084905.18384">From: wgw &lt;wgwinder@gmail.com&gt;
+
+For the moment, I use Meld to compare/update myLeoSettings.leo file. That 
+seems a bit error-prone. Is there a better way? By update, I mean that, for 
+example, in the bzr copy of LeoSettings.leo, the code_wise node says :
+
+True: use codewise completions.
+False: use leo-specific completions.
+
+This setting is no longer used!
+
+But in my (now old) myLeoSettings.leo file it says: 
+
+True: use codewise completions.
+False: use leo-specific completions
+
+I want to transfer that updated setting comment to myLeoSettings so that I 
+don't have to refer to LeoSetttings.leo when I tweak my installation. 
+
+Another example: the plugins list will change with new plugins or 
+eliminated plugins, but those changes won't be noted in the myLeoSettings 
+file. So you have to check both settings files to find/enable plugins.
+
+In general, it would seem useful to be able to merge the two leo files 
+(like bzr merge?) or somehow make note of differences in the myLeoSettings 
+file. 
+
+This is starting to sound complicated.... :) Sorry!
+
+EKR
+
+It is complicated.  One tiny workaround is to delete nodes from
+myLeoSettings.leo if and when they become unused.  More generally, you only
+have to put nodes in myLeoSettings.leo if they are different from the
+defaults.  But you probably already know that :-)
+
+Really, this is a special case of the fundamental problem the Leo
+developers have been struggling with:  Leo is great for storing gobs of
+data, but not so great at sharing.  As a result, everyone, including Leo's
+developers, struggles to remember, access or browse all the great stuff
+that is already present.
+
+Requiring tags is no solution: it's hopeless to require volunteers to do
+anything :-)  I'm not just making a joke.  Someone who contributes a script
+to this Google Group is under no further obligation to somehow be
+compatible with *any* other submission rules.  Somehow, it's up to me, or
+the other core developers, to find a simple, reliable way of "indexing" the
+submissions.  Right now I have no solutions.
+</t>
+<t tx="ekr.20141015084905.18385">From: felix74 &lt;hjuucy@googlemail.com&gt;
+
+I'm trying to create a interactive chart in a embedded in a new leo pane 
+using matplotlib. However, I am not sure about the the best way  to 
+implement this. I would appreciate some guidance on this please? The 
+questions I would like answered are:
+1/ How do I create a new blank pane for embedding a chart as well as other 
+QtWidgets.
+2/ Can I do this in a script or do I need to work with leo source 
+
+The context for wanting to do this is that I want to create a data 
+processing and visualization tool kit in leo. Like Excel but using nodes 
+instead of columns. As such I have data in nodes and can create new data 
+nodes by applying python functions to data in existing nodes. The thing 
+missing is the visualization within a leo pane (I can easily launch a chart 
+in it's own window) .
+</t>
+<t tx="ekr.20141015084905.18386">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 18 Sep 2012 05:59:59 -0700 (PDT)
+felix74 &lt;hjuucy@googlemail.com&gt; wrote:
+
+&gt; Terry,
+&gt;  
+&gt; Thanks for your help with this it was very helpful and a lot simpler than I 
+&gt; feared. I have managed to get a matplotlib graph embedded within a pane in 
+&gt; leo as a widget. I now need some help with how to interact with the 
+&gt; widget using scripts in leo. I am unsure about the following:
+&gt;  
+&gt; *1/ How do I expose the widget within th leo python environment?* 
+
+If you were only going to have one and you weren't going to destroy it,
+you could just do something simple like c._matplot = self in its
+constrictor (assuming c was passed to the constructor).
+
+If you're going to have more than one and they may be destroyed, it
+might be simplest to let the free_layout / nested_splitter system manage
+them.
+
+ts = c.free_layout.get_top_splitter()
+matplotters = ts.findChildren(myMatplotWidget)
+
+should return a list of the widgets of your class in the layout, but
+only if they're in the main window, widgets in extra windows opened
+from the "Open window" context menu item would be missed, I can add a
+find_children() method to complement the find_child() method the
+splitters already have to account for this.
+
+Detail: the above is just using Qt's QObject.findChildren(), the
+nested_splitter find_child() and (not yet written) find_children()
+versions search the extra windows as well.
+
+&gt; Here I have created a self.mat in your MatplotPaneProvider class to make 
+&gt; the windget accessible but it doesn't feel like the correct way to do this. 
+
+It should probably provide a fresh myMatplotWidget every time it's
+called, so don't construct one in the Provider's init, but in the
+ns_provide method.
+
+&gt; from PyQt4 import QtGui
+&gt; class MatplotPaneProvider:
+&gt; def __init__(self, c):
+&gt;      self.c = c
+&gt;     * self.mat = myMatplotWidget()*
+&gt;      if hasattr(c, 'free_layout'):
+[snip]  
+&gt; *2/I would also like to make the widget accessible from any script within 
+&gt; leo. What's the leo way of doing this?*
+
+See above.
+
+&gt; *3/ If I create more than 1 pane containing these widgest. How do I switch 
+&gt; between them in scripts?*
+
+Above again :-)
+ 
+&gt; *4/ Running this script more than once creates multiple items for Add 
+&gt; Matplot when pressing the Action button. How do I stop this from happening? 
+&gt; I have alrewady tried returning a unique integer in * ns_provider_id *but 
+&gt; that did not work.*
+
+The value returned by ns_provider_id should be unique for the provider
+class, but constant.  So it can just return "matplotlib provider ver 1"
+or something.
+</t>
+<t tx="ekr.20141015084905.18387">From: felix74 &lt;hjuucy@googlemail.com&gt;
+
+
+
+
+Terry,
+ 
+Thanks for your help with this it was very helpful and a lot simpler than I 
+feared. I have managed to get a matplotlib graph embedded within a pane in 
+leo as a widget. I now need some help with how to interact with the 
+widget using scripts in leo. I am unsure about the following:
+ 
+*1/ How do I expose the widget within th leo python environment?* 
+Here I have created a self.mat in your MatplotPaneProvider class to make 
+the windget accessible but it doesn't feel like the correct way to do this. 
+ 
+from PyQt4 import QtGui
+class MatplotPaneProvider:
+def __init__(self, c):
+     self.c = c
+    * self.mat = myMatplotWidget()*
+     if hasattr(c, 'free_layout'):
+         splitter = c.free_layout.get_top_splitter()
+     if splitter:
+         splitter.register_provider(self)
+    def ns_provides(self):
+         return[('Add matplot', '_add_matplot_pane')]
+    def ns_provide(self, id_):
+         if id_ == '_add_matplot_pane':
+         c = self.c
+         return self.mat
+ 
+    def ns_provider_id(self):
+
+# used by register_provider() to unregister previously registered
+# providers of the same service
+# provider ID is not the same as the service id_ above
+return "completely unique value here"
+
+ 
+*mat = MatplotPaneProvider(c)*
+*mat.mat.someMethod()*
+*mat.mat.someOtherMethod()*
+ 
+*2/I would also like to make the widget accessible from any script within 
+leo. What's the leo way of doing this?*
+ 
+*3/ If I create more than 1 pane containing these widgest. How do I switch 
+between them in scripts?*
+** 
+*4/ Running this script more than once creates multiple items for Add 
+Matplot when pressing the Action button. How do I stop this from happening? 
+I have alrewady tried returning a unique integer in * ns_provider_id *but 
+that did not work.*
+ 
+</t>
+<t tx="ekr.20141015084905.18388">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
+felix74 &lt;hjuucy@googlemail.com&gt; wrote:
+
+&gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
+&gt; using matplotlib. However, I am not sure about the the best way  to 
+&gt; implement this. I would appreciate some guidance on this please? The 
+&gt; questions I would like answered are:
+&gt; 1/ How do I create a new blank pane for embedding a chart as well as other 
+&gt; QtWidgets.
+&gt; 2/ Can I do this in a script or do I need to work with leo source 
+
+You can run this script from any body pane:
+---cut here---
+from PyQt4 import QtGui
+class MatplotPaneProvider:
+    def __init__(self, c):
+        self.c = c
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[('Add matplot', '_add_matplot_pane')]
+    def ns_provide(self, id_):
+        if id_ == '_add_matplot_pane':
+            c = self.c
+            w = QtGui.QSlider()
+            return w
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        # provider ID is not the same as the service id_ above
+        return "completely unique value here"
+
+MatplotPaneProvider(c)
+---cut here---
+
+Paste just as above and run the script.  Nothing happens.  Right click
+on one of the pane dividers and select Insert.  A new pane with a
+button 'Action' appears.  Click it, and select "Add matplot" from the
+context menu.
+
+Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
+</t>
+<t tx="ekr.20141015084905.18389">From: &lt;fidelperez@gmail.com&gt;
+
+I am going through something similar Matt Wilkie went through in this
+post&lt;https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
+.
+
+Basically I can find interesting functions in LeoPyRef.leo but I dont know 
+how to access them from my new leo scripts.
+
+I dont get the difference when I have to call them using g.Functionname(), 
+c.functionname(), or when those wont do.
+
+How can I call the function "insertIconFromFile"?
+How can I know how to call functions found in LeoPyRef.leo?
+
+Thanks!
+
+Ps: When I get that, I will already have a bookmarks importer from 
+chrome/mozilla which will also import the icons of the links! x)
+I will prepare some more interesting utils (import mindmap, etc) then 
+release them together with manuals oriented to noob users.
+
+</t>
+<t tx="ekr.20141015084905.18390">From: &lt;fidelperez@gmail.com&gt;
+
+Sounds great!
+So, in the search results, will I be able to know how to call that function?
+IE, if I find insertIconFromFile, will I be able to know that I can call it
+through using c.editCommands.insertIconFromFile?
+
+
+On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
+&gt;
+&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
+&gt; Fidel P=E9rez &lt;fidel...@gmail.com &lt;javascript:&gt;&gt; wrote:
+&gt;
+&gt; &gt; Ok, in order to print icons, the code is this:
+&gt; &gt;
+&gt; &gt; c.editCommands.insertIconFromFile(path)
+&gt; &gt;
+&gt; &gt; Im quoting from this Leo manual&lt;
+&gt; http://leoeditor.com/scripting.html#import-objects&gt;,
+&gt; &gt; "inserting and deleting icons" section -_-
+&gt; &gt;
+&gt; &gt; Although I still have a mess on which functions can be called how, and
+&gt; &gt; where to find the list of classes that can be called such as
+&gt; "editCommands"
+&gt; &gt; and the rest that they might exist.
+&gt;
+&gt; I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
+&gt; classes defined in the source, and instances of these are attached to
+&gt; each other in a hierarchical network (with loops).
+&gt;
+&gt; I've written an introspection function which lists the methods and
+&gt; instance variables (and class variables) of an arbitrary object by name
+&gt; and by type.  I should release it.  It builds its lists in a Leo
+&gt; outline, so you can navigate around that outline and expand nodes by
+&gt; introspection as needed.
+&gt;
+&gt; It occurs to me that the same code could be used to search Leo's
+&gt; runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
+&gt; and it recursively searches for it.
+&gt;
+&gt; Cheers -Terry
+&gt;
+
+</t>
+<t tx="ekr.20141015084905.18391">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Mon, May 20, 2013 at 8:47 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+
+&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
+&gt; Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wrote:
+&gt;
+
+&gt; Although I still have a mess on which functions can be called how, and
+&gt; where to find the list of classes that can be called such as
+"editCommands"
+&gt; and the rest that they might exist.
+
+I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
+&gt; classes defined in the source, and instances of these are attached to
+&gt; each other in a hierarchical network (with loops).
+&gt;
+
+I suppose you could say that there is no general solution, but the
+situation isn't really all that difficult.
+
+Start with c.  We know what that is:  it is a commander object representing
+an open outline.
+
+There are **official ivars** of c, all referring to wrapper classes defined
+in leoFrame.py:
+
+c.frame: an instance of leoFrame.
+c.frame.tree: an instance of  leoTree.
+c.frame.body: an instance of leoBody.
+c.frame.log: an instance of leoLog.
+
+The tree, body and log objects have a *ctrl* objects, which are *wrapper*
+classes:
+
+c.frame.tree.treeCtrl
+c.frame.body.bodyCtrl
+c.frame.log.logCtrl
+
+In particular, see
+http://leoeditor.com/scripting.html#c-frame-body-bodyctrlfor a
+description of the high-level text interface supported by all
+high-level text widgets, including the log and body classes.
+
+These wrapper classes have a widget ivar, which is a reference to the
+corresponding Qt widget object.  For example::
+
+    import PyQt4.QtGui as QtGui
+    w =3D c.frame.body.wrapper.widget
+    g.es(w)
+    g.es(isinstance(w,QtGui.QTextBrowser)
+
+yields::
+
+    (LeoQTextBrowser) 62418136
+    True
+
+As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
+
+HTH.  I've made a note to discuss official ivars in more detail in the
+scripting chapter.
+</t>
+<t tx="ekr.20141015084905.18392">From: &lt;fidelperez@gmail.com&gt;
+
+Ok, in order to print icons, the code is this:
+
+c.editCommands.insertIconFromFile(path)
+
+Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
+"inserting and deleting icons" section -_-
+
+Although I still have a mess on which functions can be called how, and
+where to find the list of classes that can be called such as "editCommands"
+and the rest that they might exist.
+Thanks!
+
+On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
+&gt;
+&gt; Hi, I am going through something similar Matt Wilkie went through in this
+&gt; post&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
+&gt; .
+&gt;
+&gt; Basically I can find interesting functions in LeoPyRef.leo but I dont know
+&gt; how to access them from my new leo scripts.
+&gt;
+&gt; I dont get the difference when I have to call them using g.Functionname(),
+&gt; c.functionname(), or when those wont do.
+&gt;
+&gt; How can I call the function "insertIconFromFile"?
+&gt; How can I know how to call functions found in LeoPyRef.leo?
+&gt;
+&gt; Thanks!
+&gt;
+&gt; Pd: When I get that, I will already have a bookmarks importer from
+&gt; chrome/mozilla which will also import the icons of the links! x)
+&gt; I will prepare some more interesting utils (import mindmap, etc) then
+&gt; release them together with manuals oriented to noob users.
+&gt;
+
+</t>
+<t tx="ekr.20141015084905.18393">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Mon, 20 May 2013 04:00:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
+
+&gt; Ok, in order to print icons, the code is this:
+&gt;
+&gt; c.editCommands.insertIconFromFile(path)
+&gt;
+&gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
+&gt; "inserting and deleting icons" section -_-
+&gt;
+&gt; Although I still have a mess on which functions can be called how, and
+&gt; where to find the list of classes that can be called such as "editCommands"
+&gt; and the rest that they might exist.
+
+I'm not aware of a general solution to the problem of finding the
+various pieces of Leo's class structure.  Basically there are all these
+classes defined in the source, and instances of these are attached to
+each other in a hierarchical network (with loops).
+
+I've written an introspection function which lists the methods and
+instance variables (and class variables) of an arbitrary object by name
+and by type.  I should release it.  It builds its lists in a Leo
+outline, so you can navigate around that outline and expand nodes by
+introspection as needed.
+
+It occurs to me that the same code could be used to search Leo's
+runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
+and it recursively searches for it.
+
+Cheers -Terry
+
+</t>
+<t tx="ekr.20141015084905.18394">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Mon, 20 May 2013 08:47:35 -0500
+Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
+&gt; Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; Ok, in order to print icons, the code is this:
+&gt; &gt;
+&gt; &gt; c.editCommands.insertIconFromFile(path)
+&gt; &gt;
+&gt; &gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
+&gt; &gt; "inserting and deleting icons" section -_-
+&gt; &gt;
+&gt; &gt; Although I still have a mess on which functions can be called how, and
+&gt; &gt; where to find the list of classes that can be called such as "editCommands"
+&gt; &gt; and the rest that they might exist.
+&gt;
+&gt; I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
+&gt; classes defined in the source, and instances of these are attached to
+&gt; each other in a hierarchical network (with loops).
+
+I didn't really finish the above para.  The problem is that it's hard
+to guess what the names of the attachment points are, and the attaching
+is done in a variety of places, sometimes by factory functions which
+further obscure linkages.  Not a fault with Leo, just the way programs
+work.  So the tool I've written may be the best approach to mapping
+Leo's runtime structure. Another thing it could do, try and map 'major'
+classes, or at least classes from leo.core.* - i.e. ignore the built in
+types.
+</t>
+<t tx="ekr.20141015084905.18395">From: SegundoBob &lt;bhossley@ieee.org&gt;
+
+This thread gives a recipe for inserting text into the body of a node
+at the current cursor:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a08d122e0cf59359/60be2b02f3ef3e94
+
+Unfortunately, this recipe has a problem:  When focus is moved away
+from and then back to the modified node, the inserted text
+disappears.  That is, Leo-Editor seems unaware of the insertion.
+
+The following recipe fixes this problem:
+
+http://pastebin.com/GAc15jRL
+
+Is this recipe the right way to do it or is there a better way?
+</t>
+<t tx="ekr.20141015084905.18396">From: SegundoBob &lt;bhossley@ieee.org&gt;
+
+I'm sorry no one has suggested a better way to make the changes
+permanent.  How does Leo-Editor notice that typing has inserted a few
+more characters?  Couldn't the same mechanism be used here?
+</t>
+<t tx="ekr.20141015084905.18397">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 17 Apr 2013 12:09:52 -0700 (PDT)
+SegundoBob &lt;bhossley@ieee.org&gt; wrote:
+
+&gt; This thread gives a recipe for inserting text into the body of a node
+&gt; at the current cursor:
+&gt; 
+&gt; http://groups.google.com/group/leo-editor/browse_thread/thread/a08d122e0cf59359/60be2b02f3ef3e94
+&gt; 
+&gt; Unfortunately, this recipe has a problem:  When focus is moved away
+&gt; from and then back to the modified node, the inserted text
+&gt; disappears.  That is, Leo-Editor seems unaware of the insertion.
+&gt; 
+&gt; The following recipe fixes this problem:
+&gt; 
+&gt; http://pastebin.com/GAc15jRL
+&gt; 
+&gt; Is this recipe the right way to do it or is there a better way?
+
+I think that's the way, see also:
+
+https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
+
+Depending on your use you might want to
+   
+    oldins = w.getInsertPoint() 
+
+    ...
+
+    w.setInsertPoint(oldins+len(inserted_text)) 
+
+to get the cursor where you want it afterwards, lots of variations how
+the new position might be calculated.
+
+Other possibly useful methods:
+
+    i,j = w.getSelectionRange(sort=True)
+    s = w.getSelectedText()  
+</t>
+<t tx="ekr.20141015084905.18398">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
+SegundoBob &lt;bhossley@ieee.org&gt; wrote:
+
+&gt; I'm sorry no one has suggested a better way to make the changes
+&gt; permanent.  How does Leo-Editor notice that typing has inserted a few
+&gt; more characters?  Couldn't the same mechanism be used here?
+
+I don't think Leo constantly updates p.b from w.getAllText(), but just
+does it when focus is lost - not sure about that though.
+
+Here's a thought for a higher level interface.
+
+c.get_edit_state() gives you an instance of a LeoEditState class with
+these attributes:
+
+  text attributes
+
+  les.all_text
+  les.text_before_select
+  les.text_after_select
+  les.selected_text
+  les.text_before_cursor
+  les.text_after_cursor
+
+  integer attributes
+
+  les.selection_start
+  les.selection_end
+  les.cursor_index
+
+then you can either do
+
+c.set_edit_state(les)
+
+which sets the editor text and p.b to les.all_text and sets up
+selection and insert position appropriately from the integers,
+
+or c.set_edit_state(les, mode='selection')
+or c.set_edit_state(les, mode='cursor')
+
+which assembles things based on the selection or cursor text attributes.
+
+Thoughts?  So long since I wrote any emacs text manipulation stuff I
+can't remember the idiom it used.
+
+Cheers -Terry
+
+
+
+&gt; On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that's the way,
+&gt; see also:
+&gt; &gt;
+&gt; &gt; https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
+&gt; &gt;
+&gt; Thanks.  I vaguely remembered this thread, but I couldn't find it.
+&gt; 
+&gt; &gt; Depending on your use you might want to
+&gt; &gt;
+&gt; &gt;     oldins = w.getInsertPoint()
+&gt; &gt;
+&gt; &gt;     ...
+&gt; &gt;
+&gt; &gt;     w.setInsertPoint(oldins+len(inserted_text))
+&gt; 
+&gt; http://pastebin.com/GAc15jRL  uses both w.getInsertPoint() and
+&gt; w.setInsertPoint()
+&gt; 
+&gt; &gt;
+&gt; &gt; to get the cursor where you want it afterwards, lots of variations how
+&gt; &gt; the new position might be calculated.
+&gt; &gt;
+&gt; &gt; Other possibly useful methods:
+&gt; &gt;
+&gt; &gt;     i,j = w.getSelectionRange(sort=True)
+&gt; &gt;     s = w.getSelectedText()
+&gt; 
+&gt; Yes, these are very useful.
+&gt; 
+</t>
+<t tx="ekr.20141015084905.18399">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Fri, 12 Apr 2013 10:09:40 +0800
+HaveF &lt;iamaplayer@gmail.com&gt; wrote:
+
+&gt; My workflow is like this
+&gt; [e.g., I want to select some text in the body and make transform, then
+&gt; insert to the body again]:
+
+Your workflow make sense for the general case of doing any arbitrary
+thing with Leo.  For the specific case of manipulating text, I think
+the API could be improved, or, seeing the existing API make sense for
+what it is, we could have additional "easy text manipulation" API.
+So long since I used Emacs I can't really remember its model, and if it
+would apply here.
+</t>
+<t tx="ekr.20141015084905.18400">From: &lt;lzyerste@gmail.com&gt;
+
+If I want to use leo to make mathematical notes, how can I type in some
+special mathematical sysbols? Or is there a good way to make mathematical
+notes using leo?
+
+===== Terry
+
+I use itex2MML with reStructuredText.  So within Leo you're looking at
+LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
+the latter.
+
+===== &lt;jose.i.rojas@gmail.com&gt;
+
+I've been doing this for about a year now.  I use the math docutils 
+directive.  A custom .XCompose file (for example: 
+https://github.com/kragen/xcompose)  also helps.
+
+===== Terry
+
+I think math was added to docutils after I started using itex2mml,
+neater to use docutils built in math now I think.
+
+Although having said that, playing with docutils math a bit suggests
+itex2mml gives more complete support for both MathMML and perhaps LaTeX
+math (with the PDF target).
+
+===== jose
+
+Terry, your setup is probably more flexible, but I haven't had any problems with 
+docutils math. It seems to support all the syntax that I've found necessary.
+
+I forgot to mention that the viewrendered plug-in doesn't display math 
+correctly.  I'm not sure what the problem is, I remember trying to figure 
+it out a while back, but I never got anywhere.  It's not really a big 
+problem though, I have scripts to compile nodes to html/pdfs and open them 
+in firefox/pdf reader; math works fine that way.
+
+===== From: offray@riseup.net
+
+Is not properly Leo, but is python related, tailored for math and with a
+web interface and has leo bindings, check Ipython:
+
+http://ipython.org/
+
+I'm using it for all my math related writing and I think that point the
+future of interactive writing in Python. I dream of a body pane on leo
+with the features of the pyton qt console.
+</t>
+<t tx="ekr.20141015084905.18401">From: Alexandre_Toledo &lt;jalexandretoledo@gmail.com&gt;
+
+As I use Leo to write PL/SQL code, I need to write similar text several
+times, changing only small parts of it. It would be great if I could create
+a node with the "template" and then clone it everywhere it should be
+written, and then providing the parameters to be used in this writing.
+
+Let me try to clarify it. I'd like to create a tree like this:
+
+ +- @file something.sql
+           +- Section 1
+              + &lt;&lt; Clone &gt;&gt; with Parameters A, B
+           +- Section 2
+              + &lt;&lt; Clone &gt;&gt; with Parameters C, D
+
+In this tree, both "Clone" nodes would be generated from a template
+specified somewhere in the tree, and would have parts of its text replaced
+with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
+
+I've searched but couldn't find anything like this, then I've thought of
+trying to write a hook to intercept the "save" command, but couldn't think
+of a way to pass the parameters; I think the obvious way would be to put
+the parameters after the "&lt;&lt; &gt;&gt;", but then all cloned nodes are changed, so
+it wouldn't work.
+
+Another alternative would be creating some kind of directive @something,
+but I have no idea of how to do that.
+
+Any ideas?
+</t>
+<t tx="ekr.20141015084905.18402">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
+
+You write "code Masks" and whenever you call a piece of code it will ask
+only for the parameters, and write the rest of the code. There are already
+some languages with most of the masks (all the primary functions and some
+complex ones) and its growing.
+
+For instance, if you write:
+
+"window" it will add the window to the code and let you edit the params.
+
+Their functionality would be awesome in Leo and when I know a bit better I
+will try to emulate on it.
+Sticking to Leo tho since it has a much superior way of managing data.
+
+
+On Saturday, May 4, 2013 12:48:27 AM UTC+2, Jo=E3o Alexandre Toledo wrote:
+&gt;
+&gt; Hi,
+&gt;
+&gt; Sorry for the delay... I'll try it this weekend and see how it works.
+&gt;
+&gt; Thank you.
+&gt;
+&gt; Jo=E3o
+</t>
+<t tx="ekr.20141015084905.18403">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Sun, 5 May 2013 16:35:59 -0700 (PDT)
+Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
+
+&gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
+&gt;
+&gt; You write "code Masks" and whenever you call a piece of code it will ask
+&gt; only for the parameters, and write the rest of the code. There are already
+&gt; some languages with most of the masks (all the primary functions and some
+&gt; complex ones) and its growing.
+
+I suspect different people have different things in mind when they talk
+about templates.
+
+Leo's abbreviation system is already quite advanced when it comes to
+filling in skeletons of common code layouts.  I type
+
+  def;;
+
+and I get
+
+  def foo(this, that=3D3):
+      """foo - Return
+ 
+      :Parameters:
+      - `this`: describe this
+      - `that`: &lt;|describe that|&gt;
+      """
+ 
+      &lt;|code|&gt;
+
+Two "parameters" are interactively requested, the function name, and
+the list of arguments.  The node name is presented as the default for
+the function name, and 'self' is included in the list of arguments, so,
+assuming the node was already called 'foo', all I type is this, that=3D3.
+The layout above is the rst form of the epydoc/sphinx docstring with
+formally identified parameters.
+
+The cursor is positioned after Return, where the was an empty &lt;||&gt;
+placeholder.  Pressing ,, selects the next placeholder so that typing
+replaces it.
+
+There's more, see
+https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
+and the screencast linked from there
+http://www.greygreen.org/tmp/leoabbrev.ogv
+
+Other people, Jacob etc. I think, have been talking about templates
+where the input parameters are stored in the outline, allowing for
+some of them to be altered and the template generation step re-run.
+More like generating a website from data etc.
+
+Cheers -Terry
+
+</t>
+<t tx="ekr.20141015084905.18404">From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
+
+Hi,
+
+Sorry for the delay... I'll try it this weekend and see how it works.
+
+Thank you.
+
+Jo=E3o
+
+</t>
+<t tx="ekr.20141015084905.18405">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--001a11c27f4813f73804dbad029f
+
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;
+jalexandretoledo@gmail.com&gt; wrote:
+
+&gt;
+&gt; As I use Leo to write PL/SQL code, I need to write similar text several
+&gt; times, changing only small parts of it. It would be great if I could create
+&gt; a node with the "template" and then clone it everywhere it should be
+&gt; written, and then providing the parameters to be used in this writing.
+&gt;
+
+Variants of this seem to be wanted by many people.  Most recently, there is
+the thread, "Templates with macro expansions",
+https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE
+
+Does that do what you want?
+
+Edward
+
+--001a11c27f4813f73804dbad029f
+
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:jalexandretoledo@gmail.com" target=3D"_blank"&gt;jalexandretoledo@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;
+&lt;div class=3D"gmail_quote"&gt;&lt;blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"&gt;&lt;br&gt;&lt;div&gt;As I use Leo to write PL/SQL code, I need to write similar text several times, changing only small parts of it. It would be great if I could create a node with the &amp;quot;template&amp;quot; and then clone it everywhere it should be written, and then providing the parameters to be used in this writing.&lt;/div&gt;
+&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Variants of this seem to be wanted by many people.=A0 Most recently, there is the thread, &amp;quot;Templates with macro expansions&amp;quot;, &lt;a href=3D"https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE"&gt;https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;Does that do what you want?&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Edward&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--001a11c27f4813f73804dbad029f--
+</t>
+<t tx="ekr.20141015084905.18406">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+Thank you Terry, that is exactly what I would like meant.
+
+Is there a website where abbreviation files are shared so newcomers can
+quickly being to use advanced abbreviations?
+Id love to download a python version x)
+
+On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
+&gt;
+&gt; On Sun, 5 May 2013 16:35:59 -0700 (PDT)
+&gt; Fidel P=E9rez &lt;fidel...@gmail.com &lt;javascript:&gt;&gt; wrote:
+&gt;
+&gt; &gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which
+&gt; bases its existence in that concept:
+&gt; &gt;
+&gt; &gt; You write "code Masks" and whenever you call a piece of code it will ask
+&gt; &gt; only for the parameters, and write the rest of the code. There are
+&gt; already
+&gt; &gt; some languages with most of the masks (all the primary functions and
+&gt; some
+&gt; &gt; complex ones) and its growing.
+&gt;
+&gt; I suspect different people have different things in mind when they talk
+&gt; about templates.
+&gt;
+&gt; Leo's abbreviation system is already quite advanced when it comes to
+&gt; filling in skeletons of common code layouts.  I type
+&gt;
+&gt;   def;;
+&gt;
+&gt; and I get
+&gt;
+&gt;   def foo(this, that=3D3):
+&gt;       """foo - Return
+&gt;  
+&gt;       :Parameters:
+&gt;       - `this`: &lt;|describe this|&gt;
+&gt;       - `that`: &lt;|describe that|&gt;
+&gt;       """
+&gt;  
+&gt;       &lt;|code|&gt;
+&gt;
+&gt; Two "parameters" are interactively requested, the function name, and
+&gt; the list of arguments.  The node name is presented as the default for
+&gt; the function name, and 'self' is included in the list of arguments, so,
+&gt; assuming the node was already called 'foo', all I type is this, that=3D3.
+&gt; The layout above is the rst form of the epydoc/sphinx docstring with
+&gt; formally identified parameters.
+&gt;
+&gt; The cursor is positioned after Return, where the was an empty &lt;||&gt;
+&gt; placeholder.  Pressing ,, selects the next placeholder so that typing
+&gt; replaces it.
+&gt;
+&gt; There's more, see
+&gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
+&gt; and the screencast linked from there
+&gt; http://www.greygreen.org/tmp/leoabbrev.ogv
+&gt;
+&gt; Other people, Jacob etc. I think, have been talking about templates
+&gt; where the input parameters are stored in the outline, allowing for
+&gt; some of them to be altered and the template generation step re-run.
+&gt; More like generating a website from data etc.
+&gt;
+&gt; Cheers -Terry
+&gt;
+</t>
+<t tx="ekr.20141015084905.18407">From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I've tried it and it's great, I think it will be useful, but it's not what
+I was thinking of...
+
+Let me try to explain what I had tougth about... What I would like to do is:
+
+ 1. create a new .leo file
+ 2. add a "template" node (eventually with sub nodes) with some ${schema}
+and ${table} macro place holders in its contents
+ 3. add a @file node to the .leo file
+ 4. add to this @file node a new one with definitions such as
+schema=3DSCHEMA_NAME and table=3DTABLE_NAME
+ 5. add as a sub node to this last one a clone from the "template" node;
+ 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
+"TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
+template node.
+
+It would be important that, when I reopen the .leo file later, the macros
+in the @file node where shown as ${schema} and ${table}, and not as it's
+substituted text.
+
+Now that I've described it, I can't see how it would be done... The
+${macro} place holders should be on the contents of the @file node, so
+after substitution, how could we recover it?
+
+That's also why the code from Jacob is not what I need (but I'm already
+thinking of other uses for it :) ): it will create a text when the button
+is pressed, but the generated nodes will be just static text.
+
+
+Thank you all.
+
+Leo is great!
+
+
+Jo=E3o
+
+
+On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
+&gt;
+&gt; Hi,
+&gt;
+&gt; Sorry for the delay... I'll try it this weekend and see how it works.
+&gt;
+&gt; Thank you.
+&gt;
+&gt; Jo=E3o
+</t>
+<t tx="ekr.20141015084905.18408">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+I have a note that it was an @rclick node handled by the context_menu.py 
+plugin, but I am not able to see code or documentation anywhere.  This 
+seems *well* hidden :-)
+</t>
+<t tx="ekr.20141015084905.18409">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+I don't have any visual indication of the existence of @rclick nodes,
+it would be nice.
+
+Something I've found useful is adding a @click node like:
+@rclick -------------
+
+that separates my entries from the ever present
+'Remove Button' and 'Goto Script' entries
+</t>
+<t tx="ekr.20141015084905.18410">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+
+I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
+
+One more thing.  It's reasonable to have the top-level button just be a
+placeholder for subsidiary @rclick nodes.  To do that without getting a
+warning when clicking the top-level button, set its script to "empty
+string".
+</t>
+<t tx="ekr.20141015084905.18411">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; I have a note that it was an @rclick node handled by the context_menu.py 
+&gt; plugin, but I am not able to see code or documentation anywhere.  This 
+&gt; seems *well* hidden :-)
+
+:) It's in the core, not context_menu.py.  It was a long time ago, but
+I remember finding the @button code tricky, so I'm not sure if it's an
+ideal implementation.  OTOH it hasn't broken for 1-2 years.
+
+Cheers -Terry
+
+</t>
+<t tx="ekr.20141015084905.18412">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+
+One more thing.  I can now put an @rclick node under an @button node, and
+right-clicking the created top-level button work pretty much as expected.
+
+But I remember that on your machine there was some indicator (a triangle?)
+in the top-level button indicating that it had structure.  Is that the
+case?  If so, how did you create such buttons?
+</t>
+<t tx="ekr.20141015084905.18413">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 11 Apr 2013 13:50:25 -0500
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+&gt;
+&gt; One more thing.  I can now put an @rclick node under an @button node, and
+&gt; right-clicking the created top-level button work pretty much as expected.
+&gt;
+&gt; But I remember that on your machine there was some indicator (a triangle?)
+&gt; in the top-level button indicating that it had structure.  Is that the
+&gt; case?  If so, how did you create such buttons?
+
+@settings
+   @string mod_scripting_subtext =3D =E2=96=BE
+</t>
+<t tx="ekr.20141015084905.18414">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 11 Apr 2013 20:15:33 -0500
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+&gt;
+&gt; I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
+&gt;
+&gt; One more thing.  It's reasonable to have the top-level button just be a
+&gt; placeholder for subsidiary @rclick nodes.  To do that without getting a
+&gt; warning when clicking the top-level button, set its script to "empty
+&gt; string".
+
+I think you mean set its script to a docstring describing the
+functions it groups together for the tooltip hover text :-)
+</t>
+<t tx="ekr.20141015084905.18415">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+
+&gt; On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
+&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; I have a note that it was an @rclick node handled by the context_menu.py
+&gt; &gt; plugin, but I am not able to see code or documentation anywhere.  This
+&gt; &gt; seems *well* hidden :-)
+&gt;
+&gt; :) It's in the core, not context_menu.py.  It was a long time ago, but
+&gt; I remember finding the @button code tricky, so I'm not sure if it's an
+&gt; ideal implementation.  OTOH it hasn't broken for 1-2 years.
+&gt;
+
+Thanks.  I could have sworn I searched Leo's core for @rclick.  Must have
+been a searching failure :-)  The code is in
+qtIconBarClass.setCommandForButton.
+
+I'll add documentation for this, in leoSettings.leo and also in the
+customizing Leo chapter.
+</t>
+<t tx="ekr.20141015084905.18416">From: HaveF &lt;iamaplayer@gmail.com&gt;
+
+I have read the scripting chapter of leo-editor, and already make my daily
+life easier with these quick dirty, but useful scripts.
+
+And I just want to know your workflow of writing leo scripts.
+
+My workflow is like this
+[e.g., I want to select some text in the body and make transform, then
+insert to the body again]:
+
+1. Abstract the action of word.
+[in this case, I choose "select" and "insert" as my key words]
+
+2. search the words at http://leoeditor.com/scripting.html see if there is
+existing some related topics.
+[I have luck to find
+i = w.getInsertPoint()              # Return the location of the cursor.
+...
+i,j = w.getSelectionRange(sort=True)
+...
+s = w.getSelectedText()             # Return the selected text, if any.
+]
+
+3. but I still don't know how to insert the text to body. So I search the
+above function names in the scripts.leo to see the code.
+[ I find in
+scripts.leo#Scripts--&gt;@thin leoScripts.txt--&gt;Text editing scripts--&gt;insert
+begin/endUpdate
+...
+w.insert(i,s1+'\\n\\t\\t\\n'+s2)
+...
+seems to help
+]
+
+4. test the scripts to see if it works, if it doesn't work, go to 3, to
+find more example code.
+
+Any suggestion to improve this workflow?
+</t>
+<t tx="ekr.20141015084905.18417">From: Nick_H &lt;nah@plextek.co.uk&gt;
+
+Sorry, this is probably a foolish question, but when I double-click on
+any Leo file on my desktop to launch Leo, it simply launches with the
+default workbook.leo file open.
+I can, of course, open any file via the File|Open dialog, but that's
+not so convenient.
+The file association contains the following command to execute for the
+Open operation:
+"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+%*"
+
+Can you suggest what might be wrong?
+Thank you!
+
+Nick
+
+</t>
+<t tx="ekr.20141015084905.18418">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+"On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+
+&gt; the docs have the wrong version, It should match the above:
+&gt; http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
+
+Good catch.  I think rather than updating this for every release, I'll
+try to generalize it a bit so people will understand what is intended.
+ The fix will probably be tricky: it's so hard to be clear and general
+at the same time.  Otoh, making instructions
+Python-and-Leo-version-depenedent is pretty hopeless.
+</t>
+<t tx="ekr.20141015084905.18419">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt; The file association contains the following command to execute for the
+&gt; Open operation:
+&gt; "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+&gt; %*"
+
+it's the trailing %*, use "%1" instead.
+
+You want %*  in a batch file. It passes all command line arguments to
+the program being called.
+
+"%1" passes just the file being clicked on, quoted for spaces etc.
+When in a batch file %1 passes just the first command line parameter.
+
+It is logical to expect %* to work for click file association as well,
+but it doesn't. I don't know why.
+
+</t>
+<t tx="ekr.20141015084905.18420">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt; Set up file type association:
+&gt;
+&gt; C:\\&gt; ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=
+=80=9C%1=E2=80=B3
+&gt; C:\\&gt; assoc .leo=3DLeoFile=20
+&gt;
+And put this leo.bat in %PATH%:
+&gt;
+&gt; @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+&gt;
+Edward (or anyone else with access to bzr, I don't right now (and the last=
+=20
+time it didn't work anyway ;-): the docs have the wrong version, It should=
+=20
+match the above:
+http://webpages.charter.net/edreamleo/install.html#installing-leo-on-window=
+s
+
+=20
+-matt=20
+</t>
+<t tx="ekr.20141015084905.18421">From: Nick_H &lt;nah@plextek.co.uk&gt;
+
+Many thanks to all for these replies!
+This is my final "open" string in the Windows file associations:
+"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py"=20
+--gui=3Dqttabs "%1"
+Note that the brackets are needed round the %1 to cater for file paths=20
+containing spaces.
+
+Matt, thanks for the extra details about using ftype and assoc. I hadn't=20
+realised those existed in Windows. For anyone else reading this, that is an=
+=20
+alternative to working through the file associations GUI.
+
+Nick
+
+On Saturday, April 14, 2012 4:30:10 PM UTC+1, Matt Wilkie wrote:
+&gt;
+&gt; &gt; it's the trailing %*, use "%1" instead.
+&gt;
+&gt; Here is my setup...
+&gt;
+&gt; Set up file type association:
+&gt;
+&gt; C:\\&gt; ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=
+=80=9C%1=E2=80=B3
+&gt; C:\\&gt; assoc .leo=3DLeoFile
+&gt;
+&gt;
+&gt; And put this leo.bat in %PATH%:
+&gt;
+&gt; @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+&gt;
+&gt; --=20
+&gt; -matt
+&gt;
+&gt;
+</t>
+<t tx="ekr.20141015084905.18422">From: HansBKK &lt;hansbkk@gmail.com&gt;
+
+On Tuesday, April 17, 2012 1:43:34 AM UTC+7, Matt Wilkie wrote:
+&gt;
+&gt; &gt; there's a very cool tool called "PortableFileAssociator" that allows you 
+&gt; to
+&gt; &gt; create a set of windows file associations, icons etc and enable/disable
+&gt;
+&gt; neat, thanks for the tip.
+&gt; oh, looks like it's problematic with portableapps.com suite 'cause of
+&gt; high false-positive AV warnings... but maybe the same functionality
+&gt; will be incorporated into the PA menu launcher. Cool.
+&gt; http://portableapps.com/node/15583?page=4
+&gt;
+
+Yes, many cool tools like this use autohotkey, or a certain compiler that 
+also gets used for some malware and triggers false positives for some of 
+the sloppier a/v packages.
+
+If you want to be safe, get a more balanced picture from one of these:
+http://www.virustotal.com/
+http://virusscan.jotti.org/en
+</t>
+<t tx="ekr.20141015084905.18423">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt; it's the trailing %*, use "%1" instead.
+
+Here is my setup...
+
+Set up file type association:
+
+C:\\&gt; ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=
+=80=9C%1=E2=80=B3
+C:\\&gt; assoc .leo=3DLeoFile
+
+
+And put this leo.bat in %PATH%:
+
+@start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+</t>
+<t tx="ekr.20141015084905.18424">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt; there's a very cool tool called "PortableFileAssociator" that allows you to
+&gt; create a set of windows file associations, icons etc and enable/disable
+
+neat, thanks for the tip.
+oh, looks like it's problematic with portableapps.com suite 'cause of
+high false-positive AV warnings... but maybe the same functionality
+will be incorporated into the PA menu launcher. Cool.
+http://portableapps.com/node/15583?page=4
+</t>
+<t tx="ekr.20141015084905.18425">From: HansBKK &lt;hansbkk@gmail.com&gt;
+
+Here's my launch batch. Note nothing's actually installed
+
+set HOME=E:\\aasync\\Data\\H_HOME
+cd \\aasync\\PortableApps\\leo-editor
+start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
+"..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
+exit
+</t>
+<t tx="ekr.20141015084905.18426">From: Eoin &lt;eoinmccarthy@fastmail.fm&gt;
+
+I got the association working on Windows 7 using:
+
+&gt;ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
+&gt;assoc .leo=3DLeoFile
+&gt;regsvr32 /i shell32.dll
+</t>
+<t tx="ekr.20141015084905.18427">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Fri, Apr 13, 2012 at 5:24 AM, Nick_H &lt;nah@plextek.co.uk&gt; wrote:
+
+&gt; "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+&gt; %*"
+&gt;
+&gt; Can you suggest what might be wrong?
+
+The last set of double quotes looks wrong.  Try:
+
+"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
+
+In this case, none of the double quotes are needed, because the paths
+have no embedded blanks, so this also should work:
+
+C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
+
+Finally, unless you have a strong reason not to do so, I would suggest
+adding the --gui=qttabs option::
+
+C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py
+--gui=qttabs %*
+</t>
+<t tx="ekr.20141015084905.18428">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+I'm glad you got it working.
+
+&gt;&gt;regsvr32 /i shell32.dll
+
+Just note that this command does a lot more than update file
+associations, and may undo some other customizations you've done
+(default program for camera preview, shortcut wizard behaviour, ...)
+Here are some things it does:
+http://www.pcworld.com/article/126116/windows_tips_fix_windows_glitches_by_reregistering_your_dlls.html
+
+</t>
+<t tx="ekr.20141015084905.18429">From: HansBKK &lt;hansbkk@gmail.com&gt;
+
+This is a bit OT, but: for those like me who work in "portable" mode, 
+there's a very cool tool called "PortableFileAssociator" that allows you to 
+create a set of windows file associations, icons etc and enable/disable the 
+whole profile at one time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows 
+boxes and bored with having to tweak each one separately.
+</t>
+<t tx="ekr.20141015084905.18430">From: Richard &lt;richardjohnlyon@gmail.com&gt;
+
+I am looking into using Leo for a few php projects at work.
+I think I have figured out how to use Leo, but was wondering if someone 
+could have a look at my small test project and let me know if I am using it 
+correctly. (The workbook should be attached, please let me know if there 
+are any problems).
+
+I like the idea of Leo, however I get the impression that if I use it 
+'wrong' then it will be more of a hindrance than a help.
+
+-----
+
+Just realised that that attachment is useless.
+
+What I have is :
+Nodes:
+@file foo.php
+@file test.php
+----- &lt;&lt; includes &gt;&gt;
+----- &lt;&lt; Connect to the database &gt;&gt;
+----- &lt;&lt; Disconnect from the database &gt;&gt;
+----- &lt;&lt; Test echo &gt;&gt;
+----- &lt;&lt; External file class test &gt;&gt;
+
+@file foo:
+&lt;?php
+    class Foo
+    {
+        public $foo;
+        public $bar;
+        
+        public function foobar()
+        {
+            echo $foo . $bar;
+        }
+    }
+?&gt;
+
+@file test.php
+&lt;?php
+    &lt;&lt; includes &gt;&gt;
+    &lt;&lt; Connect to the database &gt;&gt;
+    &lt;&lt; Test echo &gt;&gt;
+    &lt;&lt; Disconnect from the database &gt;&gt;
+    &lt;&lt; External file class test &gt;&gt;
+?&gt;
+
+&lt;&lt;includes&gt;&gt;:
+require('foo.php');
+
+&lt;&lt; Connect to the database &gt;&gt;
+echo "Connecting to the database";
+
+&lt;&lt; Test echo &gt;&gt;:
+echo "This is a test";
+
+&lt;&lt; Disconnect from the database &gt;&gt;:
+echo "Disconnecting from the database";
+
+&lt;&lt; External file class test &gt;&gt;:
+$foo = new Foo();
+
+$foo-&gt;foo = "foo";
+$foo-&gt;bar = "bar";
+
+$foo-&gt;foobar();
+
+Does this seem right? Or should I be doing something differently?
+</t>
+<t tx="ekr.20141015084905.18436"></t>
+<t tx="ekr.20141015084905.18437">contextmenu
+screenshots
+todo
+valuespace
+</t>
+<t tx="ekr.20141015084905.18438"></t>
+<t tx="ekr.20141015084905.18439">From: Terry Brown
+
+The script below is a tool for diffing two Leo files. The attached
+screenshot illustrates the output for two different revisions of
+LeoPyRef.leo.
+
+``- nodename``
+    indicates a node which disappeared
+``+ nodename``
+    a node which is new,
+``!v nodename`` followed by ``!^ nodename``
+    a node with an unchanged heading but changed content, the first
+    linking to the old version, the second linking to the new version
+
+If you have the bookmarks.py plugin active, you can double click nodes
+to jump to the original(s).
+
+
+
+from leo.core.leoNodes import vnode
+if not hasattr(vnode, 'insertAsLastChild'):
+    # add insertAsLastChild method to vnodes
+    def ialc(self):
+        vnode(self.context)._linkAsNthChild(self, len(self.children))
+        return self.children[-1]
+    vnode.insertAsLastChild = ialc
+
+from_filename = g.app.gui.runOpenFileDialog('From (old) file', [('Leo', '*.leo')])
+to_filename = g.app.gui.runOpenFileDialog('To (new) file', [('Leo', '*.leo')])
+
+# from_filename = "/mnt/shuttle/bkup/usr1/2012-07-13/home/tbrown/.leo/.todo.leo"
+# to_filename = "/mnt/shuttle/bkup/usr1/2012-07-15/home/tbrown/.leo/.todo.leo"
+
+from_c = g.openWithFileName(from_filename, c)
+to_c = g.openWithFileName(to_filename, c)
+
+vf = from_c.hiddenRootNode
+vt = to_c.hiddenRootNode
+
+assert from_c != c
+assert to_c != c
+assert from_c != to_c
+
+nd = c.rootPosition().insertAfter()
+nd.copy().back().moveAfter(nd)
+nd.h = 'diff @bookmarks'
+
+def text_match(a, b):
+    return (a.h == b.h, 
+            a.h == b.h and a.b == b.b)
+def gnx_match(a, b):
+    return (a.h == b.h and a.gnx == b.gnx, 
+            a.h == b.h and a.b == b.b and a.gnx == b.gnx)
+
+def diff_trees(vf, vt, path):
+
+    fonly = []  # nodes only in from tree
+    tonly = []  # nodes only in to tree
+    diffs = []  # nodes which occur in both but have different descendants
+
+    # count number of times each headline occurs as a child of
+    # each node being compared
+    count_f = {}
+    for cf in vf.children:
+        count_f[cf.h] = count_f.get(cf.h, 0) + 1
+    count_t = {}
+    for ct in vt.children:
+        count_t[ct.h] = count_t.get(ct.h, 0) + 1
+
+    for cf in vf.children:
+        
+        for ct in vt.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            
+            if body_eq:
+                diffs.append(diff_trees(cf, ct, path+[vf.h]))
+                
+                break
+            elif head_eq:
+                d = diff_trees(cf, ct, path+[vf.h])
+                if d:
+                    d.h = '!v '+d.h
+                else:
+                    d = vnode(nd.v.context)
+                    d.h = '!v '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    from_filename, 
+                    '--&gt;'.join((path+[vf.h]+[cf.h])[1:]),
+                    cf.b
+                )
+                diffs.append(d)
+                d = vnode(nd.v.context)
+                d.h = '!^ '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    to_filename, 
+                    '--&gt;'.join((path+[vt.h]+[ct.h])[1:]),
+                    ct.b
+                )
+                diffs.append(d)
+                break
+        else:
+            fonly.append(cf)
+            
+    for ct in vt.children:
+        
+        for cf in vf.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            if head_eq or body_eq:
+                # no need to recurse matches again
+                break
+
+        else:
+            tonly.append(ct)
+
+    if not any(diffs) and not fonly and not tonly:
+        return None
+        
+    vd = vnode(nd.v.context)
+    vd.h = vf.h
+    for d in diffs:
+        if d:
+            vd.children.append(d)
+    for f in fonly:
+        n = vd.insertAsLastChild()
+        n.h = '- '+f.h
+        n.b = "file://%s/#%s" % (from_filename, '--&gt;'.join((path+[vf.h]+[f.h])[1:]))
+    for t in tonly:
+        n = vd.insertAsLastChild()
+        n.h = '+ '+t.h
+        n.b = "file://%s/#%s" % (to_filename, '--&gt;'.join((path+[vf.h]+[t.h])[1:]))
+        
+    return vd
+
+v = diff_trees(vf, vt, [])
+if v:
+    nd.v.children.extend(v.children)  # snip off &lt;hidden root node&gt;
+
+c.bringToFront()
+c.redraw()
+
+=============
+
+From: resi147 &lt;scalet@yebu.de&gt;
+
+I tried this one and it seems to be very useful. What I would also like to 
+have is a similar (or the same) script,
+that does the same on two different nodes of a leo file. I admit, the 
+changes should be minimal to be done by
+myself, but as I'm not familiar with the internal leo api, I wanted to ask 
+for how to best do this changes.
+
+Probably somewhere here
+"""
+...
+vf = from_c.hiddenRootNode 
+vt = to_c.hiddenRootNode
+...
+"""
+just to feed in the 2 nodes, Any quick idea how this can be done the best 
+way?
+</t>
+<t tx="ekr.20141015084905.18440">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+Just pushed leo/external/leoftsindex.py:
+
+Stand alone GUI free index builder for Leo's full text search system::
+
+  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
+
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
+to index, and is indexed.
+
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
+containing a list of .leo files to index, with the list in
+the node indicated by the UNL after the #, e.g.::
+
+   path/to/myfile.leo#Lists--&gt;List of outlines
+
+In the latter case, if the node identified by the UNL has children,
+the list of files to scan is built from the first line of the body
+of each child node of the identified node (works well with bookmarks.py).
+If the node identified by the UNL does not have children, the
+node's body is assumed to be a simple text listing of paths to .leo files).
+
+note::
+    
+    It may be necessary to quote the "file" on the command line,
+    as the '#' may be interpreted as a comment delimiter::
+        
+        python leoftsindex.py "workbook.leo#Links"
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
