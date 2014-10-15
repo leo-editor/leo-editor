@@ -105,7 +105,7 @@ def init():
 # defer binding event until c exists
 def attachToCommander(t,k):
     c = k.get('c')
-    event = c.config.getString('active_path_event') or "icondclick1"
+    event = c.config.getString('active_path_event') or "headdclick1"
     # pylint: disable=unnecessary-lambda
     g.registerHandler(event, lambda t,k: onSelect(t,k))
 
