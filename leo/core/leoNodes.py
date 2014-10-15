@@ -14,7 +14,6 @@ import leo.core.leoGlobals as g
     # except ImportError: pass
 
 import copy
-import datetime
 import time
 import re
 import itertools
@@ -98,25 +97,12 @@ class NodeIndices (object):
     def setTimestamp (self):
 
         """Set the timestamp string to be used by getNewIndex until further notice"""
-        
-        trace = False
-        prtF = False
-        if g.app.db is None:
-            g.app.setGlobalDb()
-        lastTimeStamp = g.app.db.get('lastTimeStamp', '0')
-        if prtF: print('lastTimeStamp={0}'.format(lastTimeStamp))
-        newTimeStamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
-        if lastTimeStamp >= newTimeStamp:
-            if trace: g.trace('Time not increasing={0}'.format(newTimeStamp))
-            if prtF: print('Time in Past={0}'.format(newTimeStamp))
-            newTimeStamp = (datetime.datetime.strptime(lastTimeStamp,
-                "%Y%m%d%H%M%S") + datetime.timedelta(seconds=1)).strftime(
-                "%Y%m%d%H%M%S")
-        g.app.db['lastTimeStamp'] = newTimeStamp
-        self.timeString = newTimeStamp
 
-        if trace: g.trace(newTimeStamp,self.lastIndex,g.callers(4))
-        if prtF: print('newTimeStamp={0}'.format(newTimeStamp))
+        self.timeString = time.strftime(
+            "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
+            time.localtime())
+
+        g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20031218072017.1999: *3* ni.toString
