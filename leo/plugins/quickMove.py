@@ -233,19 +233,17 @@ class quickMove(object):
             self.txts[name] = short
 
             if first_last:
-                todo = [(True, 'first'), (False, 'last')]
+                todo = 'first child', 'last child', 'next sibling', 'prev sibling'
             else:
-                todo = [(None, '')]
+                todo = ['']
 
-            for ftrue, which in todo:
+            for which in todo:
 
-                def func(self=self, ftrue=ftrue, name=name, event=None):
-                    self.addButton(first=ftrue, type_=name)
-                # func = types.MethodType(func, None, quickMove)
+                def func(self=self, which=which, name=name, event=None):
+                    self.addButton(which=which, type_=name)
                 fname = 'func_'+name+'_'+short+'_' +which
-                # setattr(quickMove, fname, func)
                 if which:
-                    which = " "+which.title()+" Child"
+                    which = " "+which.title()
                 self.imps.append((func, fname, long+" "+short+which+" Button"))
                 cmdname = 'quickmove_'+long+" "+short+which
                 cmdname = cmdname.strip().lower().replace(' ', '_')
@@ -286,6 +284,14 @@ class quickMove(object):
                         new_dicts.append(buttons_todo[-1].copy())
                         buttons_todo[-1].update({'v':nd})
                     nd.u['quickMove'] = {'buttons': new_dicts}
+                    
+        # legacy stuff
+        for b in buttons_todo:
+            first = b.get('first', None)
+            if first is True:
+                b['first'] = 'first child'
+            if first is False:
+                b['first'] = 'last child'       
 
         for i in [b for b in buttons_todo if 'parent' not in b]:
             self.addButton(i['first'], i['type'], v=i['v'])
@@ -309,7 +315,7 @@ class quickMove(object):
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton
-    def addButton (self, first, type_="move", v=None, parent=None):
+    def addButton (self, which, type_="move", v=None, parent=None):
 
         '''Add a button that creates a target for future moves.'''
 
@@ -319,7 +325,7 @@ class quickMove(object):
             v = p.v
         sc = scriptingController(c)
 
-        mb = quickMoveButton(self,v,first,type_=type_)
+        mb = quickMoveButton(self,v,which,type_=type_)
 
         txt=self.txts[type_]
 
@@ -354,8 +360,8 @@ class quickMove(object):
             b = sc.createIconButton(
                 text,
                 command = mb.moveCurrentNodeToTarget,
-                statusLine = 'Move current node to %s child of %s' % (
-                    'first' if first else 'last',v.h),
+                statusLine = '%s current node to %s child of %s' % (
+                    type_.title(), which, v.h),
                 kind = "quick-move"
             )
 
@@ -366,10 +372,10 @@ class quickMove(object):
                     c.selectPosition(p)
                     c.redraw()
 
-                def cb_set_parent(event=None, c=c, v=v, first=first, type_=type_):
+                def cb_set_parent(event=None, c=c, v=v, first=which, type_=type_):
                     c.quickMove.set_parent(v, first, type_)
 
-                def cb_permanent(event=None, c=c, v=v, type_=type_, first=first):
+                def cb_permanent(event=None, c=c, v=v, type_=type_, first=which):
                     c.quickMove.permanentButton(v=v, type_=type_, first=first)
 
                 # def cb_clear(event=None, c=c, v=v):
@@ -505,14 +511,14 @@ class quickMove(object):
         
         for name, first_last, long, short in quickMove.flavors:
             if first_last:
-                todo = [(True, 'first'), (False, 'last')]
+                todo = 'first child', 'last child', 'next sibling', 'prev sibling'
             else:
-                todo = [(None, '')]
-            for ftrue, which in todo:
+                todo = ['']
+            for which in todo:
                 if which:
-                    which = " "+which.title()+" Child"
+                    which = " "+which.title()
                 k = "Set as "+long+" "+short+which+' target'
-                cmds[k] = {'first': ftrue, 'type': name}
+                cmds[k] = {'first': which, 'type': name}
                 menu.addAction(k)
                 
         pos = c.frame.top.window().frameGeometry().center()
@@ -778,13 +784,13 @@ class quickMoveButton:
 
     #@+others
     #@+node:ekr.20070117121326: *3* ctor
-    def __init__(self, owner, target, first, type_):
+    def __init__(self, owner, target, which, type_):
 
         self.c = owner.c
         self.owner = owner
         self.target = target
         self.targetHeadString = target.h
-        self.first = first
+        self.which = which.strip().lower()
         self.type_ = type_
         self.has_parent = False
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
@@ -819,17 +825,29 @@ class quickMoveButton:
             p = p.clone()
 
         if self.type_ in ('move', 'clone'):
-            if self.first:
+            if self.which == 'first child':
                 p.moveToFirstChildOf(p2)
-            else:
+            elif self.which == 'last child':
                 p.moveToLastChildOf(p2)
+            elif self.which == 'next sibling':
+                p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
+            elif self.which == 'prev sibling':
+                p.moveToNthChildOf(p2.parent(), p2._childIndex)
+            else:
+                raise Exception("Unknown move type "+self.which)
 
         elif self.type_ == 'bkmk':
             unl = self.computeUNL(p)  # before tree changes
-            if self.first:
+            if self.which == 'first child':
                 nd = p2.insertAsNthChild(0)
-            else:
+            elif self.which == 'last child':
                 nd = p2.insertAsLastChild()
+            elif self.which == 'next sibling':
+                nd = p2.insertAfter()
+            elif self.which == 'prev sibling':
+                nd = p2.insertBefore()
+            else:
+                raise Exception("Unknown move type "+self.which)
             h = p.anyAtFileNodeName() or p.h
             while h and h[0] == '@':
                 h = h[1:]
@@ -837,13 +855,22 @@ class quickMoveButton:
             nd.b = unl
 
         elif self.type_ == 'copy':
-            if self.first:
+
+            if self.which == 'first child':
                 nd = p2.insertAsNthChild(0)
                 quickMove.copy_recursively(p, nd)
-                # unlike p.copyTreeFromSelfTo, deepcopys p.v.u
-            else:
+                # unlike p.copyTreeFromSelfTo, deepcopys p.v.u            
+            elif self.which == 'last child':
                 nd = p2.insertAsLastChild()
                 quickMove.copy_recursively(p, nd)
+            elif self.which == 'next sibling':
+                nd = p2.insertAfter()
+                quickMove.copy_recursively(p, nd)
+            elif self.which == 'prev sibling':
+                nd = p2.insertBefore()
+                quickMove.copy_recursively(p, nd)
+            else:
+                raise Exception("Unknown move type "+self.which)
 
         elif self.type_ in ('linkTo', 'linkFrom'):
             blc = getattr(c, 'backlinkController', None)
