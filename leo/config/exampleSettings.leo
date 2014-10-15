@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -88,6 +88,7 @@
 </v>
 <v t="ekr.20131119143342.18912"><vh>node xyz</vh></v>
 </v>
+<v t="ekr.20141014135135.2488"><vh>persistent state with json as a leo abbreviation</vh></v>
 </v>
 <v t="ekr.20131119143342.19202"><vh>Example key bindings</vh>
 <v t="ekr.20131119143342.19203"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -5718,6 +5719,65 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
+</t>
+<t tx="ekr.20141014135135.2488">@language rest
+
+From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+https://gist.github.com/tbnorth/5530059
+
+The abbreviation "persist;;" expands to::
+@language python
+
+    import json
+    
+    # name for persistent data store
+    json_state_file = "cache_info_file.json"   
+    if not os.path.exists(json_state_file):
+        # create persistent data store if it doesn't exist
+        json.dump({'cache_items':{}}, open(json_state_file, 'w'))
+    # load persistent data
+    cache_info = json.load(open(json_state_file))
+    
+    def main():
+        # do stuff with cache_info...
+    
+    if __name__ == '__main__':
+    
+        try:
+            main()
+        finally:
+            # save altered persistent data
+            json.dump(cache_info, open(json_state_file, 'w'), indent=4)
+    
+@language rest
+
+with appropriate interaction to customize all the parts which, in the above
+example, include "cache_", i.e. the filename and the variable name.
+
+The point is it seems silly to create a module and hence a dependency
+for what is barely 4 lines of actual code, but those 4 lines give you
+very handy robust persistence, so something like an editor abbreviation
+is the obvious way to make the available - nothing Leo specific here,
+except that only serious editors have abbreviations like that ;-).
+
+&gt; How do you use the code inserted by the abbreviation? 
+
+The code is just a framework for providing a dictionary the contents of
+which persist between runs of the program. I've used it for code that's
+making lots of small url requests against a server, to cache the results so
+that during development the crash / debug / re-run cycle is faster because
+each piece of data is requested only once, ever, not once every run. More
+recently I was using it to store key value pairs of filenames and a comment
+on the issue in the file, knowing that completing the analysis of the
+issues in the files would take more than one run of the program which was
+identifying the issues.
+
+So in the example below, the content of the cache_info dictionary is
+persistent, whatever main() does with it is seen next time the program's
+run. Nothing Leo specific except that it's really just an import statement
+plus 5 lines of code and doesn't seem worth its own file, but is more than
+you want to re-type all the time either, so ideal for an abbreviation in
+your favorite editor.
 </t>
 </tnodes>
 </leo_file>
