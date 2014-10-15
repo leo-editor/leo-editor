@@ -4295,34 +4295,20 @@ def toPythonIndex (s,index):
 #@+node:ekr.20140526144610.17602: *4* about string composition
 #@@nocolor-node
 #@+at
-# Here is a slightly modified version of the following post:
-# A beautiful pattern for composing large strings:
-# https://groups.google.com/d/msg/python-static-type-checking/kXoWIr8o9yc/743Ha4DdcAgJ
 # 
-# I have just "discovered" an absolutely gorgeous pattern for
-# creating results from large numbers of strings. A typical
-# use for this pattern is generating html files from data. I
-# stumbled upon this pattern while simplifying the
-# ReportTraverser class.
+# Here is an elegant pattern for creating results from large numbers of
+# strings, say when generating html files from data. It stresses the gc
+# much less than using string.join.
 # 
-# Guido and I discussed this issue in the thread, "A trivial
-# theorem kills an anti-pattern."
-# https://groups.google.com/forum/?fromgroups=#!topic/python-static-type-checking/9jsT1b89_gU
-# Here, I'd like to discuss a much better way to build up
-# results than using string.join. The new pattern minimizes
-# stress on the gc. It is also the most *beautiful* thing that
-# could possibly work.
-# 
-# Clearly, this is not a real discovery; it is simply new to
-# me. Judging from Guido's earlier remarks, it may new to him.
-# Having said that, it may seem trivial to some. Lisp-ers will
-# claim that it is the obvious thing to do in lisp :-) But as
-# I discuss below, the Python solution seems safer than
+# This pattern may seem trivial to lisp-ers who will claim that it is
+# the obvious thing to do. However, the Python solution seems safer than
 # typical lisp solutions.
 # 
 # ===== The problem
 # 
-# The ReportTraverser class creates an html files from an AST tree.  Here is a typical visitor::
+# The ReportTraverser class creates an html files from an AST tree. Here
+# is a typical visitor::
+#     
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -4332,15 +4318,14 @@ def toPythonIndex (s,index):
 #         r.visit(node.right)
 #         r.span_end()
 #         
-# This looks very simple, and indeed it is. The main problem
-# is that the helpers, r.span_start, r.visit, r.op and
-# r.span_end, write results immediately to the output stream.
-# In practice, this is a bit clunky. Worse, knowing about the
-# output stream "pollutes" the code.
+# This is simple, but the helpers, r.span_start, r.visit, r.op and
+# r.span_end, write results immediately to the output stream. This isn't
+# best: knowing about the output stream "pollutes" the code.
 # 
-# ===== The first iteration of the solution
+# ===== The first iteration
 # 
-# In the first big revision, all visitors returned strings.  Like this::
+# Let's have all visitors return strings.  Like this::
+#     
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -4351,44 +4336,41 @@ def toPythonIndex (s,index):
 #                 r.visit(node.right),
 #             r.span_end(),
 #         ])
-# There are plusses and minuses to this code. The code can
-# indent list arguments to make the structure of the generated
-# html code clearer. Because everything is a string, the
-# behind-the-scenes helpers are simpler. But the
-# ''.join(aList) pattern is a bit clumsy. Worse, the code
-# maximally stresses the gc. None of the minuses are really
-# bad, but when simplifying code I never like to settle for
-# "two steps forward and one step back".
+# 
+# In this version, we can indent arguments to make the structure of the
+# generated html code clearer. And because everything is a string, the
+# behind-the-scenes helpers are simpler.
+# 
+# But the ''.join(aList) pattern is a bit clumsy. Worse, the code
+# maximally stresses the gc.  We can do better.
 # 
 # ===== The second iteration
 # 
-# The ''.join([...]) pattern that is used in so many places
-# inspired me to consider using lists to build up intermediate
-# results. The first Aha was to replace ''.join([...]) with
-# r.join(sep,[...]). r.join was intended to build up lists of
-# lists. After this large, complex list was produced, a new
-# r.write (eventually named g.flatten_list) method would produce the
-# output by "traversing" the lists of lists. Only r.write
-# knows about the output stream, so there is no pollution.
-# (Aside: g.flatten_list always yields strings; it doesn't know or care
-# how the strings are used.)
+# The ''.join([...]) pattern suggests using lists to build results.
 # 
-# Here are r.join and r.write and the new version of
-# r.visit_list. In the interests of brevity, I'll show only
-# the final versions::
+# Aha: let's replace ''.join([...]) with r.join(sep,[...]).
+# 
+# This pattern creates a single result, a list of lists. A new method,
+# called r.write writes a result string by "traversing" the final list
+# of lists. **Important**: r.write eventually became g.flatten_list.
+# 
+# Here are r.join and r.write and the new version of r.visit_list::
+# 
 #     def visit_list(self,aList,sep=''):
 #         r = self
 #         if sep:
 #             return {'sep':sep,'aList':[r.visit(z) for z in aList]}
 #         else:
 #             return [r.visit(z) for z in aList]
+# 
 #     def join (self,aList,sep=''):
 #         if sep:
 #             return {'aList':aList,'sep':sep}
 #         else:
 #             return aList
+# 
 #     def write (self,f,obj):
-#         if isinstance(obj,{}.__class__):
+#         if isinstance(obj,dict):
 #             sep = obj.get('sep')
 #             assert g.isString(sep),sep
 #             aList = obj.get('aList')
@@ -4401,27 +4383,19 @@ def toPythonIndex (s,index):
 #         elif obj:
 #             assert g.isString(obj),obj.__class__.__name__
 #             f.write(obj)
+#             
 # There are several crucial things to understand about all these methods:
 # 
-# 1. The dicts make r.write robust. Dicts arise only from
-#    catenation operations, so there can be no confusion about
-#    what a list "really" means.
+# 1. The dicts make r.write robust. Dicts arise only from catenation
+#    operations, so there can be no confusion about what a list "really"
+#    means.
 # 
-# 2. Lists can contain *anything*, including dicts, other
-#    lists, None and strings. In particular, allowing None
-#    simplifies many visitors.
+# 2. Lists can contain *anything*, including dicts, other lists, None
+#    and strings. Allowing None simplifies many visitors.
 # 
-# 3. Ironically, in this scheme it will *never* be correct to
-#    use string.join to create part of a list passed to
-#    r.join. The reason is straightforward: one or more of the
-#    arguments to string.join will be lists or dicts! For
-#    example, visitors might contain::
-#    
-#         ['(',r.visit(arg),')',...],
-#     
-#    never:
-#    
-#         ['(%s)' % r.visit(arg),...]
+# 3. Ironically, in this scheme it will *never* be correct to use
+#    string.join because one or more of the arguments to string.join
+#    will be lists or dicts!
 # 
 # ===== The great collapse
 # 
@@ -4429,7 +4403,9 @@ def toPythonIndex (s,index):
 # suddenly realized that there were *no* calls to r.join with
 # a non-trivial sep. But that means that all the calls to
 # r.join([...],'') can be replaced by just [...]. Eureka!
+# 
 # rt.BoolOp becomes::
+# 
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -4440,9 +4416,10 @@ def toPythonIndex (s,index):
 #                 r.visit(node.right),
 #             r.span_end(),
 #         ]
-# The new pattern eliminates a huge amount of cruft, and
-# highlights the primary importance of lists. Let's look again
-# at the original code::
+# 
+# The new pattern is beautiful. It eliminates all cruft and highlights the
+# primary importance of lists. Let's look again at the original code::
+# 
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -4452,25 +4429,13 @@ def toPythonIndex (s,index):
 #         r.visit(node.right)
 #         r.span_end()
 # 
-# The two versions look pretty much the same. The final
-# version looks better to me for at least two reasons:
-# a) indentation is more flexible,
-# b) the result is obviously a list.
-# But regardless of appearances, the second version is *much*
-# better than the first!
-# 
-# ===== Conclusions
-# 
-# Imo, this pattern was worth two very long days of work. It
-# has the following important virtues:
+# The two versions may similar, but the second version is *much* better than
+# the first! Indeed, the pattern has three important virtues:
 # 
 # 1. It is safe: Lists always contain "real" data; dicts
 #    contain "control" data. This removes all possibility of
 #    confusion in r.write, or anywhere else. For the first
 #    time ever, I have complete confidence in lisp-like code.
-#    This is such an important point. Similar confusions about
-#    lists caused endless difficulties in my first Python
-#    script, c2py.
 # 
 # 2. It is general-purpose: Creating html files from complex
 #    data is only one possible application. The pattern shows
@@ -4480,19 +4445,17 @@ def toPythonIndex (s,index):
 #    the list's complexity. Removing the dependence on the
 #    output stream makes the visitors much more general.
 # 
-# 3. It minimizes stress on the gc. Composing results with
-#    list operations creates no new strings; composing results
-#    with string operations creates exponentially larger
-#    strings. True, the added gc load often doesn't matter,
-#    but it is truly satisfying to minimize string creation so
-#    thoroughly.
+# 3. It minimizes stress on the gc. Composing results with list operations
+#    creates no new strings. In contrast string operations create
+#    exponentially larger strings.
 # 
-# The haiku summary: g.flatten_list is essence of this pattern.
-# Although simple, it is fantastically useful.
+# The haiku summary: g.flatten_list is the essence of this pattern.
+# 
+# Note the similarity with: http://lxml.de/tutorial.html#the-e-factory
 #@+node:ekr.20140526144610.17604: *4* g.flatten_list
 def flatten_list (obj):
     '''A generator yielding a flattened (concatenated) version of obj.'''
-    if isinstance(obj,{}.__class__) and obj.get('_join_list'):
+    if isinstance(obj,dict) and obj.get('_join_list'):
         # join_list created obj, and ensured that all args are strings.
         indent   = obj.get('indent') or ''
         leading  = obj.get('leading') or ''

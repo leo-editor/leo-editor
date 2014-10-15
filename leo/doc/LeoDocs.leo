@@ -3554,6 +3554,13 @@ views on the CFA course material. My main view follows the prescribed study
 guide. Another view is organized like the textbooks. Yet another gives me a
 glossary of terms. And when I'm done, I'll have some nice libraries...I can
 re-use later in other projects."---Michael Manti
+
+Despite I am no programmer, I have been using Leo for some years now
+as my "Intelligent PIM" - I organize my (complex) life with Leo. Many
+thanks to Edward and others for the great application -- vili
+&lt;viljem.tisnikar@gmail.com&gt;
+
+
 </t>
 <t tx="ekr.20050830074815.8">"I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful documents,
@@ -18835,7 +18842,30 @@ From Ville M. Vainio:
     I know how to script the outline, so I can easily whip up
     different tools for my needs that deal with the headline structure
     directly.
-</t>
+    
+From Terry Brown:
+
+    Why Leo? Because I have two nodes which were originally identical
+    but are now different and I want to see the differences.
+    
+    My outline loads a @file called ~/.leo/t/gen which contains a
+    @button with several @rclick children for commonly used tasks::
+    I add a new one, @rclick diff
+    
+        selected = c.getSelectedPositions()
+        open('/tmp/a_diff', 'w').write(selected[0].b)
+        open('/tmp/b_diff', 'w').write(selected[1].b)
+        import os
+        os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
+    
+    which is horrible for a number of reasons but also took only
+    moments to write. And now, not only does this Leo session have a
+    visual node diff capability, but also every future session which
+    loads ~/.leo/t/gen.
+    
+    When you can go from wanting to having a feature in less time than it
+    takes to write an email about it - well, that's "why Leo".
+    </t>
 <t tx="ekr.20131023180133.17111">- Cut &amp; copy a clone to create an unlinked (archived, non-cloned) copy of it.
 
 - if 0:
@@ -19170,7 +19200,6 @@ p.b = s</t>
 More Leo Resources
 ##################
 
-
 .. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
 .. _`bookmarks plugin video`: https://vimeo.com/77720098 
 .. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
@@ -19182,6 +19211,7 @@ More Leo Resources
 .. _`Leo's resource page`:  http://www.jserv.com/jk_orr/xml/leo.htm
 .. _`Mind Mapping`:         http://www.mind-mapping.org/
 .. _`Icons`:                http://leoeditor.com/icons.html
+.. _`blog post`: http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
 
 Videos:
 
@@ -19206,6 +19236,9 @@ More resources:
 - The `Mind Mapping`_ page.
 
 - `Icons`_ telling the world that you used Leo.
+
+Rickard Lindberg's `blog post`_ about how Leo can improve the
+organization of code.
 </t>
 <t tx="ekr.20131030184445.17285">Add these files to `/etc/apt/sources.list`::
 

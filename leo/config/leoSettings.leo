@@ -1465,7 +1465,7 @@
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
-<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
+<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = headdclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20111114201921.23020"><vh>@data active_path_bin_open</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
@@ -9753,7 +9753,7 @@ is true (and recent_files_omit_directories is False)
 <t tx="tbrown.20091129085043.11789"></t>
 <t tx="tbrown.20091129085043.11790">file type (auto, shadow, etc.) without the '@', to use when
 loading files</t>
-<t tx="tbrown.20091129085043.11792">event hook used by active_path, icondclick1 is probably best</t>
+<t tx="tbrown.20091129085043.11792">event hook used by active_path, headdclick1 is probably best</t>
 <t tx="tbrown.20091129085043.11793"># regular expressions (case insensitive) for files/directories
 # active_path won't list, one per line.
 #

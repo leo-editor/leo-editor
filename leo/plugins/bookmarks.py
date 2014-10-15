@@ -279,8 +279,8 @@ def cmd_bookmark(c, child=False):
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
     nd.h = (
-        c.frame.body.hasSelection() and  
-        c.frame.body.getSelectedText() or
+        c.frame.body.wrapper.hasSelection() and  
+        c.frame.body.wrapper.getSelectedText() or
         bm.fix_text(c.p.h)
     )
     nd.b = bm.get_unl()
@@ -495,8 +495,8 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         nd.b = new_url
         nd.h = (
-            self.c.frame.body.hasSelection() and  
-            self.c.frame.body.getSelectedText() or
+            self.c.frame.body.wrapper.hasSelection() and  
+            self.c.frame.body.wrapper.getSelectedText() or
             self.fix_text(self.c.p.h)
         )
         c.redraw()
@@ -887,8 +887,8 @@ class BookMarkDisplay:
         nd = p.insertAsNthChild(0)
         nd.b = new_url
         nd.h = (
-            self.c.frame.body.hasSelection() and  
-            self.c.frame.body.getSelectedText() or
+            self.c.frame.body.wrapper.hasSelection() and  
+            self.c.frame.body.wrapper.getSelectedText() or
             self.fix_text(self.c.p.h)
         )    
         
