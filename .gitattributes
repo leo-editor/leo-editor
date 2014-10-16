@@ -5,10 +5,14 @@
 .gitattributes                  export-ignore
 .gitignore                      export-ignore
 nsi.log.txt                     export-ignore
+
+git-manifest.txt                export-ignore
 MakeFile                        export-ignore
+MANIFEST.in                     export-ignore
 
 leoStandAloneGlobals.py         export-ignore
 stand_alone_globals.leo         export-ignore
+setup.cfg                       export-ignore
 setup.py                        export-ignore
 
 leo/core/leoPy.leo              export-ignore
