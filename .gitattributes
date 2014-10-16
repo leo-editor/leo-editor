@@ -1,0 +1,7 @@
+# .gitattributes file for Leo distribution
+
+# Commit this file after changing it!
+
+.gitattributes export-ignore=set
+
+.gitignore export-ignore=set
