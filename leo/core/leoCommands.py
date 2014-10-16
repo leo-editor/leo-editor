@@ -262,6 +262,8 @@ class Commands (object):
             print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
         self.hiddenRootNode = leoNodes.VNode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root VNode>')
+        # g.trace(c.hiddenRootNode.fileIndex,c.shortFileName())
+        self.hiddenRootNode.fileIndex = 'hidden-root-vnode-gnx'
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:

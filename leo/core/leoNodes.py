@@ -102,7 +102,7 @@ class NodeIndices (object):
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
 
-        g.trace(self.timeString,self.lastIndex,g.callers(4))
+        # g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20031218072017.1999: *3* ni.toString

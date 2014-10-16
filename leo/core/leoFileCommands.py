@@ -887,8 +887,11 @@ class FileCommands:
                 max_n = n
             n += 1
         ni.lastIndex = max_n
-        if trace: g.trace('nodes: %s stamp0: %s max_n %s %4.2f sec.' % (
-            n,stamp,max_n,time.clock()-t))
+        if trace:
+            g.trace('%20s hidden gnx: %s max_n: %s' % (
+                c.shortFileName(),c.hiddenRootNode.fileIndex,max_n))
+            # g.trace('nodes: %s stamp0: %s max_n %s %4.2f sec.' % (
+                # n,stamp,max_n,time.clock()-t))
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
