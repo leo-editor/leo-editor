@@ -881,7 +881,7 @@ class FileCommands:
         c,ni = self.c,g.app.nodeIndices
         max_n,n,stamp = ni.lastIndex,0,ni.timeString
         for v in c.all_unique_nodes():
-            stamp2,id2,n2 = ni.scanGnx(v.fileIndex)
+            id2,stamp2,n2 = ni.scanGnx(v.fileIndex)
             if stamp == stamp2 and isinstance(n2,(int,long)) and n2 > max_n:
                 if trace: g.trace(stamp,n2)
                 max_n = n
