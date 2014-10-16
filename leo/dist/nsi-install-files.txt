@@ -2,6 +2,7 @@
 ; top-level
 SetOutPath "$INSTDIR"
 SetOverwrite ifnewer
+File ".gitattributes"
 File "INSTALL.TXT"
 File "LICENSE.TXT"
 File "MANIFEST.in"
@@ -14,10 +15,8 @@ File "leo.nsi"
 File "leoStandAloneGlobals.py"
 File "leo_to_html.xsl"
 File "profileLeo.py"
-File "pylint-leo.bat"
 File "pylint-leo.py"
 File "setup.cfg"
-File "stand_alone_globals.leo"
 
 SetOutPath $INSTDIR\leo
 File "C:\leo.repo\leo-editor\leo\__init__.py"

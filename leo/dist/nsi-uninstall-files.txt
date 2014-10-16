@@ -2,6 +2,7 @@
 ; Uninstall files...
 
 SetOutPath $Temp
+Delete "$INSTDIR\.gitattributes"
 Delete "$INSTDIR\INSTALL.TXT"
 Delete "$INSTDIR\LICENSE.TXT"
 Delete "$INSTDIR\MANIFEST.in"
@@ -14,15 +15,12 @@ Delete "$INSTDIR\leo.nsi"
 Delete "$INSTDIR\leoStandAloneGlobals.py"
 Delete "$INSTDIR\leo_to_html.xsl"
 Delete "$INSTDIR\profileLeo.py"
-Delete "$INSTDIR\pylint-leo.bat"
 Delete "$INSTDIR\pylint-leo.py"
 Delete "$INSTDIR\setup.cfg"
-Delete "$INSTDIR\stand_alone_globals.leo"
 Delete "$INSTDIR\*.pyo"
 Delete "$INSTDIR\*.pyc"
 Delete "$INSTDIR\uninst.exe"
 Delete "$INSTDIR\setup.py"
-Delete "$INSTDIR\bzr-manifest.txt"
 Delete "$INSTDIR\git-manifest.txt"
 RMDir /r "$INSTDIR\leo"
 

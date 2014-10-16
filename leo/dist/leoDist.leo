@@ -42,6 +42,7 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
 <v t="ekr.20130809141000.1992"><vh>Leo's HOME directory</vh></v>
@@ -64,6 +65,7 @@
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
+<v t="ekr.20141016123713.2120"><vh>copy_nsi_files (to do)</vh></v>
 <v t="ekr.20110614062644.1378"><vh>copy_ref_files</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -92,9 +94,9 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
 </v>
+<v t="ekr.20101027070126.1662"></v>
 <v t="ekr.20101105103524.1491"></v>
 <v t="ekr.20101105103524.1493"></v>
-<v t="ekr.20101027070126.1662"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -580,14 +582,15 @@ g.es_print('done') # '@button make-leo done')
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
+        self.copy_nsi_files()
 </t>
 <t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
-
-    '''Compute a top-down list of all directories.
-       These directories start at the top-level directory.'''
-
+    '''
+    Compute a top-down list of all directories.
+    These directories start at the top-level directory.
+    '''
     trace = False
-    ignoreDirs = ('.bzr',)
+    ignoreDirs = ('.bzr','.git',)
     # Important: this adds all directories on EKR's machine,
     # regardless of whether they appear in the manifest!
     result = [] ; n = len(rootDir)
@@ -605,11 +608,8 @@ g.es_print('done') # '@button make-leo done')
     return result
 </t>
 <t tx="ekr.20101027070126.1664">def filterLines (self,lines):
-
     '''Filter lines from the input manifest file.'''
-
     trace = False
-
     # Remove blank lines, comments, and .pyc and .pyo files.
     lines = self.deleteBlankLines(lines)
     lines = self.deleteComments(lines)
@@ -618,7 +618,6 @@ g.es_print('done') # '@button make-leo done')
     lines = self.deleteExt(lines,'.pyo')
     lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
     lines = self.deleteExt(lines,'.exe') # Don't include the installer.
-
     # Remove specific files.
     deleteList = (
         '.bzrignore',
@@ -627,6 +626,8 @@ g.es_print('done') # '@button make-leo done')
         'git-manifest.txt',
         'bzr-small-manifest.txt',
         'setup.py',
+        'stand_alone_globals.leo',
+        'leoStandAloneGlobals',
         'leo/test/unittest/.leo_shadow/',
         'nsi.log.txt', # Can't write log while we are creating it.
         'leo/core/leoPy.leo',
@@ -634,13 +635,11 @@ g.es_print('done') # '@button make-leo done')
     )
     lines = self.deleteFiles(lines,deleteList)
     # if lines and lines[0].endswith('bzr ls -R'):
-    if lines and lines[0].find('bzr.exe') &gt; -1:
-        lines = lines[1:]
-
+    # if lines and lines[0].find('bzr.exe') &gt; -1:
+        # lines = lines[1:]
     if trace:
         g.trace('=' * 40)
         g.trace(g.listToString(lines))
-
     return lines
 </t>
 <t tx="ekr.20101027070126.1665">def deleteBlankLines (self,lines):
@@ -716,28 +715,23 @@ def deleteTempFiles (self,lines):
     return dirDict,filesDict
 </t>
 <t tx="ekr.20101027070126.1667">def printMissing (self,files,dirDict,filesDict):
-
+    '''A crucial check.'''
     errors = 0
-
     for fn in files:
         fn = fn.rstrip('/')
         if fn and fn not in dirDict and fn not in filesDict:
             g.es_print('missing',fn,color='red')
             errors += 1
-
     if errors:
         g.es_print('%s errors' % (errors),color='red')
-
     return errors
 </t>
 <t tx="ekr.20101027070126.1675">def create_install_files(self,dirs,dirDict,filesDict):
-
+    '''Create leo/dist/nsi-install-files.txt'''
     global install_fn,rootDir
     put = self.put
-
     self.f = self.openFile(install_fn)
     if not self.f: return
-
     # Top level
     theDir = '**top'
     put('\n')
@@ -747,7 +741,6 @@ def deleteTempFiles (self,lines):
     aList = dirDict.get(theDir,[])
     for fn in aList:
         put('File "%s"\n' % fn)
-
     for theDir in dirs:
         if theDir != '**top':
             aList = dirDict.get(theDir,[])
@@ -759,38 +752,32 @@ def deleteTempFiles (self,lines):
                     # Fix bug 425369: quote file names.
                     put('File "%s\\%s\\%s"\n' % (
                         rootDir,theDir2,fn))
-
     self.f.close()
 </t>
 <t tx="ekr.20101027070126.1676">def create_uninstall_files(self,dirs,dirDict,filesDict):
-
+    '''Create leo/dist/nsi-uninstall-files.txt'''
     def clean(s):
         return s.replace('/','\\')
     put = self.put
-
     self.f = self.openFile(uninstall_fn)
     if not self.f: return
-
     # Part 1: Delete top-level files.
     put('\n')
     put('; Uninstall files...\n\n')
     put('SetOutPath $Temp\n')
-
     # Get the list of top-level files.
     aList = dirDict.get('**top',[])
-
     # Add some special cases:
     for fn in ('*.pyo','*.pyc',
-        'uninst.exe','setup.py',
-        'bzr-manifest.txt', 'git-manifest.txt'
+        'uninst.exe',
+        'setup.py',
+        'git-manifest.txt'
     ):
         if fn not in aList:
             aList.append(fn)
-
     for fn in aList:
         # Always delete individual files.
         put('Delete "$INSTDIR\\%s"\n' % fn)
-        
     if 1:
         # Just delete the leo folder with /r option.
         # This should be completely safe.
@@ -809,7 +796,6 @@ def deleteTempFiles (self,lines):
                     put('Delete "$INSTDIR\\%s\\__pycache__\\*.pyc"\n' % (dir2))
                 for fn in aList:
                     put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
-    
         # Part 3: Delete directories.
         reverseDirs = dirs[:]
         reverseDirs.reverse()
@@ -821,13 +807,11 @@ def deleteTempFiles (self,lines):
                 if not theDir.startswith('.bzr'):
                     put('RMDir "$INSTDIR\\%s\\__pycache__"\n' % (clean(theDir)))
                     put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
-
     # Delete the op-level folder.
     put('\n')
     put('; Delete the top-level directory.\n')
     put('RMDir "$INSTDIR"\n')
         # Important: the /r option is not safe here!
-
     self.f.close()
 </t>
 <t tx="ekr.20101027070126.1678">def put (self,s):
@@ -853,32 +837,36 @@ def deleteTempFiles (self,lines):
     '''Create git-manifest.txt.'''
     os.chdir(rootDir) # Can't be done below.
     commands = (
-        # r'pwd',
         r'del git-manifest.txt',
         r'c:\apps\Git\bin\git.exe ls-files &gt; git-manifest.txt',
-        # r'dir git-manifest.txt',
-        # r'ed git-manifest.txt',     
+        # r'&amp;ed git-manifest.txt',
     )
     g.execute_shell_commands(commands,trace=True)
 </t>
 <t tx="ekr.20101105103524.1493">def make_zip(self):
-    '''Create the zip file.'''
+    '''
+    Create the zip file.
+    
+    The archive will not contain the .git directory, but will contain
+    .gitignore, .gitattributes, etc. To suppress these files, use the
+    export-ignore attribute in a .gitattributes file. Commit this before
+    doing git archive.
+    '''
     for z in (zipFile,zipFile2):
         if exists(z): self.unlink(z)
     os.chdir(rootDir) # Required.
     commands = (
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
-        # r'git status',
-        r'c:\apps\Git\bin\git.exe archive --format zip --output "%s" master' % (zipFile),
-        r'dir %s' % (zipFile),
+        r'%s archive --format zip --output "%s" --prefix=Leo5.0a1/ master' % (
+            r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
+    if not g.os_path_exists(zipFile):
+        print('does not exist: %s' % zipFile)
     # Remove the temporary zip file.
     if exists(zipFile2):
-        self.unlink(zipFile2)
-    # g.trace(g.os_path_exists(zipFile),zipFile)
-</t>
+        self.unlink(zipFile2)</t>
 <t tx="ekr.20101105103524.1494">def clean_manifest(self):
     '''Create and filter the list of files from the manifest.'''
     f = open(manifest_fn)
@@ -994,13 +982,12 @@ Quotes:   http://leoeditor.com/testimonials.html
         f.close()
 </t>
 <t tx="ekr.20110614062644.1378">def copy_ref_files (self):
-    
+    '''Copy reference copies of .leo files.'''
     table = (
         (pluginsDir,'leoGuiPlugins.leo','leoGuiPluginsRef.leo'),
         (pluginsDir,'leoPlugins.leo','leoPluginsRef.leo'),
         (coreDir,'leoPy.leo','leoPyRef.leo'),
     )
-    
     for d,src,dst in table:
         src_path = join(d,src)
         dst_path = join(d,dst)
@@ -1015,7 +1002,8 @@ Quotes:   http://leoeditor.com/testimonials.html
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 # First.
-bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
+# bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
+
     # Don't use abspath!
 distDir     = abspath(join(g.app.loadDir,'..','dist'))
 rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
@@ -1302,5 +1290,29 @@ Download:  http://sourceforge.net/projects/leo/files/
 Bzr:       http://code.launchpad.net/leo-editor/
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
+<t tx="ekr.20141016105045.2119"># .gitattributes file for Leo distribution
+
+# Commit this file after changing it!
+
+.gitattributes                  export-ignore
+.gitignore                      export-ignore
+nsi.log.txt                     export-ignore
+
+git-manifest.txt                export-ignore
+MakeFile                        export-ignore
+MANIFEST.in                     export-ignore
+
+leoStandAloneGlobals.py         export-ignore
+stand_alone_globals.leo         export-ignore
+setup.cfg                       export-ignore
+setup.py                        export-ignore
+
+leo/core/leoPy.leo              export-ignore
+leo/core/ekrLeoPy.leo           export-ignore
+leo/test/unittest/.leo_shadow/  export-ignore
+</t>
+<t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
+    '''Copy nsi files from leo/dist to leo-editor directory.'''
+    </t>
 </tnodes>
 </leo_file>
