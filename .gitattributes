@@ -2,6 +2,10 @@
 
 # Commit this file after changing it!
 
-.gitattributes export-ignore=set
+.gitattributes          export-ignore
 
-.gitignore export-ignore=set
+.gitignore              export-ignore
+
+stand_alone_globals.leo export-ignore
+
+leoStandAloneGlobals.py export-ignore
