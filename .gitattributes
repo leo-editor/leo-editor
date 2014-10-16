@@ -2,10 +2,15 @@
 
 # Commit this file after changing it!
 
-.gitattributes          export-ignore
+.gitattributes                  export-ignore
+.gitignore                      export-ignore
+nsi.log.txt                     export-ignore
+MakeFile                        export-ignore
 
-.gitignore              export-ignore
+leoStandAloneGlobals.py         export-ignore
+stand_alone_globals.leo         export-ignore
+setup.py                        export-ignore
 
-stand_alone_globals.leo export-ignore
-
-leoStandAloneGlobals.py export-ignore
+leo/core/leoPy.leo              export-ignore
+leo/core/ekrLeoPy.leo           export-ignore
+leo/test/unittest/.leo_shadow/  export-ignore
