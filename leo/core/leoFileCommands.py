@@ -890,7 +890,7 @@ class FileCommands:
                         max_n = n2
                 except Exception:
                     g.es_exception()
-                if trace: g.trace(stamp==stamp2,id2,stamp,stamp2,n2,max_n)
+                # if trace: g.trace(stamp==stamp2,id2,stamp,stamp2,n2,max_n)
             n += 1
         ni.lastIndex = max_n
         if trace: g.trace('%s max_n: %s %4.2f sec.' % (
