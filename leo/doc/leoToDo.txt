@@ -39,16 +39,15 @@ difficult to test.
    many previous conversations. This could take several days.
 .. @+node:ekr.20131220065609.16590: *3* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
+@language rest
+
 All bugs must be fixed for b1.
 I'll fix as many bugs as I can for a1.
-
-Fix all git bugs:
-https://github.com/leo-editor/leo-editor/labels/bug
 
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
 - Vim borders don't work with my standard settings and python3.4 and Qt5
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 5 bugs affecting stability
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 9 bugs affecting stability
 Big text buttons:
 
     https://github.com/leo-editor/leo-editor/issues/64
@@ -60,6 +59,17 @@ Big text buttons:
     https://github.com/leo-editor/leo-editor/issues/28
     Leo hangs when a node with too large body is selected
     
+Crashes from https://github.com/leo-editor/leo-editor/issues/73
+
+    https://bugs.launchpad.net/leo-editor/+bug/914221
+    bound method ViewRenderedController.update
+    
+    https://bugs.launchpad.net/leo-editor/+bug/1232977
+    An empty @nosent file causes an assertion error
+    
+    https://bugs.launchpad.net/leo-editor/+bug/1260545
+    Ctrl+Shift+F unpredictably error terminates Leo-Editor
+
 Others:
 
     https://github.com/leo-editor/leo-editor/issues/50
@@ -67,11 +77,40 @@ Others:
     
     (fixed??) https://github.com/leo-editor/leo-editor/issues/9
     tree context menu refresh from disk fails for @auto-rst nodes
-.. @+node:ekr.20141017055340.18277: *4* Priority 2: Focus & rclick bugs
-.. @+node:ekr.20141012064706.18244: *4* Priority 3: distro projects (1 bug)
+    
+    https://github.com/leo-editor/leo-editor/issues/73 -->
+    https://bugs.launchpad.net/leo-editor/+bug/1260545
+    Ctrl+Shift+F unpredictably error terminates Leo-Editor
+.. @+node:ekr.20141017055340.18277: *4* Priority 2: 5 bugs re focus & rclick
+https://bugs.launchpad.net/leo-editor/+bug/869098
+Context menu settings lost if save as used
+
+https://bugs.launchpad.net/leo-editor/+bug/1193820
+Focus change on tree pane after saving current Leo file
+
+https://bugs.launchpad.net/leo-editor/+bug/1245111
+Can't get the viewrendered pane back next to the editor
+
+https://bugs.launchpad.net/leo-editor/+bug/1245535
+API allows headlines to contain newlines
+
+https://bugs.launchpad.net/leo-editor/+bug/1258373
+failed find focus fails
+
+.. @+node:ekr.20141012064706.18245: *4* Priority 3: 2 newbie improvements
+From https://github.com/leo-editor/leo-editor/issues/73
+
+    https://bugs.launchpad.net/leo-editor/+bug/1245535
+    API allows headlines to contain newlines
+    
+    https://bugs.launchpad.net/leo-editor/+bug/1245616
+    Autocomplete ? function to show doc string does not work
+.. @+node:ekr.20141012064706.18244: *4* Priority 4: 2 bugs re distro
 https://github.com/leo-editor/leo-editor/issues/24
 Windows installer setting wrong file association for .leo files
-.. @+node:ekr.20141012064706.18245: *4* Priority 4: newbie improvements
+
+https://bugs.launchpad.net/leo-editor/+bug/969391
+setup.py confuses newbies
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
