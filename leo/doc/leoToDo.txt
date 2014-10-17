@@ -97,6 +97,9 @@ API allows headlines to contain newlines
 https://bugs.launchpad.net/leo-editor/+bug/1258373
 failed find focus fails
 
+Improve page up/down commands
+[Simple script] Jump exactly one page with Page Down
+https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20141012064706.18245: *4* Priority 3: 2 newbie improvements
 From https://github.com/leo-editor/leo-editor/issues/73
 
