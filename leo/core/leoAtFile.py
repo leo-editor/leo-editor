@@ -3052,14 +3052,16 @@ class AtFile:
             except AttributeError:
                 pass # os.access() may not exist on all platforms.
         try:
+            old_output_fn = at.outputFileName
+                # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1260547
             at.outputFileName = None
             kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
             if not at.outputFile:
                 kind = 'did not overwrite' if kind=='check' else 'can not create'
-                at.writeError("%s %s" % (kind,at.outputFileName))
+                at.writeError("%s %s" % (kind,old_output_fn))
                 return False
         except Exception:
-            at.exception("exception creating:" + at.outputFileName)
+            at.exception("exception creating:" + old_output_fn)
             return False
         return True
     #@+node:bwmulder.20050101094804: *6* at.openForWrite
