@@ -403,6 +403,13 @@ Removed the odious "'Can not execute commands from headlines" message.
 Instead of this message, Leo ends editing, replaces the event.widget and
 event.w fields with c.frame.body.wrapper.widget and carries on. All tests
 pass.
+.. @+node:ekr.20141012064706.18240: *4* Fixed bug 35: leoBridge sometimes assigns the same GNX to two distinct vnodes
+https://github.com/leo-editor/leo-editor/issues/35
+leoBridge sometimes assigns the same GNX to two distinct vnodes
+
+c.initObjects sets c.hiddenRootNode.fileIndex to 'hidden-root-vnode-gnx'
+
+fc.getLeoFile calls the new fc.setMaxNodeIndex after reading all nodes.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
@@ -577,6 +584,25 @@ What I did
 .. @+node:ekr.20140909072923.18136: *4* Converted 7 plugins so they work with PyQt5
 active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
 notebook.py, projectwizard.py, stickynotes.py
+.. @+node:ekr.20141015035853.18305: *4* Simplified gnx scan logic
+@language rest
+
+1. createSaxVnode now does::
+    
+    v.fileIndex = ni.tupleToString(x.scanGnx(sax_node.tnx))
+    
+ni.tupleToString is substantially simpler than ni.toString.
+
+This is the only call to tupleToString in Leo.
+
+2. Removed ni.toString.
+
+3. ni.scanGnx no longer converts n to an int.  It's going to become a string again anyway.
+
+4. The new fc.setMaxNodeIndex *does* convert the n field to an int, but
+   this very rarely happens.
+
+@language python
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
