@@ -48,6 +48,30 @@ https://github.com/leo-editor/leo-editor/labels/bug
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 
 - Vim borders don't work with my standard settings and python3.4 and Qt5
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 5 bugs affecting stability
+Big text buttons:
+
+    https://github.com/leo-editor/leo-editor/issues/64
+    big text status re-evaluated on find in current body
+    
+    https://github.com/leo-editor/leo-editor/issues/63
+    refresh-from-disk does not clear big text load delay UI
+    
+    https://github.com/leo-editor/leo-editor/issues/28
+    Leo hangs when a node with too large body is selected
+    
+Others:
+
+    https://github.com/leo-editor/leo-editor/issues/50
+    Important: body text lost switching @file to @auto-rst
+    
+    (fixed??) https://github.com/leo-editor/leo-editor/issues/9
+    tree context menu refresh from disk fails for @auto-rst nodes
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: distro projects (1 bug)
+https://github.com/leo-editor/leo-editor/issues/24
+Windows installer setting wrong file association for .leo files
+.. @+node:ekr.20141012064706.18245: *4* Priority 3: newbie improvements
+.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 
