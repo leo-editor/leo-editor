@@ -67,10 +67,11 @@ Others:
     
     (fixed??) https://github.com/leo-editor/leo-editor/issues/9
     tree context menu refresh from disk fails for @auto-rst nodes
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: distro projects (1 bug)
+.. @+node:ekr.20141017055340.18277: *4* Priority 2: Focus & rclick bugs
+.. @+node:ekr.20141012064706.18244: *4* Priority 3: distro projects (1 bug)
 https://github.com/leo-editor/leo-editor/issues/24
 Windows installer setting wrong file association for .leo files
-.. @+node:ekr.20141012064706.18245: *4* Priority 3: newbie improvements
+.. @+node:ekr.20141012064706.18245: *4* Priority 4: newbie improvements
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
@@ -6831,7 +6832,72 @@ Fossil (SCCS) and Leo.
 > it, but syncronizable with the outside world. This kind of instantiated
 > image of files in a moment of time in Fossil + Leo, would be like the
 > instantiated image of objects in a moment of time of Smalltalk.
-.. @+node:ekr.20090131200406.15: *3* File
+.. @+node:ekr.20090131200406.15: *3* File & file format
+.. @+node:ekr.20141017110114.18265: *4* Use uuid's in gnx's
+https://groups.google.com/d/msg/leo-editor/p_b2LLBAqps/aTQoyGBec68J
+
+This post discusses a new command line argument for Leo: --uuid
+
+I have no plans to implement --uuid now, but it may have to be done in future.
+
+===== Rationale
+
+Terry has convinced me that collisions between both user ids and timestamps
+will become more frequent as Leo becomes more popular. Such collisions are
+not a serious problem at present: the odds of two different people with the
+same user id sharing .leo files is small.
+
+Nevertheless, a serious problem lurks, one that can not, even in principle,
+be solved with Leo's present gnx's.
+
+Suppose two people have the same id. Then Leo *must* assume that those
+people are actually the same person! As I have explained in other post,
+this can lead to data loss if the two people create two *distinct* nodes
+with the same gnx, and then try to merge those nodes into the same .leo
+file. The odds of this happening are small, but increasing.
+
+A good way to solve this problem is to use uuids,
+http://en.wikipedia.org/wiki/Universally_unique_identifier
+and python's uuid module: https://docs.python.org/2/library/uuid.html
+
+===== Operation
+
+The --uuid should cause Leo to use uuid's for all *new* gnx's. The uuid
+option should not convert *existing* gnx's to uuid-based gnx's.
+
+A new Leo command would convert all existing gnx's to uuid-based gnxs. Such
+mass conversions should *never* be done automatically.
+
+===== Format of uuid-based gnxs
+
+I would like the uuid-based gnx's to use uuid's in *addition* to the id and
+timestamp fields. Something like::
+
+    id.timestamp..uuid
+
+Alas, that does not seem possible, unless this kind of gnx is written to
+external files (in node sentinels). But many users would complain that such
+very-long gnx's clutters external files too much.
+
+So it seems that new-style gnxs would have something like this form::
+
+    ..uuid
+
+The leading dots allow Leo to distinguish this kind of gnx from the old
+forms::
+
+    id.timestamp.n
+    id.timestamp
+
+provided that dots are not allowed in ids.
+
+===== Summary
+
+Leo's uuid-based gnxs can contain neither user ids nor timestamps.
+
+We must ensure we stick with whatever new-style gnx format we choose
+initially: we don't want to burden Leo with distinguishing between several
+different forms of uuid-based gnxs.
 .. @+node:ekr.20061002093442: *4* Add opml support to new,open, save commands
 .. @+node:ekr.20080311135649.2: *4* Allow different .leo formats
 @nocolor
