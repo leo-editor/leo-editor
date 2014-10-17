@@ -880,18 +880,21 @@ class FileCommands:
             t = time.clock()
         c,ni = self.c,g.app.nodeIndices
         max_n,n,stamp = ni.lastIndex,0,ni.timeString
+        if trace: g.trace('----- starting max_n',max_n)
         for v in c.all_unique_nodes():
             id2,stamp2,n2 = ni.scanGnx(v.fileIndex)
-            if stamp == stamp2 and isinstance(n2,(int,long)) and n2 > max_n:
-                if trace: g.trace(stamp,n2)
-                max_n = n
+            if n2 is not None:
+                try:
+                    n2 = int(n2)
+                    if stamp == stamp2 and n2 > max_n:
+                        max_n = n2
+                except Exception:
+                    g.es_exception()
+                if trace: g.trace(stamp==stamp2,id2,stamp,stamp2,n2,max_n)
             n += 1
         ni.lastIndex = max_n
-        if trace:
-            g.trace('%20s hidden gnx: %s max_n: %s' % (
-                c.shortFileName(),c.hiddenRootNode.fileIndex,max_n))
-            # g.trace('nodes: %s stamp0: %s max_n %s %4.2f sec.' % (
-                # n,stamp,max_n,time.clock()-t))
+        if trace: g.trace('%s max_n: %s %4.2f sec.' % (
+            max_n,c.shortFileName(),time.clock()-t))
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 

@@ -1879,6 +1879,7 @@ class VNodeBase (object):
         self.fileIndex = g.app.nodeIndices.getNewIndex()
             # The immutable file index for this VNode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+        # g.trace(context.shortFileName(),self.fileIndex)
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
         # Information that is never written to any file...
@@ -2401,15 +2402,16 @@ class VNodeBase (object):
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString (self,s):
 
-        # trace = False and not g.unitTesting
         v = self
-        # if trace and v._bodyString != s:
-            # g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
-                # v.h, len(v._bodyString),len(s),g.callers(5),
-                # v._bodyString,s))
+        # g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+            # v.h, len(v._bodyString),len(s),g.callers(5),
+            # v._bodyString,s))
         v._bodyString = g.toUnicode(s,reportErrors=True)
 
     def setHeadString (self,s):
+        
+        # fn = self.context.shortFileName()
+        # g.trace(fn,self.fileIndex,s,g.callers())
         v = self
         v._headString = g.toUnicode(s,reportErrors=True)
 
