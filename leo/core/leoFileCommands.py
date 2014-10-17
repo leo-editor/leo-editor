@@ -873,6 +873,11 @@ class FileCommands:
         '''
             Ensure that g.app.nodeIndices.lastIndex can collide with gnx.
             Fixes bug https://github.com/leo-editor/leo-editor/issues/35
+            
+            This method is only needed when the *present* id and timestamp are
+            the same as the id and timestamp from a *previous* invocation of
+            Leo! This can happen when Leo is invoked from a script, or when two
+            widely-separated people use the same id.
         '''
         trace = False and not g.unitTesting
         if trace:
@@ -883,13 +888,13 @@ class FileCommands:
         if trace: g.trace('----- starting max_n',max_n)
         for v in c.all_unique_nodes():
             id2,stamp2,n2 = ni.scanGnx(v.fileIndex)
-            if n2 is not None:
+            if stamp == stamp2 and n2 is not None:
                 try:
                     n2 = int(n2)
-                    if stamp == stamp2 and n2 > max_n:
+                    if n2 > max_n:
                         max_n = n2
                 except Exception:
-                    g.es_exception()
+                    pass # An unusual gnx can't affect max_n.
                 # if trace: g.trace(stamp==stamp2,id2,stamp,stamp2,n2,max_n)
             n += 1
         ni.lastIndex = max_n
