@@ -410,6 +410,11 @@ leoBridge sometimes assigns the same GNX to two distinct vnodes
 c.initObjects sets c.hiddenRootNode.fileIndex to 'hidden-root-vnode-gnx'
 
 fc.getLeoFile calls the new fc.setMaxNodeIndex after reading all nodes.
+.. @+node:ekr.20141017150357.18267: *4* Fixed bug 31: 'undo' on a freshly-loaded outline
+https://github.com/leo-editor/leo-editor/issues/31
+'undo' on a freshly-loaded outline containing chapters removes chapters
+
+Chapter.afterCreateChapter does not push undo data when cc.initing is True.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

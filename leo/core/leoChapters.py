@@ -26,6 +26,9 @@ class ChapterController:
             # Keys are chapter names, values are chapters.
             # Important: chapter names never change,
             # even if their @chapter node changes.
+        self.initing = True
+            # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+            # True: suppress undo when creating chapters.
         self.selectedChapter = None
         self.selectChapterLockout = False
             # True: cc.selectChapterForPosition does nothing.
@@ -57,6 +60,8 @@ class ChapterController:
                         self.error('duplicate chapter name: %s' % tabName)
                     else:
                         cc.chaptersDict[tabName] = Chapter(c,cc,tabName)
+        # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+        cc.initing = False
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main',collapse=False)
@@ -187,11 +192,10 @@ class ChapterController:
         fromChapter.p = p.copy()
     #@+node:ekr.20070317085437.31: *4* cc.createChapter
     def createChapter (self,event=None):
-
-        '''create-chapter command.
+        '''
+        create-chapter command.
 
         Create a chapter with a dummy first node.
-        
         '''
         cc,k,tag = self,self.c.k,'create-chapter'
         state = k.getState(tag)
@@ -728,15 +732,16 @@ class ChapterController:
     def afterCreateChapter (self,bunch,p):
 
         cc = self ; u = cc.c.undoer
-        if u.redoing or u.undoing: return
-
+        if u.redoing or u.undoing:
+            return
+        if cc.initing:
+            # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+            return
         bunch.kind = 'create-chapter'
         bunch.newP = p.copy()
-
         # Set helpers
         bunch.undoHelper = cc.undoInsertChapter
         bunch.redoHelper = cc.redoInsertChapter
-
         u.pushBead(bunch)
     #@+node:ekr.20070610091608: *4* afterRemoveChapter
     def afterRemoveChapter (self,bunch,p):
