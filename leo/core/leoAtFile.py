@@ -4887,7 +4887,7 @@ class AtFile:
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20070909103844: *4* isSignificantTree
+    #@+node:ekr.20070909103844: *4* at.isSignificantTree (not used!)
     def isSignificantTree (self,p):
 
         '''Return True if p's tree has a significant amount of information.'''
@@ -5572,7 +5572,7 @@ class AtFile:
     #@+node:ekr.20090712050729.6017: *3* at.promptForDangerousWrite
     def promptForDangerousWrite(self,fileName,kind,message=None):
 
-        at = self ; c = at.c
+        at,c,root = self,self.c,self.root
         if g.app.unitTesting:
             val = g.app.unitTestDict.get('promptForDangerousWrite')
             return val in (None,True)
@@ -5582,6 +5582,18 @@ class AtFile:
         if at.yesToAll:
             assert at.canCancelFlag
             return True
+        if root.h.startswith('@auto-rst'):
+            # Fix bug 50: body text lost switching @file to @auto-rst
+            # Refuse to convert any @<file> node to @auto-rst.
+            d = root.v.at_read
+            aList = sorted(d.get(fileName,[]))
+            for h in aList:
+                if not h.startswith('@auto-rst'):
+                    g.es('can not convert @file to @auto-rst!',color='red')
+                    g.es('reverting to:',h)
+                    root.h = h
+                    c.redraw()
+                    return False
         if message is None:
             message = '%s %s\n%s\n%s' % (
                 kind, fileName,
@@ -5600,14 +5612,24 @@ class AtFile:
         return result in ('yes','yes-to-all')
     #@+node:ekr.20120112084820.10001: *3* at.rememberReadPath
     def rememberReadPath(self,fn,p):
-
+        '''
+        Remember the files that have been read *and*
+        the full headline (@<file> type) that caused the read.
+        '''
         v = p.v
-
-        if not hasattr(v,'at_read'):
-            v.at_read = []
-
-        if not fn in v.at_read:
-            v.at_read.append(fn)
+        if 1:
+            # Fix bug #50: body text lost switching @file to @auto-rst
+            if not hasattr(v,'at_read'):
+                v.at_read = {}
+            d = v.at_read
+            aSet = d.get(fn,set())
+            aSet.add(p.h)
+            d[fn] = aSet
+        else:
+            if not hasattr(v,'at_read'):
+                v.at_read = []
+            if not fn in v.at_read:
+                v.at_read.append(fn)
     #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
@@ -5781,17 +5803,22 @@ class AtFile:
         return sentinelNameDict.get(kind,"<unknown sentinel: %s>" % kind)
     #@+node:ekr.20120110174009.9965: *3* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self,fn,p):
-
-        '''Return True if a prompt should be issued
+        '''
+        Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
-
         if not g.os_path_exists(fn):
             return False
                 # No danger of overwriting fn.
         elif hasattr(p.v,'at_read'):
-            return fn not in p.v.at_read
-                # The path is new.
+            if 1:
+                # Fix bug #50: body text lost switching @file to @auto-rst
+                d = p.v.at_read
+                aSet = d.get(fn,set())
+                return p.h not in aSet
+            else:
+                return fn not in p.v.at_read
+                    # The path is new.
         else:
             return True
                 # The file was never read.

@@ -57,9 +57,6 @@ refresh-from-disk does not clear big text load delay UI
 
 https://github.com/leo-editor/leo-editor/issues/28
 Leo hangs when a node with too large body is selected
-.. @+node:ekr.20141017110114.18272: *5* Fix bug 50: Important body text lost switching @file to @auto-rst
-https://github.com/leo-editor/leo-editor/issues/50
-Important: body text lost switching @file to @auto-rst
 .. @+node:ekr.20141017055340.18277: *4* Priority 2: 4 bugs re focus & rclick
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus

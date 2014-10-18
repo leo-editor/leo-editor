@@ -428,6 +428,22 @@ The renamed file uses the @data contextmenu_commands node in that files.
 Note that @data contextmenu_commands node in the file *replaces* any other
 @data contextmenu_commands node in leoSettings.leo or myLeoSettings.leo.
 
+.. @+node:ekr.20141017110114.18272: *4* Fixed bug 50: Important body text lost switching @file to @auto-rst
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/50
+Important: body text lost switching @file to @auto-rst
+
+This case is so dangerous that Leo refuses to create the file and instead
+reverts to the previous @file node.
+
+Changes:
+    
+- v.at_read is now a dict: keys are full file names; values are lists of headlines.
+- at.shouldPromptForDangerousWrite returns True if p.h is not in v.at_read.
+- at.promptForDangerousWrite issues a warning and reverts the headline
+
+@language python
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
