@@ -415,6 +415,19 @@ https://github.com/leo-editor/leo-editor/issues/31
 'undo' on a freshly-loaded outline containing chapters removes chapters
 
 Chapter.afterCreateChapter does not push undo data when cc.initing is True.
+.. @+node:ekr.20141017150357.18270: *4* Investigated bug 869098: Context menu settings lost if save as used
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/869098
+Context menu settings lost if save as used
+
+This report appears invalid.
+
+The renamed file uses the @data contextmenu_commands node in that files.
+
+Note that @data contextmenu_commands node in the file *replaces* any other
+@data contextmenu_commands node in leoSettings.leo or myLeoSettings.leo.
+
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
