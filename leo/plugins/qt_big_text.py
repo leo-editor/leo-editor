@@ -5,109 +5,120 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtGui
 
 #@+others
-#@+node:tbrown.20140919120654.24038: ** class LeoBigTextDialog
-class LeoBigTextDialog(QtGui.QWidget):
+#@+node:tbrown.20140919120654.24038: ** class BigTextController
+class BigTextController:
     #@+others
     #@+node:tbrown.20140919120654.24039: *3* __init__
-    def __init__(self, *args, **kwargs):
-        our_args = 'c', 'old_p', 'p', 's', 'traceTime', 'w', 'layout', 'owner'
-        for arg in our_args:
-            setattr(self, arg, kwargs.get(arg, None))
-            if arg in kwargs:
-                del kwargs[arg]
-                
-        assert hasattr(self.w, 'leo_big_text')
-                
-        QtGui.QWidget.__init__(self, *args, **kwargs)
-        
-        layout = QtGui.QVBoxLayout()
-        self.setLayout(layout)
-        self.text = text = QtGui.QTextBrowser()
-        text.setText(
-            "%d character text exceeds %d limit, not shown.\n\n"
-            "To load the body text, click the 'load' button.\n"
-            "Warning: make sure the text is fully loaded before using it!.\n\n"
-            "Set @int max-pre-loaded-body-chars in @settings\n"
-            "to permanently change limit."
-            % (len(self.s), self.c.max_pre_loaded_body_chars))
-        layout.addWidget(text)
-        if self.s.startswith('@nocolor'):
-            self.leo_load_nc_button = None
-        else:
-            self.leo_load_nc_button = QtGui.QPushButton(
-            'Load Text with @nocolor: %s' % (self.p.h))
-            layout.addWidget(self.leo_load_nc_button)
-            self.leo_load_nc_button.clicked.connect(
-                lambda checked: self.load(nocolor=True))
-        self.leo_load_button = QtGui.QPushButton(
-            'Load Text: %s' % (self.p.h))
-        self.leo_more_button = QtGui.QPushButton(
-            'Double limit for this session')
-        self.leo_copy_button = QtGui.QPushButton(
-            'Copy body to clipboard: %s' % (self.p.h))
-        # Put the @nocolor button second: it should not be the "default".
-        for w in (
-            self.leo_load_button, self.leo_load_nc_button,
-            self.leo_copy_button, self.leo_more_button,
-        ):
-            if w:
-                layout.addWidget(w)
-        layout.addItem(QtGui.QSpacerItem(
-            10, 10, vPolicy=QtGui.QSizePolicy.Expanding))
-        self.leo_copy_button.clicked.connect(lambda checked: self.copy())
-        self.leo_load_button.clicked.connect(lambda checked: self.load())
-        self.leo_more_button.clicked.connect(lambda checked: self.more())
-        self.show()
+    def __init__(self,c,layout,old_p,old_w,owner,p,parent,s):
+        '''Ctor for BigTextController.'''
+        self.c = c
+        self.widgets = {} # Keys are strings, values are buttons.
+        self.old_p = old_p
+        self.p = p
+        self.layout = layout
+        self.old_p = old_p
+        self.old_w = old_w # A LeoQTextBrowser.
+        self.owner = owner # A LeoQtTree.
+        self.parent = parent
+        self.s = s
+        self.traceTime = False
+        # Create the big-text widgets.
+        self.create()
+        # g.trace('----- (LeoBigTextDialog)',len(s),self.w)
     #@+node:tbrown.20140919120654.24040: *3* copy
-    def copy(self): 
+    def copy(self):
+        '''Copy self.s (c.p.b) to the clipboard.'''
         g.app.gui.replaceClipboardWith(self.s)
-    #@+node:tbrown.20140919120654.24041: *3* go_away
+    #@+node:ekr.20141018081615.18272: *3* create
+    def create(self):
+        '''Create the big-text buttons.'''
+        c = self.c
+        warning = self.warning_message()
+        self.old_w.setPlainText(self.p.b) # essential.
+        self.w = w = QtGui.QWidget() # No parent needed.
+        layout = QtGui.QVBoxLayout() # No parent needed.
+        w.setLayout(layout)
+        w.text = tw = QtGui.QTextBrowser()
+        tw.setText(warning)
+        tw.setObjectName('bigtextwarning')
+        self.widgets['bigtextwarning'] = tw
+        layout.addWidget(tw)
+        table = (
+            ('remove','Remove These Buttons',self.go_away),
+            ('load_nc','Load Text With @killcolor',self.load_nc),
+            ('more','Double limit for this session',self.more),
+            ('copy','Copy body to clipboard',self.copy),
+        )
+        for key,label,func in table:
+            self.widgets[key] = button = QtGui.QPushButton(label)
+            layout.addWidget(button)
+            def button_callback(checked,func=func):
+                func()
+            button.clicked.connect(button_callback)
+        # layout.addItem(QtGui.QSpacerItem(
+            # 10, 10, vPolicy=QtGui.QSizePolicy.Expanding))
+        self.layout.addWidget(w)
+        w.show()
+    #@+node:ekr.20141018081615.18276: *3* go_away
     def go_away(self):
-        bt = self
-        bt.layout.addWidget(bt.w)
-        bt.layout.removeWidget(bt)
-        bt.w.leo_big_text_w.deleteLater()
-        bt.w.leo_big_text_w = None
-        bt.w.leo_big_text = None
-    #@+node:tbrown.20140919120654.24042: *3* load
-    def load(self, nocolor=False):
-        bt = self
-        bt.wait()
-        if bt.c.positionExists(bt.p):
-            # Recreate the entire select code.
-            if nocolor:
-                bt.p.b = "@nocolor\n"+bt.p.b
-            bt.owner.set_body_text_after_select(bt.p,bt.old_p,bt.traceTime,force=True)
-            bt.owner.scroll_cursor(bt.p,bt.traceTime)
-            # g.trace('calling onBodyChanged')
-            ### bt.c.frame.body.onBodyChanged(undoType='Typing')
-        bt.go_away()
-        bt.c.bodyWantsFocusNow()
-        bt.c.recolor_now()
+        '''Delete all buttons and self.'''
+        # g.trace(self.w or 'None')
+        if self.w:
+            self.layout.removeWidget(self.w)
+            self.w.deleteLater()
+            self.w = None
+            self.c.bodyWantsFocus()
+    #@+node:tbrown.20140919120654.24042: *3* load_nc
+    def load_nc(self):
+        '''Load the big text with a leading @killcolor directive.'''
+        c,p,traceTime = self.c,self.c.p,self.traceTime
+        if not c.positionExists(p):
+            return
+        self.wait_message()
+        # Recreate the entire select code.
+        tag = "@killcolor\n"
+        if not p.b.startswith(tag):
+            p.b = tag+p.b
+        w = self.c.frame.body.wrapper
+        self.go_away()
+        self.owner.set_body_text_after_select(p,self.old_p,traceTime,force=True)
+        self.owner.scroll_cursor(p,traceTime)
+        w.setInsertPoint(0)
+        w.seeInsertPoint()
+        c.bodyWantsFocusNow()
+        c.recolor_now()
     #@+node:tbrown.20140919120654.24043: *3* more
     def more(self):
-        bt = self
-        c = bt.c
+        '''
+        Double the big text limit for this session.
+        Load the text if the text is less than this limit.
+        '''
+        c = self.c
         c.max_pre_loaded_body_chars *= 2
         if len(c.p.b) < c.max_pre_loaded_body_chars:
-            bt.wait()
-            bt.go_away()
-            c.selectPosition(bt.p)
+            self.wait_message()
+            self.go_away()
+            c.selectPosition(self.p)
         else:
-            g.es_print('limit is now: %s' % c.max_pre_loaded_body_chars)
-    #@+node:tbrown.20140919120654.24044: *3* wait
-    def wait(self):
-        bt = self
-        msg = "Loading large text, please wait\nuntil scrollbar stops shrinking"
-        bt.text.setText(msg)
-        g.es(msg)
-        bt.leo_load_button.hide()
-        bt.leo_more_button.hide()
-        bt.leo_copy_button.hide()
-        if hasattr(bt, 'leo_load_nc_button'):
-            bt.leo_load_nc_button.hide()
-        QtGui.QApplication.processEvents()  
-        # hide buttons *now* to prevent extra clicks
+            tw = self.widgets.get('bigtextwarning')
+            tw.setText(self.warning_message())
+            g.es('limit is now: %s' % c.max_pre_loaded_body_chars)
+    #@+node:tbrown.20140919120654.24044: *3* wait_message
+    def wait_message(self):
+        '''Issue a message asking the user to wait until all text loads.'''
+        g.es("Loading large text, please wait\nuntil scrollbar stops shrinking",color='red')
+    #@+node:ekr.20141018081615.18279: *3* warning_message
+    def warning_message(self):
+        '''Return the warning message.'''
+        c = self.c
+        s = '''\
+    Loading big text (%s characters, limit is %s characters)
+
+    Beware of a Qt bug: You will **lose data** if you change the text
+    before it is fully loaded (before the scrollbar stops moving).
+    '''
+        s = s.rstrip() % (len(self.s),c.max_pre_loaded_body_chars)
+        return g.adjustTripleString(s,c.tab_width)
     #@-others
 #@-others
 #@-leo

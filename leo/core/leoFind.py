@@ -1931,6 +1931,7 @@ class LeoFind:
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
             w.seeInsertPoint() # 2014/09/17
+            if trace: g.trace('p.b',len(p.b),'w.text',len(w.getAllText()),'sel',w.getSelectionRange())
             c.outerUpdate()
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()

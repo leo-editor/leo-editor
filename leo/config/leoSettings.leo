@@ -1818,7 +1818,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20141010095448.19776"></v>
+<v t="ekr.20131119143342.18879"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9289,7 +9289,10 @@ QTextEdit#richTextEdit {
     font-weight:                @body-font-weight;
     font-style:                 @body-font-style;
 }
-</t>
+
+QTextEdit#bigtextwarning {
+    background-color: pink;
+}</t>
 <t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
 
 QWidget#findTab {

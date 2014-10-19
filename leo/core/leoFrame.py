@@ -1579,8 +1579,8 @@ class LeoTree(object):
             wrapper = c.frame.body.wrapper
             w = wrapper and wrapper.widget
             return (
-                w and hasattr(w,'leo_load_button') and
-                len(p.b) > c.max_pre_loaded_body_chars)
+                ### w and hasattr(w,'leo_load_button') and
+                w and len(p.b) > c.max_pre_loaded_body_chars)
         else:
             return False
     #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body
@@ -1588,12 +1588,18 @@ class LeoTree(object):
         '''Return True if the body widget is a QTextEdit.'''
         c = self.c
         import leo.plugins.qt_text as qt_text
-        return isinstance(c.frame.body.wrapper.widget,qt_text.LeoQTextBrowser)
+        w = c.frame.body.wrapper.widget
+        val = isinstance(w,qt_text.LeoQTextBrowser)
             # c.frame.body.wrapper.widget is a LeoQTextBrowser.
             # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+        if not val:
+            g.trace(val,w,g.callers())
+        return val
+
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
     def unselect_helper(self,old_p,p,traceTime):
         '''Unselect the old node, calling the unselect hooks.'''
+        trace = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         c = self.c
@@ -1603,6 +1609,7 @@ class LeoTree(object):
         else:
             unselect = True
         if unselect and old_p != p:
+            if trace: g.trace(p.h)
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
             self.stop_colorizer(old_p)
@@ -1617,26 +1624,22 @@ class LeoTree(object):
     def remove_big_text_buttons(self,old_p):
         '''Remove the load and paste buttons created for large text.'''
         trace = False and not g.unitTesting
-        if not self.is_qt_body():
-            return
         c = self.c
-
         if not self.is_qt_body():
+            if trace: g.trace('not body')
             return
-
-        w = c.frame.body.widget
-        if old_p and hasattr(w,'leo_big_text') and w.leo_big_text is not None:
-            s = w.leo_big_text
-            if old_p and old_p.b != s:
-                if trace: g.trace('===== restoring big text',len(s),old_p.h)
+        w = c.frame.body.wrapper.widget
+        bc = getattr(w,'leo_big_text_controller',None)
+        if bc:
+            s = bc.s
+            if old_p and old_p.b !=s:
+                if trace: g.trace('===== restoring s',len(s),old_p.h)
                 old_p.b = s
                 if hasattr(c.frame.tree,'updateIcon'):
                     c.frame.tree.updateIcon(old_p,force=True)
-            w.leo_big_text = None # 2014/09/19: Allow further changes to w!
-
-        if hasattr(w,'leo_big_text_w') and w.leo_big_text_w:
-            w.leo_big_text_w.deleteLater()
-            w.leo_big_text_w = None
+            bc.go_away()
+            delattr(w,'leo_big_text_controller')
+        elif trace: g.trace('no bc')
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self,old_p):
         '''Stop colorizing the present node.'''
@@ -1653,6 +1656,7 @@ class LeoTree(object):
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self,old_p,p,traceTime):
         '''Select the new node, part 1.'''
+        trace = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         c = self.c
@@ -1664,11 +1668,21 @@ class LeoTree(object):
         if select:
             self.revertHeadline = p.h
             c.frame.setWrap(p)
-            if self.is_big_text(p):
-                self.set_not_loaded_text(p)
+            w = c.frame.body.wrapper.widget
+            bc = getattr(w,'leo_big_text_controller',None)
+            if bc and bc.w and old_p == p:
+                if trace: g.trace('same p and bc.w: do nothing',p.h)
+            elif (
+                old_p != p and
+                not bc and self.is_big_text(p) and
+                self.is_qt_body() and not g.app.unitTesting and not
+                c.undoer.undoing
+            ):
+                if trace: g.trace('add buttons',p.h)
                 self.add_big_text_buttons(old_p,p,traceTime)
             else:
-                self.set_body_text_after_select(p,old_p,traceTime)
+                if trace: g.trace('set body text',p.h)
+            self.set_body_text_after_select(p,old_p,traceTime)
             c.NodeHistory.update(p) # Remember this position.
         if traceTime:
             delta_t = time.time()-t1
@@ -1678,28 +1692,15 @@ class LeoTree(object):
     def add_big_text_buttons(self,old_p,p,traceTime):
         '''Add the load and copy buttons.'''
         trace = False and not g.unitTesting
-        from leo.plugins.qt_big_text import LeoBigTextDialog
+        from leo.plugins.qt_big_text import BigTextController
         c = self.c
-        if c.undoer.undoing:
-            g.trace('undoing')
-            return
-        if self.is_qt_body() and not g.app.unitTesting:
-            w = c.frame.body.wrapper.widget
-            frame = w.parent() # A QWidget
-            layout = frame.layout()
-            s = p.b
-            if hasattr(w,'leo_big_text_w') and w.leo_big_text_w:
-                return
-            w.leo_big_text_w = LeoBigTextDialog(
-                c=c, p=p, s=s, w=w,
-                layout=layout,
-                old_p=old_p,
-                traceTime=traceTime,
-                owner=self
-            )
-
-            layout.addWidget(w.leo_big_text_w)
-            layout.removeWidget(w)
+        w = c.frame.body.wrapper.widget
+        parent = w.parent() # A QWidget
+        layout = parent.layout()
+        old_w,owner,s = w,self,p.b
+        w.leo_big_text_controller = BigTextController(
+            c,layout,old_p,old_w,owner,p,parent,s)
+        if trace: g.trace('created',len(s))
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select (self,p,old_p,traceTime,force=False):
         '''Set the text after selecting a node.'''
@@ -1710,7 +1711,6 @@ class LeoTree(object):
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         old_s = w.getAllText()
-        
         if not force and p and p == old_p and s == old_s:
             if trace: g.trace('*pass',len(s),p.h,old_p.h)
         else:
@@ -1736,25 +1736,6 @@ class LeoTree(object):
                 if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
-    #@+node:ekr.20140829172618.18479: *6* LeoTree.set_not_loaded_text
-    def set_not_loaded_text(self,p):
-        '''Set the body text to a "not loaded" message.'''
-        c = self.c
-        if self.is_qt_body():
-            w = c.frame.body.wrapper.widget
-            wrapper = c.frame and c.frame.body and c.frame.body.wrapper
-            s = p.b
-            w.leo_big_text = p.b # Save the original text
-            # wrapper.setAllText(
-            #     "%d character text exceeds %d limit, not shown.\n\n"
-            #     "To load the body text, click the 'load' button.\n"
-            #     "Warning: make sure the text is fully loaded before using it!.\n\n"
-            #     "Set @int max-pre-loaded-body-chars in @settings\n"
-            #     "to permanently change limit."
-            #     % (len(s), c.max_pre_loaded_body_chars))
-            wrapper.setAllText('')
-            assert p.b == s
-                # There will be data loss if this assert fails.
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self,old_p,p,traceTime):
         '''Select the new node, part 2.'''

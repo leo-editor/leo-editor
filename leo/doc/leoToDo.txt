@@ -40,23 +40,12 @@ difficult to test.
 .. @+node:ekr.20131220065609.16590: *3* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 3 bugs affecting stability
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 1 bug affecting stability
 
 
     
     
    
-.. @+node:ekr.20141017110114.18274: *5* Fix big-text bugs
-Big text buttons: these are variations on the same bug.
-
-https://github.com/leo-editor/leo-editor/issues/64
-big text status re-evaluated on find in current body
-
-https://github.com/leo-editor/leo-editor/issues/63
-refresh-from-disk does not clear big text load delay UI
-
-https://github.com/leo-editor/leo-editor/issues/28
-Leo hangs when a node with too large body is selected
 .. @+node:ekr.20141017055340.18277: *4* Priority 2: 4 bugs re focus & rclick
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus
