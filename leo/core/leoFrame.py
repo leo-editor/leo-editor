@@ -1592,8 +1592,7 @@ class LeoTree(object):
         val = isinstance(w,qt_text.LeoQTextBrowser)
             # c.frame.body.wrapper.widget is a LeoQTextBrowser.
             # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-        if not val:
-            g.trace(val,w,g.callers())
+        # if not val: g.trace(val,w,g.callers())
         return val
 
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
