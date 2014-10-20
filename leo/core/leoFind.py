@@ -1861,7 +1861,7 @@ class LeoFind:
     def restore (self,data):
         '''Restore the screen and clear state after a search fails.'''
         c = self.c
-        in_headline,p,w,insert,start,end = data
+        in_headline,editing,p,w,insert,start,end = data
         if 0: # Don't do this here.
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
@@ -1871,33 +1871,40 @@ class LeoFind:
             c.selectPosition(p)
         else:
             c.selectPosition(c.rootPosition()) # New in Leo 4.5.
-        if not in_headline:
+        # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+        if in_headline:
+            c.selectPosition(p)
+            if editing:
+                c.editHeadline()
+            else:
+                c.treeWantsFocus()
+        else:
             # Looks good and provides clear indication of failure or termination.
             w.setSelectionRange(insert,insert)
             w.setInsertPoint(insert)
             w.seeInsertPoint()
-        if 1: # I prefer always putting the focus in the body.
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-            c.k.showStateAndMode(c.frame.body.wrapper)
-        else:
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save
     def save (self):
         '''Save everything needed to restore after a search fails.'''
         c = self.c
         p = self.p or c.p
-        w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
-        if w:
+        # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+        if self.in_headline:
+            e = c.edit_widget(p)
+            w = e or c.frame.tree.canvas
+            insert,start,end = None,None,None
+        else:
+            w = c.frame.body.wrapper
+            e = None
             insert = w.getInsertPoint()
             sel = w.getSelectionRange()
             if len(sel) == 2:
                 start,end = sel
             else:
                 start,end = None,None
-        else:
-            insert,start,end = None,None,None
-        return (self.in_headline,p.copy(),w,insert,start,end)
+        editing = e is not None
+        return self.in_headline,editing,p.copy(),w,insert,start,end
     #@+node:ekr.20031218072017.3091: *4* find.showSuccess
     def showSuccess(self,pos,newpos,showState=True):
         '''Display the result of a successful find operation.'''

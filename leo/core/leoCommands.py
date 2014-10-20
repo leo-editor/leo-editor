@@ -4175,21 +4175,17 @@ class Commands (object):
     #@+node:ekr.20031218072017.2885: *5* Edit Headline submenu
     #@+node:ekr.20031218072017.2886: *6* c.editHeadline
     def editHeadline (self,event=None):
-
         '''Begin editing the headline of the selected node.'''
-
         c = self ; k = c.k ; tree = c.frame.tree
-
         if g.app.batchMode:
             c.notValidInBatchMode("Edit Headline")
             return
-
         e,wrapper = tree.editLabel(c.p)
-
         if k:
             # k.setDefaultInputState()
             k.setEditingState()
             k.showStateAndMode(w=wrapper)
+        return e,wrapper
     #@+node:ekr.20031218072017.2290: *6* toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
 

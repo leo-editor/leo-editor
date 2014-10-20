@@ -41,18 +41,7 @@ difficult to test.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141017055340.18277: *4* Priority 2: 2 bugs re focus & rclick
-@language rest
-
-From https://github.com/leo-editor/leo-editor/issues/73
-
-    https://bugs.launchpad.net/leo-editor/+bug/1193820
-    Focus change on tree pane after saving current Leo file
-    
-    https://bugs.launchpad.net/leo-editor/+bug/1258373
-    failed find focus fails
-
-@language python
+.. @+node:ekr.20141017055340.18277: *4* Priority 2: 0 bugs re focus & rclick
 .. @+node:ekr.20141012064706.18244: *4* Priority 3: 2 bugs re distro
 .. @+node:ekr.20141017150357.18268: *5* Fix bug 24: Windows installer setting wrong file association for .leo files
 https://github.com/leo-editor/leo-editor/issues/24

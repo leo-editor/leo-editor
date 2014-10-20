@@ -467,6 +467,27 @@ What I did:
 - c.bigTextController (btc) replaces injected ivars.
 - Simplified all the interface code in LeoTree.select and helpers.
 - Added QTextEdit#bigtextwarning to the Qt stylesheet to make the warning background pink.
+.. @+node:ekr.20141020061642.21502: *4* Investigated bug 1193820: Focus change on tree pane after saving current Leo file
+@language rest
+
+From https://github.com/leo-editor/leo-editor/issues/73
+
+https://bugs.launchpad.net/leo-editor/+bug/1193820
+Focus change on tree pane after saving current Leo file
+    
+Using Qt. First reported here:
+https://groups.google.com/forum/#!topic/leo-editor/hPwPG9OTC3U
+
+This no longer seems to be a problem.
+.. @+node:ekr.20141020061642.21503: *4* Fixed bug 1258373: failed find focus fails
+@language rest
+
+From https://github.com/leo-editor/leo-editor/issues/73
+
+https://bugs.launchpad.net/leo-editor/+bug/1258373
+failed find focus fails
+
+Changed code in the save/restore methods in leoFind.py.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
