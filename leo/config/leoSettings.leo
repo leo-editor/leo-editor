@@ -1635,7 +1635,7 @@
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
+<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
@@ -1818,7 +1818,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

@@ -1879,7 +1879,7 @@ class Commands (object):
                 at.readOneAtEditNode(fn,p)
                 c.redraw()
             else:
-                g.trace('can not refresh from disk:',p.h)
+                g.es_print('can not refresh from disk\n%s' % p.h)
         else:
             g.warning('not an @<file> node:\n%s' % (p.h))
     #@+node:ekr.20031218072017.2834: *6* c.save

@@ -5582,7 +5582,7 @@ class AtFile:
         if at.yesToAll:
             assert at.canCancelFlag
             return True
-        if root.h.startswith('@auto-rst'):
+        if root and root.h.startswith('@auto-rst'):
             # Fix bug 50: body text lost switching @file to @auto-rst
             # Refuse to convert any @<file> node to @auto-rst.
             d = root.v.at_read

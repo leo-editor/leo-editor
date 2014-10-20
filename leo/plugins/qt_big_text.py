@@ -58,12 +58,14 @@ class BigTextController:
         tw.setObjectName('bigtextwarning')
         self.widgets['bigtextwarning'] = tw
         layout.addWidget(tw)
-        table = (
-            ('remove','Remove These Buttons',self.go_away),
-            ('load_nc','Load Text With @killcolor',self.load_nc),
-            ('more','Double limit for this session',self.more),
-            ('copy','Copy body to clipboard',self.copy),
-        )
+        table = [
+                ('remove','Remove These Buttons',self.go_away),
+                ('load_nc','Load Text With @killcolor',self.load_nc),
+                ('more','Double limit for this session',self.more),
+                ('copy','Copy body to clipboard',self.copy),
+        ]
+        if self.s.startswith('@killcolor'):
+            del table[1]
         for key,label,func in table:
             self.widgets[key] = button = QtGui.QPushButton(label)
             layout.addWidget(button)
@@ -96,6 +98,7 @@ class BigTextController:
         val = isinstance(w,qt_text.LeoQTextBrowser)
             # c.frame.body.wrapper.widget is a LeoQTextBrowser.
             # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+        # g.trace(self.c.shortFileName(),val)
         return val
 
     #@+node:ekr.20141019133149.18296: *3* btc.is_big_text
@@ -105,9 +108,11 @@ class BigTextController:
         if c.max_pre_loaded_body_chars > 0:
             wrapper = c.frame.body.wrapper
             w = wrapper and wrapper.widget
-            return w and len(p.b) > c.max_pre_loaded_body_chars
+            val = w and len(p.b) > c.max_pre_loaded_body_chars
         else:
-            return False
+            val = False
+        # g.trace(c.shortFileName(),p.h,val)
+        return val
     #@+node:tbrown.20140919120654.24042: *3* btc.load_nc
     def load_nc(self):
         '''Load the big text with a leading @killcolor directive.'''
@@ -151,11 +156,16 @@ class BigTextController:
             return False # Don't add buttons during testing.
         if self.c.undoer.undoing:
             return False # Suppress buttons during undo.
-        if old_p == p:
-            return False # Not the first time we've seen p.
-        if self.active_flag:
+        if self.active_flag: ### and old_p == p:
             return False # Buttons already created.
         return self.is_big_text(p) and self.is_qt_body()
+    #@+node:ekr.20141019190455.18296: *3* btc.should_go_away
+    def should_go_away(self,p):
+        '''Return True if big-text buttons should be removed.'''
+        if self.c.undoer.undoing:
+            return False # Suppress buttons during undo.
+        else:
+            return self.active_flag and not self.is_big_text(p)
     #@+node:tbrown.20140919120654.24044: *3* btc.wait_message
     def wait_message(self):
         '''Issue a message asking the user to wait until all text loads.'''
