@@ -316,6 +316,10 @@ class Commands (object):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
         else:
             self.styleSheetManager = None
+        if hasattr(g.app.gui,'bigTextControllerClass'):
+            self.bigTextController = g.app.gui.bigTextControllerClass(c)
+        else:
+            self.bigTextController = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self,previousSettings):
         '''Init the settings *before* initing the objects.'''
@@ -5507,7 +5511,7 @@ class Commands (object):
             elif self.array:
                 # Remove trailing whitespace.
                 # This never removes trailing whitespace from multi-line tokens.
-                 self.array[-1] = self.array[-1].rstrip()
+                self.array[-1] = self.array[-1].rstrip()
             self.array.append('\n')
             self.putArray()
         #@+node:ekr.20141009151322.17828: *9* doNl

@@ -1571,31 +1571,19 @@ class LeoTree(object):
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:total',delta_t))
-    #@+node:ekr.20140829172618.20682: *5* LeoTree.is_big_text
-    def is_big_text(self,p):
-        '''True if p.b is large and the text widgets supports big text buttons.'''
-        c = self.c
-        if big_text_buttons and c.max_pre_loaded_body_chars > 0:
-            wrapper = c.frame.body.wrapper
-            w = wrapper and wrapper.widget
-            return (
-                ### w and hasattr(w,'leo_load_button') and
-                w and len(p.b) > c.max_pre_loaded_body_chars)
-        else:
-            return False
-    #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body
-    def is_qt_body(self):
-        '''Return True if the body widget is a QTextEdit.'''
-        c = self.c
-        import leo.plugins.qt_text as qt_text
-        w = c.frame.body.wrapper.widget
-        val = isinstance(w,qt_text.LeoQTextBrowser)
-            # c.frame.body.wrapper.widget is a LeoQTextBrowser.
-            # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-        # if not val: g.trace(val,w,g.callers())
-        return val
-
-    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helpers
+    #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
+    if 0:
+        def is_qt_body(self):
+            '''Return True if the body widget is a QTextEdit.'''
+            c = self.c
+            import leo.plugins.qt_text as qt_text
+            w = c.frame.body.wrapper.widget
+            val = isinstance(w,qt_text.LeoQTextBrowser)
+                # c.frame.body.wrapper.widget is a LeoQTextBrowser.
+                # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+            # if not val: g.trace(val,w,g.callers())
+            return val
+    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
     def unselect_helper(self,old_p,p,traceTime):
         '''Unselect the old node, calling the unselect hooks.'''
         trace = False and not g.unitTesting
@@ -1612,33 +1600,15 @@ class LeoTree(object):
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
             self.stop_colorizer(old_p)
-            self.remove_big_text_buttons(old_p)
+            btc = self.c.bigTextController
+            if btc and btc.active_flag:
+                btc.go_away()
         if call_event_handlers:
             g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect',delta_t))
-    #@+node:ekr.20140829172618.18477: *6* LeoTree.remove_big_text_buttons
-    def remove_big_text_buttons(self,old_p):
-        '''Remove the load and paste buttons created for large text.'''
-        trace = False and not g.unitTesting
-        c = self.c
-        if not self.is_qt_body():
-            if trace: g.trace('not body')
-            return
-        w = c.frame.body.wrapper.widget
-        bc = getattr(w,'leo_big_text_controller',None)
-        if bc:
-            s = bc.s
-            if old_p and old_p.b !=s:
-                if trace: g.trace('===== restoring s',len(s),old_p.h)
-                old_p.b = s
-                if hasattr(c.frame.tree,'updateIcon'):
-                    c.frame.tree.updateIcon(old_p,force=True)
-            bc.go_away()
-            delattr(w,'leo_big_text_controller')
-        elif trace: g.trace('no bc')
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self,old_p):
         '''Stop colorizing the present node.'''
@@ -1655,7 +1625,6 @@ class LeoTree(object):
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self,old_p,p,traceTime):
         '''Select the new node, part 1.'''
-        trace = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         c = self.c
@@ -1668,38 +1637,16 @@ class LeoTree(object):
             self.revertHeadline = p.h
             c.frame.setWrap(p)
             w = c.frame.body.wrapper.widget
-            bc = getattr(w,'leo_big_text_controller',None)
-            if bc and bc.w and old_p == p:
-                if trace: g.trace('same p and bc.w: do nothing',p.h)
-            elif (
-                old_p != p and
-                not bc and self.is_big_text(p) and
-                self.is_qt_body() and not g.app.unitTesting and not
-                c.undoer.undoing
-            ):
-                if trace: g.trace('add buttons',p.h)
-                self.add_big_text_buttons(old_p,p,traceTime)
-            else:
-                if trace: g.trace('set body text',p.h)
+            btc = c.bigTextController
+            if btc and btc.should_add_buttons(old_p,p):
+                leoTree = self
+                btc.add_buttons(leoTree,old_p,p)
             self.set_body_text_after_select(p,old_p,traceTime)
             c.NodeHistory.update(p) # Remember this position.
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select1',delta_t))
-    #@+node:ekr.20140829172618.18478: *6* LeoTree.add_big_text_buttons
-    def add_big_text_buttons(self,old_p,p,traceTime):
-        '''Add the load and copy buttons.'''
-        trace = False and not g.unitTesting
-        from leo.plugins.qt_big_text import BigTextController
-        c = self.c
-        w = c.frame.body.wrapper.widget
-        parent = w.parent() # A QWidget
-        layout = parent.layout()
-        old_w,owner,s = w,self,p.b
-        w.leo_big_text_controller = BigTextController(
-            c,layout,old_p,old_w,owner,p,parent,s)
-        if trace: g.trace('created',len(s))
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select (self,p,old_p,traceTime,force=False):
         '''Set the text after selecting a node.'''
@@ -1762,9 +1709,8 @@ class LeoTree(object):
         if traceTime:
             t1 = time.time()
         c = self.c
-        if not self.is_big_text(p):
-            p.restoreCursorAndScroll()
-                # Was in setBodyTextAfterSelect
+        p.restoreCursorAndScroll()
+            # Was in setBodyTextAfterSelect
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:

@@ -19017,19 +19017,33 @@ def lengthHelper(self):
         delta_t = time.time()-t1
         if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
     return n
-.. @+node:ekr.20140918124632.19457: *3* No longer used color definitions
-.. @+node:ekr.20140918124632.19458: *4* @@@color LightBlue = #ADD8E6
-.. @+node:ekr.20140918124632.19459: *4* @@@color LightSteelBlue1 = #CAE1FF
-.. @+node:ekr.20140918124632.19460: *4* @@@color MistyRose1 = #FFE4E1
-.. @+node:ekr.20140918124632.19461: *4* @@@color Salmon = #FA8072
-.. @+node:ekr.20070705075604.3: *3* isUnitTestNode (not used)
-def isUnitTestNode (self,p):
+.. @+node:ekr.20140829172618.18477: *3* LeoTree.remove_big_text_buttons (unused)
+if 0:
 
-    h = p.h.lower()
-
-    for tag in self.tags:
-        if h.startswith(tag):
-            return True
-    return False
+    def remove_big_text_buttons(self,old_p):
+        '''Remove the load and paste buttons created for large text.'''
+        btc = self.c.bigTextController
+        if btc and btc.active_flag:
+            ###
+            # # # s = btc.s
+            # # # if old_p and old_p.b !=s:
+                # # # if trace: g.trace('===== restoring s',len(s),old_p.h)
+                # # # old_p.b = s
+                # # # if hasattr(c.frame.tree,'updateIcon'):
+                    # # # c.frame.tree.updateIcon(old_p,force=True)
+            btc.go_away()
+.. @+node:ekr.20140829172618.20682: *3* LeoTree.is_big_text (not used)
+if 0:
+    def is_big_text(self,p):
+        '''True if p.b is large and the text widgets supports big text buttons.'''
+        c = self.c
+        if big_text_buttons and c.max_pre_loaded_body_chars > 0:
+            wrapper = c.frame.body.wrapper
+            w = wrapper and wrapper.widget
+            return (
+                ### w and hasattr(w,'leo_load_button') and
+                w and len(p.b) > c.max_pre_loaded_body_chars)
+        else:
+            return False
 .. @-all
 .. @-leo
