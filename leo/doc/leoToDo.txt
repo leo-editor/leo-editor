@@ -60,8 +60,11 @@ correctly states, this should instead be:
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391:
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
-.. @+node:ekr.20141017150357.18266: *4* Priority 4: 5 other a1 bugs
+.. @+node:ekr.20141017150357.18266: *4* Priority 4: 4 other a1 bugs
 @language rest
+.. @+node:ekr.20141020061642.21518: *5* Fix bug 75: write-opml-file always produces an empty file 
+https://github.com/leo-editor/leo-editor/issues/75
+write-opml-file always produces an empty file
 .. @+node:ekr.20141020061642.21515: *5* Fix bug 1245616: Autocomplete ? function...does not work
 From https://github.com/leo-editor/leo-editor/issues/73
 
@@ -72,16 +75,16 @@ From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141020061642.21511: *4* Priority 5: 2 other bugs
-Improve page up/down commands
+.. @+node:ekr.20141020061642.21517: *5* Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
-https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 
-https://github.com/leo-editor/leo-editor/issues/75
-write-opml-file always produces an empty file
+https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
+
+https://github.com/leo-editor/leo-editor/issues/57
+Leo sets focus to body when main window gets focus
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
