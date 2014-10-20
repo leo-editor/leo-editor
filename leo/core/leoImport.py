@@ -657,6 +657,7 @@ class LeoImportCommands:
         d = self.atAutoDict
         trace = False and not g.unitTesting # and p.h.startswith('@auto-test')
         for key in d.keys():
+            # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
             if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h,0,key):

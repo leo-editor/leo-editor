@@ -2417,6 +2417,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 button = action_container
 
             for rc in rclicks:
+                # pylint: disable=cell-var-from-loop
                 headline = rc.position.h[8:].strip()
                 act = QtWidgets.QAction(headline, action_container)
                 if '---' in headline and headline.strip().strip('-') == '':

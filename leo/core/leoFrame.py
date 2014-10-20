@@ -1640,7 +1640,6 @@ class LeoTree(object):
             btc = c.bigTextController
             if btc:
                 if btc.should_add_buttons(old_p,p):
-                    leoTree = self
                     btc.add_buttons(old_p,p)
                 elif btc.should_go_away(p):
                     btc.go_away()
