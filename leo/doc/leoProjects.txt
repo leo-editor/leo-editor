@@ -447,6 +447,9 @@ Changes:
 .. @+node:ekr.20141017110114.18274: *4* Fixed big-text bugs: #28, #63, #64
 @language rest
 
+Summary post:
+https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
+
 https://github.com/leo-editor/leo-editor/issues/28
 Fixed: Leo hangs when a node with too large body is selected
 
@@ -456,7 +459,7 @@ Fixed: big text status re-evaluated on find in current body
 https://github.com/leo-editor/leo-editor/issues/63
 Fixed: refresh-from-disk does not clear big text load delay UI
 
-What I did (Summary):
+What I did:
 
 - The big text is now shown along with warning text and warning buttons.
   Imo, this is essential: it keeps c.frame.body.wrapper.widget unchanged.
@@ -464,10 +467,6 @@ What I did (Summary):
 - c.bigTextController (btc) replaces injected ivars.
 - Simplified all the interface code in LeoTree.select and helpers.
 - Added QTextEdit#bigtextwarning to the Qt stylesheet to make the warning background pink.
-
-Changed methods:
-- c.initObjects and LeoQtGui ctor.
-- LeoTree.select logic, especially LeoTree.unselect_helper and LeoTree.select_new_node
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

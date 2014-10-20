@@ -124,6 +124,7 @@
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
 <v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
+<v t="ekr.20141020061642.19855"><vh>@color big-text-warning-bg = pink</vh></v>
 </v>
 <v t="ekr.20140915194122.23439"><vh>Border colors</vh>
 <v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
@@ -9290,7 +9291,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: pink;
+    background-color: @big-text-warning-bg;
 }</t>
 <t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
 
@@ -9695,6 +9696,7 @@ else:
         Experimental: use at your own risk.
 False:  Use the newly-improved legacy beautify code.
 </t>
+<t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
