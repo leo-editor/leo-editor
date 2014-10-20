@@ -15,7 +15,6 @@ class BigTextController:
         self.active_flag = None # True: warning text/buttons are visible.
         self.c = c
         self.layout = None
-        self.leoTree = None # A LeoQtTree.
         self.old_p = None
         self.old_w = None # A LeoQTextBrowser.
         self.p = None
@@ -23,7 +22,7 @@ class BigTextController:
         self.s = None
         self.w = None
     #@+node:ekr.20141019133149.18299: *3* btc.add_buttons
-    def add_buttons(self,leoTree,old_p,p):
+    def add_buttons(self,old_p,p):
         '''Init the big text controller for node p.'''
         c = self.c
         w = c.frame.body.wrapper.widget
@@ -34,7 +33,6 @@ class BigTextController:
         self.layout = layout
         self.old_p = old_p
         self.old_w = w # A LeoQTextBrowser.
-        self.leoTree = leoTree # A LeoQtTree.
         self.p = p
         self.parent = parent
         self.s = p.b
@@ -127,8 +125,6 @@ class BigTextController:
             p.b = tag+p.b
         w = self.c.frame.body.wrapper
         self.go_away()
-        self.leoTree.set_body_text_after_select(p,self.old_p,traceTime,force=True)
-        self.leoTree.scroll_cursor(p,traceTime)
         w.setInsertPoint(0)
         w.seeInsertPoint()
         c.bodyWantsFocusNow()

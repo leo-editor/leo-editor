@@ -1641,7 +1641,7 @@ class LeoTree(object):
             if btc:
                 if btc.should_add_buttons(old_p,p):
                     leoTree = self
-                    btc.add_buttons(leoTree,old_p,p)
+                    btc.add_buttons(old_p,p)
                 elif btc.should_go_away(p):
                     btc.go_away()
             self.set_body_text_after_select(p,old_p,traceTime)
