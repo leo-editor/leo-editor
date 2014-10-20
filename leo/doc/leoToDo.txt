@@ -60,28 +60,26 @@ correctly states, this should instead be:
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391:
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
-.. @+node:ekr.20141017150357.18266: *4* Priority 4: 5 other a1/b1 milestone bugs
+.. @+node:ekr.20141017150357.18266: *4* Priority 4: 5 other a1 bugs
+@language rest
+.. @+node:ekr.20141020061642.21515: *5* Fix bug 1245616: Autocomplete ? function...does not work
 From https://github.com/leo-editor/leo-editor/issues/73
 
-    [For a1] https://bugs.launchpad.net/leo-editor/+bug/1243855
-    @auto-rst doesn't save text
-    
-    [For a1] https://bugs.launchpad.net/leo-editor/+bug/1259127
-    'Refresh from disk' problem with @auto 
+https://bugs.launchpad.net/leo-editor/+bug/1245616
+Autocomplete ? function to show doc string does not work
+.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+From https://github.com/leo-editor/leo-editor/issues/73
 
-    [For a1] https://bugs.launchpad.net/leo-editor/+bug/1245616
-    Autocomplete ? function to show doc string does not work
-    
-    [For a1] https://bugs.launchpad.net/leo-editor/+bug/1245535
-    API allows headlines to contain newlines
-
-    [For a1] https://github.com/leo-editor/leo-editor/issues/66
-    errors inhibited read @auto foo.md
-
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+.. @+node:ekr.20141020061642.21511: *4* Priority 5: 2 other bugs
 Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
-.. @+node:ekr.20141017150357.18271: *4* 1 bug assigned to Terry
+
+https://github.com/leo-editor/leo-editor/issues/75
+write-opml-file always produces an empty file
+.. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)

@@ -488,6 +488,17 @@ https://bugs.launchpad.net/leo-editor/+bug/1258373
 failed find focus fails
 
 Changed code in the save/restore methods in leoFind.py.
+.. @+node:ekr.20141020061642.21512: *4* Delegated git #57 to Terry
+https://github.com/leo-editor/leo-editor/issues/57
+.. @+node:ekr.20141020061642.21514: *4* Fixed bug 1245535: API allows headlines to contain newlines
+@language python
+
+From https://github.com/leo-editor/leo-editor/issues/73
+
+https://bugs.launchpad.net/leo-editor/+bug/1245535
+API allows headlines to contain newlines.
+
+The fix was to v.setHeadString.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

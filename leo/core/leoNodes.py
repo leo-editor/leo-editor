@@ -2413,7 +2413,9 @@ class VNodeBase (object):
         # fn = self.context.shortFileName()
         # g.trace(fn,self.fileIndex,s,g.callers())
         v = self
-        v._headString = g.toUnicode(s,reportErrors=True)
+        # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
+        # API allows headlines to contain newlines.
+        v._headString = g.toUnicode(s,reportErrors=True).replace('\n','')
 
     initBodyString = setBodyString
     initHeadString = setHeadString
