@@ -297,9 +297,10 @@ class OpmlController:
         '''
         Write the c.p as OPML, using the owner's put method.'''
         PutToOPML(owner)
-    #@+node:ekr.20060904103721: *3* oc.readFile
+    #@+node:ekr.20060904103721: *3* oc.readFile & helpers
     def readFile (self,fileName):
 
+        dumpTree = False
         if not fileName:
             return g.trace('no fileName')
         c = self.c.new()
@@ -307,7 +308,10 @@ class OpmlController:
             # so that created vnodes will have the proper context.
         # Pass one: create the intermediate nodes.
         dummyRoot = self.parse_opml_file(fileName)
-        self.dumpTree(dummyRoot)
+        if not dummyRoot:
+            return
+        if dumpTree:
+            self.dumpTree(dummyRoot)
         # Pass two: create the outline from the sax nodes.
         children = self.createVnodes(c,dummyRoot)
         p = leoNodes.Position(v=children[0],childIndex=0,stack=None)
@@ -416,10 +420,12 @@ class OpmlController:
     #@-others
 #@+node:ekr.20060919172012.2: ** class PutToOPML
 class PutToOPML:
-    '''Write the c.p as OPML, using the owner's put method.'''
+    '''Write c.p's tree as OPML, using the owner's put method.'''
+
     def __init__(self,owner):
         self.c = owner.c
-        self.owner = owner
+        self.leo_file_encoding = owner.leo_file_encoding
+        self.owner = owner # a leoFileCommands.FileCommand instance.
         self.initConfig()
         self.putAll()
 
@@ -616,10 +622,9 @@ class PutToOPML:
     #@+node:ekr.20141020112451.18339: *3* putXMLLine
     def putXMLLine (self):
         '''Put the **properly encoded** <?xml> element.'''
-        # Use self.leo_file_encoding encoding.
         self.put('%s"%s"%s\n' % (
             g.app.prolog_prefix_string,
-            self.owner.leo_file_encoding,
+            self.leo_file_encoding,
             g.app.prolog_postfix_string))
     #@-others
 #@+node:ekr.20060904134958.164: ** class SaxContentHandler (XMLGenerator)
@@ -628,25 +633,14 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
     '''A sax content handler class that reads OPML files.'''
 
     #@+others
-    #@+node:ekr.20060904134958.165: *3*  __init__ & helpers
+    #@+node:ekr.20060904134958.165: *3*  __init__ & helper
     def __init__ (self,c,inputFileName):
         '''Ctor for SaxContentHandler class (OMPL plugin).'''
         self.c = c
         self.inputFileName = inputFileName
-        # Init the base class.
         xml.sax.saxutils.XMLGenerator.__init__(self)
-        #@+<< define dispatch dict >>
-        #@+node:ekr.20060917185525: *4* << define dispatch dict >>
-        # There is no need for an 'end' method if all info is carried in attributes.
-        self.dispatchDict = {
-            'body':         (None,None),
-            'head':         (self.startHead,None),
-            'opml':         (None,None),
-            'outline':      (self.startOutline,self.endOutline),
-            'leo:body':     (self.startBodyText,self.endBodyText),
-            'leo:global_window_position':  (self.startWinPos,None)
-        }
-        #@-<< define dispatch dict >>
+            # Init the base class.
+        self.dispatchDict = self.define_dispatch_dict()
         # Semantics.
         self.content = []
         self.elementStack = []
@@ -656,21 +650,32 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
         self.nodeStack = []
         self.ratio = 0.5 # body-outline ratio.
         self.rootNode = None
+    #@+node:ekr.20060917185525: *4* define_disptatch_dict
+    def define_dispatch_dict(self):
+        # There is no need for an 'end' method if all info is carried in attributes.
+        # Keys are **elements**.
+        d = {
+            'body':         (None,None),
+            'head':         (self.startHead,None),
+            'opml':         (None,None),
+            'outline':      (self.startOutline,self.endOutline),
+            'leo:body':     (self.startBodyText,self.endBodyText),
+            'leo:global_window_position':  (self.startWinPos,None),
+        }
+        return d
     #@+node:ekr.20060904134958.166: *3* helpers
     #@+node:ekr.20060904134958.167: *4* attrsToList
     def attrsToList (self,attrs):
-
-        '''Convert the attributes to a list of g.Bunches.
-
-        attrs: an Attributes item passed to startElement.'''
-
+        '''
+        Convert the attributes to a list of g.Bunches.
+        attrs: an Attributes item passed to startElement.
+        '''
         return [g.Bunch(name=name,val=attrs.getValue(name))
             for name in attrs.getNames()]
     #@+node:ekr.20060904134958.170: *4* error
     def error (self, message):
 
         print('\n\nXML error: %s\n' % (message))
-
         self.errors += 1
     #@+node:ekr.20060917185525.1: *4* inElement
     def inElement (self,name):
@@ -747,7 +752,7 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
             if self.node:
                 self.content.append(content)
             else:
-                self.error('No node for leo:body content')
+                self.error('No node for %s content' % (name))
         else:
             if content.strip():
                 print('content:',name,repr(content))
@@ -769,12 +774,9 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
         assert name == name2
     #@+node:ekr.20060919193501: *4* endBodyText
     def endBodyText (self):
-
         '''End a <leo:body> element.'''
-
         if self.content:
             self.node.bodyString = ''.join(self.content)
-
         self.content = []
     #@+node:ekr.20060917185948: *4* endOutline
     def endOutline (self):
@@ -798,6 +800,7 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
     #@+node:ekr.20060919193501.1: *4* startBodyText
     def startBodyText (self,attrs):
         '''Start a <leo:body> element.'''
+        g.trace(attrs)
         self.content = []
     #@+node:ekr.20060922072852: *4* startHead
     def startHead (self,attrs):
@@ -839,15 +842,12 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
     def doOutlineAttributes (self,attrs):
 
         node = self.node
-
         for bunch in self.attrsToList(attrs):
-            name = bunch.name ; val = bunch.val
-
+            name,val = bunch.name,bunch.val
             if name == 'text': # Text is the 'official' opml attribute for headlines.
                 node.headString = val
-            elif name == 'leo:body':
-                #g.trace(repr(val))
-                #g.es_dump (val[:30])
+            elif name in ('_note','leo:body'):
+                # Android outliner uses _note.
                 node.bodyString = val
             elif name == 'leo:v':
                 node.gnx = val
