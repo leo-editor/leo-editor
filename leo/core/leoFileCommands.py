@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''Classes relating to reading and writing .leo files.'''
 
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
@@ -43,7 +41,6 @@ except Exception:
 # The following is sometimes used.
 # import time
 #@-<< imports >>
-
 #@+<< define exception classes >>
 #@+node:ekr.20060918164811: ** << define exception classes >>
 class BadLeoFile(Exception):
@@ -529,11 +526,10 @@ class FileCommands:
     #@+node:ekr.20090218115025.4: ** fc.Birth
     #@+node:ekr.20031218072017.3019: *3* fc.ctor
     def __init__(self,c):
-
+        '''Ctor for FileCommands class.'''
         # g.trace("__init__", "FileCommands.__init__")
         self.c = c
         self.frame = c.frame
-
         self.nativeTnodeAttributes = ('tx',)
         self.nativeVnodeAttributes = (
             'a',
@@ -542,25 +538,21 @@ class FileCommands:
             'expanded','marks','t','tnodeList',
             # 'vtag',
         )
-
         self.checkOutlineBeforeSave = c.config.getBool(
             'check_outline_before_save',default=False)
-
         self.initIvars()
     #@+node:ekr.20090218115025.5: *3* fc.initIvars
     def initIvars(self):
-
-        # General
+        '''Init ivars of the FileCommands class.'''
+        # General...
         c = self.c
         self.mFileName = ""
         self.fileDate = -1
         self.leo_file_encoding = c.config.new_leo_file_encoding
-
-        # The bin param doesn't exist in Python 2.3;
-        # the protocol param doesn't exist in earlier versions of Python.
-        # version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
-
-        # For reading
+            # The bin param doesn't exist in Python 2.3;
+            # the protocol param doesn't exist in earlier versions of Python.
+            # version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+        # For reading...
         self.checking = False # True: checking only: do *not* alter the outline.
         self.descendentExpandedList = []
         self.descendentMarksList = []
@@ -570,18 +562,16 @@ class FileCommands:
         self.ratio = 0.5
         self.currentVnode = None
         self.rootVnode = None
-
-        # For writing
+        # For writing...
         self.read_only = False
         self.rootPosition = None
         self.outputFile = None
         self.openDirectory = None
         self.putCount = 0
-        # self.topVnode = None
         self.toString = False
         self.usingClipboard = False
         self.currentPosition = None
-        # New in 3.12
+        # New in 3.12...
         self.copiedTree = None
         self.gnxDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
@@ -1614,42 +1604,46 @@ class FileCommands:
                 g.error("exception deleting backup file:",fileName)
                 g.es_exception(full=False)
             return False
-    #@+node:ekr.20031218072017.1470: *3* fc.put
+    #@+node:ekr.20031218072017.1470: *3* fc.put & helpers
     def put (self,s):
-
         '''Put string s to self.outputFile. All output eventually comes here.'''
-
         # Improved code: self.outputFile (a cStringIO object) always exists.
-        # g.trace(g.callers(1),repr(s))
         if s:
+            # if g.unitTesting: g.trace(g.callers(1),repr(s))
             self.putCount += 1
             if not g.isPython3:
                 s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             self.outputFile.write(s)
-
+    #@+node:ekr.20141020112451.18329: *4* put_dquote
     def put_dquote (self):
         self.put('"')
 
+    #@+node:ekr.20141020112451.18330: *4* put_dquoted_bool
     def put_dquoted_bool (self,b):
         if b: self.put('"1"')
         else: self.put('"0"')
 
+    #@+node:ekr.20141020112451.18331: *4* put_flag
     def put_flag (self,a,b):
         if a:
             self.put(" ") ; self.put(b) ; self.put('="1"')
 
+    #@+node:ekr.20141020112451.18332: *4* put_in_dquotes
     def put_in_dquotes (self,a):
         self.put('"')
         if a: self.put(a) # will always be True if we use backquotes.
         else: self.put('0')
         self.put('"')
 
+    #@+node:ekr.20141020112451.18333: *4* put_nl
     def put_nl (self):
         self.put("\n")
 
+    #@+node:ekr.20141020112451.18334: *4* put_tab
     def put_tab (self):
         self.put("\t")
 
+    #@+node:ekr.20141020112451.18335: *4* put_tabs
     def put_tabs (self,n):
         while n > 0:
             self.put("\t")
@@ -2028,15 +2022,6 @@ class FileCommands:
         self.outputFile = None
         self.usingClipboard = False
         return s
-    #@+node:ekr.20060919064401: *3* fc.putToOPML
-    # All elements and attributes prefixed by ':' are leo-specific.
-    # All other elements and attributes are specified by the OPML 1 spec.
-
-    def putToOPML (self):
-
-        '''Should be overridden by the opml plugin.'''
-
-        return None
     #@+node:ekr.20031218072017.3046: *3* fc.write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
 
@@ -2049,7 +2034,8 @@ class FileCommands:
         if self.isReadOnly(fileName):
             return False
         try:
-            self.putCount = 0 ; self.toString = toString
+            self.putCount = 0
+            self.toString = toString
             if toString:
                 ok = self.writeToStringHelper(fileName)
             else:
@@ -2116,10 +2102,13 @@ class FileCommands:
         if not theActualFile: return False
         self.mFileName = fileName
         self.outputFile = StringIO() # Always write to a string.
-
         try:
             if toOPML:
-                self.putToOPML()
+                if hasattr(c,'opmlController'):
+                    c.opmlController.putToOPML(owner=self)
+                else:
+                    # This is not likely ever to be called.
+                    g.trace('leoOPML plugin not active.')
             else:
                 self.putLeoFile()
             s = self.outputFile.getvalue()
@@ -2144,8 +2133,6 @@ class FileCommands:
     #@+node:ekr.20100119145629.6106: *5* fc.createActualFile
     def createActualFile (self,fileName,toOPML,toZip):
 
-        if toOPML and not self.mFileName.endswith('opml'):
-            fileName = self.mFileName + '.opml'
         if toZip:
             self.toString = True
             theActualFile = None
@@ -2157,7 +2144,6 @@ class FileCommands:
                 g.es('can not open %s' % fileName)
                 g.es_exception()
                 theActualFile = None
-
         return fileName,theActualFile
     #@+node:ekr.20031218072017.3047: *5* fc.createBackupFile
     def createBackupFile (self,fileName):
@@ -2475,4 +2461,8 @@ class FileCommands:
 
         # g.trace('c.fixed',c.fixed)
     #@-others
+
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo
