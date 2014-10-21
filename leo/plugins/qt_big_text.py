@@ -14,6 +14,7 @@ class BigTextController:
         '''Ctor for BigTextController.'''
         self.active_flag = None # True: warning text/buttons are visible.
         self.c = c
+        self.inhibit = set() # Set of inhibited vnodes.
         self.layout = None
         self.old_p = None
         self.old_w = None # A LeoQTextBrowser.
@@ -38,8 +39,9 @@ class BigTextController:
         self.s = p.b
         self.widgets = {}
             # Keys are strings, values are buttons.
-        self.create_widgets()
-            # Create the big-text widgets.
+        if p.v not in self.inhibit:
+            self.create_widgets()
+                # Create the big-text widgets.
         # g.trace('----- (LeoBigTextDialog)',len(self.s),self.w)
     #@+node:ekr.20141018081615.18272: *3* btc.create_widgets
     def create_widgets(self):
@@ -57,7 +59,7 @@ class BigTextController:
         self.widgets['bigtextwarning'] = tw
         layout.addWidget(tw)
         table = [
-                ('remove','Remove These Buttons',self.go_away),
+                ('remove','Remove These Buttons',self.remove),
                 ('load_nc','Load Text With @killcolor',self.load_nc),
                 ('more','Double limit for this session',self.more),
                 ('copy','Copy body to clipboard',self.copy),
@@ -83,11 +85,12 @@ class BigTextController:
         '''Delete all buttons and self.'''
         # g.trace(self.w or 'None')
         self.active_flag = False
+        c = self.c
         if self.w:
             self.layout.removeWidget(self.w)
             self.w.deleteLater()
             self.w = None
-            self.c.bodyWantsFocus()
+        c.bodyWantsFocusNow()
     #@+node:ekr.20141019133149.18298: *3* btc.is_qt_body
     def is_qt_body(self):
         '''Return True if the body widget is a QTextEdit.'''
@@ -139,12 +142,19 @@ class BigTextController:
         c.max_pre_loaded_body_chars *= 2
         if len(c.p.b) < c.max_pre_loaded_body_chars:
             self.wait_message()
+            self.inhibit.add(c.p.v)
             self.go_away()
             c.selectPosition(self.p)
         else:
             tw = self.widgets.get('bigtextwarning')
             tw.setText(self.warning_message())
             g.es('limit is now: %s' % c.max_pre_loaded_body_chars)
+    #@+node:ekr.20141020112451.18341: *3* btc.remove
+    def remove(self):
+        '''Remove the buttons and inhibit them hereafter.'''
+        c = self.c
+        self.inhibit.add(c.p.v)
+        self.go_away()
     #@+node:ekr.20141019133149.18295: *3* btc.should_add_buttons
     def should_add_buttons(self,old_p,p):
         '''Return True if big-text buttons should be added.'''
@@ -152,8 +162,10 @@ class BigTextController:
             return False # Don't add buttons during testing.
         if self.c.undoer.undoing:
             return False # Suppress buttons during undo.
-        if self.active_flag: ### and old_p == p:
+        if self.active_flag:
             return False # Buttons already created.
+        if p.v in self.inhibit:
+            return False # Buttons are inhibited for this vnode.
         return self.is_big_text(p) and self.is_qt_body()
     #@+node:ekr.20141019190455.18296: *3* btc.should_go_away
     def should_go_away(self,p):
