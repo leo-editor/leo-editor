@@ -19045,5 +19045,88 @@ if 0:
                 w and len(p.b) > c.max_pre_loaded_body_chars)
         else:
             return False
+.. @+node:ekr.20141021083702.18356: *3* unused from leoPersistence.py
+.. @+node:ekr.20140711111623.17859: *4* pd.find_gnx_node
+if 0:
+    ### No longer used
+    # Replaced by pd.gnx_dict.
+    def find_gnx_node(pd,gnx):
+        '''Return the first position having the given gnx.'''
+        # Newly-imported nodes never have the given gnx initially,
+        # but their gnx's may be changed while reading.
+        for p in pd.c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        return None
+.. @+node:ekr.20140716021139.17767: *4* pd.recover_ua_for_gnx
+def recover_ua_for_gnx(pd,gnx,root,unl):
+    '''
+    No gnx was found for unl. If an @ua:<gnx> node exists,
+    copy that node as a child of the @recovery node.
+    '''
+    trace = False and not g.unitTesting
+    at_uas = pd.has_at_uas_node(root)
+    if at_uas:
+        # Find the @ua:<gnx> node in root's @uas node.
+        h = '@ua:'+gnx
+        for at_ua in at_uas.children():
+            if at_ua.h == h:
+                break
+        else:
+            if trace: g.trace('no @ua node for gnx:',gnx)
+            return
+        # Create the @recovery node if necessary.
+        at_recovery = pd.find_at_recovery_node(root)
+        # Create the @ua node if it does not exist as a child of the @recovery node.
+        for child in at_recovery.children():
+            if (child.h,child.b) == (at_ua.h,at_ua.b):
+                if trace: g.trace('found recovered node',child.h)
+                break
+        else:
+            p = at_recovery.insertAsLastChild()
+            p.h = at_ua.h
+            p.b = at_ua.b
+            if not g.unitTesting:
+                g.trace('created recovered node',p.h)
+    elif trace:
+        g.trace('no @uas node for:',root.h)
+.. @+node:ekr.20141021083702.18355: *4* from delete_at_data_children
+        # This looks dubious.
+        for child in at_data.children():
+            if g.match_word(child.h,0,'@recovery'):
+                # Move the node to the parent.
+                parent = at_data.parent()
+                child.moveToLastChildOf(parent)
+                # Delete all the children.
+                at_data.deleteAllChildren()
+                # Move the node back.
+                p = parent.firstChild()
+                while p.hasNext():
+                    p.moveToNext()
+                p.moveToLastChildOf(at_data)
+                break
+        else:
+            at_data.deleteAllChildren()
+.. @+node:ekr.20140716021139.17772: *4* pd.find_at_recovery_node
+def find_at_recovery_node(pd,root):
+    '''
+    Find the @recovery node for root, a foreign node.
+    Create the @recovery node if it does not exist.
+    '''
+    h = '@recovery'
+    at_data = pd.find_at_data_node(root)
+    p = g.findNodeInTree(pd.c,at_data,h)
+    if not p:
+        p = at_data.insertAsLastChild()
+        p.h = h
+    return p
+.. @+node:ekr.20140716021139.17770: *4* pd.has_at_recovery_node
+def has_at_recovery_node(pd,root):
+    '''
+    Find the @recovery node for an @data node with the given unl.
+    Return None if it does not exist.
+    '''
+    p = pd.has_at_data_node(root)
+    return p and g.findNodeInTree(pd.c,p,'@recovery')
 .. @-all
 .. @-leo

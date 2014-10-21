@@ -15672,7 +15672,7 @@ def spam():
 def clone_test():
     pass
 #@+node:ekr.20140712142620.4564: *4* @auto-rst test_rst.py
-#@+node:ekr.20140716115306.4345: *4* @test pd.recovery_ua_for_gnx
+#@+node:ekr.20140716115306.4345: *4* @@test pd.recovery_ua_for_gnx
 pd = c.persistenceController
 at_persistence = pd.find_at_persistence_node()
 assert at_persistence

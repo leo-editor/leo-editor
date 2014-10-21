@@ -60,7 +60,7 @@ This is wrong. As Creating Windows file associations in the Leo documentation
 correctly states, this should instead be:
 
     LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
-.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391:
+.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 .. @+node:ekr.20141017150357.18266: *4* Priority 3: 3 other a1 bugs
