@@ -3297,6 +3297,7 @@ class AtFile:
         '''
         trace = False and not g.unitTesting
         at = self ; c = at.c
+        at.root = root # 2014/10/21
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:

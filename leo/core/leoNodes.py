@@ -49,10 +49,8 @@ class NodeIndices (object):
         self.defaultId = id_
         self.lastIndex = 0
         self.timeString = '' # Set by setTimeStamp.
-
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()
-        self.lastIndex = 0
     #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
@@ -67,11 +65,9 @@ class NodeIndices (object):
     def getNewIndex (self):
         '''Create a new gnx.'''
         self.lastIndex += 1
-        d = (self.userId,self.timeString,self.lastIndex)
-        # new gnxs:
-        return g.toUnicode("%s.%s.%d" % d)
-        # old gnxs: retain for reference:
-        # return d
+        s = g.toUnicode("%s.%s.%d" % (
+            self.userId,self.timeString,self.lastIndex))
+        return s
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation."""
@@ -1867,7 +1863,7 @@ class VNodeBase (object):
     # To support ZODB, the code must set v._p_changed = 1 whenever
     # v.unknownAttributes or any mutable VNode object changes.
 
-    def __init__ (self,context):
+    def __init__ (self,context,new_gnx=True):
 
         # The primary data: headline and body text.
         self._headString = g.u('newHeadline')
@@ -1876,9 +1872,13 @@ class VNodeBase (object):
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
         # Other essential data...
-        self.fileIndex = g.app.nodeIndices.getNewIndex()
+        if new_gnx:
+            self.fileIndex = g.app.nodeIndices.getNewIndex()
             # The immutable file index for this VNode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+        else:
+            self.fileIndex = ''
+            # New in Leo 5.0: the sax read logic will fill in the gnx.
         # g.trace(context.shortFileName(),self.fileIndex)
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits

@@ -2301,7 +2301,7 @@ class LoadManager:
             if factory and hasattr(factory,'setTabForCommander'):
                 factory.setTabForCommander(c)
         # Fix bug 844953: tell Unity which menu to use.
-        c.enableMenuBar()
+        if c: c.enableMenuBar()
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True

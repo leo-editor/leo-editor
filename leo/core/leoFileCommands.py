@@ -875,6 +875,7 @@ class FileCommands:
             t = time.clock()
         c,ni = self.c,g.app.nodeIndices
         max_n,n,stamp = ni.lastIndex,0,ni.timeString
+        if trace: g.trace(max_n,stamp)
         if trace: g.trace('----- starting max_n',max_n)
         for v in c.all_unique_nodes():
             id2,stamp2,n2 = ni.scanGnx(v.fileIndex)
@@ -882,10 +883,10 @@ class FileCommands:
                 try:
                     n2 = int(n2)
                     if n2 > max_n:
+                        if trace: g.trace(n2,v.h)
                         max_n = n2
                 except Exception:
                     pass # An unusual gnx can't affect max_n.
-                # if trace: g.trace(stamp==stamp2,id2,stamp,stamp2,n2,max_n)
             n += 1
         ni.lastIndex = max_n
         if trace: g.trace('%s max_n: %s %4.2f sec.' % (
@@ -1150,18 +1151,17 @@ class FileCommands:
                     '***update\nold: %s\nnew: %s' % (v.b,b))
                 v.b = b 
         else:
-            v = leoNodes.VNode(context=c)
+            v = leoNodes.VNode(context=c,new_gnx=False)
             v.setBodyString(b)
             v.setHeadString(h)
+            x = g.app.nodeIndices
             if sax_node.tnx:
-                x = g.app.nodeIndices
-                # new gnxs:
                 # Important: this should retain compatibility with old .leo files.
                 v.fileIndex = x.tupleToString(x.scanGnx(sax_node.tnx))
-                # old gnxs: retain for reference.
-                # v.fileIndex = x.scanGnx(sax_node.tnx,0)
+            else:
+                v.fileIndex = x.getNewIndex()
+                g.trace('no txn! allocated new v.fileIndex',v.fileIndex)
         index = self.canonicalTnodeIndex(sax_node.tnx)
-        # new gnxs:
         index = g.toUnicode(index)
         self.gnxDict [index] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
