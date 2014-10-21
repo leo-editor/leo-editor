@@ -196,12 +196,13 @@ class OpmlController:
         return children
     #@+node:ekr.20060914171659.1: *4* oc.createVnode & helpers
     def createVnode (self,c,node,v=None):
-        
+
         if not v:
             v = leoNodes.VNode(context=c)
             v.b,v.h = node.bodyString,node.headString
         if node.gnx:
-            v.fileIndex = g.app.nodeIndices.scanGnx(node.gnx,0)
+            ni = g.app.nodeIndices
+            v.fileIndex = ni.tupleToString(ni.scanGnx(node.gnx))
             self.generated_gnxs [node.gnx] = v
         self.handleVnodeAttributes(node,v)
         return v
