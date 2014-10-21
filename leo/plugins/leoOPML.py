@@ -72,6 +72,8 @@ If True, when expanding as above, skip blank dict entries.
 
 '''
 #@-<< docstring >>
+
+# 2014/10/21: support Android outliner by treating _note attributes as body text.
 # To do: read/write uA's.
 
 printElements = [] # ['all','outline','head','body',]
@@ -299,7 +301,7 @@ class OpmlController:
         PutToOPML(owner)
     #@+node:ekr.20060904103721: *3* oc.readFile & helpers
     def readFile (self,fileName):
-
+        '''Read the opml file.'''
         dumpTree = False
         if not fileName:
             return g.trace('no fileName')
@@ -316,9 +318,9 @@ class OpmlController:
         children = self.createVnodes(c,dummyRoot)
         p = leoNodes.Position(v=children[0],childIndex=0,stack=None)
         # Check the outline.
-        c.dumpOutline()
         errors = c.checkOutline()
         if errors:
+            c.dumpOutline()
             return g.trace('%s errors!' % errors) 
         # if self.opml_read_derived_files:
             # at = c.atFileCommands
@@ -800,7 +802,6 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
     #@+node:ekr.20060919193501.1: *4* startBodyText
     def startBodyText (self,attrs):
         '''Start a <leo:body> element.'''
-        g.trace(attrs)
         self.content = []
     #@+node:ekr.20060922072852: *4* startHead
     def startHead (self,attrs):
