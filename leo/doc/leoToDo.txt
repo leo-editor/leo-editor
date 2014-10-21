@@ -41,14 +41,11 @@ difficult to test.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141020112451.18304: *4* *** switching tabs scrolls the find tab
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 2 bugs affecting stability
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 1 bug affecting stability
 .. @+node:ekr.20141020112451.18306: *5* Fix bug 76: erroneous clone markers in @auto trees
 https://github.com/leo-editor/leo-editor/issues/76
 erroneous clone markers in @auto trees
-.. @+node:ekr.20141020112451.18307: *5* Fix git bug 64, redux
-https://github.com/leo-editor/leo-editor/issues/64
-.. @+node:ekr.20141017055340.18277: *4* Priority 2: 0 bugs re focus & rclick
-.. @+node:ekr.20141012064706.18244: *4* Priority 3: 2 bugs re distro
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
 .. @+node:ekr.20141017150357.18268: *5* Fix bug 24: Windows installer setting wrong file association for .leo files
 https://github.com/leo-editor/leo-editor/issues/24
 Windows installer setting wrong file association for .leo files
@@ -66,25 +63,8 @@ correctly states, this should instead be:
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391:
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
-.. @+node:ekr.20141017150357.18266: *4* Priority 4: 4 other a1 bugs
+.. @+node:ekr.20141017150357.18266: *4* Priority 3: 3 other a1 bugs
 @language rest
-.. @+node:ekr.20141020061642.21518: *5* Fixed bug 75: write-opml-file always produces an empty file 
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/75
-write-opml-file always produces an empty file
-
-leoOPML.py's docstring needs updating.
-
-Improved the packaging as follows:
-
-- The leoOPML plugin no longer monkey patches any part of the FileCommands
-  class. Instead the plugin sets the c.opmlController ivar.
-
-- fc.writeToFileHelper calls c.opmlController.putToOPML(owner=self).
-    
-- OpmlController.putToOPML is just PutToOPML(owner) where PutToOPML is a
-  class that creates the opml using the owner's put method.
 .. @+node:ekr.20141020061642.21515: *5* Fix bug 1245616: Autocomplete ? function...does not work
 From https://github.com/leo-editor/leo-editor/issues/73
 
