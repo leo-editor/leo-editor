@@ -499,7 +499,7 @@ https://bugs.launchpad.net/leo-editor/+bug/1245535
 API allows headlines to contain newlines.
 
 The fix was to v.setHeadString.
-.. @+node:ekr.20141020061642.21518: *4* Fixed bug 75: write-opml-file always produces an empty file 
+.. @+node:ekr.20141020061642.21518: *4* Fixed bug 75: write-opml-file always produces an empty file
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/75
@@ -516,6 +516,15 @@ Improved the packaging as follows:
     
 - OpmlController.putToOPML is just PutToOPML(owner) where PutToOPML is a
   class that creates the opml using the owner's put method.
+.. @+node:ekr.20141020112451.18306: *4* Fixed bug 76: erroneous clone markers in @auto trees
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/76
+erroneous clone markers in @auto trees
+
+The fixes were to several methods of the PersistenceDataController class.
+
+@language python
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
