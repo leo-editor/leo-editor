@@ -1619,7 +1619,10 @@ def zoom_in(event=None, delta=1):
     c = event.get('c')
     if c:
         c._style_deltas['font-size-body'] += delta
-        sheet = c.styleSheetManager.expand_css_constants(c.active_stylesheet)
+        ssm = c.styleSheetManager
+        # for performance, don't c.styleSheetManager.reload_style_sheets()
+        sheet = ssm.expand_css_constants(c.active_stylesheet)
+        # and apply to body widget directly
         c.frame.body.wrapper.widget.setStyleSheet(sheet)
 
 @g.command("zoom-out")
