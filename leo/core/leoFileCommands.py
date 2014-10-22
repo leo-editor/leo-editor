@@ -675,10 +675,15 @@ class FileCommands:
             self.gnxDict = oldGnxDict
         elif reassignIndices:
             self.gnxDict = oldGnxDict
+            ni = g.app.nodeIndices
             for p2 in p.self_and_subtree():
                 v = p2.v
-                v.fileIndex = index = g.app.nodeIndices.getNewIndex()
-                self.gnxDict[index] = v
+                index = ni.getNewIndex(v)
+                if index:
+                    v.fileIndex = index
+                    self.gnxDict[index] = v
+                else:
+                    g.trace('can not happen: no index',v)
                 if g.trace_gnxDict: g.trace(c.shortFileName(),'**restoring**',index,v)
         if trace and verbose:
             g.trace('**** dumping outline...')
@@ -1151,7 +1156,7 @@ class FileCommands:
                     '***update\nold: %s\nnew: %s' % (v.b,b))
                 v.b = b 
         else:
-            v = leoNodes.VNode(context=c,new_gnx=False)
+            v = leoNodes.VNode(context=c)
             v.setBodyString(b)
             v.setHeadString(h)
             x = g.app.nodeIndices
@@ -1159,7 +1164,7 @@ class FileCommands:
                 # Important: this should retain compatibility with old .leo files.
                 v.fileIndex = x.tupleToString(x.scanGnx(sax_node.tnx))
             else:
-                v.fileIndex = x.getNewIndex()
+                v.fileIndex = x.getNewIndex(v)
                 g.trace('no txn! allocated new v.fileIndex',v.fileIndex)
         index = self.canonicalTnodeIndex(sax_node.tnx)
         index = g.toUnicode(index)

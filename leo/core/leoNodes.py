@@ -40,17 +40,36 @@ class NodeIndices (object):
     """A class to implement global node indices (gnx's)."""
 
     #@+others
-    #@+node:ekr.20031218072017.1992: *3* NodeIndices.__init__
+    #@+node:ekr.20031218072017.1992: *3* ni.__init__
     def __init__ (self,id_):
-
-        """ctor for NodeIndices class"""
-
-        self.userId = id_
+        """Ctor for NodeIndices class"""
         self.defaultId = id_
+        self.hold_flag = False # True: delay allocation of gnx's.
+        self.hold_set = set() # set of vnodes to be allocated a gnx.
         self.lastIndex = 0
         self.timeString = '' # Set by setTimeStamp.
-        # A Major simplification: Only assign the timestamp once.
+        self.userId = id_
+        # Assign the initial timestamp.
         self.setTimeStamp()
+    #@+node:ekr.20141022133457.12621: *3* ni.allocateHeldGnxs (test)
+    def allocateHeldGnxs(self,fc):
+
+        if not self.hold_set:
+            return
+        old_time = self.timeString
+        self.setTimeStamp()
+        if old_time != self.timeString:
+            self.lastIndex = 0
+        for v in list(self.hold_set):
+            if v.fileIndex:
+                g.trace('can not happen',v.fileIndex,v)
+            else:
+                v.fileIndex = index = self.getNewIndex(v)
+                if index:
+                    fc.gnxDict[index] = v
+                else:
+                    g.trace('can not happen: no v.fileIndex',v)
+        self.hold_set = set()
     #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
@@ -62,12 +81,16 @@ class NodeIndices (object):
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex (self):
+    def getNewIndex (self,v):
         '''Create a new gnx.'''
-        self.lastIndex += 1
-        s = g.toUnicode("%s.%s.%d" % (
-            self.userId,self.timeString,self.lastIndex))
-        return s
+        if self.hold_flag:
+            self.hold_set.add(v)
+            return ''
+        else:
+            self.lastIndex += 1
+            s = g.toUnicode("%s.%s.%d" % (
+                self.userId,self.timeString,self.lastIndex))
+            return s
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation."""
@@ -101,37 +124,6 @@ class NodeIndices (object):
         # g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
-    #@+node:ekr.20031218072017.1999: *3* ni.toString
-    if 0:
-        def toString (self,index):
-            '''
-            Convert a tuple, string or None to its string representation.
-            *Important* the present sax code and earlier versions of Leo
-            use various kinds of tuples.  Do *not* change the tuple-related code!
-            '''
-            if g.isString(index): # new gnxs:
-                return g.toUnicode(index)
-            elif index is None: # new gnxs:
-                return self.getNewIndex() 
-            try:
-                theId,t,n = index
-                if n in (None,0,'',):
-                    s = "%s.%s" % (theId,t)
-                else:
-                    s = "%s.%s.%s" % (theId,t,n)
-            except Exception:
-                if not g.app.unitTesting:
-                    g.trace('unusual gnx',repr(index),g.callers()) 
-                try:
-                    theId,t,n = self.getNewIndex()
-                    if n in (None,0,'',):
-                        s = "%s.%s" % (theId,t)
-                    else:
-                        s = "%s.%s.%d" % (theId,t,n)
-                except Exception:
-                    s = repr(index)
-                    g.trace('double exception: returning repr(index)',s)
-            return g.toUnicode(s)
     #@+node:ekr.20141015035853.18304: *3* ni.tupleToString
     def tupleToString (self,aTuple):
         '''
@@ -1860,11 +1852,12 @@ class VNodeBase (object):
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
-    # To support ZODB, the code must set v._p_changed = 1 whenever
-    # v.unknownAttributes or any mutable VNode object changes.
-
-    def __init__ (self,context,new_gnx=True):
-
+    def __init__ (self,context):
+        '''
+        Ctor for the VNode class.
+        To support ZODB, the code must set v._p_changed = 1 whenever
+        v.unknownAttributes or any mutable VNode object changes.
+        '''
         # The primary data: headline and body text.
         self._headString = g.u('newHeadline')
         self._bodyString = g.u('')
@@ -1872,14 +1865,10 @@ class VNodeBase (object):
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
         # Other essential data...
-        if new_gnx:
-            self.fileIndex = g.app.nodeIndices.getNewIndex()
+        self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
             # The immutable file index for this VNode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-        else:
-            self.fileIndex = ''
-            # New in Leo 5.0: the sax read logic will fill in the gnx.
-        # g.trace(context.shortFileName(),self.fileIndex)
+            # New in Leo 5.0 a1: This may be '': it will be allocated later.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
         # Information that is never written to any file...
