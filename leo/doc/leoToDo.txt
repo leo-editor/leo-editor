@@ -42,10 +42,20 @@ difficult to test.
 @language rest
 .. @+node:ekr.20141020112451.18304: *4* *** switching tabs scrolls the find tab
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 1 bug affecting stability
-.. @+node:ekr.20141021133422.12578: *5* Resolve issues re gnx classes
-It will probably be necessary to reopen #35
-https://github.com/leo-editor/leo-editor/issues/35
-leoBridge sometimes assigns the same GNX to two distinct vnodes
+.. @+node:ekr.20141021133422.12578: *5* Delayed allocation of gnx's
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/JWhlmJBiesk/RsC64VZ1gxQJ
+
+Leo can ignore the possibility of global gnx clashes.
+
+Delayed allocation of gnx's will replace the post pass.
+
+A unique_timestamps plugin would cause problems anyone who uses Leo as
+Bob does.  There is nothing wrong with Bob's work flow!
+
+uuid's are not need now, and probably not ever.  There will be no
+--uuid command line option and no change to Leo's sentinel lines.
 .. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
 .. @+node:ekr.20141017150357.18268: *5* Fix bug 24: Windows installer setting wrong file association for .leo files
 https://github.com/leo-editor/leo-editor/issues/24
