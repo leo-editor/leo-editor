@@ -1160,7 +1160,7 @@ class StyleSheetManager:
         verbose = False
         c = self.c
         if 1:
-            constants = []
+            constants = {}
         else:
             constants = self.find_constants_defined(sheet)
         whine = None
