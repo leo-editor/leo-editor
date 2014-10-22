@@ -725,6 +725,8 @@ class FileCommands:
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
+        ni = g.app.nodeIndices
+        ni.begin_holding(c)
         try:
             c.loading = True # disable c.changed
             ok = True if silent else g.app.checkForOpenFile(c,fileName)
@@ -747,9 +749,9 @@ class FileCommands:
                     fc.readExternalFiles(fileName)
                 if c.config.getBool('check_outline_after_read'):
                     c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-                fc.setMaxNodeIndex()
-                    # Fix bug https://github.com/leo-editor/leo-editor/issues/35
         finally:
+            ni.end_holding(c,fc=self)
+                # Fix bug https://github.com/leo-editor/leo-editor/issues/35
             c.loading = False # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
@@ -863,39 +865,6 @@ class FileCommands:
 
         fc.setPositionsFromVnodes()
         c.selectVnode(recoveryNode or c.p) # load body pane
-    #@+node:ekr.20141012064706.18242: *5* fc.setMaxNodeIndex
-    def setMaxNodeIndex(self):
-        '''
-            Ensure that g.app.nodeIndices.lastIndex can collide with gnx.
-            Fixes bug https://github.com/leo-editor/leo-editor/issues/35
-            
-            This method is only needed when the *present* id and timestamp are
-            the same as the id and timestamp from a *previous* invocation of
-            Leo! This can happen when Leo is invoked from a script, or when two
-            widely-separated people use the same id.
-        '''
-        trace = False and not g.unitTesting
-        if trace:
-            import time
-            t = time.clock()
-        c,ni = self.c,g.app.nodeIndices
-        max_n,n,stamp = ni.lastIndex,0,ni.timeString
-        if trace: g.trace(max_n,stamp)
-        if trace: g.trace('----- starting max_n',max_n)
-        for v in c.all_unique_nodes():
-            id2,stamp2,n2 = ni.scanGnx(v.fileIndex)
-            if stamp == stamp2 and n2 is not None:
-                try:
-                    n2 = int(n2)
-                    if n2 > max_n:
-                        if trace: g.trace(n2,v.h)
-                        max_n = n2
-                except Exception:
-                    pass # An unusual gnx can't affect max_n.
-            n += 1
-        ni.lastIndex = max_n
-        if trace: g.trace('%s max_n: %s %4.2f sec.' % (
-            max_n,c.shortFileName(),time.clock()-t))
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
@@ -1140,7 +1109,7 @@ class FileCommands:
     def createSaxVnode (self,sax_node,parent_v,v=None):
 
         c = self.c
-        trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+        trace = False and not g.unitTesting
         verbose = False
         h = sax_node.headString
         b = sax_node.bodyString
@@ -1156,22 +1125,20 @@ class FileCommands:
                     '***update\nold: %s\nnew: %s' % (v.b,b))
                 v.b = b 
         else:
-            v = leoNodes.VNode(context=c)
-            v.setBodyString(b)
-            v.setHeadString(h)
             x = g.app.nodeIndices
             if sax_node.tnx:
                 # Important: this should retain compatibility with old .leo files.
-                v.fileIndex = x.tupleToString(x.scanGnx(sax_node.tnx))
+                gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
             else:
-                v.fileIndex = x.getNewIndex(v)
-                g.trace('no txn! allocated new v.fileIndex',v.fileIndex)
-        index = self.canonicalTnodeIndex(sax_node.tnx)
-        index = g.toUnicode(index)
-        self.gnxDict [index] = v
-        if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
+                gnx = x.getNewIndex(v)
+                g.trace('no txn! allocated new gnx',gnx)
+            v = leoNodes.VNode(context=c,gnx=gnx)
+            v.setBodyString(b)
+            v.setHeadString(h)
+            self.gnxDict [gnx] = v
+        if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
-            'tnx','%-22s' % (index),'v',id(v),
+            'tnx','%-22s' % (gnx),'v',id(v),
             'len(body)','%-4d' % (len(b)),h)
         self.handleVnodeSaxAttributes(sax_node,v)
         self.handleTnodeSaxAttributes(sax_node,v)

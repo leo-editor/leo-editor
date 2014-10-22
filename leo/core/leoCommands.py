@@ -192,7 +192,6 @@ class Commands (object):
 
         # if not fileName: fileName = ''
         # if not relativeFileName: relativeFileName = ''
-
         self.changed = False
             # True: the ouline has changed since the last save.
         self.ignored_at_file_nodes = []
@@ -260,10 +259,9 @@ class Commands (object):
         c = self
         if trace:
             print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
-        self.hiddenRootNode = leoNodes.VNode(context=c)
+        gnx = 'hidden-root-vnode-gnx'
+        self.hiddenRootNode = leoNodes.VNode(context=c,gnx=gnx)
         self.hiddenRootNode.setHeadString('<hidden root VNode>')
-        # g.trace(c.hiddenRootNode.fileIndex,c.shortFileName())
-        self.hiddenRootNode.fileIndex = 'hidden-root-vnode-gnx'
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:

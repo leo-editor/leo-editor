@@ -205,16 +205,13 @@ class Cacher:
         if is_clone:
             pass
         else:
-            v = leoNodes.VNode(context=c)
             if gnxString:
-                # new gnxs:
                 assert g.isUnicode(gnxString)
-                # old gnxs: retain for reference
-                # gnxString = indices.scanGnx(gnxString,0)
-                v.fileIndex = gnxString
+                v = leoNodes.VNode(context=c,gnx=gnxString)
                 gnxDict[gnxString] = v
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:
+                v = leoNodes.VNode(context=c)
                 g.trace('**** no gnx for',v)
         child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())

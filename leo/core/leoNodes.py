@@ -33,39 +33,66 @@ else:
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
-# Indices are Python dicts containing 'id','loc','time' and 'n' keys.
-
 class NodeIndices (object):
-
-    """A class to implement global node indices (gnx's)."""
+    '''A class managing global node indices (gnx's).'''
 
     #@+others
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
     def __init__ (self,id_):
-        """Ctor for NodeIndices class"""
+        '''Ctor for NodeIndices class.'''
         self.defaultId = id_
-        self.hold_flag = False # True: delay allocation of gnx's.
-        self.hold_set = set() # set of vnodes to be allocated a gnx.
+        self.hold_gnx_flag = False
+            # True: allocate gnxs later.
+        self.hold_gnx_set = set()
+            # Set of all held vnodes.
         self.lastIndex = 0
+        self.stack = []
+            # A stack of open commanders.
         self.timeString = '' # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
-    #@+node:ekr.20141022133457.12621: *3* ni.allocateHeldGnxs (test)
-    def allocateHeldGnxs(self,fc):
-
-        if not self.hold_set:
+    #@+node:ekr.20141022143218.18354: *3* ni.begin_holding
+    def begin_holding(self,c):
+        '''Begin queuing vnodes that may need new gnx's.'''
+        self.stack.append(c)
+        self.hold_gnx_flag = True
+        # g.trace('==========',[z.shortFileName() for z in self.stack])
+    #@+node:ekr.20141022133457.12621: *3* ni.end_holding (test)
+    def end_holding(self,c,fc):
+        '''
+        Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
+        It's not an error for v.fileIndex to exist.
+        '''
+        trace = False and not g.unitTesting
+        fn = c.shortFileName()
+        if not self.stack:
+            g.trace('can not happen: stack underflow',c)
+            return
+        c2 = self.stack.pop()
+        if c != c:
+            g.trace('can not happen',c.shortFileName(),c2.shortFileName())
+        self.hold_gnx_flag = bool(self.stack)
+        if self.hold_gnx_flag:
+            # if trace: g.trace('********** still holding',c2.shortFileName())
+            return
+        if not self.hold_gnx_set:
+            # if trace: g.trace('********** nothing to do',c2.shortFileName())
             return
         old_time = self.timeString
         self.setTimeStamp()
         if old_time != self.timeString:
             self.lastIndex = 0
-        for v in list(self.hold_set):
+        if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
+        for v in list(self.hold_gnx_set):
             if v.fileIndex:
-                g.trace('can not happen',v.fileIndex,v)
+                if False and trace: g.trace('*** already allocated',v.fileIndex,v.h)
             else:
+                # This case can happen when @auto finds a node that
+                # has been created outside of Leo.
                 v.fileIndex = index = self.getNewIndex(v)
                 if index:
+                    if trace: g.trace('new gnx',index,v.h)
                     fc.gnxDict[index] = v
                 else:
                     g.trace('can not happen: no v.fileIndex',v)
@@ -82,14 +109,21 @@ class NodeIndices (object):
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex (self,v):
-        '''Create a new gnx.'''
-        if self.hold_flag:
-            self.hold_set.add(v)
+        '''Create a new gnx for v or an empty string if the hold flag is set.'''
+        trace = False and not g.unitTesting
+        index = hasattr(v,'fileIndex') and v.fileIndex or ''
+        if trace: fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
+        if index:
+            return index
+        elif self.hold_gnx_flag:
+            if trace: g.trace(fn,'holding',v.h)
+            self.hold_gnx_set.add(v)
             return ''
         else:
             self.lastIndex += 1
             s = g.toUnicode("%s.%s.%d" % (
                 self.userId,self.timeString,self.lastIndex))
+            if trace: g.trace(fn,'allocating',s,v.h)
             return s
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
@@ -1171,18 +1205,16 @@ class Position (object):
         p._unlink()
     #@+node:ekr.20040303175026.3: *4* p.insertAfter
     def insertAfter (self):
+        """
+        Inserts a new position after self.
 
-        """Inserts a new position after self.
-
-        Returns the newly created position."""
-
+        Returns the newly created position.
+        """
         p = self ; context = p.v.context
         p2 = self.copy()
-
         p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAfter(p)
-
         return p2
     #@+node:ekr.20040303175026.4: *4* p.insertAsLastChild
     def insertAsLastChild (self):
@@ -1197,19 +1229,17 @@ class Position (object):
         return p.insertAsNthChild(n)
     #@+node:ekr.20040303175026.5: *4* p.insertAsNthChild
     def insertAsNthChild (self,n):
-
-        """Inserts a new node as the the nth child of self.
+        """
+        Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
 
-        Returns the newly created position."""
-
+        Returns the newly created position.
+        """
         p = self ; context = p.v.context
         p2 = self.copy()
-
         p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAsNthChild(p,n)
-
         return p2
     #@+node:ekr.20130923111858.11572: *4* p.insertBefore (new in Leo 4.11)
     def insertBefore(self):
@@ -1852,7 +1882,7 @@ class VNodeBase (object):
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
-    def __init__ (self,context):
+    def __init__ (self,context,gnx=None):
         '''
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = 1 whenever
@@ -1865,10 +1895,14 @@ class VNodeBase (object):
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
         # Other essential data...
-        self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
-            # The immutable file index for this VNode.
-            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-            # New in Leo 5.0 a1: This may be '': it will be allocated later.
+        if gnx:
+            self.fileIndex = gnx
+                # New in Leo 5.0: The caller knows the gnx.
+        else:
+            self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
+                # The immutable file index for this VNode.
+                # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+                # New in Leo 5.0: This may be '': it will be allocated later.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
         # Information that is never written to any file...
@@ -2411,9 +2445,9 @@ class VNodeBase (object):
     setHeadText = setHeadString
     setTnodeText = setBodyString
     #@+node:ekr.20080429053831.13: *4* v.setFileIndex
-    def setFileIndex (self, index):
+    # def setFileIndex (self, index):
 
-        self.fileIndex = index
+        # self.fileIndex = index
     #@+node:ekr.20031218072017.3402: *4* v.setSelection
     def setSelection (self, start, length):
 

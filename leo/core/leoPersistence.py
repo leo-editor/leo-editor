@@ -332,6 +332,7 @@ class PersistenceDataController:
         '''
         trace = False and not g.unitTesting
         p1 = self.find_position_for_relative_unl(root,unl)
+        fn = self.c.shortFileName()
         if p1:
             p2 = d.get(gnx)
             old_gnx = p1.v.gnx
@@ -340,15 +341,14 @@ class PersistenceDataController:
                     p1._relinkAsCloneOf(p2)
                     # Warning: p1 *no longer exists* here.
                     # _relinkAsClone does *not* set p1.v = p2.v.
-                    if trace: g.trace('clone:',old_gnx,'->',gnx,unl)
+                    if trace: g.trace(fn,'clone:',old_gnx,'->',gnx,unl)
                 else:
                     g.es_print('mismatch in cloned node',p1.h)
             elif trace:
-                g.trace(' node:',old_gnx,'->',gnx,unl)
+                g.trace(fn,' node:',old_gnx,'->',gnx,unl)
             p1.v.fileIndex = g.toUnicode(gnx)
         else:
             if trace: g.trace('unl not found: %s' % unl)
-            ### self.recover_ua_for_gnx(gnx,root,unl)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(self,at_uas,root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''

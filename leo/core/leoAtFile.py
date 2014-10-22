@@ -1598,9 +1598,8 @@ class AtFile:
                     g.internalError('v.fileIndex: %s gnx: %s' % (
                         v.fileIndex,gnx))
             else:
-                v = leoNodes.VNode(context=c)
+                v = leoNodes.VNode(context=c,gnx=gnx)
                 v._headString = headline # Allowed use of v._headString.
-                v.fileIndex = gnx
                 gnxDict[gnxString] = v
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             child = v
@@ -1639,9 +1638,8 @@ class AtFile:
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
                 return None
         else:
-            v = leoNodes.VNode(context=c)
+            v = leoNodes.VNode(context=c,gnx=gnx)
             v._headString = headline # Allowed use of v._headString.
-            v.fileIndex = gnx
             gnxDict[gnxString] = v
             if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             child = v

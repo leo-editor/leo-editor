@@ -14308,6 +14308,18 @@ for p in c.all_positions():
     assert c.positionExists(p)
         # 2012/03/08: If a root is given, the search is confined to that root only.
 
+#@+node:ekr.20141022175515.11: *4* @test check all gnx's exist and are unique
+d = {} # Keys are gnx's, values are lists of vnodes with that gnx.
+for p in c.all_positions():
+    gnx = p.v.fileIndex
+    assert gnx,p.v
+    aSet = d.get(gnx,set())
+    aSet.add(p.v)
+    d[gnx] = aSet
+for gnx in sorted(d.keys()):
+    aList = sorted(d.get(gnx))
+    # print(gnx,aList)
+    assert len(aList) == 1,(gnx,aList)
 #@+node:ekr.20040712101754.204: *4* @test consistency of back/next links
 for p in c.all_positions():
 
