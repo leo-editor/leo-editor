@@ -7295,16 +7295,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         '''Create a dictionary of all relevant positions in commander c.'''
         d = {}
         for p in c.all_positions():
-            # new gnxs:
             d[p.v.fileIndex] = p.copy()
-            # old gnxs: retain for reference.
-            # try:
-                # # fileIndices for pre-4.x versions of .leo files have a different format.
-                # # As a result, this could throw an exception.
-                # i,j,k = p.v.fileIndex
-                # d[str(i),str(j),str(k)] = p.copy()
-            # except Exception:
-                # pass
         return d
     #@+node:ekr.20070921072608.1: *4* dumpCompareNodes
     def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):

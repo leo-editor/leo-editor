@@ -1555,10 +1555,7 @@ class AtFile:
         verbose = True
         at = self ; c = at.c
         indices = g.app.nodeIndices
-        # new gnxs:
         gnx = gnxString = g.toUnicode(gnxString)
-        # old gnxs: retain for reference.
-        # gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
         last = at.lastThinNode # A VNode.
         lastIndex = last.fileIndex
@@ -4494,10 +4491,7 @@ class AtFile:
         #@-<< remove comment delims from h if necessary >>
 
         if at.thinFile:
-            # new gnxs:
             gnx = p.v.fileIndex
-            # old gnxs: retain for reference.
-            # gnx = g.app.nodeIndices.toString(p.v.fileIndex)
             if at.writeVersion5:
                 level = 1 + p.level() - self.root.level()
                 stars = '*' * level

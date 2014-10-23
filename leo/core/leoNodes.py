@@ -58,7 +58,7 @@ class NodeIndices (object):
         self.stack.append(c)
         self.hold_gnx_flag = True
         # g.trace('==========',[z.shortFileName() for z in self.stack])
-    #@+node:ekr.20141022133457.12621: *3* ni.end_holding (test)
+    #@+node:ekr.20141022133457.12621: *3* ni.end_holding
     def end_holding(self,c,fc):
         '''
         Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
@@ -141,10 +141,6 @@ class NodeIndices (object):
         # Use self.defaultId for missing id entries.
         if not theId:
             theId = self.defaultId
-        # Convert n to int.
-        # if n:
-            # try: n = int(n)
-            # except Exception: pass
         return theId,t,n
     #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp (self):
@@ -172,6 +168,20 @@ class NodeIndices (object):
         else:
             s = "%s.%s.%s" % (theId,t,n)
         return g.toUnicode(s)
+    #@+node:ekr.20141023110422.4: *3* ni.updateLastIndex
+    def updateLastIndex(self,gnx):
+        '''Update ni.lastIndex if the gnx affects it.'''
+        id_,t,n = self.scanGnx(gnx)
+        if not id_ or not n:
+            return # the gnx is not well formed or n in ('',None)
+        if id_ == self.userId and t == self.timeString:
+            try:
+                n = int(n)
+                if n > self.lastIndex:
+                    self.lastIndex = n
+                    g.trace(gnx,'-->',n)
+            except Exception:
+                g.trace('can not happen',repr(n))
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
 #@+<< about the position class >>
@@ -402,10 +412,7 @@ class Position (object):
     #@+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self):
         p = self
-        # new gnxs:
         return p.v.fileIndex
-        # old gnxs: retain for reference.
-        # return g.app.nodeIndices.toString(p.v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
@@ -1897,7 +1904,7 @@ class VNodeBase (object):
         # Other essential data...
         if gnx:
             self.fileIndex = gnx
-                # New in Leo 5.0: The caller knows the gnx.
+                # New in Leo 5.0: The caller allocates the gnx.
         else:
             self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
                 # The immutable file index for this VNode.
@@ -2445,9 +2452,14 @@ class VNodeBase (object):
     setHeadText = setHeadString
     setTnodeText = setBodyString
     #@+node:ekr.20080429053831.13: *4* v.setFileIndex
-    # def setFileIndex (self, index):
-
-        # self.fileIndex = index
+    def setFileIndex (self, index):
+        '''Set v.fileIndex and update g.app.nodeIndices.lastIndex.'''
+        v = self
+        if g.isString(index):
+            v.fileIndex = index
+            g.app.nodeIndices.updateLastIndex(index)
+        else:
+            g.trace('can not happen',repr(index))
     #@+node:ekr.20031218072017.3402: *4* v.setSelection
     def setSelection (self, start, length):
 
@@ -2607,10 +2619,7 @@ class VNodeBase (object):
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
-        # new gnxs:
         return v.fileIndex
-        # old gnxs: retain for reference.
-        # return g.app.nodeIndices.toString(v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,

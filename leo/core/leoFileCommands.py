@@ -636,10 +636,7 @@ class FileCommands:
             # Make sure all pasted nodes are entered into the gnxDict.
             x = g.app.nodeIndices
             for v in c.all_unique_nodes():
-                # new gnxs:
                 gnxString = v.fileIndex
-                # old gnxs: retain for reference.
-                # gnxString = x.toString(v.fileIndex)
                 self.gnxDict[gnxString] = v
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         self.usingClipboard = True
@@ -680,7 +677,7 @@ class FileCommands:
                 v = p2.v
                 index = ni.getNewIndex(v)
                 if index:
-                    v.fileIndex = index
+                    v.setFileIndex(index)
                     self.gnxDict[index] = v
                 else:
                     g.trace('can not happen: no index',v)
@@ -1766,10 +1763,7 @@ class FileCommands:
     def putTnode (self,v):
 
         # Call put just once.
-        # new gnxs:
         gnx = v.fileIndex
-        # old gnxs: retain for reference.
-        # gnx = g.app.nodeIndices.toString(v.fileIndex)
         ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
@@ -1794,25 +1788,8 @@ class FileCommands:
         for p in theIter:
             # Make *sure* the file index has the proper form.
             # pylint: disable=unbalanced-tuple-unpacking
-            # new gnxs:
             index = p.v.fileIndex
             tnodes[index] = p.v
-            # old gnxs: retain for reference.
-                # try:
-                    # theId,t,n = p.v.fileIndex
-                # except ValueError:
-                    # try:
-                        # theId,t,n = p.v.fileIndex,''
-                    # except Exception:
-                        # raise BadLeoFile('bad p.v.fileIndex: %s' % repr(p.v.fileIndex))
-                # if n is None:
-                    # n = g.u('0')
-                # elif g.isPython3:
-                    # n = str(n)
-                # else:
-                    # n = unicode(n)
-                # index = theId,t,n
-                # tnodes[index] = p.v
 
         # Put all tnodes in index order.
         for index in sorted(tnodes):
@@ -1857,10 +1834,7 @@ class FileCommands:
 
         #@+<< Set gnx = VNode index >>
         #@+node:ekr.20031218072017.1864: *5* << Set gnx = VNode index >>
-        # new gnxs:
         gnx = v.fileIndex
-        # old gnxs: retain for reference.
-        # gnx = g.app.nodeIndices.toString(v.fileIndex)
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
         #@-<< Set gnx = VNode index >>
@@ -2332,10 +2306,7 @@ class FileCommands:
             if theList:
                 sList = []
                 for v in theList:
-                    # new gnxs:
                     sList.append("%s," % v.fileIndex)
-                    # old gnxs: retain for reference.
-                    # sList.append("%s," % nodeIndices.toString(v.fileIndex))
                 s = ''.join(sList)
                 # g.trace(tag,[str(p.h) for p in theList])
                 result.append('\n%s="%s"' % (tag,s))

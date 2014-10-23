@@ -317,7 +317,6 @@ class PersistenceDataController:
                 p.moveToNodeAfterTree()
             else:
                 gnx = p.v.fileIndex
-                # val = d.get(gnx)
                 d[gnx] = p.copy()
                 p.moveToThreadNext()
         return d
@@ -346,7 +345,7 @@ class PersistenceDataController:
                     g.es_print('mismatch in cloned node',p1.h)
             elif trace:
                 g.trace(fn,' node:',old_gnx,'->',gnx,unl)
-            p1.v.fileIndex = g.toUnicode(gnx)
+            p1.v.setFileIndex(g.toUnicode(gnx))
         else:
             if trace: g.trace('unl not found: %s' % unl)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
