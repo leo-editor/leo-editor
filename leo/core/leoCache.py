@@ -72,7 +72,7 @@ class Cacher:
 
         pth, bname = split(fn)
 
-        if pth and bname: ### and g.enableDB:
+        if pth and bname:
             fn = fn.lower()
             fn = g.toEncodedString(fn) # Required for Python 3.x.
 

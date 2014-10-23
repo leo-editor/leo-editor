@@ -718,6 +718,26 @@ This is the only call to tupleToString in Leo.
    this very rarely happens.
 
 @language python
+.. @+node:ekr.20141021133422.12578: *4* Delayed allocation of gnx's...
+@nocolor-node
+
+- fc.getLeoFile now calls ni.begin/end_holding
+- Added gnx keyword arg to VNode ctor.
+- Added traces to pd.restore_gnx
+
+What I did:
+    
+- checked all calls to VNode ctor.
+- checked all calls to getNewIndex.
+- checked all calls to fileIndex =
+.. @+node:ekr.20141023110422.3: *4* Created ni.updateLastIndex
+@language rest
+
+pd.restore_gnx and fc.getLeoOutlineFromClipboard now call v.setFileIndex()
+
+v.fileIndex calls ni.updateLastIndex.
+
+@language python
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
@@ -1076,6 +1096,14 @@ What I did today.  See the << version info >> section for all the details::
 
 - The original code deleted all comments because of a botch in Comments__init__.
 - Tidy now properly handles the tidy_add_blank_lines_around_comments and tidy_double_quoted_strings settings.
+.. @+node:ekr.20141022211918.6: *4* added --no-persist command-line option
+@language rest
+
+removed new_auto switch in leoAtFile.py
+
+added g.app.at_auto_persist
+
+c.persistenceController exists only if g.app.auto_persist is True
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

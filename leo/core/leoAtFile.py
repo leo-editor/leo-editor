@@ -7,15 +7,8 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-#@+<< leoAtFile switches >>
-#@+node:ekr.20140108081031.16613: ** << leoAtFile switches >>
-new_auto = True
-    # True: enable calls to c.persistenceController.
-if False and new_auto:
-    print('\n==== new_auto: True')
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-#@-<< leoAtFile switches >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -916,7 +909,7 @@ class AtFile:
         if ok:
             if trace: g.trace('***** using cached nodes',p.h)
             # Even if the file is in the cache, the @persistence node may be different.
-            if new_auto:
+            if c.persistenceController:
                 c.persistenceController.update_after_read_foreign_file(p)
             g.doHook('after-auto',c=c,p=p)
                 # call after-auto callbacks
@@ -939,7 +932,7 @@ class AtFile:
             if 0:
                 g.es_print('reading entire file into @auto node.')
                 at.readOneAtEditNode(fileName,p)
-        elif new_auto:
+        elif c.persistenceController:
             c.persistenceController.update_after_read_foreign_file(p)
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
@@ -3359,7 +3352,7 @@ class AtFile:
         trace = False and not g.unitTesting
         at,c = self,self.c
         changed_positions = [p.copy() for p in c.all_unique_positions() if p.v.isDirty()]
-        at_persistence = c.persistenceController.has_at_persistence_node()
+        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
         if at_persistence:
             changed_positions = [p for p in changed_positions
                 if not at_persistence.isAncestorOf(p)]
@@ -3440,7 +3433,7 @@ class AtFile:
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
-        if new_auto:
+        if c.persistenceController:
             if not trialWrite:
                 c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)

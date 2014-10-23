@@ -290,6 +290,7 @@ class Commands (object):
         import leo.core.leoUndo as leoUndo
         # import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
+        import leo.plugins.free_layout as free_layout
         self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
         self.shadowController   = leoShadow.ShadowController(c)
@@ -297,7 +298,6 @@ class Commands (object):
         self.findCommands       = leoFind.LeoFind(c)
         self.atFileCommands     = leoAtFile.AtFile(c)
         self.importCommands     = leoImport.LeoImportCommands(c)
-        self.persistenceController = leoPersistence.PersistenceDataController(c)
         self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
@@ -307,9 +307,13 @@ class Commands (object):
         self.editCommandsManager.createEditCommanders()
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
-        self.undoer = leoUndo.Undoer(self)
-        import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
+        self.undoer = leoUndo.Undoer(self)
+        # Conditional controllers/managers.
+        if g.app.at_auto_persist:
+            self.persistenceController = leoPersistence.PersistenceDataController(c)
+        else:
+            self.persistenceController = None
         if hasattr(g.app.gui,'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
         else:
