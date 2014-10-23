@@ -46,7 +46,6 @@ class LeoApp:
         # leoGlobals.py contains global switches to be set by hand.
 
         # Command-line arguments...
-        self.at_auto_persist = True     # True: support @persist logic.
         self.batchMode = False          # True: run in batch mode.
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
         self.gui = None                 # The gui class.
@@ -2122,8 +2121,6 @@ class LoadManager:
             help = 'start minimized')
         add('--no-cache', action="store_true", dest='no_cache',
             help = 'disable reading of cached files')
-        add('--no-persist', action="store_true", dest='no_persist',
-            help = 'disable @persistence')
         add('--no-plugins', action="store_true", dest='no_plugins',
             help = 'disable all plugins')
         add('--no-splash', action="store_true", dest='no_splash_screen',
@@ -2190,10 +2187,6 @@ class LoadManager:
         if options.no_cache:
             if trace: print('scanOptions: disabling caching')
             g.enableDB = False
-        # --no-persist
-        if options.no_persist:
-            g.app.at_auto_persist = False
-            if trace: print('scanOptions: disabling @persistence')
         # --no-plugins
         if options.no_plugins:
             if trace: print('scanOptions: disabling plugins')

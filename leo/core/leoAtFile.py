@@ -3433,9 +3433,8 @@ class AtFile:
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
-        if c.persistenceController:
-            if not trialWrite:
-                c.persistenceController.update_before_write_foreign_file(root)
+        if c.persistenceController and not trialWrite:
+            c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             # Dispatch the proper writer.
