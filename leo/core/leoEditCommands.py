@@ -9059,6 +9059,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
             'clean-recent-files':           c.cleanRecentFiles,
             'clear-recent-files':           c.clearRecentFiles,
             'clone-node':                   c.clone,
+            'clone-node-to-last-node':      c.cloneToLastNode,
             'close-window':                 c.close,
             'contract-all':                 c.contractAllHeadlines,
             'contract-all-other-nodes':     c.contractAllOtherNodes,

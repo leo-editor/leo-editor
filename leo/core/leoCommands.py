@@ -4432,6 +4432,46 @@ class Commands (object):
                     c.alert(message)
                 return False
         return True
+    #@+node:ekr.20031218072017.1762: *7* c.clone
+    def clone (self,event=None):
+        '''Create a clone of the selected outline.'''
+        c = self ; u = c.undoer ; p = c.p
+        if not p:
+            return None
+        undoData = c.undoer.beforeCloneNode(p)
+        c.endEditing() # Capture any changes to the headline.
+        clone = p.clone()
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        if c.validateOutline():
+            u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
+            c.redraw(clone)
+            return clone # For mod_labels and chapters plugins.
+        else:
+            clone.doDelete()
+            c.setCurrentPosition(p)
+            return None
+    #@+node:ekr.20141023154408.5: *7* c.cloneToLastNode
+    def cloneToLastNode (self,event=None):
+        '''
+        Clone the selected node and move it to the last node.
+        Do *not* change the selected node.
+        '''
+        c,p,u = self,self.p,self.undoer
+        if not p: return
+        prev = p.copy()
+        undoData = c.undoer.beforeCloneNode(p)
+        c.endEditing() # Capture any changes to the headline.
+        clone = p.clone()
+        last = c.rootPosition()
+        while last and last.hasNext():
+            last.moveToNext()
+        clone.moveAfter(last)
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        u.afterCloneNode(clone,'Clone Node To Last',undoData,dirtyVnodeList=dirtyVnodeList)
+        c.redraw(prev)
+        # return clone # For mod_labels and chapters plugins.
     #@+node:ekr.20031218072017.1193: *7* c.deleteOutline
     def deleteOutline (self,event=None,op_name="Delete Node"):
 
@@ -4472,6 +4512,14 @@ class Commands (object):
         c.redraw(newNode)
 
         c.validateOutline()
+    #@+node:ekr.20071005173203.1: *7* c.insertChild
+    def insertChild (self,event=None):
+
+        '''Insert a node after the presently selected node.'''
+
+        c = self
+
+        return c.insertHeadline(event=event,op_name='Insert Child',as_child=True)
     #@+node:ekr.20031218072017.1761: *7* c.insertHeadline
     def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
 
@@ -4522,35 +4570,6 @@ class Commands (object):
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redrawAndEdit(p,selectAll=True)
         return p
-    #@+node:ekr.20071005173203.1: *7* c.insertChild
-    def insertChild (self,event=None):
-
-        '''Insert a node after the presently selected node.'''
-
-        c = self
-
-        return c.insertHeadline(event=event,op_name='Insert Child',as_child=True)
-    #@+node:ekr.20031218072017.1762: *7* c.clone
-    def clone (self,event=None):
-
-        '''Create a clone of the selected outline.'''
-
-        c = self ; u = c.undoer ; p = c.p
-        if not p: return
-
-        undoData = c.undoer.beforeCloneNode(p)
-        c.endEditing() # Capture any changes to the headline.
-        clone = p.clone()
-        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-        c.setChanged(True)
-        if c.validateOutline():
-            u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
-            c.redraw(clone)
-            return clone # For mod_labels and chapters plugins.
-        else:
-            clone.doDelete()
-            c.setCurrentPosition(p)
-            return None
     #@+node:ekr.20031218072017.1765: *7* c.validateOutline
     # Makes sure all nodes are valid.
 

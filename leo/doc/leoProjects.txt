@@ -738,6 +738,8 @@ pd.restore_gnx and fc.getLeoOutlineFromClipboard now call v.setFileIndex()
 v.fileIndex calls ni.updateLastIndex.
 
 @language python
+.. @+node:ekr.20141023154408.4: *4* Delayed allocation of vnodes
+https://groups.google.com/d/msg/leo-editor/JWhlmJBiesk/RsC64VZ1gxQJ
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
@@ -1104,6 +1106,13 @@ removed new_auto switch in leoAtFile.py
 added g.app.at_auto_persist
 
 c.persistenceController exists only if g.app.auto_persist is True
+.. @+node:ekr.20131025044901.17146: *4* Added new clone-to-last-node
+@language rest
+
+This does *not* change the selected node so it's easy to
+clone several nodes.
+
+Added c.cloneToLastNode.  
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
