@@ -3,7 +3,6 @@
 '''Leo's gui-independent find classes.'''
 
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes # 2014/04/24
 import re
 import sys
 
@@ -1162,7 +1161,7 @@ class LeoFind:
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helper
     def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
         trace = False and not g.unitTesting
-        c = self.c ; w = self.s_ctrl ; u = c.undoer
+        c,w = self.c,self.s_ctrl
         if clone_find_all_flattened:
             undoType = 'Clone Find All Flattened'
         elif clone_find_all:
@@ -1176,15 +1175,15 @@ class LeoFind:
             self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
-        skip = {} # Nodes that should be skipped.
-            # Keys are vnodes, values not important.
-        count,found = 0,None
+        skip = set() # vnodes that should be skipped.
+        count = 0
         if trace: g.trace(self.find_text)
         # 2014/04/24: Init suboutline-only for clone-find-all commands
         if clone_find_all or clone_find_all_flattened:
             self.p = c.p.copy()
             if self.suboutline_only:
                 self.onlyPosition = self.p.copy()
+        clones = set()
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
             if not self.p: self.p = c.p.copy()
@@ -1196,23 +1195,19 @@ class LeoFind:
             i,j = g.getLine(s,pos)
             line = s[i:j]
             if clone_find_all or clone_find_all_flattened:
-                if not skip:
-                    # Nothing has been created yet.
-                    undoData = u.beforeInsertNode(c.p)
-                    found = self.createCloneFindAllNode(flattened = clone_find_all_flattened)
                 if clone_find_all_flattened:
-                    skip[self.p.v] = True
+                    skip.add(self.p.v)
                 else:
                     # Don't look at the node or it's descendants.
                     for p2 in self.p.self_and_subtree():
-                        skip[p2.v] = True
-                # Create a clone of self.p under the find node.
-                p2 = self.p.clone()
-                p2.moveToLastChildOf(found)
+                        skip.add(p2.v)
+                clones.add(self.p.copy())
             else:
                 self.printLine(line,allFlag=True)
-        if found and (clone_find_all or clone_find_all_flattened):
-            self.linkCloneFindAllNode(found)
+        if clones and (clone_find_all or clone_find_all_flattened):
+            u = c.undoer
+            undoData = u.beforeInsertNode(c.p)
+            found = self.createCloneFindAllNodes(clones,clone_find_all_flattened)
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
@@ -1220,25 +1215,24 @@ class LeoFind:
             self.restore(data)
         c.redraw()
         g.es("found",count,"matches for",self.find_text)
-    #@+node:ekr.20051113110735: *5* createCloneFindAllNode
-    def createCloneFindAllNode(self,flattened):
-        '''Create a node, but do *not* link it into the outline yet.'''
+    #@+node:ekr.20141023110422.1: *5* find.createCloneFindAllNodes
+    def createCloneFindAllNodes(self,clones,flattened):
+        '''
+        Create a "Found" node as the last node of the outline.
+        Clone all positions in the clones set a children of found.
+        '''
         c = self.c
-        # Don't link the node into the outline so that positions remain valid.
-        v = leoNodes.VNode(context=c)
-        p = leoNodes.Position(v)
-        p.h = 'Found:%s %s' % (
-            ' (flattened)' if  flattened else '',
-            self.find_text)
-        return p
-    #@+node:ekr.20140424102007.16875: *5* linkCloneFindAllNode
-    def linkCloneFindAllNode(self,p):
-        '''Link p into the outline as the last top-level node.'''
-        c = self.c
-        top = c.rootPosition()
-        while top.hasNext():
-            top.moveToNext()
-        p._linkAfter(top)
+        # Create the found node.
+        last = c.rootPosition()
+        while last.hasNext():
+            last.moveToNext()
+        found = last.insertAfter()
+        found.h = 'Found:%s %s' % (' (flattened)' if flattened else '',self.find_text)
+        # Clone nodes as children of the found node.
+        for p in clones:
+            p2 = p.clone()
+            p2.moveToLastChildOf(found)
+        return found
     #@+node:ekr.20031218072017.3074: *4* find.findNext
     def findNext(self,initFlag=True):
         '''Find the next instance of the pattern.'''

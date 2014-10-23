@@ -19159,5 +19159,25 @@ if 0:
                 s = repr(index)
                 g.trace('double exception: returning repr(index)',s)
         return g.toUnicode(s)
+.. @+node:ekr.20141023110422.2: *3* clone-find-all no longer used
+.. @+node:ekr.20051113110735: *4* find.createCloneFindAllNode (no longer used)
+def createCloneFindAllNode(self,flattened):
+    '''Create a "Found" node as the last node of the outline.'''
+    c = self.c
+    # Don't link the node into the outline so that positions remain valid.
+    v = leoNodes.VNode(context=c)
+    p = leoNodes.Position(v)
+    p.h = 'Found:%s %s' % (
+        ' (flattened)' if  flattened else '',
+        self.find_text)
+    return p
+.. @+node:ekr.20140424102007.16875: *4* find.linkCloneFindAllNode (no longer used)
+def linkCloneFindAllNode(self,p):
+    '''Link p into the outline as the last top-level node.'''
+    c = self.c
+    top = c.rootPosition()
+    while top.hasNext():
+        top.moveToNext()
+    p._linkAfter(top)
 .. @-all
 .. @-leo
