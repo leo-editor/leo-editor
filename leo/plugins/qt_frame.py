@@ -3422,8 +3422,10 @@ class LeoQtLog (leoFrame.LeoLog):
                     # c.widgetWantsFocus(tab_widget)
                 if tabName == 'Find':
                     # Fix bug 1254861: Ctrl-f doesn't ensure find input field visible.
-                    findbox = c.findCommands.ftm.find_findbox
-                    widget.ensureWidgetVisible(findbox)
+                    if c.config.getBool('auto-scroll-find-tab',default=True):
+                        # This is the cause of unwanted scrolling.
+                        findbox = c.findCommands.ftm.find_findbox
+                        widget.ensureWidgetVisible(findbox)
                 elif tabName == 'Spell':
                     # the base class uses this as a flag to see if
                     # the spell system needs initing

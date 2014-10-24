@@ -44,12 +44,18 @@ difficult to test.
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
-.. @+node:ekr.20141024071004.6: *5* ** make-leo script changes leoPyRef.leo
-.. @+node:ekr.20141017150357.18266: *4* Priority 3: 6 other a1 bugs
+
+The plan is to move setup.py to leo/dist, but this may not please Ville.
+.. @+node:ekr.20141017150357.18266: *4* Priority 3: other a1 bugs
 @language rest
 
 These can wait until a2 or even b1.
 .. @+node:ekr.20141020112451.18304: *5* ** switching tabs scrolls the find tab
+This is extremely annoying when it happens.
+
+It happens when moving (ctrl-tab) from a tabbed outline with a larger find
+tab to another tab where the space available for the find tab is narrower.
+
 .. @+node:ekr.20141006073719.17938: *5* ** Fix import bugs
 .. @+node:ekr.20140923144655.17926: *5* ** Fix find bugs
 Find-previous fails at last node
@@ -328,17 +334,15 @@ errors inhibited read @auto foo.md
 [Simple script] Jump exactly one page with Page Down
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
+.. @+node:ekr.20131220065609.16590: *5* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus
-.. @+node:ekr.20131220065609.16590: *4* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20141011053251.18205: *4* Installer for a1
 @language rest
-
-Explore:
 
 - Virtual machines
 - PortableFileAssociator
@@ -349,17 +353,7 @@ Explore:
 http://sourceforge.net/forum/message.php?msg_id=3064212
 By: djsg  David 
 
-The following applies to Leo 4.3, which is in alpha as I write this. It describes
-the LeoSetup routine that I submitted to Edward to solve the "can't find Python"
-problem, and which Edward cleaned up for distribution.
-
-I think a few further issues need attention. I noticed them while working on
-the "can't find Python" problem, and deferred dealing with them. This appears
-to me to be a good time to pick them up.
-
-Before I start work on them, I would like to lay them out for your comment.
-Are they pains in the first place? Are my proposals good enough, and do they
-make sense?
+The following applies to Leo 4.3.
 
 ===== Proposal (General)
 
