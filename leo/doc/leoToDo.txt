@@ -42,12 +42,57 @@ difficult to test.
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
 .. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
 .. @+node:ekr.20141017150357.18268: *5* Fix bug 24: Windows installer setting wrong file association for .leo files
+https://github.com/leo-editor/leo-editor/issues/24
+Windows installer setting wrong file association for .leo files
+
+
+If you do ftype LeoFile after using installing LeoSetup-4.11-final.exe,
+you'll see:
+
+    LeoFile="<path to python>\pythonw.exe" "C:\Program Files (x86)\Leo-4.11-final\launchLeo.py %*"
+
+This is wrong. As Creating Windows file associations in the Leo documentation
+correctly states, this should instead be:
+
+    LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+setup.py confuses newbies
 .. @+node:ekr.20141017150357.18266: *4* Priority 3: 6 other a1 bugs
+@language rest
+
+These can wait until a2 or even b1.
 .. @+node:ekr.20141020112451.18304: *5* ** switching tabs scrolls the find tab
 .. @+node:ekr.20141006073719.17938: *5* ** Fix import bugs
 .. @+node:ekr.20140923144655.17926: *5* ** Fix find bugs
+Find-previous fails at last node
+https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+
+Ctrl-F focus inconsistent
+https://groups.google.com/d/msg/leo-editor/_DIEDA3pJo8/YZlOhSZ078EJ
 .. @+node:ekr.20140919052413.17945: *6* Fix suboutline only find bug
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
+
+In the "Find" tab, check the "suboutline only"
+
+Select an outline, and search for any text on its subtree, for instance
+"a". This outline shouldnt have "a" within its text.
+
+Now select another outline (that should have "a" within its text), then
+click "Find next" or just do "F3"
+
+It should make the search again, this time within the subtree of the
+selected node, but instead, it will give you "not found 'a'"
+
+It will only work if you change the search. So if you want to search for
+the same term within another outline, you have to change that twice.
+
+I think this bug also interferes with searches not limited to the
+sub-outline, but still wouldn't be able to pinpoint it.
+
+
 .. @+node:ekr.20031218072017.3077: *7* find.search & helpers
 def search (self):
     """
