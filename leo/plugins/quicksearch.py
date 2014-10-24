@@ -284,23 +284,23 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
                 QtCore.SIGNAL("returnPressed()"),
                 self.selectAndDismiss)
             threadutil.later(self.ui.lineEdit.setFocus)
-            
         else:
-            self.connect(self.ui.lineEdit,
-                QtCore.SIGNAL("returnPressed()"),
-                self.returnPressed)    
-
-        
-        self.connect(self.ui.lineEdit, 
-            QtCore.SIGNAL("textChanged(QString)"), 
-            self.liveUpdate)
+            if 1:
+                self.ui.lineEdit.returnPressed.connect(self.returnPressed)    
+            else:
+                self.connect(self.ui.lineEdit,
+                    QtCore.SIGNAL("returnPressed()"),
+                    self.returnPressed)    
+        if 1:
+            self.ui.lineEdit.textChanged.connect(self.liveUpdate)
+        else:
+            self.connect(self.ui.lineEdit, 
+                QtCore.SIGNAL("textChanged(QString)"), 
+                self.liveUpdate)
 
         self.ev_filter = QuickSearchEventFilter(c,w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
-
-                    
         self.c = c
-
     #@+node:ekr.20111015194452.15696: *3* returnPressed
     def returnPressed(self):
 
