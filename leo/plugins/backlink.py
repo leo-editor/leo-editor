@@ -605,15 +605,15 @@ class backlinkController(object):
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if g.app.gui.guiName() == "qt":
 
-    from leo.core.leoQt import Qt,QtCore,QtGui,uic
+    from leo.core.leoQt import Qt,QtCore,QtGui,QtWidgets,uic
 
-    class backlinkQtUI(QtGui.QWidget):
+    class backlinkQtUI(QtWidgets.QWidget):
         #@+others
         #@+node:ekr.20140920145803.17987: *3* __init__
         def __init__(self, owner):
             '''Ctor for backlinkQtUI class.'''
             self.owner = owner
-            QtGui.QWidget.__init__(self)
+            QtWidgets.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
             self.owner.c.frame.log.createTab('Links', widget = self) 

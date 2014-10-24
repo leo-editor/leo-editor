@@ -258,7 +258,7 @@ def dumpfocus():
     g.es("Focus: " + 'f')
     print("Focus: " + 'f')
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
-class LeoQuickSearchWidget(QtGui.QWidget):
+class LeoQuickSearchWidget(QtWidgets.QWidget):
     
     """ 'Find in files'/grep style search widget """
 
@@ -266,7 +266,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     #@+node:ekr.20111015194452.15695: *3*  ctor
     def __init__(self,c, mode = "nav", parent=None):
         
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
 
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)

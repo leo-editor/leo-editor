@@ -295,7 +295,7 @@ def cmd_OpenEditor(kwargs, at_rich=False):
         if not at_rich:
             g.es("CKE Editor appears to be open already")
         return
-    body = splitter.find_child(QtGui.QWidget, 'bodyFrame')
+    body = splitter.find_child(QtGui.QWidgets, 'bodyFrame')
     w = CKEEditor(c=c)
     w.at_rich = at_rich
     splitter = body.parent()
