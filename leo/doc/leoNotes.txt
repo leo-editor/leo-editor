@@ -17707,51 +17707,6 @@ def update_headlines_after_read(self,root):
     else:
         g.trace('bad @headlines body',at_headlines.b)
 .. @+node:ekr.20140120105910.10488: *6* vc.Main Lines
-.. @+node:ekr.20140131101641.15495: *7* pd.prepass & helper
-def prepass(self,root):
-    '''Make sure root's tree has no hard-to-handle nodes.'''
-    c,pd = self.c,self
-    ic = c.importCommands
-    ic.tab_width = ic.getTabWidth()
-    language = g.scanForAtLanguage(c,root)
-    ext = g.app.language_extension_dict.get(language)
-    if not ext: return
-    if not ext.startswith('.'): ext = '.' + ext
-    scanner = ic.scanner_for_ext(ext)
-    if not scanner:
-        g.trace('no scanner for',root.h)
-        return True # Pretend all went well.
-    # Pass 1: determine the nodes to be inserted.
-    ok,parts_list = True,[]
-    for p in root.subtree():
-        ok2,parts = pd.regularize_node(p,scanner)
-        ok = ok and (ok2 or parts)
-        if parts: parts_list.append(parts)
-    # Pass 2: actually insert the nodes.
-    if ok:
-        for parts in reversed(parts_list):
-            p0 = None
-            for part in reversed(parts):
-                i1,i2,headline,p = part
-                if p0 is None:
-                    p0 = p
-                else:
-                    assert p == p0,(p,p0)
-                s = p.b
-                g.trace(p.h,'-->',headline)
-                p2 = p.insertAfter()
-                p2.b = s[i1:i2]
-                p2.h = headline
-            p0.doDelete()
-    return ok
-.. @+node:ekr.20140131101641.15496: *8* pd.regularize_node
-def regularize_node(self,p,scanner):
-    '''Regularize node p so that it will not cause problems.'''
-   
-    ok,parts = scanner(atAuto=True,parent=p,s=p.b,prepass=True)
-    if not ok and not parts:
-        g.es_print('please regularize:',p.h)
-    return ok,parts
 .. @+node:ekr.20140115180051.16709: *7* vc.precompute_all_data & helpers
 def precompute_all_data(self,at_organizers,root):
     '''Precompute all data needed to reorganize nodes.'''
