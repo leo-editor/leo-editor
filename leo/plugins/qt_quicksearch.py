@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 ### from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import QtCore,QtWidgets
+from leo.core.leoQt import isQt5,QtCore,QtWidgets
 QtGui = QtWidgets
     ### Not true in general!
 
@@ -34,5 +34,10 @@ class Ui_LeoQuickSearchWidget(object):
         QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
 
     def retranslateUi(self, LeoQuickSearchWidget):
-        LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
-
+        
+        if isQt5:
+            # QApplication.UnicodeUTF8 no longer exists.
+            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget","Form",None))
+        else:
+            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget","Form",
+                None, QtGui.QApplication.UnicodeUTF8))
