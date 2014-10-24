@@ -212,7 +212,8 @@ class Cacher:
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:
                 v = leoNodes.VNode(context=c)
-                g.trace('**** no gnx for',v)
+                # This is not an error: it can happen with @auto nodes.
+                # g.trace('**** no gnx for',v,parent_v)
         child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.

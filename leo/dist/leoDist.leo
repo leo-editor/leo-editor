@@ -58,6 +58,15 @@
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
+<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
+<v t="ekr.20101027160251.1500"><vh>Notes</vh>
+<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
+<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
+<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
+</v>
+<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
+</v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
@@ -85,20 +94,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
-<v t="ekr.20101027160251.1500"><vh>Notes</vh>
-<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
-<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
-<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
-</v>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
-</v>
-<v t="ekr.20101027115225.1494"></v>
-<v t="ekr.20101027054254.1590"></v>
-<v t="ekr.20101027070126.1643"></v>
-<v t="ekr.20101027115225.1499"><vh>Section File Association</vh></v>
-<v t="ekr.20101027115225.1498"><vh>Section Desktop Shortcut</vh></v>
+<v t="ekr.20141024081700.2"><vh>** make-leo script changes ref files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -830,27 +826,6 @@ def deleteTempFiles (self,lines):
         return None
 </t>
 <t tx="ekr.20101027070126.1680"></t>
-<t tx="ekr.20101027115225.1498">
-Section "${name} Desktop Shortcut" SEC03
-  ; This sets the "Start in folder" box!!!"
-  SetOutPath "$INSTDIR\leo"
-  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
-  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
-  CreateShortCut "$DESKTOP\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
-SectionEnd
-</t>
-<t tx="ekr.20101027115225.1499">
-Section "${ext} File Association" SEC02
-    SectionIn 1 2 3 4
-    WriteRegStr HKCR "${ext}" "" "${name}File"
-    WriteRegStr HKCR "${name}File" "" "${name} File"
-    WriteRegStr HKCR "${name}File\shell" "" "open"
-    ; The single quotes below appear to be required.
-    WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
-    ; https://github.com/leo-editor/leo-editor/issues/24
-    WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
-SectionEnd
-</t>
 <t tx="ekr.20101027131034.1490">@color</t>
 <t tx="ekr.20101027135430.1492">http://nsis.sourceforge.net/Docs/Modern%20UI%202/Readme.html</t>
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
@@ -1337,5 +1312,6 @@ leo/test/unittest/.leo_shadow/  export-ignore
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''Copy nsi files from leo/dist to leo-editor directory.'''
     </t>
+<t tx="ekr.20141024081700.2">leoPyRef.leo and leoPluginsRef.leo</t>
 </tnodes>
 </leo_file>
