@@ -1351,6 +1351,7 @@ class GetArg:
         '''Compute and show the available completions.'''
         # Support vim-mode commands.
         command = ga.get_label()
+        # g.trace(ga.is_command(command),command)
         if ga.is_command(command):
             tabList,common_prefix = g.itemsMatchingPrefixInList(command,tabList)
             return common_prefix,tabList
@@ -1396,12 +1397,15 @@ class GetArg:
 
     def do_tab(ga,tabList,completion=True):
         '''Handle tab completion when the user hits a tab.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,k = ga.c,ga.k
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
             command = ga.get_label()
             common_prefix,tabList = ga.compute_tab_list(tabList)
+            if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
+                ga.cycling_prefix = common_prefix
+            if trace: g.trace(len(tabList),common_prefix,ga.cycling_prefix)
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1:

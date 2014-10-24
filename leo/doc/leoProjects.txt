@@ -556,6 +556,18 @@ Autocomplete ? function to show doc string does not work
 - Added lqlw.get_selection.
 - get_object appends get_selection before calling get_object.
 - Cleaned code in info.
+.. @+node:ekr.20141024170936.6: *4* Fixed tab-completion problems
+@language rest
+
+It sometimes picked a shorter completion that is not a prefix of the present label!
+
+Examples:
+    print-se **sometimes** shows print-uas or print-bindings or...
+    print-stat<tab>-h<tab> shows print-statusbar-hide
+    print-st<tab> shows print-style-sheet.
+    print-pr<tab> show print-plugin-handlers.
+    
+The fix was a single extra check in ga.do_tab.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
