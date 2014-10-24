@@ -113,9 +113,7 @@ class NodeIndices (object):
         trace = False and not g.unitTesting
         index = hasattr(v,'fileIndex') and v.fileIndex or ''
         if trace: fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
-        if index:
-            return index
-        elif self.hold_gnx_flag:
+        if self.hold_gnx_flag:
             if trace: g.trace(fn,'holding',v.h)
             self.hold_gnx_set.add(v)
             return ''

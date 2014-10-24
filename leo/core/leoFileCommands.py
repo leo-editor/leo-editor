@@ -620,6 +620,7 @@ class FileCommands:
         if not current:
             g.trace('no c.p')
             return None
+        if trace: g.trace('reassign',reassignIndices,'temp',tempOutline)
         check = not reassignIndices
         checkAfterRead = False or c.config.getBool('check_outline_after_read')
         self.initReadIvars()
@@ -643,7 +644,7 @@ class FileCommands:
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-            if trace: g.trace(s)
+            if trace and verbose: g.trace(s)
             # readSaxFile modifies the hidden root.
             v = self.readSaxFile(
                 theFile=None, fileName='<clipboard>',
@@ -678,7 +679,11 @@ class FileCommands:
                 index = ni.getNewIndex(v)
                 if index:
                     v.setFileIndex(index)
-                    self.gnxDict[index] = v
+                    if index in self.gnxDict:
+                        g.trace('can not happen: index clash',index,v)
+                    else:
+                        if trace: g.trace(index,v)
+                        self.gnxDict[index] = v
                 else:
                     g.trace('can not happen: no index',v)
                 if g.trace_gnxDict: g.trace(c.shortFileName(),'**restoring**',index,v)
