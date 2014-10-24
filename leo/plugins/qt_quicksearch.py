@@ -7,7 +7,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+### from PyQt4 import QtCore, QtGui
+from leo.core.leoQt import QtCore,QtGui
 
 class Ui_LeoQuickSearchWidget(object):
     def setupUi(self, LeoQuickSearchWidget):

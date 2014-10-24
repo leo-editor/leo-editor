@@ -44,6 +44,7 @@ difficult to test.
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
+.. @+node:ekr.20141024071004.6: *5* ** make-leo script changes leoPyRef.leo
 .. @+node:ekr.20141017150357.18266: *4* Priority 3: 6 other a1 bugs
 @language rest
 
