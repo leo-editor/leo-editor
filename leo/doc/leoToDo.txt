@@ -40,21 +40,7 @@ difficult to test.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
-.. @+node:ekr.20141017150357.18268: *5* Fix bug 24: Windows installer setting wrong file association for .leo files
-https://github.com/leo-editor/leo-editor/issues/24
-Windows installer setting wrong file association for .leo files
-
-
-If you do ftype LeoFile after using installing LeoSetup-4.11-final.exe,
-you'll see:
-
-    LeoFile="<path to python>\pythonw.exe" "C:\Program Files (x86)\Leo-4.11-final\launchLeo.py %*"
-
-This is wrong. As Creating Windows file associations in the Leo documentation
-correctly states, this should instead be:
-
-    LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies

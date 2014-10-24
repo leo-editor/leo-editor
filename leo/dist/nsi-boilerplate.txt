@@ -29,7 +29,7 @@ ShowUnInstDetails show
 ; Locations
 Name "${name}"
 OutFile "${target_file}"
-InstallDir "$PROGRAMFILES\${name}-${version}"
+;;; InstallDir "$PROGRAMFILES\${name}-${version}"
 
 ; Icons
 ;!define MUI_ICON "${icon}"
@@ -138,6 +138,7 @@ Section "${ext} File Association" SEC02
     WriteRegStr HKCR "${name}File\shell" "" "open"
     ; The single quotes below appear to be required.
     WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
+    ; https://github.com/leo-editor/leo-editor/issues/24
     WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
 SectionEnd
 ;@+node:ekr.20101027115225.1498: ** Section Desktop Shortcut

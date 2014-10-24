@@ -94,9 +94,11 @@
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
 </v>
-<v t="ekr.20101027070126.1662"></v>
-<v t="ekr.20101105103524.1491"></v>
-<v t="ekr.20101105103524.1493"></v>
+<v t="ekr.20101027115225.1494"></v>
+<v t="ekr.20101027054254.1590"></v>
+<v t="ekr.20101027070126.1643"></v>
+<v t="ekr.20101027115225.1499"><vh>Section File Association</vh></v>
+<v t="ekr.20101027115225.1498"><vh>Section Desktop Shortcut</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -828,6 +830,27 @@ def deleteTempFiles (self,lines):
         return None
 </t>
 <t tx="ekr.20101027070126.1680"></t>
+<t tx="ekr.20101027115225.1498">
+Section "${name} Desktop Shortcut" SEC03
+  ; This sets the "Start in folder" box!!!"
+  SetOutPath "$INSTDIR\leo"
+  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$DESKTOP\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+SectionEnd
+</t>
+<t tx="ekr.20101027115225.1499">
+Section "${ext} File Association" SEC02
+    SectionIn 1 2 3 4
+    WriteRegStr HKCR "${ext}" "" "${name}File"
+    WriteRegStr HKCR "${name}File" "" "${name} File"
+    WriteRegStr HKCR "${name}File\shell" "" "open"
+    ; The single quotes below appear to be required.
+    WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
+    ; https://github.com/leo-editor/leo-editor/issues/24
+    WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
+SectionEnd
+</t>
 <t tx="ekr.20101027131034.1490">@color</t>
 <t tx="ekr.20101027135430.1492">http://nsis.sourceforge.net/Docs/Modern%20UI%202/Readme.html</t>
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>

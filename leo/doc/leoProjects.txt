@@ -525,6 +525,26 @@ erroneous clone markers in @auto trees
 The fixes were to several methods of the PersistenceDataController class.
 
 @language python
+.. @+node:ekr.20141017150357.18268: *4* Investigated bug 24: Windows installer setting wrong file association for .leo files
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/24
+Windows installer setting wrong file association for .leo files
+
+At present, everything appears to be working.
+
+Original report
+---------------
+
+If you do ftype LeoFile after using installing LeoSetup-4.11-final.exe,
+you'll see:
+
+    LeoFile="<path to python>\pythonw.exe" "C:\Program Files (x86)\Leo-4.11-final\launchLeo.py %*"
+
+This is wrong. As Creating Windows file associations in the Leo documentation
+correctly states, this should instead be:
+
+    LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
