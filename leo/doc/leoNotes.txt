@@ -17707,11 +17707,10 @@ def update_headlines_after_read(self,root):
     else:
         g.trace('bad @headlines body',at_headlines.b)
 .. @+node:ekr.20140120105910.10488: *6* vc.Main Lines
-.. @+node:ekr.20140131101641.15495: *7* vc.prepass & helper
+.. @+node:ekr.20140131101641.15495: *7* pd.prepass & helper
 def prepass(self,root):
     '''Make sure root's tree has no hard-to-handle nodes.'''
-    vc = self
-    c = vc.c
+    c,pd = self.c,self
     ic = c.importCommands
     ic.tab_width = ic.getTabWidth()
     language = g.scanForAtLanguage(c,root)
@@ -17725,7 +17724,7 @@ def prepass(self,root):
     # Pass 1: determine the nodes to be inserted.
     ok,parts_list = True,[]
     for p in root.subtree():
-        ok2,parts = vc.regularize_node(p,scanner)
+        ok2,parts = pd.regularize_node(p,scanner)
         ok = ok and (ok2 or parts)
         if parts: parts_list.append(parts)
     # Pass 2: actually insert the nodes.
@@ -17745,7 +17744,7 @@ def prepass(self,root):
                 p2.h = headline
             p0.doDelete()
     return ok
-.. @+node:ekr.20140131101641.15496: *8* regularize_node
+.. @+node:ekr.20140131101641.15496: *8* pd.regularize_node
 def regularize_node(self,p,scanner):
     '''Regularize node p so that it will not cause problems.'''
    

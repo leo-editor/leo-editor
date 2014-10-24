@@ -390,7 +390,6 @@ class PersistenceDataController:
     #@+node:ekr.20140131101641.15495: *3* pd.prepass & helper
     def prepass(self,root):
         '''Make sure root's tree has no hard-to-handle nodes.'''
-        g.trace(g.callers())
         c,pd = self.c,self
         ic = c.importCommands
         ic.tab_width = ic.getTabWidth()
