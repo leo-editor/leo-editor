@@ -72,6 +72,12 @@ def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     if ok:
+        try:
+            QtWebKitWidgets.QWebView(None)
+        except AttributeError:
+            print('bigdash.py: QWebView must be installed')
+            ok = False
+    if ok:
         g.app._global_search = GlobalSearch()
         g.plugin_signon(__name__)
     return ok
@@ -152,7 +158,7 @@ class BigDash:
     </table>
     """
         self.web.setHtml(s)
-        
+
     #@-others
 #@+node:ekr.20140919160020.17897: ** class GlobalSearch
 class GlobalSearch:
