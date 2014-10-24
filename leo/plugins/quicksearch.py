@@ -203,8 +203,11 @@ def install_qt_quicksearch_tab(c):
     # Careful: we may be unit testing.
     if wdg and wdg.parent():
         tab_widget = wdg.parent().parent()
-        tab_widget.connect(tab_widget,
-            QtCore.SIGNAL("currentChanged(int)"), activate_input)
+        if 1:
+            tab_widget.currentChanged.connect(activate_input)
+        else:
+            tab_widget.connect(tab_widget,
+                QtCore.SIGNAL("currentChanged(int)"), activate_input)
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter
 class QuickSearchEventFilter(QtCore.QObject):
 
@@ -280,9 +283,12 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
 
         if mode == "popout":
             self.setWindowTitle("Go anywhere")
-            self.connect(self.ui.lineEdit, 
-                QtCore.SIGNAL("returnPressed()"),
-                self.selectAndDismiss)
+            if 1:
+                self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
+            else:
+                self.connect(self.ui.lineEdit, 
+                    QtCore.SIGNAL("returnPressed()"),
+                    self.selectAndDismiss)
             threadutil.later(self.ui.lineEdit.setFocus)
         else:
             if 1:
