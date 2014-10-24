@@ -33,7 +33,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "4.11 final"
+version = "5.0d1"
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
