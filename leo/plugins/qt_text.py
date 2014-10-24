@@ -506,6 +506,10 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             c.k.keyboardQuit()
             c.bodyWantsFocusNow()
             self.deleteLater()
+        #@+node:ekr.20141024170936.7: *5* lqlw.get_selection
+        def get_selection(self):
+            '''Return the presently selected item's text.'''
+            return g.u(self.currentItem().text())
         #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
         def keyPressEvent(self,event):
             '''Handle a key event from QListWidget.'''

@@ -545,6 +545,17 @@ This is wrong. As Creating Windows file associations in the Leo documentation
 correctly states, this should instead be:
 
     LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+.. @+node:ekr.20141020061642.21515: *4* Fixed bug 1245616: Autocomplete ? function...does not work
+@language rest
+
+From https://github.com/leo-editor/leo-editor/issues/73
+
+https://bugs.launchpad.net/leo-editor/+bug/1245616
+Autocomplete ? function to show doc string does not work
+
+- Added lqlw.get_selection.
+- get_object appends get_selection before calling get_object.
+- Cleaned code in info.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -832,13 +832,9 @@ class AutoCompleterClass:
         return d
     #@+node:ekr.20110512170111.14472: *4* get_object
     def get_object (self):
-
         '''Return the object corresponding to the current prefix.'''
-
         trace = False and not g.unitTesting
-
         common_prefix,prefix1,aList = self.compute_completion_list()
-
         if len(aList) == 0:
             if trace: g.trace('no completion list for: %s' % (prefix1))
             return None,prefix1
@@ -846,9 +842,9 @@ class AutoCompleterClass:
             prefix = aList[0]
         else:
             prefix = common_prefix
-
+        if prefix.endswith('.') and self.use_qcompleter:
+            prefix += self.qcompleter.get_selection()
         if trace: g.trace(repr(prefix))
-
         safe_prefix = self.strip_brackets(prefix)
         for d in self.namespaces + [self.get_leo_namespace(prefix)]:
             try:
@@ -863,29 +859,20 @@ class AutoCompleterClass:
             except Exception:
                 g.es_exception()
                 obj = None
-
         return obj,prefix
     #@+node:ekr.20061031131434.38: *4* info
     def info (self):
-
+        '''Show the docstring for the present completion.'''
         c = self.c
-
         obj,prefix = self.get_object()
-
         c.frame.log.clearTab('Info',wrap='word')
-        
         put = lambda s: self.put('', s, tabName='Info')
-        
         put(prefix)
-        
-        
         try:
             argspec = inspect.getargspec(obj)
-            
             # uses None instead of empty list
             argn = argspec.args and len(argspec.args) or 0
             defn = argspec.defaults and len(argspec.defaults) or 0
-            
             put("args:")
             simple_args = argspec.args[:argn - defn]
             if not simple_args:
@@ -893,29 +880,20 @@ class AutoCompleterClass:
             else:
                 put('    '+', '.join(' '+i for i in simple_args))
             put("keyword args:")
-
             if not argspec.defaults:
                 put('    (none)')
             for i in range(defn):
                 arg = argspec.args[-defn+i]
-                put("    %s = %s" % 
-                         (arg, repr(argspec.defaults[i])))
-                         
+                put("    %s = %s" % (arg, repr(argspec.defaults[i])))
             if argspec.varargs:
                 put("varargs: *"+argspec.varargs)
             if argspec.keywords:
                 put("keywords: **"+argspec.keywords)
-                         
             put('\n')  # separate docstring
         except TypeError:    
             put('\n')  # not a callable
-        
         doc = inspect.getdoc(obj)
-
-        if doc:
-            put(doc)
-        else:
-            put("No docstring for "+repr(prefix))
+        put(doc if doc else "No docstring for "+repr(prefix))
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self,event=None):
 

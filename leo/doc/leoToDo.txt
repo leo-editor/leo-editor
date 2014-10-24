@@ -39,13 +39,18 @@ difficult to test.
    many previous conversations. This could take several days.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
+.. @+node:ekr.20141024170936.6: *4* **** fix tab-completion
+@language rest
+
+It sometimes picks a shorter completion that is not a prefix of the present label!
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bug re distro
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
+.. @+node:ekr.20141024170936.5: *5* The distro script changes ref files
 .. @+node:ekr.20141017150357.18266: *4* Priority 3: other a1 bugs
 @language rest
 
@@ -320,11 +325,6 @@ def replaceBackSlashes (self,s):
         i += 1
     return s
 .. @+node:ekr.20140921180304.17919: *6* Find command *sometimes* doesn't scroll
-.. @+node:ekr.20141020061642.21515: *5* Fix bug 1245616: Autocomplete ? function...does not work
-From https://github.com/leo-editor/leo-editor/issues/73
-
-https://bugs.launchpad.net/leo-editor/+bug/1245616
-Autocomplete ? function to show doc string does not work
 .. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
 From https://github.com/leo-editor/leo-editor/issues/73
 
