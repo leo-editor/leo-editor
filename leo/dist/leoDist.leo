@@ -75,7 +75,7 @@
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
 <v t="ekr.20141016123713.2120"><vh>copy_nsi_files (to do)</vh></v>
-<v t="ekr.20110614062644.1378"><vh>copy_ref_files</vh></v>
+<v t="ekr.20110614062644.1378"><vh>copy_ref_files (not used)</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
@@ -94,7 +94,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20141024081700.2"><vh>** make-leo script changes ref files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -547,7 +546,6 @@ version = '5.0-a1' ##version
 @others
 
 LeoMaker().run()
-# LeoMaker().copy_ref_files()
 g.es_print('done') # '@button make-leo done')
 </t>
 <t tx="ekr.20101027070126.1643">class LeoMaker:
@@ -576,7 +574,8 @@ g.es_print('done') # '@button make-leo done')
     # This is a crucial check.
     errors = self.printMissing(files,dirDict,filesDict)
     if not errors:
-        self.copy_ref_files()
+        ### Why is this here???
+        ### self.copy_ref_files()
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
@@ -981,20 +980,23 @@ Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20110614062644.1378">def copy_ref_files (self):
     '''Copy reference copies of .leo files.'''
-    table = (
-        (pluginsDir,'leoGuiPlugins.leo','leoGuiPluginsRef.leo'),
-        (pluginsDir,'leoPlugins.leo','leoPluginsRef.leo'),
-        (coreDir,'leoPy.leo','leoPyRef.leo'),
-    )
-    for d,src,dst in table:
-        src_path = join(d,src)
-        dst_path = join(d,dst)
-        if not exists(src_path):
-            g.error('does not exist',src_path)
-        if not exists(dst_path):
-            g.error('does not exist',dst_path)
-        if exists(src_path) and exists(dst_path):
-            shutil.copyfile(src_path,dst_path)
+    if 0:
+        # There seems to be no need for this.
+        # Furthermore, this changes the ref files.
+        table = (
+            (pluginsDir,'leoGuiPlugins.leo','leoGuiPluginsRef.leo'),
+            (pluginsDir,'leoPlugins.leo','leoPluginsRef.leo'),
+            (coreDir,'leoPy.leo','leoPyRef.leo'),
+        )
+        for d,src,dst in table:
+            src_path = join(d,src)
+            dst_path = join(d,dst)
+            if not exists(src_path):
+                g.error('does not exist',src_path)
+            if not exists(dst_path):
+                g.error('does not exist',dst_path)
+            if exists(src_path) and exists(dst_path):
+                shutil.copyfile(src_path,dst_path)
 </t>
 <t tx="ekr.20110614062644.1379"># Globals...
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
@@ -1312,6 +1314,5 @@ leo/test/unittest/.leo_shadow/  export-ignore
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''Copy nsi files from leo/dist to leo-editor directory.'''
     </t>
-<t tx="ekr.20141024081700.2">leoPyRef.leo and leoPluginsRef.leo</t>
 </tnodes>
 </leo_file>
