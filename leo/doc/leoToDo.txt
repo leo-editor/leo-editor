@@ -40,25 +40,38 @@ difficult to test.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bug re distro
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024170936.5: *5* The distro script changes ref files
-.. @+node:ekr.20141017150357.18266: *4* Priority 3: other a1 bugs
+.. @+node:ekr.20141017150357.18266: *4* Priority 3: 10 other bugs targeted for a1
 @language rest
+.. @+node:ekr.20141024184556.6: *5* Fix bug 78: F3 find-next target not always highlighted
+https://github.com/leo-editor/leo-editor/issues/78
+.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+From https://github.com/leo-editor/leo-editor/issues/73
 
-These can wait until a2 or even b1.
-.. @+node:ekr.20141006073719.17938: *5* ** Fix import bugs
-.. @+node:ekr.20140923144655.17926: *5* ** Fix find bugs
-Find-previous fails at last node
-https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
+https://github.com/leo-editor/leo-editor/issues/60
+.. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
+https://github.com/leo-editor/leo-editor/issues/59
+.. @+node:ekr.20141024184556.10: *5* Fix bug 56: Focus change on tree pane after saving current Leo file
+https://github.com/leo-editor/leo-editor/issues/56
+.. @+node:ekr.20141024184556.11: *5* Fix bug 36: @auto file not found produces a script error
+https://github.com/leo-editor/leo-editor/issues/36
+.. @+node:ekr.20141024184556.12: *5* Fix bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node
+https://github.com/leo-editor/leo-editor/issues/12
+.. @+node:ekr.20141024184556.7: *5* Fix bug: Ctrl-F focus inconsistent
 Ctrl-F focus inconsistent
 https://groups.google.com/d/msg/leo-editor/_DIEDA3pJo8/YZlOhSZ078EJ
-.. @+node:ekr.20140919052413.17945: *6* Fix suboutline only find bug
+.. @+node:ekr.20140923144655.17926: *5* Fix bug: Find-previous fails at last node 
+Find-previous fails at last node
+https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+.. @+node:ekr.20140919052413.17945: *5* Fix suboutline only find bug
 @language rest
 
 https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
@@ -81,7 +94,7 @@ I think this bug also interferes with searches not limited to the
 sub-outline, but still wouldn't be able to pinpoint it.
 
 
-.. @+node:ekr.20031218072017.3077: *7* find.search & helpers
+.. @+node:ekr.20031218072017.3077: *6* find.search & helpers
 def search (self):
     """
     Search s_ctrl for self.find_text with present options.
@@ -126,7 +139,7 @@ def search (self):
     w.setSelectionRange(pos,newpos,insert=ins)
     if trace: g.trace('** returns',pos,newpos)
     return pos,newpos
-.. @+node:ekr.20060526140328: *8* passedWrapPoint
+.. @+node:ekr.20060526140328: *7* passedWrapPoint
 def passedWrapPoint(self,p,pos,newpos):
     '''Return True if the search has gone beyond the wrap point.'''
     return (
@@ -136,7 +149,7 @@ def passedWrapPoint(self,p,pos,newpos):
             (self.reverse and pos < self.wrapPos or
             not self.reverse and newpos > self.wrapPos)
     )
-.. @+node:ekr.20060526081931: *8* searchHelper & allies
+.. @+node:ekr.20060526081931: *7* searchHelper & allies
 def searchHelper (self,s,i,j,pattern):
     '''Dispatch the proper search method based on settings.'''
     trace = False and not g.unitTesting
@@ -157,7 +170,7 @@ def searchHelper (self,s,i,j,pattern):
         pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
     if trace: g.trace('returns',pos,newpos)
     return pos,newpos
-.. @+node:ekr.20060526092203: *9* regexHelper
+.. @+node:ekr.20060526092203: *8* regexHelper
 def regexHelper (self,s,i,j,pattern,backwards,nocase):
     trace = False and not g.unitTesting
     re_obj = self.re_obj # Use the pre-compiled object
@@ -195,7 +208,7 @@ def regexHelper (self,s,i,j,pattern,backwards,nocase):
             return mo.start(),mo.end()
     self.match_obj = None
     return -1,-1
-.. @+node:ekr.20060526140744: *9* backwardsHelper
+.. @+node:ekr.20060526140744: *8* backwardsHelper
 debugIndices = []
 
 @
@@ -245,7 +258,7 @@ def backwardsHelper (self,s,i,j,pattern,nocase,word):
             return -1, -1
         else:
             return k,k+n
-.. @+node:ekr.20060526093531: *9* plainHelper
+.. @+node:ekr.20060526093531: *8* plainHelper
 def plainHelper (self,s,i,j,pattern,nocase,word):
     '''Do a plain search.'''
     trace = False and not g.unitTesting
@@ -273,7 +286,7 @@ def plainHelper (self,s,i,j,pattern,nocase,word):
         else:
             if trace: g.trace('match', k)
             return k, k + n
-.. @+node:ekr.20060526140744.1: *9* matchWord
+.. @+node:ekr.20060526140744.1: *8* matchWord
 def matchWord(self,s,i,pattern):
     '''Do a whole-word search.'''
     trace = False and not g.unitTesting
@@ -294,7 +307,7 @@ def matchWord(self,s,i,pattern):
     if trace: g.trace('returns',not inWord)
     return not inWord
 
-.. @+node:ekr.20070105165924: *9* replaceBackSlashes
+.. @+node:ekr.20070105165924: *8* replaceBackSlashes
 def replaceBackSlashes (self,s):
     '''Carefully replace backslashes in a search pattern.'''
     # This is NOT the same as:
@@ -314,12 +327,6 @@ def replaceBackSlashes (self,s):
                 i += 1 # Skip the escaped character.
         i += 1
     return s
-.. @+node:ekr.20140921180304.17919: *6* Find command *sometimes* doesn't scroll
-.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
-From https://github.com/leo-editor/leo-editor/issues/73
-
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
