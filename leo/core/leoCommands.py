@@ -4675,8 +4675,8 @@ class Commands (object):
         """
         trace = False and not g.unitTesting
         c = self ; count = 1 ; errors = 0
-        if full and not unittest:
-            g.blue("all tests enabled: this may take awhile")
+        # if full and not unittest:
+            # g.blue("all tests enabled: this may take awhile")
         iter_ = root.self_and_subtree if root else c.all_positions
         for p in iter_():
             if trace: g.trace(p.h)
@@ -4697,30 +4697,26 @@ class Commands (object):
                 if full: # Unit tests usually set this false.
                     #@+<< do full tests >>
                     #@+node:ekr.20040323155951: *7* << do full tests >>
-                    if not unittest:
-                        if count % 1000 == 0:
-                            g.es('','.',newline=False)
-                        if count % 8000 == 0:
-                            g.enl()
+                    # if not unittest:
+                        # if count % 1000 == 0:
+                            # g.es('','.',newline=False)
+                        # if count % 8000 == 0:
+                            # g.enl()
 
                     #@+others
                     #@+node:ekr.20040314035615: *8* assert consistency of threadNext & threadBack links
                     threadBack = p.threadBack()
                     threadNext = p.threadNext()
-
                     if threadBack:
                         assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
-
                     if threadNext:
                         assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
                     #@+node:ekr.20040314035615.1: *8* assert consistency of next and back links
                     back = p.back()
                     next = p.next()
-
                     if back:
                         assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
                             back,back.next())
-
                     if next:
                         assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
                             next,next.back())
@@ -4728,13 +4724,10 @@ class Commands (object):
                     if p.hasParent():
                         n = p.childIndex()
                         assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
-
                     for child in p.children():
                         assert p == child.parent(), "p!=child.parent"
-
                     if p.hasNext():
                         assert p.next().parent() == p.parent(), "next.parent!=parent"
-
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent!=parent"
                     #@+node:ekr.20080426051658.1: *8* assert consistency of parent and children arrays
@@ -4747,7 +4740,6 @@ class Commands (object):
 
                     parent_v = p._parentVnode()
                     n = p.childIndex()
-
                     assert parent_v.children[n] == p.v,'fail 1'
                     #@-others
                     #@-<< do full tests >>
