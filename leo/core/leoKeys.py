@@ -151,16 +151,13 @@ class AutoCompleterClass:
     '''
 
     #@+others
-    #@+node:ekr.20061031131434.5: *3*  ctor (autocompleter)
+    #@+node:ekr.20061031131434.5: *3* ac.ctor
     def __init__ (self,k):
         '''Ctor for AutoCompleterClass class.'''
         # Ivars...
         self.c = c = k.c
         self.k = k
         self.force = None
-        self.klass = None
-            # This is some kind of weird hack, set only by the LeoQListWidget class.
-            # At present it is always None
         self.language = None
         self.namespaces = []
             # additional namespaces to search for objects, other code
@@ -186,33 +183,27 @@ class AutoCompleterClass:
         self.use_qcompleter = c.config.getBool('use_qcompleter',False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
-    #@+node:ekr.20061031131434.8: *3* Top level (autocompleter)
-    #@+node:ekr.20061031131434.9: *4* autoComplete
+    #@+node:ekr.20061031131434.8: *3* ac.Top level
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     def autoComplete (self,event=None,force=False):
-
         '''An event handler called from k.masterKeyHanderlerHelper.'''
-
         trace = False and not g.unitTesting
         c,k = self.c,self.k
         state = k.unboundKeyAction
         w = event and event.w or c.get_focus()
         self.force = force
-        self.klass = None
         if not state in ('insert','overwrite'):
             if trace: g.trace('not in insert/overwrite mode')
             return
-
         # First, handle the invocation character as usual.
         if not force:
             # Ctrl-period does *not* insert a period.
             if trace: g.trace('not force')
             k.masterCommand(event=event)
-
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             if trace: g.trace('not body')
             return
-
         self.language = g.scanForAtLanguage(c,c.p)
         if w and (k.enable_autocompleter or force): # self.language == 'python':
             if trace: g.trace('starting')
@@ -220,13 +211,13 @@ class AutoCompleterClass:
             self.start(event)
         else:
             if trace: g.trace('autocompletion not enabled')
-    #@+node:ekr.20061031131434.10: *4* autoCompleteForce
+    #@+node:ekr.20061031131434.10: *4* ac.autoCompleteForce
     def autoCompleteForce (self,event=None):
 
         '''Show autocompletion, even if autocompletion is not presently enabled.'''
 
         return self.autoComplete(event,force=True)
-    #@+node:ekr.20061031131434.12: *4* enable/disable/toggleAutocompleter/Calltips
+    #@+node:ekr.20061031131434.12: *4* ac.enable/disable/toggleAutocompleter/Calltips
     def disableAutocompleter (self,event=None):
         '''Disable the autocompleter.'''
         self.k.enable_autocompleter = False
@@ -256,7 +247,7 @@ class AutoCompleterClass:
         '''Toggle whether calltips are enabled.'''
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20061031131434.13: *4* showCalltips
+    #@+node:ekr.20061031131434.13: *4* ac.showCalltips
     def showCalltips (self,event=None,force=False):
 
         '''Show the calltips at the cursor.'''
@@ -273,13 +264,13 @@ class AutoCompleterClass:
         else:
             # Just insert the invocation character as usual.
             k.masterCommand(event=event)
-    #@+node:ekr.20061031131434.14: *4* showCalltipsForce
+    #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     def showCalltipsForce (self,event=None):
 
         '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
 
         return self.showCalltips(event,force=True)
-    #@+node:ekr.20061031131434.15: *4* showAutocompleter/CalltipsStatus
+    #@+node:ekr.20061031131434.15: *4* ac.showAutocompleter/CalltipsStatus
     def showAutocompleterStatus (self):
         '''Show the autocompleter status.'''
 
@@ -295,8 +286,8 @@ class AutoCompleterClass:
         if not g.unitTesting:
             s = 'calltips %s' % 'On' if k.enable_calltips else 'Off'
             g.red(s)
-    #@+node:ekr.20061031131434.16: *3* Helpers
-    #@+node:ekr.20110512212836.14469: *4* exit
+    #@+node:ekr.20061031131434.16: *3* ac.Helpers
+    #@+node:ekr.20110512212836.14469: *4* ac.exit
     def exit (self):
 
         trace = False and not g.unitTesting
@@ -328,7 +319,7 @@ class AutoCompleterClass:
 
     finish = exit
     abort = exit
-    #@+node:ekr.20061031131434.18: *4* append/begin/popTabName
+    #@+node:ekr.20061031131434.18: *4* ac.append/begin/popTabName
     def appendTabName (self,word):
 
         self.setTabName(self.tabName + '.' + word)
@@ -356,7 +347,7 @@ class AutoCompleterClass:
             c.frame.log.deleteTab(self.tabName)
         self.tabName = s.replace('_','') or ''
         c.frame.log.clearTab(self.tabName)
-    #@+node:ekr.20110509064011.14556: *4* attr_matches
+    #@+node:ekr.20110509064011.14556: *4* ac.attr_matches
     def attr_matches(self,s,namespace):
 
         """Compute matches when string s is of the form name.name....name.
@@ -401,7 +392,7 @@ class AutoCompleterClass:
             else:
                 g.trace(repr(s))
         return result
-    #@+node:ekr.20061031131434.11: *4* auto_completer_state_handler
+    #@+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
     def auto_completer_state_handler (self,event):
 
         trace = False and not g.app.unitTesting
@@ -463,7 +454,7 @@ class AutoCompleterClass:
                 if trace: g.trace('ignore non plain key',repr(stroke),g.callers())
                 self.abort() # 2011/06/17.
                 return 'do-standard-keys'
-    #@+node:ekr.20061031131434.20: *4* calltip & helpers
+    #@+node:ekr.20061031131434.20: *4* ac.calltip & helpers
     def calltip (self):
 
         '''Show the calltips for the present prefix.
@@ -476,7 +467,7 @@ class AutoCompleterClass:
         else:
             self.calltip_fail(prefix)
         self.exit()
-    #@+node:ekr.20110512090917.14468: *5* calltip_fail
+    #@+node:ekr.20110512090917.14468: *5* ac.calltip_fail
     def calltip_fail(self,prefix):
 
         '''Evaluation of prefix failed.'''
@@ -487,7 +478,7 @@ class AutoCompleterClass:
             g.es('eval failed for "%s"' % repr(prefix))
 
         self.insert_string('(')
-    #@+node:ekr.20110512090917.14469: *5* calltip_success
+    #@+node:ekr.20110512090917.14469: *5* ac.calltip_success
     def calltip_success(self,prefix,obj):
 
         trace = False and not g.unitTesting
@@ -512,47 +503,34 @@ class AutoCompleterClass:
 
         self.insert_string("(",select=False)
         self.insert_string(s,select=True)
-    #@+node:ekr.20061031131434.28: *4* compute_completion_list & helper
+    #@+node:ekr.20061031131434.28: *4* ac.compute_completion_list & helper
     def compute_completion_list (self):
-
+        '''Return the autocompleter completion list.'''
         trace = False and not g.unitTesting
         verbose = False
             # True: report hits and misses.
             # False: report misses.
-
-        if self.klass:
-            prefix = ''
-            # something later on eats the first char, not sure what
-            options = ['^'+i for i in self.lookup_methods([str(self.klass)],None)]
-            g.es("%s: %d options" % (self.klass, len(options)))
-            self.klass = None
+        prefix = self.get_autocompleter_prefix()
+        key,options = self.get_cached_options(prefix)
+        if options:
+            if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
         else:
-            prefix = self.get_autocompleter_prefix()
-            key,options = self.get_cached_options(prefix)
-            if options:
-                if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix,key))
-            else:
-                if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
-                options = self.get_completions(prefix)
-
+            if trace: g.trace('**prefix miss: %s, %s' % (prefix,key))
+            options = self.get_completions(prefix)
         tabList,common_prefix = g.itemsMatchingPrefixInList(
             prefix,options,matchEmptyPrefix=False)
-
         if not common_prefix:
             tabList,common_prefix = g.itemsMatchingPrefixInList(
                 prefix,options,matchEmptyPrefix=True)
-
         if trace and verbose:
             g.trace('prefix: %s, common: %s, len(tabList): %s' % (
                 repr(prefix),repr(common_prefix),len(tabList)))
             # if verbose: g.trace('options[:10]...\n',
                 # g.listToString(options[:10],sort=True))
-
         if tabList:
             self.show_completion_list(common_prefix,prefix,tabList)
-
         return common_prefix,prefix,tabList
-    #@+node:ekr.20110514051607.14524: *5* get_cached_options
+    #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
     def get_cached_options(self,prefix):
 
         trace = False and not g.unitTesting
@@ -577,7 +555,7 @@ class AutoCompleterClass:
                 if trace: g.trace('== miss: %s' % (key))
 
         return None,[]
-    #@+node:ekr.20061031131434.29: *4* do_backspace
+    #@+node:ekr.20061031131434.29: *4* ac.do_backspace
     def do_backspace (self):
 
         '''Delete the character and recompute the completion list.'''
@@ -600,7 +578,7 @@ class AutoCompleterClass:
             common_prefix,prefix,tabList = self.compute_completion_list()
             if not prefix:
                 self.exit()
-    #@+node:ekr.20110510133719.14548: *4* do_qcompleter_tab (not used)
+    #@+node:ekr.20110510133719.14548: *4* ac.do_qcompleter_tab (not used)
     def do_qcompleter_tab(self,prefix,options):
 
         '''Return the longest common prefix of all the options.'''
@@ -613,7 +591,7 @@ class AutoCompleterClass:
         if trace: g.trace(repr(common_prefix))
 
         return common_prefix
-    #@+node:ekr.20110509064011.14561: *4* get_autocompleter_prefix
+    #@+node:ekr.20110509064011.14561: *4* ac.get_autocompleter_prefix
     def get_autocompleter_prefix (self):
 
         trace = False and not g.unitTesting
@@ -631,7 +609,7 @@ class AutoCompleterClass:
         prefix = s[i:j]
         if trace: g.trace(repr(prefix),'ins',s[i1:])
         return prefix
-    #@+node:ekr.20110512212836.14471: *4* get_completions & helpers
+    #@+node:ekr.20110512212836.14471: *4* ac.get_completions & helpers
     def get_completions(self,prefix):
 
         trace = False and not g.unitTesting
@@ -665,7 +643,7 @@ class AutoCompleterClass:
         if trace: g.trace('**cash miss: %s' % (prefix))
         d [prefix] = aList
         return aList
-    #@+node:ekr.20110510120621.14539: *5* get_codewise_completions & helpers
+    #@+node:ekr.20110510120621.14539: *5* ac.get_codewise_completions & helpers
     def get_codewise_completions(self,prefix):
 
         '''Use codewise to generate a list of hits.'''
@@ -705,7 +683,7 @@ class AutoCompleterClass:
             # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
 
         return hits
-    #@+node:ekr.20110510120621.14540: *6* clean
+    #@+node:ekr.20110510120621.14540: *6* ac.clean
     def clean (self,hits):
 
         '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
@@ -721,7 +699,7 @@ class AutoCompleterClass:
             g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
 
         return aList
-    #@+node:ekr.20110512232915.14481: *6* clean_for_display (not used)
+    #@+node:ekr.20110512232915.14481: *6* ac.clean_for_display (not used)
     def clean_for_display(self,hits):
 
         '''Clean up hits, a list of ctags patterns, for display purposes.'''
@@ -744,7 +722,7 @@ class AutoCompleterClass:
             # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
             g.trace('aList[:50]',g.listToString(aList[:50],sort=False))
         return aList
-    #@+node:ekr.20110510120621.14542: *6* guess_class
+    #@+node:ekr.20110510120621.14542: *6* ac.guess_class
     def guess_class(self,c,varname):
 
         '''Return kind, class_list'''
@@ -770,7 +748,7 @@ class AutoCompleterClass:
             aList = ContextSniffer().get_classes(c.p.b,varname)
 
         return 'class',aList
-    #@+node:ekr.20110510120621.14543: *6* lookup_functions/methods/modules
+    #@+node:ekr.20110510120621.14543: *6* ac.lookup_functions/methods/modules
     def lookup_functions(self,prefix):
 
         aList = codewise.cmd_functions([prefix])
@@ -788,7 +766,7 @@ class AutoCompleterClass:
         aList = codewise.cmd_functions([aList[0]])
         hits = [z.split(None,1) for z in aList if z.strip()]
         return self.clean(hits)
-    #@+node:ekr.20110509064011.14557: *5* get_leo_completions
+    #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self,prefix):
 
         '''Return completions in an environment defining c, g and p.'''
@@ -810,7 +788,7 @@ class AutoCompleterClass:
                 g.trace('len(aList): %3s, prefix: %s' % (len(aList),repr(prefix)))
 
         return aList
-    #@+node:ekr.20110512090917.14466: *4* get_leo_namespace
+    #@+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
     def get_leo_namespace (self,prefix):
         '''
         Return an environment in which to evaluate prefix.
@@ -830,7 +808,7 @@ class AutoCompleterClass:
             for key in sorted(d.keys()):
                 g.trace(key,d.get(key))
         return d
-    #@+node:ekr.20110512170111.14472: *4* get_object
+    #@+node:ekr.20110512170111.14472: *4* ac.get_object
     def get_object (self):
         '''Return the object corresponding to the current prefix.'''
         trace = False and not g.unitTesting
@@ -860,7 +838,7 @@ class AutoCompleterClass:
                 g.es_exception()
                 obj = None
         return obj,prefix
-    #@+node:ekr.20061031131434.38: *4* info
+    #@+node:ekr.20061031131434.38: *4* ac.info
     def info (self):
         '''Show the docstring for the present completion.'''
         c = self.c
@@ -894,7 +872,7 @@ class AutoCompleterClass:
             put('\n')  # not a callable
         doc = inspect.getdoc(obj)
         put(doc if doc else "No docstring for "+repr(prefix))
-    #@+node:ekr.20110510071925.14586: *4* init_qcompleter
+    #@+node:ekr.20110510071925.14586: *4* ac.init_qcompleter
     def init_qcompleter (self,event=None):
 
         trace = False and not g.unitTesting
@@ -912,7 +890,7 @@ class AutoCompleterClass:
             if not g.unitTesting:
                 g.warning('No completions')
             self.exit()
-    #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
+    #@+node:ekr.20110511133940.14552: *4* ac.init_tabcompleter
     def init_tabcompleter (self,event=None):
 
         # Compute the prefix and the list of options.
@@ -924,7 +902,7 @@ class AutoCompleterClass:
         else:
             g.warning('No completions')
             self.exit()
-    #@+node:ekr.20061031131434.39: *4* insert_general_char
+    #@+node:ekr.20061031131434.39: *4* ac.insert_general_char
     def insert_general_char (self,ch):
 
         trace = False and not g.unitTesting
@@ -953,7 +931,7 @@ class AutoCompleterClass:
                 if trace: g.trace('ch',repr(ch),'calling exit')
                 self.insert_string(ch)
                 self.exit()
-    #@+node:ekr.20061031131434.31: *4* insert_string
+    #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string (self,s,select=False):
 
         '''Insert s at the insertion point.'''
@@ -973,7 +951,7 @@ class AutoCompleterClass:
             # g.trace(self.qw.leo_qc)
             if self.qw:
                 c.widgetWantsFocusNow(self.qw.leo_qc)
-    #@+node:ekr.20110314115639.14269: *4* is_leo_source_file
+    #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
     def is_leo_source_file (self):
 
         '''Return True if this is one of Leo's source files.'''
@@ -991,7 +969,7 @@ class AutoCompleterClass:
         ))
 
         return c.shortFileName().lower() in table
-    #@+node:ekr.20101101175644.5891: *4* put
+    #@+node:ekr.20101101175644.5891: *4* ac.put
     def put (self,*args,**keys):
 
         '''Put s to the given tab.
@@ -1004,7 +982,7 @@ class AutoCompleterClass:
             pass
         else:
             g.es(*args,**keys)
-    #@+node:ekr.20110511133940.14561: *4* show_completion_list & helpers
+    #@+node:ekr.20110511133940.14561: *4* ac.show_completion_list & helpers
     def show_completion_list (self,common_prefix,prefix,tabList):
 
         c = self.c
@@ -1030,7 +1008,7 @@ class AutoCompleterClass:
             self.beginTabName(header+'.' if header else '')
             s = '\n'.join(tabList)
             self.put('',s,tabName=self.tabName)
-    #@+node:ekr.20110513104728.14453: *5* clean_completion_list
+    #@+node:ekr.20110513104728.14453: *5* ac.clean_completion_list
     def clean_completion_list(self,header,tabList):
 
         '''Return aList with header removed from the start of each list item.'''
@@ -1038,7 +1016,7 @@ class AutoCompleterClass:
         return [
             z[len(header)+1:] if z.startswith(header) else z
                 for z in tabList]
-    #@+node:ekr.20110513104728.14454: *5* get_summary_list
+    #@+node:ekr.20110513104728.14454: *5* ac.get_summary_list
     def get_summary_list (self,header,tabList):
 
         '''Show the possible starting letters,
@@ -1059,7 +1037,7 @@ class AutoCompleterClass:
         else:
             tabList = self.clean_completion_list(header,tabList)
         return tabList
-    #@+node:ekr.20061031131434.46: *4* start
+    #@+node:ekr.20061031131434.46: *4* ac.start
     def start (self,event):
 
         # We don't need to clear this now that we don't use ContextSniffer.
@@ -1069,7 +1047,7 @@ class AutoCompleterClass:
             self.init_qcompleter(event)
         else:
             self.init_tabcompleter(event)
-    #@+node:ekr.20110512170111.14471: *4* strip_brackets
+    #@+node:ekr.20110512170111.14471: *4* ac.strip_brackets
     def strip_brackets(self,s):
 
         '''Return s with all brackets removed.
