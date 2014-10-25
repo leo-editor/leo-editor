@@ -5,38 +5,10 @@
 .. @+all
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
-
-For a1:
-
-1. Fixing all bugs that could have a major impact on Leo's stability.
-
-For example, issue #35 re duplicate gnx's. I'll review all outstanding bugs
-for their effects on stability.
-
-I am dithering about what to do about #28 re large nodes. This must either
-become completely solid before a1 or it must be removed entirely from the
-5.0 release.
-
-2. Making the install process as easy as possible.
-
-The to-do list contains several good ideas, such as supporting homebrew
-install and making Leo a portable app. I'll do as many as possible.
-
-3. Making Leo as easy as possible for newbies.
-
-For example, Fidel made several good suggestions:
-https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
-
-Fidel suggests quickstart guide should open by default instead of the
-user's workbook.
-
-4. Refine the "fit and finish" items as much as possible.
-
-Seemingly small issues such as focus issues are surprisingly important and
-difficult to test.
-
-5. Resolving *all* outstanding documentation issues, including summarizing
-   many previous conversations. This could take several days.
+.. @+node:ekr.20141024211256.13: *3* Testing for a1
+- Rerun Bob's test (make a unit test out of it??)
+- Improve check-outline using @test check all gnx's exist and are unique
+- Unit tests for indices.
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
@@ -46,32 +18,19 @@ https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141017150357.18266: *4* Priority 3: 10 other bugs targeted for a1
-@language rest
-.. @+node:ekr.20141024184556.6: *5* Fix bug 78: F3 find-next target not always highlighted
-https://github.com/leo-editor/leo-editor/issues/78
-.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
 From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
-https://github.com/leo-editor/leo-editor/issues/60
-.. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
-https://github.com/leo-editor/leo-editor/issues/59
-.. @+node:ekr.20141024184556.10: *5* Fix bug 56: Focus change on tree pane after saving current Leo file
-https://github.com/leo-editor/leo-editor/issues/56
-.. @+node:ekr.20141024184556.11: *5* Fix bug 36: @auto file not found produces a script error
-https://github.com/leo-editor/leo-editor/issues/36
-.. @+node:ekr.20141024184556.12: *5* Fix bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node
-https://github.com/leo-editor/leo-editor/issues/12
-.. @+node:ekr.20141024184556.7: *5* Fix bug: Ctrl-F focus inconsistent
-Ctrl-F focus inconsistent
-https://groups.google.com/d/msg/leo-editor/_DIEDA3pJo8/YZlOhSZ078EJ
-.. @+node:ekr.20140923144655.17926: *5* Fix bug: Find-previous fails at last node 
+.. @+node:ekr.20141024211256.16: *4* 9 bugs re fit and finish
+.. @+node:ekr.20141024211256.17: *5* 3 Find bugs
+.. @+node:ekr.20141024184556.6: *6* Fix bug 78: F3 find-next target not always highlighted
+https://github.com/leo-editor/leo-editor/issues/78
+.. @+node:ekr.20140923144655.17926: *6* Fix bug: Find-previous fails at last node 
 Find-previous fails at last node
 https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-.. @+node:ekr.20140919052413.17945: *5* Fix suboutline only find bug
+.. @+node:ekr.20140919052413.17945: *6* Fix suboutline only find bug
 @language rest
 
 https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
@@ -94,7 +53,7 @@ I think this bug also interferes with searches not limited to the
 sub-outline, but still wouldn't be able to pinpoint it.
 
 
-.. @+node:ekr.20031218072017.3077: *6* find.search & helpers
+.. @+node:ekr.20031218072017.3077: *7* find.search & helpers
 def search (self):
     """
     Search s_ctrl for self.find_text with present options.
@@ -139,7 +98,7 @@ def search (self):
     w.setSelectionRange(pos,newpos,insert=ins)
     if trace: g.trace('** returns',pos,newpos)
     return pos,newpos
-.. @+node:ekr.20060526140328: *7* passedWrapPoint
+.. @+node:ekr.20060526140328: *8* passedWrapPoint
 def passedWrapPoint(self,p,pos,newpos):
     '''Return True if the search has gone beyond the wrap point.'''
     return (
@@ -149,7 +108,7 @@ def passedWrapPoint(self,p,pos,newpos):
             (self.reverse and pos < self.wrapPos or
             not self.reverse and newpos > self.wrapPos)
     )
-.. @+node:ekr.20060526081931: *7* searchHelper & allies
+.. @+node:ekr.20060526081931: *8* searchHelper & allies
 def searchHelper (self,s,i,j,pattern):
     '''Dispatch the proper search method based on settings.'''
     trace = False and not g.unitTesting
@@ -170,7 +129,7 @@ def searchHelper (self,s,i,j,pattern):
         pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
     if trace: g.trace('returns',pos,newpos)
     return pos,newpos
-.. @+node:ekr.20060526092203: *8* regexHelper
+.. @+node:ekr.20060526092203: *9* regexHelper
 def regexHelper (self,s,i,j,pattern,backwards,nocase):
     trace = False and not g.unitTesting
     re_obj = self.re_obj # Use the pre-compiled object
@@ -208,7 +167,7 @@ def regexHelper (self,s,i,j,pattern,backwards,nocase):
             return mo.start(),mo.end()
     self.match_obj = None
     return -1,-1
-.. @+node:ekr.20060526140744: *8* backwardsHelper
+.. @+node:ekr.20060526140744: *9* backwardsHelper
 debugIndices = []
 
 @
@@ -258,7 +217,7 @@ def backwardsHelper (self,s,i,j,pattern,nocase,word):
             return -1, -1
         else:
             return k,k+n
-.. @+node:ekr.20060526093531: *8* plainHelper
+.. @+node:ekr.20060526093531: *9* plainHelper
 def plainHelper (self,s,i,j,pattern,nocase,word):
     '''Do a plain search.'''
     trace = False and not g.unitTesting
@@ -286,7 +245,7 @@ def plainHelper (self,s,i,j,pattern,nocase,word):
         else:
             if trace: g.trace('match', k)
             return k, k + n
-.. @+node:ekr.20060526140744.1: *8* matchWord
+.. @+node:ekr.20060526140744.1: *9* matchWord
 def matchWord(self,s,i,pattern):
     '''Do a whole-word search.'''
     trace = False and not g.unitTesting
@@ -307,7 +266,7 @@ def matchWord(self,s,i,pattern):
     if trace: g.trace('returns',not inWord)
     return not inWord
 
-.. @+node:ekr.20070105165924: *8* replaceBackSlashes
+.. @+node:ekr.20070105165924: *9* replaceBackSlashes
 def replaceBackSlashes (self,s):
     '''Carefully replace backslashes in a search pattern.'''
     # This is NOT the same as:
@@ -327,13 +286,40 @@ def replaceBackSlashes (self,s):
                 i += 1 # Skip the escaped character.
         i += 1
     return s
+.. @+node:ekr.20141024211256.18: *5* 2 Focus bugs
+.. @+node:ekr.20141024184556.7: *6* Fix bug: (fixed?) Ctrl-F focus inconsistent
+Ctrl-F focus inconsistent
+https://groups.google.com/d/msg/leo-editor/_DIEDA3pJo8/YZlOhSZ078EJ
+.. @+node:ekr.20141024184556.10: *6* Fix bug 56: Focus change on tree pane after saving current Leo file
+https://github.com/leo-editor/leo-editor/issues/56
+.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
+https://github.com/leo-editor/leo-editor/issues/60
+.. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
+https://github.com/leo-editor/leo-editor/issues/59
+.. @+node:ekr.20141024184556.11: *5* Fix bug 36: @auto file not found produces a script error
+https://github.com/leo-editor/leo-editor/issues/36
+.. @+node:ekr.20141024184556.12: *5* Fix bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node
+https://github.com/leo-editor/leo-editor/issues/12
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus
-.. @+node:ekr.20141011053251.18205: *4* Installer for a1
+.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
+.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
+.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20141024211256.14: *3* Review all important plugins
+.. @+node:ekr.20141024211256.12: *3* Improvements for a1
+.. @+node:ekr.20141024211256.11: *4* Fidel's ideas for newbies
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+Fidel suggests quickstart guide should open by default instead of the
+user's workbook.
+.. @+node:ekr.20141011053251.18205: *4* Installer ideas for a1
 @language rest
 
 - Virtual machines
@@ -693,18 +679,23 @@ time, without messing with the local system's registry.
 
 Also handy for those not in portable mode, but working on different windows
 boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20141024170936.13: *4* Others
-.. @+node:ekr.20131220065609.16590: *5* Add docstrings for all commands in leoSessions.py.
-.. @+node:ekr.20141020061642.21517: *5* Improve page up/down commands
+.. @+node:ekr.20141024211256.7: *4* Improve help-for command
+Fix focus problem with F11 & help-for-command
+
+Add modules/plugins to help-for-command.
+.. @+node:ekr.20141020061642.21517: *4* Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
-.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
-.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
-.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20141024211256.8: *3* Docs for a1
+- Transfer email items.
+
+- Resolve *all* outstanding documentation issues, including summarizing
+  many previous conversations.
+  
+- Add docstrings for all commands in leoSessions.py.
+  
+- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20140917154740.19477: *3* Installer bugs
@@ -1437,6 +1428,89 @@ Especially:
     - Python encoding line.
 .. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20140921072018.17937: ** New separate-process commands
+@language rest
+
+run-script-from-bridge
+run-script-externally
+    * Specify which version of python to use.
+    
+*** The at_produce plugin now has technology for reporting progress using
+the IdleTime class.
+
+This technology should become part of g.execute_shell_commands. New
+settings will control whether, and how often, to report progress.
+
+*** There will soon be two new functions for running both Leo and non-Leo
+scripts externally.
+
+- g.run_python_script_externally would simply create an external file
+  containing the script and then run python on that file.
+
+- g.run_leo_script_externally would do something similar using the Leo
+  bridge.
+
+Both functions would be controlled by new settings, including (Kent will be
+glad) what version of Python.
+
+*** Revise http://leoeditor.com/leoBridge.html
+
+There are several ways to run code externally:
+
+- Using leo.core.leoBridgeTest.
+- (When ready) using g.run_leo_script_externally.
+- Using the full-blown method that Terry discusses in that chapter.
+.. @+node:ekr.20140921072018.17938: *3* Settings for at-produce plugin?
+* Why not just improve g.execute_shell_commands ?
+    - It could report too.
+    - And it could use settings too.
+
+- time-between-notifications: 0 means disable notifications.
+- Decrease time between calls to idle-time handler.
+.. @+node:ekr.20140919052413.17946: *3* Revise leoBridge docs
+Do this after the new run-script commands
+.. @+node:ekr.20140922043414.17947: *4* Solution 1
+# http://leoeditor.com/leoBridge.html#running-leobridge-from-within-leo
+
+import sys
+import subprocess
+path = r'c:\Users\edreamleo\test\leo_bridge_test.py'
+    ### Create file containing script
+assert g.os_path_exists(path)
+proc = subprocess.Popen([sys.executable,path])
+proc.communicate()
+.. @+node:ekr.20140921072018.17943: *5* leo_bridge_test.py (defined in ekr.leo)
+'''A minimal Leo bridge application'''
+# This can not be run locally!
+import leo.core.leoBridge as leoBridge
+b = leoBridge.controller(
+    gui='nullGui',loadPlugins=True,
+    silent=False,tracePlugins=True,verbose=False)
+g = b.globals()
+path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+assert g.os_path_exists(path)
+c = b.openLeoFile(path)
+assert c
+assert c.rootPosition()
+.. @+node:ekr.20140922043414.17948: *4* Solution 2 (test)
+# From within the bridge, do:
+import leo.core.leoTest as leoTest
+helper = leoTest.RunTestExternallyHelperClass(c,all=True,marked=False)
+helper.runUnitTestLeoFile(
+    path='unitTest.leo',
+        # The path, relative to leo/test.  The full path will be:
+        # g.os_path_finalize_join(g.app.loadDir,'..','test',relative_path)
+    gui=None, # Use a Null gui.
+    loadPlugins=True,
+    readSettings=True,
+    silent=True,
+    tracePlugins=True,
+    verbose=True,
+)
+.. @+node:ekr.20140922043414.17949: *4* Solution 0 (already documented)
+import leo.core.leoBridgeTest as leoBridgeTest
+
+leoBridgeTest.main()
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 .. @+node:ekr.20140521095206.16728: *3* * Important
 .. @+node:ekr.20140910140737.17820: *4* Make Leo settings easier for newbies
