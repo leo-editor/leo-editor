@@ -1156,6 +1156,8 @@ This does *not* change the selected node so it's easy to
 clone several nodes.
 
 Added c.cloneToLastNode.  
+.. @+node:ekr.20141024211256.21: *4* Improved check outline
+It now tests that all gnx's exist and are unique.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

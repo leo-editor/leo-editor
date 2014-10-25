@@ -4666,23 +4666,19 @@ class Commands (object):
         p = c.setPositionAfterSort(sortChildren)
         c.redraw(p)
     #@+node:ekr.20040711135959.2: *5* Check Outline submenu...
-    #@+node:ekr.20031218072017.2072: *6* c.checkOutline
+    #@+node:ekr.20031218072017.2072: *6* c.checkOutline & checkGxns
     def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
+        """
+        Report any possible clone errors in the outline.
 
-        """Report any possible clone errors in the outline.
-
-        Remove any tnodeLists."""
-
+        Remove any tnodeLists.
+        """
         trace = False and not g.unitTesting
         c = self ; count = 1 ; errors = 0
-
         if full and not unittest:
             g.blue("all tests enabled: this may take awhile")
-
-        if root: iter = root.self_and_subtree
-        else:    iter = c.all_positions
-
-        for p in iter():
+        iter_ = root.self_and_subtree if root else c.all_positions
+        for p in iter_():
             if trace: g.trace(p.h)
             try:
                 count += 1
@@ -4760,10 +4756,10 @@ class Commands (object):
                 #@+<< give test failed message >>
                 #@+node:ekr.20040314044652: *7* << give test failed message >>
                 junk, value, junk = sys.exc_info()
-
                 g.error("test failed at position %s\n%s" % (repr(p),value))
                 #@-<< give test failed message >>
-                if trace: return errors 
+                if trace: return errors
+        errors += c.checkGnxs()
         if verbose or not unittest:
             #@+<< print summary message >>
             #@+node:ekr.20040314043900: *7* <<print summary message >>
@@ -4777,6 +4773,28 @@ class Commands (object):
                     g.blue('',count,'nodes checked',errors,'errors')
 
             #@-<< print summary message >>
+        return errors
+    #@+node:ekr.20141024211256.22: *7* c.checkGnxs
+    def checkGnxs(self):
+        '''Check the consistency of all gnx's.'''
+        c = self
+        d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
+        errors = 0
+        for p in c.all_positions():
+            gnx = p.v.fileIndex
+            if gnx:
+                aSet = d.get(gnx,set())
+                aSet.add(p.v)
+                d[gnx] = aSet
+            else:
+                errors += 1
+                print('empty v.fileIndex',v)
+        for gnx in sorted(d.keys()):
+            aList = sorted(d.get(gnx))
+            if len(aList) != 1:
+                errors += 1
+                print('multiple vnode with gnx: %s vnodes: [%s]' % (gnx,aList))
+        # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
         return errors
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
     # This code is no longer used by any Leo command,
