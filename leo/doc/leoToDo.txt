@@ -23,7 +23,7 @@ From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024211256.16: *4* 8 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* 7 bugs re fit and finish
 .. @+node:ekr.20141024211256.17: *5* 3 Find bugs
 .. @+node:ekr.20141024184556.6: *6* Fix bug 78: F3 find-next target not always highlighted
 https://github.com/leo-editor/leo-editor/issues/78
@@ -297,8 +297,6 @@ https://github.com/leo-editor/leo-editor/issues/56
 https://github.com/leo-editor/leo-editor/issues/60
 .. @+node:ekr.20141024184556.9: *6* Fix bug 59: drag and drop: target too small
 https://github.com/leo-editor/leo-editor/issues/59
-.. @+node:ekr.20141024184556.11: *5* Fix bug 36: @auto file not found produces a script error
-https://github.com/leo-editor/leo-editor/issues/36
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor

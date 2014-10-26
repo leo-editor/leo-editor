@@ -572,6 +572,17 @@ The fix was a single extra check in ga.do_tab.
 https://github.com/leo-editor/leo-editor/issues/12
 
 The fix was to p.isVisible.
+.. @+node:ekr.20141024184556.11: *4* Fixed bug 36: @auto file not found produces a script error
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/36
+
+The report seems misleading: it says this happens when Leo tries to load an
+@auto file that is in the outline but which's file was erased outside Leo,
+but it worked for me.
+
+I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown
+in the bug report can never happen.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
