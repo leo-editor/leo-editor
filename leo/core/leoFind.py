@@ -156,10 +156,13 @@ class LeoFind:
         self.change_text = ""
         self.radioButtonsChanged = False # Set by ftm.radio_button_callback
         # Ivars containing internal state...
-        self.p = None # The position being searched.  Never saved between searches!
+        self.buttonFlag = False
         self.changeAllFlag = False
         self.findAllFlag = False
         self.in_headline = False # True: searching headline text.
+        self.p = None # The position being searched.  Never saved between searches!
+        self.was_in_headline = None
+            # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
         # For suboutline-only
         self.onlyPosition = None # The starting node for suboutline-only searches.
         # For wrapped searches.
@@ -219,6 +222,7 @@ class LeoFind:
     def setup_button(self):
         '''Init a search started by a button in the Find panel.'''
         c = self.c
+        self.buttonFlag = True
         self.p = c.p.copy()
         c.bringToFront()
         if 0: # We _must_ retain the editing status for incremental searches!
@@ -256,9 +260,8 @@ class LeoFind:
         self.setup_command()
         self.findNext()
     #@+node:ekr.20031218072017.3064: *4* find.findPrevCommand
-    # The user has selected the "Find Previous" menu item.
-
     def findPrevCommand(self,event=None):
+        '''Handle F2 (find-previous)'''
         self.setup_command()
         self.reverse = not self.reverse
         try:
@@ -293,7 +296,8 @@ class LeoFind:
 
         if 0: # We _must_ retain the editing status for incremental searches!
             self.c.endEditing()
-        # Fix bug 
+        # Fix bug
+        self.buttonFlag = False
         self.update_ivars()
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     def startSearch(self,event):
@@ -1362,13 +1366,12 @@ class LeoFind:
             if ins is None:
                 if i is not None and j is not None and i != j:
                     ins = min(i,j)
-            elif ins in (i,j):
-                ins = min(i,j)
-            else:
-                pass # leave ins alone.
+            # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+            # editLabelHelper now properly sets the insertion range.
+                # elif ins in (i,j): ins = min(i,j)
         elif ins is None:
             ins = 0
-        if trace: g.trace(ins,s)
+        if trace and self.in_headline and ins is not None: g.trace(ins,p.h)
         self.init_s_ctrl(s,ins)
     #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper (use p.moveTo...?)
     def nextNodeAfterFail(self,p):
@@ -1385,7 +1388,7 @@ class LeoFind:
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
         if p and self.outsideSearchRange(p):
-            if trace: g.trace('outside search range',p)
+            if trace: g.trace('outside search range',p and p.h)
             return None
         if not p and wrap:
             p = self.doWrap()
@@ -1393,10 +1396,10 @@ class LeoFind:
             if trace: g.trace('end of search')
             return None
         if wrap and p == self.wrapPosition:
-            if trace: g.trace('end of wrapped search',p)
+            if trace: g.trace('end of wrapped search',p and p.h)
             return None
         else:
-            if trace: g.trace('found',p)
+            if trace: g.trace('found',p and p.h)
             return p
     #@+node:ekr.20131123071505.16465: *6* find.outsideSearchRange
     def outsideSearchRange(self,p):
@@ -1763,7 +1766,6 @@ class LeoFind:
         This is called only at the start of each search.
         This must not alter the current insertion point or selection range.
         '''
-        trace = False
         c = self.c
         p = self.p or c.p.copy()
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
@@ -1772,6 +1774,7 @@ class LeoFind:
             self.in_headline = self.focusInTree()
         else:
             self.in_headline = self.search_headline
+        # g.trace(self.in_headline,p and p.h)
     #@+node:ekr.20131126085250.16651: *5* find.focusInTree
     def focusInTree(self):
         '''Return True is the focus widget w is anywhere in the tree pane.
@@ -1783,14 +1786,18 @@ class LeoFind:
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
         ftm.entry_focus = None # Only use this focus widget once!
         w_name = w and g.app.gui.widget_name(w) or ''
+        if self.buttonFlag and self.was_in_headline in (True,False):
+            # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+            self.in_headline = self.was_in_headline
+            val = self.was_in_headline
         # Easy case: focus in body.
-        if w == c.frame.body.wrapper:
+        elif w == c.frame.body.wrapper:
             val = False
         elif w == c.frame.tree.treeWidget:
             val = True
         else:
             val = w_name.startswith('head')
-        # g.trace(val,w,w_name)
+        # g.trace(self.was_in_headline,val,c.p.h)
         return val
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
@@ -1856,6 +1863,7 @@ class LeoFind:
         '''Restore the screen and clear state after a search fails.'''
         c = self.c
         in_headline,editing,p,w,insert,start,end = data
+        self.was_in_headline = not self.was_in_headline
         if 0: # Don't do this here.
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
@@ -1868,7 +1876,7 @@ class LeoFind:
         # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
         if in_headline:
             c.selectPosition(p)
-            if editing:
+            if False and editing:
                 c.editHeadline()
             else:
                 c.treeWantsFocus()
@@ -1904,7 +1912,7 @@ class LeoFind:
         '''Display the result of a successful find operation.'''
         trace = False and not g.unitTesting
         c = self.c
-        self.p = p = self.p or c.p.copy() # 2013/12/25
+        self.p = p = self.p or c.p.copy()
         # Set state vars.
         # Ensure progress in backwards searches.
         insert = min(pos,newpos) if self.reverse else max(pos,newpos)
@@ -1912,7 +1920,7 @@ class LeoFind:
             self.wrapPosition = self.p
         if trace: g.trace('in_headline',self.in_headline,p)
         if c.sparse_find:
-            c.expandOnlyAncestorsOfNode(p=p) # 2013/12/25
+            c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:
             c.endEditing()
             selection = pos,newpos,insert

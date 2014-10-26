@@ -8504,12 +8504,8 @@ class Commands (object):
             # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20031218072017.2990: *3* Selecting & Updating (commands)
     #@+node:ekr.20031218072017.2991: *4* c.redrawAndEdit
-    # Sets the focus to p and edits p.
-
     def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
-
-        '''Redraw the screen and start editing the headline at position p.'''
-
+        '''Redraw the screen and edit p's headline.'''
         c = self ; k = c.k
         c.redraw(p) # This *must* be done now.
         if p:

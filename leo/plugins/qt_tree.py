@@ -1081,10 +1081,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18422: *3* qtree.editLabelHelper
     def editLabelHelper (self,item,selectAll=False,selection=None):
         '''
-        Called by nativeTree.editLabel to do
-        gui-specific stuff.
+        Help nativeTree.editLabel do gui-specific stuff.
         '''
-        trace = False and not g.unitTesting
         c,vc = self.c,self.c.vimCommands
         w = self.treeWidget
         w.setCurrentItem(item)
@@ -1098,9 +1096,17 @@ class LeoQtTree(leoFrame.LeoTree):
             if s == 'newHeadline': selectAll=True
             if selection:
                 # pylint: disable=unpacking-non-sequence
+                # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+                # Note: negative lengths are allowed.
                 i,j,ins = selection
-                start,n = i,abs(i-j)
-                    # Not right for backward searches.
+                if ins is None:
+                    start,n = i,abs(i-j)
+                    # This case doesn't happen for searches.
+                elif ins == j:
+                    start,n = i,j-i
+                else:
+                    start = start,n = j,i-j
+                # g.trace('i',i,'j',j,'ins',ins,'-->start',start,'n',n)
             elif selectAll: start,n,ins = 0,len_s,len_s
             else:           start,n,ins = len_s,0,len_s
             e.setObjectName('headline')
@@ -1114,8 +1120,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     vc.begin_insert_mode(w=wrapper)
                 else:
                     g.trace('not a text widget!',wrapper)
-        if trace: g.trace(e,wrapper)
-        return e,wrapper # 2011/02/11
+        return e,wrapper
     #@+node:ekr.20110605121601.18423: *3* qtree.getCurrentItem
     def getCurrentItem (self):
 
@@ -1345,15 +1350,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if item:
             e,wrapper = self.editLabelHelper(item,selectAll,selection)
         else:
-            e,wrapper = None,None # 2011/06/07: define wrapper here too.
+            e,wrapper = None,None
             self.error('no item for %s' % p)
         if trace: g.trace('p: %s e: %s' % (p and p.h,e))
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e       
-        # 2012/09/27.
-        ### g.app.gui.add_border(c,c.frame.tree.treeWidget)
-        return e,wrapper # 2011/02/12
+        return e,wrapper
     #@+node:ekr.20110605121601.17910: *3* qtree.editPosition
     def editPosition(self):
 
