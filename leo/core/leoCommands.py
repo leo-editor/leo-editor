@@ -4780,7 +4780,7 @@ class Commands (object):
                 d[gnx] = aSet
             else:
                 errors += 1
-                print('empty v.fileIndex',v)
+                print('empty v.fileIndex',p.v)
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:
