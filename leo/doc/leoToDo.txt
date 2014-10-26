@@ -26,17 +26,7 @@ From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024211256.16: *4* 4 bugs re fit and finish
-.. @+node:ekr.20141024184556.6: *5* Fix bug 78: F3 find-next target not always highlighted
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-This can't be fixed without a way to make it happen repeatedly.
-
-@language python
-.. @+node:ekr.20141024184556.10: *5* Fix bug 56: Focus change on tree pane after saving current Leo file
-https://github.com/leo-editor/leo-editor/issues/56
+.. @+node:ekr.20141024211256.16: *4* 2 bugs re fit and finish
 .. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
 https://github.com/leo-editor/leo-editor/issues/60
 .. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
@@ -47,6 +37,14 @@ Can't get the viewrendered pane back next to the editor
 
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus
+.. @+node:ekr.20141024184556.6: *4* Can't fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+This can't be fixed without a way to make it happen repeatedly.
+
+@language python
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
 # Use table?
@@ -434,7 +432,7 @@ https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 - Add docstrings for all commands in leoSessions.py.
   
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
-.. @+node:ekr.20120226183512.10195: ** Bugs
+.. @+node:ekr.20120226183512.10195: ** All Bugs
 @language rest
 .. @+node:ekr.20140917154740.19477: *3* Installer bugs
 .. @+node:ekr.20120401144849.10037: *4* Fix installer problem
@@ -702,21 +700,6 @@ I have a Leo file with settings for context menu:
 then these settings are lost if I save the leo file to a new name using
 File - Save as
 If I reload the leo file, they do return
-.. @+node:ekr.20130908104426.11243: *4* Bug 969391: setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-
-setup.py is necessary for creating Ubuntu packages, but it is *not*
-necessary for installation. This confuses newbies a lot.
-
-I'd like to move, rename or otherwise hide this file, but Ville says that's
-not trivial to do:
-
-QQQ
-I need to research it. The change won't be free, as the debian tooling
-(python-support) expects it to be called setup.py. I need to find a
-workaround, but can't do it right now.
-QQQ
-.. @+node:ekr.20130908104426.11266: *4* Bug 1193820: Focus change on tree pane after saving current Leo file
 .. @+node:ekr.20130920055521.11282: *4* Bug 1228099: Cancelling save of dirty untitled commander doesn't work with --ipython
 @language rest
 
@@ -790,124 +773,7 @@ disable errors (and not add @ignore) for underindented comments for
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20120523092521.9907: *3* Bug-tracker: Focus
-.. @+node:ekr.20140702131031.16724: *4* Fix bug 1258373: Failed find focus fails
-https://bugs.launchpad.net/leo-editor/+bug/1258373
-failed find focus fails
-
-rev 6391
-
-ctrl-f somthing<return>
-not found 'somthing'
-ctrl-f something... whoops, focus in in body, so 'something' ends up there...
-.. @+node:ekr.20120313134250.9852: *4* Fix bug 820019: Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
-See: https://bugs.launchpad.net/leo-editor/+bug/820019
-
-Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
 .. @+node:ekr.20141017110114.18266: *3* Bug-tracker: Minor
-.. @+node:ekr.20111026091322.16495: *4* Fix bug 875463: Enabling quickmove.py sends error messages...
-https://bugs.launchpad.net/leo-editor/+bug/875463
-
-Enabling quickmove.py sends to error messages to console on every outline open 
-.. @+node:ekr.20141017110114.18269: *4* Fix bug 914221: bound method ViewRenderedController.update
-https://bugs.launchpad.net/leo-editor/+bug/914221
-
-Lewis Neal (lewisneal) wrote on 2012-01-24: 	#17
-
-Günter has replied again on 20 Jan 10:50 - see
-http://permalink.gmane.org/gmane.text.docutils.user/6565
-
-For convenience here is a copy of the text:
-Re: No such file or directory: html4css1.css - system exit
-Guenter Milde <milde <at> users.sf.net>
-2012-01-20 09:50:34 GMT
-
-On 2012-01-12, Lewis wrote:
-
-> You are most likely aware that the Leo-editor project makes use of Docutils.
-
-I added Leo to the Docutils link list.
-
-> To summarise - docutils performs a system exit when it fails to find the
-> html4css1.css1 file.
-
-For style files, this is fixed in SVN.
-
-For the generic behaviour of `docutils.io.FileInput`, I'll respond to the
-old request you pointed to (join docutils-users or watch the list via gmane
-or another archive if you want to follow the discussion).
-
-> I hope the leo bug link is sufficient for you but please ask if you
-> need any more information or want me to try and reproduce the
-> traceback.
-
-I Leo calling docutils programatically?
-
-I found a possible reason of the failure to find the html4css1 file:
-
-Leos tutorial
-http://webpages.charter.net/edreamleo/rstplugin3.html#step-1-create-the-rst-node
-
-suggests:
-
-  Here are the recommended options when using docutils:
-
-  @ @rst-options
-  call_docutils=True
-  code_mode=False
-  stylesheet_path=..\doc
-  write_intermediate_file=True
-  @c
-
-However, unless a user is using custom style sheets, it is better to keep the
-Docutils stylesheet options at the default value.
-
-A very confusing point is that
-
-* for Docutils, `stylesheet_path` is a path (or a list of paths) to a
-  stylesheet *file*:
-
-  --stylesheet=<URL> Specify comma separated list of stylesheet URLs.
-                        Overrides previous --stylesheet and --stylesheet-path
-                        settings.
-  --stylesheet-path=<file>
-                        Specify comma separated list of stylesheet paths. With
-                        --link-stylesheet, the path is rewritten relative to
-                        the output file. Default:
-                        "/<docutils-package-dir>/docutils/writers/html4css1/html4css1.css"
-
-* for Leo, `stylesheet_path` points to a *directory* of stylesheets:
-
-  stylesheet_name (default: ‘default.css’)
-
-      The name of the stylesheet passed to docutils.
-
-  stylesheet_path (default: ‘’)
-
-      The directory containing the stylesheet passed to docutils.
-
-      Note: If the stylesheet_embed option is True, specify a path
-      relative to the location of the Leo file. If the stylesheet_embed
-      option is False, specify a path relative to the location of the
-      HTML file.
-
-Also:
-
-* `default.css` is outdated and specific to HTML.
-  Using Docutils' default value for (Docutils) stylesheet_path option
-  ensures an up-to-date style sheet in a location Docutils can find
-  out-of-the-box.
-
-* Leo's "stylesheet_path" option would not need to depend on the
-  stylesheet_embed setting, with the translation:
-
-     Leo Docutils
-
-     stylesheet_path+stylesheet_name --> stylesheet_path
-
-  instead of
-
-     stylesheet_path+stylesheet_name --> stylesheet
 .. @+node:ekr.20140824043305.18303: *3* Not in bug tracker
 .. @+node:ekr.20130806072439.20380: *4* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>

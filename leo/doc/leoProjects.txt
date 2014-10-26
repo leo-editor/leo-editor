@@ -583,7 +583,7 @@ but it worked for me.
 
 I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown
 in the bug report can never happen.
-.. @+node:ekr.20140923144655.17926: *4* Fixed bug: Find-previous fails at last node 
+.. @+node:ekr.20140923144655.17926: *4* Fixed bug: Find-previous fails at last node
 @language rest
 
 Find-previous fails at last node
@@ -1119,6 +1119,18 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
 https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
 
 qtree.onItemClicked now calls c.findCommands.reset_state_ivars()
+.. @+node:ekr.20141024184556.10: *4* Investigated bug 56: Focus change on tree pane after saving current Leo file
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/56
+
+I do not see this behavior.
+
+===== Report
+
+When I save the leo file, instead of staying where I am on the leo tree, it
+will go and center the view on the selected node. 
+
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
