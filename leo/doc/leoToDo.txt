@@ -23,7 +23,7 @@ From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024211256.16: *4* 9 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* 8 bugs re fit and finish
 .. @+node:ekr.20141024211256.17: *5* 3 Find bugs
 .. @+node:ekr.20141024184556.6: *6* Fix bug 78: F3 find-next target not always highlighted
 https://github.com/leo-editor/leo-editor/issues/78
@@ -292,14 +292,13 @@ Ctrl-F focus inconsistent
 https://groups.google.com/d/msg/leo-editor/_DIEDA3pJo8/YZlOhSZ078EJ
 .. @+node:ekr.20141024184556.10: *6* Fix bug 56: Focus change on tree pane after saving current Leo file
 https://github.com/leo-editor/leo-editor/issues/56
-.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
+.. @+node:ekr.20141025071403.12: *5* 2 Drag and drop bugs
+.. @+node:ekr.20141024184556.8: *6* Fix bug 60: create relative paths & urls when dragging files to Leo 
 https://github.com/leo-editor/leo-editor/issues/60
-.. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
+.. @+node:ekr.20141024184556.9: *6* Fix bug 59: drag and drop: target too small
 https://github.com/leo-editor/leo-editor/issues/59
 .. @+node:ekr.20141024184556.11: *5* Fix bug 36: @auto file not found produces a script error
 https://github.com/leo-editor/leo-editor/issues/36
-.. @+node:ekr.20141024184556.12: *5* Fix bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node
-https://github.com/leo-editor/leo-editor/issues/12
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
@@ -688,11 +687,8 @@ Add modules/plugins to help-for-command.
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
-- Transfer email items.
+- Transfer email items: 37 to-be-documented items.
 
-- Resolve *all* outstanding documentation issues, including summarizing
-  many previous conversations.
-  
 - Add docstrings for all commands in leoSessions.py.
   
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html

@@ -4205,7 +4205,7 @@ class Commands (object):
     def notValidInBatchMode(self, commandName):
 
         g.es('the',commandName,"command is not valid in batch mode")
-    #@+node:ekr.20031218072017.2894: *4* Outline menu...
+    #@+node:ekr.20031218072017.2894: *4* Outline menu (commands)
     #@+node:ekr.20031218072017.2895: *5*  Top Level... (Commands)
     #@+node:ekr.20031218072017.1548: *6* c.Cut & Paste Outlines
     #@+node:ekr.20031218072017.1549: *7* c.cutOutline
@@ -5831,17 +5831,12 @@ class Commands (object):
             c.redraw_after_contract(p=p,setFocus=True)
     #@+node:ekr.20040930064232: *7* contractNodeOrGoToParent
     def contractNodeOrGoToParent (self,event=None):
-
         """Simulate the left Arrow Key in folder of Windows Explorer."""
-
         c = self ; p = c.p
-
         parent = p.parent()
         redraw = False
-
         if p.hasChildren() and p.isExpanded():
             c.contractNode()
-
         elif parent and parent.isVisible(c):
             # New in Leo 4.9.1: contract all children first.
             if c.collapse_on_lt_arrow:
@@ -5850,7 +5845,6 @@ class Commands (object):
                         child.contract()
                         redraw = True
             c.goToParent()
-
         # This is a bit off-putting.
         # elif not parent and not c.hoistStack:
             # p = c.rootPosition()
@@ -5859,7 +5853,6 @@ class Commands (object):
                     # p.contract()
                     # redraw = True
                 # p.moveToNext()
-
         if redraw:
             c.redraw()
     #@+node:ekr.20031218072017.2902: *7* contractParent

@@ -568,6 +568,10 @@ Examples:
     print-pr<tab> show print-plugin-handlers.
     
 The fix was a single extra check in ga.do_tab.
+.. @+node:ekr.20141024184556.12: *4* Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node
+https://github.com/leo-editor/leo-editor/issues/12
+
+The fix was to p.isVisible.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

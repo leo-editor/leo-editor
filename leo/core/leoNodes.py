@@ -668,8 +668,11 @@ class Position (object):
         trace = False and not g.unitTesting
         p = self
       
-        def visible(p):
+        def visible(p,root=None):
             for parent in p.parents():
+                if parent and parent == root:
+                    # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
+                    return True
                 if not c.shouldBeExpanded(parent):
                     if trace: g.trace('fail',parent)
                     return False
@@ -677,7 +680,12 @@ class Position (object):
 
         if c.hoistStack:
             root = c.hoistStack[-1].p
-            return root.isAncestorOf(p) and visible(p)
+            if p == root:
+                # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
+                return True
+            else:
+                if trace: g.trace('root',root.h,'p',p.h)
+                return root.isAncestorOf(p) and visible(p,root=root)
         else:
             for root in c.rootPosition().self_and_siblings():
                 if root == p or root.isAncestorOf(p):
