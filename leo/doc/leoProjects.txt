@@ -1113,6 +1113,12 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
             else:
                 g.trace('not a text widget!',wrapper)
     return e,wrapper
+.. @+node:ekr.20140919052413.17945: *4* Fixed suboutline only find bug
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
+
+qtree.onItemClicked now calls c.findCommands.reset_state_ivars()
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
