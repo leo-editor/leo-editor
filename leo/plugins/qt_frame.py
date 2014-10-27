@@ -4005,8 +4005,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = f.read()
                 s = g.toUnicode(s)
                 f.close()
-                self.doFileUrlHelper(fn,p,s)
-                return True
+                return self.doFileUrlHelper(fn,p,s)
         g.es_print('not found: %s' % (fn))
         return False
     #@+node:ekr.20110605121601.18371: *7* doFileUrlHelper & helper
@@ -4018,16 +4017,34 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         if self.isLeoFile(fn,s) and not self.was_control_drag:
             g.openWithFileName(fn,old_c=c)
+            return False # Don't set the changed marker in the original file.
         else:
             u,undoType = c.undoer,'Drag File'
             undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
             if p.hasChildren() and p.isExpanded():
                 p2 = p.insertAsNthChild(0)
+                parent = p
+            elif p.h.startswith('@path '):
+                # Fix bug https://github.com/leo-editor/leo-editor/issues/60
+                # create relative paths & urls when dragging files
+                p2 = p.insertAsNthChild(0)
+                p.expand()
+                parent = p
             else:
                 p2 = p.insertAfter()
+                parent = p.parent()
+            # Fix bug https://github.com/leo-editor/leo-editor/issues/60
+            # create relative paths & urls when dragging files
+            aList = g.get_directives_dict_list(parent)
+            path = g.scanAtPathDirectives(c,aList)
+            # g.trace(p.h,path)
+            if path:
+                fn = os.path.relpath(fn,path)
+                fn = g.toUnicodeFileEncoding(fn)
             self.createAtFileNode(fn,p2,s)
             u.afterInsertNode(p2,undoType,undoData)
             c.selectPosition(p2)
+            return True # The original .leo file has changed.
     #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers
     def createAtFileNode (self,fn,p,s):
         '''
@@ -4197,9 +4214,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 break
     #@+node:ekr.20110605121601.18379: *7* doPathUrlHelper
     def doPathUrlHelper (self,fn,p):
-
         '''Insert fn as an @path node after p.'''
-        
         c = self.c
         u,undoType = c.undoer,'Drag Directory'
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])

@@ -1142,6 +1142,14 @@ https://github.com/leo-editor/leo-editor/issues/59
 
 When a file is dropped into any part of the Leo window, if the cursor is
 not on a node it goes to the top or bottom of the tree as a root node.
+.. @+node:ekr.20141024184556.8: *4* Fixed bug 60: create relative paths & urls when dragging files to Leo 
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/60
+
+It would be nice for Drag and drop files to have relative paths,taking into
+account the @path settings of the part of the tree they're dropped into
+(currently it is relative to the .leo file).
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
