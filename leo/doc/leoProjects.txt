@@ -1131,6 +1131,10 @@ I do not see this behavior.
 When I save the leo file, instead of staying where I am on the leo tree, it
 will go and center the view on the selected node. 
 
+.. @+node:ekr.20141026191037.6: *4* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

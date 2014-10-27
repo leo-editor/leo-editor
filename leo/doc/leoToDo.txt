@@ -23,15 +23,11 @@ From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024211256.16: *4* 3 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* 2 bugs re fit and finish
 .. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
 https://github.com/leo-editor/leo-editor/issues/60
 .. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
 https://github.com/leo-editor/leo-editor/issues/59
-.. @+node:ekr.20141026191037.6: *5* Fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
 .. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
@@ -46,6 +42,10 @@ https://github.com/leo-editor/leo-editor/issues/78
 This can't be fixed without a way to make it happen repeatedly.
 
 @language python
+.. @+node:ekr.20141026191037.6: *4* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
 .. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
 # Use table?
