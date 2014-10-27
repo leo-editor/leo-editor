@@ -1214,6 +1214,7 @@
 <v t="ekr.20141015084905.18429"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 </v>
 <v t="ekr.20141015084905.18430"><vh>Newbie Leo questions for php projects</vh></v>
+<v t="ekr.20141026133611.8"><vh>Use setuptools instead of .bat files</vh></v>
 </v>
 <v t="ekr.20141015084905.18436"><vh>To Release notes</vh>
 <v t="ekr.20141015084905.18437"><vh>Document four plugins</vh></v>
@@ -1221,6 +1222,7 @@
 <v t="ekr.20141015084905.18439"><vh>Tool for diffing Leo files</vh></v>
 <v t="ekr.20141015084905.18440"><vh>Indexing files for full text search</vh></v>
 </v>
+<v t="ekr.20141026133611.5"><vh>To be documented</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22232,6 +22234,37 @@ note::
         
         python leoftsindex.py "workbook.leo#Links"
 </t>
+<t tx="ekr.20141026133611.5"></t>
+<t tx="ekr.20141026133611.8">File under things-I-didn't-know-but-should-have:
+
+Instead of creating batch files all over the place to fire up python
+programs, and then having to cope with annoying "Terminate batch job
+(Y/N)?" with Ctrl-C/Break you can ask python setuptools to create an .exe
+in the Python\Scripts folder.
+
+in same folder as foo.py create setup.py, populate like so:
+
+from setuptools import setup
+
+setup(
+    name='Foo for you',
+    version='0.3',
+    py_modules=['foo'],
+    entry_points='''
+        [console_scripts]
+        foo = foo
+        '''
+    )
+
+Then run "pip --editable install . " in the same folder. Foo.exe will be
+created in C:\pythonxx\Scripts. As long as that folder is in path you can
+use foo like any other command line program. Furthermore the "editable"
+parameter means we can continue to edit and change foo.py and the changes
+are always live.
+
+Yay! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py --do-stuff-here ..." for me. :)
+
+Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
