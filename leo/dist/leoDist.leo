@@ -94,6 +94,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20141027112641.2"><vh>** (Maybe) distribute setup.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1314,5 +1315,6 @@ leo/test/unittest/.leo_shadow/  export-ignore
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''Copy nsi files from leo/dist to leo-editor directory.'''
     </t>
+<t tx="ekr.20141027112641.2"></t>
 </tnodes>
 </leo_file>
