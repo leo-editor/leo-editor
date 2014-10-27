@@ -1721,6 +1721,77 @@ clone several nodes.
 Added c.cloneToLastNode.  
 .. @+node:ekr.20141024211256.21: *4* Improved check outline
 It now tests that all gnx's exist and are unique.
+.. @+node:ekr.20141026133611.7: *4* Added @bool auto-scroll-find-tab
+The default is True, so as to enable the "fix" to bug
+1254861: find - ctrl-f doesn't ensure find input field
+visible https://bugs.launchpad.net/leo-editor/+bug/1254861
+
+I found the new behavior extremely unpleasant. For me, it
+was the worst fit-and-finish issues with Leo.
+.. @+node:ekr.20141026133611.9: *4* Rewrote at_produce plugin
+This plugin used ancient coding technology, created menu
+items instead of minibuffer commands, did not report
+progress and was probably not thread safe.
+
+All these defects have now been remedied.  It could be quite useful in some situations.
+
+For example, suppose node P has this body text::
+
+    @produce echo pylint commands
+    @produce pylint -v
+    @produce pylint -f core\leoAtFile.py
+    @produce pylint -g
+
+Selected node P and running the at-produce-selected command produces these messages in the log pane::
+
+    @produce pylint -g
+    @produce pylint -g
+    @produce pylint -g
+    @produce pylint -g
+    at-produce done
+
+And produces a node whose headline is::
+
+    produce.log from Sun Sep 21 06:35:37 2014
+
+And whose body text is::
+
+    produce: echo pylint commands
+    pylint commands
+    ===============
+    produce: pylint -v
+   
+    c:\leo.repo\leo-editor>python27 pylint-leo.py -v
+   
+    c:\leo.repo\leo-editor>c:\python27\python.exe pylint-leo.py -v
+    pylint-leo.py 1.1.0,
+    astroid 1.0.1, common 0.61.0
+    Python 2.7.2 (default, Jun 12 2011, 15:08:59) [MSC v.1500 32 bit (Intel)]
+    ===============
+    produce: pylint -f core\leoAtFile.py
+   
+    c:\leo.repo\leo-editor>python27 pylint-leo.py -f core\leoAtFile.py
+   
+    c:\leo.repo\leo-editor>c:\python27\python.exe pylint-leo.py -f core\leoAtFile.py
+    pylint-leo.py: core\leoAtFile.py
+    time:  5.000 sec.
+    ===============
+    produce: pylint -g
+   
+    c:\leo.repo\leo-editor>python27 pylint-leo.py -g
+   
+    c:\leo.repo\leo-editor>c:\python27\python.exe pylint-leo.py -g
+    pylint-leo.py: plugins\free_layout.py
+    pylint-leo.py: plugins\nested_splitter.py
+    pylint-leo.py: plugins\qt_commands.py
+    pylint-leo.py: plugins\qt_events.py
+    pylint-leo.py: plugins\qt_frame.py
+    pylint-leo.py: plugins\qt_idle_time.py
+    pylint-leo.py: plugins\qt_gui.py
+    pylint-leo.py: plugins\qt_text.py
+    pylint-leo.py: plugins\qt_tree.py
+    time: 40.073 sec.
+    ===============
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
