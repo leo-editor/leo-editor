@@ -1135,6 +1135,13 @@ will go and center the view on the selected node.
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/83
+.. @+node:ekr.20141024184556.9: *4* Fixed bug 59: drag and drop: target too small
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/59
+
+When a file is dropped into any part of the Leo window, if the cursor is
+not on a node it goes to the top or bottom of the tree as a root node.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

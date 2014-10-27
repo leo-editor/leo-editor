@@ -18,23 +18,22 @@ https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
+.. @+node:ekr.20141024211256.16: *4* 1 bug re fit and finish
+.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
+https://github.com/leo-editor/leo-editor/issues/60
 .. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
 From https://github.com/leo-editor/leo-editor/issues/73
 
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
-.. @+node:ekr.20141024211256.16: *4* 2 bugs re fit and finish
-.. @+node:ekr.20141024184556.8: *5* Fix bug 60: create relative paths & urls when dragging files to Leo 
-https://github.com/leo-editor/leo-editor/issues/60
-.. @+node:ekr.20141024184556.9: *5* Fix bug 59: drag and drop: target too small
-https://github.com/leo-editor/leo-editor/issues/59
-.. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
+.. @+node:ekr.20141027112327.11: *4* Cant/wont fix
+.. @+node:ekr.20141017150357.18271: *5* 2 bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 
 https://github.com/leo-editor/leo-editor/issues/57
 Leo sets focus to body when main window gets focus
-.. @+node:ekr.20141024184556.6: *4* Can't fix bug 78: F3 find-next target not always highlighted
+.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/78
@@ -42,7 +41,7 @@ https://github.com/leo-editor/leo-editor/issues/78
 This can't be fixed without a way to make it happen repeatedly.
 
 @language python
-.. @+node:ekr.20141026191037.6: *4* Can't fix bug 83: Bracket completion doesn't work
+.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/83

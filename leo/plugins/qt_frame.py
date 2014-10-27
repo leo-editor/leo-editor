@@ -3802,22 +3802,25 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         trace = False and not g.unitTesting
         trace_dump = False
         if not ev: return
-        mods = int(ev.keyboardModifiers())
-        self.was_alt_drag = (mods & QtCore.Qt.AltModifier) != 0
-        self.was_control_drag = (mods & QtCore.Qt.ControlModifier) != 0
-        c,tree = self.c,self.c.frame.tree
-        # Set p to the target of the drop.
-        item = self.itemAt(ev.pos())
-        if not item: return
-        itemHash = tree.itemHash(item)
-        p = tree.item2positionDict.get(itemHash)
-        if not p:
-            if trace: g.trace('no p!')
-            return
         md = ev.mimeData()
         if not md:
             g.trace('no mimeData!')
             return
+        mods = int(ev.keyboardModifiers())
+        self.was_alt_drag = (mods & QtCore.Qt.AltModifier) != 0
+        self.was_control_drag = (mods & QtCore.Qt.ControlModifier) != 0
+        c,tree = self.c,self.c.frame.tree
+        p = None
+        item = self.itemAt(ev.pos())
+        if item:
+            itemHash = tree.itemHash(item)
+            p = tree.item2positionDict.get(itemHash)
+        if not p:
+            # Fix bug: https://github.com/leo-editor/leo-editor/issues/59
+            # Drop at last node.
+            p = c.rootPosition()
+            while p.hasNext():
+                p.moveToNext()
         formats = set(str(f) for f in md.formats())
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
