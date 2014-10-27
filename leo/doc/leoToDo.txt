@@ -20,8 +20,6 @@ setup.py confuses newbies
 The plan is to move setup.py to leo/dist, but this may not please Ville.
 .. @+node:ekr.20141024211256.16: *4* Priority 3: 0 bugs re fit and finish
 .. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
-From https://github.com/leo-editor/leo-editor/issues/73
-
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
 .. @+node:ekr.20141027112327.11: *4* Cant/wont fix
