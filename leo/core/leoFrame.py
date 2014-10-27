@@ -1015,27 +1015,6 @@ class LeoFrame(object):
                 k.setDefaultInputState()
                 # Recolor the *body* text, **not** the headline.
                 k.showStateAndMode(w=c.frame.body.wrapper)
-    #@+node:ekr.20031218072017.3983: *5* insertHeadlineTime
-    def insertHeadlineTime (self,event=None):
-
-        '''Insert a date/time stamp in the headline of the selected node.'''
-
-        frame = self ; c = frame.c ; p = c.p
-
-        if g.app.batchMode:
-            c.notValidInBatchMode("Insert Headline Time")
-            return
-
-        c.endEditing()
-
-        time = c.getTime(body=False)
-        s = p.h.rstrip()
-        if s:
-            p.h = ' '.join([s, time])
-        else:
-            p.h = time
-        
-        c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20031218072017.3680: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3683: *4* Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    self.oops()

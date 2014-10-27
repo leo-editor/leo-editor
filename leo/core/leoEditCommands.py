@@ -122,24 +122,20 @@ class BaseEditCommandsClass:
                 k.resetLabel()
     #@+node:ekr.20061007105001: *3* editWidget (BaseEditCommandsClass)
     def editWidget (self,event,forceFocus=True):
-
+        '''Return the edit widget for the event.'''
         trace = False and not g.unitTesting
         c = self.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
         isTextWrapper = g.isTextWrapper(w)
-
         # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
         if w and isTextWrapper:
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.wrapper
-
         if trace: g.trace(isTextWrapper,wname,w)
-
         if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
-
         return self.w
     #@+node:ekr.20050920084036.5: *3* getPublicCommands & getStateCommands
     def getPublicCommands (self):
@@ -2008,6 +2004,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             'insert-hard-tab':                      self.insertHardTab,
             'insert-icon':                          self.insertIcon,
             'insert-file-name':                     self.insertFileName,
+            'insert-headline-time':                 self.insertHeadlineTime,
             'insert-newline':                       self.insertNewline,
             'insert-parentheses':                   self.insertParentheses,
             'insert-soft-tab':                      self.insertSoftTab,
@@ -5411,6 +5408,31 @@ class EditCommandsClass (BaseEditCommandsClass):
                 if g.app.gui.widget_name(w) == 'body':
                     c.frame.body.onBodyChanged(undoType='Typing')
             c.k.getFileName(event,callback=callback)
+    #@+node:ekr.20031218072017.3983: *3* insertHeadlineTime
+    def insertHeadlineTime (self,event=None):
+        '''Insert a date/time stamp in the headline of the selected node.'''
+        frame = self ; c = frame.c ; p = c.p
+        if g.app.batchMode:
+            c.notValidInBatchMode("Insert Headline Time")
+            return
+        w = self.editWidget(event)
+        if w:
+            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
+            # insert-headline-time should insert at cursor.
+            # Note: The command must be bound to a key for this to work.
+            ins = w.getInsertPoint()
+            s = c.getTime(body=False)
+            w.insert(ins,s)
+        else:
+            c.endEditing()
+            time = c.getTime(body=False)
+            s = p.h.rstrip()
+            if s:
+                p.h = ' '.join([s, time])
+            else:
+                p.h = time
+            
+            c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20050920084036.88: *3* line...
     #@+node:ekr.20050920084036.90: *4* flushLines
     def flushLines (self,event):
@@ -9141,7 +9163,6 @@ class LeoCommandsClass (BaseEditCommandsClass):
             'indent-region':                c.indentBody,
             'insert-body-time':             c.insertBodyTime,
             'insert-child':                 c.insertChild,
-            'insert-headline-time':         f.insertHeadlineTime,
             'insert-node':                  c.insertHeadline,
             'insert-node-before':            c.insertHeadlineBefore,
             'mark':                         c.markHeadline,
