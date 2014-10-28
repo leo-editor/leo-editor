@@ -4,11 +4,6 @@
 #@@tabwidth -4
 #@+others
 #@+node:ville.20090213231648.2: ** setup declarations
-#if 'install' in sys.argv:
-#    print "WARNING: 'setup.py install' is known to not work."
-#    print "Either use 'setup.py develop', or run launchLeo.py directly"
-#    sys.exit()
-
 # TODO: sanitize this list, not all needs to be installed
 
 # from distutils.core import setup
@@ -17,6 +12,12 @@ from distutils.command.install import INSTALL_SCHEMES
 import os,fnmatch
 from setuptools import setup, find_packages
 
+if not os.environ.get('_', '').endswith('pip'):
+    print(
+        "setup.py is only used for `pip` installs, please see:\n" +
+        "http://leoeditor.com/installing.html"
+    )
+    sys.exit()
 #@+node:maphew.20130503222911.1635: ** Get description
 try:
     long_description = open('README.TXT', 'rt').read()
