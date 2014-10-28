@@ -9,7 +9,7 @@
 # from distutils.core import setup
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
-import os,fnmatch
+import os,fnmatch,sys
 from setuptools import setup, find_packages
 
 if not os.environ.get('_', '').endswith('pip'):
