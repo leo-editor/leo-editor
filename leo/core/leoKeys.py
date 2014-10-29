@@ -1158,7 +1158,7 @@ class FileNameChooser:
     def do_back_space (fnc):
         '''Handle a back space.'''
         w = fnc.c.k.w
-        if w and w.hasSelection:
+        if w and w.hasSelection():
             # s = w.getAllText()
             i,j = w.getSelectionRange()
             w.delete(i,j)
