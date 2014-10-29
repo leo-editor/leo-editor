@@ -1170,6 +1170,10 @@ https://bugs.launchpad.net/leo-editor/+bug/1231656
 
 This bug may already have been fixed, but just to make sure compareLeoFiles
 now calls g.app.forgetOpenFile
+.. @+node:ekr.20141027171630.10: *4* Fixed bug 1244461: Numpad 'Enter' key does not work in minibuffer
+https://bugs.launchpad.net/leo-editor/+bug/1244461
+
+LeoQtEventFilter.qtKey now changes a toString value of 'Enter' to 'Return'
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
