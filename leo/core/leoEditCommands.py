@@ -7815,23 +7815,15 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
         '''Prompts for a command name and prints the help message for that command.'''
-        k = self.k
-        #@+<< define s >>
-        #@+node:ekr.20130412180825.10342: *4* << define s >> (help-for-command)
-        #@@language rest
-
+        c,k = self.c,self.k
         s = '''\
+    Alt-0 (vr-toggle) hides this help message.
 
-        Alt-0 (vr-toggle) hides this help message.
-
-        Type the name of the command, followed by Return.
-
-        '''
-
-        #@-<< define s >>
-        self.c.putHelpFor(s)
+    Type the name of the command, followed by Return.
+    '''
+        c.putHelpFor(s)
+        c.minibufferWantsFocusNow()
         k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
-
     #@+node:ekr.20120521114035.9870: *4* getBindingsForCommand
     def getBindingsForCommand(self,commandName):
 
@@ -7857,8 +7849,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20120521114035.9871: *4* helpForCommandFinisher
     def helpForCommandFinisher (self,commandName):
 
-        c = self.c ; s = None
-
+        c,s = self.c,None
         if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
             c.k.simulateCommand(commandName)
@@ -7871,13 +7862,11 @@ class HelpCommandsClass (BaseEditCommandsClass):
                     s = self.replaceBindingPatterns(s)
                 else:
                     s = 'no docstring available'
-
                 # Create the title.
                 s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
                 underline = '+' * len(s2)
                 # title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
                 title = '%s\n%s\n\n' % (s2,underline)
-
                 # Fixes bug 618570:
                 s = title + ''.join([
                     line.lstrip() if line.strip() else '\n'
@@ -7917,7 +7906,6 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
                 '''
                 #@-<< set s to about help-for-command >>
-
             c.putHelpFor(s) # calls g.adjustTripleString.
     #@+node:ekr.20120524151127.9886: *4* replaceBindingPatterns
     def replaceBindingPatterns (self,s):
