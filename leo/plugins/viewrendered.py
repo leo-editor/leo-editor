@@ -322,9 +322,12 @@ def viewrendered(event):
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
             vr.show()
-    def at_idle(c=c):
-        c.bodyWantsFocusNow()
-    QtCore.QTimer.singleShot(0,at_idle)
+    c.bodyWantsFocusNow()
+    # The following conflicts with F11: help-for-command.
+    # I'm not sure why it was needed, but for sure it can not be used.
+        # def at_idle(c=c):
+        #    c.bodyWantsFocusNow()
+        # QtCore.QTimer.singleShot(0,at_idle)
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
