@@ -740,615 +740,7 @@ class Commands (object):
         c.setChanged(True)
         c.redraw()
        
-    #@+node:peckj.20131023115434.10114: *3* c.createNodeHierarchy
-    def createNodeHierarchy(self, heads, parent=None, forcecreate=False):
-        
-        ''' Create the proper hierarchy of nodes with headlines defined in 
-            'heads' under 'parent'
-            
-            params:
-            parent - parent node to start from.  Set to None for top-level nodes
-            heads - list of headlines in order to create, i.e. ['foo','bar','baz']
-                    will create:
-                      parent
-                      -foo
-                      --bar
-                      ---baz
-            forcecreate - If False (default), will not create nodes unless they don't exist
-                          If True, will create nodes regardless of existing nodes
-            returns the final position ('baz' in the above example)
-        '''
-        u = self.undoer
-        undoType = 'Create Node Hierarchy'
-        undoType2 = 'Insert Node In Hierarchy'
-        u_node = parent or self.rootPosition()
-        undoData = u.beforeChangeGroup(u_node,undoType)
-        changed_node = False
-        for idx,head in enumerate(heads):
-            if parent is None and idx == 0: # if parent = None, create top level node for first head
-                if not forcecreate:
-                    for pos in self.all_positions():
-                        if pos.h == head:
-                            parent = pos
-                            break
-                if parent is None or forcecreate:
-                    u_d = u.beforeInsertNode(u_node)
-                    n = self.rootPosition().insertAfter()
-                    n.h = head
-                    u.afterInsertNode(n,undoType2,u_d) 
-                    parent = n
-            else: # else, simply create child nodes each round
-                if not forcecreate:
-                    for ch in parent.children():
-                        if ch.h == head:
-                            parent = ch
-                            changed_node = True
-                            break
-                if parent.h != head or not changed_node or forcecreate:
-                    u_d = u.beforeInsertNode(parent)
-                    n = parent.insertAsLastChild()
-                    n.h = head
-                    u.afterInsertNode(n, undoType2, u_d)
-                    parent = n
-            changed_node = False
-        u.afterChangeGroup(parent,undoType,undoData)
-        return parent # actually the last created/found position
-    #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
-    def deletePositionsInList (self,aList,callback=None):
-        '''
-        Delete all vnodes corresponding to the positions in aList.
-        If a callback is given, the callback is called for every node in the list.
-        
-        The callback takes one explicit argument, p. As usual, the callback can bind
-        values using keyword arguments.
-        '''
-        trace = False and not g.unitTesting
-        c = self
-        # Verify all positions *before* altering the tree.
-        aList2 = []
-        for p in aList:
-            if c.positionExists(p):
-                aList2.append(p.copy())
-            else:
-                g.trace('invalid position',p)
-        # Delete p.v for all positions p in reversed(sorted(aList2)).
-        if callback:
-            for p in reversed(sorted(aList2)):
-                callback(p)
-        else:
-            for p in reversed(sorted(aList2)):
-                if c.positionExists(p):
-                    v = p.v
-                    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-                    if v in parent_v.children:
-                        childIndex = parent_v.children.index(v)
-                        if trace: g.trace('deleting',parent_v,childIndex,v)
-                        v._cutLink(childIndex,parent_v)
-                    else:
-                        if trace: g.trace('already deleted',parent_v,v)
-                else:
-                    if trace: g.trace('can not happen',p and p.h)
-        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
-        if not c.hiddenRootNode.children:
-            v = leoNodes.VNode(context=c)
-            v._addLink(childIndex=0,parent_v=c.hiddenRootNode,adjust=False)
-            if trace: g.trace('new root',v)
-        c.selectPosition(c.rootPosition())
-        c.redraw()
-    #@+node:ekr.20080901124540.1: *3* c.Directive scanning
-    # These are all new in Leo 4.5.1.
-    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
-    def scanAllDirectives(self,p=None):
-
-        '''Scan p and ancestors for directives.
-
-        Returns a dict containing the results, including defaults.'''
-
-        trace = False and not g.unitTesting
-        c = self ; p = p or c.p
-
-        # Set defaults
-        language = c.target_language and c.target_language.lower()
-        lang_dict = {
-            'language':language,
-            'delims':g.set_delims_from_language(language),
-        }
-        wrap = c.config.getBool("body_pane_wraps")
-
-        table = (
-            ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
-            ('lineending',  None,           g.scanAtLineendingDirectives),
-            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
-            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-            ('wrap',        wrap,           g.scanAtWrapDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,default,func in table:
-            val = func(aList)
-            d[key] = default if val is None else val
-
-        # Post process: do *not* set commander ivars.
-        lang_dict = d.get('lang-dict')
-
-        d = {
-            "delims"        : lang_dict.get('delims'),
-            "encoding"      : d.get('encoding'),
-            "language"      : lang_dict.get('language'),
-            "lineending"    : d.get('lineending'),
-            "pagewidth"     : d.get('pagewidth'),
-            "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
-            "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [], # No longer used.
-            "wrap"          : d.get('wrap'),
-        }
-
-        if trace: g.trace(lang_dict.get('language'),g.callers())
-
-        # g.trace(d.get('tabwidth'))
-
-        return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
-    def scanAtPathDirectives(self,aList):
-
-        '''Scan aList for @path directives.
-        Return a reasonable default if no @path directive is found.'''
-
-        trace = False and not g.unitTesting
-        verbose = True
-
-        c = self
-        c.scanAtPathDirectivesCount += 1 # An important statistic.
-        if trace and verbose: g.trace('**entry',g.callers(4))
-
-        # Step 1: Compute the starting path.
-        # The correct fallback directory is the absolute path to the base.
-        if c.openDirectory:  # Bug fix: 2008/9/18
-            base = c.openDirectory
-        else:
-            base = g.app.config.relative_path_base_directory
-            if base and base == "!":    base = g.app.loadDir
-            elif base and base == ".":  base = c.openDirectory
-
-        if trace and verbose:
-            g.trace('base   ',base)
-            g.trace('loadDir',g.app.loadDir)
-
-        absbase = c.os_path_finalize_join(g.app.loadDir,base)
-
-        if trace and verbose: g.trace('absbase',absbase)
-
-        # Step 2: look for @path directives.
-        paths = []
-        for d in aList:
-            # Look for @path directives.
-            path = d.get('path')
-            warning = d.get('@path_in_body')
-            if trace and path:
-                g.trace('**** d',d)
-                g.trace('**** @path path',path)
-            if path is not None: # retain empty paths for warnings.
-                # Convert "path" or <path> to path.
-                path = g.stripPathCruft(path)
-                if path and not warning:
-                    paths.append(path)
-                # We will silently ignore empty @path directives.
-
-        # Add absbase and reverse the list.
-        paths.append(absbase)
-        paths.reverse()
-
-        # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose:
-            g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
-
-        path = c.os_path_finalize_join(*paths)
-
-        if trace and verbose: g.trace('joined path:',path)
-        if trace: g.trace('returns',path)
-
-        return path or g.getBaseDirectory(c)
-            # 2010/10/22: A useful default.
-    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
-    # Called only by scanColorDirectives.
-
-    def scanAtRootDirectives(self,aList):
-
-        '''Scan aList for @root-code and @root-doc directives.'''
-
-        c = self
-
-        # To keep pylint happy.
-        tag = 'at_root_bodies_start_in_doc_mode'
-        start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
-
-        # New in Leo 4.6: dashes are valid in directive names.
-        for d in aList:
-            if 'root-code' in d:
-                return 'code'
-            elif 'root-doc' in d:
-                return 'doc'
-            elif 'root' in d:
-                return 'doc' if start_in_doc else 'code'
-
-        return None
-    #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join
-    def os_path_finalize (self,path,**keys):
-
-        c = self
-        keys['c'] = c
-        return g.os_path_finalize(path,**keys)
-
-    def os_path_finalize_join (self,*args,**keys):
-
-        c = self
-        keys['c'] = c
-        return g.os_path_finalize_join(*args,**keys)
-    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
-    # Not used in Leo's core.
-    # Used by the UNl plugin.  Does not need to create a path.
-    def getNodePath (self,p):
-
-        '''Return the path in effect at node p.'''
-
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        return path
-
-    # Not used in Leo's core.
-    def getNodeFileName (self,p):
-
-        '''Return the full file name at node p,
-        including effects of all @path directives.
-
-        Return None if p is no kind of @file node.'''
-
-        c = self
-        path = g.scanAllAtPathDirectives(c,p)
-        name = ''
-        for p in p.self_and_parents():
-            name = p.anyAtFileNodeName()
-            if name: break
-
-        if name:
-            name = g.os_path_finalize_join(path,name)
-        return name
-    #@+node:ekr.20091211111443.6265: *3* c.doBatchOperations & helpers
-    def doBatchOperations (self,aList=None):
-        # Validate aList and create the parents dict
-        if aList is None: aList = []
-        ok, d = self.checkBatchOperationsList(aList)
-        if not ok:
-            return g.error('do-batch-operations: invalid list argument')
-
-        for v in list(d.keys()):
-            aList2 = d.get(v,[])
-            if aList2:
-                aList.sort()
-                for n,op in aList2:
-                    if op == 'insert':
-                        g.trace('insert:',v.h,n)
-                    else:
-                        g.trace('delete:',v.h,n)
-    #@+node:ekr.20091211111443.6266: *4* checkBatchOperationsList
-    def checkBatchOperationsList(self,aList):
-        ok = True ; d = {}
-        for z in aList:
-            try:
-                op,p,n = z
-                ok= (op in ('insert','delete') and
-                    isinstance(p,leoNodes.position) and
-                    type(n) == type(9))
-                if ok:
-                    aList2 = d.get(p.v,[])
-                    data = n,op
-                    aList2.append(data)
-                    d[p.v] = aList2
-            except ValueError:
-                ok = False
-            if not ok: break
-        return ok,d
-    #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
-    def enableMenuBar(self):
-
-        '''A failed attempt to work around Ubuntu Unity memory bugs.'''
-
-        c = self
-        # g.trace(c.frame.title,g.callers())
-        if 0:
-            if c.frame.menu.isNull:
-                return
-            for frame in g.app.windowList:
-                if frame != c.frame:
-                    frame.menu.menuBar.setDisabled(True)
-            c.frame.menu.menuBar.setEnabled(True)
-    #@+node:ekr.20051106040126: *3* c.executeMinibufferCommand
-    def executeMinibufferCommand (self,commandName):
-
-        c = self ; k = c.k
-
-        func = c.commandsDict.get(commandName)
-
-        if func:
-            event = g.app.gui.create_key_event(c,None,None,None)
-            k.masterCommand(commandName=None,event=event,func=func)
-            return k.funcReturn
-        else:
-            g.error('no such command: %s %s' % (commandName,g.callers()))
-            return None
-    #@+node:ekr.20091002083910.6106: *3* c.find...
-    #@+<< PosList doc >>
-    #@+node:bob.20101215134608.5898: *4* << PosList doc >>
-    #@@nocolor-node
-    #@+at 
-    # List of positions 
-    # 
-    # Functions find_h() and find_b() both return an instance of PosList.
-    # 
-    # Methods filter_h() and filter_b() refine a PosList.
-    # 
-    # Method children() generates a new PosList by descending one level from
-    # all the nodes in a PosList.
-    # 
-    # A chain of PosList method calls must begin with find_h() or find_b().
-    # The rest of the chain can be any combination of filter_h(),
-    # filter_b(), and children(). For example:
-    # 
-    #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
-    # 
-    # For each position, pos, in the PosList returned, find_h() and
-    # filter_h() set attribute pos.mo to the match object (see Python
-    # Regular Expression documentation) for the pattern match.
-    # 
-    # Caution: The pattern given to find_h() or filter_h() must match zero
-    # or more characters at the beginning of the headline.
-    # 
-    # For each position, pos, the postlist returned, find_b() and filter_b()
-    # set attribute pos.matchiter to an iterator that will return a match
-    # object for each of the non-overlapping matches of the pattern in the
-    # body of the node.
-    #@-<< PosList doc >>
-    #@+node:ville.20090311190405.70: *4* c.find_h
-    def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a PosList) of all nodes where zero or more characters at
-        the beginning of the headline match regex
-        """
-
-        c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.match(pat, p.h)
-            if m:
-                pc = p.copy()
-                pc.mo = m
-                res.append(pc)
-        return res
-
-    #@+node:ville.20090311200059.1: *4* c.find_b
-    def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a PosList) of all nodes whose body matches regex
-        one or more times.
-
-        """
-
-        c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.finditer(pat, p.b)
-            t1,t2 = itertools.tee(m,2)
-            try:
-                if g.isPython3:
-                    t1.__next__()
-                else:
-                    t1.next()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
-    #@+node:ekr.20091001141621.6061: *3* c.generators
-    #@+node:ekr.20091001141621.6043: *4* c.all_nodes & all_unique_nodes
-    def all_nodes(self):
-        c = self
-        for p in c.all_positions():
-            yield p.v
-        # raise StopIteration
-
-    def all_unique_nodes(self):
-        c = self
-        for p in c.all_unique_positions():
-            yield p.v
-        # raise StopIteration
-
-    # Compatibility with old code.
-    all_tnodes_iter = all_nodes
-    all_vnodes_iter = all_nodes
-    all_unique_tnodes_iter = all_unique_nodes
-    all_unique_vnodes_iter = all_unique_nodes
-    #@+node:ekr.20091001141621.6062: *4* c.all_unique_positions
-    def all_unique_positions(self):
-        c = self
-        p = c.rootPosition() # Make one copy.
-        seen = set()
-        while p:
-            if p.v in seen:
-                p.moveToNodeAfterTree()
-            else:
-                seen.add(p.v)
-                yield p
-                p.moveToThreadNext()
-        # raise StopIteration
-
-    # Compatibility with old code.
-    all_positions_with_unique_tnodes_iter = all_unique_positions
-    all_positions_with_unique_vnodes_iter = all_unique_positions
-    #@+node:ekr.20091001141621.6044: *4* c.all_positions
-    def all_positions (self):
-        c = self
-        p = c.rootPosition() # Make one copy.
-        while p:
-            yield p
-            p.moveToThreadNext()
-        # raise stopIteration
-
-    # Compatibility with old code.
-    all_positions_iter = all_positions
-    allNodes_iter = all_positions
-    #@+node:ekr.20090130135126.1: *3* c.Properties
-    def __get_p(self):
-
-        c = self
-        return c.currentPosition()
-
-    p = property(
-        __get_p, # No setter.
-        doc = "commander current position property")
-    #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
-    def putHelpFor(self,s,short_title=''):
-        '''Helper for various help commands.'''
-        c = self
-        s = g.adjustTripleString(s.rstrip(),c.tab_width)
-        if s.startswith('<') and not s.startswith('<<'):
-            pass # how to do selective replace??
-        pc = g.app.pluginsController
-        if pc.isLoaded('viewrendered2.py'):
-            vr = pc.loadOnePlugin('viewrendered2.py')
-        else:
-            vr = pc.loadOnePlugin('viewrendered.py')
-        assert vr # For unit testing.
-        if vr:
-            kw = {
-                'c':c,
-                'flags':'rst',
-                'label':'',
-                'msg':s,
-                'name':'Apropos',
-                'short_title':short_title,
-                'title':''}
-            vr.show_scrolled_message(tag='Apropos',kw=kw)
-            c.bodyWantsFocus()
-            if g.unitTesting:
-                vr.close_rendering_pane(event={'c':c})
-        else:
-            g.es(s)
-    #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
-    def recreateGnxDict(self):
-        '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-        trace = False and not g.unitTesting
-        c,d,x = self,{},g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            gnxString = v.fileIndex
-            assert g.isUnicode(gnxString)
-            d[gnxString] = v
-            if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
-        c.fileCommands.gnxDict = d
-    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self,dir_,
-        one_file=False,
-        safe_at_file=True,
-        theTypes=None,
-        use_at_edit=False,
-    ):
-        #@+<< docstring >>
-        #@+node:ekr.20130823083943.12614: *4* << docstring >>
-        '''
-        Recursively import all python files in a directory and clean the results.
-
-        Parameters::
-            dir_            The root directory or file to import
-            one_file        True: import only the file given by dir_.
-            safe_at_file    True: produce @@file nodes instead of @file nodes.
-            theTypes        A list of file extensions to import.
-                            None is equivalen to ['.py']
-            use_at_edit     True: create @edit nodes instead of @file nodes.
-            
-        This method cleans imported files as follows:
-
-        - Replace backslashes with forward slashes in headlines.
-        - Remove empty nodes.
-        - Add @path directives that reduce the needed path specifiers in descendant nodes.
-        - Add @file to nodes or replace @file with @@file.
-        '''
-        #@-<< docstring >>
-        c = self
-        if g.os_path_exists(dir_):
-            # Import all files in dir_ after c.p.
-            try:
-                import leo.core.leoImport as leoImport
-                cc = leoImport.RecursiveImportController(c,
-                    one_file = one_file,
-                    safe_at_file = safe_at_file,
-                    theTypes = ['.py'] if theTypes is None else theTypes,
-                    use_at_edit=use_at_edit)
-                cc.run(dir_)
-            finally:
-                c.redraw()
-        else:
-            g.es_print('Does not exist: %s' % (dir_))
-    #@+node:bobjack.20080509080123.2: *3* c.universalCallback
-    def universalCallback(self, function):
-
-        """Create a universal command callback.
-
-        Create and return a callback that wraps a function with an rClick
-        signature in a callback which adapts standard minibufer command
-        callbacks to a compatible format.
-
-        This also serves to allow rClick callback functions to handle
-        minibuffer commands from sources other than rClick menus so allowing
-        a single function to handle calls from all sources.
-
-        A function wrapped in this wrapper can handle rclick generator
-        and invocation commands and commands typed in the minibuffer.
-
-        It will also be able to handle commands from the minibuffer even
-        if rclick is not installed.
-        """
-        def minibufferCallback(event,function=function):
-
-            trace = False and not g.unitTesting
-
-            # Avoid a pylint complaint.
-            if hasattr(self,'theContextMenuController'):
-                cm = getattr(self,'theContextMenuController')
-                keywords = cm.mb_keywords
-            else:
-                cm = keywords = None
-
-            if not keywords:
-                # If rClick is not loaded or no keywords dict was provided
-                #  then the command must have been issued in a minibuffer
-                #  context.
-                keywords = {'c': self, 'rc_phase': 'minibuffer'}
-
-            keywords['mb_event'] = event     
-
-            retval = None
-            try:
-                if trace: g.trace(function,keywords)
-                retval = function(keywords)
-            finally:
-                if cm:
-                    # Even if there is an error:
-                    #   clear mb_keywords prior to next command and
-                    #   ensure mb_retval from last command is wiped
-                    cm.mb_keywords = None
-                    cm.mb_retval = retval
-
-        minibufferCallback.__doc__ = function.__doc__
-        return minibufferCallback
-
-    #fix bobjacks spelling error
-    universallCallback = universalCallback
-    #@+node:ekr.20031218072017.2818: *3* Command handlers...
+    #@+node:ekr.20031218072017.2818: *3* c.Command handlers...
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20031218072017.2820: *5* top level (file menu)
     #@+node:ekr.20031218072017.2833: *6* c.close
@@ -7249,7 +6641,320 @@ class Commands (object):
         '''Make commandName the command to be executed by repeat-complex-command.'''
         c = self
         c.k.mb_history.insert(0,commandName)
-    #@+node:ekr.20031218072017.2945: *3* Dragging (commands)
+    #@+node:peckj.20131023115434.10114: *3* c.createNodeHierarchy
+    def createNodeHierarchy(self, heads, parent=None, forcecreate=False):
+        
+        ''' Create the proper hierarchy of nodes with headlines defined in 
+            'heads' under 'parent'
+            
+            params:
+            parent - parent node to start from.  Set to None for top-level nodes
+            heads - list of headlines in order to create, i.e. ['foo','bar','baz']
+                    will create:
+                      parent
+                      -foo
+                      --bar
+                      ---baz
+            forcecreate - If False (default), will not create nodes unless they don't exist
+                          If True, will create nodes regardless of existing nodes
+            returns the final position ('baz' in the above example)
+        '''
+        u = self.undoer
+        undoType = 'Create Node Hierarchy'
+        undoType2 = 'Insert Node In Hierarchy'
+        u_node = parent or self.rootPosition()
+        undoData = u.beforeChangeGroup(u_node,undoType)
+        changed_node = False
+        for idx,head in enumerate(heads):
+            if parent is None and idx == 0: # if parent = None, create top level node for first head
+                if not forcecreate:
+                    for pos in self.all_positions():
+                        if pos.h == head:
+                            parent = pos
+                            break
+                if parent is None or forcecreate:
+                    u_d = u.beforeInsertNode(u_node)
+                    n = self.rootPosition().insertAfter()
+                    n.h = head
+                    u.afterInsertNode(n,undoType2,u_d) 
+                    parent = n
+            else: # else, simply create child nodes each round
+                if not forcecreate:
+                    for ch in parent.children():
+                        if ch.h == head:
+                            parent = ch
+                            changed_node = True
+                            break
+                if parent.h != head or not changed_node or forcecreate:
+                    u_d = u.beforeInsertNode(parent)
+                    n = parent.insertAsLastChild()
+                    n.h = head
+                    u.afterInsertNode(n, undoType2, u_d)
+                    parent = n
+            changed_node = False
+        u.afterChangeGroup(parent,undoType,undoData)
+        return parent # actually the last created/found position
+    #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
+    def deletePositionsInList (self,aList,callback=None):
+        '''
+        Delete all vnodes corresponding to the positions in aList.
+        If a callback is given, the callback is called for every node in the list.
+        
+        The callback takes one explicit argument, p. As usual, the callback can bind
+        values using keyword arguments.
+        '''
+        trace = False and not g.unitTesting
+        c = self
+        # Verify all positions *before* altering the tree.
+        aList2 = []
+        for p in aList:
+            if c.positionExists(p):
+                aList2.append(p.copy())
+            else:
+                g.trace('invalid position',p)
+        # Delete p.v for all positions p in reversed(sorted(aList2)).
+        if callback:
+            for p in reversed(sorted(aList2)):
+                callback(p)
+        else:
+            for p in reversed(sorted(aList2)):
+                if c.positionExists(p):
+                    v = p.v
+                    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+                    if v in parent_v.children:
+                        childIndex = parent_v.children.index(v)
+                        if trace: g.trace('deleting',parent_v,childIndex,v)
+                        v._cutLink(childIndex,parent_v)
+                    else:
+                        if trace: g.trace('already deleted',parent_v,v)
+                else:
+                    if trace: g.trace('can not happen',p and p.h)
+        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        if not c.hiddenRootNode.children:
+            v = leoNodes.VNode(context=c)
+            v._addLink(childIndex=0,parent_v=c.hiddenRootNode,adjust=False)
+            if trace: g.trace('new root',v)
+        c.selectPosition(c.rootPosition())
+        c.redraw()
+    #@+node:ekr.20080901124540.1: *3* c.Directive scanning
+    # These are all new in Leo 4.5.1.
+    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
+    def scanAllDirectives(self,p=None):
+
+        '''Scan p and ancestors for directives.
+
+        Returns a dict containing the results, including defaults.'''
+
+        trace = False and not g.unitTesting
+        c = self ; p = p or c.p
+
+        # Set defaults
+        language = c.target_language and c.target_language.lower()
+        lang_dict = {
+            'language':language,
+            'delims':g.set_delims_from_language(language),
+        }
+        wrap = c.config.getBool("body_pane_wraps")
+
+        table = (
+            ('encoding',    None,           g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,           g.scanAtWrapDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = default if val is None else val
+
+        # Post process: do *not* set commander ivars.
+        lang_dict = d.get('lang-dict')
+
+        d = {
+            "delims"        : lang_dict.get('delims'),
+            "encoding"      : d.get('encoding'),
+            "language"      : lang_dict.get('language'),
+            "lineending"    : d.get('lineending'),
+            "pagewidth"     : d.get('pagewidth'),
+            "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
+            "tabwidth"      : d.get('tabwidth'),
+            "pluginsList"   : [], # No longer used.
+            "wrap"          : d.get('wrap'),
+        }
+
+        if trace: g.trace(lang_dict.get('language'),g.callers())
+
+        # g.trace(d.get('tabwidth'))
+
+        return d
+    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
+    def scanAtPathDirectives(self,aList):
+
+        '''Scan aList for @path directives.
+        Return a reasonable default if no @path directive is found.'''
+
+        trace = False and not g.unitTesting
+        verbose = True
+
+        c = self
+        c.scanAtPathDirectivesCount += 1 # An important statistic.
+        if trace and verbose: g.trace('**entry',g.callers(4))
+
+        # Step 1: Compute the starting path.
+        # The correct fallback directory is the absolute path to the base.
+        if c.openDirectory:  # Bug fix: 2008/9/18
+            base = c.openDirectory
+        else:
+            base = g.app.config.relative_path_base_directory
+            if base and base == "!":    base = g.app.loadDir
+            elif base and base == ".":  base = c.openDirectory
+
+        if trace and verbose:
+            g.trace('base   ',base)
+            g.trace('loadDir',g.app.loadDir)
+
+        absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+        if trace and verbose: g.trace('absbase',absbase)
+
+        # Step 2: look for @path directives.
+        paths = []
+        for d in aList:
+            # Look for @path directives.
+            path = d.get('path')
+            warning = d.get('@path_in_body')
+            if trace and path:
+                g.trace('**** d',d)
+                g.trace('**** @path path',path)
+            if path is not None: # retain empty paths for warnings.
+                # Convert "path" or <path> to path.
+                path = g.stripPathCruft(path)
+                if path and not warning:
+                    paths.append(path)
+                # We will silently ignore empty @path directives.
+
+        # Add absbase and reverse the list.
+        paths.append(absbase)
+        paths.reverse()
+
+        # Step 3: Compute the full, effective, absolute path.
+        if trace and verbose:
+            g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+
+        path = c.os_path_finalize_join(*paths)
+
+        if trace and verbose: g.trace('joined path:',path)
+        if trace: g.trace('returns',path)
+
+        return path or g.getBaseDirectory(c)
+            # 2010/10/22: A useful default.
+    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
+    # Called only by scanColorDirectives.
+
+    def scanAtRootDirectives(self,aList):
+
+        '''Scan aList for @root-code and @root-doc directives.'''
+
+        c = self
+
+        # To keep pylint happy.
+        tag = 'at_root_bodies_start_in_doc_mode'
+        start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+        # New in Leo 4.6: dashes are valid in directive names.
+        for d in aList:
+            if 'root-code' in d:
+                return 'code'
+            elif 'root-doc' in d:
+                return 'doc'
+            elif 'root' in d:
+                return 'doc' if start_in_doc else 'code'
+
+        return None
+    #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join
+    def os_path_finalize (self,path,**keys):
+
+        c = self
+        keys['c'] = c
+        return g.os_path_finalize(path,**keys)
+
+    def os_path_finalize_join (self,*args,**keys):
+
+        c = self
+        keys['c'] = c
+        return g.os_path_finalize_join(*args,**keys)
+    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
+    # Not used in Leo's core.
+    # Used by the UNl plugin.  Does not need to create a path.
+    def getNodePath (self,p):
+
+        '''Return the path in effect at node p.'''
+
+        c = self
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        return path
+
+    # Not used in Leo's core.
+    def getNodeFileName (self,p):
+
+        '''Return the full file name at node p,
+        including effects of all @path directives.
+
+        Return None if p is no kind of @file node.'''
+
+        c = self
+        path = g.scanAllAtPathDirectives(c,p)
+        name = ''
+        for p in p.self_and_parents():
+            name = p.anyAtFileNodeName()
+            if name: break
+
+        if name:
+            name = g.os_path_finalize_join(path,name)
+        return name
+    #@+node:ekr.20091211111443.6265: *3* c.doBatchOperations & helpers
+    def doBatchOperations (self,aList=None):
+        # Validate aList and create the parents dict
+        if aList is None: aList = []
+        ok, d = self.checkBatchOperationsList(aList)
+        if not ok:
+            return g.error('do-batch-operations: invalid list argument')
+
+        for v in list(d.keys()):
+            aList2 = d.get(v,[])
+            if aList2:
+                aList.sort()
+                for n,op in aList2:
+                    if op == 'insert':
+                        g.trace('insert:',v.h,n)
+                    else:
+                        g.trace('delete:',v.h,n)
+    #@+node:ekr.20091211111443.6266: *4* checkBatchOperationsList
+    def checkBatchOperationsList(self,aList):
+        ok = True ; d = {}
+        for z in aList:
+            try:
+                op,p,n = z
+                ok= (op in ('insert','delete') and
+                    isinstance(p,leoNodes.position) and
+                    type(n) == type(9))
+                if ok:
+                    aList2 = d.get(p.v,[])
+                    data = n,op
+                    aList2.append(data)
+                    d[p.v] = aList2
+            except ValueError:
+                ok = False
+            if not ok: break
+        return ok,d
+    #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self,p,after):
 
@@ -7358,7 +7063,7 @@ class Commands (object):
 
         c.redraw(p)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
-    #@+node:ekr.20031218072017.2949: *3* Drawing Utilities (commands)
+    #@+node:ekr.20031218072017.2949: *3* c.Drawing Utilities
     #@+node:ekr.20080610085158.2: *4* c.add_command
     def add_command (self,menu,**keys):
 
@@ -7441,44 +7146,6 @@ class Commands (object):
                 redraw_flag = True
         if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
-    def get_focus (self):
-
-        c = self
-        return g.app.gui and g.app.gui.get_focus(c)
-
-    def get_requested_focus (self):
-
-        c = self
-        return c.requestedFocusWidget
-
-    def request_focus(self,w):
-
-        trace = False and not g.unitTesting
-        c = self
-        if trace: g.trace(g.app.gui.widget_name(w),w,g.callers())
-        if w: c.requestedFocusWidget = w
-
-    def set_focus (self,w,force=False):
-
-        trace = False and not g.unitTesting
-        c = self
-        if w and g.app.gui:
-            if trace: g.trace('(c)',
-                g.app.gui.widget_name(w),w)
-            g.app.gui.set_focus(c,w)
-        else:
-            if trace: g.trace('(c) no w')
-
-        c.requestedFocusWidget = None
-    #@+node:ekr.20080514131122.10: *4* c.invalidateFocus
-    def invalidateFocus (self):
-
-        '''Indicate that the focus is in an invalid location, or is unknown.'''
-
-        # c = self
-        # c.requestedFocusWidget = None
-        pass
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
     def requestRecolor (self):
 
@@ -7585,58 +7252,26 @@ class Commands (object):
 
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)
-    #@+node:ekr.20080514131122.16: *4* c.traceFocus
-    def traceFocus (self,w):
-
-        c = self
-        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-            c.trace_focus_count += 1
-            g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name (self,widget):
 
         # c = self
         return g.app.gui and g.app.gui.widget_name(widget) or ''
-    #@+node:ekr.20080514131122.18: *4* c.xWantsFocus
+    #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
+    def enableMenuBar(self):
 
-    def bodyWantsFocus(self):
-        c = self ; body = c.frame.body
-        c.request_focus(body and body.wrapper)
+        '''A failed attempt to work around Ubuntu Unity memory bugs.'''
 
-    def logWantsFocus(self):
-        c = self ; log = c.frame.log
-        c.request_focus(log and log.logCtrl)
-
-    def minibufferWantsFocus(self):
         c = self
-        c.request_focus(c.miniBufferWidget)
-
-    def treeWantsFocus(self):
-        c = self ; tree = c.frame.tree
-        c.request_focus(tree and tree.canvas)
-
-    def widgetWantsFocus(self,w):
-        c = self ; c.request_focus(w)
-    #@+node:ekr.20080514131122.19: *4* c.xWantsFocusNow
-    # widgetWantsFocusNow does an automatic update.
-    def widgetWantsFocusNow(self,w):
-        c = self
-        c.request_focus(w)
-        c.outerUpdate()
-
-    # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
-    def bodyWantsFocusNow(self):
-        c = self ; body = c.frame.body
-        c.widgetWantsFocusNow(body and body.wrapper)
-
-    def logWantsFocusNow(self):
-        c = self ; log = c.frame.log
-        c.widgetWantsFocusNow(log and log.logCtrl)
-
-    def treeWantsFocusNow(self):
-        c = self ; tree = c.frame.tree
-        c.widgetWantsFocusNow(tree and tree.canvas)
-    #@+node:ekr.20031218072017.2955: *3* Enabling Menu Items
+        # g.trace(c.frame.title,g.callers())
+        if 0:
+            if c.frame.menu.isNull:
+                return
+            for frame in g.app.windowList:
+                if frame != c.frame:
+                    frame.menu.menuBar.setDisabled(True)
+            c.frame.menu.menuBar.setEnabled(True)
+    #@+node:ekr.20031218072017.2955: *3* c.Enabling Menu Items
     #@+node:ekr.20040323172420: *4* Slow routines: no longer used
     #@+node:ekr.20031218072017.2966: *5* canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline (self):
@@ -7955,7 +7590,7 @@ class Commands (object):
                 return True
 
         return False
-    #@+node:ekr.20111217154130.10286: *3* Error dialogs (commands)
+    #@+node:ekr.20111217154130.10286: *3* c.Error dialogs
     #@+node:ekr.20111217154130.10284: *4* c.init_error_dialogs
     def init_error_dialogs(self):
 
@@ -7998,7 +7633,231 @@ class Commands (object):
                     message='The following were not %s because they contain @ignore:\n%s' % (kind,files))
 
         c.init_error_dialogs()
-    #@+node:ekr.20031218072017.2982: *3* Getters & Setters
+    #@+node:ekr.20051106040126: *3* c.executeMinibufferCommand
+    def executeMinibufferCommand (self,commandName):
+
+        c = self ; k = c.k
+
+        func = c.commandsDict.get(commandName)
+
+        if func:
+            event = g.app.gui.create_key_event(c,None,None,None)
+            k.masterCommand(commandName=None,event=event,func=func)
+            return k.funcReturn
+        else:
+            g.error('no such command: %s %s' % (commandName,g.callers()))
+            return None
+    #@+node:ekr.20091002083910.6106: *3* c.find_b & find_h (PosList)
+    #@+<< PosList doc >>
+    #@+node:bob.20101215134608.5898: *4* << PosList doc >>
+    #@@nocolor-node
+    #@+at 
+    # List of positions 
+    # 
+    # Functions find_h() and find_b() both return an instance of PosList.
+    # 
+    # Methods filter_h() and filter_b() refine a PosList.
+    # 
+    # Method children() generates a new PosList by descending one level from
+    # all the nodes in a PosList.
+    # 
+    # A chain of PosList method calls must begin with find_h() or find_b().
+    # The rest of the chain can be any combination of filter_h(),
+    # filter_b(), and children(). For example:
+    # 
+    #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
+    # 
+    # For each position, pos, in the PosList returned, find_h() and
+    # filter_h() set attribute pos.mo to the match object (see Python
+    # Regular Expression documentation) for the pattern match.
+    # 
+    # Caution: The pattern given to find_h() or filter_h() must match zero
+    # or more characters at the beginning of the headline.
+    # 
+    # For each position, pos, the postlist returned, find_b() and filter_b()
+    # set attribute pos.matchiter to an iterator that will return a match
+    # object for each of the non-overlapping matches of the pattern in the
+    # body of the node.
+    #@-<< PosList doc >>
+    #@+node:ville.20090311190405.70: *4* c.find_h
+    def find_h(self, regex, flags = re.IGNORECASE):
+        """ Return list (a PosList) of all nodes where zero or more characters at
+        the beginning of the headline match regex
+        """
+
+        c = self
+        pat = re.compile(regex, flags)
+        res = leoNodes.PosList()
+        for p in c.all_positions():
+            m = re.match(pat, p.h)
+            if m:
+                pc = p.copy()
+                pc.mo = m
+                res.append(pc)
+        return res
+
+    #@+node:ville.20090311200059.1: *4* c.find_b
+    def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
+        """ Return list (a PosList) of all nodes whose body matches regex
+        one or more times.
+
+        """
+
+        c = self
+        pat = re.compile(regex, flags)
+        res = leoNodes.PosList()
+        for p in c.all_positions():
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                if g.isPython3:
+                    t1.__next__()
+                else:
+                    t1.next()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        return res
+    #@+node:ekr.20141028061518.23: *3* c.Focus
+    #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
+    def get_focus (self):
+
+        c = self
+        return g.app.gui and g.app.gui.get_focus(c)
+
+    def get_requested_focus (self):
+
+        c = self
+        return c.requestedFocusWidget
+
+    def request_focus(self,w):
+
+        trace = False and not g.unitTesting
+        c = self
+        if trace: g.trace(g.app.gui.widget_name(w),w,g.callers())
+        if w: c.requestedFocusWidget = w
+
+    def set_focus (self,w,force=False):
+
+        trace = False and not g.unitTesting
+        c = self
+        if w and g.app.gui:
+            if trace: g.trace('(c)',
+                g.app.gui.widget_name(w),w)
+            g.app.gui.set_focus(c,w)
+        else:
+            if trace: g.trace('(c) no w')
+
+        c.requestedFocusWidget = None
+    #@+node:ekr.20080514131122.10: *4* c.invalidateFocus
+    def invalidateFocus (self):
+
+        '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+        # c = self
+        # c.requestedFocusWidget = None
+        pass
+    #@+node:ekr.20080514131122.16: *4* c.traceFocus (not used)
+    def traceFocus (self,w):
+
+        c = self
+        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+            c.trace_focus_count += 1
+            g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
+    #@+node:ekr.20080514131122.18: *4* c.xWantsFocus
+
+    def bodyWantsFocus(self):
+        c = self ; body = c.frame.body
+        c.request_focus(body and body.wrapper)
+
+    def logWantsFocus(self):
+        c = self ; log = c.frame.log
+        c.request_focus(log and log.logCtrl)
+
+    def minibufferWantsFocus(self):
+        c = self
+        c.request_focus(c.miniBufferWidget)
+
+    def treeWantsFocus(self):
+        c = self ; tree = c.frame.tree
+        c.request_focus(tree and tree.canvas)
+
+    def widgetWantsFocus(self,w):
+        c = self ; c.request_focus(w)
+    #@+node:ekr.20080514131122.19: *4* c.xWantsFocusNow
+    # widgetWantsFocusNow does an automatic update.
+    def widgetWantsFocusNow(self,w):
+        c = self
+        c.request_focus(w)
+        c.outerUpdate()
+
+    # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+    def bodyWantsFocusNow(self):
+        c = self ; body = c.frame.body
+        c.widgetWantsFocusNow(body and body.wrapper)
+
+    def logWantsFocusNow(self):
+        c = self ; log = c.frame.log
+        c.widgetWantsFocusNow(log and log.logCtrl)
+        
+    def minibufferWantsFocusNow(self):
+        c = self
+        c.widgetWantsFocusNow(c.miniBufferWidget)
+
+    def treeWantsFocusNow(self):
+        c = self ; tree = c.frame.tree
+        c.widgetWantsFocusNow(tree and tree.canvas)
+    #@+node:ekr.20091001141621.6061: *3* c.generators
+    #@+node:ekr.20091001141621.6043: *4* c.all_nodes & all_unique_nodes
+    def all_nodes(self):
+        c = self
+        for p in c.all_positions():
+            yield p.v
+        # raise StopIteration
+
+    def all_unique_nodes(self):
+        c = self
+        for p in c.all_unique_positions():
+            yield p.v
+        # raise StopIteration
+
+    # Compatibility with old code.
+    all_tnodes_iter = all_nodes
+    all_vnodes_iter = all_nodes
+    all_unique_tnodes_iter = all_unique_nodes
+    all_unique_vnodes_iter = all_unique_nodes
+    #@+node:ekr.20091001141621.6062: *4* c.all_unique_positions
+    def all_unique_positions(self):
+        c = self
+        p = c.rootPosition() # Make one copy.
+        seen = set()
+        while p:
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+            else:
+                seen.add(p.v)
+                yield p
+                p.moveToThreadNext()
+        # raise StopIteration
+
+    # Compatibility with old code.
+    all_positions_with_unique_tnodes_iter = all_unique_positions
+    all_positions_with_unique_vnodes_iter = all_unique_positions
+    #@+node:ekr.20091001141621.6044: *4* c.all_positions
+    def all_positions (self):
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p
+            p.moveToThreadNext()
+        # raise stopIteration
+
+    # Compatibility with old code.
+    all_positions_iter = all_positions
+    allNodes_iter = all_positions
+    #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters
     #@+node:ekr.20060906211747: *4* Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition (changed)
     def currentPosition (self):
@@ -8502,7 +8361,98 @@ class Commands (object):
             # g.trace(body)
             c.setBodyString(p,body)
             # Don't set the dirty bit: it would just be annoying.
-    #@+node:ekr.20031218072017.2990: *3* Selecting & Updating (commands)
+    #@+node:ekr.20090130135126.1: *3* c.Properties
+    def __get_p(self):
+
+        c = self
+        return c.currentPosition()
+
+    p = property(
+        __get_p, # No setter.
+        doc = "commander current position property")
+    #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
+    def putHelpFor(self,s,short_title=''):
+        '''Helper for various help commands.'''
+        c = self
+        s = g.adjustTripleString(s.rstrip(),c.tab_width)
+        if s.startswith('<') and not s.startswith('<<'):
+            pass # how to do selective replace??
+        pc = g.app.pluginsController
+        if pc.isLoaded('viewrendered2.py'):
+            vr = pc.loadOnePlugin('viewrendered2.py')
+        else:
+            vr = pc.loadOnePlugin('viewrendered.py')
+        assert vr # For unit testing.
+        if vr:
+            kw = {
+                'c':c,
+                'flags':'rst',
+                'label':'',
+                'msg':s,
+                'name':'Apropos',
+                'short_title':short_title,
+                'title':''}
+            vr.show_scrolled_message(tag='Apropos',kw=kw)
+            c.bodyWantsFocus()
+            if g.unitTesting:
+                vr.close_rendering_pane(event={'c':c})
+        else:
+            g.es(s)
+    #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
+    def recreateGnxDict(self):
+        '''Recreate the gnx dict prior to refreshing nodes from disk.'''
+        trace = False and not g.unitTesting
+        c,d,x = self,{},g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            gnxString = v.fileIndex
+            assert g.isUnicode(gnxString)
+            d[gnxString] = v
+            if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+        c.fileCommands.gnxDict = d
+    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
+    def recursiveImport(self,dir_,
+        one_file=False,
+        safe_at_file=True,
+        theTypes=None,
+        use_at_edit=False,
+    ):
+        #@+<< docstring >>
+        #@+node:ekr.20130823083943.12614: *4* << docstring >>
+        '''
+        Recursively import all python files in a directory and clean the results.
+
+        Parameters::
+            dir_            The root directory or file to import
+            one_file        True: import only the file given by dir_.
+            safe_at_file    True: produce @@file nodes instead of @file nodes.
+            theTypes        A list of file extensions to import.
+                            None is equivalen to ['.py']
+            use_at_edit     True: create @edit nodes instead of @file nodes.
+            
+        This method cleans imported files as follows:
+
+        - Replace backslashes with forward slashes in headlines.
+        - Remove empty nodes.
+        - Add @path directives that reduce the needed path specifiers in descendant nodes.
+        - Add @file to nodes or replace @file with @@file.
+        '''
+        #@-<< docstring >>
+        c = self
+        if g.os_path_exists(dir_):
+            # Import all files in dir_ after c.p.
+            try:
+                import leo.core.leoImport as leoImport
+                cc = leoImport.RecursiveImportController(c,
+                    one_file = one_file,
+                    safe_at_file = safe_at_file,
+                    theTypes = ['.py'] if theTypes is None else theTypes,
+                    use_at_edit=use_at_edit)
+                cc.run(dir_)
+            finally:
+                c.redraw()
+        else:
+            g.es_print('Does not exist: %s' % (dir_))
+    #@+node:ekr.20031218072017.2990: *3* c.Selecting & Updating
     #@+node:ekr.20031218072017.2991: *4* c.redrawAndEdit
     def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
         '''Redraw the screen and edit p's headline.'''
@@ -8670,13 +8620,13 @@ class Commands (object):
         """
         c = self
         return c.frame.tree.getSelectedPositions()
-    #@+node:ekr.20031218072017.2999: *3* Syntax coloring interface
+    #@+node:ekr.20031218072017.2999: *3* c.Syntax coloring interface
     #@+at These routines provide a convenient interface to the syntax colorer.
     #@+node:ekr.20031218072017.3000: *4* updateSyntaxColorer
     def updateSyntaxColorer(self,v):
 
         self.frame.body.updateSyntaxColorer(v)
-    #@+node:ekr.20090103070824.12: *3* Time stamps
+    #@+node:ekr.20090103070824.12: *3* c.Time stamps
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp (self,fn):
 
@@ -8728,6 +8678,57 @@ class Commands (object):
 
         # g.trace('%20s' % (timeStamp),fn)
 
+    #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
+    def universalCallback(self, function):
+
+        """Create a universal command callback.
+
+        Create and return a callback that wraps a function with an rClick
+        signature in a callback which adapts standard minibufer command
+        callbacks to a compatible format.
+
+        This also serves to allow rClick callback functions to handle
+        minibuffer commands from sources other than rClick menus so allowing
+        a single function to handle calls from all sources.
+
+        A function wrapped in this wrapper can handle rclick generator
+        and invocation commands and commands typed in the minibuffer.
+
+        It will also be able to handle commands from the minibuffer even
+        if rclick is not installed.
+        """
+        def minibufferCallback(event,function=function):
+
+            trace = False and not g.unitTesting
+
+            # Avoid a pylint complaint.
+            if hasattr(self,'theContextMenuController'):
+                cm = getattr(self,'theContextMenuController')
+                keywords = cm.mb_keywords
+            else:
+                cm = keywords = None
+            if not keywords:
+                # If rClick is not loaded or no keywords dict was provided
+                #  then the command must have been issued in a minibuffer
+                #  context.
+                keywords = {'c': self, 'rc_phase': 'minibuffer'}
+            keywords['mb_event'] = event     
+            retval = None
+            try:
+                if trace: g.trace(function,keywords)
+                retval = function(keywords)
+            finally:
+                if cm:
+                    # Even if there is an error:
+                    #   clear mb_keywords prior to next command and
+                    #   ensure mb_retval from last command is wiped
+                    cm.mb_keywords = None
+                    cm.mb_retval = retval
+        minibufferCallback.__doc__ = function.__doc__
+        return minibufferCallback
+
+    #fix bobjacks spelling error
+    universallCallback = universalCallback
     #@-others
 #@+node:ekr.20070615131604: ** class NodeHistory
 class NodeHistory:
