@@ -18,12 +18,10 @@ https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 7 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 5 bugs re fit and finish
 .. @+node:ekr.20141028061518.7: *5* Fix bug 1177355: node-only wrapped search does not work in long nodes
 https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
-.. @+node:ekr.20141027171630.11: *5* Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented
-https://bugs.launchpad.net/leo-editor/+bug/1231656
 .. @+node:ekr.20141027171630.10: *5* Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
 https://bugs.launchpad.net/leo-editor/+bug/1244461
 .. @+node:ekr.20141027171630.6: *5* Fix bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings

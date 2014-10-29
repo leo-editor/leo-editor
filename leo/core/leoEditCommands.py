@@ -7235,6 +7235,8 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         if trace: self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
         # Create clones of all inserted, deleted and changed dicts.
         self.createAllCompareClones(c1,c2,inserted,deleted,changed)
+        # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
+        g.app.forgetOpenFile(fn=c2.fileName(),force=True)
         c2.frame.destroySelf()
         g.app.gui.set_focus(c,w)
     #@+node:ekr.20070921072608: *4* computeChangeDicts

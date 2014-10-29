@@ -1165,6 +1165,11 @@ https://bugs.launchpad.net/leo-editor/+bug/524890
 Incomplete derived file
 
 This bug was fixed by the allow_cloned_sibs logic in leoAtFile.py 2013/01/20.
+.. @+node:ekr.20141027171630.11: *4* Fixed bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented
+https://bugs.launchpad.net/leo-editor/+bug/1231656
+
+This bug may already have been fixed, but just to make sure compareLeoFiles
+now calls g.app.forgetOpenFile
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

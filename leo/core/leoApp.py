@@ -1272,7 +1272,7 @@ class LeoApp:
         if fn in aList:
             aList.remove(fn)
             if trace:
-                g.trace('removed: %s' % (fn),g.callers())
+                g.trace('removed: %s' % (fn))
                 for z in aList:
                     print('  %s' % (z))
             d[tag] = aList
