@@ -6371,31 +6371,36 @@ def getDocString(s):
 
 #@+node:ekr.20111017211256.15905: *3* g.getDocStringForFunction
 def getDocStringForFunction (func):
-
     '''Return the docstring for a function that creates a Leo command.'''
 
     def name(func):
-        return hasattr(func,'__name__') and func.__name__ or ''
+        return func.__name__ if hasattr(func,'__name__') else '<no __name__>'
 
     def get_defaults(func,i):
         args, varargs, keywords, defaults = inspect.getargspec(func)
         return defaults[i]
-
-    if name(func) == 'minibufferCallback':
+        
+    # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+    # Minibuffer commands created by mod_scripting.py have no docstrings.
+    if hasattr(func,'__doc__') and func.__doc__:
+        # Note: AtButtonCallback objects now also have __doc__ attributes.
+        s = func.__doc__
+    elif name(func) == 'minibufferCallback':
         func = get_defaults(func,0)
-        if name(func) == 'commonCommandCallback':
+        if hasattr(func,'__doc__') and func.__doc__:
+            s = func.__doc__
+        elif name(func) == 'commonCommandCallback':
             script = get_defaults(func,1)
             s = g.getDocString(script)
+                # Do a text scan for the function.
         elif hasattr(func,'docstring'): # atButtonCallback object.
             s = func.docstring()
-        elif hasattr(func,'__doc__'):
-            s = func.__doc__ or ''
         else:
             print('**oops',func)
             s = ''
     else:
         s = func.__doc__ or ''
-
+        # s = None
     return s
 #@+node:ekr.20111115155710.9814: *3* g.python_tokenize
 def python_tokenize (s,line_numbers=True):

@@ -1191,6 +1191,12 @@ https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
 
 This works for me
+.. @+node:ekr.20141027171630.6: *4* Fixed bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1251252
+
+F11 (help-for-command) now works for @button & @command nodes.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

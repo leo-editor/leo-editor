@@ -402,7 +402,7 @@ class scriptingController:
             self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
 
         # At last we can define the command.
-        self.registerTwoCommands(h,func=atSettingButtonCallback,
+        self.registerAllCommands(h,func=atSettingButtonCallback,
             pane='button',tag='@button')
 
         return b
@@ -442,7 +442,7 @@ class scriptingController:
                     args = self.getArgs(h)
                     def commonCommandCallback (event=None,script=script):
                         c.executeScript(args=args,script=script,silent=True)
-                    self.registerTwoCommands(h,func=commonCommandCallback,
+                    self.registerAllCommands(h,func=commonCommandCallback,
                         pane='all',tag='global @command')
     #@+node:ekr.20060328125248.20: *4* createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
@@ -590,7 +590,11 @@ class scriptingController:
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
             c.executeScript(args=args,p=p,silent=True)
             
-        self.registerTwoCommands(h,func=atCommandCallback,
+        # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+        # Minibuffer commands created by mod_scripting.py have no docstrings
+        atCommandCallback.__doc__ = g.getDocString(p.b)
+            
+        self.registerAllCommands(h,func=atCommandCallback,
             pane='all',tag='local @command')
             
         g.app.config.atLocalCommandsList.append(p.copy())
@@ -610,7 +614,7 @@ class scriptingController:
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
             c.executeScript(args=args,p=p,silent=True)
             
-        self.registerTwoCommands(h,func=atCommandCallback,
+        self.registerAllCommands(h,func=atCommandCallback,
             pane='all',tag='local @rclick')
             
         g.app.config.atLocalCommandsList.append(p.copy())
@@ -718,11 +722,11 @@ class scriptingController:
             return None
         # Now that b is defined we can define the callback.
         # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        #@+<< define class atButtonCallback >>
-        #@+node:ekr.20130912061655.11287: *5* << define class atButtonCallback >>
+        #@+<< define class AtButtonCallback >>
+        #@+node:ekr.20130912061655.11287: *5* << define class AtButtonCallback >>
         # 20100518 - TNB replace callback function with callable class instance
         #   so qt gui can add 'Goto Script' command to context menu for button
-        class atButtonCallback(object):
+        class AtButtonCallback(object):
             
             def __init__(self,controller,b,c,buttonText,gnx):
                 self.controller = controller
@@ -730,6 +734,12 @@ class scriptingController:
                 self.c = c
                 self.buttonText = buttonText
                 self.gnx = gnx
+                self.p = p = self.controller.find_gnx(gnx)
+                # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+                # Minibuffer commands created by mod_scripting.py have no docstrings.
+                self.__doc__ = self.docstring()
+                self.__name__ = 'AtButtonCallback: %s' % (p and p.h or '<no p>')
+                # g.trace('(AtButtonCallback) %25s::%s' % (p.h,self.__doc__))
 
             def __call__(self, event=None):
                 self.controller.executeScriptFromButton(self.b,self.buttonText,self.gnx)
@@ -740,11 +750,11 @@ class scriptingController:
             def docstring(self):
                 p = self.controller.find_gnx(self.gnx)
                 return g.getDocString(p.b) if p else ''
-        #@-<< define class atButtonCallback >>
-        cb = atButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
+        #@-<< define class AtButtonCallback >>
+        cb = AtButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
         self.iconBar.setCommandForButton(b,cb)
         # At last we can define the command and use the shortcut.
-        self.registerTwoCommands(h,func=cb,pane='button',tag='local @button')
+        self.registerAllCommands(h,func=cb,pane='button',tag='local @button')
         return b
     #@+node:ekr.20060522104419.1: *4* createBalloon (gui-dependent)
     def createBalloon (self,w,label):
@@ -796,7 +806,7 @@ class scriptingController:
             self.createBalloon(b,statusLine)
         # Register the command name if it exists.
         if command:
-            self.registerTwoCommands(text,func=command,
+            self.registerAllCommands(text,func=command,
                 pane='button',tag='icon button')
         # Define the callback used to delete the button.
         def deleteButtonCallback(event=None,self=self,b=b):
@@ -924,34 +934,42 @@ class scriptingController:
                 shortcut = h[j:k].strip()
                 
         return shortcut
-    #@+node:ekr.20120301114648.9932: *4* registerTwoCommands
-    def registerTwoCommands(self,h,func,pane,tag):
-
+    #@+node:ekr.20120301114648.9932: *4* registerAllCommands
+    def registerAllCommands(self,h,func,pane,tag):
+        '''Register @button <name> and @rclick <name> and <name>'''
         trace = False and not g.unitTesting
         k = self.c.k
-
         shortcut = self.getShortcut(h)
         s = self.cleanButtonText(h)
-
-        if trace: g.trace(s)
-
+        if trace:
+            if hasattr(func,'__name__'):
+                g.trace(func.__name__,func.__doc__)
+            else:
+                g.trace(func)
         k.registerCommand(s,func=func,
             pane=pane,shortcut=shortcut,verbose=trace)
-        
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags    
         for tag in ('@button-','@command-','@rclick-'):
             if s.startswith(tag):
                 command = s[len(tag):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
-                if tag == '@button':
-                    def atButtonCallBack(event=None,func=func):
+                if tag.startswith('@button'):
+                    def atButtonCallback2(event=None,func=func):
                         func()
-                    cb = atButtonCallBack
+                    # g.trace(h,func.__doc__)
+                    # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+                    # Minibuffer commands created by mod_scripting.py have no docstrings.
+                    atButtonCallback2.__doc__ = func.__doc__
+                    cb = atButtonCallback2
                 else:
-                    def atCommandCallBack(event=None,func=func):
+                    def atCommandCallBack2(event=None,func=func):
                         func()
-                    cb = atCommandCallBack
+                    # g.trace(h,func.__doc__)
+                    # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+                    # Minibuffer commands created by mod_scripting.py have no docstrings.
+                    atCommandCallBack2.__doc__ = func.__doc__
+                    cb = atCommandCallBack2
                 if trace: g.trace('second',command)
                 k.registerCommand(command,func=cb,
                     pane=pane,shortcut=None,verbose=trace)
