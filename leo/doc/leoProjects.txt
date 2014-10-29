@@ -1154,12 +1154,17 @@ account the @path settings of the part of the tree they're dropped into
 https://bugs.launchpad.net/leo-editor/+bug/735938
 
 Added a guard to g.toUnicodeFileEncoding
-.. @+node:ekr.20141027112327.13: *4* Fixed bug 1185933: insert-headline-time should insert at cursor 
+.. @+node:ekr.20141027112327.13: *4* Fixed bug 1185933: insert-headline-time should insert at cursor
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1185933
 
 Note: the insert-headline-time command must be bound to a shortcut in order for this to work.
+.. @+node:ekr.20141028061518.6: *4* Investigated bug  524890: Incomplete derived file
+https://bugs.launchpad.net/leo-editor/+bug/524890
+Incomplete derived file
+
+This bug was fixed by the allow_cloned_sibs logic in leoAtFile.py 2013/01/20.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

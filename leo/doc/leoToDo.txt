@@ -19,9 +19,6 @@ setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
 .. @+node:ekr.20141024211256.16: *4* Priority 3: 7 bugs re fit and finish
-.. @+node:ekr.20141028061518.6: *5* Fix bug  524890: Incomplete derived file
-https://bugs.launchpad.net/leo-editor/+bug/524890
-Incomplete derived file
 .. @+node:ekr.20141028061518.7: *5* Fix bug 1177355: node-only wrapped search does not work in long nodes
 https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
