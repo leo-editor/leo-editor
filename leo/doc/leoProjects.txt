@@ -1174,6 +1174,10 @@ now calls g.app.forgetOpenFile
 https://bugs.launchpad.net/leo-editor/+bug/1244461
 
 LeoQtEventFilter.qtKey now changes a toString value of 'Enter' to 'Return'
+.. @+node:ekr.20141027171630.8: *4* Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input
+https://bugs.launchpad.net/leo-editor/+bug/1267921
+
+Added a check for k.isPlainKey to find.iSearchStateHandler.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -18,15 +18,13 @@ https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 4 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 3 bugs re fit and finish
 .. @+node:ekr.20141028061518.7: *5* Fix bug 1177355: node-only wrapped search does not work in long nodes
 https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
 .. @+node:ekr.20141027171630.6: *5* Fix bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings
 https://bugs.launchpad.net/leo-editor/+bug/1251252
 
-.. @+node:ekr.20141027171630.8: *5* Fix bug 1267921: isearch-forward accepts non-alphanumeric keys as input
-https://bugs.launchpad.net/leo-editor/+bug/1267921
 .. @+node:ekr.20141027171630.9: *5* Fix bug 1268970: Leo does not remember window maximized state
 https://bugs.launchpad.net/leo-editor/+bug/1268970
 .. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md

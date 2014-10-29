@@ -461,19 +461,14 @@ class LeoFind:
                 event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
                 k.updateLabel(event)
     #@+node:ekr.20131117164142.16950: *4* find.iSearchStateHandler
-    # Called from the state manager when the state is 'isearch'
-
     def iSearchStateHandler (self,event):
-
+        '''The state manager when the state is 'isearch'''
         trace = False and not g.unitTesting
         # c = self.c
         k = self.k
-
         stroke = event and event.stroke or None
         s = stroke.s if stroke else ''
-
         if trace: g.trace('again',stroke in self.iSearchStrokes,'s',repr(s))
-
         # No need to recognize ctrl-z.
         if s in ('Escape','\n','Return'):
             self.endSearch()
@@ -490,7 +485,8 @@ class LeoFind:
             # End the search.
             self.endSearch()
             k.masterKeyHandler(event)
-        else:
+        # Fix bug 1267921: isearch-forward accepts non-alphanumeric keys as input.
+        elif k.isPlainKey(stroke):
             if trace: g.trace('event',event)
             k.updateLabel(event)
             self.iSearch()
