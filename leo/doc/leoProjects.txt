@@ -1178,6 +1178,12 @@ LeoQtEventFilter.qtKey now changes a toString value of 'Enter' to 'Return'
 https://bugs.launchpad.net/leo-editor/+bug/1267921
 
 Added a check for k.isPlainKey to find.iSearchStateHandler.
+.. @+node:ekr.20141027171630.9: *4* Investigated bug 1268970: Leo does not remember window maximized state
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1268970
+
+This works for me (Windows 7 and Ubuntu) with Python 2.7.8, PyQt version 4.8.6.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
