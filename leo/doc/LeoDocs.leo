@@ -288,6 +288,7 @@
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
 <v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
 <v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
 <v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
@@ -22265,6 +22266,17 @@ are always live.
 Yay! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py --do-stuff-here ..." for me. :)
 
 Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.</t>
+<t tx="ekr.20141030042423.9">Use the %~dp0 syntax.  Example::
+  
+  %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
+
+http://ss64.com/nt/syntax-args.html
+http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
+
+FYI, this FAQ entry fixes the following bug:
+https://bugs.launchpad.net/leo-editor/+bug/613153
+unable to describe root directory on thumb drive
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

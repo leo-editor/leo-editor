@@ -1210,6 +1210,17 @@ create relative urls when dragging binary files to Leo
 This bug was fixed by #60: 
 https://github.com/leo-editor/leo-editor/issues/60
 create relative paths & urls when dragging files to Leo
+.. @+node:ekr.20111222113610.10244: *4* Fixed Bug 613153: unable to describe root directory on thumb drive
+https://bugs.launchpad.net/leo-editor/+bug/613153
+
+Use the %~dp0 syntax. Example::
+
+  %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
+
+http://ss64.com/nt/syntax-args.html
+http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
+
+I have just created a FAQ entry for this, so at last this issue is closed.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
