@@ -1313,6 +1313,12 @@ installer to review the message box's contents.
 
 I last looked at the installer three months ago so I would have to look at the
 rest of it for other barriers to automated installation.
+.. @+node:ekr.20141017150357.18269: *4* Fixed bug 969391: setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+setup.py confuses newbies
+
+Terry's recent changes allow pip to use setup.py, and warns otherwise. This
+seems like a good compromise.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

@@ -9,11 +9,6 @@
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
 .. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
-.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-setup.py confuses newbies
-
-The plan is to move setup.py to leo/dist, but this may not please Ville.
 .. @+node:ekr.20141024211256.11: *5* Fixed? Quickstart guide should open by default
 https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
