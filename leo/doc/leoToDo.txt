@@ -9,55 +9,7 @@
 - Rerun Bob's test (make a unit test out of it??)
 - Improve check-outline using @test check all gnx's exist and are unique
 - Unit tests for indices.
-.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
-@language rest
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
-.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-setup.py confuses newbies
-
-The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 0 bugs re fit and finish
-.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
-
-Up-voted by Kent.
-.. @+node:ekr.20141028061518.8: *4* Fix bug 74: problems with @button if defined in myLeoSettings.leo
-https://github.com/leo-editor/leo-editor/issues/74
-
-Up-voted by Kent.
-.. @+node:ekr.20141027112327.11: *4* Cant/wont fix
-.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-This can't be fixed without a way to make it happen repeatedly.
-
-@language python
-.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
-.. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
-https://bugs.launchpad.net/leo-editor/+bug/1245111
-Can't get the viewrendered pane back next to the editor
-
-https://github.com/leo-editor/leo-editor/issues/57
-Leo sets focus to body when main window gets focus
-
-https://bugs.launchpad.net/leo-editor/+bug/1235619
-BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
-.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
-.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20141024211256.14: *3* Review all important plugins
-.. @+node:ekr.20141024211256.12: *3* Improvements for a1
+.. @+node:ekr.20141024211256.12: *3* ** Improvements for a1
 .. @+node:ekr.20141024211256.11: *4* Fidel's ideas for newbies
 https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
@@ -431,12 +383,118 @@ Add modules/plugins to help-for-command.
 [Simple script] Jump exactly one page with Page Down
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
+.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
+@language rest
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
+.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+setup.py confuses newbies
+
+The plan is to move setup.py to leo/dist, but this may not please Ville.
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 1 bug re fit and finish
+.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+
+Up-voted by Kent.
+.. @+node:ekr.20141028061518.8: *4* Fix bug 74: problems with @button if defined in myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/74
+
+Up-voted by Kent.
+.. @+node:ekr.20141027112327.11: *4* Cant/wont fix
+.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+This can't be fixed without a way to make it happen repeatedly.
+
+@language python
+.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
+.. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
+https://bugs.launchpad.net/leo-editor/+bug/1245111
+Can't get the viewrendered pane back next to the editor
+
+https://github.com/leo-editor/leo-editor/issues/57
+Leo sets focus to body when main window gets focus
+
+https://bugs.launchpad.net/leo-editor/+bug/1235619
+BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
+.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
+.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
+.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20141024211256.14: *3* Review all important plugins
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
 - Transfer email items: 37 to-be-documented items.
 
 - Add docstrings for all commands in leoSessions.py.
   
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
+.. @+node:ekr.20141029185358.16: ** To do: Leo 5.0b1
+.. @+node:ekr.20141029185358.14: *3* Launchpad bugs for b1
+===== Files
+
+https://bugs.launchpad.net/leo-editor/+bug/613153
+unable to describe root directory on thumb drive
+
+https://bugs.launchpad.net/leo-editor/+bug/1259755
+Leo should keep the external editor's temp file up to date
+
+https://bugs.launchpad.net/leo-editor/+bug/1159490
+"Open with" fails to copy changes by external editor back to Leo-Editor node
+
+===== IPython
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+
+===== Commands (fit and finish)
+
+https://bugs.launchpad.net/leo-editor/+bug/1240786
+Corner case bug in tab-cycle-next and tab-cycle-previous
+
+https://bugs.launchpad.net/leo-editor/+bug/1258302
+Window, Toggle Split Direction Error
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+Plugin Menu - Keystroke binding can prevent plugin help display
+.. @+node:ekr.20141029185358.17: *3* Launchpad undecided bugs
+https://bugs.launchpad.net/leo-editor/+bug/1338773
+Autocompleter error
+
+https://bugs.launchpad.net/leo-editor/+bug/1286914
+A custom menu that seems correct, but does nothing
+
+https://bugs.launchpad.net/leo-editor/+bug/1292207
+Disabling Plugins disables menu actions
+
+https://bugs.launchpad.net/leo-editor/+bug/1335310
+Error: leo.plugins.at_folder.init did not return a bool
+
+https://bugs.launchpad.net/leo-editor/+bug/1338172
+ReplaceAll will not replace newlines indicated as \n in target string
+
+https://bugs.launchpad.net/leo-editor/+bug/1269540
+File importing problems: Path doesn't properly appear as node header
+
+https://bugs.launchpad.net/leo-editor/+bug/1282362
+shadow file name collisions cause spontaneous clone creation
+
+https://bugs.launchpad.net/leo-editor/+bug/1286909
+Settings in file A propagate to file B when editing A and B is opened
+
+https://bugs.launchpad.net/leo-editor/+bug/1286913
+After the "menu already exists: ampersand menu name" warning, the menu entries are added to the existing menu.
 .. @+node:ekr.20120226183512.10195: ** All Bugs
 @language rest
 .. @+node:ekr.20140917154740.19477: *3* Installer bugs
