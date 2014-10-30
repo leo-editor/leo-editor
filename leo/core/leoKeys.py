@@ -186,7 +186,7 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.8: *3* ac.Top level
     #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     def autoComplete (self,event=None,force=False):
-        '''An event handler called from k.masterKeyHanderlerHelper.'''
+        '''An event handler for autocompletion.'''
         trace = False and not g.unitTesting
         c,k = self.c,self.k
         state = k.unboundKeyAction
@@ -1376,6 +1376,7 @@ class GetArg:
     def do_tab(ga,tabList,completion=True):
         '''Handle tab completion when the user hits a tab.'''
         trace = False and not g.unitTesting
+        # g.trace('\n'+'\n'.join([z for z in tabList if z.startswith('@')]))
         c,k = ga.c,ga.k
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
@@ -1652,7 +1653,7 @@ class GetArg:
         else:
             command = []
             for ch in s:
-                if ch.isalnum() or ch in '_-':
+                if ch.isalnum() or ch in '@_-':
                     command.append(ch)
                 else: break
             return ''.join(command)
@@ -1667,7 +1668,9 @@ class GetArg:
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
     def is_command(ga,s):
         '''Return False if something, even a blank, follows a command.'''
-        if s.startswith(':'):
+        if s.startswith('@'):
+            return True
+        elif s.startswith(':'):
             if len(s) == 1:
                 return True
             elif s[1].isalpha():
@@ -3333,7 +3336,7 @@ class KeyHandlerClass:
         '''The master key handler for almost all key bindings.'''
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
-        verbose = True
+        verbose = False
         k,c = self,self.c
         c.check_event(event)
         #@+<< define vars >>
