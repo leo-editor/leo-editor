@@ -1223,6 +1223,96 @@ http://ss64.com/nt/syntax-args.html
 http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
 
 I have just created a FAQ entry for this, so at last this issue is closed.
+.. @+node:ekr.20050328093147.1: *4* Investigated bug 86: Installer needs attention from an expert
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/86
+
+The issues in this bug have either been fixed or they are too minor to care about.
+
+In particular:
+
+1. Leo is available for a normal user, call him Bruce, after a routine install.
+
+2. Requiring a Python installation that is available to all users seems reasonable.
+
+.. @+node:ekr.20141030042423.17: *5* (works for me) LeoSetup thinks Leo's user is an Administrator
+http://sourceforge.net/forum/message.php?msg_id=3064212
+By: djsg  David
+
+Let's say that I log on as David to Windows 2000 or Windows XP and install
+Leo 4.3. You then log out. You log in as Edward, and click Start, pick
+Programs... you have no visible entry for Leo!
+
+The above scenario works for me.
+
+Let's say that I log on as David to Windows 2000 or Windows XP and install
+Leo 4.3. You then log out. You log in as Edward, and click Start, pick
+Programs... you have no visible entry for Leo!
+
+The current Setup routine allows no one but David to use Leo on this computer.
+To make things worse, when I go to use Leo, I have to log in to Windows using
+the account under which I installed it, which has Administrator rights to the
+computer. In other words, I can't use Leo without operating the computer in
+a mode that leaves it needlessly vulnerable to security violations.
+
+===== Proposal (won't do)
+
+Setup should ask whether to install Leo for everyone or for the installer's
+account only.
+
+If the answer to that question is "yes," Setup should give the user a
+private copy of everything that comes with Leo -- the only application
+shared should be the current Python, assuming that it is installed for all
+users.
+.. @+node:ekr.20141030042423.20: *5* (low priority) LeoSetup requires that Python be available for all users
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
+
+It looks like that the "LeoSetup Script" requires a Python installation
+which is available to all users.
+
+.. @+node:ekr.20141030042423.18: *5* (low priority)_LeoSetup allows only one copy of Leo on a given computer
+http://sourceforge.net/forum/message.php?msg_id=3064212
+By: djsg  David 
+
+LeoSetup allows only one copy of Leo on a given computer. 
+
+LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
+override that already. LeoSetup also goes to some trouble to set up the usual
+click-to-open behavior for .leo files. That behavior is tied to the copy of
+Python that was current when I ran LeoSetup, and tied to the copy of Leo that
+was installed most recently.
+
+===== Proposal
+
+When LeoSetup finds Python installed for that single user, it should ask
+whether to install Leo for the installer's account only. If the answer to
+that question is "yes," Setup should give the user a private copy of
+everything that comes with Leo and use the single-user installation of
+Python.
+
+This matters because if you need to test your plug-ins with different
+versions of Python, this would make that easier.
+.. @+node:ekr.20141030042423.19: *5* (wont't do) LeoSetup does not run without human intervention
+http://sourceforge.net/forum/message.php?msg_id=3064212
+By: djsg  David
+
+EKR:  This could be done, but I do not want to complicate the install process this way.
+http://nsis.sourceforge.net/Examples/silent.nsi
+
+LeoSetup does not run without human intervention. This complicates
+deploying Leo in multi-computer sites.
+
+The message box that displays the path of the Python installation found is one
+issue. I put it in to allow the installer to cross-check Setup's behavior. Since
+nobody has complained about problems with the code I wrote to fix the problem
+installing with Python 2.4 and Active Python, Setup need no longer force the
+installer to review the message box's contents.
+
+===== Proposal: The message box needs to time out after, say, 15 seconds. 
+
+I last looked at the installer three months ago so I would have to look at the
+rest of it for other barriers to automated installation.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels

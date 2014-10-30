@@ -8,7 +8,7 @@
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 4 bugs re distro
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
@@ -415,92 +415,6 @@ This can't be fixed without a way to make it happen repeatedly.
 https://github.com/leo-editor/leo-editor/issues/83
 
 This appears to be a Windows 8 issue.
-.. @+node:ekr.20050328093147.1: *3* Can't fix bug 86: Installer needs attention from an expert
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/86
-
-I have no idea how to fix any of these issues.
-.. @+node:ekr.20141030042423.20: *4* LeoSetup requires that Python be available for all users
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
-
-> After trying several variations it looks like that the "LeoSetup Script"
-requires a Python installation which is available to all users and not just
-to this one new separate account.
-
-> I tried to install Leo 4.10 final from Sourceforge via
-"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
-and running I tried to install this into a completely new separate user
-account.
-
-EKR: One of these might work better.
-
-; RequestExecutionLevel highest
-; RequestExecutionLevel admin
-
-.. @+node:ekr.20141030042423.17: *4* LeoSetup thinks Leo's user is an Administrator
-http://sourceforge.net/forum/message.php?msg_id=3064212
-By: djsg  David 
-
-LeoSetup still thinks Leo's user is an Administrator who owns the whole
-machine.
-
-Let's say that I log on as David to Windows 2000 or Windows XP and install
-Leo 4.3. You then log out. You log in as Edward, and click Start, pick
-Programs... you have no visible entry for Leo!
-
-The current Setup routine allows no one but David to use Leo on this computer.
-To make things worse, when I go to use Leo, I have to log in to Windows using
-the account under which I installed it, which has Administrator rights to the
-computer. In other words, I can't use Leo without operating the computer in
-a mode that leaves it needlessly vulnerable to security violations.
-
-===== Proposal
-
-Setup should ask whether to install Leo for everyone or for the installer's
-account only.
-
-If the answer to that question is "yes," Setup should give the user a
-private copy of everything that comes with Leo -- the only application
-shared should be the current Python, assuming that it is installed for all
-users.
-.. @+node:ekr.20141030042423.18: *4* LeoSetup allows only one copy of Leo on a given computer
-http://sourceforge.net/forum/message.php?msg_id=3064212
-By: djsg  David 
-
-LeoSetup allows only one copy of Leo on a given computer. 
-
-LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
-override that already. LeoSetup also goes to some trouble to set up the usual
-click-to-open behavior for .leo files. That behavior is tied to the copy of
-Python that was current when I ran LeoSetup, and tied to the copy of Leo that
-was installed most recently.
-
-===== Proposal
-
-When LeoSetup finds Python installed for that single user, it should ask
-whether to install Leo for the installer's account only. If the answer to
-that question is "yes," Setup should give the user a private copy of
-everything that comes with Leo and use the single-user installation of
-Python. Why does this matter. If you need to test your plug-ins with
-different versions of Python, this would make that easier.
-.. @+node:ekr.20141030042423.19: *4* LeoSetup does not run without human intervention
-http://sourceforge.net/forum/message.php?msg_id=3064212
-By: djsg  David
-
-LeoSetup does not run without human intervention. This complicates
-deploying Leo in multi-computer sites.
-
-The message box that displays the path of the Python installation found is one
-issue. I put it in to allow the installer to cross-check Setup's behavior. Since
-nobody has complained about problems with the code I wrote to fix the problem
-installing with Python 2.4 and Active Python, Setup need no longer force the
-installer to review the message box's contents.
-
-===== Proposal: The message box needs to time out after, say, 15 seconds. 
-
-I last looked at the installer three months ago so I would have to look at the
-rest of it for other barriers to automated installation.
 .. @+node:ekr.20120226183512.10195: ** All other bugs
 @language rest
 .. @+node:ekr.20141030042423.14: *3* Launchpad bugs re plugins
