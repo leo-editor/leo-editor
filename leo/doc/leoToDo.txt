@@ -7,14 +7,15 @@
 @language rest
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 2 bugs re distro
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 1 bug affecting stability
+.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 0 bugs re distro
 .. @+node:ekr.20141024211256.11: *5* Fixed? Quickstart guide should open by default
 https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
 Fidel suggests quickstart guide should open by default instead of the
 user's workbook.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 3 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 2 bugs up-voted by Kent
 .. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
@@ -24,7 +25,6 @@ Up-voted by Kent.
 https://github.com/leo-editor/leo-editor/issues/74
 
 Up-voted by Kent.
-.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
 .. @+node:ekr.20141030042423.16: *4* Priority 4: 6 minor fit & finish bugs (as time allows)
 These may move to b1.
 .. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
