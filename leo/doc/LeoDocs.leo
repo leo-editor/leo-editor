@@ -1153,6 +1153,7 @@
 <v t="ekr.20140810085801.18216"></v>
 <v t="ekr.20140810085801.18230"></v>
 <v t="ekr.20141015084905.18376"><vh>To FAQ</vh>
+<v t="ekr.20141030042423.22"><vh>My new workflow</vh></v>
 <v t="ekr.20141015084905.18377"><vh>All about clone conflicts</vh>
 <v t="ekr.20141015084905.18378"><vh>Re: All about clone conflicts</vh></v>
 </v>
@@ -22266,6 +22267,114 @@ are always live.
 Yay! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py --do-stuff-here ..." for me. :)
 
 Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.</t>
+<t tx="ekr.20141030042423.22">https://groups.google.com/d/msg/leo-editor/4s44H9cUJGY/ewRBDBSw-A8J
+
+For the last several weeks I've used clones in a new, more effective way.
+This post is pre-writing for a new FAQ entry.
+
+The new workflow was inspired by git's stash/unstash commands. Here are the
+key ideas.
+
+1. [Most important] I avoid putting clones in two different *external*
+   files.
+
+For any task, I create a task node that resides in @file leoToDo.txt. I
+clone that node and put it in the outline, *never* in any other @file node.
+This instantly eliminates clone wars.
+
+2. I use top-level "stashed" nodes/trees in my local copy of leoPy.leo.
+
+These are *not* written to any external file, and so would be lost if I
+lost leoPy.leo. But the benefits *far* outweigh the risks, and besides, the
+risks are negligible because all stashed nodes are clones of nodes that
+*do* exist in external files.
+
+3. I have two main stashed trees: recent files and recent code.
+
+The "recent files" tree contains clones of all the @file nodes I have
+worked on recently. This speeds up access to them. That happens
+surprisingly often--often enough to be well worth maintaining the tree.
+Furthermore, because Leo's new pylint command now works on trees, I can
+check all recently-changed files simply by running pylint on the "recent
+files" tree.
+
+The "recent code" tree is even more valuable, for three reasons. The first
+is obvious--it speeds access to recently-changed nodes.
+
+Second, the "recent code" tree allows me to work on multiple tasks without
+getting overwhelmed by details and loose nodes lying around. I add
+organizer nodes as needed to make accessing the nodes faster, and also to
+jog my memory about what I was doing when I changed those nodes ;-)
+
+Third, the "recent code" tree allows me *not* to put clones in the @file
+leoProjects.txt tree. This leads me to...
+
+4. I use clones in a stylized way when fixing and committing bugs.
+
+I always use clones when working on a project. A "task" node contains
+clones of all nodes related to the task. The task node typically remains in
+leoToDo.txt until the task is completely finished. While working on the
+bug, I create a clone of the task node, and move that clone to the bottom
+top-level node of the outline. Among other things, this makes it easy to
+limit searches without actually choosing "suboutline only" in the Find
+panel. This workflow is decades old.
+
+The following is the heart of the new workflow. When a task is complete, I
+do the following:
+
+A. First, I create a **stashed-task** node, containing all the clones that
+    were previously in the task node.
+
+The *stashed-task* becomes pre-writing for the commit log. The *task* node
+instantly becomes pre-writing for the release notes, so if it needs to
+discuss any code in the clones that have just been moved to the
+stashed-task node, I write those words immediately, while all details are
+fresh in my mind.
+
+B. Now I move the cloned task node that is in leoToDo.txt to the
+   appropriate place in leoProjects.txt.
+
+C. Next I do the commit.
+
+The *other* clone of the task node, and the stashed task node are still
+within easy reach, and I typically use both nodes to create the commit log.
+The commit will typically consist of the changed leoToDo.txt and
+leoProjects.txt and whatever .py files the task itself changed. Happily,
+leoToDo.txt and leoProjects.txt are now up-to-date because of steps A and
+B.
+
+D. Finally, I clean up.
+
+I delete the top-level clone of the task node, and move the stashed-task node to the "recent code" tree.
+
+E. Later, when it appears that activity has died down on various projects, I'll delete nodes from the "recent files" an "recent code" trees.  This is a minor judgement call: I want to leave nodes in the trees while they are useful, but not significantly longer than that.  I do *not* regard these trees as permanently useful.  leoProjects.txt should contain *all* permanent notes about a project.
+
+That's it.
+
+===== Conclusion
+
+This is the work flow that I have used to dispatch dozens of bugs recently.
+I couldn't live without it.
+
+This work flow may seem complicated. Believe me, it is not. It's easier to
+use than to describe.
+
+This workflow has big advantages:
+
+1. The possibility of clone wars is gone for good.
+2. All recent data is easily available.
+3. Task nodes and stashed-task nodes provide natural places for proto-documentation.
+4. Banning clones from leoProjects.txt forces me to complete the first draft of the documentation before committing the fix.
+
+This work flow has no serious drawbacks. Yes, there is a chance of losing
+the data in the "recent files" and "recent code" trees, but that would be a
+minor inconvenience. No data would be lost because essentially everything
+in the "recent" trees is a clone of data that *does* exist in an external
+file. Indeed, *not* backing up stashed nodes is useful: only "real" changes
+get committed to the git repo. There are certainly enough of those changes
+without committing what is, in effect, transient data. But oh, that
+transient data comes in handy.
+</t>
 <t tx="ekr.20141030042423.9">Use the %~dp0 syntax.  Example::
   
   %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
