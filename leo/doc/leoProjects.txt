@@ -1197,6 +1197,19 @@ This works for me
 https://bugs.launchpad.net/leo-editor/+bug/1251252
 
 F11 (help-for-command) now works for @button & @command nodes.
+.. @+node:ekr.20141028061518.21: *4* Re-enabled command completion for @button commands
+@language rest
+
+This had been disabled when completion for vim : commands was added.
+
+Changed ga.get_command and ga.is_command.
+.. @+node:ekr.20141029185358.15: *4* Fixed bug 1028986: create relative urls when dragging binary files to Leo
+https://bugs.launchpad.net/leo-editor/+bug/1028986
+create relative urls when dragging binary files to Leo
+
+This bug was fixed by #60: 
+https://github.com/leo-editor/leo-editor/issues/60
+create relative paths & urls when dragging files to Leo
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
