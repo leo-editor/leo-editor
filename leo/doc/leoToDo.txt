@@ -8,89 +8,42 @@
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 4 bugs re distro
 .. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 setup.py confuses newbies
 
 The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 7 bugs re fit and finish
-.. @+node:ekr.20141030042423.5: *5* Fix bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
-https://bugs.launchpad.net/leo-editor/+bug/1240786
-Corner case bug in tab-cycle-next and tab-cycle-previous
-.. @+node:ekr.20141030042423.6: *5* Fix bug 1258302: Window, Toggle Split Direction Error 
-https://bugs.launchpad.net/leo-editor/+bug/1258302
-Window, Toggle Split Direction Error
-.. @+node:ekr.20141030042423.7: *5* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
-https://bugs.launchpad.net/leo-editor/+bug/815564
-Plugin Menu - Keystroke binding can prevent plugin help display
-.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
-
-Up-voted by Kent.
-.. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
-https://github.com/leo-editor/leo-editor/issues/74
-
-Up-voted by Kent.
-.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
-.. @+node:ekr.20141027112327.11: *4* Cant/wont fix/waiting for better reports
-.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
+.. @+node:ekr.20120401144849.10037: *5* Fix installer problem
 @language rest
 
-https://github.com/leo-editor/leo-editor/issues/78
+Leo 4.10 final released
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
 
-This can't be fixed without a way to make it happen repeatedly.
+EKR: One of these might work better.
 
-@language python
-.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
-@language rest
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
 
-https://github.com/leo-editor/leo-editor/issues/83
-.. @+node:ekr.20141017150357.18271: *4* 3 bugs assigned to Terry
-https://bugs.launchpad.net/leo-editor/+bug/1245111
-Can't get the viewrendered pane back next to the editor
+From Viktor
 
-https://github.com/leo-editor/leo-editor/issues/57
-Leo sets focus to body when main window gets focus
+> I tried to install Leo 4.10 final from Sourceforge via
+"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
+and running I tried to install this into a completely new separate user
+account.
 
-https://bugs.launchpad.net/leo-editor/+bug/1235619
-BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20141024211256.8: *3* Docs for a1
-- Transfer email items: 37 to-be-documented items.
+> After trying several variations it looks like that the "LeoSetup Script"
+requires a Python installation which is available to all users and not just
+to this one new separate account.
 
-- Add docstrings for all commands in leoSessions.py.
-  
-- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
+I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
 
-- Review all important plugins.
+If you mean setup.py, you shouldn't use it.
 
-- Create a FAQ entry for unable to describe root directory on thumb drive
-  Use the %~dp0 syntax.  Example::
-  
-  %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
-  
-  https://bugs.launchpad.net/leo-editor/+bug/613153
-  http://ss64.com/nt/syntax-args.html
-  http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
-.. @+node:ekr.20141024211256.13: *3* Testing for a1
-- Rerun Bob's test (make a unit test out of it??)
-- Improve check-outline using @test check all gnx's exist and are unique
-- Unit tests for indices.
-.. @+node:ekr.20141024211256.12: *3* Improvements for a1/b1
-.. @+node:ekr.20141024211256.11: *4* Fidel's ideas for newbies
-https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+> If this is done intentionally, what is the rationale for it.
 
-Fidel suggests quickstart guide should open by default instead of the
-user's workbook.
-.. @+node:ekr.20141011053251.18205: *4* Installer ideas for a1
-@language rest
-
-- Virtual machines
-- PortableFileAssociator
-- Homebrew install for Mac.
+It wasn't done intentionally. There may be an nsi option to get around this
+problem, but I'm not sure about it. I'll look at this soon.
 .. @+node:ekr.20050328093147.1: *5* Report: improving installer (old??)
 @language rest
 
@@ -164,7 +117,102 @@ installer to review the message box's contents.
 
 I last looked at the installer three months ago so I would have to look at the
 rest of it for other barriers to automated installation.
-.. @+node:ekr.20130806072439.20732: *5* ** Runnable Leo in one .zip file w/ virtual machine
+.. @+node:ekr.20141024211256.11: *5* Fidel's ideas for newbies
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+Fidel suggests quickstart guide should open by default instead of the
+user's workbook.
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 8 bugs re fit and finish
+.. @+node:ekr.20141030042423.12: *5* Fix bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string
+https://bugs.launchpad.net/leo-editor/+bug/1338172
+ReplaceAll will not replace newlines indicated as \n in target string
+.. @+node:ekr.20141030042423.5: *5* Fix bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
+https://bugs.launchpad.net/leo-editor/+bug/1240786
+Corner case bug in tab-cycle-next and tab-cycle-previous
+.. @+node:ekr.20141030042423.6: *5* Fix bug 1258302: Window, Toggle Split Direction Error 
+https://bugs.launchpad.net/leo-editor/+bug/1258302
+Window, Toggle Split Direction Error
+.. @+node:ekr.20141030042423.7: *5* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+https://bugs.launchpad.net/leo-editor/+bug/815564
+Plugin Menu - Keystroke binding can prevent plugin help display
+.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+
+Up-voted by Kent.
+.. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/74
+
+Up-voted by Kent.
+.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
+.. @+node:ekr.20141020061642.21517: *5* Improve page up/down commands
+[Simple script] Jump exactly one page with Page Down
+
+https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
+.. @+node:ekr.20141027112327.11: *4* Cant/wont fix/waiting for better reports
+.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+This can't be fixed without a way to make it happen repeatedly.
+
+@language python
+.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
+.. @+node:ekr.20141024211256.8: *3* Docs for a1
+- Transfer email items: 37 to-be-documented items.
+
+- Add docstrings for all commands in leoSessions.py.
+  
+- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
+
+- Review all important plugins.
+
+- Create a FAQ entry for unable to describe root directory on thumb drive
+  Use the %~dp0 syntax.  Example::
+  
+  %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
+  
+  https://bugs.launchpad.net/leo-editor/+bug/613153
+  http://ss64.com/nt/syntax-args.html
+  http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
+.. @+node:ekr.20141024211256.13: *3* Testing for a1
+- Rerun Bob's test (make a unit test out of it??)
+- Improve check-outline using @test check all gnx's exist and are unique
+- Unit tests for indices.
+.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
+@language rest
+.. @+node:ekr.20141030042423.13: *3* Top wishlist items
+https://bugs.launchpad.net/leo-editor/+bug/1247140
+Wishlist: Command History in minibuffer
+
+https://bugs.launchpad.net/leo-editor/+bug/1259974
+Leo should watch @ node contents for external updates
+
+https://bugs.launchpad.net/leo-editor/+bug/1259755
+Leo should keep the external editor's temp file up to date
+
+https://bugs.launchpad.net/leo-editor/+bug/1159490
+"Open with" fails to copy changes by external editor back to Leo-Editor node
+.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
+From the thread: Cannot open Leo files by double-click in Windows Explorer?
+https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
+
+From: HansBKK <hansbkk@gmail.com>
+
+For those like me who work in "portable" mode, there's a very cool tool
+called "PortableFileAssociator" that allows you to create a set of windows
+file associations, icons etc and enable/disable the whole profile at one
+time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows
+boxes and bored with having to tweak each one separately.
+.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file w/ virtual machine
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Summary - it's easy to make a .zip file containing Leo and all it's
@@ -252,7 +300,7 @@ links to the download packages etc might make it a **little** easier (IMO
 only for the clueless), but then of course that would be a doc that would
 need pretty frequent updates, which if I may be so bold doesn't seem to
 happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *6* Re: Runnable Leo in one .zip file.
+.. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
 From: Matt Wilkie <maphew@gmail.com>
 
 Since this topical today, almost a year later, I thought I'd take a run at 
@@ -283,7 +331,7 @@ Leo requires Qt to be installed.
 }}}
 
 oh well.
-.. @+node:ekr.20130806072439.20744: *6* Re: Runnable Leo in one .zip file.
+.. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
 From: HansBKK <hansbkk@gmail.com>
 
 > PortableApps version would be FANTASTIC!!
@@ -365,7 +413,7 @@ to use a single location under PortableApps, but I prefer to keep them
 separate for testing purposes.
 
 I hope you (and others googling this later) find this useful.
-.. @+node:ekr.20130807203905.16594: *5* Wishlist for newbies (Fidel)
+.. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
 @language rest
 
 From the thread: "Associate .Leo files to open with Leo when double click"
@@ -403,7 +451,7 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
-.. @+node:ekr.20130806072439.20650: *5* Wishlist: brew install leo
+.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
 From: Winn Dixie <incredible0n3@gmail.com>
 
 Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
@@ -432,48 +480,14 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 
 The script explains what it will do and then pauses before it does it.
 There are more installation options here (needed on 10.5).
-.. @+node:ekr.20130807203905.16596: *5* PortableFileAssociator
-From the thread: Cannot open Leo files by double-click in Windows Explorer?
-https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
-
-From: HansBKK <hansbkk@gmail.com>
-
-For those like me who work in "portable" mode, there's a very cool tool
-called "PortableFileAssociator" that allows you to create a set of windows
-file associations, icons etc and enable/disable the whole profile at one
-time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows
-boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20141024211256.7: *4* Improve help-for command
 Fix focus problem with F11 & help-for-command
 
 Add modules/plugins to help-for-command.
-.. @+node:ekr.20141020061642.21517: *4* Improve page up/down commands
-[Simple script] Jump exactly one page with Page Down
-
-https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
-.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 .. @+node:ekr.20141029185358.14: *3* Launchpad bugs for b1
-===== Files
+[Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
+shadow file name collisions cause spontaneous clone creation
 
-https://bugs.launchpad.net/leo-editor/+bug/613153
-unable to describe root directory on thumb drive
-
-https://bugs.launchpad.net/leo-editor/+bug/1259755
-Leo should keep the external editor's temp file up to date
-
-https://bugs.launchpad.net/leo-editor/+bug/1159490
-"Open with" fails to copy changes by external editor back to Leo-Editor node
-
-===== IPython
-
-https://bugs.launchpad.net/leo-editor/+bug/1228099
-Cancelling save of dirty untitled commander doesn't work with --ipython
-
-https://bugs.launchpad.net/leo-editor/+bug/1258512
-_leo.c not working from IPython
-.. @+node:ekr.20141029185358.17: *3* Launchpad undecided bugs
 https://bugs.launchpad.net/leo-editor/+bug/1338773
 Autocompleter error
 
@@ -483,56 +497,72 @@ A custom menu that seems correct, but does nothing
 https://bugs.launchpad.net/leo-editor/+bug/1292207
 Disabling Plugins disables menu actions
 
-https://bugs.launchpad.net/leo-editor/+bug/1335310
-Error: leo.plugins.at_folder.init did not return a bool
-
-https://bugs.launchpad.net/leo-editor/+bug/1338172
-ReplaceAll will not replace newlines indicated as \n in target string
-
 https://bugs.launchpad.net/leo-editor/+bug/1269540
 File importing problems: Path doesn't properly appear as node header
-
-[fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
-shadow file name collisions cause spontaneous clone creation
 
 https://bugs.launchpad.net/leo-editor/+bug/1286909
 Settings in file A propagate to file B when editing A and B is opened
 
 https://bugs.launchpad.net/leo-editor/+bug/1286913
-After the "menu already exists: ampersand menu name" warning, the menu entries are added to the existing menu.
+After the "menu already exists: ampersand menu name" warning,
+the menu entries are added to the existing menu.
+
+https://bugs.launchpad.net/leo-editor/+bug/1249368
+Leo 4.11 final custom hotkey can not work on 1st call
+
+https://bugs.launchpad.net/leo-editor/+bug/1249684
+"add body editor" adds editor pane in wrong tab
+
+https://bugs.launchpad.net/leo-editor/+bug/1266269
+Mac: alt-x does not work in body pane
+.. @+node:ekr.20141017150357.18271: ** 3 Launchpad bugs assigned to Terry
+https://bugs.launchpad.net/leo-editor/+bug/1245111
+Can't get the viewrendered pane back next to the editor
+
+https://github.com/leo-editor/leo-editor/issues/57
+Leo sets focus to body when main window gets focus
+
+https://bugs.launchpad.net/leo-editor/+bug/1235619
+BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
 .. @+node:ekr.20120226183512.10195: ** All other bugs
 @language rest
-.. @+node:ekr.20140917154740.19477: *3* Installer bugs
-.. @+node:ekr.20120401144849.10037: *4* Fix installer problem
-@language rest
+.. @+node:ekr.20141030042423.14: *3* Launchpad bugs re plugins
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
 
-Leo 4.10 final released
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
 
-EKR: One of these might work better.
+https://bugs.launchpad.net/leo-editor/+bug/1335310
+Error: leo.plugins.at_folder.init did not return a bool
 
-; RequestExecutionLevel highest
-; RequestExecutionLevel admin
+https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
 
-From Viktor
+https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
 
-> I tried to install Leo 4.10 final from Sourceforge via
-"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
-and running I tried to install this into a completely new separate user
-account.
+https://bugs.launchpad.net/leo-editor/+bug/823538
+Plugin quicksearch.py command marked-list does nothing
 
-> After trying several variations it looks like that the "LeoSetup Script"
-requires a Python installation which is available to all users and not just
-to this one new separate account.
+https://bugs.launchpad.net/leo-editor/+bug/917805
+Quicksearch, select string in header, Shift-Ctrl-F does NOT work
 
-I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
+https://bugs.launchpad.net/leo-editor/+bug/1173798
+Notebook plugin command nb-subtree does not start with the right leo file
 
-If you mean setup.py, you shouldn't use it.
+https://bugs.launchpad.net/leo-editor/+bug/1199979
+find-quick / Nav tab doesn't work with "first_date = events[0].date"
 
-> If this is done intentionally, what is the rationale for it.
+https://bugs.launchpad.net/leo-editor/+bug/1230273
+Todo.py documentation - image link semi-broken in docstring
 
-It wasn't done intentionally. There may be an nsi option to get around this
-problem, but I'm not sure about it. I'll look at this soon.
+https://bugs.launchpad.net/leo-editor/+bug/1240688
+Problems with the Help Menu
+Apparently, this bug is related to the leo_dark theme 0 settings.
+
+https://bugs.launchpad.net/leo-editor/+bug/323175
+run_nodes plugins doesn't work
 .. @+node:ekr.20130926053913.11562: *3* Bug-tracker: Hard
 .. @+node:ekr.20140824163757.20587: *4* Bug 1022140: scroll problem in the body pane (Hard)
 @language rest
@@ -740,104 +770,6 @@ https://bugs.launchpad.net/leo-editor/+bug/914221
 
 Summary of a *long* discussion: this may be a docutils issue, and does not
 seem easy to fix.
-.. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
-.. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/nnn
-
-These are all relatively minor.
-.. @+node:ekr.20111026091322.16498: *4* Bug 869098: Context menu settings lost if save as used
-See https://bugs.launchpad.net/leo-editor/+bug/869098
-
-Hard?
-
-I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
-.. @+node:ekr.20130920055521.11282: *4* Bug 1228099: Cancelling save of dirty untitled commander doesn't work with --ipython
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1228099
-
-The Ipython bridge doesn't seem to be working.
-
-The examples in the IPython chapter seem to be out of date.
-http://leoeditor.com/IPythonBridge.html
-
-Requires that IPython work with Leo using the --ipython option.
-.. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
-Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I'm using @auto to import java files into my Leo project. I'm then cloning 
-various methods as sub-nodes of new feature nodes. 
-It's helping keep my development focussed - and is useful to look back and 
-see what parts of the codebase I've worked on for each feature. 
-
-However, the whitespace in the Java files isn't completely regular. In 
-particular, debug logging is always placed in column 1 - regardless of the 
-surrounding indentation. 
-Other people are also working on these files, so I'd rather not mess with 
-the established convention. 
-
-As things stand, when Leo imports a file its outputting a bunch of error 
-messages:
-* error: underindented line. Extra leading whitespace will be added
-* warning: intermixed blanks and tabs
-
-The creation of the auto node goes fine - though the final result has an 
-@ignore directive in its root node. 
-When working, I just take the @ignore away and clone the methods I want to 
-work on. 
-The problem is when I close the Leo file and re-open it later on, the same 
-errors occur during the building of the auto node and the previous cloned 
-information is lost. 
-To restart work on a feature, I need to reclone the appropriate nodes. Not 
-a showstopper, but not ideal. 
-
-I tried adjusting the info in the JavaScanner class in the core 
-leoImport.py file as follows:
-
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = None
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.classTags = ['class','interface']
-        self.functionTags = []
-        self.sigFailTokens = [';','='] # Just like c.
-        self.strict=False
-
-I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
-compiled to bytecode seems to be ok.
-
-I was hoping the the setting of self.strict = False would allow the parsing 
-to ignore the whitespace and indentation issues. 
-I'm still getting the same errors though. 
-
-Any help appreciated. I'm using Leo 4.10-final. 
-
-===== EKR
-
-There is no easy way to do this at present, but it's probably reasonable to
-disable errors (and not add @ignore) for underindented comments for
-non-strict languages.
-
-Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20141017110114.18266: *3* Bug-tracker: Minor
 .. @+node:ekr.20140824043305.18303: *3* Not in bug tracker
 .. @+node:ekr.20130806072439.20380: *4* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
@@ -1041,6 +973,68 @@ Especially:
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
 .. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
+Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
+From: Eoin <eoinmccarthy@fastmail.fm>
+
+I'm using @auto to import java files into my Leo project. I'm then cloning 
+various methods as sub-nodes of new feature nodes. 
+It's helping keep my development focussed - and is useful to look back and 
+see what parts of the codebase I've worked on for each feature. 
+
+However, the whitespace in the Java files isn't completely regular. In 
+particular, debug logging is always placed in column 1 - regardless of the 
+surrounding indentation. 
+Other people are also working on these files, so I'd rather not mess with 
+the established convention. 
+
+As things stand, when Leo imports a file its outputting a bunch of error 
+messages:
+* error: underindented line. Extra leading whitespace will be added
+* warning: intermixed blanks and tabs
+
+The creation of the auto node goes fine - though the final result has an 
+@ignore directive in its root node. 
+When working, I just take the @ignore away and clone the methods I want to 
+work on. 
+The problem is when I close the Leo file and re-open it later on, the same 
+errors occur during the building of the auto node and the previous cloned 
+information is lost. 
+To restart work on a feature, I need to reclone the appropriate nodes. Not 
+a showstopper, but not ideal. 
+
+I tried adjusting the info in the JavaScanner class in the core 
+leoImport.py file as follows:
+
+        self.blockCommentDelim1 = '/*'
+        self.blockCommentDelim2 = '*/'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+        self.lineCommentDelim = '//'
+        self.lineCommentDelim2 = None
+        self.outerBlockDelim1 = '{'
+        self.outerBlockDelim2 = '}'
+        self.classTags = ['class','interface']
+        self.functionTags = []
+        self.sigFailTokens = [';','='] # Just like c.
+        self.strict=False
+
+I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
+compiled to bytecode seems to be ok.
+
+I was hoping the the setting of self.strict = False would allow the parsing 
+to ignore the whitespace and indentation issues. 
+I'm still getting the same errors though. 
+
+Any help appreciated. I'm using Leo 4.10-final. 
+
+===== EKR
+
+There is no easy way to do this at present, but it's probably reasonable to
+disable errors (and not add @ignore) for underindented comments for
+non-strict languages.
+
+Please file a wishlist bug for this.  Thanks.
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 The big picture:
 
