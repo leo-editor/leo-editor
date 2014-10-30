@@ -12,12 +12,6 @@ from distutils.command.install import INSTALL_SCHEMES
 import os,fnmatch,sys
 from setuptools import setup, find_packages
 
-if not os.environ.get('_', '').endswith('pip'):
-    print(
-        "setup.py is only used for `pip` installs, please see:\n" +
-        "http://leoeditor.com/installing.html"
-    )
-    sys.exit()
 #@+node:maphew.20130503222911.1635: ** Get description
 try:
     long_description = open('README.TXT', 'rt').read()
