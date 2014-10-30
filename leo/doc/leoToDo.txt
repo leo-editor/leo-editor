@@ -122,7 +122,25 @@ https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
 Fidel suggests quickstart guide should open by default instead of the
 user's workbook.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 8 bugs re fit and finish
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 3 bugs re fit and finish
+.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+
+Up-voted by Kent.
+.. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/74
+
+Up-voted by Kent.
+.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
+.. @+node:ekr.20141030042423.16: *4* Priority 4: 6 minor fit & finish bugs (as time allows)
+These may move to b1.
+.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20141020061642.21517: *5* Improve page up/down commands
+[Simple script] Jump exactly one page with Page Down
+
+https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20141030042423.12: *5* Fix bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string
 https://bugs.launchpad.net/leo-editor/+bug/1338172
 ReplaceAll will not replace newlines indicated as \n in target string
@@ -135,35 +153,6 @@ Window, Toggle Split Direction Error
 .. @+node:ekr.20141030042423.7: *5* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
-.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
-
-Up-voted by Kent.
-.. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
-https://github.com/leo-editor/leo-editor/issues/74
-
-Up-voted by Kent.
-.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
-.. @+node:ekr.20141020061642.21517: *5* Improve page up/down commands
-[Simple script] Jump exactly one page with Page Down
-
-https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
-.. @+node:ekr.20141027112327.11: *4* Cant/wont fix/waiting for better reports
-.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-This can't be fixed without a way to make it happen repeatedly.
-
-@language python
-.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
 - Transfer email items: 37 to-be-documented items.
 
@@ -172,19 +161,9 @@ https://github.com/leo-editor/leo-editor/issues/83
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
 
 - Review all important plugins.
-
-- Create a FAQ entry for unable to describe root directory on thumb drive
-  Use the %~dp0 syntax.  Example::
-  
-  %~dp0\Python27\python.exe %~dp0\Leo-editor\launchLeo.py
-  
-  https://bugs.launchpad.net/leo-editor/+bug/613153
-  http://ss64.com/nt/syntax-args.html
-  http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
 .. @+node:ekr.20141024211256.13: *3* Testing for a1
 - Rerun Bob's test (make a unit test out of it??)
-- Improve check-outline using @test check all gnx's exist and are unique
-- Unit tests for indices.
+- [Done?] Unit tests for indices.
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 .. @+node:ekr.20141030042423.13: *3* Top wishlist items
@@ -524,6 +503,21 @@ Leo sets focus to body when main window gets focus
 
 https://bugs.launchpad.net/leo-editor/+bug/1235619
 BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
+.. @+node:ekr.20141027112327.11: ** Cant/wont fix/waiting for better reports
+.. @+node:ekr.20141024184556.6: *3* Can't fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+This can't be fixed without a way to make it happen repeatedly.
+
+@language python
+.. @+node:ekr.20141026191037.6: *3* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
+
+This appears to be a Windows 8 issue.
 .. @+node:ekr.20120226183512.10195: ** All other bugs
 @language rest
 .. @+node:ekr.20141030042423.14: *3* Launchpad bugs re plugins
