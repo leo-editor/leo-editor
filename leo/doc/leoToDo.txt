@@ -5,11 +5,67 @@
 .. @+all
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
+.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
+@language rest
+.. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
+.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
+.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+setup.py confuses newbies
+
+The plan is to move setup.py to leo/dist, but this may not please Ville.
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 0 bugs re fit and finish
+.. @+node:ekr.20141029185358.18: *4* Priority 4: requested bug fixes
+.. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
+https://github.com/leo-editor/leo-editor/issues/66
+errors inhibited read @auto foo.md
+
+Up-voted by Kent.
+.. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/74
+
+Up-voted by Kent.
+.. @+node:ekr.20141017055340.18274: *4* Priority 5: 3 bugs re commands
+.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
+# Use table?
+.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
+.. @+node:ekr.20141017110114.18267: *5* @data qt-scintilla-styles only works in leoSetting.leo
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20141027112327.11: *4* Cant/wont fix/waiting for better reports
+.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+This can't be fixed without a way to make it happen repeatedly.
+
+@language python
+.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
+.. @+node:ekr.20141017150357.18271: *4* 3 bugs assigned to Terry
+https://bugs.launchpad.net/leo-editor/+bug/1245111
+Can't get the viewrendered pane back next to the editor
+
+https://github.com/leo-editor/leo-editor/issues/57
+Leo sets focus to body when main window gets focus
+
+https://bugs.launchpad.net/leo-editor/+bug/1235619
+BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
+.. @+node:ekr.20141024211256.8: *3* Docs for a1
+- Transfer email items: 37 to-be-documented items.
+
+- Add docstrings for all commands in leoSessions.py.
+  
+- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
+
+- Review all important plugins.
 .. @+node:ekr.20141024211256.13: *3* Testing for a1
 - Rerun Bob's test (make a unit test out of it??)
 - Improve check-outline using @test check all gnx's exist and are unique
 - Unit tests for indices.
-.. @+node:ekr.20141024211256.12: *3* ** Improvements for a1
+.. @+node:ekr.20141024211256.12: *3* Improvements for a1/b1
 .. @+node:ekr.20141024211256.11: *4* Fidel's ideas for newbies
 https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
@@ -383,60 +439,6 @@ Add modules/plugins to help-for-command.
 [Simple script] Jump exactly one page with Page Down
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
-.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
-@language rest
-.. @+node:ekr.20141012064706.18243: *4* Priority 1: 0 bugs affecting stability
-.. @+node:ekr.20141012064706.18244: *4* Priority 2: 1 bug re distro
-.. @+node:ekr.20141017150357.18269: *5* Fix bug 969391: setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-setup.py confuses newbies
-
-The plan is to move setup.py to leo/dist, but this may not please Ville.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 1 bug re fit and finish
-.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
-
-Up-voted by Kent.
-.. @+node:ekr.20141028061518.8: *4* Fix bug 74: problems with @button if defined in myLeoSettings.leo
-https://github.com/leo-editor/leo-editor/issues/74
-
-Up-voted by Kent.
-.. @+node:ekr.20141027112327.11: *4* Cant/wont fix
-.. @+node:ekr.20141024184556.6: *5* Can't fix bug 78: F3 find-next target not always highlighted
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-This can't be fixed without a way to make it happen repeatedly.
-
-@language python
-.. @+node:ekr.20141026191037.6: *5* Can't fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
-.. @+node:ekr.20141017150357.18271: *4* 2 bugs assigned to Terry
-https://bugs.launchpad.net/leo-editor/+bug/1245111
-Can't get the viewrendered pane back next to the editor
-
-https://github.com/leo-editor/leo-editor/issues/57
-Leo sets focus to body when main window gets focus
-
-https://bugs.launchpad.net/leo-editor/+bug/1235619
-BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20141017055340.18274: *3* Bugs for b1 (minor)
-.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
-# Use table?
-.. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
-.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20141024211256.14: *3* Review all important plugins
-.. @+node:ekr.20141024211256.8: *3* Docs for a1
-- Transfer email items: 37 to-be-documented items.
-
-- Add docstrings for all commands in leoSessions.py.
-  
-- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
 .. @+node:ekr.20141029185358.16: ** To do: Leo 5.0b1
 .. @+node:ekr.20141029185358.14: *3* Launchpad bugs for b1
 ===== Files
@@ -495,7 +497,7 @@ Settings in file A propagate to file B when editing A and B is opened
 
 https://bugs.launchpad.net/leo-editor/+bug/1286913
 After the "menu already exists: ampersand menu name" warning, the menu entries are added to the existing menu.
-.. @+node:ekr.20120226183512.10195: ** All Bugs
+.. @+node:ekr.20120226183512.10195: ** All other bugs
 @language rest
 .. @+node:ekr.20140917154740.19477: *3* Installer bugs
 .. @+node:ekr.20120401144849.10037: *4* Fix installer problem
@@ -1095,7 +1097,14 @@ Especially:
     - Python encoding line.
 .. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20140921072018.17937: ** New separate-process commands
+.. @+node:ekr.20120516140545.9987: ** Wishlist
+The big picture:
+
+- The dog that isn't barking: newbies seem to be having an easier time learning Leo.
+- A gallery showing what rST & css can do in Leo.
+- Leo as a web app.
+.. @+node:ekr.20140521095206.16728: *3* * Important
+.. @+node:ekr.20140921072018.17937: *4* New separate-process commands
 @language rest
 
 run-script-from-bridge
@@ -1127,16 +1136,16 @@ There are several ways to run code externally:
 - Using leo.core.leoBridgeTest.
 - (When ready) using g.run_leo_script_externally.
 - Using the full-blown method that Terry discusses in that chapter.
-.. @+node:ekr.20140921072018.17938: *3* Settings for at-produce plugin?
+.. @+node:ekr.20140921072018.17938: *5* Settings for at-produce plugin?
 * Why not just improve g.execute_shell_commands ?
     - It could report too.
     - And it could use settings too.
 
 - time-between-notifications: 0 means disable notifications.
 - Decrease time between calls to idle-time handler.
-.. @+node:ekr.20140919052413.17946: *3* Revise leoBridge docs
+.. @+node:ekr.20140919052413.17946: *5* Revise leoBridge docs
 Do this after the new run-script commands
-.. @+node:ekr.20140922043414.17947: *4* Solution 1
+.. @+node:ekr.20140922043414.17947: *6* Solution 1
 # http://leoeditor.com/leoBridge.html#running-leobridge-from-within-leo
 
 import sys
@@ -1146,7 +1155,7 @@ path = r'c:\Users\edreamleo\test\leo_bridge_test.py'
 assert g.os_path_exists(path)
 proc = subprocess.Popen([sys.executable,path])
 proc.communicate()
-.. @+node:ekr.20140921072018.17943: *5* leo_bridge_test.py (defined in ekr.leo)
+.. @+node:ekr.20140921072018.17943: *7* leo_bridge_test.py (defined in ekr.leo)
 '''A minimal Leo bridge application'''
 # This can not be run locally!
 import leo.core.leoBridge as leoBridge
@@ -1159,7 +1168,7 @@ assert g.os_path_exists(path)
 c = b.openLeoFile(path)
 assert c
 assert c.rootPosition()
-.. @+node:ekr.20140922043414.17948: *4* Solution 2 (test)
+.. @+node:ekr.20140922043414.17948: *6* Solution 2 (test)
 # From within the bridge, do:
 import leo.core.leoTest as leoTest
 helper = leoTest.RunTestExternallyHelperClass(c,all=True,marked=False)
@@ -1174,12 +1183,10 @@ helper.runUnitTestLeoFile(
     tracePlugins=True,
     verbose=True,
 )
-.. @+node:ekr.20140922043414.17949: *4* Solution 0 (already documented)
+.. @+node:ekr.20140922043414.17949: *6* Solution 0 (already documented)
 import leo.core.leoBridgeTest as leoBridgeTest
 
 leoBridgeTest.main()
-.. @+node:ekr.20120516140545.9987: ** Wishlist
-.. @+node:ekr.20140521095206.16728: *3* * Important
 .. @+node:ekr.20140910140737.17820: *4* Make Leo settings easier for newbies
 A good thread: Help! Messing with UI settings.
 https://groups.google.com/forum/#!topic/leo-editor/2xB258NjR4s
