@@ -1783,6 +1783,24 @@ class Commands (object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.flattenOutline(fileName)
+    #@+node:ekr.20141030120755.12: *6* c.flattenOutlineToNode
+    def flattenOutlineToNode(self,event=None):
+        '''
+        Flatten the selected outline by appending the body text of
+        all nodes of the tree to the body text of the root node.
+        '''
+        c,root,u = self,self.p,self.undoer
+        if not root.hasChildren():
+            return
+        bunch = u.beforeChangeNodeContents(root)
+        aList = []
+        for p in root.subtree():
+            aList.append('\n' + p.h)
+            if p.b.strip():
+                lines = g.splitLines(p.b)
+                aList.extend(lines)
+        root.b = root.b.rstrip() + '\n' + '\n'.join(aList) + '\n'
+        u.afterChangeNodeContents(root,'flatten-outline-to-node',bunch)
     #@+node:ekr.20031218072017.2857: *6* c.outlineToCWEB
     def outlineToCWEB (self,event=None):
 

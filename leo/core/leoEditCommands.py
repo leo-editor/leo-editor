@@ -9121,6 +9121,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
             # 'extract-section':              c.extractSection,
             'find-next-clone':              c.findNextClone,
             'flatten-outline':              c.flattenOutline,
+            'flatten-outline-to-node':      c.flattenOutlineToNode,
             'go-back':                      c.goPrevVisitedNode,
             'go-forward':                   c.goNextVisitedNode,
             'goto-first-node':              c.goToFirstNode,
