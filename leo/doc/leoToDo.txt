@@ -8,7 +8,7 @@
 .. @+node:ekr.20140824043305.18300: *3* Bugs for a1
 @language rest
 .. @+node:ekr.20141012064706.18243: *4* Priority 1: 1 bug affecting stability
-.. @+node:ekr.20131103054650.16527: *5* fill-region & format-body can hang
+.. @+node:ekr.20131103054650.16527: *5* Fix bug: fill-region & format-body can hang
 .. @+node:ekr.20141012064706.18244: *4* Priority 2: 0 bugs re distro
 .. @+node:ekr.20141024211256.11: *5* Fixed? Quickstart guide should open by default
 https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
@@ -21,10 +21,42 @@ https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
 
 Up-voted by Kent.
+
+Here's the file::
+
+QQQQQ
+_Thinking about Python3 in the context of Osgeo4W_
+
+the current practice of putting .exe and .dll in .\bin means we can't install different versions of python side by side. What, if anything, would break if we moved them back into `.\apps\Python27`?
+
+.\bin\set_py.bat {version}
+
+Setup the current shell for the specified python version, if null then use the default.
+
+set pythonhome=%osgeo4w_root%\apps\Python%ver%
+set path=%pythonhome%;%pythonhome%\Scripts;%path%
+python --version
+
+:: Associate .py files with Windows
+
+assoc .py=Python.File
+ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
+QQQQQ
 .. @+node:ekr.20141028061518.8: *5* Fix bug 74: problems with @button if defined in myLeoSettings.leo
+@language rest
+
 https://github.com/leo-editor/leo-editor/issues/74
 
 Up-voted by Kent.
+
+Putting @button definitions in myLeoSettings.leo (in an @buttons tree)
+makes them available in all Leo files, a nice feature.
+
+Two problems:
+
+- The buttons lack the 'Goto Script' rclick feature in all .leo files.
+
+- There are duplicate buttons in myLeoSettings.leo, 
 .. @+node:ekr.20141030042423.16: *4* Priority 4: 6 minor fit & finish bugs (as time allows)
 These may move to b1.
 .. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
@@ -58,7 +90,7 @@ Plugin Menu - Keystroke binding can prevent plugin help display
 - [Done?] Unit tests for indices.
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
-.. @+node:ekr.20141030042423.13: *3* Top wishlist items
+.. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140
 Wishlist: Command History in minibuffer
 
@@ -355,7 +387,7 @@ There are more installation options here (needed on 10.5).
 Fix focus problem with F11 & help-for-command
 
 Add modules/plugins to help-for-command.
-.. @+node:ekr.20141029185358.14: *3* Launchpad bugs for b1
+.. @+node:ekr.20141029185358.14: *3* 10 Launchpad bugs for b1
 [Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
 shadow file name collisions cause spontaneous clone creation
 
