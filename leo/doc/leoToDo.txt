@@ -15,7 +15,7 @@ https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
 Fidel suggests quickstart guide should open by default instead of the
 user's workbook.
-.. @+node:ekr.20141024211256.16: *4* Priority 3: 2 bugs up-voted by Kent
+.. @+node:ekr.20141024211256.16: *4* Priority 3: 2 up-voted bugs
 .. @+node:ekr.20141020061642.21513: *5* Fix bug 66: errors inhibited read @auto foo.md
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
@@ -42,6 +42,15 @@ python --version
 assoc .py=Python.File
 ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
 QQQQQ
+.. @+node:ekr.20141024184556.6: *5* Fix bug 78: F3 find-next target not always highlighted
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+I can now verify that this is a scrolling problem, not a failure to select
+text.
+
+@language python
 .. @+node:ekr.20141030042423.16: *4* Priority 4: 6 minor fit & finish bugs (as time allows)
 These may move to b1.
 .. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
@@ -413,14 +422,6 @@ Leo sets focus to body when main window gets focus
 https://bugs.launchpad.net/leo-editor/+bug/1235619
 BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
 .. @+node:ekr.20141027112327.11: ** Cant/wont fix/waiting for better reports
-.. @+node:ekr.20141024184556.6: *3* Can't fix bug 78: F3 find-next target not always highlighted
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-This can't be fixed without a way to make it happen repeatedly.
-
-@language python
 .. @+node:ekr.20141026191037.6: *3* Can't fix bug 83: Bracket completion doesn't work
 @language rest
 
