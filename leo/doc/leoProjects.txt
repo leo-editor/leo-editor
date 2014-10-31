@@ -3,7 +3,7 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20131225061403.16376: ** 4.11.1
+.. @+node:ekr.20131225061403.16376: ** 5.0a1
 .. @+node:ekr.20140702131031.16726: *3* Bugs
 .. @+node:ekr.20131124060912.16475: *4* Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
 https://bugs.launchpad.net/leo-editor/+bug/1228457
@@ -1319,6 +1319,28 @@ setup.py confuses newbies
 
 Terry's recent changes allow pip to use setup.py, and warns otherwise. This
 seems like a good compromise.
+.. @+node:ekr.20141028061518.8: *4* Fixed bug 74: problems with @button if defined in myLeoSettings.leo
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/74
+
+What I did:
+
+- ScriptingController now uses *gnxs* (not vnodes!) to detect duplicate buttons.
+- Use AtButtonCallback for *all* buttons.
+- QtIconBarClass.setCommandForButton always calls
+  ScriptingController.build_rclick_tree.
+- build_rclick_tree no longer assumes that command_p exists.
+
+
+Report:
+
+Putting @button definitions in myLeoSettings.leo (in an @buttons tree)
+makes them available in all Leo files, a nice feature. Two problems:
+
+- The buttons lack the 'Goto Script' rclick feature in all .leo files.
+- There are duplicate buttons in myLeoSettings.leo
+
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
@@ -1980,6 +2002,8 @@ And whose body text is::
     pylint-leo.py: plugins\qt_tree.py
     time: 40.073 sec.
     ===============
+.. @+node:ekr.20141031053508.5: *4* Added flatten-outline-to-node
+Very useful when summarizing documenation nodes.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

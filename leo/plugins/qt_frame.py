@@ -2369,44 +2369,57 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes)
+        #@+node:ekr.20141031053508.14: *4* goto_command
+        def goto_command(self,command):
+            '''
+            Select the node corresponding to command.gnx.
+            
+            command is an AtButtonCallback instance, defined in mod_scripting.py.
+            command.controller is a ScriptingController instance.
+            '''
+            # Fix bug 74: command_p may be in another outline.
+            c2,p = command.controller.find_gnx(command.gnx,openFlag=True)
+            if p:
+                g.app.selectLeoWindow(c2)
+                c2.selectPosition(p)
+                c2.redraw()
+            else:
+                g.trace('not found',command.gnx)
+        #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
         def setCommandForButton(self,button,command):
-
-            # EKR 2013/09/12: fix bug 1193819: Script buttons cant "go to script" after outline changes.
-            # The command object now has a gnx ivar instead of a p ivar.
-            # The code below uses command.controller.find_gnx to determine the proper position.
-            if command:
-                # button is a leoIconBarButton.
-                button.button.clicked.connect(command)
-                # can get here from @buttons in the current outline, in which
-                # case p exists, or from @buttons in @settings elsewhere, in
-                # which case it doesn't
-                if not hasattr(command,'gnx'):
-                    return
-                command_p = command.controller.find_gnx(command.gnx)
-                if not command_p:
-                    return
-                # 20100518 - TNB command is instance of callable class with
-                #   c and gnx attributes, so we can add a context menu item...
-                def goto_command(checked, command = command):
-                    c = command.c
-                    p = command.controller.find_gnx(command.gnx)
-                    if p:
-                        c.selectPosition(p)
-                        c.redraw()
-                b = button.button
+            '''
+            Set the "Goto Script" rlick item of an @button button.
+            
+            button is a leoIconBarButton.
+            command is an AtButtonCallback instance, defined in mod_scripting.py.
+            command.controller is a ScriptingController instance.
+            '''
+            if not command:
+                return
+            # g.trace('%20s %s' % (button.text,command),g.callers())
+            # Fix bug 74: command is now always an AtButtonCallback instance.
+            #             This code always adds a Goto Script button.
+            b = button.button
+            controller = command.controller
+            button.button.clicked.connect(command)
+            # Fix bug 1193819: Script buttons cant "go to script" after outline changes.
+            command_c,command_p = command.controller.find_gnx(command.gnx)
+            
+            def goto_callback(checked,command=command):
+                self.goto_command(command)
+                
+            if command_p:
                 docstring = g.getDocString(command_p.b)
                 if docstring:
                     b.setToolTip(docstring)
-                b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
-                b.addAction(gts)
-                gts.triggered.connect(goto_command)
-                
-                rclicks = build_rclick_tree(command_p, top_level=True)
-                self.add_rclick_menu(b, rclicks, command.controller)
-
+            b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
+            b.addAction(gts)
+            gts.triggered.connect(goto_callback)
+            rclicks = build_rclick_tree(command_p,top_level=True)
+            self.add_rclick_menu(b,rclicks,command.controller)
+        #@+node:ekr.20141031053508.15: *5* add_rclick_menu
         def add_rclick_menu(self, action_container, rclicks, controller,
-                            top_level=True, button=None, from_settings=False):
+                            top_level=True,button=None,from_settings=False):
 
             if from_settings:
                 top_offset = -1  # insert before the remove button item

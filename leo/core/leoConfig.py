@@ -157,12 +157,10 @@ class ParserBaseClass:
             self.valueError(p,kind,name,val)
     #@+node:ekr.20070925144337: *4* doButtons
     def doButtons (self,p,kind,name,val):
-
-        '''Handle an @buttons tree.'''
-
+        '''Create buttons for each @button node in an @buttons tree.'''
         trace = False and not g.unitTesting
-        aList = [] ; c = self.c ; tag = '@button'
-        seen = []
+        c,tag = self.c,'@button'
+        aList,seen = [],[]
         after = p.nodeAfterTree()
         while p and p != after:
             if p.v in seen:
@@ -183,16 +181,13 @@ class ParserBaseClass:
                     rclicks = build_rclick_tree(command_p, top_level=True)
                     command_p.rclicks = rclicks
                 p.moveToThreadNext()
-
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
         if aList:
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
-
-        if trace: g.trace(len(aList),c.shortFileName())
-
+        if trace: g.trace(c.shortFileName(),'[%s]' % ','.join([z[0].h for z in aList]))
         d,key = g.app.config.unitTestDict,'config.doButtons-file-names'
         aList = d.get(key,[])
         aList.append(c.shortFileName())
