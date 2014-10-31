@@ -7,9 +7,11 @@
 # TODO: sanitize this list, not all needs to be installed
 
 # from distutils.core import setup
-from distutils.command.install_data import install_data
+# from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
-import os,fnmatch,sys
+# import fnmatch
+import os
+import sys
 from setuptools import setup, find_packages
 
 # According to Matt, this breaks pip.
@@ -21,7 +23,8 @@ from setuptools import setup, find_packages
         # sys.exit()
 #@+node:maphew.20130503222911.1635: ** Get description
 try:
-    long_description = open('README.TXT', 'rt').read()
+    long_description = open('README.TXT', 'r').read()
+        # mode was 'rt'
 except IOError:
     long_description = """
 Leo is an outline-oriented IDE written in 100% pure Python.
