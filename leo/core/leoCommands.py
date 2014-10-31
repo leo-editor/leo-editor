@@ -1786,8 +1786,8 @@ class Commands (object):
     #@+node:ekr.20141030120755.12: *6* c.flattenOutlineToNode
     def flattenOutlineToNode(self,event=None):
         '''
-        Flatten the selected outline by appending the body text of
-        all nodes of the tree to the body text of the root node.
+        Append the headline and body text of all descendants of the selected
+        node to the body text of the selected node.
         '''
         c,root,u = self,self.p,self.undoer
         if not root.hasChildren():
@@ -6504,11 +6504,11 @@ class Commands (object):
     #@+node:ekr.20031218072017.2943: *5* openLeoSettings & openMyLeoSettings
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''
-        self.openSettingsHelper('leoSettings.leo')
+        return self.openSettingsHelper('leoSettings.leo')
 
     def openMyLeoSettings (self,event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
-        self.openSettingsHelper('myLeoSettings.leo')
+        return self.openSettingsHelper('myLeoSettings.leo')
         
     def openSettingsHelper(self, name):
         """openLeoSettings - Return true if `name`d setting file
@@ -6528,8 +6528,7 @@ class Commands (object):
         ok = g.os_path_exists(fileName)
         if ok:
             c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: 
-                return True
+            if c2: return c2
 
         # Look in homeLeoDir second.
         if configDir == loadDir:
@@ -6539,47 +6538,38 @@ class Commands (object):
             ok = g.os_path_exists(fileName)
             if ok:
                 c2 = g.openWithFileName(fileName,old_c=c)
-                ok = bool(c2)
-            if ok:
-                return True
-            else:
-                g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
+                if c2: return c2
+            g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
         
         if name == "myLeoSettings.leo":
             return self.createMyLeoSettings()
-            
-        return False
+        else:
+            return None
         
     def createMyLeoSettings(self):
         """createMyLeoSettings - Return true if myLeoSettings.leo created ok
         """
-
         name = "myLeoSettings.leo"
         c = self
         homeLeoDir = g.app.homeLeoDir
         loadDir = g.app.loadDir
         configDir = g.app.globalConfigDir
-        
         # check it doesn't already exist
         for path in homeLeoDir, loadDir, configDir:
             fileName = g.os_path_join(path, name)
             if g.os_path_exists(fileName):
-                return False
-
+                return None
         # get '@enabled-plugins' from g.app.globalConfigDir
         fileName = g.os_path_join(configDir, "leoSettings.leo")
         leosettings = g.openWithFileName(fileName, old_c=c)
         enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
         enabledplugins = enabledplugins.b
         leosettings.close()
-        
         # now create "myLeoSettings.leo"
         fileName = g.os_path_join(homeLeoDir,name) 
-        
-        mls = g.openWithFileName(fileName, old_c=c)
-
+        c2 = g.openWithFileName(fileName,old_c=c)
         # add content to outline
-        nd = mls.rootPosition()
+        nd = c2.rootPosition()
         nd.h = "Settings README"
         nd.b = (
             "myLeoSettings.leo personal settings file created {time}\n\n"
@@ -6603,10 +6593,8 @@ class Commands (object):
             "#\n"
             "#    some-command Shift-F5\n"
         )
-        
-        mls.redraw()
-
-        return True
+        c2.redraw()
+        return c2
         
     #@+node:ekr.20131213072223.19441: *5* openLeoTOC
     def openLeoTOC (self,event=None):
