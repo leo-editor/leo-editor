@@ -1332,6 +1332,35 @@ What I did:
   ScriptingController.build_rclick_tree.
 - build_rclick_tree no longer assumes that command_p exists.
 
+Rev 8413e2d fixes an important bug in the new code: "remote"
+buttons (buttons defined in settings files) now work if the
+settings file is not open.
+
+There are some tricky details that must be handled. As an
+example, consider a button defined as follows in
+myLeoSettings.leo:
+
+    @button print p.h
+    print(p.h)
+
+Detail 1: Leo must open myLeoSettings.leo to find the
+@button node. Unlike the Goto Script rclick item, the search
+does *not* leave myLeoSettings.leo open. That would be too
+great a side effect of clicking the @button node!
+
+Detail 2: We don't want to open myLeoSettings.leo every time
+the user clicks the buttons, so the first time the user does
+so the script is saved (cached). If the user clicks the
+button later the cached value is used.
+
+Detail 3: Caching is used "forever" (while Leo remains
+open), even if the user opens myLeoSettings.leo and changes
+the script. Sorry, this can't be helped. Don't ask me to
+change this.
+
+Detail 4: The new code is careful to execute the script in
+the commander in which the button is *located*, not in the
+commander in which the button is defined.
 
 Report:
 
