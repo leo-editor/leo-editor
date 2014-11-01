@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20141031134732.5: * @file /home/tbrown/t/Package/leo/git/leo-editor/./leo/plugins/wikiview.py
+#@+node:tbrown.20141101114322.1: * @file wikiview.py
 #@+<< docstring >>
-#@+node:tbrown.20140806084727.30175: ** << docstring >>
+#@+node:tbrown.20141101114322.2: ** << docstring >>
 """
 Hide text in the body editor, each time a new node is selected.  Makes::
     
@@ -50,21 +50,17 @@ Settings
 #@@tabwidth -4
 
 __version__ = "0.1"
-#@+<< version history >>
-#@+node:tbrown.20140806084727.30176: ** << version history >>
-#@+at
-# 0.1 -- first release - TNB
-#@-<< version history >>
 #@+<< imports >>
-#@+node:tbrown.20140806084727.30177: ** << imports >>
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
-
+#@+node:tbrown.20141101114322.3: ** << imports >>
 import re
+
+import leo.core.leoGlobals as g
+
+from leo.core.leoQt import QtWidgets
 #@-<< imports >>
 
 #@+others
-#@+node:tbrown.20140806084727.30178: ** init
+#@+node:tbrown.20141101114322.4: ** init
 def init():
     
     if g.unitTesting:
@@ -74,13 +70,13 @@ def init():
     g.plugin_signon(__name__)
 
     return True
-#@+node:tbrown.20140806084727.30179: ** onCreate
+#@+node:tbrown.20141101114322.5: ** onCreate
 def onCreate(tag, keys):
     
     c = keys.get('c')
     
     WikiView(c)
-#@+node:tbrown.20141031144206.1: ** cmd_toggle
+#@+node:tbrown.20141101114322.6: ** cmd_toggle
 def cmd_toggle(c):
     """cmd_toggle - toggle active flag
 
@@ -94,7 +90,7 @@ def cmd_toggle(c):
     else:
         g.es("WikiView inactive")
         cmd_show_all(c)
-#@+node:tbrown.20141031144206.2: ** cmd_hide_all
+#@+node:tbrown.20141101114322.7: ** cmd_hide_all
 def cmd_hide_all(c):
     """cmd_hide_all - re-apply hiding
 
@@ -102,19 +98,19 @@ def cmd_hide_all(c):
     """
 
     c._wikiview.hide(c._wikiview.select, {'c': c}, force=True)
-#@+node:tbrown.20141031144206.3: ** cmd_show_all
+#@+node:tbrown.20141101114322.8: ** cmd_show_all
 def cmd_show_all(c):
     """cmd_show_all - undo hiding
 
     :param outline c: outline
     """
     c._wikiview.unhide(all=True)
-#@+node:tbrown.20140806084727.30187: ** class WikiView
+#@+node:tbrown.20141101114322.9: ** class WikiView
 class WikiView:
     """Manage wikiview for an outline"""
 
     #@+others
-    #@+node:tbrown.20140806084727.30188: *3* __init__
+    #@+node:tbrown.20141101114322.10: *3* __init__
     def __init__(self, c):
         
         self.c = c
@@ -130,14 +126,17 @@ class WikiView:
         self.active = c.config.getBool('wikiview-active')
 
         g.registerHandler(self.select, self.hide)
-        g.registerHandler('after-create-leo-frame', self.hide)
         w = c.frame.body.wrapper.widget
         w.cursorPositionChanged.connect(self.unhide)
         
         # size to restore text to when unhiding,
         # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
         self.size = QtWidgets.QFontInfo(w.currentFont()).pointSize()
-    #@+node:tbrown.20141031134732.23: *3* hide
+
+        # apply hiding for initial load (`after-create-leo-frame` from module level
+        # init() / onCreate())
+        self.hide(self.select, {'c': c})
+    #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
 
         c = self.c
@@ -161,7 +160,7 @@ class WikiView:
                     cfmt.setFontLetterSpacing(self.pct)
                     # cfmt._is_hidden = True  # gets lost
                     curse.setCharFormat(cfmt)
-    #@+node:tbrown.20141031134732.25: *3* unhide
+    #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
         c = self.c
         w = c.frame.body.wrapper.widget
