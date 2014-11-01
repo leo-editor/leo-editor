@@ -1,7 +1,29 @@
-﻿./MANIFEST
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+./MANIFEST
 #./setup.cfg
-./build
-./dist
 leo/test/unittest/rst_write_test.txt
 *.exe
 *.o
@@ -24,15 +46,12 @@ leo/test/unittest/rst_write_test.txt
 gradient.png
 log.txt
 
-leo/__pycache__/
 leo/*.zip
 
-leo/core/__pycache__/
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
 leo/core/unittest
 
-leo/dist/__pycache__/
 leo/dist/*.zip
 leo/dist/*.exe
 
@@ -47,16 +66,9 @@ leo/doc/html/*.html.txt
 leo/doc/html/build
 leo/doc/html/_build
 
-leo/external/__pycache__/
-
-leo/modes/__pycache__/
-
-leo/plugins/__pycache__/
-leo/plugins/pygeotag/__pycache__/
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
-leo/test/__pycache__/
 leo/test/*.css
 leo/test/at_ignore_test.txt
 leo/test/dynamicUnitTest.leo
@@ -72,7 +84,6 @@ leo/test/scriptFile.py
 leo/test/leoProfile.txt
 leo/test/testzip.zip
 
-leo/test/unittest/__pycache__/
 leo/test/unittest/createdFile.txt
 leo/test/unittest/input/testLeoAtFile.py.txt
 leo/test/unittest/test_1.py
@@ -88,4 +99,3 @@ annotate.txt
 
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
-*.egg-info/
