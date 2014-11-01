@@ -6398,13 +6398,9 @@ class EditCommandsClass (BaseEditCommandsClass):
             w.setSelectionRange(i,i,insert=i)
         finally:
             self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20050920084036.100: *4* fillRegion (can hang)
+    #@+node:ekr.20050920084036.100: *4* fillRegion
     def fillRegion (self,event):
-
         '''Fill all paragraphs in the selected text.'''
-
-        # New in Leo 4.4.4: just use reformat-paragraph logic.
-
         c = self.c ; p = c.p ; undoType = 'fill-region'
         w = self.editWidget(event)
         i,j = w.getSelectionRange()
@@ -6414,6 +6410,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             c.reformatParagraph(event,undoType='reformat-paragraph')
             ins = w.getInsertPoint()
             s = w.getAllText()
+            w.setInsertPoint(ins)
             if progress >= ins or ins >= j or ins >= len(s):
                 break
         c.undoer.afterChangeGroup(p,undoType)

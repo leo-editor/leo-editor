@@ -3289,10 +3289,9 @@ class Commands (object):
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format,time.gmtime())
         return s
-    #@+node:ekr.20131002055813.19033: *6* c.reformatBody (can hang)
+    #@+node:ekr.20131002055813.19033: *6* c.reformatBody
     def reformatBody (self,event=None):
         '''Reformat all paragraphs in the body.'''
-        # New in Leo 4.11
         c,p = self,self.p
         undoType = 'reformat-body'
         w = c.frame.body.wrapper
