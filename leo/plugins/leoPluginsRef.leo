@@ -31,7 +31,7 @@
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -88,7 +88,8 @@
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="tbrown.20070117104409" a="E"
+expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>
@@ -237,6 +238,20 @@
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
+<v t="tbrown.20141101114322.1" a="O"><vh>@file wikiview.py</vh>
+<v t="tbrown.20141101114322.2"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="tbrown.20141101114322.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="tbrown.20141101114322.4"><vh>init</vh></v>
+<v t="tbrown.20141101114322.5"><vh>onCreate</vh></v>
+<v t="tbrown.20141101114322.6"><vh>cmd_toggle</vh></v>
+<v t="tbrown.20141101114322.7"><vh>cmd_hide_all</vh></v>
+<v t="tbrown.20141101114322.8"><vh>cmd_show_all</vh></v>
+<v t="tbrown.20141101114322.9" a="E"><vh>class WikiView</vh>
+<v t="tbrown.20141101114322.10"><vh>__init__</vh></v>
+<v t="tbrown.20141101114322.11"><vh>hide</vh></v>
+<v t="tbrown.20141101114322.12"><vh>unhide</vh></v>
+</v>
+</v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
@@ -530,6 +545,192 @@ else:
 <t tx="ekr.20140726091031.18071"># These plugins now contain the write code for all kinds special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
+</t>
+<t tx="tbrown.20141101114322.1">&lt;&lt; docstring &gt;&gt;
+
+@language python
+@tabwidth -4
+
+__version__ = "0.1"
+&lt;&lt; version history &gt;&gt;
+&lt;&lt; imports &gt;&gt;
+
+@others
+</t>
+<t tx="tbrown.20141101114322.10">def __init__(self, c):
+    
+    self.c = c
+    c._wikiview = self
+
+    url_patterns = c.config.getData('wikiview-link-patterns')
+    self.urlpats = [re.compile(i, re.IGNORECASE) for i in url_patterns]
+    
+    self.select = 'select3'  # Leo hook to hide text
+    self.pts=0.1  # hidden text size
+    self.pct=1  # hidden text letter spacing
+    
+    self.active = c.config.getBool('wikiview-active')
+
+    g.registerHandler(self.select, self.hide)
+    w = c.frame.body.wrapper.widget
+    w.cursorPositionChanged.connect(self.unhide)
+    
+    # size to restore text to when unhiding,
+    # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
+    self.size = QtWidgets.QFontInfo(w.currentFont()).pointSize()
+
+    # apply hiding for initial load (`after-create-leo-frame` from module level
+    # init() / onCreate())
+    self.hide(self.select, {'c': c})</t>
+<t tx="tbrown.20141101114322.11">def hide(self, tag, kwargs, force=False):
+
+    c = self.c
+    if not (self.active or force) or kwargs['c'] != c:
+        return
+
+    w = c.frame.body.wrapper.widget
+    curse = w.textCursor()
+         
+    s = w.toPlainText()
+    for urlpat in self.urlpats:
+        for match in urlpat.finditer(s):   
+            for group_n, group in enumerate(match.groups()):
+                # print group_n, group, match.start(group_n+1), match.end(group_n+1)
+                if group is None:
+                    continue
+                curse.setPosition(match.start(group_n+1))
+                curse.setPosition(match.end(group_n+1), curse.KeepAnchor)
+                cfmt = curse.charFormat()
+                cfmt.setFontPointSize(self.pts)
+                cfmt.setFontLetterSpacing(self.pct)
+                # cfmt._is_hidden = True  # gets lost
+                curse.setCharFormat(cfmt)
+</t>
+<t tx="tbrown.20141101114322.12">def unhide(self, all=False):
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    curse = w.textCursor()
+    cfmt = curse.charFormat()
+    if cfmt.fontPointSize() == self.pts or all:
+        if not all:
+            end = curse.position()
+            # move left to find left end of range
+            while curse.movePosition(curse.PreviousCharacter) and \
+                  curse.charFormat().fontPointSize() == self.pts:
+                pass
+            start = curse.position()
+            # move right to find left end of range
+            curse.setPosition(end)
+            while curse.movePosition(curse.NextCharacter) and \
+                  curse.charFormat().fontPointSize() == self.pts:
+                pass
+            # select range and restore normal size
+            curse.setPosition(start, curse.KeepAnchor)
+        else:
+            curse.setPosition(0)
+            curse.setPosition(len(w.toPlainText()), curse.KeepAnchor)
+        cfmt.setFontPointSize(self.size)
+        cfmt.setFontLetterSpacing(100)
+        curse.setCharFormat(cfmt)
+</t>
+<t tx="tbrown.20141101114322.2">"""
+Hide text in the body editor, each time a new node is selected.  Makes::
+    
+  file;//#some--&gt;headlines--&gt;mynode appear as mynode,
+  http;//www.google.com/search as search, and
+  `Python &lt;https;//www.python.org/&gt;`_ as Python
+
+(the ';' that should be ':' above prevent wikiview from hiding
+the examples :-)
+
+Commands
+--------
+
+  wikiview-toggle
+      Turn wikiview on or off
+  wikiview-hide-all
+      Hide all links
+  wikiview-show-all
+      Show all links
+
+Settings
+--------
+
+  wikiview-active
+      True / False - should wikiview be on by default (if the plugin is enabled)
+  wikiview-link-patterns
+      Regular expressions defining text to hide.  Examples and details::
+
+        # regex patterns for text to be hidden by the wikiview plugin
+        # each non-blank link not starting with '#' is treated as a
+        # separate pattern, use [#] for patterns starting with '#'
+        
+        # only `groups` within the pattern, i.e. parts of the pattern
+        # in (parentheses), will be hidden, e.g. the first \S+ in the
+        # restructuredText pattern is not hidden
+        
+        # restructuredText `Visible text &lt;http://invisible.url/here&gt;`
+        (`)\S+(\s*&lt;(https?|file)://\S+&gt;`_)
+        
+        # regular urls
+        ((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
+"""
+</t>
+<t tx="tbrown.20141101114322.3">import re
+
+import leo.core.leoGlobals as g
+
+from leo.core.leoQt import QtWidgets
+</t>
+<t tx="tbrown.20141101114322.4">def init():
+    
+    if g.unitTesting:
+        return False
+
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+
+    return True
+</t>
+<t tx="tbrown.20141101114322.5">def onCreate(tag, keys):
+    
+    c = keys.get('c')
+    
+    WikiView(c)
+</t>
+<t tx="tbrown.20141101114322.6">def cmd_toggle(c):
+    """cmd_toggle - toggle active flag
+
+    :param outline c: outline
+    """
+
+    c._wikiview.active = not c._wikiview.active
+    if  c._wikiview.active:
+        g.es("WikiView active")
+        cmd_hide_all(c)
+    else:
+        g.es("WikiView inactive")
+        cmd_show_all(c)
+</t>
+<t tx="tbrown.20141101114322.7">def cmd_hide_all(c):
+    """cmd_hide_all - re-apply hiding
+
+    :param outline c: outline
+    """
+
+    c._wikiview.hide(c._wikiview.select, {'c': c}, force=True)
+</t>
+<t tx="tbrown.20141101114322.8">def cmd_show_all(c):
+    """cmd_show_all - undo hiding
+
+    :param outline c: outline
+    """
+    c._wikiview.unhide(all=True)
+</t>
+<t tx="tbrown.20141101114322.9">class WikiView:
+    """Manage wikiview for an outline"""
+
+    @others
 </t>
 </tnodes>
 </leo_file>

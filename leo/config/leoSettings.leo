@@ -1629,6 +1629,10 @@
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
 </v>
+<v t="tbrown.20141101105337.1"><vh>wikiview plugin</vh>
+<v t="tbrown.20141101105337.2"><vh>@data wikiview-link-patterns</vh></v>
+<v t="tbrown.20141101105337.3"><vh>@bool wikiview-active = True</vh></v>
+</v>
 <v t="ekr.20090202191501.10"><vh>xemacs plugin</vh>
 <v t="ekr.20090202191501.11"><vh>@string xemacs_exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
 </v>
@@ -3653,6 +3657,7 @@ printing.py
 # valuespace.py
 # viewrendered.py
 # vim.py
+# wikiview.py
 # word_count.py
 # word_export.py
 # xemacs.py
@@ -10195,6 +10200,22 @@ else:
 </t>
 <t tx="tbrown.20140814090009.57475"></t>
 <t tx="tbrown.20140814090009.57476">Reload Styles</t>
+<t tx="tbrown.20141101105337.1"></t>
+<t tx="tbrown.20141101105337.2"># regex patterns for text to be hidden by the wikiview plugin
+# each non-blank link not starting with '#' is treated as a
+# separate pattern, use [#] for patterns starting with '#'
+
+# only `groups` within the pattern, i.e. parts of the pattern
+# in (parentheses), will be hidden, e.g. the first \S+ in the
+# restructuredText pattern is not hidden
+
+# restructuredText `Visible text &lt;http://invisible.url/here&gt;`
+(`)\S+(\s*&lt;(https?|file)://\S+&gt;`_)
+
+# regular urls
+((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
+</t>
+<t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
