@@ -1341,6 +1341,13 @@ makes them available in all Leo files, a nice feature. Two problems:
 - The buttons lack the 'Goto Script' rclick feature in all .leo files.
 - There are duplicate buttons in myLeoSettings.leo
 
+.. @+node:ekr.20131103054650.16527: *4* Investigated bug: fill-region & format-body can hang
+@language rest
+
+This was probably fixed earlier by the addition of progress guards
+in ec.fillRegion and c.reformatBody.
+
+Added one line for fillRegion.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
@@ -2004,6 +2011,17 @@ And whose body text is::
     ===============
 .. @+node:ekr.20141031053508.5: *4* Added flatten-outline-to-node
 Very useful when summarizing documenation nodes.
+.. @+node:ekr.20141024211256.11: *4* Fixed: Quickstart guide should open by default
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+Fidel suggests quickstart guide should open by default instead of the
+user's workbook.
+
+This has been fixed because the default workbook contains both the cheat
+sheet and an example from the rst3 tutorial.
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
