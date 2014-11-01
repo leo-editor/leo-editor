@@ -2378,7 +2378,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             command.controller is a ScriptingController instance.
             '''
             # Fix bug 74: command_p may be in another outline.
-            c2,p = command.controller.find_gnx(command.gnx,openFlag=True)
+            c2,p,script = command.controller.find_gnx(command.gnx,openFlag=True)
             if p:
                 g.app.selectLeoWindow(c2)
                 c2.selectPosition(p)
@@ -2394,16 +2394,17 @@ class LeoQtFrame (leoFrame.LeoFrame):
             command is an AtButtonCallback instance, defined in mod_scripting.py.
             command.controller is a ScriptingController instance.
             '''
+            trace = False and not g.unitTesting
             if not command:
                 return
-            # g.trace('%20s %s' % (button.text,command),g.callers())
+            if trace: g.trace('%20s %s' % (button.text,command))
             # Fix bug 74: command is now always an AtButtonCallback instance.
             #             This code always adds a Goto Script button.
             b = button.button
             controller = command.controller
             button.button.clicked.connect(command)
             # Fix bug 1193819: Script buttons cant "go to script" after outline changes.
-            command_c,command_p = command.controller.find_gnx(command.gnx)
+            command_c,command_p,script = command.controller.find_gnx(command.gnx)
             
             def goto_callback(checked,command=command):
                 self.goto_command(command)
