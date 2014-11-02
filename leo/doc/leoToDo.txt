@@ -54,13 +54,16 @@ Window, Toggle Split Direction Error
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
-- Transfer email items: 37 to-be-documented items.
+*** Transfer email items: 31 to-be-documented items.
 
 - Add docstrings for all commands in leoSessions.py.
   
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
 
 - Review all important plugins.
+
+- Document wikiview.py plugin.
+  https://groups.google.com/d/msg/leo-editor/bQT2U9QLaL0/0-mqT--TDSIJ
 .. @+node:ekr.20141024211256.13: *3* Testing for a1
 - Rerun Bob's test (make a unit test out of it??)
 - [Done?] Unit tests for indices.
@@ -403,15 +406,14 @@ Leo sets focus to body when main window gets focus
 
 https://bugs.launchpad.net/leo-editor/+bug/1235619
 BUG: Deleting multiple selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20141027112327.11: ** Cant/wont fix/waiting for better reports
+.. @+node:ekr.20120226183512.10195: ** All other bugs
+@language rest
 .. @+node:ekr.20141026191037.6: *3* Can't fix bug 83: Bracket completion doesn't work
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/83
 
 This appears to be a Windows 8 issue.
-.. @+node:ekr.20120226183512.10195: ** All other bugs
-@language rest
 .. @+node:ekr.20141030042423.14: *3* Launchpad bugs re plugins
 https://bugs.launchpad.net/leo-editor/+bug/1258512
 _leo.c not working from IPython

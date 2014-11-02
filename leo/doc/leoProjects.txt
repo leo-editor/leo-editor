@@ -618,12 +618,6 @@ I do not see this behavior.
 When I save the leo file, instead of staying where I am on the leo tree, it
 will go and center the view on the selected node. 
 
-.. @+node:ekr.20141026191037.6: *4* Can't fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
-
-This appears to be a Windows 8 issue.
 .. @+node:ekr.20141024184556.9: *4* Fixed bug 59: drag and drop: target too small
 @language rest
 
@@ -1366,6 +1360,7 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                             else:
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
+@language python
 .. @+node:ekr.20140815081211.18471: *4* Cleaned up command-name handling a bit
 Changed k.inverseCommandsDict to c.inverseCommandsDict.
 Called vc.define commands from c.finishCreate.
@@ -1376,9 +1371,6 @@ The new c.createCommandNames copies entries in g.app.global_commands_dict to com
 # The code is in leoEditCommands.py::insertFileName.
 .. @+node:ekr.20140821164256.18294: *4* Added vim mode
 See: http://leoeditor.com/vimBindings.html#using-leo-s-native-vim-mode
-.. @+node:ekr.20140821115448.18291: *5* Support visual line mode
-@nocolor-node
-
 
 do_visual_mode will extend the selection if visual_line_mode is True.
 
