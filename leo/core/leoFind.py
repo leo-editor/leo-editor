@@ -1935,7 +1935,8 @@ class LeoFind:
             c.bodyWantsFocusNow()
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
-            w.seeInsertPoint() # 2014/09/17
+            # Fix bug 78: F3 find-next target not always highlighted
+            w.see(insert)
             if trace: g.trace('p.b',len(p.b),'w.text',len(w.getAllText()),'sel',w.getSelectionRange())
             c.outerUpdate()
             if c.vim_mode and c.vimCommands:

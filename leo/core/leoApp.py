@@ -224,7 +224,7 @@ class LeoApp:
     def define_delegate_language_dict(self):
         
         self.delegate_language_dict = {
-            # Keys are new langauge names.
+            # Keys are new language names.
             # Values are existing languages in leo/modes.
             "less":        "css",
             "hbs":         "html",
