@@ -187,6 +187,7 @@ class LeoApp:
         self.define_language_delims_dict()
         self.define_language_extension_dict()
         self.define_extension_dict()
+        self.define_delegate_language_dict()
         self.global_commands_dict = {}
 
         self.ipk = None   # python kernel instance
@@ -219,6 +220,16 @@ class LeoApp:
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+    #@+node:ekr.20141102043816.5: *4* app.define_delegate_language_dict
+    def define_delegate_language_dict(self):
+        
+        self.delegate_language_dict = {
+            # Keys are new langauge names.
+            # Values are existing languages in leo/modes.
+            "less":        "css",
+            "hbs":         "html",
+            "handlebars":  "html",
+        }
     #@+node:ekr.20120522160137.9909: *4* app.define_language_delims_dict
     def define_language_delims_dict(self):
 

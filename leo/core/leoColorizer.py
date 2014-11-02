@@ -1055,22 +1055,23 @@ class JEditColorizer:
         return True
     #@+node:ekr.20110605121601.18582: *5* nameToRulesetName
     def nameToRulesetName (self,name):
-
-        '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
-
-        if not name: return ''
-
+        '''
+        Compute language and rulesetName from name, which is either a language
+        name or a delegate name.
+        '''
+        if not name:
+            return ''
         i = name.find('::')
         if i == -1:
             language = name
+            # New in Leo 5.0: allow delegated language names.
+            language = g.app.delegate_language_dict.get(language,language)
             rulesetName = '%s_main' % (language)
         else:
             language = name[:i]
             delegate = name[i+2:]
             rulesetName = self.munge('%s_%s' % (language,delegate))
-
         # if rulesetName == 'php_main': rulesetName = 'php_php'
-
         # g.trace(name,language,rulesetName)
         return language,rulesetName
     #@+node:ekr.20110605121601.18583: *5* setKeywords
