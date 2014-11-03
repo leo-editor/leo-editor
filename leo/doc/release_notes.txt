@@ -21731,13 +21731,13 @@ The highlights of Leo 5.0
     - Optional delayed loading of large text.
 * Power features:
     - File name completion.
-    - Cloned nodes can expand and contract independently.
-    - @data nodes can now be composed from a tree of nodes.
-    - Leo's main style sheet can be customized with settings.
-      (No need to alter the style sheet directly!)
+    - Cloned nodes expand and contract independently.
+    - @data nodes can be composed from descendant nodes.
+    - No need to change Leo's main style sheet:
+      it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
     - A plugable architecture for @auto nodes.
-* Several important new plugins.
+* Important new plugins for tagging, display and node evaluation.
 * For beginners:
     - Leo's default workbook files contains Leo's quickstart guide.
 * Hundreds of new/improved features and bug fixes.

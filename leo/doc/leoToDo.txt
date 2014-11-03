@@ -25,8 +25,6 @@ Steps to reproduce:
   body pane (every time you press it)
 - Move focus back to tree, press alt-x => minibuffer command entry works
   again
-.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
-@language rest
 .. @+node:ekr.20141020061642.21513: *3* Fix bug 66: errors inhibited read @auto foo.md
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
@@ -53,12 +51,43 @@ python --version
 assoc .py=Python.File
 ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
 QQQQQ
+.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
+@language rest
 .. @+node:ekr.20141020061642.21517: *3* Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
 
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20131004191204.16078: *3* cycle-all-focus doesn't work
 # Use table?
+.. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
+possible built in options to install vim bindings.
+
+http://brew.sh/
+Homebrew formulae are simple Ruby scripts:
+
+require "formula"
+
+class Wget < Formula
+  homepage "http://www.gnu.org/software/wget/"
+  url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
+  sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+
+  def install
+    system "./configure", "--prefix=#{prefix}"
+    system "make", "install"
+  end
+end
+
+
+To install homebrew, paste this in a terminal:
+
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+The script explains what it will do and then pauses before it does it.
+There are more installation options here (needed on 10.5).
 .. @+node:ekr.20141029185358.14: *3* 12 Launchpad bugs for b1
 .. @+node:ekr.20141030042423.16: *4* 4 minor fit & finish bugs
 These may move to b1.
@@ -100,6 +129,7 @@ Settings in file A propagate to file B when editing A and B is opened
 
 https://bugs.launchpad.net/leo-editor/+bug/1249368
 Leo 4.11 final custom hotkey can not work on 1st call
+.. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140
 Wishlist: Command History in minibuffer
@@ -364,40 +394,11 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
-.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
-
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
-
-http://brew.sh/
-Homebrew formulae are simple Ruby scripts:
-
-require "formula"
-
-class Wget < Formula
-  homepage "http://www.gnu.org/software/wget/"
-  url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
-  sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
-
-  def install
-    system "./configure", "--prefix=#{prefix}"
-    system "make", "install"
-  end
-end
-
-
-To install homebrew, paste this in a terminal:
-
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-The script explains what it will do and then pauses before it does it.
-There are more installation options here (needed on 10.5).
 .. @+node:ekr.20141024211256.7: *4* Improve help-for command
 Fix focus problem with F11 & help-for-command
 
 Add modules/plugins to help-for-command.
-.. @+node:ekr.20141017150357.18271: ** 3 Launchpad bugs assigned to Terry
+.. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 
@@ -406,7 +407,7 @@ Leo sets focus to body when main window gets focus
 
 https://bugs.launchpad.net/leo-editor/+bug/1235619 BUG: Deleting multiple
 selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20141030042423.14: ** 12 Launchpad bugs re plugins
+.. @+node:ekr.20141030042423.14: *3* 12 Launchpad bugs re plugins
 https://bugs.launchpad.net/leo-editor/+bug/1258512
 _leo.c not working from IPython
 
@@ -443,8 +444,8 @@ Apparently, this bug is related to the leo_dark theme 0 settings.
 
 https://bugs.launchpad.net/leo-editor/+bug/323175
 run_nodes plugins doesn't work
-.. @+node:ekr.20140824043305.18303: ** 12 Not in any bug tracker
-.. @+node:ekr.20130806072439.20380: *3* auto-rst error? need more robust?
+.. @+node:ekr.20140824043305.18303: *3* 12 Not in any bug tracker
+.. @+node:ekr.20130806072439.20380: *4* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
 When I use auto-rst import rst file, sometimes, the author write extra
@@ -571,13 +572,13 @@ It says I need a extra "="...
 
 I have attached this file, for someone has interest to reproduce the error.
 
-.. @+node:ekr.20111114085925.9932: *3* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
 Related nodes:
 ic.exportHeadlines
 TM.makeImportExportSuite
 class ImportExportTestCase
 c.exportHeadlines
-.. @+node:ekr.20130806072439.20371: *3* @wrap now suppresses horizontal scrolling
+.. @+node:ekr.20130806072439.20371: *4* @wrap now suppresses horizontal scrolling
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 The title pretty much says it all.  This is a significant improvement, and 
@@ -599,7 +600,7 @@ wrapped (as there is no space in the string) nor I can see the end of it
 
 The workaround is to disable @wrap in order to see the url, but this is
 clumsy.
-.. @+node:ekr.20111125072438.10214: *3* Fix bug: Another @shadow bug (test4.leo) (maybe)
+.. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
 email:
 http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
 
@@ -612,14 +613,14 @@ a bit of time, I am not very familiar with python.
 ===== EKR
 
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20111123095018.13632: *3* Fix bug: expand Find tab as needed for bigger fonts
-.. @+node:ekr.20111010162047.15678: *3* Fix bug: Imports to @file should put @first/@last directives in root node
+.. @+node:ekr.20111123095018.13632: *4* Fix bug: expand Find tab as needed for bigger fonts
+.. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *4* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *5* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -627,8 +628,8 @@ def spam():
     pass
     
 # This is the last line.
-.. @+node:ekr.20120219152142.34262: *3* Fix bug: Revert moves the reverted tab to the right
-.. @+node:ekr.20111125072438.10217: *3* Fix bug: shell interprets characters in at-mime headings
+.. @+node:ekr.20120219152142.34262: *4* Fix bug: Revert moves the reverted tab to the right
+.. @+node:ekr.20111125072438.10217: *4* Fix bug: shell interprets characters in at-mime headings
 http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
 
 on linux, parenthesis or angled brackets in @mime headings prevent the file from
@@ -636,17 +637,17 @@ being opened, probably because they are interpreted specially by the shell, e.g.
 they need to be escaped. Such characters should be escaped before passing the
 filename to the shell.
 
-.. @+node:ekr.20120327163022.9744: *3* Fix bug: The @auto script *must* put @first nodes in root node
+.. @+node:ekr.20120327163022.9744: *4* Fix bug: The @auto script *must* put @first nodes in root node
 Also the import commands.
 
 Especially:
     - Shebang line.
     - Python encoding line.
-.. @+node:ekr.20111018104244.15920: *3* Fix bug: Use QLocalSocket in LProtoClient.connect
+.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20141017110114.18267: *3* @data qt-scintilla-styles only works in leoSetting.leo
+.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20130806072439.20485: *3* Whitespace when importing java file using @auto
+.. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
 Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
 From: Eoin <eoinmccarthy@fastmail.fm>
 
