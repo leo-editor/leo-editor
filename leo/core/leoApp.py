@@ -2317,16 +2317,19 @@ class LoadManager:
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory,'setTabForCommander'):
                 factory.setTabForCommander(c)
+        if not c:
+            return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
         if c: c.enableMenuBar()
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
-        c.setLog()
+        if c: c.setLog()
         # print('doPostPluginsInit: ***** set log')
-        g.doHook("start2",c=c,p=c.p,v=c.p,fileName=fileName)
+        p = c and c.p or None
+        g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
         g.enableIdleTimeHook(idleTimeDelay=500)
-        lm.initFocusAndDraw(c,fileName)
+        if c: lm.initFocusAndDraw(c,fileName)
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
