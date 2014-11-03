@@ -282,8 +282,10 @@ class LeoApp:
             "foxpro"             : "&&",
             "gettext"            : "# ",
             "groovy"             : "// /* */",
+            "handlebars"         : "<!-- -->", # McNab: delegate to html.
             "haskell"            : "--_ {-_ _-}",
             "haxe"               : "// /* */",
+            "hbs"                : "<!-- -->", # McNab: delegate to html.
             "html"               : "<!-- -->",
             "i4gl"               : "-- { }",
             "icon"               : "#",
@@ -302,6 +304,7 @@ class LeoApp:
             "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
             "latex"              : "%",
+            "less"               : "/* */", # NcNab: delegate to css.
             "lilypond"           : "% %{ %}",
             "lisp"               : ";", # EKR: 2010/09/29
             "lotos"              : "(* *)",
@@ -602,6 +605,8 @@ class LeoApp:
             "g":        "antlr",
             "groovy":   "groovy",
             "h":        "c", # 2012/05/23.
+            "handlebars": "html", # McNab.
+            "hbs":      "html", # McNab.
             "hs":       "haskell",
             "html":     "html",
             "hx":       "haxe",
@@ -620,11 +625,12 @@ class LeoApp:
             "js":       "javascript", # For javascript import test.
             "jsp":      "javaserverpage",
             # "jsp":      "jsp",
-            "ksh":      "kshell", # Leo 4.5.1.
+            "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
+            "less":     "css", # McNab
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
-            "m":        "matlab", # EKR: 2011/10/21
+            "m":        "matlab",
             "mak":      "makefile",
             "md":       "md", # PeckJ 2013/02/07
             "ml":       "ml",
