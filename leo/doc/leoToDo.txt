@@ -5,12 +5,27 @@
 .. @+all
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
-.. @+node:ekr.20140824043305.18300: *3* Bugs for a1
-@language rest
-.. @+node:ekr.20141103061944.45: *4* Mac: alt-x does not work in body pane
+
+Testing:
+
+- Rerun Bob's test (make a unit test out of it??)
+
+- [Done?] Unit tests for node indices.
+.. @+node:ekr.20141103061944.45: *3* Mac: alt-x does not work in body pane
 https://bugs.launchpad.net/leo-editor/+bug/1266269
 Mac: alt-x does not work in body pane
-.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
+
+Steps to reproduce:
+
+- Ensure focus is in body pane
+- Press alt-x
+- Note that instead of showing minibuffer command entry, "≈" appears in
+  body pane (every time you press it)
+- Move focus back to tree, press alt-x => minibuffer command entry works
+  again
+.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
+@language rest
+.. @+node:ekr.20141020061642.21513: *3* Fix bug 66: errors inhibited read @auto foo.md
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
 
@@ -36,19 +51,6 @@ python --version
 assoc .py=Python.File
 ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
 QQQQQ
-.. @+node:ekr.20141024211256.8: *3* Docs for a1
-@language rest
-
-- Add docstrings for all commands in leoSessions.py.
-  
-- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
-
-- Review all important plugins.
-.. @+node:ekr.20141024211256.13: *3* Testing for a1
-- Rerun Bob's test (make a unit test out of it??)
-- [Done?] Unit tests for indices.
-.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
-@language rest
 .. @+node:ekr.20141020061642.21517: *3* Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
 
