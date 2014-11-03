@@ -872,6 +872,23 @@ Changed the call to w.see in find.showSuccess.
 605ae57
 
 The present code just exists Leo, which I think is the reasonable thing to do.  YMMV.
+.. @+node:ekr.20141103061944.42: *4* Investigated bug 1282362: shadow file name collisions cause spontaneous clone creation
+[Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
+shadow file name collisions cause spontaneous clone creation
+
+Works for me. Furthermore, the scenario is bizarre enough not to be important.
+
+- Create a new leo file.
+- Create @shadow foo.txt
+- Set body to @others, add two children, with different body texts.
+- Copy / paste the @shadow node, change the path to x/foo.txt
+
+(In shell, create x folder, saving shadow doesn't create path, which is
+maybe another bug) save and close file
+
+open file again, children of shadow nodes are clones of each other. I think
+it's the name collision, not the copy pasting etc.
+
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
