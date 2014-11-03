@@ -1808,6 +1808,611 @@ For several years the xml namespace line at the start of .leo files has been::
 The new line is::
 
     <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+.. @+node:ekr.20141103061944.5: *4* Script: Dictionary to Leo outline
+@language rest
+
+When working with a dictionary, some times I really need to "see it", so I needed this small script.
+It will transform a dictionary into an outline, so you can navigate through it.
+Just in case its useful for anyone, here it goes:
+
+@language python
+
+def dictionary_to_outline(p,dictionary):
+    '''Transform a dictionary into an outline as p's children.'''
+    # g.app.gui.frameFactory.masterFrame.currentWidget().leo_c
+    sorted_keys = sorted([key for key in dictionary])
+    for key in sorted_keys:
+        new_node = p.insertAsLastChild().copy()
+        new_node.h = key
+        if "dict" in str(type(dictionary[key])):
+            self.dictionary_to_outline(new_node,dictionary[key])
+        else:
+            new_node.b = str(dictionary[key])
+.. @+node:ekr.20141103061944.6: *4* Fixed bug re the factor language
+Fixed the entry in g.app.language_extension_dict
+.. @+node:ekr.20141103061944.7: *4* Added file name completion
+:r and :tabnew and file-open-by-name now have file-name completion
+
+The filename completion works really well.
+
+I have Ctrl-O to file-open-by-name to bypass the Windows open file dialog.
+
+The new insert-file-name command also supports filename completion.
+.. @+node:ekr.20141103061944.9: *4* Split qtGui.py into separate files
+- qt_big_text.py contains support for the "big text" warning buttons.
+
+- qt_commands.py contains several commands created by @g.commands.
+  qt_gui.py now imports this file so the commands are actually defined.
+
+- qt_events.py contains the LeoQtEventFilter class. The LeoKeyEvent class
+  remains in leoGui.py: it is independent of gui.
+
+- qt_frame.py contains most of the Qt-related code that creates the Leo
+  window and frames.
+  
+- qt_idle_time.py contains the IdleTime class.
+
+- qt_gui.py contains Qt-specific code that defines g.app.gui. leoGui.py is
+  the gui-independent code and was essentially unchanged.
+
+- qt_quickheadlines.py contains the QuickHeadlines class.
+
+- qt_text.py contains most the code for Leo's Leo's text widgets.
+  leoFrame.py contains a few gui-independent classes.
+
+- qt_tree.py contains all the Qt tree code. It replaces baseNativeTree.py.
+
+No longer used: baseNativeTree.py, qtGui.py. qtGui.py still exists, but
+just prints a warning message when imported.
+.. @+node:ekr.20141103061944.10: *4* Added some support for scintilla
+I have been using a Scintilla widget in Leo's body pane today. It has been
+the best incentive to improve it.
+
+To enable it, set @bool qt-use-scintilla = True.
+
+Almost everything works. It is certainly seems possible to do real work
+safely and pleasantly.
+
+The Scintilla code now honors the settings in @data qt-scintilla-styles,
+but *only in leoSettings.leo, not myLeoSettings.leo. This is likely a bug
+in the settings system, and I'll fix it soon.
+
+Leo now switches between the native Scintilla colorizer and a custom,
+do-nothing, colorizer depending on @language, @killcolor, etc. Creating a
+custom Scintilla colorizer was unexpectedly easy. There is no native
+Scintilla colorizer for @language rest. That will be the next custom
+colorizer that I write.
+
+Scintilla thinks Leo directives are decorators, so Leo directives are, in
+effect, colorized.
+
+No section references are ever colored. It *might* be possible to define a
+custom colorizer that defers to a native colorizer in everything but
+section references.
+
+Most unit tests pass with @bool qt-use-scintilla = True. Something strange
+is going on in the failing cases, but it doesn't seem strange enough to
+cause real problems ;-) I'll be fixing these tests asap.
+
+Edward
+
+No other colorizing is available, but everything is in place to support
+Scintilla's other native colorizers. They are:
+
+AVS, Bash, Batch, CMake, CoffeeScript, CPP, CSS, D, Diff, Fortran77, HTML,
+Lua, Makefile, Matlab, Pascal, Perl, PO, PostScript, POV, Properties,
+Python, Ruby, Spice, SQL, TCL, TeX, Verilog, VHDL, YAML.
+.. @+node:ekr.20141103061944.11: *4* Added liveview plugin
+Just pushed the livecode.py plugin, screenshot attached.
+
+It is currently python 2.7 only, although that should be relatively
+easy to fix.
+
+It currently has a dependency on https://pypi.python.org/pypi/meta
+which you can install with
+
+    pip install meta
+
+or some similar approach.
+
+Then Alt-X livecode-show<return> will show the live code evaluation
+pane as in the attached screenshot.  Hover on the buttons for helpful
+tool-tips.
+
+The dependency on `meta` is for recursively turning AST node trees back
+into printable identifiers like "m[m[5]]"
+
+i.e.
+
+   a = 7
+
+is easy,
+
+   m[m[5]] = 7
+
+is not.
+.. @+node:ekr.20141103061944.12: *4* Added viewrendered2 plugin
+https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
+
+https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
+
+As mentioned in my previous post I'll attempt to elaborate on the plugin
+I've used to make Leo more useful to me, in case it is useful for others
+also. Apologies for the very long post, but I wanted get get all its
+features and warts exposed here to get some feedback on whether others see
+this as useful or that this is only valuable to me. If it's useful to
+others then it may be worth polishing up quite a bit.
+
+Why a better viewrendered plugin?
+---------------------------------
+
+I like to use reStructuredText (reST) for all of my note-taking, idea
+development, project and task management and automation of desktop
+activities (e.g. initiating a backup). You could say it is the control
+centre of my daily activities, including calculating and showing dashboards
+of where I am and where I'm going.
+
+This means I need a tool which seamlessly shows me the full-fidelity
+browser-rendered version of what I am writing and be able to print my notes
+for meetings, cut and paste nicely formatted output to my office e-mails
+and documents, as well as show some of the material as a slideshow.
+
+The existing *viewrendered* plugin couldn't seem to do what I needed
+(especially math) and I was almost ready to abandon Leo again. This time I
+bit the bullet and created a more capable renderer in viewrendered2 (VR2).
+Initially I made a plugin that rendered, on demand, to my normal web
+browser. This worked well, but I really thought live rendering like
+"viewrendered" would be better, and for that I needed close control over
+scroll positions etc. that I couldn't get with an external browser. So the
+plugin became much more complex as I merged it with the existing
+viewrendered plugin, but was ultimately more powerful and useful to me.
+
+Objectives
+-----------
+
+* Show a "full" html representation of any reST node or tree, without an
+  @rst root node, including more features than the existing viewrendered
+  plugin:
+
+  - proper html layout
+  - math (mathjax, etc.)
+  - clickable URLs
+  - clickable hyperlinks within the page (e.g. TOC)
+  - good quality zoom
+  - cut and paste html with ctl-C
+  - s5 slideshows
+  - javascript
+  - svg images
+  - configurable css
+
+* Allow showing of node tree rather than just the current node. This can
+  give a better overview perspective of the tree contents.
+
+* Be able to lock the rendering on the root node of a tree, to view the
+  effect editing a sub-node within the larger html document.
+
+* Provide proper rendering of any combination of node types in a tree, so long as
+  they have been properly designated by @language directives (i.e. reST, text,
+  code, css, ...).
+
+* Allow viewing (and printing) of an entire source file from an @file type
+root node.
+
+* Be able to *export* any of these renderings to a full web-browser to take advantage
+  of the large rendering window (especially for slideshows, as well as printing, saving output.
+  
+* Be able to integrate automatically executed code nodes intermingled with
+  reST nodes to provide an automatic calculation-based "Notebook" or "Report"
+  type output.
+
+* Don't increase the dependencies of Leo.
+
+Implementation
+--------------
+
+VR2 is implemented mostly as an ~600 line expansion of the update_rst
+method in the viewrendered.py plugin. The text-oriented class used for
+rendering in VR1 has been replaced by the QWebView class which provides the
+full rendering functionality of a real web-browser. To make this flexible,
+a toolbar has been attached to the top with a few controls.
+
+Because I wanted to retain compatibility with VR1, I created the
+viewrendered2.py plugin, but retained all the class naming which occurred
+within VR1. This means that it remains compatible with the existing
+mechanisms (like free_layout) of showing and creating panes for VR1. I
+tried this with an expectation that it would fail, but it appears to work
+without any unintended side-effects.
+
+Tooltips have been added where Qt allows, with the philosophy that a user
+shouldn't need a manual to use this pane.
+
+VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
+
+Issues / Limitations
+--------------------
+
+I use VR2 every few minutes every working day. However, VR2 is likely to
+still have a lot of rough edges and, in particular, bugs that show up with
+different work flows or css folder layouts etc. In fact, VR2 is still a
+work in progress and therefore still being fiddled with, so bugs creep in
+regularly.
+
+But overall, my perception of its deficiencies are:
+
+* Does not handle reST headings within the node bodies well (sometimes very
+  slow render, blocking Leo).
+
+  - VR2 attempts to reconcile reST headings that originate from explicit
+    headings within the nodes against reST headings that are automatically
+    generated by the node hierarchy. In many cases, this is impossible,
+    resulting in many errors which drastically slows down rendering. -
+    Recommend not using headings within the nodes themselves, leaving the
+    node hierarchy to do this automatically.
+
+* If the node triggers one of the special viewrendered node header types
+  (@md, @image, @movie, @html) VR2 simply defaults to the old handlers for
+  those types. This means it jumps back to whatever pane type VR1 uses, so
+  the features of VR2 disappear. I suspect that VR2 could incorporate these
+  types into the new version and retain these new features. I should look
+  at that.
+    
+* Doesn't integrate with rst3 plugin, especially honouring @others etc.
+  There are some conflicts in objectives, so this may never be fully
+  resolved. It would probably make sense for rst3 settings to get used for
+  VR2 as well, along with additional VR2 specific settings. Currently, VR2
+  has its own @settings-style settings. The rst3 code is not used.
+  
+* For slideshow purposes, a patch to docutils s5_writer is required to be
+  able to handle an arbitrary hierarchy of nodes (forces all headings to
+  start a new slide). Otherwise, only the 2nd level nodes (from the root)
+  force a new slide.
+  
+* The integration of VR2 code into the existing viewrendered plugin code is
+  rudimentary. I took the shortcut of not trying to understand this code
+  well and confining my integration to the rst rendering only. Better
+  integration would be a good future step.
+
+With the plugin being able to execute javascript etc. there may be some
+form of security issue, but I can't see it myself (given that Leo can
+execute arbitrary python code anyway). Any thoughts?
+
+Future?
+-------
+
+* Expand the export button if pandoc is installed, adding optional output
+  formats such as docx, odt, plus additional slideshow formats. * Use new
+  reST functionality to replace other media viewrendered methods for
+  images, svg, movies, etc. * Integrate better with rst3?
+
+Conclusion
+----------
+
+* I've attached the source as well as a bunch of screenshots. Feel free to
+try out the source by putting viewrendered2 into your @enabled-plugins
+instead of the usual viewrendered. I'd be interested in whether it works or
+not - expect bugs to show up!
+
+* I'm looking for feedback on whether this appears useful to others and not
+just me. If so, it should probably be polished a bit more before being used
+widely. Perhaps greater understanding of the existing viewrendered plugin
+operation would help me here.
+.. @+node:ekr.20141103061944.13: *4* Code snippet: execute code after typing has not happened for a while
+https://groups.google.com/d/msg/leo-editor/f1ARsze-_XU/z6cqEMvybsQJ
+
+I've found a delay timer to execute code is very useful. For example, if I
+stopped typing for 5 seconds, It would execute 'Alt-X Ctrl-P' and execute
+the last command which in my case is to produce my HTML (rst3) so I can
+look at it. This would help editing, making it more interactive editing in
+the rst3.
+
+https://github.com/leo-editor/snippets/blob/master/on_typing_idle.py
+.. @+node:ekr.20141103061944.15: *4* Added nodetags.py plugin
+There's now a quick and dirty tagging API to use, if you're feeling brave
+and don't mind writing scripts/buttons for now:
+
+https://groups.google.com/forum/#!topic/leo-editor/HHleO2R2UPY
+
+This is only an API for tags, but I feel like it should simplify the
+process and allow someone to focus on the important bits, i.e. UI hooks,
+rather than low-level details. Also, it's usable now for scripts.
+
+Here is the docstring:
+
+Provides node tagging capabilities to Leo
+
+By Jacob M. Peck
+
+API
+===
+
+This plugin registers a controller object to c.theTagController, which
+provides the following API::
+
+    tc = c.theTagController
+    tc.get_all_tags() # return a list of all tags used in the current
+outline, automatically updated to be consistent
+    tc.get_tagged_nodes('foo') # return a list of positions tagged 'foo'
+    tc.get_tags(p) # return a list of tags applied to the node at
+position p; returns [] if node has no tags
+    tc.add_tag(p, 'bar') # add the tag 'bar' to the node at position p
+    tc.remove_tag(p, 'baz') # remove the tag 'baz' from p if it is in
+the tag list
+
+Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
+a set.
+
+UI
+==
+
+The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
+the top is a search bar, editable to allow complex search queries.  It
+is pre-populated with all existing tags in the outline, and remembers
+your custom searches within the given session.  It also acts double duty
+as an input box for the add (+) button, which adds the contents of the
+search bar as a tag to the currently selected node.
+
+The list box in the middle is a list of headlines of nodes which contain
+the tag(s) defined by the current search string.  These are clickable,
+and doing so will center the focus in the outline pane on the selected node.
+
+Below the list box is a dynamic display of tags on the currently
+selected node.  Left-clicking on any of these will populate the search
+bar with that tag, allowing you to explore similarly tagged nodes.
+Right-clicking on a tag will remove it from the currently selected node.
+
+The status line at the bottom is purely informational.
+
+The tag browser has set-algebra querying possible.  Users may search for
+strings like 'foo&bar', to get nodes with both tags foo and bar, or
+'foo|bar' to get nodes with either or both.  Set difference (-) and
+symmetric set difference (^) are supported as well.  These queries are
+left-associative, meaning they are read from left to right, with no
+other precedence.  Parentheses are not supported. See below for more
+details.
+
+Searching
+---------
+
+Searching on tags in the UI is based on set algebra.  The following
+syntax is used::
+
+    <tag>&<tag> - return nodes tagged with both the given tags
+    <tag>|<tag> - return nodes tagged with either of the given tags (or
+both)
+    <tag>-<tag> - return nodes tagged with the first tag, but not the
+second tag
+    <tag>^<tag> - return nodes tagged with either of the given tags
+(but *not* both)
+
+These may be combined, and are applied left-associatively, building the
+set from the left, such that the query `foo&bar^baz` will return only
+nodes tagged both 'foo' and 'bar', or nodes tagged with 'baz', but *not*
+tagged with all three.
+
+Tag Limitations
+---------------
+The API is unlimited in tagging abilities.  If you do not wish to use
+the UI, then the API may be used to tag nodes with any arbitrary
+strings.  The UI, however, due to searching capabilities, may *not* be
+used to tag (or search for) nodes with tags containing the special
+search characters, `&|-^`.  The UI also cannot search for tags of
+zero-length, and it automatically removes surrounding whitespace
+(calling .strip()).
+----
+.. @+node:ekr.20141103061944.16: *4* script: load files into Leo from the command line
+Just upgraded my script to load files into Leo from the command line,
+thought it was shared somewhere before, but not finding it, I've put it
+here: https://github.com/leo-editor/snippets/blob/master/utils/led.py
+.. @+node:ekr.20141103061944.17: *4* Problems with @g.command decorator
+@language rest
+
+This post discusses discusses problems with the @g.command decorator. Later
+sections discuss solutions. These later sections are ENB (Engineering Note
+Book) discussions, which can safely be ignored by all except the usual
+suspects...
+
+Promises to do something "today" don't always get kept because a seemingly
+simple task like adding an insert-file-name command becomes unbearable.
+Creating a better way to define commands has become urgent.
+
+===== Background
+
+@g.command has its uses, especially in plugins. It allows any code to
+ define a new Leo command without having any access to Leo's core code. For
+ this reason alone, the @g.command decorator is here to stay.
+
+However, using @g.command to add Leo commands is often *way* too clumsy.
+There are several problems using @g.command. To see these problems clearly,
+let's look at a typical example, from leoVim.py::
+
+@language python
+
+
+    @g.command(':gt')
+    def vim_gt(event):
+        '''cycle-focus'''
+        c = event.get('c')
+        if c and c.vimCommands:
+            c.vimCommands.cycle_focus()
+            
+@language rest
+
+This code sucks, for at least the following reasons:
+
+1. It requires an outer-level function-name (vim_gt) that has no value
+   except to the @g.command decorator itself. This is useless verbiage and
+   just clutters the namespace. Worse, although the decorator doesn't
+   require distinct names, disabling a pylint check for duplicate names
+   would be way too dangerous.
+
+2. It repeats the template code for each different command. This is pure
+   cruft. Worse, the tests for c and c.vimCommands would not be necessary
+   in a subcommander.
+
+3. It is usually bad design to define the command at the top level.
+   Commands should be defined in the classes that contain their code!
+
+For all these reasons, vim-mode commands clearly should *not* be defined
+using the @g.command decorator. The question is, how to define them
+cleanly?
+
+Everything from here on is an ENB entry. Feel free to ignore, unless you
+are Terry ;-)
+
+===== Motivation
+
+It would be possible to define vc commands in vc.finishCreate as is done by
+sub-commanders in leoEditCommands.py, but as I was thinking about this
+problem I discovered how to simplify the definition of almost *all* of
+Leo's commands. This is too good to ignore, for the following reasons:
+
+1. The simplifications to be described reduce order constraints during
+   startup. Any such reduction is, all by itself, extremely valuable,
+   because such order constraints are the main complicating factor in the
+   startup code.
+
+2. As always, simplifications to complex code (and Leo's startup code is
+   complex in hard-to-see ways) promise further simplifications. No further
+   simplifications are apparent *now*, but it would be bad practice not to
+   simplify the code when I can.
+
+===== Details
+
+At present, there are several ways (not sure how to count them ;-) to
+define large numbers of commands. By defining a command I mean associating
+a string (the command's name) with a method of some class.
+
+Although details vary, the basic idea in each case is to define a
+**commands dict**, a Python dict whose keys are command names (Python
+strings) and whose values are methods.
+
+In particular, each subcommander in leoEditCommands.py defines a
+getPublicCommands method that returns a commands dict.
+
+ECM.finishCreateEditCommanders then merges all the commands dicts, like
+this::
+
+@language python
+
+    def finishCreateEditCommanders (self):
+        '''Finish creating edit classes in the commander.
+        Return the commands dictionary for all the classes.'''
+        c,d = self.c,{}
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.finishCreate()
+            theInstance.init()
+            d2 = theInstance.getPublicCommands()
+            if d2:
+                d.update(d2)
+        return d
+        
+@language rest
+
+
+But none of this should be necessary. Or rather, it should happen in a
+different place, and at no *particular* time.
+
+===== A much better way to define commands.
+
+The basic problem with the code above is that it must happen at the exact
+instant that various finishCreate methods get called. Yes, the present code
+works, but it depends *far* too much on code order during startup.
+
+We can remove *all* these unnecessary ordering constraints as follows:
+
+1.  Define init phase 0: create ivars.
+
+This phase is trivial, for our present purposes. Commands.__init__ will
+just define c.commandsDict and its inverse, as *empty* Python dictionaries.
+
+At present, the inverse of c.commandsDict is c.k.inverseCommandsDict. How
+stupid is that? It must be a c (Commands) ivar, not a c.k (KeyHandlerClass)
+ivar! Doh. Using a c.k ivar means that c.k must be inited *before*
+c.k.inverseCommandsDict is ever used. This is a completely unnecessary
+constraint.
+
+In short, the inverseCommandsDict must be a Commands ivar, not a
+KeyHandlerClass ivar. This will ensure that c.inverseCommandsDict will
+exist before any subcommander's *ctor* gets called.
+
+2. Define c.registerCommands (plural). This will call a new method,
+   c.registerCommand, for each item in a commands dict.
+
+Important: c.k.registerCommand must remain for compatibility, but it will
+probably just call c.registerCommand.
+
+With just these simple changes, *any* class can call c.registerCommands at
+*any* time. In particular, any class can call c.registerCommands in its
+ctor, or its ctor's helpers. There is no need to wait until finishCreate
+gets called!
+
+Defining command names in the ctor logic may leave some finishCreate
+methods empty. If so, we can rejoice--another ordering constraint has
+disappeared forever!
+
+===== Testing
+
+I expect the changeover to the new scheme to be straightforward. It may
+happen "today" (TM).
+
+This new scheme should be safe, but just to make sure, I'll probably enable
+the new code with g.NEW_COMMANDS.
+
+It's not clear how well the present unit tests actually tests the
+association between commands and their names. A separate unit test may be
+advisable.
+.. @+node:ekr.20141103061944.18: *5* What I did
+In the end, I have opted for the bare minimum of changes. Given the
+complexity of key handling, I think this is the only sane way. Here is a
+slightly revised checkin log for rev 09ab839...:
+
+QQQ
+
+Cleaned up how command names get put into c.commandsDict and
+c.inverseCommandsDict, but only a little bit ;-)
+
+All tests pass, but use a bit more caution.
+
+- Removed @g.command nodes from leoVim.py.
+  vc.defineCommandNames now creates command names.
+ - Called vc.defineCommandNames from the new c.createCommandNames, called from c.finishCreate.
+- Changed k.inverseCommandsDict to c.inverseCommandsDict.
+- Renamed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
+QQQ
+
+All this adds up to *slightly* better code.
+
+In particular, the various o.defineCommandNames methods can be called any
+time after o has been created. These methods depend on nothing else, so
+they can be called "early" in c.finishCreate, by c.createCommandNames. This
+is a real plus: there are now a few less order dependencies in the startup
+code. Replacing rst.finishCreate with rst.createCommandNames is gratifying.
+
+This is important! The various finishCreate methods must be called in
+*exactly* the right order so that various widgets are created in one
+finishCreate method before they are needed in another finishCreate method.
+So anything that either eliminates finishCreate methods entirely or reduces
+their complexity is a real improvement in Leo's startup code.
+
+Otoh, I left the code that creates c.commandsDict and c.inverseCommandsDict
+*strictly* alone, except that:
+
+1. inverseCommandsDict is now a c ivar instead of a k ivar.
+
+2. The new c.createCommandNames method encapsulates all aspects of the
+   making of the command name dicts. This should make this difficult code
+   slightly easier to understand.
+
+On balance, this was a long day of coding for minor improvements to Leo's
+startup logic. But these are steps in the right direction.
+
+In any case, the VimCommands class now defines command names in
+vc.defineCommandNames. There no need for vc.finishCreate and no need for
+all those redundant @g.command code hunks.
+
+Unless there are bugs reported, this ends this project for the foreseeable
+future.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
