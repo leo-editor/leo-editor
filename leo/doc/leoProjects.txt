@@ -868,6 +868,10 @@ This is a scrolling problem, not a failure to select text.
 Changed the call to w.see in find.showSuccess.
 
 @language python
+.. @+node:ekr.20141103061944.41: *4* Fixed several crashers re no-to-all during startup
+605ae57
+
+The present code just exists Leo, which I think is the reasonable thing to do.  YMMV.
 .. @+node:ekr.20140819050118.18319: *3* Code
 .. @+node:ekr.20140114145953.16692: *4* Added c.config.isLocalSetting
 .. @+node:ekr.20140218040104.16759: *4* Added p.nosentinels
