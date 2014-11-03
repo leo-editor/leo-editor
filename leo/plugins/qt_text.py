@@ -729,11 +729,33 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
             g.openUrlOnClick(event)
+    #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
+    def getXScrollPosition(self):
+        '''Get the horizontal scrollbar position.'''
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        if trace: g.trace(pos)
+        return pos
+
+    def setXScrollPosition(self,pos):
+        '''Set the position of the horizontal scrollbar.'''
+        trace = (True or g.trace_scroll) and not g.unitTesting
+        w = self
+        if g.no_scroll:
+            if trace: g.trace('no scroll')
+            return
+        elif pos is None:
+            if trace: g.trace('None')
+        else:
+            if trace: g.trace(pos,g.callers())
+            sb = w.horizontalScrollBar()
+            sb.setSliderPosition(pos)
     #@+node:ekr.20111002125540.7021: *3* lqtb.get/setYScrollPosition
     def getYScrollPosition(self):
-
+        '''Get the vertical scrollbar position.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
-
         w = self
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
@@ -741,10 +763,9 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         return pos
 
     def setYScrollPosition(self,pos):
-
+        '''Set the position of the vertical scrollbar.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
         w = self
-
         if g.no_scroll:
             if trace: g.trace('no scroll')
             return
@@ -754,7 +775,6 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-
     #@+node:ekr.20120925061642.13506: *3* lqtb.onSliderChanged
     def onSliderChanged(self,arg):
         '''Handle a Qt onSliderChanged event.'''
@@ -1021,7 +1041,13 @@ class QScintillaWrapper(QTextMixin):
         j = int(w.SendScintilla(w.SCI_GETANCHOR))
         if sort and i > j: i,j = j,i
         return i,j
-    #@+node:ekr.20140901062324.18599: *4* qsciw.getYScrollPosition (to do)
+    #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition (to do)
+    def getXScrollPosition(self):
+        
+        w = self.widget
+        # g.trace(g.callers())
+        return 0 # Not ready yet.
+
     def getYScrollPosition(self):
         
         w = self.widget
@@ -1111,7 +1137,11 @@ class QScintillaWrapper(QTextMixin):
             w.SendScintilla(w.SCI_SETSEL,i,j)
         else:
             w.SendScintilla(w.SCI_SETSEL,j,i)
-    #@+node:ekr.20140901062324.18609: *4* qsciw.setYScrollPosition (to do)
+    #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition (to do)
+    def setXScrollPosition(self,pos):
+        '''Set the position of the horizontal scrollbar.'''
+        # g.trace(pos)
+
     def setYScrollPosition(self,pos):
         '''Set the position of the vertical scrollbar.'''
         # g.trace(pos)
@@ -1301,12 +1331,22 @@ class QTextEditWrapper(QTextMixin):
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
         return i,j
-    #@+node:ekr.20110605121601.18084: *4* qtew.getYScrollPosition
+    #@+node:ekr.20110605121601.18084: *4* qtew.getX/YScrollPosition
+    # **Important**: There is a Qt bug here: the scrollbar position
+    # is valid only if cursor is visible.  Otherwise the *reported*
+    # scrollbar position will be such that the cursor *is* visible.
+
+    def getXScrollPosition(self):
+        '''QTextEditWrapper: Get the horizontal scrollbar position.'''
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self.widget
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        if trace: g.trace(pos)
+        return pos
+
     def getYScrollPosition(self):
-        '''QTextEditWrapper.'''
-        # **Important**: There is a Qt bug here: the scrollbar position
-        # is valid only if cursor is visible.  Otherwise the *reported*
-        # scrollbar position will be such that the cursor *is* visible.
+        '''QTextEditWrapper: Get the vertical scrollbar position.'''
         trace = False and g.trace_scroll and not g.unitTesting
         w = self.widget
         sb = w.verticalScrollBar()
@@ -1558,9 +1598,23 @@ class QTextEditWrapper(QTextMixin):
             if tot_t > 0.1:   g.trace('total: %2.3f sec' % (tot_t))
             
     # setSelectionRangeHelper = setSelectionRange
+    #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
+    def setXScrollPosition(self,pos):
+        '''Set the position of the horizonatl scrollbar.'''
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self.widget
+        if g.no_scroll:
+            if trace: g.trace('no scroll')
+            return
+        elif pos is None:
+            if trace: g.trace('None')
+        else:
+            if trace: g.trace(pos,g.callers())
+            sb = w.horizontalScrollBar()
+            sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18098: *4* qtew.setYScrollPosition
     def setYScrollPosition(self,pos):
-
+        '''Set the vertical scrollbar position.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
         if g.no_scroll:

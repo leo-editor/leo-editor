@@ -127,6 +127,7 @@ class WrapperAPI(object):
     def getInsertPoint(self): return 0
     def getSelectedText(self): return ''
     def getSelectionRange (self): return (0,0)
+    def getXScrollPosition (self): return 0
     def getYScrollPosition (self): return 0
     def hasSelection(self): return False
     def insert(self,i,s): pass
@@ -137,6 +138,7 @@ class WrapperAPI(object):
     def setFocus(self): pass # Required: sets the focus to wrapper.widget.
     def setInsertPoint(self,pos,s=None): pass
     def setSelectionRange (self,i,j,insert=None): pass
+    def setXScrollPosition (self,i): pass
     def setYScrollPosition (self,i): pass
     def tag_configure (self,colorName,**keys): pass
     def toPythonIndex (self,index): return 0
@@ -2235,10 +2237,12 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18579: *3* stw.Do-nothings
     # For StringTextWrapper.
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): pass
+    def getXScrollPosition (self): return 0
     def getYScrollPosition (self): return 0
     def see(self,i): pass
     def seeInsertPoint(self): pass
     def setFocus(self): pass
+    def setXScrollPosition (self,i): pass
     def setYScrollPosition (self,i): pass
     def tag_configure (self,colorName,**keys): pass
     #@+node:ekr.20140903172510.18591: *3* stw.Text

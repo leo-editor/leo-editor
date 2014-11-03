@@ -56,8 +56,6 @@ Plugin Menu - Keystroke binding can prevent plugin help display
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
 @language rest
 
-*** Transfer email items: 31 to-be-documented items.
-
 - Add docstrings for all commands in leoSessions.py.
   
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html

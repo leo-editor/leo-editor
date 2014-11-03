@@ -3499,6 +3499,8 @@ class Commands (object):
         w.setSelectionRange(ins,ins,insert=ins)
         # 2011/10/26: Calling see does more harm than good.
             # w.see(ins)
+        # Make sure we never scroll horizontally.
+        w.setXScrollPosition(0)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
