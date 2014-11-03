@@ -1184,207 +1184,212 @@
 <v t="ekr.20141015084905.18430"><vh>Newbie Leo questions for php projects</vh></v>
 <v t="ekr.20141026133611.8"><vh>Use setuptools instead of .bat files</vh></v>
 </v>
+<v t="ekr.20140810085801.18216"></v>
 <v t="ekr.20141103061944.55"><vh>Leo 5.0a1 release notes</vh>
-<v t="ekr.20141103061944.93"><vh>From projects</vh>
+<v t="ekr.20141103061944.235"><vh>** To do</vh>
+<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140810085801.18230"></v>
+<v t="ekr.20141103061944.64"><vh>Problems with @g.command decorator</vh>
+<v t="ekr.20141103061944.65"><vh>What I did</vh></v>
+</v>
+</v>
+<v t="ekr.20141103061944.246"><vh> Highlights</vh>
+<v t="ekr.20141103061944.86"><vh>@data nodes can now be composed from a tree of nodes!</vh></v>
+<v t="ekr.20141103061944.71"><vh>Added file name completion</vh></v>
+<v t="ekr.20141103061944.201"><vh>Added per-node expansions!</vh>
+<v t="ekr.20141103061944.202"><vh>Notes</vh></v>
+</v>
+<v t="ekr.20141103061944.216"><vh>Added vim mode</vh></v>
+<v t="ekr.20141103061944.208"><vh>Created @auto-org-mode</vh></v>
+<v t="ekr.20141103061944.204"><vh>Created g.run_pylint so pylint can run unmodified</vh></v>
+<v t="ekr.20141103061944.220"><vh>Enabled big-text buttons</vh></v>
+<v t="ekr.20141103061944.78"><vh>Leo now colors text at idle time</vh></v>
+<v t="ekr.20141103061944.211"><vh>Leo now supports dynamic @auto names</vh></v>
+<v t="ekr.20141103061944.219"><vh>Leo's main style sheet is fully parameterized</vh></v>
+<v t="ekr.20141103061944.230"><vh>Quickstart guide should open by default</vh></v>
+<v t="ekr.20141103061944.231"><vh>Allow delegate languages</vh></v>
+<v t="ekr.20141103061944.72"><vh>Added some support for scintilla</vh></v>
+</v>
 <v t="ekr.20141103061944.94"><vh>Bugs</vh>
+<v t="ekr.20141103061944.238"><vh>Doc bugs</vh>
+<v t="ekr.20141103061944.113"><vh>Fixed doc bug 1228452: related to the radio buttons in the Find pane</vh></v>
+</v>
+<v t="ekr.20141103061944.240"><vh>git bugs</vh>
+<v t="ekr.20141103061944.145"><vh>Delegated git #57 to Terry</vh></v>
+<v t="ekr.20141103061944.142"><vh>Fixed big-text bugs: #28, #63, #64</vh></v>
+<v t="ekr.20141103061944.152"><vh>Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node</vh></v>
+<v t="ekr.20141103061944.139"><vh>Fixed bug 31: 'undo' on a freshly-loaded outline</vh></v>
+<v t="ekr.20141103061944.138"><vh>Fixed bug 35: leoBridge sometimes assigns the same GNX to two distinct vnodes</vh></v>
+<v t="ekr.20141103061944.153"><vh>Fixed bug 36: @auto file not found produces a script error</vh></v>
+<v t="ekr.20141103061944.141"><vh>Fixed bug 50: Important body text lost switching @file to @auto-rst</vh></v>
+<v t="ekr.20141103061944.157"><vh>Fixed bug 59: drag and drop: target too small</vh></v>
+<v t="ekr.20141103061944.158"><vh>Fixed bug 60: create relative paths &amp; urls when dragging files to Leo</vh></v>
+<v t="ekr.20141103061944.135"><vh>Fixed bug 61: errors inhibited read @auto foo.md.</vh></v>
+<v t="ekr.20141103061944.177"><vh>Fixed bug 74: problems with @button if defined in myLeoSettings.leo</vh></v>
+<v t="ekr.20141103061944.147"><vh>Fixed bug 75: write-opml-file always produces an empty file</vh></v>
+<v t="ekr.20141103061944.148"><vh>Fixed bug 76: erroneous clone markers in @auto trees</vh></v>
+<v t="ekr.20141103061944.179"><vh>Fixed bug 78: F3 find-next target not always highlighted</vh></v>
+<v t="ekr.20141103061944.149"><vh>Investigated bug 24: Windows installer setting wrong file association for .leo files</vh></v>
+<v t="ekr.20141103061944.156"><vh>Investigated bug 56: Focus change on tree pane after saving current Leo file</vh></v>
+</v>
+<v t="ekr.20141103061944.236"><vh>Launchpad bugs</vh>
 <v t="ekr.20141103061944.95"><vh>Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed</vh></v>
 <v t="ekr.20141103061944.96"><vh>Cleared bug 1228713: Find-backward skips headlines under some conditions</vh></v>
 <v t="ekr.20141103061944.97"><vh>Cleared bug 1254864: Can't search from current cursor position downward in body text</vh></v>
-<v t="ekr.20141103061944.98"><vh>find-all now uses exising find pattern</vh></v>
-<v t="ekr.20141103061944.99"><vh>Fixed a startup error involving --ipython</vh></v>
-<v t="ekr.20141103061944.100"><vh>Fixed annoyance: shift-ctrl-w leaves .leo file as dirty</vh></v>
-<v t="ekr.20141103061944.101"><vh>Fixed autocompleter bug</vh></v>
+<v t="ekr.20141103061944.169"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
 <v t="ekr.20141103061944.102"><vh>Fixed bug 1041906: underlying C/C++ object has been deleted</vh></v>
 <v t="ekr.20141103061944.103"><vh>Fixed bug 1090950: refresh from disk - cut node resurrection</vh>
 <v t="ekr.20141103061944.104"><vh>print gnxs &amp; gnxDict</vh></v>
 </v>
+<v t="ekr.20141103061944.160"><vh>Fixed bug 1185933: insert-headline-time should insert at cursor</vh></v>
 <v t="ekr.20141103061944.105"><vh>Fixed bug 1228312: Find tab selected in log pane disables Minibuffer</vh></v>
 <v t="ekr.20141103061944.106"><vh>Fixed bug 1228458: Inconsistency between Find-forward and Find-backward</vh></v>
-<v t="ekr.20141103061944.107"><vh>Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible</vh></v>
-<v t="ekr.20141103061944.108"><vh>Fixed bug 1260415: exception writing external files" is insufficient</vh></v>
-<v t="ekr.20141103061944.109"><vh>Fixed bug 1264350</vh></v>
-<v t="ekr.20141103061944.110"><vh>Fixed bug: activate events now properly restore focus</vh></v>
-<v t="ekr.20141103061944.111"><vh>Fixed clone-find-all command</vh></v>
-<v t="ekr.20141103061944.112"><vh>Fixed Crash deleting body editor</vh></v>
-<v t="ekr.20141103061944.113"><vh>Fixed doc bug 1228452: related to the radio buttons in the Find pane</vh></v>
-<v t="ekr.20141103061944.114"><vh>Fixed important security hole in mod_scripting plugin</vh></v>
-<v t="ekr.20141103061944.115"><vh>Fixed leoGlobals bug (per Reinhard Engle)</vh></v>
-<v t="ekr.20141103061944.116"><vh>Fixed modes/md.py</vh></v>
-<v t="ekr.20141103061944.117"><vh>Fixed problem with 1-character reverse searches!</vh></v>
-<v t="ekr.20141103061944.118"><vh>Fixed problems with clone-expansion</vh></v>
-<v t="ekr.20141103061944.119"><vh>Fixed recent bug in change command</vh></v>
-<v t="ekr.20141103061944.120"><vh>Fixed serious c.deletePositionsInList bug</vh></v>
-<v t="ekr.20141103061944.121"><vh>Fixed unicode problem in the log pane</vh></v>
-<v t="ekr.20141103061944.122"><vh>Gave the Find Tab the intended amount of border</vh></v>
-<v t="ekr.20141103061944.123"><vh>Reported QTextEdit bug</vh></v>
-<v t="ekr.20141103061944.124"><vh>Fixed tab cycling</vh></v>
-<v t="ekr.20141103061944.125"><vh>Fixed autocompleter bug</vh></v>
-<v t="ekr.20141103061944.126"><vh>Fixed find bug</vh></v>
-<v t="ekr.20141103061944.127"><vh>Fixed unwanted scrolling in abbreviations</vh></v>
-<v t="ekr.20141103061944.128"><vh>Set the default syntax color for operators to black</vh></v>
-<v t="ekr.20141103061944.129"><vh>Fixed recursive import bug</vh></v>
-<v t="ekr.20141103061944.130"><vh>Suppressed duplicate console messages</vh></v>
-<v t="ekr.20141103061944.131"><vh>Fixed QCompleter bug</vh></v>
-<v t="ekr.20141103061944.132"><vh>Improved ctrl-o code</vh></v>
-<v t="ekr.20141103061944.133"><vh>Fixed bug: it's now possible to change big-text nodes</vh></v>
-<v t="ekr.20141103061944.134"><vh>All unit tests now pass when run externally</vh></v>
-<v t="ekr.20141103061944.135"><vh>Fixed bug 61: errors inhibited read @auto foo.md.</vh></v>
-<v t="ekr.20141103061944.136"><vh>Made beautify commands compatible with pep8</vh></v>
-<v t="ekr.20141103061944.137"><vh>eliminated "can not exedute commands from headlines"</vh></v>
-<v t="ekr.20141103061944.138"><vh>Fixed bug 35: leoBridge sometimes assigns the same GNX to two distinct vnodes</vh></v>
-<v t="ekr.20141103061944.139"><vh>Fixed bug 31: 'undo' on a freshly-loaded outline</vh></v>
-<v t="ekr.20141103061944.140"><vh>Investigated bug 869098: Context menu settings lost if save as used</vh></v>
-<v t="ekr.20141103061944.141"><vh>Fixed bug 50: Important body text lost switching @file to @auto-rst</vh></v>
-<v t="ekr.20141103061944.142"><vh>Fixed big-text bugs: #28, #63, #64</vh></v>
-<v t="ekr.20141103061944.143"><vh>Investigated bug 1193820: Focus change on tree pane after saving current Leo file</vh></v>
-<v t="ekr.20141103061944.144"><vh>Fixed bug 1258373: failed find focus fails</vh></v>
-<v t="ekr.20141103061944.145"><vh>Delegated git #57 to Terry</vh></v>
-<v t="ekr.20141103061944.146"><vh>Fixed bug 1245535: API allows headlines to contain newlines</vh></v>
-<v t="ekr.20141103061944.147"><vh>Fixed bug 75: write-opml-file always produces an empty file</vh></v>
-<v t="ekr.20141103061944.148"><vh>Fixed bug 76: erroneous clone markers in @auto trees</vh></v>
-<v t="ekr.20141103061944.149"><vh>Investigated bug 24: Windows installer setting wrong file association for .leo files</vh></v>
-<v t="ekr.20141103061944.150"><vh>Fixed bug 1245616: Autocomplete ? function...does not work</vh></v>
-<v t="ekr.20141103061944.151"><vh>Fixed tab-completion problems</vh></v>
-<v t="ekr.20141103061944.152"><vh>Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node</vh></v>
-<v t="ekr.20141103061944.153"><vh>Fixed bug 36: @auto file not found produces a script error</vh></v>
-<v t="ekr.20141103061944.154"><vh>Fixed bug: Find-previous fails at last node</vh></v>
-<v t="ekr.20141103061944.155"><vh>Fixed suboutline only find bug</vh></v>
-<v t="ekr.20141103061944.156"><vh>Investigated bug 56: Focus change on tree pane after saving current Leo file</vh></v>
-<v t="ekr.20141103061944.157"><vh>Fixed bug 59: drag and drop: target too small</vh></v>
-<v t="ekr.20141103061944.158"><vh>Fixed bug 60: create relative paths &amp; urls when dragging files to Leo</vh></v>
-<v t="ekr.20141103061944.159"><vh>Fixed bug 735938: file association crash</vh></v>
-<v t="ekr.20141103061944.160"><vh>Fixed bug 1185933: insert-headline-time should insert at cursor</vh></v>
-<v t="ekr.20141103061944.161"><vh>Investigated bug  524890: Incomplete derived file</vh></v>
 <v t="ekr.20141103061944.162"><vh>Fixed bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented</vh></v>
 <v t="ekr.20141103061944.163"><vh>Fixed bug 1244461: Numpad 'Enter' key does not work in minibuffer</vh></v>
-<v t="ekr.20141103061944.164"><vh>Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input</vh></v>
-<v t="ekr.20141103061944.165"><vh>Investigated bug 1268970: Leo does not remember window maximized state</vh></v>
-<v t="ekr.20141103061944.166"><vh>Investigated bug 1177355: node-only wrapped search does not work in long nodes</vh></v>
+<v t="ekr.20141103061944.146"><vh>Fixed bug 1245535: API allows headlines to contain newlines</vh></v>
+<v t="ekr.20141103061944.150"><vh>Fixed bug 1245616: Autocomplete ? function...does not work</vh></v>
 <v t="ekr.20141103061944.167"><vh>Fixed bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings</vh></v>
-<v t="ekr.20141103061944.168"><vh>Re-enabled command completion for @button commands</vh></v>
-<v t="ekr.20141103061944.169"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
-<v t="ekr.20141103061944.170"><vh>Fixed Bug 613153: unable to describe root directory on thumb drive</vh></v>
+<v t="ekr.20141103061944.107"><vh>Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible</vh></v>
+<v t="ekr.20141103061944.144"><vh>Fixed bug 1258373: failed find focus fails</vh></v>
+<v t="ekr.20141103061944.108"><vh>Fixed bug 1260415: exception writing external files" is insufficient</vh></v>
+<v t="ekr.20141103061944.109"><vh>Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter </vh></v>
+<v t="ekr.20141103061944.164"><vh>Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input</vh></v>
+<v t="ekr.20141103061944.170"><vh>Fixed bug 613153: unable to describe root directory on thumb drive</vh></v>
+<v t="ekr.20141103061944.159"><vh>Fixed bug 735938: file association crash</vh></v>
+<v t="ekr.20141103061944.176"><vh>Fixed bug 969391: setup.py confuses newbies</vh></v>
+<v t="ekr.20141103061944.154"><vh>Fixed bug: Find-previous fails at last node</vh></v>
+<v t="ekr.20141103061944.180"><vh>Fixed several crashers re no-to-all during startup</vh></v>
+<v t="ekr.20141103061944.155"><vh>Fixed suboutline only find bug</vh></v>
+<v t="ekr.20141103061944.151"><vh>Fixed tab-completion problems</vh></v>
+<v t="ekr.20141103061944.161"><vh>Investigated bug  524890: Incomplete derived file</vh></v>
+<v t="ekr.20141103061944.166"><vh>Investigated bug 1177355: node-only wrapped search does not work in long nodes</vh></v>
+<v t="ekr.20141103061944.143"><vh>Investigated bug 1193820: Focus change on tree pane after saving current Leo file</vh></v>
+<v t="ekr.20141103061944.165"><vh>Investigated bug 1268970: Leo does not remember window maximized state</vh></v>
+<v t="ekr.20141103061944.181"><vh>Investigated bug 1282362: shadow file name collisions cause spontaneous clone creation</vh></v>
+<v t="ekr.20141103061944.140"><vh>Investigated bug 869098: Context menu settings lost if save as used</vh></v>
 <v t="ekr.20141103061944.171"><vh>Investigated bug 86: Installer needs attention from an expert</vh>
 <v t="ekr.20141103061944.172"><vh>(works for me) LeoSetup thinks Leo's user is an Administrator</vh></v>
 <v t="ekr.20141103061944.173"><vh>(low priority) LeoSetup requires that Python be available for all users</vh></v>
 <v t="ekr.20141103061944.174"><vh>(low priority)_LeoSetup allows only one copy of Leo on a given computer</vh></v>
 <v t="ekr.20141103061944.175"><vh>(wont't do) LeoSetup does not run without human intervention</vh></v>
 </v>
-<v t="ekr.20141103061944.176"><vh>Fixed bug 969391: setup.py confuses newbies</vh></v>
-<v t="ekr.20141103061944.177"><vh>Fixed bug 74: problems with @button if defined in myLeoSettings.leo</vh></v>
+</v>
+<v t="ekr.20141103061944.237"><vh>Other bugs</vh>
+<v t="ekr.20141103061944.134"><vh>All unit tests now pass when run externally</vh></v>
+<v t="ekr.20141103061944.137"><vh>eliminated "can not exedute commands from headlines"</vh></v>
+<v t="ekr.20141103061944.98"><vh>find-all now uses exising find pattern</vh></v>
+<v t="ekr.20141103061944.99"><vh>Fixed a startup error involving --ipython</vh></v>
+<v t="ekr.20141103061944.100"><vh>Fixed annoyance: shift-ctrl-w leaves .leo file as dirty</vh></v>
+<v t="ekr.20141103061944.125"><vh>Fixed autocompleter bug</vh></v>
+<v t="ekr.20141103061944.101"><vh>Fixed autocompleter bug</vh></v>
+<v t="ekr.20141103061944.59"><vh>Fixed bug re the factor language</vh></v>
+<v t="ekr.20141103061944.110"><vh>Fixed bug: activate events now properly restore focus</vh></v>
+<v t="ekr.20141103061944.133"><vh>Fixed bug: it's now possible to change big-text nodes</vh></v>
+<v t="ekr.20141103061944.111"><vh>Fixed clone-find-all command</vh></v>
+<v t="ekr.20141103061944.112"><vh>Fixed Crash deleting body editor</vh></v>
+<v t="ekr.20141103061944.126"><vh>Fixed find bug</vh></v>
+<v t="ekr.20141103061944.114"><vh>Fixed important security hole in mod_scripting plugin</vh></v>
+<v t="ekr.20141103061944.115"><vh>Fixed leoGlobals bug (per Reinhard Engle)</vh></v>
+<v t="ekr.20141103061944.116"><vh>Fixed modes/md.py</vh></v>
+<v t="ekr.20141103061944.117"><vh>Fixed problem with 1-character reverse searches!</vh></v>
+<v t="ekr.20141103061944.118"><vh>Fixed problems with clone-expansion</vh></v>
+<v t="ekr.20141103061944.131"><vh>Fixed QCompleter bug</vh></v>
+<v t="ekr.20141103061944.119"><vh>Fixed recent bug in change command</vh></v>
+<v t="ekr.20141103061944.129"><vh>Fixed recursive import bug</vh></v>
+<v t="ekr.20141103061944.120"><vh>Fixed serious c.deletePositionsInList bug</vh></v>
+<v t="ekr.20141103061944.124"><vh>Fixed tab cycling</vh></v>
+<v t="ekr.20141103061944.121"><vh>Fixed unicode problem in the log pane</vh></v>
+<v t="ekr.20141103061944.127"><vh>Fixed unwanted scrolling in abbreviations</vh></v>
+<v t="ekr.20141103061944.122"><vh>Gave the Find Tab the intended amount of border</vh></v>
+<v t="ekr.20141103061944.132"><vh>Improved ctrl-o code</vh></v>
 <v t="ekr.20141103061944.178"><vh>Investigated bug: fill-region &amp; format-body can hang</vh></v>
-<v t="ekr.20141103061944.179"><vh>Fixed (?) bug 78: F3 find-next target not always highlighted</vh></v>
-<v t="ekr.20141103061944.180"><vh>Fixed several crashers re no-to-all during startup</vh></v>
-<v t="ekr.20141103061944.181"><vh>Investigated bug 1282362: shadow file name collisions cause spontaneous clone creation</vh></v>
+<v t="ekr.20141103061944.136"><vh>Made beautify commands compatible with pep8</vh></v>
+<v t="ekr.20141103061944.168"><vh>Re-enabled command completion for @button commands</vh></v>
+<v t="ekr.20141103061944.123"><vh>Reported QTextEdit bug</vh></v>
+<v t="ekr.20141103061944.128"><vh>Set the default syntax color for operators to black</vh></v>
+<v t="ekr.20141103061944.130"><vh>Suppressed duplicate console messages</vh></v>
+</v>
 </v>
 <v t="ekr.20141103061944.182"><vh>Code</vh>
-<v t="ekr.20141103061944.183"><vh>Added c.config.isLocalSetting</vh></v>
+<v t="ekr.20141103061944.242"><vh>API changes</vh>
 <v t="ekr.20141103061944.184"><vh>Added p.nosentinels</vh></v>
-<v t="ekr.20141103061944.185"><vh>Added support for html handlebar syntax coloring</vh></v>
-<v t="ekr.20141103061944.186"><vh>Added support for qt5</vh></v>
 <v t="ekr.20141103061944.187"><vh>Converted all class names to pep8 style</vh></v>
-<v t="ekr.20141103061944.188"><vh>Improved p.isAncestorOf and c.positionExists</vh></v>
 <v t="ekr.20141103061944.189"><vh>Removed g.choose from Leo's core &amp; plugins</vh></v>
-<v t="ekr.20141103061944.190"><vh>Rewrote &amp; simplified k.getArg</vh></v>
-<v t="ekr.20141103061944.191"><vh>Changed most calls to k.setLabel to k.setStatusLabel</vh></v>
-<v t="ekr.20141103061944.192"><vh>Created g.IdleTime and qtGui.IdleTime</vh></v>
-<v t="ekr.20141103061944.193"><vh>Improved speed of selection logic</vh></v>
 <v t="ekr.20141103061944.194"><vh>A major reorg of Leo's code</vh></v>
-<v t="ekr.20141103061944.195"><vh>Converted 7 plugins so they work with PyQt5</vh></v>
-<v t="ekr.20141103061944.196"><vh>Simplified gnx scan logic</vh></v>
-<v t="ekr.20141103061944.197"><vh>Delayed allocation of gnx's...</vh></v>
 <v t="ekr.20141103061944.198"><vh>Created ni.updateLastIndex</vh></v>
+</v>
+<v t="ekr.20141103061944.243"><vh>Code improvements</vh>
+<v t="ekr.20141103061944.63"><vh>A beautiful and general design pattern eliminates tab-completion special cases</vh></v>
+<v t="ekr.20141103061944.186"><vh>Added support for qt5</vh></v>
+<v t="ekr.20141103061944.191"><vh>Changed most calls to k.setLabel to k.setStatusLabel</vh></v>
+<v t="ekr.20141103061944.68"><vh>code: regularized .wrapper and .widget ivars</vh></v>
+<v t="ekr.20141103061944.192"><vh>Created g.IdleTime and qtGui.IdleTime</vh></v>
+<v t="ekr.20141103061944.197"><vh>Delayed allocation of gnx's...</vh></v>
 <v t="ekr.20141103061944.199"><vh>Delayed allocation of vnodes</vh></v>
+<v t="ekr.20141103061944.188"><vh>Improved p.isAncestorOf and c.positionExists</vh></v>
+<v t="ekr.20141103061944.193"><vh>Improved speed of selection logic</vh></v>
+<v t="ekr.20141103061944.190"><vh>Rewrote &amp; simplified k.getArg</vh></v>
+<v t="ekr.20141103061944.196"><vh>Simplified gnx scan logic</vh></v>
+<v t="ekr.20141103061944.67"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
+<v t="ekr.20141103061944.66"><vh>added the IdleTime class</vh></v>
+<v t="ekr.20141103061944.214"><vh>Cleaned up command-name handling a bit</vh></v>
 </v>
-<v t="ekr.20141103061944.200"><vh>Features</vh>
-<v t="ekr.20141103061944.201"><vh>Added per-node expansions!</vh>
-<v t="ekr.20141103061944.202"><vh>Notes</vh></v>
-</v>
-<v t="ekr.20141103061944.203"><vh>Added spell-as-you-type commands</vh></v>
-<v t="ekr.20141103061944.204"><vh>Created g.run_pylint so pylint can run unmodified</vh></v>
-<v t="ekr.20141103061944.205"><vh>Improved find/replace-all commands</vh></v>
-<v t="ekr.20141103061944.206"><vh>Improved idle-time handling and added new commands</vh></v>
-<v t="ekr.20141103061944.207"><vh>Added pylint command</vh></v>
-<v t="ekr.20141103061944.208"><vh>Created @auto-org-mode</vh></v>
+<v t="ekr.20141103061944.249"><vh>Files</vh>
+<v t="ekr.20141103061944.62"><vh>Split qtGui.py into separate files</vh></v>
 <v t="ekr.20141103061944.209"><vh>Completed generalization of importers</vh></v>
 <v t="ekr.20141103061944.210"><vh>The @auto write code now uses writer plugins</vh></v>
-<v t="ekr.20141103061944.211"><vh>Leo now supports dynamic @auto names</vh></v>
 <v t="ekr.20141103061944.212"><vh>Leo imports importers &amp; writers from home/.leo</vh>
 <v t="ekr.20141103061944.213"><vh> demo script</vh></v>
 </v>
-<v t="ekr.20141103061944.214"><vh>Cleaned up command-name handling a bit</vh></v>
-<v t="ekr.20141103061944.215"><vh>Added insert-file-name command</vh></v>
-<v t="ekr.20141103061944.216"><vh>Added vim mode</vh></v>
-<v t="ekr.20141103061944.217"><vh>Added clone-find-parents command</vh></v>
-<v t="ekr.20141103061944.218"><vh>Changed Leo's namespace in .leo files</vh></v>
-<v t="ekr.20141103061944.219"><vh>Leo's main style sheet is fully parameterized</vh></v>
-<v t="ekr.20141103061944.220"><vh>Enabled big-text buttons</vh></v>
-<v t="ekr.20141103061944.221"><vh>Added --trace-plugins option &amp; corresponding leoBridge option</vh></v>
-<v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
-<v t="ekr.20141103061944.223"><vh>** beautify command now uses PythonTidy</vh></v>
-<v t="ekr.20141103061944.224"><vh>added --no-persist command-line option</vh></v>
-<v t="ekr.20141103061944.225"><vh>Added new clone-to-last-node</vh></v>
-<v t="ekr.20141103061944.226"><vh>Improved check outline</vh></v>
-<v t="ekr.20141103061944.227"><vh>Added @bool auto-scroll-find-tab</vh></v>
-<v t="ekr.20141103061944.228"><vh>Rewrote at_produce plugin</vh></v>
-<v t="ekr.20141103061944.229"><vh>Added flatten-outline-to-node</vh></v>
-<v t="ekr.20141103061944.230"><vh>Fixed: Quickstart guide should open by default</vh></v>
-<v t="ekr.20141103061944.231"><vh>Allow delegate languages</vh></v>
-<v t="ekr.20141103061944.232"><vh>New wikiview plugin</vh></v>
 </v>
-</v>
-<v t="ekr.20141103061944.92"><vh>To do: docs for a1</vh>
-<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
-<v t="ekr.20140810085801.18216"></v>
-<v t="ekr.20140810085801.18230"></v>
-</v>
-<v t="ekr.20141103061944.90"><vh>To be documented 1</vh>
-<v t="ekr.20141015084905.18437"><vh>Document four plugins</vh></v>
-<v t="ekr.20141015084905.18438"><vh>Document recent tags work</vh></v>
-<v t="ekr.20141015084905.18439"><vh>Tool for diffing Leo files</vh></v>
-<v t="ekr.20141015084905.18440"><vh>Indexing files for full text search</vh></v>
-</v>
-<v t="ekr.20141103061944.57"><vh>To be documented 2</vh>
-<v t="ekr.20141103061944.58"><vh>Bugs</vh>
-<v t="ekr.20141103061944.59"><vh>Fixed bug re the factor language</vh></v>
-</v>
-<v t="ekr.20141103061944.60"><vh>Code &amp; scripts</vh>
 <v t="ekr.20141103061944.61"><vh>Leo now uses a new xml namespace</vh></v>
-<v t="ekr.20141103061944.62"><vh>Split qtGui.py into separate files</vh></v>
-<v t="ekr.20141103061944.63"><vh>code: A beautiful and general design pattern eliminates tab-completion special cases</vh></v>
-<v t="ekr.20141103061944.64"><vh>Problems with @g.command decorator</vh>
-<v t="ekr.20141103061944.65"><vh>What I did</vh></v>
 </v>
-<v t="ekr.20141103061944.66"><vh>added the IdleTime class</vh></v>
-<v t="ekr.20141103061944.67"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
-<v t="ekr.20141103061944.68"><vh>code: regularized .wrapper and .widget ivars</vh></v>
-</v>
-<v t="ekr.20141103061944.69"><vh>Features</vh>
-<v t="ekr.20141103061944.70"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
-<v t="ekr.20141103061944.71"><vh>Added file name completion</vh></v>
-<v t="ekr.20141103061944.72"><vh>Added some support for scintilla</vh></v>
+<v t="ekr.20141103061944.200"><vh>Features</vh>
+<v t="ekr.20141103061944.247"><vh>New commands</vh>
 <v t="ekr.20141103061944.73"><vh>Added clone-find-parents command</vh></v>
+<v t="ekr.20141103061944.225"><vh>Added clone-to-last-node</vh></v>
+<v t="ekr.20141103061944.229"><vh>Added flatten-outline-to-node</vh></v>
+<v t="ekr.20141103061944.215"><vh>Added insert-file-name command</vh></v>
+<v t="ekr.20141103061944.207"><vh>Added pylint command</vh></v>
+<v t="ekr.20141103061944.203"><vh>Added spell-as-you-type commands</vh></v>
+<v t="ekr.20141103061944.206"><vh>Improved idle-time handling and added new commands</vh></v>
 </v>
-<v t="ekr.20141103061944.74"><vh>Plugins</vh>
+<v t="ekr.20141103061944.248"><vh>Improved commands</vh>
+<v t="ekr.20141103061944.205"><vh>Improved find/replace-all commands</vh></v>
+<v t="ekr.20141103061944.223"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
+<v t="ekr.20141103061944.226"><vh>Improved check outline</vh></v>
+<v t="ekr.20141103061944.70"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
+</v>
+</v>
+<v t="ekr.20141103061944.233"><vh>Plugins &amp; leo/external </vh>
 <v t="ekr.20141103061944.75"><vh>Added liveview plugin</vh></v>
-<v t="ekr.20141103061944.76"><vh>Added viewrendered2 plugin</vh></v>
 <v t="ekr.20141103061944.77"><vh>Added nodetags.py plugin</vh></v>
-<v t="ekr.20141103061944.78"><vh>Leo now colors text at idle time</vh></v>
+<v t="ekr.20141103061944.76"><vh>Added viewrendered2 plugin</vh></v>
+<v t="ekr.20141103061944.232"><vh>Added wikiview plugin</vh></v>
+<v t="ekr.20141103061944.195"><vh>Converted 7 plugins so they work with PyQt5</vh></v>
+<v t="ekr.20141015084905.18437"><vh>Document four plugins</vh></v>
+<v t="ekr.20141015084905.18440"><vh>leo/external/leoftsindex.py</vh></v>
+<v t="ekr.20141103061944.228"><vh>Rewrote at_produce plugin</vh></v>
 </v>
 <v t="ekr.20141103061944.79"><vh>Scripts</vh>
-<v t="ekr.20141103061944.80"><vh>Script: Dictionary to Leo outline</vh></v>
 <v t="ekr.20141103061944.81"><vh>Code snippet: execute code after typing has not happened for a while</vh></v>
-<v t="ekr.20141103061944.82"><vh>script: load files into Leo from the command line</vh></v>
 <v t="ekr.20141103061944.83"><vh>Leo script to safely replace body.x with body.wrapper.x</vh></v>
+<v t="ekr.20141103061944.80"><vh>Script: Dictionary to Leo outline</vh></v>
+<v t="ekr.20141103061944.82"><vh>script: load files into Leo from the command line</vh></v>
+<v t="ekr.20141015084905.18439"><vh>Tool for diffing Leo files</vh></v>
 </v>
-<v t="ekr.20141103061944.84"><vh>Settings</vh>
-<v t="ekr.20141103061944.85"><vh>Reloading visual settings</vh></v>
-<v t="ekr.20141103061944.86"><vh>@data nodes can now be composed from a tree of nodes!</vh></v>
+<v t="ekr.20141103061944.84"><vh>Settings &amp; options</vh>
+<v t="ekr.20141103061944.224"><vh>added --no-persist command-line option</vh></v>
+<v t="ekr.20141103061944.221"><vh>Added --trace-plugins option &amp; corresponding leoBridge option</vh></v>
+<v t="ekr.20141103061944.227"><vh>Added @bool auto-scroll-find-tab</vh></v>
+<v t="ekr.20141103061944.183"><vh>Added c.config.isLocalSetting</vh></v>
+<v t="ekr.20141103061944.185"><vh>Added support for html handlebar syntax coloring</vh></v>
 <v t="ekr.20141103061944.87"><vh>Fully parameterized settings</vh>
 <v t="ekr.20141103061944.88"><vh>Code changes</vh></v>
 <v t="ekr.20141103061944.89"><vh>More notes</vh></v>
 </v>
-</v>
+<v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
+<v t="ekr.20141103061944.85"><vh>Reloading visual settings</vh></v>
 </v>
 </v>
 </vnodes>
@@ -21977,7 +21982,6 @@ screenshots
 todo
 valuespace
 </t>
-<t tx="ekr.20141015084905.18438"></t>
 <t tx="ekr.20141015084905.18439">From: Terry Brown
 
 The script below is a tool for diffing two Leo files. The attached
@@ -22152,6 +22156,8 @@ just to feed in the 2 nodes, Any quick idea how this can be done the best
 way?
 </t>
 <t tx="ekr.20141015084905.18440">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+Indexing files for full text search
 
 Just pushed leo/external/leoftsindex.py:
 
@@ -22983,7 +22989,7 @@ This works for me (Windows 7 and Ubuntu) with Python 2.7.8, PyQt version 4.8.6.
 https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
 
-This works for me
+This works for me.
 </t>
 <t tx="ekr.20141103061944.167">@language rest
 
@@ -23708,16 +23714,6 @@ Affected methods: vc.vim_V and vc&gt;do_visual_mode.
 It would be good if LeoQTextEditWidget.setSelectionRangeHelper could handle
 insert points in the middle of a text selection, but at present it can't.
 </t>
-<t tx="ekr.20141103061944.217">Added c.cloneFindParents.
-</t>
-<t tx="ekr.20141103061944.218">The xml namespace line at the start of .leo files has been:
-
-    &lt;leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" &gt;
-
-The new line line is:
-
-    &lt;leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" &gt;
-</t>
 <t tx="ekr.20141103061944.219">All aspects of the style sheet can now be altered using normal user settings.
 </t>
 <t tx="ekr.20141103061944.220">@language rest
@@ -23744,7 +23740,7 @@ This is a major upgrade to the beautify command.
 
 PythonTidy (tidy for short) does a full parse of the Python sources: https://pypi.python.org/pypi/PythonTidy/
 
-What I did today.  See the &lt;&lt; version info &gt;&gt; section for all the details::
+What I did today.  See the &lt; &lt; version info &gt; &gt; section for all the details::
 
 1. Leonized tidy's sources: @file ../external/PythonTidy.py in in LeoPyRef.leo.
 
@@ -23912,6 +23908,24 @@ just 'Setup' with this pluing active.
 
 
 </t>
+<t tx="ekr.20141103061944.233"></t>
+<t tx="ekr.20141103061944.235">- Add docstrings for all commands in leoSessions.py.
+  
+- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
+
+- Review all important plugins.
+
+- Document recent tags work.</t>
+<t tx="ekr.20141103061944.236"></t>
+<t tx="ekr.20141103061944.237"></t>
+<t tx="ekr.20141103061944.238"></t>
+<t tx="ekr.20141103061944.240"></t>
+<t tx="ekr.20141103061944.242"></t>
+<t tx="ekr.20141103061944.243"></t>
+<t tx="ekr.20141103061944.246"></t>
+<t tx="ekr.20141103061944.247"></t>
+<t tx="ekr.20141103061944.248"></t>
+<t tx="ekr.20141103061944.249"></t>
 <t tx="ekr.20141103061944.55">Leo 5.0 alpha 1                               November 4, 2014
 
 Leo 5.0a1 is now available at:
@@ -23939,11 +23953,7 @@ Download:  http://sourceforge.net/projects/leo/files/
 Git:       https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20141103061944.57">@language rest
-</t>
-<t tx="ekr.20141103061944.58"></t>
 <t tx="ekr.20141103061944.59">Fixed the entry in g.app.language_extension_dict</t>
-<t tx="ekr.20141103061944.60"></t>
 <t tx="ekr.20141103061944.61">For several years the xml namespace line at the start of .leo files has been::
 
     &lt;leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" &gt;
@@ -24734,7 +24744,6 @@ methods being added to each tested "Null" class.
 That's all! You may not believe it, but I think of all this work as being
 related to fixing bugs. I'll now return more directly to bug fixes.
 </t>
-<t tx="ekr.20141103061944.69"></t>
 <t tx="ekr.20141103061944.70">Added YesToAll and NoToAll capability to g.app.gui.runAskYesNoDialog
 and uses this in the open file again? questions when opening Leo after a
 crash.</t>
@@ -24791,7 +24800,6 @@ Select a cloned node, then do:
 This works somewhat like the clone-find-all command: it creates a node containing
 clones of all the parents of the selected node.
 </t>
-<t tx="ekr.20141103061944.74"></t>
 <t tx="ekr.20141103061944.75">Just pushed the livecode.py plugin, screenshot attached.
 
 It is currently python 2.7 only, although that should be relatively
@@ -25385,16 +25393,6 @@ myLeoSettings.leo should contain overrides of only the @color and @string
 nodes in leoSettings.leo. There should be no need to use @data
 qt-gui-**user**-style-sheet unless one wants to do something very unusual.
 </t>
-<t tx="ekr.20141103061944.90"></t>
-<t tx="ekr.20141103061944.92">@language rest
-
-- Add docstrings for all commands in leoSessions.py.
-  
-- Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
-
-- Review all important plugins.
-</t>
-<t tx="ekr.20141103061944.93"></t>
 <t tx="ekr.20141103061944.94"></t>
 <t tx="ekr.20141103061944.95">https://bugs.launchpad.net/leo-editor/+bug/1228457
 

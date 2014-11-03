@@ -6,12 +6,14 @@
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
 
+Clean leoPlugins.leo
+
 Testing:
-
 - Rerun Bob's test (make a unit test out of it??)
-
 - [Done?] Unit tests for node indices.
 .. @+node:ekr.20141103061944.45: *3* Mac: alt-x does not work in body pane
+@language rest
+
 https://bugs.launchpad.net/leo-editor/+bug/1266269
 Mac: alt-x does not work in body pane
 
