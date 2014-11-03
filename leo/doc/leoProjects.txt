@@ -2413,6 +2413,628 @@ all those redundant @g.command code hunks.
 
 Unless there are bugs reported, this ends this project for the foreseeable
 future.
+.. @+node:ekr.20141103061944.19: *4* code: A beautiful and general design pattern eliminates tab-completion special cases
+In an earlier post I said:
+
+QQQ
+
+Strictly speaking, tab cycling doesn't have to be disabled for all colon
+commands. One could imaging a list of commands that use tab to complete
+file names. Otoh, maintaining that list would be clumsy, and it would add
+still more special cases to ga.do_tab.
+
+QQQ
+
+This post describes a much better way, done at rev 3994eca.
+
+The new code is gorgeous, if I do say so myself. Even better, the solution
+is a design pattern with many applications.
+
+The trick is to replace functions implementing commands by classes having
+`__call__` methods. See the P.P.S for details.
+
+Yes, this has all been done before. Several of Leo's commands are
+implemented this way. But read on...
+
+What's new is that classes can "advertise" their ability to do various
+things. Here, the classes implementing vim commands advertise, by having a
+tab_callback method, that they want to handle a tab that follows their
+name. ga.do_tab then defers to the vim command.
+
+There are several really cool things about this code.
+
+1. ga.do_tab, and its helper, ga.do_tab_callback, no longer know *anything*
+    about colon commands, or what any command intends to do with the
+    tab(!!). If the command handler has a tab_callback attribute,
+    ga.do_tab_callback just does::
+
+     ga.reset_tab_cycling()
+     k.functionTail = tail # For k.getFileName.
+     handler.tab_callback()
+
+Nothing could be simpler, or more general.
+
+2. The code in the command classes is simplified as well. No need for a
+   kludgy test event.get_arg_value. See the P.S. for the full
+   implementation of the :tabnew command.
+
+The overall result is a spectacular collapse in complexity, which the
+attendant increase in power and generality.
+
+Edward
+
+P.S. Here is the flattened form of the class that handles the :tabnew
+command (does not require vim-mode). In particular, note that the __call__
+and tab_callback methods are trivial. This is the way it is written in The
+Book.
+
+class Tabnew:
+    '''
+    A class to handle Vim's :tabnew command.
+    This class supports the do_tab callback.
+    '''
+    def __init__(self,vc):
+        '''Ctor for VimCommands.tabnew class.'''
+        self.vc = vc
+    __name__ = ':tabnew'
+        # Required.
+
+    def __call__(self,event=None):
+        '''Prompt for a file name, the open a new Leo tab.'''
+        self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
+       
+    def tab_callback(self):
+        '''Called when the user types :tabnew<tab>'''
+        self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
+       
+    def open_file_by_name(self,fn):
+        c = self.vc.c
+        if fn and not g.os_path_isdir(fn):
+            c2 = g.openWithFileName(fn,old_c=c)
+            try:
+                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+            except Exception:
+                pass
+        else:
+            c.new()
+
+P.P.S. This pattern is particularly well suited to Leo, because the various
+getPublicCommands methods reference those functions when create command
+dictionaries. Here, we replace just two entries in the dict::
+
+    ':r':   vc.LoadFileAtCursor(vc),
+    ':tabnew': vc.Tabnew(vc),
+
+This creates instances of the LoadFileAtCursor and Tabnew classes. In other
+words, we replace a function by an instance of a class. All such classes
+must have __call__ methods, so that Leo can "call" the instance as if it
+were a function.
+.. @+node:ekr.20141103061944.20: *4* added the IdleTime class
+@language rest
+
+Rev 060c33a contains a spectacular collapse in complexity in idle-time
+handling.
+
+Instantly, registering idle-time event handlers can be considered
+deprecated, though I have no plans to remove the horrendous older code.
+
+The new pattern allows multiple, independent (or cooperating) idle-time
+handlers, created at will as needed.
+
+The new code is based on the IdleTime class in qtGui.py. Rather than access
+this directly, code should use the g.IdleTime proxy::
+
+@language python
+
+    def IdleTime(c,handler,delay=500):
+        '''A proxy for the g.app.gui.IdleTime class.'''
+        if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
+            return g.app.gui.idleTimeClass(c,handler,delay)
+        else:
+            return None
+            
+@language rest
+
+g.IdleTime ensures that all is well when using gui's that don't have an IdleTime class.
+
+Here is how to use the new code::
+
+@language python
+
+    def handler(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+
+    it = g.IdleTime(c,handler,delay=500)
+    if it: it.start()
+    
+@language rest
+
+The code creates an instance of the IdleTime class that calls the given
+handler at idle time, and no more than once every 500 msec. Here is the
+output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+
+Timer instances are completely independent.  For example:
+
+@language python
+
+    def handler1(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+
+    def handler2(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 10:
+            g.trace('done')
+            it.stop()
+
+    it1 = g.IdleTime(c,handler1,delay=500)
+    it2 = g.IdleTime(c,handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+        
+@language rest
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
+.. @+node:ekr.20141103061944.21: *4* Leo now colors text at idle time
+Rev 691b8ca... activates the all-Python replacement for the QSyntaxHighlighter class.
+
+python_qsh = True at the start of leoColorizer.py.
+
+A truly great day for Leo: idle-time coloring now works!!  At rev 096a9b9.
+
+This fixes git bug 28: https://github.com/leo-editor/leo-editor/issues/28
+Leo hangs when a node with too large body is selected
+
+To see the effect of the new code:
+
+1  Create a node with *lots* of colored text.
+2. Move the cursor to the last line of the text.
+3. Select another node, and then move back to the "big" node.
+
+You should see the end of the text all in black at first, and then become
+colored later.
+
+In the meantime, Leo is responsive to all commands, mouse clicks, etc.
+.. @+node:ekr.20141103061944.22: *4* Wanted: w.getTextLength and p/v.get_b_length
+@language rest
+
+A head-slapping moment: the so-called high-level interfaced throughout
+Leo's core to interact with Leo's text panes lacks a way of getting the
+length of text *without* making a copy of the text.
+
+This is more than a slight oversight: I imagine there are several place
+were the code does s = w.getAllText() merely so it can use len(s)! This is
+a huge strain on the GC for large p.b.
+
+Worse, the absence of w.getTextLength() has lead to the most unfortunate
+LeoQTextEditWidget.lengthHelper, which calculated the length of the text
+using QTextCursor methods! This is catastrophically slow for large text.
+This method was doubling node load times for large nodes.
+
+In other words, w.getTextLength() is an essential part of fixing git bug 28:
+https://github.com/leo-editor/leo-editor/issues/28
+
+But nooooooo... w.getTextLength() is far from easy to do. There is no
+QTextEdit or QTextDocument method that delivers the length of the text!
+This is a *huge* hole in the QTextEdit and QTextDocument api's, but there
+is nothing we can do about that.
+
+The simplest thing that could possibly work would be::
+
+@language python
+
+
+    def getTextLength(self):
+        w = self.widget
+        return len(w.getAllText())
+        
+@language rest
+
+
+But this would be a step backwards because it hides the fact that it is
+expensive.
+
+It might be possible to cache the value of w.getAllText in an "text
+changed" event handler in LeoQTextBrowser:(QTextBrowser). But I would like
+to avoid this approach--any bug would lead to data loss or corruption. I
+may play around with this, but for now it's not likely to happen. See below
+for a workaround.
+
+By analogy with w.getTextLength(), we can imagine a p.b_length method that
+would simply return len(p.v._bodyString). This, at least, is worth doing.
+
+===== Summary
+
+w.getTextLength() isn't trivial.
+
+Caching the value returned by w.getAllText() seems too dangerous.
+
+As a work-around, the crucial node-selection logic will attempt to minimize
+calls to w.getAllText. There, and *only* there, it should be possible to
+create a *single* copy of the text and pass that copy around to all code
+that needs it. It would be a complication, but a completely safe one.
+
+Otoh, p/v.b_length are trivial and useful. They will be added asap.
+
+-------------
+
+Two parts to this reply:
+
+===== Part 1: defining w.getTextLength
+
+> w.getTextLength() isn't trivial...Caching the value returned by
+w.getAllText() seems too dangerous.
+
+Actually, defining w.getTextLength using a textChanged event handler in
+LeoQTextBrowser is straightforward::
+
+@language python
+
+    def onTextChanged(self):
+        '''The textChanged event handler.  Cached the text in self.leo_s.'''
+        self.leo_s = s = g.u(self.toPlainText())
+
+    def getTextLength(self):
+        '''Return the length of all the text.'''
+        if 1: # safe.
+            s = g.u(self.toPlainText())
+            if s != self.leo_s:
+                g.trace('can not happen: text mismatch.')
+                self.leo_s = s
+            return len(self.leo_s)
+        else: # fast
+            return len(self.leo_s)
+            
+@language rest
+
+We can use the "safe" version of getTextLength until we are *sure* the can
+not happen message never happens ;-)
+
+Otoh, we must be careful: onTextChanged will be called in the middle of the
+node-switching logic.
+
+===== Part 2: doing without w.getTextLength
+
+Imo, the simplest thing that could possibly work is to avoid the extra call
+to w.getAllText in the node switching logic in selectHelper.
+
+Here are the relevant parts of selectHelper. (w is a LeoQTextEditWidget).
+
+1. setBodyTextAfterSelect *already* calls w.getAllText() to get the
+   "before" text. This is unavoidable.
+
+The "after" text will be p.b, where p is the *new* position.
+
+2. restoreCursorAndScroll calls w.setInsertPoint, which just calls
+   w.setSelectionRangeHelper.
+
+3. w.setSelectionRangeHelper is the problem It used to call the horribly
+   slow lengthHelper. Now it calls w.getAllText()
+
+But w.getAllText must be the new p.b! So the selectHelper logic could
+simply pass an optional s argument to w.setInsertPoint and
+w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s
+rather than calling w.getAllText.
+
+Imo, this is the safe, if not exactly elegant way.
+.. @+node:ekr.20141103061944.24: *4* Added clone-find-parents command
+As of rev 1d882d3. Leo supports an undoable clone-find-parents command.
+Select a cloned node, then do:
+
+    <alt-x>clone-find-parents<return>
+
+This works somewhat like the clone-find-all command: it creates a node containing
+clones of all the parents of the selected node.
+.. @+node:ekr.20141103061944.27: *4* code: regularized .wrapper and .widget ivars
+This post will summarize what has already been done and what will be done in the next few days.  Let's start with the basics...
+
+===== About wrappers and widgets
+
+Wrapper and widget classes are at the heart of Leo's design. Clarifying the
+relationships between wrappers and widgets started the present avalanche.
+
+Here is what you *must know* to understand Leo's core:
+
+1. A **widget** is an actual Qt widget.
+
+Leo's core seldom accesses widgets directly. Instead...
+
+2. A **wrapper class** defines a standard api that hides the details of the
+   underlying gui **text** widgets.
+
+Leo's core uses this api almost exclusively. That is, Leo's core code
+treats wrappers *as if* they were only text widgets there are!
+
+There is, however, a back door for (hopefully rare!) special cases. All
+wrapper classes define an official "widget" ivar, so core or plugin code
+can gain access to the real Qt widget using wrapper.widget. Searching for
+wrapper.widget will (or soon will) find all gui-dependent snippets of code
+in Leo's core.
+
+3. Wrappers are crucial, even if Leo *always* uses the Qt gui.
+
+This has just become crystal clear to me. Indeed:
+
+- Wrappers allow users to choose different Qt widgets for the body pane,
+  without changing *any* of Leo's core code (except the startup code).
+
+- Wrappers allow Leo's text-handling code to remain unchanged regardless of
+  whether the body or log panes are a QTextBrowser or a QsciScintilla
+  widget.
+
+- Without wrappers, all of Leo's text-editing commands would have to know
+  the details of the api of the actual Qt text widget!
+
+==== Summary of the avalanche
+
+Here is what is happening now in Leo's code base, and in my thinking!
+
+1. A collapse in the complexity of relationships between Leo's most
+   important classes and between the files containing those classes.
+
+qt_text.py was supposedly a minor reorg. Wrong! It has become the road map
+to the reorganization of all of Leo's fundamental classes:
+
+- qt_text.py is *self contained*: it doesn't depend on any other classes!
+
+- qt_text.py defines a QTextMixin class. This is a new kind of class for
+  me. As its name suggest, it is not so much a base class as a helper
+  class. It provides helper code for all of Leo's Qt wrapper widgets.
+
+- All the classes that use QTextMixin implement the HighLevelInterface
+  class in leoFrame.py.
+
+The HighLevelInterface class will soon morph into the WrapperInterface
+class. Th WrapperInterface class will contain only the definition of
+methods and their docstrings. Unlike the HighLevelInterface class, the
+WrapperInterface will contain *no* redirection code!
+
+- If we were (heaven forbid) going to change Leo's gui, we would simply use
+  a copy of qt_text.py, say new_gui.text.py, as a starting point.
+
+2. All "redirection" code will soon be gone.
+
+Ville, Terry and I will be much happier. Eliminating this cruft makes Leo's
+code both lighter and thicker, to use the go terminology. It's lighter
+because there is far less blah, blah, blah. It's thicker because there is
+less to check and to fail.
+
+It's easy to eliminate redirection. For example, the LeoBody methods that
+just call the corresponding wrapper methods will soon be gone. We'll
+change::
+
+    c.frame.body.wrapperMethod
+
+to::
+
+    c.frame.body.wrapper.wrapperMethod
+
+Doh! This should have been done years ago. Yes, it's more verbose, but it's
+also more explicit. Furthermore, few such calls actually exist!
+
+3. widget.widget and other type-checking horrors will soon be a thing of
+   the past.
+
+New coding conventions will remove all confusion between wrappers and
+widgets. Wrappers will *always* be called wrappers, never widgets.
+
+There is/was something both fundamentally wrong and confusing about
+widget.widget. The first widget must have a different type than the second,
+but there is *no* indication of this fundamental fact. The reorg changes
+widget.widget to wrapper.widget everywhere.
+
+4. I have a new approach toward type checking.
+
+It is obvious now, in retrospect, that clarity of design is something much
+more important than type checking! Leo's code will soon make the types of
+objects *explicit* and this far more important in practice than even
+"perfect" static type checking. This is a revolution in my thinking.
+
+pylint, while supremely important for day-to-day programming, is *totally
+inadequate* to have produced the design changes I have been discussing.
+
+Now that widgets are always clearly distinct from wrappers, we could
+imaging type-checking assertions to verify their apparent types. Imo, such
+assertions are seldom pythonic, but in this case assertions might be good
+documentation, if nothing else. The assertions would be based on the
+following functions:
+
+- g.isWrapper(obj): calls g.app.gui.isWrapper(obj)
+- g.isWidget(obj): calls g.app.gui.isWidget(obj)
+
+5. A dead-easy script shows how to enforce the relationships between types
+   that really matter.
+
+This is a big Aha. The script merely compares dir(o1) with dir(o2), where
+o1 is the "template" HighLevelInterface class in leoFrame.py and o2 is one
+of QTextEditWrapper or QScintillaWrapper. You could call this the "back
+door" approach to type checking. It's sooo easy! No more messing with
+ast's!
+
+As a result of running this script, (given in the P.P.S.) I was able to
+removed cruft from both the HighLevelInterface class, and other parts of
+Leo's code.
+
+===== Summary
+
+None of these massive changes adds anything directly to Leo :-)
+
+However, they make understanding and changing Leo's code far easier and
+more pleasant. Leo's code is now more beautiful.
+
+Imo, these changes are long overdue. They fundamentally improve Leo's code
+base.
+
+That's all for now. I'll keep you posted as I change code, but this post
+covers all the essentials.
+
+Edward
+
+P.S. git and easier access to pylint contributed to the present avalanche
+of energy and ideas.
+
+Git has allowed me to revise Leo's source code radically, with complete
+safety. I would never have done what I have done lately with bzr.
+
+Leo's new pylint command allows me to run pylint *easily* on one or more
+"recent" files, *without* having to change any list. As a result, I run
+pylint much more often.
+
+P.P.S. Here is the script that checks that all text wrapper classes
+implement all required methods. This is, to the first approximation, the
+only type checking that Leo really needs. It will probably become a unit
+test.
+
+@language python
+
+    import leo.core.leoFrame as leoFrame
+    import leo.plugins.qt_text as qt_text
+    from leo.core.leoQt import Qsci,QtWidgets
+    
+    h = leoFrame.HighLevelInterface(c)
+    w = Qsci.QsciScintilla()
+    tw = QtWidgets.QTextBrowser()
+    q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
+    t = qt_text.QTextEditWrapper(widget=tw,name='test2')
+    
+    h_list = [z for z in sorted(dir(h)) if not z.startswith('__')]
+    t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
+    q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
+    ignore = [
+        'set_focus', # synonym for setFocus
+        'mutable_methods', # To be removed.
+    ]
+    for z in h_list:
+        if z not in t_list and z not in ignore:
+            print('QTextEditWrapper: not in HighLevelInterface: %s' % z)
+    for z in h_list:
+        if z not in q_list and z not in ignore:
+            print('QScintillaWrapper: not in HighLevelInterface: %s' % z)
+    print('done')
+
+@language rest
+
+=====
+
+This project appears to be a complete success. No further work is planned.
+I have encountered no problems at all during this reorg, and don't expect
+any, but we shall see...
+
+Here are the highlights:
+
+1. *All* of the odious redirection code in Leo is gone.
+ 
+The redirection code appeared in various places, especially in the
+HighLevelInterface class.
+
+2. The HighLevelInterface class is gone: the LeoBody and LeoLog classes are
+   now subclasses of object.
+
+3. The logCtrl property is gone: the LeoLog class now defines a .logCtrl
+   ivar.
+
+This ivar is inherently tricky: depending on which log *tab* is selected,
+LeoLog.logCtrl may be either a wrapper or a widget!
+
+Because LeoLog no longer contains redirection code a hack was needed.
+k.masterKeyHandler redirects text-related events originally sent to the
+c.frame.log to c.frame.log.logWidget, which, confusingly enough, is
+actually a text wrapper.
+
+4. leoFrame.py contains several new API classes: ColorizerAPI, IconBarAPI,
+   StatusLineAPI and WrapperAPI.
+
+No class is a subclass of these classes: they are for unit testing only.
+
+The new unit test, "@test interfaces using API classes", checks that
+classes implement all the methods in the corresponding API class. This is
+not a perfect solution and it is no substitute for pylint. Nevertheless,
+these API classes are good documentation, and they did result in a few new
+methods being added to each tested "Null" class.
+
+That's all! You may not believe it, but I think of all this work as being
+related to fixing bugs. I'll now return more directly to bug fixes.
+.. @+node:ekr.20141103061944.28: *4* Leo script to safely replace body.x with body.wrapper.x
+@language python
+
+'''
+A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
+
+It is *not undoable* to save massive amounts of memory.
+Please run on an already-saved .leo file, and take all other
+reasonable precautions.
+
+If replace is False, it will just report the changes to be made.
+'''
+import leo.core.leoFrame as leoFrame
+replace = False
+aList = sorted([z for z in dir(leoFrame.WrapperAPI) if not z.startswith('__')])
+nodes = 0
+for p in c.all_unique_positions():
+    s = p.b
+    nodes += 1
+    found = False
+    for target in aList:
+        i = 0
+        pattern = 'body.' + target
+        while True:
+            i = s.find(pattern,i)
+            if i == -1:
+                break
+            if g.match_word(s,i,pattern):
+                if not found:
+                    print('In node: %s' % p.h)
+                    found = True
+                i1,i2 = g.getLine(s,i)
+                if replace:
+                    j = i + len('body.')
+                    s = s[:j] + 'wrapper.' + s[j:]
+                    print(s[i1:i2+len('wrapper.')].rstrip())
+                    i += len('wrapper.') + len(pattern)
+                else:
+                    print(s[i1:i2].rstrip())
+                    i += len(pattern)
+            else:
+                i += len(pattern)
+    if found and replace:
+        p.b = s
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
