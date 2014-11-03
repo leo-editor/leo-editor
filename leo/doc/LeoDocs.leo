@@ -1115,48 +1115,40 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
+expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 </v>
+</v>
+<v t="ekr.20141103061944.235"><vh>** To do</vh>
+<v t="ekr.20140810085801.18216"></v>
+<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140810085801.18230"></v>
+<v t="ekr.20141103061944.64"><vh>Problems with @g.command decorator</vh>
+<v t="ekr.20141103061944.65"><vh>What I did</vh></v>
 </v>
 <v t="ekr.20141015084905.18376"><vh>To FAQ</vh>
+<v t="ekr.20141103113220.5"><vh>tutorials</vh>
 <v t="ekr.20141030042423.22"><vh>My new workflow</vh></v>
 <v t="ekr.20141015084905.18377"><vh>All about clone conflicts</vh>
 <v t="ekr.20141015084905.18378"><vh>Re: All about clone conflicts</vh></v>
 </v>
 <v t="ekr.20141015084905.18379"><vh>Unit-testing tutorial</vh></v>
-<v t="ekr.20141015084905.18380"><vh>Background Images in body pane?</vh>
-<v t="ekr.20141015084905.18381"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20141015084905.18382"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20141015084905.18383"><vh>Re: Background Images in body pane?</vh></v>
-</v>
 <v t="ekr.20141015084905.18384"><vh>Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?</vh></v>
-<v t="ekr.20141015084905.18385"><vh>Create Pane For matplotlib chart</vh>
-<v t="ekr.20141015084905.18386"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20141015084905.18387"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20141015084905.18388"><vh>Re: Create Pane For matplotlib chart</vh></v>
-</v>
-<v t="ekr.20141015084905.18389"><vh>How to call functions from LeoPyRef.Leo</vh>
-<v t="ekr.20141015084905.18390"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20141015084905.18391"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20141015084905.18392"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20141015084905.18393"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20141015084905.18394"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-</v>
 <v t="ekr.20141015084905.18395"><vh>How to make body text insertion at cursor permanent?</vh>
 <v t="ekr.20141015084905.18396"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20141015084905.18397"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20141015084905.18398"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20141015084905.18399"><vh>Re: the workflow of write leo scripts?</vh></v>
 </v>
-<v t="ekr.20141015084905.18400"><vh>How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20141015084905.18401"><vh>Parameterized template nodes</vh>
-<v t="ekr.20141015084905.18402"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20141015084905.18403"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20141015084905.18404"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20141015084905.18405"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20141015084905.18406"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20141015084905.18407"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20141026133611.8"><vh>Use setuptools instead of .bat files</vh></v>
 </v>
+<v t="ekr.20141103113220.7"><vh>answered questions</vh>
+<v t="ekr.20141015084905.18389"><vh>How to call functions from LeoPyRef.Leo</vh>
+<v t="ekr.20141015084905.18393"><vh>Terry: Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18390"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20141015084905.18391"><vh>EKR: Re: How to call functions from LeoPyRef.Leo</vh></v>
+</v>
+<v t="ekr.20141015084905.18400"><vh>How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20141015084905.18408"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
 <v t="ekr.20141015084905.18409"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20141015084905.18410"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
@@ -1166,8 +1158,7 @@
 <v t="ekr.20141015084905.18414"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20141015084905.18415"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 </v>
-<v t="ekr.20141015084905.18416"><vh>the workflow of write leo scripts?</vh></v>
-<v t="ekr.20141015084905.18417"><vh>Document: Cannot open Leo files by double-click in Windows Explorer?</vh>
+<v t="ekr.20141015084905.18417"><vh>How to open Leo files by double-click in Windows Explorer?</vh>
 <v t="ekr.20141015084905.18418"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 <v t="ekr.20141015084905.18419"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 <v t="ekr.20141015084905.18420"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
@@ -1181,41 +1172,34 @@
 <v t="ekr.20141015084905.18428"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 <v t="ekr.20141015084905.18429"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 </v>
-<v t="ekr.20141015084905.18430"><vh>Newbie Leo questions for php projects</vh></v>
-<v t="ekr.20141026133611.8"><vh>Use setuptools instead of .bat files</vh></v>
+<v t="ekr.20141015084905.18380"><vh>Background Images in body pane?</vh></v>
+<v t="ekr.20141103113220.9"><vh>How to use complex abbreviations</vh></v>
+<v t="ekr.20141015084905.18385"><vh>How can I create a pane for matplotlib charts?</vh></v>
 </v>
-<v t="ekr.20140810085801.18216"></v>
+</v>
+</v>
 <v t="ekr.20141103061944.55"><vh>Leo 5.0a1 release notes</vh>
-<v t="ekr.20141103061944.235"><vh>** To do</vh>
-<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
-<v t="ekr.20140810085801.18230"></v>
-<v t="ekr.20141103061944.64"><vh>Problems with @g.command decorator</vh>
-<v t="ekr.20141103061944.65"><vh>What I did</vh></v>
+<v t="ekr.20141103061944.246"><vh>Highlights</vh>
+<v t="ekr.20141103113220.17"><vh>Better integration with Vim, Emacs &amp; pylint</vh>
+<v t="ekr.20141103061944.216"><vh>vim mode</vh></v>
+<v t="ekr.20141103113220.12"><vh>Better support for pylint</vh></v>
+<v t="ekr.20141103061944.208"><vh>Full support for Emacs org-mode</vh></v>
 </v>
-</v>
-<v t="ekr.20141103061944.246"><vh> Highlights</vh>
-<v t="ekr.20141103061944.86"><vh>@data nodes can now be composed from a tree of nodes!</vh></v>
-<v t="ekr.20141103061944.71"><vh>Added file name completion</vh></v>
-<v t="ekr.20141103061944.201"><vh>Added per-node expansions!</vh>
+<v t="ekr.20141103113220.18"><vh>Power features</vh>
+<v t="ekr.20141103061944.86"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
+<v t="ekr.20141103061944.201"><vh>Clones expand and contract independently</vh>
 <v t="ekr.20141103061944.202"><vh>Notes</vh></v>
 </v>
-<v t="ekr.20141103061944.216"><vh>Added vim mode</vh></v>
-<v t="ekr.20141103061944.208"><vh>Created @auto-org-mode</vh></v>
-<v t="ekr.20141103061944.204"><vh>Created g.run_pylint so pylint can run unmodified</vh></v>
-<v t="ekr.20141103061944.220"><vh>Enabled big-text buttons</vh></v>
+<v t="ekr.20141103061944.71"><vh>File name completion</vh></v>
+<v t="ekr.20141103113220.13"><vh>Better support for nodes containing large text</vh></v>
 <v t="ekr.20141103061944.78"><vh>Leo now colors text at idle time</vh></v>
-<v t="ekr.20141103061944.211"><vh>Leo now supports dynamic @auto names</vh></v>
 <v t="ekr.20141103061944.219"><vh>Leo's main style sheet is fully parameterized</vh></v>
-<v t="ekr.20141103061944.230"><vh>Quickstart guide should open by default</vh></v>
-<v t="ekr.20141103061944.231"><vh>Allow delegate languages</vh></v>
-<v t="ekr.20141103061944.72"><vh>Added some support for scintilla</vh></v>
 </v>
-<v t="ekr.20141103061944.94"><vh>Bugs</vh>
-<v t="ekr.20141103061944.238"><vh>Doc bugs</vh>
-<v t="ekr.20141103061944.113"><vh>Fixed doc bug 1228452: related to the radio buttons in the Find pane</vh></v>
+<v t="ekr.20141103061944.230"><vh>Leo's default workbook files contains Leo's quickstart guide</vh></v>
+<v t="ekr.20141103061944.211"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
-<v t="ekr.20141103061944.240"><vh>git bugs</vh>
-<v t="ekr.20141103061944.145"><vh>Delegated git #57 to Terry</vh></v>
+<v t="ekr.20141103061944.94"><vh>Bugs fixed (70+)</vh>
+<v t="ekr.20141103061944.240"><vh>Fixed 15 github bugs</vh>
 <v t="ekr.20141103061944.142"><vh>Fixed big-text bugs: #28, #63, #64</vh></v>
 <v t="ekr.20141103061944.152"><vh>Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node</vh></v>
 <v t="ekr.20141103061944.139"><vh>Fixed bug 31: 'undo' on a freshly-loaded outline</vh></v>
@@ -1229,18 +1213,11 @@
 <v t="ekr.20141103061944.147"><vh>Fixed bug 75: write-opml-file always produces an empty file</vh></v>
 <v t="ekr.20141103061944.148"><vh>Fixed bug 76: erroneous clone markers in @auto trees</vh></v>
 <v t="ekr.20141103061944.179"><vh>Fixed bug 78: F3 find-next target not always highlighted</vh></v>
-<v t="ekr.20141103061944.149"><vh>Investigated bug 24: Windows installer setting wrong file association for .leo files</vh></v>
-<v t="ekr.20141103061944.156"><vh>Investigated bug 56: Focus change on tree pane after saving current Leo file</vh></v>
 </v>
-<v t="ekr.20141103061944.236"><vh>Launchpad bugs</vh>
-<v t="ekr.20141103061944.95"><vh>Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed</vh></v>
-<v t="ekr.20141103061944.96"><vh>Cleared bug 1228713: Find-backward skips headlines under some conditions</vh></v>
-<v t="ekr.20141103061944.97"><vh>Cleared bug 1254864: Can't search from current cursor position downward in body text</vh></v>
+<v t="ekr.20141103061944.236"><vh>Fixed 19 Launchpad bugs</vh>
 <v t="ekr.20141103061944.169"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
 <v t="ekr.20141103061944.102"><vh>Fixed bug 1041906: underlying C/C++ object has been deleted</vh></v>
-<v t="ekr.20141103061944.103"><vh>Fixed bug 1090950: refresh from disk - cut node resurrection</vh>
-<v t="ekr.20141103061944.104"><vh>print gnxs &amp; gnxDict</vh></v>
-</v>
+<v t="ekr.20141103061944.103"><vh>Fixed bug 1090950: refresh from disk - cut node resurrection</vh></v>
 <v t="ekr.20141103061944.160"><vh>Fixed bug 1185933: insert-headline-time should insert at cursor</vh></v>
 <v t="ekr.20141103061944.105"><vh>Fixed bug 1228312: Find tab selected in log pane disables Minibuffer</vh></v>
 <v t="ekr.20141103061944.106"><vh>Fixed bug 1228458: Inconsistency between Find-forward and Find-backward</vh></v>
@@ -1257,10 +1234,10 @@
 <v t="ekr.20141103061944.170"><vh>Fixed bug 613153: unable to describe root directory on thumb drive</vh></v>
 <v t="ekr.20141103061944.159"><vh>Fixed bug 735938: file association crash</vh></v>
 <v t="ekr.20141103061944.176"><vh>Fixed bug 969391: setup.py confuses newbies</vh></v>
-<v t="ekr.20141103061944.154"><vh>Fixed bug: Find-previous fails at last node</vh></v>
-<v t="ekr.20141103061944.180"><vh>Fixed several crashers re no-to-all during startup</vh></v>
-<v t="ekr.20141103061944.155"><vh>Fixed suboutline only find bug</vh></v>
-<v t="ekr.20141103061944.151"><vh>Fixed tab-completion problems</vh></v>
+<v t="ekr.20141103113220.20"><vh>Cleared/investigated bugs</vh>
+<v t="ekr.20141103061944.95"><vh>Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed</vh></v>
+<v t="ekr.20141103061944.96"><vh>Cleared bug 1228713: Find-backward skips headlines under some conditions</vh></v>
+<v t="ekr.20141103061944.97"><vh>Cleared bug 1254864: Can't search from current cursor position downward in body text</vh></v>
 <v t="ekr.20141103061944.161"><vh>Investigated bug  524890: Incomplete derived file</vh></v>
 <v t="ekr.20141103061944.166"><vh>Investigated bug 1177355: node-only wrapped search does not work in long nodes</vh></v>
 <v t="ekr.20141103061944.143"><vh>Investigated bug 1193820: Focus change on tree pane after saving current Leo file</vh></v>
@@ -1274,8 +1251,8 @@
 <v t="ekr.20141103061944.175"><vh>(wont't do) LeoSetup does not run without human intervention</vh></v>
 </v>
 </v>
-<v t="ekr.20141103061944.237"><vh>Other bugs</vh>
-<v t="ekr.20141103061944.134"><vh>All unit tests now pass when run externally</vh></v>
+</v>
+<v t="ekr.20141103061944.237"><vh>Fixed 30+ other bugs</vh>
 <v t="ekr.20141103061944.137"><vh>eliminated "can not exedute commands from headlines"</vh></v>
 <v t="ekr.20141103061944.98"><vh>find-all now uses exising find pattern</vh></v>
 <v t="ekr.20141103061944.99"><vh>Fixed a startup error involving --ipython</vh></v>
@@ -1284,9 +1261,11 @@
 <v t="ekr.20141103061944.101"><vh>Fixed autocompleter bug</vh></v>
 <v t="ekr.20141103061944.59"><vh>Fixed bug re the factor language</vh></v>
 <v t="ekr.20141103061944.110"><vh>Fixed bug: activate events now properly restore focus</vh></v>
+<v t="ekr.20141103061944.154"><vh>Fixed bug: Find-previous fails at last node</vh></v>
 <v t="ekr.20141103061944.133"><vh>Fixed bug: it's now possible to change big-text nodes</vh></v>
 <v t="ekr.20141103061944.111"><vh>Fixed clone-find-all command</vh></v>
 <v t="ekr.20141103061944.112"><vh>Fixed Crash deleting body editor</vh></v>
+<v t="ekr.20141103061944.113"><vh>Fixed doc bug 1228452: related to the radio buttons in the Find pane</vh></v>
 <v t="ekr.20141103061944.126"><vh>Fixed find bug</vh></v>
 <v t="ekr.20141103061944.114"><vh>Fixed important security hole in mod_scripting plugin</vh></v>
 <v t="ekr.20141103061944.115"><vh>Fixed leoGlobals bug (per Reinhard Engle)</vh></v>
@@ -1297,7 +1276,10 @@
 <v t="ekr.20141103061944.119"><vh>Fixed recent bug in change command</vh></v>
 <v t="ekr.20141103061944.129"><vh>Fixed recursive import bug</vh></v>
 <v t="ekr.20141103061944.120"><vh>Fixed serious c.deletePositionsInList bug</vh></v>
+<v t="ekr.20141103061944.180"><vh>Fixed several crashers re no-to-all during startup</vh></v>
+<v t="ekr.20141103061944.155"><vh>Fixed suboutline only find bug</vh></v>
 <v t="ekr.20141103061944.124"><vh>Fixed tab cycling</vh></v>
+<v t="ekr.20141103061944.151"><vh>Fixed tab-completion problems</vh></v>
 <v t="ekr.20141103061944.121"><vh>Fixed unicode problem in the log pane</vh></v>
 <v t="ekr.20141103061944.127"><vh>Fixed unwanted scrolling in abbreviations</vh></v>
 <v t="ekr.20141103061944.122"><vh>Gave the Find Tab the intended amount of border</vh></v>
@@ -1321,18 +1303,20 @@
 <v t="ekr.20141103061944.243"><vh>Code improvements</vh>
 <v t="ekr.20141103061944.63"><vh>A beautiful and general design pattern eliminates tab-completion special cases</vh></v>
 <v t="ekr.20141103061944.186"><vh>Added support for qt5</vh></v>
+<v t="ekr.20141103061944.66"><vh>added the IdleTime class</vh></v>
+<v t="ekr.20141103061944.134"><vh>All unit tests now pass when run externally</vh></v>
 <v t="ekr.20141103061944.191"><vh>Changed most calls to k.setLabel to k.setStatusLabel</vh></v>
+<v t="ekr.20141103061944.214"><vh>Cleaned up command-name handling a bit</vh></v>
 <v t="ekr.20141103061944.68"><vh>code: regularized .wrapper and .widget ivars</vh></v>
 <v t="ekr.20141103061944.192"><vh>Created g.IdleTime and qtGui.IdleTime</vh></v>
 <v t="ekr.20141103061944.197"><vh>Delayed allocation of gnx's...</vh></v>
 <v t="ekr.20141103061944.199"><vh>Delayed allocation of vnodes</vh></v>
+<v t="ekr.20141103061944.206"><vh>Improved idle-time handling</vh></v>
 <v t="ekr.20141103061944.188"><vh>Improved p.isAncestorOf and c.positionExists</vh></v>
 <v t="ekr.20141103061944.193"><vh>Improved speed of selection logic</vh></v>
 <v t="ekr.20141103061944.190"><vh>Rewrote &amp; simplified k.getArg</vh></v>
 <v t="ekr.20141103061944.196"><vh>Simplified gnx scan logic</vh></v>
 <v t="ekr.20141103061944.67"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
-<v t="ekr.20141103061944.66"><vh>added the IdleTime class</vh></v>
-<v t="ekr.20141103061944.214"><vh>Cleaned up command-name handling a bit</vh></v>
 </v>
 <v t="ekr.20141103061944.249"><vh>Files</vh>
 <v t="ekr.20141103061944.62"><vh>Split qtGui.py into separate files</vh></v>
@@ -1352,13 +1336,17 @@
 <v t="ekr.20141103061944.215"><vh>Added insert-file-name command</vh></v>
 <v t="ekr.20141103061944.207"><vh>Added pylint command</vh></v>
 <v t="ekr.20141103061944.203"><vh>Added spell-as-you-type commands</vh></v>
-<v t="ekr.20141103061944.206"><vh>Improved idle-time handling and added new commands</vh></v>
+<v t="ekr.20141103113220.19"><vh>Added idle-time commands</vh></v>
 </v>
 <v t="ekr.20141103061944.248"><vh>Improved commands</vh>
 <v t="ekr.20141103061944.205"><vh>Improved find/replace-all commands</vh></v>
 <v t="ekr.20141103061944.223"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20141103061944.226"><vh>Improved check outline</vh></v>
 <v t="ekr.20141103061944.70"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
+</v>
+<v t="ekr.20141103113220.14"><vh>Other features</vh>
+<v t="ekr.20141103061944.72"><vh>Added some support for scintilla</vh></v>
+<v t="ekr.20141103061944.231"><vh>Added support for delegate languages</vh></v>
 </v>
 </v>
 <v t="ekr.20141103061944.233"><vh>Plugins &amp; leo/external </vh>
@@ -1372,10 +1360,11 @@
 <v t="ekr.20141103061944.228"><vh>Rewrote at_produce plugin</vh></v>
 </v>
 <v t="ekr.20141103061944.79"><vh>Scripts</vh>
-<v t="ekr.20141103061944.81"><vh>Code snippet: execute code after typing has not happened for a while</vh></v>
-<v t="ekr.20141103061944.83"><vh>Leo script to safely replace body.x with body.wrapper.x</vh></v>
 <v t="ekr.20141103061944.80"><vh>Script: Dictionary to Leo outline</vh></v>
-<v t="ekr.20141103061944.82"><vh>script: load files into Leo from the command line</vh></v>
+<v t="ekr.20141103061944.82"><vh>Script: load files into Leo from the command line</vh></v>
+<v t="ekr.20141103061944.104"><vh>Script: print gnxs &amp; gnxDict</vh></v>
+<v t="ekr.20141103061944.83"><vh>Script: safely replace body.x with body.wrapper.x</vh></v>
+<v t="ekr.20141103061944.81"><vh>Snippet: execute code after typing has not happened for a while</vh></v>
 <v t="ekr.20141015084905.18439"><vh>Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20141103061944.84"><vh>Settings &amp; options</vh>
@@ -20481,42 +20470,8 @@ I'm thinking that it might be interesting to have some wallpapers/tiles to
 visually represent various categories of methods, e.g. initors, setters, 
 getters, etc.  Maybe ones that hint at the uses of a particular design 
 pattern.  Maybe us a uA to control setting?
-</t>
-<t tx="ekr.20141015084905.18381">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-
-&gt; I was wondering if the Qt widget used for body text has a provision for
-&gt; background images?
-&gt;
-
-Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
-http://qt-project.org/doc/qt-4.8/qtextbrowser.html
-a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
-QWidget, so there *might* be a way to have a background image "leak"
-through the text.
-</t>
-<t tx="ekr.20141015084905.18382">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
---MP_/NJ5QIult88.7_K/HpvnV2eA
-
-On Wed, 1 May 2013 04:19:52 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-&gt; 
-&gt; &gt; I was wondering if the Qt widget used for body text has a provision for
-&gt; &gt; background images?
-&gt; &gt;
-&gt; 
-&gt; Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
-&gt; http://qt-project.org/doc/qt-4.8/qtextbrowser.html
-&gt; a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
-&gt; QWidget, so there *might* be a way to have a background image "leak"
-&gt; through the text.
-&gt; 
-&gt; Edward
-&gt; 
+-----
 
 QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
 
@@ -20528,35 +20483,6 @@ an attribute on the body widget, probably the gnx, so you could do
 QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
   background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
 }
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20141015084905.18383">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wed, May 1, 2013 at 8:42 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt;
-&gt;
-&gt; QTextEdit#richTextEdit { background-image:
-&gt; url('/home/tbrown/Desktop/cow2.jpg'); }
-&gt;
-&gt; in the stylesheet gives the effect attached (i.e. it works).
-&gt;
-&gt; If you wanted node specific backgrounds Leo would have to start setting
-&gt; an attribute on the body widget, probably the gnx, so you could do
-&gt;
-&gt; QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
-&gt;   background-image: url('/home/tbrown/Desktop/cow2.jpg');
-&gt; }
-&gt;
-
-Wow!  Thanks for this.  LeoUser wrote a version of Leo in Jython (using the
-Swing classes), and he claimed that he could watch *movies* in the body
-pane :-)
-
-I'll add this to the Leo/To Document list.  Not sure yet how that list is
-going to get translated into action.  Still reading Getting Things Done :-)
 </t>
 <t tx="ekr.20141015084905.18384">From: wgw &lt;wgwinder@gmail.com&gt;
 
@@ -20607,163 +20533,43 @@ compatible with *any* other submission rules.  Somehow, it's up to me, or
 the other core developers, to find a simple, reliable way of "indexing" the
 submissions.  Right now I have no solutions.
 </t>
-<t tx="ekr.20141015084905.18385">From: felix74 &lt;hjuucy@googlemail.com&gt;
+<t tx="ekr.20141015084905.18385">@language rest
 
-I'm trying to create a interactive chart in a embedded in a new leo pane 
-using matplotlib. However, I am not sure about the the best way  to 
-implement this. I would appreciate some guidance on this please? The 
+From: felix74 &lt;hjuucy@googlemail.com&gt;
+
+I'm trying to create a interactive chart in a embedded in a new leo pane
+using matplotlib. However, I am not sure about the the best way to
+implement this. I would appreciate some guidance on this please? The
 questions I would like answered are:
-1/ How do I create a new blank pane for embedding a chart as well as other 
-QtWidgets.
-2/ Can I do this in a script or do I need to work with leo source 
 
-The context for wanting to do this is that I want to create a data 
-processing and visualization tool kit in leo. Like Excel but using nodes 
-instead of columns. As such I have data in nodes and can create new data 
-nodes by applying python functions to data in existing nodes. The thing 
-missing is the visualization within a leo pane (I can easily launch a chart 
-in it's own window) .
-</t>
-<t tx="ekr.20141015084905.18386">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+1. How do I create a new blank pane for embedding a chart as well as other
+   QtWidgets.
 
-On Tue, 18 Sep 2012 05:59:59 -0700 (PDT)
-felix74 &lt;hjuucy@googlemail.com&gt; wrote:
+2. Can I do this in a script or do I need to work with leo source?
 
-&gt; Terry,
-&gt;  
-&gt; Thanks for your help with this it was very helpful and a lot simpler than I 
-&gt; feared. I have managed to get a matplotlib graph embedded within a pane in 
-&gt; leo as a widget. I now need some help with how to interact with the 
-&gt; widget using scripts in leo. I am unsure about the following:
-&gt;  
-&gt; *1/ How do I expose the widget within th leo python environment?* 
+I want to create a data processing and visualization tool kit in leo. Like
+Excel but using nodes instead of columns. Nodes will have data and I want
+to create new data nodes by applying python functions to data in existing
+nodes. The thing missing is the visualization within a leo pane (I can
+easily launch a chart in it's own window).
 
-If you were only going to have one and you weren't going to destroy it,
-you could just do something simple like c._matplot = self in its
-constrictor (assuming c was passed to the constructor).
-
-If you're going to have more than one and they may be destroyed, it
-might be simplest to let the free_layout / nested_splitter system manage
-them.
-
-ts = c.free_layout.get_top_splitter()
-matplotters = ts.findChildren(myMatplotWidget)
-
-should return a list of the widgets of your class in the layout, but
-only if they're in the main window, widgets in extra windows opened
-from the "Open window" context menu item would be missed, I can add a
-find_children() method to complement the find_child() method the
-splitters already have to account for this.
-
-Detail: the above is just using Qt's QObject.findChildren(), the
-nested_splitter find_child() and (not yet written) find_children()
-versions search the extra windows as well.
-
-&gt; Here I have created a self.mat in your MatplotPaneProvider class to make 
-&gt; the windget accessible but it doesn't feel like the correct way to do this. 
-
-It should probably provide a fresh myMatplotWidget every time it's
-called, so don't construct one in the Provider's init, but in the
-ns_provide method.
-
-&gt; from PyQt4 import QtGui
-&gt; class MatplotPaneProvider:
-&gt; def __init__(self, c):
-&gt;      self.c = c
-&gt;     * self.mat = myMatplotWidget()*
-&gt;      if hasattr(c, 'free_layout'):
-[snip]  
-&gt; *2/I would also like to make the widget accessible from any script within 
-&gt; leo. What's the leo way of doing this?*
-
-See above.
-
-&gt; *3/ If I create more than 1 pane containing these widgest. How do I switch 
-&gt; between them in scripts?*
-
-Above again :-)
- 
-&gt; *4/ Running this script more than once creates multiple items for Add 
-&gt; Matplot when pressing the Action button. How do I stop this from happening? 
-&gt; I have alrewady tried returning a unique integer in * ns_provider_id *but 
-&gt; that did not work.*
-
-The value returned by ns_provider_id should be unique for the provider
-class, but constant.  So it can just return "matplotlib provider ver 1"
-or something.
-</t>
-<t tx="ekr.20141015084905.18387">From: felix74 &lt;hjuucy@googlemail.com&gt;
-
-
-
-
-Terry,
- 
-Thanks for your help with this it was very helpful and a lot simpler than I 
-feared. I have managed to get a matplotlib graph embedded within a pane in 
-leo as a widget. I now need some help with how to interact with the 
-widget using scripts in leo. I am unsure about the following:
- 
-*1/ How do I expose the widget within th leo python environment?* 
-Here I have created a self.mat in your MatplotPaneProvider class to make 
-the windget accessible but it doesn't feel like the correct way to do this. 
- 
-from PyQt4 import QtGui
-class MatplotPaneProvider:
-def __init__(self, c):
-     self.c = c
-    * self.mat = myMatplotWidget()*
-     if hasattr(c, 'free_layout'):
-         splitter = c.free_layout.get_top_splitter()
-     if splitter:
-         splitter.register_provider(self)
-    def ns_provides(self):
-         return[('Add matplot', '_add_matplot_pane')]
-    def ns_provide(self, id_):
-         if id_ == '_add_matplot_pane':
-         c = self.c
-         return self.mat
- 
-    def ns_provider_id(self):
-
-# used by register_provider() to unregister previously registered
-# providers of the same service
-# provider ID is not the same as the service id_ above
-return "completely unique value here"
-
- 
-*mat = MatplotPaneProvider(c)*
-*mat.mat.someMethod()*
-*mat.mat.someOtherMethod()*
- 
-*2/I would also like to make the widget accessible from any script within 
-leo. What's the leo way of doing this?*
- 
-*3/ If I create more than 1 pane containing these widgest. How do I switch 
-between them in scripts?*
-** 
-*4/ Running this script more than once creates multiple items for Add 
-Matplot when pressing the Action button. How do I stop this from happening? 
-I have alrewady tried returning a unique integer in * ns_provider_id *but 
-that did not work.*
- 
-</t>
-<t tx="ekr.20141015084905.18388">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
-felix74 &lt;hjuucy@googlemail.com&gt; wrote:
-
-&gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
-&gt; using matplotlib. However, I am not sure about the the best way  to 
-&gt; implement this. I would appreciate some guidance on this please? The 
-&gt; questions I would like answered are:
-&gt; 1/ How do I create a new blank pane for embedding a chart as well as other 
-&gt; QtWidgets.
-&gt; 2/ Can I do this in a script or do I need to work with leo source 
+----- Terry Brown
 
 You can run this script from any body pane:
----cut here---
-from PyQt4 import QtGui
+
+@language python
+
+
+'''
+A script that adds a MatPlotLib pane to Leo.
+
+After running this script, right click on one of the pane dividers and
+select Insert. A new pane with a button 'Action' appears. Click it, and
+select "Add matplot" from the context menu.
+'''
+
+from leo.core.leoQt import QtWidgets
+
 class MatplotPaneProvider:
     def __init__(self, c):
         self.c = c
@@ -20776,7 +20582,7 @@ class MatplotPaneProvider:
     def ns_provide(self, id_):
         if id_ == '_add_matplot_pane':
             c = self.c
-            w = QtGui.QSlider()
+            w = QtWidgets.QSlider() ### w = myMatplotWidget()
             return w
     def ns_provider_id(self):
         # used by register_provider() to unregister previously registered
@@ -20785,42 +20591,100 @@ class MatplotPaneProvider:
         return "completely unique value here"
 
 MatplotPaneProvider(c)
----cut here---
 
-Paste just as above and run the script.  Nothing happens.  Right click
-on one of the pane dividers and select Insert.  A new pane with a
-button 'Action' appears.  Click it, and select "Add matplot" from the
-context menu.
+@language rest
 
-Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
+----- OP
+
+I have managed to get a matplotlib graph embedded within a pane in 
+leo as a widget. I now need some help with how to interact with the 
+widget using scripts in leo. I am unsure about the following:
+ 
+*1/ How do I expose the widget within the leo environment?* 
+
+If you were only going to have one and you weren't going to destroy it,
+you could just do something simple like c._matplot = self in its
+constrictor (assuming c was passed to the constructor).
+
+If you're going to have more than one and they may be destroyed, it
+might be simplest to let the free_layout / nested_splitter system manage
+them::
+
+    ts = c.free_layout.get_top_splitter()
+    matplotters = ts.findChildren(myMatplotWidget)
+
+should return a list of the widgets of your class in the layout, but only
+if they're in the main window, widgets in extra windows opened from the
+"Open window" context menu item would be missed, I can add a
+find_children() method to complement the find_child() method the splitters
+already have to account for this.
+
+Detail: the above is just using Qt's QObject.findChildren(), the
+nested_splitter find_child() and (not yet written) find_children()
+versions search the extra windows as well.
+
+Here I have created a self.mat in your MatplotPaneProvider class to make 
+the windget accessible but it doesn't feel like the correct way to do this.
+
+@language python
+
+    mat = MatplotPaneProvider(c)
+    mat.mat.someMethod()
+    mat.mat.someOtherMethod()
+    
+@language rest
+ 
+2. I would also like to make the widget accessible from any script within
+   leo. What's the leo way of doing this?
+
+See above
+ 
+3. If I create more than 1 pane containing these widgest. How do I switch
+   between them in scripts?*
+
+See above
+
+4. Running this script more than once creates multiple items for Add
+   Matplot when pressing the Action button. How do I stop this from
+   happening? I have alrewady tried returning a unique integer in *
+   ns_provider_id *but that did not work.*
+ 
+The value returned by ns_provider_id should be unique for the provider
+class, but constant. So it can just return something like "matplotlib provider ver 1"
 </t>
 <t tx="ekr.20141015084905.18389">From: &lt;fidelperez@gmail.com&gt;
 
-I am going through something similar Matt Wilkie went through in this
-post&lt;https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
-.
+I am going through something similar Matt Wilkie went through in this post
+https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
 
-Basically I can find interesting functions in LeoPyRef.leo but I dont know 
+Basically I can find interesting functions in LeoPyRef.leo but I dont know
 how to access them from my new leo scripts.
 
-I dont get the difference when I have to call them using g.Functionname(), 
+I don't get the difference when I have to call them using g.Functionname(), 
 c.functionname(), or when those wont do.
 
 How can I call the function "insertIconFromFile"?
 How can I know how to call functions found in LeoPyRef.leo?
 
-Thanks!
+-----
 
-Ps: When I get that, I will already have a bookmarks importer from 
-chrome/mozilla which will also import the icons of the links! x)
-I will prepare some more interesting utils (import mindmap, etc) then 
-release them together with manuals oriented to noob users.
+Ok, in order to print icons, the code is this:
 
+c.editCommands.insertIconFromFile(path)
+
+Im quoting from this Leo manual
+http://leoeditor.com/scripting.html#important-objects,
+http://leoeditor.com/scripting.html#inserting-and-deleting-icons
+
+Although I still have a mess on which functions can be called how, and
+where to find the list of classes that can be called such as "editCommands"
+and the rest that they might exist. Thanks!
 </t>
 <t tx="ekr.20141015084905.18390">From: &lt;fidelperez@gmail.com&gt;
 
 Sounds great!
 So, in the search results, will I be able to know how to call that function?
+
 IE, if I find insertIconFromFile, will I be able to know that I can call it
 through using c.editCommands.insertIconFromFile?
 
@@ -20864,17 +20728,6 @@ On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
 </t>
 <t tx="ekr.20141015084905.18391">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-On Mon, May 20, 2013 at 8:47 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-&gt; Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wrote:
-&gt;
-
-&gt; Although I still have a mess on which functions can be called how, and
-&gt; where to find the list of classes that can be called such as
-"editCommands"
-&gt; and the rest that they might exist.
-
 I'm not aware of a general solution to the problem of finding the
 &gt; various pieces of Leo's class structure.  Basically there are all these
 &gt; classes defined in the source, and instances of these are attached to
@@ -20884,28 +20737,26 @@ I'm not aware of a general solution to the problem of finding the
 I suppose you could say that there is no general solution, but the
 situation isn't really all that difficult.
 
-Start with c.  We know what that is:  it is a commander object representing
+Start with c. We know what that is: it is a commander object representing
 an open outline.
 
 There are **official ivars** of c, all referring to wrapper classes defined
-in leoFrame.py:
+in leoFrame.py::
 
-c.frame: an instance of leoFrame.
-c.frame.tree: an instance of  leoTree.
-c.frame.body: an instance of leoBody.
-c.frame.log: an instance of leoLog.
+    c.frame         an instance of leoFrame.
+    c.frame.tree    an instance of  leoTree.
+    c.frame.body    an instance of leoBody.
+    c.frame.log     an instance of leoLog.
 
-The tree, body and log objects have a *ctrl* objects, which are *wrapper*
-classes:
+The tree, body and log objects have a *wrapper* object
 
-c.frame.tree.treeCtrl
-c.frame.body.bodyCtrl
-c.frame.log.logCtrl
+c.frame.tree.wrapper
+c.frame.body.wrapper
+c.frame.log.wrapper
 
-In particular, see
-http://leoeditor.com/scripting.html#c-frame-body-bodyctrlfor a
-description of the high-level text interface supported by all
-high-level text widgets, including the log and body classes.
+See http://leoeditor.com/scripting.html#c-frame-body-bodyctrl for a
+description of the high-level text interface supported by all high-level
+text widgets, including the log and body classes.
 
 These wrapper classes have a widget ivar, which is a reference to the
 corresponding Qt widget object.  For example::
@@ -20921,113 +20772,32 @@ yields::
     True
 
 As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
-
-HTH.  I've made a note to discuss official ivars in more detail in the
-scripting chapter.
-</t>
-<t tx="ekr.20141015084905.18392">From: &lt;fidelperez@gmail.com&gt;
-
-Ok, in order to print icons, the code is this:
-
-c.editCommands.insertIconFromFile(path)
-
-Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-"inserting and deleting icons" section -_-
-
-Although I still have a mess on which functions can be called how, and
-where to find the list of classes that can be called such as "editCommands"
-and the rest that they might exist.
-Thanks!
-
-On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
-&gt;
-&gt; Hi, I am going through something similar Matt Wilkie went through in this
-&gt; post&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
-&gt; .
-&gt;
-&gt; Basically I can find interesting functions in LeoPyRef.leo but I dont know
-&gt; how to access them from my new leo scripts.
-&gt;
-&gt; I dont get the difference when I have to call them using g.Functionname(),
-&gt; c.functionname(), or when those wont do.
-&gt;
-&gt; How can I call the function "insertIconFromFile"?
-&gt; How can I know how to call functions found in LeoPyRef.leo?
-&gt;
-&gt; Thanks!
-&gt;
-&gt; Pd: When I get that, I will already have a bookmarks importer from
-&gt; chrome/mozilla which will also import the icons of the links! x)
-&gt; I will prepare some more interesting utils (import mindmap, etc) then
-&gt; release them together with manuals oriented to noob users.
-&gt;
-
 </t>
 <t tx="ekr.20141015084905.18393">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-On Mon, 20 May 2013 04:00:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
+I'm not aware of a general solution to the problem of finding the various
+pieces of Leo's class structure. Basically there are all these classes
+defined in the source, and instances of these are attached to each other in
+a hierarchical network (with loops).
 
-&gt; Ok, in order to print icons, the code is this:
-&gt;
-&gt; c.editCommands.insertIconFromFile(path)
-&gt;
-&gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-&gt; "inserting and deleting icons" section -_-
-&gt;
-&gt; Although I still have a mess on which functions can be called how, and
-&gt; where to find the list of classes that can be called such as "editCommands"
-&gt; and the rest that they might exist.
+I've written an introspection function which lists the methods and instance
+variables (and class variables) of an arbitrary object by name and by type.
+I should release it. It builds its lists in a Leo outline, so you can
+navigate around that outline and expand nodes by introspection as needed.
 
-I'm not aware of a general solution to the problem of finding the
-various pieces of Leo's class structure.  Basically there are all these
-classes defined in the source, and instances of these are attached to
-each other in a hierarchical network (with loops).
+It occurs to me that the same code could be used to search Leo's runtime
+object hierarchy for you, i.e. you enter 'insertIconFromFile' and it
+recursively searches for it.
 
-I've written an introspection function which lists the methods and
-instance variables (and class variables) of an arbitrary object by name
-and by type.  I should release it.  It builds its lists in a Leo
-outline, so you can navigate around that outline and expand nodes by
-introspection as needed.
+-----
 
-It occurs to me that the same code could be used to search Leo's
-runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
-and it recursively searches for it.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20141015084905.18394">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Mon, 20 May 2013 08:47:35 -0500
-Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-&gt; Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; Ok, in order to print icons, the code is this:
-&gt; &gt;
-&gt; &gt; c.editCommands.insertIconFromFile(path)
-&gt; &gt;
-&gt; &gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-&gt; &gt; "inserting and deleting icons" section -_-
-&gt; &gt;
-&gt; &gt; Although I still have a mess on which functions can be called how, and
-&gt; &gt; where to find the list of classes that can be called such as "editCommands"
-&gt; &gt; and the rest that they might exist.
-&gt;
-&gt; I'm not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo's class structure.  Basically there are all these
-&gt; classes defined in the source, and instances of these are attached to
-&gt; each other in a hierarchical network (with loops).
-
-I didn't really finish the above para.  The problem is that it's hard
-to guess what the names of the attachment points are, and the attaching
-is done in a variety of places, sometimes by factory functions which
-further obscure linkages.  Not a fault with Leo, just the way programs
-work.  So the tool I've written may be the best approach to mapping
-Leo's runtime structure. Another thing it could do, try and map 'major'
-classes, or at least classes from leo.core.* - i.e. ignore the built in
-types.
+I didn't really finish the above para. The problem is that it's hard to
+guess what the names of the attachment points are, and the attaching is
+done in a variety of places, sometimes by factory functions which further
+obscure linkages. Not a fault with Leo, just the way programs work. So the
+tool I've written may be the best approach to mapping Leo's runtime
+structure. Another thing it could do, try and map 'major' classes, or at
+least classes from leo.core.* - i.e. ignore the built in types.
 </t>
 <t tx="ekr.20141015084905.18395">From: SegundoBob &lt;bhossley@ieee.org&gt;
 
@@ -21238,296 +21008,6 @@ I'm using it for all my math related writing and I think that point the
 future of interactive writing in Python. I dream of a body pane on leo
 with the features of the pyton qt console.
 </t>
-<t tx="ekr.20141015084905.18401">From: Alexandre_Toledo &lt;jalexandretoledo@gmail.com&gt;
-
-As I use Leo to write PL/SQL code, I need to write similar text several
-times, changing only small parts of it. It would be great if I could create
-a node with the "template" and then clone it everywhere it should be
-written, and then providing the parameters to be used in this writing.
-
-Let me try to clarify it. I'd like to create a tree like this:
-
- +- @file something.sql
-           +- Section 1
-              + &lt;&lt; Clone &gt;&gt; with Parameters A, B
-           +- Section 2
-              + &lt;&lt; Clone &gt;&gt; with Parameters C, D
-
-In this tree, both "Clone" nodes would be generated from a template
-specified somewhere in the tree, and would have parts of its text replaced
-with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
-
-I've searched but couldn't find anything like this, then I've thought of
-trying to write a hook to intercept the "save" command, but couldn't think
-of a way to pass the parameters; I think the obvious way would be to put
-the parameters after the "&lt;&lt; &gt;&gt;", but then all cloned nodes are changed, so
-it wouldn't work.
-
-Another alternative would be creating some kind of directive @something,
-but I have no idea of how to do that.
-
-Any ideas?
-</t>
-<t tx="ekr.20141015084905.18402">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
-
-You write "code Masks" and whenever you call a piece of code it will ask
-only for the parameters, and write the rest of the code. There are already
-some languages with most of the masks (all the primary functions and some
-complex ones) and its growing.
-
-For instance, if you write:
-
-"window" it will add the window to the code and let you edit the params.
-
-Their functionality would be awesome in Leo and when I know a bit better I
-will try to emulate on it.
-Sticking to Leo tho since it has a much superior way of managing data.
-
-
-On Saturday, May 4, 2013 12:48:27 AM UTC+2, Jo=E3o Alexandre Toledo wrote:
-&gt;
-&gt; Hi,
-&gt;
-&gt; Sorry for the delay... I'll try it this weekend and see how it works.
-&gt;
-&gt; Thank you.
-&gt;
-&gt; Jo=E3o
-</t>
-<t tx="ekr.20141015084905.18403">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 5 May 2013 16:35:59 -0700 (PDT)
-Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
-
-&gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
-&gt;
-&gt; You write "code Masks" and whenever you call a piece of code it will ask
-&gt; only for the parameters, and write the rest of the code. There are already
-&gt; some languages with most of the masks (all the primary functions and some
-&gt; complex ones) and its growing.
-
-I suspect different people have different things in mind when they talk
-about templates.
-
-Leo's abbreviation system is already quite advanced when it comes to
-filling in skeletons of common code layouts.  I type
-
-  def;;
-
-and I get
-
-  def foo(this, that=3D3):
-      """foo - Return
- 
-      :Parameters:
-      - `this`: describe this
-      - `that`: &lt;|describe that|&gt;
-      """
- 
-      &lt;|code|&gt;
-
-Two "parameters" are interactively requested, the function name, and
-the list of arguments.  The node name is presented as the default for
-the function name, and 'self' is included in the list of arguments, so,
-assuming the node was already called 'foo', all I type is this, that=3D3.
-The layout above is the rst form of the epydoc/sphinx docstring with
-formally identified parameters.
-
-The cursor is positioned after Return, where the was an empty &lt;||&gt;
-placeholder.  Pressing ,, selects the next placeholder so that typing
-replaces it.
-
-There's more, see
-https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
-and the screencast linked from there
-http://www.greygreen.org/tmp/leoabbrev.ogv
-
-Other people, Jacob etc. I think, have been talking about templates
-where the input parameters are stored in the outline, allowing for
-some of them to be altered and the template generation step re-run.
-More like generating a website from data etc.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20141015084905.18404">From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
-
-Hi,
-
-Sorry for the delay... I'll try it this weekend and see how it works.
-
-Thank you.
-
-Jo=E3o
-
-</t>
-<t tx="ekr.20141015084905.18405">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
---001a11c27f4813f73804dbad029f
-
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;
-jalexandretoledo@gmail.com&gt; wrote:
-
-&gt;
-&gt; As I use Leo to write PL/SQL code, I need to write similar text several
-&gt; times, changing only small parts of it. It would be great if I could create
-&gt; a node with the "template" and then clone it everywhere it should be
-&gt; written, and then providing the parameters to be used in this writing.
-&gt;
-
-Variants of this seem to be wanted by many people.  Most recently, there is
-the thread, "Templates with macro expansions",
-https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE
-
-Does that do what you want?
-
-Edward
-
---001a11c27f4813f73804dbad029f
-
-Content-Transfer-Encoding: quoted-printable
-
-&lt;div dir=3D"ltr"&gt;On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:jalexandretoledo@gmail.com" target=3D"_blank"&gt;jalexandretoledo@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;
-&lt;div class=3D"gmail_quote"&gt;&lt;blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"&gt;&lt;br&gt;&lt;div&gt;As I use Leo to write PL/SQL code, I need to write similar text several times, changing only small parts of it. It would be great if I could create a node with the &amp;quot;template&amp;quot; and then clone it everywhere it should be written, and then providing the parameters to be used in this writing.&lt;/div&gt;
-&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Variants of this seem to be wanted by many people.=A0 Most recently, there is the thread, &amp;quot;Templates with macro expansions&amp;quot;, &lt;a href=3D"https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE"&gt;https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE&lt;/a&gt;&lt;br&gt;
-&lt;br&gt;&lt;/div&gt;&lt;div&gt;Does that do what you want?&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Edward&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-
---001a11c27f4813f73804dbad029f--
-</t>
-<t tx="ekr.20141015084905.18406">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-Thank you Terry, that is exactly what I would like meant.
-
-Is there a website where abbreviation files are shared so newcomers can
-quickly being to use advanced abbreviations?
-Id love to download a python version x)
-
-On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
-&gt;
-&gt; On Sun, 5 May 2013 16:35:59 -0700 (PDT)
-&gt; Fidel P=E9rez &lt;fidel...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt;
-&gt; &gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which
-&gt; bases its existence in that concept:
-&gt; &gt;
-&gt; &gt; You write "code Masks" and whenever you call a piece of code it will ask
-&gt; &gt; only for the parameters, and write the rest of the code. There are
-&gt; already
-&gt; &gt; some languages with most of the masks (all the primary functions and
-&gt; some
-&gt; &gt; complex ones) and its growing.
-&gt;
-&gt; I suspect different people have different things in mind when they talk
-&gt; about templates.
-&gt;
-&gt; Leo's abbreviation system is already quite advanced when it comes to
-&gt; filling in skeletons of common code layouts.  I type
-&gt;
-&gt;   def;;
-&gt;
-&gt; and I get
-&gt;
-&gt;   def foo(this, that=3D3):
-&gt;       """foo - Return
-&gt;  
-&gt;       :Parameters:
-&gt;       - `this`: &lt;|describe this|&gt;
-&gt;       - `that`: &lt;|describe that|&gt;
-&gt;       """
-&gt;  
-&gt;       &lt;|code|&gt;
-&gt;
-&gt; Two "parameters" are interactively requested, the function name, and
-&gt; the list of arguments.  The node name is presented as the default for
-&gt; the function name, and 'self' is included in the list of arguments, so,
-&gt; assuming the node was already called 'foo', all I type is this, that=3D3.
-&gt; The layout above is the rst form of the epydoc/sphinx docstring with
-&gt; formally identified parameters.
-&gt;
-&gt; The cursor is positioned after Return, where the was an empty &lt;||&gt;
-&gt; placeholder.  Pressing ,, selects the next placeholder so that typing
-&gt; replaces it.
-&gt;
-&gt; There's more, see
-&gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
-&gt; and the screencast linked from there
-&gt; http://www.greygreen.org/tmp/leoabbrev.ogv
-&gt;
-&gt; Other people, Jacob etc. I think, have been talking about templates
-&gt; where the input parameters are stored in the outline, allowing for
-&gt; some of them to be altered and the template generation step re-run.
-&gt; More like generating a website from data etc.
-&gt;
-&gt; Cheers -Terry
-&gt;
-</t>
-<t tx="ekr.20141015084905.18407">From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-I've tried it and it's great, I think it will be useful, but it's not what
-I was thinking of...
-
-Let me try to explain what I had tougth about... What I would like to do is:
-
- 1. create a new .leo file
- 2. add a "template" node (eventually with sub nodes) with some ${schema}
-and ${table} macro place holders in its contents
- 3. add a @file node to the .leo file
- 4. add to this @file node a new one with definitions such as
-schema=3DSCHEMA_NAME and table=3DTABLE_NAME
- 5. add as a sub node to this last one a clone from the "template" node;
- 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
-"TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
-template node.
-
-It would be important that, when I reopen the .leo file later, the macros
-in the @file node where shown as ${schema} and ${table}, and not as it's
-substituted text.
-
-Now that I've described it, I can't see how it would be done... The
-${macro} place holders should be on the contents of the @file node, so
-after substitution, how could we recover it?
-
-That's also why the code from Jacob is not what I need (but I'm already
-thinking of other uses for it :) ): it will create a text when the button
-is pressed, but the generated nodes will be just static text.
-
-
-Thank you all.
-
-Leo is great!
-
-
-Jo=E3o
-
-
-On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
-&gt;
-&gt; Hi,
-&gt;
-&gt; Sorry for the delay... I'll try it this weekend and see how it works.
-&gt;
-&gt; Thank you.
-&gt;
-&gt; Jo=E3o
-</t>
 <t tx="ekr.20141015084905.18408">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 I have a note that it was an @rclick node handled by the context_menu.py 
@@ -21639,46 +21119,6 @@ qtIconBarClass.setCommandForButton.
 
 I'll add documentation for this, in leoSettings.leo and also in the
 customizing Leo chapter.
-</t>
-<t tx="ekr.20141015084905.18416">From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-I have read the scripting chapter of leo-editor, and already make my daily
-life easier with these quick dirty, but useful scripts.
-
-And I just want to know your workflow of writing leo scripts.
-
-My workflow is like this
-[e.g., I want to select some text in the body and make transform, then
-insert to the body again]:
-
-1. Abstract the action of word.
-[in this case, I choose "select" and "insert" as my key words]
-
-2. search the words at http://leoeditor.com/scripting.html see if there is
-existing some related topics.
-[I have luck to find
-i = w.getInsertPoint()              # Return the location of the cursor.
-...
-i,j = w.getSelectionRange(sort=True)
-...
-s = w.getSelectedText()             # Return the selected text, if any.
-]
-
-3. but I still don't know how to insert the text to body. So I search the
-above function names in the scripts.leo to see the code.
-[ I find in
-scripts.leo#Scripts--&gt;@thin leoScripts.txt--&gt;Text editing scripts--&gt;insert
-begin/endUpdate
-...
-w.insert(i,s1+'\\n\\t\\t\\n'+s2)
-...
-seems to help
-]
-
-4. test the scripts to see if it works, if it doesn't work, go to 3, to
-find more example code.
-
-Any suggestion to improve this workflow?
 </t>
 <t tx="ekr.20141015084905.18417">From: Nick_H &lt;nah@plextek.co.uk&gt;
 
@@ -21907,82 +21347,14 @@ whole profile at one time, without messing with the local system's registry.
 Also handy for those not in portable mode, but working on different windows 
 boxes and bored with having to tweak each one separately.
 </t>
-<t tx="ekr.20141015084905.18430">From: Richard &lt;richardjohnlyon@gmail.com&gt;
-
-I am looking into using Leo for a few php projects at work.
-I think I have figured out how to use Leo, but was wondering if someone 
-could have a look at my small test project and let me know if I am using it 
-correctly. (The workbook should be attached, please let me know if there 
-are any problems).
-
-I like the idea of Leo, however I get the impression that if I use it 
-'wrong' then it will be more of a hindrance than a help.
-
------
-
-Just realised that that attachment is useless.
-
-What I have is :
-Nodes:
-@file foo.php
-@file test.php
------ &lt;&lt; includes &gt;&gt;
------ &lt;&lt; Connect to the database &gt;&gt;
------ &lt;&lt; Disconnect from the database &gt;&gt;
------ &lt;&lt; Test echo &gt;&gt;
------ &lt;&lt; External file class test &gt;&gt;
-
-@file foo:
-&lt;?php
-    class Foo
-    {
-        public $foo;
-        public $bar;
-        
-        public function foobar()
-        {
-            echo $foo . $bar;
-        }
-    }
-?&gt;
-
-@file test.php
-&lt;?php
-    &lt;&lt; includes &gt;&gt;
-    &lt;&lt; Connect to the database &gt;&gt;
-    &lt;&lt; Test echo &gt;&gt;
-    &lt;&lt; Disconnect from the database &gt;&gt;
-    &lt;&lt; External file class test &gt;&gt;
-?&gt;
-
-&lt;&lt;includes&gt;&gt;:
-require('foo.php');
-
-&lt;&lt; Connect to the database &gt;&gt;
-echo "Connecting to the database";
-
-&lt;&lt; Test echo &gt;&gt;:
-echo "This is a test";
-
-&lt;&lt; Disconnect from the database &gt;&gt;:
-echo "Disconnecting from the database";
-
-&lt;&lt; External file class test &gt;&gt;:
-$foo = new Foo();
-
-$foo-&gt;foo = "foo";
-$foo-&gt;bar = "bar";
-
-$foo-&gt;foobar();
-
-Does this seem right? Or should I be doing something differently?
-</t>
 <t tx="ekr.20141015084905.18437">contextmenu
 screenshots
 todo
 valuespace
 </t>
-<t tx="ekr.20141015084905.18439">From: Terry Brown
+<t tx="ekr.20141015084905.18439">@language rest
+
+From: Terry Brown
 
 The script below is a tool for diffing two Leo files. The attached
 screenshot illustrates the output for two different revisions of
@@ -21999,7 +21371,7 @@ LeoPyRef.leo.
 If you have the bookmarks.py plugin active, you can double click nodes
 to jump to the original(s).
 
-
+@language python
 
 from leo.core.leoNodes import vnode
 if not hasattr(vnode, 'insertAsLastChild'):
@@ -22136,22 +21508,29 @@ c.redraw()
 
 =============
 
+@language rest
+
 From: resi147 &lt;scalet@yebu.de&gt;
 
-I tried this one and it seems to be very useful. What I would also like to 
-have is a similar (or the same) script,
-that does the same on two different nodes of a leo file. I admit, the 
-changes should be minimal to be done by
-myself, but as I'm not familiar with the internal leo api, I wanted to ask 
+I tried this one and it seems to be very useful. What I would also like to
+have is a similar (or the same) script, that does the same on two different
+nodes of a leo file. I admit, the changes should be minimal to be done by
+myself, but as I'm not familiar with the internal leo api, I wanted to ask
 for how to best do this changes.
 
-Probably somewhere here
+Probably somewhere here:
+
+@language python
+
 """
 ...
 vf = from_c.hiddenRootNode 
 vt = to_c.hiddenRootNode
 ...
 """
+
+@language rest
+
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
 </t>
@@ -22187,26 +21566,32 @@ note::
         
         python leoftsindex.py "workbook.leo#Links"
 </t>
-<t tx="ekr.20141026133611.8">File under things-I-didn't-know-but-should-have:
+<t tx="ekr.20141026133611.8">@language rest
+
+File under things-I-didn't-know-but-should-have:
 
 Instead of creating batch files all over the place to fire up python
 programs, and then having to cope with annoying "Terminate batch job
 (Y/N)?" with Ctrl-C/Break you can ask python setuptools to create an .exe
 in the Python\Scripts folder.
 
-in same folder as foo.py create setup.py, populate like so:
+in same folder as foo.py create setup.py, populate like so::
 
-from setuptools import setup
+@language python
 
-setup(
-    name='Foo for you',
-    version='0.3',
-    py_modules=['foo'],
-    entry_points='''
-        [console_scripts]
-        foo = foo
-        '''
-    )
+    from setuptools import setup
+    
+    setup(
+        name='Foo for you',
+        version='0.3',
+        py_modules=['foo'],
+        entry_points='''
+            [console_scripts]
+            foo = foo
+            '''
+        )
+    
+@language rest
 
 Then run "pip --editable install . " in the same folder. Foo.exe will be
 created in C:\pythonxx\Scripts. As long as that folder is in path you can
@@ -22214,9 +21599,12 @@ use foo like any other command line program. Furthermore the "editable"
 parameter means we can continue to edit and change foo.py and the changes
 are always live.
 
-Yay! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py --do-stuff-here ..." for me. :)
+Yay! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py
+--do-stuff-here ..." for me. :)
 
-Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.</t>
+Works for Leo too -- with the existing setup.py. It creates leo.exe and
+leoc.exe for Windowed mode (no log messages to console) and console mode
+respectively.</t>
 <t tx="ekr.20141030042423.22">https://groups.google.com/d/msg/leo-editor/4s44H9cUJGY/ewRBDBSw-A8J
 
 For the last several weeks I've used clones in a new, more effective way.
@@ -22336,9 +21724,7 @@ FYI, this FAQ entry fixes the following bug:
 https://bugs.launchpad.net/leo-editor/+bug/613153
 unable to describe root directory on thumb drive
 </t>
-<t tx="ekr.20141103061944.100">@language rest
-  
-- pd.update_before_write_foreign_file tells when an @data node has been
+<t tx="ekr.20141103061944.100">- pd.update_before_write_foreign_file tells when an @data node has been
   changed. This explains why the .leo file is now dirty.
 - at.saveOutlineIfPossible automatically saves the .leo file if only
   unchanged persistence nodes remain.
@@ -22350,19 +21736,13 @@ at.saveOutlineIfPossible makes the following hacks unnecessary:
 - Changed at.writeAll so that the no @&lt;file&gt; node written message now says
   that you must selected an unchanged @auto node directly in order to write
   it with the write-at-files-nodes command.
-
-@language python
 </t>
-<t tx="ekr.20141103061944.101">@language rest
-
-The problem was in ic.createImporterData, not at.createWritesData.
+<t tx="ekr.20141103061944.101">The problem was in ic.createImporterData, not at.createWritesData.
 A trace in get_leo_namespace pinpointed the problem.
 
  
 </t>
-<t tx="ekr.20141103061944.102">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1041906
+<t tx="ekr.20141103061944.102">https://bugs.launchpad.net/leo-editor/+bug/1041906
 
 Changed LeoQtTree.closeEditorHelper as follows:
     
@@ -22427,9 +21807,7 @@ Suggested fix: Backward search should search the body and then the headline.
 
 The fix was to LeoQtLog.selectHelper.
 </t>
-<t tx="ekr.20141103061944.108">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1260415
+<t tx="ekr.20141103061944.108">https://bugs.launchpad.net/leo-editor/+bug/1260415
 
 Added more informative error messages in at.writeAllAtFileNodesHelper.
 This is the direct response to the bug report.  A typical message::
@@ -22449,9 +21827,7 @@ A typical message::
     Warning: changes to this file will be lost
     unless you can save the file successfully.
 </t>
-<t tx="ekr.20141103061944.109">@language rest
-
-Up-arrow on the first node in a chapter switches to another chapter 
+<t tx="ekr.20141103061944.109">Up-arrow on the first node in a chapter switches to another chapter 
 https://bugs.launchpad.net/leo-editor/+bug/1264350
 
 Solution:
@@ -22494,9 +21870,7 @@ AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
     
 in local .leo files. 
 </t>
-<t tx="ekr.20141103061944.115">@language rest
-
-Reinhard Engel reinhard.engel.de@googlemail.com
+<t tx="ekr.20141103061944.115">Reinhard Engel reinhard.engel.de@googlemail.com
 
 There seems to be a subtle bug in leoGlobals.py:
 
@@ -22509,10 +21883,10 @@ The following pattern in 'compute_directives_re' solves this problem:
 
 @language python
 
-aList = [x for x in globalDirectiveList if z != 'others']
-aList.sort(lambda a,b: len(b)-len(a))
-    # Sort by length, longest first
-pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+    aList = [x for x in globalDirectiveList if z != 'others']
+    aList.sort(lambda a,b: len(b)-len(a))
+        # Sort by length, longest first
+    pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
 </t>
 <t tx="ekr.20141103061944.116">import glob
 pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
@@ -22556,21 +21930,15 @@ yaml.py:    fixed
 </t>
 <t tx="ekr.20141103061944.117">The problem was an off-by-one test in regexHelper.
 </t>
-<t tx="ekr.20141103061944.118">@language rest
-
-Alt-End when the last top-level node was a clone caused all clones to expand.
+<t tx="ekr.20141103061944.118">Alt-End when the last top-level node was a clone caused all clones to expand.
 
 The fix was in p.isAncestorOf.
 
 Also, changed p.all_unique_positions() to p.all_positions() in places where p.contract was called.
 
 I started this project by doing a clone-find-all for isExpanded.
-
-@language python
 </t>
-<t tx="ekr.20141103061944.119">@language rest
-
-The change pattern doesn't always get set properly.
+<t tx="ekr.20141103061944.119">The change pattern doesn't always get set properly.
 
 The fix was in find.addChangeStringToLabel. It must never protect the
 change string!
@@ -22587,8 +21955,6 @@ not Undo. Todd. Had to abandon the outline and start again.
 # c.deletePositionsInList(c.all_positions())
 </t>
 <t tx="ekr.20141103061944.121">
-@language rest
-
 Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
 
 g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
@@ -22608,9 +21974,7 @@ Tab cycling now works as expected in all my tests.
 
 These restriction appear to be essential.
 </t>
-<t tx="ekr.20141103061944.125">@language rest
-
-https://groups.google.com/d/msg/leo-editor/NGbogCgVmx4/nsJGngrS8BgJ
+<t tx="ekr.20141103061944.125">https://groups.google.com/d/msg/leo-editor/NGbogCgVmx4/nsJGngrS8BgJ
 
 When I hit &lt;enter&gt; after selecting "selectPosition," I get the following
 error message in the log pane:
@@ -22621,12 +21985,8 @@ Traceback (most recent call last):
 setUndoTypingParams
     old_start,old_end = oldSel
 TypeError: 'NoneType' object is not iterable
-
-@language python
 </t>
-<t tx="ekr.20141103061944.126">@language rest
-
-https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+<t tx="ekr.20141103061944.126">https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
 
 Another example of the wretched newline problem. @edit nodes preserve '\r'
 characters, and that messes up the counts in the find command.
@@ -22639,9 +21999,7 @@ The fix was a hack to find.search: it removes '\r' characters.
 <t tx="ekr.20141103061944.128">This is required so that, for example, python coloring is correct after
 selecting a node that sets another color for operators.
 </t>
-<t tx="ekr.20141103061944.129">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/49
+<t tx="ekr.20141103061944.129">https://github.com/leo-editor/leo-editor/issues/49
 
 The file import code as found in scripts fails on reaching
 Word backup files (file names prefixed with a ~)
@@ -22654,9 +22012,7 @@ g.os_path_finalize if the new expanduser keyword argument is False.
 </t>
 <t tx="ekr.20141103061944.130">g.es does nothing when g.app.gui.consoleOnly is True
 </t>
-<t tx="ekr.20141103061944.131">@language rest
-
-http://i.imgur.com/1ZV45oB.png
+<t tx="ekr.20141103061944.131">http://i.imgur.com/1ZV45oB.png
 
 There was a problem with hitting tab, and possibly with using the mouse in the QListWidget.
 
@@ -22666,26 +22022,20 @@ The fix was to define w as follows in lqlw.select_callback and lqlw.tab_callback
 
 In addition, I changed assert in lqlw.set_position to calls to g.trace.
 </t>
-<t tx="ekr.20141103061944.132">@language rest
-
-- Non-plain keys are now ignored.
+<t tx="ekr.20141103061944.132">- Non-plain keys are now ignored.
 - Backspace and other characters now do something fairly reasonable when text is selected.
   This is an edge case, unless everything to the end of the text is selected.
 </t>
 <t tx="ekr.20141103061944.133">The fix was to set w.leo_big_text = None in remove_big_text_buttons and add_load_button.
 </t>
-<t tx="ekr.20141103061944.134">@language rest
-
-Fixed an important bug in addNode, a helper of createOutline: There was a
+<t tx="ekr.20141103061944.134">Fixed an important bug in addNode, a helper of createOutline: There was a
 confusion about commanders: p is in the old commander. p2 must be in the
 new commander.
 
 Disabled a few unit tests when run externally:
 This was due to missing nodes or copies of clones not being cloned.
 </t>
-<t tx="ekr.20141103061944.135">@language rest
-
-Fixed bug 61, https://github.com/leo-editor/leo-editor/issues/61
+<t tx="ekr.20141103061944.135">Fixed bug 61, https://github.com/leo-editor/leo-editor/issues/61
 errors inhibited read @auto foo.md.
 
 Modified dropEvent and its helpers.
@@ -22732,9 +22082,7 @@ fc.getLeoFile calls the new fc.setMaxNodeIndex after reading all nodes.
 
 Chapter.afterCreateChapter does not push undo data when cc.initing is True.
 </t>
-<t tx="ekr.20141103061944.140">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/869098
+<t tx="ekr.20141103061944.140">https://bugs.launchpad.net/leo-editor/+bug/869098
 Context menu settings lost if save as used
 
 This report appears invalid.
@@ -22745,9 +22093,7 @@ Note that @data contextmenu_commands node in the file *replaces* any other
 @data contextmenu_commands node in leoSettings.leo or myLeoSettings.leo.
 
 </t>
-<t tx="ekr.20141103061944.141">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/50
+<t tx="ekr.20141103061944.141">https://github.com/leo-editor/leo-editor/issues/50
 Important: body text lost switching @file to @auto-rst
 
 This case is so dangerous that Leo refuses to create the file and instead
@@ -22758,12 +22104,8 @@ Changes:
 - v.at_read is now a dict: keys are full file names; values are lists of headlines.
 - at.shouldPromptForDangerousWrite returns True if p.h is not in v.at_read.
 - at.promptForDangerousWrite issues a warning and reverts the headline
-
-@language python
 </t>
-<t tx="ekr.20141103061944.142">@language rest
-
-Summary post:
+<t tx="ekr.20141103061944.142">Summary post:
 https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
 
 https://github.com/leo-editor/leo-editor/issues/28
@@ -22784,9 +22126,7 @@ What I did:
 - Simplified all the interface code in LeoTree.select and helpers.
 - Added QTextEdit#bigtextwarning to the Qt stylesheet to make the warning background pink.
 </t>
-<t tx="ekr.20141103061944.143">@language rest
-
-From https://github.com/leo-editor/leo-editor/issues/73
+<t tx="ekr.20141103061944.143">From https://github.com/leo-editor/leo-editor/issues/73
 
 https://bugs.launchpad.net/leo-editor/+bug/1193820
 Focus change on tree pane after saving current Leo file
@@ -22796,29 +22136,21 @@ https://groups.google.com/forum/#!topic/leo-editor/hPwPG9OTC3U
 
 This no longer seems to be a problem.
 </t>
-<t tx="ekr.20141103061944.144">@language rest
-
-From https://github.com/leo-editor/leo-editor/issues/73
+<t tx="ekr.20141103061944.144">From https://github.com/leo-editor/leo-editor/issues/73
 
 https://bugs.launchpad.net/leo-editor/+bug/1258373
 failed find focus fails
 
 Changed code in the save/restore methods in leoFind.py.
 </t>
-<t tx="ekr.20141103061944.145">https://github.com/leo-editor/leo-editor/issues/57
-</t>
-<t tx="ekr.20141103061944.146">@language python
-
-From https://github.com/leo-editor/leo-editor/issues/73
+<t tx="ekr.20141103061944.146">From https://github.com/leo-editor/leo-editor/issues/73
 
 https://bugs.launchpad.net/leo-editor/+bug/1245535
 API allows headlines to contain newlines.
 
 The fix was to v.setHeadString.
 </t>
-<t tx="ekr.20141103061944.147">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/75
+<t tx="ekr.20141103061944.147">https://github.com/leo-editor/leo-editor/issues/75
 write-opml-file always produces an empty file
 
 leoOPML.py's docstring needs updating.
@@ -22833,38 +22165,12 @@ Improved the packaging as follows:
 - OpmlController.putToOPML is just PutToOPML(owner) where PutToOPML is a
   class that creates the opml using the owner's put method.
 </t>
-<t tx="ekr.20141103061944.148">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/76
+<t tx="ekr.20141103061944.148">https://github.com/leo-editor/leo-editor/issues/76
 erroneous clone markers in @auto trees
 
 The fixes were to several methods of the PersistenceDataController class.
-
-@language python
 </t>
-<t tx="ekr.20141103061944.149">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/24
-Windows installer setting wrong file association for .leo files
-
-At present, everything appears to be working.
-
-Original report
----------------
-
-If you do ftype LeoFile after using installing LeoSetup-4.11-final.exe,
-you'll see:
-
-    LeoFile="&lt;path to python&gt;\pythonw.exe" "C:\Program Files (x86)\Leo-4.11-final\launchLeo.py %*"
-
-This is wrong. As Creating Windows file associations in the Leo documentation
-correctly states, this should instead be:
-
-    LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-</t>
-<t tx="ekr.20141103061944.150">@language rest
-
-From https://github.com/leo-editor/leo-editor/issues/73
+<t tx="ekr.20141103061944.150">From https://github.com/leo-editor/leo-editor/issues/73
 
 https://bugs.launchpad.net/leo-editor/+bug/1245616
 Autocomplete ? function to show doc string does not work
@@ -22873,9 +22179,7 @@ Autocomplete ? function to show doc string does not work
 - get_object appends get_selection before calling get_object.
 - Cleaned code in info.
 </t>
-<t tx="ekr.20141103061944.151">@language rest
-
-It sometimes picked a shorter completion that is not a prefix of the present label!
+<t tx="ekr.20141103061944.151">It sometimes picked a shorter completion that is not a prefix of the present label!
 
 Examples:
     print-se **sometimes** shows print-uas or print-bindings or...
@@ -22889,9 +22193,7 @@ The fix was a single extra check in ga.do_tab.
 
 The fix was to p.isVisible.
 </t>
-<t tx="ekr.20141103061944.153">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/36
+<t tx="ekr.20141103061944.153">https://github.com/leo-editor/leo-editor/issues/36
 
 The report seems misleading: it says this happens when Leo tries to load an
 @auto file that is in the outline but which's file was erased outside Leo,
@@ -22900,9 +22202,7 @@ but it worked for me.
 I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown
 in the bug report can never happen.
 </t>
-<t tx="ekr.20141103061944.154">@language rest
-
-Find-previous fails at last node
+<t tx="ekr.20141103061944.154">Find-previous fails at last node
 https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
 
 This only affected searches that were initiated using the buttons in the Find tab.
@@ -22914,37 +22214,17 @@ What I did:
 - focusInTree returns was_in_headline when buttonFlag is True.
 - editLabelHelper now properly sets selection range for backward searches.
 - Removed a selection hack in initNextText.
-
-@language python
 </t>
-<t tx="ekr.20141103061944.155">@language rest
-
-https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
+<t tx="ekr.20141103061944.155">https://groups.google.com/d/msg/leo-editor/ujDqUI68Sx4/EwTYCw7O38cJ
 
 qtree.onItemClicked now calls c.findCommands.reset_state_ivars()
 </t>
-<t tx="ekr.20141103061944.156">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/56
-
-I do not see this behavior.
-
-===== Report
-
-When I save the leo file, instead of staying where I am on the leo tree, it
-will go and center the view on the selected node. 
-
-</t>
-<t tx="ekr.20141103061944.157">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/59
+<t tx="ekr.20141103061944.157">https://github.com/leo-editor/leo-editor/issues/59
 
 When a file is dropped into any part of the Leo window, if the cursor is
 not on a node it goes to the top or bottom of the tree as a root node.
 </t>
-<t tx="ekr.20141103061944.158">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/60
+<t tx="ekr.20141103061944.158">https://github.com/leo-editor/leo-editor/issues/60
 
 It would be nice for Drag and drop files to have relative paths,taking into
 account the @path settings of the part of the tree they're dropped into
@@ -22954,9 +22234,7 @@ account the @path settings of the part of the tree they're dropped into
 
 Added a guard to g.toUnicodeFileEncoding
 </t>
-<t tx="ekr.20141103061944.160">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1185933
+<t tx="ekr.20141103061944.160">https://bugs.launchpad.net/leo-editor/+bug/1185933
 
 Note: the insert-headline-time command must be bound to a shortcut in order for this to work.
 </t>
@@ -22978,28 +22256,20 @@ LeoQtEventFilter.qtKey now changes a toString value of 'Enter' to 'Return'
 
 Added a check for k.isPlainKey to find.iSearchStateHandler.
 </t>
-<t tx="ekr.20141103061944.165">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1268970
+<t tx="ekr.20141103061944.165">https://bugs.launchpad.net/leo-editor/+bug/1268970
 
 This works for me (Windows 7 and Ubuntu) with Python 2.7.8, PyQt version 4.8.6.
 </t>
-<t tx="ekr.20141103061944.166">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1177355
+<t tx="ekr.20141103061944.166">https://bugs.launchpad.net/leo-editor/+bug/1177355
 node-only wrapped search does not work in long nodes
 
 This works for me.
 </t>
-<t tx="ekr.20141103061944.167">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1251252
+<t tx="ekr.20141103061944.167">https://bugs.launchpad.net/leo-editor/+bug/1251252
 
 F11 (help-for-command) now works for @button &amp; @command nodes.
 </t>
-<t tx="ekr.20141103061944.168">@language rest
-
-This had been disabled when completion for vim : commands was added.
+<t tx="ekr.20141103061944.168">This had been disabled when completion for vim : commands was added.
 
 Changed ga.get_command and ga.is_command.
 </t>
@@ -23021,9 +22291,7 @@ http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-wo
 
 I have just created a FAQ entry for this, so at last this issue is closed.
 </t>
-<t tx="ekr.20141103061944.171">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/86
+<t tx="ekr.20141103061944.171">https://github.com/leo-editor/leo-editor/issues/86
 
 The issues in this bug have either been fixed or they are too minor to care about.
 
@@ -23117,9 +22385,7 @@ setup.py confuses newbies
 Terry's recent changes allow pip to use setup.py, and warns otherwise. This
 seems like a good compromise.
 </t>
-<t tx="ekr.20141103061944.177">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/74
+<t tx="ekr.20141103061944.177">https://github.com/leo-editor/leo-editor/issues/74
 
 What I did:
 
@@ -23168,26 +22434,21 @@ makes them available in all Leo files, a nice feature. Two problems:
 - There are duplicate buttons in myLeoSettings.leo
 
 </t>
-<t tx="ekr.20141103061944.178">@language rest
-
-This was probably fixed earlier by the addition of progress guards
+<t tx="ekr.20141103061944.178">This was probably fixed earlier by the addition of progress guards
 in ec.fillRegion and c.reformatBody.
 
 Added one line for fillRegion.
 </t>
-<t tx="ekr.20141103061944.179">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
+<t tx="ekr.20141103061944.179">https://github.com/leo-editor/leo-editor/issues/78
 
 This is a scrolling problem, not a failure to select text.
 
 Changed the call to w.see in find.showSuccess.
-
-@language python
 </t>
 <t tx="ekr.20141103061944.180">605ae57
 
-The present code just exists Leo, which I think is the reasonable thing to do.  YMMV.</t>
+The present code just exists Leo, which I think is the reasonable thing to do.  YMMV.
+</t>
 <t tx="ekr.20141103061944.181">[Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
 shadow file name collisions cause spontaneous clone creation
 
@@ -23213,9 +22474,7 @@ so you specify the color with:
 
     @color html_literal3_color = pink
 </t>
-<t tx="ekr.20141103061944.186">@language rest
-
-It is not possible to use both the PyQt4 and PyQt5 installers at the same
+<t tx="ekr.20141103061944.186">It is not possible to use both the PyQt4 and PyQt5 installers at the same
 time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
 only.
 </t>
@@ -23245,9 +22504,7 @@ Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
 of a Leo command. This allows an option (does not exist yet) to use g.es
 instead of the minibuffer to report status.
 </t>
-<t tx="ekr.20141103061944.192">@language rest
-
-Rev 060c33a...Leo build: 20140825070951 contains a spectacular collapse in
+<t tx="ekr.20141103061944.192">Rev 060c33a...Leo build: 20140825070951 contains a spectacular collapse in
 complexity in idle-time handling. Instantly, registering idle-time event
 handlers can be considered deprecated, though I have no plans to remove the
 horrendous older code.
@@ -23349,9 +22606,7 @@ lengthHelper used QTextCursor, which is *much* slower than getAllText.
     except TypeError:
         w.setInsertPoint(ins)
 </t>
-<t tx="ekr.20141103061944.194">@language rest
-
-One change is required to all plugins and scripts:
+<t tx="ekr.20141103061944.194">One change is required to all plugins and scripts:
 
     body.bodyCtrl.x -&gt; body.wrapper.x
     
@@ -23379,9 +22634,7 @@ What I did
 <t tx="ekr.20141103061944.195">active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
 notebook.py, projectwizard.py, stickynotes.py
 </t>
-<t tx="ekr.20141103061944.196">@language rest
-
-1. createSaxVnode now does::
+<t tx="ekr.20141103061944.196">1. createSaxVnode now does::
     
     v.fileIndex = ni.tupleToString(x.scanGnx(sax_node.tnx))
     
@@ -23395,8 +22648,6 @@ This is the only call to tupleToString in Leo.
 
 4. The new fc.setMaxNodeIndex *does* convert the n field to an int, but
    this very rarely happens.
-
-@language python
 </t>
 <t tx="ekr.20141103061944.197">@nocolor-node
 
@@ -23410,19 +22661,14 @@ What I did:
 - checked all calls to getNewIndex.
 - checked all calls to fileIndex =
 </t>
-<t tx="ekr.20141103061944.198">@language rest
-
-pd.restore_gnx and fc.getLeoOutlineFromClipboard now call v.setFileIndex()
+<t tx="ekr.20141103061944.198">pd.restore_gnx and fc.getLeoOutlineFromClipboard now call v.setFileIndex()
 
 v.fileIndex calls ni.updateLastIndex.
-
-@language python
 </t>
 <t tx="ekr.20141103061944.199">https://groups.google.com/d/msg/leo-editor/JWhlmJBiesk/RsC64VZ1gxQJ
 </t>
 <t tx="ekr.20141103061944.200"></t>
-<t tx="ekr.20141103061944.201">@language rest
-https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
+<t tx="ekr.20141103061944.201">https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
 What I did:
 
@@ -23471,22 +22717,6 @@ spell-as-you-type-next
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
 </t>
-<t tx="ekr.20141103061944.204">@language rest
-
-This runs pylint (with optional Sherlock tracing) in
-a separate process, thereby allowing Leo to run
-pylint unchanged.
-
-What I did:
-
-1. pylint-leo.py: run now runs the following command in a separate process::
-
-    &lt;python&gt; -c "import leo.core.leoGlobals as g; g.run_pylint(&lt;args&gt;)"
-    
-2. g.run_pylint uses Sherlock tracing if requested.
-
-    
-</t>
 <t tx="ekr.20141103061944.205">@nocolor-node
 
 These commands now get their arguments from the Find Panel.
@@ -23504,14 +22734,7 @@ the find-all and change-all buttons now work as expected.
 </t>
 <t tx="ekr.20141103061944.206">@language rest
 
-Added the following commands:
-    
-disable-idle-time-tracing
-enable-idle-time-tracing
-toggle-idle-time-tracing
-disable-idle-time-events
-enable-idle-time-events
-toggle-idle-time-events
+
 
 Simplified and generalized idle-time handling as follows:
     
@@ -23551,9 +22774,7 @@ if g.app.idleTimeHook:
 else:
     g.enableIdleTimeHook(1000,h.h1)
 </t>
-<t tx="ekr.20141103061944.207">@language rest
-
-When pylint is available on your machine, Leo's pylint
+<t tx="ekr.20141103061944.207">When pylint is available on your machine, Leo's pylint
 command will execute run pylint on all @&lt;file&gt; nodes in the
 selected tree. This command is now available from the popup
 menus created by the contextmenu plugin.
@@ -23597,20 +22818,14 @@ for pylint-leo.py::
         pylint="python27 pylint-leo.py"
     '''
 </t>
-<t tx="ekr.20141103061944.208">@language rest
-
-Note: persistence applies to @auto-vimoutline-mode and @auto-org-mode
+<t tx="ekr.20141103061944.208">Note: persistence applies to @auto-vimoutline-mode and @auto-org-mode
 
 Done:
 - Added @auto-org-mode to list of valid @auto nodes.
 - Created org-mode importer.
 - Create at.writeOneOrgModeNode, called from at.writeOneAtAutoNode
-
-@language python
 </t>
-<t tx="ekr.20141103061944.209">@language rest
-
-- ic.createOutline and its helper, ic.dispatch, now use tables
+<t tx="ekr.20141103061944.209">- ic.createOutline and its helper, ic.dispatch, now use tables
   created by ic.createImporterData and its helper.
 
 - Eliminated odious special cases involving self.treeType in
@@ -23621,9 +22836,7 @@ Done:
   
 - For now, the unit-tests wrappers are hard-coded.
 </t>
-<t tx="ekr.20141103061944.210">@language rest
-
-What I did:
+<t tx="ekr.20141103061944.210">What I did:
 - at.createWritersData inits tables using the writers_dict in each plugin.
 - at.writeOnAtAutoNode calls at.dispatch to find writers.
   An important escape hatch: at.writeOnAtAutoNode calls the *existing* rst.writer
@@ -23632,12 +22845,8 @@ What I did:
 Won't do:
 - at.writeAllHelper has lots of special-case code, but that probably can't be helped.
 - It would be way too dangerous to refactor the write code for @file, @shadow, etc.
-    
-@language python
 </t>
-<t tx="ekr.20141103061944.211">@language rest
-
-The leo/plugins/importers folders now contains importer plugins.
+<t tx="ekr.20141103061944.211">The leo/plugins/importers folders now contains importer plugins.
 
 The leo/plugins/writers folders now contain writer plugins.
 
@@ -23658,12 +22867,8 @@ What I did:
 - Loading importer &amp; writer plugins updates g.app.atAutoNames:
     - at.parse_writer_dict sets at.atAutoWritersDict &amp; at.writersDispatchDict
     - ic.parse_importer_dict sets ic.atAutoDict and ic.classDispatchDict
-
-@language python
 </t>
-<t tx="ekr.20141103061944.212">@language rest
-
-Leo now imports from ~/.leo/plugins before importing from leo/plugins.
+<t tx="ekr.20141103061944.212">Leo now imports from ~/.leo/plugins before importing from leo/plugins.
 
 The new code is in at.createWritersData &amp; helper and ic.at.createImportersData &amp; their helpers.
 </t>
@@ -23696,7 +22901,8 @@ for kind,plugins in (('home',plugins1),('leo',plugins2)):
                             else:
                                 report('error',kind,folder,sfn)
                 # else: report('skipped',kind,folder,sfn)
-@language python</t>
+@language python
+</t>
 <t tx="ekr.20141103061944.214">Changed k.inverseCommandsDict to c.inverseCommandsDict.
 Called vc.define commands from c.finishCreate.
 Changed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
@@ -23716,16 +22922,6 @@ insert points in the middle of a text selection, but at present it can't.
 </t>
 <t tx="ekr.20141103061944.219">All aspects of the style sheet can now be altered using normal user settings.
 </t>
-<t tx="ekr.20141103061944.220">@language rest
-
-The user can lose tail text if they start typing before the body text completely loads!
-
-- Added c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars')
-
-- The "dummy" body text now contains a warning to wait until the text fully loads.
-
-@language python
-</t>
 <t tx="ekr.20141103061944.221">- Added --trace-plugins option
 - The leoBridge now supports the tracePlugins keyword option.
 </t>
@@ -23734,9 +22930,7 @@ The user can lose tail text if they start typing before the body text completely
     @color head-bg = @mistyrose2
     
 </t>
-<t tx="ekr.20141103061944.223">@language rest
-
-This is a major upgrade to the beautify command.
+<t tx="ekr.20141103061944.223">This is a major upgrade to the beautify command.
 
 PythonTidy (tidy for short) does a full parse of the Python sources: https://pypi.python.org/pypi/PythonTidy/
 
@@ -23765,17 +22959,13 @@ What I did today.  See the &lt; &lt; version info &gt; &gt; section for all the 
 - The original code deleted all comments because of a botch in Comments__init__.
 - Tidy now properly handles the tidy_add_blank_lines_around_comments and tidy_double_quoted_strings settings.
 </t>
-<t tx="ekr.20141103061944.224">@language rest
-
-removed new_auto switch in leoAtFile.py
+<t tx="ekr.20141103061944.224">removed new_auto switch in leoAtFile.py
 
 added g.app.at_auto_persist
 
 c.persistenceController exists only if g.app.auto_persist is True
 </t>
-<t tx="ekr.20141103061944.225">@language rest
-
-This does *not* change the selected node so it's easy to
+<t tx="ekr.20141103061944.225">This does *not* change the selected node so it's easy to
 clone several nodes.
 
 Added c.cloneToLastNode.  
@@ -23855,9 +23045,7 @@ And whose body text is::
 </t>
 <t tx="ekr.20141103061944.229">Very useful when summarizing documenation nodes.
 </t>
-<t tx="ekr.20141103061944.230">@language rest
-
-https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+<t tx="ekr.20141103061944.230">https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
 
 Fidel suggests quickstart guide should open by default instead of the
 user's workbook.
@@ -23866,9 +23054,7 @@ This has been fixed because the default workbook contains both the cheat
 sheet and an example from the rst3 tutorial.
 
 </t>
-<t tx="ekr.20141103061944.231">@language rest
-
-Allow colorizing for languages to be delegated to another language.
+<t tx="ekr.20141103061944.231">Allow colorizing for languages to be delegated to another language.
 
 - Added g.app.delegate_language_dict, with three entries for David McNab.
 
@@ -23915,10 +23101,13 @@ just 'Setup' with this pluing active.
 
 - Review all important plugins.
 
-- Document recent tags work.</t>
+- Document recent tags work.
+
+*** Discuss official ivars in more detail in the scripting chapter.
+    Revise scripting chapter to deal with wrapper ivars, not ctrl ivars.
+    </t>
 <t tx="ekr.20141103061944.236"></t>
 <t tx="ekr.20141103061944.237"></t>
-<t tx="ekr.20141103061944.238"></t>
 <t tx="ekr.20141103061944.240"></t>
 <t tx="ekr.20141103061944.242"></t>
 <t tx="ekr.20141103061944.243"></t>
@@ -23926,12 +23115,10 @@ just 'Setup' with this pluing active.
 <t tx="ekr.20141103061944.247"></t>
 <t tx="ekr.20141103061944.248"></t>
 <t tx="ekr.20141103061944.249"></t>
-<t tx="ekr.20141103061944.55">Leo 5.0 alpha 1                               November 4, 2014
+<t tx="ekr.20141103061944.55">Leo 5.0 alpha 1                             November 5, 2014
 
 Leo 5.0a1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
-
-This version boasts a new vim mode, and other important new features.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -23940,7 +23127,25 @@ Text tutorials: http://leoeditor.com/tutorial.html
 The highlights of Leo 5.0
 --------------------------
 
-*********************** Add list here ***********************
+* Better compatibility with vim, Emacs and pylint:
+    - Optional native emulation of vim commands.
+    - Full support for Emacs org-mode outlines.
+    - Better support for pylint.
+* Better handling of nodes containing large text:
+    - Idle time syntax coloring eliminates delay.
+    - Optional delayed loading of large text.
+* Power features:
+    - File name completion.
+    - Cloned nodes can expand and contract independently.
+    - @data nodes can now be composed from a tree of nodes.
+    - Leo's main style sheet can be customized with settings.
+      (No need to alter the style sheet directly!)
+    - @persistence nodes save data in @auto trees.
+    - A plugable architecture for @auto nodes.
+* Several important new plugins.
+* For beginners:
+    - Leo's default workbook files contains Leo's quickstart guide.
+* Hundreds of new/improved features and bug fixes.
 
 Links:
 ------
@@ -23953,14 +23158,16 @@ Download:  http://sourceforge.net/projects/leo/files/
 Git:       https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20141103061944.59">Fixed the entry in g.app.language_extension_dict</t>
+<t tx="ekr.20141103061944.59">Fixed the entry in g.app.language_extension_dict
+</t>
 <t tx="ekr.20141103061944.61">For several years the xml namespace line at the start of .leo files has been::
 
     &lt;leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" &gt;
 
 The new line is::
 
-    &lt;leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" &gt;</t>
+    &lt;leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" &gt;
+</t>
 <t tx="ekr.20141103061944.62">- qt_big_text.py contains support for the "big text" warning buttons.
 
 - qt_commands.py contains several commands created by @g.commands.
@@ -23985,7 +23192,8 @@ The new line is::
 - qt_tree.py contains all the Qt tree code. It replaces baseNativeTree.py.
 
 No longer used: baseNativeTree.py, qtGui.py. qtGui.py still exists, but
-just prints a warning message when imported.</t>
+just prints a warning message when imported.
+</t>
 <t tx="ekr.20141103061944.63">In an earlier post I said:
 
 QQQ
@@ -24080,7 +23288,8 @@ dictionaries. Here, we replace just two entries in the dict::
 This creates instances of the LoadFileAtCursor and Tabnew classes. In other
 words, we replace a function by an instance of a class. All such classes
 must have __call__ methods, so that Leo can "call" the instance as if it
-were a function.</t>
+were a function.
+</t>
 <t tx="ekr.20141103061944.64">@language rest
 
 This post discusses discusses problems with the @g.command decorator. Later
@@ -24392,10 +23601,9 @@ Here is the output::
     handler2  8 ekr.leo 8.1100
     handler2  9 ekr.leo 9.1300
     handler2 10 ekr.leo 10.1400
-    handler2 done</t>
-<t tx="ekr.20141103061944.67">@language rest
-
-A head-slapping moment: the so-called high-level interfaced throughout
+    handler2 done
+</t>
+<t tx="ekr.20141103061944.67">A head-slapping moment: the so-called high-level interfaced throughout
 Leo's core to interact with Leo's text panes lacks a way of getting the
 length of text *without* making a copy of the text.
 
@@ -24407,6 +23615,8 @@ Worse, the absence of w.getTextLength() has lead to the most unfortunate
 LeoQTextEditWidget.lengthHelper, which calculated the length of the text
 using QTextCursor methods! This is catastrophically slow for large text.
 This method was doubling node load times for large nodes.
+
+@language rest
 
 In other words, w.getTextLength() is an essential part of fixing git bug 28:
 https://github.com/leo-editor/leo-editor/issues/28
@@ -24426,7 +23636,6 @@ The simplest thing that could possibly work would be::
         return len(w.getAllText())
         
 @language rest
-
 
 But this would be a step backwards because it hides the fact that it is
 expensive.
@@ -24515,7 +23724,9 @@ rather than calling w.getAllText.
 
 Imo, this is the safe, if not exactly elegant way.
 </t>
-<t tx="ekr.20141103061944.68">This post will summarize what has already been done and what will be done in the next few days.  Let's start with the basics...
+<t tx="ekr.20141103061944.68">@language rest
+
+This post will summarize what has already been done and what will be done in the next few days.  Let's start with the basics...
 
 ===== About wrappers and widgets
 
@@ -24746,14 +23957,16 @@ related to fixing bugs. I'll now return more directly to bug fixes.
 </t>
 <t tx="ekr.20141103061944.70">Added YesToAll and NoToAll capability to g.app.gui.runAskYesNoDialog
 and uses this in the open file again? questions when opening Leo after a
-crash.</t>
+crash.
+</t>
 <t tx="ekr.20141103061944.71">:r and :tabnew and file-open-by-name now have file-name completion
 
 The filename completion works really well.
 
 I have Ctrl-O to file-open-by-name to bypass the Windows open file dialog.
 
-The new insert-file-name command also supports filename completion.</t>
+The new insert-file-name command also supports filename completion.
+</t>
 <t tx="ekr.20141103061944.72">I have been using a Scintilla widget in Leo's body pane today. It has been
 the best incentive to improve it.
 
@@ -24827,7 +24040,8 @@ is easy,
 
    m[m[5]] = 7
 
-is not.</t>
+is not.
+</t>
 <t tx="ekr.20141103061944.76">https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
 
 https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
@@ -25084,7 +24298,8 @@ used to tag (or search for) nodes with tags containing the special
 search characters, `&amp;|-^`.  The UI also cannot search for tags of
 zero-length, and it automatically removes surrounding whitespace
 (calling .strip()).
-----</t>
+----
+</t>
 <t tx="ekr.20141103061944.78">Rev 691b8ca... activates the all-Python replacement for the QSyntaxHighlighter class.
 
 python_qsh = True at the start of leoColorizer.py.
@@ -25182,7 +24397,8 @@ for p in c.all_unique_positions():
             else:
                 i += len(pattern)
     if found and replace:
-        p.b = s</t>
+        p.b = s
+</t>
 <t tx="ekr.20141103061944.84"></t>
 <t tx="ekr.20141103061944.85">The effect of the new leoSettings.leo is that:
 
@@ -25231,7 +24447,8 @@ P.S. Terry, the new code just looks for @qt-gui-plugin-style-sheet and
 The present code doesn't deal with themes, although there is some commented
 out that hints about what might be done.
 
-Imo, it's time to simplify how themes get specified, but we'll have to discuss this...</t>
+Imo, it's time to simplify how themes get specified, but we'll have to discuss this...
+</t>
 <t tx="ekr.20141103061944.86">How did we ever live without this?
 
 @data nodes, like @data qt-gui-plugin-style-sheet may now be composed of
@@ -25258,7 +24475,8 @@ Two fine points about the concatenation of data:
 
 2. The @data parser adds a newline to every "fragment" if necessary. This
    doesn't seem to matter for style sheets, but it could matter for other
-   kinds of @data data.</t>
+   kinds of @data data.
+</t>
 <t tx="ekr.20141103061944.87">The grand changeover to fully-parameterized style-sheets.
 
 Almost all settings in @data qt-gui-plugin-style-sheet in leoSettings.leo
@@ -25312,7 +24530,8 @@ small test file.
 It's cool to see the logic in reload_styles. For instance, it allows at
 least some stylesheets to be composed from their descendants. If it hasn't
 already been done, it will be done for @data @data
-qt-gui-plugin-style-sheet: it will make it much more Leonine.</t>
+qt-gui-plugin-style-sheet: it will make it much more Leonine.
+</t>
 <t tx="ekr.20141103061944.88">QQQ
 An important reorg and simplification of style-sheet-related code.  It should be safe.  All tests pass.
 - Moved all border-related code to the attic.
@@ -25407,6 +24626,86 @@ This appears to have been fixed at some time in the past, possibly as the result
 <t tx="ekr.20141103061944.98"></t>
 <t tx="ekr.20141103061944.99">Fixed a bug that caused Leo to exit during startup when
 --python given on the command line but IPython is not installed.
+</t>
+<t tx="ekr.20141103113220.12">Created g.run_pylint so pylint can run unmodified. This runs pylint (with
+optional Sherlock tracing) in a separate process, thereby allowing Leo to
+run pylint unchanged.
+
+What I did:
+
+1. pylint-leo.py: run now runs the following command in a separate process::
+
+    &lt;python&gt; -c "import leo.core.leoGlobals as g; g.run_pylint(&lt;args&gt;)"
+    
+2. g.run_pylint uses Sherlock tracing if requested.
+
+    
+</t>
+<t tx="ekr.20141103113220.13">
+The user can lose tail text if they start typing before the body text completely loads!
+
+- Added c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars')
+
+- The "dummy" body text now contains a warning to wait until the text fully loads.
+
+</t>
+<t tx="ekr.20141103113220.14"></t>
+<t tx="ekr.20141103113220.17"></t>
+<t tx="ekr.20141103113220.18"></t>
+<t tx="ekr.20141103113220.19">Added the following commands:
+    
+disable-idle-time-tracing
+enable-idle-time-tracing
+toggle-idle-time-tracing
+disable-idle-time-events
+enable-idle-time-events
+toggle-idle-time-events
+</t>
+<t tx="ekr.20141103113220.20"></t>
+<t tx="ekr.20141103113220.5"></t>
+<t tx="ekr.20141103113220.7"></t>
+<t tx="ekr.20141103113220.9">How can I create a node with the "template" and then clone it everywhere it
+should be written, and then providing the parameters to be used in this
+writing.
+
+Leo's abbreviation system is already quite advanced when it comes to
+filling in skeletons of common code layouts. I type
+
+  def;;
+
+and I get
+
+  def foo(this, that=3D3):
+      """foo - Return
+ 
+      :Parameters:
+      - `this`: describe this
+      - `that`: &lt;|describe that|&gt;
+      """
+ 
+      &lt;|code|&gt;
+
+Two "parameters" are interactively requested, the function name, and
+the list of arguments.  The node name is presented as the default for
+the function name, and 'self' is included in the list of arguments, so,
+assuming the node was already called 'foo', all I type is this, that=3D3.
+The layout above is the rst form of the epydoc/sphinx docstring with
+formally identified parameters.
+
+The cursor is positioned after Return, where the was an empty &lt;||&gt;
+placeholder. Pressing ,, selects the next placeholder so that typing
+replaces it.
+
+There's more, see
+https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
+
+and the screencast linked from there
+http://www.greygreen.org/tmp/leoabbrev.ogv
+
+Other people, Jacob etc. I think, have been talking about templates where
+the input parameters are stored in the outline, allowing for some of them
+to be altered and the template generation step re-run. More like generating
+a website from data etc.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

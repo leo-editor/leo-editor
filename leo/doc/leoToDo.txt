@@ -68,10 +68,10 @@ ReplaceAll will not replace newlines indicated as \n in target string
 .. @+node:ekr.20141030042423.5: *5* Fix bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
 https://bugs.launchpad.net/leo-editor/+bug/1240786
 Corner case bug in tab-cycle-next and tab-cycle-previous
-.. @+node:ekr.20141030042423.6: *5* Fix bug 1258302: Window, Toggle Split Direction Error 
+.. @+node:ekr.20141030042423.6: *5* Fix bug 1258302: Window, Toggle Split Direction Error
 https://bugs.launchpad.net/leo-editor/+bug/1258302
 Window, Toggle Split Direction Error
-.. @+node:ekr.20141030042423.7: *5* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display 
+.. @+node:ekr.20141030042423.7: *5* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 .. @+node:ekr.20141103061944.46: *4* 3 Other problems
@@ -1287,6 +1287,64 @@ On the minus side:
 - This scheme is only useful when multiple Leonine programmers work in a
   non-Leonine project. Solo Leonine programmers in a non-Leonine project
   may as well use @shadow or @auto.
+.. @+node:ekr.20141103113220.10: *4* Parameterized template nodes
+From: Alexandre_Toledo <jalexandretoledo@gmail.com>
+
+As I use Leo to write PL/SQL code, I need to write similar text several
+times, changing only small parts of it. It would be great if I could create
+a node with the "template" and then clone it everywhere it should be
+written, and then providing the parameters to be used in this writing.
+
+Let me try to clarify it. I'd like to create a tree like this:
+
+    +- @file something.sql
+       +- Section 1
+          + << Clone >> with Parameters A, B
+       +- Section 2
+          + << Clone >> with Parameters C, D
+
+In this tree, both "Clone" nodes would be generated from a template
+specified somewhere in the tree, and would have parts of its text replaced
+with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
+
+I've searched but couldn't find anything like this, then I've thought of
+trying to write a hook to intercept the "save" command, but couldn't think
+of a way to pass the parameters; I think the obvious way would be to put
+the parameters after the "<< >>", but then all cloned nodes are changed, so
+it wouldn't work.
+
+Another alternative would be creating some kind of directive @something,
+but I have no idea of how to do that.
+
+Any ideas?
+.. @+node:ekr.20141103113220.11: *5* OP: Re: Parameterized template nodes
+I've tried it and it's great, I think it will be useful, but it's not what
+I was thinking of...
+
+Let me try to explain what I had thought about.  What I would like to do is:
+
+ 1. create a new .leo file
+ 2. add a "template" node (eventually with sub nodes) with some ${schema}
+    and ${table} macro place holders in its contents
+ 3. add a @file node to the .leo file
+ 4. add to this @file node a new one with definitions such as
+    schema=3DSCHEMA_NAME and table=3DTABLE_NAME
+ 5. add as a sub node to this last one a clone from the "template" node;
+ 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
+    "TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
+    template node.
+
+It would be important that, when I reopen the .leo file later, the macros
+in the @file node where shown as ${schema} and ${table}, and not as it's
+substituted text.
+
+Now that I've described it, I can't see how it would be done... The
+${macro} place holders should be on the contents of the @file node, so
+after substitution, how could we recover it?
+
+That's also why the code from Jacob is not what I need (but I'm already
+thinking of other uses for it :) ): it will create a text when the button
+is pressed, but the generated nodes will be just static text.
 .. @+node:ekr.20140730175636.17982: *3* * Vim to-do
 @language rest
 
