@@ -1546,8 +1546,268 @@ sheet and an example from the rst3 tutorial.
 Allow colorizing for languages to be delegated to another language.
 
 - Added g.app.delegate_language_dict, with three entries for David McNab.
+
 - jEditColorizer.nameToRuleSetName now replaces the original language name
   with the delegated name.
+  
+There are two other changes you must make if you don't want
+to use @language, as in your example with @nosent trees.
+
+1. To write the proper delims for .hbs files, add the
+   following entry in define_language_delims_dict in
+   leoApp.py::
+
+    "hbs" : "<!-- -->", # McNab: delegate to html.
+
+2. To automatically use @language hbs in .hbs files, add the
+   following entry in define_extension_dict in leoApp.py:
+.. @+node:ekr.20141102053406.3: *4* New wikiview plugin
+Hides text in the body editor, each time a new node is selected. Makes::
+
+  file://#some-->headlines-->mynode     appear as mynode,
+  http://www.google.com/search          appear as search, and
+  `Python <https://www.python.org/>`_   appear as Python
+  
+There is a tiny dot to the left or right of the visible
+text. Clicking that area, or clicking and dragging, or
+clicking and using shift arrows *through* that area exposes
+the hidden text.
+
+full docs:
+https://raw.githubusercontent.com/leo-editor/leo-editor/master/leo/plugins/wikiview.py
+
+This plugin only addresses the visual aspects of wiki links.  Leo
+already supports internal wikilinks as
+file://#headline-->other%20headline-->Setup, which will now appear as
+just 'Setup' with this pluing active.
+
+
+.. @+node:ekr.20141102053406.4: *3* To be documented
+@language rest
+.. @+node:ekr.20141102053406.5: *4* Reloading visual settings
+The effect of the new leoSettings.leo is that:
+
+1. All parts of @data qt-gui-plugin-style-sheet can, in effect, be modified
+   "from afar" using traditional Leo settings like @color, @font etc.
+
+2. There is no great need for different versions of the settings that
+   differ only in font size. Changing just a few font-related settings will
+   suffice to make most of Leo usable for newbies, and everyone else.
+
+The last piece of the puzzle is the style-reload command. This command must
+be rewritten. The style-reload command must first re-read *all* settings
+files, as is done at startup. That is the only way to recompute all
+settings from leoSettings.leo, myLeoSettings.leo and the "local" .leo file.
+Just a few calls to g.app.loadManager methods should suffice.
+
+Once all settings have been updated, ssm.reload_style_sheet will call
+ssm.get_last_style_sheet to "compose" the style sheet, and then call
+w.setStyleSheet(sheet), where w is the top-level (master) widget.
+
+-----
+
+The first version of this command now works at rev dcac481.
+
+Suppose you have the following @button node:
+
+    @button reload-styles
+    c.k.simulateCommand('style-reload')
+
+And suppose you have the following setting in your local @setting tree::
+
+    @string font-size = 12pt
+
+Change the setting to 10pt (or 14pt), click the button, and see what happens :-)
+
+Edward
+
+P.S. Terry, the new code just looks for @qt-gui-plugin-style-sheet and
+@data qt-gui-plugin-style-sheet by calling
+
+    c.config.getData('qt-gui-plugin-style-sheet') and
+    c.config.getData('qt-gui-user-style-sheet')
+
+(with appropriate args so leading #'s are not treated as comments!)
+
+The present code doesn't deal with themes, although there is some commented
+out that hints about what might be done.
+
+Imo, it's time to simplify how themes get specified, but we'll have to discuss this...
+.. @+node:ekr.20141102053406.6: *4* Added Yes To All and No To All buttons to dialogs
+Added YesToAll and NoToAll capability to g.app.gui.runAskYesNoDialog
+and uses this in the open file again? questions when opening Leo after a
+crash.
+.. @+node:ekr.20141102053406.7: *4* Fully parameterized settings
+The grand changeover to fully-parameterized style-sheets.
+
+Almost all settings in @data qt-gui-plugin-style-sheet in leoSettings.leo
+are now defined in terms of @values. Traditional Leo settings nodes
+(@strings, @color, @font, etc.) define these @values.
+
+Important: Almost all existing Leo users are going to have to adjust
+settings. This can't be helped and I apologize in advance.
+
+The place to start is with the node called "Basic Fonts (change these
+first)" This should be enough to get things looking pretty good for you.
+
+Notes:
+
+1. To repeat, There is now a node called "Basic Fonts (change these first)"
+   This node contains the basic font definitions. Changing only the
+   settings in this tree (in myLeoSettings.leo, of course) should be enough
+   to get Leo looking pretty much as it was.
+
+2. Don't even *think* about changing @data qt-gui-plugin-style-sheet.
+   Really, the whole point of this exercise is to be able to change all
+   aspects of Leo's appearance without touching this stylesheet. As Terry
+   points out, there will always be a place for @data qt-gui-user-style-sheet
+
+3. In an emergency, there is at present a node called "OLD
+   qt-gui-plugin-style-sheet" that you could use to revert to the old
+   settings. Just rename it and copy it to your myLeoSettings.leo.
+
+
+The new settings scheme will make life a *lot* easier for newbies. They
+should be able to make most customizations without changing @data
+qt-gui-plugin-style-sheet in any way.
+
+-----
+
+Present status:
+
+1. Added reload-styles button in leoSettings.leo: it just does:
+   c.k.simulateCommand('style-reload')
+
+2. The button reported: "WARNING: styles in use do not match applied
+   styles" and then changed the styles.
+
+So I reloaded and began studying the style-reload command in
+qt_commands.py. This was the missing piece of the puzzle for me.
+
+For testing, I've added a "safe" switch so that settings don't really get
+changed. Not strictly necessary: I could always do the reload-styles from a
+small test file.
+
+It's cool to see the logic in reload_styles. For instance, it allows at
+least some stylesheets to be composed from their descendants. If it hasn't
+already been done, it will be done for @data @data
+qt-gui-plugin-style-sheet: it will make it much more Leonine.
+.. @+node:ekr.20141103061944.1: *5* Code changes
+QQQ
+An important reorg and simplification of style-sheet-related code.  It should be safe.  All tests pass.
+- Moved all border-related code to the attic.
+  Contrary to comments, this code was being called, but it is not needed now that the style sheets specify border style.
+  Gui classes no longer contain add_border and remove_border methods.
+  As a result, the eventFilter method has fewer odious special cases.
+- Added c.styleSheetManager ivar.
+  Code in the qt plugins can assume that this ivar exists.  All other code must use hasattr to test whether it exists.
+- Moved all stylesheet-related wrappers from LeoQtGui class to the attic.
+  Instead of these wrappers, code calls the corresponding c.styleSheetManager class.  less cruft and indirection.
+- Removed the call that sets the default color of a nested_splitter to "green".  This was quite confusing during testing ;-)
+
+Leo build: 20140915192124
+QQQ
+
+Notes:
+
+1.The repackaging came about because I couldn't stand having
+   g.expand_css_constants. It's now gone, although the checkin log omits
+   mention of this fact.
+
+2. It was surprisingly difficult to find the right way to access the SSM
+   class. There must be one such class per commander. In the end, the code
+   is simple enough because Qt-related code can assume that
+   c.styleSheetManager exists without using hasattr.
+
+3. Eliminating all border-related code eliminates a major confusion. You
+   could call it the most important part of this rev.
+
+4. I took the liberty of removing the code that sets the default background
+   color of splitters to green. I can understand why you did it, but oh my,
+   it confused the heck out of me in the last day or so ;-) Imo, better to
+   leave if for the style sheets.
+
+5. A clone-find-all for .setStyleSheet now contains no big surprises, so it
+   looks like we are, at last, ready to convert to fully parametrized style
+   sheets...
+.. @+node:ekr.20141103061944.2: *5* More notes
+To continue the status report, I have successfully transitioned to the new,
+fully parameterized style sheet. However, I dare not push it just yet.
+Considerable cleanup, and resulting debugging, is still to come. Some
+notes:
+
+- The new settings scheme will moot the need for leo10pt.leo, leo12pt.leo
+  and all the rest. Instead, all font sizes are now defined in terms of
+  three intermediate settings: @string font-size, @string medium-font-size
+  and @string small-font-size. Changing just these three settings will
+  suffice to change *all* the font sizes used in Leo.
+
+- Most users, and certainly all newbies, will never have to touch, or even
+  look at, @data qt-gui-plugin-style-sheet. This is a really good thing,
+  because the slightest syntax error silently messes up everything that
+  follows.
+
+- When things don't look right, I execute this script::
+
+    c.styleSheetManager.print_style_sheet()
+
+This prints the complete stylesheet to the console. What I mainly look for
+are lines like::
+
+    background-color: @some-setting
+
+An @value as the value of a setting indicates that no substitution took
+place, that is, that there is no node::
+
+    @string some-setting = aValue
+
+Any user that wants to roll their own @data node will want to be aware of
+this technique.
+
+5. Overriding setting using @data qt-gui-**user**-style-sheet.
+
+Using this additional style sheet probably should be deprecated. Indeed,
+@data qt-gui-**plugin**-style-sheet now takes care to define almost
+everything that any user would want to define. That being so,
+myLeoSettings.leo should contain overrides of only the @color and @string
+nodes in leoSettings.leo. There should be no need to use @data
+qt-gui-**user**-style-sheet unless one wants to do something very unusual.
+.. @+node:ekr.20141103061944.3: *4* @data nodes can now be composed from a tree of nodes!
+How did we ever live without this?
+
+@data nodes, like @data qt-gui-plugin-style-sheet may now be composed of
+the body text of the @data node itself, concatenated to the body text of
+all its descendants, in outline order.
+
+For example, @data qt-gui-plugin-style-sheet node consists of some general
+comments, with descendant nodes for the body pane, tree pane, etc. etc.
+There is no limit of nesting: the Plugins node has a child for each plugin
+that uses style sheets.
+
+Not only does this new arrangement make it far easier to find the style
+sheet of interest, it makes debugging style sheets easier. Typically, an
+error in any part of the style sheet invalidates the whole style sheet.
+With the new organization, one can swap nodes into or out of the @data node
+to find the invalid node or nodes.
+
+Two fine points about the concatenation of data:
+
+1. Descendant nodes whose headlines start with '@' do not become part of
+   the data. At present, no @data nodes have descendants, but this
+   convention does something reasonable if nodes like @int or @string were
+   descendants of an @data node.
+
+2. The @data parser adds a newline to every "fragment" if necessary. This
+   doesn't seem to matter for style sheets, but it could matter for other
+   kinds of @data data.
+.. @+node:ekr.20141103061944.4: *4* Leo now uses a new xml namespace
+For several years the xml namespace line at the start of .leo files has been::
+
+    <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+
+The new line is::
+
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

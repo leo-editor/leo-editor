@@ -54,6 +54,8 @@ Window, Toggle Split Direction Error
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 .. @+node:ekr.20141024211256.8: *3* Docs for a1
+@language rest
+
 *** Transfer email items: 31 to-be-documented items.
 
 - Add docstrings for all commands in leoSessions.py.
@@ -61,9 +63,6 @@ Plugin Menu - Keystroke binding can prevent plugin help display
 - Add bigdash to listing of plugins at http://leoeditor.com/plugins.html
 
 - Review all important plugins.
-
-- Document wikiview.py plugin.
-  https://groups.google.com/d/msg/leo-editor/bQT2U9QLaL0/0-mqT--TDSIJ
 .. @+node:ekr.20141024211256.13: *3* Testing for a1
 - Rerun Bob's test (make a unit test out of it??)
 - [Done?] Unit tests for indices.
