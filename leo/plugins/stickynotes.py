@@ -76,7 +76,7 @@ except ImportError:
     
 from leo.core.leoQt import isQt5,Qt
 if isQt5:
-    from PyQt5.QtCore import SIGNAL, QTimer # QSize, QVariant, 
+    from PyQt5.QtCore import QTimer # SIGNAL,QSize,QVariant, 
     try:
         from PyQt5.QtCore import QString
     except ImportError:
@@ -88,7 +88,7 @@ if isQt5:
         # QTextBlockFormat,QTextCursor,QTextListFormat,
     from PyQt5.QtWidgets import QLineEdit,QPlainTextEdit,QTextEdit
 else:
-    from PyQt4.QtCore import SIGNAL, QTimer # QSize, QVariant, 
+    from PyQt4.QtCore import QTimer # SIGNAL, QSize, QVariant, 
     try:
         from PyQt4.QtCore import QString
     except ImportError:
@@ -175,7 +175,8 @@ class SimpleRichText(QTextEdit):
         self.boldAct.setCheckable(True)
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
-        self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
+        self.boldAct.triggered.connect(self.setBold)
+        ### self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
@@ -186,7 +187,8 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setCheckable(True)
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
-        self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
+        self.italicAct.triggered.connect(self.setItalic)
+        ### self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
 
     def setBold(self):
@@ -299,11 +301,9 @@ def stickynoter_f(event):
     def textchanged_cb():
         nf.dirty = True
 
-    nf.connect(nf,
-        SIGNAL("textChanged()"),textchanged_cb)
-
+    nf.textChanged.connect(textchanged_cb)
+    ### nf.connect(nf,SIGNAL("textChanged()"),textchanged_cb)
     nf.show()
-
     g.app.stickynotes[p.gnx] = nf
 #@+node:tbrown.20100120100336.7829: ** g.command('stickynoteenc')
 if encOK:    
@@ -437,11 +437,9 @@ def mknote(c,p, parent=None):
         if p.v is v:
             c.selectPosition(c.p)
 
-
     def closeevent():
         pass
         # print "closeevent"
-
 
     nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
     nf.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
@@ -454,11 +452,9 @@ def mknote(c,p, parent=None):
     def textchanged_cb():
         nf.dirty = True
 
-    nf.connect(nf,
-        SIGNAL("textChanged()"),textchanged_cb)
-
+    nf.textChanged.connect(textchanged_cb)
+    ### nf.connect(nf,SIGNAL("textChanged()"),textchanged_cb)
     nf.show()
-
     g.app.stickynotes[p.gnx] = nf
     return nf
 #@+node:ville.20100704010850.5589: *3* def tabula_show
@@ -560,7 +556,6 @@ class Tabula(QMainWindow):
         event.accept() # EKR: doesn't help: we don't get the event.
 
     #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
-
     def create_actions(self):
 
         self.tb = self.addToolBar("toolbar")
@@ -603,22 +598,17 @@ class Tabula(QMainWindow):
             p.h = new
             w.setWindowTitle(new)
 
-
-
-
         self.tb.addAction("Tile", do_tile)
         self.tb.addAction("Cascade", do_cascade)
         self.tb.addAction("(Un)Tab", do_un_tab)
         self.tb.addAction("Go", do_go)
         self.tb.addAction("New", do_new)
         self.tb.addAction("Headline", do_edit_h)
-
         self.tb.addSeparator()
         self.tb.addAction("Close All", do_close_all)
-
         # ca = QAction("Close All", self.tb)
         # ca.setMenuRole(QAction.QuitRole)
-        # ca.connect(ca, SIGNAL("triggered()"), do_close_all)
+        # ca.triggered.connect(do_close_all)
         # self.tb.addAction(ca)
     #@+node:ekr.20101114061906.5440: *4* load_states
     def load_states(self):
