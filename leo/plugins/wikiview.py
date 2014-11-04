@@ -56,7 +56,7 @@ import re
 
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui,QtWidgets
 #@-<< imports >>
 
 #@+others
@@ -131,7 +131,7 @@ class WikiView:
         
         # size to restore text to when unhiding,
         # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
-        self.size = QtWidgets.QFontInfo(w.currentFont()).pointSize()
+        self.size = QtGui.QFontInfo(w.currentFont()).pointSize()
 
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
