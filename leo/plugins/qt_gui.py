@@ -441,7 +441,7 @@ class LeoQtGui(leoGui.LeoGui):
             filter_ = self.makeFilter(filetypes)
             obj = QtWidgets.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
             # Very bizarre: PyQt5 version can return a tuple!
-            s = obj[0] if instance(obj,(list,tuple)) else obj
+            s = obj[0] if isinstance(obj,(list,tuple)) else obj
             return g.u(s)
     #@+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog
     def runScrolledMessageDialog (self,
