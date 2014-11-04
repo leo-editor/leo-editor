@@ -258,7 +258,7 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = QtSvg and QtWebKitWidgets
+    ok = bool(QtSvg and QtWebKitWidgets)
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)
