@@ -324,7 +324,7 @@ class AtButtonCallback(object):
             g.app.scriptDict = {}
             args = self.controller.getArgs(p)
             # Note: use c.p, not p!
-            c.executeScript(args=args,p=c.p,script=script,silent=True)
+            c.executeScript(args=args,p=p,script=script,silent=True)
             # Remove the button if the script asks to be removed.
             if g.app.scriptDict.get('removeMe'):
                 g.es("Removing '%s' button at its request" % buttonText)
