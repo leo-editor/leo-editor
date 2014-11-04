@@ -295,7 +295,7 @@ class AtButtonCallback(object):
                 p = None
                 self.script = script
         if p or script:
-            self.controller.executeScriptFromButton(self.b,self.buttonText,gnx,p,script)
+            self.controller.executeScriptFromButton(self.b,self.buttonText,p,script)
             if self.c.exists:
                 self.c.outerUpdate()
         else:
@@ -1010,24 +1010,26 @@ class ScriptingController:
                 k.registerCommand(command,func=cb,
                     pane=pane,shortcut=None,verbose=trace)
     #@+node:ekr.20060328125248.28: *4* sc.executeScriptFromButton
-    def executeScriptFromButton (self,b,buttonText,gnx,p,script):
+    def executeScriptFromButton (self,b,buttonText,p,script):
         '''
-        Called from callbacks to execute the script in node p whose gnx is given.
-        This method is reference from qt_frame.py, so it must be a method of this class.
+        Called in various contexts to execute an @button script.
+        1. If p is given, use the script in p.b.
+        2. If script is given, use that.
+        3. Finally, search for the node whose gnx is given.
+        qt_frame.py call this method, so it must be a method of this class.
         '''
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
             return None
-        else:
-            g.app.scriptDict = {}
-            args = self.getArgs(p)
-            # Note: use c.p, not p!
-            c.executeScript(args=args,p=p,script=script,silent=True)
-            # Remove the button if the script asks to be removed.
-            if g.app.scriptDict.get('removeMe'):
-                g.es("Removing '%s' button at its request" % buttonText)
-                self.deleteButton(b)
+        g.app.scriptDict = {}
+        args = self.getArgs(p)
+        # Note: use c.p, not p!
+        c.executeScript(args=args,p=p,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
         # Do *not* set focus here: the script may have changed the focus.
             # c.bodyWantsFocus()
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText

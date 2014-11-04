@@ -2449,10 +2449,12 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     else:
                         def cb(checked, p=rc.position, button=button,
                                controller=controller):
+                            script = None
                             controller.executeScriptFromButton(
                                 button,
                                 p.h[8:].strip(),
-                                p.gnx
+                                p,
+                                script,
                             )
                             if controller.c.exists:
                                 controller.c.outerUpdate()
