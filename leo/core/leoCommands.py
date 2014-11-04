@@ -1799,7 +1799,7 @@ class Commands (object):
             if p.b.strip():
                 lines = g.splitLines(p.b)
                 aList.extend(lines)
-        root.b = root.b.rstrip() + '\n' + '\n'.join(aList) + '\n'
+        root.b = root.b.rstrip() + '\n' + ''.join(aList).rstrip() + '\n'
         u.afterChangeNodeContents(root,'flatten-outline-to-node',bunch)
     #@+node:ekr.20031218072017.2857: *6* c.outlineToCWEB
     def outlineToCWEB (self,event=None):
