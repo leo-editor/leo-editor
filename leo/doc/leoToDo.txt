@@ -9,7 +9,7 @@
 Clean leoPlugins.leo
 
 Testing:
-- Rerun Bob's test (make a unit test out of it??)
+- Rerun Bob's test
 - [Done?] Unit tests for node indices.
 .. @+node:ekr.20141103061944.45: *3* Mac: alt-x does not work in body pane
 @language rest
@@ -25,6 +25,8 @@ Steps to reproduce:
   body pane (every time you press it)
 - Move focus back to tree, press alt-x => minibuffer command entry works
   again
+.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
+@language rest
 .. @+node:ekr.20141020061642.21513: *3* Fix bug 66: errors inhibited read @auto foo.md
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
@@ -51,8 +53,6 @@ python --version
 assoc .py=Python.File
 ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
 QQQQQ
-.. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
-@language rest
 .. @+node:ekr.20141020061642.21517: *3* Improve page up/down commands
 [Simple script] Jump exactly one page with Page Down
 

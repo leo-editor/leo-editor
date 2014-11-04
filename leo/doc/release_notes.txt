@@ -22098,6 +22098,11 @@ Using Qt. First reported here:
 https://groups.google.com/forum/#!topic/leo-editor/hPwPG9OTC3U
 
 This no longer seems to be a problem.
+#@+node:ekr.20141104142429.5: *7* Investigated bug 1266269: Mac: alt-x does not work in body pane
+https://bugs.launchpad.net/leo-editor/+bug/1266269
+Mac: alt-x does not work in body pane
+
+No problem with a clean homebrew install on MacOS 10.9 Mavericks.
 #@+node:ekr.20141103061944.165: *7* Investigated bug 1268970: Leo does not remember window maximized state
 https://bugs.launchpad.net/leo-editor/+bug/1268970
 

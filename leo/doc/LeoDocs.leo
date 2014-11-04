@@ -1224,6 +1224,7 @@
 <v t="ekr.20141103061944.161"><vh>Investigated bug  524890: Incomplete derived file</vh></v>
 <v t="ekr.20141103061944.166"><vh>Investigated bug 1177355: node-only wrapped search does not work in long nodes</vh></v>
 <v t="ekr.20141103061944.143"><vh>Investigated bug 1193820: Focus change on tree pane after saving current Leo file</vh></v>
+<v t="ekr.20141104142429.5"><vh>Investigated bug 1266269: Mac: alt-x does not work in body pane</vh></v>
 <v t="ekr.20141103061944.165"><vh>Investigated bug 1268970: Leo does not remember window maximized state</vh></v>
 <v t="ekr.20141103061944.181"><vh>Investigated bug 1282362: shadow file name collisions cause spontaneous clone creation</vh></v>
 <v t="ekr.20141103061944.140"><vh>Investigated bug 869098: Context menu settings lost if save as used</vh></v>
@@ -24595,6 +24596,11 @@ https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
 <t tx="ekr.20141104053638.8">https://github.com/leo-editor/leo-editor/issues/63
 </t>
 <t tx="ekr.20141104053638.9">https://github.com/leo-editor/leo-editor/issues/64
+</t>
+<t tx="ekr.20141104142429.5">https://bugs.launchpad.net/leo-editor/+bug/1266269
+Mac: alt-x does not work in body pane
+
+No problem with a clean homebrew install on MacOS 10.9 Mavericks.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
