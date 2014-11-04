@@ -266,7 +266,7 @@ class AtButtonCallback(object):
         self.buttonText = buttonText
         self.gnx = gnx
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo
-        junk_c,p,script = self.controller.find_gnx(gnx)
+        junk_c,p,junk_script = self.controller.find_gnx(gnx)
         self.script = None # Set only if the script is found in a closed settings file.
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
         # Minibuffer commands created by mod_scripting.py have no docstrings.
@@ -284,15 +284,17 @@ class AtButtonCallback(object):
         else:
             # First: try to find the script in open commanders:
             c2,p2,script = self.controller.find_gnx(gnx,findFlag=False)
-            if script:
+            if p2: # 2014/11/04: test p2, not script.
                 # Found: do *not set self.script: this enables dynamically changing scripts.
+                # The script *must* be cleared here.
                 p = p2
+                script = None
             else:
                 # Set script if it is found in any settings file.
                 junk_c,junk_p,script = self.controller.find_gnx(gnx,findFlag=True)
                 p = None
                 self.script = script
-        if script:
+        if p or script:
             self.executeScriptFromButton(self.b,self.buttonText,gnx,p,script)
             if self.c.exists:
                 self.c.outerUpdate()
@@ -635,7 +637,7 @@ class ScriptingController:
         c = self.c
         # Look at the open commanders only if we aren't looking in unopened settings files.
         if not findFlag:
-            # First, look in se
+            # First, look in selected commander.
             for p in c.all_positions():
                 if p.gnx == gnx:
                     if trace: g.trace('found',p.h,'in',c.shortFileName())
@@ -648,18 +650,13 @@ class ScriptingController:
                             if trace: g.trace('found',p.h,'in',c2.shortFileName())
                             return c2,p,p.b
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
-        if not findFlag and not openFlag:
-            return None,None,None
-        c2 = c.openMyLeoSettings()
-        if c2:
-            p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
-            if script:
-                return c2,p2,script
-        c2 = c.openLeoSettings()
-        if c2:
-            p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
-            if script:
-                return c2,p2,script
+        if findFlag or openFlag:
+            for f in (c.openMyLeoSettings,c.openLeoSettings):
+                c2 = f()
+                if c2:
+                    p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
+                    if p2 or script:
+                        return c2,p2,script
         return None,None,None
     #@+node:ekr.20141101052758.8: *5* sc.find_gnx_helper
     def find_gnx_helper(self,c,gnx,openFlag,trace):
@@ -671,10 +668,11 @@ class ScriptingController:
             if p.gnx == gnx:
                 if trace: g.trace('found',p.h,'in',c.shortFileName())
                 if openFlag:
-                    return p,p.b
+                    return p,None
                 else:
                     c.close()
-                    return None,p.b
+                    script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                    return None,script
         # Not found: always close the commander.
         c.close()
         return None,None
