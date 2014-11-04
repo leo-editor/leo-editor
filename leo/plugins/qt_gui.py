@@ -508,34 +508,36 @@ class LeoQtGui(leoGui.LeoGui):
 
     def onDeactivateEvent (self,event,c,obj,tag):
         '''Gracefully deactivate the Leo window.'''
-        trace = False and not g.unitTesting
-        # This is called several times for each window activation.
-        if c.exists and not self.deactivated_name:
-            self.deactivated_name = self.widget_name(self.get_focus())
-            self.active = False
-            if trace: g.trace(self.deactivated_name)
-            c.k.keyboardQuit(setFocus=False)
-                # The best way to retain as much focus as possible.
-            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+        if 0:
+            trace = False and not g.unitTesting
+            # This is called several times for each window activation.
+            if c.exists and not self.deactivated_name:
+                self.deactivated_name = self.widget_name(self.get_focus())
+                self.active = False
+                if trace: g.trace(self.deactivated_name)
+                c.k.keyboardQuit(setFocus=False)
+                    # The best way to retain as much focus as possible.
+                g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent (self,event,c,obj,tag):
         '''Restore the focus when the Leo window is activated.'''
         # This is called several times for each window activation.
-        trace = False and not g.unitTesting
-        if c.exists and self.deactivated_name:
-            self.active = True
-            w_name = self.deactivated_name
-            self.deactivated_name = None
-            if trace: g.trace(w_name)
-            if c.p.v:
-                c.p.v.restoreCursorAndScroll()
-            if w_name.startswith('tree') or w_name.startswith('head'):
-                c.treeWantsFocusNow()
-            else:
-                c.bodyWantsFocusNow()
-            g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+        if 0:
+            trace = False and not g.unitTesting
+            if c.exists and self.deactivated_name:
+                self.active = True
+                w_name = self.deactivated_name
+                self.deactivated_name = None
+                if trace: g.trace(w_name)
+                if c.p.v:
+                    c.p.v.restoreCursorAndScroll()
+                if w_name.startswith('tree') or w_name.startswith('head'):
+                    c.treeWantsFocusNow()
+                else:
+                    c.bodyWantsFocusNow()
+                g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20130921043420.21175: *4* LeoQtGui.setFilter
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
