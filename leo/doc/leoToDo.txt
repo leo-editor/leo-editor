@@ -6,11 +6,8 @@
 .. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
 @language rest
 
-Clean leoPlugins.leo
-
-Testing:
-- Rerun Bob's test
-- [Done?] Unit tests for node indices.
+- Redo all docs.
+- Fix two plugins items.
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 .. @+node:ekr.20141020061642.21513: *3* Fix bug 66: errors inhibited read @auto foo.md

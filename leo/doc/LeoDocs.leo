@@ -1291,6 +1291,7 @@
 <v t="ekr.20141103061944.123"><vh>Reported QTextEdit bug</vh></v>
 <v t="ekr.20141103061944.128"><vh>Set the default syntax color for operators to black</vh></v>
 <v t="ekr.20141103061944.130"><vh>Suppressed duplicate console messages</vh></v>
+<v t="ekr.20141104143314.1"><vh>Worked around a strange PyQt5 bug in LeoQtGui.runSaveFileDialog</vh></v>
 </v>
 </v>
 <v t="ekr.20141103061944.182"><vh>Code</vh>
@@ -24602,6 +24603,8 @@ Mac: alt-x does not work in body pane
 
 No problem with a clean homebrew install on MacOS 10.9 Mavericks.
 </t>
+<t tx="ekr.20141104143314.1">For some strange reason, the PyQt5 version of LeoQtGui.runSaveFileDialog
+returns a tuple instead of a string!</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
