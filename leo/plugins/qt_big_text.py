@@ -2,7 +2,7 @@
 #@+node:ekr.20140919181357.24956: * @file ../plugins/qt_big_text.py
 """Leo aware Qt Dialog for delaying loading of big text"""
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtGui
+from leo.core.leoQt import QtWidgets
 import leo.plugins.qt_text as qt_text
 
 #@+others
@@ -50,10 +50,10 @@ class BigTextController:
         self.active_flag = True
         warning = self.warning_message()
         self.old_w.setPlainText(self.p.b) # essential.
-        self.w = w = QtGui.QWidget() # No parent needed.
-        layout = QtGui.QVBoxLayout() # No parent needed.
+        self.w = w = QtWidgets.QWidget() # No parent needed.
+        layout = QtWidgets.QVBoxLayout() # No parent needed.
         w.setLayout(layout)
-        w.text = tw = QtGui.QTextBrowser()
+        w.text = tw = QtWidgets.QTextBrowser()
         tw.setText(warning)
         tw.setObjectName('bigtextwarning')
         self.widgets['bigtextwarning'] = tw
@@ -67,13 +67,13 @@ class BigTextController:
         if self.s.startswith('@killcolor'):
             del table[1]
         for key,label,func in table:
-            self.widgets[key] = button = QtGui.QPushButton(label)
+            self.widgets[key] = button = QtWidgets.QPushButton(label)
             layout.addWidget(button)
             def button_callback(checked,func=func):
                 func()
             button.clicked.connect(button_callback)
-        # layout.addItem(QtGui.QSpacerItem(
-            # 10, 10, vPolicy=QtGui.QSizePolicy.Expanding))
+        # layout.addItem(QtWidgets.QSpacerItem(
+            # 10, 10, vPolicy=QtWidgets.QSizePolicy.Expanding))
         self.layout.addWidget(w)
         w.show()
     #@+node:tbrown.20140919120654.24040: *3* btc.copy
