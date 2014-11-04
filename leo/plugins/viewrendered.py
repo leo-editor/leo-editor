@@ -227,7 +227,6 @@ except ImportError:
 import os
 if trace:
     print('===== viewrendered.py: got_markdown: %s' % got_markdown)
-    
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
@@ -259,10 +258,11 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    ok = QtSvg and QtWebKitWidgets
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)
-    return True
+    return ok
 #@+node:ekr.20110317024548.14376: *3* onCreate
 def onCreate(tag, keys):
     
