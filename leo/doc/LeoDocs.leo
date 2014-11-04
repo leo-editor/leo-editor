@@ -1115,11 +1115,11 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
-expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141103061944.235"><vh>** To do</vh>
+<v t="ekr.20141104053638.11"><vh>** Create what's new section</vh></v>
 <v t="ekr.20140810085801.18216"></v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
 <v t="ekr.20140810085801.18230"></v>
@@ -1200,8 +1200,8 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20141103061944.94"><vh>Bugs fixed (70+)</vh>
 <v t="ekr.20141103061944.240"><vh>Fixed 15 github bugs</vh>
-<v t="ekr.20141103061944.142"><vh>Fixed big-text bugs: #28, #63, #64</vh></v>
 <v t="ekr.20141103061944.152"><vh>Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node</vh></v>
+<v t="ekr.20141104053638.7"><vh>Fixed bug 28: Leo hangs when a node with too large body is selected</vh></v>
 <v t="ekr.20141103061944.139"><vh>Fixed bug 31: 'undo' on a freshly-loaded outline</vh></v>
 <v t="ekr.20141103061944.138"><vh>Fixed bug 35: leoBridge sometimes assigns the same GNX to two distinct vnodes</vh></v>
 <v t="ekr.20141103061944.153"><vh>Fixed bug 36: @auto file not found produces a script error</vh></v>
@@ -1209,31 +1209,14 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20141103061944.157"><vh>Fixed bug 59: drag and drop: target too small</vh></v>
 <v t="ekr.20141103061944.158"><vh>Fixed bug 60: create relative paths &amp; urls when dragging files to Leo</vh></v>
 <v t="ekr.20141103061944.135"><vh>Fixed bug 61: errors inhibited read @auto foo.md.</vh></v>
+<v t="ekr.20141104053638.8"><vh>Fixed bug 63: refresh-from-disk does not clear big text load delay UI</vh></v>
+<v t="ekr.20141104053638.9"><vh>Fixed bug 64: https://github.com/leo-editor/leo-editor/issues/64</vh></v>
 <v t="ekr.20141103061944.177"><vh>Fixed bug 74: problems with @button if defined in myLeoSettings.leo</vh></v>
 <v t="ekr.20141103061944.147"><vh>Fixed bug 75: write-opml-file always produces an empty file</vh></v>
 <v t="ekr.20141103061944.148"><vh>Fixed bug 76: erroneous clone markers in @auto trees</vh></v>
 <v t="ekr.20141103061944.179"><vh>Fixed bug 78: F3 find-next target not always highlighted</vh></v>
 </v>
-<v t="ekr.20141103061944.236"><vh>Fixed 19 Launchpad bugs</vh>
-<v t="ekr.20141103061944.169"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
-<v t="ekr.20141103061944.102"><vh>Fixed bug 1041906: underlying C/C++ object has been deleted</vh></v>
-<v t="ekr.20141103061944.103"><vh>Fixed bug 1090950: refresh from disk - cut node resurrection</vh></v>
-<v t="ekr.20141103061944.160"><vh>Fixed bug 1185933: insert-headline-time should insert at cursor</vh></v>
-<v t="ekr.20141103061944.105"><vh>Fixed bug 1228312: Find tab selected in log pane disables Minibuffer</vh></v>
-<v t="ekr.20141103061944.106"><vh>Fixed bug 1228458: Inconsistency between Find-forward and Find-backward</vh></v>
-<v t="ekr.20141103061944.162"><vh>Fixed bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented</vh></v>
-<v t="ekr.20141103061944.163"><vh>Fixed bug 1244461: Numpad 'Enter' key does not work in minibuffer</vh></v>
-<v t="ekr.20141103061944.146"><vh>Fixed bug 1245535: API allows headlines to contain newlines</vh></v>
-<v t="ekr.20141103061944.150"><vh>Fixed bug 1245616: Autocomplete ? function...does not work</vh></v>
-<v t="ekr.20141103061944.167"><vh>Fixed bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings</vh></v>
-<v t="ekr.20141103061944.107"><vh>Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible</vh></v>
-<v t="ekr.20141103061944.144"><vh>Fixed bug 1258373: failed find focus fails</vh></v>
-<v t="ekr.20141103061944.108"><vh>Fixed bug 1260415: exception writing external files" is insufficient</vh></v>
-<v t="ekr.20141103061944.109"><vh>Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter </vh></v>
-<v t="ekr.20141103061944.164"><vh>Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input</vh></v>
-<v t="ekr.20141103061944.170"><vh>Fixed bug 613153: unable to describe root directory on thumb drive</vh></v>
-<v t="ekr.20141103061944.159"><vh>Fixed bug 735938: file association crash</vh></v>
-<v t="ekr.20141103061944.176"><vh>Fixed bug 969391: setup.py confuses newbies</vh></v>
+<v t="ekr.20141103061944.236"><vh>Fixed 20+ Launchpad bugs</vh>
 <v t="ekr.20141103113220.20"><vh>Cleared/investigated bugs</vh>
 <v t="ekr.20141103061944.95"><vh>Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed</vh></v>
 <v t="ekr.20141103061944.96"><vh>Cleared bug 1228713: Find-backward skips headlines under some conditions</vh></v>
@@ -1251,6 +1234,27 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20141103061944.175"><vh>(wont't do) LeoSetup does not run without human intervention</vh></v>
 </v>
 </v>
+<v t="ekr.20141103061944.169"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
+<v t="ekr.20141103061944.102"><vh>Fixed bug 1041906: underlying C/C++ object has been deleted</vh></v>
+<v t="ekr.20141103061944.103"><vh>Fixed bug 1090950: refresh from disk - cut node resurrection</vh></v>
+<v t="ekr.20141103061944.160"><vh>Fixed bug 1185933: insert-headline-time should insert at cursor</vh></v>
+<v t="ekr.20141103061944.105"><vh>Fixed bug 1228312: Find tab selected in log pane disables Minibuffer</vh></v>
+<v t="ekr.20141103061944.113"><vh>Fixed bug 1228452: related to the radio buttons in the Find pane</vh></v>
+<v t="ekr.20141103061944.106"><vh>Fixed bug 1228458: Inconsistency between Find-forward and Find-backward</vh></v>
+<v t="ekr.20141103061944.162"><vh>Fixed bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented</vh></v>
+<v t="ekr.20141103061944.163"><vh>Fixed bug 1244461: Numpad 'Enter' key does not work in minibuffer</vh></v>
+<v t="ekr.20141103061944.146"><vh>Fixed bug 1245535: API allows headlines to contain newlines</vh></v>
+<v t="ekr.20141103061944.150"><vh>Fixed bug 1245616: Autocomplete ? function...does not work</vh></v>
+<v t="ekr.20141103061944.167"><vh>Fixed bug 1251252: Minibuffer commands created by mod_scripting.py have no docstrings</vh></v>
+<v t="ekr.20141103061944.107"><vh>Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible</vh></v>
+<v t="ekr.20141103061944.144"><vh>Fixed bug 1258373: failed find focus fails</vh></v>
+<v t="ekr.20141103061944.108"><vh>Fixed bug 1260415: exception writing external files" is insufficient</vh></v>
+<v t="ekr.20141103061944.109"><vh>Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter </vh></v>
+<v t="ekr.20141103061944.164"><vh>Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input</vh></v>
+<v t="ekr.20141103061944.121"><vh>Fixed bug 1276236: unicode problem in the log pane</vh></v>
+<v t="ekr.20141103061944.170"><vh>Fixed bug 613153: unable to describe root directory on thumb drive</vh></v>
+<v t="ekr.20141103061944.159"><vh>Fixed bug 735938: file association crash</vh></v>
+<v t="ekr.20141103061944.176"><vh>Fixed bug 969391: setup.py confuses newbies</vh></v>
 </v>
 <v t="ekr.20141103061944.237"><vh>Fixed 30+ other bugs</vh>
 <v t="ekr.20141103061944.137"><vh>eliminated "can not exedute commands from headlines"</vh></v>
@@ -1258,14 +1262,11 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20141103061944.99"><vh>Fixed a startup error involving --ipython</vh></v>
 <v t="ekr.20141103061944.100"><vh>Fixed annoyance: shift-ctrl-w leaves .leo file as dirty</vh></v>
 <v t="ekr.20141103061944.125"><vh>Fixed autocompleter bug</vh></v>
-<v t="ekr.20141103061944.101"><vh>Fixed autocompleter bug</vh></v>
 <v t="ekr.20141103061944.59"><vh>Fixed bug re the factor language</vh></v>
 <v t="ekr.20141103061944.110"><vh>Fixed bug: activate events now properly restore focus</vh></v>
 <v t="ekr.20141103061944.154"><vh>Fixed bug: Find-previous fails at last node</vh></v>
-<v t="ekr.20141103061944.133"><vh>Fixed bug: it's now possible to change big-text nodes</vh></v>
 <v t="ekr.20141103061944.111"><vh>Fixed clone-find-all command</vh></v>
 <v t="ekr.20141103061944.112"><vh>Fixed Crash deleting body editor</vh></v>
-<v t="ekr.20141103061944.113"><vh>Fixed doc bug 1228452: related to the radio buttons in the Find pane</vh></v>
 <v t="ekr.20141103061944.126"><vh>Fixed find bug</vh></v>
 <v t="ekr.20141103061944.114"><vh>Fixed important security hole in mod_scripting plugin</vh></v>
 <v t="ekr.20141103061944.115"><vh>Fixed leoGlobals bug (per Reinhard Engle)</vh></v>
@@ -1275,12 +1276,11 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20141103061944.131"><vh>Fixed QCompleter bug</vh></v>
 <v t="ekr.20141103061944.119"><vh>Fixed recent bug in change command</vh></v>
 <v t="ekr.20141103061944.129"><vh>Fixed recursive import bug</vh></v>
-<v t="ekr.20141103061944.120"><vh>Fixed serious c.deletePositionsInList bug</vh></v>
+<v t="ekr.20141103061944.120"><vh>Fixed serious bug in c.deletePositionsInList</vh></v>
 <v t="ekr.20141103061944.180"><vh>Fixed several crashers re no-to-all during startup</vh></v>
 <v t="ekr.20141103061944.155"><vh>Fixed suboutline only find bug</vh></v>
 <v t="ekr.20141103061944.124"><vh>Fixed tab cycling</vh></v>
 <v t="ekr.20141103061944.151"><vh>Fixed tab-completion problems</vh></v>
-<v t="ekr.20141103061944.121"><vh>Fixed unicode problem in the log pane</vh></v>
 <v t="ekr.20141103061944.127"><vh>Fixed unwanted scrolling in abbreviations</vh></v>
 <v t="ekr.20141103061944.122"><vh>Gave the Find Tab the intended amount of border</vh></v>
 <v t="ekr.20141103061944.132"><vh>Improved ctrl-o code</vh></v>
@@ -1345,6 +1345,7 @@ expanded="ekr.20141103061944.233,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20141103061944.70"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
 </v>
 <v t="ekr.20141103113220.14"><vh>Other features</vh>
+<v t="ekr.20141104053638.10"><vh>Added warning buttons when selecting large text</vh></v>
 <v t="ekr.20141103061944.72"><vh>Added some support for scintilla</vh></v>
 <v t="ekr.20141103061944.231"><vh>Added support for delegate languages</vh></v>
 </v>
@@ -21737,11 +21738,6 @@ at.saveOutlineIfPossible makes the following hacks unnecessary:
   that you must selected an unchanged @auto node directly in order to write
   it with the write-at-files-nodes command.
 </t>
-<t tx="ekr.20141103061944.101">The problem was in ic.createImporterData, not at.createWritesData.
-A trace in get_leo_namespace pinpointed the problem.
-
- 
-</t>
 <t tx="ekr.20141103061944.102">https://bugs.launchpad.net/leo-editor/+bug/1041906
 
 Changed LeoQtTree.closeEditorHelper as follows:
@@ -21785,55 +21781,15 @@ if 1:
 </t>
 <t tx="ekr.20141103061944.105">https://bugs.launchpad.net/leo-editor/+bug/1228312
 
-When the find tab is selected in the log pane, Alt-X complements the Regexp
-flag--instead of enabling use of the Minibuffer. It doesn't matter where
-focus is. Focus can be in the outline pane or body pane, Alt-X still just
-complements the Regexp flag.
-
-Fixed at rev 6351.
-
 This was the so-called "greedy checkbox bug".
 </t>
 <t tx="ekr.20141103061944.106">https://bugs.launchpad.net/leo-editor/+bug/1228458
-
-The fix was made to firstSearchPane:
-
-In a Leo-Editor file containing exactly one node, there is no way to search
-the headline.
-
-Suggested fix: Backward search should search the body and then the headline.
 </t>
 <t tx="ekr.20141103061944.107">https://bugs.launchpad.net/leo-editor/+bug/1254861
-
-The fix was to LeoQtLog.selectHelper.
 </t>
 <t tx="ekr.20141103061944.108">https://bugs.launchpad.net/leo-editor/+bug/1260415
-
-Added more informative error messages in at.writeAllAtFileNodesHelper.
-This is the direct response to the bug report.  A typical message::
-
-    Internal error writing one or more external files.
-    Please report this error to:
-    https://groups.google.com/forum/#!forum/leo-editor
-    All changes will be lost unless you
-    can save each changed file.
-    
-A much better fix: catch all exceptions in at.writeAll.
-A typical message::
-
-    Internal error writing: @&lt;file&gt; node
-    Please report this error to:
-    https://groups.google.com/forum/#!forum/leo-editor
-    Warning: changes to this file will be lost
-    unless you can save the file successfully.
-</t>
-<t tx="ekr.20141103061944.109">Up-arrow on the first node in a chapter switches to another chapter 
-https://bugs.launchpad.net/leo-editor/+bug/1264350
-
-Solution:
-
-1. The "fix" at rev 6472 was wrong: The original code was correct.
-2. Added a unit test.
+Added more informative error messages</t>
+<t tx="ekr.20141103061944.109">https://bugs.launchpad.net/leo-editor/+bug/1264350
 </t>
 <t tx="ekr.20141103061944.110">Previously, Ctrl-F Alt-tab Alt-tab would put focus in an inactive minibuffer.
 
@@ -21870,7 +21826,9 @@ AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
     
 in local .leo files. 
 </t>
-<t tx="ekr.20141103061944.115">Reinhard Engel reinhard.engel.de@googlemail.com
+<t tx="ekr.20141103061944.115">@language rest
+
+Reinhard Engel reinhard.engel.de@googlemail.com
 
 There seems to be a subtle bug in leoGlobals.py:
 
@@ -21888,7 +21846,9 @@ The following pattern in 'compute_directives_re' solves this problem:
         # Sort by length, longest first
     pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
 </t>
-<t tx="ekr.20141103061944.116">import glob
+<t tx="ekr.20141103061944.116">@language python
+
+import glob
 pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
 for fn in glob.glob(pattern):
     sfn = g.shortFileName(fn)
@@ -21898,7 +21858,7 @@ for fn in glob.glob(pattern):
     if s.find(r'regexp="\\') &gt; -1:
         g.es(sfn)
 
-@
+@language text
 
 Possible automatic computation of First sets:
 http://stackoverflow.com/questions/787134/can-i-determine-the-set-of-first-chars-matched-by-regex-pattern
@@ -21943,19 +21903,9 @@ I started this project by doing a clone-find-all for isExpanded.
 The fix was in find.addChangeStringToLabel. It must never protect the
 change string!
 </t>
-<t tx="ekr.20141103061944.120">@nocolor-node
-
-https://groups.google.com/forum/#!topic/leo-editor/Uoa7ifVV_Aw
-
-I selected ALL nodes, and deleted them. (I think I used the context menu
-delete) Then the outline window was red, could not insert any nodes, could
-not Undo. Todd. Had to abandon the outline and start again.
-
-# Breaks Leo HARD:
-# c.deletePositionsInList(c.all_positions())
+<t tx="ekr.20141103061944.120">https://groups.google.com/forum/#!topic/leo-editor/Uoa7ifVV_Aw
 </t>
-<t tx="ekr.20141103061944.121">
-Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
+<t tx="ekr.20141103061944.121">https://bugs.launchpad.net/leo-editor/+bug/1276236
 
 g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
 </t>
@@ -21963,11 +21913,7 @@ g.insertCodingLine adds coding line to start of all python scripts, except when 
 </t>
 <t tx="ekr.20141103061944.123">https://bugreports.qt-project.org/browse/QTBUG-41153
 </t>
-<t tx="ekr.20141103061944.124">@nocolor-node
-
-As of rev 6bc05ce Leo build: 20140826115101:
-
-Tab cycling now works as expected in all my tests.
+<t tx="ekr.20141103061944.124">Tab cycling now works as expected in all my tests.
 
 - Reset tab cycling if the user types backspace or any plain character.
 - Start cycling *only* if len(label) == len(common_prefix)
@@ -21975,16 +21921,6 @@ Tab cycling now works as expected in all my tests.
 These restriction appear to be essential.
 </t>
 <t tx="ekr.20141103061944.125">https://groups.google.com/d/msg/leo-editor/NGbogCgVmx4/nsJGngrS8BgJ
-
-When I hit &lt;enter&gt; after selecting "selectPosition," I get the following
-error message in the log pane:
-
-Unexpected exception...
-Traceback (most recent call last):
-  File "/home/ldi/git/leo-editor/leo/core/leoUndo.py", line 1323, in
-setUndoTypingParams
-    old_start,old_end = oldSel
-TypeError: 'NoneType' object is not iterable
 </t>
 <t tx="ekr.20141103061944.126">https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
 
@@ -22026,8 +21962,6 @@ In addition, I changed assert in lqlw.set_position to calls to g.trace.
 - Backspace and other characters now do something fairly reasonable when text is selected.
   This is an edge case, unless everything to the end of the text is selected.
 </t>
-<t tx="ekr.20141103061944.133">The fix was to set w.leo_big_text = None in remove_big_text_buttons and add_load_button.
-</t>
 <t tx="ekr.20141103061944.134">Fixed an important bug in addNode, a helper of createOutline: There was a
 confusion about commanders: p is in the old commander. p2 must be in the
 new commander.
@@ -22066,10 +22000,8 @@ correctly but print(obj) is not correct traditionally
 </t>
 <t tx="ekr.20141103061944.137">Removed the odious "'Can not execute commands from headlines" message.
 
-Instead of this message, Leo ends editing, replaces the event.widget and
-event.w fields with c.frame.body.wrapper.widget and carries on. All tests
-pass.
-</t>
+Leo now ends editing, replaces the event.widget and event.w fields with
+c.frame.body.wrapper.widget and carries on.</t>
 <t tx="ekr.20141103061944.138">https://github.com/leo-editor/leo-editor/issues/35
 leoBridge sometimes assigns the same GNX to two distinct vnodes
 
@@ -22105,27 +22037,6 @@ Changes:
 - at.shouldPromptForDangerousWrite returns True if p.h is not in v.at_read.
 - at.promptForDangerousWrite issues a warning and reverts the headline
 </t>
-<t tx="ekr.20141103061944.142">Summary post:
-https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
-
-https://github.com/leo-editor/leo-editor/issues/28
-Fixed: Leo hangs when a node with too large body is selected
-
-https://github.com/leo-editor/leo-editor/issues/64
-Fixed: big text status re-evaluated on find in current body
-
-https://github.com/leo-editor/leo-editor/issues/63
-Fixed: refresh-from-disk does not clear big text load delay UI
-
-What I did:
-
-- The big text is now shown along with warning text and warning buttons.
-  Imo, this is essential: it keeps c.frame.body.wrapper.widget unchanged.
-- Converted LeoBigTextDialog class to BigTextController class.
-- c.bigTextController (btc) replaces injected ivars.
-- Simplified all the interface code in LeoTree.select and helpers.
-- Added QTextEdit#bigtextwarning to the Qt stylesheet to make the warning background pink.
-</t>
 <t tx="ekr.20141103061944.143">From https://github.com/leo-editor/leo-editor/issues/73
 
 https://bugs.launchpad.net/leo-editor/+bug/1193820
@@ -22136,19 +22047,9 @@ https://groups.google.com/forum/#!topic/leo-editor/hPwPG9OTC3U
 
 This no longer seems to be a problem.
 </t>
-<t tx="ekr.20141103061944.144">From https://github.com/leo-editor/leo-editor/issues/73
-
-https://bugs.launchpad.net/leo-editor/+bug/1258373
-failed find focus fails
-
-Changed code in the save/restore methods in leoFind.py.
+<t tx="ekr.20141103061944.144">https://bugs.launchpad.net/leo-editor/+bug/1258373
 </t>
-<t tx="ekr.20141103061944.146">From https://github.com/leo-editor/leo-editor/issues/73
-
-https://bugs.launchpad.net/leo-editor/+bug/1245535
-API allows headlines to contain newlines.
-
-The fix was to v.setHeadString.
+<t tx="ekr.20141103061944.146">https://bugs.launchpad.net/leo-editor/+bug/1245535
 </t>
 <t tx="ekr.20141103061944.147">https://github.com/leo-editor/leo-editor/issues/75
 write-opml-file always produces an empty file
@@ -22170,14 +22071,7 @@ erroneous clone markers in @auto trees
 
 The fixes were to several methods of the PersistenceDataController class.
 </t>
-<t tx="ekr.20141103061944.150">From https://github.com/leo-editor/leo-editor/issues/73
-
-https://bugs.launchpad.net/leo-editor/+bug/1245616
-Autocomplete ? function to show doc string does not work
-
-- Added lqlw.get_selection.
-- get_object appends get_selection before calling get_object.
-- Cleaned code in info.
+<t tx="ekr.20141103061944.150">https://bugs.launchpad.net/leo-editor/+bug/1245616
 </t>
 <t tx="ekr.20141103061944.151">It sometimes picked a shorter completion that is not a prefix of the present label!
 
@@ -22202,8 +22096,7 @@ but it worked for me.
 I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown
 in the bug report can never happen.
 </t>
-<t tx="ekr.20141103061944.154">Find-previous fails at last node
-https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+<t tx="ekr.20141103061944.154">https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
 
 This only affected searches that were initiated using the buttons in the Find tab.
 
@@ -22231,8 +22124,6 @@ account the @path settings of the part of the tree they're dropped into
 (currently it is relative to the .leo file).
 </t>
 <t tx="ekr.20141103061944.159">https://bugs.launchpad.net/leo-editor/+bug/735938
-
-Added a guard to g.toUnicodeFileEncoding
 </t>
 <t tx="ekr.20141103061944.160">https://bugs.launchpad.net/leo-editor/+bug/1185933
 
@@ -22253,8 +22144,6 @@ now calls g.app.forgetOpenFile
 LeoQtEventFilter.qtKey now changes a toString value of 'Enter' to 'Return'
 </t>
 <t tx="ekr.20141103061944.164">https://bugs.launchpad.net/leo-editor/+bug/1267921
-
-Added a check for k.isPlainKey to find.iSearchStateHandler.
 </t>
 <t tx="ekr.20141103061944.165">https://bugs.launchpad.net/leo-editor/+bug/1268970
 
@@ -22380,10 +22269,6 @@ I last looked at the installer three months ago so I would have to look at the
 rest of it for other barriers to automated installation.
 </t>
 <t tx="ekr.20141103061944.176">https://bugs.launchpad.net/leo-editor/+bug/969391
-setup.py confuses newbies
-
-Terry's recent changes allow pip to use setup.py, and warns otherwise. This
-seems like a good compromise.
 </t>
 <t tx="ekr.20141103061944.177">https://github.com/leo-editor/leo-editor/issues/74
 
@@ -22445,10 +22330,7 @@ This is a scrolling problem, not a failure to select text.
 
 Changed the call to w.see in find.showSuccess.
 </t>
-<t tx="ekr.20141103061944.180">605ae57
-
-The present code just exists Leo, which I think is the reasonable thing to do.  YMMV.
-</t>
+<t tx="ekr.20141103061944.180">The present code just exists Leo, which imo is the reasonable thing to do. </t>
 <t tx="ekr.20141103061944.181">[Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
 shadow file name collisions cause spontaneous clone creation
 
@@ -22498,9 +22380,7 @@ only.
   This required several kludges.
 
 </t>
-<t tx="ekr.20141103061944.191">@nocolor-node
-
-Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
+<t tx="ekr.20141103061944.191">Leo's core now calls k.setStatusLabel, not k.setLael, to report the status
 of a Leo command. This allows an option (does not exist yet) to use g.es
 instead of the minibuffer to report status.
 </t>
@@ -22581,9 +22461,7 @@ Here is the output::
     handler2 10 ekr.leo 10.1400
     handler2 done
 </t>
-<t tx="ekr.20141103061944.193">@nocolor-node
-
-0. Added details timing traces throughout the selectHelper logic.
+<t tx="ekr.20141103061944.193">0. Added details timing traces throughout the selectHelper logic.
    These traces showed precisely where the performance bugs were.
 
 1. updateSyntaxColorer now does nothing if the body text starts with @killcolor.
@@ -22649,9 +22527,7 @@ This is the only call to tupleToString in Leo.
 4. The new fc.setMaxNodeIndex *does* convert the n field to an int, but
    this very rarely happens.
 </t>
-<t tx="ekr.20141103061944.197">@nocolor-node
-
-- fc.getLeoFile now calls ni.begin/end_holding
+<t tx="ekr.20141103061944.197">- fc.getLeoFile now calls ni.begin/end_holding
 - Added gnx keyword arg to VNode ctor.
 - Added traces to pd.restore_gnx
 
@@ -22717,9 +22593,7 @@ spell-as-you-type-next
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
 </t>
-<t tx="ekr.20141103061944.205">@nocolor-node
-
-These commands now get their arguments from the Find Panel.
+<t tx="ekr.20141103061944.205">These commands now get their arguments from the Find Panel.
 
 Changed the following methods:
 
@@ -23127,10 +23001,11 @@ Text tutorials: http://leoeditor.com/tutorial.html
 The highlights of Leo 5.0
 --------------------------
 
-* Better compatibility with vim, Emacs and pylint:
+* Better compatibility with vim, Emacs, pylint and PyQt:
     - Optional native emulation of vim commands.
     - Full support for Emacs org-mode outlines.
     - Better support for pylint.
+    - Support for both PyQt4 and PyQt5.
 * Better handling of nodes containing large text:
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
@@ -24707,6 +24582,16 @@ the input parameters are stored in the outline, allowing for some of them
 to be altered and the template generation step re-run. More like generating
 a website from data etc.
 </t>
+<t tx="ekr.20141104053638.10"></t>
+<t tx="ekr.20141104053638.11"></t>
+<t tx="ekr.20141104053638.7">https://github.com/leo-editor/leo-editor/issues/28
+
+Summary post:
+https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
+</t>
+<t tx="ekr.20141104053638.8">https://github.com/leo-editor/leo-editor/issues/63
+</t>
+<t tx="ekr.20141104053638.9">https://github.com/leo-editor/leo-editor/issues/64</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
