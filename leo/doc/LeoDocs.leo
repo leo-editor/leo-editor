@@ -8702,7 +8702,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
 </t>
 <t tx="ekr.20090223065025.3">Let::
 
-    w = c.frame.body.bodyCtrl # Leo's body pane.
+    w = c.frame.body.wrapper # Leo's body pane.
 
 Scripts can get or change the context of the body as follows::
 
@@ -18034,9 +18034,9 @@ log tab containing a graphics widget. Here is an example script::
 +------------------------------+--------------------------------------------+
 | c.frame.body                 | the leoBody representing the body pane.    |
 +------------------------------+--------------------------------------------+
-| c.frame.body.bodyCtrl        | a leoQTextEditWidget.                      |
+| c.frame.body.wrapper         | a leoQTextEditWidget.                      |
 +------------------------------+--------------------------------------------+
-| c.frame.body.bodyCtrl.widget | a LeoQTextBrowser (a QTextBrowser)         |
+| c.frame.body.wrapper.widget  | a LeoQTextBrowser (a QTextBrowser)         |
 +------------------------------+--------------------------------------------+
 | c.frame.tree                 | a leoQtTree, representing the tree pane    |
 +------------------------------+--------------------------------------------+
@@ -18747,8 +18747,8 @@ Here is a partial list of the **official ivars** of any leoFrame f::
 
     f.c                     is the frame’s commander.
     f.body                  is a leoBody instance.
-    f.body.bodyCtl          is a leoQTextEditWidget instance.
-    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+    f.body.wrapper          is a leoQTextEditWidget instance.
+    f.body.wrapper.widget   is a LeoQTextBrowser(QTextBrowser) instance.
     f.log                   is a leoLog instance.
     f.tree                  is a leoQtTree instance.
     f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
@@ -21788,7 +21788,8 @@ This was the so-called "greedy checkbox bug".
 <t tx="ekr.20141103061944.107">https://bugs.launchpad.net/leo-editor/+bug/1254861
 </t>
 <t tx="ekr.20141103061944.108">https://bugs.launchpad.net/leo-editor/+bug/1260415
-Added more informative error messages</t>
+Added more informative error messages
+</t>
 <t tx="ekr.20141103061944.109">https://bugs.launchpad.net/leo-editor/+bug/1264350
 </t>
 <t tx="ekr.20141103061944.110">Previously, Ctrl-F Alt-tab Alt-tab would put focus in an inactive minibuffer.
@@ -22001,7 +22002,8 @@ correctly but print(obj) is not correct traditionally
 <t tx="ekr.20141103061944.137">Removed the odious "'Can not execute commands from headlines" message.
 
 Leo now ends editing, replaces the event.widget and event.w fields with
-c.frame.body.wrapper.widget and carries on.</t>
+c.frame.body.wrapper.widget and carries on.
+</t>
 <t tx="ekr.20141103061944.138">https://github.com/leo-editor/leo-editor/issues/35
 leoBridge sometimes assigns the same GNX to two distinct vnodes
 
@@ -22330,7 +22332,8 @@ This is a scrolling problem, not a failure to select text.
 
 Changed the call to w.see in find.showSuccess.
 </t>
-<t tx="ekr.20141103061944.180">The present code just exists Leo, which imo is the reasonable thing to do. </t>
+<t tx="ekr.20141103061944.180">The present code just exists Leo, which imo is the reasonable thing to do. 
+</t>
 <t tx="ekr.20141103061944.181">[Fixed?] https://bugs.launchpad.net/leo-editor/+bug/1282362
 shadow file name collisions cause spontaneous clone creation
 
@@ -24591,7 +24594,8 @@ https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
 </t>
 <t tx="ekr.20141104053638.8">https://github.com/leo-editor/leo-editor/issues/63
 </t>
-<t tx="ekr.20141104053638.9">https://github.com/leo-editor/leo-editor/issues/64</t>
+<t tx="ekr.20141104053638.9">https://github.com/leo-editor/leo-editor/issues/64
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
