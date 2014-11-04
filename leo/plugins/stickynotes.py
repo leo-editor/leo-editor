@@ -81,8 +81,9 @@ if isQt5:
         from PyQt5.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt5.QtGui import QFont,QIcon,QTextCharFormat,QInputDialog,QMainWindow,QMdiArea
-    from PyQt5.QtWidgets import QAction,QLineEdit,QPlainTextEdit,QTextEdit
+    from PyQt5.QtGui import QFont,QIcon,QTextCharFormat
+    from PyQt5.QtWidgets import (
+        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QPlainTextEdit,QTextEdit)
 else:
     from PyQt4.QtCore import QTimer
     try:
