@@ -76,28 +76,21 @@ except ImportError:
     
 from leo.core.leoQt import isQt5,Qt
 if isQt5:
-    from PyQt5.QtCore import QTimer # SIGNAL,QSize,QVariant, 
+    from PyQt5.QtCore import QTimer
     try:
         from PyQt5.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt5.QtGui import (
-        QAction,QFont,QIcon,QTextCharFormat, 
-        QInputDialog,QMainWindow,QMdiArea)
-        # QApplication,QColor,QFontMetrics,QKeySequence,QMenu,QPixmap,
-        # QTextBlockFormat,QTextCursor,QTextListFormat,
-    from PyQt5.QtWidgets import QLineEdit,QPlainTextEdit,QTextEdit
+    from PyQt5.QtGui import QFont,QIcon,QTextCharFormat,QInputDialog,QMainWindow,QMdiArea
+    from PyQt5.QtWidgets import QAction,QLineEdit,QPlainTextEdit,QTextEdit
 else:
-    from PyQt4.QtCore import QTimer # SIGNAL, QSize, QVariant, 
+    from PyQt4.QtCore import QTimer
     try:
         from PyQt4.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt4.QtGui import (
-        QAction,QFont,QIcon,QTextCharFormat,QTextEdit,
-        QPlainTextEdit,QInputDialog,QMainWindow,QMdiArea,QLineEdit)
-        # QApplication,QColor,QFontMetrics,QKeySequence,QMenu,QPixmap,
-        # QTextBlockFormat,QTextCursor,QTextListFormat,
+    from PyQt4.QtGui import QAction,QFont,QIcon,QTextCharFormat,QTextEdit
+    from PyQt4.QtGui import QPlainTextEdit,QInputDialog,QMainWindow,QMdiArea,QLineEdit
 #@-<< imports >>
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** styling
