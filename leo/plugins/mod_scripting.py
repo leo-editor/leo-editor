@@ -295,7 +295,7 @@ class AtButtonCallback(object):
                 p = None
                 self.script = script
         if p or script:
-            self.executeScriptFromButton(self.b,self.buttonText,gnx,p,script)
+            self.controller.executeScriptFromButton(self.b,self.buttonText,gnx,p,script)
             if self.c.exists:
                 self.c.outerUpdate()
         else:
@@ -313,24 +313,6 @@ class AtButtonCallback(object):
         '''Add support for docstrings.'''
         c,p,script = self.controller.find_gnx(self.gnx)
         return g.getDocString(p.b) if p else ''
-    #@+node:ekr.20060328125248.28: *3* executeScriptFromButton (AtButtonCallback)
-    def executeScriptFromButton (self,b,buttonText,gnx,p,script):
-        '''Called from callbacks to execute the script in node p whose gnx is given.'''
-        c = self.c
-        if c.disableCommandsMessage:
-            g.blue(c.disableCommandsMessage)
-            return None
-        else:
-            g.app.scriptDict = {}
-            args = self.controller.getArgs(p)
-            # Note: use c.p, not p!
-            c.executeScript(args=args,p=p,script=script,silent=True)
-            # Remove the button if the script asks to be removed.
-            if g.app.scriptDict.get('removeMe'):
-                g.es("Removing '%s' button at its request" % buttonText)
-                self.controller.deleteButton(b)
-        # Do *not* set focus here: the script may have changed the focus.
-            # c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController:
@@ -1027,6 +1009,27 @@ class ScriptingController:
                 if trace: g.trace('second',command)
                 k.registerCommand(command,func=cb,
                     pane=pane,shortcut=None,verbose=trace)
+    #@+node:ekr.20060328125248.28: *4* sc.executeScriptFromButton
+    def executeScriptFromButton (self,b,buttonText,gnx,p,script):
+        '''
+        Called from callbacks to execute the script in node p whose gnx is given.
+        This method is reference from qt_frame.py, so it must be a method of this class.
+        '''
+        c = self.c
+        if c.disableCommandsMessage:
+            g.blue(c.disableCommandsMessage)
+            return None
+        else:
+            g.app.scriptDict = {}
+            args = self.getArgs(p)
+            # Note: use c.p, not p!
+            c.executeScript(args=args,p=p,script=script,silent=True)
+            # Remove the button if the script asks to be removed.
+            if g.app.scriptDict.get('removeMe'):
+                g.es("Removing '%s' button at its request" % buttonText)
+                self.deleteButton(b)
+        # Do *not* set focus here: the script may have changed the focus.
+            # c.bodyWantsFocus()
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText
     def truncateButtonText (self,s):
         
