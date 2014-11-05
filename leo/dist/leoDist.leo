@@ -667,7 +667,7 @@ def deleteTempFiles (self,lines):
 </t>
 <t tx="ekr.20101027070126.1666">def makeDicts (self,dirs,lines):
 
-    trace = False ; verbose = False
+    trace = False ; verbose = True
 
     # Create the dirDict.
     # Keys are directories.
@@ -712,6 +712,7 @@ def deleteTempFiles (self,lines):
             path = g.choose(theDir=='**top',
                 fn,'%s/%s' % (theDir,fn))
             filesDict[path] = theDir
+            if fn == 'wikiview.py': g.trace(fn,path)
 
     return dirDict,filesDict
 </t>
@@ -771,7 +772,8 @@ def deleteTempFiles (self,lines):
     # Add some special cases:
     for fn in ('*.pyo','*.pyc',
         'uninst.exe',
-        'setup.py',
+        # 'setup.py',
+            # setup.py is now allowed at the top level.
         'git-manifest.txt'
     ):
         if fn not in aList:
@@ -817,6 +819,7 @@ def deleteTempFiles (self,lines):
 </t>
 <t tx="ekr.20101027070126.1678">def put (self,s):
 
+    # g.trace(s.rstrip())
     self.f.write(s)
 </t>
 <t tx="ekr.20101027070126.1679">def openFile (self,fn,mode='w'):
@@ -1009,7 +1012,7 @@ abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 # bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
 
     # Don't use abspath!
-distDir     = abspath(join(g.app.loadDir,'..','dist'))
+# distDir     = abspath(join(g.app.loadDir,'..','dist'))
 rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
 pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 
@@ -1017,8 +1020,8 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
 manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
-install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
-uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
+install_fn =    abspath(join(rootDir,'nsi-install-files.txt')) # was distDir!
+uninstall_fn =  abspath(join(rootDir,'nsi-uninstall-files.txt')) # was distDir!
 zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
 zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
