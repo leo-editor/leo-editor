@@ -1067,8 +1067,6 @@ leo/core/test_core.txt
 leo/dist/LeoPackage.pmsp
 leo/dist/leoDist.leo
 leo/dist/nsi-boilerplate.txt
-leo/dist/nsi-install-files.txt
-leo/dist/nsi-uninstall-files.txt
 leo/doc/CheatSheet.leo
 leo/doc/FAQ.txt
 leo/doc/IpythonBridge.txt
@@ -2066,6 +2064,8 @@ leo/www/silver_city.css
 leoStandAloneGlobals.py
 leo_to_html.xsl
 nsi-boilerplate.txt
+nsi-install-files.txt
+nsi-uninstall-files.txt
 profileLeo.py
 pylint-leo.py
 setup.cfg

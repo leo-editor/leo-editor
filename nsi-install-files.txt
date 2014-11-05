@@ -16,6 +16,8 @@ File "leo.nsi"
 File "leoStandAloneGlobals.py"
 File "leo_to_html.xsl"
 File "nsi-boilerplate.txt"
+File "nsi-install-files.txt"
+File "nsi-uninstall-files.txt"
 File "profileLeo.py"
 File "pylint-leo.py"
 File "setup.cfg"
@@ -86,8 +88,6 @@ SetOutPath $INSTDIR\leo\dist
 File "C:\leo.repo\leo-editor\leo\dist\LeoPackage.pmsp"
 File "C:\leo.repo\leo-editor\leo\dist\leoDist.leo"
 File "C:\leo.repo\leo-editor\leo\dist\nsi-boilerplate.txt"
-File "C:\leo.repo\leo-editor\leo\dist\nsi-install-files.txt"
-File "C:\leo.repo\leo-editor\leo\dist\nsi-uninstall-files.txt"
 
 SetOutPath $INSTDIR\leo\doc
 File "C:\leo.repo\leo-editor\leo\doc\CheatSheet.leo"

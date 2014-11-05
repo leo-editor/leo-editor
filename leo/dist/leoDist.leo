@@ -623,10 +623,10 @@ g.es_print('done') # '@button make-leo done')
     deleteList = (
         '.bzrignore',
         '.gitignore',
-        'bzr-manifest.txt',
+        # 'bzr-manifest.txt',
         'git-manifest.txt',
-        'bzr-small-manifest.txt',
-        'setup.py',
+        # 'bzr-small-manifest.txt',
+        # 'setup.py',
         'stand_alone_globals.leo',
         'leoStandAloneGlobals',
         'leo/test/unittest/.leo_shadow/',
