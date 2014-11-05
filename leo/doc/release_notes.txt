@@ -23630,7 +23630,7 @@ to use @language, as in your example with @nosent trees.
 2. To automatically use @language hbs in .hbs files, add the
    following entry in define_extension_dict in leoApp.py:
 #@+node:ekr.20141103061944.233: *4* Plugins & leo/external 
-#@+node:ekr.20141103061944.75: *5* Added liveview plugin
+#@+node:ekr.20141103061944.75: *5* Added livecode plugin
 Just pushed the livecode.py plugin, screenshot attached.
 
 It is currently python 2.7 only, although that should be relatively
@@ -23941,11 +23941,6 @@ just 'Setup' with this pluing active.
 #@+node:ekr.20141103061944.195: *5* Converted 7 plugins so they work with PyQt5
 active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
 notebook.py, projectwizard.py, stickynotes.py
-#@+node:ekr.20141015084905.18437: *5* Document four plugins
-contextmenu
-screenshots
-todo
-valuespace
 #@+node:ekr.20141015084905.18440: *5* leo/external/leoftsindex.py
 From: Terry Brown <terry_n_brown@yahoo.com>
 
