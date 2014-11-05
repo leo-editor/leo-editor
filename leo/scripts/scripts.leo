@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -110,6 +110,9 @@
 <v t="ekr.20130810093044.16950"><vh>Re: Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20140312052111.19343"><vh>Set line height (Qt 4.8 and above)</vh></v>
+<v t="ekr.20141105055521.14"><vh>Load files into Leo from the command line</vh></v>
+<v t="ekr.20141105055521.17"><vh>Snippet: execute code after typing has not happened for a while</vh></v>
+<v t="ekr.20141105055521.18"><vh>Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -153,6 +156,8 @@
 <v t="ekr.20140426052603.18111"><vh>replace</vh></v>
 </v>
 <v t="ekr.20140729094250.19180"><vh>Check all colorizer files for problem regex's</vh></v>
+<v t="ekr.20141105055521.15"><vh>Print gnxs &amp; gnxDict</vh></v>
+<v t="ekr.20141105055521.16"><vh>Safely replace body.x with body.wrapper.x</vh></v>
 </v>
 <v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
 <v t="ekr.20130810093044.16970"><vh>Display function call hierarchy in Leo</vh>
@@ -166,7 +171,8 @@
 <v t="ekr.20140704052551.17948"><vh>Console script: Install Leo from scratch on Windows</vh></v>
 <v t="ekr.20130812034101.12558"><vh>Script: Add docutils to python3 </vh></v>
 <v t="ekr.20140704052551.17941"><vh>Script: Add Windows handler for .leo files</vh></v>
-<v t="ekr.20140704052551.17946"><vh>Set icon for .leo files</vh></v>
+<v t="ekr.20140704052551.17946"><vh>Script: Set icon for .leo files</vh></v>
+<v t="ekr.20141105055521.13"><vh>Script: Dictionary to Leo outline</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2553,6 +2559,263 @@ rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
 yaml.py:    fixed</t>
+<t tx="ekr.20141105055521.13">@language rest
+
+When working with a dictionary, some times I really need to "see it", so I needed this small script.
+It will transform a dictionary into an outline, so you can navigate through it.
+Just in case its useful for anyone, here it goes:
+
+@language python
+
+def dictionary_to_outline(p,dictionary):
+    '''Transform a dictionary into an outline as p's children.'''
+    # g.app.gui.frameFactory.masterFrame.currentWidget().leo_c
+    sorted_keys = sorted([key for key in dictionary])
+    for key in sorted_keys:
+        new_node = p.insertAsLastChild().copy()
+        new_node.h = key
+        if "dict" in str(type(dictionary[key])):
+            self.dictionary_to_outline(new_node,dictionary[key])
+        else:
+            new_node.b = str(dictionary[key])
+</t>
+<t tx="ekr.20141105055521.14">https://github.com/leo-editor/snippets/blob/master/utils/led.py
+
+</t>
+<t tx="ekr.20141105055521.15">@language python
+'''A script used while investigating this bug.'''
+# g.cls()
+d = {}
+x = g.app.nodeIndices
+result = []
+for v in c.all_unique_nodes():
+    gnx = v.fileIndex
+    assert g.isUnicode(gnx),gnx
+    d [gnx] = v
+    result.append('%s %s' % (gnx,v))
+print('%s v.fileIndex\'s...' % len(result))
+print('\n'.join(sorted(result)))
+if 1:
+    d = c.fileCommands.gnxDict
+    print('old: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
+if 1:
+    c.recreateGnxDict()
+    d = c.fileCommands.gnxDict
+    print('new: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
+</t>
+<t tx="ekr.20141105055521.16">@language python
+
+'''
+A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
+
+It is *not undoable* to save massive amounts of memory.
+Please run on an already-saved .leo file, and take all other
+reasonable precautions.
+
+If replace is False, it will just report the changes to be made.
+'''
+import leo.core.leoFrame as leoFrame
+replace = False
+aList = sorted([z for z in dir(leoFrame.WrapperAPI) if not z.startswith('__')])
+nodes = 0
+for p in c.all_unique_positions():
+    s = p.b
+    nodes += 1
+    found = False
+    for target in aList:
+        i = 0
+        pattern = 'body.' + target
+        while True:
+            i = s.find(pattern,i)
+            if i == -1:
+                break
+            if g.match_word(s,i,pattern):
+                if not found:
+                    print('In node: %s' % p.h)
+                    found = True
+                i1,i2 = g.getLine(s,i)
+                if replace:
+                    j = i + len('body.')
+                    s = s[:j] + 'wrapper.' + s[j:]
+                    print(s[i1:i2+len('wrapper.')].rstrip())
+                    i += len('wrapper.') + len(pattern)
+                else:
+                    print(s[i1:i2].rstrip())
+                    i += len(pattern)
+            else:
+                i += len(pattern)
+    if found and replace:
+        p.b = s
+</t>
+<t tx="ekr.20141105055521.17">@language rest
+
+
+https://groups.google.com/d/msg/leo-editor/f1ARsze-_XU/z6cqEMvybsQJ
+
+I've found a delay timer to execute code is very useful. For example, if I
+stopped typing for 5 seconds, It would execute 'Alt-X Ctrl-P' and execute
+the last command which in my case is to produce my HTML (rst3) so I can
+look at it. This would help editing, making it more interactive editing in
+the rst3.
+
+https://github.com/leo-editor/snippets/blob/master/on_typing_idle.py
+</t>
+<t tx="ekr.20141105055521.18">'''
+From: Terry Brown
+
+The script below is a tool for diffing two Leo files. The attached
+screenshot illustrates the output for two different revisions of
+LeoPyRef.leo.
+
+``- nodename``
+    indicates a node which disappeared
+``+ nodename``
+    a node which is new,
+``!v nodename`` followed by ``!^ nodename``
+    a node with an unchanged heading but changed content, the first
+    linking to the old version, the second linking to the new version
+
+If you have the bookmarks.py plugin active, you can double click nodes
+to jump to the original(s).
+
+'''
+from leo.core.leoNodes import vnode
+if not hasattr(vnode, 'insertAsLastChild'):
+    # add insertAsLastChild method to vnodes
+    def ialc(self):
+        vnode(self.context)._linkAsNthChild(self, len(self.children))
+        return self.children[-1]
+    vnode.insertAsLastChild = ialc
+
+from_filename = g.app.gui.runOpenFileDialog('From (old) file', [('Leo', '*.leo')])
+to_filename = g.app.gui.runOpenFileDialog('To (new) file', [('Leo', '*.leo')])
+
+# from_filename = "/mnt/shuttle/bkup/usr1/2012-07-13/home/tbrown/.leo/.todo.leo"
+# to_filename = "/mnt/shuttle/bkup/usr1/2012-07-15/home/tbrown/.leo/.todo.leo"
+
+from_c = g.openWithFileName(from_filename, c)
+to_c = g.openWithFileName(to_filename, c)
+
+vf = from_c.hiddenRootNode
+vt = to_c.hiddenRootNode
+
+assert from_c != c
+assert to_c != c
+assert from_c != to_c
+
+nd = c.rootPosition().insertAfter()
+nd.copy().back().moveAfter(nd)
+nd.h = 'diff @bookmarks'
+
+def text_match(a, b):
+    return (a.h == b.h, 
+            a.h == b.h and a.b == b.b)
+def gnx_match(a, b):
+    return (a.h == b.h and a.gnx == b.gnx, 
+            a.h == b.h and a.b == b.b and a.gnx == b.gnx)
+
+def diff_trees(vf, vt, path):
+
+    fonly = []  # nodes only in from tree
+    tonly = []  # nodes only in to tree
+    diffs = []  # nodes which occur in both but have different descendants
+
+    # count number of times each headline occurs as a child of
+    # each node being compared
+    count_f = {}
+    for cf in vf.children:
+        count_f[cf.h] = count_f.get(cf.h, 0) + 1
+    count_t = {}
+    for ct in vt.children:
+        count_t[ct.h] = count_t.get(ct.h, 0) + 1
+
+    for cf in vf.children:
+        
+        for ct in vt.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            
+            if body_eq:
+                diffs.append(diff_trees(cf, ct, path+[vf.h]))
+                
+                break
+            elif head_eq:
+                d = diff_trees(cf, ct, path+[vf.h])
+                if d:
+                    d.h = '!v '+d.h
+                else:
+                    d = vnode(nd.v.context)
+                    d.h = '!v '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    from_filename, 
+                    '--&gt;'.join((path+[vf.h]+[cf.h])[1:]),
+                    cf.b
+                )
+                diffs.append(d)
+                d = vnode(nd.v.context)
+                d.h = '!^ '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    to_filename, 
+                    '--&gt;'.join((path+[vt.h]+[ct.h])[1:]),
+                    ct.b
+                )
+                diffs.append(d)
+                break
+        else:
+            fonly.append(cf)
+            
+    for ct in vt.children:
+        
+        for cf in vf.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            if head_eq or body_eq:
+                # no need to recurse matches again
+                break
+
+        else:
+            tonly.append(ct)
+
+    if not any(diffs) and not fonly and not tonly:
+        return None
+        
+    vd = vnode(nd.v.context)
+    vd.h = vf.h
+    for d in diffs:
+        if d:
+            vd.children.append(d)
+    for f in fonly:
+        n = vd.insertAsLastChild()
+        n.h = '- '+f.h
+        n.b = "file://%s/#%s" % (from_filename, '--&gt;'.join((path+[vf.h]+[f.h])[1:]))
+    for t in tonly:
+        n = vd.insertAsLastChild()
+        n.h = '+ '+t.h
+        n.b = "file://%s/#%s" % (to_filename, '--&gt;'.join((path+[vf.h]+[t.h])[1:]))
+        
+    return vd
+
+v = diff_trees(vf, vt, [])
+if v:
+    nd.v.children.extend(v.children)  # snip off &lt;hidden root node&gt;
+
+c.bringToFront()
+c.redraw()
+</t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
 </leo_file>
