@@ -1,0 +1,29 @@
+
+; Uninstall files...
+
+SetOutPath $Temp
+Delete "$INSTDIR\.gitattributes"
+Delete "$INSTDIR\INSTALL.TXT"
+Delete "$INSTDIR\LICENSE.TXT"
+Delete "$INSTDIR\MANIFEST.in"
+Delete "$INSTDIR\Makefile"
+Delete "$INSTDIR\PKG-INFO.TXT"
+Delete "$INSTDIR\README.TXT"
+Delete "$INSTDIR\README.rst"
+Delete "$INSTDIR\launchLeo.py"
+Delete "$INSTDIR\leo-install.py"
+Delete "$INSTDIR\leo.nsi"
+Delete "$INSTDIR\leoStandAloneGlobals.py"
+Delete "$INSTDIR\leo_to_html.xsl"
+Delete "$INSTDIR\nsi-boilerplate.txt"
+Delete "$INSTDIR\profileLeo.py"
+Delete "$INSTDIR\pylint-leo.py"
+Delete "$INSTDIR\setup.cfg"
+Delete "$INSTDIR\*.pyo"
+Delete "$INSTDIR\*.pyc"
+Delete "$INSTDIR\uninst.exe"
+Delete "$INSTDIR\git-manifest.txt"
+RMDir /r "$INSTDIR\leo"
+
+; Delete the top-level directory.
+RMDir "$INSTDIR"
