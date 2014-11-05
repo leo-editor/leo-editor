@@ -942,7 +942,6 @@ class Wget < Formula
   end
 end
 
-
 To install homebrew, paste this in a terminal:
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"

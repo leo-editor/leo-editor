@@ -15370,10 +15370,8 @@ Here is my installation write-up:
 
 - Install Homebrew (http://mxcl.github.com/homebrew/) by running the
   following command in the Terminal::
-  
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
     
-.. old command: /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 - Run "brew doctor" and check any further suggestions to improve your system.
 
@@ -22452,7 +22450,8 @@ this technique.
    contain overrides of only the @color and @string nodes in
    leoSettings.leo.
 </t>
-<t tx="ekr.20141103061944.94">Over 70 bugs have been fixed.</t>
+<t tx="ekr.20141103061944.94">Over 70 bugs have been fixed.
+</t>
 <t tx="ekr.20141103061944.95">https://bugs.launchpad.net/leo-editor/+bug/1228457
 
 This appears to have been fixed.
