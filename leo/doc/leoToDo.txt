@@ -3,10 +3,6 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20140917154740.17918: ** * To do: Leo 5.0a1
-@language rest
-
-- Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 .. @+node:ekr.20141105050314.22: *3* Docs

@@ -31,7 +31,7 @@
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -88,8 +88,7 @@
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409" a="E"
-expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
 </v>
@@ -238,8 +237,7 @@ expanded="tbrown.20070117104409.4,"><vh>@file quickMove.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20141101114322.1"
-expanded="tbrown.20141101114322.9,"><vh>@file wikiview.py</vh></v>
+<v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
