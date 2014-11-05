@@ -19426,7 +19426,7 @@ Then run::
 <t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
 into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-4-11.
+will be called something like leo-5.0a1.
 
 You now have two choices:
 
