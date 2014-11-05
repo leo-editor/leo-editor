@@ -443,10 +443,7 @@ import time</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 Make sure Leo looks good without myLeoSettings.leo.
-(*** no longer needed?) Create a *trial* manifest.
-    (The make-leo button runs make-leo-manifest automatically.)
-    - Delete any unknown files reported by git status.
-    - Run make-leo-manifest (a .bat file).
+
 Pre-testing:
     - Run all unit tests.
     - Run pylint -a.
@@ -475,7 +472,7 @@ LeoDist.leo:
     - Update readme.txt.
     - Check readme.txt spelling.
     - Check 'PKG-INFO.TXT'
-Run make-leo, making sure that the final revno matches the build number in version.py:
+Run make-leo.
     - Commit all files before running make-leo.  This provides a baseline.
     - Run make-leo button in leoDist.leo.
     - Commit the slightly-changed bzr-manifest.txt.
