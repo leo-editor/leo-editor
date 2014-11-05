@@ -486,10 +486,10 @@ Test files in installed folder.
         - leoPlugins.leo
         - leoPy.leo
         - LeoDocs.leo
-Create a bzr tag **last**.
-    - bzr tag leo-x-y
-    - bzr commit --unchanged -m "added tag"
-    - bzr push
+Create a git tag **last**.
+    - git tag leo-x-y
+    - git commit --unchanged -m "added tag"
+    - git push
 Optional: update leoDist.leo *after* doing the commit that adds the tag.
     - This ensures that leoDist.leo in the distro matches the leoDist.leo in the tagged revno.
 
