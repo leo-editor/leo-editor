@@ -1795,7 +1795,7 @@ class Commands (object):
         bunch = u.beforeChangeNodeContents(root)
         aList = []
         for p in root.subtree():
-            aList.append('\n' + p.h)
+            aList.append('\n' + p.h + '\n')
             if p.b.strip():
                 lines = g.splitLines(p.b)
                 aList.extend(lines)
