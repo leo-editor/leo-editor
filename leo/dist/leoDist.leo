@@ -75,7 +75,7 @@
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
-<v t="ekr.20141016123713.2120"><vh>copy_nsi_files (to do)</vh></v>
+<v t="ekr.20141016123713.2120"><vh>copy_nsi_files</vh></v>
 <v t="ekr.20110614062644.1378"><vh>copy_ref_files (not used)</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -535,12 +535,19 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
 </t>
-<t tx="ekr.20101027070126.1639">'''Make all variable Leo distribution files::
+<t tx="ekr.20101027070126.1639">'''
+Make all variable Leo distribution files::
 
-        git-manifest.txt
-        leo\dist\nsi-install-files.txt
-        leo\dist\nsi-uninstall-files.txt
-        leo.zip.
+    git-manifest.txt
+    leo\dist\nsi-install-files.txt
+    leo\dist\nsi-uninstall-files.txt
+    leo.zip.
+    
+Copy these files from the leo\dist folder to the top-level folder::
+
+    nsi-install-files.txt
+    nsi-uninstall-files.txt
+    nsi-boilerplate.txt
 '''
 
 version = '5.0-a1' ##version
@@ -668,7 +675,6 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101027070126.1666">def makeDicts (self,dirs,lines):
 
     trace = False ; verbose = True
-
     # Create the dirDict.
     # Keys are directories.
     # Values are files contained in each directory.
@@ -676,7 +682,6 @@ def deleteTempFiles (self,lines):
     dirDict['**top'] = [] # Create an entry for the root directory.
     for z in dirs:
         dirDict[z] = []
-
     # Assign files to dirDict.
     for line in lines:
         line = line.strip().replace('\\','/')
@@ -686,7 +691,6 @@ def deleteTempFiles (self,lines):
             path,fn = g.os_path_split(line)
         else:
             path,fn = '**top',line.strip()
-
         # Don't include top-level leo directory,
         # Do include leo/scripts/leo file.
         if fn and (path != '**top**' or fn != 'leo'):
@@ -694,7 +698,6 @@ def deleteTempFiles (self,lines):
             assert line not in aList,repr(line)
             aList.append(fn)
             dirDict[path]=aList
-
     for theDir in sorted(dirDict):
         aList = dirDict.get(theDir)
         if aList and trace:
@@ -703,7 +706,6 @@ def deleteTempFiles (self,lines):
                 print(g.listToString(aList))
             else:
                 print(theDir)
-
     # Create the inverse dict.
     filesDict = {}
     for theDir in sorted(dirDict):
@@ -712,8 +714,7 @@ def deleteTempFiles (self,lines):
             path = g.choose(theDir=='**top',
                 fn,'%s/%s' % (theDir,fn))
             filesDict[path] = theDir
-            if fn == 'wikiview.py': g.trace(fn,path)
-
+            # if fn == 'wikiview.py': g.trace(fn,path)
     return dirDict,filesDict
 </t>
 <t tx="ekr.20101027070126.1667">def printMissing (self,files,dirDict,filesDict):
@@ -1012,7 +1013,7 @@ abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 # bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
 
     # Don't use abspath!
-# distDir     = abspath(join(g.app.loadDir,'..','dist'))
+distDir     = abspath(join(g.app.loadDir,'..','dist'))
 rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
 pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 
@@ -1020,8 +1021,8 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
 manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
-install_fn =    abspath(join(rootDir,'nsi-install-files.txt')) # was distDir!
-uninstall_fn =  abspath(join(rootDir,'nsi-uninstall-files.txt')) # was distDir!
+install_fn =    abspath(join(distDir,'nsi-install-files.txt')) # was distDir.
+uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt')) # was distDir.
 zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
 zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
@@ -1319,8 +1320,24 @@ leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
 </t>
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
-    '''Copy nsi files from leo/dist to leo-editor directory.'''
-    </t>
+    '''
+    Copy these files from the leo\dist folder to the leo-editor folder::
+
+        nsi-install-files.txt
+        nsi-uninstall-files.txt
+        nsi-boilerplate.txt
+    '''
+    names = (
+        'nsi-install-files.txt',
+        'nsi-uninstall-files.txt',
+        'nsi-boilerplate.txt',
+    )
+    for fn in names:
+        src = g.os_path_join(distDir,fn)
+        dst = g.os_path_join(rootDir,fn)
+        assert g.os_path_exists(src),src
+        shutil.copyfile(src,dst)
+</t>
 <t tx="ekr.20141105082156.2">Leo 5.0 alpha 1                             November 5, 2014
 
 Leo 5.0a1 is now available at:

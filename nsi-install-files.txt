@@ -21,6 +21,7 @@ File "nsi-uninstall-files.txt"
 File "profileLeo.py"
 File "pylint-leo.py"
 File "setup.cfg"
+File "setup.py"
 
 SetOutPath $INSTDIR\leo
 File "C:\leo.repo\leo-editor\leo\__init__.py"

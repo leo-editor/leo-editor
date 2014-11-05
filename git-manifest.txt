@@ -2069,3 +2069,4 @@ nsi-uninstall-files.txt
 profileLeo.py
 pylint-leo.py
 setup.cfg
+setup.py

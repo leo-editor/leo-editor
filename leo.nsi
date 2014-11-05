@@ -1,5 +1,6 @@
 
-!addincludedir c:\leo.repo\trunk\leo\dist
+;;; This doesn't work.
+;;; !addincludedir C:\leo.repo\leo-editor\leo\dist
 
 !include MUI2.nsh
 !include nsDialogs.nsh

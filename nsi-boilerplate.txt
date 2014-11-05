@@ -14,6 +14,8 @@ Var PythonDirectory
 
 !define PythonExecutable "$PythonDirectory\pythonw.exe"
 
+!addincludedir C:\leo.repo\leo-editor\leo\dist
+
 ; Boilerplate
 SetCompressor bzip2
 Caption "${name} Installer"
@@ -29,7 +31,7 @@ ShowUnInstDetails show
 ; Locations
 Name "${name}"
 OutFile "${target_file}"
-;;; InstallDir "$PROGRAMFILES\${name}-${version}"
+InstallDir "$PROGRAMFILES\${name}-${version}"
 
 ; Icons
 ;!define MUI_ICON "${icon}"

@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="30" left="643" height="1002" width="1191"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -53,8 +53,7 @@
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"
-expanded="ekr.20140824043305.18300,"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -228,7 +227,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240"></t>
+<t tx="ekr.20051031040240" str_leo_pos="0"></t>
 <t tx="ekr.20080412053100.5">
 
 

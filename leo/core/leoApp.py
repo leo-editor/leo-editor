@@ -809,7 +809,7 @@ class LeoApp:
         commit = git_info.get('commit', None)
         
         if branch is None or commit is None:
-            app.signon1 = 'Not running running from a cloned git repo'
+            app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
                 branch, commit)
