@@ -159,13 +159,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e307104735803000000302e3171057d71066803580c000000313337363431323739362e3071077358010000003071087d71096803580c000000313337363431323932332e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -598,7 +598,11 @@
 <v t="ekr.20130815102041.15628"><vh>leomylyn.py</vh></v>
 <v t="ekr.20141105055521.5"><vh>livecode.py</vh></v>
 <v t="ekr.20101113063552.9403"><vh>nav_qt.py</vh></v>
-<v t="ekr.20141105055521.6"><vh>nodetags.py</vh></v>
+<v t="ekr.20141105055521.6"><vh>nodetags.py</vh>
+<v t="ekr.20141105085003.7"><vh>API</vh></v>
+<v t="ekr.20141105085003.8"><vh>UI</vh></v>
+<v t="ekr.20141105085003.10"><vh>Tag Limitation</vh></v>
+</v>
 <v t="ekr.20130815102041.15618"><vh>printing.py</vh></v>
 <v t="ekr.20101113063552.9404"><vh>projectwizard.py</vh></v>
 <v t="ekr.20101113063552.9405"><vh>quicksearch.py</vh></v>
@@ -610,7 +614,13 @@
 <v t="ekr.20101113063552.9409"><vh>todo.py</vh></v>
 <v t="ekr.20131009100732.19040"><vh>valuespace.py</vh></v>
 <v t="ekr.20101113063552.9410"><vh>viewrendered.py</vh></v>
-<v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh></v>
+<v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh>
+<v t="ekr.20141105085003.12"><vh>Why a better viewrendered plugin?</vh></v>
+<v t="ekr.20141105085003.13"><vh>Objectives</vh></v>
+<v t="ekr.20141105085003.14"><vh>Implementation</vh></v>
+<v t="ekr.20141105085003.15"><vh>Issues / Limitations</vh></v>
+<v t="ekr.20141105085003.16"><vh>Future</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1124,8 +1134,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e307104735810000000302e302e31322e302e302e372e302e3171057d710658090000007374725f6174696d657107580c000000313337363431323238382e307108735809000000302e302e312e302e3071097d710a6803580c000000313337363431323837322e30710b73580b000000302e302e332e302e322e33710c7d710d6803580c000000313337363431323838382e30710e73580c000000302e302e31322e302e302e37710f7d711058090000007374725f6174696d657111580c000000313337363431323238302e30711273752e"
-expanded="ekr.20141103061944.240,ekr.20141103061944.84,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
@@ -1306,6 +1315,7 @@ expanded="ekr.20141103061944.240,ekr.20141103061944.84,"><vh>@file release_notes
 <v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
+<v t="ekr.20141105085003.6"><vh>sphinx errors</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22260,7 +22270,7 @@ Provides node tagging capabilities to Leo
 By Jacob M. Peck
 
 API
-===
+----
 
 This plugin registers a controller object to c.theTagController, which
 provides the following API::
@@ -22279,7 +22289,7 @@ Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
 a set.
 
 UI
-==
+----
 
 The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
 the top is a search bar, editable to allow complex search queries.  It
@@ -22661,27 +22671,245 @@ is not.
 
 By Jacob M. Peck
 
-API
-===
+</t>
+<t tx="ekr.20141105055521.7">https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
 
-This plugin registers a controller object to c.theTagController, which
+https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
+
+As mentioned in my previous post I'll attempt to elaborate on the plugin
+I've used to make Leo more useful to me, in case it is useful for others
+also. Apologies for the very long post, but I wanted get get all its
+features and warts exposed here to get some feedback on whether others see
+this as useful or that this is only valuable to me. If it's useful to
+others then it may be worth polishing up quite a bit.
+</t>
+<t tx="ekr.20141105055521.8">Creates a global search window
+
+Use the global-search command to show this window.
+
+To restore the original appearance of the window, type help.
+
+Requires the whoosh library ('easy_install whoosh') to do full text searches.
+</t>
+<t tx="ekr.20141105055521.9"></t>
+<t tx="ekr.20141105085003.10">The API is unlimited in tagging abilities.  If you do not wish to use
+the UI, then the API may be used to tag nodes with any arbitrary
+strings.  The UI, however, due to searching capabilities, may *not* be
+used to tag (or search for) nodes with tags containing the special
+search characters, `&amp;|-^`.  The UI also cannot search for tags of
+zero-length, and it automatically removes surrounding whitespace
+(calling .strip()).
+</t>
+<t tx="ekr.20141105085003.12">I like to use reStructuredText (reST) for all of my note-taking, idea
+development, project and task management and automation of desktop
+activities (e.g. initiating a backup). You could say it is the control
+centre of my daily activities, including calculating and showing dashboards
+of where I am and where I'm going.
+
+This means I need a tool which seamlessly shows me the full-fidelity
+browser-rendered version of what I am writing and be able to print my notes
+for meetings, cut and paste nicely formatted output to my office e-mails
+and documents, as well as show some of the material as a slideshow.
+
+The existing *viewrendered* plugin couldn't seem to do what I needed
+(especially math) and I was almost ready to abandon Leo again. This time I
+bit the bullet and created a more capable renderer in viewrendered2 (VR2).
+Initially I made a plugin that rendered, on demand, to my normal web
+browser. This worked well, but I really thought live rendering like
+"viewrendered" would be better, and for that I needed close control over
+scroll positions etc. that I couldn't get with an external browser. So the
+plugin became much more complex as I merged it with the existing
+viewrendered plugin, but was ultimately more powerful and useful to me.
+
+</t>
+<t tx="ekr.20141105085003.13">* Show a "full" html representation of any reST node or tree, without an
+  @rst root node, including more features than the existing viewrendered
+  plugin::
+
+      proper html layout
+      math (mathjax, etc.)
+      clickable URLs
+      clickable hyperlinks within the page (e.g. TOC)
+      good quality zoom
+      cut and paste html with ctl-C
+      s5 slideshows
+      javascript
+      svg images
+      configurable css
+
+* Allow showing of node tree rather than just the current node. This can
+  give a better overview perspective of the tree contents.
+
+* Be able to lock the rendering on the root node of a tree, to view the
+  effect editing a sub-node within the larger html document.
+
+* Provide proper rendering of any combination of node types in a tree, so long as
+  they have been properly designated by @language directives (i.e. reST, text,
+  code, css, ...).
+
+* Allow viewing (and printing) of an entire source file from an @file type
+  root node.
+
+* Be able to *export* any of these renderings to a full web-browser to take advantage
+  of the large rendering window (especially for slideshows, as well as printing, saving output.
+  
+* Be able to integrate automatically executed code nodes intermingled with
+  reST nodes to provide an automatic calculation-based "Notebook" or "Report"
+  type output.
+
+* Don't increase the dependencies of Leo.
+</t>
+<t tx="ekr.20141105085003.14">VR2 is implemented mostly as an ~600 line expansion of the update_rst
+method in the viewrendered.py plugin. The text-oriented class used for
+rendering in VR1 has been replaced by the QWebView class which provides the
+full rendering functionality of a real web-browser. To make this flexible,
+a toolbar has been attached to the top with a few controls.
+
+Because I wanted to retain compatibility with VR1, I created the
+viewrendered2.py plugin, but retained all the class naming which occurred
+within VR1. This means that it remains compatible with the existing
+mechanisms (like free_layout) of showing and creating panes for VR1. I
+tried this with an expectation that it would fail, but it appears to work
+without any unintended side-effects.
+
+Tooltips have been added where Qt allows, with the philosophy that a user
+shouldn't need a manual to use this pane.
+
+VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
+
+</t>
+<t tx="ekr.20141105085003.15">I use VR2 every few minutes every working day. However, VR2 is likely to
+still have a lot of rough edges and, in particular, bugs that show up with
+different work flows or css folder layouts etc. In fact, VR2 is still a
+work in progress and therefore still being fiddled with, so bugs creep in
+regularly.
+
+But overall, my perception of its deficiencies are:
+
+* Does not handle reST headings within the node bodies well (sometimes very
+  slow render, blocking Leo).
+
+* VR2 attempts to reconcile reST headings that originate from explicit
+  headings within the nodes against reST headings that are
+  automatically generated by the node hierarchy. In many cases, this
+  is impossible, resulting in many errors which drastically slows down
+  rendering. - Recommend not using headings within the nodes
+  themselves, leaving the node hierarchy to do this automatically.
+
+* If the node triggers one of the special viewrendered node header types
+  (@md, @image, @movie, @html) VR2 simply defaults to the old handlers for
+  those types. This means it jumps back to whatever pane type VR1 uses, so
+  the features of VR2 disappear. I suspect that VR2 could incorporate these
+  types into the new version and retain these new features. I should look
+  at that.
+    
+* Doesn't integrate with rst3 plugin, especially honouring @others etc.
+  There are some conflicts in objectives, so this may never be fully
+  resolved. It would probably make sense for rst3 settings to get used for
+  VR2 as well, along with additional VR2 specific settings. Currently, VR2
+  has its own @settings-style settings. The rst3 code is not used.
+  
+* For slideshow purposes, a patch to docutils s5_writer is required to be
+  able to handle an arbitrary hierarchy of nodes (forces all headings to
+  start a new slide). Otherwise, only the 2nd level nodes (from the root)
+  force a new slide.
+  
+* The integration of VR2 code into the existing viewrendered plugin code is
+  rudimentary. I took the shortcut of not trying to understand this code
+  well and confining my integration to the rst rendering only. Better
+  integration would be a good future step.
+
+With the plugin being able to execute javascript etc. there may be some
+form of security issue, but I can't see it myself (given that Leo can
+execute arbitrary python code anyway).
+</t>
+<t tx="ekr.20141105085003.16">- Expand the export button if pandoc is installed, adding optional
+  output formats such as docx, odt, plus additional slideshow formats.
+
+- Use new reST functionality to replace other media viewrendered methods
+  for images, svg, movies, etc. * Integrate better with rst3?
+</t>
+<t tx="ekr.20141105085003.6">
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2754: SEVERE: Title level inconsistent:
+
+
+Searching
+---------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2810: WARNING: Literal block ends without a blank line; unexpected
+unindent.
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2814: WARNING: Definition list ends without a blank line; unexpecte
+d unindent.
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2821: SEVERE: Title level inconsistent:
+
+Tag Limitations
+---------------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3077: SEVERE: Title level inconsistent:
+
+Why a better viewrendered plugin?
+---------------------------------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3101: SEVERE: Title level inconsistent:
+
+Objectives
+-----------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3130: WARNING: Bullet list ends without a blank line; unexpected un
+indent.
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3141: SEVERE: Title level inconsistent:
+
+Implementation
+--------------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3162: SEVERE: Title level inconsistent:
+
+Issues / Limitations
+--------------------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3210: SEVERE: Title level inconsistent:
+
+Future?
+-------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3218: SEVERE: Title level inconsistent:
+
+Conclusion
+----------
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3222: WARNING: Bullet list ends without a blank line; unexpected un
+indent.
+c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3227: WARNING: Bullet list ends without a blank line; unexpected un
+indent.
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [100%] zodb
+generating indices... genindex
+writing additional pages... search
+copying images... [100%] screen-shots/render-svg-movie.png
+copying static files... done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 17 warnings.
+
+Build finished. The HTML pages are in _build/html.
+
+c:\leo.repo\leo-editor\leo\doc\html&gt;</t>
+<t tx="ekr.20141105085003.7">This plugin registers a controller object to c.theTagController, which
 provides the following API::
 
     tc = c.theTagController
-    tc.get_all_tags() # return a list of all tags used in the current
-outline, automatically updated to be consistent
-    tc.get_tagged_nodes('foo') # return a list of positions tagged 'foo'
-    tc.get_tags(p) # return a list of tags applied to the node at
-position p; returns [] if node has no tags
+    tc.get_all_tags()
+        # return a list of all tags used in the current
+        # outline, automatically updated to be consistent
+    tc.get_tagged_nodes('foo')
+        # return a list of positions tagged 'foo'
+    tc.get_tags(p)
+        # return a list of tags applied to the node at
+        # position p; returns [] if node has no tags
     tc.add_tag(p, 'bar') # add the tag 'bar' to the node at position p
-    tc.remove_tag(p, 'baz') # remove the tag 'baz' from p if it is in
-the tag list
+    tc.remove_tag(p, 'baz')
+        # remove the tag 'baz' from p if it is in the tag list
 
 Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
 a set.
-
-UI
-==
+</t>
+<t tx="ekr.20141105085003.8">UI
 
 The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
 the top is a search bar, editable to allow complex search queries.  It
@@ -22709,210 +22937,7 @@ left-associative, meaning they are read from left to right, with no
 other precedence.  Parentheses are not supported. See below for more
 details.
 
-Searching
----------
-
-Searching on tags in the UI is based on set algebra.  The following
-syntax is used::
-
-    &lt;tag&gt;&amp;&lt;tag&gt; - return nodes tagged with both the given tags
-    &lt;tag&gt;|&lt;tag&gt; - return nodes tagged with either of the given tags (or
-both)
-    &lt;tag&gt;-&lt;tag&gt; - return nodes tagged with the first tag, but not the
-second tag
-    &lt;tag&gt;^&lt;tag&gt; - return nodes tagged with either of the given tags
-(but *not* both)
-
-These may be combined, and are applied left-associatively, building the
-set from the left, such that the query `foo&amp;bar^baz` will return only
-nodes tagged both 'foo' and 'bar', or nodes tagged with 'baz', but *not*
-tagged with all three.
-
-Tag Limitations
----------------
-
-The API is unlimited in tagging abilities.  If you do not wish to use
-the UI, then the API may be used to tag nodes with any arbitrary
-strings.  The UI, however, due to searching capabilities, may *not* be
-used to tag (or search for) nodes with tags containing the special
-search characters, `&amp;|-^`.  The UI also cannot search for tags of
-zero-length, and it automatically removes surrounding whitespace
-(calling .strip()).
 </t>
-<t tx="ekr.20141105055521.7">https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
-
-https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
-
-As mentioned in my previous post I'll attempt to elaborate on the plugin
-I've used to make Leo more useful to me, in case it is useful for others
-also. Apologies for the very long post, but I wanted get get all its
-features and warts exposed here to get some feedback on whether others see
-this as useful or that this is only valuable to me. If it's useful to
-others then it may be worth polishing up quite a bit.
-
-Why a better viewrendered plugin?
----------------------------------
-
-I like to use reStructuredText (reST) for all of my note-taking, idea
-development, project and task management and automation of desktop
-activities (e.g. initiating a backup). You could say it is the control
-centre of my daily activities, including calculating and showing dashboards
-of where I am and where I'm going.
-
-This means I need a tool which seamlessly shows me the full-fidelity
-browser-rendered version of what I am writing and be able to print my notes
-for meetings, cut and paste nicely formatted output to my office e-mails
-and documents, as well as show some of the material as a slideshow.
-
-The existing *viewrendered* plugin couldn't seem to do what I needed
-(especially math) and I was almost ready to abandon Leo again. This time I
-bit the bullet and created a more capable renderer in viewrendered2 (VR2).
-Initially I made a plugin that rendered, on demand, to my normal web
-browser. This worked well, but I really thought live rendering like
-"viewrendered" would be better, and for that I needed close control over
-scroll positions etc. that I couldn't get with an external browser. So the
-plugin became much more complex as I merged it with the existing
-viewrendered plugin, but was ultimately more powerful and useful to me.
-
-Objectives
------------
-
-* Show a "full" html representation of any reST node or tree, without an
-  @rst root node, including more features than the existing viewrendered
-  plugin:
-
-  - proper html layout
-  - math (mathjax, etc.)
-  - clickable URLs
-  - clickable hyperlinks within the page (e.g. TOC)
-  - good quality zoom
-  - cut and paste html with ctl-C
-  - s5 slideshows
-  - javascript
-  - svg images
-  - configurable css
-
-* Allow showing of node tree rather than just the current node. This can
-  give a better overview perspective of the tree contents.
-
-* Be able to lock the rendering on the root node of a tree, to view the
-  effect editing a sub-node within the larger html document.
-
-* Provide proper rendering of any combination of node types in a tree, so long as
-  they have been properly designated by @language directives (i.e. reST, text,
-  code, css, ...).
-
-* Allow viewing (and printing) of an entire source file from an @file type
-root node.
-
-* Be able to *export* any of these renderings to a full web-browser to take advantage
-  of the large rendering window (especially for slideshows, as well as printing, saving output.
-  
-* Be able to integrate automatically executed code nodes intermingled with
-  reST nodes to provide an automatic calculation-based "Notebook" or "Report"
-  type output.
-
-* Don't increase the dependencies of Leo.
-
-Implementation
---------------
-
-VR2 is implemented mostly as an ~600 line expansion of the update_rst
-method in the viewrendered.py plugin. The text-oriented class used for
-rendering in VR1 has been replaced by the QWebView class which provides the
-full rendering functionality of a real web-browser. To make this flexible,
-a toolbar has been attached to the top with a few controls.
-
-Because I wanted to retain compatibility with VR1, I created the
-viewrendered2.py plugin, but retained all the class naming which occurred
-within VR1. This means that it remains compatible with the existing
-mechanisms (like free_layout) of showing and creating panes for VR1. I
-tried this with an expectation that it would fail, but it appears to work
-without any unintended side-effects.
-
-Tooltips have been added where Qt allows, with the philosophy that a user
-shouldn't need a manual to use this pane.
-
-VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
-
-Issues / Limitations
---------------------
-
-I use VR2 every few minutes every working day. However, VR2 is likely to
-still have a lot of rough edges and, in particular, bugs that show up with
-different work flows or css folder layouts etc. In fact, VR2 is still a
-work in progress and therefore still being fiddled with, so bugs creep in
-regularly.
-
-But overall, my perception of its deficiencies are:
-
-* Does not handle reST headings within the node bodies well (sometimes very
-  slow render, blocking Leo).
-
-  - VR2 attempts to reconcile reST headings that originate from explicit
-    headings within the nodes against reST headings that are automatically
-    generated by the node hierarchy. In many cases, this is impossible,
-    resulting in many errors which drastically slows down rendering. -
-    Recommend not using headings within the nodes themselves, leaving the
-    node hierarchy to do this automatically.
-
-* If the node triggers one of the special viewrendered node header types
-  (@md, @image, @movie, @html) VR2 simply defaults to the old handlers for
-  those types. This means it jumps back to whatever pane type VR1 uses, so
-  the features of VR2 disappear. I suspect that VR2 could incorporate these
-  types into the new version and retain these new features. I should look
-  at that.
-    
-* Doesn't integrate with rst3 plugin, especially honouring @others etc.
-  There are some conflicts in objectives, so this may never be fully
-  resolved. It would probably make sense for rst3 settings to get used for
-  VR2 as well, along with additional VR2 specific settings. Currently, VR2
-  has its own @settings-style settings. The rst3 code is not used.
-  
-* For slideshow purposes, a patch to docutils s5_writer is required to be
-  able to handle an arbitrary hierarchy of nodes (forces all headings to
-  start a new slide). Otherwise, only the 2nd level nodes (from the root)
-  force a new slide.
-  
-* The integration of VR2 code into the existing viewrendered plugin code is
-  rudimentary. I took the shortcut of not trying to understand this code
-  well and confining my integration to the rst rendering only. Better
-  integration would be a good future step.
-
-With the plugin being able to execute javascript etc. there may be some
-form of security issue, but I can't see it myself (given that Leo can
-execute arbitrary python code anyway). Any thoughts?
-
-Future?
--------
-
-* Expand the export button if pandoc is installed, adding optional output
-  formats such as docx, odt, plus additional slideshow formats. * Use new
-  reST functionality to replace other media viewrendered methods for
-  images, svg, movies, etc. * Integrate better with rst3?
-
-Conclusion
-----------
-
-* I've attached the source as well as a bunch of screenshots. Feel free to
-try out the source by putting viewrendered2 into your @enabled-plugins
-instead of the usual viewrendered. I'd be interested in whether it works or
-not - expect bugs to show up!
-
-* I'm looking for feedback on whether this appears useful to others and not
-just me. If so, it should probably be polished a bit more before being used
-widely. Perhaps greater understanding of the existing viewrendered plugin
-operation would help me here.
-</t>
-<t tx="ekr.20141105055521.8">Creates a global search window
-
-Use the global-search command to show this window.
-
-To restore the original appearance of the window, type help.
-
-Requires the whoosh library ('easy_install whoosh') to do full text searches.
-</t>
-<t tx="ekr.20141105055521.9"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

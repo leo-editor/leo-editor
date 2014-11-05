@@ -23580,7 +23580,7 @@ Provides node tagging capabilities to Leo
 By Jacob M. Peck
 
 API
-===
+----
 
 This plugin registers a controller object to c.theTagController, which
 provides the following API::
@@ -23599,7 +23599,7 @@ Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
 a set.
 
 UI
-==
+----
 
 The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
 the top is a search bar, editable to allow complex search queries.  It

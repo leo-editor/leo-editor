@@ -95,7 +95,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20141027112641.2"><vh>** (Maybe) distribute setup.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -444,7 +443,7 @@ import time</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 Make sure Leo looks good without myLeoSettings.leo.
-Clean files and create a *trial* manifest.
+(*** no longer needed?) Create a *trial* manifest.
     (The make-leo button runs make-leo-manifest automatically.)
     - Delete any unknown files reported by git status.
     - Run make-leo-manifest (a .bat file).
@@ -479,8 +478,6 @@ LeoDist.leo:
 Run make-leo, making sure that the final revno matches the build number in version.py:
     - Commit all files before running make-leo.  This provides a baseline.
     - Run make-leo button in leoDist.leo.
-        - This creates bzr-manifest.txt and all other variable distribution files.
-        - This will change bzr-manifest by a little bit from the previously-computed manifest.
     - Commit the slightly-changed bzr-manifest.txt.
     - Change the build number in version.py to one more than the present revno.
     - Commit the change to version.py, thereby making the build number match the final revno.
@@ -1324,7 +1321,6 @@ leo/test/unittest/.leo_shadow/  export-ignore
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''Copy nsi files from leo/dist to leo-editor directory.'''
     </t>
-<t tx="ekr.20141027112641.2"></t>
 <t tx="ekr.20141105082156.2">Leo 5.0 alpha 1                             November 5, 2014
 
 Leo 5.0a1 is now available at:
