@@ -14,6 +14,7 @@
 # Leo 4.11 a2: August 19, 2013
 # Leo 4.11 b1: October 31, 2013
 # Leo 4.11 final: November 6, 2013
+# Leo 5.0a1: November 6, 2014
 trace = False
 
 #@@language python
@@ -33,7 +34,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "5.0d1"
+version = "5.0a1"
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}

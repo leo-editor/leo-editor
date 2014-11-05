@@ -29,6 +29,7 @@
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
 <v t="ekr.20131105110107.16636"><vh>Leo 4.11 final</vh></v>
+<v t="ekr.20141105082156.2"><vh>Leo 5.0</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -105,7 +106,7 @@
 
 3. Search for copyright
 
-    Latest copyright date: 2013.
+    Latest copyright date: 2014.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
@@ -114,7 +115,7 @@ for commercial use (including resale). There is no GNU-like "copyleft"
 restriction. The Open Source Initiative board has voted to certify the
 MIT license as Open Source. This license is compatible with the GPL.
 
-Copyright (c) 1997-2013 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2014 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -135,7 +136,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.11-final
+Version: 5.0-alpha-1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -149,41 +150,50 @@ Description:
     Leo requires Python 2.6 or above. Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.11 final                                  November 6, 2013
+<t tx="EKR.20040519090846.9">Leo 5.0 alpha 1                             November 5, 2014
 
-Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
-Leo 4.11 contains over a year's work on Leo.
+Leo 5.0a1 is now available at:
+http://sourceforge.net/projects/leo/files/Leo/
 
-Leo is a PIM, an IDE and an outliner for programmers, authors and web
-designers. Leo's unique features organize data in a revolutionary way.
-Python scripts can easily access all parts of Leo outlines.
-See http://leoeditor.com/tutorial.html
+Leo is a PIM, an IDE and an outliner.
+Video tutorials: http://leoeditor.com/screencasts.html
+Text tutorials: http://leoeditor.com/tutorial.html
 
-The highlights of Leo 4.11:
----------------------------
+The highlights of Leo 5.0
+--------------------------
 
-- Leo's tutorials have been rewritten and simplified.
-- Greatly improved abbreviations, including templates.
-- Clones are now valid anywhere in @file nodes.
-- Leo now warns if a .leo file is open elsewhere.
-- Leo's IPython bridge now works with IPython 1.x.
-- Added support for @testsetup and @testclass.
-- Added support for sessions.
-- Added colorizing themes.
-- A colored border highlights the pane with focus.
-- Added support for the clojure, markdown and TypeScript languages.
-- Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved commands, plugins and scripts.
-- Dozens of bug fixes and code-level improvements.
+* Better compatibility with vim, Emacs, pylint and PyQt:
+    - Optional native emulation of vim commands.
+    - Full support for Emacs org-mode outlines.
+    - Better support for pylint.
+    - Support for both PyQt4 and PyQt5.
+* Better handling of nodes containing large text:
+    - Idle time syntax coloring eliminates delay.
+    - Optional delayed loading of large text.
+* Power features:
+    - Leo available via github repository.
+    - File name completion.
+    - Cloned nodes expand and contract independently.
+    - @data nodes can be composed from descendant nodes.
+    - No need to change Leo's main style sheet:
+      it can be customized with @color and @font settings.
+    - @persistence nodes save data in @auto trees.
+    - A plugable architecture for @auto nodes.
+    - The style-reload command changes Leo's appearance instantly.
+* Important new plugins for tagging, display and node evaluation.
+* For beginners:
+    - Leo's default workbook files contains Leo's quickstart guide.
+* Hundreds of new/improved features and bug fixes.
 
 Links:
 ------
 Leo:       http://leoeditor.com
 Docs:      http://leoeditor.com/leo_toc.html
 Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
 Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
-Bzr:       http://code.launchpad.net/leo-editor/
+Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
@@ -436,14 +446,14 @@ import time</t>
 Make sure Leo looks good without myLeoSettings.leo.
 Clean files and create a *trial* manifest.
     (The make-leo button runs make-leo-manifest automatically.)
-    - Delete any unknown files reported by bzr status.
+    - Delete any unknown files reported by git status.
     - Run make-leo-manifest (a .bat file).
 Pre-testing:
     - Run all unit tests.
     - Run pylint -a.
 Release notes and web documentation:
     - Update the release notes.
-    - Update link to what's new section.
+    - Create new "what's new" section.
     - Copy release notes to leoDist.leo.
     - Update version number and modification date on Leo's home page.
     - (The sphinx date is updated automatically.)
@@ -451,7 +461,6 @@ Release notes and web documentation:
     - Copy files to web.
 leoVersion.py
     - Update version constant.
-    - Update the static_version build number.
 LeoDocs.leo:
     - Update version numbers in html/conf.py
     - Remove top-level clones.
@@ -462,7 +471,7 @@ Post-testing:
     - Run all unit tests.
 LeoDist.leo:
     - Make sure copyright dates are correct.
-        (trunk/license.txt **and** leo/doc/license.txt.)
+        - leoDist.leo and leoDocs.leo.
     - Update version numbers: search leoDist.leo for ##version.
     - Update readme.txt.
     - Check readme.txt spelling.
@@ -1316,5 +1325,51 @@ leo/test/unittest/.leo_shadow/  export-ignore
     '''Copy nsi files from leo/dist to leo-editor directory.'''
     </t>
 <t tx="ekr.20141027112641.2"></t>
+<t tx="ekr.20141105082156.2">Leo 5.0 alpha 1                             November 5, 2014
+
+Leo 5.0a1 is now available at:
+http://sourceforge.net/projects/leo/files/Leo/
+
+Leo is a PIM, an IDE and an outliner.
+Video tutorials: http://leoeditor.com/screencasts.html
+Text tutorials: http://leoeditor.com/tutorial.html
+
+The highlights of Leo 5.0
+--------------------------
+
+* Better compatibility with vim, Emacs, pylint and PyQt:
+    - Optional native emulation of vim commands.
+    - Full support for Emacs org-mode outlines.
+    - Better support for pylint.
+    - Support for both PyQt4 and PyQt5.
+* Better handling of nodes containing large text:
+    - Idle time syntax coloring eliminates delay.
+    - Optional delayed loading of large text.
+* Power features:
+    - Leo available via github repository.
+    - File name completion.
+    - Cloned nodes expand and contract independently.
+    - @data nodes can be composed from descendant nodes.
+    - No need to change Leo's main style sheet:
+      it can be customized with @color and @font settings.
+    - @persistence nodes save data in @auto trees.
+    - A plugable architecture for @auto nodes.
+    - The style-reload command changes Leo's appearance instantly.
+* Important new plugins for tagging, display and node evaluation.
+* For beginners:
+    - Leo's default workbook files contains Leo's quickstart guide.
+* Hundreds of new/improved features and bug fixes.
+
+Links:
+------
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Github:    https://github.com/leo-editor/leo-editor
+Quotes:    http://leoeditor.com/testimonials.html
+</t>
 </tnodes>
 </leo_file>

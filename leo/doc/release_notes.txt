@@ -21731,13 +21731,14 @@ The highlights of Leo 5.0
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
 * Power features:
+    - Leo available via github repository.
     - File name completion.
     - Cloned nodes expand and contract independently.
     - @data nodes can be composed from descendant nodes.
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:
@@ -21752,7 +21753,7 @@ Tutorials: http://leoeditor.com/tutorial.html
 Videos:    http://leoeditor.com/screencasts.html
 Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
-Git:       https://github.com/leo-editor/leo-editor
+Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 #@+node:ekr.20141103061944.246: *4* Highlights
 #@+node:ekr.20141103113220.17: *5* Better integration with Vim, Emacs & pylint
@@ -23365,7 +23366,7 @@ clone several nodes.
 
 Added c.cloneToLastNode.  
 #@+node:ekr.20141103061944.229: *6* Added flatten-outline-to-node
-Very useful when summarizing documenation nodes.
+Very useful when summarizing documentation nodes.
 #@+node:ekr.20141105055521.10: *6* Added help-for-drag-and-drop command
 #@+node:ekr.20141103113220.19: *6* Added idle-time commands
 Added the following commands:
@@ -23673,7 +23674,7 @@ Why a better viewrendered plugin?
 I like to use reStructuredText (reST) for all of my note-taking, idea
 development, project and task management and automation of desktop
 activities (e.g. initiating a backup). You could say it is the control
-centre of my daily activities, including calculating and showing dashboards
+center of my daily activities, including calculating and showing dashboards
 of where I am and where I'm going.
 
 This means I need a tool which seamlessly shows me the full-fidelity

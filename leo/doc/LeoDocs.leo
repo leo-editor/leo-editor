@@ -159,13 +159,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e307104735803000000302e3171057d71066803580c000000313337363431323739362e3071077358010000003071087d71096803580c000000313337363431323932332e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -230,9 +230,8 @@
 <v t="ekr.20100817101952.4303"><vh>Installing Leo itself</vh>
 <v t="ekr.20100731112744.7276"><vh>Installing Leo on Windows</vh>
 <v t="ekr.20130807203905.16602"><vh>Using the single-click installer</vh></v>
-<v t="ekr.20130807203905.16603"><vh>Installing from sources (Windows)</vh>
+<v t="ekr.20130807203905.16603"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20130807203905.16597"><vh>Creating Windows file associations</vh></v>
-</v>
 </v>
 <v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh>
 <v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
@@ -1125,7 +1124,8 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e307104735810000000302e302e31322e302e302e372e302e3171057d710658090000007374725f6174696d657107580c000000313337363431323238382e307108735809000000302e302e312e302e3071097d710a6803580c000000313337363431323837322e30710b73580b000000302e302e332e302e322e33710c7d710d6803580c000000313337363431323838382e30710e73580c000000302e302e31322e302e302e37710f7d711058090000007374725f6174696d657111580c000000313337363431323238302e30711273752e"
+expanded="ekr.20141103061944.240,ekr.20141103061944.84,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
@@ -4360,7 +4360,8 @@ For everything a beginner needs to know about Leo see:
 http://leoeditor.com/tutorial.html
 
 For help, please ask questions at:
-http://groups.google.com/group/leo-editor</t>
+http://groups.google.com/group/leo-editor
+</t>
 <t tx="ekr.20050831232205">.. Relative links.
 .. _`Writing plugins`:   writingPlugins.html
 
@@ -8604,7 +8605,7 @@ to be the same as the MIT license, namely that Leo is absolutely free, even for
 commercial use, including resale. There is no GNU-like "copyleft" restriction.
 This license is compatible with the GPL.
 
-**Copyright 1997-2013 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2014 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21321,7 +21322,7 @@ And whose body text is::
     time: 40.073 sec.
     ===============
 </t>
-<t tx="ekr.20141103061944.229">Very useful when summarizing documenation nodes.
+<t tx="ekr.20141103061944.229">Very useful when summarizing documentation nodes.
 </t>
 <t tx="ekr.20141103061944.230">The default workbook contains both the cheat sheet and an example from the
 rst3 tutorial.
@@ -21398,13 +21399,14 @@ The highlights of Leo 5.0
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
 * Power features:
+    - Leo available via github repository.
     - File name completion.
     - Cloned nodes expand and contract independently.
     - @data nodes can be composed from descendant nodes.
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:
@@ -21419,7 +21421,7 @@ Tutorials: http://leoeditor.com/tutorial.html
 Videos:    http://leoeditor.com/screencasts.html
 Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
-Git:       https://github.com/leo-editor/leo-editor
+Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20141103061944.59">Fixed the entry in g.app.language_extension_dict
@@ -22099,7 +22101,7 @@ Why a better viewrendered plugin?
 I like to use reStructuredText (reST) for all of my note-taking, idea
 development, project and task management and automation of desktop
 activities (e.g. initiating a backup). You could say it is the control
-centre of my daily activities, including calculating and showing dashboards
+center of my daily activities, including calculating and showing dashboards
 of where I am and where I'm going.
 
 This means I need a tool which seamlessly shows me the full-fidelity
@@ -22587,7 +22589,7 @@ Summary:
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:
     - Leo's default workbook files contains Leo's quickstart guide.

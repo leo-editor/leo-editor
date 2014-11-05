@@ -439,28 +439,6 @@ It's reasonable to have the top-level button just be a placeholder for
 subsidiary @rclick nodes. To do that without getting a warning when
 clicking the top-level button, set its script to "empty string".
 
-.. @+node:ekr.20141105050314.17: *6* How to open Leo files by double-click in Windows Explorer?
-When I double-click on any Leo file on my desktop to launch Leo, it simply
-opens default workbook.leo file.  How can I get Leo to open the file I double clicked?
-
-Many thanks to all for these replies! This is my final "open" string in the
-Windows file associations::
-
-    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" --gui=3Dqttabs "%1"
-    
-The quotes are needed round the %1 to handle file paths containing spaces.
-
-An alternative is to use the Windows ftype and assoc commands. This is an
-alternative to working through the file associations GUI.
-
-Set up file type association::
-
-    C:\> ftype LeoFile=C:\Python27\pythonw.exe C:\apps\leo\launchLeo.py "%1"
-    C:\> assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" C:\Python27\python.exe C:\apps\leo\launchLeo.py %*
 .. @+node:ekr.20141105050314.18: *6* How can I put background images in the body pane?
 It might be interesting to have some wallpapers/tiles to visually represent
 various categories of methods, e.g. initors, setters, getters, etc. Maybe
@@ -924,30 +902,28 @@ Leo 4.11 final custom hotkey can not work on 1st call
 .. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
 From: Winn Dixie <incredible0n3@gmail.com>
 
-Would be stellar to have a brew install leo.
+Would be stellar to have a brew install leo. http://brew.sh/
 
-http://brew.sh/
-Homebrew formulae are simple Ruby scripts:
+Homebrew formulae are simple Ruby scripts::
 
-require "formula"
+    require "formula"
+    
+    class Wget < Formula
+      homepage "http://www.gnu.org/software/wget/"
+      url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
+      sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+    
+      def install
+        system "./configure", "--prefix=#{prefix}"
+        system "make", "install"
+      end
+    end
 
-class Wget < Formula
-  homepage "http://www.gnu.org/software/wget/"
-  url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
-  sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+To install homebrew, paste this in a terminal::
 
-  def install
-    system "./configure", "--prefix=#{prefix}"
-    system "make", "install"
-  end
-end
-
-To install homebrew, paste this in a terminal:
-
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 The script explains what it will do and then pauses before it does it.
-
 .. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140
