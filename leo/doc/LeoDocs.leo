@@ -1315,7 +1315,6 @@
 <v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
-<v t="ekr.20141105085003.6"><vh>sphinx errors</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22829,67 +22828,6 @@ execute arbitrary python code anyway).
 - Use new reST functionality to replace other media viewrendered methods
   for images, svg, movies, etc. * Integrate better with rst3?
 </t>
-<t tx="ekr.20141105085003.6">
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2754: SEVERE: Title level inconsistent:
-
-
-Searching
----------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2810: WARNING: Literal block ends without a blank line; unexpected
-unindent.
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2814: WARNING: Definition list ends without a blank line; unexpecte
-d unindent.
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:2821: SEVERE: Title level inconsistent:
-
-Tag Limitations
----------------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3077: SEVERE: Title level inconsistent:
-
-Why a better viewrendered plugin?
----------------------------------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3101: SEVERE: Title level inconsistent:
-
-Objectives
------------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3130: WARNING: Bullet list ends without a blank line; unexpected un
-indent.
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3141: SEVERE: Title level inconsistent:
-
-Implementation
---------------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3162: SEVERE: Title level inconsistent:
-
-Issues / Limitations
---------------------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3210: SEVERE: Title level inconsistent:
-
-Future?
--------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3218: SEVERE: Title level inconsistent:
-
-Conclusion
-----------
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3222: WARNING: Bullet list ends without a blank line; unexpected un
-indent.
-c:\leo.repo\leo-editor\leo\doc\html\plugins.html.txt:3227: WARNING: Bullet list ends without a blank line; unexpected un
-indent.
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [100%] zodb
-generating indices... genindex
-writing additional pages... search
-copying images... [100%] screen-shots/render-svg-movie.png
-copying static files... done
-copying extra files... done
-dumping search index in English (code: en) ... done
-dumping object inventory... done
-build succeeded, 17 warnings.
-
-Build finished. The HTML pages are in _build/html.
-
-c:\leo.repo\leo-editor\leo\doc\html&gt;</t>
 <t tx="ekr.20141105085003.7">This plugin registers a controller object to c.theTagController, which
 provides the following API::
 
