@@ -78,11 +78,13 @@ def getGuiPluginsList ():
     return (
         'free_layout',
         'nested_splitter',
+        'qt_big_text',
         'qt_commands',
         'qt_events',
         'qt_frame',
-        'qt_idle_time',
         'qt_gui',
+        'qt_idle_time',
+        'qt_quickheadlines.py',
         'qt_text',
         'qt_tree',
     )
@@ -240,10 +242,10 @@ def run(theDir,fn,rpython=False):
     fn = os.path.abspath(fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     if not os.path.exists(rc_fn):
-        print('pylint rc file not found:',rc_fn)
+        print('pylint rc file not found: %s' % (rc_fn))
         return
     if not os.path.exists(fn):
-        print('file not found:',fn)
+        print('file not found: %s' % (fn))
         return
     # Report the file name and one level of directory.
     path = g.os_path_dirname(fn)
@@ -428,7 +430,7 @@ def scanOptions():
     add('-a', action='store_true', help = 'all')
     add('-c', action='store_true', help = 'core')
     add('-e', action='store_true', help = 'external')
-    add('-f', dest='filename',     help = 'filename')
+    add('-f', dest='filename',     help = 'filename, relative to leo folder')
     add('-g', action='store_true', help = 'gui plugins')
     add('-m', action='store_true', help = 'modes')
     add('-p', action='store_true', help = 'plugins')
