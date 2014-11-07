@@ -5286,6 +5286,28 @@ def es(*args,**keys):
         app.logWaiting.append((s+'\n',color),)
     else:
         app.logWaiting.append((s,color),)
+#@+node:ekr.20141107085700.4: *3* g.es_debug
+def es_debug(*args,**keys):
+    '''
+    Print all non-keyword args, and put them to the log pane in orange.
+
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+    keys['color'] = 'orange'
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(1) # The stack frame, one level up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name # The code name
+    except Exception:
+        name = g.shortFileName(__file__)
+    if name == '<module>':
+        name = g.shortFileName(__file__)
+    if name.endswith('.pyc'):
+        name = name[:-1]
+    g.pr(name,*args,**keys)
+    if not g.app.unitTesting:
+        g.es(name,*args,**keys)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump (s,n = 30,title=None):
 
