@@ -2,7 +2,7 @@
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 import os
-import time
+# import time
 import json
 
     # Leo 4.5.1 final: September 14, 2008
