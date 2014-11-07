@@ -47,6 +47,7 @@ class LeoApp:
 
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
+        self.debug = False              # True: run Leo in debug mode.
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
