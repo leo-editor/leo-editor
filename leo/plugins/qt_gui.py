@@ -27,7 +27,7 @@ if 1:
 #@+node:ekr.20110605121601.18134: ** init
 def init():
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace and g.trace_startup: print('gt_gui.py:init')
+    if trace and g.trace_startup: g.es_debug('(gt_gui.py)')
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
     if not QtCore:

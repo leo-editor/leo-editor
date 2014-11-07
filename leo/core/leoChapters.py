@@ -41,7 +41,7 @@ class ChapterController:
 
         '''Find or make the @chapters and @chapter trash nodes.'''
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('cc.finishCreate',g.callers())
+        if trace: g.es_debug('(cc)')
         cc,c = self,self.c
         if cc.findChaptersNode():
             if hasattr(c.frame.iconBar,'createChaptersIcon'):

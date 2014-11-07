@@ -56,7 +56,7 @@ class Commands (object):
 
         trace = (False or g.trace_startup) and not g.unitTesting
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
-        if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
+        if trace and g.trace_startup: g.es_debug('(Commands)',g.shortFileName(fileName))
         c = self
         if trace and not g.trace_startup:
             t1 = time.clock()
@@ -257,8 +257,7 @@ class Commands (object):
 
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-        if trace:
-            print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
+        if trace: g.es_debug(c.shortFileName(),g.app.gui)
         gnx = 'hidden-root-vnode-gnx'
         self.hiddenRootNode = leoNodes.VNode(context=c,gnx=gnx)
         self.hiddenRootNode.setHeadString('<hidden root VNode>')
@@ -453,9 +452,7 @@ class Commands (object):
         '''Init all cached commander config settings.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-        if trace:
-            print('c.initConfigSettings: c.configInited: %s %s' % (
-            c.configInited,c.shortFileName()))
+        if trace: g.es_debug('c.configInited',c.configInited,c.shortFileName())
         getBool = c.config.getBool
         getColor = c.config.getColor
         getData  = c.config.getData

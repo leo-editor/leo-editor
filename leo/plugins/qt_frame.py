@@ -2054,7 +2054,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
     def finishCreate (self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('qtFrame.finishCreate')
+        if trace: g.es_debug('(qtFrame)')
         f = self
         c = self.c
         assert c

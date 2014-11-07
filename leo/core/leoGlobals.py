@@ -19,6 +19,7 @@ in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
 trace_startup = False
+    # --debug option sets this flag.
     # These traces use print instead of g.trace so that
     # the traces can add class info to the method name.
 trace_gnxDict = False
@@ -1513,8 +1514,8 @@ def checkUnchangedIvars(obj,d,exceptions=None):
 def pause (s):
 
     g.pr(s)
-
-    i = 0 ; n = long(1000) * long(1000)
+    i = 0
+    n = long(1000) * long(1000)
     while i < n:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
@@ -5294,7 +5295,7 @@ def es_debug(*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    keys['color'] = 'orange'
+    keys['color'] = 'blue'
     try: # get the function name from the call stack.
         f1 = sys._getframe(1) # The stack frame, one level up.
         code1 = f1.f_code # The code object
@@ -5796,12 +5797,14 @@ def actualColor(color):
         return color
 
     c = g.app.log.c
-    d = {
-        'black':'log_text_foreground_color',
-        'blue': 'log_warning_color',
-        'red':  'log_error_color',
-    }
-
+    if g.app.debug:
+        d = {} # No color translation
+    else:
+        d = {
+            'black':'log_text_foreground_color',
+            'blue': 'log_warning_color',
+            'red':  'log_error_color',
+        }
     setting = d.get(color)
 
     # Bug fix: 2012/10/17: c.config may not yet exist.

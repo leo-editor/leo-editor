@@ -40,7 +40,7 @@ class LeoApp:
     def __init__(self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('leoApp.__init__')
+        if trace: g.es_debug('(leoApp)')
 
         # These ivars are Leo's global vars.
         # leoGlobals.py contains global switches to be set by hand.
@@ -987,7 +987,7 @@ class LeoApp:
         """Create a commander and its view frame for the Leo main window."""
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('g.app.newCommander: %s %s' % (repr(fileName),repr(relativeFileName)))
+        if trace: g.es_debug(repr(fileName),repr(relativeFileName))
 
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
@@ -1126,7 +1126,7 @@ class LeoApp:
             g.app.createDefaultGui(fileName='g.app.setLeoId',verbose=True)
 
         if g.app.gui is None: # Neither gui could be created: this should never happen.
-            print("Please enter LeoID (e.g. your username, 'johndoe'...)")
+            g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
             if g.isPython3: # 2010/02/04.
                 leoid = input('LeoID: ')
             else:
@@ -1327,7 +1327,7 @@ class LoadManager:
     def __init__ (self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('LoadManager.__init__')
+        if trace: g.es_debug('(LoadManager)')
 
         # Global settings & shortcuts dicts.
         # The are the defaults for computing settings and shortcuts for all loaded files.
@@ -1657,13 +1657,11 @@ class LoadManager:
         settings_d and shortcuts_d.'''
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.trace('lm.computeLocalSettings: %s\n%s\n%s' % (
+        if trace: g.es_debug('%s\n%s\n%s' % (
             c.shortFileName(),settings_d,shortcuts_d))
 
         lm = self
-
         shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag)
-
         assert shortcuts_d
         assert settings_d
 
@@ -1852,8 +1850,7 @@ class LoadManager:
         The caller must init the c.config object.'''
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('lm.openSettingsFile: g.app.gui: %s' % (
-            g.shortFileName(fn)))
+        if trace: g.es_debug(g.shortFileName(fn))
 
         lm = self
         if not fn: return None
@@ -1894,10 +1891,8 @@ class LoadManager:
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
-        tag = 'lm.readGlobalSettingsFiles'
         lm = self
-        if trace and g.trace_startup:
-            print('\n<<<<< %s' % tag)
+        if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         paths = [lm.computeLeoSettingsPath(),lm.computeMyLeoSettingsPath()]
@@ -1916,7 +1911,6 @@ class LoadManager:
                     print(c)
             lm.traceSettingsDict(settings_d,verbose)
             lm.traceShortcutsDict(shortcuts_d,verbose)
-            print('\n>>>>>%s...' % tag)
         lm.globalSettingsDict = settings_d
         lm.globalShortcutsDict = shortcuts_d
         # Clear the cache entries for the commanders.
@@ -2019,10 +2013,8 @@ class LoadManager:
     def createGui(self,pymacs):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('\n==================== LM.createGui')
-
+        if trace: g.es_debug()
         lm = self
-
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
         script     = lm.options.get('script')
@@ -2095,7 +2087,7 @@ class LoadManager:
     def initApp (self,verbose):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('LM.initApp')
+        if trace: g.es_debug()
         assert g.app.loadManager
         import leo.core.leoConfig as leoConfig
         import leo.core.leoNodes as leoNodes
@@ -2174,6 +2166,8 @@ class LoadManager:
         # Handle the args...
         # --debug
         g.app.debug = options.debug
+        if g.app.debug:
+            g.trace_startup = True
         # --gui
         gui = options.gui
         if gui:
@@ -2552,7 +2546,7 @@ class LoadManager:
         '''
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('lm.loadLocalFile: %s' % (fn))
+        if trace: g.es_debug(fn)
         lm = self
         # Step 0: Return if the file is already open.
         fn = g.os_path_finalize(fn)
@@ -2584,7 +2578,7 @@ class LoadManager:
         '''
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('lm.openFileByName: %s' % (g.shortFileName(fn)))   
+        if trace: g.es_debug(g.shortFileName(fn)) 
         lm = self
 
         # Disable the log.
@@ -2817,7 +2811,7 @@ class LogManager:
     def __init__ (self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('LogManager.__init__',g.callers())
+        if trace: g.es_debug('LogManager.__init__',g.callers())
 
         self.log = None             # The LeoFrame containing the present log.
         self.logInited = False      # False: all log message go to logWaiting list.

@@ -1264,7 +1264,7 @@ class GlobalConfigManager:
     def __init__ (self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('g.app.config.__init__')
+        if trace: g.es_debug('(g.app.config)')
 
         # Set later.  To keep pylint happy.
         if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
@@ -1477,8 +1477,8 @@ class GlobalConfigManager:
             isNone = val in ('None','none','') # ,None)
         else:
             isNone = val in (
-                unicode('None'),unicode('none'),unicode(''),
-                'None','none','') #,None)
+                g.u('None'),g.u('none'),g.u(''),
+                'None','none','')
 
         if not self.typesMatch(gs.kind,requestedType):
             # New in 4.4: make sure the types match.
@@ -1728,7 +1728,7 @@ class LocalConfigManager:
     def __init__ (self,c,previousSettings=None):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
+        if trace: g.es_debug('(c.config)',c and c.shortFileName())
         self.c = c
 
         # The shortcuts and settings dicts, set in c.__init__
@@ -1891,7 +1891,7 @@ class LocalConfigManager:
             isNone = val in ('None','none','') # ,None)
         else:
             isNone = val in (
-                unicode('None'),unicode('none'),unicode(''),
+                g.u('None'),g.u('none'),g.u(''),
                 'None','none','') #,None)
 
         if not self.typesMatch(gs.kind,requestedType):
@@ -2265,7 +2265,7 @@ class SettingsTreeParser (ParserBaseClass):
             isNone = val in ('None','none','',None)
         else:
             isNone = val in (
-                unicode('None'),unicode('none'),unicode(''),
+                g.u('None'),g.u('none'),g.u(''),
                 'None','none','',None)
 
         if kind is None: # Not an @x node. (New in Leo 4.4.4)

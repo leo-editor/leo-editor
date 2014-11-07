@@ -1718,7 +1718,7 @@ class KeyHandlerClass:
     def __init__ (self,c):
         '''Create a key handler for c.'''
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('k.__init__')
+        if trace: g.es_debug('(k)')
         self.c = c
         self.dispatchEvent = None
         self.fnc = None
@@ -2163,7 +2163,7 @@ class KeyHandlerClass:
         c.commandsDict has been created when this is called.
         '''
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.trace('k.finishCreate',self.c)
+        if trace: g.es_debug('(k)',self.c)
         c,k = self.c,self
         k.w = c.frame.miniBufferWidget
             # Will be None for NullGui.
