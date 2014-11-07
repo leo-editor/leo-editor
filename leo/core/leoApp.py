@@ -2117,9 +2117,7 @@ class LoadManager:
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helper
     def scanOptions(self,fileName,pymacs):
-
         '''Handle all options, remove them from sys.argv and set lm.options.'''
-
         trace = False
         lm = self
         # print('scanOptions',sys.argv)
@@ -2127,6 +2125,8 @@ class LoadManager:
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
+        add('--debug', action="store_true",
+            help = 'enable debug mode')
         add('--fullscreen', action="store_true",
             help = 'start fullscreen')
         add('--ipython',    action="store_true",dest="use_ipython",
@@ -2172,6 +2172,8 @@ class LoadManager:
             g.trace('options',options)
 
         # Handle the args...
+        # --debug
+        g.app.debug = options.debug
         # --gui
         gui = options.gui
         if gui:
@@ -2258,6 +2260,8 @@ class LoadManager:
                 g.trace('bad --window-size:',windowSize)
         # Compute lm.files
         lm.files = lm.computeFilesList(fileName)
+        if options.debug:
+            g.es_debug('lm.files',lm.files)
         # Post-process the options.
         if pymacs:
             script = None
