@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.10: http://docutils.sourceforge.net/" />
+<title>Leo.plugins.bookmarks</title>
+<--- Cannot embed stylesheet 'c:/users/edreamleo/vr2-css': Permission denied. --->
+</head>
+<body>
+<div class="document" id="leo-plugins-bookmarks">
+<h1 class="title">Leo.plugins.bookmarks</h1>
+
+<p>Manage bookmarks in a list, and show bookmarks in a pane.</p>
+<p>This plugin has two bookmark related functions.  It manages nodes that
+contain bookmarks, and can also display those nodes in a special
+bookmarks pane / panel / subwindow.</p>
+<div class="section" id="general-bookmark-commands">
+<h1>General bookmark commands</h1>
+<dl class="docutils">
+<dt><strong>bookmarks-open-bookmark</strong> opens the bookmark in the selected node <strong>if</strong> the</dt>
+<dd>node has an ancestor which contains <tt class="docutils literal">&#64;bookmarks</tt> in its heading.</dd>
+<dt><strong>bookmarks-open-node</strong>, like <tt class="docutils literal"><span class="pre">bookmarks-open-bookmark</span></tt> but without</dt>
+<dd>the ancestor requirement.</dd>
+<dt><strong>bookmarks-switch</strong></dt>
+<dd>move between your working position in the outline, and the current
+bookmark, in the outline.  This is the keyboard friendly no extra pane
+alternative to the mouse based bookmark pane navigation described below.</dd>
+<dt><strong>bookmarks-bookmark</strong></dt>
+<dd>Add the current node as a bookmark at the current level in the
+bookmarks tree.  Another keyboard friendly alternative.</dd>
+<dt><strong>bookmarks-bookmark-child</strong></dt>
+<dd>Add the current node as a child of the current bookmark, if there is
+a current bookmark.  Another keyboard friendly alternative.</dd>
+</dl>
+</div>
+<div class="section" id="cross-file-bookmark-commands">
+<h1>Cross file bookmark commands</h1>
+<p>These commands let you have personal bookmarks in a .leo file you’re
+sharing with others.  E.g. you can store your personal bookmarks for the
+shared <tt class="docutils literal">LeoPyRef.leo</tt> Leo development outline in <tt class="docutils literal"><span class="pre">~/.leo/workbook.leo</span></tt>.</p>
+<dl class="docutils">
+<dt><strong>bookmarks-mark-as-target</strong></dt>
+<dd>Mark a node in outline A as being the container for
+bookmarks in another outline, outline B.</dd>
+<dt><strong>bookmarks-use-other-outline</strong></dt>
+<dd>Specify that this outline, outline B, should store its bookmarks
+in the marked node in outline A.  This also adds a bookmark display
+pane (described below), but you can ignore it, it won’t persist unless
+you save the layout.</dd>
+</dl>
+<p><em>Note:</em> bookmarks treats file urls missing the <tt class="docutils literal"><span class="pre">file://</span></tt> part as urls,
+which deviates from Leo’s behavior elsewhere.  It also recognizes local UNLs
+like <tt class="docutils literal"><span class="pre">#ToDo--&gt;Critical</span></tt> as urls.</p>
+</div>
+<div class="section" id="bookmarks-pane-commands">
+<h1>Bookmarks pane commands</h1>
+<dl class="docutils">
+<dt><strong>bookmarks-show</strong></dt>
+<dd>Add a pane showing the bookmarks <strong>in the current subtree</strong>
+with unique colors. You can very quickly jump around between nodes in a file
+using this.</dd>
+</dl>
+<p>Nodes can be added and removed from the display with the following mouse actions:</p>
+<dl class="docutils">
+<dt><strong>left-click on bookmark</strong></dt>
+<dd>Jump to that node.</dd>
+<dt><strong>left-click on background</strong></dt>
+<dd>Add a bookmark at the position clicked, unless already present,
+in which case the existing link is highlighted.</dd>
+<dt><strong>control-left-click on bookmark</strong></dt>
+<dd>Remove bookmark.</dd>
+<dt><strong>shift-control-left-click on bookmark</strong></dt>
+<dd>Rename bookmark.</dd>
+<dt><strong>alt-left-click on bookmark</strong></dt>
+<dd>Edit clicked bookmark in bookmark list, to change link text.</dd>
+<dt><strong>alt-shift-left-click on bookmark</strong></dt>
+<dd>Move around bookmark hierarchy without changing nodes, useful for filing</dd>
+<dt><strong>control-alt-left-click on bookmark</strong></dt>
+<dd>Update clicked bookmark to point to current node.</dd>
+<dt><strong>alt-left-click on background</strong></dt>
+<dd>Edit bookmark list.</dd>
+<dt><strong>shift-left-click on bookmark</strong></dt>
+<dd>Add the current node as a <em>child</em> of the clicked bookmark,
+and display the clicked bookmarks children.</dd>
+</dl>
+<p>The <tt class="docutils literal">&#64;setting</tt> <tt class="docutils literal">&#64;int <span class="pre">bookmarks-levels</span> = 1</tt> sets the number of levels of
+hierarchy shown in the bookmarks pane. By default, the &#64;setting &#64;int
+bookmarks_levels = 1 will limit the bookmarks shown to one level, so given these
+bookmarks:</p>
+<pre class="literal-block">
+A
+B
+   B1
+   B2
+C
+</pre>
+<p>you’d just see A B C, with B underlined, indicating it has
+children, and when you click B, one of two things happens.</p>
+<p>With bookmarks_levels = 1 (the default) the effect of clicking on B
+depends on whether or not B is itself a bookmark (contains an URL)
+or just an organizer node (no body).</p>
+<p>If it’s just an organizer node, clicking it immediately shows its
+children.  If it contains an URL itself, the first click makes Leo
+navigate to that URL, a subsequent click shows the children.</p>
+<p>Note that this first click / second click behavior only applies with
+&#64;int bookmarks_levels = 1.</p>
+<p>With &#64;int bookmarks_levels = 2 or more, you’ll initially see:</p>
+<pre class="literal-block">
+A B C
+</pre>
+<p>with B underlined, and clicking on B will immediately show its children, so you see:</p>
+<pre class="literal-block">
+A B C
+B1 B2
+</pre>
+<p>and, if B contains an URL, navigate to the URL</p>
+<p>With &#64;int bookmarks_levels = 0, the original behavior is used,
+hierarchy is ignored, and you see:</p>
+<pre class="literal-block">
+A B B1 B2 C
+</pre>
+<p>all the time.</p>
+<dl class="docutils">
+<dt><strong>bookmarks-level-decrease</strong></dt>
+<dd>Temporarily decrease the value of the the <tt class="docutils literal">&#64;int <span class="pre">bookmarks-levels</span></tt>
+setting.</dd>
+<dt><strong>bookmarks-level-increase</strong></dt>
+<dd>Temporarily increase the value of the the <tt class="docutils literal">&#64;int <span class="pre">bookmarks-levels</span></tt>
+setting.</dd>
+</dl>
+</div>
+<div class="section" id="other-notes">
+<h1>Other notes</h1>
+<p>The <tt class="docutils literal">quickMove.py</tt> plugin also provides actions for adding nodes to a bookmark list.</p>
+<p>The free_layout Action button context menu will also allow you to add one of
+these bookmark panes, and they will be saved and loaded again if the layout is
+saved and loaded.</p>
+<div class="section" id="bookmarks-for-tabbed-body-editors">
+<h2>Bookmarks for tabbed body editors</h2>
+<p>Create a new outline with the following nodes, as simple top level nodes:</p>
+<pre class="literal-block">
+aardvarks
+apples
+autos
+bats
+bison
+bunting
+&#64;bookmarks
+</pre>
+<p>(pro-tip, with the paste_as_headlines plugin active, you can just copy the above and use <cite>Edit -&gt; Paste as headlines</cite>, you’ll need to promote them to top level again though).</p>
+<p>Select the <tt class="docutils literal">&#64;bookmarks</tt> node and then Alt-X <cite>bookmarks-show</cite>, which should create a new empty pane above the body pane.  Select the <tt class="docutils literal">aardvarks</tt> node and click in the new empty pane, repeat
+for the <tt class="docutils literal">bats</tt> node.</p>
+<p>Squish the new empty pane up so it’s just high enough to hold the two bookmarks, or “tabs”, and
+then right click a pane divider and save this layout as “Tabs” or whatever you want to call it.</p>
+<p>So now you have two tabs which jump between two nodes.  Click the <tt class="docutils literal">aardvarks</tt> tab, then
+select the <tt class="docutils literal">apples</tt> node.  Now shift-click the <tt class="docutils literal">aardvarks</tt> tab.  Now you are entering sub tabs of the <tt class="docutils literal">aardvarks</tt> tab.  You might want to repeat the <tt class="docutils literal">aardvarks</tt> tab at this level, just select the node and click in the empty space in the bookmarks pane to repeat it here.  You could add <tt class="docutils literal">autos</tt> at this level too.</p>
+<p>How the ‘tabs’ are displayed (one or more levels at once etc.) and how you edit them are described in the earlier parts of these docs.  For example at the top level the first time you click the <tt class="docutils literal">aardvarks</tt> tab it just shows you the <tt class="docutils literal">aardvarks</tt> node, it requires a second click to see its subtabs (aardvarks, apples, and autos), because the top level <tt class="docutils literal">aardvarks</tt> tab is both a bookmark and an organizer node.  If you want it to be just and organizer node, alt-click it to edit the bookmark node itself, and delete the body text (UNL) there.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
