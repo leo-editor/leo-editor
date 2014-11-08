@@ -474,6 +474,7 @@ LeoDist.leo:
 Run make-leo.
     - Commit all files before running make-leo.
     - Run make-leo button in leoDist.leo.
+    - Commit any changed files.
 Create the executable installer:
     - Double-click leo.nsi.
 Test files in installed folder.
