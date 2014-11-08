@@ -10570,7 +10570,7 @@ class SpellTabHandler:
             if i < len(s):
                 # A non-empty word has been found.
                 j = i
-                while j < len(s) and g.isWordChar(s[j]):
+                while j < len(s) and (g.isWordChar(s[j]) or s[j] == "'"):
                     j += 1
                 word = s[i:j]
                 # This trace verifies that all words have been checked.
