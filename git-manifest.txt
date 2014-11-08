@@ -1024,6 +1024,7 @@ leo/core/buttons.txt
 leo/core/commit_timestamp.json
 leo/core/format-code.py
 leo/core/key-handling-notes.txt
+leo/core/leo.html
 leo/core/leoApp.py
 leo/core/leoAst.py
 leo/core/leoAtFile.py
@@ -1760,6 +1761,7 @@ leo/plugins/initinclass.py
 leo/plugins/interact.py
 leo/plugins/jinjarender.py
 leo/plugins/keys.css
+leo/plugins/leo.html
 leo/plugins/leoGuiPluginsRef.leo
 leo/plugins/leoOPML.py
 leo/plugins/leoPluginNotes.txt

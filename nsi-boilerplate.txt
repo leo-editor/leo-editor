@@ -13,6 +13,8 @@ Var PythonDirectory
     ; Set by onInit.  May be set in Python Directory page.
 
 !define PythonExecutable "$PythonDirectory\pythonw.exe"
+    ;;; Always use pythonw.exe here.
+    ;;; To debug, set the target to python.exe in the desktop icon properties.
 
 !addincludedir C:\leo.repo\leo-editor\leo\dist
 
