@@ -11,5 +11,13 @@ Description:
     Leo features a multi-window outlining editor, Python colorizing,
     powerful outline commands and many other things, including 
     unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-    Leo requires Python 2.6 or above. Leo works with Python 3.x.
+    Leo requires Python 2.6 or above. Leo works with Python 3.x::
+    
+        Docs:      http://leoeditor.com/leo_toc.html
+        Tutorials: http://leoeditor.com/tutorial.html
+        Videos:    http://leoeditor.com/screencasts.html
+        Forum:     http://groups.google.com/group/leo-editor
+        Download:  http://sourceforge.net/projects/leo/files/
+        Github:    https://github.com/leo-editor/leo-editor
+        Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.

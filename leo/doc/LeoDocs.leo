@@ -1318,6 +1318,20 @@
 <v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
+<v t="ekr.20141108064630.6"><vh>To scripting chapter</vh>
+<v t="ekr.20141108064630.7"><vh>How to make body text insertion at cursor permanent? (*** to do ***)</vh></v>
+</v>
+<v t="ekr.20141108064630.5"><vh>To FAQ</vh>
+<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
+<v t="ekr.20141108064630.9"><vh>What is a clone war and what happens?</vh></v>
+<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
+<v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
+<v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
+<v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
+<v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
+<v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
+<v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22883,7 +22897,497 @@ details.
 <t tx="ekr.20141108044720.5">- Leo's desktop button now works properly with Python 3.x.
   The underlying cause was that Leo did not work with python34\pythonw.exe.
 
-- Fixed name of a Qt class in richtext.py plugin.</t>
+- Fixed name of a Qt class in richtext.py plugin.
+</t>
+<t tx="ekr.20141108064630.10">Leo makes it easy to create and run unit tests from individual outline
+nodes or trees. A node whose headline starts with @test defines a unit
+test. The body text of the @test node contains a **self-contained** unit
+test. For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do::
+
+    &lt;alt-x&gt;run-selected-unit-tests-locally.
+
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do::
+
+    &lt;alt-x&gt;run&lt;tab&gt;
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+For more details about unit testing, see: 
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's. You
+only need to be concerned about unit tests that start failing after you
+make your changes.
+</t>
+<t tx="ekr.20141108064630.12">@language rest
+
+File under things-I-didn't-know-but-should-have:
+
+Instead of creating batch files all over the place to fire up python
+programs, and then having to cope with annoying "Terminate batch job
+(Y/N)?" with Ctrl-C/Break you can ask python setuptools to create an .exe
+in the Python\Scripts folder.
+
+in same folder as foo.py create setup.py, populate like so::
+
+@language python
+
+    from setuptools import setup
+    
+    setup(
+        name='Foo for you',
+        version='0.3',
+        py_modules=['foo'],
+        entry_points='''
+            [console_scripts]
+            foo = foo
+            '''
+        )
+    
+@language rest
+
+Then run "pip --editable install . " in the same folder. Foo.exe will be
+created in C:\pythonxx\Scripts. As long as that folder is in path you can
+use foo like any other command line program. Furthermore the "editable"
+parameter means we can continue to edit and change foo.py and the changes
+are always live.
+
+Yeah! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py
+--do-stuff-here ..." for me. :)
+
+Works for Leo too -- with the existing setup.py. It creates leo.exe and
+leoc.exe for Windowed mode (no log messages to console) and console mode
+respectively.
+</t>
+<t tx="ekr.20141108064630.13">I am going through something similar Matt Wilkie went through in this post
+https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
+
+Basically I can find interesting functions in LeoPyRef.leo but I don't know
+how to access them from my new leo scripts.
+
+I don't get the difference when I have to call them using g.Functionname(), 
+c.functionname(), or when those wont do.
+
+How can I call the function "insertIconFromFile"?
+How can I know how to call functions found in LeoPyRef.leo?
+
+-----
+
+Ok, in order to print icons, the code is this:
+
+c.editCommands.insertIconFromFile(path)
+
+Im quoting from this Leo manual
+http://leoeditor.com/scripting.html#important-objects,
+http://leoeditor.com/scripting.html#inserting-and-deleting-icons
+
+Although I still have a mess on which functions can be called how, and
+where to find the list of classes that can be called such as "editCommands"
+and the rest that they might exist. Thanks!
+
+I suppose you could say that there is no general solution, but the
+situation isn't really all that difficult.
+
+Start with c. We know what that is: it is a commander object representing
+an open outline.
+
+There are **official ivars** of c, all referring to wrapper classes defined
+in leoFrame.py::
+
+    c.frame         an instance of leoFrame.
+    c.frame.tree    an instance of  leoTree.
+    c.frame.body    an instance of leoBody.
+    c.frame.log     an instance of leoLog.
+
+The tree, body and log objects have a *wrapper* object
+
+c.frame.tree.wrapper
+c.frame.body.wrapper
+c.frame.log.wrapper
+
+See http://leoeditor.com/scripting.html#c-frame-body-bodyctrl for a
+description of the high-level text interface supported by all high-level
+text widgets, including the log and body classes.
+
+These wrapper classes have a widget ivar, which is a reference to the
+corresponding Qt widget object.  For example::
+
+    import PyQt4.QtGui as QtGui
+    w =3D c.frame.body.wrapper.widget
+    g.es(w)
+    g.es(isinstance(w,QtGui.QTextBrowser)
+
+yields::
+
+    (LeoQTextBrowser) 62418136
+    True
+
+As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
+
+==== Terry
+
+I'm not aware of a general solution to the problem of finding the various
+pieces of Leo's class structure. Basically there are all these classes
+defined in the source, and instances of these are attached to each other in
+a hierarchical network (with loops).
+
+I've written an introspection function which lists the methods and instance
+variables (and class variables) of an arbitrary object by name and by type.
+I should release it. It builds its lists in a Leo outline, so you can
+navigate around that outline and expand nodes by introspection as needed.
+
+It occurs to me that the same code could be used to search Leo's runtime
+object hierarchy for you, i.e. you enter 'insertIconFromFile' and it
+recursively searches for it.
+
+-----
+
+I didn't really finish the above para. The problem is that it's hard to
+guess what the names of the attachment points are, and the attaching is
+done in a variety of places, sometimes by factory functions which further
+obscure linkages. Not a fault with Leo, just the way programs work. So the
+tool I've written may be the best approach to mapping Leo's runtime
+structure. Another thing it could do, try and map 'major' classes, or at
+least classes from leo.core.* - i.e. ignore the built in types.
+</t>
+<t tx="ekr.20141108064630.14">If I want to use leo to make mathematical notes, how can I type in some
+special mathematical symbols? Or is there a good way to make mathematical
+notes using leo?
+
+===== Terry
+
+I use itex2MML with reStructuredText.  So within Leo you're looking at
+LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
+the latter.
+
+===== Jose
+
+I've been doing this for about a year now.  I use the math docutils 
+directive.  A custom .XCompose file (for example: 
+https://github.com/kragen/xcompose)  also helps.
+
+===== Terry
+
+I think math was added to docutils after I started using itex2mml,
+neater to use docutils built in math now I think.
+
+Although having said that, playing with docutils math a bit suggests
+itex2mml gives more complete support for both MathML and perhaps LaTeX
+math (with the PDF target).
+
+===== Jose
+
+Terry, your setup is probably more flexible, but I haven't had any problems with 
+docutils math. It seems to support all the syntax that I've found necessary.
+
+I forgot to mention that the viewrendered plug-in doesn't display math 
+correctly.  I'm not sure what the problem is, I remember trying to figure 
+it out a while back, but I never got anywhere.  It's not really a big 
+problem though, I have scripts to compile nodes to html/pdfs and open them 
+in firefox/pdf reader; math works fine that way.
+
+===== From: offray
+
+Is not properly Leo, but is python related, tailored for math and with a
+web interface and has leo bindings, check IPython:
+
+http://ipython.org/
+
+I'm using it for all my math related writing and I think that point the
+future of interactive writing in Python. I dream of a body pane on leo
+with the features of the python qt console.
+</t>
+<t tx="ekr.20141108064630.15">The code that handles the rclick menu is in the QtIconBarClass class in
+qt_frame.py.
+
+On your machine there was some indicator in the top-level button indicating
+that it had structure. How did you create such buttons?
+
+    @string mod_scripting_subtext = ▾
+
+I prefer a bigger triangle: ▼ U=25BC: Black Down-Pointing Triangle.
+
+It's reasonable to have the top-level button just be a placeholder for
+subsidiary @rclick nodes. To do that without getting a warning when
+clicking the top-level button, set its script to "empty string".
+
+</t>
+<t tx="ekr.20141108064630.16">It might be interesting to have some wallpapers/tiles to visually represent
+various categories of methods, e.g. ctors, setters, getters, etc. Maybe
+ones that hint at the uses of a particular design pattern. Could I use a uA
+to control setting?
+
+Put the following in the style-sheet:
+
+    QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
+
+If you wanted node specific backgrounds Leo would have to start setting
+an attribute on the body widget, probably the gnx, so you could do::
+
+    QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
+        background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
+    }
+</t>
+<t tx="ekr.20141108064630.18">@language rest
+
+I'm trying to create a interactive chart in a embedded in a new leo pane
+using matplotlib. However, I am not sure about the the best way to
+implement this. I would appreciate some guidance on this please? The
+questions I would like answered are:
+
+1. How do I create a new blank pane for embedding a chart as well as other
+   QtWidgets.
+
+2. Can I do this in a script or do I need to work with leo source?
+
+I want to create a data processing and visualization tool kit in leo. Like
+Excel but using nodes instead of columns. Nodes will have data and I want
+to create new data nodes by applying python functions to data in existing
+nodes. The thing missing is the visualization within a leo pane (I can
+easily launch a chart in it's own window).
+
+----- Terry Brown
+
+You can run this script from any body pane:
+
+@language python
+
+
+'''
+A script that adds a MatPlotLib pane to Leo.
+
+After running this script, right click on one of the pane dividers and
+select Insert. A new pane with a button 'Action' appears. Click it, and
+select "Add matplot" from the context menu.
+'''
+
+from leo.core.leoQt import QtWidgets
+
+class MatplotPaneProvider:
+    def __init__(self, c):
+        self.c = c
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[('Add matplot', '_add_matplot_pane')]
+    def ns_provide(self, id_):
+        if id_ == '_add_matplot_pane':
+            c = self.c
+            w = QtWidgets.QSlider() ### w = myMatplotWidget()
+            return w
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        # provider ID is not the same as the service id_ above
+        return "completely unique value here"
+
+MatplotPaneProvider(c)
+
+@language rest
+
+----- OP
+
+I have managed to get a matplotlib graph embedded within a pane in 
+leo as a widget. I now need some help with how to interact with the 
+widget using scripts in leo. I am unsure about the following:
+ 
+*1/ How do I expose the widget within the leo environment?* 
+
+If you were only going to have one and you weren't going to destroy it,
+you could just do something simple like c._matplot = self in its
+constrictor (assuming c was passed to the constructor).
+
+If you're going to have more than one and they may be destroyed, it
+might be simplest to let the free_layout / nested_splitter system manage
+them::
+
+    ts = c.free_layout.get_top_splitter()
+    matplotters = ts.findChildren(myMatplotWidget)
+
+should return a list of the widgets of your class in the layout, but only
+if they're in the main window, widgets in extra windows opened from the
+"Open window" context menu item would be missed, I can add a
+find_children() method to complement the find_child() method the splitters
+already have to account for this.
+
+Detail: the above is just using Qt's QObject.findChildren(), the
+nested_splitter find_child() and (not yet written) find_children()
+versions search the extra windows as well.
+
+Here I have created a self.mat in your MatplotPaneProvider class to make 
+the windget accessible but it doesn't feel like the correct way to do this.
+
+@language python
+
+    mat = MatplotPaneProvider(c)
+    mat.mat.someMethod()
+    mat.mat.someOtherMethod()
+    
+@language rest
+ 
+2. I would also like to make the widget accessible from any script within
+   leo. What's the leo way of doing this?
+
+See above
+ 
+3. If I create more than 1 pane containing these widgets. How do I switch
+   between them in scripts?*
+
+See above
+
+4. Running this script more than once creates multiple items for Add
+   Matplot when pressing the Action button. How do I stop this from
+   happening? I have already tried returning a unique integer in *
+   ns_provider_id *but that did not work.*
+ 
+The value returned by ns_provider_id should be unique for the provider
+class, but constant. So it can just return something like "matplotlib provider ver 1"
+</t>
+<t tx="ekr.20141108064630.5">@language rest
+</t>
+<t tx="ekr.20141108064630.6"></t>
+<t tx="ekr.20141108064630.7">From: SegundoBob &lt;bhossley@ieee.org&gt;
+
+When focus is moved away
+from and then back to the modified node, the inserted text
+disappears.  That is, Leo-Editor seems unaware of the insertion.
+</t>
+<t tx="ekr.20141108064630.8">.. https://groups.google.com/d/msg/leo-editor/4s44H9cUJGY/ewRBDBSw-A8J
+
+For the last several weeks I've used clones in a new, more effective way,
+inspired by git's stash/unstash commands. Here are the main ideas.
+
+1. [Most important] I avoid putting clones in two different *external*
+   files.
+
+For any task, I create a task node that resides in @file leoToDo.txt. I
+clone that node and put it in the outline, *never* in any other @file node.
+This instantly eliminates clone wars.
+
+2. I use top-level "stashed" nodes/trees in my local copy of leoPy.leo.
+
+These clones are *not* written to any external file, so they would be lost
+if I lost leoPy.leo. But the risks are negligible because all stashed nodes
+are clones of nodes that *do* exist in external files.
+
+3. I have two main stashed trees: recent files and recent code.
+
+The "recent files" tree contains clones of all the @file nodes I have
+worked on recently. This speeds up access to them. That happens
+surprisingly often--often enough to be well worth maintaining the tree.
+Furthermore, because Leo's new pylint command now works on trees, I can
+check all recently-changed files simply by running pylint on the "recent
+files" tree.
+
+The "recent code" tree is even more valuable, for three reasons. The first
+is obvious--it speeds access to recently-changed nodes.
+
+Second, the "recent code" tree allows me to work on multiple tasks without
+getting overwhelmed by details and loose nodes lying around. I add
+organizer nodes as needed to make accessing the nodes faster, and also to
+jog my memory about what I was doing when I changed those nodes ;-)
+
+Third, the "recent code" tree allows me *not* to put clones in the @file
+leoProjects.txt tree. This leads me to...
+
+4. I use clones in a stylized way when fixing and committing bugs.
+
+I always use clones when working on a project. A "task" node contains
+clones of all nodes related to the task. The task node typically remains in
+leoToDo.txt until the task is completely finished. While working on the
+bug, I create a clone of the task node, and move that clone to the bottom
+top-level node of the outline. Among other things, this makes it easy to
+limit searches without actually choosing "suboutline only" in the Find
+panel. This workflow is decades old.
+
+The following is the heart of the new workflow. When a task is complete, I
+do the following:
+
+A. First, I create a **stashed-task** node, containing all the clones that
+    were previously in the task node.
+
+The *stashed-task* becomes pre-writing for the commit log. The *task* node
+instantly becomes pre-writing for the release notes, so if it needs to
+discuss any code in the clones that have just been moved to the
+stashed-task node, I write those words immediately, while all details are
+fresh in my mind.
+
+B. Now I move the cloned task node that is in leoToDo.txt to the
+   appropriate place in leoProjects.txt.
+
+C. Next I do the commit.
+
+The *other* clone of the task node, and the stashed task node are still
+within easy reach, and I typically use both nodes to create the commit log.
+The commit will typically consist of the changed leoToDo.txt and
+leoProjects.txt and whatever .py files the task itself changed. Happily,
+leoToDo.txt and leoProjects.txt are now up-to-date because of steps A and
+B.
+
+D. Finally, I clean up.
+
+I delete the top-level clone of the task node, and move the stashed-task
+node to the "recent code" tree.
+
+E. Later, when it appears that activity has died down on various projects,
+   I'll delete nodes from the "recent files" an "recent code" trees. This
+   is a minor judgment call: I want to leave nodes in the trees while they
+   are useful, but not significantly longer than that. I do *not* regard
+   these trees as permanently useful. leoProjects.txt should contain *all*
+   permanent notes about a project.
+
+===== Conclusions
+
+This work flow may seem complicated. Believe me, it is not. It's easier to
+use than to describe.
+
+This workflow has big advantages:
+
+1. Clone wars are gone for good.
+2. All recent data is easily available.
+3. Task nodes and stashed-task nodes provide natural places for
+   proto-documentation.
+4. Banning clones from leoProjects.txt forces me to complete the first
+   draft of the documentation before committing the fix.
+</t>
+<t tx="ekr.20141108064630.9">A clone war happens when:
+
+A. A clone appears in two separate external files, not counting .leo files.
+
+B. One of those clones changes in the external file but not the other.
+
+Leo handles such situations as follows:
+
+    **The last clone that Leo reads wins.**
+
+That is, the last copy of the clone that Leo reads sets the node's headline
+and body text. If you put clones in several external files it is up to
+*you* to know these rules and handle any resulting conflicts.
+
+Whenever Leo detects multiple values for a cloned node, Leo creates a
+"Recovered nodes" tree. This tree contains all the various values for the
+clone. nicely formatted so that it is easy to determine where the
+differences are.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

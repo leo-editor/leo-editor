@@ -3,6 +3,7 @@
 .. @@language rest
 
 .. @+all
+.. @+node:ekr.20141108045647.2: ** Removed stand-alone globals
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

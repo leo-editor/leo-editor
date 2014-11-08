@@ -146,7 +146,15 @@ Description:
     Leo features a multi-window outlining editor, Python colorizing,
     powerful outline commands and many other things, including 
     unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-    Leo requires Python 2.6 or above. Leo works with Python 3.x.
+    Leo requires Python 2.6 or above. Leo works with Python 3.x::
+    
+        Docs:      http://leoeditor.com/leo_toc.html
+        Tutorials: http://leoeditor.com/tutorial.html
+        Videos:    http://leoeditor.com/screencasts.html
+        Forum:     http://groups.google.com/group/leo-editor
+        Download:  http://sourceforge.net/projects/leo/files/
+        Github:    https://github.com/leo-editor/leo-editor
+        Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.0 alpha 2                     November 8, 2014
@@ -487,16 +495,15 @@ Create a git tag **last**.
 
 ===== Scan all folders &amp; files before uploading.
 
-Create Release on SourceForge:
-    http://sourceforge.net/projects/leo/
+Create Release on SourceForge: http://sourceforge.net/projects/leo/
 
 Announcements
 - Update version number on Leo's wikipedia site:
     http://en.wikipedia.org/wiki/Leo_(editor)
     - Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
-- Announce to SourceForge itself.
 - Announce to leo-editor.
+- Announce to SourceForge:  http://sourceforge.net/projects/leo/
 - Announce to comp.lang.python: google comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form
 - Twitter
