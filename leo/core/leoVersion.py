@@ -16,6 +16,7 @@ import json
     # Leo 4.11 b1: October 31, 2013
     # Leo 4.11 final: November 6, 2013
     # Leo 5.0a1: November 6, 2014
+    # Leo 5.0a2: November 8, 2014
 
 # get info from leo/core/commit_timestamp.json
 leo_core_path = os.path.dirname(os.path.realpath(__file__))
@@ -25,7 +26,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "5.0a1" # Used if no git version is available.
+version = "5.0a2" # Used if no git version is available.
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}

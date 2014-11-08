@@ -135,7 +135,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-alpha-1
+Version: 5.0-alpha-2
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -472,11 +472,8 @@ LeoDist.leo:
     - Check readme.txt spelling.
     - Check 'PKG-INFO.TXT'
 Run make-leo.
-    - Commit all files before running make-leo.  This provides a baseline.
+    - Commit all files before running make-leo.
     - Run make-leo button in leoDist.leo.
-    - Commit the slightly-changed bzr-manifest.txt.
-    - Change the build number in version.py to one more than the present revno.
-    - Commit the change to version.py, thereby making the build number match the final revno.
 Create the executable installer:
     - Double-click leo.nsi.
 Test files in installed folder.
@@ -486,11 +483,6 @@ Test files in installed folder.
         - leoPy.leo
         - LeoDocs.leo
 Create a git tag **last**.
-    - git tag leo-x-y
-    - git commit --unchanged -m "added tag"
-    - git push
-Optional: update leoDist.leo *after* doing the commit that adds the tag.
-    - This ensures that leoDist.leo in the distro matches the leoDist.leo in the tagged revno.
 
 ===== Scan all folders &amp; files before uploading.
 
@@ -549,7 +541,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-a1' ##version
+version = '5.0-a2' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
