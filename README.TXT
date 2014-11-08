@@ -1,6 +1,6 @@
-Leo 5.0 alpha 1                             November 5, 2014
+Leo 5.0 alpha 2                     November 8, 2014
 
-Leo 5.0a1 is now available at:
+Leo 5.0a2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -26,7 +26,7 @@ The highlights of Leo 5.0
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:

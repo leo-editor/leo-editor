@@ -149,9 +149,9 @@ Description:
     Leo requires Python 2.6 or above. Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 alpha 1                             November 5, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 alpha 2                     November 8, 2014
 
-Leo 5.0a1 is now available at:
+Leo 5.0a2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -177,7 +177,7 @@ The highlights of Leo 5.0
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:
@@ -442,9 +442,8 @@ import time</t>
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
 
-Make sure Leo looks good without myLeoSettings.leo.
-
 Pre-testing:
+    - Make sure Leo looks good without myLeoSettings.leo.
     - Run all unit tests.
     - Run pylint -a.
 Release notes and web documentation:
@@ -1338,9 +1337,9 @@ leo/test/unittest/.leo_shadow/  export-ignore
         assert g.os_path_exists(src),src
         shutil.copyfile(src,dst)
 </t>
-<t tx="ekr.20141105082156.2">Leo 5.0 alpha 1                             November 5, 2014
+<t tx="ekr.20141105082156.2">Leo 5.0 alpha 2                     November 8, 2014
 
-Leo 5.0a1 is now available at:
+Leo 5.0a2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -1366,7 +1365,7 @@ The highlights of Leo 5.0
     - No need to change Leo's main style sheet:
       it can be customized with @color and @font settings.
     - @persistence nodes save data in @auto trees.
-    - A plugable architecture for @auto nodes.
+    - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 * For beginners:

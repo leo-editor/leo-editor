@@ -1138,7 +1138,7 @@
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
-<v t="ekr.20141103061944.55"><vh>Leo 5.0a1 release notes</vh>
+<v t="ekr.20141103061944.55"><vh>Leo 5.0a2 release notes</vh>
 <v t="ekr.20141103061944.246"><vh>Highlights</vh>
 <v t="ekr.20141103113220.17"><vh>Better integration with Vim, Emacs &amp; pylint</vh>
 <v t="ekr.20141103061944.216"><vh>vim mode</vh></v>
@@ -1158,6 +1158,8 @@
 <v t="ekr.20141103061944.230"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 </v>
 <v t="ekr.20141103061944.94"><vh>Bugs fixed</vh>
+<v t="ekr.20141108044720.5"><vh>Bugs fixed in 5.0a2</vh></v>
+<v t="ekr.20141108044720.4"><vh>Bugs fixed in 5.0a1</vh>
 <v t="ekr.20141103061944.240"><vh>Fixed 14 github bugs</vh>
 <v t="ekr.20141103061944.152"><vh>Fixed bug 12: when hoisted, the (alt-)arrow keys can't navigate to the top node</vh></v>
 <v t="ekr.20141104053638.7"><vh>Fixed bug 28: Leo hangs when a node with too large body is selected</vh></v>
@@ -1244,6 +1246,7 @@
 <v t="ekr.20141103061944.128"><vh>Set the default syntax color for operators to black</vh></v>
 <v t="ekr.20141103061944.130"><vh>Suppressed duplicate console messages</vh></v>
 <v t="ekr.20141104143314.1"><vh>Worked around a strange PyQt5 bug in LeoQtGui.runSaveFileDialog</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20141103061944.182"><vh>Code</vh>
@@ -21387,9 +21390,9 @@ just 'Setup' with this pluing active.
 <t tx="ekr.20141103061944.246"></t>
 <t tx="ekr.20141103061944.247"></t>
 <t tx="ekr.20141103061944.248"></t>
-<t tx="ekr.20141103061944.55">Leo 5.0 alpha 1                             November 5, 2014
+<t tx="ekr.20141103061944.55">Leo 5.0 alpha 2                     November 8, 2014
 
-Leo 5.0a1 is now available at:
+Leo 5.0a2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -22876,6 +22879,11 @@ other precedence.  Parentheses are not supported. See below for more
 details.
 
 </t>
+<t tx="ekr.20141108044720.4"></t>
+<t tx="ekr.20141108044720.5">- Leo's desktop button now works properly with Python 3.x.
+  The underlying cause was that Leo did not work with python34\pythonw.exe.
+
+- Fixed name of a Qt class in richtext.py plugin.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
