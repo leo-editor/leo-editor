@@ -71,7 +71,11 @@ if sys.platform != 'cli':
             self.fileName = fileName
             self.silent = silent
             self.inClipboard = inClipboard
-            xml.sax.saxutils.XMLGenerator.__init__(self)
+            out = sys.stdout if sys.stdout else g.fileLikeObject()
+                # Fix the exceedingly strange problem with Python 3.x and pythonw.exe.
+                # The sax ctor throws an exception in Python 3.x if sys.stdout is None.
+                # The workaround is use a disposable output stream in that case.
+            xml.sax.saxutils.XMLGenerator.__init__(self,out=out)
                 # Init the base class.
             #@+<< define dispatch dict >>
             #@+node:ekr.20060919110638.21: *5* << define dispatch dict >>
@@ -765,9 +769,7 @@ class FileCommands:
         return ok, c.frame.ratio
     #@+node:ekr.20090526081836.5841: *5* fc.getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):
-
         '''Read the .leo file and create the outline.'''
-
         c,fc = self.c,self
         try:
             ok = True
@@ -789,7 +791,6 @@ class FileCommands:
                 g.es_exception()
                 c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
-
         return ok
     #@+node:ekr.20100205060712.8314: *5* fc.handleNodeConflicts & helper
     def handleNodeConflicts (self):
@@ -1354,6 +1355,7 @@ class FileCommands:
                 parser.setFeature(xml.sax.handler.feature_external_pes,1)
                     # Include all external parameter entities
                     # Hopefully the parser can figure out the encoding from the <?xml> element.
+            # It's very hard to do anything meaningful wih an exception.
             handler = SaxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString

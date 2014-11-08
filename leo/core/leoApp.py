@@ -1602,6 +1602,9 @@ class LoadManager:
         # Get the name of the workbook.
         fn = g.app.config.getString(setting='default_leo_file')
             # The default is ~/.leo/workbook.leo
+        if not fn and g.app.debug:
+            g.es_debug("FAILED g.app.config.getString(setting='default_leo_file')")
+            fn = g.os_path_finalize('~/.leo/workbook.leo')
         fn = g.os_path_finalize(fn)
         if not fn: return
         if g.os_path_exists(fn):
@@ -1700,26 +1703,24 @@ class LoadManager:
         return shortcutsDict,settingsDict
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings (self,fn):
-
-        '''Return the settings in effect for fn.  Typically,
-        this involves pre-reading fn.'''
-
+        '''
+        Return the settings in effect for fn. Typically, this involves
+        pre-reading fn.
+        '''
         lm = self
         settingsName  = 'settings dict for %s' % g.shortFileName(fn)
         shortcutsName = 'shortcuts dict for %s' % g.shortFileName(fn)
-
         # A special case: settings in leoSettings.leo do *not* override
         # the global settings, that is, settings in myLeoSettings.leo.
         isLeoSettings = g.shortFileName(fn).lower()=='leosettings.leo'
-
-        if fn and lm.isLeoFile(fn) and not isLeoSettings and g.os_path_exists(fn):
+        exists = g.os_path_exists(fn)
+        if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
             # Open the file usinging a null gui.
             try:
                 g.app.preReadFlag = True
                 c = lm.openSettingsFile(fn)
             finally:
                 g.app.preReadFlag = False
-
             # Merge the settings from c into *copies* of the global dicts.
             d1,d2 = lm.computeLocalSettings(c,
                 lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
@@ -1730,7 +1731,6 @@ class LoadManager:
             # Get the settings from the globals settings dicts.
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
-
         return PreviousSettings(d1,d2)
     #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts (self,c,old_d,new_d):
@@ -1844,14 +1844,12 @@ class LoadManager:
         return result
     #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile
     def openSettingsFile (self,fn):
+        '''
+        Open a settings file with a null gui.  Return the commander.
 
-        '''Open a settings file with a null gui.  Return the commander.
-
-        The caller must init the c.config object.'''
-
+        The caller must init the c.config object.
+        '''
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug(g.shortFileName(fn))
-
         lm = self
         if not fn: return None
 
@@ -1860,6 +1858,7 @@ class LoadManager:
             not g.app.silentMode and
             not g.app.batchMode)
             # and not g.app.inBridge
+
         def message(s):
             # This occurs early in startup, so use the following.
             if not giveMessage: return
@@ -1868,10 +1867,8 @@ class LoadManager:
             g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
-
         if theFile:
             message('reading settings in %s' % (fn))
-
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2811,7 +2808,7 @@ class LogManager:
     def __init__ (self):
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('LogManager.__init__',g.callers())
+        if trace: g.es_debug('(LogManager)')
 
         self.log = None             # The LeoFrame containing the present log.
         self.logInited = False      # False: all log message go to logWaiting list.

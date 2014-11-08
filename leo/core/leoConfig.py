@@ -1090,9 +1090,8 @@ class ParserBaseClass:
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse (self):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c,k = self.c,self.c.k
-
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),valType=g.GeneralSetting)
@@ -1107,11 +1106,8 @@ class ParserBaseClass:
             # c.rootPosition() doesn't exist yet.
             # This is not an error.
             if trace:
-                print('****************'
-                    'ParserBaseClass.traverse: no settings tree for %s' % (
-                        c.shortFileName()))
+                g.es_debug('no settings tree for %s' % (c.shortFileName()))
             return self.shortcutsDict,self.settingsDict
-
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
@@ -1120,7 +1116,6 @@ class ParserBaseClass:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
         # Return the raw dict, unmerged.
         return self.shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError

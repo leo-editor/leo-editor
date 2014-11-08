@@ -452,7 +452,7 @@ class Commands (object):
         '''Init all cached commander config settings.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-        if trace: g.es_debug('c.configInited',c.configInited,c.shortFileName())
+        if trace: g.es_debug(c.configInited,c.shortFileName())
         getBool = c.config.getBool
         getColor = c.config.getColor
         getData  = c.config.getData
