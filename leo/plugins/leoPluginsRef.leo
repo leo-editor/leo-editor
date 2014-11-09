@@ -154,6 +154,7 @@
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
+<v t="ekr.20141109072314.1"><vh>@file watchfiles.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
