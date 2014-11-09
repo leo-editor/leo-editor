@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141109053526.9: * @file watchfiles.py
 #@@first
+#@+<< watchfiles.py docstring >>
+#@+node:ekr.20141109143634.5: ** << watchfiles.py docstring >>
 '''
 A plugin to update Leo nodes when corresponding external files change.
 
@@ -14,9 +16,12 @@ https://bugs.launchpad.net/leo-editor/+bug/1259755
 Leo should keep the external editor's temp file up to date
 
 '''
+#@-<< watchfiles.py docstring >>
 # This plugin might be moved to Leo's core.
+import leo.core.leoGlobals as g
 #@+others
-#@+node:ekr.20141109072407.7: ** notes 1259974: Leo should watch @ node contents for external updates
+#@+node:ekr.20141109143634.6: ** notes
+#@+node:ekr.20141109072407.7: *3* notes 1259974: Leo should watch @ node contents for external updates
 #@@nocolor-node
 #@+at
 # https://bugs.launchpad.net/leo-editor/+bug/1259974
@@ -50,7 +55,7 @@ Leo should keep the external editor's temp file up to date
 # - Similarity with other editors makes this an expected feature. This would
 #   lessen cognitive burden on users who currently have to maintain state in
 #   their head and be *very* careful with external edits.
-#@+node:ekr.20141109072407.8: ** notes 1259755: Leo should keep the external editor's temp file up to date
+#@+node:ekr.20141109072407.8: *3* notes 1259755: Leo should keep the external editor's temp file up to date
 #@@nocolor-node
 #@+at
 # https://bugs.launchpad.net/leo-editor/+bug/1259755
@@ -77,11 +82,24 @@ def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = True
     if ok:
-        g.registerHandler('start2',onStart2)
+        g.registerHandler("idle", on_idle)
     return ok
-#@+node:ekr.20141109072407.6: *3* onStart2
-def onStart2(tag,**keys):
-    g.trace(tag,keys)
+#@+node:ekr.20141109072407.6: *3* on_idle (watchfiles.py)
+g_count = 0
+def on_idle(tag,keys):
+    
+    global g_count
+    assert tag == 'idle'
+    c = keys.get('c')
+    log_c = g.app.log and g.app.log.c
+    g.app.openWithFiles = [d for d in g.app.openWithFiles if g.os_path_exists(d.get('path'))]
+    if c and c == log_c:
+        # g.app.openWithFiles is a list of dicts with the following keys:
+        # "body", "c", "encoding", "f", "path", "time" and "p".
+        if (g_count % 5) == 0:
+            paths = [d.get('path') for d in g.app.openWithFiles]
+            g.trace(c.shortFileName() or 'untitled',paths)
+    g_count += 1
 #@-others
 #@@language python
 #@@tabwidth -4
