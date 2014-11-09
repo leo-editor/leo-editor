@@ -6,15 +6,6 @@
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 
-a3:
-
-** Make sure opening file works when using pythonw.exe.
-   These probably all use g.openWithFileName -> LM.loadLocalFile.
-
-b1:
-
-- Complete work on new FAQ entries.
-
 * Create a plugin to handle 3 file-watching wishlist items.
 .. @+node:ekr.20141105050314.21: *3* 16 Bugs for b1
 .. @+node:ekr.20141106045626.4: *4* Fix bug 92: Tab loses focus when executing a button defined in an unopened settings file

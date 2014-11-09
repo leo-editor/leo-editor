@@ -3,7 +3,7 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141108083107.6: ** a3
+.. @+node:ekr.20141108083107.6: ** b1
 .. @+node:ekr.20141108045647.2: *3* Removed stand-alone globals
 .. @+node:ekr.20141108083107.4: *3* The spell checker handles apostrophes correctly
 .. @+node:ekr.20141108090310.8: *3* Added support for command history
