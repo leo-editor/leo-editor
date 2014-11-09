@@ -6,13 +6,24 @@
 .. @+node:ekr.20141108083107.6: ** b1
 .. @+node:ekr.20141108045647.2: *3* Removed stand-alone globals
 .. @+node:ekr.20141108083107.4: *3* The spell checker handles apostrophes correctly
+@language rest
+
+Previously, when checking "didn't" the spell checker would complain that
+"didn" wasn't in the dictionary. Now it checks (and accepts) "didn't".
+
+We have all been putting up with this annoyance for *far* to long. Changing
+just two lines of code was all that was required.
 .. @+node:ekr.20141108090310.8: *3* Added support for command history
 @language rest
 
-Alt-x UpArrow is roughly equivalent to Ctrl-p.
+After Alt-x puts you in the minibuffer, you can now use UpArrow and
+DownArrow keys to cycle through previous "complex" commands, that is,
+commands entered via Alt-x<command-name><return>.
 
-When focus is in minibuffer after alt-x, the up and down arrows cycle
-through the history of commands entered via the minibuffer.
+For example, Alt-x UpArrow is roughly equivalent to Ctrl-p.
+
+This completes one of the top four wishlist items at:
+https://github.com/leo-editor/leo-editor/issues/93
 .. @+node:ekr.20061031170011.3: *4* k.Minibuffer
 # These may be overridden, but this code is now gui-independent.
 .. @+node:ekr.20061031170011.9: *5* k.extendLabel
