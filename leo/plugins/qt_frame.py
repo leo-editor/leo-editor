@@ -4878,6 +4878,9 @@ class TabbedFrameFactory:
             tabw.setWindowTitle(f.title)
             # g.app.selectLeoWindow(f.c)
                 # would break --minimize
+            # Fix bug 690260: correct the log.
+            g.app.log = f.log
+
     #@-others
 #@-others
 #@@language python
