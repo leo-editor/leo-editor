@@ -10573,6 +10573,7 @@ class SpellTabHandler:
                 while j < len(s) and (g.isWordChar(s[j]) or s[j] == "'"):
                     j += 1
                 word = s[i:j]
+                word = word.strip("'")
                 # This trace verifies that all words have been checked.
                 # g.trace(repr(word))
                 for w in (self.workCtrl,c.frame.body.wrapper):
