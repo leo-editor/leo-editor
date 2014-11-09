@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20141027093638.6: * @file ../../setup.py
+#@+node:maphew.20141108212612.15: * @file ../../setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -41,7 +41,8 @@ import leo.core.leoVersion
 
 # for stable builds / full release
 version = leo.core.leoVersion.version
-version = '4.11-final'
+# mhw: dont know why this was hardcoded?
+#version = '4.11-final' 
 #@+node:ville.20090213231648.3: ** fullsplit
 import sys
 
@@ -114,11 +115,14 @@ if '--debug' in sys.argv[1:]:
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
     for file_info in data_files:
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
-#@-others
-
+#@+node:maphew.20141108212612.16: ** data patterns
 # Note than only *.ui matches now - add asterisks as needed/valid
-datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo',
+'.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp',
+'.js', '*.ui', '.rix', '.pmsp', '.pyd', '.png', '.alg', '.php', '.css', '.ico',
+'*.txt', '.html', '.iix', '.w']
 #print data_files
+#@-others
 
 # variable order matches order on pkg info page, but that's just a niceity
 # https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
@@ -138,7 +142,7 @@ setup(
     #keywords = [],
     platforms = ['linux','windows'],
     download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
-    #bugtrack_url = 'https://bugs.launchpad.net/leo-editor',    #only py3?
+    #bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues',    #only py3?
 
     # only include dependencies which can be installed by pip (so not PyQt or SIP)
     requires = ['docutils'],
