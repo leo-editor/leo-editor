@@ -3,9 +3,192 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141108083107.6: ** b1
+.. @+node:ekr.20141108083107.6: ** a3
 .. @+node:ekr.20141108045647.2: *3* Removed stand-alone globals
 .. @+node:ekr.20141108083107.4: *3* The spell checker handles apostrophes correctly
+.. @+node:ekr.20141108090310.8: *3* Added support for command history
+@language rest
+
+Alt-x UpArrow is roughly equivalent to Ctrl-p.
+
+When focus is in minibuffer after alt-x, the up and down arrows cycle
+through the history of commands entered via the minibuffer.
+.. @+node:ekr.20061031170011.3: *4* k.Minibuffer
+# These may be overridden, but this code is now gui-independent.
+.. @+node:ekr.20061031170011.9: *5* k.extendLabel
+def extendLabel(self,s,select=False,protect=False):
+
+    trace = False and not g.unitTesting
+
+    k = self ; c = k.c ; w = self.w
+    if not (w and s): return
+
+    if trace: g.trace(s)
+
+    c.widgetWantsFocusNow(w)
+
+    w.insert('end',s)
+
+    if select:
+        i,j = k.getEditableTextRange()
+        w.setSelectionRange(i,j,insert=j)
+
+    if protect:
+        k.protectLabel()
+.. @+node:ekr.20061031170011.13: *5* k.getEditableTextRange
+def getEditableTextRange (self):
+
+    k = self ; w = self.w
+    s = w.getAllText()
+    i = len(k.mb_prefix)
+    j = len(s)
+    return i,j
+.. @+node:ekr.20061031170011.5: *5* k.getLabel
+def getLabel (self,ignorePrompt=False):
+
+    k = self ; w = self.w
+    if not w: return ''
+
+    s = w.getAllText()
+
+    if ignorePrompt:
+        return s[len(k.mb_prefix):]
+    else:
+        return s or ''
+.. @+node:ekr.20080408060320.791: *5* k.killLine
+def killLine (self,protect=True):
+
+    k = self
+    w = k.w
+    s = w.getAllText()
+    s = s[:len(k.mb_prefix)]
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+    if protect:
+        k.mb_prefix = s
+.. @+node:ekr.20061031131434.135: *5* k.minibufferWantsFocus
+# def minibufferWantsFocus(self):
+
+    # c = self.c
+    # c.widgetWantsFocus(c.miniBufferWidget)
+.. @+node:ekr.20061031170011.6: *5* k.protectLabel
+def protectLabel (self):
+
+    k = self ; w = self.w
+    if not w: return
+
+    k.mb_prefix = w.getAllText()
+
+.. @+node:ekr.20061031170011.7: *5* k.resetLabel
+def resetLabel (self):
+    '''Reset the minibuffer label.'''
+    k = self
+    c,w = k.c,k.w
+    k.setLabelGrey('')
+    k.mb_prefix = ''
+    if w:    
+        w.setSelectionRange(0,0,insert=0)
+        state = k.unboundKeyAction
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.show_status()
+        else:
+            k.setLabelBlue(label='%s State' % (state.capitalize()))
+.. @+node:ekr.20080408060320.790: *5* k.selectAll
+def selectAll (self):
+
+    '''Select all the user-editable text of the minibuffer.'''
+
+    w = self.w
+    i,j = self.getEditableTextRange()
+    w.setSelectionRange(i,j,insert=j)
+
+
+.. @+node:ekr.20061031170011.8: *5* k.setLabel
+def setLabel (self,s,protect=False):
+    '''Set the label of the minibuffer.'''
+    trace = False and not g.app.unitTesting
+    k,w = self,self.w
+    if w:
+        if trace: g.trace(repr(s),g.callers())
+        w.setAllText(s)
+        n = len(s)
+        w.setSelectionRange(n,n,insert=n)
+        if protect:
+            k.mb_prefix = s
+    elif trace:
+        g.trace('*** no w ***')
+.. @+node:ekr.20061031170011.10: *5* k.setLabelBlue
+def setLabelBlue (self,label):
+    '''Set the minibuffer label.'''
+    trace = False and not g.unitTesting
+    k = self ; w = k.w
+    if trace: g.trace('label:',label,g.callers())
+    if w:
+        w.setStyleClass('')  # normal state, not warning or error
+        if label is not None:
+            k.setLabel(label,protect=True)
+    elif trace:
+        g.trace('*** no w ***')
+.. @+node:ekr.20061031170011.11: *5* k.setLabelGrey
+def setLabelGrey (self,label=None):
+
+    k = self ; w = self.w
+    if not w: return
+
+    w.setStyleClass( 'minibuffer_warning')
+
+    if label is not None:
+        k.setLabel(label)
+
+setLabelGray = setLabelGrey
+.. @+node:ekr.20080510153327.2: *5* k.setLabelRed
+def setLabelRed (self,label=None,protect=False):
+
+    k = self ; w = self.w
+    if not w: return
+
+    w.setStyleClass('minibuffer_error')
+
+    if label is not None:
+        k.setLabel(label,protect)
+.. @+node:ekr.20140822051549.18298: *5* k.setStatusLabel
+def setStatusLabel(self,s):
+    '''
+    Set the label to s.
+    
+    Use k.setStatusLabel, not k.setLael, to report the status of a Leo
+    command. This allows the option to use g.es instead of the minibuffer
+    to report status.
+    '''
+    k = self
+    k.setLabel(s,protect=False)
+.. @+node:ekr.20061031170011.12: *5* k.updateLabel
+def updateLabel (self,event):
+
+    '''Mimic what would happen with the keyboard and a Text editor
+    instead of plain accumalation.'''
+
+    trace = False or g.trace_minibuffer and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.w
+    ch = (event and event.char) or ''
+    if trace: g.trace('ch',ch,'k.stroke',k.stroke)
+
+    if ch and ch not in ('\n','\r'):
+        c.widgetWantsFocusNow(w)
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        # g.trace(i,j,ins)
+        if i != j:
+            w.delete(i,j)
+        if ch == '\b':
+            s = w.getAllText()
+            if len(s) > len(k.mb_prefix):
+                w.delete(i-1)
+                i-=1
+        else:
+            w.insert(ins,ch)
+            i = ins+1
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

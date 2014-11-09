@@ -6,10 +6,14 @@
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 
-- Complete work on new FAQ entries.
+a3:
 
-* Command history support:
-    - extend Ctrl-P logic: hard bindings for up/dn arrow keys in minibuffer.
+** Make sure opening file works when using pythonw.exe.
+   These probably all use g.openWithFileName -> LM.loadLocalFile.
+
+b1:
+
+- Complete work on new FAQ entries.
 
 * Create a plugin to handle 3 file-watching wishlist items.
 .. @+node:ekr.20141105050314.21: *3* 16 Bugs for b1
