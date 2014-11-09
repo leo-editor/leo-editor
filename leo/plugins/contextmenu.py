@@ -355,22 +355,22 @@ def guess_file_type(fname):
 # "body", "c", "encoding", "f", "path", "time" and "p".
 
 def editnode_on_idle (tag,keywords):
-
+    '''The idle-time handler for contextmenu.py.'''
     a = g.app
     if a.killed: return
     # g.trace('open with plugin')
-    for dict in a.openWithFiles:
-        path = dict.get("path")
-        c = dict.get("c")
-        encoding = dict.get("encoding",None)
-        p = dict.get("p")
-        old_body = dict.get("body")
+    for d in a.openWithFiles:
+        path = d.get("path")
+        c = d.get("c")
+        encoding = d.get("encoding",None)
+        p = d.get("p")
+        old_body = d.get("body")
         if path and os.path.exists(path):
             try:
                 time = os.path.getmtime(path)
-                # g.trace(path,time,dict.get('time'))
-                if time and time != dict.get("time"):
-                    dict["time"] = time # inhibit endless dialog loop.
+                # g.trace(path,time,d.get('time'))
+                if time and time != d.get("time"):
+                    d["time"] = time # inhibit endless dialog loop.
                     # The file has changed.
                     #@+<< set s to the file text >>
                     #@+node:ville.20090701142447.5474: *4* << set s to the file text >>
@@ -384,7 +384,7 @@ def editnode_on_idle (tag,keywords):
                         break
                     #@-<< set s to the file text >>
                     #@+<< update p's body text >>
-                    #@+node:ville.20090701142447.5475: *4* << update p's body text >>
+                    #@+node:ville.20090701142447.5475: *4* << update p's body text >> (contextmenu.py)
                     # Convert body and s to whatever encoding is in effect.
                     body = p.b
                     body = g.toEncodedString(body,encoding,reportErrors=True)
@@ -414,7 +414,7 @@ def editnode_on_idle (tag,keywords):
                         #TL - 7/2/08 Converted to configurable 'goto node...'
                         if c.config.getBool('open_with_goto_node_on_update'):
                             c.selectPosition(p)
-                        dict["body"] = s
+                        d["body"] = s
                         # A patch by Terry Brown.
                         if c.config.getBool('open_with_save_on_update'):
                             c.save()
