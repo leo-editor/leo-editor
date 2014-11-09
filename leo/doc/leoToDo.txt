@@ -5,8 +5,6 @@
 .. @+all
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
-
-* Create a plugin to handle 3 file-watching wishlist items.
 .. @+node:ekr.20131220065609.16591: *3* Add focus-to-<temp pane> commands
 This may be a way around problems with cycle-all-focus
 

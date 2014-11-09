@@ -200,6 +200,14 @@ def updateLabel (self,event):
         else:
             w.insert(ins,ch)
             i = ins+1
+.. @+node:ekr.20141109072407.10: *3* fixed bug 1159490: "Open with" fails to copy changes by external editor back to Leo-Editor node
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1159490
+
+The solution is to change the following setting in leoSettings.leo::
+    
+    @bool open_with_save_on_update = True
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
