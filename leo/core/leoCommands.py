@@ -1089,7 +1089,7 @@ class Commands (object):
         path = g.os_path_join(td,fn)
 
         return path
-    #@+node:ekr.20100203050306.5797: *7* c.openWithHelper
+    #@+node:ekr.20100203050306.5797: *7* c.openWithHelper & helpers
     def openWithHelper (self,p,ext):
 
         '''create or reopen a temp file for p,
