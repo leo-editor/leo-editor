@@ -208,6 +208,28 @@ https://bugs.launchpad.net/leo-editor/+bug/1159490
 The solution is to change the following setting in leoSettings.leo::
     
     @bool open_with_save_on_update = True
+.. @+node:ekr.20141030042423.5: *3* Investigate bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1240786
+Corner case bug in tab-cycle-next and tab-cycle-previous
+
+This bug appears to have been fixed.
+
+Open any already existing Leo-Editor file. Call this File 1. Ctrl-O and
+open any already existing Leo-Editor file. We will refer to this file as
+"File 2." At this point the File 2 tab has focus.
+
+Now execute tab-cycle-next or tab-cycle-previous. I do this using shortcuts
+Ctrl+Next and Ctrl+Prior respectively, but your shortcuts may be different.
+Now the File 1 tab has the focus. Now type any printable key.
+
+Note that the printable key character is put into File 2 and File 2 is now
+dirty, but the focus is still on File 1.
+
+In every other case that I've tried tab-cycle-next and tab-cycle-previous
+perform correctly and the tab with the focus is the tab into which
+characters are inserted.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
