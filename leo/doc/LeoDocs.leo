@@ -310,6 +310,7 @@
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 <v t="ekr.20130807203905.16526"><vh>How can I use bzr/git to check Leo's importers?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
+<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
 <v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
 <v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
 <v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
@@ -1327,7 +1328,6 @@
 <v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
-<v t="ekr.20090223065025.3"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -23336,6 +23336,28 @@ This workflow has big advantages:
    draft of the documentation before committing the fix.
 </t>
 <t tx="ekr.20141109053526.4"></t>
+<t tx="ekr.20141109053526.8">GTD (Getting Things Done)
+http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280
+is, by far, the best productivity book I have ever read. Many aspects of
+Leo are idea for putting GTD into practice.
+
+Here is a surprisingly useful workflow tip related to GTD.
+
+Ideas often "intrude" when I am busy with something else. When that
+happens, I create a top-level node of the form::
+
+    ** description of idea
+
+Now I can continue what I was doing! This is such a simple idea, but it's
+really really important: it means I never have to put off getting my ideas
+into Leo. The "**" draws my attention to the new to-do item. Later, when I
+am not fully immersed in the previous task, I can put the "**" node
+somewhere else.
+
+It's super important to deal with new ideas *instantly* but *without*
+greatly interrupting the task at hand. Creating "**" nodes does that. This
+new workflow has been a big improvement to my GTD practice.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
