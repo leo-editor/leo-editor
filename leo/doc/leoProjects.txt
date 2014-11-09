@@ -3,7 +3,9 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141108045647.2: ** Removed stand-alone globals
+.. @+node:ekr.20141108083107.6: ** b1
+.. @+node:ekr.20141108045647.2: *3* Removed stand-alone globals
+.. @+node:ekr.20141108083107.4: *3* The spell checker handles apostrophes correctly
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

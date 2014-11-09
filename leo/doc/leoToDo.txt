@@ -8,38 +8,10 @@
 
 - Complete work on new FAQ entries.
 
-* Create a plugin to handle file-watching wishlist items
-.. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
+* Command history support:
+    - extend Ctrl-P logic: hard bindings for up/dn arrow keys in minibuffer.
 
-Would be stellar to have a brew install leo. http://brew.sh/
-
-Homebrew formulae are simple Ruby scripts::
-
-    require "formula"
-    
-    class Wget < Formula
-      homepage "http://www.gnu.org/software/wget/"
-      url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
-      sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
-    
-      def install
-        system "./configure", "--prefix=#{prefix}"
-        system "make", "install"
-      end
-    end
-
-To install homebrew, paste this in a terminal::
-
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-The script explains what it will do and then pauses before it does it.
-.. @+node:ekr.20141108064630.19: *3* Wishlist: resolve clone wars based on modification dates
-From: Joon Ro <joonpyro@gmail.com>
-
-I think it would make more sense if leo checks the file modification time
-when it makes decision which node is new, instead of just depending on the
-order of files in the outline.
+* Create a plugin to handle 3 file-watching wishlist items.
 .. @+node:ekr.20141105050314.21: *3* 16 Bugs for b1
 .. @+node:ekr.20141106045626.4: *4* Fix bug 92: Tab loses focus when executing a button defined in an unopened settings file
 https://groups.google.com/d/msg/leo-editor/bEaJxLGIfso/ST7S7hQAMSgJ
@@ -105,6 +77,21 @@ ReplaceAll will not replace newlines indicated as \n in target string
 .. @+node:ekr.20141030042423.5: *6* Fix bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
 https://bugs.launchpad.net/leo-editor/+bug/1240786
 Corner case bug in tab-cycle-next and tab-cycle-previous
+
+Open any already existing Leo-Editor file. Call this File 1. Ctrl-O and
+open any already existing Leo-Editor file. We will refer to this file as
+"File 2." At this point the File 2 tab has focus.
+
+Now execute tab-cycle-next or tab-cycle-previous. I do this using shortcuts
+Ctrl+Next and Ctrl+Prior respectively, but your shortcuts may be different.
+Now the File 1 tab has the focus. Now type any printable key.
+
+Note that the printable key character is put into File 2 and File 2 is now
+dirty, but the focus is still on File 1.
+
+In every other case that I've tried tab-cycle-next and tab-cycle-previous
+perform correctly and the tab with the focus is the tab into which
+characters are inserted.
 .. @+node:ekr.20141030042423.6: *6* Fix bug 1258302: Window, Toggle Split Direction Error
 https://bugs.launchpad.net/leo-editor/+bug/1258302
 Window, Toggle Split Direction Error
@@ -112,12 +99,15 @@ Window, Toggle Split Direction Error
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 .. @+node:ekr.20141103061944.46: *5* 3 Other problems
+.. @+node:ekr.20141108090310.5: *6* Fix bug 1338773: Autocompleter error
 https://bugs.launchpad.net/leo-editor/+bug/1338773
 Autocompleter error
 
+.. @+node:ekr.20141108090310.6: *6* Fix bug 1269540: File importing problems: Path doesn't properly appear as node header
 https://bugs.launchpad.net/leo-editor/+bug/1269540
 File importing problems: Path doesn't properly appear as node header
 
+.. @+node:ekr.20141108090310.7: *6* Fix bug 1249684: "add body editor" adds editor pane in wrong tab
 https://bugs.launchpad.net/leo-editor/+bug/1249684
 "add body editor" adds editor pane in wrong tab
 .. @+node:ekr.20141103061944.43: *5* 3 Menu problems
@@ -130,13 +120,44 @@ Disabling Plugins disables menu actions
 https://bugs.launchpad.net/leo-editor/+bug/1286913
 After the "menu already exists: ampersand menu name" warning,
 the menu entries are added to the existing menu.
-
 .. @+node:ekr.20141103061944.44: *5* 2 Settings problems
 https://bugs.launchpad.net/leo-editor/+bug/1286909
 Settings in file A propagate to file B when editing A and B is opened
 
 https://bugs.launchpad.net/leo-editor/+bug/1249368
 Leo 4.11 final custom hotkey can not work on 1st call
+.. @+node:ekr.20141108083107.5: *3* Wishlist
+.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo. http://brew.sh/
+
+Homebrew formulae are simple Ruby scripts::
+
+    require "formula"
+    
+    class Wget < Formula
+      homepage "http://www.gnu.org/software/wget/"
+      url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
+      sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+    
+      def install
+        system "./configure", "--prefix=#{prefix}"
+        system "make", "install"
+      end
+    end
+
+To install homebrew, paste this in a terminal::
+
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+The script explains what it will do and then pauses before it does it.
+.. @+node:ekr.20141108064630.19: *4* Wishlist: resolve clone wars based on modification dates
+From: Joon Ro <joonpyro@gmail.com>
+
+I think it would make more sense if leo checks the file modification time
+when it makes decision which node is new, instead of just depending on the
+order of files in the outline.
 .. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140

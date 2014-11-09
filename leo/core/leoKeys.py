@@ -1784,6 +1784,10 @@ class KeyHandlerClass:
         # Previously defined binding tags.
         self.bindtagsDict = {}
             # Keys are strings (the tag), values are 'True'
+        self.commandHistory = []
+        self.commandIndex = 0
+            # List/stack of previously executed commands.
+            # Up arrow will select commandHistory[commandIndex]
         self.masterBindingsDict = {}
             # Keys are scope names: 'all','text',etc. or mode names.
             # Values are dicts: keys are strokes, values are ShortcutInfo's.
@@ -2588,6 +2592,15 @@ class KeyHandlerClass:
             pass
         elif char == 'Escape':
             k.keyboardQuit()
+        elif char in ('Down','Up'):
+            # Do command history.
+            h,i = k.commandHistory,k.commandIndex
+            if h:
+                i = min(i+1,len(h)-1) if char == 'Up' else max(0,i-1)
+                commandName = h[i]
+                k.commandIndex = i
+                # g.trace(char,i,h,h[i])
+                k.setLabel(k.mb_prefix + commandName)
         elif char in ('\n','Return'):
             if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
@@ -2598,7 +2611,16 @@ class KeyHandlerClass:
                 k.resetLabel()
                 if k.mb_helpHandler: k.mb_helpHandler(commandName)
             else:
-                k.callAltXFunction(k.mb_event)
+                s = k.getLabel(ignorePrompt=True)
+                commandName = s.strip()
+                ok = k.callAltXFunction(k.mb_event)
+                if ok:
+                    # Update command history if the command exists.
+                    h,i = k.commandHistory,k.commandIndex
+                    if commandName in h:
+                        h.remove(commandName)
+                        k.commandIndex = max(0,i-1)
+                    h.append(commandName)
         elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(list(c.commandsDict.keys()))
@@ -2651,6 +2673,7 @@ class KeyHandlerClass:
                 c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
                 func(event)
             k.endCommand(commandName)
+            return True
         else:
             # Show possible completions if the command does not exist.
             if 1: # Useful.
@@ -2660,6 +2683,7 @@ class KeyHandlerClass:
                 k.keyboardQuit()
                 k.setStatusLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
+            return False
     #@+node:ekr.20061031131434.113: *4* k.endCommand
     def endCommand (self,commandName):
 
@@ -3436,6 +3460,7 @@ class KeyHandlerClass:
                 # g.trace('non-ascii',ord(ch))
                 pass
             elif k.state.handler:
+                # if trace: g.trace(k.state.handler.__name__)
                 val = k.state.handler(event)
                 if val != 'continue':
                     k.endCommand(k.commandName)
@@ -3553,6 +3578,8 @@ class KeyHandlerClass:
         trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
         assert g.isStroke(stroke),repr(stroke)
+        if state == 'full-command' and stroke in ('Up','Down'):
+            return False
         if state in ('getArg','full-command'):
             if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
                 return False
