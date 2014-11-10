@@ -105,7 +105,7 @@ plugins. Here are some points of interest:
 
 import leo.core.leoGlobals as g
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import isQt5,QtCore,QtWidgets
+    from leo.core.leoQt import QtCore,QtWidgets
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -451,12 +451,10 @@ class ListDialog(QtWidgets.QDialog):
         hbox = QtWidgets.QHBoxLayout()
         ok = QtWidgets.QPushButton("Ok")
         cancel = QtWidgets.QPushButton("Cancel")
-        if isQt5:
-            ok.clicked.connect(self.writeBack)
-            cancel.clicked.connect(self.reject)
-        else:
-            QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
-            QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
+        ok.clicked.connect(self.writeBack)
+        cancel.clicked.connect(self.reject)
+            # QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
+            # QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
         hbox.addWidget(ok)
         hbox.addWidget(cancel)
         vbox.addLayout(hbox)
@@ -493,11 +491,9 @@ class editWatcher(object):
         """return widget for editing this attribute"""
         if not self._widget:
             self._widget = w = QtWidgets.QLineEdit(str(self.value))
-            if isQt5:
-                w.textChanged.connect(self.updateValue)
-            else:
-                QtCore.QObject.connect(w, 
-                    QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
+            w.textChanged.connect(self.updateValue)
+                # QtCore.QObject.connect(w, 
+                    # QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
             self._widget.focusOutEvent = self.lostFocus
             # see lostFocus()
         return self._widget

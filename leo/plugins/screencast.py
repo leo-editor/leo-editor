@@ -803,19 +803,18 @@ class ScreenCastController:
     def get_key_event (self,ch,w):
         
         m = self ; c = m.c ; k = c.k
-        
         m.key_w = w
-        
         if len(ch) > 1:
             key = None
             stroke = k.strokeFromSetting(ch).s
         else:
             stroke = key = ch
-            
         # g.trace(ch,key,stroke)
-        
-        return leoGui.LeoKeyEvent(c,key,stroke,w=w,
-            x=0,y=0,x_root=0,y_root=0) # These are required.
+        return leoGui.LeoKeyEvent(c,key,stroke,
+            shortcut=None,
+            w=w,
+            x=0,y=0,
+            x_root=0,y_root=0)
     #@+node:ekr.20120914163440.10581: *4* delete_widgets
     def delete_widgets (self):
         

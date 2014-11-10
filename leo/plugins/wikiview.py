@@ -2,7 +2,7 @@
 #@+node:tbrown.20141101114322.1: * @file wikiview.py
 #@+<< docstring >>
 #@+node:tbrown.20141101114322.2: ** << docstring >>
-"""
+r"""
 Hide text in the body editor, each time a new node is selected.  Makes::
     
   file;//#some-->headlines-->mynode appear as mynode,
@@ -56,7 +56,7 @@ import re
 
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import QtGui,QtWidgets
+from leo.core.leoQt import QtGui # ,QtWidgets
 #@-<< imports >>
 
 #@+others
