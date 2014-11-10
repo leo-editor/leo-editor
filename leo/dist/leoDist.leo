@@ -101,7 +101,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -a2.
+2. Search for this suffix: -b1.
 
 3. Search for copyright
 
@@ -157,9 +157,9 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 alpha 3                     November 9, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 beta 1                     November 10, 2014
 
-Leo 5.0a3 is now available at:
+Leo 5.0b1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -549,7 +549,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-a3' ##version
+version = '5.0-b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -576,16 +576,14 @@ g.es_print('done') # '@button make-leo done')
     self.clean_spellpyx()
     self.make_manifest()
     files = self.clean_manifest()
-    # Compute the list of all the directories.
     dirs = self.directoryList(rootDir)
-    # Compute dictionaries of directories and files.
+        # Compute the list of all the directories.
     dirDict,filesDict = self.makeDicts(dirs,files)
-    # Print manifest lines not in either dict.
-    # This is a crucial check.
+        # Compute dictionaries of directories and files.
     errors = self.printMissing(files,dirDict,filesDict)
+        # Print manifest lines not in either dict.
+        # This is a crucial check.
     if not errors:
-        ### Why is this here???
-        ### self.copy_ref_files()
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
@@ -641,9 +639,6 @@ g.es_print('done') # '@button make-leo done')
         'leo/core/ekrLeoPy.leo',
     )
     lines = self.deleteFiles(lines,deleteList)
-    # if lines and lines[0].endswith('bzr ls -R'):
-    # if lines and lines[0].find('bzr.exe') &gt; -1:
-        # lines = lines[1:]
     if trace:
         g.trace('=' * 40)
         g.trace(g.listToString(lines))
@@ -1311,8 +1306,8 @@ MANIFEST.in                     export-ignore
 
 leoStandAloneGlobals.py         export-ignore
 stand_alone_globals.leo         export-ignore
-setup.cfg                       export-ignore
-setup.py                        export-ignore
+# setup.cfg                     export-ignore
+# setup.py                      export-ignore
 
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
