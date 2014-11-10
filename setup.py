@@ -132,7 +132,7 @@ setup(
 #    maintainer_email = '',
     url = 'http://leoeditor.com',
     license = 'MIT License',
-    description = "Leonine Editor with Outlines",
+    description = "Leo: Leonine Editor with Outlines", # becomes "Summary" in pkg-info
     long_description = long_description,
     #keywords = [],
     platforms = ['linux','windows'],

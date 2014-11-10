@@ -136,7 +136,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
 Version: 5.0-beta 1
-Summary: Leo: Literate Editor with Outlines
+Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
