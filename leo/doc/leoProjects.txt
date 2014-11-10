@@ -923,6 +923,13 @@ if s != p.b:
 Used glob to discover files, not static lists.
 .. @+node:ekr.20141106045626.4: *3* Fixed bug 92: Tab loses focus when executing a button defined in an unopened settings file
 https://github.com/leo-editor/leo-editor/issues/92
+.. @+node:ekr.20141108090310.7: *3* Investigated bug 1249684: "add body editor" adds editor pane in wrong tab
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1249684
+"add body editor" adds editor pane in wrong tab
+
+This seems to have been fixed.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
