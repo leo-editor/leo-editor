@@ -65,7 +65,7 @@ QQQQQ
 https://groups.google.com/d/msg/leo-editor/Gx0R5RUypWs/n5wogDYHnqIJ
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
 # Use table?
-.. @+node:ekr.20141029185358.14: *4* 12 Launchpad bugs for b1
+.. @+node:ekr.20141029185358.14: *4* Launchpad bugs for b1
 .. @+node:ekr.20141030042423.16: *5* 3 minor fit & finish bugs
 These may move to b1.
 .. @+node:ekr.20141030042423.12: *6* Fix bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string
@@ -77,11 +77,7 @@ Window, Toggle Split Direction Error
 .. @+node:ekr.20141030042423.7: *6* Fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
 https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
-.. @+node:ekr.20141103061944.46: *5* 3 Other problems
-.. @+node:ekr.20141108090310.5: *6* Fix bug 1338773: Autocompleter error
-https://bugs.launchpad.net/leo-editor/+bug/1338773
-Autocompleter error
-
+.. @+node:ekr.20141103061944.46: *5* 2 Other problems
 .. @+node:ekr.20141108090310.6: *6* Fix bug 1269540: File importing problems: Path doesn't properly appear as node header
 https://bugs.launchpad.net/leo-editor/+bug/1269540
 File importing problems: Path doesn't properly appear as node header

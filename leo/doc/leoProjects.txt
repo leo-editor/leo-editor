@@ -230,6 +230,17 @@ dirty, but the focus is still on File 1.
 In every other case that I've tried tab-cycle-next and tab-cycle-previous
 perform correctly and the tab with the focus is the tab into which
 characters are inserted.
+.. @+node:ekr.20141108090310.5: *3* Fixed bug 1338773: Autocompleter error
+https://bugs.launchpad.net/leo-editor/+bug/1338773
+Autocompleter error
+
+Added the following defensive code::
+
+    try:
+        self.deleteLater()
+    except RuntimeError:
+        # Avoid bug 1338773: Autocompleter error
+        pass
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
