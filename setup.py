@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20141108212612.15: * @file ../../setup.py
+#@+node:maphew.20141108212612.4: * @file setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -115,17 +115,12 @@ if '--debug' in sys.argv[1:]:
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
     for file_info in data_files:
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
-#@+node:maphew.20141108212612.16: ** data patterns
+#@+node:maphew.20141108212612.19: ** data patterns
 # Note than only *.ui matches now - add asterisks as needed/valid
-datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo',
-'.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp',
-'.js', '*.ui', '.rix', '.pmsp', '.pyd', '.png', '.alg', '.php', '.css', '.ico',
-'*.txt', '.html', '.iix', '.w']
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
 #print data_files
 #@-others
 
-# variable order matches order on pkg info page, but that's just a niceity
-# https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
     name = 'leo',
     version = version,
@@ -133,8 +128,8 @@ setup(
     author_email = 'edreamleo@gmail.com',
 # don't use maintainer, else it overwrites author in PKG-INFO
 # c.f. note 3 @url http://docs.python.org/3/distutils/setupscript.html#additional-meta-data
-#    maintainer = 'Matt Wilkie',
-#    maintainer_email = 'maphew@gmail.com',
+#    maintainer = '',
+#    maintainer_email = '',
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leonine Editor with Outlines",
@@ -142,7 +137,7 @@ setup(
     #keywords = [],
     platforms = ['linux','windows'],
     download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
-    #bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues',    #only py3?
+    bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues', # pypi still needs this added manually via web form
 
     # only include dependencies which can be installed by pip (so not PyQt or SIP)
     requires = ['docutils'],
@@ -157,6 +152,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
+        'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2.6',
