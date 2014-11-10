@@ -252,6 +252,19 @@ The fix is to remove the amperstand from the @item headlines.
 https://bugs.launchpad.net/leo-editor/+bug/1286909
 Settings in file A propagate to file B when editing A and B is opened
 
+.. @+node:ekr.20141030042423.7: *3* Won't fix bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display
+https://bugs.launchpad.net/leo-editor/+bug/815564
+Plugin Menu - Keystroke binding can prevent plugin help display
+
+Obvious workaround: avoid name clashes.
+.. @+node:ekr.20141109160640.5: *3* Wont fix bug 1292207: Disabling Plugins disables menu actions 
+https://bugs.launchpad.net/leo-editor/+bug/1292207
+Disabling Plugins disables menu actions
+
+This bug is invalid.
+
+Disabling plugins disable the mod_scripting plugin, so the @command nodes
+given in the example do nothing.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
