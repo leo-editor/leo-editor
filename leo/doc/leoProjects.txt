@@ -278,6 +278,647 @@ https://bugs.launchpad.net/leo-editor/+bug/1258302
 Window, Toggle Split Direction Error
 
 This works for me.  Don't know when it was fixed.
+.. @+node:ekr.20141030042423.12: *3* Fixed bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1338172
+ReplaceAll will not replace newlines indicated as \n in target string
+
+Using regX , I can search on a pattern and replace it with a string that
+includes "\n" as a newline in the transformed string.
+
+If I do a simple search and replace-search from the Find pane that works
+(I'm searching within the body of a single node).
+
+However, if I do a Replace All, the "\n" is not translated into a newline;
+it remains as is and appears as "\n" in the transformed string.
+
+Also, I can't seem to get the replace-all command to work from the
+minibuffer line; it only does a single replace.
+
+@language python
+
+.. @+node:ekr.20031218072017.3074: *4* find.findNext
+def findNext(self,initFlag=True):
+    '''Find the next instance of the pattern.'''
+    if not self.checkArgs():
+        return False # for vim-mode find commands.
+    # initFlag is False for change-then-find.
+    if initFlag:
+        self.initInHeadline()
+        data = self.save()
+        self.initInteractiveCommands()
+    else:
+        data = self.save()
+    pos, newpos = self.findNextMatch()
+    if pos is None:
+        if self.wrapping:
+            g.es("end of wrapped search")
+        else:
+            g.es("not found","'%s'" % (self.find_text))
+        self.restore(data)
+        return False # for vim-mode find commands.
+    else:
+        self.showSuccess(pos,newpos)
+        return True # for vim-mode find commands.
+.. @+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
+def findNextMatch(self):
+    '''
+    Resume the search where it left off.
+    The caller must call set_first_incremental_search or
+    set_first_batch_search.
+    '''
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; p = self.p
+    if trace:
+        g.trace('*** entry','p',p,'\n',
+            'search_headline',self.search_headline,
+            'search_body',self.search_body)
+        for parent in p.parents():
+            print(parent)
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+    self.errors = 0
+    attempts = 0
+    if self.pattern_match:
+        ok = self.precompilePattern()
+        if not ok: return None,None
+    while p:
+        pos, newpos = self.search()
+        if self.errors:
+            g.trace('find errors')
+            break # Abort the search.
+        if trace and verbose:
+            g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
+        if pos is not None:
+            # Success.
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos,p.h)
+            return pos, newpos
+        # Searching the pane failed: switch to another pane or node.
+        if self.shouldStayInNode(p):
+            # Switching panes is possible.  Do so.
+            self.in_headline = not self.in_headline
+            self.initNextText()
+        else:
+            # Switch to the next/prev node, if possible.
+            attempts += 1
+            p = self.p = self.nextNodeAfterFail(p)
+            if p: # Found another node: select the proper pane.
+                self.in_headline = self.firstSearchPane()
+                self.initNextText()
+    if trace: g.trace('failed after %s attempts' % attempts)
+    return None, None
+.. @+node:ekr.20131123071505.16468: *5* find.doWrap
+def doWrap(self):
+    '''Return the position resulting from a wrap.'''
+    c = self.c
+    if self.reverse:
+        p = c.rootPosition()
+        while p and p.hasNext():
+            p = p.next()
+        p = p.lastNode()
+        return p
+    else:
+        return c.rootPosition()
+.. @+node:ekr.20131124060912.16473: *5* find.firstSearchPane
+def firstSearchPane(self):
+    '''
+    Set return the value of self.in_headline
+    indicating which pane to search first.
+    '''
+    if self.search_headline and self.search_body:
+        # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
+        if self.reverse:
+            return False # Search the body pane first.
+        else:
+            return True # Search the headline pane first.
+    elif self.search_headline or self.search_body:
+        # Search the only enabled pane.
+        return self.search_headline
+    else:
+        g.trace('can not happen: no search enabled')
+        return False # search the body.
+.. @+node:ekr.20131123132043.16477: *5* find.initNextText
+def initNextText(self,ins=None):
+    '''
+    Init s_ctrl when a search fails. On entry:
+    - self.in_headline indicates what text to use.
+    - self.reverse indicates how to set the insertion point.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    p = self.p or c.p.copy()
+    s = p.h if self.in_headline else p.b
+    w = self.s_ctrl
+    tree = c.frame and c.frame.tree
+    if tree and hasattr(tree,'killEditing'):
+        # g.trace('kill editing before find')
+        tree.killEditing()
+    if self.reverse:
+        i,j = w.sel
+        if ins is None:
+            if i is not None and j is not None and i != j:
+                ins = min(i,j)
+        # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+        # editLabelHelper now properly sets the insertion range.
+            # elif ins in (i,j): ins = min(i,j)
+    elif ins is None:
+        ins = 0
+    if trace and self.in_headline and ins is not None: g.trace(ins,p.h)
+    self.init_s_ctrl(s,ins)
+.. @+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper (use p.moveTo...?)
+def nextNodeAfterFail(self,p):
+    '''Return the next node after a failed search or None.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    # Wrapping is disabled by any limitation of screen or search.
+    wrap = (self.wrapping and not self.node_only and 
+        not self.suboutline_only and not c.hoistStack)
+    if wrap and not self.wrapPosition:
+        self.wrapPosition = p.copy()
+        self.wrapPos = 0 if self.reverse else len(p.b)
+    # Move to the next position.
+    p = p.threadBack() if self.reverse else p.threadNext()
+    # Check it.
+    if p and self.outsideSearchRange(p):
+        if trace: g.trace('outside search range',p and p.h)
+        return None
+    if not p and wrap:
+        p = self.doWrap()
+    if not p:
+        if trace: g.trace('end of search')
+        return None
+    if wrap and p == self.wrapPosition:
+        if trace: g.trace('end of wrapped search',p and p.h)
+        return None
+    else:
+        if trace: g.trace('found',p and p.h)
+        return p
+.. @+node:ekr.20131123071505.16465: *6* find.outsideSearchRange
+def outsideSearchRange(self,p):
+    '''
+    Return True if the search is about to go outside its range, assuming
+    both the headline and body text of the present node have been searched.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    if not p:
+        if trace: g.trace('no p')
+        return True
+    if self.node_only:
+        if trace: g.trace('Node only',p.h)
+        return True
+    if self.suboutline_only:
+        if self.onlyPosition:
+            if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
+                if trace: g.trace('outside suboutline-only',p.h,self.onlyPosition.h)
+                return True
+        else:
+            g.trace('Can not happen: onlyPosition!',p.h)
+            return True
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        if not bunch.p.isAncestorOf(p):
+            g.trace('outside hoist',p.h)
+            g.warning('found match outside of hoisted outline')
+            return True
+    return False # Within range.
+.. @+node:ekr.20131123071505.16467: *5* find.precompilePattern
+def precompilePattern(self):
+    '''Precompile the regexp pattern if necessary.'''
+    trace = False and not g.unitTesting
+    try: # Precompile the regexp.
+        flags = re.MULTILINE
+        if self.ignore_case: flags |= re.IGNORECASE
+        # Escape the search text.
+        b,s = '\\b',self.find_text
+        if self.whole_word:
+            if not s.startswith(b): s = b + s
+            if not s.endswith(b): s = s + b
+        if trace: g.trace(self.whole_word,repr(s))
+        self.re_obj = re.compile(s,flags)
+        return True
+    except Exception:
+        g.warning('invalid regular expression:',self.find_text)
+        self.errors += 1 # Abort the search.
+        return False
+.. @+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
+def shouldStayInNode (self,p):
+    '''Return True if the find should simply switch panes.'''
+    # Errors here cause the find command to fail badly.
+    # Switch only if:
+    #   a) searching both panes and,
+    #   b) this is the first pane of the pair.
+    # There is *no way* this can ever change.
+    # So simple in retrospect, so difficult to see.
+    return (
+        self.search_headline and self.search_body and (
+        (self.reverse and not self.in_headline) or
+        (not self.reverse and self.in_headline)))
+.. @+node:ekr.20031218072017.3077: *4* find.search & helpers
+def search (self):
+    """
+    Search s_ctrl for self.find_text with present options.
+    Returns (pos, newpos) or (None,None).
+    """
+    trace = False and not g.unitTesting
+    c = self.c
+    p = self.p or c.p.copy()
+    w = self.s_ctrl
+    index = w.getInsertPoint()
+    s = w.getAllText()
+    if sys.platform.lower().startswith('win'):
+        s = s.replace('\r','')
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+            # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if s:
+        if trace: g.trace('=====',index,repr(s[max(0,index-10):index+40]))
+    else:
+        if trace: g.trace('returning: no text',p.h)
+        return None,None
+    stopindex = 0 if self.reverse else len(s)
+    pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
+    if trace: g.trace('pos,newpos',pos,newpos)
+    # Bug fix: 2013/11/23.
+    if self.in_headline and not self.search_headline:
+        if trace: g.trace('not searching headlines')
+        return None,None
+    if not self.in_headline and not self.search_body:
+        if trace: g.trace('not searching bodies')
+        return None,None
+    if pos == -1:
+        if trace: g.trace('Returning: pos is -1')
+        return None,None
+    if self.passedWrapPoint(p,pos,newpos):
+        if trace:
+            kind = 'reverse ' if self.reverse else ''
+            g.trace("** %swrap done",kind,pos,newpos)
+        self.wrapPosition = None # Reset.
+        return None,None
+    ins = min(pos,newpos) if self.reverse else max(pos,newpos)
+    w.setSelectionRange(pos,newpos,insert=ins)
+    if trace: g.trace('** returns',pos,newpos)
+    return pos,newpos
+.. @+node:ekr.20060526140328: *5* passedWrapPoint
+def passedWrapPoint(self,p,pos,newpos):
+    '''Return True if the search has gone beyond the wrap point.'''
+    return (
+        self.wrapping and
+        self.wrapPosition is not None and
+        p == self.wrapPosition and
+            (self.reverse and pos < self.wrapPos or
+            not self.reverse and newpos > self.wrapPos)
+    )
+.. @+node:ekr.20060526081931: *5* searchHelper & allies
+def searchHelper (self,s,i,j,pattern):
+    '''Dispatch the proper search method based on settings.'''
+    trace = False and not g.unitTesting
+    backwards=self.reverse
+    nocase=self.ignore_case
+    regexp=self.pattern_match
+    word=self.whole_word
+    if backwards: i,j = j,i
+    if trace: g.trace('entry',i,j,repr(s[min(i,j):max(i,j)]))
+    if not s[i:j] or not pattern:
+        if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
+        return -1,-1
+    if regexp:
+        pos,newpos = self.regexHelper(s,i,j,pattern,backwards,nocase)
+    elif backwards:
+        pos,newpos = self.backwardsHelper(s,i,j,pattern,nocase,word)
+    else:
+        pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
+    if trace: g.trace('returns',pos,newpos)
+    return pos,newpos
+.. @+node:ekr.20060526092203: *6* regexHelper
+def regexHelper (self,s,i,j,pattern,backwards,nocase):
+    trace = False and not g.unitTesting
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+    if backwards:
+        # Scan to the last match using search here.
+        last_mo = None ; i = 0
+        while i < len(s):
+            mo = re_obj.search(s,i,j)
+            if not mo: break
+            i += 1
+            last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s,i,j)
+    if trace: g.trace('backwards',backwards,'pattern',pattern,
+        i,j,'s[i:j]',repr(s[i:j]),
+        'mo.start/end',mo and mo.start(),mo and mo.end())
+    while mo and 0 <= i <= len(s):
+        # Bug fix: 2013/12/27: must be 0 <= i <= len(s)
+        if mo.start() == mo.end():
+            if backwards:
+                # Search backward using match instead of search.
+                i -= 1
+                while 0 <= i < len(s):
+                    mo = re_obj.match(s,i,j)
+                    if mo: break
+                    i -= 1
+            else:
+                i += 1 ; mo = re_obj.search(s,i,j)
+        else:
+            self.match_obj = mo
+            return mo.start(),mo.end()
+    self.match_obj = None
+    return -1,-1
+.. @+node:ekr.20060526140744: *6* backwardsHelper
+debugIndices = []
+
+@
+rfind(sub [,start [,end]])
+
+Return the highest index in the string where substring sub is found, such that
+sub is contained within s[start,end]. Optional arguments start and end are
+interpreted as in slice notation. Return -1 on failure.
+@c
+def backwardsHelper (self,s,i,j,pattern,nocase,word):
+
+    trace = False and not g.unitTesting
+    if nocase:
+        s = s.lower()
+        pattern = pattern.lower()
+            # Bug fix: 10/5/06: At last the bug is found!
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+    # 2014/09/18: Put the indices in range.  Indices can get out of range
+    # because the search code strips '\r' characters when searching @edit nodes.
+    i = max(0,i)
+    j = min(len(s),j)
+    # Old code:
+        # if i < 0 or i > len(s) or j < 0 or j > len(s):
+            # g.trace('bad index: i = %s, j = %s' % (i,j))
+            # i = 0 ; j = len(s)
+    if trace and (s and i == 0 and j == 0):
+        g.trace('two zero indices')
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        return -1,-1
+    if word:
+        while 1:
+            k = s.rfind(pattern,i,j)
+            if trace: g.trace('**word** %3s %3s %5s -> %s %s' % (
+                i,j,'(end)' if j==len(s) else '',k,self.p.h))
+            if k == -1: return -1, -1
+            if self.matchWord(s,k,pattern):
+                return k,k+n
+            else:
+                j = max(0,k-1)
+    else:
+        k = s.rfind(pattern,i,j)
+        if trace: g.trace('%3s %3s %5s -> %s %s' % (
+            i,j,'(end)' if j==len(s) else '',k,self.p.h))
+        if k == -1:
+            return -1, -1
+        else:
+            return k,k+n
+.. @+node:ekr.20060526093531: *6* plainHelper
+def plainHelper (self,s,i,j,pattern,nocase,word):
+    '''Do a plain search.'''
+    trace = False and not g.unitTesting
+    if trace: g.trace(i,j,repr(s[i:i+20]))
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower()
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern,i,j)
+            # g.trace(k,n)
+            if k == -1:
+                if trace: g.trace('no match word',i)
+                return -1, -1
+            elif self.matchWord(s,k,pattern):
+                if trace: g.trace('match word',k)
+                return k, k + n
+            else: i = k + n
+    else:
+        k = s.find(pattern,i,j)
+        if k == -1:
+            if trace: g.trace('no match word',i)
+            return -1, -1
+        else:
+            if trace: g.trace('match', k)
+            return k, k + n
+.. @+node:ekr.20060526140744.1: *6* matchWord
+def matchWord(self,s,i,pattern):
+    '''Do a whole-word search.'''
+    trace = False and not g.unitTesting
+    pattern = self.replaceBackSlashes(pattern)
+    if not s or not pattern or not g.match(s,i,pattern):
+        if trace: g.trace('empty')
+        return False
+    pat1,pat2 = pattern[0],pattern[-1]
+    n = len(pattern)
+    ch1 = 0 <= i-1 < len(s) and s[i-1] or '.'
+    ch2 = 0 <= i+n < len(s) and s[i+n] or '.'
+    isWordPat1 = g.isWordChar(pat1)
+    isWordPat2 = g.isWordChar(pat2)
+    isWordCh1 = g.isWordChar(ch1)
+    isWordCh2 = g.isWordChar(ch2)
+    # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
+    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
+    if trace: g.trace('returns',not inWord)
+    return not inWord
+
+.. @+node:ekr.20070105165924: *6* replaceBackSlashes
+def replaceBackSlashes (self,s):
+    '''Carefully replace backslashes in a search pattern.'''
+    # This is NOT the same as:
+    # s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+    # because there is no rescanning.
+    i = 0
+    while i + 1 < len(s):
+        if s[i] == '\\':
+            ch = s[i+1]
+            if ch == '\\':
+                s = s[:i] + s[i+1:] # replace \\ by \
+            elif ch == 'n':
+                s = s[:i] + '\n' + s[i+2:] # replace the \n by a newline
+            elif ch == 't':
+                s = s[:i] + '\t' + s[i+2:] # replace \t by a tab
+            else:
+                i += 1 # Skip the escaped character.
+        i += 1
+    return s
+.. @+node:ekr.20031218072017.3070: *4* find.changeSelection
+# Replace selection with self.change_text.
+# If no selection, insert self.change_text at the cursor.
+
+def changeSelection(self):
+
+    c = self.c ; p = self.p
+    wrapper = c.frame.body and c.frame.body.wrapper
+    w = c.edit_widget(p) if self.in_headline else wrapper
+    if not w:
+        self.in_headline = False
+        w = wrapper
+    if not w: return
+
+    oldSel = sel = w.getSelectionRange()
+    start,end = sel
+    if start > end: start,end = end,start
+    if start == end:
+        g.es("no text selected") ; return False
+
+    # g.trace(start,end)
+
+    # Replace the selection in _both_ controls.
+    start,end = oldSel
+    change_text = self.change_text
+
+    # Perform regex substitutions of \1, \2, ...\9 in the change text.
+    if self.pattern_match and self.match_obj:
+        groups = self.match_obj.groups()
+        if groups:
+            change_text = self.makeRegexSubs(change_text,groups)
+    # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
+    change_text = self.replaceBackSlashes(change_text)
+    for w2 in (w,self.s_ctrl):
+        if start != end: w2.delete(start,end)
+        w2.insert(start,change_text)
+        w2.setInsertPoint(start if self.reverse else start+len(change_text))
+    
+    # Update the selection for the next match.
+    w.setSelectionRange(start,start+len(change_text))
+    c.widgetWantsFocus(w)
+
+    # No redraws here: they would destroy the headline selection.
+    if self.mark_changes:
+        p.setMarked()
+    if self.in_headline:
+        c.frame.tree.onHeadChanged(p,'Change')
+    else:
+        c.frame.body.onBodyChanged('Change',oldSel=oldSel)
+
+    c.frame.tree.drawIcon(p) # redraw only the icon.
+
+    return True
+.. @+node:ekr.20060526201951: *5* makeRegexSubs
+def makeRegexSubs(self,s,groups):
+    r'''
+    Carefully substitute group[i-1] for \i strings in s.
+    The group strings may contain \i strings: they are *not* substituted.
+    '''
+    digits = '123456789'
+    result = [] ; n = len(s)
+    i = j = 0 # s[i:j] is the text between \i markers.
+    while j < n:
+        k = s.find('\\',j)
+        if k == -1 or k + 1 >= n:
+            break
+        j = k + 1 ; ch = s[j]
+        if ch in digits:
+            j += 1
+            result.append(s[i:k]) # Append up to \i
+            i = j
+            gn = int(ch)-1
+            if gn < len(groups):
+                result.append(groups[gn]) # Append groups[i-1]
+            else:
+                result.append('\\%s' % ch) # Append raw '\i'
+    result.append(s[i:])
+    return ''.join(result)
+.. @+node:ekr.20031218072017.3069: *4* find.changeAll
+def changeAll(self):
+    trace = False and not g.unitTesting
+    c = self.c ; u = c.undoer ; undoType = 'Replace All'
+    current = c.p
+    if not self.checkArgs():
+        if trace: g.trace('checkArgs failed')
+        return
+    self.initInHeadline()
+    saveData = self.save()
+    self.initBatchCommands()
+    count = 0
+    u.beforeChangeGroup(current,undoType)
+    # Fix bug 338172: ReplaceAll will not replace newlines indicated as \n in target string.
+    self.change_text = self.replaceBackSlashes(self.change_text)
+    while 1:
+        pos1, pos2 = self.findNextMatch()
+        if pos1 is None:
+            if trace: g.trace('findNextMatch failed')
+            break
+        if trace: g.trace(pos1,pos2,self.p and self.p.h)
+        count += 1
+        self.batchChange(pos1,pos2)
+    p = c.p
+    u.afterChangeGroup(p,undoType,reportFlag=True)
+    g.es("changed:",count,"instances of",self.find_text,"to",self.change_text)
+    c.redraw(p)
+    self.restore(saveData)
+.. @+node:ekr.20031218072017.2293: *4* find.batchChange (sets start of replace-all group)
+@ This routine performs a single batch change operation, updating the
+head or body string of p and leaving the result in s_ctrl. We update
+the body if we are changing the body text of c.currentVnode().
+
+s_ctrl contains the found text on entry and contains the changed text
+on exit. pos and pos2 indicate the selection. The selection will never
+be empty. NB: we can not assume that self.p is visible.
+@c
+
+def batchChange (self,pos1,pos2):
+
+    c = self.c ; u = c.undoer
+    p = self.p
+    w = self.s_ctrl
+    # Replace the selection with self.change_text
+    if pos1 > pos2: pos1,pos2=pos2,pos1
+    s = w.getAllText()
+    if pos1 != pos2: w.delete(pos1,pos2)
+    w.insert(pos1,self.change_text)
+    # Update the selection.
+    insert=pos1 if self.reverse else pos1+len(self.change_text)
+    w.setSelectionRange(insert,insert)
+    w.setInsertPoint(insert)
+    # Update the node
+    s = w.getAllText() # Used below.
+    if self.in_headline:
+        << change headline >>
+    else:
+        << change body >>
+.. @+node:ekr.20031218072017.2294: *5* << change headline >>
+if len(s) > 0 and s[-1]=='\n':
+    s = s[:-1]
+if s != p.h:
+    undoData = u.beforeChangeNodeContents(p)
+    p.initHeadString(s)
+    if self.mark_changes:
+        p.setMarked()
+    p.setDirty()
+    if not c.isChanged():
+        c.setChanged(True)
+    u.afterChangeNodeContents(p,'Change Headline',undoData)
+.. @+node:ekr.20031218072017.2295: *5* << change body >>
+if len(s) > 0 and s[-1]=='\n': s = s[:-1]
+
+if s != p.b:
+
+    undoData = u.beforeChangeNodeContents(p)
+
+    c.setBodyString(p,s)
+    if self.mark_changes:
+        p.setMarked()
+    p.setDirty()
+    if not c.isChanged():
+        c.setChanged(True)
+
+    u.afterChangeNodeContents(p,'Change Body',undoData)
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
