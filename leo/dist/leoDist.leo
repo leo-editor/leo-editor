@@ -12,7 +12,7 @@
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
+<v t="ekr.20101025095431.1517" a="E"><vh>Installer/Distribution bugs &amp; to-do</vh>
 <v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
@@ -23,7 +23,7 @@
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucements</vh>
+<v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
@@ -42,7 +42,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -57,6 +57,7 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
+<v t="maphew.20141108212612.15" a="E"><vh>@file ../../setup.py</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>

@@ -124,17 +124,15 @@ datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo',
 #print data_files
 #@-others
 
-# variable order matches order on pkg info page, but that's just a niceity
-# https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
     name = 'leo',
     version = version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
-# don't use maintainer, else it overwrites author in PKG-INFO
-# c.f. note 3 @url http://docs.python.org/3/distutils/setupscript.html#additional-meta-data
-#    maintainer = 'Matt Wilkie',
-#    maintainer_email = 'maphew@gmail.com',
+    # don't use maintainer, else it overwrites author in PKG-INFO
+    # c.f. note 3 @url http://docs.python.org/3/distutils/setupscript.html#additional-meta-data
+    # maintainer = '',
+    # maintainer_email = '',
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leonine Editor with Outlines",
@@ -142,7 +140,7 @@ setup(
     #keywords = [],
     platforms = ['linux','windows'],
     download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
-    #bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues',    #only py3?
+    bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues',    #is not reflected on pypi.org 
 
     # only include dependencies which can be installed by pip (so not PyQt or SIP)
     requires = ['docutils'],
@@ -157,6 +155,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
+        'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2.6',
