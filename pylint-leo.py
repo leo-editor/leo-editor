@@ -95,7 +95,7 @@ def getPassList():
         'trace_gc_plugin','trace_keys','trace_tags',
         'vim','xemacs',
     )
-#@+node:ekr.20100221142603.5642: ** getPluginsList **** to do ****
+#@+node:ekr.20100221142603.5642: ** getPluginsList
 def getPluginsList():
     '''Return a list of all important plugins.'''
     aList = []
@@ -111,7 +111,7 @@ def getPluginsList():
         'cursesGui.py',         # Many, many formatting problems.
         'free_layout.py',       # Gui-related.
         'gtkDialogs.py',        # Many errors, not important.
-        # 'leofts',               # Several hard-to-remove errors.
+        'leofts.py',            # Not (yet) in leoPlugins.leo.
         'nested_splitter.py',   # Gui-related.
         'qtGui.py',             # Dummy file
         'qt_main.py',           # Created automatically.
@@ -123,23 +123,6 @@ def getPluginsList():
             aList.remove(z)
     # g.trace('\n'.join(aList))
     return aList
-    
-    # aList.extend([
-        # 'baseNativeTree',
-        # 'bookmarks',
-        # 'contextmenu',
-        # 'leoOPML',
-        # 'lineNumbers',
-        # # 'mod_http',
-        # 'mod_scripting',
-        # 'nav_qt',
-        # 'quicksearch',
-        # 'todo',
-        # 'vim.py',
-        # 'viewrendered.py',
-        # 'xemacs.py',
-    # ])
-    # return aList
 #@+node:ekr.20140331201252.16861: ** getTable
 def getTable(scope):
     
