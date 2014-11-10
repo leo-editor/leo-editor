@@ -84,9 +84,10 @@
 </v>
 </v>
 <v t="ekr.20130810093044.16933"><vh>Recently contributed/modified scripts</vh>
-<v t="ekr.20130810093044.16934"><vh>By Terry Brown</vh>
+<v t="ekr.20130810093044.16934" a="E"><vh>By Terry Brown</vh>
+<v t="tbrown.20141110113251.1"><vh>Capture idea / ph. msg / to-do item</vh></v>
 <v t="ekr.20130810093044.16935"><vh>add @script node</vh></v>
-<v t="ekr.20130810093044.16936"><vh>Cross-outline node editing</vh>
+<v t="ekr.20130810093044.16936"><vh>Cross-outline to-do item editing</vh>
 <v t="ekr.20130810093044.16937"><vh>Re: Cross-outline node editing</vh></v>
 <v t="ekr.20130810093044.16938"><vh>Re: Cross-outline node editing</vh></v>
 <v t="ekr.20130810093044.16939"><vh>Re: Cross-outline node editing</vh></v>
@@ -2817,5 +2818,43 @@ c.bringToFront()
 c.redraw()
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
+<t tx="tbrown.20141110113251.1">@g.command('x')
+def add_note(args):
+    """Create a global Alt-x command 'x' to quickly add a top level node
+    to workbook.leo, if it's open, else the first open Leo outline, to
+    quickly record a note / thought / to-do item.
+    
+    Marks the node as a priority 2 to-do item due today, titles the node
+    with current date / time, and included date / time in body.
+    """
+    # search for workbook.leo
+    for c in g.app.commanders():
+        if c.fileName().endswith('workbook.leo'):
+            break
+    else:
+        c = g.app.commanders()[0]  # or use first open outline
+    
+    # add a node a the top of the outline
+    nd = c.rootPosition().insertAfter()
+    nd.moveToRoot(c.rootPosition())
+    
+    # label the node and add to-do attributes
+    import datetime, time
+    nd.h = time.asctime()
+    nd.b = "\n\n# %s\n\n" % nd.h 
+    nd.v.u['annotate'] = {
+        'duedate': datetime.date.today(),
+        'created': datetime.datetime.now(),
+        'nextworkdate': datetime.date.today(),
+        'priority': 2,
+    }
+
+    # select the node and focus in body for immediate typing
+    c.selectPosition(nd)
+    c.cleo.loadIcons(nd)
+    c.redraw()
+    c.bringToFront()
+    c.bodyWantsFocusNow()
+</t>
 </tnodes>
 </leo_file>
