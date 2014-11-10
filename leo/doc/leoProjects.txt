@@ -257,7 +257,7 @@ https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 
 Obvious workaround: avoid name clashes.
-.. @+node:ekr.20141109160640.5: *3* Won't fix bug 1292207: Disabling Plugins disables menu actions 
+.. @+node:ekr.20141109160640.5: *3* Won't fix bug 1292207: Disabling Plugins disables menu actions
 https://bugs.launchpad.net/leo-editor/+bug/1292207
 Disabling Plugins disables menu actions
 
@@ -919,6 +919,8 @@ if s != p.b:
         c.setChanged(True)
 
     u.afterChangeNodeContents(p,'Change Body',undoData)
+.. @+node:ekr.20141110071911.4: *3* Added more files to pylint -a & -p
+Used glob to discover files, not static lists.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
