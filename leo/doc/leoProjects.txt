@@ -921,6 +921,8 @@ if s != p.b:
     u.afterChangeNodeContents(p,'Change Body',undoData)
 .. @+node:ekr.20141110071911.4: *3* Added more files to pylint -a & -p
 Used glob to discover files, not static lists.
+.. @+node:ekr.20141106045626.4: *3* Fixed bug 92: Tab loses focus when executing a button defined in an unopened settings file
+https://github.com/leo-editor/leo-editor/issues/92
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

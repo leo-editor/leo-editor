@@ -632,14 +632,20 @@ class ScriptingController:
                             if trace: g.trace('found',p.h,'in',c2.shortFileName())
                             return c2,p,p.b
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
+        c0 = g.app.log and g.app.log.c if g.app.qt_use_tabs else None
+        c2,p2,script = None,None,None
         if findFlag or openFlag:
             for f in (c.openMyLeoSettings,c.openLeoSettings):
-                c2 = f()
+                c2 = f() # Open the settings file.
                 if c2:
                     p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
                     if p2 or script:
-                        return c2,p2,script
-        return None,None,None
+                        break
+        # Fix bug 92: restore the previously selected tab.
+        if c0:
+            c0.frame.top.leo_master.select(c0)
+                # c0.frame.top.leo_master is a LeoTabbedTopLevel.
+        return c2,p2,script
     #@+node:ekr.20141101052758.8: *5* sc.find_gnx_helper
     def find_gnx_helper(self,c,gnx,openFlag,trace):
         '''
@@ -652,8 +658,8 @@ class ScriptingController:
                 if openFlag:
                     return p,None
                 else:
-                    c.close()
                     script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                    c.close()
                     return None,script
         # Not found: always close the commander.
         c.close()
