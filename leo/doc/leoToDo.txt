@@ -10,6 +10,7 @@
 - vimoutline mode.
 - link to vim docs from release notes.
 .. @+node:ekr.20141110064849.1: *3* Fix 5 bugs
+@language rest
 .. @+node:ekr.20141106045626.4: *4* Fix bug 92: Tab loses focus when executing a button defined in an unopened settings file
 https://groups.google.com/d/msg/leo-editor/bEaJxLGIfso/ST7S7hQAMSgJ
 
