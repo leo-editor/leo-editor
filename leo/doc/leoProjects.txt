@@ -930,6 +930,17 @@ https://bugs.launchpad.net/leo-editor/+bug/1249684
 "add body editor" adds editor pane in wrong tab
 
 This seems to have been fixed.
+.. @+node:ekr.20141108090310.6: *3* Investigated bug 1269540: File importing problems: Path doesn't properly appear as node header
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1269540
+File importing problems: Path doesn't properly appear as node header
+
+This bug was fixed by #60 or at some earlier time.
+
+I am aware of no problems with drag and drop at present.
+Please create a github bug report if any new issues appear.
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
