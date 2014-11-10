@@ -42,7 +42,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -194,14 +194,14 @@ The highlights of Leo 5.0
 
 Links:
 ------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
+| Leo:       http://leoeditor.com
+| Docs:      http://leoeditor.com/leo_toc.html
+| Tutorials: http://leoeditor.com/tutorial.html
+| Videos:    http://leoeditor.com/screencasts.html
+| Forum:     http://groups.google.com/group/leo-editor
+| Download:  http://sourceforge.net/projects/leo/files/
+| Github:    https://github.com/leo-editor/leo-editor
+| Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 

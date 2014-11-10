@@ -35,11 +35,11 @@ The highlights of Leo 5.0
 
 Links:
 ------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
+| Leo:       http://leoeditor.com
+| Docs:      http://leoeditor.com/leo_toc.html
+| Tutorials: http://leoeditor.com/tutorial.html
+| Videos:    http://leoeditor.com/screencasts.html
+| Forum:     http://groups.google.com/group/leo-editor
+| Download:  http://sourceforge.net/projects/leo/files/
+| Github:    https://github.com/leo-editor/leo-editor
+| Quotes:    http://leoeditor.com/testimonials.html
