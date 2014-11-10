@@ -2063,7 +2063,6 @@ leo/www/default.css
 leo/www/index.html
 leo/www/leo_rst.css
 leo/www/silver_city.css
-leoStandAloneGlobals.py
 leo_to_html.xsl
 nsi-boilerplate.txt
 nsi-install-files.txt

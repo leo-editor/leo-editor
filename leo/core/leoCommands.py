@@ -1089,7 +1089,7 @@ class Commands (object):
         path = g.os_path_join(td,fn)
 
         return path
-    #@+node:ekr.20100203050306.5797: *7* c.openWithHelper
+    #@+node:ekr.20100203050306.5797: *7* c.openWithHelper & helpers
     def openWithHelper (self,p,ext):
 
         '''create or reopen a temp file for p,
@@ -6464,6 +6464,7 @@ class Commands (object):
         '''Open leo/doc/cheatSheet.leo'''
         c = self
         fn = g.os_path_finalize_join(g.app.loadDir,'..','doc','CheatSheet.leo')
+        # g.es_debug(g.os_path_exists(fn),fn)
         if g.os_path_exists(fn):
             c2 = g.openWithFileName(fn,old_c=c)
             if redraw:

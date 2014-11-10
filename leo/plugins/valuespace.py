@@ -185,9 +185,11 @@ try:
 except ImportError:
     yaml = None
 #@-<< imports >>
-
 controllers = {}
     # Keys are c.hash(), values are ValueSpaceControllers.
+    
+# pylint: disable=eval-used
+# Eval is essential to this plugin.
 
 #@+others
 #@+node:ekr.20110408065137.14221: ** Module level

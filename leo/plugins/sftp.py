@@ -101,11 +101,9 @@ __version__ = '0.2'
 #@+node:peckj.20140218144401.6038: ** << imports >>
 import leo.core.leoGlobals as g
 
-#import PyQt4.QtCore as QtCore
-#import PyQt4.QtGui as QtGui
-from leo.core.leoQt import QtWidgets, QtCore
+from leo.core.leoQt import QtWidgets #, QtCore
 
-import os
+# import os
 
 try:
     import paramiko
@@ -297,7 +295,7 @@ class SFTPController:
             except:
                 self.log('Communications error!', color='red')
         else:
-            self.log('Not an @sftp node!', color='red');
+            self.log('Not an @sftp node!', color='red')
     #@+node:peckj.20140218144401.6174: *4* sftp_pull_all
     def sftp_pull_all(self, event=None):
         """Runs an `sftp-pull` on all @sftp nodes in the current outline."""
@@ -329,7 +327,7 @@ class SFTPController:
                 self.log('Communications error!', color='red')
        
         else:
-            self.log('Not an @sftp node!', color='red');
+            self.log('Not an @sftp node!', color='red')
     #@+node:peckj.20140218144401.6176: *4* sftp_push_all
     def sftp_push_all(self, event=None):
         """Runs an `sftp-push` on all @sftp nodes in the current outline."""

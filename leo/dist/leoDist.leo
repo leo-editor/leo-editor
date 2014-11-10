@@ -135,7 +135,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-alpha-2
+Version: 5.0-alpha-3
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -157,9 +157,9 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 alpha 2                     November 8, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 alpha 3                     November 9, 2014
 
-Leo 5.0a2 is now available at:
+Leo 5.0a3 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -549,7 +549,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-a2' ##version
+version = '5.0-a3' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 

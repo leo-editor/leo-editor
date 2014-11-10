@@ -1,6 +1,6 @@
-Leo 5.0 alpha 2                     November 8, 2014
+Leo 5.0 alpha 3                     November 9, 2014
 
-Leo 5.0a2 is now available at:
+Leo 5.0a3 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.

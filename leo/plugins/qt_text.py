@@ -505,7 +505,11 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             # This is important: it clears the autocompletion state.
             c.k.keyboardQuit()
             c.bodyWantsFocusNow()
-            self.deleteLater()
+            try:
+                self.deleteLater()
+            except RuntimeError:
+                # Avoid bug 1338773: Autocompleter error
+                pass
         #@+node:ekr.20141024170936.7: *5* lqlw.get_selection
         def get_selection(self):
             '''Return the presently selected item's text.'''

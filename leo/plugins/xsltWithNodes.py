@@ -298,6 +298,7 @@ def addMenu( tag, keywords ):
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
+        # pylint: disable=cell-var-from-loop
         c.add_command(m2,
             label = z,
             command = lambda c=c,element=xslt[ z ]: addXSLTElement(c,element))

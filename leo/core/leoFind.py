@@ -1060,6 +1060,8 @@ class LeoFind:
         self.initBatchCommands()
         count = 0
         u.beforeChangeGroup(current,undoType)
+        # Fix bug 338172: ReplaceAll will not replace newlines indicated as \n in target string.
+        self.change_text = self.replaceBackSlashes(self.change_text)
         while 1:
             pos1, pos2 = self.findNextMatch()
             if pos1 is None:

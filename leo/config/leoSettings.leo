@@ -1453,7 +1453,7 @@
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
-<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = False</vh></v>
+<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = True</vh></v>
 <v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
 <v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
 <v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>

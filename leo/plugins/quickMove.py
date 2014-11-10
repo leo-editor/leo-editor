@@ -153,6 +153,7 @@ if g.app.gui.guiName() == "qt":
     from leo.core.leoQt import QtCore,QtGui
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
+# pylint: disable=cell-var-from-loop
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():

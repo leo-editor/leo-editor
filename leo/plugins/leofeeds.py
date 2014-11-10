@@ -43,7 +43,7 @@ if isPython3:
 else:
     import HTMLParser
 
-import pprint
+# import pprint
 #@-<< imports >>
 
 #@+others

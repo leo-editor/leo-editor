@@ -24,46 +24,16 @@ import time
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
-
-    return (
-        'runLeo',
-        'leoApp',
-        'leoAtFile',
-        'leoBridge',
-        'leoCache',
-        'leoColor',
-        'leoColorizer',
-        'leoChapters',
-        'leoCommands',
-        'leoConfig',
-        'leoEditCommands',
-        'leoFileCommands',
-            # E1120: no value passed for param.
-            # E1101: Class 'str' has no 'maketrans' member
-        'leoFind',
-        'leoFrame',
-            # R0923: Interface not implemented.
-        'leoGlobals', 
-            # E0611: no name 'parse' in urllib.
-            # E1103: Instance of 'ParseResult' has no 'xxx' member,
-        'leoGui',
-        'leoImport',
-        'leoIPython',
-        'leoKeys',
-        'leoMenu',
-            # W0108: Lambda may not be necessary (it is).
-        'leoNodes',
-        'leoQt',
-        'leoPersistence',
-        'leoPlugins',
-        'leoRope',
-        'leoRst', 
-        'leoSessions',
-        'leoShadow',
-        'leoTangle',
-        'leoTest',
-        'leoUndo',
-    )
+    
+    pattern = g.os_path_finalize_join('.','leo','core','leo*.py')
+    aList = [
+        g.shortFileName(fn)
+            for fn in glob.glob(pattern)
+                if g.shortFileName(fn) != '__init__.py']
+    aList.extend([
+         'runLeo.py',
+    ])
+    return sorted(aList)
 #@+node:ekr.20140528065727.17960: ** getExternalList
 def getExternalList():
     '''Return list of files in leo/external'''
@@ -74,20 +44,20 @@ def getExternalList():
     ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
-
-    return (
+    
+    pattern = g.os_path_finalize_join('.','leo','plugins','qt_*.py')
+    aList = [
+        g.shortFileName(fn)
+            for fn in glob.glob(pattern)
+                if g.shortFileName(fn) != '__init__.py']
+    aList.extend([
         'free_layout',
         'nested_splitter',
-        'qt_big_text',
-        'qt_commands',
-        'qt_events',
-        'qt_frame',
-        'qt_gui',
-        'qt_idle_time',
-        'qt_quickheadlines.py',
-        'qt_text',
-        'qt_tree',
-    )
+    ])
+    if 'qt_main.py' in aList:
+        # Auto-generated file.
+        aList.remove('qt_main.py')
+    return sorted(aList)
 #@+node:ekr.20140727180847.17983: ** getModesList
 def getModesList():
     pattern = g.os_path_finalize_join('.','leo','modes','*.py')
@@ -130,27 +100,28 @@ def getPluginsList():
     '''Return a list of all important plugins.'''
     aList = []
     # g.app.loadDir does not exist: use '.' instead.
-    for theDir in ('importers','writers'):
+    for theDir in ('','importers','writers'):
         pattern = g.os_path_finalize_join('.','leo','plugins',theDir,'*.py')
         for fn in glob.glob(pattern):
             sfn = g.shortFileName(fn)
             if sfn != '__init__.py':
-                aList.append(os.sep.join([theDir,sfn]))
-    aList.extend([
-        'baseNativeTree',
-        'bookmarks',
-        'contextmenu',
-        'leoOPML',
-        'lineNumbers',
-        # 'mod_http',
-        'mod_scripting',
-        'nav_qt',
-        'quicksearch',
-        'todo',
-        'vim.py',
-        'viewrendered.py',
-        'xemacs.py',
-    ])
+                sfn = os.sep.join([theDir,sfn]) if theDir else sfn
+                aList.append(sfn)
+    remove = [
+        'cursesGui.py',         # Many, many formatting problems.
+        'free_layout.py',       # Gui-related.
+        'gtkDialogs.py',        # Many errors, not important.
+        'leofts.py',            # Not (yet) in leoPlugins.leo.
+        'nested_splitter.py',   # Gui-related.
+        'qtGui.py',             # Dummy file
+        'qt_main.py',           # Created automatically.
+    ]
+    aList = sorted([z for z in aList if z not in remove])
+    # Remove all gui related items.
+    for z in sorted(aList):
+        if z.startswith('qt_'):
+            aList.remove(z)
+    # g.trace('\n'.join(aList))
     return aList
 #@+node:ekr.20140331201252.16861: ** getTable
 def getTable(scope):
@@ -158,7 +129,6 @@ def getTable(scope):
     d = {
         'all': (
             (coreList,'core'),
-            # (guiPluginsList,'plugins'),
             (guiPluginsList,'plugins'),
             (pluginsList,'plugins'),
             (externalList,'external'),

@@ -26,7 +26,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "5.0a2" # Used if no git version is available.
+version = "5.0a3" # Used if no git version is available.
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}

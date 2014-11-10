@@ -256,12 +256,14 @@
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
-<v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
-<v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
-<v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
+<v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
-<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
+<v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
+<v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
+<v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
 <v t="ekr.20110531155858.20564"><vh>How do I set selection colors?</vh></v>
+<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
+<v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
@@ -276,6 +278,7 @@
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
 <v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
+<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
 <v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 <v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
@@ -287,8 +290,28 @@
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
+<v t="ekr.20141109053526.4"><vh>Scipting &amp; Testing</vh>
+<v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
+<v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
+<v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
+<v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
+<v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
+<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
+<v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
+<v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
+</v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
+<v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
+<v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
+<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
+<v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
+<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
+<v t="ekr.20130807203905.16526"><vh>How can I use bzr/git to check Leo's importers?</vh></v>
+<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
+<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
+<v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
 <v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
 <v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
 <v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
@@ -299,19 +322,6 @@
 <v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
 <v t="ekr.20131211054925.16388"><vh>Tips for improving audio</vh></v>
 </v>
-<v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
-<v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
-<v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
-<v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
-<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
-<v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
-<v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
-<v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
-<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
-<v t="ekr.20130807203905.16526"><vh>How can I use bzr/git to check Leo's importers?</vh></v>
-<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
-<v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
-<v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
@@ -1317,20 +1327,6 @@
 <v t="ekr.20141103061944.87"></v>
 <v t="ekr.20141103061944.222"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
-</v>
-<v t="ekr.20141108064630.6"><vh>To scripting chapter</vh>
-<v t="ekr.20141108064630.7"><vh>How to make body text insertion at cursor permanent? (*** to do ***)</vh></v>
-</v>
-<v t="ekr.20141108064630.5"><vh>To FAQ</vh>
-<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
-<v t="ekr.20141108064630.9"><vh>What is a clone war and what happens?</vh></v>
-<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
-<v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
-<v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
-<v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
-<v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
-<v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -6047,26 +6043,6 @@ Recent projects include:
    It should **not** be a child of the node
    '@ignore Unused key bindings'.
 </t>
-<t tx="ekr.20060822111759">By Rich Ries
-
-There is no direct way to make script buttons available in multiple Leo files.
-Sure, you could copy and paste the @button nodes, but there is a slightly
-easier way using the "New Buttons" plugin.
-
-1) Create and test and debug your desired Script Button.
-
-2) With the Script Button node selected, run Plugins --&gt; New buttons --&gt; Make Template From
-
-Open a new Leo file.
-
-3) Assuming you have only the one New Button Template defined, left-click the
-   New button, and a new node will be added to your outline. (Otherwise, you'll
-   need to select the Template you want.)
-
-4) Press [Script Button] to create the new script button.
-
-It's easier to *do* this than to *explain* it!
-</t>
 <t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring.
 See `Customizing Leo`_ for a general discussion of Leo's settings.
 
@@ -8650,7 +8626,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
 </t>
-<t tx="ekr.20090223065025.3">Let::
+<t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your
+script calls c.frame.body.onBodyChanged after making those changes. This
+method has the following signature::
+
+    def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+Let::
 
     w = c.frame.body.wrapper # Leo's body pane.
 
@@ -22994,7 +22976,7 @@ Ok, in order to print icons, the code is this:
 
 c.editCommands.insertIconFromFile(path)
 
-Im quoting from this Leo manual
+I'm quoting from this Leo manual
 http://leoeditor.com/scripting.html#important-objects,
 http://leoeditor.com/scripting.html#inserting-and-deleting-icons
 
@@ -23103,7 +23085,7 @@ it out a while back, but I never got anywhere.  It's not really a big
 problem though, I have scripts to compile nodes to html/pdfs and open them 
 in firefox/pdf reader; math works fine that way.
 
-===== From: offray
+===== offray
 
 Is not properly Leo, but is python related, tailored for math and with a
 web interface and has leo bindings, check IPython:
@@ -23117,24 +23099,17 @@ with the features of the python qt console.
 <t tx="ekr.20141108064630.15">The code that handles the rclick menu is in the QtIconBarClass class in
 qt_frame.py.
 
-On your machine there was some indicator in the top-level button indicating
-that it had structure. How did you create such buttons?
+Show that the  top-level button contains structure, do this::
 
     @string mod_scripting_subtext = ▾
 
-I prefer a bigger triangle: ▼ U=25BC: Black Down-Pointing Triangle.
+An alternative: ▼ U=25BC: Black Down-Pointing Triangle.
 
 It's reasonable to have the top-level button just be a placeholder for
 subsidiary @rclick nodes. To do that without getting a warning when
 clicking the top-level button, set its script to "empty string".
-
 </t>
-<t tx="ekr.20141108064630.16">It might be interesting to have some wallpapers/tiles to visually represent
-various categories of methods, e.g. ctors, setters, getters, etc. Maybe
-ones that hint at the uses of a particular design pattern. Could I use a uA
-to control setting?
-
-Put the following in the style-sheet:
+<t tx="ekr.20141108064630.16">Put the following in the style-sheet:
 
     QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
 
@@ -23262,15 +23237,6 @@ See above
 The value returned by ns_provider_id should be unique for the provider
 class, but constant. So it can just return something like "matplotlib provider ver 1"
 </t>
-<t tx="ekr.20141108064630.5">@language rest
-</t>
-<t tx="ekr.20141108064630.6"></t>
-<t tx="ekr.20141108064630.7">From: SegundoBob &lt;bhossley@ieee.org&gt;
-
-When focus is moved away
-from and then back to the modified node, the inserted text
-disappears.  That is, Leo-Editor seems unaware of the insertion.
-</t>
 <t tx="ekr.20141108064630.8">.. https://groups.google.com/d/msg/leo-editor/4s44H9cUJGY/ewRBDBSw-A8J
 
 For the last several weeks I've used clones in a new, more effective way,
@@ -23369,24 +23335,28 @@ This workflow has big advantages:
 4. Banning clones from leoProjects.txt forces me to complete the first
    draft of the documentation before committing the fix.
 </t>
-<t tx="ekr.20141108064630.9">A clone war happens when:
+<t tx="ekr.20141109053526.4"></t>
+<t tx="ekr.20141109053526.8">GTD (Getting Things Done)
+http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280
+is, by far, the best productivity book I have ever read. Many aspects of
+Leo are idea for putting GTD into practice.
 
-A. A clone appears in two separate external files, not counting .leo files.
+Here is a surprisingly useful workflow tip related to GTD.
 
-B. One of those clones changes in the external file but not the other.
+Ideas often "intrude" when I am busy with something else. When that
+happens, I create a top-level node of the form::
 
-Leo handles such situations as follows:
+    ** description of idea
 
-    **The last clone that Leo reads wins.**
+Now I can continue what I was doing! This is such a simple idea, but it's
+really really important: it means I never have to put off getting my ideas
+into Leo. The "**" draws my attention to the new to-do item. Later, when I
+am not fully immersed in the previous task, I can put the "**" node
+somewhere else.
 
-That is, the last copy of the clone that Leo reads sets the node's headline
-and body text. If you put clones in several external files it is up to
-*you* to know these rules and handle any resulting conflicts.
-
-Whenever Leo detects multiple values for a cloned node, Leo creates a
-"Recovered nodes" tree. This tree contains all the various values for the
-clone. nicely formatted so that it is easy to determine where the
-differences are.
+It's super important to deal with new ideas *instantly* but *without*
+greatly interrupting the task at hand. Creating "**" nodes does that. This
+new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
