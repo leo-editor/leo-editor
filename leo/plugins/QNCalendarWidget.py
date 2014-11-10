@@ -7,11 +7,10 @@ with a QDateEdit (QNDateEdit) in a particular context.
 Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 """
 
-import os
+# import os
 import sys
 import datetime
 
-# from PyQt4 import QtGui, QtCore
 from leo.core.leoQt import QtCore,QtWidgets
 
 def init():

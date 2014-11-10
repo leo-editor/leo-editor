@@ -161,6 +161,7 @@ class LiveCodeDisplay:
                 
                 try:
                     if isinstance(node, ast.Expr):
+                        # pylint: disable=eval-used
                         node_result = repr(eval(block[n], self.scope))
                     else:
                         # exec block[n] in self.scope
@@ -185,6 +186,7 @@ class LiveCodeDisplay:
                             todo.extend(target.elts)
                             continue
                         code = asttools.dump_python_source(target)
+                        # pylint: disable=eval-used
                         node_result.append("%s = %r" %
                             (code.strip(), eval(code, self.scope)))
 

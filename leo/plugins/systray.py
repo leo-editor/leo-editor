@@ -47,15 +47,15 @@ def init ():
     return ok
 #@+node:ville.20110219221839.6560: ** createTrayIcon
 def createTrayIcon():
-    g.trayIconMenu = QtGui.QMenu();
+    g.trayIconMenu = QtGui.QMenu()
     def new_note():
         c = g.app.commanders()[0]
         c.k.simulateCommand('stickynote-new')
 
-    g.trayIconMenu.addAction("New note",new_note);
+    g.trayIconMenu.addAction("New note",new_note)
 
-    g.trayIcon = QtGui.QSystemTrayIcon();
-    g.trayIcon.setContextMenu(g.trayIconMenu);
+    g.trayIcon = QtGui.QSystemTrayIcon()
+    g.trayIcon.setContextMenu(g.trayIconMenu)
     g.trayIcon.setIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     g.trayIcon.setVisible(True)
 
