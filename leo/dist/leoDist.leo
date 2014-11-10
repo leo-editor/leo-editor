@@ -135,7 +135,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-alpha-3
+Version: 5.0-beta 1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -857,7 +857,7 @@ def deleteTempFiles (self,lines):
     commands = (
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
-        r'%s archive --format zip --output "%s" --prefix=Leo5.0a1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo5.0b1/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)

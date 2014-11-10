@@ -1888,6 +1888,7 @@ leo/plugins/valuespace.py
 leo/plugins/viewrendered.py
 leo/plugins/viewrendered2.py
 leo/plugins/vim.py
+leo/plugins/watchfiles.py
 leo/plugins/wikiview.py
 leo/plugins/word_count.py
 leo/plugins/word_export.ini
