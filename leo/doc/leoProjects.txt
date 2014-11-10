@@ -241,7 +241,7 @@ Added the following defensive code::
     except RuntimeError:
         # Avoid bug 1338773: Autocompleter error
         pass
-.. @+node:ekr.20141109160640.4: *3* Investigated bug 1286914: A custom menu that seems correct, but does nothing 
+.. @+node:ekr.20141109160640.4: *3* Investigated bug 1286914: A custom menu that seems correct, but does nothing
 https://bugs.launchpad.net/leo-editor/+bug/1286914
 A custom menu that seems correct, but does nothing
 
@@ -257,7 +257,7 @@ https://bugs.launchpad.net/leo-editor/+bug/815564
 Plugin Menu - Keystroke binding can prevent plugin help display
 
 Obvious workaround: avoid name clashes.
-.. @+node:ekr.20141109160640.5: *3* Wont fix bug 1292207: Disabling Plugins disables menu actions 
+.. @+node:ekr.20141109160640.5: *3* Won't fix bug 1292207: Disabling Plugins disables menu actions 
 https://bugs.launchpad.net/leo-editor/+bug/1292207
 Disabling Plugins disables menu actions
 
@@ -265,6 +265,19 @@ This bug is invalid.
 
 Disabling plugins disable the mod_scripting plugin, so the @command nodes
 given in the example do nothing.
+.. @+node:ekr.20141109160640.6: *3* Won't fix bug 1286913: After the "menu already exists"...
+https://bugs.launchpad.net/leo-editor/+bug/1286913
+After the "menu already exists: ampersand menu name" warning,
+the menu entries are added to the existing menu.
+
+This is a minor wishlist item.
+.. @+node:ekr.20141030042423.6: *3* Investigate bug 1258302: Window, Toggle Split Direction Error
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1258302
+Window, Toggle Split Direction Error
+
+This works for me.  Don't know when it was fixed.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
