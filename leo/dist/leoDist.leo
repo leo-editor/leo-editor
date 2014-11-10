@@ -55,9 +55,8 @@
 <v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
-<v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
-<v t="maphew.20141108212612.15" a="E"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20141108212612.15"><vh>@file ../../setup.py</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
@@ -134,33 +133,9 @@ PARTICULAR PURPOSE. IN NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF
 PROFIT OR ANY COMMERCIAL DAMAGE, INCLUDING BUT NOT LIMITED TO SPECIAL,
 INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
-<t tx="EKR.20040519090846.8">Metadata-Version: 1.0
-Name: leo
-Version: 5.0-alpha-2
-Summary: Leo: Literate Editor with Outlines
-Home-page: http://leoeditor.com/
-Author: Edward K. Ream
-Author-email: edreamleo@gmail.com
-License: Python
-Description:
-    Leo is a PIM, IDE and outliner written in 100% pure Python.
-    Leo features a multi-window outlining editor, Python colorizing,
-    powerful outline commands and many other things, including 
-    unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-    Leo requires Python 2.6 or above. Leo works with Python 3.x::
-    
-        Docs:      http://leoeditor.com/leo_toc.html
-        Tutorials: http://leoeditor.com/tutorial.html
-        Videos:    http://leoeditor.com/screencasts.html
-        Forum:     http://groups.google.com/group/leo-editor
-        Download:  http://sourceforge.net/projects/leo/files/
-        Github:    https://github.com/leo-editor/leo-editor
-        Quotes:    http://leoeditor.com/testimonials.html
-Platform: Windows, Linux, MacOS.
-</t>
-<t tx="EKR.20040519090846.9">Leo 5.0 alpha 2                     November 8, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 alpha 3                     November 9, 2014
 
-Leo 5.0a2 is now available at:
+Leo 5.0a3 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 Leo is a PIM, an IDE and an outliner.
@@ -550,7 +525,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-a2' ##version
+version = '5.0-a3' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
