@@ -241,6 +241,17 @@ Added the following defensive code::
     except RuntimeError:
         # Avoid bug 1338773: Autocompleter error
         pass
+.. @+node:ekr.20141109160640.4: *3* Investigated bug 1286914: A custom menu that seems correct, but does nothing 
+https://bugs.launchpad.net/leo-editor/+bug/1286914
+A custom menu that seems correct, but does nothing
+
+This problem is demonstrated by the file settingsCreep01.leo attached to bug 1286909.
+
+The fix is to remove the amperstand from the @item headlines.
+.. @+node:ekr.20141109160640.7: *3* Invalid bug 1286909: Settings in file A propagate to file B when editing A and B is opened
+https://bugs.launchpad.net/leo-editor/+bug/1286909
+Settings in file A propagate to file B when editing A and B is opened
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
