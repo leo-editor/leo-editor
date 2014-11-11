@@ -108,7 +108,6 @@ def getPluginsList():
                 sfn = os.sep.join([theDir,sfn]) if theDir else sfn
                 aList.append(sfn)
     remove = [
-        'cursesGui.py',         # Many, many formatting problems.
         'free_layout.py',       # Gui-related.
         'gtkDialogs.py',        # Many errors, not important.
         'leofts.py',            # Not (yet) in leoPlugins.leo.
