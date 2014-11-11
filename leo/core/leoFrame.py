@@ -1489,7 +1489,7 @@ class LeoTree(object):
     def scrollTo(self,p): self.oops()
     # idle_scrollTo = scrollTo # For compatibility.
     # Headlines.
-    def editLabel(self,v,selectAll=False,selection=None): self.oops()
+    def editLabel(self,p,selectAll=False,selection=None): self.oops()
     def edit_widget (self,p): self.oops()
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
