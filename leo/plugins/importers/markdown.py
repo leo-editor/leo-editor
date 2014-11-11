@@ -185,14 +185,14 @@ class MarkdownScanner (basescanner.BaseScanner):
             level = 0
             while level < len(line) and line[level] == '#':
                 level += 1
-            name = line[level:].strip()
+            name = line[level:].rstrip() # Retain leading ws.
             kind = '#'
         else:
             # Look ahead if the next line is an underline.
             i2,j2 = g.getLine(s,j2)
             line2 = s[i2:j2]
             level = self.isUnderline(line2)
-            name = line.strip() if level > 0 else None
+            name = line.rstrip() if level > 0 else None
             kind = {0: '#', 1: '=', 2: '-'}.get(level)
         # Update the kind dict.
         if name:

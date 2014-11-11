@@ -42,7 +42,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         if kind is None:
             if self.trace: g.trace('skip headline',p.h)
         elif kind == '#':
-            self.put('%s %s' % (level*'#',p.h))
+            self.put('%s%s' % (level*'#',p.h))
         elif kind in '=-':
             self.put(p.h)
             self.put(kind*len(p.h))
