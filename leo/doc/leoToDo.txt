@@ -10,36 +10,11 @@
 - vimoutline mode.
 - link to vim docs from release notes.
 .. @+node:ekr.20141110064849.1: *3* Fix 3 bugs
-.. @+node:ekr.20141020061642.21513: *4* Fix bug 66: errors inhibited read @auto foo.md
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/66
-errors inhibited read @auto foo.md
-
-Up-voted by Kent.
-
-Here's the file::
-
-QQQQQ
-_Thinking about Python3 in the context of Osgeo4W_
-
-the current practice of putting .exe and .dll in .\bin means we can't install different versions of python side by side. What, if anything, would break if we moved them back into `.\apps\Python27`?
-
-.\bin\set_py.bat {version}
-
-Setup the current shell for the specified python version, if null then use the default.
-
-set pythonhome=%osgeo4w_root%\apps\Python%ver%
-set path=%pythonhome%;%pythonhome%\Scripts;%path%
-python --version
-
-:: Associate .py files with Windows
-
-assoc .py=Python.File
-ftype Python.File=%pythonhome%\pythonw.exe "%1" %*
-QQQQQ
+.. @+node:ekr.20141110223158.22: *4* Fix bugs similar to #66 for org-mode and vimoutline files
 .. @+node:ekr.20141110154742.6: *4* Fix bug 78: find-next target not always scrolled into view
 https://github.com/leo-editor/leo-editor/issues/78
+
+Add tracing/history to find this bug.
 .. @+node:ekr.20141109160640.8: *4* Fix bug 1249368: MacOs custom hotkey can not work on 1st call
 @language rest
 
@@ -59,6 +34,8 @@ but as MAC OS X, usage Ctrl-. as Cmd-.
 Leo 4.11 final, build 5020, 2012-02-26 13:18:08 -0600
 Python 2.7.1, qt version 4.8.0
 darwin
+.. @+node:ekr.20141110223158.5: *3* ** fix ipython bugs
+.. @+node:ekr.20141110223158.9: *3* Fix IPython bugs
 .. @+node:ekr.20131004191204.16078: *3* Maybe: eliminate cycle-all-focus
 Replace with new focus-to-x command, for each dynamically created pane.
 .. @+node:ekr.20131220065609.16591: *4* Add focus-to-<temp pane> commands

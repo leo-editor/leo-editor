@@ -8,7 +8,7 @@ import leo.plugins.importers.basescanner as basescanner
 class MarkdownScanner (basescanner.BaseScanner):
 
     #@+others
-    #@+node:ekr.20140725190808.18068: *3* mds.__init__  (test)
+    #@+node:ekr.20140725190808.18068: *3* mds.__init__
     def __init__ (self,importCommands,atAuto):
         '''ctor for MarkdownScanner class.'''
         # Init the base class.
@@ -21,7 +21,7 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.escapeSectionRefs = False
         self.functionTags = []
         self.hasClasses = False
-        self.hasDecls = False
+        self.hasDecls = True # Fix bug 66.
         self.ignoreBlankLines = True
         self.isRst = False
         self.lineCommentDelim = '..'
@@ -32,6 +32,8 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.lastParent = None # The previous parent.
         self.lastSectionLevel = 0 # The section level of previous section.
         self.sectionLevel = 0 # The section level of the just-parsed section.
+        self.underlineDict = {}
+            # Keys are names. Values are ordered lists of underlining styles.
     #@+node:ekr.20140725190808.18069: *3* mds.adjustParent
     def adjustParent (self,parent,headline):
         '''Return the proper parent of the new node.'''
@@ -79,11 +81,38 @@ class MarkdownScanner (basescanner.BaseScanner):
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body1,body2
-    #@+node:ekr.20140725190808.18073: *3* mds.endGen
+    #@+node:ekr.20141110223158.16: *3* mds.createDeclsNode (new)
+    def createDeclsNode (self,parent,s):
+        '''Create a child node of parent containing s.'''
+        # Create the node for the decls.
+        headline = 'markdown declarations'
+        body = self.undentBody(s)
+        p = self.createHeadline(parent,body,headline)
+        # Remember that this node should not have its headline written.
+        d = self.underlineDict
+        name = headline
+        aList = d.get(name,[])
+        aList.append(None)
+        d [name] = aList
+        g.trace(name,aList)
+        # # # u,tag = p.v.u,'markdown-import'
+        # # # d = u.get(tag,{})
+        # # # d['skip_headline'] = True
+        # # # u [tag] = d
+        return p
+    #@+node:ekr.20141110223158.15: *3* mds.endGen
     def endGen (self,s):
-        '''End code generation.'''
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.root.b = self.root.b + warning
+        '''Finish code generation.'''
+        # Add the warning to the root's body text.
+        p = self.root
+        warning = '\nWarning: this node is ignored when writing this file.\n'
+        self.root.b = p.b + warning
+        # Put the underlineDict in self.root.v.u
+        u = p.v.u
+        tag = 'markdown-import'
+        d = u.get(tag,{})
+        d ['underline_dict'] = self.underlineDict
+        p.v.u [tag] = d
     #@+node:ekr.20140725190808.18074: *3* mds.isUnderline
     def isUnderline(self,s):
         '''
@@ -138,7 +167,7 @@ class MarkdownScanner (basescanner.BaseScanner):
         if trace: g.trace('found %s...\n%s' % (
             self.sigId,s[self.sigStart:self.codeEnd]))
         return True
-    #@+node:ekr.20140725190808.18077: *3* mds.startsSection & helper
+    #@+node:ekr.20140725190808.18077: *3* mds.startsSection
     def startsSection (self,s,i):
         '''
         Scan one or two lines looking for the start of a section.
@@ -156,12 +185,18 @@ class MarkdownScanner (basescanner.BaseScanner):
             while level < len(line) and line[level] == '#':
                 level += 1
             name = line[level:].strip()
+            kind = '#'
         else:
             # Look ahead if the next line is an underline.
             i2,j2 = g.getLine(s,j2)
             line2 = s[i2:j2]
             level = self.isUnderline(line2)
             name = line.strip() if level > 0 else None
+            kind = {0: '#', 1: '=', 2: '-'}.get(level)
+        # Update the kind dict.
+        if name:
+            d = self.underlineDict
+            d [name] = kind
         return level,name,j2
     #@-others
 #@-others
