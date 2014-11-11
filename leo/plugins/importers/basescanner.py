@@ -164,6 +164,7 @@ class BaseScanner:
         '''Return True if a trial write produces the original file.'''
         # s1 and s2 are for unit testing.
         trace = False and not g.unitTesting
+        trace_code = True
         trace_time = False and not g.unitTesting
         if trace_time:
             t1 = time.clock()
@@ -215,6 +216,9 @@ class BaseScanner:
             lines2 = self.adjustTestLines(lines2)
             s1 = ''.join(lines1)
             s2 = ''.join(lines2)
+        if trace and trace_code:
+            g.trace('s1...\n%s' % s1)
+            g.trace('s2...\n%s' % s2)
         # if g.unitTesting: g.pdb()
         if self.compare_tokens: # Token-based comparison.
             bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)

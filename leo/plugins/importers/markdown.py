@@ -23,8 +23,8 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.hasClasses = False
         self.hasDecls = True # Fix bug 66.
         self.ignoreBlankLines = True
-        self.isRst = False
-        self.lineCommentDelim = '..'
+        self.isRst = False # Don't set this: it messes with underlining.
+        self.lineCommentDelim = None
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
         self.strict = False # Mismatches in leading whitespace are irrelevant.
@@ -34,6 +34,7 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.sectionLevel = 0 # The section level of the just-parsed section.
         self.underlineDict = {}
             # Keys are names. Values are ordered lists of underlining styles.
+
     #@+node:ekr.20140725190808.18069: *3* mds.adjustParent
     def adjustParent (self,parent,headline):
         '''Return the proper parent of the new node.'''

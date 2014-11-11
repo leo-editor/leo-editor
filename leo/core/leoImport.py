@@ -1378,8 +1378,8 @@ class LeoImportCommands:
     def javaScriptUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.js')
         
-    def markdownUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.md')
+    def markdownUnitTest(self,p,atAuto=False,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest(p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.md')
 
     def pascalUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.pas')
