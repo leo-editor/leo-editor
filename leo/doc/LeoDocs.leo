@@ -10366,7 +10366,26 @@ Nevertheless, these sentinels can be useful in special situations.
 
     The \@comment directive must precede the first section name or \@c
     directive.
-
+    
+    There are situations where using \@delims or \@comment is not avoidable or impractical to
+    add new language definition, and including it causes the resulting file to be invalid.
+    In place of delimiter definition, use @0x + delimiter encoded in hexadecimal.
+    The hexadecimal part must be acceptable input to binascii.unhexlify(), otherwise whole 
+    directive will be ignored. Use binascii.hexlify('my-delimiter') to generate it.
+    Decoded delimiters are not checked for validity (such as, UTF-8) and whether they 
+    do not clash with Leo format (like newline or NUL characters)!
+    
+    Example::
+    
+        @comment @0x3c212d2d2120 @0x202d2d3e
+    
+    for GenshiXML is the same definition as 
+        
+        @comment &lt;!--!_ _--&gt;
+    
+    to create comments that will be removed from the output by Genshi. But the latter would 
+    cause XML parsing error on the @comment line.
+    
 .. index::
     pair: @delims; Reference
 

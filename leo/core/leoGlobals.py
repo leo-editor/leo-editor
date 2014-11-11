@@ -128,6 +128,8 @@ if isPython3:
 else:
     import urlparse
 
+import binascii
+
 # import zipfile
 
 # These do not exist in IronPython.
@@ -2468,11 +2470,26 @@ def set_delims_from_string(s):
         delims[1] = delims[0]
         delims[0] = ''
 
-    # 7/8/02: The "REM hack": replace underscores by blanks.
-    # 9/25/02: The "perlpod hack": replace double underscores by newlines.
     for i in range(0,3):
         if delims[i]:
-            delims[i] = delims[i].replace("__",'\n').replace('_',' ')
+            if delims[i].startswith("@0x"):
+                # Allow delimiter definition as @0x + hexadecimal encoded delimiter
+                # to avoid problems with duplicate delimiters on the @comment line. 
+                # If used, whole delimiter must be encoded.
+                if len(delims[i]) == 3:
+                    g.warning("'%s' delimiter is invalid" % delims[i])
+                    return None, None, None
+                    
+                try:
+                    delims[i] = binascii.unhexlify(delims[i][3:])
+                except Exception as e:
+                    g.warning("'%s' delimiter is invalid: %s" % (delims[i], e))
+                    return None, None, None
+            else:    
+                # 7/8/02: The "REM hack": replace underscores by blanks.
+                # 9/25/02: The "perlpod hack": replace double underscores by newlines.
+                delims[i] = delims[i].replace("__",'\n').replace('_',' ')
+    
 
     return delims[0], delims[1], delims[2]
 #@+node:ekr.20031218072017.1384: *3* g.set_language
