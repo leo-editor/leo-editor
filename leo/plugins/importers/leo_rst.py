@@ -123,7 +123,7 @@ class RstScanner (basescanner.BaseScanner):
         headline = '@rst-no-head %s declarations' % self.methodName
         body = self.undentBody(s)
         self.createHeadline(parent,body,headline)
-    #@+node:ekr.20140723122936.18105: *3* endGen
+    #@+node:ekr.20140723122936.18105: *3* endGen (RstScanner)
     def endGen (self,s):
 
         '''Remember the underlining characters in the root's uA.'''

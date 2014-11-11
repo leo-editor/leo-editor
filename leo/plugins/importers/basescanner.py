@@ -85,7 +85,7 @@ class BaseScanner:
         self.tab_ws = ''
             # Set in run: the whitespace equivalent to one tab.
         self.trace = False or ic.trace
-            # = c.config.getBool('trace_import')
+            # ic.trace is c.config.getBool('trace_import')
         self.treeType = ic.treeType
             # '@root' or '@file'
         self.webType = ic.webType
@@ -540,8 +540,6 @@ class BaseScanner:
 
         return ''.join([mungeRstLine(z) for z in g.splitLines(s)])
     #@+node:ekr.20140727075002.18205: ** BaseScanner.Code generation
-    #@+at None of these methods should ever need to be overridden in subclasses.
-    # 
     #@+node:ekr.20140727075002.18206: *3* BaseScanner.adjustParent
     def adjustParent (self,parent,headline):
 
@@ -580,29 +578,23 @@ class BaseScanner:
         return self.importCommands.setBodyString(p,s)
     #@+node:ekr.20140727075002.18209: *3* BaseScanner.computeBody
     def computeBody (self,s,start,sigStart,codeEnd):
-
+        '''Return the head and tail of the body.'''
         trace = False
-
         body1 = s[start:sigStart]
         # Adjust start backwards to get a better undent.
         if body1.strip():
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
-
         # g.trace(repr(s[sigStart:codeEnd]))
-
         body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
         body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
-
         if trace: g.trace('body: %s' % repr(body))
-
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
             self.warning(
                 '%s %s does not end with a newline; one will be added\n%s' % (
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
-
         return body1,body2
     #@+node:ekr.20140727075002.18210: *3* BaseScanner.createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -632,7 +624,6 @@ class BaseScanner:
         return self.importCommands.createHeadline(parent,body,headline)
     #@+node:ekr.20140727075002.18213: *3* BaseScanner.endGen
     def endGen (self,s):
-
         '''Do any language-specific post-processing.'''
         pass
     #@+node:ekr.20140727075002.18214: *3* BaseScanner.getLeadingIndent
@@ -863,9 +854,7 @@ class BaseScanner:
         parent = self.adjustParent(parent,headline)
 
         if trace:
-            # pylint: disable=E1103
-                # Instance of str has no h member.
-            g.trace('parent',parent.h) # pylint complains.
+            g.trace('parent',parent.h)
             if verbose:
                 # g.trace('**body1...\n',body1)
                 g.trace('**body2...\n',body2)
