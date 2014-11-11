@@ -655,12 +655,13 @@ class LeoImportCommands:
     def scanner_for_at_auto(self,p):
         '''A factory returning a scanner function for p, an @auto node.'''
         d = self.atAutoDict
-        trace = False and not g.unitTesting # and p.h.startswith('@auto-test')
+        trace = False and not g.unitTesting
         for key in d.keys():
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
-            if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
+            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h,0,key):
+                if trace: g.trace('found',aClass.__name__)
                 def scanner_for_at_auto_cb(atAuto,parent,s,prepass=False):
                     try:
                         scanner = aClass(importCommands=self,atAuto=atAuto)
@@ -1363,19 +1364,22 @@ class LeoImportCommands:
         return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.c#')
 
     def elispUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.el')
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.el')
 
     def htmlUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.htm')
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.htm')
 
     def iniUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ini')
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ini')
 
     def javaUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.java')
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.java')
 
     def javaScriptUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.js')
+        
+    def markdownUnitTest(self,p,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.md')
 
     def pascalUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.pas')
@@ -1384,16 +1388,10 @@ class LeoImportCommands:
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.php')
 
     def pythonUnitTest(self,p,atAuto=False,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.py')
+        return self.scannerUnitTest(p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
     def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
-        if False: # and g.app.isExternalUnitTest:
-            # Disable the tests in the unit tests themselves, not here.
-            # These tests cause mysterious problem when run externally.
-            # This trace will probably not be used: the tests are skipped explicitly.
-            g.trace('skipping test',p.h)
-            return None
-        elif docutils:
+        if docutils:
             return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
         else:
             return None
