@@ -7609,9 +7609,9 @@ class Commands (object):
             d[tag] = 1 + d.get(tag,0)
     #@+node:ekr.20111217154130.10285: *4* c.raise_error_dialogs
     def raise_error_dialogs(self,kind='read'):
-
+        '''Warn abouit read/write failures.'''
         c = self
-
+        use_dialogs = True
         if g.unitTesting:
             d = g.app.unitTestDict
             tag = 'raise_error_dialogs'
@@ -7619,24 +7619,30 @@ class Commands (object):
             # This trace catches all too-many-calls failures.
             # g.trace(g.callers())
         else:
-            # 2011/12/17: Issue one or two dialogs.
+            # Issue one or two dialogs or messages.
             if c.import_error_nodes or c.ignored_at_file_nodes:
                 g.app.gui.dismiss_splash_screen()
-                # g.trace(g.callers())
-
             if c.import_error_nodes:
                 files = '\n'.join(sorted(c.import_error_nodes))
-                g.app.gui.runAskOkDialog(c,
-                    title='Import errors',
-                    message='The following were not imported properly.  @ignore was inserted:\n%s' % (files))
-
+                if use_dialogs:
+                    g.app.gui.runAskOkDialog(c,
+                        title='Import errors',
+                        message='The following were not imported properly. '
+                        '@ignore was inserted:\n%s' % (files))
+                else:
+                    g.es('import errors...',color='red')
+                    g.es('\n'.join(sorted(files)),color='blue')
             if c.ignored_at_file_nodes:
                 files = '\n'.join(sorted(c.ignored_at_file_nodes))
                 kind = 'read' if kind.startswith('read') else 'written'
-                g.app.gui.runAskOkDialog(c,
-                    title='Not read',
-                    message='The following were not %s because they contain @ignore:\n%s' % (kind,files))
-
+                if use_dialogs:
+                    g.app.gui.runAskOkDialog(c,
+                        title='Not read',
+                        message='The following were not %s because they contain @ignore:\n%s' % (
+                            kind,files))
+                else:
+                    g.es('not %s (@ignore)...' % (kind),color='red')
+                    g.es(files,color='blue')
         c.init_error_dialogs()
     #@+node:ekr.20051106040126: *3* c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
