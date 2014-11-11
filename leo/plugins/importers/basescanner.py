@@ -858,7 +858,8 @@ class BaseScanner:
         parent = self.adjustParent(parent,headline)
 
         if trace:
-            g.trace('parent',parent.h)
+            # pylint: disable=maybe-no-member
+            g.trace('parent',parent and parent.h)
             if verbose:
                 # g.trace('**body1...\n',body1)
                 g.trace('**body2...\n',body2)
