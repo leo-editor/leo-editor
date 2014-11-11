@@ -12655,6 +12655,24 @@ console.log("Listening on " + port);
 
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20141111092038.11: *5* Markdown tests
+#@+node:ekr.20141111092038.12: *6* @@@test markdown 1 (creates an unwanted @auto node)
+s = '''
+
+Header
+======
+
+After header text
+
+Subheader
+---------
+
+After subheader text
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+c.importCommands.markdownUnitTest(p,s=s,atAuto=False,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 s = '''
@@ -13481,6 +13499,39 @@ section 3.1.1, line 1
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20141111095646.11: *5* @auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
+@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+#@+node:ekr.20141111095646.12: *6* @rst-no-head rST import test declarations
+.. toc
+
+#@+node:ekr.20141111095646.13: *6* top
+The top section
+
+#@+node:ekr.20141111095646.14: *7* section 1
+section 1, line 1
+--
+selction 1, line 2
+
+#@+node:ekr.20141111095646.15: *7* section 2
+section 2, line 1
+
+#@+node:ekr.20141111095646.16: *8* section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20141111095646.17: *9* section 2.1.1
+section 2.2.1 line 1
+
+#@+node:ekr.20141111095646.18: *7* section 3
+section 3, line 1
+
+#@+node:ekr.20141111095646.19: *8* @rst-no-head section 3.1.1
+#@+node:ekr.20141111095646.20: *9* section 3.1.1
+section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
