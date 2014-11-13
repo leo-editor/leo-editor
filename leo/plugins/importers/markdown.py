@@ -94,11 +94,9 @@ class MarkdownScanner (basescanner.BaseScanner):
     def endGen (self,s):
         '''Finish code generation.'''
         p = self.root
-        ###
-        # # # # Add the warning to the root's body text.
-        # # # warning = '\nWarning: this node is ignored when writing this file.\n'
-        # # # self.root.b = p.b + warning
-        
+        # Add the warning to the root's body text.
+        warning = '\nWarning: this node is ignored when writing this file.\n'
+        self.root.b = p.b + warning
         # Put the underlineDict in self.root.v.u
         u = p.v.u
         tag = 'markdown-import'
