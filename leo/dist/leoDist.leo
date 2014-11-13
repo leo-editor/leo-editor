@@ -42,7 +42,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -452,6 +452,7 @@ import time</t>
 
 Pre-testing:
     - Make sure Leo looks good without myLeoSettings.leo.
+    - Run checks in leoSettings.leo.
     - Run all unit tests.
     - Run pylint -a.
 Release notes and web documentation:
