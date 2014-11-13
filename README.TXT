@@ -1,4 +1,4 @@
-Leo 5.0 beta 1                     November 10, 2014
+Leo 5.0 beta 1                  November 13, 2014
 
 Leo 5.0b1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
@@ -13,12 +13,14 @@ The highlights of Leo 5.0
 * Better compatibility with vim, Emacs, pylint and PyQt:
     - Optional native emulation of vim commands.
     - Full support for Emacs org-mode outlines.
+    - Full support for Vim .otl outlines.
     - Better support for pylint.
     - Support for both PyQt4 and PyQt5.
 * Better handling of nodes containing large text:
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
 * Power features:
+    - Command history for minibuffer commands.
     - Leo available via github repository.
     - File name completion.
     - Cloned nodes expand and contract independently.
@@ -35,11 +37,11 @@ The highlights of Leo 5.0
 
 Links:
 ------
-| Leo:       http://leoeditor.com
-| Docs:      http://leoeditor.com/leo_toc.html
-| Tutorials: http://leoeditor.com/tutorial.html
-| Videos:    http://leoeditor.com/screencasts.html
-| Forum:     http://groups.google.com/group/leo-editor
-| Download:  http://sourceforge.net/projects/leo/files/
-| Github:    https://github.com/leo-editor/leo-editor
-| Quotes:    http://leoeditor.com/testimonials.html
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Github:    https://github.com/leo-editor/leo-editor
+Quotes:    http://leoeditor.com/testimonials.html

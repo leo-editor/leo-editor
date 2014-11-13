@@ -1156,24 +1156,7 @@
 <v t="ekr.20141113102829.12"><vh>Full support for org-mode (.org) and vimoutline (.otl) files</vh></v>
 </v>
 <v t="ekr.20141113102829.13"><vh>Power features</vh>
-<v t="ekr.20141113102829.174"><vh>Added command history</vh>
-<v t="ekr.20141113102829.175"><vh>k.Minibuffer</vh>
-<v t="ekr.20141113102829.176"><vh>k.extendLabel</vh></v>
-<v t="ekr.20141113102829.177"><vh>k.getEditableTextRange</vh></v>
-<v t="ekr.20141113102829.178"><vh>k.getLabel</vh></v>
-<v t="ekr.20141113102829.179"><vh>k.killLine</vh></v>
-<v t="ekr.20141113102829.180"><vh>k.minibufferWantsFocus</vh></v>
-<v t="ekr.20141113102829.181"><vh>k.protectLabel</vh></v>
-<v t="ekr.20141113102829.182"><vh>k.resetLabel</vh></v>
-<v t="ekr.20141113102829.183"><vh>k.selectAll</vh></v>
-<v t="ekr.20141113102829.184"><vh>k.setLabel</vh></v>
-<v t="ekr.20141113102829.185"><vh>k.setLabelBlue</vh></v>
-<v t="ekr.20141113102829.186"><vh>k.setLabelGrey</vh></v>
-<v t="ekr.20141113102829.187"><vh>k.setLabelRed</vh></v>
-<v t="ekr.20141113102829.188"><vh>k.setStatusLabel</vh></v>
-<v t="ekr.20141113102829.189"><vh>k.updateLabel</vh></v>
-</v>
-</v>
+<v t="ekr.20141113102829.174"><vh>Added command history</vh></v>
 <v t="ekr.20141113102829.14"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
 <v t="ekr.20141113102829.15"><vh>Clones expand and contract independently</vh></v>
 <v t="ekr.20141113102829.16"><vh>File name completion</vh></v>
@@ -1191,37 +1174,7 @@
 <v t="ekr.20141113102829.173"><vh>The spell checker handles apostrophes correctly</vh></v>
 <v t="ekr.20141113102829.190"><vh>fixed bug 1159490: "Open with" fails to copy changes by external editor back to Leo-Editor node</vh></v>
 <v t="ekr.20141113102829.192"><vh>Fixed bug 1338773: Autocompleter error</vh></v>
-<v t="ekr.20141113102829.199"><vh>Fixed bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string</vh>
-<v t="ekr.20141113102829.200"><vh>find.findNext</vh></v>
-<v t="ekr.20141113102829.201"><vh>find.findNextMatch &amp; helpers</vh>
-<v t="ekr.20141113102829.202"><vh>find.doWrap</vh></v>
-<v t="ekr.20141113102829.203"><vh>find.firstSearchPane</vh></v>
-<v t="ekr.20141113102829.204"><vh>find.initNextText</vh></v>
-<v t="ekr.20141113102829.205"><vh>find.nextNodeAfterFail &amp; helper (use p.moveTo...?)</vh>
-<v t="ekr.20141113102829.206"><vh>find.outsideSearchRange</vh></v>
-</v>
-<v t="ekr.20141113102829.207"><vh>find.precompilePattern</vh></v>
-<v t="ekr.20141113102829.208"><vh>find.shouldStayInNode</vh></v>
-</v>
-<v t="ekr.20141113102829.209"><vh>find.search &amp; helpers</vh>
-<v t="ekr.20141113102829.210"><vh>passedWrapPoint</vh></v>
-<v t="ekr.20141113102829.211"><vh>searchHelper &amp; allies</vh>
-<v t="ekr.20141113102829.212"><vh>regexHelper</vh></v>
-<v t="ekr.20141113102829.213"><vh>backwardsHelper</vh></v>
-<v t="ekr.20141113102829.214"><vh>plainHelper</vh></v>
-<v t="ekr.20141113102829.215"><vh>matchWord</vh></v>
-<v t="ekr.20141113102829.216"><vh>replaceBackSlashes</vh></v>
-</v>
-</v>
-<v t="ekr.20141113102829.217"><vh>find.changeSelection</vh>
-<v t="ekr.20141113102829.218"><vh>makeRegexSubs</vh></v>
-</v>
-<v t="ekr.20141113102829.219"><vh>find.changeAll</vh></v>
-<v t="ekr.20141113102829.220"><vh>find.batchChange (sets start of replace-all group)</vh>
-<v t="ekr.20141113102829.221"><vh>&lt;&lt; change headline &gt;&gt;</vh></v>
-<v t="ekr.20141113102829.222"><vh>&lt;&lt; change body &gt;&gt;</vh></v>
-</v>
-</v>
+<v t="ekr.20141113102829.199"><vh>Fixed bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string</vh></v>
 <v t="ekr.20141113102829.224"><vh>Fixed bug 92: Tab loses focus when executing a button defined in an unopened settings file</vh></v>
 <v t="ekr.20141113102829.227"><vh>Fixed bug 66: errors inhibited read @auto foo.md</vh></v>
 <v t="ekr.20141113102829.228"><vh>Disable activate/deactivate logic</vh></v>
@@ -20975,44 +20928,39 @@ easily launch a chart in it's own window).
 
 ----- Terry Brown
 
-You can run this script from any body pane:
+You can run this script from any body pane::
 
-@language python
-
-
-'''
-A script that adds a MatPlotLib pane to Leo.
-
-After running this script, right click on one of the pane dividers and
-select Insert. A new pane with a button 'Action' appears. Click it, and
-select "Add matplot" from the context menu.
-'''
-
-from leo.core.leoQt import QtWidgets
-
-class MatplotPaneProvider:
-    def __init__(self, c):
-        self.c = c
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
-    def ns_provides(self):
-        return[('Add matplot', '_add_matplot_pane')]
-    def ns_provide(self, id_):
-        if id_ == '_add_matplot_pane':
-            c = self.c
-            w = QtWidgets.QSlider() ### w = myMatplotWidget()
-            return w
-    def ns_provider_id(self):
-        # used by register_provider() to unregister previously registered
-        # providers of the same service
-        # provider ID is not the same as the service id_ above
-        return "completely unique value here"
-
-MatplotPaneProvider(c)
-
-@language rest
+    '''
+    A script that adds a MatPlotLib pane to Leo.
+    
+    After running this script, right click on one of the pane dividers and
+    select Insert. A new pane with a button 'Action' appears. Click it, and
+    select "Add matplot" from the context menu.
+    '''
+    
+    from leo.core.leoQt import QtWidgets
+    
+    class MatplotPaneProvider:
+        def __init__(self, c):
+            self.c = c
+            if hasattr(c, 'free_layout'):
+                splitter = c.free_layout.get_top_splitter()
+                if splitter:
+                    splitter.register_provider(self)
+        def ns_provides(self):
+            return[('Add matplot', '_add_matplot_pane')]
+        def ns_provide(self, id_):
+            if id_ == '_add_matplot_pane':
+                c = self.c
+                w = QtWidgets.QSlider() ### w = myMatplotWidget()
+                return w
+        def ns_provider_id(self):
+            # used by register_provider() to unregister previously registered
+            # providers of the same service
+            # provider ID is not the same as the service id_ above
+            return "completely unique value here"
+    
+    MatplotPaneProvider(c)
 
 ----- OP
 
@@ -22870,60 +22818,6 @@ For example, Alt-x UpArrow is roughly equivalent to Ctrl-p.
 This completes one of the top four wishlist items at:
 https://github.com/leo-editor/leo-editor/issues/93
 </t>
-<t tx="ekr.20141113102829.175"># These may be overridden, but this code is now gui-independent.
-</t>
-<t tx="ekr.20141113102829.176">def extendLabel(self,s,select=False,protect=False):
-
-    trace = False and not g.unitTesting
-
-    k = self ; c = k.c ; w = self.w
-    if not (w and s): return
-
-    if trace: g.trace(s)
-
-    c.widgetWantsFocusNow(w)
-
-    w.insert('end',s)
-
-    if select:
-        i,j = k.getEditableTextRange()
-        w.setSelectionRange(i,j,insert=j)
-
-    if protect:
-        k.protectLabel()
-</t>
-<t tx="ekr.20141113102829.177">def getEditableTextRange (self):
-
-    k = self ; w = self.w
-    s = w.getAllText()
-    i = len(k.mb_prefix)
-    j = len(s)
-    return i,j
-</t>
-<t tx="ekr.20141113102829.178">def getLabel (self,ignorePrompt=False):
-
-    k = self ; w = self.w
-    if not w: return ''
-
-    s = w.getAllText()
-
-    if ignorePrompt:
-        return s[len(k.mb_prefix):]
-    else:
-        return s or ''
-</t>
-<t tx="ekr.20141113102829.179">def killLine (self,protect=True):
-
-    k = self
-    w = k.w
-    s = w.getAllText()
-    s = s[:len(k.mb_prefix)]
-    w.setAllText(s)
-    n = len(s)
-    w.setSelectionRange(n,n,insert=n)
-    if protect:
-        k.mb_prefix = s
-</t>
 <t tx="ekr.20141113102829.18">Leo now uses an all-Python replacement for the QSyntaxHighlighter class.
 
 This fixes git bug 28: https://github.com/leo-editor/leo-editor/issues/28
@@ -22939,128 +22833,6 @@ You should see the end of the text all in black at first, and then become
 colored later.
 
 In the meantime, Leo is responsive to all commands, mouse clicks, etc.
-</t>
-<t tx="ekr.20141113102829.180"># def minibufferWantsFocus(self):
-
-    # c = self.c
-    # c.widgetWantsFocus(c.miniBufferWidget)
-</t>
-<t tx="ekr.20141113102829.181">def protectLabel (self):
-
-    k = self ; w = self.w
-    if not w: return
-
-    k.mb_prefix = w.getAllText()
-
-</t>
-<t tx="ekr.20141113102829.182">def resetLabel (self):
-    '''Reset the minibuffer label.'''
-    k = self
-    c,w = k.c,k.w
-    k.setLabelGrey('')
-    k.mb_prefix = ''
-    if w:    
-        w.setSelectionRange(0,0,insert=0)
-        state = k.unboundKeyAction
-        if c.vim_mode and c.vimCommands:
-            c.vimCommands.show_status()
-        else:
-            k.setLabelBlue(label='%s State' % (state.capitalize()))
-</t>
-<t tx="ekr.20141113102829.183">def selectAll (self):
-
-    '''Select all the user-editable text of the minibuffer.'''
-
-    w = self.w
-    i,j = self.getEditableTextRange()
-    w.setSelectionRange(i,j,insert=j)
-
-
-</t>
-<t tx="ekr.20141113102829.184">def setLabel (self,s,protect=False):
-    '''Set the label of the minibuffer.'''
-    trace = False and not g.app.unitTesting
-    k,w = self,self.w
-    if w:
-        if trace: g.trace(repr(s),g.callers())
-        w.setAllText(s)
-        n = len(s)
-        w.setSelectionRange(n,n,insert=n)
-        if protect:
-            k.mb_prefix = s
-    elif trace:
-        g.trace('*** no w ***')
-</t>
-<t tx="ekr.20141113102829.185">def setLabelBlue (self,label):
-    '''Set the minibuffer label.'''
-    trace = False and not g.unitTesting
-    k = self ; w = k.w
-    if trace: g.trace('label:',label,g.callers())
-    if w:
-        w.setStyleClass('')  # normal state, not warning or error
-        if label is not None:
-            k.setLabel(label,protect=True)
-    elif trace:
-        g.trace('*** no w ***')
-</t>
-<t tx="ekr.20141113102829.186">def setLabelGrey (self,label=None):
-
-    k = self ; w = self.w
-    if not w: return
-
-    w.setStyleClass( 'minibuffer_warning')
-
-    if label is not None:
-        k.setLabel(label)
-
-setLabelGray = setLabelGrey
-</t>
-<t tx="ekr.20141113102829.187">def setLabelRed (self,label=None,protect=False):
-
-    k = self ; w = self.w
-    if not w: return
-
-    w.setStyleClass('minibuffer_error')
-
-    if label is not None:
-        k.setLabel(label,protect)
-</t>
-<t tx="ekr.20141113102829.188">def setStatusLabel(self,s):
-    '''
-    Set the label to s.
-    
-    Use k.setStatusLabel, not k.setLael, to report the status of a Leo
-    command. This allows the option to use g.es instead of the minibuffer
-    to report status.
-    '''
-    k = self
-    k.setLabel(s,protect=False)
-</t>
-<t tx="ekr.20141113102829.189">def updateLabel (self,event):
-
-    '''Mimic what would happen with the keyboard and a Text editor
-    instead of plain accumalation.'''
-
-    trace = False or g.trace_minibuffer and not g.app.unitTesting
-    k = self ; c = k.c ; w = self.w
-    ch = (event and event.char) or ''
-    if trace: g.trace('ch',ch,'k.stroke',k.stroke)
-
-    if ch and ch not in ('\n','\r'):
-        c.widgetWantsFocusNow(w)
-        i,j = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        # g.trace(i,j,ins)
-        if i != j:
-            w.delete(i,j)
-        if ch == '\b':
-            s = w.getAllText()
-            if len(s) &gt; len(k.mb_prefix):
-                w.delete(i-1)
-                i-=1
-        else:
-            w.insert(ins,ch)
-            i = ins+1
 </t>
 <t tx="ekr.20141113102829.190">@language rest
 
@@ -23176,276 +22948,6 @@ Change the setting to 10pt (or 14pt), click the button, and see what happens :-)
 The present code doesn't deal with themes, although there is some commented
 out that hints about what might be done.
 </t>
-<t tx="ekr.20141113102829.200">def findNext(self,initFlag=True):
-    '''Find the next instance of the pattern.'''
-    if not self.checkArgs():
-        return False # for vim-mode find commands.
-    # initFlag is False for change-then-find.
-    if initFlag:
-        self.initInHeadline()
-        data = self.save()
-        self.initInteractiveCommands()
-    else:
-        data = self.save()
-    pos, newpos = self.findNextMatch()
-    if pos is None:
-        if self.wrapping:
-            g.es("end of wrapped search")
-        else:
-            g.es("not found","'%s'" % (self.find_text))
-        self.restore(data)
-        return False # for vim-mode find commands.
-    else:
-        self.showSuccess(pos,newpos)
-        return True # for vim-mode find commands.
-</t>
-<t tx="ekr.20141113102829.201">def findNextMatch(self):
-    '''
-    Resume the search where it left off.
-    The caller must call set_first_incremental_search or
-    set_first_batch_search.
-    '''
-    trace = False and not g.unitTesting
-    verbose = True
-    c = self.c ; p = self.p
-    if trace:
-        g.trace('*** entry','p',p,'\n',
-            'search_headline',self.search_headline,
-            'search_body',self.search_body)
-        for parent in p.parents():
-            print(parent)
-    if not self.search_headline and not self.search_body:
-        if trace: g.trace('nothing to search')
-        return None, None
-    if len(self.find_text) == 0:
-        if trace: g.trace('no find text')
-        return None, None
-    self.errors = 0
-    attempts = 0
-    if self.pattern_match:
-        ok = self.precompilePattern()
-        if not ok: return None,None
-    while p:
-        pos, newpos = self.search()
-        if self.errors:
-            g.trace('find errors')
-            break # Abort the search.
-        if trace and verbose:
-            g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
-        if pos is not None:
-            # Success.
-            if self.mark_finds:
-                p.setMarked()
-                c.frame.tree.drawIcon(p) # redraw only the icon.
-            if trace: g.trace('success',pos,newpos,p.h)
-            return pos, newpos
-        # Searching the pane failed: switch to another pane or node.
-        if self.shouldStayInNode(p):
-            # Switching panes is possible.  Do so.
-            self.in_headline = not self.in_headline
-            self.initNextText()
-        else:
-            # Switch to the next/prev node, if possible.
-            attempts += 1
-            p = self.p = self.nextNodeAfterFail(p)
-            if p: # Found another node: select the proper pane.
-                self.in_headline = self.firstSearchPane()
-                self.initNextText()
-    if trace: g.trace('failed after %s attempts' % attempts)
-    return None, None
-</t>
-<t tx="ekr.20141113102829.202">def doWrap(self):
-    '''Return the position resulting from a wrap.'''
-    c = self.c
-    if self.reverse:
-        p = c.rootPosition()
-        while p and p.hasNext():
-            p = p.next()
-        p = p.lastNode()
-        return p
-    else:
-        return c.rootPosition()
-</t>
-<t tx="ekr.20141113102829.203">def firstSearchPane(self):
-    '''
-    Set return the value of self.in_headline
-    indicating which pane to search first.
-    '''
-    if self.search_headline and self.search_body:
-        # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
-        if self.reverse:
-            return False # Search the body pane first.
-        else:
-            return True # Search the headline pane first.
-    elif self.search_headline or self.search_body:
-        # Search the only enabled pane.
-        return self.search_headline
-    else:
-        g.trace('can not happen: no search enabled')
-        return False # search the body.
-</t>
-<t tx="ekr.20141113102829.204">def initNextText(self,ins=None):
-    '''
-    Init s_ctrl when a search fails. On entry:
-    - self.in_headline indicates what text to use.
-    - self.reverse indicates how to set the insertion point.
-    '''
-    trace = False and not g.unitTesting
-    c = self.c
-    p = self.p or c.p.copy()
-    s = p.h if self.in_headline else p.b
-    w = self.s_ctrl
-    tree = c.frame and c.frame.tree
-    if tree and hasattr(tree,'killEditing'):
-        # g.trace('kill editing before find')
-        tree.killEditing()
-    if self.reverse:
-        i,j = w.sel
-        if ins is None:
-            if i is not None and j is not None and i != j:
-                ins = min(i,j)
-        # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-        # editLabelHelper now properly sets the insertion range.
-            # elif ins in (i,j): ins = min(i,j)
-    elif ins is None:
-        ins = 0
-    if trace and self.in_headline and ins is not None: g.trace(ins,p.h)
-    self.init_s_ctrl(s,ins)
-</t>
-<t tx="ekr.20141113102829.205">def nextNodeAfterFail(self,p):
-    '''Return the next node after a failed search or None.'''
-    trace = False and not g.unitTesting
-    c = self.c
-    # Wrapping is disabled by any limitation of screen or search.
-    wrap = (self.wrapping and not self.node_only and 
-        not self.suboutline_only and not c.hoistStack)
-    if wrap and not self.wrapPosition:
-        self.wrapPosition = p.copy()
-        self.wrapPos = 0 if self.reverse else len(p.b)
-    # Move to the next position.
-    p = p.threadBack() if self.reverse else p.threadNext()
-    # Check it.
-    if p and self.outsideSearchRange(p):
-        if trace: g.trace('outside search range',p and p.h)
-        return None
-    if not p and wrap:
-        p = self.doWrap()
-    if not p:
-        if trace: g.trace('end of search')
-        return None
-    if wrap and p == self.wrapPosition:
-        if trace: g.trace('end of wrapped search',p and p.h)
-        return None
-    else:
-        if trace: g.trace('found',p and p.h)
-        return p
-</t>
-<t tx="ekr.20141113102829.206">def outsideSearchRange(self,p):
-    '''
-    Return True if the search is about to go outside its range, assuming
-    both the headline and body text of the present node have been searched.
-    '''
-    trace = False and not g.unitTesting
-    c = self.c
-    if not p:
-        if trace: g.trace('no p')
-        return True
-    if self.node_only:
-        if trace: g.trace('Node only',p.h)
-        return True
-    if self.suboutline_only:
-        if self.onlyPosition:
-            if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
-                if trace: g.trace('outside suboutline-only',p.h,self.onlyPosition.h)
-                return True
-        else:
-            g.trace('Can not happen: onlyPosition!',p.h)
-            return True
-    if c.hoistStack:
-        bunch = c.hoistStack[-1]
-        if not bunch.p.isAncestorOf(p):
-            g.trace('outside hoist',p.h)
-            g.warning('found match outside of hoisted outline')
-            return True
-    return False # Within range.
-</t>
-<t tx="ekr.20141113102829.207">def precompilePattern(self):
-    '''Precompile the regexp pattern if necessary.'''
-    trace = False and not g.unitTesting
-    try: # Precompile the regexp.
-        flags = re.MULTILINE
-        if self.ignore_case: flags |= re.IGNORECASE
-        # Escape the search text.
-        b,s = '\\b',self.find_text
-        if self.whole_word:
-            if not s.startswith(b): s = b + s
-            if not s.endswith(b): s = s + b
-        if trace: g.trace(self.whole_word,repr(s))
-        self.re_obj = re.compile(s,flags)
-        return True
-    except Exception:
-        g.warning('invalid regular expression:',self.find_text)
-        self.errors += 1 # Abort the search.
-        return False
-</t>
-<t tx="ekr.20141113102829.208">def shouldStayInNode (self,p):
-    '''Return True if the find should simply switch panes.'''
-    # Errors here cause the find command to fail badly.
-    # Switch only if:
-    #   a) searching both panes and,
-    #   b) this is the first pane of the pair.
-    # There is *no way* this can ever change.
-    # So simple in retrospect, so difficult to see.
-    return (
-        self.search_headline and self.search_body and (
-        (self.reverse and not self.in_headline) or
-        (not self.reverse and self.in_headline)))
-</t>
-<t tx="ekr.20141113102829.209">def search (self):
-    """
-    Search s_ctrl for self.find_text with present options.
-    Returns (pos, newpos) or (None,None).
-    """
-    trace = False and not g.unitTesting
-    c = self.c
-    p = self.p or c.p.copy()
-    w = self.s_ctrl
-    index = w.getInsertPoint()
-    s = w.getAllText()
-    if sys.platform.lower().startswith('win'):
-        s = s.replace('\r','')
-            # Ignore '\r' characters, which may appear in @edit nodes.
-            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
-            # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
-    if s:
-        if trace: g.trace('=====',index,repr(s[max(0,index-10):index+40]))
-    else:
-        if trace: g.trace('returning: no text',p.h)
-        return None,None
-    stopindex = 0 if self.reverse else len(s)
-    pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
-    if trace: g.trace('pos,newpos',pos,newpos)
-    # Bug fix: 2013/11/23.
-    if self.in_headline and not self.search_headline:
-        if trace: g.trace('not searching headlines')
-        return None,None
-    if not self.in_headline and not self.search_body:
-        if trace: g.trace('not searching bodies')
-        return None,None
-    if pos == -1:
-        if trace: g.trace('Returning: pos is -1')
-        return None,None
-    if self.passedWrapPoint(p,pos,newpos):
-        if trace:
-            kind = 'reverse ' if self.reverse else ''
-            g.trace("** %swrap done",kind,pos,newpos)
-        self.wrapPosition = None # Reset.
-        return None,None
-    ins = min(pos,newpos) if self.reverse else max(pos,newpos)
-    w.setSelectionRange(pos,newpos,insert=ins)
-    if trace: g.trace('** returns',pos,newpos)
-    return pos,newpos
-</t>
 <t tx="ekr.20141113102829.21">The leo/plugins/importers folders now contains importer plugins.
 
 The leo/plugins/writers folders now contain writer plugins.
@@ -23458,360 +22960,9 @@ the .xyzzy extension, that is, importers/test.py and writers/test.py. So,
 for *unique* extensions, there is no need to use a separate @auto name, you
 can just use @auto.
 </t>
-<t tx="ekr.20141113102829.210">def passedWrapPoint(self,p,pos,newpos):
-    '''Return True if the search has gone beyond the wrap point.'''
-    return (
-        self.wrapping and
-        self.wrapPosition is not None and
-        p == self.wrapPosition and
-            (self.reverse and pos &lt; self.wrapPos or
-            not self.reverse and newpos &gt; self.wrapPos)
-    )
-</t>
-<t tx="ekr.20141113102829.211">def searchHelper (self,s,i,j,pattern):
-    '''Dispatch the proper search method based on settings.'''
-    trace = False and not g.unitTesting
-    backwards=self.reverse
-    nocase=self.ignore_case
-    regexp=self.pattern_match
-    word=self.whole_word
-    if backwards: i,j = j,i
-    if trace: g.trace('entry',i,j,repr(s[min(i,j):max(i,j)]))
-    if not s[i:j] or not pattern:
-        if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
-        return -1,-1
-    if regexp:
-        pos,newpos = self.regexHelper(s,i,j,pattern,backwards,nocase)
-    elif backwards:
-        pos,newpos = self.backwardsHelper(s,i,j,pattern,nocase,word)
-    else:
-        pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
-    if trace: g.trace('returns',pos,newpos)
-    return pos,newpos
-</t>
-<t tx="ekr.20141113102829.212">def regexHelper (self,s,i,j,pattern,backwards,nocase):
-    trace = False and not g.unitTesting
-    re_obj = self.re_obj # Use the pre-compiled object
-    if not re_obj:
-        g.trace('can not happen: no re_obj')
-        return -1,-1
-    if backwards:
-        # Scan to the last match using search here.
-        last_mo = None ; i = 0
-        while i &lt; len(s):
-            mo = re_obj.search(s,i,j)
-            if not mo: break
-            i += 1
-            last_mo = mo
-        mo = last_mo
-    else:
-        mo = re_obj.search(s,i,j)
-    if trace: g.trace('backwards',backwards,'pattern',pattern,
-        i,j,'s[i:j]',repr(s[i:j]),
-        'mo.start/end',mo and mo.start(),mo and mo.end())
-    while mo and 0 &lt;= i &lt;= len(s):
-        # Bug fix: 2013/12/27: must be 0 &lt;= i &lt;= len(s)
-        if mo.start() == mo.end():
-            if backwards:
-                # Search backward using match instead of search.
-                i -= 1
-                while 0 &lt;= i &lt; len(s):
-                    mo = re_obj.match(s,i,j)
-                    if mo: break
-                    i -= 1
-            else:
-                i += 1 ; mo = re_obj.search(s,i,j)
-        else:
-            self.match_obj = mo
-            return mo.start(),mo.end()
-    self.match_obj = None
-    return -1,-1
-</t>
-<t tx="ekr.20141113102829.213">debugIndices = []
-
-@
-rfind(sub [,start [,end]])
-
-Return the highest index in the string where substring sub is found, such that
-sub is contained within s[start,end]. Optional arguments start and end are
-interpreted as in slice notation. Return -1 on failure.
-@c
-def backwardsHelper (self,s,i,j,pattern,nocase,word):
-
-    trace = False and not g.unitTesting
-    if nocase:
-        s = s.lower()
-        pattern = pattern.lower()
-            # Bug fix: 10/5/06: At last the bug is found!
-    pattern = self.replaceBackSlashes(pattern)
-    n = len(pattern)
-    # 2014/09/18: Put the indices in range.  Indices can get out of range
-    # because the search code strips '\r' characters when searching @edit nodes.
-    i = max(0,i)
-    j = min(len(s),j)
-    # Old code:
-        # if i &lt; 0 or i &gt; len(s) or j &lt; 0 or j &gt; len(s):
-            # g.trace('bad index: i = %s, j = %s' % (i,j))
-            # i = 0 ; j = len(s)
-    if trace and (s and i == 0 and j == 0):
-        g.trace('two zero indices')
-    # short circuit the search: helps debugging.
-    if s.find(pattern) == -1:
-        return -1,-1
-    if word:
-        while 1:
-            k = s.rfind(pattern,i,j)
-            if trace: g.trace('**word** %3s %3s %5s -&gt; %s %s' % (
-                i,j,'(end)' if j==len(s) else '',k,self.p.h))
-            if k == -1: return -1, -1
-            if self.matchWord(s,k,pattern):
-                return k,k+n
-            else:
-                j = max(0,k-1)
-    else:
-        k = s.rfind(pattern,i,j)
-        if trace: g.trace('%3s %3s %5s -&gt; %s %s' % (
-            i,j,'(end)' if j==len(s) else '',k,self.p.h))
-        if k == -1:
-            return -1, -1
-        else:
-            return k,k+n
-</t>
-<t tx="ekr.20141113102829.214">def plainHelper (self,s,i,j,pattern,nocase,word):
-    '''Do a plain search.'''
-    trace = False and not g.unitTesting
-    if trace: g.trace(i,j,repr(s[i:i+20]))
-    if nocase:
-        s = s.lower() ; pattern = pattern.lower()
-    pattern = self.replaceBackSlashes(pattern)
-    n = len(pattern)
-    if word:
-        while 1:
-            k = s.find(pattern,i,j)
-            # g.trace(k,n)
-            if k == -1:
-                if trace: g.trace('no match word',i)
-                return -1, -1
-            elif self.matchWord(s,k,pattern):
-                if trace: g.trace('match word',k)
-                return k, k + n
-            else: i = k + n
-    else:
-        k = s.find(pattern,i,j)
-        if k == -1:
-            if trace: g.trace('no match word',i)
-            return -1, -1
-        else:
-            if trace: g.trace('match', k)
-            return k, k + n
-</t>
-<t tx="ekr.20141113102829.215">def matchWord(self,s,i,pattern):
-    '''Do a whole-word search.'''
-    trace = False and not g.unitTesting
-    pattern = self.replaceBackSlashes(pattern)
-    if not s or not pattern or not g.match(s,i,pattern):
-        if trace: g.trace('empty')
-        return False
-    pat1,pat2 = pattern[0],pattern[-1]
-    n = len(pattern)
-    ch1 = 0 &lt;= i-1 &lt; len(s) and s[i-1] or '.'
-    ch2 = 0 &lt;= i+n &lt; len(s) and s[i+n] or '.'
-    isWordPat1 = g.isWordChar(pat1)
-    isWordPat2 = g.isWordChar(pat2)
-    isWordCh1 = g.isWordChar(ch1)
-    isWordCh2 = g.isWordChar(ch2)
-    # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
-    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
-    if trace: g.trace('returns',not inWord)
-    return not inWord
-
-</t>
-<t tx="ekr.20141113102829.216">def replaceBackSlashes (self,s):
-    '''Carefully replace backslashes in a search pattern.'''
-    # This is NOT the same as:
-    # s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
-    # because there is no rescanning.
-    i = 0
-    while i + 1 &lt; len(s):
-        if s[i] == '\\':
-            ch = s[i+1]
-            if ch == '\\':
-                s = s[:i] + s[i+1:] # replace \\ by \
-            elif ch == 'n':
-                s = s[:i] + '\n' + s[i+2:] # replace the \n by a newline
-            elif ch == 't':
-                s = s[:i] + '\t' + s[i+2:] # replace \t by a tab
-            else:
-                i += 1 # Skip the escaped character.
-        i += 1
-    return s
-</t>
-<t tx="ekr.20141113102829.217"># Replace selection with self.change_text.
-# If no selection, insert self.change_text at the cursor.
-
-def changeSelection(self):
-
-    c = self.c ; p = self.p
-    wrapper = c.frame.body and c.frame.body.wrapper
-    w = c.edit_widget(p) if self.in_headline else wrapper
-    if not w:
-        self.in_headline = False
-        w = wrapper
-    if not w: return
-
-    oldSel = sel = w.getSelectionRange()
-    start,end = sel
-    if start &gt; end: start,end = end,start
-    if start == end:
-        g.es("no text selected") ; return False
-
-    # g.trace(start,end)
-
-    # Replace the selection in _both_ controls.
-    start,end = oldSel
-    change_text = self.change_text
-
-    # Perform regex substitutions of \1, \2, ...\9 in the change text.
-    if self.pattern_match and self.match_obj:
-        groups = self.match_obj.groups()
-        if groups:
-            change_text = self.makeRegexSubs(change_text,groups)
-    # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
-    change_text = self.replaceBackSlashes(change_text)
-    for w2 in (w,self.s_ctrl):
-        if start != end: w2.delete(start,end)
-        w2.insert(start,change_text)
-        w2.setInsertPoint(start if self.reverse else start+len(change_text))
-    
-    # Update the selection for the next match.
-    w.setSelectionRange(start,start+len(change_text))
-    c.widgetWantsFocus(w)
-
-    # No redraws here: they would destroy the headline selection.
-    if self.mark_changes:
-        p.setMarked()
-    if self.in_headline:
-        c.frame.tree.onHeadChanged(p,'Change')
-    else:
-        c.frame.body.onBodyChanged('Change',oldSel=oldSel)
-
-    c.frame.tree.drawIcon(p) # redraw only the icon.
-
-    return True
-</t>
-<t tx="ekr.20141113102829.218">def makeRegexSubs(self,s,groups):
-    r'''
-    Carefully substitute group[i-1] for \i strings in s.
-    The group strings may contain \i strings: they are *not* substituted.
-    '''
-    digits = '123456789'
-    result = [] ; n = len(s)
-    i = j = 0 # s[i:j] is the text between \i markers.
-    while j &lt; n:
-        k = s.find('\\',j)
-        if k == -1 or k + 1 &gt;= n:
-            break
-        j = k + 1 ; ch = s[j]
-        if ch in digits:
-            j += 1
-            result.append(s[i:k]) # Append up to \i
-            i = j
-            gn = int(ch)-1
-            if gn &lt; len(groups):
-                result.append(groups[gn]) # Append groups[i-1]
-            else:
-                result.append('\\%s' % ch) # Append raw '\i'
-    result.append(s[i:])
-    return ''.join(result)
-</t>
-<t tx="ekr.20141113102829.219">def changeAll(self):
-    trace = False and not g.unitTesting
-    c = self.c ; u = c.undoer ; undoType = 'Replace All'
-    current = c.p
-    if not self.checkArgs():
-        if trace: g.trace('checkArgs failed')
-        return
-    self.initInHeadline()
-    saveData = self.save()
-    self.initBatchCommands()
-    count = 0
-    u.beforeChangeGroup(current,undoType)
-    # Fix bug 338172: ReplaceAll will not replace newlines indicated as \n in target string.
-    self.change_text = self.replaceBackSlashes(self.change_text)
-    while 1:
-        pos1, pos2 = self.findNextMatch()
-        if pos1 is None:
-            if trace: g.trace('findNextMatch failed')
-            break
-        if trace: g.trace(pos1,pos2,self.p and self.p.h)
-        count += 1
-        self.batchChange(pos1,pos2)
-    p = c.p
-    u.afterChangeGroup(p,undoType,reportFlag=True)
-    g.es("changed:",count,"instances of",self.find_text,"to",self.change_text)
-    c.redraw(p)
-    self.restore(saveData)
-</t>
 <t tx="ekr.20141113102829.22">The default workbook contains both the cheat sheet and an example from the
 rst3 tutorial.
 
-</t>
-<t tx="ekr.20141113102829.220">@ This routine performs a single batch change operation, updating the
-head or body string of p and leaving the result in s_ctrl. We update
-the body if we are changing the body text of c.currentVnode().
-
-s_ctrl contains the found text on entry and contains the changed text
-on exit. pos and pos2 indicate the selection. The selection will never
-be empty. NB: we can not assume that self.p is visible.
-@c
-
-def batchChange (self,pos1,pos2):
-
-    c = self.c ; u = c.undoer
-    p = self.p
-    w = self.s_ctrl
-    # Replace the selection with self.change_text
-    if pos1 &gt; pos2: pos1,pos2=pos2,pos1
-    s = w.getAllText()
-    if pos1 != pos2: w.delete(pos1,pos2)
-    w.insert(pos1,self.change_text)
-    # Update the selection.
-    insert=pos1 if self.reverse else pos1+len(self.change_text)
-    w.setSelectionRange(insert,insert)
-    w.setInsertPoint(insert)
-    # Update the node
-    s = w.getAllText() # Used below.
-    if self.in_headline:
-        &lt;&lt; change headline &gt;&gt;
-    else:
-        &lt;&lt; change body &gt;&gt;
-</t>
-<t tx="ekr.20141113102829.221">if len(s) &gt; 0 and s[-1]=='\n':
-    s = s[:-1]
-if s != p.h:
-    undoData = u.beforeChangeNodeContents(p)
-    p.initHeadString(s)
-    if self.mark_changes:
-        p.setMarked()
-    p.setDirty()
-    if not c.isChanged():
-        c.setChanged(True)
-    u.afterChangeNodeContents(p,'Change Headline',undoData)
-</t>
-<t tx="ekr.20141113102829.222">if len(s) &gt; 0 and s[-1]=='\n': s = s[:-1]
-
-if s != p.b:
-
-    undoData = u.beforeChangeNodeContents(p)
-
-    c.setBodyString(p,s)
-    if self.mark_changes:
-        p.setMarked()
-    p.setDirty()
-    if not c.isChanged():
-        c.setChanged(True)
-
-    u.afterChangeNodeContents(p,'Change Body',undoData)
 </t>
 <t tx="ekr.20141113102829.223">Used glob to discover files, not static lists.
 </t>
@@ -23842,7 +22993,7 @@ errors inhibited read @auto foo.md
 
 The markdown code is now similar to the @auto-rst code.
 
-Added some kludgy code to handle underlining.
+Added some kludgey code to handle underlining.
 
 @language python
 </t>
@@ -23899,7 +23050,7 @@ fc.getLeoFile calls the new fc.setMaxNodeIndex after reading all nodes.
 <t tx="ekr.20141113102829.31">https://github.com/leo-editor/leo-editor/issues/36
 
 The report seems misleading: it says this happens when Leo tries to load an
-@auto file that is in the outline but which's file was erased outside Leo,
+@auto file that is in the outline but which was erased outside Leo,
 but it worked for me.
 
 I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown

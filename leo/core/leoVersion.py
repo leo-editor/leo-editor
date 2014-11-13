@@ -17,6 +17,7 @@ import json
     # Leo 4.11 final: November 6, 2013
     # Leo 5.0a1: November 6, 2014
     # Leo 5.0a2: November 8, 2014
+    # Leo 5.0b1: November 13, 2014
 
 # get info from leo/core/commit_timestamp.json
 leo_core_path = os.path.dirname(os.path.realpath(__file__))
