@@ -23,6 +23,8 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
+    # Fix https://bugs.launchpad.net/leo-editor/+bug/1335310
+    return True
 #@+node:ekr.20140920173002.17960: ** onSelect
 def onSelect (tag,keywords):
     c = keywords.get('c') or keywords.get('new_c')
