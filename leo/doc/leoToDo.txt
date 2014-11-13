@@ -6,22 +6,59 @@
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
 .. @+node:ekr.20141112070001.5: *3* Check .org and .vimoutline importers/writers
-.. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
 .. @+node:ekr.20141110071911.5: *3* Make sure new features are documented
 - org mode.
 - vimoutline mode.
 - link to vim docs from release notes.
-.. @+node:ekr.20131004191204.16078: *3* Eliminate cycle-all-focus
-Replace with new focus-to-x command, for each dynamically created pane.
-.. @+node:ekr.20131220065609.16591: *4* Add focus-to-<temp pane> commands
-This may be a way around problems with cycle-all-focus
-
-Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
-.. @+node:ekr.20141109160640.8: *3* Fix bug 1249368: MacOs custom hotkey can not work on 1st call
+.. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0b2/rc1
 @language rest
+.. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
+.. @+node:ekr.20141112094313.4: *3* Fix bugs re plugins
+For me:
+
+https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
+
+https://bugs.launchpad.net/leo-editor/+bug/1240688
+Problems with the Help Menu
+Apparently, this bug is related to the leo_dark theme 0 settings.
+
+For others:
+
+https://bugs.launchpad.net/leo-editor/+bug/1173798
+Notebook plugin command nb-subtree does not start with the right leo file 
+
+https://bugs.launchpad.net/leo-editor/+bug/1230273
+Todo.py documentation - image link semi-broken in docstring
+
+.. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
+https://github.com/leo-editor/leo-editor/issues/101
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
+.. @+node:ekr.20141109160640.8: *3* Fix bug 99: MacOs custom hotkey can not work on 1st call
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/99
 
 https://bugs.launchpad.net/leo-editor/+bug/1249368
 Leo 4.11 final custom hotkey can not work on 1st call
+
+There are communications problems because the OP's native language is Chinese, not English.
+
+===== My guess about what is meant:
+
+
+With the custom setting: delete-node = Ctrl-.
+
+We want to use clover-period instead of Ctrl-period.
+
+But for each Leo file, nothing happens until you use the menu to select the command.
+
+===== The original posting:
 
 custom hotkey as:
 myLeoSettings.leo#@settings-->Keyboard shortcuts-->@keys EKR bindings-->@shortcuts Outline operations
@@ -36,8 +73,6 @@ but as MAC OS X, usage Ctrl-. as Cmd-.
 Leo 4.11 final, build 5020, 2012-02-26 13:18:08 -0600
 Python 2.7.1, qt version 4.8.0
 darwin
-.. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0b2/rc1
-.. @+node:ekr.20141110223158.9: *3* Fix IPython bugs
 .. @+node:ekr.20141110154742.6: *3* Fix bug 78: find-next target not always scrolled into view
 https://github.com/leo-editor/leo-editor/issues/78
 

@@ -836,34 +836,26 @@ class BaseScanner:
         return putRef,bodyIndent,classDelim,decls,trailing
     #@+node:ekr.20140727075002.18223: *3* BaseScanner.putFunction
     def putFunction (self,s,sigStart,codeEnd,start,parent):
-
         '''Create a node of parent for a function defintion.'''
-
         trace = False and not g.unitTesting
         verbose = True
-
-        # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
-
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
-
         if self.sigId:
             headline = self.sigId
         else:
             g.trace('Can not happen: no sigId')
             headline = 'unknown function'
-
         body1,body2 = self.computeBody(s,start,sigStart,codeEnd)
         body = body1 + body2
         parent = self.adjustParent(parent,headline)
-
         if trace:
             # pylint: disable=maybe-no-member
             g.trace('parent',parent and parent.h)
             if verbose:
                 # g.trace('**body1...\n',body1)
-                g.trace('**body2...\n',body2)
-
+                g.trace(self.atAutoSeparateNonDefNodes)
+                g.trace('**body...\n%s' % body)
         # 2010/11/04: Fix wishlist bug 670744.
         if self.atAutoSeparateNonDefNodes:
             if body1.strip():
@@ -872,9 +864,7 @@ class BaseScanner:
                 line1 = line1.strip() or 'non-def code'
                 self.createFunctionNode(line1,body1,parent)
                 body = body2
-
         self.lastParent = self.createFunctionNode(headline,body,parent)
-
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
     #@+node:ekr.20140727075002.18224: *3* BaseScanner.putRootText

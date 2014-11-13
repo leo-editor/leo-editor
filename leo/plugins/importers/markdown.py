@@ -15,6 +15,7 @@ class MarkdownScanner (basescanner.BaseScanner):
         basescanner.BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,language='md')
         # Scanner overrides
+        self.atAutoSeparateNonDefNodes = False # Fix bug 66.
         self.atAutoWarnsAboutLeadingWhitespace = True
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
@@ -33,7 +34,7 @@ class MarkdownScanner (basescanner.BaseScanner):
         self.lastSectionLevel = 0 # The section level of previous section.
         self.sectionLevel = 0 # The section level of the just-parsed section.
         self.underlineDict = {}
-            # Keys are names. Values are ordered lists of underlining styles.
+            # Keys are names. Values are underlining styles.
 
     #@+node:ekr.20140725190808.18069: *3* mds.adjustParent
     def adjustParent (self,parent,headline):
@@ -69,18 +70,14 @@ class MarkdownScanner (basescanner.BaseScanner):
     def computeBody (self,s,start,sigStart,codeEnd):
         '''Return the body of a section.'''
         trace = False and not g.unitTesting
-        body1 = s[start:sigStart]
-        # Adjust start backwards to get a better undent.
-        if body1.strip():
-            while start > 0 and s[start-1] in (' ','\t'):
-                start -= 1
         # Never indent any text; discard the entire signature.
-        body1 = '' # s[start:sigStart]
+        body1 = ''
         body2 = s[self.sigEnd:codeEnd]
         body2 = g.removeLeadingBlankLines(body2) 
-        body = body1 + body2
         # Don't warn about missing tail newlines: they will be added.
-        if trace: g.trace('body: %s' % repr(body))
+        if trace:
+            # g.trace(s[start:sigStart])
+            g.trace('body: %s' % repr(body1 + body2),'\n',g.callers())
         return body1,body2
     #@+node:ekr.20141110223158.16: *3* mds.createDeclsNode (new)
     def createDeclsNode (self,parent,s):
@@ -91,23 +88,17 @@ class MarkdownScanner (basescanner.BaseScanner):
         p = self.createHeadline(parent,body,headline)
         # Remember that this node should not have its headline written.
         d = self.underlineDict
-        name = headline
-        aList = d.get(name,[])
-        aList.append(None)
-        d [name] = aList
-        g.trace(name,aList)
-        # # # u,tag = p.v.u,'markdown-import'
-        # # # d = u.get(tag,{})
-        # # # d['skip_headline'] = True
-        # # # u [tag] = d
+        d [headline] = None
         return p
     #@+node:ekr.20141110223158.15: *3* mds.endGen
     def endGen (self,s):
         '''Finish code generation.'''
-        # Add the warning to the root's body text.
         p = self.root
-        warning = '\nWarning: this node is ignored when writing this file.\n'
-        self.root.b = p.b + warning
+        ###
+        # # # # Add the warning to the root's body text.
+        # # # warning = '\nWarning: this node is ignored when writing this file.\n'
+        # # # self.root.b = p.b + warning
+        
         # Put the underlineDict in self.root.v.u
         u = p.v.u
         tag = 'markdown-import'

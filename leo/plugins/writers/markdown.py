@@ -22,7 +22,8 @@ class MarkdownWriter(basewriter.BaseWriter):
         self.underlineDict = d.get('underline_dict',{})
         for p in root.subtree():
             self.write_headline(p)
-            for s in p.b.strip().splitlines(False):
+            # Fix bug 66: use rstrip, **not** strip.
+            for s in p.b.rstrip().splitlines(False):
                 if not g.isDirective(s):
                     if self.trace: g.trace(s)
                     self.put(s)

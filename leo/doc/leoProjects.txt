@@ -950,6 +950,8 @@ errors inhibited read @auto foo.md
 The markdown code is now similar to the @auto-rst code.
 
 Added some kludgy code to handle underlining.
+
+@language python
 .. @+node:ekr.20141104115623.6: *3* document: disable activate/deactivate logic
 LeoQtGui.onActivate/DeactiveEvent
 .. @+node:ekr.20141107143646.4: *3* fixed pythonw bug
@@ -958,6 +960,8 @@ LeoQtGui.onActivate/DeactiveEvent
 The fix was to define out in the ctor of SaxContentHandler.
 
 @language python
+.. @+node:ekr.20141112070001.12: *3* Eliminated cycle-all-focus command
+Replaced by new focus-to-find and focus-to-spell commands.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
