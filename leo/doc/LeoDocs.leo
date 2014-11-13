@@ -20225,7 +20225,6 @@ backspace over the ':'. Here are the commands::
     :! Execute a shell command.
     :e! Revert all changes to a .leo file, prompting if there have been changes.
     :gt cycle-focus
-    :gT cycle-all-focus
     :q Quit, prompting for saves.
     :qa Quit only if there are no unsaved changes.
     :r Prompt for a file name.  Insert it at the cursor.

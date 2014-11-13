@@ -7471,7 +7471,6 @@ Rewrote moveWordHelper. It now avoids Tk and regexes.  *Much* simpler.
 * Alt keys (outline move commands) should set focus to outline even if nothing else happens.
 - Closing a window no longer puts focus in limbo: added force argument to c.set_focus.
 - New gui bindings: (I should actually be able to remember these).
-    cycle-all-focus                     = Alt-Y
     contract-pane                       = Alt+Ctrl+-
     expand-pane                         = Alt+Ctrl-=
     focus-to-tree                       = Alt-space
@@ -7793,7 +7792,6 @@ CVS:        http://leo.tigris.org/source/browse/leo/
 Quotes:     http://leoeditor.com/testimonials.html
 #@+node:ekr.20061020155235.1: *6* Bugs
 #@+node:ekr.20061020155235.2: *7* Fixed crash when searching for headllines containing unicode chars
-#@+node:ekr.20061020155235.9: *7* Fixed bugs in cycle-all-focus command
 #@+node:ekr.20061020155235.27: *7* Fixed bug with Alt-n keys
 @command whatever @key Alt-1 didn't work
 Actually, no Alt-n keys worked for n in (1,2,3,4,5) in any context.
@@ -7842,7 +7840,6 @@ What I did:
 - Eliminating onFocusIn and its associated binding.
   Hurray: this also fixed the Find problem.
 - Fixed problem with deleting nodes when multiple editors are present.
-- Fixed minor problem with cycle-all-focus.
 - Removed title bar when penultimate editor is deleted.
 #@+node:ekr.20061020155235.254: *7* Moved @import to top of doc/default.css
 #@+node:ekr.20061020155235.255: *7* Fixed focus problem when double-clicking @url nodes
@@ -9373,8 +9370,6 @@ This inserts a child node.
 #@+node:ekr.20071006155647: *7* @bool add_ws_to_kill_ring setting
 #@+node:ekr.20071021111856.412: *7* Improved yank and yank-pop commands
 Optimized yank, by using yanked leading whitespace if it exists
-
-New default bindings: Alt-Y: yank-pop.  Alt-Ctrl-Y: cycle-all-focus.
 
 New option: add-ws-to-kill-ring (or kill-ws-adds-to-kill-ring)
 #@+node:ekr.20071021111856.458: *7* Improved debug command
@@ -16763,22 +16758,6 @@ either the old or new version of the add-comments command.
 Example: ctrl-shift-home.
 
 The fix was to set self.widget = contents in leoQtLog.selectTab.
-#@+node:ekr.20120229094652.14834: *6* Fixed cycle-all-focus command
-- Added disabled code to inject event filter in TabbedFrameFactory.createFrame.
-
-- Added cycle-tab-focus command.
-
-- cycle-all-focus command uses cycleTabFocus as a helper: this greatly simplifies the code.
-    
-- Added binding for "Find" tab in leoQtLog.createTab.
-
-- DynamicWindow.createFindTab injects leo_find_widget ivar for leoQtLog.createTab.
-
-- Added isLogWidget to leoQtLog and nullLog classes.  They are helpers for cycleAllFocus.
-
-- Revised leoQtLog.selectHelper: selecting a new tab does *not* change logCtrl (log.widget).
-
-- Added bindings to Find tab
 #@+node:ekr.20120229094652.14835: *6* Fixed crashers involving calls to w.setSelectionRange
 #@+node:ekr.20120229094652.14836: *6* Fixed hang in cycleAllFocus
 The safe default pane is the body pane.  It's also the simplest code.
@@ -20609,11 +20588,6 @@ Added qtGui.setFilter and used it to simplify the code.
 
 The new code is only enabled if the newFilter is set at the start of qtGui.py.
 #@+node:ekr.20131105110107.16975: *6* Fixed bugs
-#@+node:ekr.20131105110107.16976: *7* cycle-all-focus now works with the Spell Tab enabled
-The problem was that no standard bindings were created for the spell tab.
-This is done in leoQtLog.createTab.  Yes, it's a terrible hack.
-
-Changed cycleAllFocus,leoQtLog.createTab and DynamicWindow.createSpellTab.
 #@+node:ekr.20131105110107.16977: *7* Fixed annoying reformat-paragraph bug
 The cursor was positioned one character from the end when there was no
 newline at the end of the paragraph.  

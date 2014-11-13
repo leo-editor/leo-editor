@@ -1349,10 +1349,12 @@
 <v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22155"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22156"><vh>@item &amp;cycle-all-focus</vh></v>
+<v t="ekr.20131213135427.22156"><vh>@@@item &amp;cycle-all-focus</vh></v>
 <v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
+<v t="ekr.20141112072219.1"><vh>@item focus-to-&amp;find</vh></v>
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
+<v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
@@ -2949,8 +2951,10 @@ cycle-focus
 edit-headline
 end-edit-headline
 focus-to-body
+focus-to-find
 focus-to-log
 focus-to-minibuffer
+focus-to-spell
 focus-to-tree
 
 Menus
@@ -3936,7 +3940,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 50
 50</t>
 <t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
-cycle-all-focus                     = Ctrl-Shift-tab
+# cycle-all-focus                   = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
@@ -6228,8 +6232,10 @@ find-tab-open                       = None
 flatten-outline                     = None
 flush-lines                         = None
 focus-to-body                       = None
+focus-to-find                       = None
 focus-to-log                        = None
 focus-to-minibuffer                 = None
+focus-to-spell                      = None
 focus-to-tree                       = None
 forward-char                        = Ctrl-f
 forward-char-extend-selection       = None
@@ -6594,7 +6600,7 @@ copy-text                           = None
 count-region                        = None
 cut-node                            = None
 cut-text                            = None
-cycle-all-focus                     = None
+# cycle-all-focus                     = None
 cycle-focus                         = None
 cycle-editor-focus                  = None
 dabbrev-completion                  = None
@@ -6690,7 +6696,9 @@ flatten-outline                     = None
 flush-lines                         = None
 focus-to-body                       = None
 focus-to-log                        = None
+focus-to-find                       = None
 focus-to-minibuffer                 = None
+focus-to-spell                      = None
 focus-to-tree                       = None
 forward-char                        = None
 forward-char-extend-selection       = None
@@ -9707,6 +9715,8 @@ False:  Use the newly-improved legacy beautify code.
 <t tx="ekr.20141023155838.4">True: enable @persistence data for @file nodes.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
+<t tx="ekr.20141112072219.1"></t>
+<t tx="ekr.20141112072219.2"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

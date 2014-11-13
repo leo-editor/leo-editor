@@ -1925,7 +1925,8 @@ class EditCommandsClass (BaseEditCommandsClass):
             'count-region':                         self.countRegion,
             'ctrl-click-icon':                      self.ctrlClickIconBox,
             'cycle-focus':                          self.cycleFocus,
-            'cycle-all-focus':                      self.cycleAllFocus,
+            # 'cycle-all-focus':                    self.cycleAllFocus,
+                # Replaced by focus-to-x commands.
             'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
             'cycle-log-focus':                      c.frame.log.cycleTabFocus,
             # 'delete-all-icons':                   self.deleteAllIcons,
