@@ -962,6 +962,12 @@ The fix was to define out in the ctor of SaxContentHandler.
 @language python
 .. @+node:ekr.20141112070001.12: *3* Eliminated cycle-all-focus command
 Replaced by new focus-to-find and focus-to-spell commands.
+.. @+node:ekr.20131220065609.16591: *3* Added focus-to-find/spell commands
+@language rest
+
+The focus-to-spell command just makes the spell tab visible.
+
+It would not be a good idea actually to transfer focus.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

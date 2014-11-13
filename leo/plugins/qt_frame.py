@@ -4292,21 +4292,20 @@ class LeoQtSpellTab:
     #@+others
     #@+node:ekr.20110605121601.18386: *3* LeoQtSpellTab.__init__
     def __init__ (self,c,handler,tabName):
-
-        # g.trace('(LeoQtSpellTab)')
+        '''Ctor for LeoQtSpellTab class.'''
+        # g.trace('(LeoQtSpellTab)',g.callers())
         self.c = c
         self.handler = handler
         # hack:
         handler.workCtrl = leoFrame.StringTextWrapper(c, 'spell-workctrl')
         self.tabName = tabName
         ui = c.frame.top.leo_ui
-        # self.createFrame()
-        if not hasattr(ui, 'leo_spell_label'):
+        if hasattr(ui, 'leo_spell_label'):
+            self.wordLabel = ui.leo_spell_label
+            self.listBox = ui.leo_spell_listBox
+            self.fillbox([])
+        else:
             self.handler.loaded = False
-            return
-        self.wordLabel = ui.leo_spell_label
-        self.listBox = ui.leo_spell_listBox
-        self.fillbox([])
     #@+node:ekr.20110605121601.18389: *3* Event handlers
     #@+node:ekr.20110605121601.18390: *4* onAddButton
     def onAddButton(self):
@@ -4391,6 +4390,15 @@ class LeoQtSpellTab:
         idx = self.listBox.currentRow()
         value = self.suggestions[idx]
         return value
+    #@+node:ekr.20141113094129.13: *4* setFocus (LeoQtSpellTab)
+    def setFocus(self):
+        '''Actually put focus in the tab.'''
+        # Not a great idea: there is no indication of focus.
+        c = self.c
+        if c.frame and c.frame.top and hasattr(c.frame.top,'spellFrame'):
+            w = self.c.frame.top.spellFrame
+            c.widgetWantsFocus(w)
+            
     #@+node:ekr.20110605121601.18401: *4* update (LeoQtSpellTab)
     def update(self,show=True,fill=False):
 

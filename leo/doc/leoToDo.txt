@@ -5,32 +5,13 @@
 .. @+all
 .. @+node:ekr.20141029185358.16: ** * To do: Leo 5.0b1
 @language rest
-.. @+node:ekr.20141112070001.5: *3* Check .org and .vimoutline importers/writers
-.. @+node:ekr.20141110071911.5: *3* Make sure new features are documented
+.. @+node:ekr.20141110071911.5: *3* ** Make sure new features are documented
 - org mode.
 - vimoutline mode.
 - link to vim docs from release notes.
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0b2/rc1
 @language rest
 .. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
-.. @+node:ekr.20141112094313.4: *3* Fix bugs re plugins
-For me:
-
-https://bugs.launchpad.net/leo-editor/+bug/1158269
-viewrendered pane goes blank when url clicked.
-
-https://bugs.launchpad.net/leo-editor/+bug/1240688
-Problems with the Help Menu
-Apparently, this bug is related to the leo_dark theme 0 settings.
-
-For others:
-
-https://bugs.launchpad.net/leo-editor/+bug/1173798
-Notebook plugin command nb-subtree does not start with the right leo file 
-
-https://bugs.launchpad.net/leo-editor/+bug/1230273
-Todo.py documentation - image link semi-broken in docstring
-
 .. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
 https://github.com/leo-editor/leo-editor/issues/101
 
@@ -77,6 +58,24 @@ darwin
 https://github.com/leo-editor/leo-editor/issues/78
 
 Add tracing/history to find this bug.
+.. @+node:ekr.20141112094313.4: *3* Fix bugs re plugins
+For me:
+
+https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
+
+https://bugs.launchpad.net/leo-editor/+bug/1240688
+Problems with the Help Menu
+Apparently, this bug is related to the leo_dark theme 0 settings.
+
+For others:
+
+https://bugs.launchpad.net/leo-editor/+bug/1173798
+Notebook plugin command nb-subtree does not start with the right leo file 
+
+https://bugs.launchpad.net/leo-editor/+bug/1230273
+Todo.py documentation - image link semi-broken in docstring
+
 .. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
 From: Winn Dixie <incredible0n3@gmail.com>
 

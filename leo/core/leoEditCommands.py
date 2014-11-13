@@ -10155,6 +10155,7 @@ class SearchCommandsClass (BaseEditCommandsClass):
         'find-prev':                      find.findPrevCommand,
         'find-tab-hide':                  find.hideFindTab,
         'find-tab-open':                  find.openFindTab,
+        'focus-to-find':                  find.focusToFind,
         'isearch-forward':                find.isearchForward,
         'isearch-backward':               find.isearchBackward,
         'isearch-forward-regexp':         find.isearchForwardRegexp,
@@ -10209,6 +10210,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
+            'focus-to-spell':           self.focusToSpell,
             'open-spell-tab':           self.openSpellTab,
             'spell-find':               self.find,
             'spell-change':             self.change,
@@ -10246,18 +10248,22 @@ class SpellCommandsClass (BaseEditCommandsClass):
         self.spell_as_you_type = False
         self.wrap_as_you_type = False
     #@+node:ekr.20051025080420.1: *4* commands...(SpellCommandsClass)
-    # Just open the Spell tab if it has never been opened.
-    # For minibuffer commands, we must also force the Spell tab to be visible.
-    # self.handler is a SpellTabHandler object (inited by openSpellTab)
-
+    #@+node:ekr.20141113094129.8: *5* find
     def find (self,event=None):
-        '''Simulate pressing the 'Find' button in the Spell tab.'''
+        '''
+        Simulate pressing the 'Find' button in the Spell tab.
+        
+        Just open the Spell tab if it has never been opened.
+        For minibuffer commands, we must also force the Spell tab to be visible.
+        '''
+        # self.handler is a SpellTabHandler object (inited by openSpellTab)
         if self.handler:
             self.openSpellTab()
             self.handler.find()
         else:
             self.openSpellTab()
 
+    #@+node:ekr.20141113094129.9: *5* change
     def change(self,event=None):
         '''Simulate pressing the 'Change' button in the Spell tab.'''
         if self.handler:
@@ -10266,6 +10272,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
         else:
             self.openSpellTab()
 
+    #@+node:ekr.20141113094129.10: *5* changeThenFind
     def changeThenFind (self,event=None):
         '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
         if self.handler:
@@ -10277,12 +10284,14 @@ class SpellCommandsClass (BaseEditCommandsClass):
         else:
             self.openSpellTab()
 
+    #@+node:ekr.20141113094129.11: *5* hide
     def hide (self,event=None):
         '''Hide the Spell tab.'''
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
 
+    #@+node:ekr.20141113094129.12: *5* ignore
     def ignore (self,event=None):
         '''Simulate pressing the 'Ignore' button in the Spell tab.'''
         if self.handler:
@@ -10290,6 +10299,15 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.handler.ignore()
         else:
             self.openSpellTab()
+    #@+node:ekr.20141113094129.5: *5* focusToSpell
+    def focusToSpell(self,event=None):
+        '''Put focus in the spell tab.'''
+        self.openSpellTab()
+            # Makes Spell tab visible.
+            
+        # This is not a great idea. There is no indication of focus.
+            # if self.handler and self.handler.tab:
+                # self.handler.tab.setFocus()
     #@+node:tbrown.20140117115926.30765: *4* as_you_type_* commands
     #@+node:tbrown.20140117115926.30766: *5* as_you_type_toggle
     def as_you_type_toggle(self, event):

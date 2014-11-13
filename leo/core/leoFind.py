@@ -268,6 +268,9 @@ class LeoFind:
             self.findNext()
         finally:
             self.reverse = not self.reverse
+    #@+node:ekr.20141113094129.6: *4* find.focusToFind
+    def focusToFind(self,event=None):
+        self.c.frame.log.selectTab('Find')
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self,event=None):
         '''Called from Find panel.  Redirect.'''
