@@ -279,7 +279,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                     splitter.add(i)
                 self.add_item(add_callback,menu,'Add %s' % (ab[i]))
         # Rotate All.
-        self.add_item(splitter.rotate,menu,'Rotate All')
+        self.add_item(splitter.rotate,menu,'Toggle split direction')
         # equalize panes
         def eq(splitter=splitter.top()):
             splitter.equalize_sizes(recurse=True)

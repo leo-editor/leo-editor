@@ -2958,63 +2958,9 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         '''Toggle the split direction in the present Leo window.'''
 
-        trace = False and not g.unitTesting
-        c,f = self.c,self
-
-        if trace: g.trace('*'*20)
-
-        def getRatio(w):
-            sizes = w.sizes()
-            if len(sizes) == 2:
-                size1,size2 = sizes
-                ratio = float(size1)/float(size1+size2)
-                if trace: g.trace(
-                    '   ratio: %0.2f, size1: %3s, size2: %3s, total: %4s, w: %s' % (
-                    ratio,size1,size2,size1+size2,w))
-                return ratio
-            else:
-                if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
-                return float(0.5)
-
-        def getNewSizes(sizes,ratio):
-            size1,size2 = sizes
-            total = size1+size2
-            size1 = int(float(ratio)*float(total))
-            size2 = total - size1
-            if trace: g.trace(
-                'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
-                ratio,size1,size2,total))
-            return [size1,size2]
-
-        # Compute the actual ratios before reorienting.
-        w1,w2 = f.top.splitter, f.top.splitter_2
-        r1 = getRatio(w1)
-        r2 = getRatio(w2)
-        f.ratio,f.secondary_ratio = r1,r2
-
-        # Remember the sizes before reorienting.
-        sizes1 = w1.sizes()
-        sizes2 = w2.sizes()
-
-        # Reorient the splitters.
-        for w in (f.top.splitter,f.top.splitter_2):
-            w.setOrientation(
-                QtCore.Qt.Vertical if w.orientation() == QtCore.Qt.Horizontal else QtCore.Qt.Horizontal)
-
-        # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
-        if len(sizes1) == 2 and len(sizes2) == 2:
-            w1.setSizes(getNewSizes(sizes1,r1))
-            w2.setSizes(getNewSizes(sizes2,r2))
-
-        # Maintain the key invariant: self.splitVerticalFlag
-        # tells the alignment of the main splitter.
-        f.splitVerticalFlag = not f.splitVerticalFlag
-
-        # Fix bug 581031: Scrollbar position is not preserved.
-        # This is better than adjust the scroll value directy.
-        c.frame.tree.setItemForCurrentPosition(scroll=True)
-        w = c.frame.body.wrapper
-        if w: w.seeInsertPoint()
+        if hasattr(self.c, 'free_layout'):
+            self.c.free_layout.get_top_splitter().rotate()
+        return
     #@+node:ekr.20110605121601.18308: *5* resizeToScreen (qtFrame)
     def resizeToScreen (self,event=None):
 
