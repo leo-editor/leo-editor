@@ -21782,8 +21782,6 @@ Note: persistence applies to @auto-vimoutline-mode and @auto-org-mode
 - Created importers and writers for .org and .otl files.
 #@+node:ekr.20141113102829.13: *6* Power features
 #@+node:ekr.20141113102829.174: *7* Added command history
-@language rest
-
 After Alt-x puts you in the minibuffer, you can now use UpArrow and
 DownArrow keys to cycle through previous "complex" commands, that is,
 commands entered via Alt-x<command-name><return>.
@@ -21942,16 +21940,12 @@ Over 70 bugs have been fixed.
 #@+node:ekr.20141113102829.170: *6* Bugs fixed in 5.0b1
 #@+node:ekr.20141113102829.234: *7* Fixed
 #@+node:ekr.20141113102829.173: *8* The spell checker handles apostrophes correctly
-@language rest
-
 Previously, when checking "didn't" the spell checker would complain that
 "didn" wasn't in the dictionary. Now it checks (and accepts) "didn't".
 
 We have all been putting up with this annoyance for *far* to long. Changing
 just two lines of code was all that was required.
 #@+node:ekr.20141113102829.190: *8* fixed bug 1159490: "Open with" fails to copy changes by external editor back to Leo-Editor node
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1159490
 
 The solution is to change the following setting in leoSettings.leo::
@@ -21969,8 +21963,6 @@ Added the following defensive code::
         # Avoid bug 1338773: Autocompleter error
         pass
 #@+node:ekr.20141113102829.199: *8* Fixed bug 1338172: ReplaceAll will not replace newlines indicated as \n in target string
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1338172
 ReplaceAll will not replace newlines indicated as \n in target string
 
@@ -21985,32 +21977,21 @@ it remains as is and appears as "\n" in the transformed string.
 
 Also, I can't seem to get the replace-all command to work from the
 minibuffer line; it only does a single replace.
-
-@language python
-
 #@+node:ekr.20141113102829.224: *8* Fixed bug 92: Tab loses focus when executing a button defined in an unopened settings file
 https://github.com/leo-editor/leo-editor/issues/92
 #@+node:ekr.20141113102829.227: *8* Fixed bug 66: errors inhibited read @auto foo.md
-@language rest
-
 https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
 
 The markdown code is now similar to the @auto-rst code.
 
 Added some kludgey code to handle underlining.
-
-@language python
 #@+node:ekr.20141113102829.228: *8* Disable activate/deactivate logic
 LeoQtGui.onActivate/DeactiveEvent
 
 This fixed several focus problems.
 #@+node:ekr.20141113102829.229: *8* fixed pythonw bug
-@language rest
-
 The fix was to define out in the ctor of SaxContentHandler.
-
-@language python
 #@+node:ekr.20141113102829.24: *6* Bugs fixed in 5.0a2
 - Leo's desktop button now works properly with Python 3.x.
   The underlying cause was that Leo did not work with python34\pythonw.exe.
@@ -22495,8 +22476,6 @@ https://bugs.launchpad.net/leo-editor/+bug/1286909
 Settings in file A propagate to file B when editing A and B is opened
 
 #@+node:ekr.20141113102829.191: *8* Investigated bug 1240786: Corner case bug in tab-cycle-next and tab-cycle-previous
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1240786
 Corner case bug in tab-cycle-next and tab-cycle-previous
 
@@ -22517,22 +22496,16 @@ In every other case that I've tried tab-cycle-next and tab-cycle-previous
 perform correctly and the tab with the focus is the tab into which
 characters are inserted.
 #@+node:ekr.20141113102829.225: *8* Investigated bug 1249684: "add body editor" adds editor pane in wrong tab
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1249684
 "add body editor" adds editor pane in wrong tab
 
 This seems to have been fixed.
 #@+node:ekr.20141113102829.198: *8* Investigated bug 1258302: Window, Toggle Split Direction Error
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1258302
 Window, Toggle Split Direction Error
 
 This works for me.  Don't know when it was fixed.
 #@+node:ekr.20141113102829.226: *8* Investigated bug 1269540: File importing problems: Path doesn't properly appear as node header
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1269540
 File importing problems: Path doesn't properly appear as node header
 
@@ -23218,8 +23191,6 @@ https://groups.google.com/d/msg/leo-editor/JWhlmJBiesk/RsC64VZ1gxQJ
 #@+node:ekr.20141113102829.123: *6* Improved idle-time handling
 @language rest
 
-
-
 Simplified and generalized idle-time handling as follows:
     
 - Removed g.app.afterHandler: g.app.idleTimeHook does the same thing now.
@@ -23418,7 +23389,6 @@ The simplest thing that could possibly work would be::
 
 @language python
 
-
     def getTextLength(self):
         w = self.widget
         return len(w.getAllText())
@@ -23514,8 +23484,6 @@ Imo, this is the safe, if not exactly elegant way.
 #@+node:ekr.20141113102829.134: *5* Features
 #@+node:ekr.20141113102829.135: *6* New commands
 #@+node:ekr.20141113102829.231: *7* Added focus-to-find/spell commands
-@language rest
-
 The focus-to-spell command just makes the spell tab visible.
 
 It would not be a good idea actually to transfer focus.
@@ -24696,7 +24664,7 @@ https://bugs.launchpad.net/leo-editor/+bug/1258373
 #@+node:ekr.20141103061944.108: *8* Fixed bug 1260415: exception writing external files" is insufficient
 https://bugs.launchpad.net/leo-editor/+bug/1260415
 Added more informative error messages
-#@+node:ekr.20141103061944.109: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter 
+#@+node:ekr.20141103061944.109: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter
 https://bugs.launchpad.net/leo-editor/+bug/1264350
 #@+node:ekr.20141103061944.164: *8* Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input
 https://bugs.launchpad.net/leo-editor/+bug/1267921
@@ -26034,7 +26002,7 @@ to use @language, as in your example with @nosent trees.
 
 2. To automatically use @language hbs in .hbs files, add the
    following entry in define_extension_dict in leoApp.py:
-#@+node:ekr.20141103061944.233: *5* Plugins & leo/external 
+#@+node:ekr.20141103061944.233: *5* Plugins & leo/external
 #@+node:ekr.20141103061944.75: *6* Added livecode plugin
 Then livecode-show command shows the live code evaluation pane. Hover on
 the buttons for helpful tool-tips.

@@ -3,6 +3,12 @@
 .. @@language rest
 
 .. @+all
+.. @+node:ekr.20141114054312.4: ** 5.0 final
+.. @+node:ekr.20141114054312.5: *3* c.executeScript adds '.' to sys.path
+https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+
+c.executeScript places '.' as the *second* element of
+sys.path, following c.frame.openDirectory as before.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -3,8 +3,25 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0b2/rc1
+.. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0 final
 @language rest
+.. @+node:ekr.20141114054312.7: *3* Fix bug 103: Installation Issues on Linux
+https://github.com/leo-editor/leo-editor/issues/103
+.. @+node:ekr.20141114054312.6: *3* Fix bug 102: Loading @file node with embedded code broken
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/102
+
+The following node definition saves the file into /home/user/.leo
+(on Linux, not tested on Win)::
+
+    @file {{g.app.loadDir}}/testapp.txt
+
+but when such leo file is loaded, it starts with error::
+
+    can not open: '@file /home/user/.leo/{{g.app.loadDir}}/testapp.txt'
+
+and files are not loaded. Tried 4.11, it behaves in the same way.
 .. @+node:ekr.20141113123533.4: *3* #66: support @path with md importer/writer/rclick
 @language rest
 

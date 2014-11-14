@@ -21790,8 +21790,6 @@ What I did:
 </t>
 <t tx="ekr.20141113102829.123">@language rest
 
-
-
 Simplified and generalized idle-time handling as follows:
     
 - Removed g.app.afterHandler: g.app.idleTimeHook does the same thing now.
@@ -21990,7 +21988,6 @@ is nothing we can do about that.
 The simplest thing that could possibly work would be::
 
 @language python
-
 
     def getTextLength(self):
         w = self.widget
@@ -22799,17 +22796,13 @@ this technique.
 </t>
 <t tx="ekr.20141113102829.170"></t>
 <t tx="ekr.20141113102829.172"></t>
-<t tx="ekr.20141113102829.173">@language rest
-
-Previously, when checking "didn't" the spell checker would complain that
+<t tx="ekr.20141113102829.173">Previously, when checking "didn't" the spell checker would complain that
 "didn" wasn't in the dictionary. Now it checks (and accepts) "didn't".
 
 We have all been putting up with this annoyance for *far* to long. Changing
 just two lines of code was all that was required.
 </t>
-<t tx="ekr.20141113102829.174">@language rest
-
-After Alt-x puts you in the minibuffer, you can now use UpArrow and
+<t tx="ekr.20141113102829.174">After Alt-x puts you in the minibuffer, you can now use UpArrow and
 DownArrow keys to cycle through previous "complex" commands, that is,
 commands entered via Alt-x&lt;command-name&gt;&lt;return&gt;.
 
@@ -22834,17 +22827,13 @@ colored later.
 
 In the meantime, Leo is responsive to all commands, mouse clicks, etc.
 </t>
-<t tx="ekr.20141113102829.190">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1159490
+<t tx="ekr.20141113102829.190">https://bugs.launchpad.net/leo-editor/+bug/1159490
 
 The solution is to change the following setting in leoSettings.leo::
     
     @bool open_with_save_on_update = True
 </t>
-<t tx="ekr.20141113102829.191">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1240786
+<t tx="ekr.20141113102829.191">https://bugs.launchpad.net/leo-editor/+bug/1240786
 Corner case bug in tab-cycle-next and tab-cycle-previous
 
 This bug appears to have been fixed.
@@ -22905,16 +22894,12 @@ the menu entries are added to the existing menu.
 
 This is a minor wishlist item.
 </t>
-<t tx="ekr.20141113102829.198">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1258302
+<t tx="ekr.20141113102829.198">https://bugs.launchpad.net/leo-editor/+bug/1258302
 Window, Toggle Split Direction Error
 
 This works for me.  Don't know when it was fixed.
 </t>
-<t tx="ekr.20141113102829.199">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1338172
+<t tx="ekr.20141113102829.199">https://bugs.launchpad.net/leo-editor/+bug/1338172
 ReplaceAll will not replace newlines indicated as \n in target string
 
 Using regX , I can search on a pattern and replace it with a string that
@@ -22928,9 +22913,6 @@ it remains as is and appears as "\n" in the transformed string.
 
 Also, I can't seem to get the replace-all command to work from the
 minibuffer line; it only does a single replace.
-
-@language python
-
 </t>
 <t tx="ekr.20141113102829.20">The style-reload reloads all visual settings.
 
@@ -22968,16 +22950,12 @@ rst3 tutorial.
 </t>
 <t tx="ekr.20141113102829.224">https://github.com/leo-editor/leo-editor/issues/92
 </t>
-<t tx="ekr.20141113102829.225">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1249684
+<t tx="ekr.20141113102829.225">https://bugs.launchpad.net/leo-editor/+bug/1249684
 "add body editor" adds editor pane in wrong tab
 
 This seems to have been fixed.
 </t>
-<t tx="ekr.20141113102829.226">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1269540
+<t tx="ekr.20141113102829.226">https://bugs.launchpad.net/leo-editor/+bug/1269540
 File importing problems: Path doesn't properly appear as node header
 
 This bug was fixed by #60 or at some earlier time.
@@ -22986,33 +22964,23 @@ I am aware of no problems with drag and drop at present.
 Please create a github bug report if any new issues appear.
 
 </t>
-<t tx="ekr.20141113102829.227">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/66
+<t tx="ekr.20141113102829.227">https://github.com/leo-editor/leo-editor/issues/66
 errors inhibited read @auto foo.md
 
 The markdown code is now similar to the @auto-rst code.
 
 Added some kludgey code to handle underlining.
-
-@language python
 </t>
 <t tx="ekr.20141113102829.228">LeoQtGui.onActivate/DeactiveEvent
 
 This fixed several focus problems.</t>
-<t tx="ekr.20141113102829.229">@language rest
-
-The fix was to define out in the ctor of SaxContentHandler.
-
-@language python
+<t tx="ekr.20141113102829.229">The fix was to define out in the ctor of SaxContentHandler.
 </t>
 <t tx="ekr.20141113102829.23">Over 70 bugs have been fixed.
 </t>
 <t tx="ekr.20141113102829.230">Replaced by new focus-to-find and focus-to-spell commands.
 </t>
-<t tx="ekr.20141113102829.231">@language rest
-
-The focus-to-spell command just makes the spell tab visible.
+<t tx="ekr.20141113102829.231">The focus-to-spell command just makes the spell tab visible.
 
 It would not be a good idea actually to transfer focus.
 </t>

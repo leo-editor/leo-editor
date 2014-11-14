@@ -459,6 +459,7 @@ Pre-testing:
     - Run pylint -a.
 Release notes and web documentation:
     - Update the release notes.
+    - Remove @language rest where possible in new notes.
     - Create new "what's new" section.
     - Copy release notes to leoDist.leo.
     - Update version number and modification date on Leo's home page.
