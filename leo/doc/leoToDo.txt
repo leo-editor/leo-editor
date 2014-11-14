@@ -5,6 +5,17 @@
 .. @+all
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0b2/rc1
 @language rest
+.. @+node:ekr.20141113123533.4: *3* #66: support @path with md importer/writer/rclick
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/66
+
+I get no errors here: @auto mkdocs/docs/index.md
+rclick -> refresh from disk
+
+but from here:
+@path mkdocs
+descending to the file, I get an old perfect import error 
 .. @+node:ekr.20141113114751.1: *3* Window title of Leo installer should give version
 .. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
 @@@test markdown 1 (creates an unwanted @auto node)

@@ -1909,32 +1909,39 @@ class Commands (object):
 
         frame.colorPanel.bringToFront()
     #@+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
-    def executeScript(self,event=None,args=None,p=None,script=None,
-        useSelectedText=True,define_g=True,define_name='__main__',silent=False,
-        namespace=None,raiseFlag=False):
-
-        """This executes body text as a Python script.
-
-        We execute the selected text, or the entire body text if no text is selected."""
-
-        c = self ; script1 = script
-
+    def executeScript(self,event=None,
+        args=None,p=None,script=None,useSelectedText=True,
+        define_g=True,define_name='__main__',
+        silent=False,namespace=None,raiseFlag=False,
+    ):
+        '''
+        Execute a *Leo* script.
+        Keyword args:
+        args=None               Not None: set script_args in the execution environment.
+        p=None                  Get the script from p.b, unless script is given.
+        script=None             None: use script in p.b or c.p.b
+        useSelectedText=True    False: use all the text in p.b or c.p.b.
+        define_g=True           True: define g for the script.
+        define_name='__main__'  Not None: define the name symbol.
+        silent=False            No longer used.
+        namespace=None          Not None: execute the script in this namespace.
+        raiseFlag=False         True: reraise any exceptions.
+        '''
+        c,script1 = self,script
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c,p or c.p,useSelectedText=useSelectedText)
-
-        script_p = p or c.p # Only for error reporting below.
-
+        script_p = p or c.p
+            # Only for error reporting below.
         self.redirectScriptOutput()
         try:
-            oldLog = g.app.log # 2011/01/19
+            oldLog = g.app.log
             log = c.frame.log
             g.app.log = log
             if script.strip():
-                # print('***executeScript***',c.frame.openDirectory)
-                # 2014/05/20: Bug fix, per SegundoBob: use c.frame.openDirectory as is.
-                sys.path.insert(0,c.frame.openDirectory)
+                sys.path.insert(0, '.') # New in Leo 5.0
+                sys.path.insert(0,c.frame.openDirectory) # per SegundoBob
                 script += '\n' # Make sure we end the script properly.
                 try:
                     # We *always* execute the script with p = c.p.
@@ -1946,12 +1953,12 @@ class Commands (object):
                         g.handleScriptException(c,script_p,script,script1)
                 finally:
                     del sys.path[0]
+                    del sys.path[0]
             else:
                 tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
                 g.warning("no script selected",tabName=tabName)
-
         finally:
-            g.app.log = oldLog # 2011/01/19
+            g.app.log = oldLog
             self.unredirectScriptOutput()
     #@+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
     def executeScriptHelper (self,args,define_g,define_name,namespace,script):
