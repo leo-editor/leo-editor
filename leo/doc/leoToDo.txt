@@ -12,16 +12,8 @@ https://github.com/leo-editor/leo-editor/issues/103
 
 https://github.com/leo-editor/leo-editor/issues/102
 
-The following node definition saves the file into /home/user/.leo
-(on Linux, not tested on Win)::
-
-    @file {{g.app.loadDir}}/testapp.txt
-
-but when such leo file is loaded, it starts with error::
-
-    can not open: '@file /home/user/.leo/{{g.app.loadDir}}/testapp.txt'
-
-and files are not loaded. Tried 4.11, it behaves in the same way.
+The fix was to add the c keyword arg to g.os_path_finalize and
+g.os_path_finalize_join in two places in the read logic.
 .. @+node:ekr.20141113123533.4: *3* #66: support @path with md importer/writer/rclick
 @language rest
 

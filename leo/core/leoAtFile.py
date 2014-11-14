@@ -778,6 +778,7 @@ class AtFile:
     #@+node:ekr.20041005105605.22: *5* at.initFileName
     def initFileName (self,fromString,importFileName,root):
         '''Return the fileName to be used in messages.'''
+        at = self
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
@@ -786,6 +787,9 @@ class AtFile:
             fileName = root.anyAtFileNodeName()
         else:
             fileName = None
+        if fileName:
+            # Fix bug 102: add c keyword arg.
+            fileName = g.os_path_finalize(fileName,c=at.c)
         return fileName
     #@+node:ekr.20100224050618.11547: *5* at.isFileLike
     def isFileLike (self,s):
@@ -3099,7 +3103,7 @@ class AtFile:
         """Write a 4.x derived file.
         root is the position of an @<file> node"""
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
         at.setTargetFileName(nosentinels,root,thinFile,toString)
@@ -5492,12 +5496,11 @@ class AtFile:
         return g.utils_stat(fileName)
     #@+node:ekr.20090530055015.6050: *3* at.fullPath
     def fullPath (self,p,simulate=False):
-
-        '''Return the full path (including fileName) in effect at p.
+        '''
+        Return the full path (including fileName) in effect at p.
 
         Neither the path nor the fileName will be created if it does not exist.
         '''
-
         at = self ; c = at.c
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
@@ -5506,7 +5509,8 @@ class AtFile:
         else:
             fn = p.anyAtFileNodeName()
         if fn:
-            path = g.os_path_finalize_join(path,fn)
+            # Fix bug 102: add c keyword arg.
+            path = g.os_path_finalize_join(path,fn,c=c)
         else:
             g.trace('can not happen: not an @<file> node',g.callers())
             for p2 in p.self_and_parents():

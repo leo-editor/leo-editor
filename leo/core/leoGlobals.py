@@ -6144,9 +6144,7 @@ def os_path_exists(path):
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression
 def os_path_expandExpression (s,**keys):
-
     '''Expand {{anExpression}} in c's context.'''
-
     trace = False
     c = keys.get('c')
     if not c:
