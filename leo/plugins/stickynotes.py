@@ -268,17 +268,24 @@ def stickynoter_f(event):
     v = p.v
 
     def focusin():
-        print("focus in")
+        # print("focus in")
         if v is c.p.v:
-            nf.setHtml(v.b)
+            if not g.isPython3:
+                nf.setHtml(unicode(v.b))
+            else:
+                nf.setHtml(v.b)
+
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
     def focusout():
-        print("focus out")
+        # print("focus out")
         if not nf.dirty:
             return
-        v.b = nf.toHtml()
+        if not g.isPython3:
+            v.b = unicode(nf.toHtml())
+        else:
+            v.b = nf.toHtml()
         v.setDirty()
         nf.dirty = False
         p = c.p
@@ -386,8 +393,7 @@ if encOK:
         __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
-#@+node:ville.20100703234124.9976: ** Tabula
-#@+node:ville.20100707205336.5610: *3* def create_subnode
+#@+node:ville.20100707205336.5610: ** create_subnode
 def create_subnode(c, heading):
     """  Find node with heading, then add new node as child under this heading 
 
@@ -406,7 +412,7 @@ def create_subnode(c, heading):
 
     chi = p.insertAsLastChild()
     return chi.copy()
-#@+node:ville.20100703194946.5587: *3* def mknote
+#@+node:ville.20100703194946.5587: ** mknote
 def mknote(c,p, parent=None):
     """ Launch editable 'sticky note' for the node """
 
@@ -414,17 +420,24 @@ def mknote(c,p, parent=None):
     def focusin():
         #print "focus in"
         if v is c.p.v:
-            if v.b != nf.toPlainText():
+            if v.b.encode('utf-8') != nf.toPlainText():
                 # only when needed to avoid scroll jumping
-                nf.setPlainText(v.b)
+                if not g.isPython3:
+                    nf.setPlainText(unicode(v.b))
+                else:
+                    nf.setPlainText(v.b)
             nf.setWindowTitle(v.h)
             nf.dirty = False
+            
 
     def focusout():
         #print "focus out"
         if not nf.dirty:
             return
-        v.b = nf.toPlainText()
+        if not g.isPython3:
+            v.b = unicode(nf.toPlainText())
+        else:
+            v.b = nf.toPlainText()
         v.setDirty()
         nf.dirty = False
         p = c.p
@@ -451,6 +464,7 @@ def mknote(c,p, parent=None):
     nf.show()
     g.app.stickynotes[p.gnx] = nf
     return nf
+#@+node:ville.20100703234124.9976: ** Tabula
 #@+node:ville.20100704010850.5589: *3* def tabula_show
 def tabula_show(c):
     try:
