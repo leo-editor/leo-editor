@@ -270,11 +270,7 @@ def stickynoter_f(event):
     def focusin():
         # print("focus in")
         if v is c.p.v:
-            if not g.isPython3:
-                nf.setHtml(unicode(v.b))
-            else:
-                nf.setHtml(v.b)
-
+            nf.setHtml(g.u(v.b))
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
@@ -282,10 +278,7 @@ def stickynoter_f(event):
         # print("focus out")
         if not nf.dirty:
             return
-        if not g.isPython3:
-            v.b = unicode(nf.toHtml())
-        else:
-            v.b = nf.toHtml()
+        v.b = g.u(nf.toHtml())
         v.setDirty()
         nf.dirty = False
         p = c.p
@@ -422,10 +415,7 @@ def mknote(c,p, parent=None):
         if v is c.p.v:
             if v.b.encode('utf-8') != nf.toPlainText():
                 # only when needed to avoid scroll jumping
-                if not g.isPython3:
-                    nf.setPlainText(unicode(v.b))
-                else:
-                    nf.setPlainText(v.b)
+                nf.setPlainText(g.u(v.b))
             nf.setWindowTitle(v.h)
             nf.dirty = False
             
@@ -434,10 +424,7 @@ def mknote(c,p, parent=None):
         #print "focus out"
         if not nf.dirty:
             return
-        if not g.isPython3:
-            v.b = unicode(nf.toPlainText())
-        else:
-            v.b = nf.toPlainText()
+        v.b = g.u(nf.toPlainText())
         v.setDirty()
         nf.dirty = False
         p = c.p
