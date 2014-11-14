@@ -1994,13 +1994,11 @@ class RstCommands:
         # g.trace(self.encoding)
 
         return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-    #@+node:ekr.20090502071837.91: *4* report
+    #@+node:ekr.20090502071837.91: *4* rst.report
     def report (self,name):
 
         if self.getOption('verbose'):
-
-            name = g.os_path_finalize(name)
-
+            name = self.c.os_path_finalize(name)
             g.blue('wrote: %s' % (name))
     #@+node:ekr.20090502071837.92: *4* rstComment
     def rstComment (self,s):

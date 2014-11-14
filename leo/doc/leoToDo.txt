@@ -7,13 +7,6 @@
 @language rest
 .. @+node:ekr.20141114054312.7: *3* Fix bug 103: Installation Issues on Linux
 https://github.com/leo-editor/leo-editor/issues/103
-.. @+node:ekr.20141114054312.6: *3* Fix bug 102: Loading @file node with embedded code broken
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/102
-
-The fix was to add the c keyword arg to g.os_path_finalize and
-g.os_path_finalize_join in two places in the read logic.
 .. @+node:ekr.20141113123533.4: *3* #66: support @path with md importer/writer/rclick
 @language rest
 

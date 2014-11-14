@@ -788,8 +788,8 @@ class AtFile:
         else:
             fileName = None
         if fileName:
-            # Fix bug 102: add c keyword arg.
-            fileName = g.os_path_finalize(fileName,c=at.c)
+            # Fix bug 102: call the commander method, not the global funtion.
+            fileName = at.c.os_path_finalize(fileName)
         return fileName
     #@+node:ekr.20100224050618.11547: *5* at.isFileLike
     def isFileLike (self,s):
@@ -5509,8 +5509,8 @@ class AtFile:
         else:
             fn = p.anyAtFileNodeName()
         if fn:
-            # Fix bug 102: add c keyword arg.
-            path = g.os_path_finalize_join(path,fn,c=c)
+            # Fix bug 102: call commander method, not the global function.
+            path = c.os_path_finalize_join(path,fn)
         else:
             g.trace('can not happen: not an @<file> node',g.callers())
             for p2 in p.self_and_parents():

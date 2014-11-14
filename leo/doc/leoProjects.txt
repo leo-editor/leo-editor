@@ -9,6 +9,13 @@ https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
 
 c.executeScript places '.' as the *second* element of
 sys.path, following c.frame.openDirectory as before.
+.. @+node:ekr.20141114054312.6: *3* Fixed bug 102: Loading @file node with embedded code broken
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/102
+
+The fix was to call c.os_path_finalize/_join instead of
+g.os_path_finalize_join in two places in the read logic.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

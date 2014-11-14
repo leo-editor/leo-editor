@@ -6915,12 +6915,11 @@ class Commands (object):
 
     # Not used in Leo's core.
     def getNodeFileName (self,p):
-
-        '''Return the full file name at node p,
+        '''
+        Return the full file name at node p,
         including effects of all @path directives.
-
-        Return None if p is no kind of @file node.'''
-
+        Return None if p is no kind of @file node.
+        '''
         c = self
         path = g.scanAllAtPathDirectives(c,p)
         name = ''
@@ -6929,7 +6928,8 @@ class Commands (object):
             if name: break
 
         if name:
-            name = g.os_path_finalize_join(path,name)
+            # The commander method supports {{expr}}; the global function does not.
+            name = c.os_path_finalize_join(path,name)
         return name
     #@+node:ekr.20091211111443.6265: *3* c.doBatchOperations & helpers
     def doBatchOperations (self,aList=None):
