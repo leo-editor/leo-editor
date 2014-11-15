@@ -16,6 +16,7 @@ https://github.com/leo-editor/leo-editor/issues/102
 
 The fix was to call c.os_path_finalize/_join instead of
 g.os_path_finalize_join in two places in the read logic.
+.. @+node:ekr.20141113114751.1: *3* Installer window now gives version
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

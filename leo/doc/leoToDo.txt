@@ -18,7 +18,6 @@ rclick -> refresh from disk
 but from here:
 @path mkdocs
 descending to the file, I get an old perfect import error 
-.. @+node:ekr.20141113114751.1: *3* Window title of Leo installer should give version
 .. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
 https://github.com/leo-editor/leo-editor/issues/101
 
