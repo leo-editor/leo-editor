@@ -19,8 +19,6 @@ but from here:
 @path mkdocs
 descending to the file, I get an old perfect import error 
 .. @+node:ekr.20141113114751.1: *3* Window title of Leo installer should give version
-.. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
-@@@test markdown 1 (creates an unwanted @auto node)
 .. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
 https://github.com/leo-editor/leo-editor/issues/101
 
@@ -29,7 +27,12 @@ _leo.c not working from IPython
 
 https://bugs.launchpad.net/leo-editor/+bug/1228099
 Cancelling save of dirty untitled commander doesn't work with --ipython
-.. @+node:ekr.20141112094313.4: *3* Fix bugs re plugins
+.. @+node:ekr.20141110154742.6: *3* Fix bug 78: find-next target not always scrolled into view
+https://github.com/leo-editor/leo-editor/issues/78
+
+Add tracing/history to find this bug.
+.. @+node:ekr.20141113102829.5: *3* Maybe
+.. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins
 For me:
 
 https://bugs.launchpad.net/leo-editor/+bug/1158269
@@ -47,11 +50,8 @@ Notebook plugin command nb-subtree does not start with the right leo file
 https://bugs.launchpad.net/leo-editor/+bug/1230273
 Todo.py documentation - image link semi-broken in docstring
 
-.. @+node:ekr.20141110154742.6: *3* Fix bug 78: find-next target not always scrolled into view
-https://github.com/leo-editor/leo-editor/issues/78
-
-Add tracing/history to find this bug.
-.. @+node:ekr.20141113102829.5: *3* Maybe
+.. @+node:ekr.20141112070001.6: *4* Fix markdown unit test
+@@@test markdown 1 (creates an unwanted @auto node)
 .. @+node:ekr.20141109160640.8: *4* Fix bug 99: MacOs custom hotkey can not work on 1st call
 @language rest
 

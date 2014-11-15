@@ -20,7 +20,7 @@ Var PythonDirectory
 
 ; Boilerplate
 SetCompressor bzip2
-Caption "${name} Installer"
+Caption "${name}-${version} Installer"
 AutoCloseWindow false 
 SilentInstall normal
 CRCCheck on
