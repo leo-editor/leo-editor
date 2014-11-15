@@ -15,13 +15,22 @@ https://github.com/leo-editor/leo-editor/issues/78
 
 Add tracing/history to find this bug.
 .. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
-https://github.com/leo-editor/leo-editor/issues/101
+@language rest
 
-https://bugs.launchpad.net/leo-editor/+bug/1258512
-_leo.c not working from IPython
+https://github.com/leo-editor/leo-editor/issues/101
 
 https://bugs.launchpad.net/leo-editor/+bug/1228099
 Cancelling save of dirty untitled commander doesn't work with --ipython
+
+No further information available. Probably report at leo-editor.
+
+Fixed
+-----
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+Improved the documentation of the "c" property.
+
 .. @+node:ekr.20141113102829.5: *3* Maybe
 .. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins
 For me:

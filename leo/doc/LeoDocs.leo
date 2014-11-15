@@ -1144,8 +1144,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
-expanded="ekr.20141113102829.23,ekr.20141115093034.1,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
@@ -16299,6 +16298,34 @@ script were run from Leo.
 **Important**: the _leo object is an instance of LeoNameSpace class,
 defined in leo.core.leoIPython.py. This class allows IPython scripts to
 access multiple Leo outlines at once. See the actual code for details.
+
+**Note**: _leo.c is a property which can return None in some situations.
+Here is its definition:
+
+.. code-block:: python
+
+    def __get_c(self):
+        '''Return the designated commander, or the only open commander.'''
+        self.update()
+        if self.commander and self.commander in self.commanders_list:
+            return self.commander
+        elif len(self.commanders_list) == 1:
+            return self.commanders_list[0]
+        else:
+            return None
+    
+    def __set_c(self,c):
+        '''Designate the commander to be returned by the getter.'''
+        self.update()
+        if c in self.commanders_list:
+            self.commander = c
+        else:
+            g.trace(g.callers())
+            raise ValueError(c)
+    
+    c = property(
+        __get_c, __set_c,
+        doc = "LeoNameSpace c property")
 </t>
 <t tx="ekr.20131001100236.15927">Leo's valuespace.py plugin uses the ipython namespace when the
 --ipython command line switch is in effect.
@@ -22982,7 +23009,8 @@ Added some kludgey code to handle underlining.
 </t>
 <t tx="ekr.20141113102829.228">LeoQtGui.onActivate/DeactiveEvent
 
-This fixed several focus problems.</t>
+This fixed several focus problems.
+</t>
 <t tx="ekr.20141113102829.229">The fix was to define out in the ctor of SaxContentHandler.
 </t>
 <t tx="ekr.20141113102829.23">Over 70 bugs have been fixed.
