@@ -3103,7 +3103,7 @@ class AtFile:
         """Write a 4.x derived file.
         root is the position of an @<file> node"""
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
         at.setTargetFileName(nosentinels,root,thinFile,toString)
