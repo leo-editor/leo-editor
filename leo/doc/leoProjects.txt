@@ -7,6 +7,19 @@
 .. @+node:ekr.20141115091852.1: *3* Made sure the .json file is part of the .zip file.
 https://github.com/leo-editor/leo-editor/issues/104
 https://github.com/leo-editor/leo-editor/issues/103
+.. @+node:ekr.20141113123533.4: *3* Investigated bug 66: support @path with md importer/writer/rclick
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/66
+
+Works for me.
+
+I get no errors here: @auto mkdocs/docs/index.md
+rclick -> refresh from disk
+
+but from here:
+@path mkdocs
+descending to the file, I get an old perfect import error 
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
