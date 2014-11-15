@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20141108212612.4: * @file setup.py
+#@+node:ekr.20141027093638.6: * @file ../../setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
