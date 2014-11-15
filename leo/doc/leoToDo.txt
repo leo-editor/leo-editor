@@ -5,9 +5,7 @@
 .. @+all
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0 final
 @language rest
-.. @+node:ekr.20141114054312.7: *3* Fix bug 103: Installation Issues on Linux
-https://github.com/leo-editor/leo-editor/issues/103
-.. @+node:ekr.20141113123533.4: *3* #66: support @path with md importer/writer/rclick
+.. @+node:ekr.20141113123533.4: *3* Fix bug 66: support @path with md importer/writer/rclick
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/66
@@ -18,6 +16,10 @@ rclick -> refresh from disk
 but from here:
 @path mkdocs
 descending to the file, I get an old perfect import error 
+.. @+node:ekr.20141110154742.6: *3* Fix bug 78: find-next target not always scrolled into view
+https://github.com/leo-editor/leo-editor/issues/78
+
+Add tracing/history to find this bug.
 .. @+node:ekr.20141110223158.9: *3* Fix bug 101: IPython issues
 https://github.com/leo-editor/leo-editor/issues/101
 
@@ -26,10 +28,8 @@ _leo.c not working from IPython
 
 https://bugs.launchpad.net/leo-editor/+bug/1228099
 Cancelling save of dirty untitled commander doesn't work with --ipython
-.. @+node:ekr.20141110154742.6: *3* Fix bug 78: find-next target not always scrolled into view
-https://github.com/leo-editor/leo-editor/issues/78
-
-Add tracing/history to find this bug.
+.. @+node:ekr.20141114054312.7: *3* Fix bug 103: Installation Issues on Linux
+https://github.com/leo-editor/leo-editor/issues/103
 .. @+node:ekr.20141113102829.5: *3* Maybe
 .. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins
 For me:

@@ -21702,11 +21702,13 @@ in ``about:config`` in Firefox.
     - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
-#@+node:ekr.20141113102829.7: *4* Leo 5.0b1 release notes
-Leo 5.0 beta 1                  November 13, 2014
+#@+node:ekr.20141113102829.7: *4* Leo 5.0b2 release notes
+Leo 5.0 beta 2                  November 15, 2014
 
-Leo 5.0b1 is now available at:
+Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
+
+This release attempts to fix several installation issues.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -21937,6 +21939,20 @@ rst3 tutorial.
 
 #@+node:ekr.20141113102829.23: *5* Bugs fixed
 Over 70 bugs have been fixed.
+#@+node:ekr.20141115093034.1: *6* Bugs fixed in 5.0b2
+#@+node:ekr.20141115093034.3: *7* c.executeScript adds '.' to sys.path
+https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+
+c.executeScript places '.' as the *second* element of
+sys.path, following c.frame.openDirectory as before.
+#@+node:ekr.20141115093034.4: *7* Fixed bug 102: Loading @file node with embedded code broken
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/102
+
+The fix was to call c.os_path_finalize/_join instead of
+g.os_path_finalize_join in two places in the read logic.
+#@+node:ekr.20141115093034.5: *7* Installer window now shows version
 #@+node:ekr.20141113102829.170: *6* Bugs fixed in 5.0b1
 #@+node:ekr.20141113102829.234: *7* Fixed
 #@+node:ekr.20141113102829.173: *8* The spell checker handles apostrophes correctly

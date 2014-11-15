@@ -95,6 +95,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20141115093034.7"><vh>** Change linux install instructions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -157,10 +158,12 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 beta 1                  November 13, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 beta 2                  November 15, 2014
 
-Leo 5.0b1 is now available at:
+Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
+
+This release attempts to fix several installation issues.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -553,7 +556,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-final' ##version
+version = '5.0-b2' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -861,7 +864,7 @@ def deleteTempFiles (self,lines):
     commands = (
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
-        r'%s archive --format zip --output "%s" --prefix=Leo5.0-final/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo5.0-b2/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1336,10 +1339,12 @@ leo/test/unittest/.leo_shadow/  export-ignore
         assert g.os_path_exists(src),src
         shutil.copyfile(src,dst)
 </t>
-<t tx="ekr.20141105082156.2">Leo 5.0 beta 1                  November 13, 2014
+<t tx="ekr.20141105082156.2">Leo 5.0 beta 2                  November 15, 2014
 
-Leo 5.0b1 is now available at:
+Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
+
+This release attempts to fix several installation issues.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -1384,5 +1389,6 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
+<t tx="ekr.20141115093034.7"></t>
 </tnodes>
 </leo_file>

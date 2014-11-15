@@ -1144,11 +1144,12 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
+expanded="ekr.20141113102829.23,ekr.20141115093034.1,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
-<v t="ekr.20141113102829.7"><vh>Leo 5.0b1 release notes</vh>
+<v t="ekr.20141113102829.7"><vh>Leo 5.0b2 release notes</vh>
 <v t="ekr.20141113102829.8"><vh>Highlights</vh>
 <v t="ekr.20141113102829.9"><vh>Better integration with Vim, Emacs &amp; pylint</vh>
 <v t="ekr.20141113102829.10"><vh>vim mode</vh></v>
@@ -1169,6 +1170,11 @@
 <v t="ekr.20141113102829.22"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 </v>
 <v t="ekr.20141113102829.23"><vh>Bugs fixed</vh>
+<v t="ekr.20141115093034.1"><vh>Bugs fixed in 5.0b2</vh>
+<v t="ekr.20141115093034.3"><vh>c.executeScript adds '.' to sys.path</vh></v>
+<v t="ekr.20141115093034.4"><vh>Fixed bug 102: Loading @file node with embedded code broken</vh></v>
+<v t="ekr.20141115093034.5"><vh>Installer window now shows version</vh></v>
+</v>
 <v t="ekr.20141113102829.170"><vh>Bugs fixed in 5.0b1</vh>
 <v t="ekr.20141113102829.234"><vh>Fixed</vh>
 <v t="ekr.20141113102829.173"><vh>The spell checker handles apostrophes correctly</vh></v>
@@ -1357,6 +1363,9 @@
 <v t="ekr.20141113102829.167"></v>
 <v t="ekr.20141113102829.168"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
+</v>
+<v t="ekr.20141115093034.6"><vh>Linux instructions: to be changed</vh>
+<v t="ekr.20100731112744.7274"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -23270,10 +23279,12 @@ Added more informative error messages
 </t>
 <t tx="ekr.20141113102829.69">https://bugs.launchpad.net/leo-editor/+bug/1267921
 </t>
-<t tx="ekr.20141113102829.7">Leo 5.0 beta 1                  November 13, 2014
+<t tx="ekr.20141113102829.7">Leo 5.0 beta 2                  November 15, 2014
 
-Leo 5.0b1 is now available at:
+Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
+
+This release attempts to fix several installation issues.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -23543,6 +23554,21 @@ The fix was a single extra check in ga.do_tab.
 </t>
 <t tx="ekr.20141113102829.99">Saved and restored the y-scroll position in find_place_holder.
 </t>
+<t tx="ekr.20141115093034.1"></t>
+<t tx="ekr.20141115093034.3">https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+
+c.executeScript places '.' as the *second* element of
+sys.path, following c.frame.openDirectory as before.
+</t>
+<t tx="ekr.20141115093034.4">@language rest
+
+https://github.com/leo-editor/leo-editor/issues/102
+
+The fix was to call c.os_path_finalize/_join instead of
+g.os_path_finalize_join in two places in the read logic.
+</t>
+<t tx="ekr.20141115093034.5"></t>
+<t tx="ekr.20141115093034.6"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
