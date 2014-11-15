@@ -20,6 +20,18 @@ rclick -> refresh from disk
 but from here:
 @path mkdocs
 descending to the file, I get an old perfect import error 
+.. @+node:ekr.20141110223158.9: *3* Fixed bug 101: IPython issues
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/101
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
+Works for me.
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+Improved the documentation of the "c" property.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
