@@ -14,6 +14,67 @@ Where are we?
 https://github.com/leo-editor/leo-editor/issues/78
 
 Add tracing/history to find this bug.
+.. @+node:ekr.20141115150149.4: *3* Fix bug 38: autocompleter gives a strange traceback
+https://github.com/leo-editor/leo-editor/issues/38
+
+autocompleter Off
+autocompleter On
+exception executing command
+Traceback (most recent call last):
+File "/home/leo/leo-editor/leo/core/leoCommands.py", line 537, in doCommand
+val = command(event)
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 215, in autoComplete
+self.start(event)
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 1091, in start
+self.init_qcompleter(event)
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 922, in init_qcompleter
+options = self.get_completions(prefix)
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 639, in get_completions
+aList = self.get_codewise_completions('self.')
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 691, in get_codewise_completions
+hits = self.lookup_functions(func)
+File "/home/leo/leo-editor/leo/core/leoKeys.py", line 772, in lookup_functions
+aList = codewise.cmd_functions([prefix])
+File "/home/leo/leo-editor/leo/external/codewise.py", line 178, in cmd_functions
+funcs = cw.get_functions(args[0])
+File "/home/leo/leo-editor/leo/external/codewise.py", line 755, in get_functions
+c = self.cursor()
+File "/home/leo/leo-editor/leo/external/codewise.py", line 716, in cursor
+return self.dbconn and self.dbconn.cursor()
+ProgrammingError: Cannot operate on a closed database.
+
+System: Kubuntu 12.04, Python 2.7.3, PyQt 4.8.1
+.. @+node:ekr.20141115150149.5: *3* Fix bug 62: Syntax @color settings don't dereference
+https://github.com/leo-editor/leo-editor/issues/62
+
+Unlike the stylesheet @colors, the syntax @color settings don't dereference. For example:
+
+@color mycomment = #586E76
+@color comment1_color = @mycomment
+@color comment2_color = @mycomment
+@color comment3_color = @mycomment
+@color comment4_color = @mycomment
+
+Result:
+Errors in the console (see below) and uncolored comments in code (same as normal fg color).
+
+Console output:
+** isPython3: False
+Leo 4.11 final, build 20140922060345, Mon Sep 22 06:03:44 CDT 2014
+Git repo info: branch = master, commit = c93bd17
+Python 2.7.6, PyQt version 4.8.5
+Windows 7 x86 (build 6.1.7601) SP1
+leoID=peckj (in C:\Users\PeckJ.leo)
+reading settings in C:\cygwin\home\PeckJ\repos\leo\leo-editor\leo\config\leoSettings.leo
+reading settings in C:\Users\PeckJ.leo\myLeoSettings.leo
+reading settings in C:\Users\PeckJ.leo\workbook.leo
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
+.. @+node:ekr.20141115150149.6: *3* Fix bug 80: Find-previous fails at last node with mouse click
+https://github.com/leo-editor/leo-editor/issues/80
+
+Find-previous fails at last node when selected by mouse-click.
+See https://groups.google.com/forum/?fromgroups#!topic/leo-editor/RAzVPihqmkI
 .. @+node:ekr.20141113102829.5: *3* Maybe
 .. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins
 For me:
