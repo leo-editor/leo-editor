@@ -6970,7 +6970,7 @@ set the value of name to val, with the indicated type.
 &lt;type&gt;          Valid values
 --------------- -----------------------------------------------------------------------------------------
 \@bool           True, False, 0, 1
-\@color          A Tk color name or value, such as 'red' or 'xf2fddff' (without the quotes)
+\@color          A Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes)
 \@directory      A path to a directory
 \@float          A floating point number of the form nn.ff.
 \@int            An integer

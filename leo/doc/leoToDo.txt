@@ -913,6 +913,35 @@ c:\leo.repo\leo-editor\leo\core\leoGlobals.py:400:
     UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode -
     interpreting them as being unequal
   elif hasattr(other,'s'):    return self.s == other.s
+.. @+node:ekr.20141115150149.5: *3* Wishlist bug 62: Syntax @color settings don't dereference
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/62
+
+Unlike the stylesheet @colors, the syntax @color settings don't
+dereference. For example::
+
+    @color mycomment = #586E76
+    @color comment1_color = @mycomment
+    @color comment2_color = @mycomment
+    @color comment3_color = @mycomment
+    @color comment4_color = @mycomment
+
+Result:
+Errors in the console (see below) and uncolored comments in code (same as normal fg color).
+
+Console output:
+** isPython3: False
+Leo 4.11 final, build 20140922060345, Mon Sep 22 06:03:44 CDT 2014
+Git repo info: branch = master, commit = c93bd17
+Python 2.7.6, PyQt version 4.8.5
+Windows 7 x86 (build 6.1.7601) SP1
+leoID=peckj (in C:\Users\PeckJ.leo)
+reading settings in C:\cygwin\home\PeckJ\repos\leo\leo-editor\leo\config\leoSettings.leo
+reading settings in C:\Users\PeckJ.leo\myLeoSettings.leo
+reading settings in C:\Users\PeckJ.leo\workbook.leo
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 The big picture:
 
