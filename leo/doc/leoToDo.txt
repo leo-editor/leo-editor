@@ -14,37 +14,22 @@ Where are we?
 https://github.com/leo-editor/leo-editor/issues/78
 
 Add tracing/history to find this bug.
-.. @+node:ekr.20141115150149.5: *3* Fix bug 62: Syntax @color settings don't dereference
-https://github.com/leo-editor/leo-editor/issues/62
-
-Unlike the stylesheet @colors, the syntax @color settings don't dereference. For example:
-
-@color mycomment = #586E76
-@color comment1_color = @mycomment
-@color comment2_color = @mycomment
-@color comment3_color = @mycomment
-@color comment4_color = @mycomment
-
-Result:
-Errors in the console (see below) and uncolored comments in code (same as normal fg color).
-
-Console output:
-** isPython3: False
-Leo 4.11 final, build 20140922060345, Mon Sep 22 06:03:44 CDT 2014
-Git repo info: branch = master, commit = c93bd17
-Python 2.7.6, PyQt version 4.8.5
-Windows 7 x86 (build 6.1.7601) SP1
-leoID=peckj (in C:\Users\PeckJ.leo)
-reading settings in C:\cygwin\home\PeckJ\repos\leo\leo-editor\leo\config\leoSettings.leo
-reading settings in C:\Users\PeckJ.leo\myLeoSettings.leo
-reading settings in C:\Users\PeckJ.leo\workbook.leo
-setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
-setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
 .. @+node:ekr.20141115150149.6: *3* Fix bug 80: Find-previous fails at last node with mouse click
 https://github.com/leo-editor/leo-editor/issues/80
 
 Find-previous fails at last node when selected by mouse-click.
 See https://groups.google.com/forum/?fromgroups#!topic/leo-editor/RAzVPihqmkI
+
+Open LeoDocs.leo
+search for 'shell-command'
+ Find Next: F3
+ repeat until it reaches the last instance at
+LeoDocs.leo#Leo's Documentation-->Release notes-->@file release_notes.txt-->Previous versions...-->4.10 Incremental improvements-->Code improvements-->Minor-->Rewrote shell-command commands
+not found 'shell-command'
+
+Now *click* on  Find previous *button*
+Find gets stuck and fails to travel up the previous nodes.
+It only frees up if you manually select another node.
 .. @+node:ekr.20141113102829.5: *3* Maybe
 .. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins
 For me:
