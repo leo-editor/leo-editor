@@ -25,12 +25,6 @@ class DartWriter(basewriter.BaseWriter):
                     self.put(s)
         root.setVisited()
         return True
-    #@+node:ekr.20141116100154.18: ** dart.put (not used)
-    # def put(self,s):
-        # '''Write line s using at.os, taking special care of newlines.'''
-        # at = self.at
-        # at.os(s[:-1] if s.endswith('\n') else s)
-        # at.onl()
     #@-others
 
 writer_dict = {
