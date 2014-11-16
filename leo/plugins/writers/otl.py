@@ -7,7 +7,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18083: ** class OtlWriter
 class OtlWriter(basewriter.BaseWriter):
-    '''The writer class for markdown files.'''
+    '''The writer class for .otl files.'''
     # def __init__(self,c):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
