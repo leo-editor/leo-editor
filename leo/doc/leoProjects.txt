@@ -32,6 +32,10 @@ Works for me.
 https://bugs.launchpad.net/leo-editor/+bug/1258512
 _leo.c not working from IPython
 Improved the documentation of the "c" property.
+.. @+node:ekr.20141115150149.4: *3* Fixed bug 38: autocompleter gives a strange traceback
+https://github.com/leo-editor/leo-editor/issues/38
+
+Fixed by Terry Brown at e8c0e27.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
