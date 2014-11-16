@@ -1940,8 +1940,10 @@ class LeoFind:
             c.bodyWantsFocusNow()
             # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
-            # Fix bug 78: F3 find-next target not always highlighted
             w.see(insert)
+            p.v.scrollBarSpot = None
+                # Fix bug 78: F3 find-next target not always highlighted
+                # Disable the scrolling in v.restoreCursorAndScroll
             if trace: g.trace('p.b',len(p.b),'w.text',len(w.getAllText()),'sel',w.getSelectionRange())
             c.outerUpdate()
             if c.vim_mode and c.vimCommands:

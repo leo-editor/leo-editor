@@ -40,6 +40,15 @@ Fixed by Terry Brown at e8c0e27.
 https://github.com/leo-editor/leo-editor/issues/80
 
 Fixed at 614817a, October 26, 2014.
+.. @+node:ekr.20141110154742.6: *3* Fixed(?) bug 78: find-next target not always scrolled into view
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+It's hard to know whether the change did anything.  It does not appear to have hurt.
+
+find.showSuccess now sets p.v.scrollBarSpot = None, which prevents v.restoreCursorAndScroll
+from altering the vertical scrollbars.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

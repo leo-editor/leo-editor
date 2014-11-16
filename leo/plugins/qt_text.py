@@ -1495,7 +1495,7 @@ class QTextEditWrapper(QTextMixin):
         if g.no_see:
             pass
         else:
-            if trace: g.trace('*****',i,g.callers())
+            if trace: g.trace(i,g.callers(2))
             self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
@@ -1504,7 +1504,7 @@ class QTextEditWrapper(QTextMixin):
         if g.no_see:
             pass
         else:
-            if trace: g.trace('*****',g.callers())
+            if trace: g.trace(g.callers(2))
             self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
     def setAllText(self,s):
@@ -1549,11 +1549,9 @@ class QTextEditWrapper(QTextMixin):
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
-        if s is not None:
-            n = len(s)
-        elif 1:
+        if s is None:
             s = self.getAllText()
-            n = len(s)
+        n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
         if insert is None:
