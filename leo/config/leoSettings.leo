@@ -2139,7 +2139,9 @@ one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
 True:  Leo strips blanks and tabs from otherwise blank lines.
 False: Leo retains whitespace even in otherwise blank lines.</t>
 <t tx="ekr.20041119042929"></t>
-<t tx="ekr.20041119042929.1"></t>
+<t tx="ekr.20041119042929.1">Value must be Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes).
+
+Unlike in @data qt-gui-plugin-style-sheet, @values are not allowed as color values.</t>
 <t tx="ekr.20041119042929.10">The encoding specified in the following line of new .leo files:
 
 &lt;?xml version="1.0" encoding="UTF-8"&gt;
