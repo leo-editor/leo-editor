@@ -272,6 +272,7 @@ class LeoApp:
             "cweb"               : "@q@ @>", # Use the "cweb hack"
             "cython"             : "#",
             "d"                  : "// /* */",
+            "dart"               : "// /* */", # Leo 5.0.
             "doxygen"            : "#",
             "eiffel"             : "--",
             "elisp"              : ";",
@@ -446,6 +447,7 @@ class LeoApp:
             "cweb"          : "w",
             "cython"        : "pyx", # Only one extension is valid at present: .pyi, .pyd.
             "d"             : "d",
+            "dart"          : "dart",
             "eiffel"        : "e",
             "elisp"         : "el",
             "erlang"        : "erl",
@@ -595,6 +597,7 @@ class LeoApp:
             "cpp":      "cpp",
             "css":      "css",
             "d":        "d",
+            "dart":     "dart",
             "e":        "eiffel",
             "el":       "elisp",
             "eml":      "mail",
