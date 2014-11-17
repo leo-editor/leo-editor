@@ -1553,6 +1553,7 @@ leo/modes/csharp.py
 leo/modes/css.py
 leo/modes/cython.py
 leo/modes/d.py
+leo/modes/dart.py
 leo/modes/doxygen.py
 leo/modes/eiffel.py
 leo/modes/embperl.py
@@ -1739,6 +1740,7 @@ leo/plugins/importers/basescanner.py
 leo/plugins/importers/c.py
 leo/plugins/importers/csharp.py
 leo/plugins/importers/ctext.py
+leo/plugins/importers/dart.py
 leo/plugins/importers/elisp.py
 leo/plugins/importers/howto.txt
 leo/plugins/importers/html.py
@@ -1895,6 +1897,7 @@ leo/plugins/word_export.py
 leo/plugins/writers/__init__.py
 leo/plugins/writers/basewriter.py
 leo/plugins/writers/ctext.py
+leo/plugins/writers/dart.py
 leo/plugins/writers/howto.txt
 leo/plugins/writers/leo_rst.py
 leo/plugins/writers/markdown.py
