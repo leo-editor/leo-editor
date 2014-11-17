@@ -457,7 +457,7 @@ import time</t>
 
 Pre-testing:
     - Make sure Leo looks good without myLeoSettings.leo.
-    - Run checks in leoSettings.leo.
+    - Run the "check-bindings" button in leoSettings.leo.
     - Run all unit tests.
     - Run pylint -a.
 Release notes and web documentation:

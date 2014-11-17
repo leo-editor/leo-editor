@@ -112,27 +112,23 @@ class WikiView:
     #@+others
     #@+node:tbrown.20141101114322.10: *3* __init__
     def __init__(self, c):
-        
+        '''Ctor for WikiView class.'''
         self.c = c
         c._wikiview = self
-
         url_patterns = c.config.getData('wikiview-link-patterns')
         self.urlpats = [re.compile(i, re.IGNORECASE) for i in url_patterns]
-        
         self.select = 'select3'  # Leo hook to hide text
         self.pts=0.1  # hidden text size
         self.pct=1  # hidden text letter spacing
-        
         self.active = c.config.getBool('wikiview-active')
-
-        g.registerHandler(self.select, self.hide)
         w = c.frame.body.wrapper.widget
+        if not w:
+            return # w may not exist during unit testing.
+        g.registerHandler(self.select,self.hide)
         w.cursorPositionChanged.connect(self.unhide)
-        
         # size to restore text to when unhiding,
         # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
         self.size = QtGui.QFontInfo(w.currentFont()).pointSize()
-
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
         self.hide(self.select, {'c': c})
