@@ -21708,7 +21708,8 @@ Leo 5.0 beta 2                  November 17, 2014
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release attempts to fix several installation issues.
+This release fixes several installation issues
+and updates installation instructions for Linux/Ubuntu.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -23671,6 +23672,7 @@ and uses this in the open file again? questions when opening Leo after a
 crash.
 #@+node:ekr.20141113102829.223: *7* Added more files to pylint -a & -p
 Used glob to discover files, not static lists.
+#@+node:ekr.20141117110823.5: *7* The clean-all-lines command strips trailing whitespace
 #@+node:ekr.20141113102829.149: *6* Other features
 #@+node:ekr.20141113102829.151: *7* Added some support for scintilla
 I have been using a Scintilla widget in Leo's body pane today. It has been

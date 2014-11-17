@@ -1342,6 +1342,7 @@
 <v t="ekr.20141113102829.147"><vh>Improved check outline</vh></v>
 <v t="ekr.20141113102829.148"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
 <v t="ekr.20141113102829.223"><vh>Added more files to pylint -a &amp; -p</vh></v>
+<v t="ekr.20141117110823.5"><vh>The clean-all-lines command strips trailing whitespace</vh></v>
 </v>
 <v t="ekr.20141113102829.149"><vh>Other features</vh>
 <v t="ekr.20141113102829.151"><vh>Added some support for scintilla</vh></v>
@@ -1372,9 +1373,7 @@
 <v t="ekr.20141113102829.168"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
-<v t="ekr.20141115093034.6"><vh>Linux instructions: to be changed</vh>
 <v t="ekr.20100731112744.7274"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -19517,26 +19516,18 @@ Then run::
 </t>
 <t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-5.0a1.
+into a folder in your home directory, say ~/leo-5.0.
 
 You now have two choices:
 
-1. You can run Leo from your home directory.
-   Just add  ~/leo-4-5 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.0 to your path.
 
-2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
+2. You can install leo into /usr/local/lib and /usr/local/bin as follows::
 
-    cd ~/leo-4-11-final # Change version as appropriate.
-    chmod u+x install
-    sudo ./install
+    cd ~/leo-5.0
+    sudo python setup.py install
 
-The install script will instruct you to add /usr/local/bin to your path.
-You can, instead, add the following link::
-
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
-
-That's it!  See `Running Leo`_ for how to run Leo after installing it.
+See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core:
 
@@ -20392,7 +20383,8 @@ unable to describe root directory on thumb drive
 - Added some support for scintilla.
 - Added support for delegate languages.
 - Added support for the dart language.
-- c.executeScript adds '.' to sys.path.</t>
+- c.executeScript adds '.' to sys.path.
+- The clean-all-lines command now strips trailing whitespace.</t>
 <t tx="ekr.20141105050314.181">- Added livecode.py plugin.
 - Added nodetags.py plugin.
 - Added viewrendered2.py plugin.
@@ -23322,7 +23314,8 @@ Added more informative error messages
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release attempts to fix several installation issues.
+This release fixes several installation issues
+and updates installation instructions for Linux/Ubuntu.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -23604,7 +23597,6 @@ The fix was to call c.os_path_finalize/_join instead of
 g.os_path_finalize_join in two places in the read logic.
 </t>
 <t tx="ekr.20141115093034.5"></t>
-<t tx="ekr.20141115093034.6"></t>
 <t tx="ekr.20141117065749.3"></t>
 <t tx="ekr.20141117073519.11">https://github.com/leo-editor/leo-editor/issues/103
 
@@ -23643,6 +23635,7 @@ find.showSuccess now sets p.v.scrollBarSpot = None, which prevents v.restoreCurs
 from altering the vertical scrollbars.
 </t>
 <t tx="ekr.20141117073519.9"></t>
+<t tx="ekr.20141117110823.5"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

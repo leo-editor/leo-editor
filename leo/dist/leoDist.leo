@@ -11,6 +11,9 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
+<v t="ekr.20141117135127.2"><vh>@settings</vh>
+<v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
+</v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
 <v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
@@ -95,7 +98,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20141115093034.7"><vh>** Change linux install instructions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -163,7 +165,8 @@ Platform: Windows, Linux, MacOS.
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release attempts to fix several installation issues.
+This release fixes several installation issues
+and updates installation instructions for Linux/Ubuntu.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -1129,25 +1132,18 @@ Installing Leo on Linux
 
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-5-0.
+into a folder in your home directory, say ~/leo-5.0.
 
 You now have two choices:
 
-1. You can run Leo from your home directory.
-   Just add  ~/leo-5-0 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.0 to your path.
 
-2. You can install leo into /usr/local/lib and /usr/local/bin by running
-   Leo's install script as follows::
+2. You can install leo into /usr/local/lib and /usr/local/bin as follows::
 
-    cd ~/leo-5-0-a1 # Change version as appropriate.
-    chmod u+x install
-    sudo ./install
+    cd ~/leo-5.0
+    sudo python setup.py install
 
-The install script will instruct you to add /usr/local/bin to your path.
-You can, instead, add the following link::
-
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
+See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="ekr.20130809141000.1994">
 Installing Leo on Windows
@@ -1344,7 +1340,8 @@ leo/test/unittest/.leo_shadow/  export-ignore
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release attempts to fix several installation issues.
+This release fixes several installation issues
+and updates installation instructions for Linux/Ubuntu.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
@@ -1389,6 +1386,7 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20141115093034.7"></t>
+<t tx="ekr.20141117135127.2"></t>
+<t tx="ekr.20141117135127.3"></t>
 </tnodes>
 </leo_file>

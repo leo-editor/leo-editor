@@ -3,7 +3,8 @@ Leo 5.0 beta 2                  November 17, 2014
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release attempts to fix several installation issues.
+This release fixes several installation issues
+and updates installation instructions for Linux/Ubuntu.
 
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
