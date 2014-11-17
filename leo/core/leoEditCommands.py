@@ -4817,11 +4817,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         n = 0
         for p in c.p.self_and_subtree():
             lines = []
-            for s in g.splitLines(p.b):
-                if s.strip():
-                    lines.append(s)
-                else:
-                    # Ensures a trailing newline.
+            for line in g.splitLines(p.b):
+                if line.rstrip():
+                    lines.append(line.rstrip())
+                if line.endswith('\n'):
                     lines.append('\n')
             s2 = ''.join(lines)
             if s2 != p.b:
@@ -4850,7 +4849,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         for line in g.splitlines(s):
             if line.rstrip():
                 lines.append(line.rstrip())
-            if line.endswith('\n'): lines.append('\n')
+            if line.endswith('\n'):
+                lines.append('\n')
         result = ''.join(lines)
         if s != result:
             self.beginCommand(undoType='clean-lines')
