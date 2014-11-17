@@ -1883,16 +1883,16 @@ def getTime():
 
 def esDiffTime(message, start):
     delta = time.clock()-start
-    g.es('',"%s %6.3f sec." % (message,delta))
+    g.es('',"%s %5.2f sec." % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
     delta = time.clock()-start
-    g.pr("%s %6.3f sec." % (message,delta))
+    g.pr("%s %5.2f sec." % (message,delta))
     return time.clock()
 
 def timeSince(start):
-    return "%6.3f sec." % (time.clock()-start)
+    return "%5.2f sec." % (time.clock()-start)
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
