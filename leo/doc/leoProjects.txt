@@ -3,53 +3,6 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141115093034.8: ** b2
-.. @+node:ekr.20141115091852.1: *3* Made sure the .json file is part of the .zip file.
-https://github.com/leo-editor/leo-editor/issues/104
-https://github.com/leo-editor/leo-editor/issues/103
-.. @+node:ekr.20141113123533.4: *3* Investigated bug 66: support @path with md importer/writer/rclick
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/66
-
-Works for me.
-
-I get no errors here: @auto mkdocs/docs/index.md
-rclick -> refresh from disk
-
-but from here:
-@path mkdocs
-descending to the file, I get an old perfect import error 
-.. @+node:ekr.20141110223158.9: *3* Fixed bug 101: IPython issues
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/101
-
-https://bugs.launchpad.net/leo-editor/+bug/1228099
-Cancelling save of dirty untitled commander doesn't work with --ipython
-Works for me.
-
-https://bugs.launchpad.net/leo-editor/+bug/1258512
-_leo.c not working from IPython
-Improved the documentation of the "c" property.
-.. @+node:ekr.20141115150149.4: *3* Fixed bug 38: autocompleter gives a strange traceback
-https://github.com/leo-editor/leo-editor/issues/38
-
-Fixed by Terry Brown at e8c0e27.
-.. @+node:ekr.20141115150149.6: *3* Fixed bug 80: Find-previous fails at last node with mouse click
-https://github.com/leo-editor/leo-editor/issues/80
-
-Fixed at 614817a, October 26, 2014.
-.. @+node:ekr.20141110154742.6: *3* Fixed(?) bug 78: find-next target not always scrolled into view
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
-
-It's hard to know whether the change did anything.  It does not appear to have hurt.
-
-find.showSuccess now sets p.v.scrollBarSpot = None, which prevents v.restoreCursorAndScroll
-from altering the vertical scrollbars.
-.. @+node:ekr.20141116105945.5: *3* Added support for dart language
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

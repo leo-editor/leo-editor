@@ -2,22 +2,27 @@
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 import os
-# import time
 import json
-
-    # Leo 4.5.1 final: September 14, 2008
-    # Leo 4.6.1 final: July 30, 2009.
-    # Leo 4.7.1 final: February 26, 2010.
-    # Leo 4.8   final: November 26, 2010.
-    # Leo 4.9   final: June 21, 2011.
-    # Leo 4.10  final: March 29, 2012.
-    # Leo 4.11 a1: August 18, 2013
-    # Leo 4.11 a2: August 19, 2013
-    # Leo 4.11 b1: October 31, 2013
-    # Leo 4.11 final: November 6, 2013
-    # Leo 5.0a1: November 6, 2014
-    # Leo 5.0a2: November 8, 2014
-    # Leo 5.0b1: November 13, 2014
+#@+<< version dates >>
+#@+node:ekr.20141117073519.12: ** << version dates >>
+#@@nocolor-node
+#@+at
+# Leo 4.5.1 final: September 14, 2008
+# Leo 4.6.1 final: July 30, 2009.
+# Leo 4.7.1 final: February 26, 2010.
+# Leo 4.8   final: November 26, 2010.
+# Leo 4.9   final: June 21, 2011.
+# Leo 4.10  final: March 29, 2012.
+# Leo 4.11 a1: August 18, 2013
+# Leo 4.11 a2: August 19, 2013
+# Leo 4.11 b1: October 31, 2013
+# Leo 4.11 final: November 6, 2013
+# Leo 5.0a1: November 6, 2014
+# Leo 5.0a2: November 8, 2014
+# Leo 5.0b1: November 13, 2014
+# Leo 5.0b2: November 17, 2014
+#@-<< version dates >>
+# Leo 5.0b2: November 17, 2014
 
 # get info from leo/core/commit_timestamp.json
 leo_core_path = os.path.dirname(os.path.realpath(__file__))
@@ -27,7 +32,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "5.0b1" # Used if no git version is available.
+version = "5.0b2" # Used if no git version is available.
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}

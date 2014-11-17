@@ -21703,7 +21703,7 @@ in ``about:config`` in Firefox.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
 #@+node:ekr.20141113102829.7: *4* Leo 5.0b2 release notes
-Leo 5.0 beta 2                  November 15, 2014
+Leo 5.0 beta 2                  November 17, 2014
 
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
@@ -21940,19 +21940,48 @@ rst3 tutorial.
 #@+node:ekr.20141113102829.23: *5* Bugs fixed
 Over 70 bugs have been fixed.
 #@+node:ekr.20141115093034.1: *6* Bugs fixed in 5.0b2
-#@+node:ekr.20141115093034.3: *7* c.executeScript adds '.' to sys.path
-https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+#@+node:ekr.20141117073519.6: *7* Fixed bug  38: autocompleter gives a strange traceback
+https://github.com/leo-editor/leo-editor/issues/38
 
-c.executeScript places '.' as the *second* element of
-sys.path, following c.frame.openDirectory as before.
+Fixed by Terry Brown at e8c0e27.
+#@+node:ekr.20141117073519.8: *7* Fixed bug  78?: find-next target not always scrolled into view
+https://github.com/leo-editor/leo-editor/issues/78
+
+It's hard to know whether the change did anything.  It does not appear to have hurt.
+
+find.showSuccess now sets p.v.scrollBarSpot = None, which prevents v.restoreCursorAndScroll
+from altering the vertical scrollbars.
+#@+node:ekr.20141117073519.7: *7* Fixed bug  80: Find-previous fails at last node with mouse click
+https://github.com/leo-editor/leo-editor/issues/80
+
+Fixed at 614817a, October 26, 2014.
+#@+node:ekr.20141117073519.5: *7* Fixed bug 101: IPython issues
+https://github.com/leo-editor/leo-editor/issues/101
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
+Works for me.
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+Improved the documentation of the "c" property.
 #@+node:ekr.20141115093034.4: *7* Fixed bug 102: Loading @file node with embedded code broken
-@language rest
-
 https://github.com/leo-editor/leo-editor/issues/102
 
 The fix was to call c.os_path_finalize/_join instead of
 g.os_path_finalize_join in two places in the read logic.
+#@+node:ekr.20141117073519.11: *7* Fixed bug 103: Installation Issues on Linux
+https://github.com/leo-editor/leo-editor/issues/103
+
+Where are we?
 #@+node:ekr.20141115093034.5: *7* Installer window now shows version
+#@+node:ekr.20141117073519.4: *7* Investigated bug 66: support @path with md importer/writer/rclick
+https://github.com/leo-editor/leo-editor/issues/66
+
+Works for me.
+#@+node:ekr.20141117073519.3: *7* Made sure the .json file is part of the .zip file.
+https://github.com/leo-editor/leo-editor/issues/104
+https://github.com/leo-editor/leo-editor/issues/103
 #@+node:ekr.20141113102829.170: *6* Bugs fixed in 5.0b1
 #@+node:ekr.20141113102829.234: *7* Fixed
 #@+node:ekr.20141113102829.173: *8* The spell checker handles apostrophes correctly
@@ -23643,7 +23672,6 @@ crash.
 #@+node:ekr.20141113102829.223: *7* Added more files to pylint -a & -p
 Used glob to discover files, not static lists.
 #@+node:ekr.20141113102829.149: *6* Other features
-#@+node:ekr.20141113102829.150: *7* Added warning buttons when selecting large text
 #@+node:ekr.20141113102829.151: *7* Added some support for scintilla
 I have been using a Scintilla widget in Leo's body pane today. It has been
 the best incentive to improve it.
@@ -23680,6 +23708,7 @@ Scintilla's other native colorizers. They are:
 AVS, Bash, Batch, CMake, CoffeeScript, CPP, CSS, D, Diff, Fortran77, HTML,
 Lua, Makefile, Matlab, Pascal, Perl, PO, PostScript, POV, Properties,
 Python, Ruby, Spice, SQL, TCL, TeX, Verilog, VHDL, YAML.
+#@+node:ekr.20141117073519.9: *7* Added support for dart language
 #@+node:ekr.20141113102829.152: *7* Added support for delegate languages
 Allow colorizing for languages to be delegated to another language.
 
@@ -23699,6 +23728,12 @@ to use @language, as in your example with @nosent trees.
 
 2. To automatically use @language hbs in .hbs files, add the
    following entry in define_extension_dict in leoApp.py:
+#@+node:ekr.20141113102829.150: *7* Added warning buttons when selecting large text
+#@+node:ekr.20141115093034.3: *7* c.executeScript adds '.' to sys.path
+https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+
+c.executeScript places '.' as the *second* element of
+sys.path, following c.frame.openDirectory as before.
 #@+node:ekr.20141113102829.230: *7* Eliminated cycle-all-focus command
 Replaced by new focus-to-find and focus-to-spell commands.
 #@+node:ekr.20141113102829.172: *7* Removed stand-alone globals

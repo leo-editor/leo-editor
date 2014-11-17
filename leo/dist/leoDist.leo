@@ -102,7 +102,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -b1.
+2. Search for this suffix: -b2.
 
 3. Search for copyright
 
@@ -136,7 +136,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-beta 1
+Version: 5.0-b2
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -158,7 +158,7 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 beta 2                  November 15, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 beta 2                  November 17, 2014
 
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
@@ -1339,7 +1339,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
         assert g.os_path_exists(src),src
         shutil.copyfile(src,dst)
 </t>
-<t tx="ekr.20141105082156.2">Leo 5.0 beta 2                  November 15, 2014
+<t tx="ekr.20141105082156.2">Leo 5.0 beta 2                  November 17, 2014
 
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/

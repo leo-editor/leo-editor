@@ -13,6 +13,7 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20141117065749.3"><vh>@bool wikiview-active = False</vh></v>
 <v t="ekr.20111108052738.5507"><vh>@shortcuts</vh></v>
 <v t="ekr.20130816100419.17299"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20100907092300.4440"><vh>Inkscape options</vh>
@@ -1170,9 +1171,15 @@
 </v>
 <v t="ekr.20141113102829.23"><vh>Bugs fixed</vh>
 <v t="ekr.20141115093034.1"><vh>Bugs fixed in 5.0b2</vh>
-<v t="ekr.20141115093034.3"><vh>c.executeScript adds '.' to sys.path</vh></v>
+<v t="ekr.20141117073519.6"><vh>Fixed bug  38: autocompleter gives a strange traceback</vh></v>
+<v t="ekr.20141117073519.8"><vh>Fixed bug  78?: find-next target not always scrolled into view</vh></v>
+<v t="ekr.20141117073519.7"><vh>Fixed bug  80: Find-previous fails at last node with mouse click</vh></v>
+<v t="ekr.20141117073519.5"><vh>Fixed bug 101: IPython issues</vh></v>
 <v t="ekr.20141115093034.4"><vh>Fixed bug 102: Loading @file node with embedded code broken</vh></v>
+<v t="ekr.20141117073519.11"><vh>Fixed bug 103: Installation Issues on Linux</vh></v>
 <v t="ekr.20141115093034.5"><vh>Installer window now shows version</vh></v>
+<v t="ekr.20141117073519.4"><vh>Investigated bug 66: support @path with md importer/writer/rclick</vh></v>
+<v t="ekr.20141117073519.3"><vh>Made sure the .json file is part of the .zip file.</vh></v>
 </v>
 <v t="ekr.20141113102829.170"><vh>Bugs fixed in 5.0b1</vh>
 <v t="ekr.20141113102829.234"><vh>Fixed</vh>
@@ -1337,9 +1344,11 @@
 <v t="ekr.20141113102829.223"><vh>Added more files to pylint -a &amp; -p</vh></v>
 </v>
 <v t="ekr.20141113102829.149"><vh>Other features</vh>
-<v t="ekr.20141113102829.150"><vh>Added warning buttons when selecting large text</vh></v>
 <v t="ekr.20141113102829.151"><vh>Added some support for scintilla</vh></v>
+<v t="ekr.20141117073519.9"><vh>Added support for dart language</vh></v>
 <v t="ekr.20141113102829.152"><vh>Added support for delegate languages</vh></v>
+<v t="ekr.20141113102829.150"><vh>Added warning buttons when selecting large text</vh></v>
+<v t="ekr.20141115093034.3"><vh>c.executeScript adds '.' to sys.path</vh></v>
 <v t="ekr.20141113102829.230"><vh>Eliminated cycle-all-focus command</vh></v>
 <v t="ekr.20141113102829.172"><vh>Removed stand-alone globals</vh></v>
 </v>
@@ -20382,7 +20391,8 @@ unable to describe root directory on thumb drive
 - Added warning buttons when selecting large text.
 - Added some support for scintilla.
 - Added support for delegate languages.
-</t>
+- Added support for the dart language.
+- c.executeScript adds '.' to sys.path.</t>
 <t tx="ekr.20141105050314.181">- Added livecode.py plugin.
 - Added nodetags.py plugin.
 - Added viewrendered2.py plugin.
@@ -23307,7 +23317,7 @@ Added more informative error messages
 </t>
 <t tx="ekr.20141113102829.69">https://bugs.launchpad.net/leo-editor/+bug/1267921
 </t>
-<t tx="ekr.20141113102829.7">Leo 5.0 beta 2                  November 15, 2014
+<t tx="ekr.20141113102829.7">Leo 5.0 beta 2                  November 17, 2014
 
 Leo 5.0b2 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
@@ -23588,15 +23598,51 @@ The fix was a single extra check in ga.do_tab.
 c.executeScript places '.' as the *second* element of
 sys.path, following c.frame.openDirectory as before.
 </t>
-<t tx="ekr.20141115093034.4">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/102
+<t tx="ekr.20141115093034.4">https://github.com/leo-editor/leo-editor/issues/102
 
 The fix was to call c.os_path_finalize/_join instead of
 g.os_path_finalize_join in two places in the read logic.
 </t>
 <t tx="ekr.20141115093034.5"></t>
 <t tx="ekr.20141115093034.6"></t>
+<t tx="ekr.20141117065749.3"></t>
+<t tx="ekr.20141117073519.11">https://github.com/leo-editor/leo-editor/issues/103
+
+Where are we?
+</t>
+<t tx="ekr.20141117073519.3">https://github.com/leo-editor/leo-editor/issues/104
+https://github.com/leo-editor/leo-editor/issues/103
+</t>
+<t tx="ekr.20141117073519.4">https://github.com/leo-editor/leo-editor/issues/66
+
+Works for me.
+</t>
+<t tx="ekr.20141117073519.5">https://github.com/leo-editor/leo-editor/issues/101
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+Cancelling save of dirty untitled commander doesn't work with --ipython
+Works for me.
+
+https://bugs.launchpad.net/leo-editor/+bug/1258512
+_leo.c not working from IPython
+Improved the documentation of the "c" property.
+</t>
+<t tx="ekr.20141117073519.6">https://github.com/leo-editor/leo-editor/issues/38
+
+Fixed by Terry Brown at e8c0e27.
+</t>
+<t tx="ekr.20141117073519.7">https://github.com/leo-editor/leo-editor/issues/80
+
+Fixed at 614817a, October 26, 2014.
+</t>
+<t tx="ekr.20141117073519.8">https://github.com/leo-editor/leo-editor/issues/78
+
+It's hard to know whether the change did anything.  It does not appear to have hurt.
+
+find.showSuccess now sets p.v.scrollBarSpot = None, which prevents v.restoreCursorAndScroll
+from altering the vertical scrollbars.
+</t>
+<t tx="ekr.20141117073519.9"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
