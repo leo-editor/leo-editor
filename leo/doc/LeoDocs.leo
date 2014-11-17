@@ -156,7 +156,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195449"><vh>Read me first</vh></v>
+<v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -1323,6 +1323,7 @@
 <v t="ekr.20141113102829.131"><vh>Split qtGui.py into separate files</vh></v>
 <v t="ekr.20141113102829.132"><vh>The @auto write code now uses writer plugins</vh></v>
 <v t="ekr.20141113102829.133"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
+<v t="ekr.20141115093034.3"><vh>c.executeScript adds '.' to sys.path</vh></v>
 </v>
 <v t="ekr.20141113102829.134"><vh>Features</vh>
 <v t="ekr.20141113102829.135"><vh>New commands</vh>
@@ -1349,7 +1350,6 @@
 <v t="ekr.20141117073519.9"><vh>Added support for dart language</vh></v>
 <v t="ekr.20141113102829.152"><vh>Added support for delegate languages</vh></v>
 <v t="ekr.20141113102829.150"><vh>Added warning buttons when selecting large text</vh></v>
-<v t="ekr.20141115093034.3"><vh>c.executeScript adds '.' to sys.path</vh></v>
 <v t="ekr.20141113102829.230"><vh>Eliminated cycle-all-focus command</vh></v>
 <v t="ekr.20141113102829.172"><vh>Removed stand-alone globals</vh></v>
 </v>
@@ -1373,7 +1373,6 @@
 <v t="ekr.20141113102829.168"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
-<v t="ekr.20100731112744.7274"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20374,6 +20373,8 @@ unable to describe root directory on thumb drive
 - Leo now uses the following namespace in .leo files::
 
     &lt;leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" &gt;
+    
+- c.executeScript adds '.' to sys.path.
 </t>
 <t tx="ekr.20141105050314.163">- Improved find/replace-all commands.
 - The beautify command now optionally uses PythonTidy.
@@ -20383,7 +20384,6 @@ unable to describe root directory on thumb drive
 - Added some support for scintilla.
 - Added support for delegate languages.
 - Added support for the dart language.
-- c.executeScript adds '.' to sys.path.
 - The clean-all-lines command now strips trailing whitespace.</t>
 <t tx="ekr.20141105050314.181">- Added livecode.py plugin.
 - Added nodetags.py plugin.

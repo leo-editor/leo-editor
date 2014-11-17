@@ -23527,6 +23527,11 @@ w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s
 rather than calling w.getAllText.
 
 Imo, this is the safe, if not exactly elegant way.
+#@+node:ekr.20141115093034.3: *6* c.executeScript adds '.' to sys.path
+https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
+
+c.executeScript places '.' as the *second* element of
+sys.path, following c.frame.openDirectory as before.
 #@+node:ekr.20141113102829.134: *5* Features
 #@+node:ekr.20141113102829.135: *6* New commands
 #@+node:ekr.20141113102829.231: *7* Added focus-to-find/spell commands
@@ -23731,11 +23736,6 @@ to use @language, as in your example with @nosent trees.
 2. To automatically use @language hbs in .hbs files, add the
    following entry in define_extension_dict in leoApp.py:
 #@+node:ekr.20141113102829.150: *7* Added warning buttons when selecting large text
-#@+node:ekr.20141115093034.3: *7* c.executeScript adds '.' to sys.path
-https://groups.google.com/forum/#!topic/leo-editor/cYWigOYtjUM
-
-c.executeScript places '.' as the *second* element of
-sys.path, following c.frame.openDirectory as before.
 #@+node:ekr.20141113102829.230: *7* Eliminated cycle-all-focus command
 Replaced by new focus-to-find and focus-to-spell commands.
 #@+node:ekr.20141113102829.172: *7* Removed stand-alone globals
