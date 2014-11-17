@@ -5,7 +5,7 @@
 .. @+all
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0 final
 @language rest
-.. @+node:ekr.20141117065749.2: *3* ** report *total* time in pylint, or no time
+.. @+node:ekr.20141117074620.1: *3* ** Should all importers remove *trailing* whitespace for compares?
 .. @+node:ekr.20141117073519.10: *3* ** Don't horizontally scroll when pasting large text
 .. @+node:ekr.20141113102829.5: *3* Maybe
 .. @+node:ekr.20141112094313.4: *4* Fix bugs re plugins

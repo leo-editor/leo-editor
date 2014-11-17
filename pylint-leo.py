@@ -188,11 +188,11 @@ def main(tables_table):
     # Do these imports **after** clearing the screen.
     from pylint import lint
         # in pythonN/Lib/site-packages.
-    t1 = time.clock()
+    t = 0.0
     for table,theDir in tables_table:
         for fn in table:
-            run(theDir,fn)
-    print('time: %s' % g.timeSince(t1))
+            t += run(theDir,fn)
+    print('time: %5.2f sec.' % t)
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():
     try:
@@ -388,7 +388,10 @@ def run(theDir,fn,rpython=False):
     # Execute the command in a separate process.
     command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
         sys.executable,args)
-    g.execute_shell_commands(command)   
+    t1 = time.clock()
+    g.execute_shell_commands(command)
+    t2 = time.clock()
+    return t2-t1 
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''

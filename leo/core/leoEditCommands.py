@@ -304,6 +304,7 @@ def pylint_command(event):
             '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
             c,root = self.c,self.c.p
             try:
+                import time
                 from pylint import lint
                 # in pythonN/Lib/site-packages.
             except ImportError:
@@ -313,6 +314,7 @@ def pylint_command(event):
             if not rc_fn:
                 return
             # Run lint on all Python @<file> nodes in root's tree.
+            t1 = time.clock()
             found = False
             for p in root.self_and_subtree():
                 found |= self.check(p,rc_fn)
@@ -334,7 +336,7 @@ def pylint_command(event):
                             if isAncestor and self.check(p,rc_fn):
                                 break
             if self.wait:
-                g.es_print('pylint: done')
+                g.es_print('pylint: done %s' % g.timeSince(t1))
         #@+node:ekr.20140718105559.17741: *5* run_pylint
         def run_pylint(self,fn,rc_fn):
             '''Run pylint on fn with the given pylint configuration file.'''
