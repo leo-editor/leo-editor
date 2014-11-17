@@ -117,7 +117,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
 #@+node:maphew.20141108212612.19: ** data patterns
 # Note than only *.ui matches now - add asterisks as needed/valid
-datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w', '*.json']
 #print data_files
 #@-others
 
