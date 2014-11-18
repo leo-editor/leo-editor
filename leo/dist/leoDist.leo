@@ -1434,6 +1434,7 @@ wrote recent file: C:\Users\mhwilkie\dropbox\.leo\.leoRecentFiles.txt
 :: rebuild package and upload
 pushd b:\apps\leo-editor
 python setup.py sdist upload
+popd
 
 :: inspect public page for problems
 start https://pypi.python.org/pypi/leo
