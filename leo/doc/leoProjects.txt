@@ -7,6 +7,15 @@
 .. @+node:ekr.20141117074620.1: *3* Removed *trailing* whitespace for import compares
 .. @+node:ekr.20141117073519.10: *3* Don't horizontally scroll when pasting large text
 .. @+node:ekr.20141116105945.6: *3* Fixed dart coloring
+.. @+node:ekr.20141112094313.4: *3* Fixed bug 1158269: viewrendered pane goes blank when url clicked
+https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
+
+Clicking on a url link in a viewrendered pane causes the viewrendered pane
+to completely blank. The action successfully launches a browser. Then if I
+clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
+alt-x vr command, a detached blank python window is launched. The only way
+to get the viewrendered panel to be embedded in leo is to restart.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

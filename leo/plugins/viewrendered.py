@@ -287,7 +287,10 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s,'flags':flags})
+    vr.update(
+        tag='show-scrolled-message',
+        keywords={'c':c,'force':True,'s':s,'flags':flags},
+    )
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
@@ -662,7 +665,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-        return
     #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         '''Set the background color of the vr pane.'''
@@ -982,20 +984,23 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@+node:ekr.20110322031455.5765: *4* utils for update helpers...
     #@+node:ekr.20110322031455.5764: *5* ensure_text_widget
     def ensure_text_widget (self):
-        
         '''Swap a text widget into the rendering pane if necessary.'''
-        
         pc = self
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
             
             def mouseReleaseHelper(w,event):
-                if QtCore.Qt.ControlModifier & event.modifiers():
-                    event2 = {'c':self.c,'w':w.leo_wrapper}
-                    g.openUrlOnClick(event2)
-                else:
-                    QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
-            
+                # Fix bug 1158269: viewrendered pane goes blank when url clicked.
+                # No need to call the base mouseReleaseEvent method.
+                event2 = {'c':self.c,'w':w.leo_wrapper}
+                g.openUrlOnClick(event2)
+                # if QtCore.Qt.ControlModifier & event.modifiers():
+                    # event2 = {'c':self.c,'w':w.leo_wrapper}
+                    # g.openUrlOnClick(event2)
+                # else:
+                    # This call caused the text to disappear.
+                    # QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
+
             # Monkey patch a click handler.
             # 2012/04/10: Use the same pattern for mouseReleaseEvents
             # that is used in Leo's core:

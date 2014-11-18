@@ -6839,6 +6839,7 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     '''Open an url.'''
+    # g.trace(url,g.callers())
     if 1:
         # pylint: disable=no-member
         unquote = urllib.parse.unquote if isPython3 else urllib.unquote

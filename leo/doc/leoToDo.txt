@@ -10,44 +10,11 @@
 
 https://github.com/leo-editor/leo-editor/issues/99
 
-https://bugs.launchpad.net/leo-editor/+bug/1249368
-Leo 4.11 final custom hotkey can not work on 1st call
+With:
 
-There are communications problems because the OP's native language is Chinese, not English.
+    delete-node = Ctrl-.
 
-===== My guess about what is meant:
-
-
-With the custom setting: delete-node = Ctrl-.
-
-We want to use clover-period instead of Ctrl-period.
-
-But for each Leo file, nothing happens until you use the menu to select the command.
-
-===== The original posting:
-
-custom hotkey as:
-myLeoSettings.leo#@settings-->Keyboard shortcuts-->@keys EKR bindings-->@shortcuts Outline operations
-
-delete-node = Ctrl-. #None
-
-but as MAC OS X, usage Ctrl-. as Cmd-.
-- For each opened Leo file:
-- Nothing happens if use hotkey first
-- need to use menu command before custom hotkey will work.
-
-Leo 4.11 final, build 5020, 2012-02-26 13:18:08 -0600
-Python 2.7.1, qt version 4.8.0
-darwin
-.. @+node:ekr.20141112094313.4: *3* Fix bug 1158269: viewrendered pane goes blank when url clicked
-https://bugs.launchpad.net/leo-editor/+bug/1158269
-viewrendered pane goes blank when url clicked.
-
-Clicking on a url link in a viewrendered pane causes the viewrendered pane
-to completely blank. The action successfully launches a browser. Then if I
-clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
-alt-x vr command, a detached blank python window is launched. The only way
-to get the viewrendered panel to be embedded in leo is to restart.
+This key binding doesn't work until Outline:Delete Node is executed from the menu.
 .. @+node:ekr.20141112070001.6: *3* Fix markdown unit test
 @@@test markdown 1 (creates an unwanted @auto node)
 .. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
