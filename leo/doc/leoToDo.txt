@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0 final
 @language rest
-.. @+node:ekr.20141116105945.6: *3* ** fix dart coloring
 .. @+node:ekr.20141109160640.8: *3* ** Fix bug 99: MacOs custom hotkey can not work on 1st call
 @language rest
 
