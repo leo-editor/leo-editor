@@ -310,17 +310,17 @@ class BaseScanner:
             return messageKind in ('comment','warning') # Only errors are invalid.
     #@+node:ekr.20140727075002.18194: *4* BaseScanner.adjustTestLines
     def adjustTestLines(self,lines):
+        '''
+        Ignore blank lines and trailing whitespace.
 
-        '''Ignore newlines.
-
-        This fudge allows the rst code generators to insert needed newlines freely.'''
-
+        This fudge allows the rst code generators to insert needed newlines freely.
+        '''
         if self.ignoreBlankLines:
             lines = [z for z in lines if z.strip()]
-
         if self.ignoreLeadingWs:
             lines = [z.lstrip() for z in lines]
-
+        # New in Leo 5.0.
+        lines = [z.rstrip()+'\n' if z.endswith('\n') else z.rstrip() for z in lines]
         return lines
     #@+node:ekr.20140727075002.18195: *4* BaseScanner.compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):

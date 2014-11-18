@@ -514,7 +514,8 @@ Announcements
 - Update version number on web site.
 - Announce to leo-editor.
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
-- Announce to comp.lang.python: google comp.lang.python
+- Announce to comp.lang.python.announce:
+    https://groups.google.com/forum/#!forum/comp.lang.python.announce
 - Register Leo at http://www.python.org/pypi?:action=submit_form
 - Twitter
 - My blog</t>
