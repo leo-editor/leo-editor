@@ -956,11 +956,14 @@ class LeoFrame(object):
             # Strip trailing newlines so the truncation doesn't cause confusion.
             while s and s [ -1] in ('\n','\r'):
                 s = s [: -1]
+        # Save the horizontal scroll position.
+        if hasattr(w,'getXScrollPosition'):
+            x_pos = w.getXScrollPosition()
         # Update the widget.
         if i != j:
             w.delete(i,j)
         w.insert(i,s)
-        w.see(i+len(s) + 2) # 2011/06/01
+        w.see(i+len(s) + 2)
         if wname.startswith('body'):
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
@@ -974,7 +977,11 @@ class LeoFrame(object):
                 # p.initHeadString(s)
                 # width = f.tree.headWidth(p=None,s=s)
                 # w.setWidth(width)
-        else: pass
+        else:
+            pass
+        # Never scroll horizontally.
+        if hasattr(w,'getXScrollPosition'):
+            w.setXScrollPosition(x_pos)
 
     OnPasteFromMenu = pasteText
     #@+node:ekr.20061016071937: *5* OnPaste (To support middle-button paste)
