@@ -61,6 +61,10 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
+<v t="ekr.20141118074110.4"><vh>Discussions</vh>
+<v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
+<v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
+</v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
@@ -1389,5 +1393,103 @@ Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
+<t tx="ekr.20141118074110.2">@language rest
+
+https://groups.google.com/d/msg/leo-editor/Mm0hFBIR81Q/0v217II0kPIJ
+
+Here's my workflow (written here as a script, but really done in fits and
+starts):
+
+:: checkout tagged release &amp; build package
+pushd b:\apps\leo-editor
+git checkout tags/Leo-5.0-b2
+python setup.py sdist
+popd
+
+:: install from built package
+pip uninstall leo
+pip install  b:\apps\dist\leo-5.0b2.zip
+
+:: verify Leo works as expected
+D:\&gt;which leoc
+B:\o4w\apps\Python27\Scripts\leoc.EXE
+
+D:\&gt;leoc --version
+Leo 5.0b2, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
+
+D:\&gt;leoc
+
+** isPython3: False
+Leo 5.0b2, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
+Not running from a git repo
+Python 2.7.4, PyQt version 4.7.1
+Windows 7 AMD64 (build 6.1.7601) SP1
+leoID=maphew (in C:\Users\mhwilkie\dropbox\.leo)
+reading settings in B:\o4w\apps\Python27\lib\site-packages\leo\config\leoSettings.leo
+reading settings in C:\Users\mhwilkie\dropbox\.leo\myLeoSettings.leo
+reading settings in C:\Users\mhwilkie\dropbox\.leo\workbook.leo
+...snip...
+wrote recent file: C:\Users\mhwilkie\dropbox\.leo\.leoRecentFiles.txt
+
+:: rebuild package and upload
+pushd b:\apps\leo-editor
+python setup.py sdist upload
+
+:: inspect public page for problems
+start https://pypi.python.org/pypi/leo
+
+:: verbosely install from pypi.org
+pip uninstall leo
+pip -v install -pre leo
+
+:: repeat verify run leo works.
+
+https://groups.google.com/d/msg/leo-editor/Mm0hFBIR81Q/67p7y-x1zLAJ
+
+&gt; python setup.py sdist upload
+
+This is the tricky part, there's a bunch of prep-work that's hidden,
+involving getting a properly formatted ~/.pypirc. It looks very
+straightforward, according to docs, but in practice I've found devilishly
+difficult. There are bugs lurking in distutils/setuptools/something. I've
+had my .pypirc mangled by "register" and had to rebuild manually. Anyway:
+
+Step 1:
+python setup.py register
+
+and answer wizard steps, you'll need your pypi user and pass handy.
+DO save at end.
+
+Step 2: manually edit %HOME%\.pypirc and make sure it resembles below.
+DONT use httpS.
+
+Step 3: the commands in previous message (`python setup.py sdist upload`)
+
+Here's my .pypirc:
+
+[distutils]
+index-servers =
+    pypi
+    testpypi
+
+[pypi]
+repository: http://pypi.python.org/pypi
+username: {{omitted}}
+password: {{omitted}}
+
+[testpypi]
+repository: http://testpypi.python.org/pypi
+username: {{omitted}}
+password: {{omitted}}
+
+It really is a horrible system. The user and pass are sent in clear text. I
+don't know what's taking them so long to use SSH keys or OpenID or..., but
+frankly it's to Python's detriment. I hope they get it sorted out sooner
+than later.
+
+
+</t>
+<t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
+<t tx="ekr.20141118074110.4"></t>
 </tnodes>
 </leo_file>

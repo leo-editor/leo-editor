@@ -3,6 +3,8 @@
 .. @@language rest
 
 .. @+all
+.. @+node:ekr.20141117162102.2: ** 5.0 final
+.. @+node:ekr.20141117074620.1: *3* ** Removed *trailing* whitespace for import compares
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
