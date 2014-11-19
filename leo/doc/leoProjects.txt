@@ -38,6 +38,7 @@ The workaround is to pick other bindings.  For example::
 
 
 
+.. @+node:ekr.20141119060722.3: *3* Status line fields are now read-only
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
