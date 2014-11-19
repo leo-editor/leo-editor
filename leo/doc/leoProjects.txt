@@ -39,6 +39,10 @@ The workaround is to pick other bindings.  For example::
 
 
 .. @+node:ekr.20141119060722.3: *3* Status line fields are now read-only
+.. @+node:ekr.20141112070001.6: *3* Fixed markdown unit test
+The unit test created an unwanted @auto node.
+The fix was to ic.create_top_node.
+The fix also affected other importer tests.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

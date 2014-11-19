@@ -55,13 +55,14 @@ class MarkdownScanner (basescanner.BaseScanner):
                 parent = lastParent
                 while level > lastLevel:
                     level -= 1
-                    h2 = '@rst-no-head %s' % headline
+                    h2 = 'placeholder' if level > 1 else 'declarations'
                     body = ''
                     parent = self.createFunctionNode(h2,body,parent)
         else:
             assert self.root
             self.lastParent = self.root
-        if not parent: parent = self.root
+        if not parent:
+            parent = self.root
         if trace: g.trace('level %s lastLevel %s %s returns %s' % (
             level,lastLevel,headline,parent.h))
         self.lastParent = parent.copy()

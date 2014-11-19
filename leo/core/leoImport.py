@@ -628,7 +628,7 @@ class LeoImportCommands:
             if atAutoKind:
                 # We have found a match between ext and an @auto importer.
                 undoData = u.beforeInsertNode(parent)
-                p = parent.insertAfter()
+                p = parent.insertAsLastChild()
                 p.initHeadString(atAutoKind + ' ' + fileName)
                 u.afterInsertNode(p,'Import',undoData)
             else:
@@ -699,6 +699,7 @@ class LeoImportCommands:
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
     def init_import(self,atAuto,atShadow,ext,fileName,s):
         '''Init ivars & vars for imports.'''
+        trace = False and not g.unitTesting
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
@@ -717,7 +718,7 @@ class LeoImportCommands:
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
-        # g.trace(atAuto,self.treeType,fileName)
+        if trace: g.trace('1',atAuto,self.treeType,fileName)
         atAutoKind = None
         if not atAuto and kind != '@auto':
             # Not yet an @auto node.
@@ -732,6 +733,7 @@ class LeoImportCommands:
                         atAuto = True
                         atAutoKind = z
                         break
+        if trace: g.trace('2',atAuto,atAutoKind,ext)
         return atAuto,atAutoKind,ext,s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
@@ -1378,8 +1380,8 @@ class LeoImportCommands:
     def javaScriptUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.js')
         
-    def markdownUnitTest(self,p,atAuto=False,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest(p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.md')
+    def markdownUnitTest(self,p,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.md')
 
     def pascalUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.pas')

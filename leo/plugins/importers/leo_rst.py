@@ -41,21 +41,15 @@ class RstScanner (basescanner.BaseScanner):
         self.underlines = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" # valid rst underlines.
         self.underlines1 = [] # Underlining characters for underlines.
         self.underlines2 = [] # Underlining characters for over/underlines.
-    #@+node:ekr.20140723122936.18101: *3* adjustParent
+    #@+node:ekr.20140723122936.18101: *3* adjustParent (RstScanner)
     def adjustParent (self,parent,headline):
-
         '''Return the proper parent of the new node.'''
-
         trace = False and not g.unitTesting
-
         level,lastLevel = self.sectionLevel,self.lastSectionLevel
         lastParent = self.lastParent
-
         if trace: g.trace('**entry level: %s lastLevel: %s lastParent: %s' % (
             level,lastLevel,lastParent and lastParent.h or '<none>'))
-
         if self.lastParent:
-
             if level <= lastLevel:
                 parent = lastParent.parent()
                 while level < lastLevel:
@@ -69,16 +63,13 @@ class RstScanner (basescanner.BaseScanner):
                     h2 = '@rst-no-head %s' % headline
                     body = ''
                     parent = self.createFunctionNode(h2,body,parent)
-
         else:
             assert self.root
             self.lastParent = self.root
-
-        if not parent: parent = self.root
-
+        if not parent:
+            parent = self.root
         if trace: g.trace('level %s lastLevel %s %s returns %s' % (
             level,lastLevel,headline,parent.h))
-
         #self.lastSectionLevel = self.sectionLevel
         self.lastParent = parent.copy()
         return parent.copy()

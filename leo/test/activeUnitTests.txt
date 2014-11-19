@@ -12656,7 +12656,7 @@ console.log("Listening on " + port);
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20141111092038.11: *5* Markdown tests
-#@+node:ekr.20141111092038.12: *6* @@@test markdown 1 (creates an unwanted @auto node)
+#@+node:ekr.20141111092038.12: *6* @test markdown
 s = '''
 
 Header
@@ -12672,7 +12672,7 @@ After subheader text
 '''
 
 g.app.unitTestDict ['expectedErrors'] = 0
-c.importCommands.markdownUnitTest(p,s=s,atAuto=False,showTree=False)
+c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 s = '''
