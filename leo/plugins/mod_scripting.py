@@ -645,6 +645,9 @@ class ScriptingController:
         if c0:
             c0.frame.top.leo_master.select(c0)
                 # c0.frame.top.leo_master is a LeoTabbedTopLevel.
+        if trace: g.trace('gnx',gnx,'findFlag',findFlag,'openFlag',openFlag,
+            'len(script)',script and len(script) or 0,
+            c2 and c2.shortFileName(),p2 and p2.h)
         return c2,p2,script
     #@+node:ekr.20141101052758.8: *5* sc.find_gnx_helper
     def find_gnx_helper(self,c,gnx,openFlag,trace):
@@ -656,7 +659,7 @@ class ScriptingController:
             if p.gnx == gnx:
                 if trace: g.trace('found',p.h,'in',c.shortFileName())
                 if openFlag:
-                    return p,None
+                    return p,script
                 else:
                     script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
                     c.close()
