@@ -16,6 +16,28 @@ to completely blank. The action successfully launches a browser. Then if I
 clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
 alt-x vr command, a detached blank python window is launched. The only way
 to get the viewrendered panel to be embedded in leo is to restart.
+.. @+node:ekr.20141109160640.8: *3* Can't fix bug 99: MacOs custom hotkey can not work on 1st call
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/99
+
+Binding to Ctrl-. does not work on the Mac::
+
+    delete-node = Ctrl-.
+    
+Worse, this standard key binding does not work on the Mac::
+
+    clone-node = Ctrl-`
+    
+There is no obvious way to fix these problems: Leo never gets a key event.
+Presumably MacOS handles these keys before passing them to Leo.
+
+The workaround is to pick other bindings.  For example::
+
+    delete-node = Ctrl-,
+
+
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
