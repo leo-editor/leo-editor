@@ -1404,11 +1404,11 @@ class LoadManager:
         return path
     #@+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
     def computeMyLeoSettingsPath (self):
+        '''
+        Return the full path to myLeoSettings.leo.
 
-        '''Return the full path to myLeoSettings.leo.
-
-        The "footnote": Get the local directory from lm.files[0]'''
-
+        The "footnote": Get the local directory from lm.files[0]
+        '''
         trace = False
         lm = self
         join = g.os_path_finalize_join
@@ -1417,34 +1417,27 @@ class LoadManager:
         # This seems pointless: we need a machine *directory*.
         # For now, however, we'll keep the existing code as is.
         machine_fn = lm.computeMachineName() + settings_fn
-
         # First, compute the directory of the first loaded file.
         # All entries in lm.files are full, absolute paths.
         localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
-
         table = (
             # First, myLeoSettings.leo in the local directory
             join(localDir,          settings_fn),
-
             # Next, myLeoSettings.leo in the home directories.
             join(g.app.homeDir,     settings_fn),
             join(g.app.homeLeoDir,  settings_fn),
-
             # Next, <machine-name>myLeoSettings.leo in the home directories.
             join(g.app.homeDir,     machine_fn),
             join(g.app.homeLeoDir,  machine_fn),
-
             # Last, leoSettings.leo in leo/config directory.
             join(g.app.globalConfigDir, settings_fn),
         )
-
         for path in table:
             if trace: print('computeMyLeoSettingsPath',g.os_path_exists(path),repr(path))
             if g.os_path_exists(path):
                 break
         else:
             path = None
-
         return path
     #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self):

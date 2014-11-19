@@ -19133,5 +19133,40 @@ def linkCloneFindAllNode(self,p):
     while top.hasNext():
         top.moveToNext()
     p._linkAfter(top)
+.. @+node:ekr.20141119161908.1: *3* c.openSettingsHelper (no longer used)
+def openSettingsHelper(self, name):
+    """openLeoSettings - Return true if `name`d setting file
+    opened successfully.
+
+    :Parameters:
+    - `name`: name of settings file to open
+    """
+    c = self
+    homeLeoDir = g.app.homeLeoDir
+    loadDir = g.app.loadDir
+    configDir = g.app.globalConfigDir
+    
+    # Look in configDir first.
+    fileName = g.os_path_join(configDir,name)
+    ok = g.os_path_exists(fileName)
+    if ok:
+        c2 = g.openWithFileName(fileName,old_c=c)
+        if c2: return c2
+
+    # Look in homeLeoDir second.
+    if configDir == loadDir:
+        g.es('',name,"not found in",configDir)
+    else:
+        fileName = g.os_path_join(homeLeoDir,name)
+        ok = g.os_path_exists(fileName)
+        if ok:
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return c2
+        g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
+    
+    if name == "myLeoSettings.leo":
+        return self.createMyLeoSettings()
+    else:
+        return None
 .. @-all
 .. @-leo

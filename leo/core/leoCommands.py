@@ -6507,51 +6507,27 @@ class Commands (object):
             c2 = g.openWithFileName(fileName,old_c=c)
             if c2: return
         g.es('not found:',fileName)
-    #@+node:ekr.20031218072017.2943: *5* openLeoSettings & openMyLeoSettings
+    #@+node:ekr.20031218072017.2943: *5* c.openLeoSettings & c.openMyLeoSettings & helper
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''
-        return self.openSettingsHelper('leoSettings.leo')
+        c,lm = self,g.app.loadManager
+        path = lm.computeLeoSettingsPath()
+        if path:
+            return g.openWithFileName(path,old_c=c)
+        else:
+            g.es('not found: leoSettings.leo')
+            return None
 
     def openMyLeoSettings (self,event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
-        return self.openSettingsHelper('myLeoSettings.leo')
-        
-    def openSettingsHelper(self, name):
-        """openLeoSettings - Return true if `name`d setting file
-        opened successfully.
-
-        :Parameters:
-        - `name`: name of settings file to open
-        """
-
-        c = self
-        homeLeoDir = g.app.homeLeoDir
-        loadDir = g.app.loadDir
-        configDir = g.app.globalConfigDir
-
-        # Look in configDir first.
-        fileName = g.os_path_join(configDir,name)
-        ok = g.os_path_exists(fileName)
-        if ok:
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return c2
-
-        # Look in homeLeoDir second.
-        if configDir == loadDir:
-            g.es('',name,"not found in",configDir)
+        c,lm = self,g.app.loadManager
+        path = lm.computeMyLeoSettingsPath()
+        if path:
+            return g.openWithFileName(path,old_c=c)
         else:
-            fileName = g.os_path_join(homeLeoDir,name)
-            ok = g.os_path_exists(fileName)
-            if ok:
-                c2 = g.openWithFileName(fileName,old_c=c)
-                if c2: return c2
-            g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
-        
-        if name == "myLeoSettings.leo":
-            return self.createMyLeoSettings()
-        else:
-            return None
-        
+            g.es('not found: myLeoSettings.leo')
+            return c.createMyLeoSettings()
+    #@+node:ekr.20141119161908.2: *6* createMyLeoSettings
     def createMyLeoSettings(self):
         """createMyLeoSettings - Return true if myLeoSettings.leo created ok
         """
@@ -6571,7 +6547,7 @@ class Commands (object):
         enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
         enabledplugins = enabledplugins.b
         leosettings.close()
-        # now create "myLeoSettings.leo"
+        # now create "~/.leo/myLeoSettings.leo"
         fileName = g.os_path_join(homeLeoDir,name) 
         c2 = g.openWithFileName(fileName,old_c=c)
         # add content to outline
@@ -6601,7 +6577,6 @@ class Commands (object):
         )
         c2.redraw()
         return c2
-        
     #@+node:ekr.20131213072223.19441: *5* openLeoTOC
     def openLeoTOC (self,event=None):
         '''Open Leo's tutorials page in a web browser.'''
