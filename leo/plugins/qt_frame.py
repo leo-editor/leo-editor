@@ -2161,6 +2161,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
             self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
             w1.setObjectName('status1')
             w2.setObjectName('status2')
+            w1.setReadOnly(True)
+            w2.setReadOnly(True)
             splitter = QtWidgets.QSplitter()
             self.statusBar.addWidget(splitter, True)
             sizes = c.config.getString('status_line_split_sizes') or '1 2'
