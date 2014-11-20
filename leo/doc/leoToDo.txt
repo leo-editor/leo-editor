@@ -11,31 +11,24 @@
 - MacOS prevents some bindings from working.
 
 - Make sure people know how to avoid big-text buttons.
-.. @+node:ekr.20130806072439.20650: *3* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
+.. @+node:ekr.20130806072439.20650: *3* ** Fix bug 106: wishlist brew install leo
+https://github.com/leo-editor/leo-editor/issues/106
 
-Would be stellar to have a brew install leo. http://brew.sh/
 
-Homebrew formulae are simple Ruby scripts::
 
-    require "formula"
-    
-    class Wget < Formula
-      homepage "http://www.gnu.org/software/wget/"
-      url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
-      sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
-    
-      def install
-        system "./configure", "--prefix=#{prefix}"
-        system "make", "install"
-      end
-    end
+I've made a first draft of this...It still installs Leo 4.10 final. That is
+if it still works, as I haven't tested it in a while...
 
-To install homebrew, paste this in a terminal::
+You can try it out like this from my tap::
 
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew tap ska-sa/tap
+    brew install leo
 
-The script explains what it will do and then pauses before it does it.
+You are more than welcome to copy it from:
+
+https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
+.. @+node:ekr.20141120061623.4: *3* ** Remove notepad from open-with list
+Replace it with scite, if it exists in the standard place.
 .. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140
