@@ -104,6 +104,12 @@ Function .onInit
         StrCmp $9 "" try26 ok
     try26:
         ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+        StrCmp $9 "" try35 ok
+    try35:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.5\InstallPath" ""
+        StrCmp $9 "" try34 ok
+    try34:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.4\InstallPath" ""
         StrCmp $9 "" try33 ok
     try33:
         ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.3\InstallPath" ""
