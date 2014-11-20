@@ -554,13 +554,12 @@ class Position (object):
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self, with_file=True, with_proto=False, with_index=True):
-        """with_file=True - include path to Leo file
-           with_proto=False - include 'file://'
+    def get_UNL(self,with_file=True,with_proto=False,with_index=True):
         """
-
+        with_file=True - include path to Leo file
+        with_proto=False - include 'file://'
+        """
         aList = []
-        
         for i in self.self_and_parents():
             if with_index:
                 i = i.copy()
@@ -578,7 +577,6 @@ class Position (object):
             else:
                 aList.append(i.h.replace('-->', '--%3E'))
         UNL = '-->'.join(reversed(aList))
-
         if with_proto:
             return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
         elif with_file:

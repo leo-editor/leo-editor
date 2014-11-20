@@ -46,12 +46,12 @@ class SessionManager:
         # print(s)
     #@+node:ekr.20120420054855.14245: *3* get_session
     def get_session(self):
-
         '''Return a list of UNLs for open tabs.'''
-
         result = []
         for frame in g.app.windowList:
-            result.append(frame.c.p.get_UNL())
+            result.append(frame.c.p.get_UNL(
+                # Prevent json decode problems.
+                with_file=False,with_proto=False,with_index=False))
         return result
     #@+node:ekr.20120420054855.14416: *3* get_session_path
     def get_session_path (self):
@@ -83,7 +83,6 @@ class SessionManager:
     def load_snapshot(self):
         '''Load a snapshot of a session from the leo.session file.'''
         fn = self.path
-
         if fn and g.os_path_exists(fn):
             with open(fn) as f:
                 session = json.loads(f.read())
