@@ -659,6 +659,7 @@ class ScriptingController:
             if p.gnx == gnx:
                 if trace: g.trace('found',p.h,'in',c.shortFileName())
                 if openFlag:
+                    script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
                     return p,script
                 else:
                     script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
