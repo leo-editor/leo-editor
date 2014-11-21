@@ -141,7 +141,6 @@ setup(
 
     # only include dependencies which can be installed by pip (so not PyQt or SIP)
     requires = ['docutils'],
-
     #provides = [],
     #obsoletes= [],
     classifiers = [
@@ -161,13 +160,12 @@ setup(
         'Topic :: Text Editors',
         'Topic :: Text Processing',
         ],
-
     packages = packages,
     data_files = data_files,
     #package_data = {'leo.plugins' : datapats },
     package_data = {'' : datapats }, #no need to restrict to just plugins(?)
     scripts = ['leo-install.py'],
-
+    zip_safe = False,
     entry_points = {
         'console_scripts': [
         'leoc = leo.core.runLeo:run'

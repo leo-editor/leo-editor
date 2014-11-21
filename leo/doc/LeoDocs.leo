@@ -23213,6 +23213,8 @@ Chapter.afterCreateChapter does not push undo data when cc.initing is True.
 </t>
 <t tx="ekr.20141120113801.5">@language rest
 
+* advise Linux users to use "pip install leo".
+
 - MacOS prevents some bindings from working.
 
 - Document sesssions (and related command-line args).
