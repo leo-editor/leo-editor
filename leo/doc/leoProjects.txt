@@ -43,6 +43,38 @@ The workaround is to pick other bindings.  For example::
 The unit test created an unwanted @auto node.
 The fix was to ic.create_top_node.
 The fix also affected other importer tests.
+.. @+node:ekr.20141120061623.5: *3* ** Fixed sessions crash
+a Leo URI in focused node causes trouble on restore.
+
+focus a node with a uri headline:
+file://data.leo#data.leo-->Sandbox-->1000
+
+save and close Leo file
+
+reopen with --session-restore option and Leo says:
+
+(venv)ktenney@lappy:~/develop$ Traceback (most recent call last):
+  File "/home/ktenney/venv/bin/leo", line 9, in <module>
+    load_entry_point('leo==5.0b1', 'gui_scripts', 'leo')()
+  File "/var/fetching/leo-editor/leo/core/runLeo.py", line 81, in run
+    g.app.loadManager.load(fileName,pymacs)
+  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 1956, in load
+    ok = lm.doPostPluginsInit()
+  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 2298, in
+doPostPluginsInit
+    aList = m.load_snapshot()
+  File "/var/fetching/leo-editor/leo/core/leoSessions.py", line 89, in
+load_snapshot
+    session = json.loads(f.read())
+  File "/usr/lib/python2.7/json/__init__.py", line 338, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python2.7/json/decoder.py", line 366, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python2.7/json/decoder.py", line 384, in raw_decode
+    raise ValueError("No JSON object could be decoded")
+ValueError: No JSON object could be decoded
+
+[1]+  Exit 1                  leo --session-save --session-restore
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

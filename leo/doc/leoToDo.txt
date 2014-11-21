@@ -8,15 +8,15 @@
 .. @+node:ekr.20141119060722.1: *3* ** Update docs
 @language rest
 
-- Readme: Leo now supports "brew install leo"
-
 - MacOS prevents some bindings from working.
 
 - Make sure people know how to avoid big-text buttons.
+
+* Where are sessions documented?
 .. @+node:ekr.20130806072439.20650: *3* ** Fix bug 106: wishlist brew install leo
+@language rest
+
 https://github.com/leo-editor/leo-editor/issues/106
-
-
 
 I've made a first draft of this...It still installs Leo 4.10 final. That is
 if it still works, as I haven't tested it in a while...
@@ -29,38 +29,6 @@ You can try it out like this from my tap::
 You are more than welcome to copy it from:
 
 https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-.. @+node:ekr.20141120061623.5: *3* ** Fix sessions crash
-a Leo URI in focused node causes trouble on restore.
-
-focus a node with a uri headline:
-file://data.leo#data.leo-->Sandbox-->1000
-
-save and close Leo file
-
-reopen with --session-restore option and Leo says:
-
-(venv)ktenney@lappy:~/develop$ Traceback (most recent call last):
-  File "/home/ktenney/venv/bin/leo", line 9, in <module>
-    load_entry_point('leo==5.0b1', 'gui_scripts', 'leo')()
-  File "/var/fetching/leo-editor/leo/core/runLeo.py", line 81, in run
-    g.app.loadManager.load(fileName,pymacs)
-  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 1956, in load
-    ok = lm.doPostPluginsInit()
-  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 2298, in
-doPostPluginsInit
-    aList = m.load_snapshot()
-  File "/var/fetching/leo-editor/leo/core/leoSessions.py", line 89, in
-load_snapshot
-    session = json.loads(f.read())
-  File "/usr/lib/python2.7/json/__init__.py", line 338, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python2.7/json/decoder.py", line 366, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python2.7/json/decoder.py", line 384, in raw_decode
-    raise ValueError("No JSON object could be decoded")
-ValueError: No JSON object could be decoded
-
-[1]+  Exit 1                  leo --session-save --session-restore
 .. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140

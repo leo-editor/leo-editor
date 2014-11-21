@@ -50,8 +50,10 @@ class SessionManager:
         result = []
         for frame in g.app.windowList:
             result.append(frame.c.p.get_UNL(
-                # Prevent json decode problems.
-                with_file=False,with_proto=False,with_index=False))
+                with_file=True,with_proto=False,with_index=True
+                    # The defaults.
+            ))
+            
         return result
     #@+node:ekr.20120420054855.14416: *3* get_session_path
     def get_session_path (self):
@@ -66,13 +68,21 @@ class SessionManager:
     #@+node:ekr.20120420054855.14247: *3* load_session
     def load_session(self,c=None,unls=None):
         '''Open a tab for each item in UNLs & select the indicated node in each.'''
+        trace = False and not g.unitTesting
         if unls is None:
             unls = []
         for unl in unls:
+            if trace: g.trace('1: unl',unl)
             if unl.strip():
-                fn,unl = unl.split("#")
-                if g.os_path_exists(fn):
-                    # g.trace(fn)
+                i = unl.find("#")
+                if i > -1:
+                    fn,unl = unl[:i],unl[i:]
+                else:
+                    fn,unl = unl,''
+                fn = fn.strip()
+                exists = fn and g.os_path_exists(fn)
+                if trace: g.trace('2: exists:',exists,'fn',fn,'unl',unl)
+                if exists:
                     c2 = g.app.loadManager.loadLocalFile(fn,gui=g.app.gui,old_c=c)
                     for p in c2.all_positions():
                         if p.get_UNL() == unl:
@@ -81,7 +91,11 @@ class SessionManager:
                             break
     #@+node:ekr.20120420054855.14248: *3* load_snapshot
     def load_snapshot(self):
-        '''Load a snapshot of a session from the leo.session file.'''
+        '''
+        Load a snapshot of a session from the leo.session file.
+        
+        Called when --restore-session is in effect.
+        '''
         fn = self.path
         if fn and g.os_path_exists(fn):
             with open(fn) as f:
@@ -92,7 +106,11 @@ class SessionManager:
             return None
     #@+node:ekr.20120420054855.14249: *3* save_snapshot
     def save_snapshot(self,c=None):
-        '''Save a snapshot of the present session to the leo.session file.'''
+        '''
+        Save a snapshot of the present session to the leo.session file.
+        
+        Called automatically during shutdown when --session-save is in effect.
+        '''
         if self.path:
             session = self.get_session()
             # print('save_snaphot: %s' % (len(session)))
