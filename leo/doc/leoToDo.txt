@@ -5,30 +5,14 @@
 .. @+all
 .. @+node:ekr.20141112070001.4: ** * To do: Leo 5.0 final
 @language rest
-.. @+node:ekr.20141119060722.1: *3* ** Update docs
-@language rest
-
-- MacOS prevents some bindings from working.
-
-- Make sure people know how to avoid big-text buttons.
-
-* Where are sessions documented?
 .. @+node:ekr.20130806072439.20650: *3* ** Fix bug 106: wishlist brew install leo
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/106
 
-I've made a first draft of this...It still installs Leo 4.10 final. That is
-if it still works, as I haven't tested it in a while...
-
-You can try it out like this from my tap::
-
-    brew tap ska-sa/tap
-    brew install leo
-
-You are more than welcome to copy it from:
-
 https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
+
+Do this after creating official release.
 .. @+node:ekr.20141103113220.22: ** Next
 .. @+node:ekr.20141030042423.13: *3* Top 4 wishlist items
 https://bugs.launchpad.net/leo-editor/+bug/1247140
