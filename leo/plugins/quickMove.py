@@ -418,10 +418,11 @@ class quickMove(object):
                 (not first or mover.first == first)):
                 cnt += 1
                 v.u['quickMove']['buttons'].append(
-                    {'first':mover.first, 'type': mover.type_})
+                    {'first':mover.which, 'type': mover.type_})
 
         if cnt:
             g.es('Made buttons permanent')
+            c.setChanged(True)
         else:
             g.es("Didn't find button")
     #@+node:tbrown.20091217114654.5374: *3* clearButton
@@ -432,9 +433,12 @@ class quickMove(object):
             p = c.p
             v = p.v
 
-        g.es('Removing buttons - reload to apply')
         if 'quickMove' in v.u:
             del v.u['quickMove']
+            c.setChanged(True)
+            g.es('Removing buttons - reload to apply')
+        else:
+            g.es('Quickmove buttons not found')
     #@+node:tbrown.20091207102637.11494: *3* context menu popup
     def popup(self, c, p, menu):
         """make popup menu entry for tree context menu"""
@@ -791,7 +795,8 @@ class quickMoveButton:
         self.owner = owner
         self.target = target
         self.targetHeadString = target.h
-        self.which = which.strip().lower()
+        self.which = (which or '').strip().lower()
+        # (which or '') - handle legacy cases
         self.type_ = type_
         self.has_parent = False
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
