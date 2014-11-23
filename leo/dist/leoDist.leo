@@ -108,9 +108,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -b2.
-
-3. Search for copyright
+2. Search for copyright
 
     Latest copyright date: 2014.
 
@@ -142,7 +140,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-b2
+Version: 5.0-rc1
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -164,9 +162,9 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 beta 2                  November 17, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 release candidate 1         November 22, 2014
 
-Leo 5.0b2 is now available at:
+Leo 5.0rc1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -564,7 +562,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-b2' ##version
+version = '5.0-rc1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -872,7 +870,8 @@ def deleteTempFiles (self,lines):
     commands = (
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
-        r'%s archive --format zip --output "%s" --prefix=Leo5.0-b2/ master' % (
+        ##version
+        r'%s archive --format zip --output "%s" --prefix=Leo5.0-rc1/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1340,9 +1339,9 @@ leo/test/unittest/.leo_shadow/  export-ignore
         assert g.os_path_exists(src),src
         shutil.copyfile(src,dst)
 </t>
-<t tx="ekr.20141105082156.2">Leo 5.0 beta 2                  November 17, 2014
+<t tx="ekr.20141105082156.2">Leo 5.0 release candidate 1         November 22, 2014
 
-Leo 5.0b2 is now available at:
+Leo 5.0rc1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues

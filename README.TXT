@@ -1,6 +1,6 @@
-Leo 5.0 beta 2                  November 17, 2014
+Leo 5.0 release candidate 1         November 22, 2014
 
-Leo 5.0b2 is now available at:
+Leo 5.0rc1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues

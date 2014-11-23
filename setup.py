@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141027093638.6: * @file ../../setup.py
 '''setup.py for leo'''
-simple = True # True: avoid all complications.
-trace = True
+simple = False # True: avoid all complications.
+trace = False
 import leo.core.leoVersion
 from setuptools import setup, find_packages
 if simple:
@@ -47,12 +47,9 @@ def fullsplit(path, result=None):
 # Tell distutils to put the data_files in platform-specific installation
 # locations. See here for an explanation:
 # http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
-if simple:
-    pass
-else:
+if not simple:
     for scheme in list(INSTALL_SCHEMES.values()):
         scheme['data'] = scheme['purelib']
-#@+node:ville.20090213233714.2: *3* @url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
 #@+node:ville.20090213231648.5: ** collect (and filter) files
 # Compile the list of packages available, because distutils doesn't have
 # an easy way to do this.
@@ -159,8 +156,9 @@ setup(
     ],
     packages = packages,
     data_files = [] if simple else data_files,
-    # package_data = {'leo.plugins' : datapats },
-    # package_data = {'' : datapats }, # no need to restrict to just plugins(?)
+    package_data = {'' : datapats },
+        # package_data = {'leo.plugins' : datapats },
+        # no need to restrict to just plugins(?)
     scripts = ['leo-install.py'],
     zip_safe = False,
     entry_points = {

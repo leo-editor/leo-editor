@@ -1374,6 +1374,7 @@
 </v>
 </v>
 <v t="ekr.20141120113801.5"><vh>** Update docs</vh></v>
+<v t="ekr.20100731112744.7274"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -23212,8 +23213,6 @@ https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
 Chapter.afterCreateChapter does not push undo data when cc.initing is True.
 </t>
 <t tx="ekr.20141120113801.5">@language rest
-
-* advise Linux users to use "pip install leo".
 
 - MacOS prevents some bindings from working.
 
