@@ -754,22 +754,30 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         s = p.b
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
-            if i is not None:
-                w = c.frame.body.wrapper
-                switch = p != c.p
-                if switch:
-                    c.selectPosition(p)
-                oldSel = w.getSelectionRange()
-                w.setAllText(new_s)
+            if i is None:
+                return False
+            w = c.frame.body.wrapper
+            switch = p != c.p
+            if switch:
+                c.selectPosition(p)
+            else:
                 scroll = w.getYScrollPosition()
-                c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-                c.p.b = new_s
-                if switch:
-                    c.redraw()
-                self.set_selection(i,j)
+            oldSel = w.getSelectionRange()
+            w.setAllText(new_s)
+            c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+            c.p.b = new_s
+            if switch:
+                c.redraw()
+            w.setSelectionRange(i,j,insert=j)
+            if switch:
+                w.seeInsertPoint()
+            else:
+                # Keep the scroll point if possible.
                 w.setYScrollPosition(scroll)
-                return True
-        return False
+                w.seeInsertPoint()
+            return True
+        else:
+            return False
     #@+node:ekr.20131114051702.22731: *4* make_script_substitutions
     def make_script_substitutions(self,i,j,val):
         '''Make scripting substitutions in node p.'''
@@ -854,10 +862,6 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             w.insert(i,s)
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
-    #@+node:ekr.20131114124839.17399: *4* set_selection
-    def set_selection(self,i,j):
-        '''Set the selection range, with the insert point at the end.'''
-        self.c.frame.body.wrapper.setSelectionRange(i,j,insert=j)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):
