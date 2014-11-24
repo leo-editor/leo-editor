@@ -32,7 +32,7 @@
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
 <v t="ekr.20131105110107.16636"><vh>Leo 4.11 final</vh></v>
-<v t="ekr.20141105082156.2"><vh>Leo 5.0</vh></v>
+<v t="ekr.20141105082156.2"><vh>Leo 5.0 final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -140,7 +140,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.0-rc1
+Version: 5.0-final
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -162,9 +162,9 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.0 release candidate 1         November 22, 2014
+<t tx="EKR.20040519090846.9">Leo 5.0 final                       November 24, 2014
 
-Leo 5.0rc1 is now available at:
+Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -183,6 +183,11 @@ The highlights of Leo 5.0
     - Full support for Vim .otl outlines.
     - Better support for pylint.
     - Support for both PyQt4 and PyQt5.
+* Smoother installation:
+    - Support for brew install leo on MacOS.
+    - 'python setup.py install' now works.
+    - pip install leo now works.
+    - Leo is now a debian package.
 * Better handling of nodes containing large text:
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
@@ -564,7 +569,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-rc1' ##version
+version = '5.0-final' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -873,7 +878,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo5.0-rc1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo5.0-final/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1341,9 +1346,9 @@ leo/test/unittest/.leo_shadow/  export-ignore
         assert g.os_path_exists(src),src
         shutil.copyfile(src,dst)
 </t>
-<t tx="ekr.20141105082156.2">Leo 5.0 release candidate 1         November 22, 2014
+<t tx="ekr.20141105082156.2">Leo 5.0 final                       November 24, 2014
 
-Leo 5.0rc1 is now available at:
+Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -1362,6 +1367,11 @@ The highlights of Leo 5.0
     - Full support for Vim .otl outlines.
     - Better support for pylint.
     - Support for both PyQt4 and PyQt5.
+* Smoother installation:
+    - Support for brew install leo on MacOS.
+    - 'python setup.py install' now works.
+    - pip install leo now works.
+    - Leo is now a debian package.
 * Better handling of nodes containing large text:
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
@@ -1403,25 +1413,25 @@ starts):
 
 :: checkout tagged release &amp; build package
 pushd b:\apps\leo-editor
-git checkout tags/Leo-5.0-b2
+git checkout tags/Leo-5.0-final
 python setup.py sdist
 popd
 
 :: install from built package
 pip uninstall leo
-pip install  b:\apps\dist\leo-5.0b2.zip
+pip install  b:\apps\dist\leo-5.0-final.zip
 
 :: verify Leo works as expected
 D:\&gt;which leoc
 B:\o4w\apps\Python27\Scripts\leoc.EXE
 
 D:\&gt;leoc --version
-Leo 5.0b2, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
+Leo 5.0-final, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
 
 D:\&gt;leoc
 
 ** isPython3: False
-Leo 5.0b2, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
+Leo 5.0-final, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
 Not running from a git repo
 Python 2.7.4, PyQt version 4.7.1
 Windows 7 AMD64 (build 6.1.7601) SP1

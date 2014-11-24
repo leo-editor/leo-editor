@@ -21947,20 +21947,10 @@ rst3 tutorial.
 Over 70 bugs have been fixed.
 #@+node:ekr.20141124033239.2: *6* Bugs fixed in 5.0rc1
 #@+node:ekr.20141124033239.3: *7* Fixed scrolling problem when expanding abbreviations
-
 When editing at the end of a large block of text where all of the body text
-does not fit in the edit window, if I enter an abbreviation, the focus
-[scroll position] resets to the top of the page even though the text cursor
-position remains with the replaced text. This means I have to scroll back
-down to the bottom of the window to continue editing.
-
-Another odd thing is that not all of my abbreviations cause this behavior.
-The ones that trigger this behavior all have a REPLACE TEXT block. Without
-this block, the abbreviation works as expected.
-
-This appears to be new behavior as I don't see this with Leo 4. Also, on my
-other Win7 machine with Python 2.7 and PyQt 4, it does the same thing (Leo
-5).
+does not fit in the edit window, if I enter an abbreviation, the scroll
+position resets to the top of the page even though the text cursor position
+remains with the replaced text.
 #@+node:ekr.20141120113801.24: *6* Bugs fixed in 5.0b2
 #@+node:ekr.20141120113801.25: *7* Fixed bug  38: autocompleter gives a strange traceback
 https://github.com/leo-editor/leo-editor/issues/38

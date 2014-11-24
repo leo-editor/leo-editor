@@ -1,6 +1,6 @@
-Leo 5.0 release candidate 1         November 22, 2014
+Leo 5.0 final                       November 24, 2014
 
-Leo 5.0rc1 is now available at:
+Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -19,6 +19,11 @@ The highlights of Leo 5.0
     - Full support for Vim .otl outlines.
     - Better support for pylint.
     - Support for both PyQt4 and PyQt5.
+* Smoother installation:
+    - Support for brew install leo on MacOS.
+    - 'python setup.py install' now works.
+    - pip install leo now works.
+    - Leo is now a debian package.
 * Better handling of nodes containing large text:
     - Idle time syntax coloring eliminates delay.
     - Optional delayed loading of large text.
