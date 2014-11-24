@@ -21702,10 +21702,10 @@ in ``about:config`` in Firefox.
     - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
-#@+node:ekr.20141120113801.6: *4* Leo 5.0-rc1 release notes
-Leo 5.0 release candidate 1              November 24, 2014
+#@+node:ekr.20141120113801.6: *4* Leo 5.0-final release notes
+Leo 5.0 final                       November 24, 2014
 
-Leo 5.0rc1 is now available at:
+Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues

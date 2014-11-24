@@ -236,7 +236,6 @@
 </v>
 <v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh>
 <v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
-<v t="ekr.20141124033239.4"><vh>Installing using pip</vh></v>
 <v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
 </v>
 <v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
@@ -251,6 +250,7 @@
 <v t="ekr.20131008041326.16155"><vh>The .leo directory</vh></v>
 </v>
 <v t="ekr.20131008041326.16156"><vh>Leo's command-line options</vh></v>
+<v t="ekr.20141124094250.2"><vh>Using sessions</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
@@ -1151,7 +1151,7 @@ expanded="ekr.20141124033239.2,ekr.20141120113801.83,"><vh>@file release_notes.t
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
-<v t="ekr.20141120113801.6"><vh>Leo 5.0-rc1 release notes</vh>
+<v t="ekr.20141120113801.6"><vh>Leo 5.0-final release notes</vh>
 <v t="ekr.20141120113801.7"><vh>Highlights</vh>
 <v t="ekr.20141120113801.8"><vh>Better integration with Vim, Emacs &amp; pylint</vh>
 <v t="ekr.20141120113801.9"><vh>vim mode</vh></v>
@@ -1378,8 +1378,6 @@ expanded="ekr.20141124033239.2,ekr.20141120113801.83,"><vh>@file release_notes.t
 <v t="ekr.20141120113801.206"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
-<v t="ekr.20141120113801.5"><vh>** Update docs</vh></v>
-<v t="ekr.20100731112744.7274"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -9230,8 +9228,9 @@ If you are using Debian/Ubuntu, it's best to
 `install Leo from a debian package`_, as described next.
 This provides file associations, icons, launcher items, etc.
 
+.. Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
 
-Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
+Otherwise, you may `install Leo from sources`_.
 </t>
 <t tx="ekr.20100731112744.7276">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -23219,12 +23218,6 @@ https://groups.google.com/d/msg/leo-editor/b6TszFS_6NQ/gJrlRkqH9_oJ
 
 Chapter.afterCreateChapter does not push undo data when cc.initing is True.
 </t>
-<t tx="ekr.20141120113801.5">@language rest
-
-- MacOS prevents some bindings from working.
-
-- Document sesssions (and related command-line args).
-</t>
 <t tx="ekr.20141120113801.50">https://github.com/leo-editor/leo-editor/issues/35
 leoBridge sometimes assigns the same GNX to two distinct vnodes
 
@@ -23337,9 +23330,9 @@ erroneous clone markers in @auto trees
 
 The fixes were to several methods of the PersistenceDataController class.
 </t>
-<t tx="ekr.20141120113801.6">Leo 5.0 release candidate 1              November 24, 2014
+<t tx="ekr.20141120113801.6">Leo 5.0 final                       November 24, 2014
 
-Leo 5.0rc1 is now available at:
+Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -23670,8 +23663,19 @@ this block, the abbreviation works as expected.
 
 This appears to be new behavior as I don't see this with Leo 4. Also, on my
 other Win7 machine with Python 2.7 and PyQt 4, it does the same thing (Leo
-5).</t>
-<t tx="ekr.20141124033239.4"></t>
+5).
+</t>
+<t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
+automatically when Leo first starts.
+
+The typical usage is to start Leo with the --session-save
+--session-restore command-line options, open several Leo files and exit.
+
+The next time Leo is started with those options, the files will be
+open, and the nodes focused as when the previous session ended.
+
+Leo stores session state in ~/.leo/leo.session
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

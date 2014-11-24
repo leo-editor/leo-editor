@@ -2363,7 +2363,9 @@ Lines starting with # are ignored.
 
 All other non-blank lines should have the form:
 
-commandName = shortcut specifier.</t>
+commandName = shortcut specifier.
+
+**Note**: not all bindings are possible on MacOS, especially Ctrl-H and Ctrl-period.</t>
 <t tx="ekr.20041120155431.2">Not implemented yet.
 
 Autments the settings parser and the dialog creator with scripts.</t>
