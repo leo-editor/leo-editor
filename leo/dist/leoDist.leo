@@ -492,7 +492,7 @@ LeoDist.leo:
     - Check readme.txt spelling.
     - Check 'PKG-INFO.TXT'
 Run make-leo.
-    - Commit all files before running make-leo.
+    ***** Commit all files before running make-leo.
     - Run make-leo button in leoDist.leo.
     - Commit any changed files.
 Create the executable installer:
@@ -547,14 +547,16 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
 </t>
-<t tx="ekr.20101027070126.1639">'''
+<t tx="ekr.20101027070126.1639"># Commit all files before running this script.
+
+'''
 Make all variable Leo distribution files::
 
     git-manifest.txt
     leo\dist\nsi-install-files.txt
     leo\dist\nsi-uninstall-files.txt
     leo.zip.
-    
+
 Copy these files from the leo\dist folder to the top-level folder::
 
     nsi-install-files.txt

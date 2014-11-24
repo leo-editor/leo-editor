@@ -236,6 +236,7 @@
 </v>
 <v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh>
 <v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
+<v t="ekr.20141124033239.4"><vh>Installing using pip</vh></v>
 <v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
 </v>
 <v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
@@ -1145,11 +1146,12 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
+expanded="ekr.20141124033239.2,ekr.20141120113801.83,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
-<v t="ekr.20141120113801.6"><vh>Leo 5.0-final release notes</vh>
+<v t="ekr.20141120113801.6"><vh>Leo 5.0-rc1 release notes</vh>
 <v t="ekr.20141120113801.7"><vh>Highlights</vh>
 <v t="ekr.20141120113801.8"><vh>Better integration with Vim, Emacs &amp; pylint</vh>
 <v t="ekr.20141120113801.9"><vh>vim mode</vh></v>
@@ -1170,6 +1172,9 @@
 <v t="ekr.20141120113801.22"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 </v>
 <v t="ekr.20141120113801.23"><vh>Bugs fixed</vh>
+<v t="ekr.20141124033239.2"><vh>Bugs fixed in 5.0rc1</vh>
+<v t="ekr.20141124033239.3"><vh>Fixed scrolling problem when expanding abbreviations</vh></v>
+</v>
 <v t="ekr.20141120113801.24"><vh>Bugs fixed in 5.0b2</vh>
 <v t="ekr.20141120113801.25"><vh>Fixed bug  38: autocompleter gives a strange traceback</vh></v>
 <v t="ekr.20141120113801.26"><vh>Fixed bug  78?: find-next target not always scrolled into view</vh></v>
@@ -9218,13 +9223,15 @@ AttributeError as c has no .cleo when the @script is executed. Deferring it by
 using registerHandler() avoids the problem.
 </t>
 <t tx="ekr.20100731112744.7274">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
+.. _`install Leo using pip`: installing.html#installing-using-pip
 .. _`install Leo from sources`: installing.html#installing-from-sources-linux
 
 If you are using Debian/Ubuntu, it's best to
 `install Leo from a debian package`_, as described next.
 This provides file associations, icons, launcher items, etc.
 
-Otherwise, `install Leo from sources`_.
+
+Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
 </t>
 <t tx="ekr.20100731112744.7276">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -19519,11 +19526,11 @@ Then run::
 http://leoeditor.com/download.html If the sources are zipped, unzip them
 into a folder in your home directory, say ~/leo-5.0.
 
-You now have two choices:
+You now have several choices.
 
 1. You can run Leo from your home directory. Just add  ~/leo-5.0 to your path.
 
-2. You can install leo into /usr/local/lib and /usr/local/bin as follows::
+2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
     cd ~/leo-5.0
     sudo python setup.py install
@@ -23330,9 +23337,9 @@ erroneous clone markers in @auto trees
 
 The fixes were to several methods of the PersistenceDataController class.
 </t>
-<t tx="ekr.20141120113801.6">Leo 5.0 final              November 22, 2014
+<t tx="ekr.20141120113801.6">Leo 5.0 release candidate 1              November 24, 2014
 
-Leo 5.0 final is now available at:
+Leo 5.0rc1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -23649,6 +23656,22 @@ Also, changed p.all_unique_positions() to p.all_positions() in places where p.co
 
 I started this project by doing a clone-find-all for isExpanded.
 </t>
+<t tx="ekr.20141124033239.2"></t>
+<t tx="ekr.20141124033239.3">
+When editing at the end of a large block of text where all of the body text
+does not fit in the edit window, if I enter an abbreviation, the focus
+[scroll position] resets to the top of the page even though the text cursor
+position remains with the replaced text. This means I have to scroll back
+down to the bottom of the window to continue editing.
+
+Another odd thing is that not all of my abbreviations cause this behavior.
+The ones that trigger this behavior all have a REPLACE TEXT block. Without
+this block, the abbreviation works as expected.
+
+This appears to be new behavior as I don't see this with Leo 4. Also, on my
+other Win7 machine with Python 2.7 and PyQt 4, it does the same thing (Leo
+5).</t>
+<t tx="ekr.20141124033239.4"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

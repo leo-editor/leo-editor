@@ -21702,10 +21702,10 @@ in ``about:config`` in Firefox.
     - A pluggable architecture for @auto nodes.
     - The style-reload command changes Leo's appearance instantly.
 * Important new plugins for tagging, display and node evaluation.
-#@+node:ekr.20141120113801.6: *4* Leo 5.0-final release notes
-Leo 5.0 final              November 22, 2014
+#@+node:ekr.20141120113801.6: *4* Leo 5.0-rc1 release notes
+Leo 5.0 release candidate 1              November 24, 2014
 
-Leo 5.0 final is now available at:
+Leo 5.0rc1 is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
 This release fixes several installation issues
@@ -21945,6 +21945,22 @@ rst3 tutorial.
 
 #@+node:ekr.20141120113801.23: *5* Bugs fixed
 Over 70 bugs have been fixed.
+#@+node:ekr.20141124033239.2: *6* Bugs fixed in 5.0rc1
+#@+node:ekr.20141124033239.3: *7* Fixed scrolling problem when expanding abbreviations
+
+When editing at the end of a large block of text where all of the body text
+does not fit in the edit window, if I enter an abbreviation, the focus
+[scroll position] resets to the top of the page even though the text cursor
+position remains with the replaced text. This means I have to scroll back
+down to the bottom of the window to continue editing.
+
+Another odd thing is that not all of my abbreviations cause this behavior.
+The ones that trigger this behavior all have a REPLACE TEXT block. Without
+this block, the abbreviation works as expected.
+
+This appears to be new behavior as I don't see this with Leo 4. Also, on my
+other Win7 machine with Python 2.7 and PyQt 4, it does the same thing (Leo
+5).
 #@+node:ekr.20141120113801.24: *6* Bugs fixed in 5.0b2
 #@+node:ekr.20141120113801.25: *7* Fixed bug  38: autocompleter gives a strange traceback
 https://github.com/leo-editor/leo-editor/issues/38
@@ -24764,7 +24780,7 @@ https://bugs.launchpad.net/leo-editor/+bug/1258373
 #@+node:ekr.20141113102829.67: *8* Fixed bug 1260415: exception writing external files" is insufficient
 https://bugs.launchpad.net/leo-editor/+bug/1260415
 Added more informative error messages
-#@+node:ekr.20141113102829.68: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter 
+#@+node:ekr.20141113102829.68: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter
 https://bugs.launchpad.net/leo-editor/+bug/1264350
 #@+node:ekr.20141113102829.69: *8* Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input
 https://bugs.launchpad.net/leo-editor/+bug/1267921
@@ -26254,7 +26270,7 @@ to use @language, as in your example with @nosent trees.
 #@+node:ekr.20141113102829.230: *7* Eliminated cycle-all-focus command
 Replaced by new focus-to-find and focus-to-spell commands.
 #@+node:ekr.20141113102829.172: *7* Removed stand-alone globals
-#@+node:ekr.20141113102829.153: *5* Plugins & leo/external 
+#@+node:ekr.20141113102829.153: *5* Plugins & leo/external
 #@+node:ekr.20141113102829.154: *6* Added livecode plugin
 Then livecode-show command shows the live code evaluation pane. Hover on
 the buttons for helpful tool-tips.
