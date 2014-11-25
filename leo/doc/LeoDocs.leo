@@ -23334,9 +23334,6 @@ The fixes were to several methods of the PersistenceDataController class.
 Leo 5.0-final is now available at:
 http://sourceforge.net/projects/leo/files/Leo/
 
-This release fixes several installation issues
-and updates installation instructions for Linux/Ubuntu.
-
 Leo is a PIM, an IDE and an outliner.
 Video tutorials: http://leoeditor.com/screencasts.html
 Text tutorials: http://leoeditor.com/tutorial.html
