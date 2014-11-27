@@ -145,7 +145,7 @@ def init():
     ok = not g.app.unitTesting
     if ok:
         # Register the handlers...
-        g.registerHandler("icondclick1",onIconDoubleClick)
+        g.registerHandler("headdclick1",onIconDoubleClick)
         g.registerHandler("headkey2",onHeadKey)
         g.plugin_signon(__name__)
 
@@ -195,23 +195,27 @@ def onIconDoubleClick(tag,keywords):
 def onHeadKey(tag,keywords):
     """Write template for the entry in body pane.
 
-    If body pane is empty, get template for the entry from a dictionary 'templates ' and write it in the body pane."""
-    # checking for duplicate keys will be also done in this function (to be implemented).
+    If body pane is empty, get template for the entry from a dictionary
+    'templates ' and write it in the body pane.
+    
+    20141127 - note headkey2 now only fires on `Enter`, no need
+    to check which key brought us here.    
+    """
+    # checking for duplicate keys will be also done in this function (to be
+    # implemented).
 
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
     h = v.h.strip()
-    ch = keywords.get("ch")
-    if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.b):
+    if h[:h.find(' ')] in templates.keys() and not v.b:
         for p in v.parents():
             if p.h[:8] == '@bibtex ':
                 #@+<< write template >>
                 #@+node:timo.20050215232157: *3* << write template >>
                 c.setBodyString(v,templates[h[:h.find(' ')]])
-                c.frame.body.setInsertPoint('1.16')
+                c.frame.body.wrapper.setInsertPoint(16)
                 return
                 #@-<< write template >>
-
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
