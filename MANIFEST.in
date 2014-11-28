@@ -1,17 +1,25 @@
-include *.TXT
+#We don't need manifest any more if we want to install everything from the source.
+#For example, these files will be part of the sources tarball (sdist)
+#But not installed with pip install or part of a bdist_dumb archive
 include launchLeo.py
 include profileLeo.py
-include pylint-leo.bat
 include pylint-leo.py
-recursive-exclude leo *.pyc *.pyo
+#This would only be usefull to add some more files to source tarball,
+#but without installing them.
+#include *.TXT
+#include launchLeo.py
+#include profileLeo.py
+#include pylint-leo.bat
+#include pylint-leo.py
+#recursive-exclude leo *.pyc *.pyo
 
 # same as data_pat in setup.py
-recursive-include leo *.tix *.GIF *.dbm *.conf *.TXT *.xml *.gif *.leo *.def *.svg *.ini *.six *.bat *.cat *.pro *.sh *.xsl *.bmp *.js *.ui *.rix *.pmsp  *.pyd *.png *.alg *.php *.css *.ico *.txt *.html  *.iix  *.w  *.json
+#recursive-include leo *.tix *.GIF *.dbm *.conf *.TXT *.xml *.gif *.leo *.def *.svg *.ini *.six *.bat *.cat *.pro *.sh *.xsl *.bmp *.js *.ui *.rix *.pmsp  *.pyd *.png *.alg *.php *.css *.ico *.txt *.html  *.iix  *.w  *.json
 
-# same as scrub_datafiles in setup.py
-prune leo/extensions 
-prune leo/test
-prune leo/plugins/test
-prune leo/doc/html
-prune leo/__pycache__
-prune leo/*/__pycache__
+#same as scrub_datafiles in setup.py
+#prune leo/extensions 
+#prune leo/test
+#prune leo/plugins/test
+#prune leo/doc/html
+#prune leo/__pycache__
+#prune leo/*/__pycache__
