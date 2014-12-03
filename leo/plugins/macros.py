@@ -103,38 +103,31 @@ class paramClass:
         body = c.frame.body
         w = body.wrapper
         current = c.currentVnode()
-
         if not self.params:
             self.params = self.findParameters(current)
             if not self.params: return
-
-        sr = s = body.getAllText()
+        sr = s = w.getAllText()
         sr = sr.split('\n')
-
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         sr = sr[row]
         sr = sr[:col]
         sr = sr.rstrip()
-        
         match = self.regex.search(sr)
         if not match:
             g.trace(self.regex)
             g.trace('no match',repr(sr))
             return
-
         sr = sr [match.start(): match.end()]
         for z in range(current.numberOfChildren()):
             child = current.nthChild(z)
             if child.headString == sr:
                 return
-
         pieces = sr.split('(',1)
         searchline = pieces [0] + ">>"
         pieces [1] = pieces [1].rstrip('>')
         pieces [1] = pieces [1].rstrip(')')
         sections = pieces [1].split(',')
-
         node = None
         for z in range(self.params.numberOfChildren()):
             child = self.params.nthChild(z)
@@ -142,7 +135,6 @@ class paramClass:
                 node = child
                 break
             return
-
         bodys = node.b
         v = current.insertAsNthChild(0) #,tn)
         v.setBodyString(bodys)
