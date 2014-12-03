@@ -12,6 +12,7 @@ In Python 3 there is no 'unicode' function.
 - A big collapse in complexity in g.reportBadChars.
 - Added an important guard in g.ue for Python 3.
 
+.. @+node:ekr.20141203092457.19: *3* Fixed Python3 compatibility bug in g.pause
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

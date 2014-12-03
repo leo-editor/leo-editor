@@ -1517,7 +1517,7 @@ def pause (s):
 
     g.pr(s)
     i = 0
-    n = long(1000) * long(1000)
+    n = 1000 * 1000 if g.isPython3 else long(1000) * long(1000)
     while i < n:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
