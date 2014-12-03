@@ -4749,57 +4749,17 @@ def isWordChar (ch):
 def isWordChar1 (ch):
 
     return ch and (ch.isalpha() or ch == '_')
-#@+node:ekr.20031218072017.1501: *4* g.reportBadChars
+#@+node:ekr.20031218072017.1501: *4* g.reportBadChars & helpers
 def reportBadChars (s,encoding):
-
-    trace = False and not g.unitTesting
-    errors = 0
-    if g.isPython3:
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.error(s2)
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.error(s2)
+    '''Report problems converting between encoded and decoded (unicode) strings.'''
+    if g.unitTesting:
+        return
+    elif g.isUnicode(s):
+        g.error("Error converting %s from unicode to %s encoding" % (
+            s.encode(encoding,'replace'),encoding))
     else:
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.error(s2)
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.error(s2)
-    if trace and not errors:
-        g.es_exception()
+        g.error("Error converting %s from %s encoding to unicode" % (
+            s.decode(encoding,'replace'),encoding))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
 def stripBOM(s):
     
@@ -4831,7 +4791,6 @@ def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
     if encoding is None:
         encoding = 'utf-8'
-
     if g.isUnicode(s):
         try:
             s = s.encode(encoding,"strict")
@@ -4874,7 +4833,7 @@ if isPython3: # g.not defined yet.
     def u(s):
         return s
     def ue(s,encoding):
-        return str(s,encoding)
+        return s if g.isUnicode(s) else str(s,encoding)
 else:
     def u(s):
         return unicode(s)
@@ -6738,8 +6697,7 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
-    if g.isPython3: f = str
-    else: f = unicode
+    f = str if g.isPython3 else unicode
     if s is None:
         s = g.u('')
     if not g.isUnicode(s):

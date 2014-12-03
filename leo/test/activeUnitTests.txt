@@ -1137,24 +1137,16 @@ else:
 #@+node:ekr.20071113145804.23: *3* @test g.reportBadChars
 @first # -*- coding: utf-8 -*-
 
-if g.isPython3:
-    table = (
-        ('aĂbĂ',    'ascii'),
-        ('炰',       'ascii'),
-        ('aĂbĂ',    'utf-8'),
-        ('炰',       'utf-8'),
-    ) 
-else:
-    table = (
-        ('aĂbĂ',                    'ascii'),
-        (g.ue('aĂbĂ','utf-8'),      'ascii'),
-        ('炰',                       'ascii'),
-        (g.ue('炰','utf-8'),         'ascii'),
-        ('aĂbĂ',                     'utf-8'),
-        (g.ue('aĂbĂ','utf-8'),       'utf-8'),
-        ('炰',                       'utf-8'),
-        (g.ue('炰','utf-8'),         'utf-8'),
-    )
+table = (
+    ('aĂbĂ',                    'ascii'),
+    (g.ue('aĂbĂ','utf-8'),      'ascii'),
+    ('炰',                       'ascii'),
+    (g.ue('炰','utf-8'),         'ascii'),
+    ('aĂbĂ',                     'utf-8'),
+    (g.ue('aĂbĂ','utf-8'),       'utf-8'),
+    ('炰',                       'utf-8'),
+    (g.ue('炰','utf-8'),         'utf-8'),
+)
 for s,encoding in table:
     g.reportBadChars(s,encoding)
 #@+node:ekr.20100204053330.5367: *3* @test koi8-r encoding

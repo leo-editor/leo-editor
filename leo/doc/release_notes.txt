@@ -21942,6 +21942,25 @@ rst3 tutorial.
 
 #@+node:ekr.20141120113801.23: *5* Bugs fixed
 Over 70 bugs have been fixed.
+#@+node:ekr.20141203092457.10: *6* Bugs fixed in 5.0 final
+#@+node:ekr.20141203092457.11: *7* Removed *trailing* whitespace for import compares
+#@+node:ekr.20141203092457.12: *7* Don't horizontally scroll when pasting large text
+#@+node:ekr.20141203092457.13: *7* Fixed dart coloring
+#@+node:ekr.20141203092457.14: *7* Fixed bug 1158269: viewrendered pane goes blank when url clicked
+https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
+
+Clicking on a url link in a viewrendered pane causes the viewrendered pane
+to completely blank. The action successfully launches a browser. Then if I
+clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
+alt-x vr command, a detached blank python window is launched. The only way
+to get the viewrendered panel to be embedded in leo is to restart.
+#@+node:ekr.20141203092457.16: *7* Status line fields are now read-only
+#@+node:ekr.20141203092457.17: *7* Fixed markdown unit test
+The unit test created an unwanted @auto node.
+The fix was to ic.create_top_node.
+The fix also affected other importer tests.
+#@+node:ekr.20141203092457.18: *7* Fixed sessions crash
 #@+node:ekr.20141124033239.2: *6* Bugs fixed in 5.0rc1
 #@+node:ekr.20141124033239.3: *7* Fixed scrolling problem when expanding abbreviations
 When editing at the end of a large block of text where all of the body text

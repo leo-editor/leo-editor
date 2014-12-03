@@ -3,78 +3,15 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141117162102.2: ** 5.0 final
-.. @+node:ekr.20141117074620.1: *3* Removed *trailing* whitespace for import compares
-.. @+node:ekr.20141117073519.10: *3* Don't horizontally scroll when pasting large text
-.. @+node:ekr.20141116105945.6: *3* Fixed dart coloring
-.. @+node:ekr.20141112094313.4: *3* Fixed bug 1158269: viewrendered pane goes blank when url clicked
-https://bugs.launchpad.net/leo-editor/+bug/1158269
-viewrendered pane goes blank when url clicked.
+.. @+node:ekr.20141203092457.6: ** Leo 5.0.1
+.. @+node:ekr.20141203092457.5: *3* Fixed bug in g.reportBadChars
+https://groups.google.com/forum/#!topic/leo-editor/X9rePlT6Meg
 
-Clicking on a url link in a viewrendered pane causes the viewrendered pane
-to completely blank. The action successfully launches a browser. Then if I
-clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
-alt-x vr command, a detached blank python window is launched. The only way
-to get the viewrendered panel to be embedded in leo is to restart.
-.. @+node:ekr.20141109160640.8: *3* Can't fix bug 99: MacOs custom hotkey can not work on 1st call
-@language rest
+In Python 3 there is no 'unicode' function.
 
-https://github.com/leo-editor/leo-editor/issues/99
+- A big collapse in complexity in g.reportBadChars.
+- Added an important guard in g.ue for Python 3.
 
-Binding to Ctrl-. does not work on the Mac::
-
-    delete-node = Ctrl-.
-    
-Worse, this standard key binding does not work on the Mac::
-
-    clone-node = Ctrl-`
-    
-There is no obvious way to fix these problems: Leo never gets a key event.
-Presumably MacOS handles these keys before passing them to Leo.
-
-The workaround is to pick other bindings.  For example::
-
-    delete-node = Ctrl-,
-
-
-
-.. @+node:ekr.20141119060722.3: *3* Status line fields are now read-only
-.. @+node:ekr.20141112070001.6: *3* Fixed markdown unit test
-The unit test created an unwanted @auto node.
-The fix was to ic.create_top_node.
-The fix also affected other importer tests.
-.. @+node:ekr.20141120061623.5: *3* ** Fixed sessions crash
-a Leo URI in focused node causes trouble on restore.
-
-focus a node with a uri headline:
-file://data.leo#data.leo-->Sandbox-->1000
-
-save and close Leo file
-
-reopen with --session-restore option and Leo says:
-
-(venv)ktenney@lappy:~/develop$ Traceback (most recent call last):
-  File "/home/ktenney/venv/bin/leo", line 9, in <module>
-    load_entry_point('leo==5.0b1', 'gui_scripts', 'leo')()
-  File "/var/fetching/leo-editor/leo/core/runLeo.py", line 81, in run
-    g.app.loadManager.load(fileName,pymacs)
-  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 1956, in load
-    ok = lm.doPostPluginsInit()
-  File "/var/fetching/leo-editor/leo/core/leoApp.py", line 2298, in
-doPostPluginsInit
-    aList = m.load_snapshot()
-  File "/var/fetching/leo-editor/leo/core/leoSessions.py", line 89, in
-load_snapshot
-    session = json.loads(f.read())
-  File "/usr/lib/python2.7/json/__init__.py", line 338, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python2.7/json/decoder.py", line 366, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python2.7/json/decoder.py", line 384, in raw_decode
-    raise ValueError("No JSON object could be decoded")
-ValueError: No JSON object could be decoded
-
-[1]+  Exit 1                  leo --session-save --session-restore
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
