@@ -1146,7 +1146,8 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
+expanded="ekr.20141120113801.23,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141105050314.25"></v>
@@ -1171,6 +1172,15 @@
 <v t="ekr.20141120113801.22"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 </v>
 <v t="ekr.20141120113801.23"><vh>Bugs fixed</vh>
+<v t="ekr.20141203092457.10"><vh>Bugs fixed in 5.0 final</vh>
+<v t="ekr.20141203092457.11"><vh>Removed *trailing* whitespace for import compares</vh></v>
+<v t="ekr.20141203092457.12"><vh>Don't horizontally scroll when pasting large text</vh></v>
+<v t="ekr.20141203092457.13"><vh>Fixed dart coloring</vh></v>
+<v t="ekr.20141203092457.14"><vh>Fixed bug 1158269: viewrendered pane goes blank when url clicked</vh></v>
+<v t="ekr.20141203092457.16"><vh>Status line fields are now read-only</vh></v>
+<v t="ekr.20141203092457.17"><vh>Fixed markdown unit test</vh></v>
+<v t="ekr.20141203092457.18"><vh>Fixed sessions crash</vh></v>
+</v>
 <v t="ekr.20141124033239.2"><vh>Bugs fixed in 5.0rc1</vh>
 <v t="ekr.20141124033239.3"><vh>Fixed scrolling problem when expanding abbreviations</vh></v>
 </v>
@@ -23662,6 +23672,25 @@ open, and the nodes focused as when the previous session ended.
 
 Leo stores session state in ~/.leo/leo.session
 </t>
+<t tx="ekr.20141203092457.10"></t>
+<t tx="ekr.20141203092457.11"></t>
+<t tx="ekr.20141203092457.12"></t>
+<t tx="ekr.20141203092457.13"></t>
+<t tx="ekr.20141203092457.14">https://bugs.launchpad.net/leo-editor/+bug/1158269
+viewrendered pane goes blank when url clicked.
+
+Clicking on a url link in a viewrendered pane causes the viewrendered pane
+to completely blank. The action successfully launches a browser. Then if I
+clear the viewrendered pane (right-click, Remove 1 Right) and repeat the
+alt-x vr command, a detached blank python window is launched. The only way
+to get the viewrendered panel to be embedded in leo is to restart.
+</t>
+<t tx="ekr.20141203092457.16"></t>
+<t tx="ekr.20141203092457.17">The unit test created an unwanted @auto node.
+The fix was to ic.create_top_node.
+The fix also affected other importer tests.
+</t>
+<t tx="ekr.20141203092457.18"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
