@@ -530,7 +530,7 @@ def reportBadChars (s,encoding):
         elif g.isChar(s):
             for ch in s:
                 # try: unicode(ch,encoding,"strict")
-                # 2012/04/20: use str instead of str.
+                # 2012/04/20: use str instead of unicode.
                 try: str(ch)
                 except Exception: errors += 1
             if errors:
