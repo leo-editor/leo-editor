@@ -1,0 +1,4 @@
+[submodule "leo/external/ckeditor"]
+	path = leo/external/ckeditor
+	url = git://github.com/ckeditor/ckeditor-releases.git
+	branch = full/latest
