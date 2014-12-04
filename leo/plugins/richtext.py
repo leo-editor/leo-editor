@@ -60,7 +60,7 @@ To make a button to toggle the editor on and off, use::
 #@+<< imports >>
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets,QtWebKitWidgets
 if isQt5:
     from PyQt5 import QtWebKit
 else:
@@ -95,7 +95,7 @@ class CKEEditor(QtWidgets.QWidget):
         self.c = kwargs['c']
         
         del kwargs['c']
-        QtGui.QWidget.__init__(self, *args, **kwargs)
+        QtWidgets.QWidget.__init__(self, *args, **kwargs)
         
         # were we opened by an @ rich node? Calling code will set
         self.at_rich = False
@@ -127,14 +127,14 @@ class CKEEditor(QtWidgets.QWidget):
             self.config = '\n'.join(self.config).strip()
 
         # make widget containing QWebView    
-        self.setLayout(QtGui.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setSpacing(0)
         self.layout().setContentsMargins(0,0,0,0)
         # enable inspector
         QtWebKit.QWebSettings.globalSettings().setAttribute(
             QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
 
-        self.webview = QtWebKit.QWebView()
+        self.webview = QtWebKitWidgets.QWebView()
         self.layout().addWidget(self.webview)
         
         g.registerHandler('select3', self.select_node)
@@ -239,7 +239,7 @@ class CKEEditor(QtWidgets.QWidget):
         self.c = None
         g.unregisterHandler('select3', self.select_node)
         g.unregisterHandler('unselect1', self.unselect_node)
-        return QtGui.QWidget.close(self)
+        return QtWidgets.QWidget.close(self)
     #@-others
 #@+node:tbrown.20130813134319.5694: ** class CKEPaneProvider
 class CKEPaneProvider:
