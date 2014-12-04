@@ -4103,6 +4103,9 @@ def importModule (moduleName,pluginName=None,verbose=False):
     Try to import a module as Python's import command does.
 
     moduleName is the module's name, without file extension.
+    
+    This function first attempts to import from sys.modules,
+    then from the extensions and external directories.
     '''
     # Important: g is Null during startup.
     trace = g.app.trace_plugins and not g.unitTesting
