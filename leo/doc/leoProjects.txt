@@ -13,6 +13,17 @@ In Python 3 there is no 'unicode' function.
 - Added an important guard in g.ue for Python 3.
 
 .. @+node:ekr.20141203092457.19: *3* Fixed Python3 compatibility bug in g.pause
+.. @+node:ekr.20141205082137.4: *3* Fixed bug 108: can't write spellpyx.txt
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/108
+
+The plugin tries to create a new file inside the install path, and doesn't
+have the permission.
+
+Is there a way to configure the path of this spellpyx.txt to, say, $HOME/.leo?
+
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

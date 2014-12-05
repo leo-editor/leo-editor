@@ -10638,9 +10638,7 @@ class EnchantClass:
     #@+others
     #@+node:ekr.20100904095239.5916: *4*  __init__ (EnchantClass)
     def __init__ (self,c):
-
         """Ctor for the EnchantClass class."""
-
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
         # Set the base language
@@ -10649,10 +10647,19 @@ class EnchantClass:
             g.es_print('Using "en_US" instead')
             language = 'en_US'
         # Compute fn, the full path to the local dictionary.
-        fn = g.os_path_finalize(
-            c.config.getString('enchant_local_dictionary') or
-            os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
+        fn = c.config.getString('enchant_local_dictionary')
+        if not fn:
+            fn = g.os_path_finalize_join(g.app.loadDir,"..","plugins",'spellpyx.txt')
+        # Fix bug https://github.com/leo-editor/leo-editor/issues/108
+        if not g.os_path_exists(fn):
+            fn = g.os_path_finalize_join(g.app.homeDir,'.leo','spellpyx.txt')
         self.open_dict(fn,language)
+    #@+node:ekr.20100904095239.5927: *4* add
+    def add (self,word):
+
+        '''Add a word to the user dictionary.'''
+
+        self.d.add(word)
     #@+node:ekr.20130116142831.10185: *4* clean_dict
     def clean_dict (self,fn):
         
@@ -10670,8 +10677,10 @@ class EnchantClass:
                 f.close()
     #@+node:ekr.20130915181927.11293: *4* create
     def create (self,fn):
-        
         '''Create the given file with empty contents.'''
+        theDir = g.os_path_dirname(fn)
+        g.makeAllNonExistentDirectories(theDir,c=self.c,force=True,verbose=True)
+            # Make the directories as needed.
         try:
             f = open(fn,mode='wb')
             f.close()
@@ -10681,21 +10690,20 @@ class EnchantClass:
         except Exception:
             g.error('unexpected error creating: %s' % (fn))
             g.es_exception()
-    #@+node:ekr.20100904095239.5927: *4* add
-    def add (self,word):
-
-        '''Add a word to the user dictionary.'''
-
-        self.d.add(word)
     #@+node:ekr.20100904095239.5928: *4* ignore
     def ignore (self,word):
 
         self.d.add_to_session(word)
     #@+node:ekr.20130915181927.11294: *4* open_dict
     def open_dict(self,fn,language):
-        
         '''Open or create the dict with the given fn.'''
+        trace = False and not g.unitTesting
         if not fn or not language:
+            return
+        d = g.app.spellDict
+        if d:
+            self.d = d
+            if trace: g.trace('already open',self.c.fileName(),fn)
             return
         if not g.os_path_exists(fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized.
@@ -10705,6 +10713,7 @@ class EnchantClass:
             try:
                 self.clean_dict(fn)
                 self.d = enchant.DictWithPWL(language,fn)
+                if trace: g.trace('open',g.shortFileName(self.c.fileName()),fn)
             except Exception:
                 g.es_exception()
                 g.error('not a valid dictionary file',fn)
@@ -10712,6 +10721,8 @@ class EnchantClass:
         else:
             # A fallback.  Unlikely to happen.
             self.d = enchant.Dict(language)
+        # Use only a single copy of the dict.
+        g.app.spellDict = self.d
     #@+node:ekr.20100904095239.5920: *4* processWord
     def processWord(self, word):
 

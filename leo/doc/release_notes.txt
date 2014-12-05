@@ -21987,7 +21987,7 @@ Fixed at 614817a, October 26, 2014.
 https://github.com/leo-editor/leo-editor/issues/101
 
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-Cancelling save of dirty untitled commander doesn't work with --ipython
+Canceling save of dirty untitled commander doesn't work with --ipython
 Works for me.
 
 https://bugs.launchpad.net/leo-editor/+bug/1258512
