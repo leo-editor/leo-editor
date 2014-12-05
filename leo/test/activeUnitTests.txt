@@ -1134,8 +1134,10 @@ else:
     s = g.ue('炰','utf-8')
     s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
     assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-#@+node:ekr.20071113145804.23: *3* @test g.reportBadChars
+#@+node:ekr.20071113145804.23: *3* @@test g.reportBadChars
 @first # -*- coding: utf-8 -*-
+
+# g.reportBadChars no longer exists.
 
 table = (
     ('aĂbĂ',                    'ascii'),

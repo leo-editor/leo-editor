@@ -512,99 +512,40 @@ def isValidEncoding (encoding):
         return False
     except AttributeError: # Linux.
         return False
-#@+node:ekr.20110310093050.14285: *5* reportBadChars (codewise)
-def reportBadChars (s,encoding):
-
-    if g.isPython3:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                print(s2)
-        elif g.isChar(s):
-            for ch in s:
-                # try: unicode(ch,encoding,"strict")
-                # 2012/04/20: use str instead of unicode.
-                try: str(ch)
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors,str(encoding),
-                    # unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    print(s2)
-    else:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                print("%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace')))
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                print("%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace')))
 #@+node:ekr.20110310093050.14286: *5* toEncodedString (codewise)
 def toEncodedString (s,encoding='utf-8',reportErrors=False):
-
+    '''Convert unicode string to an encoded string.'''
+    if not g.isUnicode(s):
+        return s
     if encoding is None:
         encoding = 'utf-8'
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
+    try:
+        s = s.encode(encoding,"strict")
+    except UnicodeError:
+        s = s.encode(encoding,"replace")
+        if reportErrors:
+            g.error("Error converting %s from unicode to %s encoding" % (s,encoding))
     return s
 #@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode (s,encoding='utf-8',reportErrors=False):
-
-    # The encoding is usually 'utf-8'
-    # but is may be different while importing or reading files.
-    if encoding is None:
+    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    if g.isUnicode(s):
+        return s
+    if not encoding:
         encoding = 'utf-8'
-
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
-    else:
-        pass
-
+    try:
+        s = s.decode(encoding,'strict')
+    except UnicodeError:
+        s = s.decode(encoding,'replace')
+        if reportErrors:
+            g.error("Error converting %s from %s encoding to unicode" % (s,encoding))
     return s
 #@+node:ekr.20110310093050.14288: *5* u & ue (codewise)
 if isPython3: # g.not defined yet.
     def u(s):
         return s
     def ue(s,encoding):
-        return str(s,encoding)
+        return s if g.isUnicode(s) else str(s,encoding)
 else:
     def u(s):
         return unicode(s)

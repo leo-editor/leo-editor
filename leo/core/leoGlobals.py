@@ -4752,17 +4752,6 @@ def isWordChar (ch):
 def isWordChar1 (ch):
 
     return ch and (ch.isalpha() or ch == '_')
-#@+node:ekr.20031218072017.1501: *4* g.reportBadChars & helpers
-def reportBadChars (s,encoding):
-    '''Report problems converting between encoded and decoded (unicode) strings.'''
-    if g.unitTesting:
-        return
-    elif g.isUnicode(s):
-        g.error("Error converting %s from unicode to %s encoding" % (
-            s.encode(encoding,'replace'),encoding))
-    else:
-        g.error("Error converting %s from %s encoding to unicode" % (
-            s.decode(encoding,'replace'),encoding))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
 def stripBOM(s):
     
@@ -4791,45 +4780,31 @@ def stripBOM(s):
     return None,s
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString (s,encoding='utf-8',reportErrors=False):
-
+    '''Convert unicode string to an encoded string.'''
+    if not g.isUnicode(s):
+        return s
     if encoding is None:
         encoding = 'utf-8'
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
+    try:
+        s = s.encode(encoding,"strict")
+    except UnicodeError:
+        s = s.encode(encoding,"replace")
+        if reportErrors:
+            g.error("Error converting %s from unicode to %s encoding" % (s,encoding))
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode (s,encoding='utf-8',reportErrors=False):
-
-    # The encoding is usually 'utf-8'
-    # but it may be different while importing or reading files.
+    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    if g.isUnicode(s):
+        return s
     if not encoding:
         encoding = 'utf-8'
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        # except (UnicodeError,UnicodeDecodeError,Exception):
-        except Exception:
-            try:
-                s = f(s,encoding,'replace')
-                if reportErrors: g.reportBadChars(s,encoding)
-            except Exception:
-                g.error('can not convert to unicode!',g.callers())
-                g.es_exception()
-                s = ''
-    else:
-        pass
+    try:
+        s = s.decode(encoding,'strict')
+    except UnicodeError:
+        s = s.decode(encoding,'replace')
+        if reportErrors:
+            g.error("Error converting %s from %s encoding to unicode" % (s,encoding))
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
 if isPython3: # g.not defined yet.
@@ -6685,20 +6660,20 @@ def getTestVars ():
     return c,p and p.copy()
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
-
+    '''For unit testing: convert s to an encoded string and return (s,ok).'''
     ok = True
-
     if g.isUnicode(s):
         try:
             s = s.encode(encoding,"strict")
-        except Exception:
-            if reportErrors: g.reportBadChars(s,encoding)
+        except UnicodeError:
             s = s.encode(encoding,"replace")
+            if reportErrors:
+                g.error("Error converting %s from unicode to %s encoding" % (s,encoding))
             ok = False
     return s, ok
 #@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
-
+    '''For unit testing: convert s to unicode and return (s,ok).'''
     ok = True
     f = str if g.isPython3 else unicode
     if s is None:
@@ -6706,10 +6681,10 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
     if not g.isUnicode(s):
         try:
             s = f(s,encoding,'strict')
-        except Exception:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
+        except UnicodeError:
             s = f(s,encoding,'replace')
+            if reportErrors:
+                g.error("Error converting %s from %s encoding to unicode" % (s,encoding))
             ok = False
     return s,ok
 #@+node:ekr.20120311151914.9916: ** g.Urls
