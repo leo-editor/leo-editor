@@ -1161,7 +1161,7 @@ class StyleSheetManager:
     def expand_css_constants(self,sheet,font_size_delta=None):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c
         if 1:
             constants = {}

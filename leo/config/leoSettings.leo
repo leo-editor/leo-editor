@@ -155,11 +155,8 @@
 </v>
 <v t="ekr.20140912075503.19283"><vh>Outline colors</vh>
 <v t="ekr.20140915194122.23437"><vh>Basic outline colors</vh>
-<v t="ekr.20140915194122.23426"><vh>@color tree-item-selected-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19284"><vh>@color tree-fg = black</vh></v>
 <v t="ekr.20140912075503.19285"><vh>@color tree-bg = @LeoYellow</vh></v>
-<v t="ekr.20140912075503.19286"><vh>@color tree-sel-fg = black</vh></v>
-<v t="ekr.20140912075503.19287"><vh>@color tree-sel-bg = lightgrey</vh></v>
 </v>
 <v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
 <v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
@@ -168,9 +165,10 @@
 <v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
 </v>
 <v t="ekr.20140912075503.19301"><vh>Colors for headlines that are *not* being edited</vh>
-<v t="ekr.20140912075503.19302"><vh>@color edit-label-border = 2px</vh></v>
-<v t="ekr.20140912075503.19303"><vh>@color edit-label-margin = 2px</vh></v>
-<v t="ekr.20140912075503.19304"><vh>@color edit-label-bg = @LeoYellow</vh></v>
+<v t="ekr.20140912075503.19302"><vh>@@string edit-label-border = 2px</vh></v>
+<v t="ekr.20140912075503.19303"><vh>@@string edit-label-margin = 2px</vh></v>
+<v t="ekr.20140912075503.19304"><vh>@color edit-label-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20141204160426.5"><vh>@color edit-label-fg = black</vh></v>
 </v>
 </v>
 <v t="ekr.20140915194122.24238"><vh>Plugin colors (deprecated)</vh>
@@ -352,7 +350,6 @@
 <v t="ekr.20140915194122.19460"><vh>Focus borders</vh></v>
 <v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
 <v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
 <v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
@@ -363,6 +360,7 @@
 <v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
 <v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane stylesheet</vh></v>
 </v>
 </v>
 </v>
@@ -9192,8 +9190,6 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19283"></t>
 <t tx="ekr.20140912075503.19284"></t>
 <t tx="ekr.20140912075503.19285"></t>
-<t tx="ekr.20140912075503.19286"></t>
-<t tx="ekr.20140912075503.19287"></t>
 <t tx="ekr.20140912075503.19288"></t>
 <t tx="ekr.20140912075503.19289"></t>
 <t tx="ekr.20140912075503.19290"></t>
@@ -9212,7 +9208,7 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19301"></t>
 <t tx="ekr.20140912075503.19302"></t>
 <t tx="ekr.20140912075503.19303"></t>
-<t tx="ekr.20140912075503.19304"></t>
+<t tx="ekr.20140912075503.19304">Was @LeoYellow</t>
 <t tx="ekr.20140912075503.19305"></t>
 <t tx="ekr.20140912075503.19306"></t>
 <t tx="ekr.20140912075503.19307"></t>
@@ -9581,20 +9577,19 @@ QLineEdit#status1, QLineEdit#status2 {
 <t tx="ekr.20140915194122.19474">/* ========== Outline pane ========== */
 
 QTreeWidget {
-    /* The selected item, but not to editing items. */
+    /* Outline pane defaults. */
     color:                      @tree-fg;
     background-color:           @tree-bg;
-    selection-color:            @tree-sel-fg;
-    selection-background-color: @tree-sel-bg;
     font-family:                @tree-font-family;
     font-size:                  @tree-font-size;
     font-weight:                @tree-font-weight;
     font-style:                 @tree-font-style;
     show-decoration-selected:   1 /* 1: select entire row */
- }
+}
 
 QTreeWidget QLineEdit {
-    /* Headlines when they **are** being edited. */
+    /* Headlines when they *are* being edited. */
+    color:                      @head-fg;
     background-color:           @head-bg;
     selection-color:            @head-sel-fg; 
     selection-background-color: @head-sel-bg;
@@ -9604,21 +9599,15 @@ QTreeWidget QLineEdit {
     font-style:                 @head-font-style;
 }
 
-QLineEdit#editorLabel {
-    /* Headlines when they are **not** being edited. */
-    border:             @edit-label-border;
-    margin:             @edit-label-margin;
+QTreeWidget::item:selected {
+    /* Headlines when they selected but *not* edited. */
+    color:              @edit-label-fg;
     background-color:   @edit-label-bg;
     font-family:        @edit-label-font-family;
     font-size:          @edit-label-font-size;
     font-weight:        @edit-label-font-weight;
     font-style:         @edit-label-font-style;
 }
-
-QTreeView::item:selected {
-    background-color:   @tree-item-selected-bg;
-}
-
 </t>
 <t tx="ekr.20140915194122.19475">/* Vim mode borders... */
 
@@ -9639,7 +9628,6 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 <t tx="ekr.20140915194122.23418"></t>
 <t tx="ekr.20140915194122.23422"></t>
 <t tx="ekr.20140915194122.23424"></t>
-<t tx="ekr.20140915194122.23426"></t>
 <t tx="ekr.20140915194122.23427"></t>
 <t tx="ekr.20140915194122.23428"># All other fonts are defined in terms of these basic fonts.
 # Changing the basic fonts are all that most users will want to do.</t>
@@ -9721,6 +9709,7 @@ False:  Use the newly-improved legacy beautify code.
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141112072219.2"></t>
+<t tx="ekr.20141204160426.5">New.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
