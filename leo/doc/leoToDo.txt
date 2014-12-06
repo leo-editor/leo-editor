@@ -11,6 +11,20 @@ https://github.com/leo-editor/leo-editor/issues/106
 https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
 
 Do this after creating official release.
+.. @+node:ekr.20141206050611.8: ** Fix bug 78: find-next match not always scrolled into view
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+Here is how to make it happen:
+
+Open leoPy.leo
+select @file ../external/PythonTidy.py
+search for print (whole word)
+The first match shows properly (it doesn't scroll).
+The second match does *not* scroll properly.
+
+@language python
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
