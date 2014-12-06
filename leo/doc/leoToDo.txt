@@ -3,14 +3,6 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/106
-
-https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-
-Do this after creating official release.
 .. @+node:ekr.20141206050611.8: ** Fix bug 78: find-next match not always scrolled into view
 @language rest
 
@@ -25,6 +17,21 @@ The first match shows properly (it doesn't scroll).
 The second match does *not* scroll properly.
 
 @language python
+.. @+node:ekr.20141206050611.6: ** Fix/improve recursive import
+@language rest
+
+- Fix bug: @file nodes aren't put in the correct places.
+- Option to generate @@file (or @@nosent)
+- Option to generate @nosent
+- Generate @path statements relative to base.
+.. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/106
+
+https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
+
+Do this after creating official release.
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
