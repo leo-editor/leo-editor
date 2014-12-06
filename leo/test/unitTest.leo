@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.59">
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.59">
 	<global_window_position top="95" left="571" height="929" width="1307"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>

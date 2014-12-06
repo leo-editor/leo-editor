@@ -969,84 +969,20 @@ try:
 except SyntaxError:
     pass
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
-import os
-
-# The files in leoGuiPlugins.leo.
-guiPluginsList = (
-    'cursesGui',
-    # These are now in leo/plugins/obsolete.
-    # 'ironPythonGui','swing_gui','tkGui','wxGui',
-)
-
-passList = (
-    '__init__','FileActions',
-    'active_path','add_directives','attrib_edit',
-    'backlink','baseNativeTree','bibtex','bookmarks',
-    'codewisecompleter','colorize_headlines','contextmenu',
-    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    # 'detect_urls',
-    'dtest','empty_leo_file','enable_gc','initinclass',
-    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
-    # 'leoN',
-    'leoOPML','leoremote','lineNumbers',
-    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
-    'mod_scripting','mod_speedups','mod_timestamp',
-    'nav_qt','niceNosent','nodeActions',
-    'open_shell','outline_export','quit_leo',
-    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qt_main','qt_quicksearch','qt_commands',
-    'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
-    'screenshots',
-    # 'scrolledmessage',
-    'setHomeDirectory','slideshow','spydershell','startfile',
-    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
-    'vim','xemacs',
-)
-core_files = (
-    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
-    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
-    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
-    'leoPlugins','leoShadow','leoTangle','leoUndo',
-)
-external_files = (
-    'lproto',
-    # 'ipy_leo', now in leo/external/obsolete.
-    'PythonTidy',
-)
-
-recent = (
-    #'leo_interface',
-)
-
-# The files in scripts.leo.
-scriptsList = (
-    'convert_to_shadow','leoFindScript','LinixInstall',
-    'tangle_done','untangle_done',
-)
-
-table = (
-    ('plugins',recent),
-    ('plugins',passList),
-    ('plugins',guiPluginsList),
-    ('core',core_files),
-    ('external',external_files),
-    ('scripts',scriptsList),
-)
-files = []
-for theDir,aList in table:
+import glob
+failed,n = [],0
+for theDir in ('core','external','plugins','scripts'):
+    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+    assert g.os_path_exists(path),path
+    aList = glob.glob(g.os_path_join(path,'*.py'))
     for z in aList:
-        if not z.endswith('.py'): z = z + '.py'
-        fn = os.path.abspath(os.path.join(g.app.loadDir,'..',theDir,z))
-        if os.path.exists(fn): files.append(fn)
-        else: print('*** (%s) file not found: %s' % (p.h,fn))
-
-failed = []
-for z in files:
-    fn = g.shortFileName(z)
-    s,e = g.readFileIntoString(z)
-    if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-        failed.append(fn)
-
+        n += 1
+        fn = g.shortFileName(z)
+        # print('%8s %s' % (theDir,fn))
+        s,e = g.readFileIntoString(z)
+        if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+            failed.append(z)
+# print('tested %s files' % n)
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 #@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
 fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')

@@ -10,7 +10,7 @@ import tempfile
 
 # -i : ask python interpreter to stay open when done, to see messages
 params = "-i {} ".format(' '.join(sys.argv[1:]))
-print params
+print(params)
 
 #@+others
 #@+node:maphew.20130613230258.2803: ** UAC Elevation
@@ -23,11 +23,11 @@ def elevate(params):
     lpDirectory = tempfile.gettempdir() # working dir
     nShowCmd = 1            # window visibility, must be 1 for Leo.
     
-    print lpFile, lpParameters
+    print(lpFile, lpParameters)
     #g.es(lpFile, lpParameters)
     retcode = ctypes.windll.shell32.ShellExecuteA(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd)
     msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
-    print msg 
+    print(msg)
     #g.es(msg)
     
 #@-others
