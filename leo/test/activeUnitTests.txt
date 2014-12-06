@@ -970,19 +970,21 @@ except SyntaxError:
     pass
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
 import glob
+trace = False
 failed,n = [],0
-for theDir in ('core','external','plugins','scripts'):
+for theDir in ('core','external','extensions','plugins','scripts','test'):
+    if trace: print(theDir)
     path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
     assert g.os_path_exists(path),path
     aList = glob.glob(g.os_path_join(path,'*.py'))
     for z in aList:
         n += 1
         fn = g.shortFileName(z)
-        # print('%8s %s' % (theDir,fn))
+        # if trace: print('%8s %s' % (theDir,fn))
         s,e = g.readFileIntoString(z)
         if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
             failed.append(z)
-# print('tested %s files' % n)
+if trace: print('tested %s files' % n)
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 #@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
 fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
