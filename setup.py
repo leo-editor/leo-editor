@@ -112,7 +112,7 @@ if not simple:
         '.css', '.ico', '*.txt', '.html',  '.iix',  '.w',
         '*.json'
     ]
-#print data_files
+#print(data_files)
 #@-others
 long_description = get_long_description()
 setup(

@@ -1286,8 +1286,7 @@ class Comments(dict):
         lines = merge_concatenated_strings(lines)
         for (token_type, token_string, start, end, line) in lines:
             if DEBUG:
-                print (token.tok_name)[token_type], token_string, start, \
-                    end, line
+                print (token.tok_name[token_type], token_string, start, end, line)
             (self.max_lineno, scol) = start
             (erow, ecol) = end
             if token_type in [tokenize.COMMENT, tokenize.NL]:
@@ -5193,9 +5192,9 @@ class NodeYield(Node):
 #@+node:ekr.20141010141310.19067: ** main
 def main():
     if DEBUG:
-        print 'Begin doctests.'
+        print('Begin doctests.')
         doctest.testmod()
-        print '  End doctests.'
+        print('  End doctests.')
     if len(sys.argv) > 1:
         file_in = sys.argv[1]
     else:

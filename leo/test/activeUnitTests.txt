@@ -1011,6 +1011,7 @@ core_files = (
 external_files = (
     'lproto',
     # 'ipy_leo', now in leo/external/obsolete.
+    'PythonTidy',
 )
 
 recent = (
