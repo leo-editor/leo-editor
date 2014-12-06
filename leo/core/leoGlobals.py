@@ -4783,7 +4783,7 @@ def toEncodedString (s,encoding='utf-8',reportErrors=False):
     '''Convert unicode string to an encoded string.'''
     if not g.isUnicode(s):
         return s
-    if encoding is None:
+    if not encoding:
         encoding = 'utf-8'
     try:
         s = s.encode(encoding,"strict")
