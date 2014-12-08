@@ -11203,6 +11203,11 @@ path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
 assert not g.os_path_exists(path)
 module = g.importFromPath ('xyz',path,verbose=False)
 assert not module,repr(module)
+#@+node:ekr.20141208130803.11: *4* @test g.importModule
+assert g.importModule('codewise',verbose=False)
+    # Top-level .py file.
+assert g.importModule('rope',verbose=False)
+    # In a folder.
 #@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
