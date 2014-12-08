@@ -2,3 +2,6 @@
 	path = leo/external/ckeditor
 	url = git://github.com/ckeditor/ckeditor-releases.git
 	branch = full/latest
+[submodule "leo\\external\\rope"]
+	path = leo\\external\\rope
+	url = https://github.com/python-rope/rope.git
