@@ -2876,7 +2876,7 @@ Note: The 'initially' prefix is needed to distinguish this setting from
 enable-autocompleter command. Otherwised they would get 'munged' to the same
 configuration value.</t>
 <t tx="ekr.20060216170801"></t>
-<t tx="ekr.20060303075452">The following commands are will be useful for operating Leo without a mouse.
+<t tx="ekr.20060303075452">The following commands are useful for operating Leo without a mouse.
 
 Clicks
 
