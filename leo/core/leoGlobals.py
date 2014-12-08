@@ -4102,7 +4102,8 @@ def importModule (moduleName,pluginName=None,verbose=False):
     then from the extensions and external directories.
     '''
     # Important: g is Null during startup.
-    trace = g.app.trace_plugins and not g.unitTesting
+    trace = (False or g.app.trace_plugins) and not g.unitTesting
+    # if moduleName == 'rope': g.pdb()
     module = sys.modules.get(moduleName)
     if module:
         return module
@@ -4115,9 +4116,9 @@ def importModule (moduleName,pluginName=None,verbose=False):
             # so search extensions and external directories here explicitly.
             for findPath in (None,'extensions','external'):
                 if findPath:
-                    findPath2 = g.os_path_finalize_join(
-                        g.app.loadDir,'..',findPath)
-                    findPath = [findPath2]
+                    findPath2 = g.os_path_finalize_join(g.app.loadDir,'..',findPath)
+                    findPath3 = g.os_path_finalize_join(findPath2,moduleName)
+                    findPath = [findPath2,findPath3]
                 if trace and verbose: g.trace('findPath',findPath)
                 try:
                     data = imp.find_module(moduleName,findPath) # This can open the file.
