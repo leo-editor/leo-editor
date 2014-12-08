@@ -746,11 +746,11 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
     def setXScrollPosition(self,pos):
         '''Set the position of the horizontal scrollbar.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self
-        if pos is None: pos = 0
-        if trace: g.trace(pos,g.callers())
-        sb = w.horizontalScrollBar()
-        sb.setSliderPosition(pos)
+        if pos is not None:
+            w = self
+            if trace: g.trace(pos)
+            sb = w.horizontalScrollBar()
+            sb.setSliderPosition(pos)
     #@+node:ekr.20111002125540.7021: *3* lqtb.get/setYScrollPosition
     def getYScrollPosition(self):
         '''Get the vertical scrollbar position.'''
@@ -1587,7 +1587,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self,pos):
         '''Set the position of the horizonatl scrollbar.'''
-        trace = (True or g.trace_scroll) and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
         if pos is not None:
             w = self.widget
             if trace: g.trace(pos,g.callers())
