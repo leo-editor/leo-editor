@@ -38,11 +38,7 @@ if new_keys:
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
-no_scroll = False
-    # True: disable all calls to w.setYScrollPosition.
-no_see = False
-    # True: disable all calls to w.see and w.seeInsertPoint.
-    
+
 # Switches to trace the garbage collector.
 trace_gc = False           
 trace_gc_calls = False    
@@ -51,9 +47,7 @@ trace_gc_inited = False
 
 # Other tracing options...
 trace_scroll = False
-    # Trace calls to get/setYScrollPosition
-trace_see = False
-    # Trace calls to see and setInsertPoint.
+    # Trace calls to get/setYScrollPosition.
 trace_minibuffer = False
 trace_modes = False
 

@@ -745,17 +745,12 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
 
     def setXScrollPosition(self,pos):
         '''Set the position of the horizontal scrollbar.'''
-        trace = (True or g.trace_scroll) and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self
-        if g.no_scroll:
-            if trace: g.trace('no scroll')
-            return
-        elif pos is None:
-            if trace: g.trace('None')
-        else:
-            if trace: g.trace(pos,g.callers())
-            sb = w.horizontalScrollBar()
-            sb.setSliderPosition(pos)
+        if pos is None: pos = 0
+        if trace: g.trace(pos,g.callers())
+        sb = w.horizontalScrollBar()
+        sb.setSliderPosition(pos)
     #@+node:ekr.20111002125540.7021: *3* lqtb.get/setYScrollPosition
     def getYScrollPosition(self):
         '''Get the vertical scrollbar position.'''
@@ -770,15 +765,10 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         '''Set the position of the vertical scrollbar.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
         w = self
-        if g.no_scroll:
-            if trace: g.trace('no scroll')
-            return
-        elif pos is None:
-            if trace: g.trace('None')
-        else:
-            if trace: g.trace(pos,g.callers())
-            sb = w.verticalScrollBar()
-            sb.setSliderPosition(pos)
+        if pos is None: pos = 0
+        if trace: g.trace(pos)
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
     #@+node:ekr.20120925061642.13506: *3* lqtb.onSliderChanged
     def onSliderChanged(self,arg):
         '''Handle a Qt onSliderChanged event.'''
@@ -1351,7 +1341,7 @@ class QTextEditWrapper(QTextMixin):
 
     def getYScrollPosition(self):
         '''QTextEditWrapper: Get the vertical scrollbar position.'''
-        trace = False and g.trace_scroll and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
@@ -1382,12 +1372,7 @@ class QTextEditWrapper(QTextMixin):
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
         '''QTextEditWrapper.'''
         trace = False and not g.unitTesting
-        verbose = True
         w = self.widget
-        if trace:
-            g.trace(kind,'extend',extend)
-            if verbose:
-                g.trace(len(w.toPlainText()))
         tc = QtGui.QTextCursor
         d = {
             'exchange': True, # Dummy.
@@ -1419,6 +1404,7 @@ class QTextEditWrapper(QTextMixin):
             w.moveCursor(op,mode)
         # 2012/03/25.  Add this common code.
         self.seeInsertPoint()
+        if trace: g.trace(kind,'extend',extend,'yscroll',w.getYScrollPosition())
         self.rememberSelectionAndScroll()
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
@@ -1489,28 +1475,27 @@ class QTextEditWrapper(QTextMixin):
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18090: *4* qtew.see & seeInsertPoint
     def see(self,i):
-
-        trace = g.trace_see and not g.unitTesting
-
-        if g.no_see:
-            pass
-        else:
-            if trace: g.trace(i,g.callers(2))
-            self.widget.ensureCursorVisible()
+        '''Make sure position i is visible.'''
+        trace = False and not g.unitTesting
+        w = self.widget
+        if trace:
+            cursor = w.textCursor()
+            g.trace('i',i,'pos',cursor.position())
+                # 'getInsertPoint',self.getInsertPoint())
+        w.ensureCursorVisible()
 
     def seeInsertPoint (self):
-
-        trace = g.trace_see and not g.unitTesting
-        if g.no_see:
-            pass
-        else:
-            if trace: g.trace(g.callers(2))
-            self.widget.ensureCursorVisible()
+        '''Make sure the insert point is visible.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(self.getInsertPoint())
+        self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
     def setAllText(self,s):
         '''Set the text of body pane.'''
+        trace = False and not g.unitTesting
         traceTime = False and not g.unitTesting
         c,w = self.c,self.widget
+        if trace: g.trace(len(s),c.p and c.p.h)
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         # Be careful: Scintilla doesn't have a colorer.
@@ -1543,6 +1528,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self,i,j,insert=None,s=None):
         '''Set the selection range and the insert point.'''
+        trace = False and not g.unitTesting
         traceTime = False and not g.unitTesting
         # Part 1
         if traceTime: t1 = time.time()
@@ -1581,18 +1567,16 @@ class QTextEditWrapper(QTextMixin):
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
             tc.setPosition(j)
             tc.setPosition(i,tc.KeepAnchor)
-            # g.trace('***',i,j,ins)
         w.setTextCursor(tc)
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins
-        if i > j: i,j = j,i
+        if i > j: i,j = j,i 
         assert(i<=j)
         v.selectionStart = i
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.verticalScrollBar().value()
-        # g.trace(spot,v.h)
-        # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
+        if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
         if traceTime:
             delta_t = time.time()-t2
             tot_t = time.time()-t1
@@ -1603,14 +1587,9 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self,pos):
         '''Set the position of the horizonatl scrollbar.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self.widget
-        if g.no_scroll:
-            if trace: g.trace('no scroll')
-            return
-        elif pos is None:
-            if trace: g.trace('None')
-        else:
+        trace = (True or g.trace_scroll) and not g.unitTesting
+        if pos is not None:
+            w = self.widget
             if trace: g.trace(pos,g.callers())
             sb = w.horizontalScrollBar()
             sb.setSliderPosition(pos)
@@ -1618,13 +1597,9 @@ class QTextEditWrapper(QTextMixin):
     def setYScrollPosition(self,pos):
         '''Set the vertical scrollbar position.'''
         trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self.widget
-        if g.no_scroll:
-            return
-        elif pos is None:
-            if trace: g.trace('None')
-        else:
-            if trace: g.trace(pos,g.callers())
+        if pos is not None:
+            w = self.widget
+            if trace: g.trace(pos)
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex

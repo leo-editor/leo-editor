@@ -24,6 +24,24 @@ have the permission.
 Is there a way to configure the path of this spellpyx.txt to, say, $HOME/.leo?
 
 @language python
+.. @+node:ekr.20141206050611.8: *3* Fixed bug 78: find-next match not always scrolled into view
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+The problem was in the PythonQSyntaxHighlighter class: it does not work
+*exactly* like QSyntaxHighlighter. The fix was to call w.seeInsertPoint()
+in pqsh.reformat_blocks_helper.
+
+Here is how to demonstrate the bug:
+
+- Open leoPy.leo
+- select @file ../external/PythonTidy.py
+- search for print (whole word)
+- The first match shows properly (it doesn't scroll).
+- The second match does *not* scroll properly.
+
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

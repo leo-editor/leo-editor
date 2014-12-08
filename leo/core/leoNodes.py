@@ -2404,18 +2404,16 @@ class VNodeBase (object):
         # This is very expensive for large text.
         if traceTime: t1 = time.time()
         if hasattr(body.wrapper,'setInsertPoint'):
-            w.setInsertPoint(ins,s=v._bodyString)
+            if trace and ins: g.trace('ins',ins,'spot',spot)
+            w.setInsertPoint(ins) ##### ,s=v._bodyString)
         if traceTime: 
             delta_t = time.time()-t1
             if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
-        if g.no_scroll:
-            return
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:
             w.setYScrollPosition(spot)
-        v.scrollBarSpot = spot
-        if trace: g.trace(spot,v.h)
+            v.scrollBarSpot = spot
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):

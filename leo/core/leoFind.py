@@ -1919,7 +1919,7 @@ class LeoFind:
         insert = min(pos,newpos) if self.reverse else max(pos,newpos)
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-        if trace: g.trace('in_headline',self.in_headline,p)
+        # if trace: g.trace('in_headline',self.in_headline,p.h)
         if c.sparse_find:
             c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:
@@ -1931,7 +1931,7 @@ class LeoFind:
             w = c.edit_widget(p)
         else:
             w = c.frame.body.wrapper
-            # Bug fix: 2012/11/26: *Always* do the full selection logic.
+            # *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
             c.selectPosition(p)
             c.bodyWantsFocus()
@@ -1939,13 +1939,13 @@ class LeoFind:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
             # assert w.getAllText() == p.b.replace('\r','')
+            if trace: g.trace('before',w.getYScrollPosition())
             w.setSelectionRange(pos,newpos,insert=insert)
             w.see(insert)
-            p.v.scrollBarSpot = None
-                # Fix bug 78: F3 find-next target not always highlighted
-                # Disable the scrolling in v.restoreCursorAndScroll
-            if trace: g.trace('p.b',len(p.b),'w.text',len(w.getAllText()),'sel',w.getSelectionRange())
+            if trace: g.trace('after',w.getYScrollPosition())
             c.outerUpdate()
+            if trace: g.trace('insert: %s sel: %s yscroll: %s' % (
+                insert,w.getSelectionRange(),w.getYScrollPosition()))
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
         return w # Support for isearch.

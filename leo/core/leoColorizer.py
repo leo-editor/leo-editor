@@ -24,10 +24,10 @@ import time
 #@+node:ekr.20140825132752.18554: ** << class PythonQSyntaxHighlighter >>
 class PythonQSyntaxHighlighter:
     '''
-    **Experimental** python implementation of QtGui.QSyntaxHighlighter.
+    Python implementation of QtGui.QSyntaxHighlighter.
     
-    This would allow incremental coloring of text at idle time, trading
-    slower overall speed for much faster response time.
+    This allows incremental coloring of text at idle time, trading slower
+    overall speed for much faster response time.
     '''
     #@+others
     #@+node:ekr.20140825132752.18561: *3* pqsh.Birth & death
@@ -78,6 +78,7 @@ class PythonQSyntaxHighlighter:
         if d and self.is_valid(block) and block.document() == d:
             self.rehighlightPending = d.rehighlightPending
             cursor = QtGui.QTextCursor(block)
+            g.trace(g.u(block.text()))
             self.rehighlight_helper(cursor,QtGui.QTextCursor.EndOfBlock)
             if self.rehighlightPending:
                 d.rehighlightPending = self.rehighlightPending
@@ -195,6 +196,7 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18592: *4* pqsh.delayedRehighlight
     def delayedRehighlight(self): # inline
         '''Queued rehighlight.'''
+        # g.trace('=====',self.rehighlightPending)
         if self.rehighlightPending:
             self.rehighlightPending = False
             self.rehighlight()
@@ -254,6 +256,13 @@ class PythonQSyntaxHighlighter:
             self.timer.start()
         elif self.timer:
             self.timer.stop()
+            # g.trace('-----end-----',self.c.p and self.c.p.h)
+            # Really fix bug 78: find-next match not always scrolled into view.
+            # https://github.com/leo-editor/leo-editor/issues/78
+            w = self.c.frame.body.wrapper
+            if w:
+                w.seeInsertPoint()
+
     #@+node:ekr.20140825132752.18560: *4* pqsh.reformatBlock
     def reformatBlock(self,block):
         trace = False and not g.unitTesting

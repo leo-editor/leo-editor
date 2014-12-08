@@ -14713,16 +14713,5 @@ def has_at_recovery_node(pd,root):
     '''
     p = pd.has_at_data_node(root)
     return p and g.findNodeInTree(pd.c,p,'@recovery')
-.. @+node:ekr.20031218072017.1501: *3* g.reportBadChars & helpers
-def reportBadChars (s,encoding):
-    '''Report problems converting between encoded and decoded (unicode) strings.'''
-    if g.unitTesting:
-        return
-    elif g.isUnicode(s):
-        g.error("Error converting %s from unicode to %s encoding" % (
-            s.encode(encoding,'replace'),encoding))
-    else:
-        g.error("Error converting %s from %s encoding to unicode" % (
-            s.decode(encoding,'replace'),encoding))
 .. @-all
 .. @-leo
