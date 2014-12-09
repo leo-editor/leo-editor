@@ -4,4 +4,4 @@
 	branch = full/latest
 [submodule "leo/external/rope"]
 	path = leo/external/rope
-	url = https://github.com/python-rope/rope.git
+	url = git://github.com/python-rope/rope.git
