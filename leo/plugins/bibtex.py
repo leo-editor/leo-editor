@@ -1,6 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:timo.20050213160555: * @file bibtex.py
-
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>
 r''' Manages BibTeX files with Leo.
@@ -61,18 +60,13 @@ valid BibTeX file.
 
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
+import leo.core.leoGlobals as g
 
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
-
-__version__ = "0.4" # Set version for the plugin handler.
 #@+<< change log >>
 #@+node:timo.20050213160555.2: ** <<change log>>
 #@@nocolor-node
 #@+at 
-# 
 # 
 # 0.1
 # - @bibtex nodes introduced, writing the contents in a BibTeX format.
@@ -94,29 +88,24 @@ __version__ = "0.4" # Set version for the plugin handler.
 # - Bugfix: templates now include commas after each field
 #   Timo Honkasalo 2005/03/02
 #@-<< change log >>
-#@+<< imports >>
-#@+node:timo.20050213193129: ** <<imports>>
-import leo.core.leoGlobals as g
-
-#@-<< imports >>
 #@+<< globals >>
 #@+node:timo.20050215183130: ** <<globals>>
-templates = {'@article':'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
-             '@book':'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
-             '@booklet':'title        = {}',
-             '@conference':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
-             '@inbook':'author       = {},\ntitle        = {},\nchapter      = {},\npublisher    = {},\nyear         = ',
-             '@incollection':'author       = {},\ntitle        = {},\nbooktitle    = {},\npublisher    = {},\nyear         = ',
-             '@inproceedings':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
-             '@manual':'title        = {},',
-             '@mastersthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
-             '@misc':'',
-             '@phdthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
-             '@proceedings':'title        = {},\nyear         = ',
-             '@techreport':'author       = {},\ntitle        = {},\ninstitution  = {},\nyear         = ',
-             '@unpublished':'author       = {},\ntitle        = {},\nnote         = {}'
-             }
-
+templates = {
+    '@article':'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
+    '@book':'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
+    '@booklet':'title        = {}',
+    '@conference':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
+    '@inbook':'author       = {},\ntitle        = {},\nchapter      = {},\npublisher    = {},\nyear         = ',
+    '@incollection':'author       = {},\ntitle        = {},\nbooktitle    = {},\npublisher    = {},\nyear         = ',
+    '@inproceedings':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
+    '@manual':'title        = {},',
+    '@mastersthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
+    '@misc':'',
+    '@phdthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
+    '@proceedings':'title        = {},\nyear         = ',
+    '@techreport':'author       = {},\ntitle        = {},\ninstitution  = {},\nyear         = ',
+    '@unpublished':'author       = {},\ntitle        = {},\nnote         = {}'
+    }
 entrytypes = list(templates.keys())
 entrytypes.append('@string') 
 #@-<< globals >>
@@ -148,7 +137,6 @@ def init():
         g.registerHandler("headdclick1",onIconDoubleClick)
         g.registerHandler("headkey2",onHeadKey)
         g.plugin_signon(__name__)
-
     return ok
 #@+node:timo.20050213160555.3: ** onIconDoubleClick
 #
@@ -170,7 +158,7 @@ def onIconDoubleClick(tag,keywords):
         if v.hasChildren():
             #@+<< write bibtex file >>
             #@+node:timo.20050213160555.6: *3* << write bibtex file >>
-            bibFile = file(fname,'w')
+            bibFile = open(fname,'w')
             writeTreeAsBibTex(bibFile, v, c)
 
             bibFile.close()
@@ -179,9 +167,9 @@ def onIconDoubleClick(tag,keywords):
         else:
             #@+<< read bibtex file >>
             #@+node:timo.20050214174623: *3* << read bibtex file >>
-            g.es('reading: ' + str(fname))
+            g.es('reading: ' + fname)
             try: 
-                bibFile = file(fname,'r')
+                bibFile = open(fname,'r')
             except IOError:
                 g.es('IOError: file not found')
                 return    
@@ -189,8 +177,6 @@ def onIconDoubleClick(tag,keywords):
 
             bibFile.close()
             #@-<< read bibtex file >>
-
-
 #@+node:timo.20050215222802: ** onHeadKey
 def onHeadKey(tag,keywords):
     """Write template for the entry in body pane.
@@ -201,9 +187,7 @@ def onHeadKey(tag,keywords):
     20141127 - note headkey2 now only fires on `Enter`, no need
     to check which key brought us here.    
     """
-    # checking for duplicate keys will be also done in this function (to be
-    # implemented).
-
+    # To do: check for duplicate keys here.
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
     h = v.h.strip()
@@ -219,13 +203,11 @@ def onHeadKey(tag,keywords):
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
-
     # body text of @bibtex node is ignored
     dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         encoding = g.app.config.default_derived_file_encoding
-
     strings = ''
     entries = ''
     # iterate over nodes in this tree
@@ -277,13 +259,14 @@ def readBibTexFileIntoTree(bibFile, c):
     p = c.p
     for i in biblist:
         v = p.insertAsLastChild()
-        c.setHeadString(v,str(i[0]))
-        c.setBodyString(v,str(i[1]))
+        c.setHeadString(v,g.toUnicode(i[0]))
+        c.setBodyString(v,g.toUnicode(i[1]))
 
 
 
 
 
 #@-others
-
+#@@language python
+#@@tabwidth -4
 #@-leo
