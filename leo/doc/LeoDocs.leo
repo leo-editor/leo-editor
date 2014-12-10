@@ -213,6 +213,7 @@
 <v t="ekr.20050830074815.15"><vh>Dan Winkler 2</vh></v>
 <v t="ekr.20050830074815.16"><vh>Dan Winkler 3</vh></v>
 <v t="ekr.20131025044901.17144"><vh>Steve Litt</vh></v>
+<v t="ekr.20141210095600.11"><vh>Dave Williams</vh></v>
 </v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh>
@@ -23690,6 +23691,23 @@ The fix was to ic.create_top_node.
 The fix also affected other importer tests.
 </t>
 <t tx="ekr.20141203092457.18"></t>
+<t tx="ekr.20141210095600.11">I am a microbiologist mostly analysing large numbers of bacteria
+genomes for which I use almost entirely Python tools. A couple of
+years ago while working at Yale University I gave Leo go for writing
+Python and organising my notes with.
+
+Not only do I now use Leo is a central repository for scripts I write
+as I explore the data, generate plots, start analyses with third party
+applications etc., but also for storing and organising ideas for
+research and notes parsed out of PDFs of academic papers. And that's
+just for work!
+
+I have a calendar, addresses all my general PIM-type info, and notes
+for any project I'm tinkering with. In short whether I'm at work or
+play Leo is usually involved :-)
+
+Dave Williams &lt;dave@d-dub.org.uk&gt;
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
