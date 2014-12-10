@@ -18,11 +18,6 @@ https://github.com/leo-editor/leo-editor/issues/106
 https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
 
 Do this after creating official release.
-.. @+node:ekr.20141208105807.4: ** Add Rope as a subproject
-# import rope ; print(rope)
-
-rope = g.importModule('rope',verbose=True)
-print(rope)
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry

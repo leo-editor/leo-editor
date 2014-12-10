@@ -42,6 +42,11 @@ Here is how to demonstrate the bug:
 - The second match does *not* scroll properly.
 
 @language python
+.. @+node:ekr.20141208105807.4: *3* Added external/rope folder
+# import rope ; print(rope)
+
+rope = g.importModule('rope',verbose=True)
+print(rope)
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
