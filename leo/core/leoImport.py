@@ -21,6 +21,8 @@ except ImportError:
 import glob
 import importlib
 import os
+import re
+
 if g.isPython3:
     import io
     StringIO = io.StringIO
@@ -28,6 +30,7 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 import time
+import urllib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
@@ -2029,6 +2032,86 @@ class RecursiveImportController:
             c.redraw(root)
         t2 = time.time()
         g.es('imported %s nodes in %2.2f sec' % (n,t2-t1))
+    #@-others
+#@+node:ekr.20141210051628.26: ** class ZimImportController
+class ZimImportController:
+    '''
+    A class to import Zim folders and files: http://zim-wiki.org/
+    
+    User options:
+        @int rst_level = 0
+        @string rst_type
+        @string zim_node_name
+        @string path_to_zim
+    
+    '''
+    #@+others
+    #@+node:ekr.20141210051628.31: *3* zic.__init__
+    def __init__(self,c):
+        '''Ctor for ZimImportController class.'''
+        self.c = c
+        # User options.
+        self.pathToZim = c.config.getString('path_to_zim')
+        self.rstLevel = c.config.getInt('rst_level') or 0
+        self.rstType = c.config.getString('rst_type') or 'rst'
+        self.zimNodeName = c.config.getString('zim_node_name') or 'Imported Zim Tree'
+    #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
+    def parseZimIndex(self):
+        """
+        Parse Zim wiki index.rst and return a list of tuples (level, name, path)
+        """
+        c = self.c
+        pathToZim = g.os_path_abspath(self.pathToZim)
+        pathToIndex = g.os_path_join(pathToZim,'index.rst')
+        if not g.os_path_exists(pathToIndex):
+            g.es('not found: %s' %(pathToIndex),color='red')
+            return None
+        index = open(pathToIndex).read()
+        # pylint: disable=anomalous-backslash-in-string
+        parse = re.findall('(\t*)-\s`(.+)\s<(.+)>`_',index)
+        if not parse:
+            g.es('invalid index: %s' %(pathToIndex), color='red')
+            return None
+        results = []
+        for result in parse:
+            level = len(result[0])
+            name = result[1].decode('utf-8')
+            path = [g.os_path_abspath(g.os_path_join(
+                pathToZim,urllib.unquote(result[2]).decode('utf-8')))]
+            results.append((level,name, path))
+        return results
+    #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild
+    def rstToLastChild(self,pos,name,rst):
+        """Import an rst file as a last child of pos node with the specified name"""
+        c = self.c
+        c.selectPosition(pos,enableRedrawFlag=False)
+        c.importCommands.importFilesCommand(rst,'@rst',redrawFlag=False)
+        rstNode = pos.getLastChild()
+        rstNode.h = name
+        return rstNode
+    #@+node:ekr.20141210051628.30: *3* zic.run
+    def run(self):
+        '''Create the zim node as the last top-level node.'''
+        c = self.c
+        # Make sure a path is given.
+        if not self.pathToZim:
+            g.es('Missing setting: @string path_to_zim',color='red')
+            return
+        root = c.rootPosition()
+        while root.hasNext():
+            root.moveToNext()
+        zimNode = root.insertAfter()
+        zimNode.h = self.zimNodeName
+        # Parse the index file
+        files = self.parseZimIndex()
+        if files:
+            # Do the import
+            rstNodes = {'0':zimNode,}
+            for level, name, rst in files:
+                if level == self.rstLevel:
+                    name = "%s %s" % (self.rstType,name)
+                rstNodes[str(level+1)] = self.rstToLastChild(rstNodes[str(level)],name,rst)
+            c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
