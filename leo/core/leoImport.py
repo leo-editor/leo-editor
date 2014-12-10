@@ -2038,6 +2038,8 @@ class ZimImportController:
     '''
     A class to import Zim folders and files: http://zim-wiki.org/
     
+    Original script by Davy Cottet.
+    
     User options:
         @int rst_level = 0
         @string rst_type
@@ -2114,6 +2116,21 @@ class ZimImportController:
             c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
+#@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
+@g.command('import-zim-folder')
+def import_zim_command(event):
+    '''
+    Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+    This command requires the following Leo settings::
+
+        @int rst_level = 0
+        @string rst_type
+        @string zim_node_name
+        @string path_to_zim
+    '''
+    c = event.get('c')
+    if c:
+        ZimImportController(c).run()
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
 def parse_body_command(event):
