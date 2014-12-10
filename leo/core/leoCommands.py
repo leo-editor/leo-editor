@@ -8408,6 +8408,7 @@ class Commands (object):
         safe_at_file=True,
         theTypes=None,
         use_at_edit=False,
+        use_at_nosent=False,
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -8421,6 +8422,8 @@ class Commands (object):
             theTypes        A list of file extensions to import.
                             None is equivalen to ['.py']
             use_at_edit     True: create @edit nodes instead of @file nodes.
+            use_at_nosent   True: create @nosent nodes instead of @file nodes.
+                            (only if use_at_edit is False).
             
         This method cleans imported files as follows:
 
@@ -8439,7 +8442,8 @@ class Commands (object):
                     one_file = one_file,
                     safe_at_file = safe_at_file,
                     theTypes = ['.py'] if theTypes is None else theTypes,
-                    use_at_edit=use_at_edit)
+                    use_at_edit=use_at_edit,
+                    use_at_nosent=use_at_nosent)
                 cc.run(dir_)
             finally:
                 c.redraw()

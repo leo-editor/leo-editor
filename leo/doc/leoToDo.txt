@@ -3,11 +3,6 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20141206050611.6: ** Improve recursive import
-@language rest
-
-- Option to generate @nosent or @@nosent.
-- Generate @path statements relative to base.
 .. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo
 @language rest
 

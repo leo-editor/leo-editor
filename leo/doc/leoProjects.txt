@@ -47,6 +47,10 @@ Here is how to demonstrate the bug:
 
 rope = g.importModule('rope',verbose=True)
 print(rope)
+.. @+node:ekr.20141206050611.6: *3* Improved recursive import command
+- Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
+- Added use_at_nosent keyword option to c.recursiveImport.
+- Contract all imported nodes.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

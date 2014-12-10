@@ -1645,7 +1645,13 @@ class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
-    def __init__ (self,c,one_file=False,theTypes=None,safe_at_file=True,use_at_edit=False):
+    def __init__ (self,c,
+        one_file=False,
+        theTypes=None,
+        safe_at_file=True,
+        use_at_edit=False,
+        use_at_nosent=False,
+    ):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.one_file = one_file
@@ -1653,6 +1659,7 @@ class RecursiveImportController:
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.use_at_edit = use_at_edit
+        self.use_at_nosent = use_at_nosent
     #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir
     def import_dir(self,root,dir_):
         '''Import selected files from dir_, a directory.'''
@@ -1681,12 +1688,13 @@ class RecursiveImportController:
         if files2:
             if self.one_file:
                 files2 = [files2[0]]
-            if self.use_at_edit:
+            if self.use_at_edit or self.use_at_nosent:
+                kind = '@edit' if self.use_at_edit else '@nosent'
                 for fn in files2:
                     parent = child or root
                     p = parent.insertAsLastChild()
                     p.h = fn.replace('\\','/')
-                    s,e = g.readFileIntoString(fn,encoding='utf-8',kind='@edit')
+                    s,e = g.readFileIntoString(fn,encoding='utf-8',kind=kind)
                     p.b = s
             else:
                 c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
@@ -1924,7 +1932,7 @@ class RecursiveImportController:
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        if not self.use_at_edit:
+        if not self.use_at_edit and not self.use_at_nosent:
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
         self.clear_dirty_bits(root.copy())
@@ -1952,9 +1960,7 @@ class RecursiveImportController:
                 p.h = s
     #@+node:ekr.20130823083943.12611: *4* minimize_headlines
     def minimize_headlines (self,p,prefix):
-        
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
-
         trace = False and not g.unitTesting
         # This could only happen during testing.
         if p.h.startswith('@'):
@@ -1968,15 +1974,17 @@ class RecursiveImportController:
             for p in p.children():
                 self.minimize_headlines(p,prefix)
         elif h2.find('/') <= 0 and ends_with_ext:
-            if h2.startswith('/'): h2 = h2[1:]
+            if h2.startswith('/'):
+                h2 = h2[1:]
             if self.use_at_edit:
                 p.h = '@edit %s' % (h2)
-            elif self.safe_at_file:
-                if trace: g.trace('@@file %s' % (h2))
-                p.h = '@@file %s' % (h2)
+            elif self.use_at_nosent:
+                p.h = '@nosent %s' % (h2)
             else:
-                if trace: g.trace('@file %s' % (h2))
                 p.h = '@file %s' % (h2)
+            if self.safe_at_file:
+                p.h = '@' + p.h
+            if trace: g.trace(p.h)
             # We never scan the children of @file nodes.
         else:
             if h2.startswith('/'): h2 = h2[1:]
@@ -2031,7 +2039,8 @@ class RecursiveImportController:
             g.es_exception()
         finally:
             g.app.disable_redraw = False
-            root.contract()
+            for p in root.self_and_subtree():
+                p.contract()
             c.redraw(root)
         t2 = time.time()
         g.es('imported %s nodes in %2.2f sec' % (n,t2-t1))
