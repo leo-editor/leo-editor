@@ -807,8 +807,9 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand & helper
     def importFilesCommand (self,files=None,treeType=None,redrawFlag=True):
         # Not a command.  It must *not* have an event arg.
-        c = self.c ; current = c.p
-        if not c or not current or not files: return
+        c,current = self.c,self.c.p
+        if not c or not current or not files:
+            return
         self.tab_width = self.getTabWidth()
         self.treeType = treeType
         if len(files) == 2:
@@ -818,7 +819,6 @@ class LeoImportCommands:
             p = self.createOutline(fn,current)
             if p: # createOutline may fail.
                 if not g.unitTesting: g.blue("imported",fn)
-                current = p # 2014/08/16
                 p.contract()
                 p.setDirty()
                 c.setChanged(True)
@@ -1675,6 +1675,9 @@ class RecursiveImportController:
             child = root.insertAsLastChild()
             child.h = dir_
             c.selectPosition(child,enableRedrawFlag=False)
+        if trace:
+            g.trace('files2...\n%s' % '\n'.join(files2))
+            g.trace('dirs...\n%s' % '\n'.join(dirs))
         if files2:
             if self.one_file:
                 files2 = [files2[0]]
