@@ -347,9 +347,9 @@
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
 <v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
-<v t="ekr.20140915194122.19460"><vh>Focus borders</vh></v>
 <v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
 <v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
 <v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
@@ -360,7 +360,6 @@
 <v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
 <v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane stylesheet</vh></v>
 </v>
 </v>
 </v>
@@ -1825,6 +1824,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20140917051508.19548"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9341,26 +9341,16 @@ QCheckBox, QRadioButton {
     font-size:      @checkbox-font-size;
 }
 </t>
-<t tx="ekr.20140915194122.19460">/* ========== Focused &amp; unfocused pane border highlighting ========== */
+<t tx="ekr.20140915194122.19461">/* ========== The log pane &amp; other text widgets ========== */
 
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
+QTextEdit:focus {
   border-color: @focused-border-focus-color; 
 }
-</t>
-<t tx="ekr.20140915194122.19461">/* ========== The log panes ========== 
-
-   Yes, all unmodified QTextEdit's are assumed to be in the log pane.
-*/
 
 QTextEdit {
+    border-color:               @focused-border-unfocus-color; 
+    border-style:               @focused-border-style;
+    border-width:               @focused-border-width; 
     background-color:           @log-bg;
     color:                      @log-fg;
     selection-color:            @log-sel-fg;
@@ -9578,6 +9568,9 @@ QLineEdit#status1, QLineEdit#status2 {
 
 QTreeWidget {
     /* Outline pane defaults. */
+    border-style:       @focused-border-style;
+    border-width:       @focused-border-width; 
+    border-color:       @focused-border-unfocus-color; 
     color:                      @tree-fg;
     background-color:           @tree-bg;
     font-family:                @tree-font-family;
@@ -9597,6 +9590,12 @@ QTreeWidget QLineEdit {
     font-size:                  @head-font-size; 
     font-weight:                @head-font-weight;
     font-style:                 @head-font-style;
+}
+
+QTreeWidget:focus {
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
 }
 
 QTreeWidget::item:selected {
