@@ -1,2 +1,4 @@
-def child():
+def spam():
+    pass
+def eggs():
     pass
