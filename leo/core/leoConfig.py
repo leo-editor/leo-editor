@@ -2265,7 +2265,7 @@ class SettingsTreeParser (ParserBaseClass):
 
         if kind is None: # Not an @x node. (New in Leo 4.4.4)
             pass
-        if kind == "settings":
+        elif kind == "settings":
             pass
         # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
         elif kind in self.basic_types and isNone:
