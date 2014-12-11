@@ -5750,6 +5750,7 @@ def actualColor(color):
         d = {} # No color translation
     else:
         d = {
+            None:   'log_text_foreground_color',
             'black':'log_text_foreground_color',
             'blue': 'log_warning_color',
             'red':  'log_error_color',
