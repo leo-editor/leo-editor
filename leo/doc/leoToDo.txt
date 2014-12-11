@@ -82,6 +82,8 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20141210123805.9: ** Support rope
+.. @+node:ekr.20130806211959.17377: ** Add coffeescript importer
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
@@ -1405,31 +1407,13 @@ The big picture:
 - The dog that isn't barking: newbies seem to be having an easier time learning Leo.
 - A gallery showing what rST & css can do in Leo.
 - Leo as a web app.
-.. @+node:ekr.20141109053526.7: *3* * First
+.. @+node:ekr.20140521095206.16728: *3* * Important
 .. @+node:ekr.20141108064630.19: *4* Resolve clone wars based on modification dates
 From: Joon Ro <joonpyro@gmail.com>
 
 I think it would make more sense if leo checks the file modification time
 when it makes decision which node is new, instead of just depending on the
 order of files in the outline.
-.. @+node:ekr.20140402091953.16863: *4* Add rope to Leo
-# http://rope.sourceforge.net/library.html
-
-import rope.base.project as project
-print(project)
-
-# myproject = project.Project('/path/to/myproject')
-.. @+node:ekr.20140521095206.16728: *3* * Important
-.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-Just yesterday I was looking into the CoffeeScript/XUL combination as
-part of my study of FireBug. JQuery looks at first glance like a more
-portable alternative.
-
-As I write this, I realize that Leo would benefit from a CoffeeScript
-importer.  I'll get on it :-)
-
 .. @+node:ekr.20130508084413.10631: *4* add g.etrace
 How easy is this to do?
 .. @+node:ekr.20120520055508.11873: *4* Add split-window commands
@@ -1438,8 +1422,7 @@ These would be an alternative to the Easter Egg interface.
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
 There is a way to allow clones *anywhere* in @file nodes and simplify Leo's
-read code in the process! This might be one of the defining features of Leo
-5.0.
+read code in the process!
 
 The idea is for the read code to treat *all* nodes exactly the same
 initially, regardless of whether they should actually be clones of each
