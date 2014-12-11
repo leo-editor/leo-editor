@@ -972,18 +972,28 @@ except SyntaxError:
 import glob
 trace = False
 failed,n = [],0
+skip_tuples = (
+    ('extensions','asciidoc.py'),
+)
+if g.isPython3:
+    skip_list = [g.os_path_finalize_join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+else:
+    skip_list = []
 for theDir in ('core','external','extensions','plugins','scripts','test'):
     if trace: print(theDir)
     path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
     assert g.os_path_exists(path),path
     aList = glob.glob(g.os_path_join(path,'*.py'))
     for z in aList:
-        n += 1
-        fn = g.shortFileName(z)
-        # if trace: print('%8s %s' % (theDir,fn))
-        s,e = g.readFileIntoString(z)
-        if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-            failed.append(z)
+        if z in skip_list:
+            pass # print('%s: skipped: %s' % (p.h,z))
+        else:
+            n += 1
+            fn = g.shortFileName(z)
+            # if trace: print('%8s %s' % (theDir,fn))
+            s,e = g.readFileIntoString(z)
+            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+                failed.append(z)
 if trace: print('tested %s files' % n)
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 #@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
