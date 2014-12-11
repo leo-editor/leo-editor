@@ -16,9 +16,13 @@ class OrgModeWriter(basewriter.BaseWriter):
         """Write all the *descendants* of an @auto-org-mode node."""
         at = self
         root_level = root.level()
+        first = root.firstChild()
         for p in root.subtree():
-            indent = p.level()-root_level
-            self.put('%s %s' % ('*'*indent,p.h))
+            if p == first and p.h == 'declarations':
+                pass
+            else:
+                indent = p.level()-root_level
+                self.put('%s %s' % ('*'*indent,p.h))
             for s in p.b.splitlines(False):
                 self.put(s)
         root.setVisited()
