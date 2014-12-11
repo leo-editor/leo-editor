@@ -347,7 +347,6 @@
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
 <v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
-<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
 <v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
@@ -360,6 +359,7 @@
 <v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
 <v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 </v>
 </v>
 </v>
