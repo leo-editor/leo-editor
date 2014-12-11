@@ -5741,11 +5741,8 @@ tr = translateString
 #@+node:EKR.20040612114220: ** g.Miscellaneous
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
 def actualColor(color):
-
-    if not g.app.log:
-        return color
-
-    c = g.app.log.c
+    '''Return the actual color corresponding to the requested color.'''
+    c = g.app.log and g.app.log.c
     if g.app.debug:
         d = {} # No color translation
     else:
@@ -5756,13 +5753,11 @@ def actualColor(color):
             'red':  'log_error_color',
         }
     setting = d.get(color)
-
-    # Bug fix: 2012/10/17: c.config may not yet exist.
+    # Be careful: c.config may not yet exist.
     if c and c.config and setting:
         color2 = c.config.getColor(setting)
     else:
         color2 = color
-
     # g.trace(color,color2)
     return color2
 #@+node:ekr.20060921100435: *3* g.CheckVersion & helpers
