@@ -51,6 +51,12 @@ print(rope)
 - Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
 - Added use_at_nosent keyword option to c.recursiveImport.
 - Contract all imported nodes.
+.. @+node:ekr.20141211065012.4: *3* Fixed bug 117: <Return> causes unwanted scrolling
+https://github.com/leo-editor/leo-editor/issues/117
+
+This was a side effect of fixing https://github.com/leo-editor/leo-editor/issues/78
+
+Added g.app.allow_see and related logic.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

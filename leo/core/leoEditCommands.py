@@ -5269,7 +5269,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         if trace:
             s = w.widget.toPlainText()
             g.trace(i,j,len(s),w)
-
+        # Fix bug 117: <Return> causes unwanted scrolling
+        g.app.allow_see = False
         if i != j:
             # No auto-indent if there is selected text.
             w.delete(i,j)
@@ -5278,14 +5279,12 @@ class EditCommandsClass (BaseEditCommandsClass):
         else:
             w.insert(i,ch)
             w.setInsertPoint(i+1)
-
             if (c.autoindent_in_nocolor or 
                 (c.frame.body.colorizer.useSyntaxColoring(p) and
                 undoType != "Change")
             ):
                 # No auto-indent if in @nocolor mode or after a Change command.
                 self.updateAutoIndent(p,w)
-
         w.seeInsertPoint()
     #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
     def updateAutoIndent (self,p,w):
