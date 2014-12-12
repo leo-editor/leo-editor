@@ -2107,34 +2107,38 @@ class ZimImportController:
     #@+node:davy.20141212140940.1: *3* zic.clean
     def clean(self,zimNode,rstType):
         """Clean useless nodes"""
-
-        for pos in zimNode.subtree_iter():
+        warning = 'Warning: this node is ignored when writing this file'
+        for p in zimNode.subtree_iter():
             # looking for useless bodies
-            if pos.hasFirstChild() and 'Warning: this node is ignored when writing this file' in pos.b:
-                child=pos.getFirstChild()
+            if p.hasFirstChild() and warning in p.b:
+                child = p.getFirstChild()
+                table = (
+                    "@rst-no-head %s declarations" % p.h.replace(' ','_'),
+                    "@rst-no-head %s declarations" % p.h.replace(rstType,'').strip().replace(' ','_'),
+                )
                 # Replace content with @rest-no-head first child (without title head) and delete it
-                if child.h in ("@rst-no-head %s declarations" % (pos.h.replace(' ','_')) , "@rst-no-head %s declarations" % (pos.h.replace(rstType,'').strip().replace(' ','_'))) :
-                    pos.b = '\n'.join(child.b.split('\n')[3:])
+                if child.h in table:
+                    p.b = '\n'.join(child.b.split('\n')[3:])
                     child.doDelete()
                     # Replace content of empty body parent node with first child with same name
-                elif (pos.h==child.h) or ("%s %s" % (rstType,pos.h) ==child.h):
+                elif p.h == child.h or ("%s %s" % (rstType,p.h) == child.h):
                     if not child.hasFirstChild():
-                        pos.b=child.b
+                        p.b = child.b
                         child.doDelete()
                     elif not child.hasNext():
-                        pos.b=child.b
-                        child.copyTreeFromSelfTo(pos)
+                        p.b = child.b
+                        child.copyTreeFromSelfTo(p)
                         child.doDelete()
-                    else :
-                        child.h='Introduction'
-            elif pos.hasFirstChild() and "@rst-no-head" in pos.h and pos.b=="":
-                child=pos.getFirstChild()
+                    else:
+                        child.h = 'Introduction'
+            elif p.hasFirstChild() and p.h.startswith("@rst-no-head") and not p.b.strip():
+                child = p.getFirstChild()
+                p_no_head = p.h.replace("@rst-no-head","").strip()
                 # Replace empty @rst-no-head by its same named chidren
-                if child.h ==pos.h.replace("@rst-no-head ","") and not child.hasFirstChild():
-                    pos.h=pos.h.replace("@rst-no-head ","")
-                    pos.b=child.b
+                if child.h.strip() == p_no_head and not child.hasFirstChild():
+                    p.h = p_no_head
+                    p.b = child.b
                     child.doDelete()
-     
     #@+node:ekr.20141210051628.30: *3* zic.run
     def run(self):
         '''Create the zim node as the last top-level node.'''
