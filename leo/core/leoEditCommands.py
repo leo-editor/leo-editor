@@ -5269,8 +5269,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         if trace:
             s = w.widget.toPlainText()
             g.trace(i,j,len(s),w)
-        # Fix bug 117: <Return> causes unwanted scrolling
-        g.app.allow_see = False
         if i != j:
             # No auto-indent if there is selected text.
             w.delete(i,j)

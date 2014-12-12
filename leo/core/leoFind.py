@@ -1942,6 +1942,9 @@ class LeoFind:
             if trace: g.trace('before',w.getYScrollPosition())
             w.setSelectionRange(pos,newpos,insert=insert)
             w.see(insert)
+            # Fix bug 78: find-next match not always scrolled into view.
+            # https://github.com/leo-editor/leo-editor/issues/78
+            g.app.allow_delayed_see = True
             if trace: g.trace('after',w.getYScrollPosition())
             c.outerUpdate()
             if trace: g.trace('insert: %s sel: %s yscroll: %s' % (

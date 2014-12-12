@@ -257,12 +257,12 @@ class PythonQSyntaxHighlighter:
         elif self.timer:
             self.timer.stop()
             # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
-            # Really fix bug 78: find-next match not always scrolled into view.
+            # Fix bug 78: find-next match not always scrolled into view.
             # https://github.com/leo-editor/leo-editor/issues/78
             w = self.c.frame.body.wrapper
-            if g.app.allow_see and w:
+            if g.app.allow_delayed_see and w:
                 w.seeInsertPoint()
-            g.app.allow_see = True
+            g.app.allow_delayed_see = False
     #@+node:ekr.20140825132752.18560: *4* pqsh.reformatBlock
     def reformatBlock(self,block):
         trace = False and not g.unitTesting

@@ -33,6 +33,8 @@ The problem was in the PythonQSyntaxHighlighter class: it does not work
 *exactly* like QSyntaxHighlighter. The fix was to call w.seeInsertPoint()
 in pqsh.reformat_blocks_helper.
 
+The fix now involves the g.app.all_delayed_see switch.
+
 Here is how to demonstrate the bug:
 
 - Open leoPy.leo
