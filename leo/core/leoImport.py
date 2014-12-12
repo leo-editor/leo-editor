@@ -2121,7 +2121,7 @@ class ZimImportController:
                     p.b = '\n'.join(child.b.split('\n')[3:])
                     child.doDelete()
                     # Replace content of empty body parent node with first child with same name
-                elif p.h == child.h or ("%s %s" % (rstType,p.h) == child.h):
+                elif p.h == child.h or ("%s %s" % (rstType,child.h) == p.h):
                     if not child.hasFirstChild():
                         p.b = child.b
                         child.doDelete()
