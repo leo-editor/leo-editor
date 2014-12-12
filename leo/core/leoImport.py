@@ -2121,7 +2121,7 @@ class ZimImportController:
                     p.b = '\n'.join(child.b.split('\n')[3:])
                     child.doDelete()
                     # Replace content of empty body parent node with first child with same name
-                elif p.h == child.h or ("%s %s" % (rstType,p.h) == child.h):
+                elif p.h == child.h or ("%s %s" % (rstType,child.h) == p.h):
                     if not child.hasFirstChild():
                         p.b = child.b
                         child.doDelete()
@@ -2139,6 +2139,11 @@ class ZimImportController:
                     p.h = p_no_head
                     p.b = child.b
                     child.doDelete()
+            elif p.h.startswith("@rst-no-head"):
+                lines=p.b.split('\n')
+                p.h=lines[1]
+                p.b='\n'.join(lines[3:])
+
     #@+node:ekr.20141210051628.30: *3* zic.run
     def run(self):
         '''Create the zim node as the last top-level node.'''
