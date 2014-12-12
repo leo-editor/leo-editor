@@ -2139,6 +2139,11 @@ class ZimImportController:
                     p.h = p_no_head
                     p.b = child.b
                     child.doDelete()
+            elif p.h.startswith("@rst-no-head"):
+                lines=p.b.split('\n')
+                p.h=lines[1]
+                p.b='\n'.join(lines[3:])
+
     #@+node:ekr.20141210051628.30: *3* zic.run
     def run(self):
         '''Create the zim node as the last top-level node.'''
