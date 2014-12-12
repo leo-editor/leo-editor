@@ -2049,6 +2049,7 @@ class RecursiveImportController:
 class ZimImportController:
     '''
     A class to import Zim folders and files: http://zim-wiki.org/
+    First use Zim to export your project to rst files.
     
     Original script by Davy Cottet.
     
@@ -2103,6 +2104,37 @@ class ZimImportController:
         rstNode = pos.getLastChild()
         rstNode.h = name
         return rstNode
+    #@+node:davy.20141212140940.1: *3* zic.clean
+    def clean(self,zimNode,rstType):
+        """Clean useless nodes"""
+
+        for pos in zimNode.subtree_iter():
+            # looking for useless bodies
+            if pos.hasFirstChild() and 'Warning: this node is ignored when writing this file' in pos.b:
+                child=pos.getFirstChild()
+                # Replace content with @rest-no-head first child (without title head) and delete it
+                if child.h in ("@rst-no-head %s declarations" % (pos.h.replace(' ','_')) , "@rst-no-head %s declarations" % (pos.h.replace(rstType,'').strip().replace(' ','_'))) :
+                    pos.b = '\n'.join(child.b.split('\n')[3:])
+                    child.doDelete()
+                    # Replace content of empty body parent node with first child with same name
+                elif (pos.h==child.h) or ("%s %s" % (rstType,pos.h) ==child.h):
+                    if not child.hasFirstChild():
+                        pos.b=child.b
+                        child.doDelete()
+                    elif not child.hasNext():
+                        pos.b=child.b
+                        child.copyTreeFromSelfTo(pos)
+                        child.doDelete()
+                    else :
+                        child.h='Introduction'
+            elif pos.hasFirstChild() and "@rst-no-head" in pos.h and pos.b=="":
+                child=pos.getFirstChild()
+                # Replace empty @rst-no-head by its same named chidren
+                if child.h ==pos.h.replace("@rst-no-head ","") and not child.hasFirstChild():
+                    pos.h=pos.h.replace("@rst-no-head ","")
+                    pos.b=child.b
+                    child.doDelete()
+     
     #@+node:ekr.20141210051628.30: *3* zic.run
     def run(self):
         '''Create the zim node as the last top-level node.'''
@@ -2125,6 +2157,12 @@ class ZimImportController:
                 if level == self.rstLevel:
                     name = "%s %s" % (self.rstType,name)
                 rstNodes[str(level+1)] = self.rstToLastChild(rstNodes[str(level)],name,rst)
+            # Clean nodes
+            g.es('Start cleaning process. Please wait...',color='blue')
+            self.clean(zimNode,self.rstType)
+            g.es('Done',color='blue')
+            # Select zimNode
+            c.selectPosition(zimNode)
             c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
