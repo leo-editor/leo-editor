@@ -42,7 +42,7 @@ viewrendered.py creates the following (``Alt-X``) commands:
 ..    displays the html source generated from reStructuredText, useful for
 ..    debugging
 
-``hide-rendering-pane``
+``vr-hide``
     Makes the rendering pane invisible, but does not destroy it.
 
 ``vr-lock`` and ``vr-unlock``
