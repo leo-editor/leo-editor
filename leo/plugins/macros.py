@@ -113,7 +113,7 @@ class ParamClass:
         # g.trace("self.pattern: %s" % self.pattern)
         self.regex = re.compile(self.pattern)
         self.addMenu() # Now gui-independent.
-    #@+node:ekr.20040916084945.1: *3* macros.parameterize
+    #@+node:ekr.20040916084945.1: *3* parameterize
     def parameterize (self,event=None):
         trace = True and not g.unitTesting
         c = self.c
