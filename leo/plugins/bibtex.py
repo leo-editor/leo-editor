@@ -160,7 +160,7 @@ def onHeadKey(tag,keywords):
         for p in p.parents():
             if p.h[:8] == '@bibtex ':
                 # write template
-                c.setBodyString(v,templates[h[:h.find(' ')]])
+                c.setBodyString(p,templates[h[:h.find(' ')]])
                 c.frame.body.wrapper.setInsertPoint(16)
                 return
 #@+node:timo.20050213160555.3: ** onIconDoubleClick
