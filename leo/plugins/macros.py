@@ -63,119 +63,128 @@ It's a lot easier to use than to explain!
 
 '''
 #@-<< docstring >>
-
+__version__ = "2.0" # BobS & EKR.
+#@+<< version history >>
+#@+node:ekr.20040916091520: ** << version history >>
+#@+at
+# 
+# 1.2 EKR:
+# - Converted to outline.
+# - Use g.angleBrackets to enclose lines with < < and > >.
+# - Use new instead of start2 hook.
+# - onCreate creates a new class for each commander.
+# - Removed all globals.
+# 1.3 EKR: Changed 'new_c' logic to 'c' logic.
+# 1.4 EKR: Replaced tree.begin/endUpdate by c.beginEndUpdate.
+# 1.5 EKR: Added event param to parameterize.
+# 1.6 EKR: imported leoNodes.
+# 1.7 Rich Ries: improved the docstring.
+# 1.8 EKR: Add the menu only for the tkinter gui.
+# 1.9 BobS: Revised self.pattern & added traces.
+# 2.0 EKR: Many code cleanups & fixed several crashers.
+#@-<< version history >>
 import leo.core.leoGlobals as g
 import re
-
+import pprint
 #@+others
 #@+node:ekr.20070302121133: ** init
 def init ():
-    '''Return True if the plugin has loaded successfully.'''
+    '''Return True if this plugin loaded correctly.'''
     # Ok for unit testing: adds command to Outline menu.
     g.registerHandler( ('new','menu2') ,onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag,keywords):
-
+    '''Create the per-commander instance of ParamClass.'''
     c = keywords.get("c")
     if c:
-        paramClass(c)
-#@+node:ekr.20040916091520.2: ** class paramClass
-class paramClass:
+        ParamClass(c)
+#@+node:ekr.20040916091520.2: ** class ParamClass
+class ParamClass:
 
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__
     def __init__ (self,c):
-
+        '''Ctor for ParamClass.'''
         self.c = c
-        self.body = c.frame.body
-        self.params = None
-        self.pattern = g.angleBrackets(r'\w*?\(([^,]*?,)*?([^,])+?\)') + '$'
+        # self.pattern = g.angleBrackets(r'\w*?\(([^,]*?,)*?([^,])+?\)') + '$'
+        self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
+        # g.trace("self.pattern: %s" % self.pattern)
         self.regex = re.compile(self.pattern)
-
         self.addMenu() # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* macros.parameterize
     def parameterize (self,event=None):
-
+        trace = True and not g.unitTesting
         c = self.c
-        tree = c.frame.tree
-        body = c.frame.body
-        w = body.wrapper
-        current = c.currentVnode()
-        if not self.params:
-            self.params = self.findParameters(current)
-            if not self.params: return
+        w = c.frame.body.wrapper
+        # EKR: always search for parms.
+        params = self.findParameters(c.p)
+        if not params:
+            return
         sr = s = w.getAllText()
+        if trace: g.trace("body: %s" % sr)
         sr = sr.split('\n')
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         sr = sr[row]
         sr = sr[:col]
         sr = sr.rstrip()
+        if trace: g.trace("regex search on: %s" % sr)
         match = self.regex.search(sr)
         if not match:
-            g.trace(self.regex)
-            g.trace('no match',repr(sr))
+            g.es("no match")
             return
         sr = sr [match.start(): match.end()]
-        for z in range(current.numberOfChildren()):
-            child = current.nthChild(z)
-            if child.headString == sr:
+        if trace: g.trace("found sr",sr)
+        for child in c.p.children():
+            if child.h == sr:
                 return
         pieces = sr.split('(',1)
         searchline = pieces [0] + ">>"
-        pieces [1] = pieces [1].rstrip('>')
-        pieces [1] = pieces [1].rstrip(')')
+        # EKR: added rstrip().
+        pieces [1] = pieces [1].rstrip().rstrip('>')
+        pieces [1] = pieces [1].rstrip().rstrip(')')
         sections = pieces [1].split(',')
+        if trace: g.trace(
+            "pieces: %s\n" % (pprint.pformat(pieces)),
+            "searchline: %s\n" % (searchline),
+            "sections: %s\n" % (pprint.pformat(sections)))
         node = None
-        for z in range(self.params.numberOfChildren()):
-            child = self.params.nthChild(z)
+        for child in params.children():
             if child.matchHeadline(searchline):
                 node = child
                 break
+        else:
+            if trace: g.trace('not found',searchline)
             return
-        bodys = node.b
-        v = current.insertAsNthChild(0) #,tn)
-        v.setBodyString(bodys)
-        v.setHeadString(sr)
-        for z in range(0,len(sections)):
-            head = g.angleBrackets(str(z+1)+"$")
-            bod = sections [z]
-            v.insertAsNthChild(0) #,t)
-            v.setBodyString(bod)
-            v.setHeadString(head)
+        c.setCurrentPosition(node)
+        if trace: g.trace("found: %s'\n%s" % (node.h,node.b))
+        for i in range(0,len(sections)):
+            p = c.p.insertAsNthChild(i)
+            p.b = sections [i]
+            p.h = g.angleBrackets(str(i+1)+"$")
         c.redraw()
     #@+node:ekr.20040916084945.2: *3* findParameters
-    def findParameters (self,v):
-
-        tag = "Parameterized Nodes"
-
-        if v.level() != 0:
-            rnode = self.findParameters( v.parent())
-
-        bnode = v
-        while bnode:
-            if bnode.h == tag:
-                return bnode
-            bnode = bnode.back()
-
-        nnode = v
-        while nnode:
-            if nnode.h == tag:
-                return nnode
-            nnode = nnode.next()
-
+    def findParameters (self,p):
+        '''Find the parameterized nodes in p's parents..'''
+        trace = False and not g.unitTesting
+        tag = "parameterized nodes"
+        for parent in p.parents():
+            if trace: g.trace('parent:',parent.h)
+            for sib in parent.self_and_siblings():
+                if sib.h.lower() == tag:
+                    if trace: g.trace('found:',sib.h)
+                    return sib
+        g.es('not found',tag)
         return None
     #@+node:ekr.20040916084945.3: *3* addMenu
     def addMenu(self):
-
+        '''Add a submenu in the outline menu.'''
         c = self.c
-
         table = (
             ("Parameterize Section Reference",None,self.parameterize),
         )
-
         c.frame.menu.createMenuItemsFromTable("Outline",table,dynamicMenu=True)
     #@-others
 #@-others
