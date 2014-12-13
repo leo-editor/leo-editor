@@ -21188,7 +21188,7 @@ http://webpages.charter.net/edreamleo/front.html
 #@+node:ekr.20100131171342.5500: *3* @test macros.parameterize
 import leo.plugins.macros as macros
 
-controller = macros.paramClass(c)
+controller = macros.ParamClass(c)
 controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.
