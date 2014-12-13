@@ -608,10 +608,12 @@ class LeoImportCommands:
         if g.unitTesting:
             assert func or ext in ('.w','.xxx'),(ext,p.h)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
+            s = g.toUnicode(s,encoding=self.encoding)
             s = s.replace('\r','')
             func(atAuto=atAuto,parent=p,s=s)
         else:
             # Just copy the file to the parent node.
+            s = g.toUnicode(s,encoding=self.encoding)
             s = s.replace('\r','')
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
         if atAuto:
