@@ -59,6 +59,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
         self.mGuiName = 'qt'
+        self.appIcon = self.getIconImage('leoapp32.png')
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
@@ -279,6 +280,7 @@ class LeoQtGui(leoGui.LeoGui):
             d.setCancelButtonText(cancelButtonText)
         if okButtonText:
             d.setOkButtonText(okButtonText)
+        self.attachLeoIcon(d)
         ok = d.exec_()
         n = d.textValue()
         try:
@@ -302,6 +304,7 @@ class LeoQtGui(leoGui.LeoGui):
             d.setCancelButtonText(cancelButtonText)
         if okButtonText:
             d.setOkButtonText(okButtonText)
+        self.attachLeoIcon(d)
         ok = d.exec_()
         return str(d.textValue()) if ok else None
     #@+node:ekr.20110605121601.18495: *4* LeoQtGui.runAskOkDialog
@@ -408,14 +411,15 @@ class LeoQtGui(leoGui.LeoGui):
 
             parent = None
             filter = self.makeFilter(filetypes)
-
+            d = QtWidgets.QFileDialog()
+            self.attachLeoIcon(d)
             if multiple:
-                lst = QtWidgets.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
+                lst = d.getOpenFileNames(parent,title,startpath,filter)
                 if isQt5:  # this is a *Py*Qt change rather than a Qt change
                     lst, selected_filter = lst
                 return [g.u(s) for s in lst]
             else:
-                s = QtWidgets.QFileDialog.getOpenFileName(parent,title,startpath,filter)
+                s = d.getOpenFileName(parent,title,startpath,filter)
                 if isQt5:
                     s, selected_filter = s
                 return g.u(s)
@@ -439,7 +443,9 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             parent = None
             filter_ = self.makeFilter(filetypes)
-            obj = QtWidgets.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
+            d = QtWidgets.QFileDialog()
+            self.attachLeoIcon(d)
+            obj = d.getSaveFileName(parent,title,os.curdir,filter_)
             # Very bizarre: PyQt5 version can return a tuple!
             s = obj[0] if isinstance(obj,(list,tuple)) else obj
             return g.u(s)
@@ -650,7 +656,7 @@ class LeoQtGui(leoGui.LeoGui):
         #icon = self.getIconImage('leoApp.ico')
 
         #window.setWindowIcon(icon)
-        window.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+        window.setWindowIcon(self.appIcon)    
         #window.setLeoWindowIcon()
     #@+node:ekr.20110605121601.18516: *4* LeoQtGui.getIconImage
     def getIconImage (self,name):
