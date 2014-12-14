@@ -396,7 +396,9 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run an Qt open directory dialog ."""
 
         parent = None
-        s = QtWidgets.QFileDialog.getExistingDirectory (parent,title,startdir)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        s = d.getExistingDirectory (parent,title,startdir)
         return g.u(s)
     #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog
     def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
