@@ -74,7 +74,9 @@ try:
 except ImportError:
     pass
     
-from leo.core.leoQt import isQt5,Qt
+    from leo.core.leoQt import Qt, QtCore, QtWidgets
+
+from leo.core.leoQt import isQt5, Qt, QtCore, QtWidgets
 if isQt5:
     from PyQt5.QtCore import QTimer
     try:
@@ -122,17 +124,61 @@ def init ():
         g.plugin_signon(__name__)
     g.app.stickynotes = {}    
     return ok
+#@+node:tbrown.20141214173054.3: ** class TextEditSearch
+class TextEditSearch(QtWidgets.QWidget):
+    """A QTextEdit with a search box
+    
+    Used to make decoded encoded body text searchable, so when you've decoded
+    your password list you dont't have to scan through five pages of text to
+    find the one you need.
+    """
+
+    def __init__(self, *args, **kwargs):
+        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
+        # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
+        self.textedit.focusInEvent = lambda event, owner=self: owner.focusin()
+        self.textedit.focusOutEvent = lambda event, owner=self: owner.focusout()
+        self.searchbox = QtWidgets.QLineEdit()
+        self.searchbox.focusInEvent = lambda event, owner=self: owner.focusin()
+        self.searchbox.focusOutEvent = lambda event, owner=self: owner.focusout()
+
+        # invoke find when return pressed
+        self.searchbox.returnPressed.connect(self.search)
+        
+        layout = QtWidgets.QVBoxLayout()
+        self.setLayout(layout)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0,0,0,0)
+        layout.addWidget(self.textedit)
+        hlayout = QtWidgets.QHBoxLayout()
+        hlayout.setContentsMargins(0,0,0,0)
+        hlayout.addWidget(QtWidgets.QLabel("Find:"))
+        hlayout.addWidget(self.searchbox)
+        layout.addLayout(hlayout)
+
+    def __getattr__(self, name):
+        """Delegate things QWidget doesn't have to QTextEdit, takes care
+        of attempts to access the text."""
+        return getattr(self.textedit, name)
+
+    def search(self):
+        """Search text"""
+        text = self.searchbox.text()
+        doc = self.textedit.document()
+        result = doc.find(text, self.textedit.textCursor())
+        if not result.isNull():
+            self.textedit.setTextCursor(result)
 #@+node:ville.20091008210853.7616: ** class FocusingPlainTextEdit
-class FocusingPlaintextEdit(QPlainTextEdit):
+class FocusingPlaintextEdit(TextEditSearch):
 
     def __init__(self, focusin, focusout, closed = None, parent = None):
-        QPlainTextEdit.__init__(self, parent)        
+        TextEditSearch.__init__(self, parent)        
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
 
     def focusOutEvent (self, event):
-        #print "focus out"
         self.focusout()
 
     def focusInEvent (self, event):        
@@ -154,7 +200,6 @@ class SimpleRichText(QTextEdit):
         #self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     def focusOutEvent ( self, event ):
-        #print "focus out"
         self.focusout()
 
     def focusInEvent ( self, event ):        
