@@ -19925,7 +19925,7 @@ refresh-from-disk command to populate the node. Do this *before* saving the
 .leo file. If you try to save an empty @auto-org-mode node Leo will warn
 you that you are about to overwrite the file.
 
-The refresh-from-disck command creates an @auto-otl node whose **children**
+The ``refresh-from-disk`` command creates an @auto-org-mode node whose **children**
 represent the contents of the external .org file. Leo does *not* write the
 \@auto-org-mode node itself. This allows you to put Leo directives in the
 node.
