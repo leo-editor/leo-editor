@@ -389,7 +389,7 @@ class ChapterController:
         oldName = chapter.name
         del d [oldName]
         d [newName] = chapter
-        chapter.name = newName
+        chapter.name = g.toUnicode(newName)
         root = cc.findChapterNode(oldName)
         if root:
             root.initHeadString('@chapter %s' % newName)
@@ -571,6 +571,7 @@ class ChapterController:
         but users may move them anywhere.'''
 
         trace = False and not g.unitTesting
+        name = g.toUnicode(name)
         cc,s = self,'@chapter ' + name
         for p in cc.c.all_positions():
             if p.h == s:
@@ -853,7 +854,7 @@ class Chapter:
 
         self.c = c 
         self.cc = cc = chapterController
-        self.name = name
+        self.name = g.toUnicode(name)
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         if self.name == 'main':

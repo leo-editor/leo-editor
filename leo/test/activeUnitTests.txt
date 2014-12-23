@@ -1987,7 +1987,7 @@ if not g.app.isExternalUnitTest:
     for p2,h2 in table:
         assert p2.h == h2
         assert len(p2.b) > 10
-#@+node:ekr.20090704085350.5018: *5* @test @shadow: shape of tree
+#@+node:ekr.20090704085350.5018: *5* @@test @shadow: shape of tree
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
@@ -11575,6 +11575,13 @@ table =  (
 for path,expected in table:
     result = g.stripPathCruft(path)
     assert result == expected
+#@+node:ekr.20141223125432.11: *4* @test g.toUnicode(QString)
+if not g.isPython3:
+      import leo.core.leoQt as leoQt
+      QString = leoQt.QtCore.QString
+      s = g.toUnicode(QString('abc'))
+      assert s == 'abc',repr(s)
+
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
 
