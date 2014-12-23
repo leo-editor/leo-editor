@@ -65,6 +65,8 @@ https://github.com/leo-editor/leo-editor/issues/119
 https://github.com/leo-editor/leo-editor/issues/126
 Call g.toUnicode in cc.findChapterNode.
 Added test for QString in g.toUnicode.
+.. @+node:ekr.20141223125811.4: *3* Fixed bug 124: Viewrendered can't display @image
+https://github.com/leo-editor/leo-editor/issues/124
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
