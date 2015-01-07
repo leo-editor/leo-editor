@@ -604,19 +604,27 @@ class todoController:
         "new attrbiute setter"
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
+            
             if (not hasattr(node, '_cached_src_vnode') or 
                 not node._cached_src_vnode):
                 src_unl = node.u['annotate']['src_unl']
                 c1 = self.c
                 p1 = c1.vnode2position(node)
                 c2, p2 = self.unl_to_pos(src_unl, p1)
-                node._cached_src_c = c2
-                node._cached_src_vnode = p2.v
-            node._cached_src_c.cleo.setat(node._cached_src_vnode, attrib, val)
-            op = node._cached_src_c.vnode2position(node._cached_src_vnode)
-            node._cached_src_c.cleo.loadIcons(op)
-            node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
-            node._cached_src_c.setChanged(True)
+                if p2 is None:
+                    g.es("Failed to access '%s' for attribute update." % src_unl)
+                else:
+                    node._cached_src_c = c2
+                    node._cached_src_vnode = p2.v
+
+            # if the above succeeded in getting the required attributes
+            if (hasattr(node, '_cached_src_vnode') and
+                node._cached_src_vnode):
+                node._cached_src_c.cleo.setat(node._cached_src_vnode, attrib, val)
+                op = node._cached_src_c.vnode2position(node._cached_src_vnode)
+                node._cached_src_c.cleo.loadIcons(op)
+                node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
+                node._cached_src_c.setChanged(True)
 
         isDefault = self.testDefault(attrib, val)
 
