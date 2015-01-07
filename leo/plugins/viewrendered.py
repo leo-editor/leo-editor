@@ -188,6 +188,8 @@ Jacob Peck added markdown support to this plugin.
 # - (Failed) Make viewrendered-big work.
 #@-<< to do >>
 
+#pylint: disable=no-member
+
 trace = False
     # This global trace is convenient.
 
