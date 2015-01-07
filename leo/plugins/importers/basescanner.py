@@ -1573,7 +1573,8 @@ class BaseScanner:
             # skipCodeBlock skips the trailing delim.
         # This assert ensures that all class/function/method definitions end with a newline.
         # It would be False for language like html/xml, but they override this method.
-        assert i > 0 and s[i-1] == '\n' or i == len(s)
+        if self.language != 'javascript':
+            assert i > 0 and s[i-1] == '\n' or i == len(s),(i,len(s))
         # Success: set the ivars.
         self.sigStart = self.adjustDefStart(s,self.sigStart)
         self.codeEnd = i
