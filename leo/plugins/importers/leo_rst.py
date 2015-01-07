@@ -75,21 +75,21 @@ class RstScanner (basescanner.BaseScanner):
         return parent.copy()
     #@+node:ekr.20140723122936.18102: *3* computeBody (RstScanner)
     def computeBody (self,s,start,sigStart,codeEnd):
-
+        '''Compute the body of an rst node.'''
         trace = False and not g.unitTesting
-
         body1 = s[start:sigStart]
         # Adjust start backwards to get a better undent.
         if body1.strip():
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
-
         # Never indent any text; discard the entire signature.
         body1 = s[start:sigStart]
         body2 = s[self.sigEnd+1:codeEnd]
         body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
         body = body1 + body2
-
+        # Fix bug 122: @auto-rst` should add an empty line after a heading.
+        if False and not body.strip():
+            body = '\n\n'
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body1,body2
