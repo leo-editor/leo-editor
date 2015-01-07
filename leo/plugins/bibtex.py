@@ -2,32 +2,32 @@
 #@+node:timo.20050213160555: * @file bibtex.py
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>
-r''' Manages BibTeX files with Leo.
+r''' Creates a BibTex fkile from an  '@bibtex <filename>' tree.
 
-Create a bibliographic database by
-putting '@bibtex filename' in a headline. Entries are added as nodes, with
-'@entrytype key' as the headline, and the contents of the entry in body text.
-The plugin will automatically insert a template for the entry in the body pane
-when a new entry is created (hooked to pressing enter when typing the headline
-text). The templates are defined in dictionary 'templates' in the \<\<globals\>\>
-section, by default containing all required fields for every entry.
+Nodes of the form '@entrytype key' create entries in the file.
 
-The file is written by double-clicking the node. Thus the following outline::
+When the user creates a new node (presses enter in headline text) the
+plugin automatically inserts a template for the entry in the body pane.
+
+The 'templates' dict in the <\< globals >\> section defines the template. The default,
+the template creates all required entries.
+
+Double-clicking the @bibtex node writes the file. For example, the following outline::
 
     -@bibtex biblio.bib
      +@book key
       author = {A. Uthor},
       year = 1999
 
-will be written in the file 'biblio.bib' as::
+creates the following 'biblio.bib' files::
 
     @book{key,
     author = {A. Uthor},
     year= 1999}
 
-Strings are defined in @string nodes and they can contain multiple entries.
-All @string nodes are written at the start of the file. Thus the following
-outline::
+\@string nodes define strings and may contain multiple entries. The plugin
+writes all @string nodes at the start of the file. For example, the
+following outline::
 
     -@bibtext biblio.bib
      +@string
@@ -39,7 +39,7 @@ outline::
       j2 = {Journal2}
       j3 = {Journal3}
 
-Will be written as::
+creates the following file::
 
     @string{j1 = {Journal1}}
     @string{j2 = {Journal2}}
@@ -49,14 +49,13 @@ Will be written as::
     author = {A. Uthor},
     journal = j1}
 
-No error checking is made on the syntax. The entries can be organized under
-nodes --- if the headline doesn't start with '@', the headline and body text are
-ignored, but the child nodes are parsed as usual.
+Headlines that do not start with '@' are organizer nodes: the plugin does
+not write organizer nodes, but does write descendant nodes.
 
-BibTeX files can be imported by creating an empty node with '@bibtex filename'
-in the headline. Double-clicking it will read the file 'filename' and parse it
-into a @bibtex tree. No syntax checking is made, 'filename' is expected to be a
-valid BibTeX file.
+BibTeX files can be imported by creating an empty node with '@bibtex
+filename' in the headline. Double-clicking it will read the file and parse
+it into a @bibtex tree. No syntax checks are made: the file is expected to
+be a valid BibTeX file.
 
 '''
 #@-<< docstring >>
@@ -89,10 +88,10 @@ __version__ = '0.5'
 # - Use p, not v, for positions.
 # - Improved messages and cleaned up code.
 # 
+# 0.6 EKR: Rewrote the docstring:  use the active voice!
 #@-<< change log >>
-
-#@+<< define templates >>
-#@+node:timo.20050215183130: ** <<define templates>>
+#@+<< define templates dict>>
+#@+node:timo.20050215183130: ** <<define templates dict>>
 templates = {
     '@article':'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
     '@book':'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
@@ -109,10 +108,9 @@ templates = {
     '@techreport':'author       = {},\ntitle        = {},\ninstitution  = {},\nyear         = ',
     '@unpublished':'author       = {},\ntitle        = {},\nnote         = {}'
 }
-#@-<< define templates >>
+#@-<< define templates dict>>
 entrytypes = list(templates.keys())
 entrytypes.append('@string')
-
 #@+<< to do >>
 #@+node:timo.20050213185039: ** <<to do>>
 #@+at To do list (in approximate order of importance):
@@ -156,10 +154,10 @@ def onHeadKey(tag,keywords):
     p = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
     h = p.h.strip()
-    if h[:h.find(' ')] in templates.keys() and not p.b:
+    if h[:h.find(' ')] in templates.keys() and not p.b.strip():
         for p in p.parents():
-            if p.h[:8] == '@bibtex ':
-                # write template
+            if p.h.startswith('@bibtex ') and not p.b.strip():
+                # write template, but only for new nodes.
                 c.setBodyString(p,templates[h[:h.find(' ')]])
                 c.frame.body.wrapper.setInsertPoint(16)
                 return
