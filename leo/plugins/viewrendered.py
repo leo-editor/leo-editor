@@ -746,9 +746,12 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_image (self,s,keywords):
         '''Update an image in the vr pane.'''
         pc = self
+        if not s.strip():
+            return
         lines = g.splitLines(s) or []
-        g.trace(lines)
         fn = lines and lines[0].strip()
+        if not fn:
+            return
         w = pc.ensure_text_widget()
         ok,path = pc.get_fn(fn,'@image')
         if not ok:
@@ -773,7 +776,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         w.setReadOnly(False)
         w.setHtml(template)
         w.setReadOnly(True)
-        
     #@+node:peckj.20130207132858.3671: *4* update_md
     def update_md (self,s,keywords):
         '''Update markdown text in the vr pane.'''

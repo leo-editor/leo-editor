@@ -8375,7 +8375,8 @@ class Commands (object):
             vr = pc.loadOnePlugin('viewrendered2.py')
         else:
             vr = pc.loadOnePlugin('viewrendered.py')
-        assert vr # For unit testing.
+        if g.unitTesting:
+            assert vr # For unit testing.
         if vr:
             kw = {
                 'c':c,

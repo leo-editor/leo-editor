@@ -715,6 +715,7 @@ class SherlockTracer:
         self.set_patterns(patterns)
         from leo.core.leoQt import QtCore
         if QtCore:
+            # pylint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     #@+node:ekr.20140326100337.16844: *4* __call__
     def __call__(self,frame,event,arg):
@@ -1532,6 +1533,7 @@ def pdb (message=''):
             except ImportError:
                 QtCore = None
         if QtCore:
+            # pylint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     if message:
         print(message)
@@ -4800,6 +4802,9 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
         s = s.decode(encoding,'replace')
         if reportErrors:
             g.error("Error converting %s from %s encoding to unicode" % (s,encoding))
+    except AttributeError:
+        # May be a QString.
+        s = g.u(s)
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
 if isPython3: # g.not defined yet.

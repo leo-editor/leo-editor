@@ -10377,9 +10377,13 @@ When reading external files created by \@file, the sentinels allow Leo to
 recreate all aspects of the outline. In particular, Leo can update the
 outline based on changes made to the file by another editor. 
 
-**Important**: \@file is the recommended way to create and edit most files. In
-particular, using \@file nodes is **highly recommended** when sharing external
-files in a collaborative environment.
+**Important**: \@file is the recommended way to create and edit most
+files. In particular, using \@file nodes is **highly recommended**
+when sharing external files in a collaborative environment. The \@all
+directivive is designed for "catch-all" files, like todo.txt or
+notes.txt or whatever. Such files are assumed to contain a random
+collection of nodes, so there is no language in effect and no real
+comment delimiters.
 
 The \@thin directive is a synonym for \@file.
 
@@ -10508,6 +10512,11 @@ They are two of the most important directives in Leo.
 
     Within the range of an \@all directive, Leo ignores the \@others directive
     and section references, so Leo will not complain about orphan nodes.
+    
+    The @all directivive is designed for "catch-all" files, like
+    todo.txt or notes.txt or whatever. Such files are assumed to
+    contain a random collection of nodes, so there is no language in
+    effect and no real comment delimiters.
 
 .. index::
     pair: @others; Reference
@@ -16711,6 +16720,11 @@ the order in which the nodes appear in the outline pane when all nodes are
 expanded. Non-programmers will typically use the @all directive;
 programmers typically use the @others directive, as discussed in the
 `programming tutorial`_.
+
+The @all directivive is designed for "catch-all" files, like todo.txt
+ or notes.txt or whatever. Such files are assumed to contain a random
+ collection of nodes, so there is no language in effect and no real
+ comment delimiters.
 
 .. index::
     pair: Sentinel Comments; Tutorial
