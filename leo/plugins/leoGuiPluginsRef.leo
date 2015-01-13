@@ -32,7 +32,6 @@
 <v t="ekr.20100102164747.3702"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
-<v t="ekr.20141110215426.72"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20081121105001.80"><vh>@file ./obsolete/ironPythonGui.py</vh></v>
 <v t="ekr.20081121105001.595"><vh>@file ./obsolete/swing_gui.py</vh></v>
 <v t="ekr.20081121110412.2"><vh>@file ./obsolete/tkGui.py</vh></v>

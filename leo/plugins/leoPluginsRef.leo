@@ -51,7 +51,7 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -158,7 +158,11 @@
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
-<v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
+<v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
+<v t="ekr.20150107090324.1"
+marks="ekr.20150107090324.16,"
+expanded="ekr.20150107090324.60,"><vh>@file cursesGui.py</vh></v>
+</v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
 <v t="ekr.20140727075002.18109"><vh>@file importers/basescanner.py</vh></v>
@@ -263,18 +267,18 @@ header_style = Heading
 </t>
 <t tx="EKR.20040517090508">@nocolor-node
 
-Enable plugins by creating @enabled-plugins nodes in leoSettings files,
-typically myLeoSettings.leo. See the node
+Enable plugins by creating@enabled-plugins nodes in leoSettings files,
+typically myLeoSettings.leo.See the node
 
-Users Guide--&gt;Chapter 8: Customizing Leo--&gt;@rst
-html\customizing.html--&gt;Specifying settings--&gt;Complex settings nodes
+Users Guide-- &gt; Chapter 8: Customizing Leo-- &gt;@rst
+html\customizing.html-- &gt; Specifying settings-- &gt; Complex settings nodes
 
 in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">@language python
-@tabwidth -4
+<t tx="edream.110203113231.618" _bklnk="7d71002858050000006c696e6b7371015d710258010000007871034b00580400000074797065710458080000006e6f646552656374710558010000007971064b00752e">@language python
+@tabwidth-4
 @pagewidth 80</t>
 <t tx="edream.110203113231.667"></t>
 <t tx="edream.110203113231.729"></t>
@@ -295,16 +299,16 @@ affect Leo's panes and windows in various ways.
 
 </t>
 <t tx="ekr.20041001210557"></t>
-<t tx="ekr.20041030092101">@ Notes by EKR:  The dyna plugin is a remarkable body of work by 'e'.  Have fun with it.
+<t tx="ekr.20041030092101">@Notes by EKR: The dyna plugin is a remarkable body of work by 'e'.Have fun with it.
 
-You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
+You may download the latest version at: http: // rclick.netfirms.com / dyna_menu.py.html
 </t>
 <t tx="ekr.20041114102139">@nocolor
 
 Comments
 --------
 
-Most of the comments in the style guide are comments *about* the style guide.
+Most of the comments in the style guide are comments*about*the style guide.
 You would replace these comments with your own, or eliminate them entirely in
 your plugin.
 
@@ -320,39 +324,39 @@ Directives
 Please put the following at the end of the plugin's top-level node.
 
     @language python
-    @tabwidth -4
+    @tabwidth-4
 
 Imports
 -------
-    
-- Do *not* assume that modules like Qt are always available.
 
-- Do *not* use from m import *
+-Do* not*assume that modules like Qt are always available.
 
-- Your code should test whether modules have been imported only if those modules
+-Do* not*use from m import*
+
+-Your code should test whether modules have been imported only if those modules
   may not be available on all platforms.
-  
-- To fail gracefully if the Qt gui is not in effect, put the following at
+
+-To fail gracefully if the Qt gui is not in effect, put the following at
   the top level::
-      
+
       g.assertUi('qt')
-        
+
 Exceptions
 ----------
 
-It is usually best *not* to catch exceptions in plugins: doHook catches all
+It is usually best* not*to catch exceptions in plugins: doHook catches all
 exceptions and disables further calls to plugins.
 
 If a plugin catches exceptions during startup it should do either raise the
 exception again or provide an init function at the top level that reports the
 failure by returning False.
-        
+
 Use separate nodes
 ------------------
 
-**Please** define each class, function or method in a separate node! To
-make this work, just put @others in the root of your plugin as shown. Note
-that @others may be nested, as shown in class myClass.
+**Please**define each class, function or method in a separate node!To
+make this work, just put@others in the root of your plugin as shown.Note
+that@others may be nested, as shown in class myClass.
 </t>
 <t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
@@ -367,42 +371,44 @@ If it's long, you might put it in a separate section.
 &lt;&lt; imports &gt;&gt;
 @others
 @language python
-@tabwidth -4
+@tabwidth-4
 </t>
 <t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
 
-# Whatever other imports your plugins uses.</t>
-<t tx="ekr.20050303051101">def init ():
+# Whatever other imports your plugins uses.
+</t>
+<t tx="ekr.20050303051101">def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = g.app.gui.guiName() in ('qt','qttabs')
+    ok=g.app.gui.guiName() in('qt','qttabs')
     if ok:
         if 1: # Use this if you want to create the commander class before the frame is fully created.
             g.registerHandler('before-create-leo-frame',onCreate)
         else: # Use this if you want to create the commander class after the frame is fully created.
             g.registerHandler('after-create-leo-frame',onCreate)
     return ok</t>
-<t tx="ekr.20050303051150">def onCreate (tag, keys):
-    
-    c = keys.get('c')
+<t tx="ekr.20050303051150">def onCreate(tag, keys):
+
+    c=keys.get('c')
     if not c: return
-    
-    thePluginController = pluginController(c)
+
+    thePluginController=pluginController(c)
 </t>
 <t tx="ekr.20050303051222">class pluginController:
-    
+
     @others</t>
-<t tx="ekr.20050303051222.1">def __init__ (self,c):
-    
-    self.c = c
-    # Warning: hook handlers must use keywords.get('c'), NOT self.c.</t>
-<t tx="ekr.20050306071540">def onStart2 (tag, keywords):
-    
+<t tx="ekr.20050303051222.1">def __init__(self,c):
+
+    self.c=c
+    # Warning: hook handlers must use keywords.get('c'), NOT self.c.
+</t>
+<t tx="ekr.20050306071540">def onStart2(tag, keywords):
+
     """
     Showing how to define a global hook that affects all commanders.
     """
 
-    log = c.frame.log.__class__
-    
+    log=c.frame.log.__class__
+
     # Replace frame.put with newPut (not shown).
     g.funcToMethod(newPut,log,"put")</t>
 <t tx="ekr.20050306071629">'''
@@ -412,7 +418,7 @@ If it's long, you might put it in a separate section.
 &lt;&lt; imports &gt;&gt;
 @others
 @language python
-@tabwidth -4</t>
+@tabwidth-4</t>
 <t tx="ekr.20050306071629.1">'''This docstring should be a clear, concise description of
 what the plugin does and how to use it.
 '''
@@ -421,17 +427,17 @@ what the plugin does and how to use it.
 
 # Whatever other imports your plugins uses.
 </t>
-<t tx="ekr.20050306071629.4">def init ():
+<t tx="ekr.20050306071629.4">def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = True # This might depend on imports, etc.
+    ok=True # This might depend on imports, etc.
     if ok:
         g.registerHandler('start2',onStart2)
     return ok</t>
 <t tx="ekr.20050306081349"></t>
-<t tx="ekr.20050328101812"> 
-        
-        
-        </t>
+<t tx="ekr.20050328101812">
+
+
+</t>
 <t tx="ekr.20050328101812.1"></t>
 <t tx="ekr.20050328101812.2"></t>
 <t tx="ekr.20050328101812.3"></t>
@@ -479,17 +485,18 @@ abc.xyz.pdq
 w.bind\(.*,.*,.*$
 
 [-w]\.bind\(</t>
-<t tx="ekr.20081121105001.2080"># All gui plugins are now in leoGuiPluginsRef.leo</t>
+<t tx="ekr.20081121105001.2080"># Most other gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090430075506.4"></t>
-<t tx="ekr.20100103093121.5365"># These are experimental plugins.</t>
+<t tx="ekr.20100103093121.5365"># These are experimental plugins.
+</t>
 <t tx="ekr.20100910115903.5597"></t>
 <t tx="ekr.20100910115903.5599"></t>
 <t tx="ekr.20101004082701.5674"></t>
-<t tx="ekr.20101110084839.5680">'''Print all plugins not in this file.'''
+<t tx="ekr.20101110084839.5680">[-w]\.bind\('''Print all plugins not in this file.'''
 
 import glob
 
-suppress = (
+suppress=(
     '__init__.py',
     # Gui's
     'baseNativeTree.py','cursesGui.py','gtkDialogs.py','gtkGui.py',
@@ -502,15 +509,15 @@ suppress = (
     'rst.py','rst2.py',
 )
 
-all = glob.glob(g.os_path_finalize_join(
+all=glob.glob(g.os_path_finalize_join(
     g.app.loadDir,'..','plugins','*.py'))
-all = [g.shortFileName(z) for z in all]
+all=[g.shortFileName(z) for z in all]
 all.sort()
 
-here = [v.anyAtFileNodeName() for v in c.all_unique_nodes()
+here=[v.anyAtFileNodeName() for v in c.all_unique_nodes()
     if v.isAnyAtFileNode()]
 
-missing = [s for s in all if s not in here and s not in suppress]
+missing=[s for s in all if s not in here and s not in suppress]
 
 if missing:
     print('='*20)
@@ -520,7 +527,8 @@ if missing:
 else:
     g.es_print('no_missing plugins')
 </t>
-<t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.</t>
+<t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
+</t>
 <t tx="ekr.20101110150056.9457"></t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20121126102050.10134"></t>
