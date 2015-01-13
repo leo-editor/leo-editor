@@ -375,7 +375,7 @@ class LeoBody(object):
         '''Select the editor whose widget is given.'''
         c = self.c
         trace = False and not g.unitTesting
-        if not wrapper.leo_p:
+        if not (hasattr(wrapper,'leo_p') and wrapper.leo_p):
             g.trace('no wrapper.leo_p') 
             return
         if trace: g.trace('==1',id(wrapper),
