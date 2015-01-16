@@ -8,7 +8,7 @@ interface. Bzr is invoked based on the path of the current node.
 """
 # by TNB
 import subprocess
-from PyQt4 import QtCore
+from leo.core.leoQt import QtCore
 import leo.core.leoGlobals as g
 #@+others
 #@+node:tbrown.20101101135104.15789: ** init

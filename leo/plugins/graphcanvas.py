@@ -39,7 +39,7 @@ except ImportError:
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtConst, QtCore, QtGui, uic
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
 
 pygraphviz = None
 if not pydot:
@@ -118,7 +118,7 @@ def toggle_autoload(event):
         c.db[c_db_key] = str(c.p.v.gnx)
         g.es('Graph for current node will be autoloaded')
 #@+node:bob.20110119123023.7395: ** class graphcanvasUI
-class graphcanvasUI(QtGui.QWidget):
+class graphcanvasUI(QtWidgets.QWidget):
     #@+others
     #@+node:bob.20110119123023.7396: *3* __init__
     def __init__(self, owner=None):
@@ -213,7 +213,7 @@ class graphcanvasUI(QtGui.QWidget):
         self.canvasView.current_scale = 0
     #@-others
 #@+node:bob.20110119123023.7397: ** class GraphicsView
-class GraphicsView(QtGui.QGraphicsView):
+class GraphicsView(QtWidgets.QGraphicsView):
     #@+others
     #@+node:bob.20110119123023.7398: *3* __init__
     def __init__(self, glue, *args, **kargs):
@@ -330,7 +330,7 @@ class GetImage:
         return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
            
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
-class nodeBase(QtGui.QGraphicsItemGroup):
+class nodeBase(QtWidgets.QGraphicsItemGroup):
 
     node_types = {}
     
@@ -622,7 +622,7 @@ class nodeImage(nodeBase):
   
 nodeBase.node_types[nodeImage.__name__] = nodeImage
 #@+node:bob.20110121161547.3424: ** class linkItem
-class linkItem(QtGui.QGraphicsItemGroup):
+class linkItem(QtWidgets.QGraphicsItemGroup):
     """Node on the canvas"""
     #@+others
     #@+node:bob.20110119123023.7405: *3* __init__
