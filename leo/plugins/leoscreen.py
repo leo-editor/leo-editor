@@ -277,7 +277,10 @@ class leoscreen_Controller:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.communicate()
 
-        f = open(self.tmpfile)
+        if g.isPython3: 
+            f = open(self.tmpfile, encoding='latin-1')
+        else:
+            f = open(self.tmpfile)
 
         self.output = f.read().strip().split('\n')
         self.next_unread_line = self.first_line
