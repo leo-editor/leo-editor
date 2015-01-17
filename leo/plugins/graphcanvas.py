@@ -127,7 +127,7 @@ class graphcanvasUI(QtWidgets.QWidget):
 
         # a = QtGui.QApplication([]) # argc, argv );
 
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         uiPath = g.os_path_join(g.app.leoDir,
             'plugins', 'GraphCanvas', 'GraphCanvas.ui')
 
@@ -146,10 +146,10 @@ class graphcanvasUI(QtWidgets.QWidget):
             
             os.chdir(old_dir)
 
-        self.canvas = QtGui.QGraphicsScene()
+        self.canvas = QtWidgets.QGraphicsScene()
 
         self.canvasView = GraphicsView(self.owner, self.canvas)
-        self.canvasView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+        self.canvasView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
         
         self.UI.canvasFrame.addWidget(self.canvasView)
         self.canvasView.setSceneRect(0,0,300,300)
@@ -157,51 +157,40 @@ class graphcanvasUI(QtWidgets.QWidget):
         u = self.UI
         o = self.owner
 
-        self.connect(u.btnUpdate, QtCore.SIGNAL("clicked()"), o.do_update)
-        self.connect(u.btnGoto, QtCore.SIGNAL("clicked()"), o.goto)
+        u.btnUpdate.clicked.connect(lambda checked: o.do_update())
+        u.btnGoto.clicked.connect(lambda checked: o.goto())
 
-        self.connect(u.btnLoad, QtCore.SIGNAL("clicked()"), o.loadGraph)
-        self.connect(u.btnLoadSibs, QtCore.SIGNAL("clicked()"),
-            lambda: o.loadGraph('sibs'))
-        self.connect(u.btnLoadRecur, QtCore.SIGNAL("clicked()"),
-            lambda: o.loadGraph('recur'))
+        u.btnLoad.clicked.connect(lambda checked: o.loadGraph())
+        u.btnLoadSibs.clicked.connect(lambda checked: o.loadGraph('sibs'))
+        u.btnLoadRecur.clicked.connect(lambda checked: o.loadGraph('recur'))
 
-        self.connect(u.btnLoadLinked, QtCore.SIGNAL("clicked()"),
-            lambda: o.loadLinked('linked'))
-        self.connect(u.btnLoadAll, QtCore.SIGNAL("clicked()"),
-            lambda: o.loadLinked('all'))
+        u.btnLoadLinked.clicked.connect(lambda checked: o.loadLinked('linked'))
+        u.btnLoadAll.clicked.connect(lambda checked: o.loadLinked('all'))
 
-        self.connect(u.btnUnLoad, QtCore.SIGNAL("clicked()"), o.unLoad)
-        self.connect(u.btnClear, QtCore.SIGNAL("clicked()"), o.clear)
+        u.btnUnLoad.clicked.connect(lambda checked: o.unLoad())
+        u.btnClear.clicked.connect(lambda checked: o.clear())
 
-        self.connect(u.btnLocate, QtCore.SIGNAL("clicked()"), o.locateNode)
-        self.connect(u.btnReset, QtCore.SIGNAL("clicked()"), o.resetNode)
-        self.connect(u.btnColor, QtCore.SIGNAL("clicked()"), o.setColor)
-        self.connect(u.btnTextColor, QtCore.SIGNAL("clicked()"), o.setTextColor)
-        self.connect(u.btnClearFormatting, QtCore.SIGNAL("clicked()"), o.clearFormatting)
+        u.btnLocate.clicked.connect(lambda checked: o.locateNode())
+        u.btnReset.clicked.connect(lambda checked: o.resetNode())
+        u.btnColor.clicked.connect(lambda checked: o.setColor())
+        u.btnTextColor.clicked.connect(lambda checked: o.setTextColor())
+        u.btnClearFormatting.clicked.connect(lambda checked: o.clearFormatting())
 
-        self.connect(u.btnRect, QtCore.SIGNAL("clicked()"),
-            lambda: o.setNode(nodeRect))
-        self.connect(u.btnEllipse, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeEllipse))
-        self.connect(u.btnDiamond, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeDiamond))
-        self.connect(u.btnNone, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeNone))
-        self.connect(u.btnTable, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeTable))
+        u.btnRect.clicked.connect(lambda checked: o.setNode(nodeRect))
+        u.btnEllipse.clicked.connect(lambda checked: o.setNode(nodeEllipse))
+        u.btnDiamond.clicked.connect(lambda checked: o.setNode(nodeDiamond))
+        u.btnNone.clicked.connect(lambda checked: o.setNode(nodeNone))
+        u.btnTable.clicked.connect(lambda checked: o.setNode(nodeTable))
 
-        self.connect(u.btnComment, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeComment))
+        u.btnComment.clicked.connect(lambda checked: o.setNode(nodeComment))
 
-        self.connect(u.btnImage, QtCore.SIGNAL("clicked()"), 
-            lambda: o.setNode(nodeImage))
+        u.btnImage.clicked.connect(lambda checked: o.setNode(nodeImage))
 
-        self.connect(u.btnExport, QtCore.SIGNAL("clicked()"), o.exportGraph)
+        u.btnExport.clicked.connect(lambda checked: o.exportGraph())
 
-        self.connect(u.chkHierarchy, QtCore.SIGNAL("clicked()"), o.do_update)
+        u.chkHierarchy.clicked.connect(lambda checked: o.do_update())
 
-        menu = QtGui.QMenu(u.btnLayout)
+        menu = QtWidgets.QMenu(u.btnLayout)
         for name, func in o.layouts():
             menu.addAction(name, func)
         u.btnLayout.setMenu(menu)
@@ -219,10 +208,10 @@ class GraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, glue, *args, **kargs):
         self.glue = glue
         self.current_scale = 0
-        QtGui.QGraphicsView.__init__(self, *args)
+        QtWidgets.QGraphicsView.__init__(self, *args)
     #@+node:bob.20110119123023.7399: *3* mouseDoubleClickEvent
     def mouseDoubleClickEvent(self, event):
-        QtGui.QGraphicsView.mouseDoubleClickEvent(self, event)
+        QtWidgets.QGraphicsView.mouseDoubleClickEvent(self, event)
         nn = self.glue.newNode(pnt=self.mapToScene(event.pos()))
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
@@ -239,7 +228,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
             
         else:
         
-            QtGui.QGraphicsView.wheelEvent(self, event)
+            QtWidgets.QGraphicsView.wheelEvent(self, event)
     #@-others
 #@+node:tbrown.20110413094721.24681: ** class GetImage
 class GetImage:
@@ -284,7 +273,7 @@ class GetImage:
             # file on local file system
             testpath = g.os_path_finalize_join(path, testpath)
             if g.os_path_exists(testpath):
-                return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))                
+                return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))                
 
             # explicit file://, but no such file exists
             if src.startswith('file://'):
@@ -305,7 +294,7 @@ class GetImage:
         if data:
             img = QtGui.QPixmap()
             if img.loadFromData(data):
-                return QtGui.QGraphicsPixmapItem(img)
+                return QtWidgets.QGraphicsPixmapItem(img)
         
         if fail_ok:
             return None
@@ -327,7 +316,7 @@ class GetImage:
         """return QGraphicsPixmapItem with "No Image" image loaded"""
         testpath = g.os_path_abspath(g.os_path_join(
             g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
-        return QtGui.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
+        return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
            
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtWidgets.QGraphicsItemGroup):
@@ -340,8 +329,8 @@ class nodeBase(QtWidgets.QGraphicsItemGroup):
 
     def __init__(self, owner, node, *args, **kargs):
 
-        QtGui.QGraphicsItemGroup.__init__(self, *args, **kargs)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        QtWidgets.QGraphicsItemGroup.__init__(self, *args, **kargs)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
 
         self.owner = owner
         self.node = node
@@ -363,16 +352,16 @@ class nodeBase(QtWidgets.QGraphicsItemGroup):
     #@+node:tbrown.20110407091036.17536: *3* mouseMoveEvent
     def mouseMoveEvent(self, event):
         
-        QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
+        QtWidgets.QGraphicsItemGroup.mouseMoveEvent(self, event)
         self.owner.newPos(self, event)
     #@+node:tbrown.20110407091036.17537: *3* mouseReleaseEvent
     def mouseReleaseEvent(self, event):
         
-        QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
+        QtWidgets.QGraphicsItemGroup.mouseReleaseEvent(self, event)
         self.owner.releaseNode(self, event)
     #@+node:tbrown.20110407091036.17538: *3* focusOutEvent
     def focusOutEvent(self, event):
-        QtGui.QGraphicsItemGroup.focusOutEvent(self, event)
+        QtWidgets.QGraphicsItemGroup.focusOutEvent(self, event)
         self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         g.es("focusOutEvent")
     #@-others
@@ -386,7 +375,11 @@ class nodeRect(nodeBase):
         self.text = self.text_item()  
         # .text must be first for nodeComment, see its bg_item()
         self.bg = self.bg_item()
-        self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
+        if g.app.config.getBool("color_theme_is_dark"):
+            bgcolor = QtGui.QColor(30,50,30)
+        else:
+            bgcolor = QtGui.QColor(200,240,200)
+        self.bg.setBrush(QtGui.QBrush(bgcolor))
         
         self.setZValue(20)
         self.bg.setZValue(10)
@@ -401,11 +394,11 @@ class nodeRect(nodeBase):
           
     def bg_item(self):
         """return a canvas item for the shape in the background"""
-        return QtGui.QGraphicsRectItem(-2,+2,30,20)
+        return QtWidgets.QGraphicsRectItem(-2,+2,30,20)
         
     def text_item(self):
         """return a canvas item for the text in the foreground"""
-        return QtGui.QGraphicsTextItem(self.get_text())
+        return QtWidgets.QGraphicsTextItem(self.get_text())
 
     def get_text(self):
         """return text content for the text in the foreground"""
@@ -446,7 +439,7 @@ class nodeNone(nodeBase):
           
     def text_item(self):
         """return a canvas item for the text in the foreground"""
-        return QtGui.QGraphicsTextItem(self.get_text())
+        return QtWidgets.QGraphicsTextItem(self.get_text())
 
     def get_text(self):
         """return text content for the text in the foreground"""
@@ -469,7 +462,7 @@ class nodeEllipse(nodeRect):
 
     def bg_item(self):
         """return a canvas item for the shape in the background"""
-        return QtGui.QGraphicsEllipseItem(-5,+5,30,20)
+        return QtWidgets.QGraphicsEllipseItem(-5,+5,30,20)
            
     def do_update(self):
         marginX = self.text.document().size().width()/2
@@ -485,7 +478,7 @@ class nodeDiamond(nodeRect):
 
     def bg_item(self):
         """return a canvas item for the shape in the background"""
-        bg = QtGui.QGraphicsPolygonItem()
+        bg = QtWidgets.QGraphicsPolygonItem()
         poly = QtGui.QPolygonF()
         poly.append(QtCore.QPointF(-5, 5))
         poly.append(QtCore.QPointF(15, -5))
@@ -521,7 +514,7 @@ class nodeComment(nodeRect):
             
     def text_item(self):
         """return a canvas item for the text in the foreground"""
-        item = QtGui.QGraphicsTextItem()
+        item = QtWidgets.QGraphicsTextItem()
         
         f = item.font()
         f.setPointSize(7)
@@ -633,8 +626,8 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         pass glue object and let it key nodeItems to leo nodes
         """
         self.glue = glue
-        QtGui.QGraphicsItemGroup.__init__(self)
-        self.line = QtGui.QGraphicsLineItem(*args)
+        QtWidgets.QGraphicsItemGroup.__init__(self)
+        self.line = QtWidgets.QGraphicsLineItem(*args)
 
         pen = QtGui.QPen()
 
@@ -650,7 +643,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         self.line.setPen(pen)
         self.addToGroup(self.line)
 
-        self.head = QtGui.QGraphicsPolygonItem()
+        self.head = QtWidgets.QGraphicsPolygonItem()
         
         if hierarchyLink:
             self.head.setBrush(QtGui.QBrush(QtGui.QColor(180,180,180)))
@@ -661,7 +654,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         self.addToGroup(self.head)
     #@+node:bob.20110119123023.7406: *3* mousePressEvent
     def mousePressEvent(self, event):
-        QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
+        QtWidgets.QGraphicsItemGroup.mousePressEvent(self, event)
         self.glue.pressLink(self, event)
     #@+node:bob.20110119123023.7407: *3* setLine
     def setLine(self, x0, y0, x1, y1, hierarchyLink = False):
@@ -1316,7 +1309,7 @@ class graphcanvasController(object):
         self.ui.canvas.render(painter)
         painter.end()
         
-        path = QtGui.QFileDialog.getSaveFileName(caption="Export to File", filter="*.png", selectedFilter="Images (*.png)")
+        path = QtWidgets.QFileDialog.getSaveFileName(caption="Export to File", filter="*.png", selectedFilter="Images (*.png)")
         image.save(path)
     #@+node:bob.20110121113659.3413: *4* Formatting
     #@+node:bob.20110120111825.3356: *5* setColor
@@ -1327,9 +1320,9 @@ class graphcanvasController(object):
 
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
-            newcolor = QtGui.QColorDialog.getColor(color)
+            newcolor = QtWidgets.QColorDialog.getColor(color)
         else:
-            newcolor = QtGui.QColorDialog.getColor()
+            newcolor = QtWidgets.QColorDialog.getColor()
 
         if QtGui.QColor.isValid(newcolor):
             newcolor = str(newcolor.name())  # store strings not objects
@@ -1346,9 +1339,9 @@ class graphcanvasController(object):
              
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']
-            newcolor = QtGui.QColorDialog.getColor(color)
+            newcolor = QtWidgets.QColorDialog.getColor(color)
         else:
-            newcolor = QtGui.QColorDialog.getColor()
+            newcolor = QtWidgets.QColorDialog.getColor()
             
         if QtGui.QColor.isValid(newcolor):
             newcolor = str(newcolor.name())  # store strings not objects
