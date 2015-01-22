@@ -16361,7 +16361,7 @@ Here is its definition:
         doc = "LeoNameSpace c property")
 </t>
 <t tx="ekr.20131001100236.15927">Leo's valuespace.py plugin uses the ipython namespace when the
---ipython command line switch is in effect.
+``--ipython`` command line switch is in effect.
 
 This plugin provides a "workbook" like way to get data from Leo document to
 the namespace, and do calculations based on that data. Having this data be
@@ -23822,7 +23822,7 @@ os.system('make latex')
 os.chdir('_build/latex')
 os.system('make all-pdf')
 </t>
-<t tx="vivainio.20080302174639.1">Leo's --ipython command-line option enables two-way communication
+<t tx="vivainio.20080302174639.1">Leo's ``--ipython`` command-line option enables two-way communication
 (**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo
 scripts from IPython, and IPython scripts from Leo.
 
@@ -23837,7 +23837,7 @@ range of problem domains with very little actual coding.
 
 1. Install IPython 0.8.3 or above.
 
-2. `run Leo in a console window`_ with the --ipython command-line option
+2. `run Leo in a console window`_ with the ``--ipython`` command-line option
    enabled. This option starts an instance of the IPython shell in the
    console. Leo and IPython run simultaneously and independently. Their
    separate event loops do not interfere with each other.

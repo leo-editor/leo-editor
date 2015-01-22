@@ -20300,7 +20300,7 @@ The highlights of the changes:
     if 0:
         @others
 
-3. When the --ipython command-line argument is in effect, g.app.ipk is a
+3. When the ``--ipython`` command-line argument is in effect, g.app.ipk is a
    *singleton* IPython shell, shared by any and all IPython consoles.
 
 4. The startup code injects only a single object, _leo, into the IPython
@@ -21206,7 +21206,7 @@ The highlights of the changes:
     if 0:
         @others
 
-3. When the --ipython command-line argument is in effect, g.app.ipk is a
+3. When the ``--ipython`` command-line argument is in effect, g.app.ipk is a
    *singleton* IPython shell, shared by any and all IPython consoles.
 
 4. The startup code injects only a single object, _leo, into the IPython
