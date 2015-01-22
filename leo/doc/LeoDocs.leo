@@ -16765,7 +16765,7 @@ step-by-step example:
 
 3. Create a child of the @file node whose headline is::
    
-   &lt;&lt;docstring &gt;&gt;
+   &lt;&lt; docstring &gt;&gt;
 
 4. Type this in the child's body text::
 
@@ -16842,6 +16842,12 @@ external files even for Python.  The following cute trick works::
         @others
 
 **Notes**:
+
+- Neither whitespace nor capitalization are important in section names.
+  The following section names are equivalent::
+  
+      &lt;&lt; a section &gt;&gt;
+      &lt;&lt;ASection&gt;&gt;
 
 - Any node may contain a single @others directive. No node may contain more
   than one @others directive.

@@ -41,7 +41,7 @@ master_doc = 'leo_toc' # don't use any suffix.
 # General information about the project.
 project = 'Leo'
 
-copyright = '2014, Edward K. Ream'
+copyright = '2015, Edward K. Ream'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
