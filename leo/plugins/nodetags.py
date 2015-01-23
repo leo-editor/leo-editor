@@ -31,7 +31,7 @@ Below the list box is a dynamic display of tags on the currently selected node. 
 
 The status line at the bottom is purely informational.
 
-The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precedence.  Parentheses are not supported.  See below for more details.
+The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precedence.  Parentheses are not supported.  Additionally, regular expression support is included, and tag hierarchies can be implemented with wildcards.  See below for more details.
 
 Searching
 ---------
@@ -44,6 +44,10 @@ Searching on tags in the UI is based on set algebra.  The following syntax is us
     <tag>^<tag> - return nodes tagged with either of the given tags (but *not* both)
 
 These may be combined, and are applied left-associatively, building the set from the left, such that the query `foo&bar^baz` will return only nodes tagged both 'foo' and 'bar', or nodes tagged with 'baz', but *not* tagged with all three.
+
+Additionally, the search string may be any valid regular expression, meaning you can search using wildcards (*), and using this, you can create tag hierarchies, for example 'work/priority' and 'work/long-term'.  Searching for 'work/*' would return all nodes tagged with either 'work/priority' or 'work/long-term'.
+
+Please note that this plugin automatically replaces '*' with '.*' in your search string to produce python-friendly regular expressions.  This means nothing to the end-user, except that '*' can be used as a wildcard freely, as one expects.
 
 Tag Limitations
 ---------------
@@ -119,12 +123,21 @@ class TagController:
         self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* get_tagged_nodes
     def get_tagged_nodes(self, tag):
-        ''' return a list of positions of nodes containing the tag '''
+        ''' return a list of positions of nodes containing the tag, with * as a wildcard '''
         nodelist = []
+        
+        # replace * with .* for regex compatibility
+        tag = tag.replace('*', '.*')
+        
+        regex = re.compile(tag)
+        
         for node in self.c.all_unique_nodes():
             p = self.c.vnode2position(node)
-            if tag in self.get_tags(p):
-                nodelist.append(p)
+            for t in self.get_tags(p):
+                if regex.match(t):
+                    nodelist.append(p)
+                    break
+
         return nodelist
     #@+node:peckj.20140804103733.9265: *3* individual nodes
     #@+node:peckj.20140804103733.9259: *4* get_tags
