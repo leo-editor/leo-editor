@@ -4454,7 +4454,9 @@ class LeoQtTreeTab:
     def selectTab (self,tabName):
         '''LeoQtTreeTab.'''
         tt,c,cc = self,self.c,self.cc
+        tabName = g.u(tabName)
         exists = tabName in self.tabNames
+        # g.trace(tabName, type(tabName), exists)
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if not tt.lockout:

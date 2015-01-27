@@ -414,7 +414,8 @@ class ChapterController:
         cc,k,tag = self,self.c.k,'select-chapter'
         state = k.getState(tag)
         if state == 0:
-            names = list(cc.chaptersDict.keys())
+            #names = list(cc.chaptersDict.keys())
+            names = cc.setAllChapterNames()
             g.es('Chapters:\n' + '\n'.join(names))
             k.setLabelBlue('Select chapter: ')
             k.getArg(event,tag,1,self.selectChapter,tabList=names) # prefix=prefix,
@@ -863,7 +864,7 @@ class Chapter:
             self.p = None # Set later.
             root = self.findRootNode()
         if cc.tt:
-            # g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
+            #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* __str__ and __repr__(chapter)
     def __str__ (self):
