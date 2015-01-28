@@ -11,15 +11,11 @@ versions that define the IPKernelApp class.
 
 This module replaces leo.external.ipy_leo and leo.plugins.internal_ipkernel.
 '''
-
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 import sys
 import leo.core.leoGlobals as g
-import_trace = True and not g.unitTesting
+import_trace = False and not g.unitTesting
 # pylint: disable=no-name-in-module
 try:
     from IPython.lib.kernel import connect_qtconsole
@@ -49,35 +45,46 @@ class InternalIPKernel(object):
     # Was init_ipkernel
 
     def __init__(self, backend='qt'):
+        '''Ctor for InternalIPKernal class.'''
         # Start IPython kernel with GUI event loop and pylab support
         self.ipkernel = self.pylab_kernel(backend)
         # To create and track active qt consoles
         self.consoles = []
-        
         # This application will also act on the shell user namespace
         self.namespace = self.ipkernel.shell.user_ns
         # Keys present at startup so we don't print the entire pylab/numpy
         # namespace when the user clicks the 'namespace' button
         self._init_keys = set(self.namespace.keys())
-
         # Example: a variable that will be seen by the user in the shell, and
         # that the GUI modifies (the 'Counter++' button increments it):
         self.namespace['app_counter'] = 0
         #self.namespace['ipkernel'] = self.ipkernel  # dbg
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self,gui):
-        """Launch and return an IPython kernel with pylab support for the desired gui
-        """
-        trace = True
-        tag = 'leoIPython.py'
+        '''Launch an IPython kernel with pylab support for the gui.'''
+        log_debug,pdb,trace = False,True,False
+        tag = 'leoIPython.py:pylab_kernel'
         kernel = IPKernelApp.instance()
+            # IPKernalApp is a singleton class.
+            # Return the singleton instance, creating it if necessary.
         if kernel:
-            # pylab is really needed, for Qt event loop integration.
+            # pylab is needed for Qt event loop integration.
+            args = ['python','--pylab=%s' % (gui)]
+            if log_debug: args.append('--debug')
+                #'--log-level=10'
+                # '--pdb', # User-level debugging
             try:
-                kernel.initialize(['python','--pylab=%s' % (gui)])
-                    #'--log-level=10'
-                if trace: print('%s: kernel: %s' % (tag,kernel))
+                if pdb: g.pdb()
+                kernel.initialize(args)
+                # kernel objects: (Leo --ipython arg)
+                    # kernel.session: zmq.session.Session
+                    # kernel.shell: ZMQInteractiveShell
+                    # kernel.shell.comm_manager: comm.manager.CommManager.
+                    # kernel.shell.event = events.EventManager
+                    # kernel.shell.run_cell (method)
+                    # kernel.shell.hooks
             except Exception:
+                sys.stdout = sys.__stdout__
                 print('%s: kernel.initialize failed!' % tag)
                 raise
         else:
@@ -98,6 +105,7 @@ class InternalIPKernel(object):
         if ipk:
             if not ipk.namespace.get('_leo'):
                 ipk.namespace['_leo'] = LeoNameSpace()
+            # from IPython.lib.kernel import connect_qtconsole
             console = connect_qtconsole(
                 self.ipkernel.connection_file,
                 profile=self.ipkernel.profile)
@@ -184,4 +192,7 @@ class LeoNameSpace(object):
     #@-others
     
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

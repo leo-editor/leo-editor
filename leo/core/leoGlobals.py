@@ -5408,6 +5408,20 @@ def internalError (*args):
     g.error('\nInternal Leo error in',caller)
     g.es_print(*args)
     g.es_print('Called from',','.join(callers[:-1]))
+#@+node:ekr.20150127060254.5: *3* g.log
+def log(s,fn=None):
+    '''Write a message to ~/test/leo_log.txt.'''
+    # g.trace(s)
+    if fn is None:
+        fn = g.os_path_expanduser('~/test/leo_log.txt')
+    if not s.endswith('\n'):
+        s = s + '\n'
+    try:
+        f = open(fn,'a')
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -5420,18 +5434,19 @@ def pr(*args,**keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    print_immediately = False or not app # True: good for debugging.
+    print_immediately = True or not app # True: good for debugging.
 
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
     d = doKeywordArgs(keys,d)
     newline = d.get('newline')
+    stdout = sys.__stdout__ # was sys.stdout
 
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
-    elif hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+    elif hasattr(stdout,'encoding') and stdout.encoding:
         # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = sys.stdout.encoding
+        encoding = stdout.encoding
     else:
         encoding = 'utf-8'
 
@@ -5453,12 +5468,12 @@ def pr(*args,**keys):
 
     if print_immediately:
         # Good for debugging: prints messages immediately.
-        sys.stdout.write(s2)
+        stdout.write(s2)
     else:
         assert app
         # Good for production: queues 'reading settings' until after signon.
         if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
-            sys.stdout.write(s2)
+            stdout.write(s2)
         else:
             app.printWaiting.append(s2)
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
