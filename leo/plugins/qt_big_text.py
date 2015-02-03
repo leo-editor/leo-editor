@@ -190,7 +190,7 @@ class BigTextController:
     Beware of a Qt bug: You will **lose data** if you change the text
     before it is fully loaded (before the scrollbar stops moving).
 
-    To disable these buttons set @bool max-pre-loaded-body-chars = 0
+    To disable these buttons set @int max-pre-loaded-body-chars = 0
     '''
         s = s.rstrip() % (len(self.s),c.max_pre_loaded_body_chars)
         return g.adjustTripleString(s,c.tab_width)
