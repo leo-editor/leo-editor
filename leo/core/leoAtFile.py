@@ -9,7 +9,7 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-new_nosent = True
+new_nosent = False
     # True: automatically update @nosent files using the @shadow algorithm.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -810,7 +810,7 @@ class AtFile:
         i = s.find(tag)
         if i == -1:
             if trace: g.trace('found: False',repr(s))
-            return True # Don't use the cashe.
+            return True # Don't use the cache.
         else:
             j,k = g.getLine(s,i)
             line = s[j:k]
@@ -819,7 +819,7 @@ class AtFile:
             if trace: g.trace('found: True isThin:',
                 isThin,repr(line))
             return not isThin
-    #@+node:ekr.20041005105605.26: *4* at.readAll (to be changed)
+    #@+node:ekr.20041005105605.26: *4* at.readAll
     def readAll(self,root,partialFlag=False):
         """Scan positions, looking for @<file> nodes to read."""
         use_tracer = False
@@ -829,7 +829,7 @@ class AtFile:
         if partialFlag:
             # Capture the current headline only if
             # we aren't doing the initial read.
-            c.endEditing() 
+            c.endEditing()
         anyRead = False
         p = root.copy()
         scanned_tnodes = set()
@@ -854,15 +854,15 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
                 fileName = p.atAutoNodeName()
-                at.readOneAtAutoNode (fileName,p)
+                at.readOneAtAutoNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtEditNode():
                 fileName = p.atEditNodeName()
-                at.readOneAtEditNode (fileName,p)
+                at.readOneAtEditNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
                 fileName = p.atShadowFileNodeName()
-                at.readOneAtShadowNode (fileName,p)
+                at.readOneAtShadowNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
                 anyRead = True
@@ -876,6 +876,16 @@ class AtFile:
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
+            elif new_nosent:
+                if p.isAtAsisFileNode():
+                    at.rememberReadPath(at.fullPath(p),p)
+                    p.moveToNodeAfterTree()
+                elif p.isAtNoSentFileNode():
+                    anyRead = True
+                    at.readOneAtNosentNode(p)
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
             else:
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                     at.rememberReadPath(at.fullPath(p),p)
@@ -991,6 +1001,180 @@ class AtFile:
         p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
+    #@+node:ekr.20150204165040.5: *4* at.readOneAtNosentNode & helpers
+    def readOneAtNosentNode(self,root):
+        '''Update the @nosent node at root.'''
+        trace = True and not g.unitTesting
+        verbose = False
+        at,c,x = self,self.c,self.c.shadowController
+        fileName = at.fullPath(root)
+        #### at.rememberReadPath(fileName,root)
+            #### Done in at.readOpenFile
+        if not g.os_path_exists(fileName):
+            g.es('not found: %s' % (fileName),color='red')
+            return
+        new_public_lines = at.read_at_nosent_lines(fileName)
+        old_private_lines = self.write_nosent_sentinels(root)
+        if trace and verbose:
+            self.dump(new_public_lines,'new public')
+            # self.dump(old_private_lines,'old private')
+        marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines,old_private_lines,marker,p=root)
+        if trace:
+            self.dump(new_private_lines,'new private')
+        if new_private_lines == old_private_lines:
+            if trace: g.trace('no update needed')
+            return
+        g.es('updating: %s' % (root.h),color='red')
+        # From the @shadow read code
+        # Delete all children.
+        # p = root.copy()
+        # while p.hasChildren():
+            # p.firstChild().doDelete()
+
+        #########################################
+        #### at.read(p,atShadow=True,force=force)
+        
+        at.initReadIvars(root,fileName)
+            #### importFileName=importFileName,atShadow=atShadow)
+            ### at.fromString = False ### fromString
+
+        # if at.errors:
+            # if trace: g.trace('Init error')
+            # return False
+        ### fileName = at.openFileForReading(fromString=fromString)
+            # For @shadow files, calls x.updatePublicAndPrivateFiles.
+            
+        #### ????
+        #### c.setFileTimeStamp(fileName)
+
+        # if fileName and at.inputFile:
+            # c.setFileTimeStamp(fileName)
+        # elif fromString: # 2010/09/02.
+            # pass
+        # else:
+            # if trace: g.trace('No inputFile')
+            # return False
+
+        # Get the file from the cache if possible.
+        # if fromString:
+            # s,loaded,fileKey = fromString,False,None
+        # else:
+            # s,loaded,fileKey = c.cacher.readFile(fileName,root)
+
+        # Never read an external file with file-like sentinels from the cache.
+        # isFileLike = loaded and at.isFileLike(s)
+        # if not loaded or isFileLike:
+            # # if trace: g.trace('file-like file',fileName)
+            # force = True # Disable caching.
+        # if loaded and not force:
+            # if trace: g.trace('in cache',fileName)
+            # at.inputFile.close()
+            # root.clearDirty()
+            # return True
+
+        if not g.unitTesting:
+            g.es("reading:",root.h)
+            
+        # if isFileLike:
+            # if g.unitTesting:
+                # if 0: print("converting @file format in",root.h)
+                # g.app.unitTestDict['read-convert']=True
+            # else:
+                # g.red("converting @file format in",root.h)
+                
+        root.clearVisitedInTree()
+        at.scanAllDirectives(root,importing=at.importing,reading=True)
+            # Sets the following ivars:
+                # at.default_directory
+                # at.encoding: **Important**: changed later
+                #     by readOpenFile/at.scanHeader.
+                # at.explicitLineEnding
+                # at.language
+                # at.output_newline
+                # at.page_width
+                # at.tab_width
+
+        ### if trace: g.trace(repr(at.encoding),fileName)
+        
+        # Init the input stream used by read-open file.
+        at.read_lines = new_private_lines
+        at.read_ptr = 0
+        short_fn = g.shortFileName(fileName)
+        f = None # Not used !!!
+        g.pdb()
+        thinFile = at.readOpenFile(root,f,short_fn,deleteNodes=True)
+            # Calls at.scanHeader, which sets at.encoding.
+        root.clearDirty() # May be set dirty below.
+        if at.errors == 0:
+            at.deleteUnvisitedNodes(root)
+            at.deleteTnodeList(root)
+        if at.errors == 0 and not at.importing:
+            # Used by mod_labels plugin.
+            at.copyAllTempBodyStringsToVnodes(root,thinFile)
+        at.deleteAllTempBodyStrings()
+        
+        
+        #######
+        root.clearOrphan()
+        
+        # if isFileLike and at.errors == 0: # Old-style sentinels.
+            # # 2010/02/24: Make the root @file node dirty so it will
+            # # be written automatically when saving the file.
+            # # Do *not* set the orphan bit here!
+            # root.clearOrphan()
+            # root.setDirty()
+            # c.setChanged(True) # Essential, to keep dirty bit set.
+        # el
+        if at.errors > 0:
+            # 2010/10/22: Dirty bits are *always* cleared.
+            # Only the orphan bit is preserved.
+            # root.setDirty() # 2011/06/17: Won't be preserved anyway
+            root.setOrphan()
+            # c.setChanged(True) # 2011/06/17.
+        else:
+            root.clearOrphan()
+        
+        # if at.errors == 0 and not isFileLike and not fromString:
+            # c.cacher.writeFile(root,fileKey)
+
+        if trace: g.trace('at.errors',at.errors)
+        return at.errors == 0
+
+        
+    #@+node:ekr.20150204165040.7: *5* at.dump_lines
+    def dump(self,lines,tag):
+        '''Dump all lines.'''
+        print('***** %s lines...\n' % tag)
+        for s in lines:
+            print(s.rstrip())
+
+    #@+node:ekr.20150204165040.8: *5* at.read_at_nosent_lines
+    def read_at_nosent_lines(self,fn):
+        '''Return all lines of the @nosent file at fn.'''
+        try:
+            f = open(fn,'r')
+            s = f.read()
+            f.close()
+        except IOError:
+            s = ''
+        return g.splitLines(s)
+    #@+node:ekr.20150204165040.9: *5* at.write_nosent_sentinels
+    def write_nosent_sentinels(self,root):
+        '''
+        Return all lines of the @nosent tree as if the tree were written as an
+        @file node.
+        '''
+        at = self.c.atFileCommands
+        at.write(root,
+            kind = '@nosent',
+            nosentinels = False,
+            perfectImportFlag = False,
+            scriptWrite = True,
+            thinFile = True,
+            toString = True)
+        return g.splitLines(at.stringOutput)
     #@+node:ekr.20080711093251.7: *4* at.readOneAtShadowNode
     def readOneAtShadowNode (self,fn,p,force=False):
 
@@ -1120,7 +1304,7 @@ class AtFile:
 
         # Delete all children except for old-style @file nodes
 
-        if root.isAtNoSentFileNode():
+        if not new_nosent and root.isAtNoSentFileNode():
             return False
         elif root.isAtFileNode() and not thinFile:
             return False
