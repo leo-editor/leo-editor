@@ -9,6 +9,8 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
+new_nosent = True
+    # True: automatically update @nosent files using the @shadow algorithm.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -527,13 +529,12 @@ class AtFile:
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
-    #@+node:ekr.20041005105605.19: *4* at.openFileForReading
+    #@+node:ekr.20041005105605.19: *4* at.openFileForReading & helper
     def openFileForReading(self,fromString=False):
-
-        '''Open the file given by at.root.
-        This will be the private file for @shadow nodes.'''
-
-        trace = False and not g.app.unitTesting
+        '''
+        Open the file given by at.root.
+        This will be the private file for @shadow nodes.
+        '''
         at = self
         if fromString:
             if at.atShadow:
@@ -548,23 +549,8 @@ class AtFile:
             at.setPathUa(at.root,fn)
                 # Remember the full path to this node.
             if at.atShadow:
-                x = at.c.shadowController
-                # readOneAtShadowNode should already have checked these.
-                shadow_fn     = x.shadowPathName(fn)
-                shadow_exists = g.os_path_exists(shadow_fn) and \
-                    g.os_path_isfile(shadow_fn)
-                if not shadow_exists:
-                    g.trace('can not happen: no private file',
-                        shadow_fn,g.callers())
-                    return at.error(
-                        'can not happen: private file does not exist: %s' % (
-                            shadow_fn))
-                # This method is the gateway to the shadow algorithm.
-                if trace:
-                    g.trace('         fn:       ',fn)
-                    g.trace('reading: shadow_fn:',shadow_fn)
-                x.updatePublicAndPrivateFiles(at.root,fn,shadow_fn)
-                fn = shadow_fn
+                fn = at.openAtShadowFileForReading(fn)
+                if not fn: return None
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = f = open(fn,'rb')
@@ -574,13 +560,35 @@ class AtFile:
                 s = g.toUnicode(s,e)
                 s = s.replace('\r\n','\n')
                 at.read_lines = g.splitLines(s)
-                if trace: g.trace(at.bom_encoding,fn)
+                # g.trace(at.bom_encoding,fn)
                 at.warnOnReadOnlyFile(fn)
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
                 fn = None
         return fn
+    #@+node:ekr.20150204165040.4: *5* at.openAtShadowFileForReading
+    def openAtShadowFileForReading(self,fn):
+        '''Open an @shadow for reading and return shadow_fn.'''
+        trace = False and not g.app.unitTesting
+        at = self
+        x = at.c.shadowController
+        # readOneAtShadowNode should already have checked these.
+        shadow_fn     = x.shadowPathName(fn)
+        shadow_exists = (g.os_path_exists(shadow_fn) and
+            g.os_path_isfile(shadow_fn))
+        if not shadow_exists:
+            g.trace('can not happen: no private file',
+                shadow_fn,g.callers())
+            at.error('can not happen: private file does not exist: %s' % (
+                shadow_fn))
+            return None
+        # This method is the gateway to the shadow algorithm.
+        if trace:
+            g.trace('         fn:       ',fn)
+            g.trace('reading: shadow_fn:',shadow_fn)
+        x.updatePublicAndPrivateFiles(at.root,fn,shadow_fn)
+        return shadow_fn
     #@+node:ekr.20041005105605.21: *4* at.read & helpers
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
@@ -811,7 +819,7 @@ class AtFile:
             if trace: g.trace('found: True isThin:',
                 isThin,repr(line))
             return not isThin
-    #@+node:ekr.20041005105605.26: *4* at.readAll
+    #@+node:ekr.20041005105605.26: *4* at.readAll (to be changed)
     def readAll(self,root,partialFlag=False):
         """Scan positions, looking for @<file> nodes to read."""
         use_tracer = False
