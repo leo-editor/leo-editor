@@ -9,7 +9,7 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-new_nosent = False
+new_nosent = True
     # True: automatically update @nosent files using the @shadow algorithm.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -697,7 +697,7 @@ class AtFile:
         return at.errors == 0
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
-
+        '''Delete all v.tempBodyString & v.tempBodyList attributes.'''
         for v in self.c.all_unique_nodes():
             if hasattr(v,"tempBodyString"):
                 delattr(v,"tempBodyString")
@@ -1005,53 +1005,45 @@ class AtFile:
     def readOneAtNosentNode(self,root):
         '''Update the @nosent node at root.'''
         trace = False and not g.unitTesting
-        verbose = False
         at,c,x = self,self.c,self.c.shadowController
         fileName = at.fullPath(root)
         if not g.os_path_exists(fileName):
             g.es('not found: %s' % (fileName),color='red')
             return
+        if not g.unitTesting:
+            # Recovered nodes make an update message unnecessary.
+            g.es("reading:",root.h)
+        # Update the outline using the @shadow algorithm.
         new_public_lines = at.read_at_nosent_lines(fileName)
         old_private_lines = self.write_nosent_sentinels(root)
-        if trace and verbose:
-            self.dump(new_public_lines,'new public')
-            self.dump(old_private_lines,'old private')
         marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
         new_private_lines = x.propagate_changed_lines(
             new_public_lines,old_private_lines,marker,p=root)
-        if trace and verbose:
+        if trace:
+            self.dump(new_public_lines,'new public')
+            # self.dump(old_private_lines,'old private')
             self.dump(new_private_lines,'new private')
         if new_private_lines == old_private_lines:
-            if trace: g.trace('no update needed')
             return
-        g.es('updating: %s' % (root.h),color='red')
-
-        # The following is a simplified version of code in at.read().
-        # There is no need for caching logic: the file has already been read.
+        # The following is like at.read() w/o caching logic.
         at.initReadIvars(root,fileName)
-        if not g.unitTesting:
-            g.es("reading:",root.h)
         root.clearVisitedInTree()
-        at.scanAllDirectives(root,importing=at.importing,reading=True)
+        at.scanAllDirectives(root,reading=True)
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
         f = None # Not used !!!
         thinFile = at.readOpenFile(root,f,fileName,deleteNodes=True)
-            # Calls at.scanHeader, which sets at.encoding.
         root.clearDirty()
         if at.errors == 0:
             at.deleteUnvisitedNodes(root)
             at.deleteTnodeList(root)
-        if at.errors == 0 and not at.importing:
-            # Used by mod_labels plugin.
             at.copyAllTempBodyStringsToVnodes(root,thinFile)
-        at.deleteAllTempBodyStrings()
-        if at.errors > 0:
-            root.setOrphan()
-        else:
+                # Used by mod_labels plugin: May set c dirty.
             root.clearOrphan()
-        if trace: g.trace('at.errors',at.errors)
+        else:
+            root.setOrphan()
+        at.deleteAllTempBodyStrings()         
         return at.errors == 0
     #@+node:ekr.20150204165040.7: *5* at.dump_lines
     def dump(self,lines,tag):
