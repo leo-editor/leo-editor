@@ -525,7 +525,7 @@ class AtFile:
         if at.errors: return
         at.openFileForReading(fromString=s)
         if not at.inputFile: return
-        at.readOpenFile(root,at.inputFile,fn)
+        at.readOpenFile(root,fn)
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
@@ -664,7 +664,7 @@ class AtFile:
                 # at.tab_width
 
         if trace: g.trace(repr(at.encoding),fileName)
-        thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+        thinFile = at.readOpenFile(root,fileName,deleteNodes=True)
             # Calls at.scanHeader, which sets at.encoding.
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
@@ -1032,8 +1032,7 @@ class AtFile:
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
-        f = None # Not used !!!
-        thinFile = at.readOpenFile(root,f,fileName,deleteNodes=True)
+        thinFile = at.readOpenFile(root,fileName,deleteNodes=True)
         root.clearDirty()
         if at.errors == 0:
             at.deleteUnvisitedNodes(root)
@@ -1134,7 +1133,7 @@ class AtFile:
 
         return ic.errors == 0
     #@+node:ekr.20041005105605.27: *4* at.readOpenFile & helpers
-    def readOpenFile(self,root,theFile,fileName,deleteNodes=False):
+    def readOpenFile(self,root,fileName,deleteNodes=False):
         '''
         Read an open derived file.
 
