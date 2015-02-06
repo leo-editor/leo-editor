@@ -1152,7 +1152,7 @@ class AtFile:
             while root.hasChildren():
                 root.firstChild().doDelete()
         if read_new:
-            lastLines = at.scanText4(theFile,fileName,root)
+            lastLines = at.scanText4(fileName,root)
         else:
             firstLines = [] ; lastLines = []
             if at.atShadow:
@@ -1372,7 +1372,7 @@ class AtFile:
         assert e
         return e
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
-    def scanText4 (self,theFile,fileName,p,verbose=False):
+    def scanText4 (self,fileName,p,verbose=False):
 
         """Scan a 4.x derived file non-recursively."""
 
