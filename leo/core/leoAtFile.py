@@ -1010,6 +1010,7 @@ class AtFile:
         if not g.os_path_exists(fileName):
             g.es('not found: %s' % (fileName),color='red')
             return
+        at.rememberReadPath(fileName,root)
         if not g.unitTesting:
             # Recovered nodes make an update message unnecessary.
             g.es("reading:",root.h)
@@ -5667,7 +5668,7 @@ class AtFile:
         if root and root.h.startswith('@auto-rst'):
             # Fix bug 50: body text lost switching @file to @auto-rst
             # Refuse to convert any @<file> node to @auto-rst.
-            d = root.v.at_read
+            d = root.v.at_read if hasattr(root.v,'at_read') else {}
             aList = sorted(d.get(fileName,[]))
             for h in aList:
                 if not h.startswith('@auto-rst'):
@@ -5699,19 +5700,13 @@ class AtFile:
         the full headline (@<file> type) that caused the read.
         '''
         v = p.v
-        if 1:
-            # Fix bug #50: body text lost switching @file to @auto-rst
-            if not hasattr(v,'at_read'):
-                v.at_read = {}
-            d = v.at_read
-            aSet = d.get(fn,set())
-            aSet.add(p.h)
-            d[fn] = aSet
-        else:
-            if not hasattr(v,'at_read'):
-                v.at_read = []
-            if not fn in v.at_read:
-                v.at_read.append(fn)
+        # Fix bug #50: body text lost switching @file to @auto-rst
+        if not hasattr(v,'at_read'):
+            v.at_read = {}
+        d = v.at_read
+        aSet = d.get(fn,set())
+        aSet.add(p.h)
+        d[fn] = aSet
     #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
@@ -5890,17 +5885,13 @@ class AtFile:
         when writing p (an @<file> node) to fn.
         '''
         if not g.os_path_exists(fn):
+            # No danger of overwriting fn.
             return False
-                # No danger of overwriting fn.
         elif hasattr(p.v,'at_read'):
-            if 1:
-                # Fix bug #50: body text lost switching @file to @auto-rst
-                d = p.v.at_read
-                aSet = d.get(fn,set())
-                return p.h not in aSet
-            else:
-                return fn not in p.v.at_read
-                    # The path is new.
+            # Fix bug #50: body text lost switching @file to @auto-rst
+            d = p.v.at_read
+            aSet = d.get(fn,set())
+            return p.h not in aSet
         else:
             return True
                 # The file was never read.
