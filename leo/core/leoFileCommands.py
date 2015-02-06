@@ -794,20 +794,17 @@ class FileCommands:
         return ok
     #@+node:ekr.20100205060712.8314: *5* fc.handleNodeConflicts & helper
     def handleNodeConflicts (self):
-
+        '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c
         if not c.nodeConflictList: return
-
         # Find the last top-level node.
         sib = c.rootPosition()
         while sib.hasNext():
             sib.moveToNext()
-
         # Create the 'Recovered Nodes' node.
         root = sib.insertAfter()
         root.setHeadString('Recovered Nodes')
         root.expand()
-
         # For each conflict, create one child and two grandchildren.
         for bunch in c.nodeConflictList:
             tag = bunch.get('tag') or ''
@@ -834,7 +831,6 @@ class FileCommands:
             n1.setBodyString(b1)
             n2.setHeadString('new:'+h2)
             n2.setBodyString(b2)
-
         return root
     #@+node:ekr.20100701112151.5959: *6* getDiff
     def getDiff (self,s1,s2):

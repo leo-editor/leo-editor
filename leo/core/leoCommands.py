@@ -1238,8 +1238,10 @@ class Commands (object):
     def refreshFromDisk(self,event=None):
         '''Refresh and @<file> node from disk.'''
         c,p = self,self.p
+        c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:
+            redraw_flag = True
             at = c.atFileCommands
             c.recreateGnxDict()
                 # Fix bug 1090950 refresh from disk: cut node ressurection.
@@ -1248,23 +1250,27 @@ class Commands (object):
             if word == '@auto':
                 p.deleteAllChildren()
                 at.readOneAtAutoNode(fn,p)
-                c.redraw()
             elif word in ('@thin','@file'):
                 p.deleteAllChildren()
                 at.read(p,force=True)
-                c.redraw()
+            elif word == '@nosent':
+                at.readOneAtNosentNode(p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
                 at.read(p,force=True,atShadow=True)
-                c.redraw()
             elif word == '@edit':
                 p.deleteAllChildren()
                 at.readOneAtEditNode(fn,p)
-                c.redraw()
             else:
                 g.es_print('can not refresh from disk\n%s' % p.h)
+                redraw_flag = False
         else:
             g.warning('not an @<file> node:\n%s' % (p.h))
+            redraw_flag = False
+        if redraw_flag:
+            # Create the 'Recovered Nodes' tree.
+            c.fileCommands.handleNodeConflicts()
+            c.redraw()
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None,fileName=None):
 

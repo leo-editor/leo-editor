@@ -2926,9 +2926,8 @@ class AtFile:
         if hasattr(v,'tempBodyList'): delattr(v,'tempBodyList')
     #@+node:ekr.20100628124907.5816: *5* at.indicateNodeChanged
     def indicateNodeChanged (self,old,new,postPass,v):
-
-        at = self ; c = at.c
-
+        '''Add an entry to c.nodeConflictList.'''
+        at,c = self,self.c
         if at.perfectImportRoot:
             if not postPass:
                 at.correctedLines += 1
@@ -2942,9 +2941,6 @@ class AtFile:
             # Do nothing if only trailing whitespace is involved.
             if new.endswith('\n') and old == new[:-1]: return
             if old.endswith('\n') and new == old[:-1]: return
-            # if old == new.rstrip(): return
-            # if new == old.rstrip(): return
-
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -2954,10 +2950,8 @@ class AtFile:
                 h_old=v._headString,
                 h_new=v._headString,
             ))
-
             if not g.unitTesting:
                 g.error("uncached read node changed",v.h)
-
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
             c.changed = True
