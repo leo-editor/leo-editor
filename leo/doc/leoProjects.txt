@@ -3,8 +3,9 @@
 .. @@language rest
 
 .. @+all
-.. @+node:ekr.20141203092457.6: ** Leo 5.0.1
-.. @+node:ekr.20141203092457.5: *3* Fixed bug in g.reportBadChars
+.. @+node:ekr.20141203092457.6: ** Leo 5.1: @nosent updates automatically
+.. @+node:ekr.20150206064817.6: *3* Bugs
+.. @+node:ekr.20141203092457.5: *4* Fixed bug in g.reportBadChars
 https://groups.google.com/forum/#!topic/leo-editor/X9rePlT6Meg
 
 In Python 3 there is no 'unicode' function.
@@ -12,8 +13,8 @@ In Python 3 there is no 'unicode' function.
 - A big collapse in complexity in g.reportBadChars.
 - Added an important guard in g.ue for Python 3.
 
-.. @+node:ekr.20141203092457.19: *3* Fixed Python3 compatibility bug in g.pause
-.. @+node:ekr.20141205082137.4: *3* Fixed bug 108: can't write spellpyx.txt
+.. @+node:ekr.20141203092457.19: *4* Fixed Python3 compatibility bug in g.pause
+.. @+node:ekr.20141205082137.4: *4* Fixed bug 108: can't write spellpyx.txt
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/108
@@ -24,7 +25,7 @@ have the permission.
 Is there a way to configure the path of this spellpyx.txt to, say, $HOME/.leo?
 
 @language python
-.. @+node:ekr.20141206050611.8: *3* Fixed bug 78: find-next match not always scrolled into view
+.. @+node:ekr.20141206050611.8: *4* Fixed bug 78: find-next match not always scrolled into view
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/78
@@ -44,29 +45,64 @@ Here is how to demonstrate the bug:
 - The second match does *not* scroll properly.
 
 @language python
-.. @+node:ekr.20141208105807.4: *3* Added external/rope folder
-# import rope ; print(rope)
-
-rope = g.importModule('rope',verbose=True)
-print(rope)
-.. @+node:ekr.20141206050611.6: *3* Improved recursive import command
-- Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
-- Added use_at_nosent keyword option to c.recursiveImport.
-- Contract all imported nodes.
-.. @+node:ekr.20141211065012.4: *3* Fixed bug 117: <Return> causes unwanted scrolling
+.. @+node:ekr.20141211065012.4: *4* Fixed bug 117: <Return> causes unwanted scrolling
 https://github.com/leo-editor/leo-editor/issues/117
 
 This was a side effect of fixing https://github.com/leo-editor/leo-editor/issues/78
 
 Added g.app.allow_see and related logic.
-.. @+node:ekr.20141211132803.1: *3* Fixed bug 119: new setting for @auto-org-mode
+.. @+node:ekr.20141211132803.1: *4* Fixed bug 119: new setting for @auto-org-mode
 https://github.com/leo-editor/leo-editor/issues/119
-.. @+node:ekr.20141223122529.4: *3* Fixed bug 126:  Inproper handling of @chapter nodes with non ASCII headlines
+.. @+node:ekr.20141223122529.4: *4* Fixed bug 126:  Inproper handling of @chapter nodes with non ASCII headlines
 https://github.com/leo-editor/leo-editor/issues/126
 Call g.toUnicode in cc.findChapterNode.
 Added test for QString in g.toUnicode.
-.. @+node:ekr.20141223125811.4: *3* Fixed bug 124: Viewrendered can't display @image
+.. @+node:ekr.20141223125811.4: *4* Fixed bug 124: Viewrendered can't display @image
 https://github.com/leo-editor/leo-editor/issues/124
+.. @+node:ekr.20150206064817.7: *4* Fixed bug: Made last log line visible
+.. @+node:ekr.20150206064817.9: *3* Code
+.. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
+From at.readOpenFile, at.scanHeader and at.scanText4.
+.. @+node:ekr.20141208105807.4: *4* Added external/rope folder
+# import rope ; print(rope)
+
+rope = g.importModule('rope',verbose=True)
+print(rope)
+.. @+node:ekr.20150206064817.8: *3* Features
+.. @+node:ekr.20141206050611.6: *4* Improved recursive import command
+- Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
+- Added use_at_nosent keyword option to c.recursiveImport.
+- Contract all imported nodes.
+.. @+node:ekr.20150206064817.5: *3* Major feature: @nosent updates automatically
+Rev 7a851eb enables automatic updating of @nosent files.
+When loading a .leo file, Leo will automatically update
+@nosent trees if the corresponding external file has been
+changed outside Leo! This is one of the most important
+advances in Leo's history.
+
+As discussed yesterday, using @nosent files is about twice
+as fast as using @shadow trees. No shadow directories or
+shadow files are needed: it's trivial to recreate the
+"shadow" data from the @nosent tree!
+
+Why, of why, did we never see this before? It could have
+been done at any time since Leo supported @shadow.
+
+Finally, Leo reports all changes using the "recovered nodes"
+mechanism. No new code was required: the core @shadow code
+was not changed in any way.
+
+at.readOneAtNosentNode and two simple helpers handle
+all the details. readOneAtNosentNode uses the @shadow
+algorithm to compute the updated lines of the @nosent tree,
+exactly as described yesterday. If the new lines match the
+old, nothing more need be done: we can use the existing
+@nosent tree as is. Otherwise, the new lines are passed to
+at.readOpenFile to delete the old tree and create the
+@nosent tree. This part of the code is similar to the code
+in at.read, but it is much simpler because caching is not
+involved. In essence, everything "just worked" from the get
+go.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
