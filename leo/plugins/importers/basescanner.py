@@ -554,15 +554,11 @@ class BaseScanner:
         return parent
     #@+node:ekr.20140727075002.18207: *3* BaseScanner.addRef
     def addRef (self,parent):
-
         '''Create an unindented @others or section reference in the parent node.'''
-
         if self.isRst and not self.atAuto:
             return
-
-        if self.treeType in ('@file',None):
+        if self.treeType in ('@file','@nosent',None):
             self.appendStringToBody(parent,'@others\n')
-
         if self.treeType == '@root' and self.methodsSeen:
             self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
@@ -779,14 +775,11 @@ class BaseScanner:
         return prefix
     #@+node:ekr.20140727075002.18221: *4* BaseScanner.getClassNodeRef
     def getClassNodeRef (self,class_name):
-
         '''Insert the proper body text in the class_vnode.'''
-
-        if self.treeType in ('@file',None):
+        if self.treeType in ('@file','@nosent',None):
             s = '@others'
         else:
             s = g.angleBrackets(' class %s methods ' % (class_name))
-
         return '%s\n' % (s)
     #@+node:ekr.20140727075002.18222: *4* BaseScanner.putClassHelper
     def putClassHelper(self,s,i,end,class_node):

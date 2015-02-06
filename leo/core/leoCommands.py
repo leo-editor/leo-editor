@@ -794,7 +794,7 @@ class Commands (object):
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand([fn],"@file")
+                ic.importFilesCommand([fn],"@nosent") # Was @file.
             # No longer supported.
             # c.importCommands.importFilesCommand (names,"@root")
         c.raise_error_dialogs(kind='read')

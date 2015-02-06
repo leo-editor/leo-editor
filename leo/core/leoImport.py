@@ -642,8 +642,8 @@ class LeoImportCommands:
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
-            if self.treeType == "@file":
-                p.initHeadString("@file " + fileName)
+            if self.treeType in ("@file","@nosent"):
+                p.initHeadString("%s %s " % (self.treeType,fileName))
             elif self.treeType is None:
                 # By convention, we use the short file name.
                 p.initHeadString(g.shortFileName(fileName))
@@ -816,6 +816,9 @@ class LeoImportCommands:
         self.treeType = treeType
         if len(files) == 2:
             current = self.createImportParent(current,files)
+        else:
+            current = current.insertAfter()
+            current.h = 'imported files'
         for fn in files:
             g.setGlobalOpenDir(fn)
             p = self.createOutline(fn,current)
@@ -1690,8 +1693,8 @@ class RecursiveImportController:
         if files2:
             if self.one_file:
                 files2 = [files2[0]]
-            if self.use_at_edit or self.use_at_nosent:
-                kind = '@edit' if self.use_at_edit else '@nosent'
+            if self.use_at_edit: ### or self.use_at_nosent:
+                kind = '@edit' ### if self.use_at_edit else '@nosent'
                 for fn in files2:
                     parent = child or root
                     p = parent.insertAsLastChild()
@@ -1699,7 +1702,8 @@ class RecursiveImportController:
                     s,e = g.readFileIntoString(fn,encoding='utf-8',kind=kind)
                     p.b = s
             else:
-                c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
+                kind = '@nosent' if self.use_at_nosent else '@file'
+                c.importCommands.importFilesCommand(files2,kind,redrawFlag=False)
                     # '@auto' causes problems.
         if dirs:
             for dir_ in sorted(dirs):
@@ -1712,6 +1716,11 @@ class RecursiveImportController:
             h = p.h
             if h.startswith('@file') or h.startswith('@@file'):
                 i = 6 if h[1] == '@' else 5
+                path = h[i:].strip()
+                junk,ext = g.os_path_splitext(path)
+                self.clean(p,ext)
+            elif h.startswith('@nosent') or h.startswith('@@nosent'):
+                i = 7 if h[1] == '@' else 6
                 path = h[i:].strip()
                 junk,ext = g.os_path_splitext(path)
                 self.clean(p,ext)
@@ -1729,7 +1738,7 @@ class RecursiveImportController:
 
         c = self.c
         root = p.copy()
-        for tag in ('@@file','@file'):
+        for tag in ('@@file','@file','@@nosent','@nosent'):
             if p.h.startswith(tag):
                 p.h = p.h[len(tag):].strip()
                 break
@@ -1906,9 +1915,7 @@ class RecursiveImportController:
             p.b = ''.join(lines[1:])
     #@+node:ekr.20130823083943.12606: *4* rename_decls
     def rename_decls (self,root):
-        
         '''Use a section reference for declarations.'''
-        
         p = root.firstChild()
         h = p and p.h or ''
         tag = 'declarations'
@@ -1934,7 +1941,7 @@ class RecursiveImportController:
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        if not self.use_at_edit and not self.use_at_nosent:
+        if not self.use_at_edit: ### and not self.use_at_nosent:
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
         self.clear_dirty_bits(root.copy())
@@ -2014,7 +2021,6 @@ class RecursiveImportController:
                     c.selectPosition(root)
                     changed = True
                     break
-        
     #@+node:ekr.20130823083943.12613: *3* run
     def run (self,dir_):
         '''Import all the .py files in dir_.'''
