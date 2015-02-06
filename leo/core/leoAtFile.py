@@ -1004,12 +1004,10 @@ class AtFile:
     #@+node:ekr.20150204165040.5: *4* at.readOneAtNosentNode & helpers
     def readOneAtNosentNode(self,root):
         '''Update the @nosent node at root.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         at,c,x = self,self.c,self.c.shadowController
         fileName = at.fullPath(root)
-        #### at.rememberReadPath(fileName,root)
-            #### Done in at.readOpenFile
         if not g.os_path_exists(fileName):
             g.es('not found: %s' % (fileName),color='red')
             return
@@ -1017,96 +1015,31 @@ class AtFile:
         old_private_lines = self.write_nosent_sentinels(root)
         if trace and verbose:
             self.dump(new_public_lines,'new public')
-            # self.dump(old_private_lines,'old private')
+            self.dump(old_private_lines,'old private')
         marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
         new_private_lines = x.propagate_changed_lines(
             new_public_lines,old_private_lines,marker,p=root)
-        if trace:
+        if trace and verbose:
             self.dump(new_private_lines,'new private')
         if new_private_lines == old_private_lines:
             if trace: g.trace('no update needed')
             return
         g.es('updating: %s' % (root.h),color='red')
-        # From the @shadow read code
-        # Delete all children.
-        # p = root.copy()
-        # while p.hasChildren():
-            # p.firstChild().doDelete()
 
-        #########################################
-        #### at.read(p,atShadow=True,force=force)
-        
+        # The following is a simplified version of code in at.read().
+        # There is no need for caching logic: the file has already been read.
         at.initReadIvars(root,fileName)
-            #### importFileName=importFileName,atShadow=atShadow)
-            ### at.fromString = False ### fromString
-
-        # if at.errors:
-            # if trace: g.trace('Init error')
-            # return False
-        ### fileName = at.openFileForReading(fromString=fromString)
-            # For @shadow files, calls x.updatePublicAndPrivateFiles.
-            
-        #### ????
-        #### c.setFileTimeStamp(fileName)
-
-        # if fileName and at.inputFile:
-            # c.setFileTimeStamp(fileName)
-        # elif fromString: # 2010/09/02.
-            # pass
-        # else:
-            # if trace: g.trace('No inputFile')
-            # return False
-
-        # Get the file from the cache if possible.
-        # if fromString:
-            # s,loaded,fileKey = fromString,False,None
-        # else:
-            # s,loaded,fileKey = c.cacher.readFile(fileName,root)
-
-        # Never read an external file with file-like sentinels from the cache.
-        # isFileLike = loaded and at.isFileLike(s)
-        # if not loaded or isFileLike:
-            # # if trace: g.trace('file-like file',fileName)
-            # force = True # Disable caching.
-        # if loaded and not force:
-            # if trace: g.trace('in cache',fileName)
-            # at.inputFile.close()
-            # root.clearDirty()
-            # return True
-
         if not g.unitTesting:
             g.es("reading:",root.h)
-            
-        # if isFileLike:
-            # if g.unitTesting:
-                # if 0: print("converting @file format in",root.h)
-                # g.app.unitTestDict['read-convert']=True
-            # else:
-                # g.red("converting @file format in",root.h)
-                
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
-            # Sets the following ivars:
-                # at.default_directory
-                # at.encoding: **Important**: changed later
-                #     by readOpenFile/at.scanHeader.
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
-
-        ### if trace: g.trace(repr(at.encoding),fileName)
-        
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
-        short_fn = g.shortFileName(fileName)
         f = None # Not used !!!
-        g.pdb()
-        thinFile = at.readOpenFile(root,f,short_fn,deleteNodes=True)
+        thinFile = at.readOpenFile(root,f,fileName,deleteNodes=True)
             # Calls at.scanHeader, which sets at.encoding.
-        root.clearDirty() # May be set dirty below.
+        root.clearDirty()
         if at.errors == 0:
             at.deleteUnvisitedNodes(root)
             at.deleteTnodeList(root)
@@ -1114,35 +1047,12 @@ class AtFile:
             # Used by mod_labels plugin.
             at.copyAllTempBodyStringsToVnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
-        
-        
-        #######
-        root.clearOrphan()
-        
-        # if isFileLike and at.errors == 0: # Old-style sentinels.
-            # # 2010/02/24: Make the root @file node dirty so it will
-            # # be written automatically when saving the file.
-            # # Do *not* set the orphan bit here!
-            # root.clearOrphan()
-            # root.setDirty()
-            # c.setChanged(True) # Essential, to keep dirty bit set.
-        # el
         if at.errors > 0:
-            # 2010/10/22: Dirty bits are *always* cleared.
-            # Only the orphan bit is preserved.
-            # root.setDirty() # 2011/06/17: Won't be preserved anyway
             root.setOrphan()
-            # c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
-        
-        # if at.errors == 0 and not isFileLike and not fromString:
-            # c.cacher.writeFile(root,fileKey)
-
         if trace: g.trace('at.errors',at.errors)
         return at.errors == 0
-
-        
     #@+node:ekr.20150204165040.7: *5* at.dump_lines
     def dump(self,lines,tag):
         '''Dump all lines.'''
