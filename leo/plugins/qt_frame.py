@@ -3255,6 +3255,20 @@ class LeoQtLog (leoFrame.LeoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
+    #@+node:ekr.20150205181818.5: *4* LeoQtLog.scrollToEnd
+    def scrollToEnd (self,tabName='Log'):
+        '''Scroll the log to the end.'''
+        if g.app.quitting:
+            return
+        if tabName:
+            self.selectTab(tabName)
+        w = self.logCtrl.widget
+        if w:
+            sb = w.horizontalScrollBar()
+            pos = sb.sliderPosition()
+            w.moveCursor(QtGui.QTextCursor.End)
+            sb.setSliderPosition(pos)
+            w.repaint() # Slow, but essential.
     #@+node:ekr.20120913110135.10613: *3* LeoQtLog.putImage
     #@+node:ekr.20110605121601.18324: *3* LeoQtLog.Tab
     #@+node:ekr.20110605121601.18325: *4* LeoQtLog.clearTab

@@ -1187,25 +1187,22 @@ class LeoApp:
         self.logIsLocked = False
     #@+node:ekr.20031218072017.2619: *3* app.writeWaitingLog
     def writeWaitingLog (self,c):
-
+        '''Write all waiting lines to the log.'''
         trace = False
         app = self
-
         if trace:
             # Do not call g.es, g.es_print, g.pr or g.trace here!
-            print('** writeWaitingLog','silent',app.silentMode,c.shortFileName())
+            print('** writeWaitingLog: silent: %s c: %s' % (
+                app.silentMode,c and c.shortFileName() or '<no c>'))
             # print('writeWaitingLog',g.callers())
             # import sys ; print('writeWaitingLog: argv',sys.argv)
-
         if not c or not c.exists:
             return
-
         if g.unitTesting:
             app.printWaiting = []
             app.logWaiting = []
             g.app.setLog(None) # Prepare to requeue for other commanders.
             return
-
         table = [
             ('Leo Log Window','red'),
             (app.signon,None),
@@ -1213,13 +1210,11 @@ class LeoApp:
             (app.signon2,None)
         ]
         table.reverse()
-
-        c.setLog() # 2010/10/20
+        c.setLog()
         app.logInited = True # Prevent recursive call.
-
         if not app.signon_printed:
             app.signon_printed = True
-            if not app.silentMode: # 2011/11/02:
+            if not app.silentMode:
                 print('')
                 print('** isPython3: %s' % g.isPython3)
                 if not g.enableDB:
@@ -1227,19 +1222,19 @@ class LeoApp:
                 print(app.signon)
                 print(app.signon1)
                 print(app.signon2)
-        if not app.silentMode: # 2011/11/02:
+        if not app.silentMode:
             for s in app.printWaiting:
                 print(s)
         app.printWaiting = []
-
-        if not app.silentMode:  # 2011/11/02:
+        if not app.silentMode:
             for s,color in table:
                 app.logWaiting.insert(0,(s+'\n',color),)
             for s,color in app.logWaiting:
                 g.es('',s,color=color,newline=0)
                     # The caller must write the newlines.
+            if hasattr(c.frame.log,'scrollToEnd'):
+                g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
         app.logWaiting = []
-
         # Essential when opening multiple files...
         g.app.setLog(None) 
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
@@ -2797,97 +2792,6 @@ class LoadManager:
         return ok
     #@-others
 
-#@+node:ekr.20120211121736.10831: ** class LogManager
-class LogManager:
-
-    '''A class to handle the global log, and especially
-    switching the log from commander to commander.'''
-
-    def __init__ (self):
-
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(LogManager)')
-
-        self.log = None             # The LeoFrame containing the present log.
-        self.logInited = False      # False: all log message go to logWaiting list.
-        self.logIsLocked = False    # True: no changes to log are allowed.
-        self.logWaiting = []        # List of messages waiting to go to a log.
-        self.printWaiting = []      # Queue of messages to be sent to the printer.
-        self.signon_printed = False # True: the global signon has been printed.
-
-    #@+others
-    #@+node:ekr.20120211121736.10834: *3* LogM.setLog, lockLog, unlocklog
-    def setLog (self,log):
-
-        """set the frame to which log messages will go"""
-
-        # print("app.setLog:",log,g.callers())
-        if not self.logIsLocked:
-            self.log = log
-
-    def lockLog(self):
-        """Disable changes to the log"""
-        self.logIsLocked = True
-
-    def unlockLog(self):
-        """Enable changes to the log"""
-        self.logIsLocked = False
-    #@+node:ekr.20120211121736.10836: *3* LogM.writeWaitingLog
-    def writeWaitingLog (self,c):
-
-        trace = False
-        lm = self
-
-        if trace:
-            # Do not call g.es, g.es_print, g.pr or g.trace here!
-            print('** writeWaitingLog','silent',g.app.silentMode,c.shortFileName())
-            # print('writeWaitingLog',g.callers())
-            # import sys ; print('writeWaitingLog: argv',sys.argv)
-
-        if not c or not c.exists:
-            return
-
-        if g.unitTesting:
-            lm.printWaiting = []
-            lm.logWaiting = []
-            g.app.setLog(None) # Prepare to requeue for other commanders.
-            return
-
-        table = [
-            ('Leo Log Window','red'),
-            (g.app.signon,'black'),
-            (g.app.signon2,'black'),
-        ]
-        table.reverse()
-
-        c.setLog() # 2010/10/20
-        lm.logInited = True # Prevent recursive call.
-
-        if not lm.signon_printed:
-            lm.signon_printed = True
-            if not g.app.silentMode: # 2011/11/02:
-                print('')
-                print('** isPython3: %s' % g.isPython3)
-                if not g.enableDB:
-                    print('** caching disabled')
-                print(g.app.signon)
-                print(g.app.signon2)
-        if not g.app.silentMode: # 2011/11/02:
-            for s in lm.printWaiting:
-                print(s)
-        lm.printWaiting = []
-
-        if not g.app.silentMode:  # 2011/11/02:
-            for s,color in table:
-                lm.logWaiting.insert(0,(s+'\n',color),)
-            for s,color in lm.logWaiting:
-                g.es('',s,color=color,newline=0)
-                    # The caller must write the newlines.
-        lm.logWaiting = []
-
-        # Essential when opening multiple files...
-        lm.setLog(None) 
-    #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:
 

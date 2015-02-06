@@ -6181,6 +6181,88 @@ http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcut
 @ignore
 @language python
 @color
+.. @+node:ekr.20120211121736.10831: *3* class LogManager (not used yet)
+class LogManager:
+
+    '''A class to handle the global log, and especially
+    switching the log from commander to commander.'''
+
+    def __init__ (self):
+
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: g.es_debug('(LogManager)')
+
+        self.log = None             # The LeoFrame containing the present log.
+        self.logInited = False      # False: all log message go to logWaiting list.
+        self.logIsLocked = False    # True: no changes to log are allowed.
+        self.logWaiting = []        # List of messages waiting to go to a log.
+        self.printWaiting = []      # Queue of messages to be sent to the printer.
+        self.signon_printed = False # True: the global signon has been printed.
+
+    @others
+.. @+node:ekr.20120211121736.10834: *4* LogM.setLog, lockLog, unlocklog
+def setLog (self,log):
+
+    """set the frame to which log messages will go"""
+
+    # print("app.setLog:",log,g.callers())
+    if not self.logIsLocked:
+        self.log = log
+
+def lockLog(self):
+    """Disable changes to the log"""
+    self.logIsLocked = True
+
+def unlockLog(self):
+    """Enable changes to the log"""
+    self.logIsLocked = False
+.. @+node:ekr.20120211121736.10836: *4* LogM.writeWaitingLog
+def writeWaitingLog (self,c):
+    '''Write all waiting lines to the log.'''
+    trace = True
+    lm = self
+    if trace:
+        # Do not call g.es, g.es_print, g.pr or g.trace here!
+        print('** writeWaitingLog','silent',g.app.silentMode,c.shortFileName())
+        # print('writeWaitingLog',g.callers())
+        # import sys ; print('writeWaitingLog: argv',sys.argv)
+    if not c or not c.exists:
+        return
+    if g.unitTesting:
+        lm.printWaiting = []
+        lm.logWaiting = []
+        g.app.setLog(None) # Prepare to requeue for other commanders.
+        return
+    table = [
+        ('Leo Log Window','red'),
+        (g.app.signon,'black'),
+        (g.app.signon2,'black'),
+    ]
+    table.reverse()
+    c.setLog()
+    lm.logInited = True # Prevent recursive call.
+    if not lm.signon_printed:
+        lm.signon_printed = True
+        if not g.app.silentMode:
+            print('')
+            print('** isPython3: %s' % g.isPython3)
+            if not g.enableDB:
+                print('** caching disabled')
+            print(g.app.signon)
+            print(g.app.signon2)
+    if not g.app.silentMode:
+        for s in lm.printWaiting:
+            print(s)
+    lm.printWaiting = []
+    if not g.app.silentMode:
+        for s,color in table:
+            lm.logWaiting.insert(0,(s+'\n',color),)
+        for s,color in lm.logWaiting:
+            g.es('',s,color=color,newline=0)
+                # The caller must write the newlines.
+    lm.logWaiting = []
+    # Essential when opening multiple files...
+    lm.setLog(None)
 .. @+node:ekr.20140918124632.19462: *3* Keep
 .. @+node:ekr.20101031172539.5880: *4* Existing autocompleter: do not delete
 .. @+node:ekr.20061031131434.43: *5* completeSelf (not used yet)
