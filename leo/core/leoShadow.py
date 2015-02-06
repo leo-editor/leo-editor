@@ -517,7 +517,7 @@ class ShadowController:
                 marker              = marker)
             #@-<< do final correctness check>>
         return result
-    #@+node:ekr.20080708094444.36: *4* x.propagate_changes (calls scanHeader)
+    #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
 
         '''Propagate the changes from the public file (without_sentinels)

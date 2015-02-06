@@ -302,11 +302,10 @@ class FileLikeObject:
     getvalue = get # for compatibility with StringIo
     read = get # for use by sax.
     #@+node:ekr.20050404151753.5: *4* readline
-    def readline(self): # New for read-from-string (readOpenFile).
-
+    def readline(self):
+        '''Read the next line using at.list and at.ptr.'''
         if self.ptr < len(self.list):
             line = self.list[self.ptr]
-            # g.trace(repr(line))
             self.ptr += 1
             return line
         else:

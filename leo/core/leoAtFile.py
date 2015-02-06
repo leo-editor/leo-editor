@@ -1142,7 +1142,7 @@ class AtFile:
         '''
         trace = False and not g.unitTesting
         at = self
-        firstLines,read_new,thinFile = at.scanHeader(theFile,fileName)
+        firstLines,read_new,thinFile = at.scanHeader(fileName)
             # Important: this sets at.encoding, used by at.readLine.
         at.thinFile = thinFile
             # 2010/01/22: use *only* the header to set self.thinFile.
@@ -1367,7 +1367,7 @@ class AtFile:
             assert default_encoding
             at.encoding = None
             # Execute scanHeader merely to set at.encoding.
-            at.scanHeader(None,fn,giveErrors=False)
+            at.scanHeader(fn,giveErrors=False)
             e = at.encoding or default_encoding
         assert e
         return e
@@ -2812,7 +2812,7 @@ class AtFile:
         else:
             return '' # Not an error.
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
-    def scanHeader(self,theFile,fileName,giveErrors=True):
+    def scanHeader(self,fileName,giveErrors=True):
         """
         Scan the @+leo sentinel.
 
@@ -2867,7 +2867,7 @@ class AtFile:
         at = self
         s = at.readFileToUnicode(fileName)
             # inits at.readLine.
-        junk,junk,isThin = at.scanHeader(None,None)
+        junk,junk,isThin = at.scanHeader(None)
             # scanHeader uses at.readline instead of its args.
         return isThin
     #@+node:ekr.20041005105605.131: *4* at.skipIndent
