@@ -54,25 +54,18 @@ class ShadowController:
     #@+others
     #@+node:ekr.20080708094444.79: *3*  x.ctor
     def __init__ (self,c,trace=False,trace_writers=False):
-
+        '''Ctor for ShadowController class.'''
         self.c = c
-
         # File encoding.
         self.encoding = c.config.default_derived_file_encoding
-            # 2011/09/08
-
         # Configuration...
         self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
         self.shadow_prefix = c.config.getString('shadow_prefix') or ''
         self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir',default=False)
-
-        # Munch shadow_subdir
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
-
         # Error handling...
         self.errors = 0
         self.last_error  = '' # The last error message, regardless of whether it was actually shown.
-
         # Support for goto-line.
         self.line_mapping = []
     #@+node:ekr.20080711063656.1: *3* x.File utils
@@ -386,26 +379,27 @@ class ShadowController:
             #@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
             # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
             # In this special case, we must do the insert before the sentinels.
-            limit=mapping[old_i]
+            limit = mapping[old_i]
 
             if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
 
             if tag == 'equal':
-                # Copy sentinels up to the limit = mapping[old_i]
+                # Copy sentinels up to the limit.
                 x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
 
                 # Copy all lines (including sentinels) from the old private file to the new private file.
-                start = old_private_rdr.i # Only used for tag.
+                start = old_private_rdr.i # For tag.
                 while old_private_rdr.i <= mapping[old_j-1]:
                     line = old_private_rdr.get()
                     wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
 
-                # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+                # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
                 new_public_rdr.i = new_j # Sync to new_j.
 
             elif tag == 'insert':
                 if limit < len(old_private_rdr.lines):
                     x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
+
                 # All unwritten lines from old_private_rdr up to mapping[old_i] have already been ignored.
                 # Copy lines from new_public_rdr up to new_j.
                 start = new_public_rdr.i # Only used for tag.
@@ -422,20 +416,18 @@ class ShadowController:
                 while (
                     old_private_rdr.i <= mapping[old_j-1]
                     and new_public_rdr.i <  new_j
-                        # 2010/10/22: the replacement lines can be shorter.
+                        # Careful: the replacement lines can be shorter.
                 ):
                     old_line = old_private_rdr.get()
                     if marker.isSentinel(old_line):
                         # Important: this should work for @verbatim sentinels
                         # because the next line will also be replaced.
-                        wtr.put(old_line,tag='%s %s:%s' % (
-                            'replace: copy sentinel',start,new_j))
+                        wtr.put(old_line,tag='%s %s:%s' % ('replace: copy sentinel',start,new_j))
                     else:
                         new_line = new_public_rdr.get()
-                        wtr.put(new_line,tag='%s %s:%s' % (
-                            'replace: new line',start,new_j))
+                        wtr.put(new_line,tag='%s %s:%s' % ('replace: new line',start,new_j))
 
-                # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
+                # Careful: The replacement lines can be longer: same as 'insert' code above.
                 while new_public_rdr.i < new_j:
                     line = new_public_rdr.get()
                     if marker.isSentinel(line):
@@ -444,9 +436,8 @@ class ShadowController:
                     wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag=='delete':
-                # Copy sentinels up to the limit = mapping[old_i]
+                # Copy sentinels up to the limit. Leave new_public_rdr unchanged.
                 x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
-                # Leave new_public_rdr unchanged.
 
             else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
 
@@ -458,7 +449,6 @@ class ShadowController:
             prev_new_j = new_j
         # Copy all unwritten sentinels.
         x.copy_sentinels(old_private_rdr,wtr,marker,limit = len(old_private_rdr.lines))
-        # Get the result.
         result = wtr.lines
         if 1: # Do the final correctness check.
             x.check(marker, new_public_lines, result, wtr)
@@ -964,12 +954,10 @@ class ShadowController:
             self.i = 0
         #@+node:ekr.20080708094444.15: *4* get
         def get (self):
-            '''Return the next line, incrementing i.'''
-            if self.i < len(self.lines):
-                result = self.lines[self.i]
-                self.i += 1
-            else:
-                result = ''
+            '''Return the next line, always incrementing self.i'''
+            result = self.lines[self.i] if self.i < len(self.lines) else ''
+            # It is safest always to increment i to ensure that loops on i terminate.
+            self.i += 1
             return result 
         #@+node:ekr.20080708094444.20: *4* dump
         def dump(self, title):
