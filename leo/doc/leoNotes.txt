@@ -6263,6 +6263,34 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
+.. @+node:ekr.20150207024859.6: *3* not used (Sourcereader)
+.. @+node:ekr.20080708094444.18: *4* atEnd (not used)
+# def atEnd (self):
+    # return self.index>=self.length
+.. @+node:ekr.20080708094444.19: *4* clone (not used)
+# def clone(self):
+    # sr = self.shadowController.Sourcereader(shadowController,self.lines)
+    # sr.i = self.i
+    # return sr
+.. @+node:ekr.20080708094444.14: *4* index (not used)
+# def index (self):
+    # return self.i
+.. @+node:ekr.20080708094444.17: *4* size (optional, poor)
+# def size (self):
+    # return self.length
+        # # This works only because len(self.lines) doesn't change!
+.. @+node:ekr.20080708094444.16: *4* sync (not used)
+# def sync (self,i):
+    # self.i = i 
+.. @+node:ekr.20150207024859.7: *3* not used (Sourcewriter)
+.. @+node:ekr.20080708094444.24: *4* index (optional)
+# def index (self):
+
+    # return self.i 
+.. @+node:ekr.20080708094444.25: *4* getlines (optional)
+# def getlines (self):
+
+    # return self.lines 
 .. @+node:ekr.20140918124632.19462: *3* Keep
 .. @+node:ekr.20101031172539.5880: *4* Existing autocompleter: do not delete
 .. @+node:ekr.20061031131434.43: *5* completeSelf (not used yet)
