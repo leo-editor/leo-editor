@@ -56,6 +56,13 @@ class ShadowController:
     def __init__ (self,c,trace=False,trace_writers=False):
         '''Ctor for ShadowController class.'''
         self.c = c
+        # Opcode dispatch dict.
+        self.dispatch_dict = {
+            'delete': self.op_delete,
+            'equal': self.op_equal,
+            'insert': self.op_insert,
+            'replace': self.op_replace,
+        }
         # File encoding.
         self.encoding = c.config.default_derived_file_encoding
         # Configuration...
@@ -217,8 +224,9 @@ class ShadowController:
 
         return ok
     #@+node:ekr.20080708192807.1: *3* x.Propagation
-    #@+node:ekr.20080708094444.35: *4* x.check_the_final_output
-    def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
+    #@+node:ekr.20080708094444.35: *4* x.check_output
+    ### def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
+    def check_output(self):
         """
         Check that we produced a valid output.
 
@@ -230,6 +238,12 @@ class ShadowController:
             1. new_targetlines without sentinels must equal changed_lines_without_sentinels.
             2. the sentinel lines of new_targetlines must match 'sentinels'
         """
+        x = self
+        marker,wtr = x.marker,x.wtr
+        new_private_lines = wtr.lines
+        new_public_lines = x.new_public_lines
+        junk, sentinel_lines = x.separate_sentinels(wtr.lines, marker)
+
         new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
             new_private_lines, marker)
 
@@ -249,11 +263,9 @@ class ShadowController:
             sents2 = [z.rstrip() for z in sents2]
         lines_ok = lines1 == lines2
         sents_ok = sents1 == sents2
-
         if g.unitTesting:
             # The unit test will report the error.
             return lines_ok and sents_ok
-
         if not lines_ok:
             if 1:
                 g.trace()
@@ -262,222 +274,220 @@ class ShadowController:
                 aList = list(d.compare(new_public_lines2,new_public_lines))
                 pprint.pprint(aList)
             else:
-                self.show_error(
+                x.show_error(
                     lines1 = new_public_lines2,
                     lines2 = new_public_lines,
                     message = "Error in updating public file!",
                     lines1_message = "new public lines (derived from new private lines)",
                     lines2_message = "new public lines")
-
         if not sents_ok:
-            self.show_error(
+            x.show_error(
                 lines1 = sentinel_lines,
                 lines2 = new_sentinel_lines2,
                 message = "Sentinals not preserved!",
                 lines1_message = "old sentinels",
                 lines2_message = "new sentinels")
-
         return lines_ok and sents_ok
     #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
-    def copy_sentinels(self,reader,writer,marker,limit):
-        '''Copy sentinels from reader to writer while reader.i < limit.'''
+    ### def copy_sentinels(self,reader,writer,marker,limit):
+    def copy_sentinels(self,limit):
+        '''Copy sentinels from x.rdr to x.wtr while x.rdr.i < limit.'''
         x = self
-        start = reader.i
-        while reader.i < limit:
-            line = reader.get()
+        marker,rdr,wtr = x.marker,x.rdr,x.wtr
+        start = rdr.i
+        while rdr.i < limit:
+            line = rdr.get()
             if marker.isSentinel(line):
                 if marker.isVerbatimSentinel(line):
                     # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
                     # We must **extend** the limit to get the next line.
-                    if reader.i < limit + 1:
+                    if rdr.i < limit + 1:
                         # Skip the next line, whatever it is.
                         # Important: this **deletes** the @verbatim sentinel,
                         # so this is a exception to the rule that sentinels are preserved.
-                        line = reader.get()
+                        line = rdr.get()
                     else:
                         x.verbatim_error()
                 else:
                     # g.trace('put line',repr(line))
-                    writer.put(line,tag='copy sent %s:%s' % (start,limit))
+                    wtr.put(line,tag='copy sent %s:%s' % (start,limit))
     #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm)
-    #@+<< About the main propagation loop >>
-    #@+node:ekr.20080708192807.2: *5* << about the main propagation loop >>
-    #@@nocolor-node
-
-    #@+at This loop writes all output lines using a single writer:
-    # wtr.
-    # 
-    # The output lines come from two, and *only* two readers:
-    # 
-    # 1. old_private_rdr delivers the complete original sources. All
-    #    sentinels and unchanged regular lines come from this reader.
-    # 
-    # 2. new_public_rdr delivers the new, changed sources. All inserted or
-    #    replacement text comes from this reader.
-    # 
-    # Each time through the loop, the following are true:
-    # 
-    # - old_i is the index into old_public_lines of the start of the present
-    #   SequenceMatcher opcode.
-    # 
-    # - mapping[old_i] is the index into old_private_lines of the start of
-    #   the same opcode.
-    # 
-    # At the start of the loop, the call to copy_sentinels effectively skips
-    # (deletes) all previously unwritten non-sentinel lines in
-    # old_private_rdr whose index is less than mapping[old_i].
-    # 
-    # As a result, the opcode handlers do not need to delete elements from
-    # the old_private_rdr explicitly. This explains why opcode
-    # handlers for the 'insert' and 'delete' opcodes are identical.
-    #@-<< About the main propagation loop >>
-
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-        '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+        #@+<< docstring >>
+        #@+node:ekr.20150207044400.9: *5* << docstring >>
+        '''
+        Propagate changes from 'new_public_lines' to 'old_private_lines.
 
         We compare the old and new public lines, create diffs and
         propagate the diffs to the new private lines, copying sentinels as well.
 
-        We have two invariants:
-        1. We never delete sentinels, except for @verbatim sentinels for deleted lines.
-           New at 2010/01/07: Replacements preserve sentinel locations.
-        2. Insertions that happen at the boundary between nodes will be put at
-           the end of a node.  However, insertions must always be done within sentinels.
+        Invariants:
+        - We never delete sentinels, except for @verbatim sentinels for deleted lines.
+        - Insertions that happen at the boundary between nodes will be put at
+          the end of a node.  However, insertions must always be done within sentinels.
+        - old_public_lines [old_i] is the start of the present opcode.
+        - old_private_lines[mapping[old_i]] is the corresponding line.
         '''
-        trace = False and g.unitTesting
-        verbose = True
+        #@-<< docstring >>
+        trace, verbose = False and g.unitTesting, True
         x = self
-        # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-        old_public_lines, mapping = x.strip_sentinels_with_map(old_private_lines,marker)
-        #@+<< init vars >>
-        #@+node:ekr.20080708094444.40: *5* << init vars >>
-        wtr = x.Sourcewriter()
+        #@+<< init ivars >>
+        #@+node:ekr.20080708094444.40: *5* << init ivars >>
+        # Copy args into ivars.
+        x.marker = marker
+        x.new_public_lines = new_public_lines
+        x.old_private_lines = old_private_lines
+        x.old_public_lines, x.mapping = x.strip_sentinels_with_map(old_private_lines,marker)
+            # old_public_lines[i] comes from line mapping[i] of old_private_lines.
+
+        # Create streams.
+        x.wtr = x.Sourcewriter()
             # Collects the contents of the new file.
-        new_public_rdr = x.Sourcereader(new_public_lines)
-            # The new lines, without sentinels.
-        old_private_rdr = x.Sourcereader(old_private_lines)
+        x.ns_rdr = x.Sourcereader(x.new_public_lines)
+            # The new lines, no sentinels.
+        x.rdr = x.Sourcereader(x.old_private_lines)
             # The old lines, with sentinels.
-            
-        # old_public_rdr = x.Sourcereader(old_public_lines)
-            # this is compared to new_public_rdr to find out the changes.
+        x.old_ns_rdr = x.Sourcereader(x.old_public_lines)
+            # Dumps only.
 
         # Check that all ranges returned by get_opcodes() are contiguous
-        old_old_j, old_i2_modified_lines = -1,-1
-        tag = old_i = old_j = new_i = new_j = None
-        #@-<< init vars >>
-        delim1,delim2 = marker.getDelims()
-        sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-        for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-            #@+<< Handle the opcode >>
-            #@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
-            # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-            # In this special case, we must do the insert before the sentinels.
-            limit = mapping[old_i]
+        ### old_old_j, old_i2_modified_lines = -1,-1
+        ### tag = old_i = old_j = new_i = new_j = None
+        x.delim1,x.delim2 = marker.getDelims()
+        sm = difflib.SequenceMatcher(None,x.old_public_lines,new_public_lines)
 
-            if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
-
-            if tag == 'equal':
-                # Copy sentinels up to the limit.
-                x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
-
-                # Copy all lines (including sentinels) from the old private file to the new private file.
-                start = old_private_rdr.i # For tag.
-                while old_private_rdr.i <= mapping[old_j-1]:
-                    line = old_private_rdr.get()
-                    wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-                # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
-                new_public_rdr.i = new_j # Sync to new_j.
-
-            elif tag == 'insert':
-                if limit < len(old_private_rdr.lines):
-                    x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
-
-                # All unwritten lines from old_private_rdr up to mapping[old_i] have already been ignored.
-                # Copy lines from new_public_rdr up to new_j.
-                start = new_public_rdr.i # Only used for tag.
-                while new_public_rdr.i < new_j:
-                    line = new_public_rdr.get()
-                    if marker.isSentinel(line):
-                        wtr.put('%s@verbatim%s\n' % (delim1,delim2),
-                                tag='%s %s:%s' % ('new sent',start,new_j))
-                    wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-            elif tag == 'replace':
-                # This case is new: it was the same as the 'insert' case.
-                start = old_private_rdr.i # Only used for tag.
-                while (
-                    old_private_rdr.i <= mapping[old_j-1]
-                    and new_public_rdr.i <  new_j
-                        # Careful: the replacement lines can be shorter.
-                ):
-                    old_line = old_private_rdr.get()
-                    if marker.isSentinel(old_line):
-                        # Important: this should work for @verbatim sentinels
-                        # because the next line will also be replaced.
-                        wtr.put(old_line,tag='%s %s:%s' % ('replace: copy sentinel',start,new_j))
-                    else:
-                        new_line = new_public_rdr.get()
-                        wtr.put(new_line,tag='%s %s:%s' % ('replace: new line',start,new_j))
-
-                # Careful: The replacement lines can be longer: same as 'insert' code above.
-                while new_public_rdr.i < new_j:
-                    line = new_public_rdr.get()
-                    if marker.isSentinel(line):
-                        wtr.put('%s@verbatim%s\n' % (delim1,delim2),
-                                tag='%s %s:%s' % ('replace: new sentinel',start,new_j))
-                    wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-            elif tag=='delete':
-                # Copy sentinels up to the limit. Leave new_public_rdr unchanged.
-                x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
-
-            else: g.trace('unknown difflib opcode: %s' % repr(tag))
-
-            if trace and verbose:
-                x.print_tags(tag,p,old_i,old_j,new_i,new_j,"After tag",old_private_rdr,new_public_rdr,wtr)
-            #@-<< Handle the opcode >>
+        ### Create local copies of ivars
+            # delim1,delim2 = x.delim1,x.delim2
+            # mapping = x.mapping
+            # ns_rdr = x.ns_rdr
+            # old_ns_rdr = x.old_ns_rdr
+            # rdr = x.rdr
+            # wtr = x.wtr
+        #@-<< init ivars >>
+        for opcode in sm.get_opcodes():
+            tag,old_i,old_j,new_i,new_j = opcode
+            if trace: g.trace('tag',tag,'old_i',old_i,'limit',x.mapping[old_i])
+            f = x.dispatch_dict.get(tag,x.op_bad)
+            f(opcode)
+            if trace and verbose: x.print_tags(opcode,p)
         # Copy all unwritten sentinels.
-        x.copy_sentinels(old_private_rdr,wtr,marker,limit = len(old_private_rdr.lines))
-        result = wtr.lines
-        if 1: # Do the final correctness check.
-            x.check(marker, new_public_lines, result, wtr)
-        return result
-    #@+node:ekr.20080708094444.45: *5* x.check
-    def check(self, marker, new_public_lines, result, wtr):
-        '''Perform the final correctness check.'''
+        ### x.copy_sentinels(rdr,wtr,marker,limit = len(rdr.lines))
+        x.copy_sentinels(len(x.rdr.lines))
+        # Do the final correctness check.
+        ###result = wtr.lines
+        ### junk, t_sentinel_lines = x.separate_sentinels(wtr.lines, marker)
+        ### x.check_the_final_output(result,new_public_lines,t_sentinel_lines,marker,wtr)
+        x.check_output()
+        return x.wtr.lines
+    #@+node:ekr.20150207044400.16: *5* op_bad
+    def op_bad(self,opcode):
+        '''Report an unexpected opcode.'''
         x = self
-        junk, t_sentinel_lines = x.separate_sentinels(wtr.lines, marker)
-        x.check_the_final_output(
-            new_private_lines   = result,
-            new_public_lines    = new_public_lines,
-            sentinel_lines      = t_sentinel_lines,
-            marker              = marker)
+        tag,old_i,old_j,new_i,new_j = opcode
+        x.error('unknown difflib opcode: %s' % repr(tag))
+    #@+node:ekr.20150207044400.12: *5* op_delete
+    def op_delete(self,opcode):
+        '''Handle the 'delete' opcode.'''
+        x = self
+        tag,old_i,old_j,new_i,new_j = opcode
+
+        # Copy sentinels up to the limit. Leave ns_rdr unchanged.
+        ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+        x.copy_sentinels(x.mapping[old_i])
+    #@+node:ekr.20150207044400.13: *5* op_equal
+    def op_equal(self,opcode):
+        '''Handle the 'equal' opcode.'''
+        x = self
+        tag,old_i,old_j,new_i,new_j = opcode
+        ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
+        
+        # Copy sentinels up to mapping[old_i].
+        ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+        x.copy_sentinels(x.mapping[old_i])
+
+        # Copy all lines (including sentinels) up to mapping[old_j]
+        start = rdr.i
+        while rdr.i <= x.mapping[old_j-1]:
+            line = rdr.get()
+            wtr.put(line,tag='%s %s:%s' % (tag,start,x.mapping[old_j-1]))
+
+        # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
+        ns_rdr.i = new_j # Sync to new_j.
+    #@+node:ekr.20150207044400.14: *5* op_insert
+    def op_insert(self,opcode):
+        '''Handle the 'insert' opcode.'''
+        # Do not copy sentinels if we are inserting and limit is at the end of the old_private_lines.
+        # In this special case, we must do the insert before the sentinels.
+        x = self
+        ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
+        tag,old_i,old_j,new_i,new_j = opcode
+        limit = x.mapping[old_i]
+        if limit < len(rdr.lines):
+            ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+            x.copy_sentinels(limit)
+
+        # All unwritten lines from rdr up to mapping[old_i] have already been ignored.
+        # Copy lines from ns_rdr up to new_j.
+        start = ns_rdr.i # Only used for tag.
+        while ns_rdr.i < new_j:
+            line = ns_rdr.get()
+            if x.marker.isSentinel(line):
+                wtr.put('%s@verbatim%s\n' % (x.delim1,x.delim2),
+                        tag='%s %s:%s' % ('new sent',start,new_j))
+            wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+    #@+node:ekr.20150207044400.15: *5* op_replace
+    def op_replace(self,opcode):
+        '''Handle the 'replace' opcode.'''
+        x = self
+        ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
+        tag,old_i,old_j,new_i,new_j = opcode
+
+        # 2010/01/07: Replacements preserve sentinel locations.
+        # Careful: the replacement lines can be shorter.
+        start = rdr.i
+        while rdr.i <= x.mapping[old_j-1] and ns_rdr.i <  new_j:
+            old_line = rdr.get()
+            if x.marker.isSentinel(old_line):
+                # Important: this should work for @verbatim sentinels
+                # because the next line will also be replaced.
+                wtr.put(old_line,tag='%s %s:%s' % ('replace: copy sentinel',start,new_j))
+            else:
+                new_line = ns_rdr.get()
+                wtr.put(new_line,tag='%s %s:%s' % ('replace: new line',start,new_j))
+
+        # Careful: The replacement lines can be longer: same as 'insert' code above.
+        while ns_rdr.i < new_j:
+            line = ns_rdr.get()
+            if x.marker.isSentinel(line):
+                wtr.put('%s@verbatim%s\n' % (x.delim1,x.delim2),
+                        tag='%s %s:%s' % ('replace: new sentinel',start,new_j))
+            wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
     #@+node:ekr.20080708094444.39: *5* x.print_tags
-    def print_tags(self,tag,p,old_i,old_j,new_i,new_j,message,old_private_rdr, new_public_rdr, wtr):
+    def print_tags(self,opcode,p):
         '''Call dump for all readers and writers.'''
+        tag,old_i,old_j,new_i,new_j = opcode
+        x = self
         sep1 = '=' * 10
         sep2 = '-' * 20
-        g.pr('\n',sep1,message,sep1,p and p.h)
-        g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+        g.pr('\n',sep1,sep1,p and p.h)
+        g.pr('\n%s: old[%s:%s] new[%s:%s]' % (opcode))
         g.pr('\n',sep2)
         table = (
-            (old_private_rdr,'old private lines'),
-            # (old_public_rdr,'old public lines'),
-            (new_public_rdr,'new public lines'),
-            (wtr,'new private lines'),
+            (x.rdr,'old private lines'),
+            (x.old_ns_rdr,'old public lines'),
+            (x.ns_rdr,'new public lines'),
+            (x.wtr,'new private lines'),
         )
         for f,tag in table:
             f.dump(tag)
             g.pr(sep2)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
-
-        '''Propagate the changes from the public file (without_sentinels)
-        to the private file (with_sentinels)'''
-
-        trace = False and not g.unitTesting ; verbose = False
+        '''
+        Propagate the changes from the public file (without_sentinels)
+        to the private file (with_sentinels)
+        '''
+        trace, verbose = False and not g.unitTesting, False
         import leo.core.leoAtFile as leoAtFile
         x = self ; at = self.c.atFileCommands
         at.errors = 0
@@ -977,7 +987,7 @@ class ShadowController:
             trace = False and not g.unitTesting
 
             # An important hack.  Make sure *all* lines end with a newline.
-            # This will cause a mismatch later in check_the_final_output,
+            # This will cause a mismatch later in check_output,
             # and a special case has been inserted to forgive this newline.
             if not line.endswith('\n'):
                 if trace: g.trace('adding newline',repr(line))

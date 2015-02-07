@@ -6263,34 +6263,116 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
-.. @+node:ekr.20150207024859.6: *3* not used (Sourcereader)
-.. @+node:ekr.20080708094444.18: *4* atEnd (not used)
+.. @+node:ekr.20150207044400.10: *3* Unused @shadow stuff
+.. @+node:ekr.20150207044400.11: *4* << Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+### limit = x.mapping[old_i]
+
+### mapping,ns_rdr,rdr,wtr = x.mapping,x.ns_rdr,x.rdr,x.wtr
+
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',x.mapping[old_i])
+
+if tag == 'equal':
+    
+    # Copy sentinels up to mapping[old_i].
+    ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+    x.copy_sentinels(mapping[old_i])
+
+    # Copy all lines (including sentinels) up to mapping[old_j]
+    start = rdr.i
+    while rdr.i <= mapping[old_j-1]:
+        line = rdr.get()
+        wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
+    ns_rdr.i = new_j # Sync to new_j.
+
+elif tag == 'insert':
+    limit = x.mapping[old_i]
+    if limit < len(rdr.lines):
+        ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+        x.copy_sentinels(limit)
+
+    # All unwritten lines from rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from ns_rdr up to new_j.
+    start = ns_rdr.i # Only used for tag.
+    while ns_rdr.i < new_j:
+        line = ns_rdr.get()
+        if marker.isSentinel(line):
+            wtr.put('%s@verbatim%s\n' % (delim1,delim2),
+                    tag='%s %s:%s' % ('new sent',start,new_j))
+        wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag == 'replace':
+    # 2010/01/07: Replacements preserve sentinel locations.
+    # Careful: the replacement lines can be shorter.
+    start = rdr.i
+    while rdr.i <= mapping[old_j-1] and ns_rdr.i <  new_j:
+        old_line = rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            wtr.put(old_line,tag='%s %s:%s' % ('replace: copy sentinel',start,new_j))
+        else:
+            new_line = ns_rdr.get()
+            wtr.put(new_line,tag='%s %s:%s' % ('replace: new line',start,new_j))
+
+    # Careful: The replacement lines can be longer: same as 'insert' code above.
+    while ns_rdr.i < new_j:
+        line = ns_rdr.get()
+        if marker.isSentinel(line):
+            wtr.put('%s@verbatim%s\n' % (x.delim1,x.delim2),
+                    tag='%s %s:%s' % ('replace: new sentinel',start,new_j))
+        wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # Copy sentinels up to the limit. Leave ns_rdr unchanged.
+    ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
+    x.copy_sentinels(x.mapping[old_i])
+
+else: g.trace('unknown difflib opcode: %s' % repr(tag))
+
+if trace and verbose:
+    x.print_tags(opcode,p,"After tag")
+.. @+node:ekr.20150207024859.6: *4* not used (Sourcereader)
+.. @+node:ekr.20080708094444.18: *5* atEnd (not used)
 # def atEnd (self):
     # return self.index>=self.length
-.. @+node:ekr.20080708094444.19: *4* clone (not used)
+.. @+node:ekr.20080708094444.19: *5* clone (not used)
 # def clone(self):
     # sr = self.shadowController.Sourcereader(shadowController,self.lines)
     # sr.i = self.i
     # return sr
-.. @+node:ekr.20080708094444.14: *4* index (not used)
+.. @+node:ekr.20080708094444.14: *5* index (not used)
 # def index (self):
     # return self.i
-.. @+node:ekr.20080708094444.17: *4* size (optional, poor)
+.. @+node:ekr.20080708094444.17: *5* size (optional, poor)
 # def size (self):
     # return self.length
         # # This works only because len(self.lines) doesn't change!
-.. @+node:ekr.20080708094444.16: *4* sync (not used)
+.. @+node:ekr.20080708094444.16: *5* sync (not used)
 # def sync (self,i):
     # self.i = i 
-.. @+node:ekr.20150207024859.7: *3* not used (Sourcewriter)
-.. @+node:ekr.20080708094444.24: *4* index (optional)
+.. @+node:ekr.20150207024859.7: *4* not used (Sourcewriter)
+.. @+node:ekr.20080708094444.24: *5* index (optional)
 # def index (self):
 
     # return self.i 
-.. @+node:ekr.20080708094444.25: *4* getlines (optional)
+.. @+node:ekr.20080708094444.25: *5* getlines (optional)
 # def getlines (self):
 
     # return self.lines 
+.. @+node:ekr.20080708094444.45: *4* x.check (not used)
+def check(self, marker, new_public_lines, result, wtr):
+    '''Perform the final correctness check.'''
+    x = self
+    junk, t_sentinel_lines = x.separate_sentinels(wtr.lines, marker)
+    x.check_the_final_output(
+        new_private_lines   = result,
+        new_public_lines    = new_public_lines,
+        sentinel_lines      = t_sentinel_lines,
+        marker              = marker)
 .. @+node:ekr.20140918124632.19462: *3* Keep
 .. @+node:ekr.20101031172539.5880: *4* Existing autocompleter: do not delete
 .. @+node:ekr.20061031131434.43: *5* completeSelf (not used yet)
