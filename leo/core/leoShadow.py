@@ -426,14 +426,14 @@ class ShadowController:
                     line = new_public_rdr.get()
                     if marker.isSentinel(line):
                         wtr.put('%s@verbatim%s\n' % (delim1,delim2),
-                                tag='%s %s:%s' % ('new sent',start,new_j))
+                                tag='%s %s:%s' % ('replace: new sentinel',start,new_j))
                     wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag=='delete':
                 # Copy sentinels up to the limit. Leave new_public_rdr unchanged.
                 x.copy_sentinels(old_private_rdr,wtr,marker,limit=limit)
 
-            else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+            else: g.trace('unknown difflib opcode: %s' % repr(tag))
 
             if trace and verbose:
                 x.print_tags(tag,p,old_i,old_j,new_i,new_j,"After tag",old_private_rdr,new_public_rdr,wtr)
