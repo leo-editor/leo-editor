@@ -225,7 +225,6 @@ class ShadowController:
         return ok
     #@+node:ekr.20080708192807.1: *3* x.Propagation
     #@+node:ekr.20080708094444.35: *4* x.check_output
-    ### def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
     def check_output(self):
         """
         Check that we produced a valid output.
@@ -289,7 +288,6 @@ class ShadowController:
                 lines2_message = "new sentinels")
         return lines_ok and sents_ok
     #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
-    ### def copy_sentinels(self,reader,writer,marker,limit):
     def copy_sentinels(self,limit):
         '''Copy sentinels from x.rdr to x.wtr while x.rdr.i < limit.'''
         x = self
@@ -350,19 +348,8 @@ class ShadowController:
         x.old_ns_rdr = x.Sourcereader(x.old_public_lines)
             # Dumps only.
 
-        # Check that all ranges returned by get_opcodes() are contiguous
-        ### old_old_j, old_i2_modified_lines = -1,-1
-        ### tag = old_i = old_j = new_i = new_j = None
         x.delim1,x.delim2 = marker.getDelims()
         sm = difflib.SequenceMatcher(None,x.old_public_lines,new_public_lines)
-
-        ### Create local copies of ivars
-            # delim1,delim2 = x.delim1,x.delim2
-            # mapping = x.mapping
-            # ns_rdr = x.ns_rdr
-            # old_ns_rdr = x.old_ns_rdr
-            # rdr = x.rdr
-            # wtr = x.wtr
         #@-<< init ivars >>
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
@@ -371,12 +358,8 @@ class ShadowController:
             f(opcode)
             if trace and verbose: x.print_tags(opcode,p)
         # Copy all unwritten sentinels.
-        ### x.copy_sentinels(rdr,wtr,marker,limit = len(rdr.lines))
         x.copy_sentinels(len(x.rdr.lines))
         # Do the final correctness check.
-        ###result = wtr.lines
-        ### junk, t_sentinel_lines = x.separate_sentinels(wtr.lines, marker)
-        ### x.check_the_final_output(result,new_public_lines,t_sentinel_lines,marker,wtr)
         x.check_output()
         return x.wtr.lines
     #@+node:ekr.20150207044400.16: *5* op_bad
@@ -390,9 +373,7 @@ class ShadowController:
         '''Handle the 'delete' opcode.'''
         x = self
         tag,old_i,old_j,new_i,new_j = opcode
-
         # Copy sentinels up to the limit. Leave ns_rdr unchanged.
-        ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
         x.copy_sentinels(x.mapping[old_i])
     #@+node:ekr.20150207044400.13: *5* op_equal
     def op_equal(self,opcode):
@@ -402,7 +383,6 @@ class ShadowController:
         ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
         
         # Copy sentinels up to mapping[old_i].
-        ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
         x.copy_sentinels(x.mapping[old_i])
 
         # Copy all lines (including sentinels) up to mapping[old_j]
@@ -416,14 +396,13 @@ class ShadowController:
     #@+node:ekr.20150207044400.14: *5* op_insert
     def op_insert(self,opcode):
         '''Handle the 'insert' opcode.'''
-        # Do not copy sentinels if we are inserting and limit is at the end of the old_private_lines.
-        # In this special case, we must do the insert before the sentinels.
         x = self
         ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
         tag,old_i,old_j,new_i,new_j = opcode
+        # Do not copy sentinels if we are inserting and limit is at the end of the old_private_lines.
+        # In this special case, we must do the insert before the sentinels.
         limit = x.mapping[old_i]
         if limit < len(rdr.lines):
-            ### x.copy_sentinels(rdr,wtr,marker,limit=limit)
             x.copy_sentinels(limit)
 
         # All unwritten lines from rdr up to mapping[old_i] have already been ignored.
@@ -1003,7 +982,7 @@ class ShadowController:
             g.pr(title)
             for i, line in enumerate(self.lines):
                 marker = '  '
-                g.pr("%s %3s:%s" % (marker, i, repr(line)),newline=False)
+                g.pr("%s %3s:%s" % (marker, i, repr(line)))
         #@-others
     #@-others
 #@-others
