@@ -355,7 +355,7 @@ class ShadowController:
         wtr = x.Sourcewriter()
             # Collects the contents of the new file.
         new_public_rdr = x.Sourcereader(new_public_lines)
-            # The changed source code, without sentinels.
+            # The new lines, without sentinels.
         old_private_rdr = x.Sourcereader(old_private_lines)
             # The old lines, with sentinels.
             
@@ -368,13 +368,7 @@ class ShadowController:
         #@-<< init vars >>
         delim1,delim2 = marker.getDelims()
         sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-        prev_old_j,prev_new_j = 0,0
         for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-            # Verify that SequenceMatcher never leaves gaps.
-            if old_i != prev_old_j:
-                x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
-            if new_i != prev_new_j:
-                x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
             #@+<< Handle the opcode >>
             #@+node:ekr.20080708192807.5: *5* << Handle the opcode >>
             # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
@@ -444,9 +438,6 @@ class ShadowController:
             if trace and verbose:
                 x.print_tags(tag,p,old_i,old_j,new_i,new_j,"After tag",old_private_rdr,new_public_rdr,wtr)
             #@-<< Handle the opcode >>
-            # Remember the ends of the previous tag ranges.
-            prev_old_j = old_j
-            prev_new_j = new_j
         # Copy all unwritten sentinels.
         x.copy_sentinels(old_private_rdr,wtr,marker,limit = len(old_private_rdr.lines))
         result = wtr.lines
