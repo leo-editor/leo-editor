@@ -362,20 +362,21 @@ class ShadowController:
         # Do the final correctness check.
         x.check_output()
         return x.wtr.lines
-    #@+node:ekr.20150207044400.16: *5* op_bad
+    #@+node:ekr.20150207044400.16: *5* x.op_bad
     def op_bad(self,opcode):
         '''Report an unexpected opcode.'''
         x = self
         tag,old_i,old_j,new_i,new_j = opcode
         x.error('unknown difflib opcode: %s' % repr(tag))
-    #@+node:ekr.20150207044400.12: *5* op_delete
+    #@+node:ekr.20150207044400.12: *5* x.op_delete
     def op_delete(self,opcode):
         '''Handle the 'delete' opcode.'''
         x = self
         tag,old_i,old_j,new_i,new_j = opcode
+
         # Copy sentinels up to the limit. Leave ns_rdr unchanged.
         x.copy_sentinels(x.mapping[old_i])
-    #@+node:ekr.20150207044400.13: *5* op_equal
+    #@+node:ekr.20150207044400.13: *5* x.op_equal
     def op_equal(self,opcode):
         '''Handle the 'equal' opcode.'''
         x = self
@@ -393,12 +394,13 @@ class ShadowController:
 
         # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
         ns_rdr.i = new_j # Sync to new_j.
-    #@+node:ekr.20150207044400.14: *5* op_insert
+    #@+node:ekr.20150207044400.14: *5* x.op_insert
     def op_insert(self,opcode):
         '''Handle the 'insert' opcode.'''
         x = self
         ns_rdr,rdr,wtr = x.ns_rdr,x.rdr,x.wtr
         tag,old_i,old_j,new_i,new_j = opcode
+
         # Do not copy sentinels if we are inserting and limit is at the end of the old_private_lines.
         # In this special case, we must do the insert before the sentinels.
         limit = x.mapping[old_i]
@@ -414,7 +416,7 @@ class ShadowController:
                 wtr.put('%s@verbatim%s\n' % (x.delim1,x.delim2),
                         tag='%s %s:%s' % ('new sent',start,new_j))
             wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-    #@+node:ekr.20150207044400.15: *5* op_replace
+    #@+node:ekr.20150207044400.15: *5* x.op_replace
     def op_replace(self,opcode):
         '''Handle the 'replace' opcode.'''
         x = self
