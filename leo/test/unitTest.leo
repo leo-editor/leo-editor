@@ -568,7 +568,6 @@
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4397"></v>
 <v t="ekr.20150207135815.11"><vh>@suite run child @shadow-test nodes with trace</vh>
 <v t="ekr.20150207135815.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
 <v t="ekr.20150207135815.54"><vh>old</vh>
@@ -1395,7 +1394,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2111,7 +2110,7 @@ finally:
 <t tx="ekr.20090704085350.5034">@language python
 @others</t>
 <t tx="ekr.20090704085350.5035">def spam():
-    pass</t>
+    pass # Unicode test: Ã</t>
 <t tx="ekr.20090704085350.5036">def eggs():
     pass</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
