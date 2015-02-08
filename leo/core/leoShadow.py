@@ -381,9 +381,6 @@ class ShadowController:
             # The old lines, with sentinels.
         x.old_ns_rdr = x.SourceReader(x,x.old_public_lines)
             # Dumps only.
-        ### To be deleted.
-        ### x.wtr = x.Sourcewriter()
-            # Collects the results.
     #@+node:ekr.20150207044400.16: *5* x.op_bad
     def op_bad(self,opcode):
         '''Report an unexpected opcode.'''
@@ -474,8 +471,6 @@ class ShadowController:
             line = line + '\n'
         x.results.append(line)
         if x.trace:
-            # g.trace('%30s %s' % (tag,repr(line)))
-            # g.trace(' '*5,repr(line))
             g.trace(repr(line))
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
