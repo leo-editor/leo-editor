@@ -1014,6 +1014,8 @@ class AtFile:
         if not g.unitTesting:
             # Recovered nodes make an update message unnecessary.
             g.es("reading:",root.h)
+        # Set at.encoding first.
+        at.scanAllDirectives(root,reading=True)
         # Update the outline using the @shadow algorithm.
         new_public_lines = at.read_at_nosent_lines(fileName)
         old_private_lines = self.write_nosent_sentinels(root)
@@ -1029,7 +1031,6 @@ class AtFile:
         # The following is like at.read() w/o caching logic.
         at.initReadIvars(root,fileName)
         root.clearVisitedInTree()
-        at.scanAllDirectives(root,reading=True)
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
@@ -1055,12 +1056,14 @@ class AtFile:
     #@+node:ekr.20150204165040.8: *5* at.read_at_nosent_lines
     def read_at_nosent_lines(self,fn):
         '''Return all lines of the @nosent file at fn.'''
+        at = self
         try:
             f = open(fn,'r')
             s = f.read()
             f.close()
         except IOError:
             s = ''
+        s = g.toUnicode(s,encoding = at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *5* at.write_nosent_sentinels
     def write_nosent_sentinels(self,root):
@@ -1076,7 +1079,8 @@ class AtFile:
             scriptWrite = True,
             thinFile = True,
             toString = True)
-        return g.splitLines(at.stringOutput)
+        s = g.toUnicode(at.stringOutput,encoding = at.encoding)
+        return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *4* at.readOneAtShadowNode
     def readOneAtShadowNode (self,fn,p,force=False):
 
