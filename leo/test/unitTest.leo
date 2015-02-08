@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.77">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.90">
 	<global_window_position top="150" left="261" height="896" width="1021"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -296,7 +296,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20150207041158.11"><vh>recent @shadow tests</vh>
+<v t="ekr.20150207041158.11"><vh>Recent @shadow tests</vh>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
@@ -548,9 +548,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100131180007.5363"><vh>@test class MarkerClass.getDelims</vh></v>
-<v t="ekr.20100131180007.5362"><vh>@test class MarkerClass.isSentinel</vh></v>
-<v t="ekr.20100131180007.5361"><vh>@test class MarkerClass.isVerbatimSentinel</vh></v>
+<v t="ekr.20100131180007.5363"><vh>@test class Marker.getDelims</vh></v>
+<v t="ekr.20100131180007.5362"><vh>@test class Marker.isSentinel</vh></v>
+<v t="ekr.20100131180007.5361"><vh>@test class Marker.isVerbatimSentinel</vh></v>
 <v t="ekr.20090529115704.4550"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20090529115704.4552"><vh>@test x.dirName</vh></v>
 <v t="ekr.20100131180007.5366"><vh>@test x.findAtLeoLine</vh></v>
@@ -566,6 +566,19 @@
 <v t="ekr.20090529115704.4554"><vh>@test x.shadowDirName</vh></v>
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4397"></v>
+<v t="ekr.20150207135815.11"><vh>@suite run child @shadow-test nodes with trace</vh>
+<v t="ekr.20150207135815.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20150207135815.54"><vh>old</vh>
+<v t="ekr.20150207135815.55"><vh>node 1</vh></v>
+<v t="ekr.20150207135815.56"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150207135815.57"><vh>new</vh>
+<v t="ekr.20150207135815.58"><vh>node 1</vh></v>
+<v t="ekr.20150207135815.59"><vh>node 2</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1382,7 +1395,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1460,18 +1473,10 @@ Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20090529115704.4396"></t>
 <t tx="ekr.20090529115704.4397">import unittest
-
-if 1:
-    x = c.shadowController
-else:
-    import leo.core.leoShadow as leoShadow
-    x = leoShadow.shadowController(c,trace=False,trace_writers=False)
-
+x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeAnywhere(c,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-
-trace = False ; vrbose = False
 for p in root.children_iter():
     h = p.h.strip()
     if h.startswith('@shadow-test-lax'):
@@ -1481,7 +1486,6 @@ for p in root.children_iter():
     else:
         test = None
     if test:
-        if trace and verbose: print(h)
         suite.addTest(test)
 # if suite:
     # g.app.scriptDict['suite'] = suite
@@ -2350,7 +2354,7 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.isVerbatimSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)
@@ -2374,7 +2378,7 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.isSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)
@@ -2388,7 +2392,7 @@ table = (
 )
 for language,delim1,delim2 in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.getDelims()
     expected = delim1,delim2
     assert result==expected,'language %s expected %s got %s' % (
@@ -3351,5 +3355,36 @@ unl: organizer node--&gt;child2
 <t tx="ekr.20141213094716.21">def eggs():
     pass</t>
 <t tx="ekr.20150207041158.11"></t>
+<t tx="ekr.20150207135815.11">import unittest
+x = c.shadowController
+suite = unittest.makeSuite(unittest.TestCase)
+trace = True
+for p in p.children():
+    h = p.h.strip()
+    if h.startswith('@shadow-test-lax'):
+        test = x.AtShadowTestCase(c,p,x,lax=True,trace=trace)
+    elif h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
+    else:
+        test = None
+    if test:
+        suite.addTest(test)
+# if suite:
+    # g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20150207135815.53"></t>
+<t tx="ekr.20150207135815.54">@others
+</t>
+<t tx="ekr.20150207135815.55">node 1 line 1
+</t>
+<t tx="ekr.20150207135815.56">node 2 line 1
+</t>
+<t tx="ekr.20150207135815.57">@others
+</t>
+<t tx="ekr.20150207135815.58">node 1 line 1
+inserted node at end of node 1
+</t>
+<t tx="ekr.20150207135815.59">node 2 line 1
+</t>
 </tnodes>
 </leo_file>

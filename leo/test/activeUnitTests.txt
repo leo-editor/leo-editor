@@ -19656,18 +19656,10 @@ x.show_error(
     lines2_message = "lines2")
 #@+node:ekr.20090529115704.4397: *4* @suite run @shadow-test nodes in the @shadow-tests tree
 import unittest
-
-if 1:
-    x = c.shadowController
-else:
-    import leo.core.leoShadow as leoShadow
-    x = leoShadow.shadowController(c,trace=False,trace_writers=False)
-
+x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeAnywhere(c,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-
-trace = False ; vrbose = False
 for p in root.children_iter():
     h = p.h.strip()
     if h.startswith('@shadow-test-lax'):
@@ -19677,7 +19669,6 @@ for p in root.children_iter():
     else:
         test = None
     if test:
-        if trace and verbose: print(h)
         suite.addTest(test)
 # if suite:
     # g.app.scriptDict['suite'] = suite
@@ -20141,7 +20132,7 @@ node 1 line 2
 #@+node:ekr.20090529115704.4548: *8* node 2
 node 2 line 1
 node 2 line 2
-#@+node:ekr.20100131180007.5363: *4* @test class MarkerClass.getDelims
+#@+node:ekr.20100131180007.5363: *4* @test class Marker.getDelims
 x = c.shadowController
 table = (
     ('python','#',''),
@@ -20151,12 +20142,12 @@ table = (
 )
 for language,delim1,delim2 in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.getDelims()
     expected = delim1,delim2
     assert result==expected,'language %s expected %s got %s' % (
         language,expected,result)
-#@+node:ekr.20100131180007.5362: *4* @test class MarkerClass.isSentinel
+#@+node:ekr.20100131180007.5362: *4* @test class Marker.isSentinel
 x = c.shadowController
 table = (
     ('python','abc',False),
@@ -20176,11 +20167,11 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.isSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)
-#@+node:ekr.20100131180007.5361: *4* @test class MarkerClass.isVerbatimSentinel
+#@+node:ekr.20100131180007.5361: *4* @test class Marker.isVerbatimSentinel
 x = c.shadowController
 table = (
     ('python','abc',False),
@@ -20197,7 +20188,7 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.MarkerClass(delims)
+    marker = x.Marker(delims)
     result = marker.isVerbatimSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)
