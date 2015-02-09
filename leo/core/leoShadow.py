@@ -233,11 +233,10 @@ class ShadowController:
         x = self
         marker = x.marker
         new_private_lines = x.results
-        new_public_lines = x.new_public_lines
+        new_public_lines = x.b
         ### junk, sentinel_lines = x.separate_sentinels(x.results, marker)
-        junk, sentinel_lines = x.separate_sentinels(x.old_private_lines, marker)
-        new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
-            new_private_lines, marker)
+        junk, sentinel_lines = x.separate_sentinels(x.old_sent_lines, marker)
+        new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(x.results, marker)
 
         lines1 = new_public_lines
         lines2 = new_public_lines2
@@ -282,22 +281,22 @@ class ShadowController:
         return lines_ok and sents_ok
     #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
     def copy_sentinels(self,limit):
-        '''Copy sentinels from x.rdr to x.results while x.rdr.i < limit.'''
+        '''Copy sentinels from x.sent_rdr to x.results while x.sent_rdr.i < limit.'''
         x = self
         if x.trace: g.trace(limit)
-        marker,rdr = x.marker,x.rdr
-        start = rdr.i
-        while rdr.i < limit:
-            line = rdr.get()
+        marker,sent_rdr = x.marker,x.sent_rdr
+        ###start = sent_rdr.i
+        while sent_rdr.i < limit:
+            line = sent_rdr.get()
             if marker.isSentinel(line):
                 if marker.isVerbatimSentinel(line):
                     # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
                     # We must **extend** the limit to get the next line.
-                    if rdr.i < limit + 1:
+                    if sent_rdr.i < limit + 1:
                         # Skip the next line, whatever it is.
                         # Important: this **deletes** the @verbatim sentinel,
                         # so this is a exception to the rule that sentinels are preserved.
-                        line = rdr.get()
+                        line = sent_rdr.get()
                     else:
                         x.verbatim_error()
                 else:
@@ -324,7 +323,7 @@ class ShadowController:
         x = self
         trace = x.trace and g.unitTesting
         x.init_ivars(new_public_lines,old_private_lines,marker)
-        sm = difflib.SequenceMatcher(None,x.old_public_lines,x.new_public_lines)
+        sm = difflib.SequenceMatcher(None,x.a,x.b)
         if trace: x.dump_args()
         for opcode in sm.get_opcodes():
             if new_shadow:
@@ -339,7 +338,7 @@ class ShadowController:
         if new_shadow:
             x.copy_last_sentinels()
         else:
-            x.copy_sentinels(len(x.rdr.lines))
+            x.copy_sentinels(len(x.sent_rdr.lines))
         if trace: x.dump_lines(x.results,'results')
         # Do the final correctness check.
         x.check_output()
@@ -351,23 +350,22 @@ class ShadowController:
         x.delim1,x.delim2 = marker.getDelims()
         ### x.end_opcode = 'end',0,0,0,0
         x.marker = marker
-        x.new_public_lines = new_public_lines
         x.old_opcode = 'start',0,0,0,0 ### -1,-1,-1,-1
-        x.old_private_lines = old_private_lines
+        x.old_sent_lines = old_private_lines
         x.results = []
         x.verbatim_line = '%s@verbatim%s\n' % (x.delim1,x.delim2)
         # Preprocess both public lines.
         old_public_lines, x.mapping = x.strip_sentinels_with_map(
             old_private_lines,marker,'old_private_lines')
-        x.new_public_lines = x.preprocess(new_public_lines)
-        x.old_public_lines = x.preprocess(old_public_lines)
+        x.b = x.preprocess(new_public_lines)
+        x.a = x.preprocess(old_public_lines)
         if new_shadow:
             pass
         else:
             # Create reader streams.
-            x.ns_rdr = x.SourceReader(x,x.new_public_lines) # new lines, no sentinels.
-            x.rdr = x.SourceReader(x,x.old_private_lines) # old lines, with sentinels.
-            x.old_ns_rdr = x.SourceReader(x,x.old_public_lines) # Dumps only.
+            x.b_rdr = x.SourceReader(x,x.b) # new lines, no sentinels.
+            x.sent_rdr = x.SourceReader(x,x.old_sent_lines) # old lines, with sentinels.
+            x.a_rdr = x.SourceReader(x,x.a) # Dumps only.
     #@+node:ekr.20150208060128.13: *5* x.copy
     def copy(self,opcode):
         '''
@@ -379,11 +377,9 @@ class ShadowController:
         x = self
         tag,a1,a2,b1,b2 = opcode
         tag2,oa1,oa2,ob1,ob2 = x.old_opcode
-        lines = [] if tag in ('delete','end') else x.new_public_lines[b1:b2]
+        lines = [] if tag in ('delete','end') else x.b[b1:b2]
         ai = a1 # The index of the first old private line.
         bi = 0 # The index into lines of the next non-sentinel line to be added.
-        # ob2 = min(ob2,len(x.old_public_lines))
-        # pi = 0 if ob2 == -1 else x.mapping[ob2] # All sentinels before pi have been copied.
         pi = x.mapping[ob2] # All sentinels before pi have been copied.
         g.trace(opcode)
         g.trace('ob2',ob2,'pi',pi)
@@ -392,7 +388,7 @@ class ShadowController:
             pj = x.mapping[ai]
             ai += 1
             if pi < pj:
-                x.results.extend(x.old_private_lines[pi:pj])
+                x.results.extend(x.old_sent_lines[pi:pj])
             pi = pj
             # Copy the next plain line, if any.
             if bi < len(lines):
@@ -408,8 +404,8 @@ class ShadowController:
         '''Copy the last sentinels to x.results.'''
         x = self
         pi = x.last_pi
-        if pi < len(x.old_private_lines):
-            x.results.extend(x.old_private_lines[pi:])
+        if pi < len(x.old_sent_lines):
+            x.results.extend(x.old_sent_lines[pi:])
     #@+node:ekr.20150208060128.15: *5* x.copy_plain_line
     def copy_plain_line(self,line):
         '''Copy a plain line to x.results, inserting verbatim lines if necessary.'''
@@ -423,15 +419,15 @@ class ShadowController:
         x = self
         if new_shadow:
             table = (
-                (x.old_private_lines,'old private lines'),
-                (x.old_public_lines,'old public lines'),
-                (x.new_public_lines,'new public lines'),
+                (x.old_sent_lines,'old private lines'),
+                (x.a,'old public lines'),
+                (x.b,'new public lines'),
             )
         else:
             table = (
-                (x.rdr.lines,'old private lines'),
-                (x.old_ns_rdr.lines,'old public lines'),
-                (x.ns_rdr.lines,'new public lines'),
+                (x.sent_rdr.lines,'old private lines'),
+                (x.a_rdr.lines,'old public lines'),
+                (x.b_rdr.lines,'new public lines'),
             )
         for lines,title in table:
             x.dump_lines(lines,title)
@@ -454,40 +450,40 @@ class ShadowController:
         x = self
         tag,old_i,old_j,new_i,new_j = opcode
 
-        # Copy sentinels up to the limit. Leave ns_rdr unchanged.
+        # Copy sentinels up to the limit. Leave b_rdr unchanged.
         x.copy_sentinels(x.mapping[old_i])
     #@+node:ekr.20150207044400.13: *5* x.op_equal
     def op_equal(self,opcode):
         '''Handle the 'equal' opcode.'''
         x = self
         tag,old_i,old_j,new_i,new_j = opcode
-        ns_rdr,rdr = x.ns_rdr,x.rdr
+        b_rdr,sent_rdr = x.b_rdr,x.sent_rdr
         # Copy sentinels up to mapping[old_i].
         x.copy_sentinels(x.mapping[old_i])
         # Copy all lines (including sentinels) up to mapping[old_j-1]
-        start = rdr.i
-        while rdr.i <= x.mapping[old_j-1]:
-            line = rdr.get()
+        ### start = sent_rdr.i
+        while sent_rdr.i <= x.mapping[old_j-1]:
+            line = sent_rdr.get()
             x.put(line)
         # Ignore all new lines up to new_j: these lines (with sentinels) have just been written.
-        ns_rdr.i = new_j # Sync to new_j.
+        b_rdr.i = new_j # Sync to new_j.
     #@+node:ekr.20150207044400.14: *5* x.op_insert
     def op_insert(self,opcode):
         '''Handle the 'insert' opcode.'''
         x = self
-        ns_rdr,rdr = x.ns_rdr,x.rdr
+        b_rdr,sent_rdr = x.b_rdr,x.sent_rdr
         tag,old_i,old_j,new_i,new_j = opcode
 
         # Do not copy sentinels if we are inserting and limit is at the end of the old_private_lines.
         # In this special case, we must do the insert before the sentinels.
         limit = x.mapping[old_i]
-        if limit < len(rdr.lines):
+        if limit < len(sent_rdr.lines):
             x.copy_sentinels(limit)
 
-        # All unwritten lines from rdr up to mapping[old_i] have already been ignored.
-        # Copy lines from ns_rdr up to new_j.
-        while ns_rdr.i < new_j:
-            line = ns_rdr.get()
+        # All unwritten lines from sent_rdr up to mapping[old_i] have already been ignored.
+        # Copy lines from b_rdr up to new_j.
+        while b_rdr.i < new_j:
+            line = b_rdr.get()
             x.put_plain_line(line)
     #@+node:ekr.20150207044400.15: *5* x.op_replace
     def op_replace(self,opcode):
@@ -496,18 +492,18 @@ class ShadowController:
         tag,old_i,old_j,new_i,new_j = opcode
         # 2010/01/07: Replacements preserve sentinel locations.
         # Careful: the replacement lines can be shorter.
-        while x.rdr.i <= x.mapping[old_j-1] and x.ns_rdr.i < new_j:
-            old_line = x.rdr.get()
+        while x.sent_rdr.i <= x.mapping[old_j-1] and x.b_rdr.i < new_j:
+            old_line = x.sent_rdr.get()
             if x.marker.isSentinel(old_line):
                 # Important: this should work for @verbatim sentinels
                 # because the next line will also be replaced.
                 x.put(old_line)
             else:
-                new_line = x.ns_rdr.get()
+                new_line = x.b_rdr.get()
                 x.put(new_line)
         # Careful: The replacement lines can be longer: same as 'insert' code above.
-        while x.ns_rdr.i < new_j:
-            line = x.ns_rdr.get()
+        while x.b_rdr.i < new_j:
+            line = x.b_rdr.get()
             x.put_plain_line(line)
     #@+node:ekr.20150208060128.7: *5* x.preprocess (handle verbatim?)
     def preprocess(self,lines):
