@@ -326,6 +326,9 @@ class ShadowController:
         x.init_ivars(new_public_lines,old_private_lines,marker)
         sm = difflib.SequenceMatcher(None,x.a,x.b)
         if trace: x.dump_args()
+        if new_shadow:
+            # A special case to ensure leading sentinels are put first.
+            x.put_sentinels(0)
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
             if trace and new_shadow:
@@ -475,9 +478,11 @@ class ShadowController:
         x = self
         if new_shadow:
             tag,ai,aj,bi,bj = opcode
-            x.put_sentinels(ai)
             for i in range(bi,bj):
-                x.put_plain_line(x.b[i]) 
+                x.put_plain_line(x.b[i])
+            # Prefer to put sentinels after inserted nodes.
+            # Requires a call to x.put_sentinels(0) before the main loop.
+            x.put_sentinels(ai)
         else:
             b_rdr,sent_rdr = x.b_rdr,x.sent_rdr
             tag,old_i,old_j,new_i,new_j = opcode

@@ -19656,14 +19656,16 @@ x.show_error(
     lines2_message = "lines2")
 #@+node:ekr.20090529115704.4397: *4* @suite run @shadow-test nodes in the @shadow-tests tree
 import unittest
+import leo.core.leoShadow as leoShadow
 x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
 for p in root.children_iter():
     h = p.h.strip()
+    # Lax has no effect when new_shadow is True
     if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=True)
+        test = x.AtShadowTestCase(c,p,x,lax=not leoShadow.new_shadow)
     elif h.startswith('@shadow-test'):
         test = x.AtShadowTestCase(c,p,x,lax=False)
     else:
@@ -19778,7 +19780,7 @@ inserted line
 line 1
 line 2
 line 3
-#@+node:ekr.20090529115704.4421: *6* @shadow-test insert after first line
+#@+node:ekr.20090529115704.4421: *6* @shadow-test insert middle line (after first line)
 #@+node:ekr.20090529115704.4422: *7* old
 line 1
 line 2
@@ -19788,7 +19790,7 @@ line 1
 inserted line
 line 2
 line 3
-#@+node:ekr.20090529115704.4424: *6* @shadow-test insert before last line
+#@+node:ekr.20090529115704.4424: *6* @shadow-test insert middle line (before last line)
 #@+node:ekr.20090529115704.4425: *7* old
 line 1
 line 2
@@ -19821,20 +19823,6 @@ node 2 line 1
 node 1 line 1
 inserted node at end of node 1
 #@+node:ekr.20090529115704.4436: *8* node 2
-node 2 line 1
-#@+node:ekr.20090529115704.4437: *6* @shadow-test insert between nodes: at start of next node
-#@+node:ekr.20090529115704.4438: *7* old
-@others
-#@+node:ekr.20090529115704.4439: *8* node 1
-node 1 line 1
-#@+node:ekr.20090529115704.4440: *8* node 2
-node 2 line 1
-#@+node:ekr.20090529115704.4441: *7* new
-@others
-#@+node:ekr.20090529115704.4442: *8* node 1
-node 1 line 1
-#@+node:ekr.20090529115704.4443: *8* node 2
-inserted node at start of node 2
 node 2 line 1
 #@+node:ekr.20090529115704.4444: *6* @shadow-test delete between nodes: at end of prev node
 #@+node:ekr.20090529115704.4445: *7* old
@@ -19905,30 +19893,15 @@ node 2 line 2
 @others
 #@+node:ekr.20090529115704.4474: *8* node 1
 node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
 #@+node:ekr.20090529115704.4475: *8* node 2
 node 2 line 1
 #@+node:ekr.20090529115704.4476: *7* new
 @others
 #@+node:ekr.20090529115704.4477: *8* node 1
 node 1 line 1
-inserted node 1 at end of node 1
-inserted node 2 at end of node 1
 #@+node:ekr.20090529115704.4478: *8* node 2
-node 2 line 1
-#@+node:ekr.20090529115704.4479: *6* @shadow-test multiple-line insert between nodes: at start of next node
-#@+node:ekr.20090529115704.4480: *7* old
-@others
-#@+node:ekr.20090529115704.4481: *8* node 1
-node 1 line 1
-#@+node:ekr.20090529115704.4482: *8* node 2
-node 2 line 1
-#@+node:ekr.20090529115704.4483: *7* new
-@others
-#@+node:ekr.20090529115704.4484: *8* node 1
-node 1 line 1
-#@+node:ekr.20090529115704.4485: *8* node 2
-inserted node 1 at start of node 2
-inserted node 2 at start of node 2
 node 2 line 1
 #@+node:ekr.20090529115704.4486: *6* @shadow-test multiple-line change end of prev node
 #@+node:ekr.20090529115704.4487: *7* old
@@ -19966,7 +19939,7 @@ node 1 line 2
 #@+node:ekr.20090529115704.4499: *8* node 2
 node 2 line 1 changed
 node 2 line 2 changed
-#@+node:ekr.20100107110353.5105: *6* @shadow-test NEW multiple-NODE changes
+#@+node:ekr.20100107110353.5105: *6* @shadow-test multiple-NODE changes
 #@+node:ekr.20100107110353.5106: *7* old
 @others
 #@+node:ekr.20100107110353.5107: *8* node 1

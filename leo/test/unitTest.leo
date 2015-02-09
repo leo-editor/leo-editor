@@ -294,7 +294,8 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"
+expanded="ekr.20090529115704.4398,ekr.20090529115704.4431,ekr.20090529115704.4434,ekr.20100107110353.5106,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150207041158.11"><vh>Recent @shadow tests</vh>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
@@ -354,11 +355,11 @@
 <v t="ekr.20090529115704.4419"><vh>old</vh></v>
 <v t="ekr.20090529115704.4420"><vh>new</vh></v>
 </v>
-<v t="ekr.20090529115704.4421"><vh>@shadow-test insert after first line</vh>
+<v t="ekr.20090529115704.4421"><vh>@shadow-test insert middle line (after first line)</vh>
 <v t="ekr.20090529115704.4422"><vh>old</vh></v>
 <v t="ekr.20090529115704.4423"><vh>new</vh></v>
 </v>
-<v t="ekr.20090529115704.4424"><vh>@shadow-test insert before last line</vh>
+<v t="ekr.20090529115704.4424"><vh>@shadow-test insert middle line (before last line)</vh>
 <v t="ekr.20090529115704.4425"><vh>old</vh></v>
 <v t="ekr.20090529115704.4426"><vh>new</vh></v>
 </v>
@@ -374,16 +375,6 @@
 <v t="ekr.20090529115704.4434"><vh>new</vh>
 <v t="ekr.20090529115704.4435"><vh>node 1</vh></v>
 <v t="ekr.20090529115704.4436"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20090529115704.4437"><vh>@shadow-test insert between nodes: at start of next node</vh>
-<v t="ekr.20090529115704.4438"><vh>old</vh>
-<v t="ekr.20090529115704.4439"><vh>node 1</vh></v>
-<v t="ekr.20090529115704.4440"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20090529115704.4441"><vh>new</vh>
-<v t="ekr.20090529115704.4442"><vh>node 1</vh></v>
-<v t="ekr.20090529115704.4443"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20090529115704.4444"><vh>@shadow-test delete between nodes: at end of prev node</vh>
@@ -436,16 +427,6 @@
 <v t="ekr.20090529115704.4478"><vh>node 2</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4479"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
-<v t="ekr.20090529115704.4480"><vh>old</vh>
-<v t="ekr.20090529115704.4481"><vh>node 1</vh></v>
-<v t="ekr.20090529115704.4482"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20090529115704.4483"><vh>new</vh>
-<v t="ekr.20090529115704.4484"><vh>node 1</vh></v>
-<v t="ekr.20090529115704.4485"><vh>node 2</vh></v>
-</v>
-</v>
 <v t="ekr.20090529115704.4486"><vh>@shadow-test multiple-line change end of prev node</vh>
 <v t="ekr.20090529115704.4487"><vh>old</vh>
 <v t="ekr.20090529115704.4488"><vh>node 1</vh></v>
@@ -466,7 +447,7 @@
 <v t="ekr.20090529115704.4499"><vh>node 2</vh></v>
 </v>
 </v>
-<v t="ekr.20100107110353.5105"><vh>@shadow-test NEW multiple-NODE changes</vh>
+<v t="ekr.20100107110353.5105"><vh>@shadow-test multiple-NODE changes</vh>
 <v t="ekr.20100107110353.5106"><vh>old</vh>
 <v t="ekr.20100107110353.5107"><vh>node 1</vh></v>
 <v t="ekr.20100107110353.5108"><vh>node 2</vh></v>
@@ -568,6 +549,7 @@
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
 </v>
+<v t="ekr.20090529115704.4397"></v>
 <v t="ekr.20150207135815.11"><vh>@suite run child @shadow-test nodes with trace</vh>
 <v t="ekr.20150207135815.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
 <v t="ekr.20150207135815.54"><vh>old</vh>
@@ -1394,7 +1376,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1472,14 +1454,16 @@ Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20090529115704.4396"></t>
 <t tx="ekr.20090529115704.4397">import unittest
+import leo.core.leoShadow as leoShadow
 x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
 for p in root.children_iter():
     h = p.h.strip()
+    # Lax has no effect when new_shadow is True
     if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=True)
+        test = x.AtShadowTestCase(c,p,x,lax=not leoShadow.new_shadow)
     elif h.startswith('@shadow-test'):
         test = x.AtShadowTestCase(c,p,x,lax=False)
     else:
@@ -1606,20 +1590,6 @@ inserted node at end of node 1
 </t>
 <t tx="ekr.20090529115704.4436">node 2 line 1
 </t>
-<t tx="ekr.20090529115704.4437"></t>
-<t tx="ekr.20090529115704.4438">@others
-</t>
-<t tx="ekr.20090529115704.4439">node 1 line 1
-</t>
-<t tx="ekr.20090529115704.4440">node 2 line 1
-</t>
-<t tx="ekr.20090529115704.4441">@others
-</t>
-<t tx="ekr.20090529115704.4442">node 1 line 1
-</t>
-<t tx="ekr.20090529115704.4443">inserted node at start of node 2
-node 2 line 1
-</t>
 <t tx="ekr.20090529115704.4444"></t>
 <t tx="ekr.20090529115704.4445">@others
 </t>
@@ -1688,31 +1658,16 @@ node 2 line 2
 <t tx="ekr.20090529115704.4473">@others
 </t>
 <t tx="ekr.20090529115704.4474">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
 </t>
 <t tx="ekr.20090529115704.4475">node 2 line 1
 </t>
 <t tx="ekr.20090529115704.4476">@others
 </t>
 <t tx="ekr.20090529115704.4477">node 1 line 1
-inserted node 1 at end of node 1
-inserted node 2 at end of node 1
 </t>
 <t tx="ekr.20090529115704.4478">node 2 line 1
-</t>
-<t tx="ekr.20090529115704.4479"></t>
-<t tx="ekr.20090529115704.4480">@others
-</t>
-<t tx="ekr.20090529115704.4481">node 1 line 1
-</t>
-<t tx="ekr.20090529115704.4482">node 2 line 1
-</t>
-<t tx="ekr.20090529115704.4483">@others
-</t>
-<t tx="ekr.20090529115704.4484">node 1 line 1
-</t>
-<t tx="ekr.20090529115704.4485">inserted node 1 at start of node 2
-inserted node 2 at start of node 2
-node 2 line 1
 </t>
 <t tx="ekr.20090529115704.4486"></t>
 <t tx="ekr.20090529115704.4487">@others
