@@ -14973,5 +14973,53 @@ def print_tags(self,opcode,p):
     # # # for i, line in enumerate(self.results):
         # # # marker = '  '
         # # # g.pr("%s %3s:%s" % (marker, i, repr(line)))
+.. @+node:ekr.20150209044257.5: *4* Abandoned copy scheme
+.. @+node:ekr.20150208060128.13: *5* x.copy
+def copy(self,opcode):
+    '''
+    Copy new public lines to the output, interspersing sentinels from old_private_lines.
+    a1:a2 are indices into old_public lines.
+    b1:b2 are indices into new_public lines.
+    mapping[a1]:mapping[a2] are indices into old_private lines.
+    '''
+    x = self
+    tag,a1,a2,b1,b2 = opcode
+    tag2,oa1,oa2,ob1,ob2 = x.old_opcode
+    lines = [] if tag in ('delete','end') else x.b[b1:b2]
+    ai = a1 # The index of the first old private line.
+    bi = 0 # The index into lines of the next non-sentinel line to be added.
+    pi = x.mapping[ob2] # All sentinels before pi have been copied.
+    g.trace(opcode)
+    g.trace('ob2',ob2,'pi',pi)
+    while ai < a2:
+        # Copy preceding sentinels from pi:mapping[ai]
+        pj = x.mapping[ai]
+        ai += 1
+        if pi < pj:
+            x.results.extend(x.old_sent_lines[pi:pj])
+        pi = pj
+        # Copy the next plain line, if any.
+        if bi < len(lines):
+            x.copy_plain_line(lines[bi])
+            bi += 1
+    x.last_pi = pi # Remember this for x.copy_last_sentinels.
+    # Copy all additional plain lines.
+    while bi < len(lines):
+        x.copy_plain_line(lines[bi])
+        bi += 1
+.. @+node:ekr.20150208060128.16: *5* x.copy_last_sentinels
+def copy_last_sentinels(self):
+    '''Copy the last sentinels to x.results.'''
+    x = self
+    pi = x.last_pi
+    if pi < len(x.old_sent_lines):
+        x.results.extend(x.old_sent_lines[pi:])
+.. @+node:ekr.20150208060128.15: *5* x.copy_plain_line
+def copy_plain_line(self,line):
+    '''Copy a plain line to x.results, inserting verbatim lines if necessary.'''
+    x = self
+    if x.marker.isSentinel(line):
+        x.results.append(x.verbatim_line)
+    x.results.append(line)
 .. @-all
 .. @-leo
