@@ -229,23 +229,13 @@ class ShadowController:
     #@+node:ekr.20080708192807.1: *3* x.Propagation
     #@+node:ekr.20080708094444.35: *4* x.check_output
     def check_output(self):
-        """
-        Check that we produced a valid output.
-
-        Input:
-            new_targetlines:   the lines with sentinels which produce changed_lines_without_sentinels.
-            sentinels:         new_targetlines should include all the lines from sentinels.
-
-        checks:
-            1. new_targetlines without sentinels must equal changed_lines_without_sentinels.
-            2. the sentinel lines of new_targetlines must match 'sentinels'
-        """
+        '''Check that we produced a valid output.'''
         x = self
         marker = x.marker
         new_private_lines = x.results
         new_public_lines = x.new_public_lines
-        junk, sentinel_lines = x.separate_sentinels(x.results, marker)
-
+        ### junk, sentinel_lines = x.separate_sentinels(x.results, marker)
+        junk, sentinel_lines = x.separate_sentinels(x.old_private_lines, marker)
         new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(
             new_private_lines, marker)
 
@@ -316,7 +306,7 @@ class ShadowController:
     #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm) & helpers
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
         #@+<< docstring >>
-        #@+node:ekr.20150207044400.9: *5* << docstring >>
+        #@+node:ekr.20150207044400.9: *5*  << docstring >>
         '''
         Propagate changes from 'new_public_lines' to 'old_private_lines.
 
@@ -354,6 +344,30 @@ class ShadowController:
         # Do the final correctness check.
         x.check_output()
         return x.results
+    #@+node:ekr.20080708094444.40: *5*  x.init_ivars
+    def init_ivars(self,new_public_lines,old_private_lines,marker):
+        '''Init all ivars used by propagate_changed_lines & its helpers.'''
+        x = self
+        x.delim1,x.delim2 = marker.getDelims()
+        ### x.end_opcode = 'end',0,0,0,0
+        x.marker = marker
+        x.new_public_lines = new_public_lines
+        x.old_opcode = 'start',0,0,0,0 ### -1,-1,-1,-1
+        x.old_private_lines = old_private_lines
+        x.results = []
+        x.verbatim_line = '%s@verbatim%s\n' % (x.delim1,x.delim2)
+        # Preprocess both public lines.
+        old_public_lines, x.mapping = x.strip_sentinels_with_map(
+            old_private_lines,marker,'old_private_lines')
+        x.new_public_lines = x.preprocess(new_public_lines)
+        x.old_public_lines = x.preprocess(old_public_lines)
+        if new_shadow:
+            pass
+        else:
+            # Create reader streams.
+            x.ns_rdr = x.SourceReader(x,x.new_public_lines) # new lines, no sentinels.
+            x.rdr = x.SourceReader(x,x.old_private_lines) # old lines, with sentinels.
+            x.old_ns_rdr = x.SourceReader(x,x.old_public_lines) # Dumps only.
     #@+node:ekr.20150208060128.13: *5* x.copy
     def copy(self,opcode):
         '''
@@ -428,30 +442,6 @@ class ShadowController:
         print('\n%s...\n' % title)
         for i,line in enumerate(lines):
             g.pr('%4s %s' % (i,repr(line)))
-    #@+node:ekr.20080708094444.40: *5* x.init_ivars
-    def init_ivars(self,new_public_lines,old_private_lines,marker):
-        '''Init all ivars used by propagate_changed_lines & its helpers.'''
-        x = self
-        x.delim1,x.delim2 = marker.getDelims()
-        ### x.end_opcode = 'end',0,0,0,0
-        x.marker = marker
-        x.new_public_lines = new_public_lines
-        x.old_opcode = 'start',0,0,0,0 ### -1,-1,-1,-1
-        x.old_private_lines = old_private_lines
-        x.results = []
-        x.verbatim_line = '%s@verbatim%s\n' % (x.delim1,x.delim2)
-        # Preprocess both public lines.
-        old_public_lines, x.mapping = x.strip_sentinels_with_map(
-            old_private_lines,marker,'old_private_lines')
-        x.new_public_lines = x.preprocess(new_public_lines)
-        x.old_public_lines = x.preprocess(old_public_lines)
-        if new_shadow:
-            pass
-        else:
-            # Create reader streams.
-            x.ns_rdr = x.SourceReader(x,x.new_public_lines) # new lines, no sentinels.
-            x.rdr = x.SourceReader(x,x.old_private_lines) # old lines, with sentinels.
-            x.old_ns_rdr = x.SourceReader(x,x.old_public_lines) # Dumps only.
     #@+node:ekr.20150207044400.16: *5* x.op_bad
     def op_bad(self,opcode):
         '''Report an unexpected opcode.'''
