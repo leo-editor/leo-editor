@@ -40,8 +40,12 @@ import os
 import pprint
 import unittest
 #@-<< imports >>
-
+#@+<< define new_shadow >>
+#@+node:ekr.20150209090744.4: ** << define new_shadow >>
 new_shadow = False # True: use new propagate algorithm
+if new_shadow:
+    print('**** new_shadow ***')
+#@-<< define new_shadow >>
 
 #@@language python
 #@@tabwidth -4
@@ -318,18 +322,21 @@ class ShadowController:
         '''
         #@-<< docstring >>
         x = self
-        trace = x.trace and g.unitTesting
+        trace = (False or x.trace) and g.unitTesting
         x.init_ivars(new_public_lines,old_private_lines,marker)
         sm = difflib.SequenceMatcher(None,x.a,x.b)
         if trace: x.dump_args()
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
-            if trace: g.trace(tag,'old_i:%s limit:%s' % (old_i,x.mapping[old_i]))
+            if trace and new_shadow:
+                g.trace('%3s %s' % (old_i,tag))
+            elif trace:
+                g.trace(tag,'old_i:%s limit:%s' % (old_i,x.mapping[old_i]))
             tag,ai,aj,bi,bj = opcode
             f = x.dispatch_dict.get(tag,x.op_bad)
             f(opcode)
         if new_shadow:
-            x.put_sentinels(x.trailing_sentinels)
+            x.results.extend(x.trailing_sentinels)
         else:
             x.copy_sentinels(len(x.sent_rdr.lines))
         if trace: x.dump_lines(x.results,'results')
@@ -371,12 +378,15 @@ class ShadowController:
         x.results = []
         x.verbatim_line = '%s@verbatim%s\n' % (x.delim1,x.delim2)
         # Preprocess both public lines.
-        old_public_lines, x.mapping = x.strip_sentinels_with_map(
-            old_private_lines,marker,'old_private_lines')
+        if new_shadow:
+            old_public_lines = x.init_data()
+        else:
+            old_public_lines, x.mapping = x.strip_sentinels_with_map(
+                old_private_lines,marker,'old_private_lines')
         x.b = x.preprocess(new_public_lines)
         x.a = x.preprocess(old_public_lines)
         if new_shadow:
-            x.init_data()
+            pass
         else:
             # Create reader streams.
             x.b_rdr = x.SourceReader(x,x.b) # new lines, no sentinels.
@@ -384,7 +394,10 @@ class ShadowController:
             x.a_rdr = x.SourceReader(x,x.a) # Dumps only.
     #@+node:ekr.20150209044257.6: *6* x.init_data (test)
     def init_data(self):
-        '''Init x.sentinels and x.trailing_sentinels arrays.'''
+        '''
+        Init x.sentinels and x.trailing_sentinels arrays.
+        Return the list of non-sentinel lines in x.old_sent_lines.
+        '''
         x = self
         lines = x.old_sent_lines
         sentinels = []
@@ -414,8 +427,8 @@ class ShadowController:
                 x.sentinels.append(sentinels)
                 sentinels = []
                 new_lines.append(line)
-        assert new_lines == x.a
         x.trailing_sentinels = sentinels
+        return new_lines
     #@+node:ekr.20150207044400.16: *5* x.op_bad
     def op_bad(self,opcode):
         '''Report an unexpected opcode.'''
@@ -428,8 +441,8 @@ class ShadowController:
         x = self
         if new_shadow:
             tag,ai,aj,bi,bj = opcode
-            for i in range(ai,aj+1):
-                x.put_sentinels(x.sentinels[i])
+            for i in range(ai,aj):
+                x.put_sentinels(i)
         else:
             tag,old_i,old_j,new_i,new_j = opcode
             # Copy sentinels up to the limit. Leave b_rdr unchanged.
@@ -441,8 +454,8 @@ class ShadowController:
         if new_shadow:
             tag,ai,aj,bi,bj = opcode
             assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
-            for i in range(ai,aj+1):
-                x.put_sentinels(x.sentinels[i])
+            for i in range(ai,aj):
+                x.put_sentinels(i)
                 x.put_plain_line(x.a[i])
                     # works because x.lines[ai:aj] == x.lines[bi:bj]
         else:
@@ -462,7 +475,8 @@ class ShadowController:
         x = self
         if new_shadow:
             tag,ai,aj,bi,bj = opcode
-            for i in range(bi,bj+1):
+            x.put_sentinels(ai)
+            for i in range(bi,bj):
                 x.put_plain_line(x.b[i]) 
         else:
             b_rdr,sent_rdr = x.b_rdr,x.sent_rdr
@@ -485,10 +499,22 @@ class ShadowController:
         x = self
         if new_shadow:
             tag,ai,aj,bi,bj = opcode
-            for i in range(ai,aj+1):
-                x.put_sentinels(x.sentinels[i])
-            for i in range(bi,bj+1):
-                x.put_plain_line(x.b[i])
+            if 1:
+                # Intersperse sentinels and lines.
+                b_lines = list(reversed(x.b[bi:bj]))
+                for i in range(ai,aj):
+                    x.put_sentinels(i)
+                    if b_lines:
+                        x.put_plain_line(b_lines.pop())
+                # Put any trailing lines.
+                while b_lines:
+                    x.put_plain_line(b_lines.pop())  
+            else:
+                # Feasible, but would change unit tests.
+                for i in range(ai,aj):
+                    x.put_sentinels(i)
+                for i in range(bi,bj):
+                    x.put_plain_line(x.b[i])
         else:
             tag,old_i,old_j,new_i,new_j = opcode
             # 2010/01/07: Replacements preserve sentinel locations.
@@ -506,7 +532,7 @@ class ShadowController:
             while x.b_rdr.i < new_j:
                 line = x.b_rdr.get()
                 x.put_plain_line(line)
-    #@+node:ekr.20150208060128.7: *5* x.preprocess (handle verbatim?)
+    #@+node:ekr.20150208060128.7: *5* x.preprocess
     def preprocess(self,lines):
         '''
         Preprocess public lines, adding newlines as needed.
@@ -517,9 +543,6 @@ class ShadowController:
         for line in lines:
             if not line.endswith('\n'):
                 line = line + '\n'
-            ### Probably not needed.
-            # if new_shadow and marker.isSentinel(line):
-                # result.append('%s@verbatim%s\n' % (x.delim1,x.delim2))
             result.append(line)
         return result
     #@+node:ekr.20150207111757.5: *5* x.put
@@ -537,16 +560,22 @@ class ShadowController:
     def put_plain_line(self,line):
         '''Put a plain line to x.results, inserting verbatim lines if necessary.'''
         x = self
+        # if x.trace: g.trace(repr(line),g.callers(1))
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
             x.trace_line(x.verbatim_line)
         x.results.append(line)
         x.trace_line(line)
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
-    def put_sentinels(self,sentinels):
+    def put_sentinels(self,i):
         '''Put all the sentinels to the results'''
         x = self
-        x.results.extend(sentinels)
+        if 0 <= i < len(x.sentinels):
+            sentinels = x.sentinels[i] 
+            # if x.trace: g.trace('%3s %s' % (i,sentinels))
+            x.results.extend(sentinels)
+            # Make sure sentinels are ouput at most once.
+            x.sentinels[i] = []
     #@+node:ekr.20150208060128.9: *5* x.trace_line
     def trace_line(self,line):
         '''trace the line.'''

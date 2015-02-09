@@ -1474,7 +1474,7 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20090529115704.4397">import unittest
 x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
-root = g.findNodeAnywhere(c,'@shadow-tests')
+root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
 for p in root.children_iter():
     h = p.h.strip()
