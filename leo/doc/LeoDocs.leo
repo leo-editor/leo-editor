@@ -935,6 +935,11 @@
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
 <v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20150210062226.4"><vh>The new @shadow algorithm</vh>
+<v t="ekr.20150210062226.5"><vh>Background</vh></v>
+<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
+<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
+</v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
@@ -23727,6 +23732,86 @@ for any project I'm tinkering with. In short whether I'm at work or
 play Leo is usually involved :-)
 
 Dave Williams &lt;dave@d-dub.org.uk&gt;
+</t>
+<t tx="ekr.20150210062226.4">This section documents new @shadow algorithm in detail, with an
+informal proof of its correctness.
+
+
+
+</t>
+<t tx="ekr.20150210062226.5">The algorithm depends on four simple, guaranteed, properties of
+SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
+
+**Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b (another list of lines).
+
+The code uses the a and b terminology. It's concise and easy to remember.
+
+**Fact 2**: The opcode indices ai, aj, bi, bj *never* change because neither x.a nor x.b changes.
+
+Plain lines of the result can be built up by copying lines from x.b to x.results::
+
+    'replace'   x.results.extend(x.b[j1:j2])
+    'delete'    do nothing  (j1 == j2)
+    'insert'    x.results.extend(x.b[j1:j2])
+    'equal'     x.results.extend(x.b[j1:j2])
+
+**Fact 3**: The opcodes *cover* both x.a and x.b, in order, without any gaps.
+
+This is an explicit requirement of sm.get_opcode:
+
+- The first tuple has ai==aj==bi==bj==0.
+
+- Remaining tuples have ai == (aj from the preceding tuple) and bi == (bj from the previous tuple).
+
+**Fact 4**: The x.sentinels array contains the sentinels that precede each line of x.a.
+
+For any index i, x.sentinels[i] is the (possibly empty) list of sentinel lines that precede line a[i]. Computing x.sentinels from old_private_lines is easy.
+
+Crucially, x.a and x.sentinels are *parallel arrays*.  That is, len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into x.sentinels.
+
+Envisioning the x.sentinels array was the Aha that collapsed the complexity of the algorithm.  Sentinels no longer affect indices so opcode indices are indices into the x.a, x.b and x.sentinels arrays.
+</t>
+<t tx="ekr.20150210062226.6">With these facts in mind, the strategy for creating the results is
+simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:
+
+- Writes sentinels from x.sentinels[i], for i in range(ai,aj).
+
+- Writes plain lines from b[i], for i in range(bi,bj).
+
+This "just works" because the indices cover both a and b.
+
+- The algorithm writes sentinels exactly once (in order) because each
+  sentinel appears in x.sentinels[i] for some i in range(len(x.a)).
+
+- The algorithm writes plain lines exactly once (in order) because
+  each plain line appears in x.b[i] for some i in range(len(x.b)).
+
+This completes an informal proof of the correctness of the algorithm.
+
+The leading and trailing sentinels lines are easy special cases. This
+code, appearing before the main loop, ensures that leading lines are
+written first, and only once::
+
+    x.put_sentinels(0)
+    x.sentinels[0] = []
+
+Similarly, this line, at the end of the main loop, writes trailing
+sentinels::
+
+    x.results.extend(x.trailing_sentinels)
+</t>
+<t tx="ekr.20150210062226.7">The algorithm depends on simple, guaranteed, properties of indices in
+SequenceMatcher opcodes.
+
+The algorithm steps through x.sentinels and x.b, extending x.results
+as it goes.
+
+The algorithm gets all needed data directly from opcode indices into
+x.sentinels and x.b. Using opcode indices requires neither reader
+classes nor auxiliary indices.
+
+The algorithm is simple enough to be understood at first reading. I'll
+remember its details for the rest of my life.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
