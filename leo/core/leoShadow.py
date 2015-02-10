@@ -562,23 +562,17 @@ class ShadowController:
         # if x.trace: g.trace(repr(line),g.callers(1))
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
-            x.trace_line(x.verbatim_line)
+            if x.trace: print('put %s' % repr(x.verbatim_line))
         x.results.append(line)
-        x.trace_line(line)
+        if x.trace: print('put %s' % repr(line))
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self,i):
         '''Put all the sentinels to the results'''
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i] 
-            if x.trace: g.trace('%3s %s' % (i,sentinels),g.callers(2))
+            if x.trace: g.trace('%3s %s' % (i,sentinels))
             x.results.extend(sentinels)
-    #@+node:ekr.20150208060128.9: *5* x.trace_line 
-    def trace_line(self,line):
-        '''trace the line.'''
-        x = self
-        if x.trace:
-            print('put %s' % repr(line))
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
         '''
