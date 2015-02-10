@@ -236,25 +236,9 @@ class ShadowController:
         '''Check that we produced a valid output.'''
         x = self
         marker = x.marker
-        new_private_lines = x.results
-        new_public_lines = x.b
-        junk, sentinel_lines = x.separate_sentinels(x.old_sent_lines, marker)
-        new_public_lines2, new_sentinel_lines2 = self.separate_sentinels(x.results, marker)
-        lines1 = new_public_lines
-        lines2 = new_public_lines2
-        sents1 = sentinel_lines
-        sents2 = new_sentinel_lines2
-        if 0: # not needed because of x.preprocess.
-            # Ignore trailing ws:
-            s1 = ''.join(lines1).rstrip()
-            s2 = ''.join(lines2).rstrip()
-            lines1 = g.splitLines(s1)
-            lines2 = g.splitLines(s2)
-            # Ignore trailing ws on every line.
-            lines1 = [z.rstrip() for z in lines1]
-            lines2 = [z.rstrip() for z in lines2]
-            sents1 = [z.rstrip() for z in sents1]
-            sents2 = [z.rstrip() for z in sents2]
+        lines1 = x.b
+        junk, sents1 = x.separate_sentinels(x.old_sent_lines, marker)
+        lines2, sents2 = self.separate_sentinels(x.results, marker)
         lines_ok = lines1 == lines2
         sents_ok = sents1 == sents2
         if g.unitTesting:
@@ -263,12 +247,12 @@ class ShadowController:
         if not lines_ok:
             g.trace()
             d = difflib.Differ()
-            aList = list(d.compare(new_public_lines2,new_public_lines))
+            aList = list(d.compare(lines2,x.b))
             pprint.pprint(aList)
         if not sents_ok:
             x.show_error(
-                lines1 = sentinel_lines,
-                lines2 = new_sentinel_lines2,
+                lines1 = sents1,
+                lines2 = sents2,
                 message = "Sentinals not preserved!",
                 lines1_message = "old sentinels",
                 lines2_message = "new sentinels")
