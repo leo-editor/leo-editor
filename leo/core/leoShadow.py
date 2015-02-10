@@ -340,6 +340,8 @@ class ShadowController:
             f(opcode)
         if new_shadow:
             x.results.extend(x.trailing_sentinels)
+            # Do the final correctness check: will be eliminated later.
+            x.check_output()
         else:
             x.copy_sentinels(len(x.sent_rdr.lines))
             # Do the final correctness check.
