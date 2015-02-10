@@ -244,12 +244,13 @@ class ShadowController:
         lines2 = new_public_lines2
         sents1 = sentinel_lines
         sents2 = new_sentinel_lines2
-        if 1: # Ignore trailing ws:
+        if 0: # not needed because of x.preprocess.
+            # Ignore trailing ws:
             s1 = ''.join(lines1).rstrip()
             s2 = ''.join(lines2).rstrip()
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
-        if 1: # Ignore trailing ws on every line.
+            # Ignore trailing ws on every line.
             lines1 = [z.rstrip() for z in lines1]
             lines2 = [z.rstrip() for z in lines2]
             sents1 = [z.rstrip() for z in sents1]
@@ -260,19 +261,10 @@ class ShadowController:
             # The unit test will report the error.
             return lines_ok and sents_ok
         if not lines_ok:
-            if 1:
-                g.trace()
-                d = difflib.Differ()
-                # g.trace('Different!!',d)
-                aList = list(d.compare(new_public_lines2,new_public_lines))
-                pprint.pprint(aList)
-            else:
-                x.show_error(
-                    lines1 = new_public_lines2,
-                    lines2 = new_public_lines,
-                    message = "Error in updating public file!",
-                    lines1_message = "new public lines (derived from new private lines)",
-                    lines2_message = "new public lines")
+            g.trace()
+            d = difflib.Differ()
+            aList = list(d.compare(new_public_lines2,new_public_lines))
+            pprint.pprint(aList)
         if not sents_ok:
             x.show_error(
                 lines1 = sentinel_lines,

@@ -547,9 +547,8 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-</v>
 <v t="ekr.20090529115704.4397"></v>
-<v t="ekr.20150207135815.11"><vh>@suite run child @shadow-test nodes with trace</vh>
+<v t="ekr.20150207135815.11"><vh>@@suite run child @shadow-test nodes with trace</vh>
 <v t="ekr.20150207135815.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
 <v t="ekr.20150207135815.54"><vh>old</vh>
 <v t="ekr.20150207135815.55"><vh>node 1</vh></v>
@@ -558,6 +557,7 @@
 <v t="ekr.20150207135815.57"><vh>new</vh>
 <v t="ekr.20150207135815.58"><vh>node 1</vh></v>
 <v t="ekr.20150207135815.59"><vh>node 2</vh></v>
+</v>
 </v>
 </v>
 </v>
