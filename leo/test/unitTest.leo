@@ -294,8 +294,7 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"
-expanded="ekr.20090529115704.4398,ekr.20090529115704.4431,ekr.20090529115704.4434,ekr.20100107110353.5106,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150207041158.11"><vh>Recent @shadow tests</vh>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
@@ -1376,7 +1375,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1459,13 +1458,14 @@ x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
+trace = False
 for p in root.children_iter():
     h = p.h.strip()
     # Lax has no effect when new_shadow is True
     if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=not leoShadow.new_shadow)
+        test = x.AtShadowTestCase(c,p,x,lax=not leoShadow.new_shadow,trace=trace)
     elif h.startswith('@shadow-test'):
-        test = x.AtShadowTestCase(c,p,x,lax=False)
+        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
     else:
         test = None
     if test:

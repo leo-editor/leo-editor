@@ -308,17 +308,13 @@ class ShadowController:
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
         '''
-        Propagate changes from 'new_public_lines' to 'old_private_lines.
+        The Mulder update algorithm, revised by EKR.
 
-        We compare the old and new public lines, create diffs and
-        propagate the diffs to the new private lines, copying sentinels as well.
+        Use the diff between the old and new public lines to insperse sentinels
+        from old_private_lines into the result.
 
-        Invariants:
-        - We never delete sentinels, except for @verbatim sentinels for deleted lines.
-        - Insertions that happen at the boundary between nodes will be put at
-          the end of a node.  However, insertions must always be done within sentinels.
-        - old_public_lines [old_i] is the start of the present opcode.
-        - old_private_lines[mapping[old_i]] is the corresponding line.
+        The algorithm never deletes or rearranges sentinels. However, verbatim
+        sentinels may be inserted or deleted as needed.
         '''
         #@-<< docstring >>
         x = self
@@ -329,6 +325,7 @@ class ShadowController:
         if new_shadow:
             # A special case to ensure leading sentinels are put first.
             x.put_sentinels(0)
+            x.sentinels[0] = []
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
             if trace and new_shadow:
@@ -484,7 +481,6 @@ class ShadowController:
                 x.put_plain_line(x.b[i])
             # Prefer to put sentinels after inserted nodes.
             # Requires a call to x.put_sentinels(0) before the main loop.
-            x.put_sentinels(ai)
         else:
             b_rdr,sent_rdr = x.b_rdr,x.sent_rdr
             tag,old_i,old_j,new_i,new_j = opcode
@@ -575,10 +571,8 @@ class ShadowController:
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i] 
-            # if x.trace: g.trace('%3s %s' % (i,sentinels))
+            if x.trace: g.trace('%3s %s' % (i,sentinels),g.callers(2))
             x.results.extend(sentinels)
-            # Make sure sentinels are ouput at most once.
-            x.sentinels[i] = []
     #@+node:ekr.20150208060128.9: *5* x.trace_line 
     def trace_line(self,line):
         '''trace the line.'''
