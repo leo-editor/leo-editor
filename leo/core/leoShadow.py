@@ -235,28 +235,26 @@ class ShadowController:
     def check_output(self):
         '''Check that we produced a valid output.'''
         x = self
-        marker = x.marker
         lines1 = x.b
-        junk, sents1 = x.separate_sentinels(x.old_sent_lines, marker)
-        lines2, sents2 = self.separate_sentinels(x.results, marker)
-        lines_ok = lines1 == lines2
-        sents_ok = sents1 == sents2
+        junk, sents1 = x.separate_sentinels(x.old_sent_lines, x.marker)
+        lines2, sents2 = self.separate_sentinels(x.results, x.marker)
+        ok = lines1 == lines2 and sents1 == sents2
         if g.unitTesting:
             # The unit test will report the error.
-            return lines_ok and sents_ok
-        if not lines_ok:
+            return ok
+        if lines1 != lines2:
             g.trace()
             d = difflib.Differ()
             aList = list(d.compare(lines2,x.b))
             pprint.pprint(aList)
-        if not sents_ok:
+        if sents1 != sents2:
             x.show_error(
                 lines1 = sents1,
                 lines2 = sents2,
                 message = "Sentinals not preserved!",
                 lines1_message = "old sentinels",
                 lines2_message = "new sentinels")
-        return lines_ok and sents_ok
+        return ok
     #@+node:ekr.20080708094444.37: *4* x.copy_sentinels
     def copy_sentinels(self,limit):
         '''Copy sentinels from x.sent_rdr to x.results while x.sent_rdr.i < limit.'''
