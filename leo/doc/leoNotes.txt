@@ -6181,7 +6181,8 @@ http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcut
 @ignore
 @language python
 @color
-.. @+node:ekr.20120211121736.10831: *3* class LogManager (not used yet)
+.. @+node:ekr.20140918124632.19462: *3* Keep
+.. @+node:ekr.20120211121736.10831: *4* class LogManager (not used yet)
 class LogManager:
 
     '''A class to handle the global log, and especially
@@ -6200,7 +6201,7 @@ class LogManager:
         self.signon_printed = False # True: the global signon has been printed.
 
     @others
-.. @+node:ekr.20120211121736.10834: *4* LogM.setLog, lockLog, unlocklog
+.. @+node:ekr.20120211121736.10834: *5* LogM.setLog, lockLog, unlocklog
 def setLog (self,log):
 
     """set the frame to which log messages will go"""
@@ -6216,7 +6217,7 @@ def lockLog(self):
 def unlockLog(self):
     """Enable changes to the log"""
     self.logIsLocked = False
-.. @+node:ekr.20120211121736.10836: *4* LogM.writeWaitingLog
+.. @+node:ekr.20120211121736.10836: *5* LogM.writeWaitingLog
 def writeWaitingLog (self,c):
     '''Write all waiting lines to the log.'''
     trace = True
@@ -6263,7 +6264,6 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
-.. @+node:ekr.20140918124632.19462: *3* Keep
 .. @+node:ekr.20101031172539.5880: *4* Existing autocompleter: do not delete
 .. @+node:ekr.20061031131434.43: *5* completeSelf (not used yet)
 def completeSelf (self):
