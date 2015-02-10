@@ -436,8 +436,8 @@ class ShadowController:
     def op_bad(self,opcode):
         '''Report an unexpected opcode.'''
         x = self
-        tag,old_i,old_j,new_i,new_j = opcode
-        x.error('unknown difflib opcode: %s' % repr(tag))
+        tag,ai,aj,bi,bj = opcode
+        x.error('unknown SequenceMatcher opcode: %s' % repr(tag))
     #@+node:ekr.20150207044400.12: *5* x.op_delete
     def op_delete(self,opcode):
         '''Handle the 'delete' opcode.'''
@@ -550,14 +550,10 @@ class ShadowController:
                 line = line + '\n'
             result.append(line)
         return result
-    #@+node:ekr.20150207111757.5: *5* x.put
+    #@+node:ekr.20150207111757.5: *5* x.put (old code only)
     def put(self,line):
         '''Put the line to x.results.'''
         x = self
-        ### Now done in x.preprocess.
-        # if not line.endswith('\n'):
-            # if x.trace: g.trace('adding newline',repr(line))
-            # line = line + '\n'
         x.results.append(line)
         if x.trace:
             g.trace(repr(line))
@@ -581,7 +577,7 @@ class ShadowController:
             x.results.extend(sentinels)
             # Make sure sentinels are ouput at most once.
             x.sentinels[i] = []
-    #@+node:ekr.20150208060128.9: *5* x.trace_line
+    #@+node:ekr.20150208060128.9: *5* x.trace_line 
     def trace_line(self,line):
         '''trace the line.'''
         x = self
