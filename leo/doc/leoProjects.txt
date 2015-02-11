@@ -60,6 +60,7 @@ Added test for QString in g.toUnicode.
 .. @+node:ekr.20141223125811.4: *4* Fixed bug 124: Viewrendered can't display @image
 https://github.com/leo-editor/leo-editor/issues/124
 .. @+node:ekr.20150206064817.7: *4* Fixed bug: Made last log line visible
+LeoQtLog.put and app.writeWaitingLog changed.
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
