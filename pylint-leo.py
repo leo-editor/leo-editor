@@ -21,6 +21,7 @@ import optparse
 import os
 import sys
 import time
+rc_warning_given = False
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -141,7 +142,8 @@ def getTable(scope):
             (externalList,'external'),
         ),
         'file': (
-            ([g_option_fn],''), # Default directory is the leo directory (was leo/core)
+            ([g_option_fn],''),
+                # Default directory is the leo directory (was leo/core)
         ),
         'gui': (
             (guiPluginsList,'plugins'),
@@ -205,17 +207,19 @@ def report_version():
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
+    global rc_warning_given
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     # print('run:scope:%s' % scope)
     fn = os.path.abspath(fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     if not os.path.exists(rc_fn):
-        print('pylint rc file not found: %s' % (rc_fn))
-        return
+        if not rc_warning_given:
+            rc_warning_given = True
+            print('pylint rc file not found: %s' % (rc_fn))
     if not os.path.exists(fn):
         print('file not found: %s' % (fn))
-        return
+        return 0.0
     # Report the file name and one level of directory.
     path = g.os_path_dirname(fn)
     dirs = path.split(os.sep)
