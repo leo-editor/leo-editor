@@ -935,11 +935,6 @@
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
 <v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20150210062226.4"><vh>The new @shadow algorithm</vh>
-<v t="ekr.20150210062226.5"><vh>Background</vh></v>
-<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
-<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
-</v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
@@ -982,6 +977,11 @@
 <v t="EKR.20040524104904.257"><vh>Error recovery, at last</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20150210062226.4"><vh>The new @shadow algorithm</vh>
+<v t="ekr.20150210062226.5"><vh>Background</vh></v>
+<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
+<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
 <v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
@@ -1392,6 +1392,7 @@
 <v t="ekr.20141120113801.206"><vh>Leo stylesheets now support all color names in leoColor.py</vh></v>
 </v>
 </v>
+<v t="ekr.20150210062226.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -23733,11 +23734,15 @@ play Leo is usually involved :-)
 
 Dave Williams &lt;dave@d-dub.org.uk&gt;
 </t>
-<t tx="ekr.20150210062226.4">This section documents new @shadow algorithm in detail, with an
+<t tx="ekr.20150210062226.4">This appendix documents new @shadow algorithm in detail, with an
 informal proof of its correctness.
 
-
-
+**Acknowledgment**: The late, great, Bernhard Mulder wrote the
+initial version of the algorithm. Only a true genius could conceive
+that such an algorithm was possible. This algorithm is, by far, the
+most difficult and important algorithm in Leo's history.  The new,
+simpler, version of the algorithm would never have happened without
+Bernhard's previous work.
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on four simple, guaranteed, properties of
 SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
@@ -23750,10 +23755,10 @@ The code uses the a and b terminology. It's concise and easy to remember.
 
 Plain lines of the result can be built up by copying lines from x.b to x.results::
 
-    'replace'   x.results.extend(x.b[j1:j2])
-    'delete'    do nothing  (j1 == j2)
-    'insert'    x.results.extend(x.b[j1:j2])
-    'equal'     x.results.extend(x.b[j1:j2])
+    'replace'   x.results.extend(x.b[b1:b2])
+    'delete'    do nothing  (b1 == b2)
+    'insert'    x.results.extend(x.b[b1:b2])
+    'equal'     x.results.extend(x.b[b1:b2])
 
 **Fact 3**: The opcodes *cover* both x.a and x.b, in order, without any gaps.
 
