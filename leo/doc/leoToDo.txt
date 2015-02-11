@@ -3,6 +3,19 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20150211104036.471: ** Fix bibtex plugin
+@language rest
+
+https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
+
+The problem appears in both Python 2 and Python 3:
+
+The body text of any of the article, journal, etc. nodes is written as body
+text of the @bibtex node. It overwrites each time the previous body text of
+the @bibtex node. The body text of the single bibliography nodes remain
+empty.
+
+@language python
 .. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo
 @language rest
 
@@ -82,9 +95,35 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20150211104036.4: ** Fix bug 135: drag and drop between trees broken
+https://github.com/leo-editor/leo-editor/issues/135
+drag and drop between trees broken
+
+This may also affect paste-retaining-clones.
+
+4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
+commit 4f848037424544e127166dbb0375f90c6826aa21
+Author: Edward K. Ream <edreamleo@gmail.com>
+Date:   Fri Sep 13 16:44:33 2013 -0500
+.. @+node:ekr.20110605121601.18383: *3* parseText
+def parseText (self,md):
+    '''Parse md.text() into (fn,s)'''
+    fn = ''
+    # Fix bug 1046195: character encoding changes when dragging outline between leo files
+    # Python3: md.text() is a (unicode) str.  Python2: md.text is a QString.
+    s = g.u(md.text())
+    # s = g.toUnicode(s,'utf-8')
+    if s:
+        i = s.find(',')
+        if i == -1:
+            pass
+        else:
+            fn = s[:i]
+            s = s[i+1:]
+    return fn,s
 .. @+node:ekr.20141210123805.9: ** Support rope
 .. @+node:ekr.20130806211959.17377: ** Add coffeescript importer
-.. @+node:ekr.20120226183512.10195: ** Bugs
+.. @+node:ekr.20120226183512.10195: ** Other bugs Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
