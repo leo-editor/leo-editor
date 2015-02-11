@@ -1237,10 +1237,11 @@ class Commands (object):
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
     def refreshFromDisk(self,event=None):
         '''Refresh and @<file> node from disk.'''
-        c,p = self,self.p
+        c,p,u = self,self.p,self.undoer
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:
+            b = u.beforeChangeTree(p)
             redraw_flag = True
             at = c.atFileCommands
             c.recreateGnxDict()
@@ -1268,6 +1269,7 @@ class Commands (object):
             g.warning('not an @<file> node:\n%s' % (p.h))
             redraw_flag = False
         if redraw_flag:
+            u.afterChangeTree(p,command='refresh-from-disk',bunch=b)
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
             c.redraw()
