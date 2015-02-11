@@ -20106,6 +20106,11 @@ node 1 line 2
 #@+node:ekr.20090529115704.4548: *8* node 2
 node 2 line 1
 node 2 line 2
+#@+node:ekr.20150210195923.11: *6* @shadow-test no change, no ending newline
+#@+node:ekr.20150210195923.12: *7* old
+line
+#@+node:ekr.20150210195923.15: *7* new
+line
 #@+node:ekr.20100131180007.5363: *4* @test class Marker.getDelims
 x = c.shadowController
 table = (
