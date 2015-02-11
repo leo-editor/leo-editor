@@ -1019,14 +1019,24 @@ class AtFile:
         # Update the outline using the @shadow algorithm.
         new_public_lines = at.read_at_nosent_lines(fileName)
         old_private_lines = self.write_nosent_sentinels(root)
-        marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines,old_private_lines,marker,p=root)
+        marker = x.markerFromFileLines(old_private_lines,fileName)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines,marker)
+        if old_public_lines:
+            marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
+            new_private_lines = x.propagate_changed_lines(
+                new_public_lines,old_private_lines,marker,p=root)
+        else:
+            if trace: g.trace('*** no previous lines.''')
+            new_private_lines = []
+            root.b = ''.join(new_public_lines)
+            root.clearOrphan()
+            return True
         if trace:
             self.dump(new_public_lines,'new public')
-            # self.dump(old_private_lines,'old private')
+            self.dump(old_private_lines,'old private')
             self.dump(new_private_lines,'new private')
         if new_private_lines == old_private_lines:
+            if trace: g.trace('lines match')
             return
         # The following is like at.read() w/o caching logic.
         at.initReadIvars(root,fileName)

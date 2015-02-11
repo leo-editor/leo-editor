@@ -237,7 +237,7 @@ class ShadowController:
         x = self
         lines1 = x.b
         junk, sents1 = x.separate_sentinels(x.old_sent_lines, x.marker)
-        lines2, sents2 = self.separate_sentinels(x.results, x.marker)
+        lines2, sents2 = x.separate_sentinels(x.results, x.marker)
         ok = lines1 == lines2 and sents1 == sents2
         if g.unitTesting:
             # The unit test will report the error.
@@ -298,10 +298,8 @@ class ShadowController:
         if trace: x.dump_args()
         if new_shadow:
             # Ensure leading sentinels are put first.
-            # Careful: there may not be any original sentinels in new files.
-            if x.sentinels:
-                x.put_sentinels(0)
-                x.sentinels[0] = []
+            x.put_sentinels(0)
+            x.sentinels[0] = []
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
             if trace and new_shadow:
