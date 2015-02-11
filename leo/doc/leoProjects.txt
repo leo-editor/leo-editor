@@ -95,6 +95,7 @@ It's really that simple, but here are some consequences:
 - Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
 - Added use_at_nosent keyword option to c.recursiveImport.
 - Contract all imported nodes.
+.. @+node:ekr.20150211035240.4: *4* refresh-from-disk is now undoable.
 .. @+node:ekr.20150206064817.5: *3* Major feature: @nosent updates automatically
 Rev 7a851eb enables automatic updating of @nosent files.
 When loading a .leo file, Leo will automatically update

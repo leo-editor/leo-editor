@@ -44,7 +44,7 @@ import unittest
 #@+node:ekr.20150209090744.4: ** << define new_shadow >>
 new_shadow = True # True: use new propagate algorithm
 if new_shadow:
-    print('**** new_shadow ***')
+    print('*** new_shadow')
 #@-<< define new_shadow >>
 
 #@@language python
