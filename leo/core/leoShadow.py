@@ -297,9 +297,11 @@ class ShadowController:
         sm = difflib.SequenceMatcher(None,x.a,x.b)
         if trace: x.dump_args()
         if new_shadow:
-            # A special case to ensure leading sentinels are put first.
-            x.put_sentinels(0)
-            x.sentinels[0] = []
+            # Ensure leading sentinels are put first.
+            # Careful: there may not be any original sentinels in new files.
+            if x.sentinels:
+                x.put_sentinels(0)
+                x.sentinels[0] = []
         for opcode in sm.get_opcodes():
             tag,old_i,old_j,new_i,new_j = opcode
             if trace and new_shadow:
