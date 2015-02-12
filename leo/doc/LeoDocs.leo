@@ -691,11 +691,11 @@
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt; (deprecated)</vh></v>
 <v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
 <v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
@@ -1394,7 +1394,10 @@
 </v>
 </v>
 <v t="ekr.20150210062226.4"></v>
+<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20131009065148.31758"></v>
 <v t="ekr.20150212091950.4"></v>
+<v t="ekr.20100806170836.4392"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -10129,10 +10132,15 @@ including Leo's home page.</t>
 This section discusses the \@&lt;file&gt; directives. These directives create or
 import external files.
 
-**Important**: Newcomers to Leo should create external files with \@auto or
-\@file. Use \@auto if your external files must not contain sentinel lines. Use
-\@file otherwise. In particular, \@file is **highly recommended** when sharing
-external files in a collaborative environment.
+..  **Important**: Newcomers to Leo should create external files with \@auto or
+..  \@file. Use \@auto if your external files must not contain sentinel lines. Use
+..  \@file otherwise. In particular, \@file is **highly recommended** when sharing
+..  external files in a collaborative environment.
+
+**Important**: As or rev rev 7ec6e4b \@file or \@nosent are the recommended
+ways of creating external files.
+
+**Important**: In Leo 5.1 \@auto and \@shadow will be synonyms for \@nosent.
 
 **Note**: All these directive must appear in headlines.
 
@@ -10220,9 +10228,13 @@ references and @others are not allowed.
 <t tx="ekr.20100806170836.4396">.. index::
     pair: @auto; Reference
 
-The \@auto directive imports an external file into a tree of nodes. Using \@auto
-is *highly recommended* when using external files that must not contain Leo
-sentinels.
+The \@auto directive imports an external file into a tree of nodes.
+
+**Important**: \@auto is **deprecated** since rev 7ec6e4b. In Leo 5.1
+\@auto will be a synonym for \@nosent.
+
+..  Using \@auto is *highly recommended* when using external files that must
+..  not contain Leo sentinels.
 
 \@auto trees allow people to use Leo in collaborative environments without using
 sentinels in external files. Even without sentinels, \@auto trees can change
@@ -10361,6 +10373,9 @@ The default is True.
     pair: @shadow; Reference
     pair: Private file; Reference
     pair: Public file; Reference
+    
+**Important**: \@shadow is **deprecated** since rev 7ec6e4b. In Leo 5.1
+\@shadow will be a synonym for \@nosent.
 
 The \@shadow directive creates *two* external files, a **public** file without
 sentinels, and a **private** file containing sentinels.
@@ -18333,13 +18348,16 @@ This overrides the following default binding in leoSettings.leo::
 <t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
 
     @asis &lt;filename&gt;    
-    @auto &lt;filename&gt;        creates outline using importer
-    @auto-rst &lt;filename&gt;    (reStructuredText importer)
     @edit &lt;filename&gt;
     @file &lt;filename&gt;        recommended
-    @nosent &lt;filename&gt;  
-    @shadow &lt;filename&gt;      creates outline structure
-                            without sentinels in file
+    @nosent &lt;filename&gt;      recommended
+                            
+The following are **deprecated** as of rev 7ec6e4b. In Leo 5.1 they
+will be synonyms for @nosent::
+
+    @auto &lt;filename&gt;        updates outline using importer
+    @auto-rst &lt;filename&gt;    uses reStructuredText importer
+    @shadow &lt;filename&gt;      updates outline structure using hidden files.
     
 See the `Directives reference`_ for full details.
     
