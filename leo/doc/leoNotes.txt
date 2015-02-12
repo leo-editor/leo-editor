@@ -6177,6 +6177,26 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+.. @+node:ekr.20150212091950.5: ** Using @auto nodes
+Use @auto instead of @file when you don't want to add sentinels in the file.
+
+.. index::
+    pair: @auto; Tutorial
+    pair: Importer; Tutorial
+
+When reading @auto files, Leo **importers** create an outline from the
+external file. Importers create nodes for each class, method and function
+in the external file.
+
+Notes:
+
+- Leo determines the language using the file's extension.
+
+- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript,
+  Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
+
+- If no importer exists for a file, Leo reads the entire file into an @edit
+  node.
 .. @+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python

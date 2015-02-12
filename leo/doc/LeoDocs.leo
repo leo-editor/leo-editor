@@ -417,8 +417,8 @@
 <v t="ekr.20131003040744.18222" a="O"><vh>Basic markup</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
+<v t="ekr.20150212091950.4"><vh>Using @nosent nodes</vh></v>
 <v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
-<v t="ekr.20131008041326.16056"><vh>Using @auto nodes</vh></v>
 <v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
@@ -980,6 +980,7 @@
 </v>
 <v t="ekr.20150210062226.4"><vh>The new @shadow algorithm</vh>
 <v t="ekr.20150210062226.5"><vh>Background</vh></v>
+<v t="ekr.20150211131925.9"><vh>The Aha: the x.sentinels array</vh></v>
 <v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
 <v t="ekr.20150210062226.7"><vh>Summary</vh></v>
 </v>
@@ -1393,6 +1394,7 @@
 </v>
 </v>
 <v t="ekr.20150210062226.4"></v>
+<v t="ekr.20150212091950.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -17176,26 +17178,6 @@ predefined symbols: c, g, p, os and sys.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
 </t>
-<t tx="ekr.20131008041326.16056">Use @auto instead of @file when you don't want to add sentinels in the file.
-
-.. index::
-    pair: @auto; Tutorial
-    pair: Importer; Tutorial
-
-When reading @auto files, Leo **importers** create an outline from the
-external file. Importers create nodes for each class, method and function
-in the external file.
-
-Notes:
-
-- Leo determines the language using the file's extension.
-
-- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript,
-  Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
-
-- If no importer exists for a file, Leo reads the entire file into an @edit
-  node.
-</t>
 <t tx="ekr.20131008041326.16058">.. index::
     pair: @test Node; Tutorial
 
@@ -23744,14 +23726,16 @@ most difficult and important algorithm in Leo's history.  The new,
 simpler, version of the algorithm would never have happened without
 Bernhard's previous work.
 </t>
-<t tx="ekr.20150210062226.5">The algorithm depends on four simple, guaranteed, properties of
+<t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
 
-**Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b (another list of lines).
+**Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b
+(another list of lines).
 
 The code uses the a and b terminology. It's concise and easy to remember.
 
-**Fact 2**: The opcode indices ai, aj, bi, bj *never* change because neither x.a nor x.b changes.
+**Fact 2**: The opcode indices ai, aj, bi, bj *never* change because
+neither x.a nor x.b changes.
 
 Plain lines of the result can be built up by copying lines from x.b to x.results::
 
@@ -23766,17 +23750,16 @@ This is an explicit requirement of sm.get_opcode:
 
 - The first tuple has ai==aj==bi==bj==0.
 
-- Remaining tuples have ai == (aj from the preceding tuple) and bi == (bj from the previous tuple).
+- Remaining tuples have ai == (aj from the preceding tuple) and bi == (bj
+  from the previous tuple).
+  
+Keep in mind this crucial picture:
 
-**Fact 4**: The x.sentinels array contains the sentinels that precede each line of x.a.
+- The slices x.a[ai:aj] cover the x.a array, in order without gaps.
+- The slices x.b[bi:bj] cover the x.b array, in order without gaps.
 
-For any index i, x.sentinels[i] is the (possibly empty) list of sentinel lines that precede line a[i]. Computing x.sentinels from old_private_lines is easy.
-
-Crucially, x.a and x.sentinels are *parallel arrays*.  That is, len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into x.sentinels.
-
-Envisioning the x.sentinels array was the Aha that collapsed the complexity of the algorithm.  Sentinels no longer affect indices so opcode indices are indices into the x.a, x.b and x.sentinels arrays.
 </t>
-<t tx="ekr.20150210062226.6">With these facts in mind, the strategy for creating the results is
+<t tx="ekr.20150210062226.6">Given the x.sentinels array, the strategy for creating the results is
 simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:
 
 - Writes sentinels from x.sentinels[i], for i in range(ai,aj).
@@ -23817,6 +23800,49 @@ classes nor auxiliary indices.
 
 The algorithm is simple enough to be understood at first reading. I'll
 remember its details for the rest of my life.
+</t>
+<t tx="ekr.20150211131925.9">The x.sentinels is the new invention that drastically simplies the
+algorithm. This array contains the sentinels that precede each line of x.a.
+
+For any index i, x.sentinels[i] is the (possibly empty) list of sentinel
+lines that precede line a[i]. Computing x.sentinels from old_private_lines
+is easy.
+
+Crucially, x.a and x.sentinels are *parallel arrays*. That is, len(x.a) ==
+len(x.sentinels), so indices into x.a are *also* indices into x.sentinels.
+
+Envisioning the x.sentinels array was the Aha that collapsed the complexity
+of the algorithm. Sentinels no longer affect indices so opcode indices are
+indices into the x.a, x.b and x.sentinels arrays.
+</t>
+<t tx="ekr.20150212091950.4">Use @nosent instead of @file when you don't want to add sentinels in the file.
+
+.. index::
+    pair: @nosent; Tutorial
+    
+**Important**: The following describes a sensational new feature of Leo
+available since rev 7ec6e4b.  This feature will be part of Leo 5.1.
+    
+Leo can update @nosent trees based on changes you make outside of Leo. Leo
+will perform such updates when you open a .leo file or when you reload the
+external file using Leo's refresh-from-disk command.
+
+Updating @nosent trees uses a sophisticated **update algorithm** that
+places inserted and changed lines in their proper places in the outline!
+
+**Ambiguous lines** are lines that could be placed either to a node or the
+following node. The algorithm must **guess** where to place such lines. The
+algorithm always places ambiguous lines in the following node because it's
+more common to add lines to the end of nodes.
+
+The update algorithm is **sound** because guesses do not matter. The
+contents of any external file created by @nosent will be the same
+regardless of guesses.
+
+Leo reports which nodes have been updated. You can override guesses
+manually by moving lines to a new node. Once inserted or changed lines are
+in the outline, the update algorithm will never again have to guess where
+they belong.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
