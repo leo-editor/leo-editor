@@ -478,14 +478,14 @@ class ShadowController:
             tag,ai,aj,bi,bj = opcode
             if 1:
                 # Intersperse sentinels and lines.
-                b_lines = list(reversed(x.b[bi:bj]))
+                b_lines = x.b[bi:bj]
                 for i in range(ai,aj):
                     x.put_sentinels(i)
                     if b_lines:
-                        x.put_plain_line(b_lines.pop())
+                        x.put_plain_line(b_lines.pop(0))
                 # Put any trailing lines.
                 while b_lines:
-                    x.put_plain_line(b_lines.pop())  
+                    x.put_plain_line(b_lines.pop(0))  
             else:
                 # Feasible, but would change unit tests.
                 for i in range(ai,aj):
