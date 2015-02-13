@@ -939,6 +939,19 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
+<v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
+<v t="ekr.20150210062226.5"><vh>Background</vh></v>
+<v t="ekr.20150211131925.9"><vh>The Aha: the x.sentinels array</vh></v>
+<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
+<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20050901084134"><vh>Why I like Python</vh>
+<v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
+<v t="ekr.20050901092232.3"><vh>Power</vh></v>
+<v t="ekr.20050901092232.4"><vh>Safety</vh></v>
+<v t="ekr.20050901092232.5"><vh>Speed</vh></v>
+<v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
+</v>
 <v t="ekr.20131008041326.16177"><vh>History of Leo</vh>
 <v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>Beginnings</vh></v>
@@ -977,19 +990,6 @@
 <v t="EKR.20040524104904.257"><vh>Error recovery, at last</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20150210062226.4"><vh>The new @shadow algorithm</vh>
-<v t="ekr.20150210062226.5"><vh>Background</vh></v>
-<v t="ekr.20150211131925.9"><vh>The Aha: the x.sentinels array</vh></v>
-<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
-<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20050901084134"><vh>Why I like Python</vh>
-<v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
-<v t="ekr.20050901092232.3"><vh>Power</vh></v>
-<v t="ekr.20050901092232.4"><vh>Safety</vh></v>
-<v t="ekr.20050901092232.5"><vh>Speed</vh></v>
-<v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
 </v>
 </v>
 <v t="ekr.20091111112709.6672"><vh>@rst html/glossary.html</vh>
@@ -21012,15 +21012,13 @@ play Leo is usually involved :-)
 
 Dave Williams &lt;dave@d-dub.org.uk&gt;
 </t>
-<t tx="ekr.20150210062226.4">This appendix documents new @shadow algorithm in detail, with an
-informal proof of its correctness.
+<t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail,
+with an informal proof of its correctness.
 
-**Acknowledgment**: The late, great, Bernhard Mulder wrote the
-initial version of the algorithm. Only a true genius could conceive
-that such an algorithm was possible. This algorithm is, by far, the
-most difficult and important algorithm in Leo's history.  The new,
-simpler, version of the algorithm would never have happened without
-Bernhard's previous work.
+Leo used Mulder's original algorithm to read \@shadow files. Leo uses
+EKR's new algorithm to read \@nosent files. The new algorithm replaces
+the x.mapping array with the x.sentinels array. As a result, diff
+indices never need to be adjusted and handling diff opcodes is easy.
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
@@ -21097,19 +21095,14 @@ classes nor auxiliary indices.
 The algorithm is simple enough to be understood at first reading. I'll
 remember its details for the rest of my life.
 </t>
-<t tx="ekr.20150211131925.9">The x.sentinels is the new invention that drastically simplies the
-algorithm. This array contains the sentinels that precede each line of x.a.
+<t tx="ekr.20150211131925.9">The x.sentinels eliminates the need for the x.mapping array and
+related index offsets.
 
-For any index i, x.sentinels[i] is the (possibly empty) list of sentinel
-lines that precede line a[i]. Computing x.sentinels from old_private_lines
-is easy.
-
-Crucially, x.a and x.sentinels are *parallel arrays*. That is, len(x.a) ==
-len(x.sentinels), so indices into x.a are *also* indices into x.sentinels.
-
-Envisioning the x.sentinels array was the Aha that collapsed the complexity
-of the algorithm. Sentinels no longer affect indices so opcode indices are
-indices into the x.a, x.b and x.sentinels arrays.
+For any index i, x.sentinels[i] is the (possibly empty) list of
+sentinel lines that precede line a[i]. Computing x.sentinels from
+old_private_lines is easy. Crucially, x.a and x.sentinels are
+*parallel arrays*. That is, len(x.a) == len(x.sentinels), so indices
+into x.a are *also* indices into x.sentinels.
 </t>
 <t tx="ekr.20150212091950.4">Use @nosent instead of @file when you don't want to add sentinels in the file.
 
