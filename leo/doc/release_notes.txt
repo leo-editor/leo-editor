@@ -29066,5 +29066,50 @@ For example, this setting works without any explicit definition of mistyrose2.
     
     @color head-bg = @mistyrose2
 #@+node:edream.110203163054.63: ** Latest version
+#@+node:ekr.20150212182032.5: *3* 5.1 @nosent replaces @auto and @shadow
+Leo 5.1 b1                          February 20, 2015
+
+Leo 5.1 b1 is now available at:
+http://sourceforge.net/projects/leo/files/Leo/
+
+Leo is a PIM, an IDE and an outliner.
+Video tutorials: http://leoeditor.com/screencasts.html
+Text tutorials: http://leoeditor.com/tutorial.html
+
+The highlights of Leo 5.1
+--------------------------
+
+* Leo can now update @nosent trees from external files that contain no Leo
+  sentinels, the long-sought holy grail of Leo's developers and users.
+  
+* The Aha was that the Mulder update algorithm (previously used only to
+  update @shadow files) can get sentinel data from the outline itself.
+
+* Updating an @nosent tree is twice as fast as updating an @shadow tree.
+  Unlike @auto, the new @nosent preserves the users desired outline
+  structure.
+
+* As a result, there is no longer any need for @auto or @shadow: they are
+  now merely deprecated synonyms for @nosent.
+
+* The Mulder update algorithm has been greatly simplified. This was deemed
+  essential because of the algorithm's new importance. The algorithm is now
+  easy to understand, provably correct and completely documented.
+  
+* The revised algorithm is spectacular technology. It may be of interest to
+  the developers of Emacs Org Mode and Vim's outline mode. 
+
+* The usual bug fixes and improvements.
+
+Links:
+------
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Github:    https://github.com/leo-editor/leo-editor
+Quotes:    http://leoeditor.com/testimonials.html
 #@-all
 #@-leo
