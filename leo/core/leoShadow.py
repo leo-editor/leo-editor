@@ -645,12 +645,11 @@ class ShadowController:
         '''
         #@+others
         #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
-        def __init__ (self,c,p,shadowController,lax,trace=False):
+        def __init__ (self,c,p,shadowController,trace=False):
             '''Ctor for AtShadowTestCase class.'''
             unittest.TestCase.__init__(self)
                 # Init the base class.
             self.c = c
-            self.lax = lax
             self.p = p.copy()
             self.shadowController=shadowController
             self.trace = trace
@@ -666,20 +665,15 @@ class ShadowController:
             g.app.unitTestDict["fail"] = g.callers()
         #@+node:ekr.20080709062932.8: *4* setUp & helpers
         def setUp (self):
-
-            c = self.c
-            p = self.p
-            # x = self.shadowController
+            '''AtShadowTestCase.setup.'''
+            c,p = self.c,self.p
             old = self.findNode (c,p,'old')
             new = self.findNode (c,p,'new')
-
             self.old_private_lines = self.makePrivateLines(old)
             self.new_private_lines = self.makePrivateLines(new)
-
             self.old_public_lines = self.makePublicLines(self.old_private_lines)
             self.new_public_lines = self.makePublicLines(self.new_private_lines)
-
-            # We must change node:new to node:old
+            # Change node:new to node:old in all sentinel lines.
             self.expected_private_lines = self.mungePrivateLines(
                 self.new_private_lines,'node:new','node:old')
         #@+node:ekr.20080709062932.19: *5* findNode
@@ -735,7 +729,6 @@ class ShadowController:
                 else:
                     results.append(line)
                 i += 1
-
             return results
         #@+node:ekr.20080709062932.9: *4* tearDown
         def tearDown (self):
@@ -751,8 +744,7 @@ class ShadowController:
             p = self.p.copy()
             results = x.propagate_changed_lines(
                 self.new_public_lines,self.old_private_lines,self.marker,p=p)
-            if not self.lax and results != self.expected_private_lines:
-                # g.pr('%s\nAtShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
+            if results != self.expected_private_lines:
                 g.pr(p.h)
                 for aList,tag in (
                     (results,'results'),

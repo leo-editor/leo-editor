@@ -19661,20 +19661,11 @@ x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-trace = False
 for p in root.children_iter():
     h = p.h.strip()
-    # Lax has no effect in the new @shadow code.
-    if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
-    elif h.startswith('@shadow-test'):
-        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
-    else:
-        test = None
-    if test:
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,trace=False)
         suite.addTest(test)
-# if suite:
-    # g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529115704.4398: *5* @shadow-tests
 @
 

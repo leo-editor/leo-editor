@@ -1379,7 +1379,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1462,20 +1462,11 @@ x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-trace = False
 for p in root.children_iter():
     h = p.h.strip()
-    # Lax has no effect in the new @shadow code.
-    if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
-    elif h.startswith('@shadow-test'):
-        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
-    else:
-        test = None
-    if test:
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,trace=False)
         suite.addTest(test)
-# if suite:
-    # g.app.scriptDict['suite'] = suite
 </t>
 <t tx="ekr.20090529115704.4398">@
 
