@@ -208,10 +208,7 @@ class LeoApp:
             "@edit",
             "@file-asis","@file-thin","@file-nosent","@file",
             "@nosent",
-            # "@nosentinelsfile",
-            # "@silentfile",
             "@shadow",
-            # "@thinfile", 
             "@thin", 
         ])
     #@+node:ekr.20031218072017.1417: *4* app.define_global_constants

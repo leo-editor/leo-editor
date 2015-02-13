@@ -33,6 +33,9 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys:
     print('\n***** new_keys')
+only_nosent = False
+if only_nosent:
+    print('\n***** only_nosent')
 
 # Debugging options...
 enableDB = True
