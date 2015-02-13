@@ -6121,10 +6121,11 @@ def importFiles (theDir,type=None,recursive=False):
 
 c.recursiveImport(
     dir_ = r'C:\prog\pyflakes-0.6.0\pyflakes',
+    kind = '@nosent', # The new best practice.
     one_file = False,
     safe_at_file = False,
     theTypes = None, # Same as ['.py']
-    use_at_edit = False)
+)
 #@+node:ekr.20120602062004.12350: *4* cleanup-imported-nodes
 '''A script to clean Python imports.
 '''
