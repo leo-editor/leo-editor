@@ -271,12 +271,10 @@ class ShadowController:
         # Ensure leading sentinels are put first.
         x.put_sentinels(0)
         x.sentinels[0] = []
-        for opcode in sm.get_opcodes():
-            tag,old_i,old_j,new_i,new_j = opcode
-            if trace: g.trace('%3s %s' % (old_i,tag))
-            tag,ai,aj,bi,bj = opcode
+        for tag,ai,aj,bi,bj in sm.get_opcodes():
+            if trace: g.trace('%3s %s' % (ai,tag))
             f = x.dispatch_dict.get(tag,x.op_bad)
-            f(opcode)
+            f(tag,ai,aj,bi,bj)
         # Put the trailing sentinels & check the result.
         x.results.extend(x.trailing_sentinels)
         x.check_output()
@@ -350,42 +348,37 @@ class ShadowController:
         x.b = x.preprocess(new_public_lines)
         x.a = x.preprocess(old_public_lines)
     #@+node:ekr.20150207044400.16: *5* x.op_bad
-    def op_bad(self,opcode):
+    def op_bad(self,tag,ai,aj,bi,bj):
         '''Report an unexpected opcode.'''
         x = self
-        tag,ai,aj,bi,bj = opcode
         x.error('unknown SequenceMatcher opcode: %s' % repr(tag))
     #@+node:ekr.20150207044400.12: *5* x.op_delete
-    def op_delete(self,opcode):
+    def op_delete(self,tag,ai,aj,bi,bj):
         '''Handle the 'delete' opcode.'''
         x = self
-        tag,ai,aj,bi,bj = opcode
         for i in range(ai,aj):
             x.put_sentinels(i)
     #@+node:ekr.20150207044400.13: *5* x.op_equal
-    def op_equal(self,opcode):
+    def op_equal(self,tag,ai,aj,bi,bj):
         '''Handle the 'equal' opcode.'''
         x = self
-        tag,ai,aj,bi,bj = opcode
         assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
         for i in range(ai,aj):
             x.put_sentinels(i)
             x.put_plain_line(x.a[i])
                 # works because x.lines[ai:aj] == x.lines[bi:bj]
     #@+node:ekr.20150207044400.14: *5* x.op_insert
-    def op_insert(self,opcode):
+    def op_insert(self,tag,ai,aj,bi,bj):
         '''Handle the 'insert' opcode.'''
         x = self
-        tag,ai,aj,bi,bj = opcode
         for i in range(bi,bj):
             x.put_plain_line(x.b[i])
         # Prefer to put sentinels after inserted nodes.
         # Requires a call to x.put_sentinels(0) before the main loop.
     #@+node:ekr.20150207044400.15: *5* x.op_replace
-    def op_replace(self,opcode):
+    def op_replace(self,tag,ai,aj,bi,bj):
         '''Handle the 'replace' opcode.'''
         x = self
-        tag,ai,aj,bi,bj = opcode
         if 1:
             # Intersperse sentinels and lines.
             b_lines = x.b[bi:bj]
@@ -397,7 +390,7 @@ class ShadowController:
             while b_lines:
                 x.put_plain_line(b_lines.pop(0))  
         else:
-            # Feasible, but would change unit tests.
+            # Feasible. Causes the present unit tests to fail.
             for i in range(ai,aj):
                 x.put_sentinels(i)
             for i in range(bi,bj):
