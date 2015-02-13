@@ -8412,12 +8412,8 @@ class Commands (object):
             if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self,dir_,
-        one_file=False,
-        safe_at_file=True,
-        theTypes=None,
-        use_at_edit=False,
-        use_at_nosent=False,
+    def recursiveImport(self,dir_,kind,
+        one_file=False,safe_at_file=True,theTypes=None
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -8425,15 +8421,13 @@ class Commands (object):
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_            The root directory or file to import
-            one_file        True: import only the file given by dir_.
-            safe_at_file    True: produce @@file nodes instead of @file nodes.
-            theTypes        A list of file extensions to import.
-                            None is equivalen to ['.py']
-            use_at_edit     True: create @edit nodes instead of @file nodes.
-            use_at_nosent   True: create @nosent nodes instead of @file nodes.
-                            (only if use_at_edit is False).
-            
+            dir_                The root directory or file to import.
+            kind                One of ('@edit','@file','@nosent').
+            one_file = False    True: import only the file given by dir_.
+            safe_at_file = True True: generate @@edit, @@file or @@nosent.
+            theTypes = None     A list of file extensions to import.
+                                None is equivalen to ['.py']
+
         This method cleans imported files as follows:
 
         - Replace backslashes with forward slashes in headlines.
@@ -8447,12 +8441,11 @@ class Commands (object):
             # Import all files in dir_ after c.p.
             try:
                 import leo.core.leoImport as leoImport
-                cc = leoImport.RecursiveImportController(c,
+                cc = leoImport.RecursiveImportController(c,kind,
                     one_file = one_file,
                     safe_at_file = safe_at_file,
                     theTypes = ['.py'] if theTypes is None else theTypes,
-                    use_at_edit=use_at_edit,
-                    use_at_nosent=use_at_nosent)
+                )
                 cc.run(dir_)
             finally:
                 c.redraw()
