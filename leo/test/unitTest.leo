@@ -1465,9 +1465,9 @@ assert root, 'Node not found: @shadow-tests'
 trace = False
 for p in root.children_iter():
     h = p.h.strip()
-    # Lax has no effect when new_shadow is True
+    # Lax has no effect in the new @shadow code.
     if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=not leoShadow.new_shadow,trace=trace)
+        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
     elif h.startswith('@shadow-test'):
         test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
     else:
