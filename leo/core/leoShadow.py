@@ -638,13 +638,11 @@ class ShadowController:
                 g.es_print('can not open',fileName)
     #@+node:ekr.20080709062932.2: *3* class x.AtShadowTestCase
     class AtShadowTestCase (unittest.TestCase):
-
-        '''Support @shadow-test nodes.
+        '''
+        Support @shadow-test nodes.
 
         These nodes should have two descendant nodes: 'before' and 'after'.
-
         '''
-
         #@+others
         #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
         def __init__ (self,c,p,shadowController,lax,trace=False):
@@ -663,11 +661,8 @@ class ShadowController:
             self.ok = True
         #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
         def fail (self,msg=None):
-
-            """Mark a unit test as having failed."""
-
+            '''Mark an AtShadowTestCase as having failed.'''
             import leo.core.leoGlobals as g
-
             g.app.unitTestDict["fail"] = g.callers()
         #@+node:ekr.20080709062932.8: *4* setUp & helpers
         def setUp (self):
@@ -685,10 +680,11 @@ class ShadowController:
             self.new_public_lines = self.makePublicLines(self.new_private_lines)
 
             # We must change node:new to node:old
-            self.expected_private_lines = self.mungePrivateLines(self.new_private_lines,'node:new','node:old')
-
+            self.expected_private_lines = self.mungePrivateLines(
+                self.new_private_lines,'node:new','node:old')
         #@+node:ekr.20080709062932.19: *5* findNode
         def findNode(self,c,p,headline):
+            '''Return the node in p's subtree with given headline.'''
             p = g.findNodeInTree(c,p,headline)
             if not p:
                 g.es_print('can not find',headline)
@@ -696,25 +692,20 @@ class ShadowController:
             return p
         #@+node:ekr.20080709062932.20: *5* createSentinelNode
         def createSentinelNode (self,root,p):
-
             '''Write p's tree to a string, as if to a file.'''
-
             h = p.h
             p2 = root.insertAsLastChild()
             p2.setHeadString(h + '-sentinels')
             return p2
-
         #@+node:ekr.20080709062932.21: *5* makePrivateLines
         def makePrivateLines (self,p):
-
-            c = self.c ; at = c.atFileCommands
-
-            at.write (p,
+            '''Return a list of the lines of p containing sentinels.'''
+            at = self.c.atFileCommands
+            at.write(p,
                 nosentinels = False,
                 thinFile = False,  # Debatable.
                 scriptWrite = True,
                 toString = True)
-
             s = at.stringOutput
             return g.splitLines(s)
         #@+node:ekr.20080709062932.22: *5* makePublicLines
@@ -725,11 +716,11 @@ class ShadowController:
             return lines
         #@+node:ekr.20080709062932.23: *5* mungePrivateLines
         def mungePrivateLines (self,lines,find,replace):
-
-            x = self.shadowController ; marker = self.marker
-
-            i = 0 ; n = len(lines) ; results = []
-            while i < n:
+            '''Change the 'find' the 'replace' pattern in sentinel lines.'''
+            x = self.shadowController
+            marker = self.marker
+            i, results = 0, []
+            while i < len(lines):
                 line = lines[i]
                 if marker.isSentinel(line):
                     new_line = line.replace(find,replace)
@@ -748,14 +739,13 @@ class ShadowController:
             return results
         #@+node:ekr.20080709062932.9: *4* tearDown
         def tearDown (self):
-
+            '''AtShadowTestCase.tearDown.'''
             pass
-
-            # No change is made to the outline.
-            # self.c.redraw()
+                # No change is made to the outline.
+                # self.c.redraw()
         #@+node:ekr.20080709062932.10: *4* runTest (AtShadowTestCase)
         def runTest (self,define_g = True):
-
+            '''AtShadowTestCase.runTest.'''
             x = self.shadowController
             x.trace = self.trace
             p = self.p.copy()
@@ -777,10 +767,9 @@ class ShadowController:
             return self.ok
         #@+node:ekr.20080709062932.11: *4* shortDescription
         def shortDescription (self):
-
+            '''AtShadowTestCase.shortDescription.'''
             return self.p and self.p.h or '@test-shadow: no self.p'
         #@-others
-
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
     class Marker:
         '''A class representing comment delims in @shadow files.'''
