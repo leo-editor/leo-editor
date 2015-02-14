@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.90">
-	<global_window_position top="150" left="261" height="896" width="1021"/>
+<globals body_outline_ratio="0.68" body_secondary_ratio="0.68">
+	<global_window_position top="79" left="369" height="947" width="1017"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -136,21 +136,18 @@
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
 <v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
-<v t="ekr.20141213094716.13" a="O"><vh>@@@shadow COPY ../test/unittest/at-shadow-test.py</vh>
-<v t="ekr.20141213094716.14"><vh>spam</vh></v>
-<v t="ekr.20141213094716.15"><vh>eggs</vh></v>
+<v t="ekr.20090704085350.5014"><vh>@@shadow ../test/unittest/at-shadow-test.py</vh>
+<v t="ekr.20150208213643.12"><vh>spam</vh></v>
+<v t="ekr.20150208213643.13"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20141213094716.19" a="O"><vh>@@@shadow COPY unittest/at-shadow-line-number-test.py</vh>
-<v t="ekr.20141213094716.20"><vh>spam</vh></v>
-<v t="ekr.20141213094716.21"><vh>eggs</vh></v>
+<v t="ekr.20080907122804.1"><vh>@@shadow unittest/at-shadow-line-number-test.py</vh>
+<v t="ekr.20150208213643.15"><vh>spam</vh></v>
+<v t="ekr.20150208213643.16"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20120229082711.3934"><vh>@@@shadow COPY unittest/at-shadow-unlink-clones.py</vh>
-<v t="ekr.20120229082711.3935"><vh>Node 1</vh></v>
-<v t="ekr.20120229082711.3936"><vh>Node 2</vh></v>
+<v t="ekr.20111213122041.3930"><vh>@@shadow unittest/at-shadow-unlink-clones.py</vh>
+<v t="ekr.20150208213643.18"><vh>Node 1</vh></v>
+<v t="ekr.20150208213643.19"><vh>Node 2</vh></v>
 </v>
-<v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
-<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
-<v t="ekr.20111213122041.3930"><vh>@shadow unittest/at-shadow-unlink-clones.py</vh></v>
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -299,9 +296,6 @@
 <v t="ekr.20150207041158.11"><vh>Recent @shadow tests</vh>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
-</v>
-<v t="ekr.20111210175541.3957"><vh>@test at.readOneAtShadowNode retains @shadow links clones</vh>
-<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
 </v>
 <v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
@@ -1379,7 +1373,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1441,6 +1435,7 @@ finally:
 
 Important: this may cause crashes on some platforms.
 </t>
+<t tx="ekr.20080907122804.1">@others</t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
 @others
@@ -2051,6 +2046,7 @@ finally:
 <t tx="ekr.20090529115704.4568"># body of @shadow test node
 # The last line.
 </t>
+<t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
 <t tx="ekr.20090704085350.5029">def spam():
@@ -2962,36 +2958,8 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
-<t tx="ekr.20111210175541.3957"># Important: the child of this node must be a clone of
-# the corresponding node in @shadow unittest/at-shadow-unlink-clones.py
-
-# The @shadow node will not exist for an external test.
-if not g.app.isExternalUnitTest:
-    try:
-        # print('start',p.h)
-        b = c.undoer.beforeChangeTree(p)
-        h = '@shadow unittest/at-shadow-unlink-clones.py'
-        root = g.findNodeAnywhere(c,h)
-        assert root
-        assert root.h == h,repr(root.h)
-        child = p.firstChild()
-        assert child
-        assert child.isCloned(),'fail 1: test not set up properly'
-        c.selectPosition(root)
-        fn = root.atShadowFileNodeName()
-        assert fn
-        c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
-        c.undoer.afterChangeTree(p,'fc.readOneAtShadowNode',b)
-        assert child.isCloned(),'fail 2: intended test fails'
-        c.undoer.undo()
-    finally:
-        c.selectPosition(p)
-        c.redraw()
-</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20120228174052.3929"># node 1 text A.
-</t>
-<t tx="ekr.20120229082711.3934">@language python
+<t tx="ekr.20111213122041.3930">@language python
 @tabwidth -4
 
 # Begin
@@ -2999,10 +2967,6 @@ if not g.app.isExternalUnitTest:
 @others
 
 # End
-</t>
-<t tx="ekr.20120229082711.3935"># node 1 text A.
-</t>
-<t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -3293,33 +3257,15 @@ unl: organizer node--&gt;child1
 gnx: ekr.20140712142620.4581
 unl: organizer node--&gt;child2
 </t>
-<t tx="ekr.20141213094716.13">@others</t>
-<t tx="ekr.20141213094716.14">def spam():
-    pass</t>
-<t tx="ekr.20141213094716.15">def eggs():
-    pass</t>
-<t tx="ekr.20141213094716.19">@others</t>
-<t tx="ekr.20141213094716.20">def spam():
-    pass</t>
-<t tx="ekr.20141213094716.21">def eggs():
-    pass</t>
 <t tx="ekr.20150207041158.11"></t>
 <t tx="ekr.20150207135815.11">import unittest
 x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
-trace = True
 for p in p.children():
     h = p.h.strip()
-    if h.startswith('@shadow-test-lax'):
-        test = x.AtShadowTestCase(c,p,x,lax=True,trace=trace)
-    elif h.startswith('@shadow-test'):
-        test = x.AtShadowTestCase(c,p,x,lax=False,trace=trace)
-    else:
-        test = None
-    if test:
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,trace=True)
         suite.addTest(test)
-# if suite:
-    # g.app.scriptDict['suite'] = suite
 </t>
 <t tx="ekr.20150207135815.53"></t>
 <t tx="ekr.20150207135815.54">@others
@@ -3334,6 +3280,18 @@ for p in p.children():
 inserted node at end of node 1
 </t>
 <t tx="ekr.20150207135815.59">node 2 line 1
+</t>
+<t tx="ekr.20150208213643.12">def spam():
+    pass</t>
+<t tx="ekr.20150208213643.13">def eggs():
+    pass</t>
+<t tx="ekr.20150208213643.15">def spam():
+    pass</t>
+<t tx="ekr.20150208213643.16">def eggs():
+    pass</t>
+<t tx="ekr.20150208213643.18"># node 1 text A.
+</t>
+<t tx="ekr.20150208213643.19"># node 2 text B.
 </t>
 <t tx="ekr.20150210195923.11"></t>
 <t tx="ekr.20150210195923.12">line

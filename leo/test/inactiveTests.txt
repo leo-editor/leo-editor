@@ -136,6 +136,51 @@ for i in range(len(aList)):
         total += 1
 
 g.es('"%s": total tests: %s' % (p.h,total))
+#@+node:ekr.20150214063940.11: ** @ignore @shadow tests
+#@+node:ekr.20111210175541.3957: *3* @@test at.readOneAtShadowNode retains @shadow links clones
+# Important: the child of this node must be a clone of
+# the corresponding node in @shadow unittest/at-shadow-unlink-clones.py
+
+# The @shadow node will not exist for an external test.
+if not g.app.isExternalUnitTest:
+    try:
+        # print('start',p.h)
+        b = c.undoer.beforeChangeTree(p)
+        h = '@shadow unittest/at-shadow-unlink-clones.py'
+        root = g.findNodeAnywhere(c,h)
+        assert root
+        assert root.h == h,repr(root.h)
+        child = p.firstChild()
+        assert child
+        assert child.isCloned(),'fail 1: test not set up properly'
+        c.selectPosition(root)
+        fn = root.atShadowFileNodeName()
+        assert fn
+        c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
+        c.undoer.afterChangeTree(p,'fc.readOneAtShadowNode',b)
+        assert child.isCloned(),'fail 2: intended test fails'
+        c.undoer.undo()
+    finally:
+        c.selectPosition(p)
+        c.redraw()
+#@+node:ekr.20120228174052.3929: *4* Node 1
+# node 1 text A.
+#@+node:ekr.20110610122533.3397: *3* @@test goto-global-line @shadow
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow unittest/at-shadow-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    fileName,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
+    assert fileName == h[8:],'fileName'
+    assert root2 == root1
+    
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h,isRaw,n,len(lines)))
 #@+node:ekr.20080703104536.1: ** @ignore mini tests
 #@+node:ekr.20100203163606.5365: *3* 2to3 script
 import os
