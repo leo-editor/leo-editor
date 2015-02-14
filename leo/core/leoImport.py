@@ -642,8 +642,8 @@ class LeoImportCommands:
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
-            if self.treeType == "@file":
-                p.initHeadString("@file " + fileName)
+            if self.treeType in ('@file','@nosent'):
+                p.initHeadString('%s %s' % (self.treeType,fileName))
             elif self.treeType is None:
                 # By convention, we use the short file name.
                 p.initHeadString(g.shortFileName(fileName))

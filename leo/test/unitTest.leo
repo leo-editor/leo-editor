@@ -46,14 +46,32 @@
 </v>
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
-<v t="ekr.20140712144020.4334"><vh>@persistence</vh>
-<v t="ekr.20140923080452.6566"><vh>@data:@auto root</vh>
-<v t="ekr.20140923080452.6567"><vh>@gnxs</vh></v>
-</v>
-</v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
+<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
+<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
+<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
+<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
+<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
+<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
+<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
 </v>
-<v t="ekr.20140902101931.4478"></v>
+<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
+<v t="ekr.20070217072822"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
+</v>
+</v>
+<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
+<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
+<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
+<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
+<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
+<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20111123042627.6654"></v>
 <v t="ekr.20111112093605.4679"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
@@ -89,29 +107,18 @@
 <v t="ekr.20050618061835.19"><vh>How about @suite?</vh></v>
 <v t="ekr.20050618061835.20"><vh>Final remarks</vh></v>
 </v>
+<v t="ekr.20111211094936.3970"><vh>To do</vh>
+<v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
+<v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
 </v>
-<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
-<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
-<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
-<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
-<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
-<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
-<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
+<v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
+<v t="ekr.20100131171342.5474"><vh>@test leoBody is subset of leoTkBody</vh></v>
+<v t="ekr.20100131171342.5475"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
+<v t="ekr.20100131171342.5476"><vh>@test leoGui is subset of leoTkGui</vh></v>
+<v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
 </v>
-<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
-<v t="ekr.20070217072822"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
-</v>
-</v>
-<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
-<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
-<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
-<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
-<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
-<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
+<v t="ekr.20111125183140.3952"><vh>@test ic.createOutline changes back-slashes to slashes</vh></v>
+<v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
 </v>
 </v>
 <v t="ekr.20071113203234"><vh>Test files</vh>
@@ -154,141 +161,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20111211094936.3970"><vh>To do</vh>
-<v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
-<v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
-</v>
-<v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
-<v t="ekr.20100131171342.5474"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20100131171342.5475"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20100131171342.5476"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
-</v>
-<v t="ekr.20111125183140.3952"><vh>@test ic.createOutline changes back-slashes to slashes</vh></v>
-<v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
-</v>
 <v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
-</v>
-<v t="ekr.20140906072925.5224"><vh>Scintilla fails</vh>
-<v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
-<v t="ekr.20111112171235.3854"><vh>@test add/delete html comments</vh>
-<v t="ekr.20111112171235.3855"><vh>html</vh></v>
-</v>
-<v t="ekr.20111112171235.3858"><vh>@test add/delete python comments</vh>
-<v t="ekr.20111112171235.3859"><vh>python</vh></v>
-</v>
-<v t="ekr.20061101121602.126"><vh>@test backward-kill-paragraph</vh>
-<v t="ekr.20061101121602.127"><vh>work</vh></v>
-<v t="ekr.20061101121602.128"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.129"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.154"><vh>@test center-region</vh>
-<v t="ekr.20061101121602.155"><vh>work</vh></v>
-<v t="ekr.20061101121602.156"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.157"><vh>after sel=1.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.174"><vh>@test downcase-region</vh>
-<v t="ekr.20061101121602.175"><vh>work</vh></v>
-<v t="ekr.20061101121602.176"><vh>before sel=3.0,4.0</vh></v>
-<v t="ekr.20061101121602.177"><vh>after sel=3.0,4.0</vh></v>
-</v>
-<v t="ekr.20061101121602.282"><vh>@test kill-paragraph</vh>
-<v t="ekr.20061101121602.283"><vh>work</vh></v>
-<v t="ekr.20061101121602.285"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.284"><vh>after sel=8.0,8.0</vh></v>
-</v>
-<v t="ekr.20071113145804.4"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20061101121602.350"><vh>@test upcase-region</vh>
-<v t="ekr.20061101121602.351"><vh>work</vh></v>
-<v t="ekr.20061101121602.352"><vh>before sel=3.0,4.0</vh></v>
-<v t="ekr.20061101121602.353"><vh>after sel=3.0,4.0</vh></v>
-</v>
-<v t="ekr.20110118082508.3766"><vh>@test reformat-paragraph paragraph 1 of 3</vh>
-<v t="ekr.20110118082508.3772"><vh>work</vh></v>
-<v t="ekr.20110118082508.3773"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3792"><vh>after sel=11.14,11.14</vh></v>
-</v>
-<v t="ekr.20110118082508.3779"><vh>@test reformat-paragraph paragraph 2 of 3</vh>
-<v t="ekr.20110118082508.3780"><vh>work</vh></v>
-<v t="ekr.20110118082508.3781"><vh>before sel=13.0,13.0</vh></v>
-<v t="ekr.20110118082508.3782"><vh>after sel=23.33,23.33</vh></v>
-</v>
-<v t="ekr.20110118082508.3787"><vh>@test reformat-paragraph paragraph 3 of 3</vh>
-<v t="ekr.20110118082508.3788"><vh>work</vh></v>
-<v t="ekr.20110118082508.3789"><vh>before sel=25.10,25.10</vh></v>
-<v t="ekr.20110118082508.3790"><vh>after sel=32.11,32.11</vh></v>
-</v>
-<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
-<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
-<v t="ekr.20060127120604"><vh>tempNode</vh></v>
-<v t="ekr.20050417202713"><vh>addComments</vh>
-<v t="ekr.20050417202713.1"><vh>before</vh></v>
-<v t="ekr.20050417202713.2"><vh>after</vh></v>
-<v t="ekr.20050417202713.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417204940"><vh>convertAllBlanks</vh>
-<v t="ekr.20050417204940.1"><vh>before</vh></v>
-<v t="ekr.20050417204940.2"><vh>after</vh></v>
-<v t="ekr.20050417204940.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417205012"><vh>convertAllTabs</vh>
-<v t="ekr.20050417205012.1"><vh>before</vh></v>
-<v t="ekr.20050417205012.2"><vh>after</vh></v>
-<v t="ekr.20050417205012.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114"><vh>convertBlanks</vh>
-<v t="ekr.20050417203310"><vh>before</vh></v>
-<v t="ekr.20050417203310.1"><vh>after</vh></v>
-<v t="ekr.20050417203336"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114.1"><vh>convertTabs</vh>
-<v t="ekr.20050417204834"><vh>before</vh></v>
-<v t="ekr.20050417204830"><vh>after</vh></v>
-<v t="ekr.20050417204901"><vh>selection</vh></v>
-</v>
-<v t="ekr.20040712101754.49"><vh>dedentBody</vh>
-<v t="ekr.20040712101754.50"><vh>before</vh></v>
-<v t="ekr.20040712101754.51"><vh>after</vh></v>
-<v t="ekr.20040712101754.52"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417202817"><vh>deleteComments</vh>
-<v t="ekr.20050417202817.1"><vh>before</vh></v>
-<v t="ekr.20050417202817.2"><vh>after</vh></v>
-<v t="ekr.20050417202817.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20111112211307.3910"><vh>deleteComments</vh>
-<v t="ekr.20111112211307.3911"><vh>before</vh></v>
-<v t="ekr.20111112211307.3912"><vh>after</vh></v>
-<v t="ekr.20111112211307.3913"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417201845"><vh>extract test1</vh>
-<v t="ekr.20050417201845.1"><vh>before</vh></v>
-<v t="ekr.20050417201845.2"><vh>after</vh>
-<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
-</v>
-<v t="ekr.20050417201845.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070540"><vh>extract test2</vh>
-<v t="ekr.20050518070540.1"><vh>before</vh></v>
-<v t="ekr.20050518070545"><vh>after</vh></v>
-<v t="ekr.20050518070540.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070927"><vh>extractSection test1</vh>
-<v t="ekr.20050518070927.1"><vh>before</vh></v>
-<v t="ekr.20050518070927.2"><vh>after</vh>
-<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
-</v>
-<v t="ekr.20050518070927.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518071251"><vh>extractSection test2</vh>
-<v t="ekr.20050518071251.1"><vh>before</vh></v>
-<v t="ekr.20050518071258"><vh>after</vh></v>
-<v t="ekr.20050518071251.4"><vh>selection</vh></v>
-</v>
-</v>
-</v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
@@ -582,238 +456,11 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
-<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
-
-suite = c.testManager.makeEditBodySuite(p)
-
-# g.app.scriptDict['suite'] = suite
-</t>
-<t tx="ekr.20040712101754.38">@language plain
-@
-
-The names of child nodes are the names of commander methods to be called to do the test.
-
-Each child node will in turn have two or more children:
-
-- a "before" node
-- an "after" node
-- an optional selection node containing two lines giving the selection range in Tk coordinates.
-- An optional insert node containing one line giving the insert point in Tk coordinates.
-</t>
-<t tx="ekr.20040712101754.49"></t>
-<t tx="ekr.20040712101754.50">line 1
-    line 2
-    line 3
-line 4
-</t>
-<t tx="ekr.20040712101754.51">line 1
-line 2
-line 3
-line 4
-</t>
-<t tx="ekr.20040712101754.52">2.0
-3.5
-</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
-<t tx="ekr.20050417201845"></t>
-<t tx="ekr.20050417201845.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050417201845.2">before
-    &lt;&lt; section &gt;&gt;
-after
-</t>
-<t tx="ekr.20050417201845.3">sec line 1
-    sec line 2 indented
-sec line 3
-</t>
-<t tx="ekr.20050417201845.4">2.0
-5.10
-</t>
-<t tx="ekr.20050417202713"></t>
-<t tx="ekr.20050417202713.1">@language python
-
-def addCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202713.2">@language python
-
-def addCommentTest():
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202713.3">5.0
-7.8
-</t>
-<t tx="ekr.20050417202817"># created by new add-comments
-</t>
-<t tx="ekr.20050417202817.1">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202817.2">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202817.3">5.0
-7.8
-</t>
-<t tx="ekr.20050417203114"></t>
-<t tx="ekr.20050417203114.1"></t>
-<t tx="ekr.20050417203310">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417203310.1">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417203336">1.0
-6.5
-</t>
-<t tx="ekr.20050417204830">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417204834">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417204901">1.0
-6.5
-</t>
-<t tx="ekr.20050417204940"></t>
-<t tx="ekr.20050417204940.1">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417204940.2">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417204940.3">1.0
-6.5
-</t>
-<t tx="ekr.20050417205012"></t>
-<t tx="ekr.20050417205012.1">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417205012.2">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417205012.3">1.0
-6.5
-</t>
-<t tx="ekr.20050518070540"></t>
-<t tx="ekr.20050518070540.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070540.4">2.0
-2.16
-</t>
-<t tx="ekr.20050518070545">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070927"></t>
-<t tx="ekr.20050518070927.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070927.2">before
-    &lt;&lt; section &gt;&gt;
-after
-</t>
-<t tx="ekr.20050518070927.3">sec line 1
-    sec line 2 indented
-sec line 3
-</t>
-<t tx="ekr.20050518070927.4">2.0
-5.10
-</t>
-<t tx="ekr.20050518071251"></t>
-<t tx="ekr.20050518071251.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518071251.4">2.0
-2.16
-</t>
-<t tx="ekr.20050518071258">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -1051,178 +698,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20060127120604"></t>
-<t tx="ekr.20061101121602.126">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.127">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.128">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.129">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.154">@pagewidth 70 # Required for unit test.
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.155">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-         StormReady, a program started in 1999 in Tulsa, OK,
-  helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.156">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-StormReady, a program started in 1999 in Tulsa, OK,
-helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.157">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-         StormReady, a program started in 1999 in Tulsa, OK,
-  helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.174">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.175">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.176">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.177">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.282">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.283">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.284">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.285">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.350">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.351">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.352">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.353">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -1402,34 +877,6 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
-@language python
-
-try:
-    ec = c.editCommands ; w = c.frame.body.wrapper
-    s = w.getAllText()
-
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
-    u = g.u('(pdq):\n')
-    w.setInsertPoint(len(s))
-    for char in u:
-        stroke = g.choose(char=='\n','Return',char)
-        event = g.app.gui.create_key_event(c,char,stroke,w)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:\n%s' % result
-    # Test of autocompleter.
-finally:
-    if 1:
-        w.setAllText(s)
-        p.setBodyString(s)
-        # g.trace(repr(s))
-        c.recolor()
-
-# end:
-</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -2409,77 +1856,6 @@ fn = 'does/not/exist'
 assert not g.os_path_exists(fn)
 assert not x.replaceFileWithString (fn,'abc')
 </t>
-<t tx="ekr.20100204165850.5373">k = c.k
-colorizer = c.frame.body.getColorizer()
-ed = c.editCommands
-
-# These don't set ivars
-    # 'toggle-active-pane'),
-    # 'toggle-angle-brackets',
-    # 'toggle-input-state'),
-    # 'toggle-mini-buffer'),
-    # 'toggle-split-direction'),
-
-table = [
-    (k,'abbrevOn','toggle-abbrev-mode'),
-    (ed,'extendMode','toggle-extend-mode'),
-]
-
-# Not valid for external tests.
-table2 = [
-    (k,'enable_autocompleter','toggle-autocompleter'),
-    (k,'enable_calltips','toggle-calltips'),
-    (c,'sparse_find','toggle-find-collapses-nodes'),
-    (colorizer,'showInvisibles','toggle-invisibles'),
-    (c,'sparse_move','toggle-sparse-move'),
-]
-
-if not g.app.isExternalUnitTest:
-    table.extend(table2)
-
-for obj,ivar,command in table:
-    val1 = getattr(obj,ivar)
-    try:
-        k.simulateCommand(command)
-        val2 = getattr(obj,ivar)
-        assert val2 == (not val1),'failed 1 %s' % command
-        k.simulateCommand(command)
-        val3 = getattr(obj,ivar)
-        assert val3 == val1,'failed 2 %s' % command
-        # print('pass',command)
-    finally:
-        setattr(obj,ivar,val1)
-</t>
-<t tx="ekr.20100223123103.5382">import leo.core.leoFrame as leoFrame
-
-# Do nothing when run externally.
-if g.app.isExternalUnitTest:
-    pass
-else:
-    assert not isinstance(c.frame,leoFrame.NullFrame)
-    def closeEnough(f1,f2):
-        return abs(f1-f2) &lt; 0.0001
-    f = c.frame
-    ratio,ratio2 = f.ratio,f.secondary_ratio
-    table = (
-        c.bodyWantsFocusNow,
-        c.logWantsFocusNow,
-        c.treeWantsFocusNow,
-    )
-    for func in table:
-        func()
-        f.contractPane()
-        if func == c.logWantsFocusNow:
-            assert ratio2 != f.secondary_ratio,'fail 1'
-        else:
-            assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
-        func()
-        f.expandPane()
-        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
-            ratio,f.ratio)
-        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s' % (
-            ratio2,f.secondary_ratio)
-</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -2525,243 +1901,6 @@ node 1 line 2
 </t>
 <t tx="ekr.20101220161557.6013"># Some of these tests give warnings.</t>
 <t tx="ekr.20101220161557.6016"># Some tests are disabled when g.app.isExternalUnitTest is True.</t>
-<t tx="ekr.20110118082508.3766"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3772">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3773">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3779"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3780">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3781">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3782">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3787"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3788">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3789">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3790">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3792">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
@@ -2792,111 +1931,6 @@ run-selected-unit-tests-locally     = Alt-4
 run-selected-unit-tests-externally  = Alt-7
 
 # Important: Alt-9 is used by a unit test
-</t>
-<t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'html')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-try:
-    i = p.b.find('text')
-    assert i &gt; -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
-    w.setSelectionRange(i,i+4)
-    c.addComments()
-    if indent:
-        i = p.b.find('&lt;!-- text')
-    else:
-        i = p.b.find('&lt;!--     text')
-    assert i &gt; -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('&lt;!-- ','&lt;!--')
-    i = p.b.find('&lt;!--')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
-    p.b = s
-</t>
-<t tx="ekr.20111112171235.3855">@language html
-&lt;html&gt;
-    text 
-&lt;/html&gt;
-</t>
-<t tx="ekr.20111112171235.3858"># Can't be run externally.
-w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'python')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-
-try:
-    i = p.b.find('pass')
-    assert i &gt; -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
-    w.setSelectionRange(i,i+4)
-    c.addComments()
-    if indent:
-        i = p.b.find('# pass')
-    else:
-        i = p.b.find('#     pass')
-    assert i &gt; -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('# pass','#pass')
-    i = p.b.find('#')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
-    p.b = s
-</t>
-<t tx="ekr.20111112171235.3859">@language python
-
-def spam():
-    pass
-
-# after
-</t>
-<t tx="ekr.20111112211307.3910"># created by old and new add-comments.
-</t>
-<t tx="ekr.20111112211307.3911">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
-</t>
-<t tx="ekr.20111112211307.3912">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20111112211307.3913">5.0
-12.8
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
@@ -3240,23 +2274,8 @@ char t
 </t>
 <t tx="ekr.20140103103143.4095"></t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
-<t tx="ekr.20140712144020.4334"></t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20140906072925.5224"></t>
-<t tx="ekr.20140923080452.6566">gnx: ekr.20140712142620.4576
-</t>
-<t tx="ekr.20140923080452.6567">gnx: ekr.20140712142620.4577
-unl: aClass
-gnx: ekr.20140712142620.4582
-unl: aClass--&gt;clone
-gnx: ekr.20140712142620.4579
-unl: organizer node
-gnx: ekr.20140712142620.4580
-unl: organizer node--&gt;child1
-gnx: ekr.20140712142620.4581
-unl: organizer node--&gt;child2
-</t>
 <t tx="ekr.20150207041158.11"></t>
 <t tx="ekr.20150207135815.11">import unittest
 x = c.shadowController
