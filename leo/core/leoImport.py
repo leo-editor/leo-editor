@@ -1702,7 +1702,7 @@ class RecursiveImportController:
                 self.import_dir(child,dir_)
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
     def clean_all (self,p):
-        '''Clean all imported nodes.'''
+        '''Clean all imported nodes. This takes a lot of time.'''
         t1 = time.time()
         for p in p.self_and_subtree():
             h = p.h
@@ -2010,6 +2010,7 @@ class RecursiveImportController:
         c = self.c
         root = p.copy()
         # Restart the scan once a node is deleted.
+        # This is not a significant performance issue.
         changed = True
         while changed:
             changed = False
@@ -2020,7 +2021,6 @@ class RecursiveImportController:
                     c.selectPosition(root)
                     changed = True
                     break
-        
     #@+node:ekr.20130823083943.12613: *3* run
     def run (self,dir_):
         '''Import all the .py files in dir_.'''
