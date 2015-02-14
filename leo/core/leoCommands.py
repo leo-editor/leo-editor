@@ -8419,14 +8419,12 @@ class Commands (object):
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_            The root directory or file to import
+            dir_            The root directory or file to import.
+            kind            One of ('@edit','@file','@nosent').
             one_file        True: import only the file given by dir_.
             safe_at_file    True: produce @@file nodes instead of @file nodes.
             theTypes        A list of file extensions to import.
                             None is equivalen to ['.py']
-            use_at_edit     True: create @edit nodes instead of @file nodes.
-            use_at_nosent   True: create @nosent nodes instead of @file nodes.
-                            (only if use_at_edit is False).
             
         This method cleans imported files as follows:
 

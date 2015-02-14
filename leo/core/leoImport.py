@@ -1651,7 +1651,6 @@ class RecursiveImportController:
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.kind = kind
-        assert kind in ('@edit','@file','@nosent'),kind ### TEMP ONLY.
         self.one_file = one_file
         self.recursive = not one_file
         self.safe_at_file = safe_at_file
@@ -1928,7 +1927,6 @@ class RecursiveImportController:
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        ### if self.kind not in ('@edit','@nosent'):
         if self.kind != '@edit':
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
@@ -2013,6 +2011,8 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12613: *3* run
     def run (self,dir_):
         '''Import all the .py files in dir_.'''
+        if self.kind not in ('@edit','@file','@nosent'):
+            g.es('bad kind param',self.kind,color='red')
         try:
             c = self.c
             p = c.p
