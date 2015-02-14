@@ -1693,7 +1693,8 @@ class RecursiveImportController:
             if self.one_file:
                 files2 = [files2[0]]
             ### if self.use_at_edit or self.use_at_nosent:
-            if self.kind in ('@edit','@nosent'):
+            ### if self.kind in ('@edit','@nosent'):
+            if self.kind == '@edit':
                 ### kind = '@edit' if self.use_at_edit else '@nosent'
                 kind = self.kind
                 for fn in files2:
