@@ -1024,9 +1024,8 @@ class AtFile:
             g.es('not found: %s' % (fileName),color='red')
             return
         at.rememberReadPath(fileName,root)
-        if not g.unitTesting:
-            # Recovered nodes make an update message unnecessary.
-            g.es("reading:",root.h)
+        # if not g.unitTesting:
+            # g.es("reading:",root.h)
         # Set at.encoding first.
         at.scanAllDirectives(root,reading=True)
         # Update the outline using the @shadow algorithm.
@@ -1050,7 +1049,9 @@ class AtFile:
             self.dump(new_private_lines,'new private')
         if new_private_lines == old_private_lines:
             if trace: g.trace('lines match')
-            return
+            return True
+        if not g.unitTesting:
+            g.es("updating:",root.h)
         # The following is like at.read() w/o caching logic.
         at.initReadIvars(root,fileName)
         root.clearVisitedInTree()
