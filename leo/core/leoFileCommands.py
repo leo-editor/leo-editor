@@ -14,6 +14,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 import binascii
 import difflib
+import time
 
 if g.isPython3:
     import io # Python 3.x
@@ -726,6 +727,7 @@ class FileCommands:
             The caller should follow this with a call to c.redraw().
         '''
         fc,c = self,self.c
+        t1 = time.time()
         c.setChanged(False) # May be set when reading @file nodes.
         fc.warnOnReadOnlyFiles(fileName)
         fc.checking = False
@@ -766,6 +768,8 @@ class FileCommands:
             fc.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
         fc.initReadIvars()
+        t2 = time.time()
+        # g.es('read outline in %2.2f seconds' % (t2-t1))
         return ok, c.frame.ratio
     #@+node:ekr.20090526081836.5841: *5* fc.getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):

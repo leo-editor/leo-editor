@@ -905,7 +905,7 @@ class AtFile:
         #    v.clearOrphan()
         if nRead:
             t2 = time.time()
-            g.es('read %s files in %2.2f sec' % (nRead,t2-t1))
+            g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
         if partialFlag and not anyRead and not g.unitTesting:
             g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
