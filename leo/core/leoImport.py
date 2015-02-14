@@ -1647,13 +1647,7 @@ class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
-    def __init__ (self,c,kind,
-        one_file=False,
-        theTypes=None,
-        safe_at_file=True,
-        ### use_at_edit=False,
-        ### use_at_nosent=False,
-    ):
+    def __init__ (self,c,kind,one_file=False,theTypes=None,safe_at_file=True):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.kind = kind
@@ -1662,8 +1656,6 @@ class RecursiveImportController:
         self.recursive = not one_file
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-        ### self.use_at_edit = use_at_edit
-        ### self.use_at_nosent = use_at_nosent
     #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir
     def import_dir(self,root,dir_):
         '''Import selected files from dir_, a directory.'''
@@ -1692,10 +1684,7 @@ class RecursiveImportController:
         if files2:
             if self.one_file:
                 files2 = [files2[0]]
-            ### if self.use_at_edit or self.use_at_nosent:
-            ### if self.kind in ('@edit','@nosent'):
             if self.kind == '@edit':
-                ### kind = '@edit' if self.use_at_edit else '@nosent'
                 kind = self.kind
                 for fn in files2:
                     parent = child or root
@@ -1705,7 +1694,7 @@ class RecursiveImportController:
                     p.b = s
             else:
                 c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
-                    # '@auto' causes problems.
+                    # '@auto' or '@nosent' cause problems.
         if dirs:
             for dir_ in sorted(dirs):
                 prefix = dir_
@@ -1939,8 +1928,7 @@ class RecursiveImportController:
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        ### if not self.use_at_edit and not self.use_at_nosent:
-        if self.kind not in ('@edit','@nosent'):
+        if self.kind not in ('@edit','@nosent'): ### Huh???
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
         self.clear_dirty_bits(root.copy())
@@ -1984,10 +1972,8 @@ class RecursiveImportController:
         elif h2.find('/') <= 0 and ends_with_ext:
             if h2.startswith('/'):
                 h2 = h2[1:]
-            ### if self.use_at_edit:
             if self.kind == '@edit':
                 p.h = '@edit %s' % (h2)
-            ### elif self.use_at_nosent:
             elif self.kind == '@nosent':
                 p.h = '@nosent %s' % (h2)
             else:
@@ -2040,7 +2026,6 @@ class RecursiveImportController:
             self.import_dir(root.copy(),dir_)
             for p in root.self_and_subtree():
                 n += 1
-            ### if not self.use_at_edit:
             if self.kind != '@edit':
                 self.clean_all(root.copy())
             self.post_process(root.copy(),dir_)
