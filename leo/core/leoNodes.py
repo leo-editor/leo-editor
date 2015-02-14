@@ -1975,14 +1975,13 @@ class VNodeBase (object):
     # Return the the empty string if v is not an @xxx node.
 
     def atAutoNodeName (self,h=None):
-        names = [] if g.only_nosent else g.app.atAutoNames
         return self.findAtFileName(g.app.atAutoNames,h=h)
 
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no 
     # importer or writer for reStructuredText exists.
     def atAutoRstNodeName (self,h=None):
-        names = [] if g.only_nosent else ("@auto-rst",)
+        names = ("@auto-rst",)
         return self.findAtFileName(names,h=h)
 
     def atEditNodeName (self):
@@ -1994,13 +1993,11 @@ class VNodeBase (object):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        names = ["@nosent", "@file-nosent"]
-        if g.only_nosent:
-            names.extend(["@auto","@auto-rst","@shadow"])
+        names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
 
     def atShadowFileNodeName (self):
-        names = [] if g.only_nosent else ("@shadow",)
+        names = ("@shadow",)
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
@@ -2033,16 +2030,10 @@ class VNodeBase (object):
         return h and h[0] == '@' and self.anyAtFileNodeName()
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode (changed)
     def isAtAutoNode (self):
-        if g.only_nosent:
-            return False
-        else:
-            return True if self.atAutoNodeName() else False
+        return True if self.atAutoNodeName() else False
 
     def isAtAutoRstNode (self):
-        if g.only_nosent:
-            return False
-        else:
-            return True if self.atAutoRstNodeName() else False
+        return True if self.atAutoRstNodeName() else False
 
     def isAtEditNode (self):
         return True if self.atEditNodeName() else False
