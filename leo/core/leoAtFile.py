@@ -830,7 +830,9 @@ class AtFile:
             # Capture the current headline only if
             # we aren't doing the initial read.
             c.endEditing()
+        t1 = time.time()
         anyRead = False
+        nRead = 0
         p = root.copy()
         scanned_tnodes = set()
         c.init_error_dialogs()
@@ -850,21 +852,26 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
+                nRead += 1
                 at.read(p,force=force)
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
+                nRead += 1
                 fileName = p.atAutoNodeName()
                 at.readOneAtAutoNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtEditNode():
+                nRead += 1
                 fileName = p.atEditNodeName()
                 at.readOneAtEditNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
+                nRead += 1
                 fileName = p.atShadowFileNodeName()
                 at.readOneAtShadowNode(fileName,p)
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
+                nRead += 1
                 anyRead = True
                 wasOrphan = p.isOrphan()
                 ok = at.read(p,force=force)
@@ -878,9 +885,11 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif new_nosent:
                 if p.isAtAsisFileNode():
+                    nRead += 1
                     at.rememberReadPath(at.fullPath(p),p)
                     p.moveToNodeAfterTree()
                 elif p.isAtNoSentFileNode():
+                    nRead += 1
                     anyRead = True
                     at.readOneAtNosentNode(p)
                     p.moveToNodeAfterTree()
@@ -888,11 +897,15 @@ class AtFile:
                     p.moveToThreadNext()
             else:
                 if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                    nRead += 1
                     at.rememberReadPath(at.fullPath(p),p)
                 p.moveToThreadNext()
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
         #for v in c.all_unique_nodes():
         #    v.clearOrphan()
+        if nRead:
+            t2 = time.time()
+            g.es('read %s files in %2.2f sec' % (nRead,t2-t1))
         if partialFlag and not anyRead and not g.unitTesting:
             g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
