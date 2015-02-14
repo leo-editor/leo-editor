@@ -1928,7 +1928,8 @@ class RecursiveImportController:
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
-        if self.kind not in ('@edit','@nosent'): ### Huh???
+        ### if self.kind not in ('@edit','@nosent'):
+        if self.kind != '@edit':
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
         self.clear_dirty_bits(root.copy())
