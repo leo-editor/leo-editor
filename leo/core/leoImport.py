@@ -1692,7 +1692,7 @@ class RecursiveImportController:
                     s,e = g.readFileIntoString(fn,encoding='utf-8',kind=self.kind)
                     p.b = s
             elif self.kind == '@auto':
-                 for fn in files2:
+                for fn in files2:
                     parent = child or root
                     p = parent.insertAsLastChild()
                     p.h = fn.replace('\\','/')
