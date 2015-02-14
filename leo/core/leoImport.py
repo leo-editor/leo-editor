@@ -807,7 +807,7 @@ class LeoImportCommands:
         c.redraw(current)
         return p
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand & helper
-    def importFilesCommand (self,files=None,treeType=None,redrawFlag=True):
+    def importFilesCommand (self,files=None,treeType=None,redrawFlag=True,shortFn=False):
         # Not a command.  It must *not* have an event arg.
         c,current = self.c,self.c.p
         if not c or not current or not files:
@@ -820,7 +820,8 @@ class LeoImportCommands:
             g.setGlobalOpenDir(fn)
             p = self.createOutline(fn,current)
             if p: # createOutline may fail.
-                if not g.unitTesting: g.blue("imported",fn)
+                if not g.unitTesting:
+                    g.blue("imported",g.shortFileName(fn) if shortFn else fn)
                 p.contract()
                 p.setDirty()
                 c.setChanged(True)
@@ -1692,7 +1693,8 @@ class RecursiveImportController:
                     s,e = g.readFileIntoString(fn,encoding='utf-8',kind=kind)
                     p.b = s
             else:
-                c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
+                c.importCommands.importFilesCommand(files2,'@file',
+                    redrawFlag=False,shortFn=True)
                     # '@auto' or '@nosent' cause problems.
         if dirs:
             for dir_ in sorted(dirs):
@@ -1701,16 +1703,24 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
     def clean_all (self,p):
         '''Clean all imported nodes.'''
+        t1 = time.time()
         for p in p.self_and_subtree():
             h = p.h
-            if h.startswith('@file') or h.startswith('@@file'):
-                i = 6 if h[1] == '@' else 5
-                path = h[i:].strip()
-                junk,ext = g.os_path_splitext(path)
-                self.clean(p,ext)
+            for tag in ('@file','@nosent'):
+                if h.startswith('@'+tag):
+                    i = 1+len(tag)
+                    path = h[i:].strip()
+                    junk,ext = g.os_path_splitext(path)
+                    self.clean(p,ext)
+                elif h.startswith(tag):
+                    i = len(tag)
+                    path = h[i:].strip()
+                    junk,ext = g.os_path_splitext(path)
+                    self.clean(p,ext)
+        t2 = time.time()
+        # g.trace('%2.2f sec' % (t2-t1))
     #@+node:ekr.20130823083943.12599: *4* clean
     def clean(self,p,ext):
-        
         '''
         - Move a shebang line from the first child to the root.
         - Move a leading docstring in the first child to the root.
@@ -1719,7 +1729,7 @@ class RecursiveImportController:
         - Merge a node containing nothing but comments with the next node.
         - Merge a node containing no class or def lines with the previous node.
         '''
-
+        g.blue('cleaning',g.shortFileName(p.h))
         c = self.c
         root = p.copy()
         for tag in ('@@file','@file'):
@@ -1924,6 +1934,7 @@ class RecursiveImportController:
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         '''
+        t1 = time.time()
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\','/')
@@ -1931,6 +1942,8 @@ class RecursiveImportController:
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(),prefix)
         self.clear_dirty_bits(root.copy())
+        t2 = time.time()
+        # g.trace('%2.2f sec' % (t2-t1))
     #@+node:ekr.20130823083943.12608: *4* clear_dirty_bits
     def clear_dirty_bits (self,p):
 
