@@ -769,7 +769,7 @@ class FileCommands:
         c.setChanged(c.changed) # Refresh the changed marker.
         fc.initReadIvars()
         t2 = time.time()
-        # g.es('read outline in %2.2f seconds' % (t2-t1))
+        g.es('read outline in %2.2f seconds' % (t2-t1))
         return ok, c.frame.ratio
     #@+node:ekr.20090526081836.5841: *5* fc.getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):
