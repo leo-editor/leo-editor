@@ -1685,7 +1685,6 @@ class RecursiveImportController:
             if self.one_file:
                 files2 = [files2[0]]
             if self.kind == '@edit':
-                ### kind = self.kind
                 for fn in files2:
                     parent = child or root
                     p = parent.insertAsLastChild()
@@ -1990,14 +1989,7 @@ class RecursiveImportController:
         elif h2.find('/') <= 0 and ends_with_ext:
             if h2.startswith('/'):
                 h2 = h2[1:]
-            ####
             p.h = '%s %s' % (self.kind,h2)
-            # if self.kind == '@edit':
-                # p.h = '@edit %s' % (h2)
-            # elif self.kind == '@nosent':
-                # p.h = '@nosent %s' % (h2)
-            # else:
-                # p.h = '@file %s' % (h2)
             if self.safe_at_file:
                 p.h = '@' + p.h
             if trace: g.trace(p.h)
