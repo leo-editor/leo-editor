@@ -8412,12 +8412,12 @@ class Commands (object):
             if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self,dir_,
+    def recursiveImport(self,dir_,kind,
         one_file=False,
         safe_at_file=True,
         theTypes=None,
-        use_at_edit=False,
-        use_at_nosent=False,
+        ### use_at_edit=False,
+        ### use_at_nosent=False,
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -8447,12 +8447,13 @@ class Commands (object):
             # Import all files in dir_ after c.p.
             try:
                 import leo.core.leoImport as leoImport
-                cc = leoImport.RecursiveImportController(c,
+                cc = leoImport.RecursiveImportController(c,kind, ###
                     one_file = one_file,
                     safe_at_file = safe_at_file,
                     theTypes = ['.py'] if theTypes is None else theTypes,
-                    use_at_edit=use_at_edit,
-                    use_at_nosent=use_at_nosent)
+                    ### use_at_edit=use_at_edit,
+                    ###use_at_nosent=use_at_nosent,
+                )
                 cc.run(dir_)
             finally:
                 c.redraw()
