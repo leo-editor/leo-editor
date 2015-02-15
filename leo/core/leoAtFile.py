@@ -1034,7 +1034,6 @@ class AtFile:
         marker = x.markerFromFileLines(old_private_lines,fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines,marker)
         if old_public_lines:
-            marker = x.markerFromFileLines(old_private_lines,g.shortFileName(fileName))
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines,old_private_lines,marker,p=root)
         else:
