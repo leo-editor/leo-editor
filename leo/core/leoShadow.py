@@ -567,28 +567,31 @@ class ShadowController:
         return marker
     #@+node:ekr.20080708094444.29: *4* x.separate_sentinels
     def separate_sentinels (self, lines, marker):
-
         '''
         Separates regular lines from sentinel lines.
+        Do not return @verbatim sentinels.
 
         Returns (regular_lines, sentinel_lines)
         '''
-
         x = self
         regular_lines = []
         sentinel_lines = []
         i = 0
         while i < len(lines):
             line = lines[i]
-            if marker.isSentinel(line):
+            if marker.isVerbatimSentinel(line):
+                # Add the plain line that *looks* like a sentinel,
+                # but *not* the preceding @verbatim sentinel itself.
+                # Adding the actual sentinel would spoil the sentinel test when
+                # the user adds or deletes a line requiring an @verbatim line.
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    regular_lines.append(line)
+                else:
+                    x.verbatim_error()
+            elif marker.isSentinel(line):
                 sentinel_lines.append(line)
-                if marker.isVerbatimSentinel(line):
-                    i += 1
-                    if i < len(lines):
-                        line = lines[i]
-                        regular_lines.append(line)
-                    else:
-                        x.verbatim_error()
             else:
                 regular_lines.append(line)
             i += 1
