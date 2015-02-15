@@ -61,6 +61,30 @@ Added test for QString in g.toUnicode.
 https://github.com/leo-editor/leo-editor/issues/124
 .. @+node:ekr.20150206064817.7: *4* Fixed bug: Made last log line visible
 LeoQtLog.put and app.writeWaitingLog changed.
+.. @+node:ekr.20150215071358.4: *4* Fixed crash in v._cutLine after paste-retaining-clones
+The fix was to add the obvious guard.
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 556, in doCommand
+    val = command(event)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 3642, in cutOutline
+    c.deleteOutline("Cut Node")
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 3932, in deleteOutline
+    p.doDelete(newNode)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 1216, in doDelete
+    p._unlink()
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 1791, in _unlink
+    child._cutLink(n,parent_v)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 2544, in _cutLink
+    v.parents.remove(parent_v)
+
+ValueError: list.remove(x): x not in list
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
