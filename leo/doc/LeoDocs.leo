@@ -1159,6 +1159,9 @@
 </v>
 <v t="ekr.20150212182032.4"></v>
 <v t="ekr.20150212182032.5"><vh>5.1 @nosent replaces @auto and @shadow</vh></v>
+<v t="ekr.20150214032209.4"><vh>** Deprecate @auto and @shadow in all docs</vh></v>
+<v t="ekr.20150214121337.4"><vh>** Document @auto-x</vh></v>
+<v t="ekr.20150214121337.5"><vh>** Make sure new @oosent is completely documented</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -10660,7 +10663,7 @@ Basic slide shows
 
 `Leo Basics Step By Step`_  explains the basics of Leo outlines.
 
-`External Files`_ discusses creating external files with \@file, \@auto and \@edit.
+`External Files`_ discusses creating external files with \@file, \@nosent and \@edit.
 
 `Clones and views`_ illustrates how clones work and show how they create views.
 
@@ -21179,6 +21182,9 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
+<t tx="ekr.20150214032209.4"></t>
+<t tx="ekr.20150214121337.4">@auto-md, @auto-rst, @auto-vimoutline/vo, @auto-otl</t>
+<t tx="ekr.20150214121337.5"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
