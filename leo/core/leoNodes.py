@@ -2541,7 +2541,8 @@ class VNodeBase (object):
         parent_v.childrenModified()    
         assert parent_v.children[childIndex]==v
         del parent_v.children[childIndex]
-        v.parents.remove(parent_v)
+        if parent_v in v.parents:
+            v.parents.remove(parent_v)
         v._p_changed = 1
         parent_v._p_changed = 1
         # If v has no more parents, we adjust all
