@@ -85,6 +85,9 @@ Traceback (most recent call last):
     v.parents.remove(parent_v)
 
 ValueError: list.remove(x): x not in list
+.. @+node:ekr.20150215081440.4: *4* Fixed Zatz @nosent problem with @verbatim sentinels
+The fix was to x.separate_sentinels.
+I no longer adds @verbatim sentinels to the returned list of sentinels.
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
