@@ -525,25 +525,20 @@ class ShadowController:
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
     #@+node:ekr.20090529125512.6122: *4* x.markerFromFileLines & helper
-    def markerFromFileLines (self,lines,fn):  # fn used only for traces.
-
+    def markerFromFileLines (self,lines,fn):
         '''Return the sentinel delimiter comment to be used for filename.'''
-
         trace = False and not g.unitTesting
-        x = self ; at = x.c.atFileCommands
-
+        # if trace: g.trace(''.join(lines))
+        at,x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
         ok,junk,start,end,junk = at.parseLeoSentinel(s)
         if end:
             delims = '',start,end
         else:
             delims = start,'',''
-
-        if trace: g.trace('delim1 %s delim2 %s delim3 %s fn %s' % (
-            delims[0],delims[1],delims[2], fn))
-
-        marker = x.Marker(delims)
-        return marker
+        if trace: g.trace('delims %r, %r, %r, fn %s' % (
+            delims[0],delims[1],delims[2],fn))
+        return x.Marker(delims)
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
     def findLeoLine (self,lines):
         '''Return the @+leo line, or ''.'''
@@ -642,7 +637,7 @@ class ShadowController:
         '''
         #@+others
         #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
-        def __init__ (self,c,p,shadowController,trace=False):
+        def __init__ (self,c,p,shadowController,delims=None,trace=False):
             '''Ctor for AtShadowTestCase class.'''
             unittest.TestCase.__init__(self)
                 # Init the base class.
@@ -651,7 +646,8 @@ class ShadowController:
             self.shadowController=shadowController
             self.trace = trace
             # Hard value for now.
-            delims = '#','',''
+            if delims is None:
+                delims = '#','',''
             self.marker = shadowController.Marker(delims)
             # For teardown...
             self.ok = True
@@ -771,13 +767,15 @@ class ShadowController:
             self.delim2 = delim2 # Block comment starting delim.
             self.delim3 = delim3 # Block comment ending delim.
             if not delim1 and not delim2:
+                if g.unitTesting:
+                    assert False,repr(delims)
                 self.delim1 = g.app.language_delims_dict.get('unknown_language')
 
         def __repr__ (self):
             if self.delim1:
                 delims = self.delim1
             else:
-                delims = '%s %s' % (self.delim2,self.delim2)
+                delims = '%s %s' % (self.delim2,self.delim3)
             return '<Marker: delims: %s>' % repr(delims)
         #@+node:ekr.20090529061522.6258: *4* getDelims
         def getDelims(self):

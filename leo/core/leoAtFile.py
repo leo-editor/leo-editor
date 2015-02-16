@@ -1027,7 +1027,8 @@ class AtFile:
         # if not g.unitTesting:
             # g.es("reading:",root.h)
         # Set at.encoding first.
-        at.scanAllDirectives(root,reading=True)
+        at.scanAllDirectives(root)
+            # Sets at.startSentinelComment/endSentinelComment.
         # Update the outline using the @shadow algorithm.
         new_public_lines = at.read_at_nosent_lines(fileName)
         old_private_lines = self.write_nosent_sentinels(root)
@@ -1057,6 +1058,8 @@ class AtFile:
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
+        # Read the file using the @file read logic.
+        # g.trace('***',repr(at.startSentinelComment),repr(at.endSentinelComment))
         thinFile = at.readOpenFile(root,fileName,deleteNodes=True)
         root.clearDirty()
         if at.errors == 0:
@@ -1099,7 +1102,7 @@ class AtFile:
             kind = '@nosent',
             nosentinels = False,
             perfectImportFlag = False,
-            scriptWrite = True,
+            scriptWrite = False, # Do *not* force python sentinels!
             thinFile = True,
             toString = True)
         s = g.toUnicode(at.stringOutput,encoding = at.encoding)
@@ -1433,7 +1436,9 @@ class AtFile:
         at.lastThinNode = None
         at.thinNodeStack = []
         #@-<< init ivars for scanText4 >>
-        if trace: g.trace('filename:',fileName)
+        if trace:
+            print('')
+            g.trace('filename:',fileName)
         try:
             while at.errors == 0 and not at.done:
                 s = at.readLine()
@@ -1496,10 +1501,9 @@ class AtFile:
             at.appendToDocPart(s)
     #@+node:ekr.20100624082003.5942: *6* at.appendToDocPart
     def appendToDocPart (self,s):
-
+        '''Append the next line of the @doc part to docOut.'''
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
-
         # Skip the leading stuff
         if len(at.endSentinelComment) == 0:
             # Skip the single comment delim and a blank.
@@ -1509,7 +1513,6 @@ class AtFile:
                 if g.match(s,i," "): i += 1
         else:
             i = at.skipIndent(s,0,at.indent)
-
         if at.readVersion5:
             # Append the line to docOut.
             line = s[i:]
@@ -1517,14 +1520,12 @@ class AtFile:
         else:
             # Append line to docOut, possibly stripping the newline.
             line = s[i:-1] # remove newline for rstrip.
-
             if line == line.rstrip():
                 # no trailing whitespace: the newline is real.
                 at.docOut.append(line + '\n')
             else:
                 # trailing whitespace: the newline is fake.
                 at.docOut.append(line)
-
         if trace: g.trace(repr(line))
     #@+node:ekr.20041005105605.80: *5* start sentinels
     #@+node:ekr.20041005105605.81: *6* at.readStartAll
