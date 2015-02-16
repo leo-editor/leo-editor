@@ -124,6 +124,7 @@ It's really that simple, but here are some consequences:
 - Contract all imported nodes.
 .. @+node:ekr.20150211035240.4: *4* refresh-from-disk is now undoable.
 .. @+node:ekr.20150214032209.5: *4* import-file command create @nosent nodes
+.. @+node:ekr.20150216074433.13: *4* Added --old-nosent command-line option
 .. @+node:ekr.20150206064817.5: *3* Major feature: @nosent updates automatically
 Rev 7a851eb enables automatic updating of @nosent files.
 When loading a .leo file, Leo will automatically update

@@ -20059,6 +20059,456 @@ node 2 line 2
 line
 #@+node:ekr.20150210195923.15: *7* new
 line
+#@+node:ekr.20150216070628.11: *4* @@suite @nosent with javascript
+import unittest
+import leo.core.leoShadow as leoShadow
+# Possible: replace this suite with individual @test nodes
+# exec(g.findTestScript(c,'@common @shadow test code'))
+x = c.shadowController
+suite = unittest.makeSuite(unittest.TestCase)
+root = g.findNodeInTree(c,p,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
+delims = '//','',''
+for p in root.children_iter():
+    h = p.h.strip()
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,delims=delims,trace=False)
+        suite.addTest(test)
+#@+node:ekr.20150216070628.12: *5* @shadow-tests
+@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+#@+node:ekr.20150216070628.168: *6* @shadow-test equal @nosent @doc
+#@+node:ekr.20150216070628.14: *7* old
+@others
+#@+node:ekr.20150216070628.15: *8* node 1
+@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+#@+node:ekr.20150216070628.16: *7* new
+@others
+#@+node:ekr.20150216070628.17: *8* node 1
+@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+#@+node:ekr.20150216070628.18: *6* @shadow-test replace in node new < old
+#@+node:ekr.20150216070628.19: *7* old
+@others
+#@+node:ekr.20150216070628.20: *8* node 1
+node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 old line 3
+node 1 old line 4
+node 1 line 2
+#@+node:ekr.20150216070628.21: *7* new
+@others
+#@+node:ekr.20150216070628.22: *8* node 1
+node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 line 2
+#@+node:ekr.20150216070628.23: *6* @shadow-test change middle line
+#@+node:ekr.20150216070628.24: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.25: *7* new
+line 1
+line 2 changed
+line 3
+#@+node:ekr.20150216070628.26: *6* @shadow-test change first line
+#@+node:ekr.20150216070628.27: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.28: *7* new
+line 1 changed
+line 2
+line 3
+#@+node:ekr.20150216070628.29: *6* @shadow-test change last line
+#@+node:ekr.20150216070628.30: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.31: *7* new
+line 1
+line 2
+line 3 changed
+#@+node:ekr.20150216070628.32: *6* @shadow-test delete first line
+#@+node:ekr.20150216070628.33: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.34: *7* new
+line 2
+line 3
+#@+node:ekr.20150216070628.35: *6* @shadow-test delete middle line
+#@+node:ekr.20150216070628.36: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.37: *7* new
+line 1
+line 3
+#@+node:ekr.20150216070628.38: *6* @shadow-test delete last line
+#@+node:ekr.20150216070628.39: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.40: *7* new
+line 1
+line 2
+#@+node:ekr.20150216070628.41: *6* @shadow-test insert before first line
+#@+node:ekr.20150216070628.42: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.43: *7* new
+inserted line
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.44: *6* @shadow-test insert middle line (after first line)
+#@+node:ekr.20150216070628.45: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.46: *7* new
+line 1
+inserted line
+line 2
+line 3
+#@+node:ekr.20150216070628.47: *6* @shadow-test insert middle line (before last line)
+#@+node:ekr.20150216070628.48: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.49: *7* new
+line 1
+line 2
+inserted line
+line 3
+#@+node:ekr.20150216070628.50: *6* @shadow-test insert after last line
+#@+node:ekr.20150216070628.51: *7* old
+line 1
+line 2
+line 3
+#@+node:ekr.20150216070628.52: *7* new
+line 1
+line 2
+line 3
+inserted line
+#@+node:ekr.20150216070628.53: *6* @shadow-test-lax insert between nodes: at end of prev node
+#@+node:ekr.20150216070628.54: *7* old
+@others
+#@+node:ekr.20150216070628.55: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.56: *8* node 2
+node 2 line 1
+#@+node:ekr.20150216070628.57: *7* new
+@others
+#@+node:ekr.20150216070628.58: *8* node 1
+node 1 line 1
+inserted node at end of node 1
+#@+node:ekr.20150216070628.59: *8* node 2
+node 2 line 1
+#@+node:ekr.20150216070628.60: *6* @shadow-test delete between nodes: at end of prev node
+#@+node:ekr.20150216070628.61: *7* old
+@others
+#@+node:ekr.20150216070628.62: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.63: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.64: *7* new
+@others
+#@+node:ekr.20150216070628.65: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.66: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.67: *6* @shadow-test delete between nodes: at start of next node
+#@+node:ekr.20150216070628.68: *7* old
+@others
+#@+node:ekr.20150216070628.69: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.70: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.71: *7* new
+@others
+#@+node:ekr.20150216070628.72: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.73: *8* node 2
+node 2 line 2
+#@+node:ekr.20150216070628.74: *6* @shadow-test change end of prev node
+#@+node:ekr.20150216070628.75: *7* old
+@others
+#@+node:ekr.20150216070628.76: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.77: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.78: *7* new
+@others
+#@+node:ekr.20150216070628.79: *8* node 1
+node 1 line 1
+node 1 line 1 changed
+#@+node:ekr.20150216070628.80: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.81: *6* @shadow-test change start of next node
+#@+node:ekr.20150216070628.82: *7* old
+@others
+#@+node:ekr.20150216070628.83: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.84: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.85: *7* new
+@others
+#@+node:ekr.20150216070628.86: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.87: *8* node 2
+node 2 line 1 changed
+node 2 line 2
+#@+node:ekr.20150216070628.88: *6* @shadow-test-lax multiple-line insert between nodes: at end of prev node
+#@+node:ekr.20150216070628.89: *7* old
+@others
+#@+node:ekr.20150216070628.90: *8* node 1
+node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
+#@+node:ekr.20150216070628.91: *8* node 2
+node 2 line 1
+#@+node:ekr.20150216070628.92: *7* new
+@others
+#@+node:ekr.20150216070628.93: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.94: *8* node 2
+node 2 line 1
+#@+node:ekr.20150216070628.95: *6* @shadow-test multiple-line change end of prev node
+#@+node:ekr.20150216070628.96: *7* old
+@others
+#@+node:ekr.20150216070628.97: *8* node 1
+node 1 line 1
+node 1 line 2
+node 1 line 3
+#@+node:ekr.20150216070628.98: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.99: *7* new
+@others
+#@+node:ekr.20150216070628.100: *8* node 1
+node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed
+#@+node:ekr.20150216070628.101: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.102: *6* @shadow-test multiple-line change start of next node
+#@+node:ekr.20150216070628.103: *7* old
+@others
+#@+node:ekr.20150216070628.104: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.105: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.106: *7* new
+@others
+#@+node:ekr.20150216070628.107: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.108: *8* node 2
+node 2 line 1 changed
+node 2 line 2 changed
+#@+node:ekr.20150216070628.109: *6* @shadow-test multiple-NODE changes
+#@+node:ekr.20150216070628.110: *7* old
+@others
+#@+node:ekr.20150216070628.111: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.112: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.113: *7* new
+@others
+#@+node:ekr.20150216070628.114: *8* node 1
+node 1 line 1
+node 1 line 2 changed
+#@+node:ekr.20150216070628.115: *8* node 2
+node 2 line 1 changed
+node 2 line 2 changed
+#@+node:ekr.20150216070628.116: *6* @shadow-test multiple-line delete between nodes: at end of prev node
+#@+node:ekr.20150216070628.117: *7* old
+@others
+#@+node:ekr.20150216070628.118: *8* node 1
+node 1 line 1
+node 1 line 2
+node 1 line 3
+#@+node:ekr.20150216070628.119: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.120: *7* new
+@others
+#@+node:ekr.20150216070628.121: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.122: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.123: *6* @shadow-test multiple-line delete between nodes: at start of next node
+#@+node:ekr.20150216070628.124: *7* old
+@others
+#@+node:ekr.20150216070628.125: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.126: *8* node 2
+node 2 line 1
+node 2 line 2
+node 2 line 3
+#@+node:ekr.20150216070628.127: *7* new
+@others
+#@+node:ekr.20150216070628.128: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.129: *8* node 2
+node 2 line 3
+#@+node:ekr.20150216070628.130: *6* @shadow-test verbatim sentinels-delete verbatim line
+#@+node:ekr.20150216070628.131: *7* old
+@others
+#@+node:ekr.20150216070628.132: *8* node 1
+node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+#@+node:ekr.20150216070628.133: *8* node 2
+node 2 line 1
+node 2 line 2
+node 2 line 3
+#@+node:ekr.20150216070628.134: *7* new
+@others
+#@+node:ekr.20150216070628.135: *8* node 1
+node 1 line 1
+line 1 line 3
+#@+node:ekr.20150216070628.136: *8* node 2
+node 2 line 1
+node 2 line 2
+node 2 line 3
+#@+node:ekr.20150216070628.137: *6* @shadow-test verbatim sentinels-delete verbatim line: at start of node
+#@+node:ekr.20150216070628.138: *7* old
+@others
+#@+node:ekr.20150216070628.139: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.140: *8* node 2
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+node 2 line 2
+#@+node:ekr.20150216070628.141: *7* new
+@others
+#@+node:ekr.20150216070628.142: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.143: *8* node 2
+node 2 line 2
+#@+node:ekr.20150216070628.144: *6* @shadow-test verbatim sentinels-no change
+#@+node:ekr.20150216070628.145: *7* old
+@others
+#@+node:ekr.20150216070628.146: *8* node 1
+node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+#@+node:ekr.20150216070628.147: *8* node 2
+node 2 line 1
+node 2 line 2
+node 2 line 3
+#@+node:ekr.20150216070628.148: *7* new
+@others
+#@+node:ekr.20150216070628.149: *8* node 1
+node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+#@+node:ekr.20150216070628.150: *8* node 2
+node 2 line 1
+node 2 line 2
+node 2 line 3
+#@+node:ekr.20150216070628.151: *6* @shadow-test verbatim sentinels-delete verbatim line: at end of node
+#@+node:ekr.20150216070628.152: *7* old
+@others
+#@+node:ekr.20150216070628.153: *8* node 1
+node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+#@+node:ekr.20150216070628.154: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.155: *7* new
+@others
+#@+node:ekr.20150216070628.156: *8* node 1
+node 1 line 1
+#@+node:ekr.20150216070628.157: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.158: *6* @shadow-test verbatim sentinels-add verbatim line
+# This fails because the @all read logic inserts a second verbatim, I think.
+#@+node:ekr.20150216070628.159: *7* old
+@others
+#@+node:ekr.20150216070628.160: *8* node 1
+node 1 line 1
+node 1 line 2
+#@+node:ekr.20150216070628.161: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.162: *7* new
+@others
+#@+node:ekr.20150216070628.163: *8* node 1
+node 1 line 1
+@verbatim
+#@verbatim
+#@ should be handled by verbatim
+node 1 line 2
+#@+node:ekr.20150216070628.164: *8* node 2
+node 2 line 1
+node 2 line 2
+#@+node:ekr.20150216070628.165: *6* @shadow-test no change, no ending newline
+#@+node:ekr.20150216070628.166: *7* old
+line
+#@+node:ekr.20150216070628.167: *7* new
+line
 #@+node:ekr.20100131180007.5363: *4* @test class Marker.getDelims
 x = c.shadowController
 table = (

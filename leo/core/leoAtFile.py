@@ -9,8 +9,6 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-new_nosent = True
-    # True: automatically update @nosent files using the @shadow algorithm.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -883,7 +881,7 @@ class AtFile:
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
-            elif new_nosent:
+            elif g.app.new_nosent:
                 if p.isAtAsisFileNode():
                     nRead += 1
                     at.rememberReadPath(at.fullPath(p),p)
@@ -1236,7 +1234,7 @@ class AtFile:
 
         # Delete all children except for old-style @file nodes
 
-        if not new_nosent and root.isAtNoSentFileNode():
+        if not g.app.new_nosent and root.isAtNoSentFileNode():
             return False
         elif root.isAtFileNode() and not thinFile:
             return False

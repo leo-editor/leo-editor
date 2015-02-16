@@ -52,6 +52,7 @@ class LeoApp:
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
         self.ipython_inited = False     # True if leoIpython.py imports succeeded.
+        self.new_nosent = True          # True: enable @nosent update logic.
         self.qt_use_tabs = False        # True: allow tabbed main window.
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.
@@ -2104,41 +2105,43 @@ class LoadManager:
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
-        add('--debug', action="store_true",
+        add('--debug', action='store_true',
             help = 'enable debug mode')
-        add('--fullscreen', action="store_true",
+        add('--fullscreen', action='store_true',
             help = 'start fullscreen')
-        add('--ipython',    action="store_true",dest="use_ipython",
+        add('--ipython',    action='store_true',dest='use_ipython',
             help = 'enable ipython support')
         add('--gui',
             help = 'gui to use (qt/qttabs)')
-        add('--maximized', action="store_true",
+        add('--maximized', action='store_true',
             help = 'start maximized')
-        add('--minimized', action="store_true",
+        add('--minimized', action='store_true',
             help = 'start minimized')
-        add('--no-cache', action="store_true", dest='no_cache',
+        add('--no-cache', action='store_true', dest='no_cache',
             help = 'disable reading of cached files')
-        add('--no-plugins', action="store_true", dest='no_plugins',
+        add('--no-plugins', action='store_true', dest='no_plugins',
             help = 'disable all plugins')
-        add('--no-splash', action="store_true", dest='no_splash_screen',
+        add('--no-splash', action='store_true', dest='no_splash_screen',
             help = 'disable the splash screen')
+        add('--old-nosent', action='store_true', dest='old_nosent',
+            help = 'disable new @nosent update logic')
         add('--screen-shot', dest='screenshot_fn',
             help = 'take a screen shot and then exit')
-        add('--script', dest="script",
+        add('--script', dest='script',
             help = 'execute a script and then exit')
-        add('--script-window',dest="script_window",
+        add('--script-window',dest='script_window',
             help = 'open a window for scripts')
         add('--select', dest='select',
             help='headline or gnx of node to select')
-        add('--session-restore', action="store_true", dest='session_restore',
+        add('--session-restore', action='store_true', dest='session_restore',
             help = 'restore previously saved session tabs at startup')
-        add('--session-save', action="store_true", dest='session_save',
+        add('--session-save', action='store_true', dest='session_save',
             help = 'save session tabs on exit')
-        add('--silent', action="store_true", dest="silent",
+        add('--silent', action='store_true', dest='silent',
             help = 'disable all log messages')
-        add('--trace-plugins', action="store_true", dest='trace_plugins',
+        add('--trace-plugins', action='store_true', dest='trace_plugins',
             help = 'trace imports of plugins')
-        add('-v', '--version', action="store_true", dest="version",
+        add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
             help='initial window size (height x width)')
@@ -2196,6 +2199,9 @@ class LoadManager:
         g.app.use_splash_screen = (
             not options.no_splash_screen and
             not options.minimized)
+        # --old-nosent
+        g.app.new_nosent = not options.old_nosent
+        # g.trace('g.app.new_nosent',g.app.new_nosent)
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
         if screenshot_fn:
@@ -2205,7 +2211,7 @@ class LoadManager:
         script_path = options.script
         script_path_w = options.script_window
         if script_path and script_path_w:
-            parser.error("--script and script-window are mutually exclusive")
+            parser.error('--script and script-window are mutually exclusive')
         script_name = script_path or script_path_w
         if script_name:
             script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
