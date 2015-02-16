@@ -5,6 +5,40 @@
 .. @+all
 .. @+node:ekr.20150211104036.476: ** To do first
 @language rest
+.. @+node:ekr.20150216074433.9: *3* Use @shadow logic in refresh-from-disk?
+.. @+node:ekr.20150215102218.4: *3* Create @ns-rst/vo/otl commands
+@language rest
+
+===== @ns-* write logic
+
+In his initial post, Rob said, "when I change my @auto-rst files to @nosent
+files, the resulting files do not contain the RST section headers that were
+automatically added by @auto-rst."
+
+This proves that @ns-rst must have special logic that writes the proper
+section headers. Happily, this can be done easily with special cases in
+at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
+
+From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
+
+===== @ns-* read logic
+
+No change is actually *required* for @ns-rst and @ns-md. When reading an
+@ns-rst or @ns-md file, added sections could be slurped into the outline as
+under/overlining text. The user could leave the changed node as it is. Or
+the user could create a new node with the indicated headline. Either way,
+the @ns-rst write logic would recreate the changed file.
+
+However, a simple, fast post-pass in the @ns-rst/md read logic could create
+the new nodes automagically. The post-pass would traverse the tree created
+by the @nosent logic looking for under/overlined lines (or # lines for md),
+creating new nodes as needed. The actual code would be similar to the
+@auto-rst logic,but it exists in a far simpler context than @auto-rst.
+
+Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
+vimoutline or otl sentinels should *never* be left as plain text in an
+existing node. The "raw" sentinels would corrupt the vim or Emacs outline
+if the node were later moved. An unpleasant time bomb.
 .. @+node:ekr.20150213061241.4: *3* Create import-rst/vo/otl-file commands
 .. @+node:ekr.20150213061241.6: *3* Bugs
 .. @+node:ekr.20150213061241.5: *4* Before b1

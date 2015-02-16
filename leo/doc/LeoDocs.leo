@@ -21183,19 +21183,19 @@ Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20150215071358.87">* Document @auto-rst/md/vo/otl.
+* Make sure uA's and gnx's are documented.
 * Make sure new @nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
 * (Maybe) Deprecate @auto in all docs.</t>
-<t tx="ekr.20150216034509.1">\@persistence nodes were introduced in Leo 5.0. You can enable and disable
-@persistence nodes with::
+<t tx="ekr.20150216034509.1">\@persistence nodes were introduced in Leo 5.0.
 
-    @bool enable-persistence = True
+The existence of an @persistence enables this
+feature. Changing the node to, say, @@persistence disables the feature. 
 
 When writing an @auto file, Leo stores data (akin to bookmarks) in a
 subtree of the @persistence node. When re-reading the file, the data allow
 Leo to restore gnx info.
-
 
 leoPersistence.py implements the new feature.
 
@@ -21203,7 +21203,8 @@ pd.find_position_for_relative_unl links unls saved in the @persistence tree
 with just-imported nodes. Here is the docstring::
    
     Given a unl relative to root, return the node whose
-    unl matches the longest suffix of the given unl.</t>
+    unl matches the longest suffix of the given unl.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
