@@ -900,6 +900,8 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20090529115704.4396"></t>
 <t tx="ekr.20090529115704.4397">import unittest
 import leo.core.leoShadow as leoShadow
+# Possible: replace this suite with individual @test nodes
+# exec(g.findTestScript(c,'@common @shadow test code'))
 x = c.shadowController
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeInTree(c,p,'@shadow-tests')
