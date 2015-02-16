@@ -512,6 +512,7 @@
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
+<v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
@@ -9707,6 +9708,7 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
+<t tx="ekr.20150216135059.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

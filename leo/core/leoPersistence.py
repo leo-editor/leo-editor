@@ -236,7 +236,7 @@ class PersistenceDataController:
         '''
         trace = False and not g.unitTesting
         # Delete all children of the @data node.
-        self.at_persistence = self.has_at_persistence_node()
+        self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return None
             # was return at_data # for at-file-to-at-auto command.
@@ -281,7 +281,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self,root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        self.at_persistence = self.has_at_persistence_node()
+        self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return
         if not self.is_foreign_file(root):
@@ -455,7 +455,7 @@ class PersistenceDataController:
         Return the @data node for root, a foreign node.
         Create the node if it does not exist.
         '''
-        self.at_persistence = self.has_at_persistence_node()
+        self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return None
         p = self.has_at_data_node(root)
@@ -488,7 +488,16 @@ class PersistenceDataController:
         so that no existing positions become invalid.
         '''
         # New in Leo 5.1: Leo never creates the @persistence node automatically.
-        return g.findNodeAnywhere(self.c,'@persistence')
+        c,h = self.c,'@persistence'
+        p = g.findNodeAnywhere(c,h)
+        if not p and c.config.getBool('create-at-persistence-nodes-automatically'):
+            last = c.rootPosition()
+            while last.hasNext():
+                last.moveToNext()
+            p = last.insertAfter()
+            p.h = h
+            g.es('created %s node' % h,color='red')
+        return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node (changed)
     def find_at_uas_node(self,root):
         '''
