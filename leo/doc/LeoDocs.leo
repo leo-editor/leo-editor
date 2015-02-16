@@ -1160,6 +1160,7 @@
 <v t="ekr.20150212182032.4"></v>
 <v t="ekr.20150212182032.5"><vh>5.1 @nosent replaces @auto and @shadow</vh></v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
+<v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -1623,15 +1624,16 @@ read code which newlines were inserted in doc parts. (The whole point of doc
 parts is to have the write code format long comments by splitting long lines.)
 To quote from my diary:
 
-"We can use the following convention to determine where putDocPart has inserted
-line breaks: A line in a doc part is followed by an inserted newline if and only
-if the newline is preceded by whitespace. This is a really elegant convention,
-and is essentially invisible to the user. Tangle outputs words until the line
-would become too long, and then it inserts a newline. To preserve all
-whitespace, tangle always includes the whitespace that terminates a word on the
-same line as the word itself. Therefore, split lines always end in whitespace.
-To make this convention work, tangle only has to delete the trailing whitespace
-of all lines that are followed by a 'real' newline."
+"We can use the following convention to determine where putDocPart has
+inserted line breaks: A line in a doc part is followed by an inserted
+newline if and only if the newline is preceded by whitespace. This is
+an elegant convention, and is essentially invisible to the user.
+Tangle outputs words until the line would become too long, and then it
+inserts a newline. To preserve all whitespace, tangle always includes
+the whitespace that terminates a word on the same line as the word
+itself. Therefore, split lines always end in whitespace. To make this
+convention work, tangle only has to delete the trailing whitespace of
+all lines that are followed by a 'real' newline."
 </t>
 <t tx="EKR.20040524104904.253">After the write code was working I turned my attention to the read (untangle)
 code. Leo's Untangle command is the most complex and difficult code I have ever
@@ -21181,10 +21183,27 @@ Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20150215071358.87">* Document @auto-rst/md/vo/otl.
-* Make sure new @nosent is completely documented
+* Make sure new @nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
 * (Maybe) Deprecate @auto in all docs.</t>
+<t tx="ekr.20150216034509.1">\@persistence nodes were introduced in Leo 5.0. You can enable and disable
+@persistence nodes with::
+
+    @bool enable-persistence = True
+
+When writing an @auto file, Leo stores data (akin to bookmarks) in a
+subtree of the @persistence node. When re-reading the file, the data allow
+Leo to restore gnx info.
+
+
+leoPersistence.py implements the new feature.
+
+pd.find_position_for_relative_unl links unls saved in the @persistence tree
+with just-imported nodes. Here is the docstring::
+   
+    Given a unl relative to root, return the node whose
+    unl matches the longest suffix of the given unl.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
