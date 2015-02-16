@@ -767,8 +767,8 @@ class ShadowController:
             self.delim2 = delim2 # Block comment starting delim.
             self.delim3 = delim3 # Block comment ending delim.
             if not delim1 and not delim2:
-                if g.unitTesting:
-                    assert False,repr(delims)
+                # if g.unitTesting:
+                #    assert False,repr(delims)
                 self.delim1 = g.app.language_delims_dict.get('unknown_language')
 
         def __repr__ (self):
