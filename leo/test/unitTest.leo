@@ -3,15 +3,15 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.68" body_secondary_ratio="0.84">
-	<global_window_position top="79" left="369" height="947" width="1017"/>
+<globals body_outline_ratio="0.57" body_secondary_ratio="0.84">
+	<global_window_position top="70" left="568" height="947" width="1195"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20140103103143.4095"><vh>@views</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -2498,7 +2498,6 @@ char T
 char f
 char t
 </t>
-<t tx="ekr.20140103103143.4095"></t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
@@ -2987,5 +2986,7 @@ node 2 line 2
 </t>
 <t tx="ekr.20150216070628.99">@others
 </t>
+<t tx="ekr.20150216110251.11"># Do not delete this node.
+# It is used by unit tests.</t>
 </tnodes>
 </leo_file>

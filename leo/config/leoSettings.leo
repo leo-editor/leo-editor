@@ -512,7 +512,6 @@
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
-<v t="ekr.20141023155838.4"><vh>@bool enable-persistence = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
@@ -9703,7 +9702,6 @@ else:
 False:  Use the newly-improved legacy beautify code.
 </t>
 <t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
-<t tx="ekr.20141023155838.4">True: enable @persistence data for @file nodes.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>

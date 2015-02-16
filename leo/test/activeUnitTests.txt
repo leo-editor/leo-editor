@@ -15586,7 +15586,7 @@ else:
         if g.app.isExternalUnitTest:
             pass
         else:
-            assert rep == clone
+            assert rep == clone,(repr(rep),repr(clone))
     finally:
         root.h = 'root' # root must not be an @auto node.
         c.redraw()
@@ -15597,12 +15597,9 @@ else:
 # Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
 pd = c.persistenceController
 persistence = g.findNodeAnywhere(c,'@persistence')
-if persistence:
-    assert pd.has_at_persistence_node()
-    persistence.deleteAllChildren()
-else:
-    assert not pd.has_at_persistence_node()
-    persistence = pd.find_at_views_node()
+assert persistence
+assert pd.has_at_persistence_node()
+persistence.deleteAllChildren()
 assert persistence
 root = g.findNodeInTree(c,p,'root')
 assert root
@@ -15690,7 +15687,7 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *5* @gnxs
-gnx: ekr.20140923080452.6343
+gnx: ekr.20140923080452.6565
 unl: node1
 #@+node:ekr.20140923080452.6565: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
@@ -15729,6 +15726,13 @@ class aClass:
 def spam():
     pass
 #@+node:ekr.20140712142620.4582: *5* clone
+#@+node:ekr.20150216111306.25: *4* @test delete all children of @persistence node
+pd = c.persistenceController
+persistence = g.findNodeAnywhere(c,'@persistence')
+assert persistence
+assert pd.has_at_persistence_node()
+persistence.deleteAllChildren()
+assert persistence
 #@+node:ekr.20100131171342.5610: *3* leoPlugins
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController

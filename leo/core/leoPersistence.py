@@ -193,8 +193,9 @@ class PersistenceDataController:
     def __init__ (self,c):
         '''Ctor for persistenceController class.'''
         self.c = c
-        self.enabled = c.config.getBool('enable-persistence',default=True)
-        # g.trace('(PersistenceDataController)',self.enable,c.shortFileName())
+        self.at_persistence = None
+            # The position of the @position node.
+        # g.trace('(PersistenceDataController)',c.shortFileName())
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140718153519.17731: *4* pd.clean
     def clean(self):
@@ -235,9 +236,11 @@ class PersistenceDataController:
         '''
         trace = False and not g.unitTesting
         # Delete all children of the @data node.
+        self.at_persistence = self.has_at_persistence_node()
+        if not self.at_persistence:
+            return None
+            # was return at_data # for at-file-to-at-auto command.
         at_data = self.find_at_data_node(root)
-        if not self.enabled:
-            return at_data # For at-file-to-at-auto command.
         self.delete_at_data_children(at_data,root)
         # Create the data for the @gnxs and @uas trees.
         aList,seen = [],[]
@@ -278,7 +281,8 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self,root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        if not self.enabled:
+        self.at_persistence = self.has_at_persistence_node()
+        if not self.at_persistence:
             return
         if not self.is_foreign_file(root):
             return 
@@ -451,10 +455,12 @@ class PersistenceDataController:
         Return the @data node for root, a foreign node.
         Create the node if it does not exist.
         '''
-        at_persistence = self.find_at_persistence_node()
+        self.at_persistence = self.has_at_persistence_node()
+        if not self.at_persistence:
+            return None
         p = self.has_at_data_node(root)
-        if not p and self.enabled:
-            p = at_persistence.insertAsLastChild()
+        if not p:
+            p = self.at_persistence.insertAsLastChild()
             p.h = '@data:' + root.h
             p.b = self.at_data_body(root)
         return p
@@ -466,38 +472,35 @@ class PersistenceDataController:
         Create the @gnxs node if it does not exist.
         '''
         h = '@gnxs'
+        if not self.at_persistence:
+            return None
         data = self.find_at_data_node(root)
         p = g.findNodeInTree(self.c,data,h)
-        if not p and self.enabled:
+        if not p:
             p = data.insertAsLastChild()
             p.h = h
         return p
-    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
+    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node (changed)
     def find_at_persistence_node(self):
         '''
         Find the first @persistence node in the outline.
         If it does not exist, create it as the *last* top-level node,
         so that no existing positions become invalid.
         '''
-        c,h = self.c,'@persistence'
-        p = g.findNodeAnywhere(c,h)
-        if not p and self.enabled:
-            last = c.rootPosition()
-            while last.hasNext():
-                last.moveToNext()
-            p = last.insertAfter()
-            p.h = h
-        return p
-    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
+        # New in Leo 5.1: Leo never creates the @persistence node automatically.
+        return g.findNodeAnywhere(self.c,'@persistence')
+    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node (changed)
     def find_at_uas_node(self,root):
         '''
         Find the @uas node for root, a foreign node.
         Create the @uas node if it does not exist.
         '''
         h = '@uas'
+        if not self.at_persistence:
+            return None
         auto_view = self.find_at_data_node(root)
         p = g.findNodeInTree(self.c,auto_view,h)
-        if not p and self.enabled:
+        if not p:
             p = auto_view.insertAsLastChild()
             p.h = h
         return p
@@ -625,25 +628,24 @@ class PersistenceDataController:
         '''
         # if g.unitTesting:
             # pass
-        if not self.enabled:
+        if not self.at_persistence:
             return None
         if not self.is_at_auto_node(root):
             return None
-        views = g.findNodeAnywhere(self.c,'@persistence')
-        if views:
-            # Find a direct child of views with matching headline and body.
-            s = self.at_data_body(root)
-            for p in views.children():
-                if p.b == s:
-                    return p
+        # Find a direct child of the @persistence nodes with matching headline and body.
+        s = self.at_data_body(root)
+        for p in self.at_persistence.children():
+            if p.b == s:
+                return p
         return None
+       
     #@+node:ekr.20140711111623.17890: *5* pd.has_at_gnxs_node
     def has_at_gnxs_node(self,root):
         '''
         Find the @gnxs node for an @data node with the given unl.
         Return None if it does not exist.
         '''
-        if self.enabled:
+        if self.at_persistence:
             p = self.has_at_data_node(root)
             return p and g.findNodeInTree(self.c,p,'@gnxs')
         else:
@@ -654,7 +656,7 @@ class PersistenceDataController:
         Find the @uas node for an @data node with the given unl.
         Return None if it does not exist.
         '''
-        if self.enabled:
+        if self.at_persistence:
             p = self.has_at_data_node(root)
             return p and g.findNodeInTree(self.c,p,'@uas')
         else:
@@ -662,7 +664,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17869: *5* pd.has_at_persistence_node
     def has_at_persistence_node(self):
         '''Return the @persistence node or None if it does not exist.'''
-        return self.enabled and g.findNodeAnywhere(self.c,'@persistence')
+        return g.findNodeAnywhere(self.c,'@persistence')
     #@+node:ekr.20140711111623.17870: *4* pd.is...
     #@+node:ekr.20140711111623.17871: *5* pd.is_at_auto_node
     def is_at_auto_node(self,p):
