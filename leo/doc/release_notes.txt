@@ -22276,7 +22276,7 @@ https://bugs.launchpad.net/leo-editor/+bug/1258373
 #@+node:ekr.20141120113801.76: *8* Fixed bug 1260415: exception writing external files" is insufficient
 https://bugs.launchpad.net/leo-editor/+bug/1260415
 Added more informative error messages
-#@+node:ekr.20141120113801.77: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter 
+#@+node:ekr.20141120113801.77: *8* Fixed bug 1264350: Up-arrow on the first node in a chapter switches to another chapter
 https://bugs.launchpad.net/leo-editor/+bug/1264350
 #@+node:ekr.20141120113801.78: *8* Fixed bug 1267921: isearch-forward accepts non-alphanumeric keys as input
 https://bugs.launchpad.net/leo-editor/+bug/1267921
@@ -23766,7 +23766,7 @@ to use @language, as in your example with @nosent trees.
 #@+node:ekr.20141120113801.189: *7* Eliminated cycle-all-focus command
 Replaced by new focus-to-find and focus-to-spell commands.
 #@+node:ekr.20141120113801.190: *7* Removed stand-alone globals
-#@+node:ekr.20141120113801.191: *5* Plugins & leo/external 
+#@+node:ekr.20141120113801.191: *5* Plugins & leo/external
 #@+node:ekr.20141120113801.192: *6* Added livecode plugin
 Then livecode-show command shows the live code evaluation pane. Hover on
 the buttons for helpful tool-tips.
@@ -29066,7 +29066,7 @@ For example, this setting works without any explicit definition of mistyrose2.
     
     @color head-bg = @mistyrose2
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20150212182032.5: *3* 5.1 @nosent replaces @auto and @shadow
+#@+node:ekr.20150212182032.5: *3* 5.1 Leo updates @nosent files
 Leo 5.1 b1                          February 20, 2015
 
 Leo 5.1 b1 is now available at:
@@ -29079,25 +29079,17 @@ Text tutorials: http://leoeditor.com/tutorial.html
 The highlights of Leo 5.1
 --------------------------
 
-* Leo can now update @nosent trees from external files that contain no Leo
-  sentinels, the long-sought holy grail of Leo's developers and users.
+* Leo can now update @nosent trees from changes made to external files
+  without sentinel comments, something long thought impossible. As a
+  result, Leo can now be used in any environment, including work groups
+  where no one else uses Leo.
   
-* The Aha was that the Mulder update algorithm (previously used only to
-  update @shadow files) can get sentinel data from the outline itself.
-
-* Updating an @nosent tree is twice as fast as updating an @shadow tree.
-  Unlike @auto, the new @nosent preserves the users desired outline
-  structure.
-
-* As a result, there is no longer any need for @auto or @shadow: they are
-  now merely deprecated synonyms for @nosent.
-
-* The Mulder update algorithm has been greatly simplified. This was deemed
-  essential because of the algorithm's new importance. The algorithm is now
-  easy to understand, provably correct and completely documented.
+* Updating an @nosent tree is significantly faster than updating @shadow
+  trees or importing @auto trees. Furthermore, @nosent trees now preserve
+  clone links and user attributes (uA's).
   
-* The revised algorithm is spectacular technology. It may be of interest to
-  the developers of Emacs Org Mode and Vim's outline mode. 
+* @shadow is now officially deprecated. Leo will continue to support @auto,
+  @auto-rst, etc., indefinitely.
 
 * The usual bug fixes and improvements.
 
@@ -29111,5 +29103,24 @@ Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
+#@+node:ekr.20150217105817.4: *4* The new @nosent
+Leo can now update @nosent trees from changes made to external files
+without sentinel comments, something long thought impossible. As a result,
+Leo can now be used in any environment, including work groups where no one
+else uses Leo.
+
+Leo updates @nosent trees using a simplified version of the Mulder update
+algorithm previously used to update @shadow trees. The new Mulder/Ream
+algorithm is easy to understand, provably correct and completely
+documented. It may be of interest to the developers of other outliners.
+
+Updating an @nosent tree is about twice as fast as updating an @shadow
+tree. As a result, @shadow is now officially deprecated.
+
+Leo will continue to support all forms of @auto for the foreseeable future.
+However, users are encouraged to convert @auto trees to @nosent trees:
+
+- Updating an @nosent tree is much faster that importing an @auto tree.
+- @nosent trees preserve outline structure, clone links and uA's.
 #@-all
 #@-leo

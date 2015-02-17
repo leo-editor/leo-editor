@@ -1158,7 +1158,9 @@
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
-<v t="ekr.20150212182032.5"><vh>5.1 @nosent replaces @auto and @shadow</vh></v>
+<v t="ekr.20150212182032.5"><vh>5.1 Leo updates @nosent files</vh>
+<v t="ekr.20150217105817.4"><vh>The new @nosent</vh></v>
+</v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
 <v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
 </vnodes>
@@ -21149,25 +21151,17 @@ Text tutorials: http://leoeditor.com/tutorial.html
 The highlights of Leo 5.1
 --------------------------
 
-* Leo can now update @nosent trees from external files that contain no Leo
-  sentinels, the long-sought holy grail of Leo's developers and users.
+* Leo can now update @nosent trees from changes made to external files
+  without sentinel comments, something long thought impossible. As a
+  result, Leo can now be used in any environment, including work groups
+  where no one else uses Leo.
   
-* The Aha was that the Mulder update algorithm (previously used only to
-  update @shadow files) can get sentinel data from the outline itself.
-
-* Updating an @nosent tree is twice as fast as updating an @shadow tree.
-  Unlike @auto, the new @nosent preserves the users desired outline
-  structure.
-
-* As a result, there is no longer any need for @auto or @shadow: they are
-  now merely deprecated synonyms for @nosent.
-
-* The Mulder update algorithm has been greatly simplified. This was deemed
-  essential because of the algorithm's new importance. The algorithm is now
-  easy to understand, provably correct and completely documented.
+* Updating an @nosent tree is significantly faster than updating @shadow
+  trees or importing @auto trees. Furthermore, @nosent trees now preserve
+  clone links and user attributes (uA's).
   
-* The revised algorithm is spectacular technology. It may be of interest to
-  the developers of Emacs Org Mode and Vim's outline mode. 
+* @shadow is now officially deprecated. Leo will continue to support @auto,
+  @auto-rst, etc., indefinitely.
 
 * The usual bug fixes and improvements.
 
@@ -21208,6 +21202,24 @@ with just-imported nodes. Here is the docstring::
     Given a unl relative to root, return the node whose
     unl matches the longest suffix of the given unl.
 </t>
+<t tx="ekr.20150217105817.4">Leo can now update @nosent trees from changes made to external files
+without sentinel comments, something long thought impossible. As a result,
+Leo can now be used in any environment, including work groups where no one
+else uses Leo.
+
+Leo updates @nosent trees using a simplified version of the Mulder update
+algorithm previously used to update @shadow trees. The new Mulder/Ream
+algorithm is easy to understand, provably correct and completely
+documented. It may be of interest to the developers of other outliners.
+
+Updating an @nosent tree is about twice as fast as updating an @shadow
+tree. As a result, @shadow is now officially deprecated.
+
+Leo will continue to support all forms of @auto for the foreseeable future.
+However, users are encouraged to convert @auto trees to @nosent trees:
+
+- Updating an @nosent tree is much faster that importing an @auto tree.
+- @nosent trees preserve outline structure, clone links and uA's.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
