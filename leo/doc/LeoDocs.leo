@@ -21182,7 +21182,10 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20150215071358.87">* Document @auto-rst/md/vo/otl.
+<t tx="ekr.20150215071358.87">* Emphasize that the place to search first is LeoDocs.leo.
+  Jake: The above line should be highlighted in big boldface on Leo's website.
+
+* Document @auto-rst/md/vo/otl.
 * Make sure uA's and gnx's are documented.
 * Make sure new @nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
