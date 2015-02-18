@@ -1158,7 +1158,7 @@
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
-<v t="ekr.20150212182032.5"><vh>5.1 Leo updates @nosent files</vh>
+<v t="ekr.20150212182032.5"><vh>5.1 No more sentinels!</vh>
 <v t="ekr.20150217105817.4"><vh>The new @nosent</vh></v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
@@ -21150,6 +21150,9 @@ Text tutorials: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 5.1
 --------------------------
+
+* Leo can now be used without sentinel comments in external files,
+  removing the biggest obstacle to using Leo!
 
 * Leo can now update @nosent trees from changes made to external files
   without sentinel comments, something long thought impossible. As a

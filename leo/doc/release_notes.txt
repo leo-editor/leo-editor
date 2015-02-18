@@ -29066,7 +29066,7 @@ For example, this setting works without any explicit definition of mistyrose2.
     
     @color head-bg = @mistyrose2
 #@+node:edream.110203163054.63: ** Latest version
-#@+node:ekr.20150212182032.5: *3* 5.1 Leo updates @nosent files
+#@+node:ekr.20150212182032.5: *3* 5.1 No more sentinels!
 Leo 5.1 b1                          February 20, 2015
 
 Leo 5.1 b1 is now available at:
@@ -29078,6 +29078,9 @@ Text tutorials: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 5.1
 --------------------------
+
+* Leo can now be used without sentinel comments in external files,
+  removing the biggest obstacle to using Leo!
 
 * Leo can now update @nosent trees from changes made to external files
   without sentinel comments, something long thought impossible. As a
