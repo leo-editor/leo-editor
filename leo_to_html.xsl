@@ -23,7 +23,7 @@
     <xsl:if test ='./v' >
         <xsl:apply-templates select = 'v'/>
     </xsl:if> 
- </ul>
+</ul>
 </xsl:template>
 
 <xsl:template match ='leo_file'>
