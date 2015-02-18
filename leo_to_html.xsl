@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method = 'xml' />
 <xsl:preserve-space elements='leo_file/tnodes/t'/>
-
 
 <xsl:template match='v'>
 
@@ -50,5 +49,4 @@
     </xsl:for-each>
 </xsl:template>
 
-
-</xsl:transform>
+</xsl:stylesheet>
