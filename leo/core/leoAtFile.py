@@ -254,13 +254,13 @@ class AtFile:
         }
     #@+node:ekr.20041005105605.10: *3* at.initCommonIvars
     def initCommonIvars (self):
+        """
+        Init ivars common to both reading and writing.
 
-        """Init ivars common to both reading and writing.
-
-        The defaults set here may be changed later."""
-
-        at = self ; c = at.c
-
+        The defaults set here may be changed later.
+        """
+        at = self
+        c = at.c
         at.at_auto_encoding = c.config.default_at_auto_file_encoding
         at.default_directory = None
         at.encoding = c.config.default_derived_file_encoding
@@ -277,7 +277,7 @@ class AtFile:
         at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
-        at.tab_width  = None
+        at.tab_width  = c.tab_width or -4
         at.toString = False # True: sring-oriented read or write.
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *3* at.initReadIvars
@@ -1025,6 +1025,8 @@ class AtFile:
         # if not g.unitTesting:
             # g.es("reading:",root.h)
         # Set at.encoding first.
+        at.initReadIvars(root,fileName)
+            # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(root)
             # Sets at.startSentinelComment/endSentinelComment.
         # Update the outline using the @shadow algorithm.
@@ -1051,7 +1053,6 @@ class AtFile:
         if not g.unitTesting:
             g.es("updating:",root.h)
         # The following is like at.read() w/o caching logic.
-        at.initReadIvars(root,fileName)
         root.clearVisitedInTree()
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
@@ -5735,10 +5736,10 @@ class AtFile:
         createPath=True,
         issuePathWarning=False,
     ):
-
-        '''Scan p and p's ancestors looking for directives,
-        setting corresponding AtFile ivars.'''
-
+        '''
+        Scan p and p's ancestors looking for directives,
+        setting corresponding AtFile ivars.
+        '''
         trace = False and not g.unitTesting
         at = self ; c = self.c
         g.app.atPathInBodyWarning = None
