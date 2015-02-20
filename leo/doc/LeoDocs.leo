@@ -7884,7 +7884,7 @@ based *solely* on changes to public files.
 Leo writes private files to a subfolder of the folder containing the public file:
 by default this folder is called .leo_shadow.
 You can change the name of this folder using the @string shadow_subdir setting.
-Note that private files need not be known to source code control systems such as bzr or git.
+Note that private files need not be known to source code control systems such as git.
 
 That's *almost* all there is to it.  The following sections discuss important details:
 
@@ -7892,12 +7892,12 @@ That's *almost* all there is to it.  The following sections discuss important de
 - How @shadow works.
 - Why the update algorithm is sound.
 </t>
-<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it creates a
-public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
-short). Public files might can committed to a source code control system such as
-bzr or git. Private files should *not* be known to bzr or git.
+<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it
+creates a public file, a.py, and a private file, .leo_shadow/xa.p (or just
+xa.p for short). Public files might can committed to a source code control
+system such as git. Private files should *not* be known to bzr or git.
 
-Now suppose a.py has been changed outside of Leo, say as the result of a bzr
+Now suppose a.py has been changed outside of Leo, say as the result of a git
 merge. The corresponding private file, xa.p, will *not* have been changed.
 (Private files should *never* change outside of Leo.
 
@@ -21236,7 +21236,8 @@ Leo will continue to support all forms of @auto for the foreseeable future.
 However, users are encouraged to convert @auto trees to @clean trees:
 
 - Updating an @clean tree is much faster that importing an @auto tree.
-- @clean trees preserve outline structure, clone links and uA's.</t>
+- @clean trees preserve outline structure, clone links and uA's.
+</t>
 <t tx="ekr.20150220083616.4">@nocolor-node
 
 - Added glossary entry for @clean.
