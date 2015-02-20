@@ -836,15 +836,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
-<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
-<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
-<v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
-<v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
-<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
-</v>
-</v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
@@ -940,8 +931,10 @@
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
 <v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
+<v t="ekr.20150220145456.4"><vh>What the algorithm does</vh></v>
 <v t="ekr.20150210062226.5"><vh>Background</vh></v>
-<v t="ekr.20150211131925.9"><vh>The Aha: the x.sentinels array</vh></v>
+<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
+<v t="ekr.20150211131925.9"><vh>Aha: the x.sentinels array</vh></v>
 <v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
 <v t="ekr.20150210062226.7"><vh>Summary</vh></v>
 </v>
@@ -1159,15 +1152,17 @@
 </v>
 <v t="ekr.20150212182032.4"></v>
 <v t="ekr.20150212182032.5"><vh>5.1 No more sentinels!</vh>
-<v t="ekr.20150217105817.4"><vh>The new @clean</vh></v>
+<v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
+<v t="ekr.20150220115528.6"><vh>\@clean is better than \auto</vh></v>
+<v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
+<v t="ekr.20150220115528.4"><vh>A better update algorithm</vh></v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
 <v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
 <v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
 <v t="ekr.20150220083616.5"><vh>Revise or eliminate</vh>
-<v t="ekr.20080730212711.39"></v>
+<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
 <v t="ekr.20070806095535.1"></v>
-<v t="ekr.20080730212711.15"></v>
 </v>
 <v t="ekr.20100821182153.4343"></v>
 <v t="ekr.20081205084002.2"></v>
@@ -1188,7 +1183,7 @@
 <v t="ekr.20090706042206.14718"></v>
 <v t="ekr.20150217105817.4"></v>
 </v>
-<v t="ekr.20150220083616.6"><vh>** Move most of the @shadow docs elsewhere</vh></v>
+<v t="ekr.20150210062226.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -7838,32 +7833,6 @@ The contents of @button profile is::
 
 runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
 </t>
-<t tx="ekr.20080730212711.14"></t>
-<t tx="ekr.20080730212711.15">#############
-Using @shadow
-#############
-
-This chapter describes an important new feature that debuted in Leo 4.5 b2: @shadow trees.
-These trees combine the benefits of @auto, @file and @nosent trees:
-
-- The (public) files created by @shadow trees contain no sentinels, but
-- Leo is able to update @shadow trees in the Leo outline based on changes made
-  to public files outside of Leo.
-
-@shadow trees are often useful for studying or editing source files from projects that don't use Leo. 
-In such situations, it is convenient to import the @shadow tree from the (public) sources.
-As discussed below, Leo can import @shadow trees automatically,
-using the same algorithms used by `@auto trees`_.
-
-The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
-
-.. contents::
-    :depth: 2
-
-</t>
-<t tx="ekr.20080730212711.16">.. Links
-.. _`@auto trees`:          directives.html#auto    
-</t>
 <t tx="ekr.20080730212711.39">Using @shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file. 
@@ -7892,86 +7861,42 @@ That's *almost* all there is to it.  The following sections discuss important de
 - How @shadow works.
 - Why the update algorithm is sound.
 </t>
-<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it
-creates a public file, a.py, and a private file, .leo_shadow/xa.p (or just
-xa.p for short). Public files might can committed to a source code control
-system such as git. Private files should *not* be known to bzr or git.
-
-Now suppose a.py has been changed outside of Leo, say as the result of a git
-merge. The corresponding private file, xa.p, will *not* have been changed.
-(Private files should *never* change outside of Leo.
-
-When Leo reads the *new* (and possibly updated) public file it does the
-following:
-
-1. Recreates the *old* public file by removing sentinels from the (unchanged!) *private* file.
-2. Creates a set of diffs between the old and new *public* files.
-3. Uses the diffs to create a new version of the *private* file.
-4. Creates the @shadow tree using  the new *private* file.
-
-**Important**: The update algorithm never changes sentinels. This means that the
-update algorithm never inserts or deletes nodes. The user is responsible for
-creating nodes to hold new lines, or for deleting nodes that become empty as the
-result of deleting lines.
-
-Step 3 is the clever part. To see all the details of how the algorithm works,
-please study the x.propagate_changed_lines method in leoShadow.py. This code is
-heavily commented.
-</t>
-<t tx="ekr.20080730212711.42">The first step in creating an @shadow tree is to create a node whose
-headline is @shadow *&lt;filename&gt;*.
-
-Thus, you can create an @shadow node and save your outline, regardless of
-whether the original file exists. The next time Leo reads the @shadow node, Leo
-will **create** the entire @shadow tree using the same logic as for `@auto
-trees`_. You can cause Leo to read the @shadow node in two ways: 1) by closing
-and reloading the Leo outline or 2) by selecting the @shadow node and executing
-the File:Read/Write:Read @shadow Node command.
-
-**Important**: Leo imports the private file into the @shadow tree only if
-
-a) the public file exists and
-b) the private file does *not* exist.
-
-Thus, Leo will import code into each @shadow node at most once. After the first
-import, updates are made using the update algorithm.
-
-**Note**: just as for @auto, Leo will never read (import) or write an @shadow
-tree if the @shadow node is under the influence of an \@ignore directive.
-
-**Important**: At present, Leo puts all nodes included by @others at the
-same outline level. This could fairly be called a bug. See:
-https://bugs.launchpad.net/leo-editor/+bug/1226353 The workaround is to
-place an @others directive at the end of any node with children.
-</t>
 <t tx="ekr.20080730212711.52">There are several boundary cases that the update algorithm can not resolve.
-For example, if a line is inserted at the boundary between nodes,
-the updated algorithm can not determine whether the line should be inserted
-at the end of one node of the start of the next node.
+For example, if a line is inserted between nodes, the updated algorithm can
+not determine whether the line should be inserted at the end of one node of
+the start of the next node. Let us call such lines **ambiguous lines**.
 
-Happily, the inability of the update algorithm to distinguish between
-these two cases **does not matter**, for three very important reasons:
+In this case the algorithm *guesses* that the ambiguous line (or lines)
+belongs at the end of the first node. This is usually what is wanted
+because most lines are inserted at the ends of nodes.
 
-1. No matter which choice is made, the *public* file that results is the same.
-   **The choice doesn't matter**, so the update algorithm is completely and
-   absolutely safe.
+Happily, **guesses don't matter**, for the following reasons:
+
+1. The external file that results from writing the @clean x will be the same
+   as the updated external file
+   *no matter where ambiguous lines are placed*.
+   In other words, the update algorithm is **sound**.
 
 2. Leo reports any nodes that were changed as the result of the update
-   algorithm. In essence, these reports are exactly the same as the reports Leo
-   makes when @file trees were changed as the result of changes made externally
-   to Leo. It is as easy for the user to review changes to @shadow trees as it
+   algorithm. These reports are the same as the reports Leo makes when
+   @file trees were changed as the result of changes made externally to
+   Leo. It is as easy for the user to review changes to @shadow trees as it
    is to review changes to @thin or @file trees.
 
-3. Suppose the user moves a line from the end of one node to the beginning of
-   the following node, or vice versa. Once the user saves the file, the
-   *private* file records the location of the moved line. The next time the user
-   reads the @shadow file, the line will *not* be subject to the update
-   algorithm because the line has not been changed externally. The location of
-   the line (on the boundary) will be completely determined and it will never
-   need to be moved across the boundary.
+3. The user can permanently correct any mistaken guess.
 
-Understanding these three reasons finally convinced me that @shadow could be
-made to work reliably.
+   The next time an @clean tree is saved, the sentinels in the outline
+   "remember" the node placement of all lines. The update algorithm will
+   never again have to guess.  So moving an ambiguous line to a new node
+   is all the user has to do to correct a mistaken guess.
+   
+   In short, only changed or inserted lines (in the diff) can ever create
+   ambiguous lines.  Once x is written, those lines will no longer appear
+   in the diffs.
+
+This proves that \@shadow and \@clean are safe to use. The remaining sections
+of this document discusses code-level details.
+
 </t>
 <t tx="ekr.20080806211440.185"></t>
 <t tx="ekr.20080806211440.188">.. _`v.uA's`: http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
@@ -10128,8 +10053,10 @@ accessing external files for most people.
 When writing an \@clean tree, Leo expands section references, \@all and
 \@others directives, but Leo writes no sentinels to the external file.
 
+.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+
 When reading an @clean tree, Leo propagates changes from the external file
-to the \@clean tree using the Mulder/Ream update algorithm.
+to the \@clean tree using the `Mulder/Ream update algorithm`_.
 
 **Note**: The \@bool force_newlines_in_at_nosent_bodies setting controls whether
 Leo writes a trailing newline if non-empty body text does not end in a newline.
@@ -10141,20 +10068,19 @@ The default is True.
     pair: Public file; Reference
     
 **Important**: As of Leo 5.1, \@shadow is **deprecated** Use \@clean
-instead.
+instead. \@clean is faster than \@shadow and requires no hidden files.
 
-The \@shadow directive creates *two* external files, a **public** file without
-sentinels, and a **private** file containing sentinels.
+The \@shadow directive creates *two* external files, a **public** file
+without sentinels, and a **private** file containing sentinels.
 
 .. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
-When reading an \@shadow node, Leo uses the `Mulder/Ream update algorithm`_ to
-compare the public and private files, and then updates the outline based
-on changes to the *public* file. 
+When reading an \@shadow node, Leo uses the
+`Mulder/Ream update algorithm`_ to compare the public and private files,
+then updates the outline based on changes to the *public* file.
 
 Leo can do an initial import of \@shadow trees by parsing the corresponding
-public file, exactly as is done for \@auto nodes.
-</t>
+public file, exactly as is done for \@auto nodes.</t>
 <t tx="ekr.20100806170836.4403">.. index::
     pair: @file; Reference
     pair: @thin; Reference
@@ -17094,12 +17020,12 @@ Advanced Topics
 .. toctree::
    :maxdepth: 1
 
-   atShadow
    scripting-miscellany
    theory
    vim-theory
    leonine-world
-</t>
+
+.. atShadow</t>
 <t tx="ekr.20131008041326.16100">######################
 Leo and Other Programs
 ######################
@@ -21035,10 +20961,12 @@ Dave Williams &lt;dave@d-dub.org.uk&gt;
 <t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail,
 with an informal proof of its correctness.
 
-Leo used Mulder's original algorithm to read \@shadow files. Leo uses EKR's
-new algorithm to read \@clean files. The new algorithm replaces the
-x.mapping array with the x.sentinels array. As a result, diff indices never
-need to be adjusted and handling diff opcodes is easy.
+Leo used Mulder's original algorithm to read \@shadow files. The
+Mulder/Ream algorithm is a complete rewrite of the original algorithm. It
+is simple, easy-to-understand and provably correct.
+
+Starting with Leo 5.1, Leo uses the Mulder/Ream algorithm to read \@clean files.
+
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
@@ -21102,7 +21030,13 @@ sentinels::
 
     x.results.extend(x.trailing_sentinels)
 </t>
-<t tx="ekr.20150210062226.7">The algorithm depends on simple, guaranteed, properties of indices in
+<t tx="ekr.20150210062226.7">The algorithm creates an updated set of lines *with* sentinels using the
+@clean outline and the updated external file. These new lines then replace
+the original @clean with a new @clean tree. The algorithm uses only
+difflib. It will work with *any* kind of text file. No knowledge of any
+language is needed.
+
+The algorithm depends on simple, guaranteed, properties of indices in
 SequenceMatcher opcodes.
 
 The algorithm steps through x.sentinels and x.b, extending x.results
@@ -21115,14 +21049,19 @@ classes nor auxiliary indices.
 The algorithm is simple enough to be understood at first reading. I'll
 remember its details for the rest of my life.
 </t>
-<t tx="ekr.20150211131925.9">The x.sentinels eliminates the need for the x.mapping array and
-related index offsets.
+<t tx="ekr.20150211131925.9">Mulder's original algorithm was hard to understand or to change. The
+culprit was the x.mapping array, which mapped indices into arrays of lines
+*with* sentinels to indices into arrays of lines *without* sentines.
 
-For any index i, x.sentinels[i] is the (possibly empty) list of
-sentinel lines that precede line a[i]. Computing x.sentinels from
-old_private_lines is easy. Crucially, x.a and x.sentinels are
-*parallel arrays*. That is, len(x.a) == len(x.sentinels), so indices
-into x.a are *also* indices into x.sentinels.
+The new algorithm replaces the x.mapping array with the x.sentinels array.
+As a result, diff indices never need to be adjusted and handling diff
+opcodes is easy.
+
+For any index i, x.sentinels[i] is the (possibly empty) list of sentinel
+lines that precede line a[i]. Computing x.sentinels from old_private_lines
+is easy. Crucially, x.a and x.sentinels are *parallel arrays*. That is,
+len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
+x.sentinels.
 </t>
 <t tx="ekr.20150212091950.4">Use @clean instead of @file when you don't want to add sentinels in the file.
 
@@ -21165,22 +21104,21 @@ Text tutorials: http://leoeditor.com/tutorial.html
 The highlights of Leo 5.1
 --------------------------
 
-* Leo can now be used without sentinel comments in external files,
-  removing the biggest obstacle to using Leo!
-
-* Leo can now update @clean trees from changes made to external files
-  without sentinel comments, something long thought impossible. As a
-  result, Leo can now be used in any environment, including work groups
-  where no one else uses Leo.
+* @clean trees are the new recommended way of creating external files. Such
+  files contain no sentinels, yet using \@clean is as convenient as @file:
   
-* Updating an @clean tree is significantly faster than updating @shadow
-  trees or importing @auto trees. Furthermore, @clean trees now preserve
-  clone links and user attributes (uA's).
+  - Leo updates @clean trees from changes made to external files without
+    sentinel comments, something long thought impossible. The Aha was to
+    apply a version of the @shadow algorithm to @clean trees.
   
-* @shadow is now officially deprecated. Leo will continue to support @auto,
-  @auto-rst, etc., indefinitely.
-
-* The usual bug fixes and improvements.
+  - \@clean trees preserve clone links and user attributes (uA's) as in
+    @file trees.
+    
+  - Updating @clean trees is significantly faster than updating \@shadow
+    trees or importing @auto trees.
+  
+* @shadow is officially deprecated. \@clean is superior to \@shadow in all
+  respects. Leo will support @auto, @auto-rst, etc. indefinitely.
 
 Links:
 ------
@@ -21219,31 +21157,76 @@ with just-imported nodes. Here is the docstring::
     Given a unl relative to root, return the node whose
     unl matches the longest suffix of the given unl.
 </t>
-<t tx="ekr.20150217105817.4">Leo can now update @clean trees from changes made to external files
-without sentinel comments, something long thought impossible. As a result,
-Leo can now be used in any environment, including work groups where no one
-else uses Leo.
+<t tx="ekr.20150217105817.4">Leo updates @clean trees from changes made to external files without
+sentinel comments, something long thought impossible. As a result, Leo can
+now be used in any environment, including work groups where no one else
+uses Leo.
 
-Leo updates @clean trees using a simplified version of the Mulder update
-algorithm previously used to update @shadow trees. The new Mulder/Ream
-algorithm is easy to understand, provably correct and completely
-documented. It may be of interest to the developers of other outliners.
-
-Updating an @clean tree is about twice as fast as updating an @shadow
-tree. As a result, @shadow is now officially deprecated.
-
-Leo will continue to support all forms of @auto for the foreseeable future.
-However, users are encouraged to convert @auto trees to @clean trees:
-
-- Updating an @clean tree is much faster that importing an @auto tree.
-- @clean trees preserve outline structure, clone links and uA's.
 </t>
 <t tx="ekr.20150220083616.4">@nocolor-node
 
 - Added glossary entry for @clean.
 - Rewrite/eliminate @shadow chapter.</t>
 <t tx="ekr.20150220083616.5"></t>
-<t tx="ekr.20150220083616.6"></t>
+<t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update
+algorithm previously used to update @shadow trees. The Mulder/Ream
+algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+is easy to understand, provably correct and completely documented. It may
+be of interest to the developers of other outliners.</t>
+<t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. \@clean is faster
+and easier to use than \@shadow.
+</t>
+<t tx="ekr.20150220115528.6">\@clean is significantly better than \@auto for most purposes.
+Most users will want convert from @auto trees to @clean:
+
+- Updating an @clean tree is faster that importing an @auto tree.
+
+- @clean trees preserve outline structure, clone links and uA's without the
+  need for @persistence trees.
+
+However, Leo will continue to support all forms of @auto for the
+foreseeable future, especially \@auto-rst, \@auto-vimoutline and
+\@auto-otl.</t>
+<t tx="ekr.20150220145456.4">For simplicity, this discussion will assume that we are updating an
+external file, x, created with @clean x. The update algorithm works
+exactly the same way with @shadow trees.
+
+**Important**: the algorithm works with *any* kind of text file. The
+algorithm uses only difflib. The algorithm knows nothing about the text or
+its meaning. No parsing is ever done.
+
+Now suppose file x has been changed outside of Leo.  When Leo reads the new
+contents of x it does the following:
+
+1. Recreates the *old* version of x *without* sentinels by writing the
+   @clean x *outline* into a string, as if it were writing x again.
+   
+2. Recreates all the lines of x *with* sentinels by writing the @clean
+   *outline* into a string, as if it was writing an @file node!  Let's
+   call these lines the **old sentinels** lines.
+   
+3. Uses difflib.SequenceMatcher to create a set of diffs between the
+   old and new versions of x *without* sentinels.
+   
+   **Terminology**: the diffs tell how to change file a into file b. The
+   actual code uses this terminaology: **a** is set of lines in the old
+   version of b, **b** is the set of lines in the new version of x.
+   
+4. Creates a set of lines, the **new sentinels lines** using the old
+   sentinels lines, the a and b lines and the diffs.
+   
+   Bernhard Mulder's genius was conceiving that a three-way merge of lines
+   could produce the new outline. The x.propagate_changed_lines method
+   contains all the code.
+   
+5. Replaces the @clean tree with the new tree created by reading the new
+   sentinels lines using the @file read logic.
+
+**Important**: The update algorithm never changes sentinels. This means that the
+update algorithm never inserts or deletes nodes. The user is responsible for
+creating nodes to hold new lines, or for deleting nodes that become empty as the
+result of deleting lines.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
