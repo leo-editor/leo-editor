@@ -1970,7 +1970,7 @@ class VNodeBase (object):
         return (
             self.findAtFileName(g.app.atAutoNames) or
             self.findAtFileName(g.app.atFileNames))
-    #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName (changed)
+    #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
@@ -1993,7 +1993,7 @@ class VNodeBase (object):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        names = ("@nosent", "@file-nosent",)
+        names = ("@clean","@nosent", "@file-nosent",)
         return self.findAtFileName(names)
 
     def atShadowFileNodeName (self):
@@ -2028,7 +2028,7 @@ class VNodeBase (object):
 
         h = self.headString()
         return h and h[0] == '@' and self.anyAtFileNodeName()
-    #@+node:ekr.20040325073709: *4* v.isAt...FileNode (changed)
+    #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
 

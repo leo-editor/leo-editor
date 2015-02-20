@@ -1014,7 +1014,7 @@ class AtFile:
         g.doHook('after-edit',p=p)
     #@+node:ekr.20150204165040.5: *4* at.readOneAtNosentNode & helpers
     def readOneAtNosentNode(self,root):
-        '''Update the @nosent node at root.'''
+        '''Update the @clean/@nosent node at root.'''
         trace = False and not g.unitTesting
         at,c,x = self,self.c,self.c.shadowController
         fileName = at.fullPath(root)
@@ -1079,7 +1079,7 @@ class AtFile:
 
     #@+node:ekr.20150204165040.8: *5* at.read_at_nosent_lines
     def read_at_nosent_lines(self,fn):
-        '''Return all lines of the @nosent file at fn.'''
+        '''Return all lines of the @clean/@nosent file at fn.'''
         at = self
         try:
             f = open(fn,'r')
@@ -1092,8 +1092,8 @@ class AtFile:
     #@+node:ekr.20150204165040.9: *5* at.write_nosent_sentinels
     def write_nosent_sentinels(self,root):
         '''
-        Return all lines of the @nosent tree as if the tree were written as an
-        @file node.
+        Return all lines of the @clean/@nosent tree as if the tree were written
+        as an @file node.
         '''
         at = self.c.atFileCommands
         at.write(root,
@@ -3878,7 +3878,7 @@ class AtFile:
             nosentinels=True,thinFile=False,
             scriptWrite=False,toString=toString)
         # Compute the file's contents.
-        # Unlike the @nosent file logic it does not add a final newline.
+        # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
             if at.directiveKind4(s,0) == at.noDirective])
         if toString:
@@ -3947,7 +3947,7 @@ class AtFile:
         # 
         # - We always ensure a newline in @file and @thin trees.
         # - This code is not used used in @asis trees.
-        # - New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+        # - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
         #   @bool force_newlines_in_at_nosent_bodies = False
         #@@c
 

@@ -1048,7 +1048,7 @@ class RstCommands:
             # New in Leo 4.4.4.
             if word.startswith('@'):
                 if self.getOption('strip_at_file_prefixes'):
-                    for s in ('@auto','@file','@nosent','@thin',):
+                    for s in ('@auto','@clean','@file','@nosent','@thin',):
                         if g.match_word(word,0,s):
                             h = h [len(s):].strip()
 

@@ -1032,9 +1032,7 @@ class TestManager:
         return suite
     #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest
     def runAtFileTest(self,p):
-
         """Common code for testing output of @file, @thin, etc."""
-
         c = self.c
         at = c.atFileCommands
         child1 = p.firstChild()
@@ -1044,17 +1042,14 @@ class TestManager:
         assert(g.match(h1,0,"#@"))
         assert(g.match(h2,0,"output"))
         expected = child2.b
-
         # Compute the type from child1's headline.
         j = g.skip_c_id(h1,2)
         theType = h1[1:j]
         assert theType in (
-            "@auto","@edit","@file","@thin","@nosent",
+            "@auto","@clean","@edit","@file","@thin","@nosent",
             "@asis",), "bad type: %s" % type
-
         thinFile = theType == "@thin"
-        nosentinels = theType in ("@asis","edit","@nosent")
-
+        nosentinels = theType in ("@asis","@clean","@edit","@nosent")
         if theType == "@asis":
             at.asisWrite(child1,toString=True)
         elif theType == "@auto":

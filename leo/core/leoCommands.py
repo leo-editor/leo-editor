@@ -794,7 +794,7 @@ class Commands (object):
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand([fn],"@nosent",)
+                ic.importFilesCommand([fn],'@clean') # "@nosent",)
             # No longer supported.
             # c.importCommands.importFilesCommand (names,"@root")
         c.raise_error_dialogs(kind='read')
@@ -1254,7 +1254,7 @@ class Commands (object):
             elif word in ('@thin','@file'):
                 p.deleteAllChildren()
                 at.read(p,force=True)
-            elif word == '@nosent':
+            elif word in ('@clean','@nosent'):
                 at.readOneAtNosentNode(p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
@@ -2548,13 +2548,10 @@ class Commands (object):
             return n
         #@+node:ekr.20100216141722.5634: *7* getFileLines (leoEditCommands)
         def getFileLines (self,root,fileName):
-
             '''Read the file into lines.'''
-
             c = self.c
             isAtEdit = root.isAtEditNode()
             isAtNoSent = root.isAtNoSentFileNode()
-
             if isAtNoSent or isAtEdit:
                 # Write a virtual file containing sentinels.
                 at = c.atFileCommands
@@ -8420,7 +8417,7 @@ class Commands (object):
 
         Parameters::
             dir_            The root directory or file to import.
-            kind            One of ('@edit','@file','@nosent').
+            kind            One of ('@clean','@edit','@file','@nosent').
             one_file        True: import only the file given by dir_.
             safe_at_file    True: produce @@file nodes instead of @file nodes.
             theTypes        A list of file extensions to import.

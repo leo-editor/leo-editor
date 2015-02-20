@@ -642,7 +642,7 @@ class LeoImportCommands:
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
-            if self.treeType in ('@file','@nosent'):
+            if self.treeType in ('@clean','@file','@nosent'):
                 p.initHeadString('%s %s' % (self.treeType,fileName))
             elif self.treeType is None:
                 # By convention, we use the short file name.
@@ -1343,9 +1343,10 @@ class LeoImportCommands:
         if not p: return
         c,ic = self.c,self
         language = g.scanForAtLanguage(c,p)
+        self.treeType = '@file'
         ext = '.' + g.app.language_extension_dict.get(language)
         parser = self.body_parser_for_ext(ext)
-        # g.trace(language,ext,parser)
+        # g.trace(language,ext,parser and parser.__name__)
         if parser:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
@@ -1700,7 +1701,7 @@ class RecursiveImportController:
             else:
                 c.importCommands.importFilesCommand(files2,'@file',
                     redrawFlag=False,shortFn=True)
-                    # '@auto' or '@nosent' cause problems.
+                    # '@auto','@clean','@nosent' cause problems.
         if dirs:
             for dir_ in sorted(dirs):
                 prefix = dir_
@@ -1711,7 +1712,7 @@ class RecursiveImportController:
         t1 = time.time()
         for p in p.self_and_subtree():
             h = p.h
-            for tag in ('@file','@nosent'):
+            for tag in ('@clean','@file','@nosent'):
                 if h.startswith('@'+tag):
                     i = 1+len(tag)
                     path = h[i:].strip()
@@ -2024,7 +2025,7 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12613: *3* run
     def run (self,dir_):
         '''Import all the .py files in dir_.'''
-        if self.kind not in ('@auto','@edit','@file','@nosent'):
+        if self.kind not in ('@auto','@clean','@edit','@file','@nosent'):
             g.es('bad kind param',self.kind,color='red')
         try:
             c = self.c

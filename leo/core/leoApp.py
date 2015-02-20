@@ -52,7 +52,7 @@ class LeoApp:
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
         self.ipython_inited = False     # True if leoIpython.py imports succeeded.
-        self.new_nosent = True          # True: enable @nosent update logic.
+        self.new_nosent = True          # True: enable @clean update logic.
         self.qt_use_tabs = False        # True: allow tabbed main window.
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.
@@ -208,7 +208,7 @@ class LeoApp:
             "@asis",
             "@edit",
             "@file-asis","@file-thin","@file-nosent","@file",
-            "@nosent",
+            "@clean","@nosent",
             "@shadow",
             "@thin", 
         ])
@@ -2124,7 +2124,7 @@ class LoadManager:
         add('--no-splash', action='store_true', dest='no_splash_screen',
             help = 'disable the splash screen')
         add('--old-nosent', action='store_true', dest='old_nosent',
-            help = 'disable new @nosent update logic')
+            help = 'disable new @clean update logic')
         add('--screen-shot', dest='screenshot_fn',
             help = 'take a screen shot and then exit')
         add('--script', dest='script',
