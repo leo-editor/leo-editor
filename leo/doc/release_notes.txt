@@ -29080,16 +29080,17 @@ The highlights of Leo 5.1
 --------------------------
 
 * @clean trees are the new recommended way of creating external files. Such
-  files contain no sentinels, yet using \@clean is as convenient as @file:
+  files contain no sentinels, yet using @clean is as convenient as using
+  @file:
   
-  - Leo updates @clean trees from changes made to external files without
-    sentinel comments, something long thought impossible. The Aha was to
-    apply a version of the @shadow algorithm to @clean trees.
+  - Leo updates @clean trees from changes made to external files, something
+    long thought impossible. The Aha was to apply the @shadow algorithm to
+    @clean trees.
   
-  - \@clean trees preserve clone links and user attributes (uA's) as in
+  - @clean trees preserve clone links and user attributes (uA's) as in
     @file trees.
     
-  - Updating @clean trees is significantly faster than updating \@shadow
+  - Updating @clean trees is significantly faster than updating @shadow
     trees or importing @auto trees.
   
 * @shadow is officially deprecated. \@clean is superior to \@shadow in all

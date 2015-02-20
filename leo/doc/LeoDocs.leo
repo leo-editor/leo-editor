@@ -932,8 +932,8 @@
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
 <v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
 <v t="ekr.20150220145456.4"><vh>What the algorithm does</vh></v>
-<v t="ekr.20150210062226.5"><vh>Background</vh></v>
-<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
+<v t="ekr.20080730212711.52"><vh>Guesses don't matter</vh></v>
+<v t="ekr.20150210062226.5"><vh>Background of the code</vh></v>
 <v t="ekr.20150211131925.9"><vh>Aha: the x.sentinels array</vh></v>
 <v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
 <v t="ekr.20150210062226.7"><vh>Summary</vh></v>
@@ -7862,40 +7862,30 @@ That's *almost* all there is to it.  The following sections discuss important de
 - Why the update algorithm is sound.
 </t>
 <t tx="ekr.20080730212711.52">There are several boundary cases that the update algorithm can not resolve.
-For example, if a line is inserted between nodes, the updated algorithm can
-not determine whether the line should be inserted at the end of one node of
-the start of the next node. Let us call such lines **ambiguous lines**.
+For example, if a line is inserted between nodes, the algorithm can not
+determine whether the line should be inserted at the end of one node or the
+start of the next node. Let us call such lines **ambiguous lines**.
 
-In this case the algorithm *guesses* that the ambiguous line (or lines)
-belongs at the end of the first node. This is usually what is wanted
-because most lines are inserted at the ends of nodes.
+The algorithm *guesses* that ambiguous lines belongs at the end of a node
+rather than at the start of the next node. This is usually what is
+wanted--we usually insert lines at the end of a node.
 
 Happily, **guesses don't matter**, for the following reasons:
 
-1. The external file that results from writing the @clean x will be the same
-   as the updated external file
-   *no matter where ambiguous lines are placed*.
-   In other words, the update algorithm is **sound**.
+1. The external file that results from writing the @clean x tree will be
+   the same as the updated external file *no matter where* ambiguous lines
+   are placed. In other words, the update algorithm is **sound**.
 
-2. Leo reports any nodes that were changed as the result of the update
-   algorithm. These reports are the same as the reports Leo makes when
-   @file trees were changed as the result of changes made externally to
-   Leo. It is as easy for the user to review changes to @shadow trees as it
-   is to review changes to @thin or @file trees.
+2. Leo reports nodes that were changed when reading any external file. The
+   user can review changes to @clean and @file trees in the same way.
 
-3. The user can permanently correct any mistaken guess.
+3. The user can permanently correct any mistaken guess. Guesses only happen
+   for *newly inserted or changed* lines. Moving an ambiguous line to the
+   following node will not change the external file. As a result, the
+   next time Leo reads the file the line will be placed in the correct node!
 
-   The next time an @clean tree is saved, the sentinels in the outline
-   "remember" the node placement of all lines. The update algorithm will
-   never again have to guess.  So moving an ambiguous line to a new node
-   is all the user has to do to correct a mistaken guess.
-   
-   In short, only changed or inserted lines (in the diff) can ever create
-   ambiguous lines.  Once x is written, those lines will no longer appear
-   in the diffs.
-
-This proves that \@shadow and \@clean are safe to use. The remaining sections
-of this document discusses code-level details.
+This proves that \@shadow and \@clean are easy and safe to use. The
+remaining sections of this document discusses code-level details.
 
 </t>
 <t tx="ekr.20080806211440.185"></t>
@@ -20961,15 +20951,16 @@ Dave Williams &lt;dave@d-dub.org.uk&gt;
 <t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail,
 with an informal proof of its correctness.
 
-Leo used Mulder's original algorithm to read \@shadow files. The
-Mulder/Ream algorithm is a complete rewrite of the original algorithm. It
-is simple, easy-to-understand and provably correct.
+Leo used Mulder's original algorithm to read \@shadow files. The new
+algorithm is a complete rewrite. It is simple, easy-to-understand and
+provably correct.
 
 Starting with Leo 5.1, Leo uses the Mulder/Ream algorithm to read \@clean files.
 
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
-SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
+SequenceMatcher.opcodes. See
+https://docs.python.org/2/library/difflib.html#sequencematcher-examples
 
 **Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b
 (another list of lines).
@@ -21105,16 +21096,17 @@ The highlights of Leo 5.1
 --------------------------
 
 * @clean trees are the new recommended way of creating external files. Such
-  files contain no sentinels, yet using \@clean is as convenient as @file:
+  files contain no sentinels, yet using @clean is as convenient as using
+  @file:
   
-  - Leo updates @clean trees from changes made to external files without
-    sentinel comments, something long thought impossible. The Aha was to
-    apply a version of the @shadow algorithm to @clean trees.
+  - Leo updates @clean trees from changes made to external files, something
+    long thought impossible. The Aha was to apply the @shadow algorithm to
+    @clean trees.
   
-  - \@clean trees preserve clone links and user attributes (uA's) as in
+  - @clean trees preserve clone links and user attributes (uA's) as in
     @file trees.
     
-  - Updating @clean trees is significantly faster than updating \@shadow
+  - Updating @clean trees is significantly faster than updating @shadow
     trees or importing @auto trees.
   
 * @shadow is officially deprecated. \@clean is superior to \@shadow in all
@@ -21133,17 +21125,23 @@ Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20150215071358.87">* Emphasize that the place to search first is LeoDocs.leo.
   Jake: The above line should be highlighted in big boldface on Leo's website.
-
+  
+* Review tutorial, making sure that @clean is highlighted.
+  
+* De-emphasize @auto in all docs.
 * Document @auto-rst/md/vo/otl.
-* Make sure uA's and gnx's are documented.
+* Review docs for uA's and gnx's.
+* Spell check all changed text.
+
+Done
 * Make sure @clean/@nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
-* (Maybe) Deprecate @auto in all docs.</t>
-<t tx="ekr.20150216034509.1">\@persistence nodes were introduced in Leo 5.0.
+</t>
+<t tx="ekr.20150216034509.1">@persistence nodes were introduced in Leo 5.0.
 
-The existence of an @persistence enables this
-feature. Changing the node to, say, @@persistence disables the feature. 
+The existence of an @persistence node enables this feature. Changing the
+node to, say, @@persistence disables the feature.
 
 When writing an @auto file, Leo stores data (akin to bookmarks) in a
 subtree of the @persistence node. When re-reading the file, the data allow
@@ -21172,7 +21170,8 @@ uses Leo.
 algorithm previously used to update @shadow trees. The Mulder/Ream
 algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 is easy to understand, provably correct and completely documented. It may
-be of interest to the developers of other outliners.</t>
+be of interest to the developers of other outliners.
+</t>
 <t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. \@clean is faster
 and easier to use than \@shadow.
 </t>
@@ -21186,46 +21185,48 @@ Most users will want convert from @auto trees to @clean:
 
 However, Leo will continue to support all forms of @auto for the
 foreseeable future, especially \@auto-rst, \@auto-vimoutline and
-\@auto-otl.</t>
+\@auto-otl.
+</t>
 <t tx="ekr.20150220145456.4">For simplicity, this discussion will assume that we are updating an
 external file, x, created with @clean x. The update algorithm works
 exactly the same way with @shadow trees.
 
-**Important**: the algorithm works with *any* kind of text file. The
-algorithm uses only difflib. The algorithm knows nothing about the text or
-its meaning. No parsing is ever done.
+The algorithm works with *any* kind of text file. The algorithm uses only
+difflib. It knows nothing about the text or its meaning. No parsing is ever
+done.
 
-Now suppose file x has been changed outside of Leo.  When Leo reads the new
-contents of x it does the following:
+Suppose file x has been changed outside of Leo. When Leo reads x it does
+the following:
 
 1. Recreates the *old* version of x *without* sentinels by writing the
-   @clean x *outline* into a string, as if it were writing x again.
+   @clean x *outline* into a string, as if it were writing the @clean x
+   outline again.
    
-2. Recreates all the lines of x *with* sentinels by writing the @clean
-   *outline* into a string, as if it was writing an @file node!  Let's
-   call these lines the **old sentinels** lines.
+2. Recreates all the lines of x *with* sentinels by writing the @clean x
+   *outline* into a string, as if it was writing an @file node! Let's call
+   these lines the **old sentinels** lines.
    
 3. Uses difflib.SequenceMatcher to create a set of diffs between the
    old and new versions of x *without* sentinels.
    
    **Terminology**: the diffs tell how to change file a into file b. The
    actual code uses this terminaology: **a** is set of lines in the old
-   version of b, **b** is the set of lines in the new version of x.
+   version of x, **b** is the set of lines in the new version of x.
    
 4. Creates a set of lines, the **new sentinels lines** using the old
    sentinels lines, the a and b lines and the diffs.
    
-   Bernhard Mulder's genius was conceiving that a three-way merge of lines
-   could produce the new outline. The x.propagate_changed_lines method
-   contains all the code.
+   This is the magic. Bernhard Mulder's genius was conceiving that a
+   three-way merge of lines could produce the new outline, *with*
+   sentinels. The code is in x.propagate_changed_lines and its helpers.
    
 5. Replaces the @clean tree with the new tree created by reading the new
-   sentinels lines using the @file read logic.
+   sentinels lines with the @file read logic.
 
-**Important**: The update algorithm never changes sentinels. This means that the
-update algorithm never inserts or deletes nodes. The user is responsible for
-creating nodes to hold new lines, or for deleting nodes that become empty as the
-result of deleting lines.
+**Important**: The update algorithm never changes sentinels. It never
+inserts or deletes nodes. The user is responsible for creating nodes to
+hold new lines, or for deleting nodes that become empty as the result of
+deleting lines.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
