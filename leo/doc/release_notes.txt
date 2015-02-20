@@ -23752,7 +23752,7 @@ Allow colorizing for languages to be delegated to another language.
   with the delegated name.
   
 There are two other changes you must make if you don't want
-to use @language, as in your example with @nosent trees.
+to use @language, as in your example with @clean trees.
 
 1. To write the proper delims for .hbs files, add the
    following entry in define_language_delims_dict in
@@ -29082,13 +29082,13 @@ The highlights of Leo 5.1
 * Leo can now be used without sentinel comments in external files,
   removing the biggest obstacle to using Leo!
 
-* Leo can now update @nosent trees from changes made to external files
+* Leo can now update @clean trees from changes made to external files
   without sentinel comments, something long thought impossible. As a
   result, Leo can now be used in any environment, including work groups
   where no one else uses Leo.
   
-* Updating an @nosent tree is significantly faster than updating @shadow
-  trees or importing @auto trees. Furthermore, @nosent trees now preserve
+* Updating an @clean tree is significantly faster than updating @shadow
+  trees or importing @auto trees. Furthermore, @clean trees now preserve
   clone links and user attributes (uA's).
   
 * @shadow is now officially deprecated. Leo will continue to support @auto,
@@ -29106,24 +29106,24 @@ Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
-#@+node:ekr.20150217105817.4: *4* The new @nosent
-Leo can now update @nosent trees from changes made to external files
+#@+node:ekr.20150217105817.4: *4* The new @clean
+Leo can now update @clean trees from changes made to external files
 without sentinel comments, something long thought impossible. As a result,
 Leo can now be used in any environment, including work groups where no one
 else uses Leo.
 
-Leo updates @nosent trees using a simplified version of the Mulder update
+Leo updates @clean trees using a simplified version of the Mulder update
 algorithm previously used to update @shadow trees. The new Mulder/Ream
 algorithm is easy to understand, provably correct and completely
 documented. It may be of interest to the developers of other outliners.
 
-Updating an @nosent tree is about twice as fast as updating an @shadow
+Updating an @clean tree is about twice as fast as updating an @shadow
 tree. As a result, @shadow is now officially deprecated.
 
 Leo will continue to support all forms of @auto for the foreseeable future.
-However, users are encouraged to convert @auto trees to @nosent trees:
+However, users are encouraged to convert @auto trees to @clean trees:
 
-- Updating an @nosent tree is much faster that importing an @auto tree.
-- @nosent trees preserve outline structure, clone links and uA's.
+- Updating an @clean tree is much faster that importing an @auto tree.
+- @clean trees preserve outline structure, clone links and uA's.
 #@-all
 #@-leo

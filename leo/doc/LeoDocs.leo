@@ -417,7 +417,7 @@
 <v t="ekr.20131003040744.18222" a="O"><vh>Basic markup</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
-<v t="ekr.20150212091950.4"><vh>Using @nosent nodes</vh></v>
+<v t="ekr.20150212091950.4"><vh>Using @clean nodes</vh></v>
 <v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
 <v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
@@ -694,7 +694,7 @@
 <v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt; (deprecated)</vh></v>
 <v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
-<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4399"><vh>\@clean &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
@@ -1159,10 +1159,36 @@
 </v>
 <v t="ekr.20150212182032.4"></v>
 <v t="ekr.20150212182032.5"><vh>5.1 No more sentinels!</vh>
-<v t="ekr.20150217105817.4"><vh>The new @nosent</vh></v>
+<v t="ekr.20150217105817.4"><vh>The new @clean</vh></v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
 <v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
+<v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
+<v t="ekr.20150220083616.5"><vh>Revise or eliminate</vh>
+<v t="ekr.20080730212711.39"></v>
+<v t="ekr.20070806095535.1"></v>
+<v t="ekr.20080730212711.15"></v>
+</v>
+<v t="ekr.20100821182153.4343"></v>
+<v t="ekr.20081205084002.2"></v>
+<v t="ekr.20050830120007"></v>
+<v t="ekr.20100809122216.4286"></v>
+<v t="ekr.20100804133903.7250"></v>
+<v t="ekr.20100806170836.4402"></v>
+<v t="ekr.20050830115714.14"></v>
+<v t="ekr.20141120113801.187"><vh>Added support for delegate languages</vh></v>
+<v t="ekr.20150212091950.4"></v>
+<v t="ekr.20131015035606.16799"></v>
+<v t="ekr.20100806170836.4399"></v>
+<v t="ekr.20131215083347.16903"></v>
+<v t="ekr.20100806170836.4392"></v>
+<v t="ekr.20100806170836.4396"></v>
+<v t="ekr.20150212182032.5"></v>
+<v t="ekr.20050830115714.21"></v>
+<v t="ekr.20090706042206.14718"></v>
+<v t="ekr.20150217105817.4"></v>
+</v>
+<v t="ekr.20150220083616.6"><vh>** Move most of the @shadow docs elsewhere</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3819,21 +3845,11 @@ HTML code (e.g. an image link gets mapped to an &lt;img&gt; HTML tag, a link to 
 Flash file gets mapped to an &lt;embed&gt; tag, etc).
 </t>
 <t tx="ekr.20050830115714.13"></t>
-<t tx="ekr.20050830115714.14">You have two options, depending on whether you want to be able to use sections
-or not.
+<t tx="ekr.20050830115714.14">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
--   Use @nosent trees.
-    Files derived from @nosent trees contain no sentinels_.
-    However, Leo create the external file just as in @file trees.
-    In particular, Leo expands section references and understands the @others directive.
-
--   Use @asis trees.
-    Files derived from @asis trees contain no sentinels_.
-    Moreover, Leo does not expand section references in asis trees.
-    In other words, Leo creates the `external file` simply by writing all body text in outline order.
-    Leo can't update the outline unless the external file contains sentinels,
-    so Leo does not update @nosent trees or @asis trees automatically when
-    you change the external file in an external editor.
+Use @clean trees. Files derived from @clean trees contain no sentinels_.
+However, Leo can update \@clean trees from changes made to the corresponding
+external file.  The `Mulder/Ream update algorithm`_ makes this magic happen.
 </t>
 <t tx="ekr.20050830115714.16">Use @asis trees. Files derived from @asis trees contain no sentinels. Leo
 creates the external file simply by writing all body text in outline order. Leo
@@ -3929,7 +3945,7 @@ Like this::
 This changes the comment symbol the apostrophe,
 making comments parseable by a BASIC (or other language.)
 </t>
-<t tx="ekr.20050830115714.21">Use the @first directive_ in @file trees or @nosent trees.
+<t tx="ekr.20050830115714.21">Use the @first directive_ in @file or @clean trees.
 
 The @first directive puts lines at the very start of files derived from @file.
 For example, the body text of @file spam.py might be::
@@ -4112,9 +4128,9 @@ new_leo_file_encoding
 .. ----- References to the glossary: the glossary now contains references to the tutorial.
 .. _`@asis`:                glossary.html#asis-trees
 .. _`@auto`:                glossary.html#auto-trees
+.. _`@clean`:               glossary.html#clean
 .. _`@file`:                glossary.html#file-trees
 .. _`@others directive`:    glossary.html#others
-.. _`@nosent`:              glossary.html#nosent
 .. _`@shadow`:              glossary.html#shadow-trees
 .. _`@thin`:                glossary.html#thin-trees
 .. _`@unit`:                glossary.html#unit
@@ -8125,7 +8141,7 @@ For example::
 
 In particular, d.get('path') returns the full, absolute path created by all
 \@path directives that are in ancestors of node p. If p is any kind of @file node
-(including @file, @auto, @nosent, @shadow, etc.), the following script will
+(including @file, @auto, @clean, etc.), the following script will
 print the full path to the created file::
 
     path = d.get('path')
@@ -8718,20 +8734,13 @@ Nevertheless, you can steal a peek at the doc here:
 
 http://vvtools.googlecode.com/files/Leodocumentation.pdf 
 </t>
-<t tx="ekr.20090706042206.14718">Leo's sentinels add outline structure to source files.
-However, those sentinels annoy some people who don't use Leo.
+<t tx="ekr.20090706042206.14718">Leo's sentinels add outline structure to source files. However, those
+sentinels annoy some people who don't use Leo.
 
-You can use @auto, @shadow or @nosent trees to edit
-files that are shared with those who don't want to see sentinel comments.
+Most people will find using @clean trees to be most useful.
 
-- @auto is best for files whose imported outline structure often changes. In
-  most cases, this will be the best option. The drawback of @auto files are a)
-  you can't use clones and b) you can't add your own organizer nodes.
-
-- @shadow will work for files whose outline structure seldom changes.
-  The advantage of @shadow is that you can add your own structure.
-
-- @nosent is appropriate only for files that you alone modify.
+Use @auto-rst, @auto-vimoutline or @auto-otl when using rST, vimoutline or
+Emacs org mode files.
 </t>
 <t tx="ekr.20090711120622.10447">################
 Leo screen shots
@@ -9043,7 +9052,7 @@ or download Leo's sources directly.
 
 \@&lt;file&gt; node
     A node whose headline starts with
-    @asis, @edit, @file, @nosent, @shadow, @thin, or their longer forms.
+    @asis, @clean, @edit, @file, @shadow, @thin, or their longer forms.
     We often refer to outline nodes by the directives they contain.
     For example, an @file node is a node whose headline starts with @file, etc.
 
@@ -9088,6 +9097,14 @@ or download Leo's sources directly.
 
 .. index::
     pair: @color; Glossary
+    
+.. index::
+    pair: @clean; Glossary
+
+\@clean
+
+    Creates an external file without sentinels. Section references and the
+    \@all and \@others directives are valid in \@clean trees.
 
 \@color
 
@@ -9205,8 +9222,7 @@ or download Leo's sources directly.
 
 \@nosent
 
-    Creates an external file containing no sentinels. Unlike \@asis, sections
-    references and the @all and @others directives are valid in \@nosent trees.
+    A deprecated spelling of \@clean.
 
 .. index::
     pair: @nowrap; Glossary
@@ -9903,14 +9919,12 @@ import external files.
 ..  \@file otherwise. In particular, \@file is **highly recommended** when sharing
 ..  external files in a collaborative environment.
 
-**Important**: As or rev rev 7ec6e4b \@file or \@nosent are the recommended
+**Important**: In Leo 5.1 and later \@file or \@clean are the recommended
 ways of creating external files.
-
-**Important**: In Leo 5.1 \@auto and \@shadow will be synonyms for \@nosent.
 
 **Note**: All these directive must appear in headlines.
 
-The following table summarizes the various ways of creating external files.
+The following table compares the various ways of creating external files.
 
 +---------+------------+------------------+-----------------+
 |         | Sentinels  | Sections and     | File data stored|
@@ -9921,21 +9935,15 @@ The following table summarizes the various ways of creating external files.
 +---------+------------+------------------+-----------------+
 | @auto   | no         | yes              | no              |
 +---------+------------+------------------+-----------------+
+| @clean  | no         | yes              | yes             |
++---------+------------+------------------+-----------------+
 | @edit   | no         | no               | no              |
 +---------+------------+------------------+-----------------+
-| @nosent | no         | yes              | yes             |
-+---------+------------+------------------+-----------------+
-| @shadow | Note 1     | yes              | no              |
-+---------+------------+------------------+-----------------+
-| @file   | yes        | yes              |                 |
-| @thin   |            |                  | no              |
-| Note 2  |            |                  |                 |
+| @file   | yes        | yes              | no              |
 +---------+------------+------------------+-----------------+
 
-**Note 1**: \@shadow nodes create two files, a **public** file without sentinels
-and a **private** file with sentinels.
-
-**Note 2**: \@file and \@thin nodes are synonyms.
+.. .. | @shadow | Note 1     | yes              | no              |
+.. .. | @thin   |            |                  | no              |
 
 Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following
 symbols known: c, g, p, os and sys.  For example::
@@ -9996,11 +10004,7 @@ references and @others are not allowed.
 
 The \@auto directive imports an external file into a tree of nodes.
 
-**Important**: \@auto is **deprecated** since rev 7ec6e4b. In Leo 5.1
-\@auto will be a synonym for \@nosent.
-
-..  Using \@auto is *highly recommended* when using external files that must
-..  not contain Leo sentinels.
+**Important**: As of Leo 5.1, \@clean is recommended instead of \@auto.
 
 \@auto trees allow people to use Leo in collaborative environments without using
 sentinels in external files. Even without sentinels, \@auto trees can change
@@ -10115,21 +10119,17 @@ descendant nodes.
     node.
 </t>
 <t tx="ekr.20100806170836.4399">.. index::
-    pair: @nosent; Reference
+    pair: @clean; Reference
 
-The \@nosent &lt;filename&gt; creates an external file without sentinel lines.
+The \@clean &lt;filename&gt; creates an external file without sentinel lines.
+\@clean trees will probably be the most convenient way of creating and
+accessing external files for most people.
 
-When writing an \@nosent tree, Leo expands section references, \@all and
+When writing an \@clean tree, Leo expands section references, \@all and
 \@others directives, but Leo writes no sentinels to the external file.
-Thus, Leo can not update \@nosent trees from changes made to the external
-file. However, \@nosent trees do have their uses: unlike \@auto trees,
-cloned nodes *are* valid in \@nosent trees.
 
-When reading an \@nosent node, Leo does *not* read the external file.
-Instead, all the data in the \@nosent tree is stored in the .leo file.
-
-**Note**: \@auto or \@shadow are usually better choices than \@nosent for
-creating external files without sentinels.
+When reading an @clean tree, Leo propagates changes from the external file
+to the \@clean tree using the Mulder/Ream update algorithm.
 
 **Note**: The \@bool force_newlines_in_at_nosent_bodies setting controls whether
 Leo writes a trailing newline if non-empty body text does not end in a newline.
@@ -10140,17 +10140,17 @@ The default is True.
     pair: Private file; Reference
     pair: Public file; Reference
     
-**Important**: \@shadow is **deprecated** since rev 7ec6e4b. In Leo 5.1
-\@shadow will be a synonym for \@nosent.
+**Important**: As of Leo 5.1, \@shadow is **deprecated** Use \@clean
+instead.
 
 The \@shadow directive creates *two* external files, a **public** file without
 sentinels, and a **private** file containing sentinels.
 
-When reading an \@shadow node, Leo uses a brilliant algorithm devised by
-Bernhard Mulder that compares the public and private files, and then updates the
-outline based on changes to the *public* file. In this way, \@shadow provides
-many of the benefits of \@file trees without writing sentinels in the (public)
-external file.
+.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+
+When reading an \@shadow node, Leo uses the `Mulder/Ream update algorithm`_ to
+compare the public and private files, and then updates the outline based
+on changes to the *public* file. 
 
 Leo can do an initial import of \@shadow trees by parsing the corresponding
 public file, exactly as is done for \@auto nodes.
@@ -10396,7 +10396,7 @@ show_sections (default: True)
 
 strip_at_file_prefixes (default: True)
 
-    True: remove @auto, @file, @nosent and @thin from the start of headlines.
+    True: remove @auto, @file, @clean, and @thin from the start of headlines.
 
 stylesheet_name (default: 'default.css')
 
@@ -10665,7 +10665,7 @@ Basic slide shows
 
 `Leo Basics Step By Step`_  explains the basics of Leo outlines.
 
-`External Files`_ discusses creating external files with \@file, \@nosent and \@edit.
+`External Files`_ discusses creating external files with \@file, \@clean and \@edit.
 
 `Clones and views`_ illustrates how clones work and show how they create views.
 
@@ -18113,17 +18113,12 @@ This overrides the following default binding in leoSettings.leo::
 </t>
 <t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
 
-    @asis &lt;filename&gt;    
-    @edit &lt;filename&gt;
-    @file &lt;filename&gt;        recommended
-    @nosent &lt;filename&gt;      recommended
-                            
-The following are **deprecated** as of rev 7ec6e4b. In Leo 5.1 they
-will be synonyms for @nosent::
-
+    @asis &lt;filename&gt;
     @auto &lt;filename&gt;        updates outline using importer
     @auto-rst &lt;filename&gt;    uses reStructuredText importer
-    @shadow &lt;filename&gt;      updates outline structure using hidden files.
+    @clean &lt;filename&gt;       recommended
+    @edit &lt;filename&gt;
+    @file &lt;filename&gt;        recommended
     
 See the `Directives reference`_ for full details.
     
@@ -19676,7 +19671,9 @@ Using these variables, scripts may easily do any of the following:
 - Use utility classes and function in the leo.core.leoGlobals module.
 - Execute any code in Leo's own code base.
 </t>
-<t tx="ekr.20131215083347.16903">Leo creates **external files** (files on your file system) from
+<t tx="ekr.20131215083347.16903">.. tutorial-programming.html
+
+Leo creates **external files** (files on your file system) from
 **@file nodes** and *all the descendants* of the @file node.
 Examples::
 
@@ -19694,8 +19691,7 @@ to create the external file from the @file node and its descendants.
 **Note**: Other kinds of nodes (not discussed here) can also create
 external files::
 
-    @nosent x.py
-    @shadow y.py
+    @clean x.py
     @auto z.py</t>
 <t tx="ekr.20140216125129.16666"></t>
 <t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
@@ -20989,6 +20985,25 @@ greatly interrupting the task at hand. Creating "**" nodes does that. This
 new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
+<t tx="ekr.20141120113801.187">Allow colorizing for languages to be delegated to another language.
+
+- Added g.app.delegate_language_dict, with three entries for David McNab.
+
+- jEditColorizer.nameToRuleSetName now replaces the original language name
+  with the delegated name.
+  
+There are two other changes you must make if you don't want
+to use @language, as in your example with @clean trees.
+
+1. To write the proper delims for .hbs files, add the
+   following entry in define_language_delims_dict in
+   leoApp.py::
+
+    "hbs" : "&lt;!-- --&gt;", # McNab: delegate to html.
+
+2. To automatically use @language hbs in .hbs files, add the
+   following entry in define_extension_dict in leoApp.py:
+</t>
 <t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
 automatically when Leo first starts.
 
@@ -21020,10 +21035,10 @@ Dave Williams &lt;dave@d-dub.org.uk&gt;
 <t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail,
 with an informal proof of its correctness.
 
-Leo used Mulder's original algorithm to read \@shadow files. Leo uses
-EKR's new algorithm to read \@nosent files. The new algorithm replaces
-the x.mapping array with the x.sentinels array. As a result, diff
-indices never need to be adjusted and handling diff opcodes is easy.
+Leo used Mulder's original algorithm to read \@shadow files. Leo uses EKR's
+new algorithm to read \@clean files. The new algorithm replaces the
+x.mapping array with the x.sentinels array. As a result, diff indices never
+need to be adjusted and handling diff opcodes is easy.
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes.  See https://docs.python.org/2/library/difflib.html#sequencematcher-examples
@@ -21109,19 +21124,18 @@ old_private_lines is easy. Crucially, x.a and x.sentinels are
 *parallel arrays*. That is, len(x.a) == len(x.sentinels), so indices
 into x.a are *also* indices into x.sentinels.
 </t>
-<t tx="ekr.20150212091950.4">Use @nosent instead of @file when you don't want to add sentinels in the file.
+<t tx="ekr.20150212091950.4">Use @clean instead of @file when you don't want to add sentinels in the file.
 
 .. index::
-    pair: @nosent; Tutorial
-    
-**Important**: The following describes a sensational new feature of Leo
-available since rev 7ec6e4b.  This feature will be part of Leo 5.1.
-    
-Leo can update @nosent trees based on changes you make outside of Leo. Leo
+    pair: @clean; Tutorial
+        
+Leo can update @clean trees based on changes you make outside of Leo. Leo
 will perform such updates when you open a .leo file or when you reload the
 external file using Leo's refresh-from-disk command.
 
-Updating @nosent trees uses a sophisticated **update algorithm** that
+.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+
+Updating @clean trees uses `Mulder/Ream update algorithm`_. This algorithm
 places inserted and changed lines in their proper places in the outline!
 
 **Ambiguous lines** are lines that could be placed either to a node or the
@@ -21130,7 +21144,7 @@ algorithm always places ambiguous lines in the following node because it's
 more common to add lines to the end of nodes.
 
 The update algorithm is **sound** because guesses do not matter. The
-contents of any external file created by @nosent will be the same
+contents of any external file created by @clean will be the same
 regardless of guesses.
 
 Leo reports which nodes have been updated. You can override guesses
@@ -21154,13 +21168,13 @@ The highlights of Leo 5.1
 * Leo can now be used without sentinel comments in external files,
   removing the biggest obstacle to using Leo!
 
-* Leo can now update @nosent trees from changes made to external files
+* Leo can now update @clean trees from changes made to external files
   without sentinel comments, something long thought impossible. As a
   result, Leo can now be used in any environment, including work groups
   where no one else uses Leo.
   
-* Updating an @nosent tree is significantly faster than updating @shadow
-  trees or importing @auto trees. Furthermore, @nosent trees now preserve
+* Updating an @clean tree is significantly faster than updating @shadow
+  trees or importing @auto trees. Furthermore, @clean trees now preserve
   clone links and user attributes (uA's).
   
 * @shadow is now officially deprecated. Leo will continue to support @auto,
@@ -21184,7 +21198,7 @@ Quotes:    http://leoeditor.com/testimonials.html
 
 * Document @auto-rst/md/vo/otl.
 * Make sure uA's and gnx's are documented.
-* Make sure new @nosent is completely documented.
+* Make sure @clean/@nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
 * (Maybe) Deprecate @auto in all docs.</t>
@@ -21205,24 +21219,30 @@ with just-imported nodes. Here is the docstring::
     Given a unl relative to root, return the node whose
     unl matches the longest suffix of the given unl.
 </t>
-<t tx="ekr.20150217105817.4">Leo can now update @nosent trees from changes made to external files
+<t tx="ekr.20150217105817.4">Leo can now update @clean trees from changes made to external files
 without sentinel comments, something long thought impossible. As a result,
 Leo can now be used in any environment, including work groups where no one
 else uses Leo.
 
-Leo updates @nosent trees using a simplified version of the Mulder update
+Leo updates @clean trees using a simplified version of the Mulder update
 algorithm previously used to update @shadow trees. The new Mulder/Ream
 algorithm is easy to understand, provably correct and completely
 documented. It may be of interest to the developers of other outliners.
 
-Updating an @nosent tree is about twice as fast as updating an @shadow
+Updating an @clean tree is about twice as fast as updating an @shadow
 tree. As a result, @shadow is now officially deprecated.
 
 Leo will continue to support all forms of @auto for the foreseeable future.
-However, users are encouraged to convert @auto trees to @nosent trees:
+However, users are encouraged to convert @auto trees to @clean trees:
 
-- Updating an @nosent tree is much faster that importing an @auto tree.
-- @nosent trees preserve outline structure, clone links and uA's.</t>
+- Updating an @clean tree is much faster that importing an @auto tree.
+- @clean trees preserve outline structure, clone links and uA's.</t>
+<t tx="ekr.20150220083616.4">@nocolor-node
+
+- Added glossary entry for @clean.
+- Rewrite/eliminate @shadow chapter.</t>
+<t tx="ekr.20150220083616.5"></t>
+<t tx="ekr.20150220083616.6"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
