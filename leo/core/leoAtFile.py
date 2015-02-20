@@ -1465,6 +1465,7 @@ class AtFile:
             # Work around bug https://bugs.launchpad.net/leo-editor/+bug/1074812
             # Crashes in the scanning logic may arise from corrupted external files.
             at.error('The input file appears to be corrupted.')
+            g.es_exception()
         if at.errors == 0 and not at.done:
             #@+<< report unexpected end of text >>
             #@+node:ekr.20041005105605.76: *5* << report unexpected end of text >>
