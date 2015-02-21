@@ -160,13 +160,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431323932332e307104735803000000302e3171057d71066803580c000000313337363431323739362e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -414,12 +414,16 @@
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131215083347.16903"><vh>Overview</vh></v>
-<v t="ekr.20131003040744.18222" a="O"><vh>Basic markup</vh></v>
-<v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
+<v t="ekr.20131003040744.18222" a="O"><vh>Example</vh></v>
+<v t="ekr.20150221052529.4"><vh>Markup</vh></v>
+<v t="ekr.20150221052529.5"><vh>Updating @clean files</vh></v>
+<v t="ekr.20150221052529.6"><vh>Details</vh>
+<v t="ekr.20150221052529.3"><vh>Using @file nodes</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
-<v t="ekr.20150212091950.4"><vh>Using @clean nodes</vh></v>
+<v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
 <v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
+</v>
 </v>
 <v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
@@ -1148,7 +1152,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e30710473580b000000302e302e332e302e322e3371057d71066803580c000000313337363431323838382e30710773580c000000302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735809000000302e302e312e302e30710c7d710d6803580c000000313337363431323837322e30710e735810000000302e302e31322e302e302e372e302e31710f7d711058090000007374725f6174696d657111580c000000313337363431323238382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285810000000302e302e31322e302e302e372e302e3171017d710258090000007374725f6174696d657103580c000000313337363431323238382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e312e312e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323838392e30710c735809000000302e302e312e302e30710d7d710e680b580c000000313337363431323837322e30710f73580b000000302e302e332e302e322e3371107d7111680b580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1160,6 +1164,8 @@
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
 <v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
+<v t="ekr.20150221052529.2"><vh>Finished</vh>
+<v t="ekr.20150210062226.4"></v>
 <v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
 <v t="ekr.20150220083616.5"><vh>Revise or eliminate</vh>
 <v t="ekr.20080730212711.39"><vh>Overview</vh></v>
@@ -1172,7 +1178,7 @@
 <v t="ekr.20100806170836.4402"></v>
 <v t="ekr.20050830115714.14"></v>
 <v t="ekr.20141120113801.187"><vh>Added support for delegate languages</vh></v>
-<v t="ekr.20150212091950.4"></v>
+<v t="ekr.20150212091950.4"><vh>Using @clean nodes</vh></v>
 <v t="ekr.20131015035606.16799"></v>
 <v t="ekr.20100806170836.4399"></v>
 <v t="ekr.20131215083347.16903"></v>
@@ -1183,7 +1189,8 @@
 <v t="ekr.20090706042206.14718"></v>
 <v t="ekr.20150217105817.4"></v>
 </v>
-<v t="ekr.20150210062226.4"></v>
+</v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16442,24 +16449,16 @@ If you don't want sentinels in your sources, skip head to
 the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 </t>
 <t tx="ekr.20131003040744.18222">.. index::
-    pair: Section Name; Tutorial
-    pair: Section Definition Node; Tutorial
-    pair: Section Reference; Tutorial
-    pair: Expansion; Tutorial
     pair: Markup; Tutorial
-    pair: @others; Tutorial
     
-Simple markup,the @others directive, and section references, tell Leo how
-to create external files.
-
-Before going into terminology and explanations, let's look at a
-step-by-step example:
+Simple text markup tells Leo how to create an external file from an
+@clean node and its descendants. Let's look at a step-by-step example:
 
 1. Create a new outline node whose headline is::
 
-    @file myfile.py
+    @clean myfile.py
 
-2. Type this in @file node's body::
+2. Type this in the body of the @clean node::
     
     @language python
     @tabwidth -4
@@ -16468,121 +16467,57 @@ step-by-step example:
     if __name__ == '__main__':
         main()
 
-3. Create a child of the @file node whose headline is::
+3. Create a child of the @clean node whose headline is::
    
    &lt;&lt; docstring &gt;&gt;
 
 4. Type this in the child's body text::
 
-    '''
-    This is the docstring for this python module.
-    '''
+    '''This is the docstring for the myfile module.'''
     
-5. Create another child of the @file node, with the headline::
+5. Create another child of the @clean node whose headline is::
 
     main
     
-6. Type this in the body::
+6. Type this in the body of the node::
 
     def main():
         print('hello from main')
         
-7. Saving the outline will create myfile.py automatically.
-
-8. Open myfile.py in an external editor. |br|
-   Comments in this file represent Leo directives and Leo's outline structure.
-
-9. (Optional) Run myfile.py with a python interpreter.
+7. Save the outline as myfile.leo. This creates myfile.py automatically.
    
-.. You will see something like::
-..
-    #@+leo-ver=5-thin
-    #@+node:ekr.20131023081456.2537: * @file myfile.py
-    #@@language python
-    #@@tabwidth -4
-    #@+&lt;&lt; docstring &gt;&gt;
-    #@+node:ekr.20131023081456.2538: ** &lt;&lt; docstring &gt;&gt;
-    '''
-    This is the docstring for this python module.
-    '''
-    #@-&lt;&lt; docstring &gt;&gt;
-    #@+others
-    #@+node:ekr.20131023081456.2539: ** main
+8. Quit Leo.
+
+9. Open myfile.py in your favorite text editor. You will see::
+
+    '''This is the docstring for the myfile module.'''
     def main():
         print('hello from main')
-    #@-others
     if __name__ == '__main__':
         main()
-    #@-leo
 
-Now let's find out how all this works.
+Usually you will edit myfile.py from Leo, but Leo can update the outline
+from changes you make in the text editor!
 
-**Essential Terms**:
+10. In your text editor, change the line::
 
-- A **section name** is any text of the form: &lt;&lt; any text &gt;&gt;.
-  (&gt;&gt; must not appear in "any text".)
-- A **section definition node** is any node whose headline starts with a
-  section name.
-- A **section reference** is a section name that appears in body text.
-
-Leo creates external files containing @others directives by writing the
-*expansion* of the @file node. |br|
-The **expansion** of *any* node is
-the node's body text after making these text **substitutions**:
-
-1. Leo replaces @others with the *expansion* of all descendant nodes
-   **except** section definition nodes. That's how @others got its name.
-
-2. Leo replaces section references by the *expansion* of the body text of
-   the corresponding section definition node.
-   
-Whitespace is significant before @others and section references. Leo adds
-the leading whitespace appearing before each @others directive or section
-reference to every line of their expansion. As a result, Leo can generate
-external files even for Python.  The following cute trick works::
-
-    if 1:
-        &lt;&lt; a section &gt;&gt;
-    if 0:
-        @others
-
-**Notes**:
-
-- Neither whitespace nor capitalization are important in section names.
-  The following section names are equivalent::
-  
-      &lt;&lt; a section &gt;&gt;
-      &lt;&lt;ASection&gt;&gt;
-
-- Any node may contain a single @others directive. No node may contain more
-  than one @others directive.
-
-- Nodes that *aren't* section definition nodes are included in the expansion
-  of the *nearest* ancestor node containing an @others directive.
-  
-.. index::
-    pair: Orphan Node; Tutorial
-
-- An **orphan node** is a descendant of an @file node not included in any
-  substitution. Leo refuses to write external files containing orphan
-  nodes. Instead, Leo writes the @file tree to the .leo file itself,
-  thereby preserving all data.
-
-**Example 1**: The body of the @file node for a typical Python module will
-look something like::
-
-    '''A docstring.'''
-    &lt;&lt; imports &gt;&gt;
-    @others
-    if __name__ == '__main__':
-        main()
+    print('hello from main')
         
-**Example 2**:  Here is a typical Python class definition in Leo::
+to::
 
-    class MyClass:
-        '''A docstring.'''
-        @others
-</t>
+    print('hello AGAIN from main')
+        
+11. Save myfile.py and quit your text editor.
+
+12. Open myfile.leo. Leo reports that the 'main' node has been changed.
+    It's body text is now::
+    
+    def main():
+        print('hello AGAIN from main')
+        
+This automatic update feature of @clean nodes is an important feature of
+Leo. We'll see how this works later. But first, the next section discusses
+Leo's markup in detail.</t>
 <t tx="ekr.20131004064408.16020">.. index::
    pair: Directive; Tutorial
 
@@ -16855,6 +16790,9 @@ external file. For example::
     @first # -*- coding: utf-8 -*-
 
 Similarly, @last forces lines to appear after the last sentinel.
+
+The @first and @last directives aren't necessary within @clean trees, but
+they are allowed within @clean trees.
 </t>
 <t tx="ekr.20131008041326.16055">.. index::
     pair: @path; Tutorial
@@ -18182,8 +18120,8 @@ Downloading, Installing &amp; Running Leo
 <t tx="ekr.20131016021541.16894">.. index::
     pair: @edit; Tutorial
 
-Use @edit instead of @file to place the entire contents of an external file
-into a single outline node. Leo writes no sentinel when writing @edit
+Use @edit instead of @clean to place the entire contents of an external
+file into a single outline node. Leo writes no sentinel when writing @edit
 files.</t>
 <t tx="ekr.20131016083406.16724">@language python
 import os
@@ -19589,26 +19527,20 @@ Using these variables, scripts may easily do any of the following:
 </t>
 <t tx="ekr.20131215083347.16903">.. tutorial-programming.html
 
+.. index::
+    pair: @clean; Tutorial
+
 Leo creates **external files** (files on your file system) from
-**@file nodes** and *all the descendants* of the @file node.
-Examples::
+**@clean nodes** and all their **descendant* nodes.
+Examples:
 
-    @file spam.py
-    @file ../foo.c
-    @file ~/bar.py
-    
-A single Leo outline may contain many @file nodes. As a result, Leo
-outlines function much like project files in other IDE's (Integrated
-Development Environments).
+    @clean spam.py
+    @clean ../foo.c
+    @clean ~/bar.py
 
-Within an @file tree, simple text markup (discussed next) tells Leo how
-to create the external file from the @file node and its descendants.
-   
-**Note**: Other kinds of nodes (not discussed here) can also create
-external files::
-
-    @clean x.py
-    @auto z.py</t>
+A single Leo outline may contain many @clean nodes. Leo outlines are like
+project files in other IDE's (Integrated Development Environments).
+</t>
 <t tx="ekr.20140216125129.16666"></t>
 <t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
 
@@ -21070,19 +21002,6 @@ external file using Leo's refresh-from-disk command.
 Updating @clean trees uses `Mulder/Ream update algorithm`_. This algorithm
 places inserted and changed lines in their proper places in the outline!
 
-**Ambiguous lines** are lines that could be placed either to a node or the
-following node. The algorithm must **guess** where to place such lines. The
-algorithm always places ambiguous lines in the following node because it's
-more common to add lines to the end of nodes.
-
-The update algorithm is **sound** because guesses do not matter. The
-contents of any external file created by @clean will be the same
-regardless of guesses.
-
-Leo reports which nodes have been updated. You can override guesses
-manually by moving lines to a new node. Once inserted or changed lines are
-in the outline, the update algorithm will never again have to guess where
-they belong.
 </t>
 <t tx="ekr.20150212182032.4"></t>
 <t tx="ekr.20150212182032.5">Leo 5.1 b1                          February 20, 2015
@@ -21243,6 +21162,177 @@ The ability to update outlines from changes made to external files
 Leo's history. For the first time, there is no need to make excuses
 for Leo!
 </t>
+<t tx="ekr.20150221052529.2"></t>
+<t tx="ekr.20150221052529.3">.. index::
+    pair: @file; Tutorial
+    pair: sentinel lines; Tutorial
+
+Before Leo 5.1, the recommended way to create external files was with
+**@file trees**. @file trees use the same markup as @clean trees.
+
+The only difference between @clean and @file is that @file insert
+**sentinel lines** into external files. Sentinel lines are comments
+corresponding to markup. Sentinel lines *explicitly* represent structure.
+
+Sentinel comments greatly simplify the update algorithm. There are no
+ambiguous lines @file trees! @file nodes are especially useful when
+everyone in a project uses Leo. Leo's sources use @file trees for the
+convenience of Leo developers.
+
+Nevertheless, most people will prefer to use @clean instead of @file. For
+example, changing::
+
+    @clean myfile.py
+    
+to::
+
+    @file myfile.py
+    
+in the earlier example will create the file myfile.py whose contents looks
+something like this::
+
+    #@+leo-ver=5-thin
+    #@+node:ekr.20131023081456.2537: * @file myfile.py
+    #@@language python
+    #@@tabwidth -4
+    #@+&lt;&lt; docstring &gt;&gt;
+    #@+node:ekr.20131023081456.2538: ** &lt;&lt; docstring &gt;&gt;
+    '''This is the docstring for this python module.'''
+    #@-&lt;&lt; docstring &gt;&gt;
+    #@+others
+    #@+node:ekr.20131023081456.2539: ** main
+    def main():
+        print('hello from main')
+    #@-others
+    if __name__ == '__main__':
+        main()
+    #@-leo
+    
+Not pleasant to look at. However, sentinel lines don't bother Leo's
+developers because they almost always change Leo's sources from within Leo.
+They seldom look at the external files. Leo's own sources will always use
+@file.</t>
+<t tx="ekr.20150221052529.4">.. index::
+    pair: Section Name; Tutorial
+    pair: Section Definition Node; Tutorial
+    pair: Section Reference; Tutorial
+    pair: Expansion; Tutorial
+    pair: Markup; Tutorial
+    pair: @others; Tutorial
+    
+This section discusses Leo's markup. This markup tells how to create
+external files from @clean trees.
+
+**Essential Terms**:
+
+- A **section name** is any text of the form: &lt;&lt; any text &gt;&gt;.
+  (&gt;&gt; must not appear in "any text".)
+
+- A **section definition node** is any node whose headline starts with a
+  section name.
+
+- A **section reference** is a section name that appears in body text.
+
+Leo creates external files containing @others directives by writing the
+*expansion* of the @clean node. |br|
+The **expansion** of *any* node is
+the node's body text after making these text **substitutions**:
+
+1. Leo replaces @others with the *expansion* of all descendant nodes
+   **except** section definition nodes. That's how @others got its name.
+
+2. Leo replaces section references by the *expansion* of the body text of
+   the corresponding section definition node.
+   
+Whitespace is significant before @others and section references. Leo adds
+the leading whitespace appearing before each @others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  For example, here is a cute trick::
+
+    if 1:
+        &lt;&lt; a section &gt;&gt;
+    if 0:
+        @others
+
+**Notes**:
+
+- Neither whitespace nor capitalization are important in section names.
+  The following section names are equivalent::
+  
+      &lt;&lt; a section &gt;&gt;
+      &lt;&lt;ASection&gt;&gt;
+
+- Any node may contain a *single* @others directive. No node may contain more
+  than one @others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+  
+.. index::
+    pair: Orphan Node; Tutorial
+
+- An **orphan node** is a descendant of an @clean node not included in any
+  substitution. Leo refuses to write external files containing orphan
+  nodes. Instead, Leo writes the @clean tree to the .leo file itself,
+  thereby preserving all data.
+
+**Example 1**: The body of the @clean node for a typical Python module will
+look something like::
+
+    '''A docstring.'''
+    &lt;&lt; imports &gt;&gt;
+    @others
+    if __name__ == '__main__':
+        main()
+        
+**Example 2**:  Here is a typical Python class definition in Leo::
+
+    class MyClass:
+        '''A docstring.'''
+        @others
+</t>
+<t tx="ekr.20150221052529.5">Leo 5.1 introduced the ability to update @clean trees from changes made to
+the corresponding external file. This is one of the most important
+developments in Leo's history. Previously, Leo could perform such updates
+only if the external file contained **sentinel lines**, comment lines
+corresponding to Leo markup that indicated outline structure.
+
+.. _`explained here`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+
+.. index::
+    pair: Mulder/Ream update algorithm; Tutorial
+    pair: Update algorithm; Tutorial
+    
+The update algorithm is a clever three-way diff/merge of lines computed
+from the outline and the external files. You don't have to know how it
+works in order to use Leo. It is `explained here`_.
+
+In most cases, the update algorithm "just works". However, there is one
+edge case that you should be aware of.
+
+**Ambiguous lines** are lines that could be placed either at the end of a
+node or at the beginning of the following node. The update algorithm must
+**guess** where to place such lines--there simply is not enough data to
+know for sure. The algorithm always places ambiguous lines at the start of
+the following node because it's more common to add lines to the end of
+nodes.
+
+The update algorithm is **sound** because guesses do not affect the
+resulting external file. That is, the contents of the external file will be
+the same whether an ambiguous line is placed at the end of one node or the
+beginning of the next.
+
+The exact placement of ambiguous lines may not matter as far as the
+contents of the external files is concerned, but it will certainly matter
+to you! You will want lines placed in their proper nodes.
+
+Happily, Leo reports which nodes have been updated. You can override
+guesses manually by moving lines to a new node. Once you save the outline,
+the lines will no longer become ambiguous. The next time the update
+algorithm runs, it will no longer have to guess where the lines belong!
+</t>
+<t tx="ekr.20150221052529.6">You now know enough to create external files. The following sections
+discuss additional topics that may come in handy.</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
