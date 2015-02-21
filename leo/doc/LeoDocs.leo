@@ -160,13 +160,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1147,7 +1147,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e30710473580b000000302e302e332e302e322e3371057d71066803580c000000313337363431323838382e30710773580c000000302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735809000000302e302e312e302e30710c7d710d6803580c000000313337363431323837322e30710e735810000000302e302e31322e302e302e372e302e31710f7d711058090000007374725f6174696d657111580c000000313337363431323238382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1166,7 +1166,6 @@
 </v>
 <v t="ekr.20100821182153.4343"></v>
 <v t="ekr.20081205084002.2"></v>
-<v t="ekr.20050830120007"></v>
 <v t="ekr.20100809122216.4286"></v>
 <v t="ekr.20100804133903.7250"></v>
 <v t="ekr.20100806170836.4402"></v>
@@ -21042,7 +21041,7 @@ remember its details for the rest of my life.
 </t>
 <t tx="ekr.20150211131925.9">Mulder's original algorithm was hard to understand or to change. The
 culprit was the x.mapping array, which mapped indices into arrays of lines
-*with* sentinels to indices into arrays of lines *without* sentines.
+*with* sentinels to indices into arrays of lines *without* sentinels.
 
 The new algorithm replaces the x.mapping array with the x.sentinels array.
 As a result, diff indices never need to be adjusted and handling diff
@@ -21131,7 +21130,6 @@ Quotes:    http://leoeditor.com/testimonials.html
 * De-emphasize @auto in all docs.
 * Document @auto-rst/md/vo/otl.
 * Review docs for uA's and gnx's.
-* Spell check all changed text.
 
 Done
 * Make sure @clean/@nosent is completely documented.
@@ -21210,7 +21208,7 @@ the following:
    old and new versions of x *without* sentinels.
    
    **Terminology**: the diffs tell how to change file a into file b. The
-   actual code uses this terminaology: **a** is set of lines in the old
+   actual code uses this terminology: **a** is set of lines in the old
    version of x, **b** is the set of lines in the new version of x.
    
 4. Creates a set of lines, the **new sentinels lines** using the old
@@ -21228,7 +21226,7 @@ inserts or deletes nodes. The user is responsible for creating nodes to
 hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
 
