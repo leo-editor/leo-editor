@@ -969,6 +969,7 @@
 <v t="ekr.20131008041326.16253"><vh>Leo 4.9 Qt, autocompleter, vr pane</vh></v>
 <v t="ekr.20131031101712.16685"><vh>Leo 4.10 Many improvements</vh></v>
 <v t="ekr.20131031101712.17211"><vh>Leo 4.11 Many more improvements</vh></v>
+<v t="ekr.20150220200101.2"><vh>Leo 5.1 Updating @nosent files</vh></v>
 <v t="ekr.20050902100834"><vh>@rst-ignore-tree More history</vh>
 <v t="EKR.20040524104904.247"><vh>Versions</vh></v>
 <v t="EKR.20040524104904.248"><vh>Designing @file trees</vh>
@@ -20947,16 +20948,18 @@ play Leo is usually involved :-)
 
 Dave Williams &lt;dave@d-dub.org.uk&gt;
 </t>
-<t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail,
-with an informal proof of its correctness.
+<t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail, with an
+informal proof of its correctness.
 
-Leo used Mulder's original algorithm to read \@shadow files. The new
-algorithm is a complete rewrite. It is simple, easy-to-understand and
-provably correct.
+Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to read
+@shadow files. Starting with Leo 5.1, Leo uses this algorithm to read
+both @clean and @shadow files. Conceptually, both algorithms work as
+described in the next section.
 
-Starting with Leo 5.1, Leo uses the Mulder/Ream algorithm to read \@clean files.
-
-</t>
+In February 2015 EKR realized that the @shadow algorithm could be used to
+update @clean (@nosent) files. Simplifying the algorithm instantly became a
+top priority. The new code emerged several days later, made possible by the
+x.sentinels array. It is an important milestone in Leo's history.</t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes. See
 https://docs.python.org/2/library/difflib.html#sequencematcher-examples
@@ -21130,6 +21133,7 @@ Quotes:    http://leoeditor.com/testimonials.html
 * De-emphasize @auto in all docs.
 * Document @auto-rst/md/vo/otl.
 * Review docs for uA's and gnx's.
+* Write a section for Leo 5.0 in the history of Leo.
 
 Done
 * Make sure @clean/@nosent is completely documented.
@@ -21225,6 +21229,19 @@ the following:
 inserts or deletes nodes. The user is responsible for creating nodes to
 hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.
+</t>
+<t tx="ekr.20150220200101.2">Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to
+read @shadow files. Starting with Leo 5.1, Leo uses this algorithm to
+read both @clean and @shadow files.
+
+In February 2015 I realized that the @shadow algorithm could be used
+to update @nosent (@clean) files. The new, much simpler Mulder/Ream
+algorithm emerged several days later.
+
+The ability to update outlines from changes made to external files
+*without* sentinels is one of the most important turning points in
+Leo's history. For the first time, there is no need to make excuses
+for Leo!
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
