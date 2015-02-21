@@ -21361,7 +21361,7 @@ Nevertheless, there are advantages to using @file instead of @clean:
 2. Sentinels allow you to share structure simply by sending the external
    file. This is an overwhelming advantage for Leo's developers.
    
-3. A minor advangtage: @file makes Leo files smaller. Leo stores the entire
+3. A minor advantage: @file makes Leo files smaller. Leo stores the entire
    @clean *tree* in the .leo file, but only stores the top-level @file
    *node* in the .leo file.
    
