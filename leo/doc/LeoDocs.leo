@@ -413,12 +413,14 @@
 </v>
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131215083347.16903"><vh>Overview</vh></v>
+<v t="ekr.20131215083347.16903"><vh>Using @clean</vh>
 <v t="ekr.20131003040744.18222" a="O"><vh>Example</vh></v>
 <v t="ekr.20150221052529.4"><vh>Markup</vh></v>
-<v t="ekr.20150221052529.5"><vh>Updating @clean files</vh></v>
+<v t="ekr.20150221052529.5"><vh>Updating @clean trees</vh></v>
+</v>
+<v t="ekr.20150221052529.3"><vh>Using @file</vh></v>
+<v t="ekr.20150221052529.7"><vh>Summary: @clean vs @file</vh></v>
 <v t="ekr.20150221052529.6"><vh>Details</vh>
-<v t="ekr.20150221052529.3"><vh>Using @file nodes</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
@@ -1189,8 +1191,8 @@
 <v t="ekr.20090706042206.14718"></v>
 <v t="ekr.20150217105817.4"></v>
 </v>
+<v t="ekr.20131008041326.16245"></v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16515,9 +16517,9 @@ to::
     def main():
         print('hello AGAIN from main')
         
-This automatic update feature of @clean nodes is an important feature of
-Leo. We'll see how this works later. But first, the next section discusses
-Leo's markup in detail.</t>
+Automatic updates of @clean nodes is an important feature of Leo. We'll see
+how this works later. But first, the next section discusses Leo's markup in
+detail.</t>
 <t tx="ekr.20131004064408.16020">.. index::
    pair: Directive; Tutorial
 
@@ -17230,9 +17232,8 @@ Now we come to the programming features that distinguish Leo from all other
 programming environments. This part tells how to create external files from
 Leo outlines.
 
-Please study this section carefully if you intend to use Leo for programming.
-
-If you get stuck, please `ask for help`_ immediately.
+Please study this section carefully if you intend to use Leo for
+programming. If you get stuck, please `ask for help`_ immediately.
 
 .. contents::
     :depth: 2
@@ -19530,9 +19531,8 @@ Using these variables, scripts may easily do any of the following:
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system) from
-**@clean nodes** and all their **descendant* nodes.
-Examples:
+Leo creates **external files** (files on your file system) from **@clean
+nodes** and their **descendant* nodes. Examples:
 
     @clean spam.py
     @clean ../foo.c
@@ -21179,8 +21179,9 @@ ambiguous lines @file trees! @file nodes are especially useful when
 everyone in a project uses Leo. Leo's sources use @file trees for the
 convenience of Leo developers.
 
-Nevertheless, most people will prefer to use @clean instead of @file. For
-example, changing::
+@file is recommended if you seldom share files with others. Nevertheless,
+most people will prefer to use @clean instead of @file. For example,
+changing::
 
     @clean myfile.py
     
@@ -21208,10 +21209,10 @@ something like this::
         main()
     #@-leo
     
-Not pleasant to look at. However, sentinel lines don't bother Leo's
-developers because they almost always change Leo's sources from within Leo.
-They seldom look at the external files. Leo's own sources will always use
-@file.</t>
+Not pleasant to look at. However, sentinel lines won't bother you if you
+seldom change the external file outside Leo. For example, Leo's developers
+use @file nodes for Leo's own sources.
+</t>
 <t tx="ekr.20150221052529.4">.. index::
     pair: Section Name; Tutorial
     pair: Section Definition Node; Tutorial
@@ -21331,8 +21332,29 @@ guesses manually by moving lines to a new node. Once you save the outline,
 the lines will no longer become ambiguous. The next time the update
 algorithm runs, it will no longer have to guess where the lines belong!
 </t>
-<t tx="ekr.20150221052529.6">You now know enough to create external files. The following sections
-discuss additional topics that may come in handy.</t>
+<t tx="ekr.20150221052529.6">You now know enough to create external files and to choose between @clean
+and @file. The following sections discuss additional topics that may come
+in handy.</t>
+<t tx="ekr.20150221052529.7">This tutorial discussed @clean first for two reasons:
+
+1. To avoid making excuses for sentinel lines.
+
+2. To brag about the @clean update algorithm.
+
+Nevertheless, there are advantages to using @file instead of @clean:
+
+1. Leo can update @file trees without guessing, so using @file can be
+   *slightly* easier than using @clean.
+   
+2. Sentiels allow you to share structure simply by sending the external
+   file. This is an overwhelming advantage for Leo's developers.
+   
+3. A minor advangtage: @file makes Leo files smaller. Leo stores the entire
+   @clean *tree* in the .leo file, but only stores the top-level @file
+   *node* in the .leo file.
+   
+My recommendation: use @file if you can. Use @clean if you can't tolerate
+sentinel lines.</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
