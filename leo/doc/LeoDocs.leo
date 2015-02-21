@@ -160,13 +160,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431323932332e307104735803000000302e3171057d71066803580c000000313337363431323739362e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e307104735803000000302e3171057d71066803580c000000313337363431323739362e3071077358010000003071087d71096803580c000000313337363431323932332e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -420,12 +420,15 @@
 </v>
 <v t="ekr.20150221052529.3"><vh>Using @file</vh></v>
 <v t="ekr.20150221052529.7"><vh>Summary: @clean vs @file</vh></v>
-<v t="ekr.20150221052529.6"><vh>Details</vh>
+<v t="ekr.20131016021541.16894"><vh>Using @edit</vh></v>
+<v t="ekr.20150221092405.2"><vh>Using @auto</vh>
+<v t="ekr.20150216034509.1"><vh>Using @persistence</vh></v>
+</v>
+<v t="ekr.20150221052529.6"><vh>Directives</vh>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
-<v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
-<v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
+<v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
@@ -1154,7 +1157,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285810000000302e302e31322e302e302e372e302e3171017d710258090000007374725f6174696d657103580c000000313337363431323238382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e312e312e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323838392e30710c735809000000302e302e312e302e30710d7d710e680b580c000000313337363431323837322e30710f73580b000000302e302e332e302e322e3371107d7111680b580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e302e322e3371097d710a6803580c000000313337363431323838382e30710b735809000000302e302e312e302e30710c7d710d6803580c000000313337363431323837322e30710e735810000000302e302e31322e302e302e372e302e31710f7d711058090000007374725f6174696d657111580c000000313337363431323238382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1165,7 +1168,6 @@
 <v t="ekr.20150220115528.4"><vh>A better update algorithm</vh></v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
-<v t="ekr.20150216034509.1"><vh>** Document @persistence</vh></v>
 <v t="ekr.20150221052529.2"><vh>Finished</vh>
 <v t="ekr.20150210062226.4"></v>
 <v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
@@ -1191,8 +1193,8 @@
 <v t="ekr.20090706042206.14718"></v>
 <v t="ekr.20150217105817.4"></v>
 </v>
-<v t="ekr.20131008041326.16245"></v>
 </v>
+<v t="ekr.20131008041326.16245"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -17229,8 +17231,9 @@ Programming with Leo
     of writing code."---Joe Orr
 
 Now we come to the programming features that distinguish Leo from all other
-programming environments. This part tells how to create external files from
-Leo outlines.
+programming environments. Several kinds of nodes create external files. This
+tutorial discusses four of them: @clean, @file, @edit and @auto. Most people
+will use @clean or @file.
 
 Please study this section carefully if you intend to use Leo for
 programming. If you get stuck, please `ask for help`_ immediately.
@@ -17238,25 +17241,28 @@ programming. If you get stuck, please `ask for help`_ immediately.
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131008041326.16246">- Leo creates external files by replacing @others and section references
-  with their expansions. 
+<t tx="ekr.20131008041326.16246">- @clean, @file, @edit and @auto trees create external files.
+
+- When writing @clean, @file and @auto trees, Leo replaces @others and
+  section references with their expansions.
   
 - A **section name** is any text of the form: &lt;&lt; any text &gt;&gt;.
 
-- A **section definition node** is a node whose headline starts with a section name.
+- A **section definition node** is a node whose headline starts with a
+  section name.
 
 - A **section reference** is a section name in body text.
 
-- @first places lines before the first sentinel lines of a file.
-
-- @path specifies a common prefix for the file names of @file and @auto nodes.
-
-- @edit reads an entire external file into a single outline node.
+- @edit reads an entire external file into the body text of the @edit node.
 
 - @auto imports an external file into an outline, creating nodes for
-  functions, methods and classes.
+  functions, methods and classes. @persistence nodes optionally save gnx's
+  and uA's of @auto trees in a semi-permanent way.
   
-- Use @edit or @auto to avoid adding Leo sentinels to external files.
+- @first places lines before the first sentinel lines of a file.
+
+- @path specifies a common prefix for file names of @clean, @file, @edit
+  and @auto nodes.
 
 - leo/core/LeoPyRef.leo contains all of Leo's core source code.</t>
 <t tx="ekr.20131008041326.16248">.. |br| raw:: html
@@ -19531,8 +19537,8 @@ Using these variables, scripts may easily do any of the following:
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system) from **@clean
-nodes** and their **descendant* nodes. Examples:
+Leo creates **external files** (files on your file system)
+from **@clean nodes** and their **descendant* nodes. Examples:
 
     @clean spam.py
     @clean ../foo.c
@@ -21059,23 +21065,29 @@ Done
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
 </t>
-<t tx="ekr.20150216034509.1">@persistence nodes were introduced in Leo 5.0.
+<t tx="ekr.20150216034509.1">.. index::
+    pair: gnx; Tutorial
+    pair: uA; Tutorial
 
-The existence of an @persistence node enables this feature. Changing the
-node to, say, @@persistence disables the feature.
+With @clean and @file, Leo can store **persistent data** in nodes. This
+information consists of the node's **gnx** (Global Node Index) and the
+node's **uA**, (User Attributes). The gnx gives each node a unique,
+immutable identity. Gnx's make clones possible. The uA allows scripts and
+plugins to associate arbitrarily much additional data with each node.
 
-When writing an @auto file, Leo stores data (akin to bookmarks) in a
-subtree of the @persistence node. When re-reading the file, the data allow
-Leo to restore gnx info.
+.. To do: links to further discussion of gnx and uA.
 
-leoPersistence.py implements the new feature.
+By default, Leo's importers preserve neither gnx's nor uA's. This makes
+imported @auto trees second class citizens. To remedy this, if an outline
+contains an @persistence node, Leo will save data in the @persistence tree
+that allows Leo to recover gnx's and uA's when re-reading @auto files
+later. This allows clone links and uA's to persist.
 
-pd.find_position_for_relative_unl links unls saved in the @persistence tree
-with just-imported nodes. Here is the docstring::
-   
-    Given a unl relative to root, return the node whose
-    unl matches the longest suffix of the given unl.
-</t>
+@persistence is an optional feature. The stored data is akin to bookmarks.
+The data can "break" (become inaccessible) if the structure (including
+class/method/function names) changes. However, the data will typically
+break infrequently. To disable this feature, just delete an existing
+@persistence node or change @persistence to @@persistence.</t>
 <t tx="ekr.20150217105817.4">Leo updates @clean trees from changes made to external files without
 sentinel comments, something long thought impossible. As a result, Leo can
 now be used in any environment, including work groups where no one else
@@ -21333,8 +21345,8 @@ the lines will no longer become ambiguous. The next time the update
 algorithm runs, it will no longer have to guess where the lines belong!
 </t>
 <t tx="ekr.20150221052529.6">You now know enough to create external files and to choose between @clean
-and @file. The following sections discuss additional topics that may come
-in handy.</t>
+and @file. The following sections discuss directives affecting external
+files.</t>
 <t tx="ekr.20150221052529.7">This tutorial discussed @clean first for two reasons:
 
 1. To avoid making excuses for sentinel lines.
@@ -21346,16 +21358,38 @@ Nevertheless, there are advantages to using @file instead of @clean:
 1. Leo can update @file trees without guessing, so using @file can be
    *slightly* easier than using @clean.
    
-2. Sentiels allow you to share structure simply by sending the external
+2. Sentinels allow you to share structure simply by sending the external
    file. This is an overwhelming advantage for Leo's developers.
    
 3. A minor advangtage: @file makes Leo files smaller. Leo stores the entire
    @clean *tree* in the .leo file, but only stores the top-level @file
    *node* in the .leo file.
    
-My recommendation: use @file if you can. Use @clean if you can't tolerate
-sentinel lines.</t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
+My recommendation: use @file if you can tolerate sentinel lines. Otherwise,
+use @clean.</t>
+<t tx="ekr.20150221092405.2">Use @auto instead of @clear when you expect other people to make
+substantial changes to an external file without using Leo.
+
+.. index::
+    pair: @auto; Tutorial
+    pair: Importer; Tutorial
+
+When reading @auto files, Leo **importers** create an outline from the
+external file. Importers create nodes for each class, method and function
+in the external file.
+
+Notes:
+
+- Leo determines the language using the file's extension.
+
+- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript,
+  Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
+
+- If no importer exists for a file, Leo reads the entire file into an @edit
+  node.
+
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
 
