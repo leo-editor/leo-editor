@@ -2183,13 +2183,13 @@ class Commands (object):
             return found
         #@+node:ekr.20100216141722.5623: *7* countLines & helpers
         def countLines (self,root,n):
-
-            '''Scan through root's outline, looking for line n (one based).
+            '''
+            Scan through root's outline, looking for line n (one based).
             Return (p,i,found)
-            p is the found node.
-            i is the offset of the line within the node.
-            found is True if the line was found.'''
-
+                p:      the found node.
+                i:      the offset of the line within the node.
+                found:  True if the line was found.
+            '''
             trace = False and not g.unitTesting
             # c = self.c
             # Start the recursion.
@@ -2199,8 +2199,8 @@ class Commands (object):
             return p,i,found # The index is zero-based.
         #@+node:ekr.20100216141722.5624: *8* countLinesHelper
         def countLinesHelper (self,p,n,trace):
-
-            '''Scan p's body text, looking for line n (zero-based).
+            '''
+            Scan p's body text, looking for line n (zero-based).
             ao is the index of the line containing @others or None.
 
             Return (p,i,n,effective_lines,found)
@@ -2257,7 +2257,10 @@ class Commands (object):
                         s = line.strip()
                         k = g.skip_id(s,1)
                         word = s[1:k]
-                        if word and word in g.globalDirectiveList:
+                        # g.trace('word',repr(word))
+                        # Fix bug 138: goto-global-line doesn't work properly in @nosent files
+                        # Treat a bare '@' as a Leo directive.
+                        if not word or word in g.globalDirectiveList:
                             pass # A regular directive: don't change n or i here.
                         else:
                             # Fix bug 1182864: goto-global-line cmd bug.
