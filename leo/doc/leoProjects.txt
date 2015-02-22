@@ -130,6 +130,8 @@ The @persistence code is now enabled if and only if a .leo file has an
 @persistence node.
 
 Removed @bool enable-persistence from leoSettings.leo.
+
+Added @bool create-at-persistence-nodes-automatically = False.
 .. @+node:ekr.20150220052100.4: *4* Support @clean as the preferred form of @nosent
 .. @+node:ekr.20150206064817.5: *3* Major feature: @nosent updates automatically
 Rev 7a851eb enables automatic updating of @nosent files.
