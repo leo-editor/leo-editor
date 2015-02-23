@@ -289,6 +289,48 @@ at.readOpenFile to delete the old tree and create the
 in at.read, but it is much simpler because caching is not
 involved. In essence, everything "just worked" from the get
 go.
+.. @+node:ekr.20150223111349.4: *3* Why @clean is so important
+@clean removes barriers to using Leo that prevented its widespread adoption.  Only now, after the barriers have been removed, do I see how important those barriers were.
+
+For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
+
+Not only did I not see how damaging sentinels might be for non-Leo users, I did not see how inconvenient sentinels might be for my *own* work flow.  This was a shocking revelation.  To illustrate, here is the first draft of a new comparison between @clean and @file in the programming tutorial:
+
+QQQQQ
+This tutorial discussed @clean first for three reasons:
+
+1. To avoid making excuses for sentinel lines.
+
+2. To brag about the @clean update algorithm.
+
+3. It is often more convenient to avoid sentinels. For example, when I study other people's code I do the following:
+
+- Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
+ 
+- Use an `import script`_ to create the desired @clean nodes.
+
+- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
+
+- Use `git`_ diff to ensure that no important changes have been made while importing the nodes.
+
+- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code.
+
+Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
+
+Nevertheless, there are advantages to using @file instead of @clean. All these advantages arise because external files created by @file contain explicit outline structure.
+
+1. Leo can read @file trees more quickly and without guesses. There is never any need for you to move ambiguous lines from one node to another.
+  
+2. Sentinels allow you to share structure simply by sending the external file. This is an overwhelming advantage for Leo's developers.
+  
+3. A minor advantage: @file makes Leo files smaller. Leo stores the entire @clean *tree* in the .leo file, but only stores the top-level @file *node* in the .leo file.
+  
+In short: use @clean for most purposes. Use @file when all developers in a project use Leo.
+QQQQQ
+
+The point is that I have just, in the past few days, realized how badly sentinels interfered with git diffs.
+
+Imo, @clean is the long-sought breakthrough that just might allow Leo to "go viral".  In retrospect, we can see that sentinels were a *fundamental* problem that neither exhortations nor documentation could remedy.  @clean removes the one and only real barrier to using Leo everywhere.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

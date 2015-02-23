@@ -161,13 +161,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1158,7 +1158,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e302e322e3371017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473580b000000302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773580c000000302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735809000000302e302e312e302e30710c7d710d6803580c000000313337363431323837322e30710e735810000000302e302e31322e302e302e372e302e31710f7d711058090000007374725f6174696d657111580c000000313337363431323238382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1168,7 +1168,9 @@
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
 <v t="ekr.20150220115528.4"><vh>A better update algorithm</vh></v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh></v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150223040723.2"><vh>Importing files (to do, in scripting tutorial)</vh></v>
+</v>
 <v t="ekr.20150221052529.2"><vh>Finished</vh>
 <v t="ekr.20150210062226.4"></v>
 <v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
@@ -1197,8 +1199,6 @@
 </v>
 <v t="ekr.20040403171740"></v>
 <v t="ekr.20131008041326.16245"></v>
-<v t="ekr.20150223040723.2"><vh>Importing files (to do, in scripting tutorial)</vh></v>
-<v t="ekr.20150223053130.5"><vh>Why @clean is so important (to do)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -17221,7 +17221,9 @@ tutorial. You can open CheatSheet.leo from Leo's help menu.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20131008041326.16245">.. |---| unicode:: U+02015 .. for quotes
+<t tx="ekr.20131008041326.16245">@wrap
+
+.. |---| unicode:: U+02015 .. for quotes
    :trim:
    
 ####################
@@ -17258,7 +17260,8 @@ Please study this section carefully if you intend to use Leo for programming. If
 
 - @path specifies a common prefix for file names of @clean, @file, @edit and @auto nodes.
 
-- leo/core/LeoPyRef.leo contains all of Leo's core source code.</t>
+- leo/core/LeoPyRef.leo contains all of Leo's core source code.
+</t>
 <t tx="ekr.20131008041326.16248">.. |br| raw:: html
 
    &lt;br /&gt;
@@ -18122,7 +18125,8 @@ Downloading, Installing &amp; Running Leo
 <t tx="ekr.20131016021541.16894">.. index::
     pair: @edit; Tutorial
 
-Use @edit instead of @clean to place the entire contents of an external file into a single outline node. Leo writes no sentinel when writing @edit files.</t>
+Use @edit instead of @clean to place the entire contents of an external file into a single outline node. Leo writes no sentinel when writing @edit files.
+</t>
 <t tx="ekr.20131016083406.16724">@language python
 import os
 trace = True
@@ -21335,9 +21339,8 @@ guesses manually by moving lines to a new node. Once you save the outline,
 the lines will no longer become ambiguous. The next time the update
 algorithm runs, it will no longer have to guess where the lines belong!
 </t>
-<t tx="ekr.20150221052529.6">You now know enough to create external files and to choose between @clean
-and @file. The following sections discuss directives affecting external
-files.</t>
+<t tx="ekr.20150221052529.6">You now know enough to create external files and to choose between @clean and @file. The following sections discuss directives affecting external files.
+</t>
 <t tx="ekr.20150221052529.7">This tutorial discussed @clean first for three reasons:
 
 1. To avoid making excuses for sentinel lines.
@@ -21366,7 +21369,8 @@ Nevertheless, there are advantages to using @file instead of @clean. All these a
    
 3. A minor advantage: @file makes Leo files smaller. Leo stores the entire @clean *tree* in the .leo file, but only stores the top-level @file *node* in the .leo file.
    
-In short: use @clean for most purposes. Use @file when all developers in a project use Leo.</t>
+In short: use @clean for most purposes. Use @file when all developers in a project use Leo.
+</t>
 <t tx="ekr.20150221092405.2">Use @auto instead of @clear when you expect other people to make substantial changes to an external file without using Leo.
 
 .. index::
@@ -21379,57 +21383,13 @@ Notes:
 
 - Leo determines the language using the file's extension.
 
-- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript,
-  Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
+- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript, Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
 
-- If no importer exists for a file, Leo reads the entire file into an @edit
-  node.
-
+- If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
 <t tx="ekr.20150223040723.2">Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is much more convenient to use a </t>
-<t tx="ekr.20150223053130.5">@clean removes barriers to using Leo that prevented its widespread adoption.  Only now, after the barriers have been removed, do I see how important those barriers were.
-
-For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
-
-Not only did I not see how damaging sentinels might be for non-Leo users, I did not see how inconvenient sentinels might be for my *own* work flow.  This was a shocking revelation.  To illustrate, here is the first draft of a new comparison between @clean and @file in the programming tutorial:
-
-QQQQQ
-This tutorial discussed @clean first for three reasons:
-
-1. To avoid making excuses for sentinel lines.
-
-2. To brag about the @clean update algorithm.
-
-3. It is often more convenient to avoid sentinels. For example, when I study other people's code I do the following:
-
-- Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
- 
-- Use an `import script`_ to create the desired @clean nodes.
-
-- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
-
-- Use `git`_ diff to ensure that no important changes have been made while importing the nodes.
-
-- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code.
-
-Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
-
-Nevertheless, there are advantages to using @file instead of @clean. All these advantages arise because external files created by @file contain explicit outline structure.
-
-1. Leo can read @file trees more quickly and without guesses. There is never any need for you to move ambiguous lines from one node to another.
-  
-2. Sentinels allow you to share structure simply by sending the external file. This is an overwhelming advantage for Leo's developers.
-  
-3. A minor advantage: @file makes Leo files smaller. Leo stores the entire @clean *tree* in the .leo file, but only stores the top-level @file *node* in the .leo file.
-  
-In short: use @clean for most purposes. Use @file when all developers in a project use Leo.
-QQQQQ
-
-The point is that I have just, in the past few days, realized how badly sentinels interfered with git diffs.
-
-Imo, @clean is the long-sought breakthrough that just might allow Leo to "go viral".  In retrospect, we can see that sentinels were a *fundamental* problem that neither exhortations nor documentation could remedy.  @clean removes the one and only real barrier to using Leo everywhere.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
 
