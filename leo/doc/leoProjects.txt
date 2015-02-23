@@ -151,7 +151,11 @@ Removed @bool enable-persistence from leoSettings.leo.
 Added @bool create-at-persistence-nodes-automatically = False.
 .. @+node:ekr.20150220052100.4: *4* Support @clean as the preferred form of @nosent
 .. @+node:ekr.20150223082820.8: *4* Added unformat-paragraph command
-It does the reverse of the reformat-paragraph command: it removes all extra whitespace from a paragraph.
+The reformat-paragraph command is surprisingly useful.  It is somewhat like the reverse of the reformat-paragraph command: it removes all extra whitespace from a paragraph.
+
+Extraneous whitespace causes problems with rST text--various kinds of rST markup can't be split between lines. LeoDocs.leo used various workarounds, including preceding @ signs with a backslash.
+
+unformat-paragraph makes all these problems disappear.  Furthermore, the appearance of the text in LeoDocs.leo improves provided that @wrap is in effect.
 .. @+node:ekr.20150218093124.1: *4* To be documented: xslt
 @language rest
 
