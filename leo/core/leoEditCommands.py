@@ -9230,6 +9230,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
             'toggle-sparse-move':           c.toggleSparseMove,
             'toggle-split-direction':       f.toggleSplitDirection,
             'undo':                         c.undoer.undo,
+            'unformat-paragraph':           c.unformatParagraph,
             'unindent-region':              c.dedentBody,
             'unmark-all':                   c.unmarkAll,
             'untangle':                     c.untangle,

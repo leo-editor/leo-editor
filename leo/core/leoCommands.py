@@ -457,6 +457,7 @@ class Commands (object):
         getColor = c.config.getColor
         getData  = c.config.getData
         getInt = c.config.getInt
+        c.allow_at_in_paragraphs    = getBool('allow-at-in-paragraphs',default=False)
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -3320,8 +3321,8 @@ class Commands (object):
         c.undoer.afterChangeGroup(p,undoType)
     #@+node:ekr.20101118113953.5839: *6* c.reformatParagraph & helpers
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
-
-        """Reformat a text paragraph
+        '''
+        Reformat a text paragraph
 
         Wraps the concatenated text to present page width setting. Leading tabs are
         sized to present tab width setting. First and second line of original text is
@@ -3330,9 +3331,7 @@ class Commands (object):
 
         Paragraph is bound by start of body, end of body and blank lines. Paragraph is
         selected by position of current insertion cursor.
-
-        """
-        trace = False and not g.unitTesting
+        '''
         c = self
         body = c.frame.body
         w = body.wrapper
@@ -3345,12 +3344,9 @@ class Commands (object):
         oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
         head,lines,tail = c.findBoundParagraph()
         if lines:
-            if trace: g.trace('\n'+'\n'.join(lines))
             indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
             result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
             c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
-        else:
-            if trace: g.trace('no lines')
     #@+node:ekr.20031218072017.1825: *7* c.findBoundParagraph & helpers
     def findBoundParagraph (self,event=None):
         '''Return the lines of a paragraph to be reformatted.'''
@@ -3484,18 +3480,19 @@ class Commands (object):
     def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
         '''Reformat the body and update the selection.'''
         c = self ; body = c.frame.body ; w = body.wrapper
-        s = w.getAllText()
         # This destroys recoloring.
         junk, ins = body.setSelectionAreas(head,result,tail)
         changed = original != head + result + tail
         if changed:
-            # 2013/09/14: fix an annoying glitch when there is no
+            s = w.getAllText()
+            # Fix an annoying glitch when there is no
             # newline following the reformatted paragraph.
             if not tail and ins < len(s): ins += 1
             # 2010/11/16: stay in the paragraph.
             body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
         else:
             # Advance to the next paragraph.
+            s = w.getAllText()
             ins += 1 # Move past the selection.
             while ins < len(s):
                 i,j = g.getLine(s,ins)
@@ -3554,6 +3551,55 @@ class Commands (object):
         result = '\n'.join(paddedResult)
         if trailingNL: result = result + '\n'
         return result
+    #@+node:ekr.20150223082820.5: *6* c.unformatParagraph & helper
+    def unformatParagraph (self,event=None,undoType='Unformat Paragraph'):
+        '''
+        Unformat a text paragraph. Removes all extra whitespace in a paragraph.
+
+        Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+        selected by position of current insertion cursor.
+        '''
+        c = self
+        body = c.frame.body
+        w = body.wrapper
+        if g.app.batchMode:
+            c.notValidInBatchMode("unformat-paragraph")
+            return
+        if w.hasSelection():
+            i,j = w.getSelectionRange()
+            w.setInsertPoint(i)
+        oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+        head,lines,tail = c.findBoundParagraph()
+        if lines:
+            result = ' '.join([z.strip() for z in lines]) + '\n'
+            c.unreformat(head,oldSel,oldYview,original,result,tail,undoType)
+    #@+node:ekr.20150223082820.7: *7* unreformat
+    def unreformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+        '''unformat the body and update the selection.'''
+        c = self ; body = c.frame.body ; w = body.wrapper
+        # This destroys recoloring.
+        junk, ins = body.setSelectionAreas(head,result,tail)
+        changed = original != head + result + tail
+        if changed:
+            body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+        # Advance to the next paragraph.
+        s = w.getAllText()
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            if line.isspace():
+                ins = j+1
+            else:
+                ins = i
+                break
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+        w.setSelectionRange(ins,ins,insert=ins)
+        # More useful than for reformat-paragraph.
+        w.see(ins)
+        # Make sure we never scroll horizontally.
+        w.setXScrollPosition(0)
     #@+node:ekr.20031218072017.1838: *6* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
         '''Handle changed text in the body pane.'''
