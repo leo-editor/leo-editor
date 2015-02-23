@@ -16481,16 +16481,16 @@ Simple text markup tells Leo how to create an external file from an
 
 4. Type this in the child's body text::
 
-    '''This is the docstring for the myfile module.'''
+        '''This is the docstring for the myfile module.'''
     
 5. Create another child of the @clean node whose headline is::
 
-    main
+        main
     
 6. Type this in the body of the node::
 
-    def main():
-        print('hello from main')
+        def main():
+            print('hello from main')
         
 7. Save the outline as myfile.leo. This creates myfile.py automatically.
    
@@ -16498,30 +16498,29 @@ Simple text markup tells Leo how to create an external file from an
 
 9. Open myfile.py in your favorite text editor. You will see::
 
-    '''This is the docstring for the myfile module.'''
-    def main():
-        print('hello from main')
-    if __name__ == '__main__':
-        main()
+        '''This is the docstring for the myfile module.'''
+        def main():
+            print('hello from main')
+        if __name__ == '__main__':
+            main()
 
 Usually you will edit myfile.py from Leo, but Leo can update the outline
 from changes you make in the text editor!
 
 10. In your text editor, change the line::
 
-    print('hello from main')
+        print('hello from main')
         
 to::
 
-    print('hello AGAIN from main')
+        print('hello AGAIN from main')
         
 11. Save myfile.py and quit your text editor.
 
-12. Open myfile.leo. Leo reports that the 'main' node has been changed.
-    It's body text is now::
+12. Open myfile.leo. Leo reports that the 'main' node has been changed. It's body text is now::
     
-    def main():
-        print('hello AGAIN from main')
+        def main():
+            print('hello AGAIN from main')
         
 Automatic updates of @clean nodes is an important feature of Leo. We'll see
 how this works later. But first, the next section discusses Leo's markup in
@@ -19531,7 +19530,7 @@ Using these variables, scripts may easily do any of the following:
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system) from **@clean nodes** and their **descendant* nodes. Examples:
+Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples:
 
     @clean spam.py
     @clean ../foo.c
