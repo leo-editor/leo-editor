@@ -161,13 +161,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3171087d71096803580c000000313337363431323739362e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1158,7 +1158,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e312e312e3371017d710258090000007374725f6174696d657103580c000000313337363431323838392e30710473580b000000302e302e332e302e322e3371057d71066803580c000000313337363431323838382e307107735809000000302e302e312e302e3071087d71096803580c000000313337363431323837322e30710a735810000000302e302e31322e302e302e372e302e31710b7d710c58090000007374725f6174696d65710d580c000000313337363431323238382e30710e73580c000000302e302e31322e302e302e37710f7d711058090000007374725f6174696d657111580c000000313337363431323238302e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1195,7 +1195,10 @@
 <v t="ekr.20150217105817.4"></v>
 </v>
 </v>
+<v t="ekr.20040403171740"></v>
 <v t="ekr.20131008041326.16245"></v>
+<v t="ekr.20150223040723.2"><vh>Importing files (to do, in scripting tutorial)</vh></v>
+<v t="ekr.20150223040723.3"><vh>** unformat-paragraph command</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -17231,39 +17234,30 @@ Programming with Leo
     "We who use Leo know that it is a breakthrough tool and a whole new way
     of writing code."---Joe Orr
 
-Now we come to the programming features that distinguish Leo from all other
-programming environments. Several kinds of nodes create external files. This
-tutorial discusses four of them: @clean, @file, @edit and @auto. Most people
-will use @clean or @file.
+Now we come to the programming features that distinguish Leo from all other programming environments. Several kinds of nodes create external files. This tutorial discusses four of them: @clean, @file, @edit and @auto. @clean is recommended for most purposes.
 
-Please study this section carefully if you intend to use Leo for
-programming. If you get stuck, please `ask for help`_ immediately.
+Please study this section carefully if you intend to use Leo for programming. If you get stuck, please `ask for help`_ immediately.
 
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131008041326.16246">- @clean, @file, @edit and @auto trees create external files.
+<t tx="ekr.20131008041326.16246">- @clean, @file, @edit and @auto trees create external files. @clean is recommended for most purposes.
 
-- When writing @clean, @file and @auto trees, Leo replaces @others and
-  section references with their expansions.
+- When writing @clean, @file and @auto trees, Leo replaces @others and section references with their expansions.
   
 - A **section name** is any text of the form: &lt;&lt; any text &gt;&gt;.
 
-- A **section definition node** is a node whose headline starts with a
-  section name.
+- A **section definition node** is a node whose headline starts with a section name.
 
 - A **section reference** is a section name in body text.
 
 - @edit reads an entire external file into the body text of the @edit node.
 
-- @auto imports an external file into an outline, creating nodes for
-  functions, methods and classes. @persistence nodes optionally save gnx's
-  and uA's of @auto trees in a semi-permanent way.
+- @auto imports an external file into an outline, creating nodes for functions, methods and classes. @persistence nodes optionally save gnx's and uA's of @auto trees in a semi-permanent way.
   
 - @first places lines before the first sentinel lines of a file.
 
-- @path specifies a common prefix for file names of @clean, @file, @edit
-  and @auto nodes.
+- @path specifies a common prefix for file names of @clean, @file, @edit and @auto nodes.
 
 - leo/core/LeoPyRef.leo contains all of Leo's core source code.</t>
 <t tx="ekr.20131008041326.16248">.. |br| raw:: html
@@ -17275,8 +17269,9 @@ programming. If you get stuck, please `ask for help`_ immediately.
 
    &lt;br /&gt;
 
-.. _`event handlers`:
-.. _`Leo's scripting chapter`:</t>
+.. _`Scripting Tutorial`: tutorial-scripting.html
+.. _`import script`: tutorial-scripting.html#import-scripts
+.. _git: http://git-scm.com/</t>
 <t tx="ekr.20131008041326.16253">.. _`PyQt`: http://www.riverbankcomputing.com/software/pyqt/intro
 
 Leo 4.9 featured the completed transition to the `PyQt`_ application
@@ -18128,9 +18123,7 @@ Downloading, Installing &amp; Running Leo
 <t tx="ekr.20131016021541.16894">.. index::
     pair: @edit; Tutorial
 
-Use @edit instead of @clean to place the entire contents of an external
-file into a single outline node. Leo writes no sentinel when writing @edit
-files.</t>
+Use @edit instead of @clean to place the entire contents of an external file into a single outline node. Leo writes no sentinel when writing @edit files.</t>
 <t tx="ekr.20131016083406.16724">@language python
 import os
 trace = True
@@ -19538,15 +19531,19 @@ Using these variables, scripts may easily do any of the following:
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system)
-from **@clean nodes** and their **descendant* nodes. Examples:
+Leo creates **external files** (files on your file system) from **@clean nodes** and their **descendant* nodes. Examples:
 
     @clean spam.py
     @clean ../foo.c
     @clean ~/bar.py
 
-A single Leo outline may contain many @clean nodes. Leo outlines are like
-project files in other IDE's (Integrated Development Environments).
+A single Leo outline may contain many @clean nodes. Leo outlines are like project files in other IDE's (Integrated Development Environments).
+
+.. index::
+    pair: Import Script; Tutorial
+    pair: import-file command; Tutorial
+
+Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is more convenient to use a **import script**. Such scripts will be discussed in the `Scripting Tutorial`_.
 </t>
 <t tx="ekr.20140216125129.16666"></t>
 <t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
@@ -21178,17 +21175,11 @@ for Leo!
     pair: @file; Tutorial
     pair: sentinel lines; Tutorial
 
-Before Leo 5.1, the recommended way to create external files was with
-**@file trees**. @file trees use the same markup as @clean trees.
+Before Leo 5.1, the recommended way to create external files was with **@file trees**. @file trees use the same markup as @clean trees.
 
-The only difference between @clean and @file is that @file insert
-**sentinel lines** into external files. Sentinel lines are comments
-corresponding to markup. Sentinel lines *explicitly* represent structure.
+The only difference between @clean and @file is that @file insert **sentinel lines** into external files. Sentinel lines are comments corresponding to markup. Sentinel lines *explicitly* represent structure.
 
-Sentinel comments greatly simplify the update algorithm. There are no
-ambiguous lines @file trees! @file nodes are especially useful when
-everyone in a project uses Leo. Leo's sources use @file trees for the
-convenience of Leo developers.
+Sentinel comments greatly simplify the update algorithm. There are no ambiguous lines @file trees! @file nodes are especially useful when everyone in a project uses Leo. Leo's sources use @file trees for the convenience of Leo developers.
 
 @file is recommended if you seldom share files with others. Nevertheless,
 most people will prefer to use @clean instead of @file. For example,
@@ -21200,8 +21191,7 @@ to::
 
     @file myfile.py
     
-in the earlier example will create the file myfile.py whose contents looks
-something like this::
+in the earlier example will create the file myfile.py whose contents looks something like this::
 
     #@+leo-ver=5-thin
     #@+node:ekr.20131023081456.2537: * @file myfile.py
@@ -21346,16 +21336,30 @@ algorithm runs, it will no longer have to guess where the lines belong!
 <t tx="ekr.20150221052529.6">You now know enough to create external files and to choose between @clean
 and @file. The following sections discuss directives affecting external
 files.</t>
-<t tx="ekr.20150221052529.7">This tutorial discussed @clean first for two reasons:
+<t tx="ekr.20150221052529.7">This tutorial discussed @clean first for three reasons:
 
 1. To avoid making excuses for sentinel lines.
 
 2. To brag about the @clean update algorithm.
 
-Nevertheless, there are advantages to using @file instead of @clean:
+3. It is often more convenient to avoid sentinels. For example, when I study other people's code I do the following:
 
-1. Leo can update @file trees without guessing, so using @file can be
-   *slightly* easier than using @clean.
+- Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
+  
+- Use an `import script`_ to create the desired @clean nodes.
+
+- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
+
+- Use `git`_ diff to ensure that no important changes have been made while importing the nodes.
+
+- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code.
+
+Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
+
+Nevertheless, there are advantages to using @file instead of @clean. All these advantages arise because external files created by @file contain explicit outline structure.
+
+1. Lea can read @file trees more quickly and without guesses. There is never
+   any need for you to move ambiguous lines from one node to another.
    
 2. Sentinels allow you to share structure simply by sending the external
    file. This is an overwhelming advantage for Leo's developers.
@@ -21364,18 +21368,14 @@ Nevertheless, there are advantages to using @file instead of @clean:
    @clean *tree* in the .leo file, but only stores the top-level @file
    *node* in the .leo file.
    
-My recommendation: use @file if you can tolerate sentinel lines. Otherwise,
-use @clean.</t>
-<t tx="ekr.20150221092405.2">Use @auto instead of @clear when you expect other people to make
-substantial changes to an external file without using Leo.
+In short: use @clean for most purposes. Use @file when all developers in a project use Leo.</t>
+<t tx="ekr.20150221092405.2">Use @auto instead of @clear when you expect other people to make substantial changes to an external file without using Leo.
 
 .. index::
     pair: @auto; Tutorial
     pair: Importer; Tutorial
 
-When reading @auto files, Leo **importers** create an outline from the
-external file. Importers create nodes for each class, method and function
-in the external file.
+When reading @auto files, Leo **importers** create an outline from the external file. Importers create nodes for each class, method and function in the external file.
 
 Notes:
 
@@ -21389,7 +21389,9 @@ Notes:
 
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
+<t tx="ekr.20150223040723.2">Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is much more convenient to use a </t>
+<t tx="ekr.20150223040723.3"></t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
 
