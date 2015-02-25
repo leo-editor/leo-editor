@@ -1954,7 +1954,7 @@ class LoadManager:
         if g.app.diff:
             g.es('--diff mode. sys.argv[2:]...',color='red')
             for z in self.old_argv[2:]:
-                g.es(repr(z),color='blue')
+                g.es(g.shortFileName(z) if z else repr(z),color='blue')
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()

@@ -7221,14 +7221,25 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         trace = False and not g.unitTesting
         c = c1 = self.c
         w = c.frame.body.wrapper
-        # Prompt for the file to be compared with the present outline.
-        filetypes = [("Leo files", "*.leo"),("All files", "*"),]
-        fileName = g.app.gui.runOpenFileDialog(
-            title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
-        if not fileName: return
-        # Read the file into the hidden commander.
-        c2 = self.createHiddenCommander(fileName)
-        if not c2: return
+        commanders = g.app.commanders()
+        if g.app.diff:
+            if len(commanders) == 2:
+                c1,c2 = commanders
+                g.es('--diff auto compare',color='red')
+                g.es('c1',c1.shortFileName())
+                g.es('c2',c2.shortFileName())
+            else:
+                g.es('expecting two .leo files')
+                return
+        else:
+            # Prompt for the file to be compared with the present outline.
+            filetypes = [("Leo files", "*.leo"),("All files", "*"),]
+            fileName = g.app.gui.runOpenFileDialog(
+                title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
+            if not fileName: return
+            # Read the file into the hidden commander.
+            c2 = self.createHiddenCommander(fileName)
+            if not c2: return
         # Compute the inserted, deleted and changed dicts.
         d1 = self.createFileDict(c1)
         d2 = self.createFileDict(c2)  
