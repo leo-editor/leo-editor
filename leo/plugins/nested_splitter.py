@@ -761,6 +761,19 @@ class NestedSplitter(QtWidgets.QSplitter):
             ns.place_provided(action, 1)
         ns.setSizes([0,1])  # but hide one initially
         self.root.windows.append(window)
+
+        # copy the main main window's stylesheet to new window
+        w = self.root  # this is a Qt Widget, class NestedSplitter
+        sheets = []
+        while w:
+            s = w.styleSheet()
+            if s:
+                sheets.append(str(s))
+            w = w.parent()
+        sheets.reverse()
+        sheets = '\n'.join(sheets)
+        ns.setStyleSheet(sheets)
+
         window.show()
     #@+node:tbrown.20110627201141.11744: *3* register_provider
     def register_provider(self, provider):
