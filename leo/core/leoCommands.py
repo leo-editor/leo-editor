@@ -189,9 +189,7 @@ class Commands (object):
 
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self,fileName,relativeFileName):
-
-        # if not fileName: fileName = ''
-        # if not relativeFileName: relativeFileName = ''
+        '''Init file-related ivars of the commander.'''
         self.changed = False
             # True: the ouline has changed since the last save.
         self.ignored_at_file_nodes = []
@@ -203,6 +201,11 @@ class Commands (object):
         self.mRelativeFileName = relativeFileName or ''
             #
         self.openDirectory = None
+            #
+        self.wrappedFileName = None
+            # The name of the wrapped file, for wrapper commanders.
+            # Set by LM.initWrapperLeoFile
+        
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self):
 

@@ -7208,16 +7208,16 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         return {
             'directory-make':           self.makeDirectory,
             'directory-remove':         self.removeDirectory,
-            'file-compare-leo-files':   self.compareLeoFiles,
+            'file-compare-leo-files':   self.compareAnyTwoFiles,
             'file-delete':              self.deleteFile,
             'file-diff-files':          self.diff, 
             'file-insert':              self.insertFile,
             'file-open-by-name':        self.openOutlineByName,
             'file-save':                self.saveFile
         }
-    #@+node:ekr.20070920104110: *3* compareLeoFiles
-    def compareLeoFiles (self,event):
-        '''Compare two .leo files.'''
+    #@+node:ekr.20070920104110: *3* compareAnyTwoFiles & helpers
+    def compareAnyTwoFiles (self,event):
+        '''Compare two files.'''
         trace = False and not g.unitTesting
         c = c1 = self.c
         w = c.frame.body.wrapper
@@ -7225,9 +7225,11 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         if g.app.diff:
             if len(commanders) == 2:
                 c1,c2 = commanders
+                fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
+                fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
                 g.es('--diff auto compare',color='red')
-                g.es('c1',c1.shortFileName())
-                g.es('c2',c2.shortFileName())
+                g.es(fn1)
+                g.es(fn2)
             else:
                 g.es('expecting two .leo files')
                 return
@@ -7248,9 +7250,10 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         # Create clones of all inserted, deleted and changed dicts.
         self.createAllCompareClones(c1,c2,inserted,deleted,changed)
         # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
-        g.app.forgetOpenFile(fn=c2.fileName(),force=True)
-        c2.frame.destroySelf()
-        g.app.gui.set_focus(c,w)
+        if not g.app.diff:
+            g.app.forgetOpenFile(fn=c2.fileName(),force=True)
+            c2.frame.destroySelf()
+            g.app.gui.set_focus(c,w)
     #@+node:ekr.20070921072608: *4* computeChangeDicts
     def computeChangeDicts (self,d1,d2):
 
@@ -7276,20 +7279,23 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         return inserted, deleted, changed
     #@+node:ekr.20070921072910: *4* createAllCompareClones & helper
     def createAllCompareClones(self,c1,c2,inserted,deleted,changed):
-
+        '''Create the comparison trees.'''
         c = self.c # Always use the visible commander
         assert c == c1
         # Create parent node at the start of the outline.
-        u = c.undoer ; undoType = 'Compare .leo Files'
+        u,undoType = c.undoer,'Compare Two Files'
         u.beforeChangeGroup(c.p,undoType)
         undoData = u.beforeInsertNode(c.p)
         parent = c.p.insertAfter()
         parent.setHeadString(undoType)
         u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+        # Use the wrapped file name if possible.
+        fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
+        fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
         for d,kind in (
-            (deleted,'not in %s' % c2.shortFileName()),
-            (inserted,'not in %s' % c1.shortFileName()),
-            (changed,'changed: as in %s' % c2.shortFileName()),
+            (deleted,'not in %s' % fn2),
+            (inserted,'not in %s' % fn1),
+            (changed,'changed: as in %s' % fn2),
         ):
             self.createCompareClones(d,kind,parent)
         c.selectPosition(parent)
@@ -7304,7 +7310,10 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             parent.setHeadString(kind)
             for key in d:
                 p = d.get(key)
-                if p.v.context == c:
+                if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                    # Don't make clones of @<file> nodes for wrapped files.
+                    pass
+                elif p.v.context == c:
                     clone = p.clone()
                     clone.moveToLastChildOf(parent)
                 else:
@@ -7348,7 +7357,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                     g.pr('%-32s %s' % (key,p.h))
                 else:
                     g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
-    #@+node:ekr.20050920084036.164: *3* deleteFile (changed)
+    #@+node:ekr.20050920084036.164: *3* deleteFile
     def deleteFile (self,event):
 
         '''Prompt for the name of a file and delete it.'''
@@ -7367,7 +7376,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                 k.setStatusLabel('Deleted: %s' % k.arg)
             except Exception:
                 k.setStatusLabel('Not Deleted: %s' % k.arg)
-    #@+node:ekr.20050920084036.165: *3* diff (revise)
+    #@+node:ekr.20050920084036.165: *3* diff
     def diff (self,event):
 
         '''Creates a node and puts the diff between 2 files into it.'''

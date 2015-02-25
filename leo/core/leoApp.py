@@ -1932,7 +1932,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120219154958.10452: *3* LM.load
+    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load (self,fileName=None,pymacs=None):
         '''Load the indicated file'''
         lm = self
@@ -1951,15 +1951,27 @@ class LoadManager:
         if g.app.killed: return
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
-        if g.app.diff:
-            g.es('--diff mode. sys.argv[2:]...',color='red')
-            for z in self.old_argv[2:]:
-                g.es(g.shortFileName(z) if z else repr(z),color='blue')
+        if ok and g.app.diff:
+            lm.doDiff()
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
             # For scripts, the gui is a nullGui.
             # and the gui.setScript has already been called.
+    #@+node:ekr.20150225133846.7: *4* LM.doDiff
+    def doDiff(self):
+        '''Support --diff option after loading Leo.'''
+        if len(self.old_argv[2:]) == 2:
+            pass # c.editFileCommands.compareAnyTwoFiles gives a message.
+        else:
+            # This is an unusual situation.
+            g.es('--diff mode. sys.argv[2:]...',color='red')
+            for z in self.old_argv[2:]:
+                g.es(g.shortFileName(z) if z else repr(z),color='blue')
+        commanders = g.app.commanders()
+        if len(commanders) == 2:
+            c = commanders[0]
+            c.editFileCommands.compareAnyTwoFiles(event=None)
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self,fileName,pymacs):
 
@@ -2720,8 +2732,9 @@ class LoadManager:
                 p.setBodyString(s)
                 c.selectPosition(p)
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
-        # 2013/09/25: Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
+        # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
+        c.wrappedFileName = fn
         c.frame.title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(c.frame.title)
         # chapterController.finishCreate must be called after the first real redraw
