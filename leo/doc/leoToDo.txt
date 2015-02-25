@@ -9,6 +9,8 @@
 
 * Continue work on leo_to_html.xsl.
 
+- Call scanAllDirectives at end of initReadIvars?
+
 - Use @auto instead of @edit when reading non.leo files?
 
 - Add setting (not recommended!) to suppress "Recovered Nodes" messages.
