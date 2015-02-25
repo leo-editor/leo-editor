@@ -48,6 +48,7 @@ class LeoApp:
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
         self.debug = False              # True: run Leo in debug mode.
+        self.diff = False               # True: run Leo in diff mode.
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
@@ -1341,6 +1342,8 @@ class LoadManager:
             # List of files to be loaded.
         self.options = {}
             # Dictionary of user options. Keys are option names.
+        self.old_argv = []
+            # A copy of sys.argv for debugging.
 
         if 0: # use lm.options.get instead.
             self.script = None          # The fileName of a script, or None.
@@ -1931,7 +1934,6 @@ class LoadManager:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load
     def load (self,fileName=None,pymacs=None):
-
         '''Load the indicated file'''
         lm = self
         # Phase 1: before loading plugins.
@@ -1949,6 +1951,10 @@ class LoadManager:
         if g.app.killed: return
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
+        if g.app.diff:
+            g.es('--diff mode. sys.argv[2:]...',color='red')
+            for z in self.old_argv[2:]:
+                g.es(repr(z),color='blue')
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
@@ -2101,12 +2107,15 @@ class LoadManager:
         trace = False
         lm = self
         # print('scanOptions',sys.argv)
+        lm.old_argv = sys.argv[:]
 
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
         add('--debug', action='store_true',
             help = 'enable debug mode')
+        add('--diff',       action='store_true',dest='diff',
+            help = 'use Leo as an external git diff')
         add('--fullscreen', action='store_true',
             help = 'start fullscreen')
         add('--ipython',    action='store_true',dest='use_ipython',
@@ -2158,6 +2167,9 @@ class LoadManager:
         g.app.debug = options.debug
         if g.app.debug:
             g.trace_startup = True
+        # --git-diff
+        if options.diff:
+            g.app.diff = options.diff
         # --gui
         gui = options.gui
         if gui:
