@@ -3709,9 +3709,9 @@ For a list of Tk color specifiers see:
 \@strings[list]  A string (must be one of the strings in the list).
                  Example: @strings tk_relief['flat','groove','raised']='groove'
 
-2. "Complex settings nodes" have headlines of the form:
+2. "Complex settings nodes" have headlines of the form::
 
-\@<type> description
+    @<type> description
 
 The actual settings are specified in the body text.  At present, there are two such kinds of complex settings nodes:
 
@@ -4060,9 +4060,9 @@ For a list of Tk color specifiers see:
 \@strings[list]  A string (must be one of the strings in the list).
                  Example: @strings tk_relief['flat','groove','raised']='groove'
 
-2. "Complex settings nodes" have headlines of the form:
+2. "Complex settings nodes" have headlines of the form::
 
-\@<type> description
+    @<type> description
 
 The actual settings are specified in the body text.  At present, there are two such kinds of complex settings nodes:
 
@@ -11214,7 +11214,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 
     You can optionally specify the size and position on the screen of fixed .leo
     files by putting an '@data fixedWindowPosition' node in the
-    \@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+    @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
     **not** put such a node in the fixed .leo file itself--everyone who
     opens the file would get that fixed position.
 
@@ -16159,7 +16159,7 @@ probably is close to optimal in most situations.
 
   An earlier rev fixed a bug that effectively destroyed the viewrendered plugin.
   It was caused by the new convention that alleviates the need for many
-  \@language directives. The fix was simply to enable the update_rst method if
+  @language directives. The fix was simply to enable the update_rst method if
   the massaged p.b is not empty.
 
 - Fixed chapters problems
@@ -17737,7 +17737,7 @@ I see the following
 #@+node:ekr.20120229094652.14613: *5* Improved scannerUnitTest
 The error message is now part of the failed assert.  Very helpful.
 #@+node:ekr.20120314095341.14216: *5* Leo supports @ignore when scanning for @command and @button nodes.
-There no need to disable buttons and commands with \@@button or \@@command.
+There no need to disable buttons and commands with @@button or @@command.
 #@+node:ekr.20120229094652.14777: *5* Support @ignore when installing @command/@button nodes
 Changed doButtons and doCommands kind handlers.
 
@@ -19682,11 +19682,11 @@ https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 - Ctrl-click in body allows spaces in url's.
 #@+node:ekr.20131105110107.16934: *6* New features
 #@+node:ekr.20131105110107.16935: *7* About @testsetup
-Leo now contains support for \@testsetup nodes. At present, they work only
+Leo now contains support for @testsetup nodes. At present, they work only
 when running unit tests locally.
 
-In effect, \@testsetup nodes provide common setup code for all following
-\@test and \@suite nodes. Such common setup code is the real reason for
+In effect, @testsetup nodes provide common setup code for all following
+@test and @suite nodes. Such common setup code is the real reason for
 having custom subclasses of unittest.TestCase. This Leonine solution is
 much than either:
 
@@ -19696,10 +19696,10 @@ b) "injecting" common test code using::
 
     exec(g.findTestScript(c,\'@common name-of-common-test-code\'))
 
-Leo's test-execution code prepends the body text of an \@testsetup node to
-all following @test and @suite nodes. Multiple \@testsetup nodes may appear
+Leo's test-execution code prepends the body text of an @testsetup node to
+all following @test and @suite nodes. Multiple @testsetup nodes may appear
 in an outline. The range of an @testsetup node extends over all following
-\@test and \@suite nodes until the next \@testsetup node is seen (in
+@test and @suite nodes until the next @testsetup node is seen (in
 outline order).
 
 #@+node:ekr.20131105110107.16936: *7* Added support for @testclass
@@ -20195,8 +20195,8 @@ ipython variable "foo"
 
 **@vso bar.json**
 
-serializes content of variable "bar" to json file. \@vsi gets executed
-during pass 1 of vs-update, \@vso gets executed in phase 2.
+serializes content of variable "bar" to json file. @vsi gets executed
+during pass 1 of vs-update, @vso gets executed in phase 2.
 
 Body text gets assigned with json content in both cases.
 
@@ -20491,7 +20491,7 @@ Made the following changes:
   so each may have its own docstring.
 
 - Added try/finally protection in the exec statement, so that errors in
-  \@data abbreviations-subst-env do not cause problems during startup.
+  @data abbreviations-subst-env do not cause problems during startup.
 
 - Added a new setting: @bool scripting-abbreviations, default False.
   Scripting abbreviations will be enabled if *either* of the following is
@@ -20924,7 +20924,7 @@ The fix was to nodeHistory.select at rev 6042
 #@+node:ekr.20131105110107.17005: *7* Fixed bug in at.putCodeLine
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
 
-\@auto did not write the following .json file properly(!)::
+@auto did not write the following .json file properly(!)::
 
     {
         'name' : "Test app 1"
@@ -29056,19 +29056,14 @@ For example, this setting works without any explicit definition of mistyrose2.
 #@+node:ekr.20150212182032.5: *3* 5.1 No more sentinels!
 Leo 5.1 b1                          February 20, 2015
 
-Leo 5.1 b1 is now available at:
-http://sourceforge.net/projects/leo/files/Leo/
+Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
-Leo is a PIM, an IDE and an outliner.
-Video tutorials: http://leoeditor.com/screencasts.html
-Text tutorials: http://leoeditor.com/tutorial.html
+Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/screencasts.html Text tutorials: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 5.1
 --------------------------
 
-* @clean trees are the new recommended way of creating external files. Such
-  files contain no sentinels, yet using @clean is as convenient as using
-  @file:
+* @clean trees are the new recommended way of creating external files. Such files contain no sentinels, yet using @clean is as convenient as using @file:
   
   - Leo updates @clean trees from changes made to external files, something
     long thought impossible. The Aha was to apply the @shadow algorithm to
@@ -29080,7 +29075,7 @@ The highlights of Leo 5.1
   - Updating @clean trees is significantly faster than updating @shadow
     trees or importing @auto trees.
   
-* @shadow is officially deprecated. \@clean is superior to \@shadow in all
+* @shadow is officially deprecated. @clean is superior to @shadow in all
   respects. Leo will support @auto, @auto-rst, etc. indefinitely.
 
 Links:
@@ -29094,31 +29089,19 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 #@+node:ekr.20150217105817.4: *4* \@clean
-Leo updates @clean trees from changes made to external files without
-sentinel comments, something long thought impossible. As a result, Leo can
-now be used in any environment, including work groups where no one else
-uses Leo.
+Leo updates @clean trees from changes made to external files without sentinel comments, something long thought impossible. As a result, Leo can now be used in any environment, including work groups where no one else uses Leo.
 
 #@+node:ekr.20150220115528.6: *4* \@clean is better than \auto
-\@clean is significantly better than \@auto for most purposes.
-Most users will want convert from @auto trees to @clean:
+\@clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
 
 - Updating an @clean tree is faster that importing an @auto tree.
 
-- @clean trees preserve outline structure, clone links and uA's without the
-  need for @persistence trees.
+- @clean trees preserve outline structure, clone links and uA's without the need for @persistence trees.
 
-However, Leo will continue to support all forms of @auto for the
-foreseeable future, especially \@auto-rst, \@auto-vimoutline and
-\@auto-otl.
+However, Leo will continue to support all forms of @auto for the foreseeable future, especially @auto-rst, @auto-vimoutline and @auto-otl.
 #@+node:ekr.20150220115528.5: *4* \@shadow is deprecated
-\@shadow is now officially deprecated. \@clean is faster
-and easier to use than \@shadow.
+\@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
 #@+node:ekr.20150220115528.4: *4* A better update algorithm
-Leo updates @clean trees using a simplified version of the Mulder update
-algorithm previously used to update @shadow trees. The Mulder/Ream
-algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-is easy to understand, provably correct and completely documented. It may
-be of interest to the developers of other outliners.
+Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. The Mulder/Ream algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
 #@-all
 #@-leo
