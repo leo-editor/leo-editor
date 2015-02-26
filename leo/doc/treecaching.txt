@@ -1,19 +1,10 @@
 Python list based description of trees ('objtrees')
-===================================================
++++++++++++++++++++++++++++++++++++++++++++++++++++
+Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized" representation in .leo xml files (where structure is described by xml hierarchy), or @file nodes (where structure is described by sentinels).
 
-Positions and trees are objects that exists only within Leo instance. However,
-trees can have "serialized" representation in .leo xml files (where structure is
-described by xml hierarchy), or @file nodes (where structure is described by
-sentinels).
+Sometimes, both formats are too heavyweight. Both xml and "flat" text files involve nontrivial callback-based (or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and passed around with almost zero cost in CPU consumption or code complexity. In theory position objects can be passed around in this fashion as well, but positions always have to exist in the tree (there is no concept of 'detached' position) and they can't be pickled or moved around outside the Leo instance.
 
-Sometimes, both formats are too heavyweight. Both xml and "flat" text files involve nontrivial callback-based
-(or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and 
-passed around with almost zero cost in CPU consumption or code complexity. In theory position objects
-can be passed around in this fashion as well, but positions always have to exist in the tree (there
-is no concept of 'detached' position) and they can't be pickled or moved around outside the Leo instance.
-
-For the purposes of this discussion (and for the sheer narcissistic pleasure of inventing new terminology), I'm 
-calling these data structures `objtrees`.
+For the purposes of this discussion (and for the sheer narcissistic pleasure of inventing new terminology), I'm calling these data structures `objtrees`.
 
 The structure of objtrees is a standard Python list of the form::
 
@@ -36,11 +27,7 @@ Where `children` is a recursive tree. Here's an example objtree (from ILeo sessi
        'ville.20090609184451.5682',
        [[u'ch2.1 head', u'', 'ville.20090609184451.5683', []]]]]]
 
-Note that these trees are constructed using `g.tree_at_position(pos)`. These objtrees can be re-incorporated to 
-Leo document using `g.create_tree_at_vnode(c, v, tree)`, which rebuilds the structure at position p. The "vnode"
-is available as p.v attribute. This functions also creates clones if necessary (according to gnx). If 
-you want to avoid creating clones (e.g. to implement simple copy-paste functionality), you can use `g.create_tree_at_position(p)`.
-create_tree_at_position also server as a trivial example for recursing through objtree data structure::
+Note that these trees are constructed using `g.tree_at_position(pos)`. These objtrees can be re-incorporated to Leo document using `g.create_tree_at_vnode(c, v, tree)`, which rebuilds the structure at position p. The "vnode" is available as p.v attribute. This functions also creates clones if necessary (according to gnx). If you want to avoid creating clones (e.g. to implement simple copy-paste functionality), you can use `g.create_tree_at_position(p)`. create_tree_at_position also server as a trivial example for recursing through objtree data structure::
 
     def create_tree_at_position(p, tree):
         """ Like create_tree_at_vnode, but slower, simpler, without clone/gnx support
@@ -55,43 +42,25 @@ create_tree_at_position also server as a trivial example for recursing through o
             # recurse
             create_tree_at_position(chpos, el)
 
-`g.create_tree_at_vnode` is more complex, but faster and supports clones. It relies on 
-`g.fast_add_last_child(c, parent_v, gnxString)`, which adds a new node to the tree
-as last child of parent_v (vnode), It either returns the created vnode, or None 
-if it created a clone (i.e. a node with same gnx was already found in the document). 
-This is a conscious design choice, as it prevents you from accidentally manipulating
-the tree of the clone (since it already has a tree of its own!).
-
+`g.create_tree_at_vnode` is more complex, but faster and supports clones. It relies on `g.fast_add_last_child(c, parent_v, gnxString)`, which adds a new node to the tree as last child of parent_v (vnode), It either returns the created vnode, or None if it created a clone (i.e. a node with same gnx was already found in the document). This is a conscious design choice, as it prevents you from accidentally manipulating the tree of the clone (since it already has a tree of its own!).
 Using objtrees for caching
-==========================
+++++++++++++++++++++++++++
+Objtrees are not without real life applications. They are used to implement the content hash based node cache that radically speeds up Leo's startup (effectively eliminating the delay caused by Leo parsing @file / @auto nodes - something which made trees with several @auto or @file nodes intolerable in practice. The trick here relies on the fact that:
 
-Objtrees are not without real life applications. They are used to implement the
-content hash based node cache that radically speeds up Leo's startup
-(effectively eliminating the delay caused by Leo parsing @file / @auto nodes -
-something which made trees with several @auto or @file nodes intolerable in
-practice. The trick here relies on the fact that:
+- The whole content of external file (say, foo.py) can be described by calculating an md5sum of the file - The same external file content will always create the same leo tree.
 
-- The whole content of external file (say, foo.py) can be described by
-calculating an md5sum of the file - The same external file content will always
-create the same leo tree.
+In brief,
 
-In brief, 
+- When we are reading in a @file node foo.cpp, we first read in the whole file and calculate md5sum of its contents. Let's say the md5 sum is 8095e2dabbfe90b349066209fb090df6.
 
-- When we are reading in a @file node foo.cpp, we first read in the whole file and calculate
-  md5sum of its contents. Let's say the md5 sum is 8095e2dabbfe90b349066209fb090df6. 
-- Leo tries to look for existing cached version in ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6. Initially, it doesn't exist,
-  so Leo executes the standard (slow) @file code parsing routine and creates the tree normally
-- After creating the tree, Leo executes g.tree_at_position and pickles the objtree to file 
-  ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
+- Leo tries to look for existing cached version in ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6. Initially, it doesn't exist, so Leo executes the standard (slow) @file code parsing routine and creates the tree normally
+
+- After creating the tree, Leo executes g.tree_at_position and pickles the objtree to file ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
+
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`
-
 The `Leo database` (c.db, g.app.db)
-===================================
-
-Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but 
-uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
-always associated with one specific Leo document, and is available through c.db. So, storing a tree is
-(in simplified form) about doing::
++++++++++++++++++++++++++++++++++++
+Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is always associated with one specific Leo document, and is available through c.db. So, storing a tree is (in simplified form) about doing::
 
    cachename = "fcache/8095e2dabbfe90b349066209fb090df6"
    if cachename in c.db:
@@ -100,16 +69,11 @@ always associated with one specific Leo document, and is available through c.db.
         tree = g.tree_at_position(pos)
         c.db[cachename] = tree
 
-Pickleshare (as used by Leo) stores the pickles in zlib-compressed form, which yields 
-significant size benefits for large pickles like objtrees.
+Pickleshare (as used by Leo) stores the pickles in zlib-compressed form, which yields significant size benefits for large pickles like objtrees.
 
-Note that c.db is available to all plugins and scripts, and in no way limited to this 
-specific caching purpose. In practice, it's useful for data you want to persist
-through Leo sessions, but not added to .leo document (which is what unknownAttributes
-are used for).
+Note that c.db is available to all plugins and scripts, and in no way limited to this specific caching purpose. In practice, it's useful for data you want to persist through Leo sessions, but not added to .leo document (which is what unknownAttributes are used for).
 
-In addition to c.db, there is g.app.db that can be used for global (non-document specific)
-persisted data. E.g.::
+In addition to c.db, there is g.app.db that can be used for global (non-document specific) persisted data. E.g.::
 
     g.app.db['foo'] = [1,2,3]  
 

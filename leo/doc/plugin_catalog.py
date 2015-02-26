@@ -8,7 +8,7 @@
 Extract plugin status and docs. from docstrings
 
 :last_update: 20100301
-:plugin_status: inital development
+:plugin_status: initial development
 :gui: qt
 :maintainer: terry_n_brown@yahoo.com
 
