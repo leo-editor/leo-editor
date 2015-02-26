@@ -25571,7 +25571,7 @@ P.S. git and easier access to pylint contributed to the present avalanche
 of energy and ideas.
 
 Git has allowed me to revise Leo's source code radically, with complete
-safety. I would never have done what I have done lately with bzr.
+safety.
 
 Leo's new pylint command allows me to run pylint *easily* on one or more
 "recent" files, *without* having to change any list. As a result, I run

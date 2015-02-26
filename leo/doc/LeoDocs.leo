@@ -1790,7 +1790,8 @@ The g.u function should be used *only* to convert from the Qt string type (a wra
     **New in 4.0**:
 
     -   &lt;v&gt; elements corresponding to @file nodes now contain tnodeList attributes.
-        The tnodeList attribute allows Leo to recreate the order in which nodes should appear in the outline.
+        The tnodeList attribute allows Leo to recreate the order in which nodes should 
+        appear in the outline.
         The tnodeList attribute is a list of gnx's: global node indices.
         See Format of external files (4.x) for the format of gnx's.
 
@@ -14259,6 +14260,8 @@ Leo's Cheat Sheet
 
    &lt;br /&gt;
    
+**Important**: The easiest way to find documentation is to search LeoDocs.leo.
+   
 .. _`Directives reference`: directives.html
 .. _`Commands Reference`: commands.html
 .. _`userAttributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
@@ -14624,14 +14627,17 @@ You will get something like the following::
     
     Options:
       -h, --help            show this help message and exit
-      --fullscreen          start fullscreen (Qt only)
+      --debug               enable debug mode
+      --diff                use Leo as an external git diff
+      --fullscreen          start fullscreen
       --ipython             enable ipython support
       --gui=GUI             gui to use (qt/qttabs)
-      --maximized           start maximized (Qt only)
+      --maximized           start maximized
       --minimized           start minimized
       --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
+      --old-nosent          disable new @clean update logic
       --screen-shot=SCREENSHOT_FN
                             take a screen shot and then exit
       --script=SCRIPT       execute a script and then exit
@@ -14641,9 +14647,10 @@ You will get something like the following::
       --session-restore     restore previously saved session tabs at startup
       --session-save        save session tabs on exit
       --silent              disable all log messages
+      --trace-plugins       trace imports of plugins
       -v, --version         print version number and exit
       --window-size=WINDOW_SIZE
-                            initial window size in height x width format
+                            initial window size (height x width)
 </t>
 <t tx="ekr.20131008041326.16177">This section discusses the most important milestones in history of Leo.
 
@@ -16393,28 +16400,34 @@ More: Associate leo files
 </t>
 <t tx="ekr.20131028213522.17138">::
 
-  -h, --help            show this help message and exit
-  --diff                run Leo in diff mode
-  --fullscreen          start fullscreen
-  --ipython             enable ipython support
-  --gui=GUI             gui to use (qt/qttabs)
-  --maximized           start maximized
-  --minimized           start minimized
-  --no-cache            disable reading of cached files
-  --no-plugins          disable all plugins
-  --no-splash           disable the splash screen
-  --screen-shot=SCREENSHOT_FN
-                        take a screen shot and then exit
-  --script=SCRIPT       execute a script and then exit
-  --script-window=SCRIPT_WINDOW
-                        open a window for scripts
-  --select=SELECT       headline or gnx of node to select
-  --session-restore     restore previously saved session tabs at startup
-  --session-save        save session tabs on exit
-  --silent              disable all log messages
-  -v, --version         print version number and exit
-  --window-size=WINDOW_SIZE
-                        initial window size (height x width)
+    Usage: launchLeo.py [options]
+    
+    Options:
+      -h, --help            show this help message and exit
+      --debug               enable debug mode
+      --diff                use Leo as an external git diff
+      --fullscreen          start fullscreen
+      --ipython             enable ipython support
+      --gui=GUI             gui to use (qt/qttabs)
+      --maximized           start maximized
+      --minimized           start minimized
+      --no-cache            disable reading of cached files
+      --no-plugins          disable all plugins
+      --no-splash           disable the splash screen
+      --old-nosent          disable new @clean update logic
+      --screen-shot=SCREENSHOT_FN
+                            take a screen shot and then exit
+      --script=SCRIPT       execute a script and then exit
+      --script-window=SCRIPT_WINDOW
+                            open a window for scripts
+      --select=SELECT       headline or gnx of node to select
+      --session-restore     restore previously saved session tabs at startup
+      --session-save        save session tabs on exit
+      --silent              disable all log messages
+      --trace-plugins       trace imports of plugins
+      -v, --version         print version number and exit
+      --window-size=WINDOW_SIZE
+                            initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
 <t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to
@@ -17994,27 +18007,26 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20150215071358.87">* Emphasize that the place to search first is LeoDocs.leo.
-  Jake: The above line should be highlighted in big boldface on Leo's website.
-  
-* Spell check.
-** @auto-org is not @auto-otl.
-  
-- Revise 5.1 release notes.
+<t tx="ekr.20150215071358.87">- Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
-
-* Make sure list of command-line arguments is up-to-date.
-* Search for bzr.
 * Document @auto-rst/md/vo/otl.
-* Review docs for uA's and gnx's.
-    - Links to main discussion in the tutorial.
+    * @auto-org is not @auto-otl.
+* Add entries for gnx and uA to glossary, with examples in scripting chapter.
+    * Links to docs for uA's and gnx's.
 * Write a section for Leo 5.0 in the history of Leo.
+* Spell check.
 
-Done
-* Use unformat-paragraph throughout.
+Done:
+
+* Review docs for uA's and gnx's.
+  http://leoeditor.com/tutorial-programming.html#using-persistence
+  http://leoeditor.com/appendices.html#format-of-external-files
 * Make sure @clean is completely documented.
+  http://leoeditor.com/tutorial-programming.html#using-clean
+  http://leoeditor.com/tutorial-programming.html#summary-clean-vs-file
 * Explain the overall idea of the @shadow algorithm.
+  http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 * Deprecate @shadow in all docs.
 </t>
 <t tx="ekr.20150216034509.1">.. index::
