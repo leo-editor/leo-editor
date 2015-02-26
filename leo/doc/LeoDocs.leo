@@ -161,13 +161,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e307104735803000000302e3171057d71066803580c000000313337363431323739362e3071077358010000003071087d71096803580c000000313337363431323932332e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -701,10 +701,10 @@
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt; (deprecated)</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4399"><vh>\@clean &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
-<v t="ekr.20100806170836.4399"><vh>\@clean &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
@@ -1158,7 +1158,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580c000000302e302e31322e302e302e3771017d710258090000007374725f6174696d657103580c000000313337363431323238302e307104735809000000302e302e312e302e3071057d710658090000007374725f6174696d657107580c000000313337363431323837322e307108735810000000302e302e31322e302e302e372e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323238382e30710c73580b000000302e302e332e302e322e33710d7d710e6807580c000000313337363431323838382e30710f73580b000000302e302e332e312e312e3371107d71116807580c000000313337363431323838392e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150212182032.4"></v>
@@ -1279,8 +1279,7 @@ The command operates on the paragraph containing the insert cursor. If the inser
   2. This is the second paragraph,
      and it too has a hanging indentation.
      
-The ``unformat-paragraph`` removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
-
+The ``unformat-paragraph`` (Ctrl-Shift-P) command removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
 </t>
 <t tx="EKR.20040524104904.139">The ``match-brackets`` command is enabled if the cursor is next to one of the following characters in the body pane:
 
@@ -13769,39 +13768,19 @@ In the future, this could be able to remember the scores through the sessions, d
 
 Mylyn was a nice boost back in the eclipse days, it could work for Leo too. My main motivation right now was to demonstrate the signals with something that is much simpler than using them in qmlnotebook.
 </t>
-<t tx="ekr.20130815102041.15630">By Terry Brown.
-
-See http://leo-editor.github.io/screen_capture.html
+<t tx="ekr.20130815102041.15630">By Terry Brown. See http://leo-editor.github.io/screen_capture.html
 
 screen_capture now captures an image immediately, screen_capture_5sec waits
 five seconds, so you can position the pointer, open menus etc. The only
 feedback is in the console, as messages in the log would be distracting in
-the captured image.
-</t>
-<t tx="ekr.20130815102041.15631">By Edward K. Ream
+the captured image.</t>
+<t tx="ekr.20130815102041.15631">Screencasts promise to be easy to be *much* easier to create than slideshows, while also being more interesting, informative and flashy.  It is *so* much easier to write a screencast script than it is to lay out a slide, take a screenshot, and then manage resulting slide.
 
-Screencasts promise to be easy to be *much* easier to create than 
-slideshows, while also being more interesting, informative and flashy.  It 
-is *so* much easier to write a screencast script than it is to lay out a 
-slide, take a screenshot, and then manage resulting slide.
+In particular, there are few continuity problems with screencasts. Continuity is a *huge* problem with slideshows!  If I change one slide, I am likely to want to change all following slides.  Which means I have to retake all the slides, and file the new versions in the proper places.  In contrast, any changes to screencasts naturally propagate forward.  There might be an effect on following screencasts scenes, but this will happen rarely with a reasonable scene design, and any problems should be easy to fix.
 
-In particular, there are few continuity problems with screencasts.  
-Continuity is a *huge* problem with slideshows!  If I change one slide, I 
-am likely to want to change all following slides.  Which means I have to 
-retake all the slides, and file the new versions in the proper places.  In 
-contrast, any changes to screencasts naturally propagate forward.  There 
-might be an effect on following screencasts scenes, but this will happen 
-rarely with a reasonable scene design, and any problems should be easy to 
-fix.
+With screencasts, the *movie* script is also the *python* script!  There is no "translation" from one to the other.  Furthermore, all the work to produce a screencast is done (naturally!) within Leo.  No need to create and manage external data.  This is another huge advantage and it make producing screencasts much faster than producing slideshows.
 
-With screencasts, the *movie* script is also the *python* script!  There is 
-no "translation" from one to the other.  Furthermore, all the work to 
-produce a screencast is done (naturally!) within Leo.  No need to create 
-and manage external data.  This is another huge advantage and it make 
-producing screencasts much faster than producing slideshows.
-
-Screencasts may be the long-awaited tools that will allow me to show Leo in
-action so that other will finally be able to understand it easily.
+Screencasts may be the long-awaited tools that will allow me to show Leo in action so that other will finally be able to understand it easily.
 </t>
 <t tx="ekr.20130815102041.15632">By Kent Tenney
 
@@ -14471,7 +14450,7 @@ The @first and @last directives aren't necessary within @clean trees, but
 they are allowed within @clean trees.
 </t>
 <t tx="ekr.20131008041326.16055">.. index::
-    pair: @path; Tutorial
+    pair: \@path; Tutorial
 
 Rather than specifying long paths in @file nodes, you can specify a path in
 an ancestor @path node.
@@ -15200,9 +15179,7 @@ g.pdb. I recommend always running Leo from a console.</t>
     &lt;&lt; about 'internal' bindings &gt;&gt; (leoKeys.py)
     &lt;&lt; about key dicts &gt;&gt; (leoKeys.py)
     
-These comments may be helpful, but do *not* assume that they are accurate.
-
-When in doubt, trust the code, not the comments.
+These comments may be helpful, but do *not* assume that they are accurate. When in doubt, trust the code, not the comments.
 </t>
 <t tx="ekr.20131011050613.16868">You can learn *anything* about Leo, provided that you can cause Leo to execute the relevant code. That's usually very easy!
 
@@ -16894,7 +16871,7 @@ As discussed below, execute-script predefines three variables: c, g and p. |br| 
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples:
+Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
 
     @clean spam.py
     @clean ../foo.c
@@ -17607,9 +17584,7 @@ provides the following API::
 Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
 a set.
 </t>
-<t tx="ekr.20141105085003.8">UI
-
-The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
+<t tx="ekr.20141105085003.8">The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
 the top is a search bar, editable to allow complex search queries.  It
 is pre-populated with all existing tags in the outline, and remembers
 your custom searches within the given session.  It also acts double duty
@@ -17708,9 +17683,9 @@ How can I call the function "insertIconFromFile"? How can I know how to call fun
 
 -----
 
-Ok, in order to print icons, the code is this:
+Ok, in order to print icons, the code is this::
 
-c.editCommands.insertIconFromFile(path)
+    c.editCommands.insertIconFromFile(path)
 
 I'm quoting from this Leo manual
 http://leoeditor.com/scripting.html#important-objects,
@@ -18001,8 +17976,6 @@ Leo stores session state in ~/.leo/leo.session
 Not only do I now use Leo is a central repository for scripts I write as I explore the data, generate plots, start analyses with third party applications etc., but also for storing and organising ideas for research and notes parsed out of PDFs of academic papers. And that's just for work!
 
 I have a calendar, addresses all my general PIM-type info, and notes for any project I'm tinkering with. In short whether I'm at work or play Leo is usually involved :-)
-
-Dave Williams &lt;dave@d-dub.org.uk&gt;
 </t>
 <t tx="ekr.20150210062226.4">This appendix documents the Mulder/Ream update algorithm in detail, with an informal proof of its correctness.
 
@@ -18160,16 +18133,21 @@ Quotes:    http://leoeditor.com/testimonials.html
 <t tx="ekr.20150215071358.87">* Emphasize that the place to search first is LeoDocs.leo.
   Jake: The above line should be highlighted in big boldface on Leo's website.
   
+* Spell check.
+** @auto-org is not @auto-otl.
+  
 - Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
-* Use unformat-paragraph throughout.
+
+* Make sure list of command-line arguments is up-to-date.
 * Document @auto-rst/md/vo/otl.
 * Review docs for uA's and gnx's.
     - Links to main discussion in the tutorial.
 * Write a section for Leo 5.0 in the history of Leo.
 
 Done
+* Use unformat-paragraph throughout.
 * Make sure @clean/@nosent is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
@@ -18487,7 +18465,7 @@ Notes:
 </t>
 <t tx="ekr.20150222035621.5"></t>
 <t tx="ekr.20150223040723.2">Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is much more convenient to use a </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
