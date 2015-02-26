@@ -4250,18 +4250,13 @@ Event name (tag argument)     Stop?    When called                         Keys 
 
 Each @button node also creates a corresponding minibuffer command.
 
-Pressing the script button (or executing the command from the minibuffer)
-applies the script in the @button node to the presently selected outline
-node.
+Pressing the script button (or executing the command from the minibuffer) applies the script in the @button node to the presently selected outline node.
 
-Script buttons **bring scripts to outlines** a powerful pattern. Creating
-an @button script should be your first thought whenever you want to
-automate any task.
+Script buttons **bring scripts to outlines** a powerful pattern. Creating an @button script should be your first thought whenever you want to automate any task.
 
 - The mod_scripting.py plugins must be enabled to create @button nodes.
 
-- Script buttons execute the **present** body text of the @button node. |br|
-  You can modify a script button's script at any time.
+- Script buttons execute the **present** body text of the @button node. |br| You can modify a script button's script at any time.
 
 - You can bind keys to the commands created by script buttons::
 
@@ -6116,8 +6111,7 @@ p is the **position** of the presently selected node.
 
 - vnodes contain all the permanent data in a Leo outline.
 
-The next two sections are crucial: they discuss vnodes and positions in all
-necessary detail.
+The next two sections are crucial: they discuss vnodes and positions in all necessary detail.
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
@@ -8135,21 +8129,11 @@ Leo's Tutorials
     and how much information I can find and organize and store in a
     useful way."---Dan Winkler
 
-Leo looks like other outlining programs, but it is not. This tutorial will
-get you using Leo quickly, acquainting you with its unique features in one
-or two hours. It has five parts.
+Leo looks like other outlining programs, but it is not. This tutorial will get you using Leo quickly, acquainting you with its unique features in one or two hours. It has five parts.
 
-The first three parts are for all users. They will take about an hour to
-complete. Part one introduces Leo's basic operations for creating and
-changing outlines. Part two tells how to use Leo as a Personal Information
-Manager. Part three tells how to create HTML, PDF, LaTeX and other
-documents.
+The first three parts are for all users. They will take about an hour to complete. Part one introduces Leo's basic operations for creating and changing outlines. Part two tells how to use Leo as a Personal Information Manager. Part three tells how to create HTML, PDF, LaTeX and other documents.
 
-The last two parts are for computer programmers; they assume some
-familiarity with `Python`_ programming. They will take another hour to
-complete. Part four tells how to create external files (files on your file
-system) from Leo outlines. Part five tells how to write Leo scripts, Python
-scripts run from any Leo node.
+The last two parts are for computer programmers; they assume some familiarity with `Python`_ programming. They will take another hour to complete. Part four tells how to create external files (files on your file system) from Leo outlines. Part five tells how to write Leo scripts, Python scripts run from any Leo node.
     
 .. toctree::
     :maxdepth: 1
@@ -13080,19 +13064,13 @@ Leo's scripting environment takes full advantage of outline structure:
 <t tx="ekr.20101124083644.5052">.. index::
     pair: Autocompletion; Tutorial
     
-Autocompletion reminds you of all members (functions, methods, ivars, etc.)
-contained in objects in Leo's source code, and in Python's standard library
-modules.
+Autocompletion reminds you of all members (functions, methods, ivars, etc.) contained in objects in Leo's source code, and in Python's standard library modules.
 
-Alt-1 (toggle-autocompleter) enables and disables autocompletion. **Note**:
-Autocompletion can be enabled only when @language python is in effect.
+Alt-1 (toggle-autocompleter) enables and disables autocompletion. **Note**: Autocompletion can be enabled only when @language python is in effect.
 
-For example, typing just "c.atF" (in the body pane, with autocompletion
-enabled) automatically inserts "c.atFileCommands" into the body pane,
-because "c.atFileCommands" is the only possible completion of "c.atF".
+For example, typing just "c.atF" (in the body pane, with autocompletion enabled) automatically inserts "c.atFileCommands" into the body pane, because "c.atFileCommands" is the only possible completion of "c.atF".
 
-As another example, typing "at.writeA" will show (in an autocompleter tab in the Log pane)
-all of the write commands in leoAtFile.py::
+As another example, typing "at.writeA" will show (in an autocompleter tab in the Log pane) all of the write commands in leoAtFile.py::
 
     writeAll:method
     writeAllHelper:method
@@ -13101,8 +13079,7 @@ all of the write commands in leoAtFile.py::
     writeAtShadowNodes:method
     writeAtShadowNodesHelper:method
 
-When a single completion is shown, typing '?' will show the docstring for a method::
-For example, "c.atFileCommands.write?" shows::
+When a single completion is shown, typing '?' will show the docstring for a method. For example, "c.atFileCommands.write?" shows::
 
     Write a 4.x derived file.
     root is the position of an @&lt;file&gt; node
@@ -15330,36 +15307,23 @@ the namespace, and do calculations based on that data. Having this data be
 accessible to the ipython instance makes it convenient to interact and poke
 around with the same data.
 </t>
-<t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands. |br|
-**Note**: you can also use the Nav Tab (in the Log pane) to search for text. 
+<t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands. |br| **Note**: you can also use the Nav Tab (in the Log pane) to search for text.
 
-Ctrl-F (start-search) shows the Find Tab and puts the focus
-in the minibuffer. |br|
-**Important**: the Find tab just shows you the status of search and replace
-operations. |br|
-You control those operations from the minibuffer.
+Ctrl-F (start-search) shows the Find Tab and puts the focus in the minibuffer. |br| **Important**: the Find tab just shows you the status of search and replace operations. |br| You control those operations from the minibuffer.
 
-**Note**: You can select radio buttons and toggle check boxes in the
-Find Tab with Ctrl-Alt keys. The capitalized words of the radio
-buttons or check boxes indicate which Ctrl-Alt key to use. For
-example, Ctrl-Alt-X (toggle-find-regex-option) toggles the Regexp
-checkbox.
+**Note**: You can select radio buttons and toggle check boxes in the Find Tab with Ctrl-Alt keys. The capitalized words of the radio buttons or check boxes indicate which Ctrl-Alt key to use. For example, Ctrl-Alt-X (toggle-find-regex-option) toggles the Regexp checkbox.
 
 After typing Ctrl-F, type the search string, say "def", in the minibuffer.
 
 Start the find by typing &lt;Return&gt;.
 
-But suppose you want to replace "def" with "foo", instead of just finding
-"foo".
+But suppose you want to replace "def" with "foo", instead of just finding "foo".
 
-Before typing &lt;Return&gt; type &lt;Tab&gt;. The minibuffer prompts for the
-replacement string. Notice that the status area now shows “def” as the Find
-string.
+Before typing &lt;Return&gt; type &lt;Tab&gt;. The minibuffer prompts for the replacement string. Notice that the status area now shows “def” as the Find string.
 
 Type "foo" and type &lt;Return&gt; to start the find-next command.
 
-When Leo finds the next instance of "def", it will select it. |br|
-You may type any command.  The following are most useful:
+When Leo finds the next instance of "def", it will select it. |br| You may type any command.  The following are most useful:
 
 - Ctrl-minus (replace-then-find) replaces the selected text.
 - F3 (find-next) continues searching without making a replacement.
@@ -15374,23 +15338,15 @@ You may type any command.  The following are most useful:
     pair: Local Settings; Tutorial
     pair: Configuration file; Tutorial
 
-Leo has a flexible (perhaps *too* flexible) configuration system. It's best
-to use this flexibility in a restricted way as follows:
+Leo has a flexible (perhaps *too* flexible) configuration system. It's best to use this flexibility in a restricted way as follows:
 
-1. The file leo/config/leoSettings.leo contains Leo's default **global settings**.
-   Don't change this file unless you are one of Leo's developers.
+1. The file leo/config/leoSettings.leo contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
-2. The file ~/myLeoSettings.leo contains your **personal settings**. Leo will
-   not create this file automatically: you should create it yourself.
-   Settings in myLeoSettings.leo override (or add to) the default settings
-   in leoSettings.leo.
+2. The file ~/myLeoSettings.leo contains your **personal settings**. Leo will not create this file automatically: you should create it yourself. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
    
-3. Any other .leo file may also contain **local settings**. Local
-   settings apply only to that file and override all other settings.
-   It's best to use local settings sparingly.
+3. Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings. It's best to use local settings sparingly.
    
-As a result, settings may vary from one Leo file to another. This can be
-confusing. These two commands can help:
+As a result, settings may vary from one Leo file to another. This can be confusing. These two commands can help:
 
 - print-settings shows each setting and where it came from.
   
@@ -15399,16 +15355,9 @@ confusing. These two commands can help:
 .. index::
     pair: @settings tree; Tutorial
 
-**Important**: within any file, settings take effect **only** if they are
-contained in an **@settings tree**, that is, are descendants of a node
-whose headline is @settings. Nodes outside @settings trees do not affect
-settings in any way.
+**Important**: within any file, settings take effect **only** if they are contained in an **@settings tree**, that is, are descendants of a node whose headline is @settings. Nodes outside @settings trees do not affect settings in any way.
 
-Within @settings trees, you specify boolean settings with @bool nodes,
-string settings with @string nodes, menus with @menus and @menu nodes, etc.
-For exact details, please do study leoSettings.leo. You can open either
-leoSettings.leo or myLeoSettings.leo from the Help menu. Within
-leoSettings.leo:
+Within @settings trees, you specify boolean settings with @bool nodes, string settings with @string nodes, menus with @menus and @menu nodes, etc. For exact details, please do study leoSettings.leo. You can open either leoSettings.leo or myLeoSettings.leo from the Help menu. Within leoSettings.leo:
 
 - The node "About this file" explains about settings.
 - The node "Candidates for settings in myLeoSettings.leo" highlights the
@@ -15455,34 +15404,23 @@ leoSettings.leo:
     pair: Minibuffer; Tutorial
     pair: Tab completion; Tutorial
 
-Leo’s minibuffer appears at the bottom of Leo’s main window. You use the
-minibuffer to execute commands by name, and also to accumulate arguments to
-commands.
+Leo’s minibuffer appears at the bottom of Leo’s main window. You use the minibuffer to execute commands by name, and also to accumulate arguments to commands.
 
 Alt-X (full-command) puts the cursor in the minibuffer.
 
-You could type the full command name in the minibuffer, followed by the
-&lt;Return&gt; key to invoke the command, but that would be *way* too much work.
-Instead, you can avoid most typing using **tab completion**. With tab
-completion, there is no need to remember the exact names of Leo’s commands.
+You could type the full command name in the minibuffer, followed by the &lt;Return&gt; key to invoke the command, but that would be *way* too much work. Instead, you can avoid most typing using **tab completion**. With tab completion, there is no need to remember the exact names of Leo’s commands.
 
-For example, suppose you want to print out the list of Leo’s commands. You
-might remember only that there are several related commands and that they
-all start with "print". Just type::
+For example, suppose you want to print out the list of Leo’s commands. You might remember only that there are several related commands and that they all start with "print". Just type::
 
     &lt;Alt-X&gt;pri&lt;Tab&gt;
 
-You will see "print-" in the minibuffer. This is the longest common prefix
-of all the command names that start with "pri". The Completion tab in the log pane
-shows all the commands that start with "print-".
+You will see "print-" in the minibuffer. This is the longest common prefix of all the command names that start with "pri". The Completion tab in the log pane shows all the commands that start with "print-".
 
-Now just type "c&lt;Tab&gt;" and you will see the print-commands command in the
-minibuffer.
+Now just type "c&lt;Tab&gt;" and you will see the print-commands command in the minibuffer.
 
 Finally, &lt;Return&gt; executes the command.
 
-The output of the print-commands command appears in the commands tab, and
-focus returns to the body pane.
+The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
 
 Summary:
 
@@ -15491,19 +15429,13 @@ Summary:
 - &lt;BackSpace&gt; shows more alternatives.
 - Ctrl-G exits the minibuffer and puts focus in the body pane.
 </t>
-<t tx="ekr.20131001100335.15947">F1 (help) shows a help message appears in the viewrendered pane.
-Alt-0 (vr-toggle) hides or shows this pane.
+<t tx="ekr.20131001100335.15947">F1 (help) shows a help message appears in the viewrendered pane. Alt-0 (vr-toggle) hides or shows this pane.
 
-F11 (help-for-command) shows the documentation for any Leo command. F11
-prompts for the name of a Leo command in the minibuffer. Use tab completion
-to see the list of all commands that start with a given prefix.
+F11 (help-for-command) shows the documentation for any Leo command. F11 prompts for the name of a Leo command in the minibuffer. Use tab completion to see the list of all commands that start with a given prefix.
 
-F12 (help-for-python) shows the documentation from Python's help system.
-Typing completion is not available: type the full name of any Python
-module, class, function or statement.
+F12 (help-for-python) shows the documentation from Python's help system. Typing completion is not available: type the full name of any Python module, class, function or statement.
 
-These commands clarify which settings are in effect, and where they came
-from::
+These commands clarify which settings are in effect, and where they came from::
 
     print-bindings
     print-settings
@@ -15519,8 +15451,7 @@ These commands discuss special topics::
     help-for-minibuffer
     help-for-regular-expressions
 
-Using Leo, especially for programming, requires some learning initially.
-Please feel free to `ask for help`_ at any time.
+Using Leo, especially for programming, requires some learning initially. Please feel free to `ask for help`_ at any time.
 </t>
 <t tx="ekr.20131002055813.15973">Here is a slightly reduced screenshot of Leo's main window:
 
@@ -15537,19 +15468,9 @@ Please feel free to `ask for help`_ at any time.
     pair: Outline pane; Tutorial
     pair: Status line; Tutorial
 
-Leo's main window consists of
-an **icon area** just below the menus,
-an **outline pane** at the top left,
-a **log pane** at the top right,
-a **body pane** at the bottom left,
-and an optional **viewrendered pane** at the bottom right.
-The **minibuffer** and **status line** lie at the bottom of the main window.
+Leo's main window consists of an **icon area** just below the menus, an **outline pane** at the top left, a **log pane** at the top right, a **body pane** at the bottom left, and an optional **viewrendered pane** at the bottom right. The **minibuffer** and **status line** lie at the bottom of the main window.
 
-The log pane contains several tabs. The **Log tab** shows messages from
-Leo, the **Find Tab** shows the status of Leo's Find/Replace commands.
-Other tabs may also appear in the log pane: The **Spell Tab** controls
-Leo's spell-checking. The **Completion Tab** shows available typing
-completions.
+The log pane contains several tabs. The **Log tab** shows messages from Leo, the **Find Tab** shows the status of Leo's Find/Replace commands. Other tabs may also appear in the log pane: The **Spell Tab** controls Leo's spell-checking. The **Completion Tab** shows available typing completions.
 
 .. index::
     pair: Icon box; Tutorial
@@ -15557,32 +15478,24 @@ completions.
     pair: Headline; Tutorial
     pair: Body text; Tutorial
 
-Leo stores all data in **nodes**. Nodes have **headlines**, shown in
-the outline pane, and **body text**. The body pane shows the body text of
-the **presently selected node**, the node whose headline is selected in the
-outline pane.  Headlines have an **icon box** indicating a nodes status.
-For example, the icon box has a black border when the node has been changed.
+Leo stores all data in **nodes**. Nodes have **headlines**, shown in the outline pane, and **body text**. The body pane shows the body text of the **presently selected node**, the node whose headline is selected in the outline pane.  Headlines have an **icon box** indicating a nodes status. For example, the icon box has a black border when the node has been changed.
 </t>
-<t tx="ekr.20131002055813.19036">You may select, expand and contract outline nodes with the mouse as usual,
-but using arrow keys is *highly recommended*.
+<t tx="ekr.20131002055813.19036">You may select, expand and contract outline nodes with the mouse as usual, but using arrow keys is *highly recommended*.
 
 When focus is in the outline pane, *plain* arrows keys change the selected node:
 
 - Right-arrow (expand-and-go-right) expands a node or selects its first child.
-- Left-arrow (contract-or-go-left) contracts a node if its children are visible,
-  and selects the node's parent otherwise. 
+- Left-arrow (contract-or-go-left) contracts a node if its children are visible, and selects the node's parent otherwise.
 - Up-arrow (goto-prev-visible) selects the previous *visible* outline node.
 - Down-arrow (goto-next-visible) selects the next *visible* outline node.
   
-When focus is in the outline pane, Shift-arrow keys move the selected node
-in the direction of the arrow, if possible.
+When focus is in the outline pane, Shift-arrow keys move the selected node in the direction of the arrow, if possible.
 
 Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
 
 - Alt-Home (goto-first-visible-node) selects the first outline node.
 - Alt-End (goto-last-visible-node) selects the last *visible* outline node.
-- Alt-arrow keys select the outline pane, and then act just like the plain
-  arrow keys when the outline pane has focus.
+- Alt-arrow keys select the outline pane, and then act just like the plain arrow keys when the outline pane has focus.
 - Alt-Shift-arrow keys select the outline pane and move the selected node.
 
 The following commands work anywhere, regardless of focus:
@@ -15592,8 +15505,7 @@ The following commands work anywhere, regardless of focus:
 - Ctrl-R (move-outline-right) moves the selected node right.
 - Ctrl-U (move-outline-up) moves the selected node up.
 </t>
-<t tx="ekr.20131002055813.19037">When focus is in any of Leo's text panes (body pane, log pane, headlines),
-Leo works like most text editors:
+<t tx="ekr.20131002055813.19037">When focus is in any of Leo's text panes (body pane, log pane, headlines), Leo works like most text editors:
 
 - Plain arrow keys move the cursor up, down, left or right.
 - Ctrl-LeftArrow and Ctrl-RightArrow move the cursor by words.
@@ -15602,65 +15514,43 @@ Leo works like most text editors:
 - Ctrl-End moves the cursor to the end of the body text.
 - PageDown and PageUp move the cursor up or down one page.
 
-**Note**: As usual, adding the Shift key modifier to any of the keys above
-moves the cursor and extends the selected text.
+**Note**: As usual, adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 </t>
 <t tx="ekr.20131002055813.19835">Ctrl-I or Insert (insert-node) inserts a new node into the outline.
 
-Regardless of focus, Ctrl-H (edit-headline) begins editing the headline of
-the selected node.  |br|
-When editing a headline, &lt;Return&gt; (end-edit-headline) ends the editing,
-leaving the focus in the body pane.
+Regardless of focus, Ctrl-H (edit-headline) begins editing the headline of the selected node.  |br| When editing a headline, &lt;Return&gt; (end-edit-headline) ends the editing, leaving the focus in the body pane.
 
-Ctrl-Shift-C (copy-node) copies the outline and all it's descendants,
-placing the node on the clipboard. |br|
-Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing
-the node on the clipboard. |br|
-Ctrl-Shift-V (paste-node) pastes a node (and its descendants) from the
-clipboard after the presently selected node.
+Ctrl-Shift-C (copy-node) copies the outline and all it's descendants, placing the node on the clipboard. |br| Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing the node on the clipboard. |br| Ctrl-Shift-V (paste-node) pastes a node (and its descendants) from the clipboard after the presently selected node.
 
-Ctrl-{ (promote) makes all the children of a headline siblings of the
-headline. |br|
-Ctrl-} (demote) makes all following siblings of a headline children of the
-headline. |br|
-The demote and promote commands are useful for gathering nodes together before
-moving or cutting them.
+Ctrl-{ (promote) makes all the children of a headline siblings of the headline. |br| Ctrl-} (demote) makes all following siblings of a headline children of the headline. |br| The demote and promote commands are useful for gathering nodes together before moving or cutting them.
 
-Ctrl-M (mark) toggles the mark on a node. |br|
-Marked nodes have a vertical red bar in their icon area.
+Ctrl-M (mark) toggles the mark on a node. |br| Marked nodes have a vertical red bar in their icon area.
 </t>
-<t tx="ekr.20131002055813.19837">Leo has unlimited undo--Leo remembers *all* changes you make to outline
-structure or the contents of any node since you restarted Leo.
+<t tx="ekr.20131002055813.19837">Leo has unlimited undo--Leo remembers *all* changes you make to outline structure or the contents of any node since you restarted Leo.
 
-Ctrl-Z (undo) undoes the last change. Another Ctrl-Z undoes the
-previous change, etc. 
+Ctrl-Z (undo) undoes the last change. Another Ctrl-Z undoes the previous change, etc.
 
 Ctrl-Shift-Z (redo) undoes the effect of the last undo, etc.
 
-The first two entries of the Edit menu show what the next undo or redo
-operation will be.
+The first two entries of the Edit menu show what the next undo or redo operation will be.
 </t>
 <t tx="ekr.20131002211347.6456">.. index::
     pair: Command name; Tutorial
 
-Every Leo command has a **command name**. In this document, keystrokes that
-invoke a command will be followed by the command name in parentheses.
+Every Leo command has a **command name**. In this document, keystrokes that invoke a command will be followed by the command name in parentheses.
 
 For example, Ctrl-S (save-file) saves a Leo file.
 
-The full-command (Alt-X) command executes any other command by typing its
-full name. For full details see `The minibuffer &amp; completions`_.
+The full-command (Alt-X) command executes any other command by typing its full name. For full details see `The minibuffer &amp; completions`_.
 </t>
 <t tx="ekr.20131003040744.18221">.. index::
     pair: @file node; Tutorial
     
 Leo stores outline data on your file system in **.leo files**.
 
-Rather than storing all your data in the .leo file, you may store parts of
-your outline data in **external files**, files on your file system.
+Rather than storing all your data in the .leo file, you may store parts of your outline data in **external files**, files on your file system.
 
-**@file nodes** create external files. @file nodes have headlines starting
-with @file followed by a file name::
+**@file nodes** create external files. @file nodes have headlines starting with @file followed by a file name::
 
     @file leoNodes.py
     @file ../../notes.text
@@ -15668,35 +15558,23 @@ with @file followed by a file name::
 .. index::
     pair: Dirty node; Tutorial
 
-Leo reads external files automatically when you open Leo outline, and
-writes all **dirty** (changed) external files when you save any Leo
-outline.
+Leo reads external files automatically when you open Leo outline, and writes all **dirty** (changed) external files when you save any Leo outline.
 
 .. index::
     pair: @all; Tutorial
     pair: Outline Order; Tutorial
 
-The **@all** directive tells Leo to write the **@file tree** (the @file
-node and all its descendants) to the external file in **outline order**,
-the order in which the nodes appear in the outline pane when all nodes are
-expanded. Non-programmers will typically use the @all directive;
-programmers typically use the @others directive, as discussed in the
-`programming tutorial`_.
+The **@all** directive tells Leo to write the **@file tree** (the @file node and all its descendants) to the external file in **outline order**, the order in which the nodes appear in the outline pane when all nodes are expanded. Non-programmers will typically use the @all directive; programmers typically use the @others directive, as discussed in the `programming tutorial`_.
 
-The @all directivive is designed for "catch-all" files, like todo.txt
- or notes.txt or whatever. Such files are assumed to contain a random
- collection of nodes, so there is no language in effect and no real
- comment delimiters.
+The @all directivive is designed for "catch-all" files, like todo.txt or notes.txt or whatever. Such files are assumed to contain a random collection of nodes, so there is no language in effect and no real comment delimiters.
 
 .. index::
     pair: Sentinel Comments; Tutorial
     pair: Sentinel Lines; Tutorial
 
-When writing @file nodes, Leo adds **sentinel comments** to external files.
-Sentinels embed Leo's outline structure into external files.
+When writing @file nodes, Leo adds **sentinel comments** to external files. Sentinels embed Leo's outline structure into external files.
 
-If you don't want sentinels in your sources, skip head to
-the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
+If you don't want sentinels in your sources, skip head to the `Using @clean nodes`_ part of Leo's `programming tutorial`_.
 </t>
 <t tx="ekr.20131003040744.18222">.. index::
     pair: Markup; Tutorial
@@ -15770,17 +15648,13 @@ detail.</t>
 <t tx="ekr.20131004064408.16020">.. index::
    pair: Directive; Tutorial
 
-**Directives** control Leo's operations.
-Directives start with '@' in the leftmost column.
+**Directives** control Leo's operations. Directives start with '@' in the leftmost column.
 
 Directives may appear either in headlines or body text.
 
-When people speak of an @x node, they are implying that the headline starts
-with @x. If a node contains an @x directive (in the body pane), they will
-usually say something like, "a node containing an @x directive".
+When people speak of an @x node, they are implying that the headline starts with @x. If a node contains an @x directive (in the body pane), they will usually say something like, "a node containing an @x directive".
 
-Directives apply until overridden by the same (or related) directive in a
-descendant node.
+Directives apply until overridden by the same (or related) directive in a descendant node.
 
 Some commonly used general-purpose directives:
 
@@ -15799,8 +15673,7 @@ These control whether to syntax color text.
 
 Nodes may contain multiple color directives.
 
-Nodes containing multiple color directives do not affect coloring of
-descendant nodes.
+Nodes containing multiple color directives do not affect coloring of descendant nodes.
     
 .. index::
     pair: @language; Tutorial
@@ -15834,8 +15707,7 @@ Sets the page width used when formatting paragraphs.
     
 Sets the width of tabs.
 
-Negative tab widths cause Leo to convert tabs to
-spaces and are highly recommended for Python programming.
+Negative tab widths cause Leo to convert tabs to spaces and are highly recommended for Python programming.
 
 .. index::
     pair: @wrap; Tutorial
@@ -15851,16 +15723,13 @@ These enable or disable line wrapping in the body pane.
 <t tx="ekr.20131004073415.16044">.. index::
     pair: Clone; Tutorial
     
-A **clone** is a node that appears in more than one place in a Leo outline. |br|
-Clones are marked with a small red arrow in its icon box.
+A **clone** is a node that appears in more than one place in a Leo outline. |br| Clones are marked with a small red arrow in its icon box.
 
 .. .. image:: images/box13.GIF
 ..    :scale 200 %
 ..    :alt: Leo Icon Box With Clone Mark
 
-All clones of a node are actually *the same node*. |br|
-Any change to one clone affects all clones. |br|
-Inserting, moving or deleting any child of a clone will change all other clones on the screen.
+All clones of a node are actually *the same node*. |br| Any change to one clone affects all clones. |br| Inserting, moving or deleting any child of a clone will change all other clones on the screen.
 
 Clones allow data to be stored in *arbitrarily many* places within an outline.
 
@@ -15884,9 +15753,7 @@ Please take a few moments to experiment with clones:
 Alt-T (focus-to-tree) puts focus in the outline pane.  |br|
 Ctrl-T (toggle-active-pane) toggles focus between the outline and body panes.
 
-You may open multiple Leo outlines in different tabs within the same main
-window. |br|
-Ctrl-Tab (tab-cycle-next) switches between outline tabs.
+You may open multiple Leo outlines in different tabs within the same main window. |br| Ctrl-Tab (tab-cycle-next) switches between outline tabs.
 
 Ctrl-N (new) creates a new outline in a new tab. |br|
 Ctrl-O (open-outline) opens an existing .leo file. |br|
@@ -15909,8 +15776,7 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 </t>
 <t tx="ekr.20131005214621.16128">.. _`the rst3 chapter`: rstplugin3.html
 
-- The rst3 command converts an @rst tree to an output file and
-  an intermediate file.
+- The rst3 command converts an @rst tree to an output file and an intermediate file.
 
 - docutils uses the output file; sphinx uses the intermediate file.
 
@@ -15922,8 +15788,7 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 
 - You reorganize your rST documents just by reorganizing the corresponding @rst tree.
   
-- The rst3 command works acts on the nearest ancestor @rst node, if any, or
-  on all descendant @rst nodes.
+- The rst3 command works acts on the nearest ancestor @rst node, if any, or on all descendant @rst nodes.
   
 - @rst-no-head nodes insert text (or markup) without an rST headline.
 
@@ -15931,13 +15796,10 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 
 - The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
 
-- CheatSheet.leo contains an expanded version of the example used in this
-  tutorial. You can open CheatSheet.leo from Leo's help menu.
+- CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo's help menu.
   
-- The rst3 command provides *many* other capabilities. For details, see
-  `the rst3 chapter`_.
-  
-</t>
+- The rst3 command provides *many* other capabilities. For details, see `the rst3 chapter`_.
+  </t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
 
 This sections assumes you are *thoroughly* familiar with `Leo's tutorial`_.
@@ -16065,8 +15927,7 @@ predefined symbols: c, g, p, os and sys.  For example::
 <t tx="ekr.20131008041326.16058">.. index::
     pair: @test Node; Tutorial
 
-Leo's unit test commands (&lt;Alt-X&gt;run&lt;tab&gt; gives the full list)
-create unit tests from the body text of @test nodes.
+Leo's unit test commands (&lt;Alt-X&gt;run&lt;tab&gt; gives the full list) create unit tests from the body text of @test nodes.
 
 - The headline gives the name of the test::
 
@@ -16076,13 +15937,11 @@ create unit tests from the body text of @test nodes.
 
     assert g
     
-- The unit test commands convert the body to a subclass of
-  unittest.TestCase.  This saves a lot of typing.
+- The unit test commands convert the body to a subclass of unittest.TestCase.  This saves a lot of typing.
   
 - The unit test commands predefine c, g, and p as usual.
 
-- 'self' is predefined as the test itself, that is, the instance of
-  unittest.TestCase created by the @test node. For example::
+- 'self' is predefined as the test itself, that is, the instance of unittest.TestCase created by the @test node. For example::
   
     self.assertTrue(g)
 
@@ -16103,8 +15962,7 @@ Views allow multiple views of data to exist in a single outline.
 
 Leo expands abbreviations as you type.
 
-    - Abbreviations range from simple shortcuts to multi-line templates
-      containing fields.
+    - Abbreviations range from simple shortcuts to multi-line templates containing fields.
     - Type ",," to move to the next field.
     - Abbreviations can also insert the result of executing code.
     
@@ -16361,9 +16219,7 @@ The Basics of Leo
     "Edward... you've come up with perhaps the most powerful new concept in
     code manipulation since VI and Emacs."---David McNab
 
-This chapter introduces Leo's basic operations for creating and
-changing outlines. Commands can be executed using keystrokes, or by
-name.
+This chapter introduces Leo's basic operations for creating and changing outlines. Commands can be executed using keystrokes, or by name.
 
 .. contents::
     :depth: 2
@@ -16406,9 +16262,7 @@ Using Leo as a Personal Information Manager
     did not see with any other outliner (and I tried a few). Amazing! Leo
     directly supports the way I work!"---F. Geiger
 
-This chapter tells how you can use Leo as a Personal Information Manager.
-It introduces `clones`_: one of Leo's most unusual and powerful features
-for organizing data.
+This chapter tells how you can use Leo as a Personal Information Manager. It introduces `clones`_: one of Leo's most unusual and powerful features for organizing data.
 
 .. contents::
     :depth: 2
@@ -16438,24 +16292,15 @@ Creating Documents with the rst3 Command
     Python language) has utterly changed my view of programming (indeed of
     writing) forever."---Shakeeb Alireza
     
-Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST)
-or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files.
-This tutorial gives step-by-step instructions for using the rst3 command.
+Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST) or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.
 
-**Prerequisites**: Please make sure you have read the `first tutorial`_ before reading this
-one. If you are new to rST, please read the `rST primer`_. For full
-information about Sphinx, please read the `Sphinx documentation`_.
+**Prerequisites**: Please make sure you have read the `first tutorial`_ before reading this one. If you are new to rST, please read the `rST primer`_. For full information about Sphinx, please read the `Sphinx documentation`_.
 
-The rst3 command makes using rST or Sphinx *much* easier by automatically
-creating underlining for rST sections. To reorganize a document, just
-reorganize the corresponding Leo outline: you don't have to change
-underlining characters by hand.
+The rst3 command makes using rST or Sphinx *much* easier by automatically creating underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change underlining characters by hand.
 
-The tutorial covers only the basic features of the rst3 command. This is
-enough to generate all of Leo's documentation! 
+The tutorial covers only the basic features of the rst3 command. This is enough to generate all of Leo's documentation!
 
-CheatSheet.leo contains an expanded version of the example used in this
-tutorial. You can open CheatSheet.leo from Leo's help menu.
+CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo's help menu.
 
 .. contents::
     :depth: 3
@@ -16575,14 +16420,11 @@ Leo highlights URLs whenever syntax is coloring is enabled.
 
 Ctrl-Left-Click (open-url-under-cursor) opens the URL under the cursor.
 
-The open-url command opens a URL appearing either in the 
-headline or the first line of body text.
+The open-url command opens a URL appearing either in the headline or the first line of body text.
 
 If a headline starts with @url, the rest of the headline is take to be a url.
 
-Leo opens URLs that look like file names using os.startfile. |br|
-Leo opens all other URLs with your default web browser. |br|
-Any scheme (http, mailto, ftp, file, etc.) supported by your browser is valid.
+Leo opens URLs that look like file names using os.startfile. |br| Leo opens all other URLs with your default web browser. |br| Any scheme (http, mailto, ftp, file, etc.) supported by your browser is valid.
 
 .. _`See the Appendix`: appendices.html#valid-url-s
 
@@ -16605,19 +16447,15 @@ The @rst node, and all its descendants, represents your document.</t>
     War and Peace
     #############
     
-rST markup uses over/underlining to indicate chapter titles. Put a
-**overline** consisting of pounds signs above the title (War and Peace),
-and an identical **underline** of pound signs below as shown. rST markup
-for chapter titles is a bit picky:
+rST markup uses over/underlining to indicate chapter titles. Put a **overline** consisting of pounds signs above the title (War and Peace), and an identical **underline** of pound signs below as shown. rST markup for chapter titles is a bit picky:
 
 - under/overlines must be at least 4 characters long
 - under/overlines must be at least as long as the title.
 - The overline and underline must be identical.
 
-In addition, the rst3 command requires that the "#" character be used in
-the over/underlines for chapter titles.</t>
-<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. Organize
-your work as always:
+In addition, the rst3 command requires that the "#" character be used in the over/underlines for chapter titles.
+</t>
+<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. Organize your work as always:
 
     **nodes create sections, subsections, sub-sub-sections, etc.**, |br|
     **depending on their position in the outline**.
@@ -16627,19 +16465,15 @@ your work as always:
 
 &lt;Alt-X&gt;rst3&lt;Return&gt; runs the rst3 command.
 
-- If the present node is an @rst node, or a descendant node of an @rst
-  node, the rst3 command applies to the nearest ancestor @rst node.
+- If the present node is an @rst node, or a descendant node of an @rst node, the rst3 command applies to the nearest ancestor @rst node.
 
 - Otherwise, the rst3 command applies to all descendant @rst trees.
 
 .. _`this section`: tutorial-basics.html#configuring-leo
 
-If @bool rst3_call_docutils is True, the rst3 command will call docutils
-automatically to create the output files. For more information about
-Leo settings, see `this section`_.
+If @bool rst3_call_docutils is True, the rst3 command will call docutils automatically to create the output files. For more information about Leo settings, see `this section`_.
 
-When using sphinx, run sphinx's "make" utility after running the rst3
-command to create the final output files.
+When using sphinx, run sphinx's "make" utility after running the rst3 command to create the final output files.
 
 **Errors and warnings**:
 
@@ -16647,28 +16481,21 @@ command to create the final output files.
 
     writeToDocutils: docutils not present
     
-2. ​Leo has a default stylesheet ​​that centers titles and makes them big and bold,
-   so you can disregard messages such as::
+2. ​Leo has a default stylesheet ​​that centers titles and makes them big and bold, so you can disregard messages such as::
 
     stylesheet not found &lt;path-to&gt;default.css
 </t>
 <t tx="ekr.20131009100732.16753">.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 
-You now know enough to get started with the rst3 command. Some possible
-next steps are:
+You now know enough to get started with the rst3 command. Some possible next steps are:
 
-- Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes in
-  this tree correspond to the documentation you see before you.
+- Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes in this tree correspond to the documentation you see before you.
    
-- LeoDocs.leo has an @button make-sphinx script that calls sphinx
-  automatically.
+- LeoDocs.leo has an @button make-sphinx script that calls sphinx automatically.
 
-- Create your own @rst nodes. Run the rst3 command on them and see what
-  happens. If you get stuck, please `ask for help`_.
+- Create your own @rst nodes. Run the rst3 command on them and see what happens. If you get stuck, please `ask for help`_.
 </t>
-<t tx="ekr.20131009100732.16754">Put the rst3_call_docutils setting in the @settings tree in the .leo file
-containing the @rst node. This setting determines whether to use plain rST
-markup or full sphinx markup. To use plain reStructuredText markup::
+<t tx="ekr.20131009100732.16754">Put the rst3_call_docutils setting in the @settings tree in the .leo file containing the @rst node. This setting determines whether to use plain rST markup or full sphinx markup. To use plain reStructuredText markup::
 
     @bool rst3_call_docutils = True
     
@@ -16694,12 +16521,9 @@ The rst3 command adds the body text of this node to the previous section:
 
 Leo optionally expands abbreviations as you type.
 
-Abbreviations typically end with something like ";;" so they won't trigger
-by accident.
+Abbreviations typically end with something like ";;" so they won't trigger by accident.
 
-You define abbreviations in @data abbreviations nodes or @data
-global-abbreviations nodes. |br| None come predefined, but leoSettings.leo
-contains example abbreviations in the node::
+You define abbreviations in @data abbreviations nodes or @data global-abbreviations nodes. |br| None come predefined, but leoSettings.leo contains example abbreviations in the node::
 
     @@data abbreviations examples
 
@@ -16707,15 +16531,13 @@ Abbreviations can simply be shortcuts::
 
     ncn;;=@nocolor
     
-Abbreviations can span multiple lines. Continued lines start with \\:, like
-this::
+Abbreviations can span multiple lines. Continued lines start with \\:, like this::
 
     form;;=&lt;form action="main_submit" method="get" accept-charset="utf-8"&gt;
     \:&lt;p&gt;&lt;input type="submit" value="Continue &amp;rarr;"&gt;&lt;/p&gt;
     \:&lt;/form&gt;\n
 
-Abbreviations can define templates in which &lt;\|a-field-name\|&gt; denotes a field
-to be filled in::
+Abbreviations can define templates in which &lt;\|a-field-name\|&gt; denotes a field to be filled in::
 
     input;;=&lt;input type="text/submit/hidden/button"
     \:name="&lt;|name|&gt;"
@@ -16723,8 +16545,7 @@ to be filled in::
 
 Typing ",," after inserting a template selects the next field.
 
-Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
-}\|}::
+Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and }\|}::
 
     date;;={|{import time ; x=time.asctime()}|}
     ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
@@ -16744,8 +16565,7 @@ See leoSettings.leo for full details.
 
 Plugins reside in the leo/plugins folder.
 
-Enable plugins by adding their file names in @enabled-plugins nodes an @settings tree. |br|
-The @enabled-plugins bundled in leoSettings.leo contains a list of default (recommended) plugins.
+Enable plugins by adding their file names in @enabled-plugins nodes an @settings tree. |br| The @enabled-plugins bundled in leoSettings.leo contains a list of default (recommended) plugins.
 
 Programmers have contributed dozens of plugins, including:
 
@@ -16910,34 +16730,22 @@ users in specifying key bindings.
 <t tx="ekr.20131012060912.16775">.. index::
     pair: Generator; Tutorial
 
-Leo generators are `Python generators`_. Leo generators traverse (step
-through) Leo outlines node by node:
-**Leo generators yield a sequence of positions.**
+Leo generators are `Python generators`_. Leo generators traverse (step through) Leo outlines node by node: **Leo generators yield a sequence of positions.**
 
-The Commands (commander) and position classes define several generators,
-discussed later in this chapter. c.all_positions() traverses
-the outline in outline order.  The following prints a properly-indented
-list of all headlines::
+The Commands (commander) and position classes define several generators, discussed later in this chapter. c.all_positions() traverses the outline in outline order.  The following prints a properly-indented list of all headlines::
 
     for p in c.all_positions():
         print(' '*p.level()+p.h)
         
-Leo generators **yield** (return a sequence of) positions. They do *not*
-return actual lists; this saves lots of space for large outlines.
-In fact, this "sequence of positions" is actually a sequence of a
-**single, constantly changing** position.
-This is a very important space optimization.
+Leo generators **yield** (return a sequence of) positions. They do *not* return actual lists; this saves lots of space for large outlines. In fact, this "sequence of positions" is actually a sequence of a **single, constantly changing** position. This is a very important space optimization.
   
-When a generator is finished, this single position becomes an **empty
-position**. p.v is None for empty positions. There are the right and wrong
-ways to test for empty positions::
+When a generator is finished, this single position becomes an **empty position**. p.v is None for empty positions. There are the right and wrong ways to test for empty positions::
 
     if not p:       # Right
     if not p.v:     # Right
     if p is None:   # Wrong!
     
-The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's
-generators.
+The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's generators.
   </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
@@ -17016,9 +16824,7 @@ Notes:
 
 - Output should appear in the log pane.
 
-- Ctrl-B (execute-script) executes the body text of the selected node as a
-  Python script. |br|
-  If text is selected, execute-script executes only the selected text.
+- Ctrl-B (execute-script) executes the body text of the selected node as a Python script. |br| If text is selected, execute-script executes only the selected text.
 
 - g.es prints its arguments to Leo's log pane.
 
@@ -17030,12 +16836,7 @@ g seems to be undefined, yet this script *does* work without error, because...
     pair: Position; Tutorial
     pair: position class; Tutorial
 
-A **position** represents a specific outline node at an exact location
-in the outline. Positions are instances of the position class, defined
-in leoNodes.py. Methods of the position class provide safe ways to
-insert, delete and move outline nodes. The `scripting portion`_ of
-`Leo's cheat sheet`_ lists the most important methods of the position
-class.
+A **position** represents a specific outline node at an exact location in the outline. Positions are instances of the position class, defined in leoNodes.py. Methods of the position class provide safe ways to insert, delete and move outline nodes. The `scripting portion`_ of `Leo's cheat sheet`_ lists the most important methods of the position class.
 
 - The vnode at position p is p.v.
 
@@ -17046,49 +16847,36 @@ class.
 
 - For any commander c, c.p is the presently selected node.
 
-**positions usually become invalid when outline structure changes**.
-Scripts should store positions for later use only if the script does not
-cause the outline to change in any way.
+**positions usually become invalid when outline structure changes**. Scripts should store positions for later use only if the script does not cause the outline to change in any way.
 
 - c.positionExists(p) returns True if p is (still) valid in c's outline.
 
-The next section describes generators. Generators are a great way of
-gaining access to outline nodes.
+The next section describes generators. Generators are a great way of gaining access to outline nodes.
 </t>
 <t tx="ekr.20131014053720.16809">.. index::
     pair: Capturing Positions; Tutorial
     pair: p.copy(); Tutorial
     
-As mentioned previously,
-**positions become invalid whenever nodes are inserted, deleted or moved**.
+As mentioned previously, **positions become invalid whenever nodes are inserted, deleted or moved**.
 
-It is valid to capture positions *temporarily*, *provided* that the outline
-does not changed while the captured positions are being used. Here is the
-proper way::
+It is valid to capture positions *temporarily*, *provided* that the outline does not changed while the captured positions are being used. Here is the proper way::
 
     aList = [p.copy() for p in c.all_positions()]
         # aList is valid until the outline changes.
         
-The p.copy() method returns a *separate* position that does not change when
-p changes. Beginners erroneously try to capture positions like this::
+The p.copy() method returns a *separate* position that does not change when p changes. Beginners erroneously try to capture positions like this::
 
     aList = [p for p in c.all_positions()] # Wrong!
     
-This is wrong. Leo's generators use a single position, and yield that
-*same* position for every node in the outline. Furthermore, that position
-will be empty when the generator ends, so every member of aList will be the
-(same) empty position!
+This is wrong. Leo's generators use a single position, and yield that *same* position for every node in the outline. Furthermore, that position will be empty when the generator ends, so every member of aList will be the (same) empty position!
 </t>
 <t tx="ekr.20131014053720.16810">.. index::
     pair: Vnode; Tutorial
     pair: vnode class; Tutorial
 
-This section discusses vnodes; the next discusses positions. To script Leo
-properly, you *must* understand how vnodes and positions are related.
+This section discusses vnodes; the next discusses positions. To script Leo properly, you *must* understand how vnodes and positions are related.
 
-**vnodes** are instances of the vnode class, defined in leoNodes.py. Each
-vnode represents *all* the data associated with an outline node, including
-*private* data carrying its outline structure. For each vnode v:
+**vnodes** are instances of the vnode class, defined in leoNodes.py. Each vnode represents *all* the data associated with an outline node, including *private* data carrying its outline structure. For each vnode v:
 
 - v.b is the (outline) node's body text.
 
@@ -17101,12 +16889,10 @@ vnode represents *all* the data associated with an outline node, including
 ..    (v is a clone if and only if len(v.parents) &gt; 1
 ..  - Scripts **absolutely must not change** v.parents and v.children!
 
-**All cloned outline nodes share a common vnode**. Conversely, |br| each
-vnode represents *all* the clones of the corresponding outline node.
+**All cloned outline nodes share a common vnode**. Conversely, |br| each vnode represents *all* the clones of the corresponding outline node.
 
-Because a *single* vnode can represent *many* outline nodes, it is awkward
-to use vnodes directly. This is where positions come in: **positions
-simplify access to vnodes**...</t>
+Because a *single* vnode can represent *many* outline nodes, it is awkward to use vnodes directly. This is where positions come in: **positions simplify access to vnodes**...
+</t>
 <t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many
 disabled), that do repetitive chores. Here is one, @button
 promote-child-bodies, from LeoDocs.leo::
@@ -17385,12 +17171,9 @@ if aList:
         # Don't wait for this command to exit!
         g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
 </t>
-<t tx="ekr.20131016084446.16726">The `scripting portion`_ of `Leo's cheat sheet`_ contains much more
-information about scripting, including lists of Leo's generators and useful
-methods of the commander and position classes. 
+<t tx="ekr.20131016084446.16726">The `scripting portion`_ of `Leo's cheat sheet`_ contains much more information about scripting, including lists of Leo's generators and useful methods of the commander and position classes.
 
-`Leo's Directive Reference`_ discusses all directives in great detail.
-It would be a good idea to skim this chapter to see what it contains.
+`Leo's Directive Reference`_ discusses all directives in great detail. It would be a good idea to skim this chapter to see what it contains.
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details:
 
@@ -17406,8 +17189,7 @@ It would be a good idea to skim this chapter to see what it contains.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
 reading LeoDocs.leo.</t>
-<t tx="ekr.20131017051340.16733">This chapter uses the following outline (with all nodes expanded) as an
-ongoing example::
+<t tx="ekr.20131017051340.16733">This chapter uses the following outline (with all nodes expanded) as an ongoing example::
 
     + A (clone)
       + B
@@ -17440,8 +17222,7 @@ c.all_positions, when applied to the example tree above, yields::
         print('(%s %s) p.stack: %s' % (
             p.childIndex(),p.h,print_p_stack(p)))
             
-yields the following when applied to the example
-outline::
+yields the following when applied to the example outline::
     
     (0 A) p.stack:
     (0 B) p.stack: (0 A)
@@ -17537,8 +17318,7 @@ Calltips show the expected arguments to functions and methods:
 - '(' shows calltips, when @language python is in effect.
 - &lt;Return&gt; or Ctrl-G (keyboard-quit) exits calltips.
 
-Calltips work for any Python function or method, including Python's
-global functions. Examples::
+Calltips work for any Python function or method, including Python's global functions. Examples::
 
     g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
@@ -17581,20 +17361,13 @@ These features combine to accelerate your work flow in a unique **Leonine** way,
   
 In the next sections, Leo's users tell, in their own words, why they think Leo is something truly special...
 </t>
-<t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone
-nodes related to the project and drag them at or near the top level, where
-you can get at them easily. When the project is complete, just delete the
-clones. This work flow is surprisingly effective:
+<t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:
 
 - The original nodes never move, but they change whenever their clones do.
 
-- There is nothing to "put back in place" when you are done. Just delete the
-  clones.
+- There is nothing to "put back in place" when you are done. Just delete the clones.
   
-Used this way, **clones create views**: when you gather cloned nodes
-together for a project, you are, in effect, creating a project-oriented
-view of the outline. This view **focuses your attention** on only those
-nodes that are relevant to the task at hand.
+Used this way, **clones create views**: when you gather cloned nodes together for a project, you are, in effect, creating a project-oriented view of the outline. This view **focuses your attention** on only those nodes that are relevant to the task at hand.
 </t>
 <t tx="ekr.20131019035402.17557"></t>
 <t tx="ekr.20131019035402.17573">#################
@@ -18049,8 +17822,7 @@ That's all there is to it:
 
 - **You reorganize your document by reorganizing nodes**.
 
-There is *no* need to change markup when reorganizing your document, a huge
-improvement over writing "raw" rST.
+There is *no* need to change markup when reorganizing your document, a huge improvement over writing "raw" rST.
 </t>
 <t tx="ekr.20131025044901.17143">Org mode is kinda like Leo for Emacs: http://orgmode.org/manual/index.html
 
@@ -18099,25 +17871,19 @@ Back to your question: If all I needed to do was **write** a program, I'd just s
 
 So it seems to me that I *design* the program on Leo, and then, when the time comes, I flip a switch and Leo *writes* the program for me. That's how I'd view what I've heard about Leo.
 </t>
-<t tx="ekr.20131025044901.17147">It is often useful to put reference material in your @rst tree
-that will *not* be included in the actual output.
-
-To have the rst3 command ignore a single node, type this in the node's headline::
+<t tx="ekr.20131025044901.17147">It is often useful to put reference material in your @rst tree that will *not* be included in the actual output. To have the rst3 command ignore a single node, type this in the node's headline::
 
     @rst-ignore &lt;ignored-text&gt;
     
 Neither the headline nor body text will be part of the output file.
     
-To have the rst3 command ignore a node and all its descendants,
-type this in the node's headline::
+To have the rst3 command ignore a node and all its descendants, type this in the node's headline::
 
     @rst-ignore-tree &lt;ignored-text&gt;
 </t>
 <t tx="ekr.20131025044901.17148">.. _`rST manual`: http://docutils.sourceforge.net/docs/user/rst/quickref.html#directives
 
-The `rST manual`_ tells how to insert "raw" markup into the output. For
-example, Leo's documentation uses the following two kinds of special
-markup::
+The `rST manual`_ tells how to insert "raw" markup into the output. For example, Leo's documentation uses the following two kinds of special markup::
 
     .. |br| raw:: html
     
@@ -18126,11 +17892,7 @@ markup::
     .. |---| unicode:: U+02015 .. for quotes
        :trim:
 
-With this markup in place, \|br\| has the effect of inserting &lt;br /&gt; (a
-line break), while - - - inserts the unicode "quotation dash" used to
-indicate the author of quotations.
-
-Note that rST automatically turns - - into a dash: --.
+With this markup in place, \|br\| has the effect of inserting &lt;br /&gt; (a line break), while - - - inserts the unicode "quotation dash" used to indicate the author of quotations. Note that rST automatically turns - - into a dash: --.
 </t>
 <t tx="ekr.20131027064821.17131">Leo's read code parses text into true Python objects: Leo's positions and vnodes.
 
@@ -18157,33 +17919,24 @@ be emulated.
 
     @rst myDocument.html
     
-will generate an **output file**, myDocument.html, from this node and its
-children, grand-children, etc. The rst3 command creates the output
-file in the same directory as the .leo file containing the @rst node. You
-can specify other directories using absolute or relative paths. Examples::
+will generate an **output file**, myDocument.html, from this node and its children, grand-children, etc. The rst3 command creates the output file in the same directory as the .leo file containing the @rst node. You can specify other directories using absolute or relative paths. Examples::
 
     @rst myDocument.html        # in same folder as the .leo file
     @rst html/myDocument.html   # in a subfolder
     @rst ~/docs/myDocument.html # an absolute path to the folder
     
-The rst3 command writes an **intermediate file** in the same directory as
-the output file. This intermediate file contains the reStructuredText
-markup generated by the rst3 command. It has the suffix .txt::
+The rst3 command writes an **intermediate file** in the same directory as the output file. This intermediate file contains the reStructuredText markup generated by the rst3 command. It has the suffix .txt::
 
     myDocument.html.txt
 
 
 </t>
 <t tx="ekr.20131027064821.18685"></t>
-<t tx="ekr.20131027064821.18689">When using sphinx you must ensure that sphinx's conf.py file is configured
-so that it will find the intermediate files created by the rst3 command.
-
-For example, the conf.py file for Leo's docs contains the following::
+<t tx="ekr.20131027064821.18689">When using sphinx you must ensure that sphinx's conf.py file is configured so that it will find the intermediate files created by the rst3 command. For example, the conf.py file for Leo's docs contains the following::
 
     source_suffix = '.html.txt'
     
-This "matches" the form of the intermediate files.  For example,
-given::
+This "matches" the form of the intermediate files.  For example, given::
 
     @rst myDocument.html
     
@@ -18395,12 +18148,9 @@ Supported by plugins:
 - Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
 </t>
-<t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also
-install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's
-and `Python's`_ web sites their distinctive appearance and features.
+<t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and `Python's`_ web sites their distinctive appearance and features.
 
-After installing docutils or sphinx, you must restart Leo so that the new
-installation will take effect.
+After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
 <t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">@language rest
@@ -18601,11 +18351,9 @@ One final word of advice. When editing your video, settle for "good enough". Per
 
 Ctrl-B (execute-script) executes the body text of the presently selected node.
 
-execute-script creates the script using @others and section references: |br|
-**you can create complex scripts from a node and its descendants.**
+execute-script creates the script using @others and section references: |br| **you can create complex scripts from a node and its descendants.**
 
-As discussed below, execute-script predefines three variables: c, g and p. |br|
-Using these variables, scripts may easily do any of the following:
+As discussed below, execute-script predefines three variables: c, g and p. |br| Using these variables, scripts may easily do any of the following:
 
 - Gain access to all data contained in any Leo outline.
 - Traverse the data in any outline.
