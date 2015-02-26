@@ -10334,25 +10334,17 @@ Leo now contains minimal support for arguments to minibuffer commands.
 #@+node:ekr.20080310093038.4: *7* Translating Leo's menus and messages
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 
-It is easy to translate Leo's menu strings: simply create an @menus tree in
-leoSettings.leo or myLeoSettings.leo that contains the translated menu names.
+It is easy to translate Leo's menu strings: simply create an @menus tree in leoSettings.leo or myLeoSettings.leo that contains the translated menu names.
 
-**New in Leo 4.4.8**:
-Leo now contains support for translating messages sent to Leo's log:
+**New in Leo 4.4.8**: Leo now contains support for translating messages sent to Leo's log:
 
-- Rather than using an '_' function to denote strings to be translated, Leo's
-  g.es and g.es_print functions translate "odd" (first, third, fifth) arguments,
-  leaving "even" arguments untranslated. Keyword arguments, color, newline, etc.
-  are never translated.
+- Rather than using an '_' function to denote strings to be translated, Leo's g.es and g.es_print functions translate "odd" (first, third, fifth) arguments, leaving "even" arguments untranslated. Keyword arguments, color, newline, etc. are never translated.
 
 - All calls to g.es and g.es_print in Leo's core follow this convention.
 
 - g.translateString does the actual translation using Python's `gettext`_ module.
 
-- You can use the script in the node "@button print g.es stats" in scripts.leo
-  to create catalogs of all scripts that need to be translated. Such catalogs
-  are used by Python's gettext module. (This script was also used to check that
-  the proper arguments to g.es and g.es_print were translated.)
+- You can use the script in the node "@button print g.es stats" in scripts.leo to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's gettext module. (This script was also used to check that the proper arguments to g.es and g.es_print were translated.)
 #@+node:ekr.20080311060457.1: *5* 4.4.8 b2
 Leo 4.4.8 beta 2                           March 14, 2008
 
