@@ -10129,31 +10129,17 @@ The code_mode and doc_only_mode options determine the mode as follows:
 .. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
 
-Leo's core code is always being improved and developed. Unit-testing
-ensures that the daily commits are as bug-free as possible. Almost all of
-the time, downloading the most recent `nightly snapshot`_ of the
-development code is going to give you code that is just as stable and much
-more up-to-date than the most recent `latest stable release`_ which most
-Leonistas would consider already outdated.
+Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading the most recent `nightly snapshot`_ of the development code is going to give you code that is just as stable and much more up-to-date than the most recent `latest stable release`_ which most Leonistas would consider already outdated.
 
-If you are just checking Leo out, feel free to use the `latest stable release`_
-download if it makes you feel more secure, but once you've
-decided to work with Leo on a regular basis, we highly recommend regularly
-keeping your installation up to date with the most recent `nightly snapshot`_.
+If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_.
 
 To summarize, you may get Leo in three ways:
 
-1. Download the `latest stable release`_ from `SourceForge`_. This release
-   contains an executable installer. This release will usually be a bit out
-   of date.
+1. Download the `latest stable release`_ from `SourceForge`_. This release contains an executable installer. This release will usually be a bit out of date.
 
-2. Download a `nightly snapshot`_ from `Leo's snapshots page`_. This page
-   contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days
-   ago.
+2. Download a `nightly snapshot`_ from `Leo's snapshots page`_. This page contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days ago.
    
-3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_.
-   Installing git is easy, and once set up this is the easiest way
-   to get the latest version of Leo's code::
+3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Installing git is easy, and once set up this is the easiest way to get the latest version of Leo's code::
    
         git clone https://github.com/leo-editor/leo-editor (http access)
     
@@ -13404,20 +13390,11 @@ For example, "c.atFileCommands.write?" shows::
 <t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt_` package.
 The `PyEnchant`_ package is optional. 
 
-**Python**: Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. To install Python, see
-http://python.org.
+**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
-package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
-The PyQt version must match your installed Python version. Remember that
-Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
-binary PyQt installer.
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary package from: http://www.riverbankcomputing.co.uk/software/pyqt/download The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the binary PyQt installer.
 
-**PyEnchant**: You must install the PyEnchant package if you want to use
-Leo's Spell tab. Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html There is an executable
-installer for Windows users.
+**PyEnchant**: You must install the PyEnchant package if you want to use Leo's Spell tab. Download and install the PyEnchant package from http://pythonhosted.org/pyenchant/download.html There is an executable installer for Windows users.
 </t>
 <t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another
 outline. This is a frequently requested feature. For example::
@@ -14748,28 +14725,17 @@ Downloading Leo
 .. _`GitHub`: https://github.com/leo-editor
 .. _`git`: http://git-scm.com/
 
-Leo's core code is always being improved and developed. Unit-testing
-ensures that the daily commits are as bug-free as possible. Almost all of
-the time, downloading the most recent `nightly snapshot`_ of the
-development code is going to give you code that is just as stable and much
-more up-to-date than the most recent `latest stable release`_ which most
-Leonistas would consider already outdated.
+Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading the most recent `nightly snapshot`_ of the development code is going to give you code that is just as stable and much more up-to-date than the most recent `latest stable release`_ which most Leonistas would consider already outdated.
 
-If you are just checking Leo out, feel free to use the `latest stable release`_
-download if it makes you feel more secure, but once you've
-decided to work with Leo on a regular basis, we highly recommend regularly
-keeping your installation up to date with the most recent `nightly snapshot`_.
+If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_.
 
 To summarize, you may get Leo in three ways:
 
-1. Download the `latest stable release`_ from `SourceForge`_. This release
-   contains an executable installer. This release will usually be a bit out of date.
+1. Download the `latest stable release`_ from `SourceForge`_. This release contains an executable installer. This release will usually be a bit out of date.
 
-2. Download `snapshots`_ (see below) from github. You can get the very latest development
-   version, or a version from from 1, 2, 5, 10, 30 or 90 days ago.
+2. Download `snapshots`_ (see below) from github. You can get the very latest development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago.
    
-3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once
-   git is installed, getting the latest version of Leo is very easy::
+3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once git is installed, getting the latest version of Leo is very easy::
    
         git clone https://github.com/leo-editor/leo-editor.git (http access)
     
@@ -16569,11 +16535,9 @@ Installing Leo
 
 .. index:: Installing Leo
 
-This chapter tells how to install and run Leo on Windows or Linux.
-Leo can be installed on MacOS, but the process is difficult and not recommended.
+This chapter tells how to install and run Leo on Windows or Linux. Leo can be installed on MacOS, but the process is difficult and not recommended.
 
-**Important**: If you have *any* problems installing Leo,
-please ask for help on `Leo's help forum`_.
+**Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
 .. contents::
     :depth: 4
@@ -16620,8 +16584,7 @@ Running Leo
 
 .. index:: Running Leo
 
-This chapter tells how to run Leo and discusses Leo's command-line
-options.
+This chapter tells how to run Leo and discusses Leo's command-line options.
 
 .. contents::
     :depth: 3
@@ -19688,9 +19651,7 @@ The viewrendered and viewrendered2 plugins use docutils.
 
 PyEnchant is required to do spell checking.
 
-Plugins may require other packages.  For example, viewrendered
-requires 'markdown' if one wishes to use markdown rendering, but it is
-optional. rss.py will not function without 'feedparser'. Etc.
+Plugins may require other packages.  For example, viewrendered requires 'markdown' if one wishes to use markdown rendering, but it is optional. rss.py will not function without 'feedparser'. Etc.
 </t>
 <t tx="ekr.20141105055521.5">The livecode-show commands shows the live code evaluation pane. Hover on
 the buttons for helpful tool-tips.
@@ -20998,13 +20959,11 @@ os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
-<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from github, no
-account required.  The downloaded file will have a name like::
+<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from github, no account required.  The downloaded file will have a name like::
 
   leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
 
-where the ``50c0...cad5`` part is the ID or fingerprint of the version
-you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
+where the ``50c0...cad5`` part is the ID or fingerprint of the version you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
 
 Here are some direct download links:
 
