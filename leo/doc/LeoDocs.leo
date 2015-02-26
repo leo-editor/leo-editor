@@ -339,7 +339,7 @@
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
 <v t="ekr.20070623145346.1"></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
-<v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @shadow outline as expected?</vh></v>
+<v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
 </v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
@@ -3328,11 +3328,7 @@ This is Leo's Frequently Asked Questions document.
     :depth: 4
 </t>
 <t tx="ekr.20050830115714.1"></t>
-<t tx="ekr.20050830115714.10">The encoding used in the file being imported doesn't match the encoding in effect for Leo.
-You have two options:
-
-- Use the @encoding directive_ in an ancestor of the node_ selected when
-  doing the Import command_ to specify the encoding of file to be imported.
+<t tx="ekr.20050830115714.10">The encoding used in the file being imported doesn't match the encoding in effect for Leo. Use the @encoding directive_ in an ancestor of the node_ selected when doing the Import command_ to specify the encoding of file to be imported.
 </t>
 <t tx="ekr.20050830115714.113">**Question**: It would be nice if Leo could open empty files. I tend to be "document oriented" rather than "application oriented" in my thinking and prefer "create empty file at location -&gt; open it with program" to "start program -&gt; create new file -&gt; save it at location".
 
@@ -3353,16 +3349,11 @@ You have two options:
 
 Now you should have a New:Leo File option in Explorer. This creates a duplicate of the file you saved. This can be useful because you could make a template Leo file containing some standard nodes_ that you always have and then save this.
 </t>
-<t tx="ekr.20050830115714.115" str_atime="1376412852.0">For the most part, docutils_ does a good job of reporting errors. docutils_ prints
-a message to the console and inserts an unmistakable error message in the
-generated .html file.
-**Important**: On Windows it is helpful to `run Leo in a console window`_.
+<t tx="ekr.20050830115714.115" str_atime="1376412852.0">For the most part, docutils_ does a good job of reporting errors. docutils_ prints a message to the console and inserts an unmistakable error message in the generated .html file. **Important**: On Windows it is helpful to `run Leo in a console window`_.
 
-However, in some cases, docutils_ crashes instead of properly reporting the
-problem. There are several workarounds:
+However, in some cases, docutils_ crashes instead of properly reporting the problem. There are several workarounds:
 
-1.  The crashes I have seen arise from the following bug in docutils.
-    **Hyperlinks in image:: markup must be lower case**.  This will work::
+1.  The crashes I have seen arise from the following bug in docutils. **Hyperlinks in image:: markup must be lower case**.  This will work::
 
         .. .. |back| image:: arrow_lt.gif
             :target: faq_
@@ -3374,31 +3365,22 @@ problem. There are several workarounds:
 
     So avoid this crash by making sure to use lower case targets in ':target:' markup.
 
-2.  You can change the docutils_ source slightly so that it prints a traceback when it
-    crashes. (The rst3 plugin should be able to do this, but I haven't figured
-    out how yet.) It's easy enough to do this:
+2.  You can change the docutils_ source slightly so that it prints a traceback when it crashes. (The rst3 plugin should be able to do this, but I haven't figured out how yet.) It's easy enough to do this:
 
-    - Find the file core.py in top-level docutils folder.
-      Typically this folder will be in Python's site-packages folder.
+- Find the file core.py in top-level docutils folder. Typically this folder will be in Python's site-packages folder.
 
-    - Open core.py in some editor other than Leo.
+- Open core.py in some editor other than Leo.
 
-    - Find the method called report_Exceptions.
+- Find the method called report_Exceptions.
 
-    - Insert the following lines at the very start of this method::
+- Insert the following lines at the very start of this method::
 
         print 'EKR: added traceback'
         import traceback ; traceback.print_exc()
 
-    This will cause a traceback whenever docutils_ crashes. I have found that
-    such tracebacks are generally enough to locate the general area of the
-    problem. **Note**: These tracebacks go to the console window, so you should
-    `run Leo in a console window`_.
+This will cause a traceback whenever docutils_ crashes. I have found that such tracebacks are generally enough to locate the general area of the problem. **Note**: These tracebacks go to the console window, so you should `run Leo in a console window`_.
 
-3.  As a last resort, you can isolate syntax errors by reducing your input files
-    until they work again, then adding sections until you get a crash. This is
-    easy enough to do (when using the rst3 plugin) by change a headline 'x' to
-    @rst-ignore-tree x.
+3.  As a last resort, you can isolate syntax errors by reducing your input files until they work again, then adding sections until you get a crash. This is easy enough to do (when using the rst3 plugin) by change a headline 'x' to @rst-ignore-tree x.
 </t>
 <t tx="ekr.20050830115714.116">.. From: http://sourceforge.net/forum/message.php?msg_id=3240374
 
@@ -3422,8 +3404,7 @@ I think there is some interesting possibility here because of the enforcement of
 
 In Excel you would see 4500 below those two numbers. This is completely independent of where the block of three cells exists on the sheet.
 </t>
-<t tx="ekr.20050830115714.117">Python's decorator_ syntax is ill-conceived.
-This syntax file hack works well enough anyway to work with Leo '@' markup::
+<t tx="ekr.20050830115714.117">This syntax file hack works well enough to work with Leo '@' markup::
 
     syn region leoComment start="^@\\s*" end="^@c\\s*$"
     syn match   pythonDecorator	"@\\S\\S+" display nextgroup=pythonFunction skipwhite
@@ -3450,41 +3431,24 @@ You could probably generalize this idea of "collect all @url nodes under current
 <t tx="ekr.20050830115714.13"></t>
 <t tx="ekr.20050830115714.14">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
-Use @clean trees. Files derived from @clean trees contain no sentinels_.
-However, Leo can update \@clean trees from changes made to the corresponding
-external file.  The `Mulder/Ream update algorithm`_ makes this magic happen.
+Use @clean trees. Files derived from @clean trees contain no sentinels_. However, Leo can update \@clean trees from changes made to the corresponding external file.  The `Mulder/Ream update algorithm`_ makes this magic happen.
 </t>
-<t tx="ekr.20050830115714.16">Use @asis trees. Files derived from @asis trees contain no sentinels. Leo
-creates the external file simply by writing all body text in outline order. Leo
-can't update the outline unless the external file contains sentinels, so Leo
-does not update @asis trees automatically when you change the external file in
-an external editor.
+<t tx="ekr.20050830115714.16">Use @asis trees. Files derived from @asis trees contain no sentinels. Leo creates the external file simply by writing all body text in outline order. Leo can't update the outline unless the external file contains sentinels, so Leo does not update @asis trees automatically when you change the external file in an external editor.
 </t>
-<t tx="ekr.20050830115714.17">The import commands insert @ignore directives_ in the top-level node_.
-Leo does this so that you won't accidentally overwrite your files after importing them.
-Change the filename following @file (or @file) as desired,
-then remove the @ignore directive_.
-Saving the outline will then create the external file.
+<t tx="ekr.20050830115714.17">The import commands insert @ignore directives_ in the top-level node_. Leo does this so that you won't accidentally overwrite your files after importing them. Change the filename following @file (or @file) as desired, then remove the @ignore directive_. Saving the outline will then create the external file.
 </t>
-<t tx="ekr.20050830115714.18">**Question**: I'm writing a Windows Script Component, which is an XML file with
-a CData section containing javascript. I can get the XML as I want it by using
-\@language html, but how can I get the tangling comments inside the CData
-section to be java-style comments rather than html ones?
+<t tx="ekr.20050830115714.18">**Question**: I'm writing a Windows Script Component, which is an XML file with a CData section containing javascript. I can get the XML as I want it by using \@language html, but how can I get the tangling comments inside the CData section to be java-style comments rather than html ones?
 
-**Answer**: In @file trees you use the @delims directive to change comment delimiters.
-For example::
+**Answer**: In @file trees you use the @delims directive to change comment delimiters. For example::
 
     @delims /* */ 
     Javascript stuff 
     @delims &lt;-- --&gt; 
     HTML stuff
 
-**Important**: Leo can not revert to previous delimiters automatically;
-you must change back to previous delimiters using another @delims directive_.
+**Important**: Leo can not revert to previous delimiters automatically; you must change back to previous delimiters using another @delims directive_.
 </t>
-<t tx="ekr.20050830115714.19">By Zvi Boshernitzan: I was having trouble disabling '&lt;?php' with comments (and
-couldn't override the comment character for the start of the page). Finally, I
-found a solution that worked, using php's heredoc string syntax::
+<t tx="ekr.20050830115714.19">By Zvi Boshernitzan: I was having trouble disabling '&lt;?php' with comments (and couldn't override the comment character for the start of the page). Finally, I found a solution that worked, using php's heredoc string syntax::
 
     @first &lt;?php
     @first $comment = &lt;&lt;&lt;EOD
@@ -3518,18 +3482,14 @@ or::
 
 - Most methods are defined using @others, *not* section definition nodes.
 </t>
-<t tx="ekr.20050830115714.20">Here is a posting which might be helpful:
-http://sourceforge.net/forum/message.php?msg_id=2300457 The @first
-directive_ is the key to output usable code in unsupported languages. For
-example, to use Leo with the Basic language, use the following::
+<t tx="ekr.20050830115714.20">Here is a posting which might be helpful: http://sourceforge.net/forum/message.php?msg_id=2300457 The @first directive_ is the key to output usable code in unsupported languages. For example, to use Leo with the Basic language, use the following::
 
     @first $IFDEF LEOHEADER
     @delims '
     @c
     $ENDIF
 
-So this would enable a basic compiler to "jump" over the "true" Leo-header-lines.
-Like this::
+So this would enable a basic compiler to "jump" over the "true" Leo-header-lines. Like this::
 
     $IFDEF LEOHEADER &lt;-conditional compilation directive 
     #@+leo-ver=4 &lt;-these lines not compiled
@@ -3540,13 +3500,9 @@ Like this::
     $ENDIF &lt;-... Until here!
     &lt;rest of derived code file ... &gt;
 
-This changes the comment symbol the apostrophe,
-making comments parseable by a BASIC (or other language.)
+This changes the comment symbol the apostrophe, making comments parseable by a BASIC (or other language.)
 </t>
-<t tx="ekr.20050830115714.21">Use the @first directive_ in @file or @clean trees.
-
-The @first directive puts lines at the very start of files derived from @file.
-For example, the body text of @file spam.py might be::
+<t tx="ekr.20050830115714.21">Use the @first directive_ in @file or @clean trees. The @first directive puts lines at the very start of files derived from @file. For example, the body text of @file spam.py might be::
 
     @first #! /usr/bin/env python
 
@@ -3554,28 +3510,20 @@ The body text of @file foo.pl might be::
 
     @first #/usr/bin/perl
 
-Leo recognizes the @first directive_ only at the start of the body text of @file nodes.
-No text may precede @first directives_.
-More than one @first directive may exist, like this::
+Leo recognizes the @first directive_ only at the start of the body text of @file nodes. No text may precede @first directives_. More than one @first directive may exist, like this::
 
     @first #! /usr/bin/env python
     @first # more comments.
 </t>
-<t tx="ekr.20050830115714.24">No. Everything in an @file trees must be part of the external file: orphan and
-\@ignore nodes are invalid in @file trees. This restriction should not be
-troublesome. For example, you can organize your outline like this::
+<t tx="ekr.20050830115714.24">No. Everything in an @file trees must be part of the external file: orphan and \@ignore nodes are invalid in @file trees. This restriction should not be troublesome. For example, you can organize your outline like this::
 
     + myClass
     ..+ ignored stuff
     ..+ @file myClass
 
-(As usual, + denotes a headline.) So you simply create a new node_, called
-myClass, that holds your @file trees and stuff you don't want in the @file
-trees.
+(As usual, + denotes a headline.) So you simply create a new node_, called myClass, that holds your @file trees and stuff you don't want in the @file trees.
 </t>
-<t tx="ekr.20050830115714.25">By Rich Ries.
-Some older C compilers don't understand the "//" comment symbol, so using @language C won't work.
-Moreover, the following does not always work either::
+<t tx="ekr.20050830115714.25">By Rich Ries. Some older C compilers don't understand the "//" comment symbol, so using @language C won't work. Moreover, the following does not always work either::
 
     @comment /* */
 
@@ -3583,16 +3531,13 @@ This generates the following sentinel line::
 
     /*@@comment /* */*/
 
-in the output file, and not all C compilers allow nested comments, so the last \*\/ generates an error.
-The solution is to use::
+in the output file, and not all C compilers allow nested comments, so the last \*\/ generates an error. The solution is to use::
 
     #if 0
     @comment /* */
     #endif
 
-Leo is happy: it recognizes the @comment directive_.
-The C compiler is happy: the C preprocessor strips out the offending line before the C
-compiler gets it.
+Leo is happy: it recognizes the @comment directive_. The C compiler is happy: the C preprocessor strips out the offending line before the C compiler gets it.
 </t>
 <t tx="ekr.20050830115714.26" str_atime="1376412984.0"></t>
 <t tx="ekr.20050830115714.29">See the instructions are in LeoPy.leo in::
@@ -3636,15 +3581,11 @@ In short, I create sections when convenient, and convert them to functions or me
 This will import all .py files from aDirectory, which should be a full path to a particular directory. You could use ".c" to import all .c files, etc.
 </t>
 <t tx="ekr.20050830115714.76" str_atime="1376412985.0"></t>
-<t tx="ekr.20050830115714.77">Just `run Leo in a console window`_. At the point you want to drop into the
-debugger, execute this line::
+<t tx="ekr.20050830115714.77">Just `run Leo in a console window`_. At the point you want to drop into the debugger, execute this line::
 
     g.pdb()
 
-All output from pdb goes to stdout, which is the console window. It would be
-good to create a subclass of pdb.Pdb that uses Leo's log pane rather than a
-console window, but I haven't done that. It could be done easily enough in a
-plugin...
+All output from pdb goes to stdout, which is the console window. It would be good to create a subclass of pdb.Pdb that uses Leo's log pane rather than a console window, but I haven't done that. It could be done easily enough in a plugin...
 
 **Important**: I recommend using g.trace instead of pdb.  For example::
 
@@ -3658,19 +3599,11 @@ returns the last 5 entries of the call stack. For example::
 
 Used this way, g.trace shows you patterns that will be invisible using pdb.
 </t>
-<t tx="ekr.20050830115714.9">Internally, Leo represents all strings as unicode. Leo translates from a
-particular encoding to Unicode_ when reading .leo files or external files. Leo
-translates from Unicode_ to a particular encoding when writing external files.
-You may see strange looking characters if your text editor is expecting a
-different encoding. The encoding used in any external file is shown in the
-#@+leo sentinel line like this::
+<t tx="ekr.20050830115714.9">Internally, Leo represents all strings as unicode. Leo translates from a particular encoding to Unicode_ when reading .leo files or external files. Leo translates from Unicode_ to a particular encoding when writing external files. You may see strange looking characters if your text editor is expecting a different encoding. The encoding used in any external file is shown in the #@+leo sentinel line like this::
 
     #@+leo-encoding=iso-8859-1.
 
-**Exception**: the encoding is UTF-8 if no -encoding= field exists.
-You can also use the @encoding directive_ to set the encoding for individual external files.
-If no @encoding directive_ is in effect,
-Leo uses the following settings_ to translate to and from unicode:
+**Exception**: the encoding is UTF-8 if no -encoding= field exists. You can also use the @encoding directive_ to set the encoding for individual external files. If no @encoding directive_ is in effect, Leo uses the following settings_ to translate to and from unicode:
 
 default_derived_file_encoding
     The encoding used for external files if no @encoding directive_ is in effect.
@@ -4336,11 +4269,7 @@ automate any task.
 
 - Right-clicking a script button deletes it.
 </t>
-<t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to stderr,
-the output stream that goes to the console window. In Linux and MacOS
-environments, python programs normally execute with the console window visible.
-On Windows, can run Leo with the console window visible by associating .leo
-files with python.exe *not* pythonw.exe.
+<t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to stderr, the output stream that goes to the console window. In Linux and MacOS environments, python programs normally execute with the console window visible. On Windows, can run Leo with the console window visible by associating .leo files with python.exe *not* pythonw.exe.
 </t>
 <t tx="ekr.20050907094633">Settings may be different for each commander.
 
@@ -5162,9 +5091,7 @@ The path to the file to be written by the execute-script command. Notes:
 </t>
 <t tx="ekr.20060529053407">@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
 
-The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates 
-outlines from external files. This is an absolutely crucial restriction and will never go away.
-For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
+The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates outlines from external files. This is an absolutely crucial restriction and will never go away. For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
 
@@ -5672,19 +5599,12 @@ Without this line, constructs such as::
     u = u'a-(2 unicode characters here)-z'
     u = 'a-(2 unicode characters here)-z'
 
-will not work when executed with Leo's execute script command.
-Indeed, the Execute Script command creates the script by writing the tree
-containing the script to a string. This is done using Leo's write logic, and
-this logic converts the unicode input to a utf-8 encoded string. So *all
-non-ascii characters* get converted to their equivalent in the utf-8 encoding. 
-Call these encoding &lt;e1&gt; and &lt;e2&gt;. In effect the script becomes::
+will not work when executed with Leo's execute script command. Indeed, the Execute Script command creates the script by writing the tree containing the script to a string. This is done using Leo's write logic, and this logic converts the unicode input to a utf-8 encoded string. So *all non-ascii characters* get converted to their equivalent in the utf-8 encoding. Call these encoding &lt;e1&gt; and &lt;e2&gt;. In effect the script becomes::
 
     u = u'a-&lt;e1&gt;-&lt;e2&gt;-z'
     u = 'a-&lt;e2&gt;-&lt;e&gt;-z'
 
-which is certainly *not* what the script writer intended!
-Rather than defining strings using actual characters, Instead, one should use
-the equivalent escape sequences. For example::
+which is certainly *not* what the script writer intended! Rather than defining strings using actual characters, Instead, one should use the equivalent escape sequences. For example::
 
     u = u'a-\\u0233-\\u8ce2-z'
     u = 'a-\\u0233-\\u8ce2-z'
@@ -6853,17 +6773,11 @@ Add the equivalent of::
 
 at the head of each file that uses leoBridge.
 
-The problem is not importing leoBridge itself but (if I use 'from leo.core') the
-importing of plugins, who get a different leoGlobals from leoBridge, without
-g.app etc, and so do not work if they rely on dynamic values in g.etc.
+The problem is not importing leoBridge itself but (if I use 'from leo.core') the importing of plugins, who get a different leoGlobals from leoBridge, without g.app etc, and so do not work if they rely on dynamic values in g.etc.
 
-&gt; Why can't you simply add leo/core to sys.path in sitecustomize.py?  
+&gt; Why can't you simply add leo/core to sys.path in sitecustomize.py?
 
-Putting leo/core on the python path as you suggest would put forty python modules
-in the global module namespace for all python programs when I want just one.
-Also, I have a safe working copy of leo and a cvs/testing version. I would wish
-to test any programs against the testing version while using the working
-version, but both /core directories can't be exposed at the same time.
+Putting leo/core on the python path as you suggest would put forty python modules in the global module namespace for all python programs when I want just one. Also, I have a safe working copy of leo and a cvs/testing version. I would wish to test any programs against the testing version while using the working version, but both /core directories can't be exposed at the same time.
 
 &gt; Do you need plugins while running from the leoBridge? 
 
@@ -6873,11 +6787,7 @@ Afraid so, at least the rst3 plugin. The solution I am using now is to place::
 
 in leoBridge after import leo.core.leoGlobals as leoGlobals
 
-This allows my scripts
-to be portable over the several computers/platforms I need to use them on, and
-makes testing scripts against multiple leo versions easy. It does mean that my
-scripts are not portable to other leo users but that is not likely to be a
-problem.
+This allows my scripts to be portable over the several computers/platforms I need to use them on, and makes testing scripts against multiple leo versions easy. It does mean that my scripts are not portable to other leo users but that is not likely to be a problem.
 </t>
 <t tx="ekr.20070920092716">The so-called resolve-cvs-conflict project has resolved itself into small,
 easily understood commands.
@@ -6964,10 +6874,9 @@ in an @item node is just a hyphen (-), the item represents a menu separator.
     import sys 
     sys.setdefaultencoding('utf-8') # 'iso-8859-1' is another choice.
 
-You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up. 
+You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up.
 
-Leo's g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding.
-For example, the following Leo script shows various ways of printing La Peña properly::
+Leo's g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding. For example, the following Leo script shows various ways of printing La Peña properly::
 
     @first # -*- coding: utf-8 -*-
 
@@ -6989,8 +6898,7 @@ For example, the following Leo script shows various ways of printing La Peña pr
         print 'print     ',s
         print 'repr(s)   ',repr(s)
 
-For still more details, see:
-http://www.diveintopython.org/xml_processing/unicode.html 
+For still more details, see: http://www.diveintopython.org/xml_processing/unicode.html
 </t>
 <t tx="ekr.20071026180804">The prototype in test.leo now will use PIL (Python Imaging Library) if
 available, so many more kinds of icons can be used. Buttons now exist to add
@@ -7485,24 +7393,17 @@ remaining sections of this document discusses code-level details.
   Leo looks for myLeoSettings.leo in HOME/.leo.
   Leo uses os.path.expanduser("~") if there is no home setting.
 </t>
-<t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
-problems if your .leo file contains invalid characters.
-Bugs in previous versions of Leo permitted these bad characters to appear.
+<t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause problems if your .leo file contains invalid characters. Bugs in previous versions of Leo permitted these bad characters to appear.
 
-The sax parser complains that these characters are not valid in .xml files.
-Remove these invalid characters as follows:
+The sax parser complains that these characters are not valid in .xml files. Remove these invalid characters as follows:
 
-1. `run Leo in a console window`_, and load the .leo file.
-   Near the bottom of the error message you will see a line like::
+1. `run Leo in a console window`_, and load the .leo file. Near the bottom of the error message you will see a line like::
 
     SAXParseException: &lt;unknown&gt;:123:25: not well-formed (invalid token)
 
-   This line reports a bad character at character 25 of line 123.
+This line reports a bad character at character 25 of line 123.
 
-2. Open the .leo file in an external editor.
-   The Scite editor, http://www.scintilla.org/SciTE.html,
-   is a good choice because it clearly shows non-printing characters.
-   Remove the invalid character, save the .leo file.
+2. Open the .leo file in an external editor. The Scite editor, http://www.scintilla.org/SciTE.html, is a good choice because it clearly shows non-printing characters. Remove the invalid character, save the .leo file.
 
 Repeat steps 1 and 2 until all invalid characters are gone.
 </t>
@@ -7835,11 +7736,9 @@ In addition, Leo's -c command-line option can specify any .leo file anywhere.
 </t>
 <t tx="ekr.20090130144433.1">All questions are welcome at http://groups.google.com/group/leo-editor
 </t>
-<t tx="ekr.20090130144433.2">You can discuss possible bugs at
-http://groups.google.com/group/leo-editor
+<t tx="ekr.20090130144433.2">You can discuss possible bugs at http://groups.google.com/group/leo-editor
 
-Please report bugs at
-http://bugs.launchpad.net/leo-editor
+Please report bugs at http://bugs.launchpad.net/leo-editor
 
 When reporting a bug, please include *all* of the following:
 
@@ -7853,8 +7752,7 @@ When reporting a bug, please include *all* of the following:
 
 - Information sufficient to recreate the problem.
 
-It's polite to make the bug report self contained, so that six weeks later
-somebody will be able to understand the report as it stands.
+It's polite to make the bug report self contained, so that six weeks later somebody will be able to understand the report as it stands.
 </t>
 <t tx="ekr.20090202191501.7">You can simply unpack Leo anywhere and run from there.  You don't need the installer.
 
@@ -10305,19 +10203,9 @@ unusual data-changing events occur. Creating this scheme is likely the final
 chapter in the epic saga of error recovery in Leo.
 </t>
 <t tx="ekr.20101026082911.5536"></t>
-<t tx="ekr.20101026082911.5538">.. .. _`here`: atShadow.html#aha-boundary-cases-don-t-matter
+<t tx="ekr.20101026082911.5538">The update algorithm guarantees *only* that writing an updated @clean outline will generate the updated **public** file.  **Ambiguous lines** could be placed either at the end of one node or the beginning of the following nodes. The update algorithm *guesses* that such lines should be placed at the end of the previous node.
 
-The \@shadow algorithm guarantees *only* that writing an updated \@shadow
-outline will generate the updated **public** file. There is *no way* to
-guarantee that the updated outline structure will be as expected. The
-\@shadow algorithm can not guess between two or more ways of updating the
-**private** file when each of the ways yields the same **public** file.
-
-Happily, this "fact of life" about \@shadow is not serious. If you don't like
-the "guesses" that the \@shadow algorithm has made, you can simply change the
-\@shadow tree. After saving the outline, the *private* file will record your
-choice. The next time you open the outline, you will see the choices *you* made,
-not the guesses that the \@shadow algorithm made.
+Happily, guesses are not serious. Once you move an ambiguous node and save the Leo file, the update algorithm will not have to guess where the line belongs the next time Leo reads the @clean files.
 </t>
 <t tx="ekr.20101104024804.4898">- Select the node "Leo's Documentation"
 
@@ -14642,8 +14530,7 @@ will copy the @setting tree, but will *not* actually set the corresponding setti
 </t>
 <t tx="ekr.20120229094652.15130">@pagewidth 75
 
-Q. When I run the following script I see a window appear and then
-immediately disappear::
+Q. When I run the following script I see a window appear and then immediately disappear::
 
     from PyQt4 import QtGui
     w = QtGui.QWidget()
@@ -14654,15 +14541,11 @@ immediately disappear::
     
 What's going on?
 
-A. When the script exits the sole reference to the window, w, ceases to
-exist, so the window is destroyed (garbage collected). To keep the window
-open, add the following code as the last line to keep the reference alive::
+A. When the script exits the sole reference to the window, w, ceases to exist, so the window is destroyed (garbage collected). To keep the window open, add the following code as the last line to keep the reference alive::
 
     g.app.scriptsDict['my-script_w'] = w
 
-Note that this reference will persist until the next time you run the
-execute-script. If you want something even more permanent, you can do
-something like::
+This reference will persist until the next time you run the execute-script. If you want something even more permanent, you can do something like::
 
     g.app.my_script_w = w
 </t>
@@ -20464,17 +20347,9 @@ documentation steps that should not be overlooked.
         :undoc-members:
         :show-inheritance:
 </t>
-<t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
-includes a maximum line length restriction. How can I know the length of a
-line when it gets written to the external file?
+<t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It includes a maximum line length restriction. How can I know the length of a line when it gets written to the external file?
 
-**Answer**: If a node belongs to a external file hierarchy, its body might get
-indented when it is written to the external file. It happens when an
-\@others directive or a section name appears indented in a higher-level
-node body. While (**line**, **col**) in status area show the line and column
-containing the body text's cursor, **fcol** shows the cursor coordinate
-relative to the external file, not to the current node. The relation
-**fcol &gt;= col** is always true.
+**Answer**: If a node belongs to a external file hierarchy, its body might get indented when it is written to the external file. It happens when an \@others directive or a section name appears indented in a higher-level node body. While (**line**, **col**) in status area show the line and column containing the body text's cursor, **fcol** shows the cursor coordinate relative to the external file, not to the current node. The relation **fcol &gt;= col** is always true.
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
