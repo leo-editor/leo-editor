@@ -72,11 +72,10 @@ try:
     __ENCKEY = [None]
     encOK = True
 except ImportError:
-    pass
-    
-    from leo.core.leoQt import Qt, QtCore, QtWidgets
+    from leo.core.leoQt import Qt, QtWidgets # QtCore, 
 
-from leo.core.leoQt import isQt5, Qt, QtCore, QtWidgets
+from leo.core.leoQt import isQt5, Qt, QtWidgets # QtCore,
+
 if isQt5:
     from PyQt5.QtCore import QTimer
     try:
@@ -85,7 +84,8 @@ if isQt5:
         QString = str
     from PyQt5.QtGui import QFont,QIcon,QTextCharFormat
     from PyQt5.QtWidgets import (
-        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QPlainTextEdit,QTextEdit)
+        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
+            # QPlainTextEdit,
 else:
     from PyQt4.QtCore import QTimer
     try:
@@ -93,7 +93,8 @@ else:
     except ImportError:
         QString = str
     from PyQt4.QtGui import QAction,QFont,QIcon,QTextCharFormat,QTextEdit
-    from PyQt4.QtGui import QPlainTextEdit,QInputDialog,QMainWindow,QMdiArea,QLineEdit
+    from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
+        # QPlainTextEdit,
 #@-<< imports >>
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** styling
