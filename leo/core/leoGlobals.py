@@ -4722,21 +4722,17 @@ def isUnicode(s):
         return type(s) == types.UnicodeType
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding (encoding):
-
+    '''Return True if the encooding is valid.'''
     if not encoding:
         return False
-
     if sys.platform == 'cli':
         return True
-
     import codecs
-
     try:
         codecs.lookup(encoding)
         return True
-    except LookupError: # Windows.
-        return False
-    except AttributeError: # Linux.
+    except Exception:
+        # UnicodeEncodeError, LookupError, AttributeError.
         return False
 #@+node:ekr.20061006152327: *4* g.isWordChar & g.isWordChar1
 def isWordChar (ch):
