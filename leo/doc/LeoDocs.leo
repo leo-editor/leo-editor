@@ -1876,15 +1876,11 @@ This chapter discusses these topics:
 .. contents::
     :depth: 3
 </t>
-<t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes,
-located in the leoSettings.leo file, under the "@settings" node
-in the myLeoSettings.leo file
+<t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes, located in the leoSettings.leo file, under the "@settings" node in the myLeoSettings.leo file
 
 The same procedure is performed to update to a new version.
 
-Note: Place any local customized key bindings in a separate
-"@keys My Vi" node in the myLeoSettings.leo file to prevent
-them from being overwritten when updating to a new version.
+Note: Place any local customized key bindings in a separate "@keys My Vi" node in the myLeoSettings.leo file to prevent them from being overwritten when updating to a new version.
 </t>
 <t tx="TL.20080804095315.5">The following commands are always available.
 
@@ -2286,39 +2282,21 @@ Notable missing body pane commands::
     '&lt;command&gt;  Go to line of last edit, jump, ...
     `&lt;command&gt;  Go to character of last edit, jump, ...
 </t>
-<t tx="TL.20080804095315.9">If you use the open-with command to open a node text in Vim and your
-Vim's "tag" file refers to external files then there is a risk that a
-external file that is initially displayed via the "tag" command" in
-Vim is accidentally edited and saved from the external Vim editor
-while your Leo session still contains the external file's original
-text that may later recreate the original external file during a Leo
-save operation (overwriting the changes saved from the Vim editor).
+<t tx="TL.20080804095315.9">If you use the open-with command to open a node text in Vim and your Vim's "tag" file refers to external files then there is a risk that a external file that is initially displayed via the "tag" command" in Vim is accidentally edited and saved from the external Vim editor while your Leo session still contains the external file's original text that may later recreate the original external file during a Leo save operation (overwriting the changes saved from the Vim editor).
 
-To prevent this problem, modifications to external files can be avoided by using
-Vim's "modeline" feature to disable editing of external files.
+To prevent this problem, modifications to external files can be avoided by using Vim's "modeline" feature to disable editing of external files.
 
-Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
-of the file containing " vim:" followed by a series of Vim options. The text is
-usually embedded within a comment. The following example prevents modifications
-to a buffer in a Python file::
+Vim's "modeline" feature scans each loaded buffer for text at the top or bottom of the file containing " vim:" followed by a series of Vim options. The text is usually embedded within a comment. The following example prevents modifications to a buffer in a Python file::
 
     # vim:noma (A space is required between the '#' and "vim:noma")
 
-If this line is placed in a separate Leo node at the top or bottom of the list
-of nodes under a external file node (ex: @file) then any external file saved and
-then later loaded into Vim will, by default, not be modifiable. If a derived
-file does need to be edited then modifications can be re-enabled on a
-file-by-file basis by issuing Vim's ":ma" command while viewing the derived
-file.
+If this line is placed in a separate Leo node at the top or bottom of the list of nodes under a external file node (ex: @file) then any external file saved and then later loaded into Vim will, by default, not be modifiable. If a derived file does need to be edited then modifications can be re-enabled on a file-by-file basis by issuing Vim's ":ma" command while viewing the derived file.
 
-The number of lines that Vim checks at the top and bottom of the buffer is
-configurable. The following Vim command must be placed in the vimrc file to
-allow for Leo's trailing sentinel lines::
+The number of lines that Vim checks at the top and bottom of the buffer is configurable. The following Vim command must be placed in the vimrc file to allow for Leo's trailing sentinel lines::
 
     set modelines=8
 
-Issue the ":help modeline" command within Vim for the more information about
-modelines.
+Issue the ":help modeline" command within Vim for the more information about modelines.
 </t>
 <t tx="ekr.20040403171740">@ @rst-options
 .. A very cool option: doc parts will be rendered properly,
@@ -5231,44 +5209,28 @@ This chapter discusses how to write Leo scripts that store and retrieve data usi
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
 </t>
 <t tx="ekr.20060913165542.1"></t>
-<t tx="ekr.20060913165542.2">This function inits the zodb.
-pathToZodbStorage is the full path to the zodb storage file.
-You can call g.init_zodb as many times as you like.
-Only the first call for any path actually does anything:
-subsequent calls for a previously opened path simply return the same value as the first call.
+<t tx="ekr.20060913165542.2">This function inits the zodb. pathToZodbStorage is the full path to the zodb storage file. You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.
 </t>
-<t tx="ekr.20060913165542.3">This vnode method returns v2, a copy of v that is completely detached from the
-outline. v2.fileIndex is unrelated to v.fileIndex initially, but it may be
-convenient to copy this field::
+<t tx="ekr.20060913165542.3">This vnode method returns v2, a copy of v that is completely detached from the outline. v2.fileIndex is unrelated to v.fileIndex initially, but it may be convenient to copy this field::
 
     v2 = v.detach()
     v2.fileIndex = v.fileIndex
 </t>
-<t tx="ekr.20060913170145">To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py.
-You must also install ZODB itself.  See `Installing ZODB`_ for details.
+<t tx="ekr.20060913170145">To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py. You must also install ZODB itself.  See `Installing ZODB`_ for details.
 
-When ZODB is installed and use_zodb is True,
-Leo's vnode class becomes a subclass of ZODB.Persistence.Persistent.
-This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
+When ZODB is installed and use_zodb is True, Leo's vnode class becomes a subclass of ZODB.Persistence.Persistent. This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
 
 **Important notes**:
 
-- Scripts **should not** store or retrieve positions using the ZODB!
-  Doing so makes sense neither from Leo's point of view nor from ZODB's point of view.
+- Scripts **should not** store or retrieve positions using the ZODB! Doing so makes sense neither from Leo's point of view nor from ZODB's point of view.
 
-- The examples below show how to store or retrieve Leo data by accessing the
-  so-called root of a ZODB connection. However, these are only examples. Scripts
-  are free to do with Leo's vnodes *anything* that can be done with
-  ZODB.Persistence.Persistent objects.
+- The examples below show how to store or retrieve Leo data by accessing the so-called root of a ZODB connection. However, these are only examples. Scripts are free to do with Leo's vnodes *anything* that can be done with ZODB.Persistence.Persistent objects.
 </t>
-<t tx="ekr.20060913170403">Scripts should call g.init_zodb to open a ZODB.Storage file.
-g.init_zodb returns an instance of ZODB.DB.  For example::
+<t tx="ekr.20060913170403">Scripts should call g.init_zodb to open a ZODB.Storage file. g.init_zodb returns an instance of ZODB.DB.  For example::
 
     db = g.init_zodb (zodbStorageFileName)
 
-You can call g.init_zodb as many times as you like.
-Only the first call for any path actually does anything:
-subsequent calls for a previously opened path simply return the same value as the first call.
+You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.
 </t>
 <t tx="ekr.20060913170403.1">The following script writes v, a tree of vnodes, to zodb::
 
@@ -5314,8 +5276,7 @@ Notes:
         get_transaction().commit()
         connection.close()
 </t>
-<t tx="ekr.20060913175437">The keys used to store and retrieve data in connection.root() can be any string that uniquely identifies the data.
-The following are only suggestions; you are free to use any string you like.
+<t tx="ekr.20060913175437">The keys used to store and retrieve data in connection.root() can be any string that uniquely identifies the data. The following are only suggestions; you are free to use any string you like.
 
 1. When saving a file, you would probably use a key that is similar to a real file path.
    For example::
@@ -5334,17 +5295,9 @@ The following are only suggestions; you are free to use any string you like.
        v2.fileIndex = v.fileIndex
        aKey = g.app.nodeIndices.toString(v2.fileIndex)
 </t>
-<t tx="ekr.20060913175437.1">The scripts shown above close the zodb connection after processing the data.
-This is by far the simplest strategy.
-I recommend it for typical scripts.
+<t tx="ekr.20060913175437.1">The scripts shown above close the zodb connection after processing the data. This is by far the simplest strategy. I recommend it for typical scripts.
 
-**Important**: you must **leave the connection open** if your script modifies persistent data in any way.
-(Actually, this statement is not really true,
-but you must define zodb transaction managers if you intend to use multiple connections simultaneously.
-This complication is beyond the scope of this documentation.)
-For example, it would be possible to create a new Leo outline from the data just read,
-but the script must leave the connection open.
-I do not recommend this tactic, but for the adventurous here is some sample code::
+**Important**: you must **leave the connection open** if your script modifies persistent data in any way. (Actually, this statement is not really true, but you must define zodb transaction managers if you intend to use multiple connections simultaneously. This complication is beyond the scope of this documentation.) For example, it would be possible to create a new Leo outline from the data just read, but the script must leave the connection open. I do not recommend this tactic, but for the adventurous here is some sample code::
 
     connection = self.db.open()
     root = connection.root()
@@ -5366,10 +5319,7 @@ I do not recommend this tactic, but for the adventurous here is some sample code
         g.es_print('zodb read: not found: %s' % (fileName))
 
 
-This will work **provided** that no other zodb connection is ever opened while this connection is opened.
-Unless special zodb precautions are taken (like defining zodb transaction managers)
-calling get_transaction().commit() will affect **all** open connections.
-You have been warned.
+This will work **provided** that no other zodb connection is ever opened while this connection is opened. Unless special zodb precautions are taken (like defining zodb transaction managers) calling get_transaction().commit() will affect **all** open connections. You have been warned.
 </t>
 <t tx="ekr.20060915112109">Find the @file leoApp.py node in leoPy.leo. In the ctor for the LeoApp class set self.use_psyco to True or False. You will find this ctor in the node::
 
@@ -5668,9 +5618,9 @@ This chapter several topics relating to the Emacs editor.
 
 - open(fileName)
 
-  Opens the .leo file given by fileName.
-  fileName must be the full path to a .leo file.
-  Returns the commander of the open Leo outline, or None if the outline could not be opened.
+  Opens the .leo file given by fileName. fileName must be the full
+  path to a .leo file. Returns the commander of the open Leo outline,
+  or None if the outline could not be opened.
 
 - run_script(c,script,p=None)
 
@@ -5679,11 +5629,7 @@ This chapter several topics relating to the Emacs editor.
   In the executed script, p is set to c.p if no p argument is specified.
   Returns g.app.scriptResult, where g.app is the hidden app.
 </t>
-<t tx="ekr.20061025081359">Leo's leoPymacs module is a simple 'server' for the pymacs_ package.
-Using pymacs and leoPymacs, elisp_ scripts in Emacs_ can open .leo files and execute *Python* scripts
-as if they were executed inside Leo.
-In particular, such scripts can use Leo's predefined c, g and p variables.
-Thus, *Python* scripts running in Emacs can:
+<t tx="ekr.20061025081359">Leo's leoPymacs module is a simple 'server' for the pymacs_ package. Using pymacs and leoPymacs, elisp_ scripts in Emacs_ can open .leo files and execute *Python* scripts as if they were executed inside Leo. In particular, such scripts can use Leo's predefined c, g and p variables. Thus, *Python* scripts running in Emacs can:
 
 - Open any .leo file. 
 - Access any part of the outline. 
@@ -5713,21 +5659,24 @@ Here are step-by-step instructions for executing Python scripts in Emacs:
 
     (pymacs-load "leoPymacs" "leo-")
 
-  The call to pymacs-load is similar to 'import leoPymacs as leo-' in Python.
-  The side effect of pymacs-load is to define the elisp function leo-x for every top-level function x in leoPymacs.py,
-  namely leo-dump, leo-get-app, leo-get-g, leo-get-script-result, leo-init, leo-open and leo-run-script.
-  The first call to any of these functions creates a **hidden Leo application**
-  in which .leo files may be loaded, modified and saved,
-  and in which Leo scripts may be executed.
-  This hidden Leo application uses Leo's nullGui class as its gui,
-  so Leo commands and Leo scripts that require a fully functional gui will not work as
-  expected in the hidden Leo application.
-  Steps 3 and 4 tell how to use this hidden Leo application.
+  The call to pymacs-load is similar to 'import leoPymacs as leo-' in
+  Python. The side effect of pymacs-load is to define the elisp
+  function leo-x for every top-level function x in leoPymacs.py,
+  namely leo-dump, leo-get-app, leo-get-g, leo-get-script-result,
+  leo-init, leo-open and leo-run-script. The first call to any of
+  these functions creates a **hidden Leo application** in which .leo
+  files may be loaded, modified and saved, and in which Leo scripts
+  may be executed. This hidden Leo application uses Leo's nullGui
+  class as its gui, so Leo commands and Leo scripts that require a
+  fully functional gui will not work as expected in the hidden Leo
+  application. Steps 3 and 4 tell how to use this hidden Leo
+  application.
 
-  pymacs-load works like a Python reload, so you can redefine leoPymacs.py while Emacs is running.
-  However, calling pymacs-load destroys the old hidden Leo application and creates a new one,
-  so typically you would want to call pymacs-load only once per Emacs session.
-  Like this::
+  pymacs-load works like a Python reload, so you can redefine
+  leoPymacs.py while Emacs is running. However, calling pymacs-load
+  destroys the old hidden Leo application and creates a new one, so
+  typically you would want to call pymacs-load only once per Emacs
+  session. Like this::
 
         (setq reload nil) ; change nil to t to force a reload.
 
@@ -5802,22 +5751,15 @@ Putting this all together, we get::
         (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
         (leo-run-script c script)
 </t>
-<t tx="ekr.20061025142434">Leo's mini-buffer is a text area at the bottom of the body pane.
-You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*.
-The following commands affect the minibuffer:
+<t tx="ekr.20061025142434">Leo's mini-buffer is a text area at the bottom of the body pane. You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*. The following commands affect the minibuffer:
 
-- **full-command**: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
-  full command name, then hit &lt;Return&gt; to execute the command. Tab completion
-  works, but not yet for file names.
+- **full-command**: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a full command name, then hit &lt;Return&gt; to execute the command. Tab completion works, but not yet for file names.
 
-- **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
-  defined in leoSettings.leo. It is useful for commonly-used commands.
+- **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is defined in leoSettings.leo. It is useful for commonly-used commands.
 
-- **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat
-  count for later command. Ctrl-u 999 a adds 999 a's.
+- **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat count for later command. Ctrl-u 999 a adds 999 a's.
 
-- **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
-  the focus in the body pane.
+- **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
 
 For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
 </t>
@@ -5949,32 +5891,21 @@ Python programs running independently of Leo. Let us call such a program a
     g = controller.globals()
     c = controller.openLeoFile(path)
 
-Let us look at these statements in detail. The first two statements
-import the leoBridge module and create a **bridge controller**. In
-effect, these statements embed an invisible copy of Leo into the host
-program. This embedded copy of Leo uses a null gui, which simulates
-all aspects of Leo's normal gui code without creating any screen
-objects.
+Let us look at these statements in detail. The first two statements import the leoBridge module and create a **bridge controller**. In effect, these statements embed an invisible copy of Leo into the host program. This embedded copy of Leo uses a null gui, which simulates all aspects of Leo's normal gui code without creating any screen objects.
 
 The statement::
 
     g = controller.globals()
 
-provides access to Leo's leoGlobals module, and properly inits globals such as
-g.app, g.app.gui, etc. *Host programs should not import leoGlobals directly*,
-because doing so would not init the g.app object properly.
+provides access to Leo's leoGlobals module, and properly inits globals such as g.app, g.app.gui, etc. *Host programs should not import leoGlobals directly*, because doing so would not init the g.app object properly.
 
 The statement::
 
     c = controller.openLeoFile(path)
 
-invisibly opens the .leo file given by the path argument. This call returns a
-completely standard Leo commander, properly inited. This is the big payoff from
-the leoBridge module: the host program gets instant access to c.config.getBool,
-etc. Do you see how sweet this is?
+invisibly opens the .leo file given by the path argument. This call returns a completely standard Leo commander, properly inited. This is the big payoff from the leoBridge module: the host program gets instant access to c.config.getBool, etc. Do you see how sweet this is?
 
-For example, the following script runs leo/test/leoBridgeTest.py outside of Leo.
-leoBridgeTest.py uses the leoBridge module to run all unit tests in leo/test/unitTest.leo::
+For example, the following script runs leo/test/leoBridgeTest.py outside of Leo. leoBridgeTest.py uses the leoBridge module to run all unit tests in leo/test/unitTest.leo::
 
     import os,sys
 
@@ -5984,8 +5915,7 @@ leoBridgeTest.py uses the leoBridge module to run all unit tests in leo/test/uni
 
     os.system('%s %s' % (sys.executable,path))
 
-The file leo/test/test.leo contains the source code for leoBridgeTest.py.
-Here it is, stripped of its sentinel lines::
+The file leo/test/test.leo contains the source code for leoBridgeTest.py. Here it is, stripped of its sentinel lines::
 
     '''A program to run unit tests with the leoBridge module.'''
 
@@ -6768,16 +6698,9 @@ source code. The runOpenFileDialog returns a list of file names.
 </t>
 <t tx="ekr.20071210094621">This following is adapted from Terry Brown's entry in Leo's wiki.
 
-You can not just run leoBridge from Leo, because the leoBridge module is designed
-to run a separate copy of Leo. However, it is possible to run leoBridge from a
-separate process. That turned out to be more, um, interesting than anticipated,
-so I'm recording the results here.
+You can not just run leoBridge from Leo, because the leoBridge module is designed to run a separate copy of Leo. However, it is possible to run leoBridge from a separate process. That turned out to be more, um, interesting than anticipated, so I'm recording the results here.
 
-The idea is that script A running in Leo (i.e. in a regular GUI Leo session)
-calls script B through subprocess.Popen(), script B uses LeoBridge to do
-something (parse unloaded Leo files), and returns the result to script A.
-Passing the result back via the clipboard seemed like a possibility, but
-XWindows clipboard madness being what it is, that didn't seem to work.
+The idea is that script A running in Leo (i.e. in a regular GUI Leo session) calls script B through subprocess.Popen(), script B uses LeoBridge to do something (parse unloaded Leo files), and returns the result to script A. Passing the result back via the clipboard seemed like a possibility, but XWindows clipboard madness being what it is, that didn't seem to work.
 
 First trick, calling script B from script A::
 
@@ -6790,16 +6713,9 @@ First trick, calling script B from script A::
     )
     p.wait()
 
-Setting PYTHONPATH in the environment seemed like the easiest way to let
-script B find leoBridge.py (which it needs to import).  But by setting the
-env parameter you limit script B's environment to be **only** PYTHONPATH,
-which causes leoBridge to fail because, in unix at least, it depends
-on USER in the environment.  So you need to pass that through, too.
+Setting PYTHONPATH in the environment seemed like the easiest way to let script B find leoBridge.py (which it needs to import).  But by setting the env parameter you limit script B's environment to be **only** PYTHONPATH, which causes leoBridge to fail because, in unix at least, it depends on USER in the environment.  So you need to pass that through, too.
 
-Now, because passing stuff back on the clipboard seems unreliable, at least
-in XWindows, script B passes results back to script A via stdout (print),
-but there's some Leo initialization chatter you want to avoid.  So put a
-sentinel, 'START_CLIPBOARD', in the output, and collect it like this::
+Now, because passing stuff back on the clipboard seems unreliable, at least in XWindows, script B passes results back to script A via stdout (print), but there's some Leo initialization chatter you want to avoid.  So put a sentinel, 'START_CLIPBOARD', in the output, and collect it like this::
 
     response = p.stdout.readlines()
     while response and 'START_CLIPBOARD' not in response[0]:
@@ -6807,9 +6723,7 @@ sentinel, 'START_CLIPBOARD', in the output, and collect it like this::
     del response[0]  # delete the sentinel as well
     response = ''.join(response)
 
-This is the basic mechanism.  What I *actually* wanted to do was have script
-B generate a branch of nodes and pass that back to script A for insertion in
-the tree script A is running in.  That's relatively easy if you use::
+This is the basic mechanism.  What I *actually* wanted to do was have script B generate a branch of nodes and pass that back to script A for insertion in the tree script A is running in.  That's relatively easy if you use::
 
     c.setCurrentPosition(pos_of_branch_to_return)
     c.copyOutline()
@@ -8589,11 +8503,9 @@ View node
     descendant nodes comprise most of the data of the view. Other non-cloned
     nodes may add additional information to the view.
 </t>
-<t tx="ekr.20100804133903.7262">This section is a reference guide for all other Leo directives, organized
-alphabetically.
+<t tx="ekr.20100804133903.7262">This section is a reference guide for all other Leo directives, organized alphabetically.
 
-Unless otherwise noted, all directives listed are valid only in body text,
-and they must start at the leftmost column of the node.
+Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.
 
 .. glossary::
      :sorted:
@@ -8846,16 +8758,9 @@ including Leo's home page.</t>
 <t tx="ekr.20100806170836.4392">.. index::
     pair: @&lt;file&gt;; Reference
 
-This section discusses the \@&lt;file&gt; directives. These directives create or
-import external files.
+This section discusses the \@&lt;file&gt; directives. These directives create or import external files.
 
-..  **Important**: Newcomers to Leo should create external files with \@auto or
-..  \@file. Use \@auto if your external files must not contain sentinel lines. Use
-..  \@file otherwise. In particular, \@file is **highly recommended** when sharing
-..  external files in a collaborative environment.
-
-**Important**: In Leo 5.1 and later \@file or \@clean are the recommended
-ways of creating external files.
+**Important**: In Leo 5.1 and later \@file or \@clean are the recommended ways of creating external files.
 
 **Note**: All these directive must appear in headlines.
 
@@ -8877,11 +8782,7 @@ The following table compares the various ways of creating external files.
 | @file   | yes        | yes              | no              |
 +---------+------------+------------------+-----------------+
 
-.. .. | @shadow | Note 1     | yes              | no              |
-.. .. | @thin   |            |                  | no              |
-
-Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following
-symbols known: c, g, p, os and sys.  For example::
+Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following symbols known: c, g, p, os and sys.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
 
@@ -9014,10 +8915,7 @@ Leo colors text in the body pane.
 .. index::
     pair: Ambiguous node; Reference
 
-These directives typically affect the node in which they appear and all
-descendant nodes. Exception: an **ambiguous node**, a node containing both
-\@color and \@nocolor directives, has no effect on how Leo colors text in
-descendant nodes.
+These directives typically affect the node in which they appear and all descendant nodes. Exception: an **ambiguous node**, a node containing both \@color and \@nocolor directives, has no effect on how Leo colors text in descendant nodes.
 
 .. glossary::
     :sorted:
@@ -9115,9 +9013,7 @@ The \@thin directive is a synonym for \@file.
 Prior to Leo 4.7, \@file worked differently from \@thin. This should not be
 a problem: Leo 4.7 can read all external files written by Leo 4.6.
 </t>
-<t tx="ekr.20100806170836.4408">These directives alter how Leo represents data in external files. They are
-**dangerous**--mistakes in using these sentinels can make it impossible for Leo
-to read the resulting external file. Use them with care!
+<t tx="ekr.20100806170836.4408">These directives alter how Leo represents data in external files. They are **dangerous**--mistakes in using these sentinels can make it impossible for Leo to read the resulting external file. Use them with care!
 
 Nevertheless, these sentinels can be useful in special situations.
 
@@ -9219,8 +9115,7 @@ Nevertheless, these sentinels can be useful in special situations.
     range, Leo ignores all section references and directives, and Leo generates
     no additional leading whitespace.
 </t>
-<t tx="ekr.20100806170836.4411">These control how Leo places text when writing external files.
-They are two of the most important directives in Leo.
+<t tx="ekr.20100806170836.4411">These control how Leo places text when writing external files. They are two of the most important directives in Leo.
 
 .. glossary::
     :sorted:
@@ -14329,58 +14224,35 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20131001045038.17448">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream
-on IPython developer mailing list:
-http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
+<t tx="ekr.20131001045038.17448">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream on IPython developer mailing list: http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
 
-I was using FreeMind as mind mapping software, and so I had an immediate
-use case for Leo (which, incidentally, is superior to FreeMind as mind
-mapper). The wheels started rolling, I got obsessed with the power of this
-concept (everything clicked together), and Edwards excitement paralleled
-mine. Everything was mind-bogglingly easy/trivial, something that is
-typical of all promising technologies.
+I was using FreeMind as mind mapping software, and so I had an immediate use case for Leo (which, incidentally, is superior to FreeMind as mind mapper). The wheels started rolling, I got obsessed with the power of this concept (everything clicked together), and Edwards excitement paralleled mine. Everything was mind-bogglingly easy/trivial, something that is typical of all promising technologies.
 
-The goal of close cooperation between Leo and IPython went from vague dream
-to completed reality over the span of about 10 days. The IPython bridge has
-continued to evolve since then.
+The goal of close cooperation between Leo and IPython went from vague dream to completed reality over the span of about 10 days. The IPython bridge has continued to evolve since then.
 </t>
-<t tx="ekr.20131001045038.18979">The IPython bridge turns Leo into another kind of `IPython Notebook`_.
-IPython users typically use %edit to produce non-trivial functions/classes
-instead of entering them directly on the interactive prompt. But this is a
-bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
+<t tx="ekr.20131001045038.18979">The IPython bridge turns Leo into another kind of `IPython Notebook`_. IPython users typically use %edit to produce non-trivial functions/classes instead of entering them directly on the interactive prompt. But this is a bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
 
 - You can execute any Leo node in IPython with &lt;Alt-I&gt; (ipython-exec)
 - Saving your Leo outline saves all your IPython scripts.
 - You can use Leo as always to organize all your IPython scripts.
 </t>
-<t tx="ekr.20131001045038.18980">*You can run any IPython script from Leo*. Leo's ipython-exec (Alt-I)
-command executes the body text of the presently selected Leo node in the
-address space of the IPython shell. Such scripts *immediately* affect the
-IPython interpreter.
+<t tx="ekr.20131001045038.18980">*You can run any IPython script from Leo*. Leo's ipython-exec (Alt-I) command executes the body text of the presently selected Leo node in the address space of the IPython shell. Such scripts *immediately* affect the IPython interpreter.
 
-The IPython bridge sets several global variables *within Leo*, allowing Leo
-scripts *complete* access to all of IPython's code and data:
+The IPython bridge sets several global variables *within Leo*, allowing Leo scripts *complete* access to all of IPython's code and data:
 
 - g.app.ipk.namespace is IPython's namespace.
 - g.app.ipk.ipkernel is an IPython IPKernelApp object.
 - g.app.ipk.ipkernel.shell is an IPython InteractiveShell object.
 </t>
-<t tx="ekr.20131001045038.18981">*You can run any Leo script from IPython*. The IPython bridge injects an
-object called _leo into IPython's namespace. IPython scripts may access
-Leo's c and g objects as follows::
+<t tx="ekr.20131001045038.18981">*You can run any Leo script from IPython*. The IPython bridge injects an object called _leo into IPython's namespace. IPython scripts may access Leo's c and g objects as follows::
 
     c,g = _leo.c, _leo.g
 
-This allows IPython scripts to do *anything* that a Leo script can do.
-Scripts run from IPython *immediately* change Leo, *exactly* as if the
-script were run from Leo.
+This allows IPython scripts to do *anything* that a Leo script can do. Scripts run from IPython *immediately* change Leo, *exactly* as if the script were run from Leo.
 
-**Important**: the _leo object is an instance of LeoNameSpace class,
-defined in leo.core.leoIPython.py. This class allows IPython scripts to
-access multiple Leo outlines at once. See the actual code for details.
+**Important**: the _leo object is an instance of LeoNameSpace class, defined in leo.core.leoIPython.py. This class allows IPython scripts to access multiple Leo outlines at once. See the actual code for details.
 
-**Note**: _leo.c is a property which can return None in some situations.
-Here is its definition:
+**Note**: _leo.c is a property which can return None in some situations. Here is its definition:
 
 .. code-block:: python
 
@@ -14407,13 +14279,9 @@ Here is its definition:
         __get_c, __set_c,
         doc = "LeoNameSpace c property")
 </t>
-<t tx="ekr.20131001100236.15927">Leo's valuespace.py plugin uses the ipython namespace when the
-``--ipython`` command line switch is in effect.
+<t tx="ekr.20131001100236.15927">Leo's valuespace.py plugin uses the ipython namespace when the ``--ipython`` command line switch is in effect.
 
-This plugin provides a "workbook" like way to get data from Leo document to
-the namespace, and do calculations based on that data. Having this data be
-accessible to the ipython instance makes it convenient to interact and poke
-around with the same data.
+This plugin provides a "workbook" like way to get data from Leo document to the namespace, and do calculations based on that data. Having this data be accessible to the ipython instance makes it convenient to interact and poke around with the same data.
 </t>
 <t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands. |br| **Note**: you can also use the Nav Tab (in the Log pane) to search for text.
 
@@ -17498,19 +17366,11 @@ or equivalently::
     
 import the org-mode file as a Leo outline. 
 
-These nodes work like other @auto nodes: when Leo loads an outline, Leo
-reads the .org file into the @auto-org-mode tree. When Leo writes an
-outline, Leo writes any @auto-org-mode tree back to the org-mode file.
+These nodes work like other @auto nodes: when Leo loads an outline, Leo reads the .org file into the @auto-org-mode tree. When Leo writes an outline, Leo writes any @auto-org-mode tree back to the org-mode file.
 
-After creating an @auto-org-mode node by hand, be sure to use Leo's
-refresh-from-disk command to populate the node. Do this *before* saving the
-.leo file. If you try to save an empty @auto-org-mode node Leo will warn
-you that you are about to overwrite the file.
+After creating an @auto-org-mode node by hand, be sure to use Leo's refresh-from-disk command to populate the node. Do this *before* saving the .leo file. If you try to save an empty @auto-org-mode node Leo will warn you that you are about to overwrite the file.
 
-The ``refresh-from-disk`` command creates an @auto-org-mode node whose **children**
-represent the contents of the external .org file. Leo does *not* write the
-\@auto-org-mode node itself. This allows you to put Leo directives in the
-node.
+The ``refresh-from-disk`` command creates an @auto-org-mode node whose **children** represent the contents of the external .org file. Leo does *not* write the \@auto-org-mode node itself. This allows you to put Leo directives in the node.
 </t>
 <t tx="ekr.20140720203932.17748">Leo can automatically import and export vimoutline (.otl) files. Nodes like::
 
@@ -17522,18 +17382,11 @@ or equivalently::
     
 import the .otl as a Leo outline.
 
-These nodes work like other @auto nodes: when Leo loads an outline, Leo
-reads the .otl file into the @auto-otl tree. When Leo writes an outline,
-Leo writes any @auto-otl tree back to the .otl file.
+These nodes work like other @auto nodes: when Leo loads an outline, Leo reads the .otl file into the @auto-otl tree. When Leo writes an outline, Leo writes any @auto-otl tree back to the .otl file.
 
-After creating an @auto-otl node by hand, be sure to use Leo's
-refresh-from-disk command to populate the node. Do this *before* saving the
-.leo file. If you try to save an empty @auto-otl node Leo will warn you
-that you are about to overwrite the file.
+After creating an @auto-otl node by hand, be sure to use Leo's refresh-from-disk command to populate the node. Do this *before* saving the .leo file. If you try to save an empty @auto-otl node Leo will warn you that you are about to overwrite the file.
 
-The refresh-from-disck command creates an @auto-otl node whose **children**
-represent the contents of the external .otl file. Leo does *not* write the
-\@auto-otl node itself. This allows you to put Leo directives in the node.
+The refresh-from-disck command creates an @auto-otl node whose **children** represent the contents of the external .otl file. Leo does *not* write the \@auto-otl node itself. This allows you to put Leo directives in the node.
 </t>
 <t tx="ekr.20140810085801.18216"></t>
 <t tx="ekr.20140810085801.18217">Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to
@@ -17836,8 +17689,7 @@ method. A simple check in vc.do_key ensures that every key handler, has, in
 fact, called an acceptance method. In practice, this check has been very
 effective.
 </t>
-<t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three
-modes, insert, normal and visual.
+<t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three modes, insert, normal and visual.
 
 
     
@@ -19263,16 +19115,9 @@ os.system('make latex')
 os.chdir('_build/latex')
 os.system('make all-pdf')
 </t>
-<t tx="vivainio.20080302174639.1">Leo's ``--ipython`` command-line option enables two-way communication
-(**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo
-scripts from IPython, and IPython scripts from Leo.
+<t tx="vivainio.20080302174639.1">Leo's ``--ipython`` command-line option enables two-way communication (**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo scripts from IPython, and IPython scripts from Leo.
 
-The level of integration is much deeper than conventional integration in
-IDEs. Most notably, you are able to store and manipulate *data* in Leo
-nodes, in addition to mere program code--essentially making ILeo a
-hierarchical spreadsheet, albeit with non-grid view of the data. The
-possibilities of this are endless, and the approach can be applied in wide
-range of problem domains with very little actual coding.
+The level of integration is much deeper than conventional integration in IDEs. Most notably, you are able to store and manipulate *data* in Leo nodes, in addition to mere program code--essentially making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data. The possibilities of this are endless, and the approach can be applied in wide range of problem domains with very little actual coding.
 </t>
 <t tx="vivainio.20080302174639.2">To run Leo's IPython bridge:
 
