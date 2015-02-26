@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101028110015.8271: * @file slideshows.txt
+
 #@@pagewidth 70
 #@+all
 #@+node:ekr.20101122071746.5046: ** How to create slideshows
@@ -140,18 +141,18 @@ As with other outliners, Leo outlines show
 #@+node:ekr.20101011103613.4930: *5* @slide A Better PIM
 Leo is a better pim.
 #@+node:ekr.20101011103613.4942: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-003.html
 #@+node:ekr.20101012083118.5245: *5* @slide External Files
 #@+node:ekr.20101011103613.4933: *5* @slide A Scripting Environment
 The body text of any node can contain a Python script.
 
 You execute the script with (Ctrl-B) Leo's execute-script command.
 #@+node:ekr.20101011103613.4943: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-005.html
 #@+node:ekr.20101011103613.4934: *5* @slide Better Scripting
 All Leo scripts have access to three predefined constants: c, g and p.
 #@+node:ekr.20101011103613.4944: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-006.html
 #@+node:ekr.20101011103613.4938: *5* @slide Better Scripting, Part Deux
 All Leo scripts have full access to the outline in which the scripts reside. The
 following scripts, executed from Leo's body pane, will print the headlines of
@@ -160,15 +161,15 @@ all the nodes of the outline, properly indented::
     for p in c.all_positions():
         print '%s%s' % (' '*p.level(),p.h)
 #@+node:ekr.20101011103613.4945: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-007.html
 #@+node:ekr.20101011103613.4935: *5* @slide Outlines Create New Leo Commands
 Discuss @button nodes
 #@+node:ekr.20101011103613.4946: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
 #@+node:ekr.20101011103613.4936: *5* @slide Outlines Create Unit tests
 Discuss @test nodes
 #@+node:ekr.20101011103613.4947: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
 #@+node:ekr.20101011103613.4937: *5* @slide Outlines Create Restructured Text
 Leo outlines make it easy to create Restructured Text (rST) documents.
 
@@ -176,9 +177,9 @@ Within @rst trees, nodes correspond to rST sections. Naturally, the outline
 level of a node in the Leo outline determines the section's level in the
 resulting document.
 #@+node:ekr.20101011111455.4965: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
-#@+node:ekr.20101011103613.4939: *5* @slide Outlines Create HTML
-#@+node:ekr.20101007082321.4357: *4* @slideshow What is Leo? (Joe Orr)
+c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-010.html
+#@+node:ekr.20101007082321.4357: *4* @slideshow What is Leo
+By Joe Orr.
 #@+node:ekr.20101009171445.4637: *5* @title_pattern = What is Leo? Slide %(slide_number)s
 #@+node:ekr.20101008061729.4372: *5* @slide 001
 Leo is a unique, powerful computer program that you can use to **organize**,
@@ -198,7 +199,7 @@ Use Leo:
 Because Leo is unlike other tools you may have used, a series of examples may be
 the best way to demonstrate what can be done with Leo.
 #@+node:ekr.20101010121134.4703: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-001.html
 #@+node:ekr.20101008061729.4373: *5* @slide 002
 From one perspective, Leo is an **outlining editor**. This is a screenshot of
 Leo. The arrow shows the outline pane. (A later tutorial explains how to create
@@ -219,13 +220,13 @@ an outline like the one in the screenshot).
 #@+node:ekr.20101008061729.4396: *6* @select To Do List
 #@+node:ekr.20101010121134.4704: *6* @edit
 #@+node:ekr.20101010121134.4716: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-002.png
 #@+node:ekr.20101010121134.4717: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-002.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-002.svg
 #@+node:ekr.20101010121134.4718: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-002.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-002.png
 #@+node:ekr.20101010121134.4719: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-002.html
 #@+node:ekr.20101008061729.4398: *5* @slide 003
 Clicking on the open triangle will open the indicated node.
 
@@ -244,13 +245,13 @@ My to-do list.
 #@+node:ekr.20101009115705.4592: *8* 2010
 #@+node:ekr.20101008061729.4420: *6* @select 2009
 #@+node:ekr.20101010121134.4731: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-003.png
 #@+node:ekr.20101010121134.4732: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-003.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-003.svg
 #@+node:ekr.20101010121134.4746: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-003.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-003.png
 #@+node:ekr.20101010121134.4747: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-003.html
 #@+node:ekr.20101008061729.4522: *5* @slide 004
 Here the node has been opened. Clicking on the box again will close the node.
 
@@ -281,13 +282,13 @@ My to-do list.
 #@+node:ekr.20101009124842.4606: *6* @select 2009
 #@+node:ekr.20101009124842.4607: *6* @edit
 #@+node:ekr.20101010121134.4766: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-004.png
 #@+node:ekr.20101010121134.4767: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-004.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-004.svg
 #@+node:ekr.20101010121134.4768: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-004.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-004.png
 #@+node:ekr.20101010121134.4769: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-004.html
 #@+node:ekr.20101008061729.4518: *5* @slide 005
 Here the indicated node has been closed.
 
@@ -314,13 +315,13 @@ My to-do list.
 #@+node:ekr.20101009212539.4746: *6* @select 2009
 #@+node:ekr.20101009212539.4699: *6* @edit
 #@+node:ekr.20101009213545.4670: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-005.png
 #@+node:ekr.20101009213545.4671: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-005.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-005.svg
 #@+node:ekr.20101009213545.4672: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-005.png
 #@+node:ekr.20101010121134.4814: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-005.html
 #@+node:ekr.20101008061729.4521: *5* @slide 006
 Clicking on a node headline (1) will show the text for that node in the body
 pane (2) below. The body pane is a text editor--you can enter, delete or change
@@ -355,13 +356,13 @@ My to-do list.
 #@+node:ekr.20101009213545.4709: *6* @edit
 #@+node:ekr.20101009213545.4710: *6* @select Urgent
 #@+node:ekr.20101010121134.4810: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-006.png
 #@+node:ekr.20101010121134.4811: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-006.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-006.svg
 #@+node:ekr.20101010121134.4812: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-006.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-006.png
 #@+node:ekr.20101010121134.4813: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-006.html
 #@+node:ekr.20101008061729.4523: *5* @slide 007
 You can save the outline in a .leo file.  Click File:Save (or Ctrl-S).
 
@@ -394,13 +395,13 @@ My to-do list.
 #@+node:ekr.20101010141334.4791: *6* @select Urgent
 #@+node:ekr.20101010121134.4849: *6* @pause
 #@+node:ekr.20101010121134.4868: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-007.png
 #@+node:ekr.20101010121134.4869: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-007.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-007.svg
 #@+node:ekr.20101010140842.4755: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-007.png
 #@+node:ekr.20101010140842.4756: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-007.html
 #@+node:ekr.20101008061729.4524: *5* @slide 008
 Here we will save our outline in a file named "pim.leo"
 
@@ -433,13 +434,13 @@ My to-do list.
 #@+node:ekr.20101010141334.4793: *6* @select Urgent
 #@+node:ekr.20101010141334.4789: *6* @pause
 #@+node:ekr.20101010141953.4835: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-008.png
 #@+node:ekr.20101010141953.4836: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-008.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-008.svg
 #@+node:ekr.20101010141953.4837: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-008.png
 #@+node:ekr.20101010141953.4838: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-008.html
 #@+node:ekr.20101008061729.4525: *5* @slide 009
 The file is now saved, and the file appears in the title bar.
 
@@ -473,13 +474,13 @@ My to-do list.
 #@+node:ekr.20101010141953.4896: *6* @pause
 #@+node:ekr.20101010141953.4897: *6* @edit
 #@+node:ekr.20101010141953.4916: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-009.png
 #@+node:ekr.20101010141953.4917: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-009.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-009.svg
 #@+node:ekr.20101010141953.4918: *6* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/slide-009.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/slide-009.png
 #@+node:ekr.20101010141953.4919: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-009.html
 #@+node:ekr.20101008061729.4526: *5* @slide 010
 You've just seen an introduction to Leo as an outlining editor. You can use Leo
 to make an outline, with optional text for each outline element. You can save
@@ -503,7 +504,7 @@ structured in some other way.
 
 What does this mean in practice? Some examples should help clarify things...
 #@+node:ekr.20101010141953.4922: *6* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\what-is-leo\_build\html\slide-010.html
 #@+node:ekr.20101008061729.4527: *5* @slide 011
 Here is the "pim.leo" file again. We have:
 
@@ -542,9 +543,9 @@ This is my diary.
 #@+node:ekr.20101010141953.4958: *6* @pause
 #@+node:ekr.20101010141953.4957: *6* @select Diary
 #@+node:ekr.20101010141953.5023: *6* @url screenshot
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-011.png
 #@+node:ekr.20101010141953.5024: *6* @url working file
-c:/leo.repo/trunk/leo/doc/html/slides/what-is-leo/screenshot-011.svg
+c:/leo.repo/leo-editor/leo/doc/html/slides/what-is-leo/screenshot-011.svg
 #@+node:ekr.20101008061729.4528: *5* @slide 012
 #@+node:ekr.20101008061729.4529: *5* @slide 013
 #@+node:ekr.20101008061729.4530: *5* @slide 014
@@ -592,7 +593,7 @@ SourceForge. You can also install Leo manually, as discussed in the
 
 See the `next slide`_.
 #@+node:ekr.20101128120258.5087: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-001.html
 #@+node:ekr.20100821182153.4348: *3* @slide Installing Leo from sources
 .. _`Download Python`: http://www.python.org/download/
 .. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
@@ -613,7 +614,7 @@ c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-001.html
    download page`_ to your desktop or other location. Unzip the .zip
    file to the folder of your choice.
 #@+node:ekr.20101128120258.5094: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-002.html
 #@+node:ekr.20101014034526.5302: *3* @slide Running Leo from a console
 **Running Leo from a console**
 
@@ -628,7 +629,7 @@ To run Leo directly from a console, do the following:
     python launchLeo.py %*
 
 #@+node:ekr.20101128120258.5089: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-003.html
 #@+node:ekr.20101014034526.5303: *3* @slide Scripts & .bat files
 Using shell scripts (Linux) or .bat files (Windows)
 can make it easier to open Leo files.
@@ -651,7 +652,7 @@ On either platform, the following will open x.leo::
 
     leo x.leo
 #@+node:ekr.20101128120258.5090: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-004.html
 #@+node:ekr.20101014034526.5304: *3* @slide Setting .leoID.txt
 The first time you start Leo, a dialog will ask you for a unique
 identifier. This string helps ensure that each Leo node has a
@@ -666,7 +667,7 @@ files that Leo creates.
 Leo stores this identifier in the file ~/.leo/.leoID.txt.
 You can change this identifier at any time by editing .leoID.txt.
 #@+node:ekr.20101128120258.5091: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-005.html
 #@+node:ekr.20100821182153.4350: *3* @slide Free software
 .. _`Edward K. Ream`:   http://leoeditor.com/ekr.html
 .. _`leo-editor`:       http://groups.google.com/group/leo-editor
@@ -689,7 +690,7 @@ information, see the `leo-editor`_ Google Group.
 Not only is Leo free software, it is supported software. Post questions and bug
 reports to the `leo-editor`_ Google Group.
 #@+node:ekr.20101128120258.5096: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\installation\_build\html\slide-006.html
 #@+node:ekr.20101013072903.5224: ** @slideshow Leo basics step by step
 @pagewidth 50
 #@+node:ekr.20101113202201.4920: *3* @wink_path = ../doc/html/slides/leo-basics-step-by-step/_files
@@ -706,7 +707,7 @@ how to use Leo outlines.
 
 #@+node:ekr.20101018190057.5370: *4* @no-screenshot
 #@+node:ekr.20101113211531.4918: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-001.html
 #@+node:ekr.20101013072903.5226: *3* @slide ((Open notebook file
 .. The workbook.leo window.
 
@@ -723,9 +724,9 @@ taste.
 .. image:: slide-002.png
 
 #@+node:ekr.20101018190057.5441: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-002.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-002.png
 #@+node:ekr.20101113211531.4919: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-002.html
 #@+node:ekr.20101014110348.5286: *3* @slide ((Ctrl-H edits headline
 Ctrl-H edits the presently selected headline.
 
@@ -738,18 +739,18 @@ longer has focus.
 .. image:: slide-003.png
 
 #@+node:ekr.20101018190057.5442: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-003.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-003.png
 #@+node:ekr.20101113211531.4920: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-003.html
 #@+node:ekr.20101013072903.5234: *3* @slide (("to do" node
 I typed "to do" in the headline.
 
 .. image:: slide-004.png
 
 #@+node:ekr.20101018190057.5443: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-004.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-004.png
 #@+node:ekr.20101113211531.4921: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-004.html
 #@+node:ekr.20101018061243.5392: *3* @slide ((Return ends editing
 Typing the <return> key ends editing of the headline
 and puts focus back in the body pane.
@@ -763,9 +764,9 @@ node has been changed. We say the node is
 .. image:: slide-005.png
 
 #@+node:ekr.20101018190057.5444: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-005.png
 #@+node:ekr.20101113211531.4922: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-005.html
 #@+node:ekr.20101018061243.5393: *3* @slide ((no-slide focus keys
 You can use Leo without ever using the mouse. For
 instance, you can select any Leo pane by using
@@ -780,7 +781,7 @@ keystrokes instead of clicking the pane:
 
 #@+node:ekr.20101018190057.5373: *4* @no-screenshot
 #@+node:ekr.20101128120258.5093: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-006.html
 #@+node:ekr.20101014110348.5325: *3* @slide ((Ctrl-S saves outline
 Ctrl-S saves the outline.
 
@@ -793,18 +794,18 @@ the file was last saved.
 .. image:: slide-007.png
 
 #@+node:ekr.20101018190057.5445: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-007.png
 #@+node:ekr.20101113211531.4924: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-007.html
 #@+node:ekr.20101013072903.5236: *3* @slide ((Ctrl-I inserts a new node
 Ctrl-I inserts a new node.
 
 .. image:: slide-008.png
 
 #@+node:ekr.20101018190057.5446: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-008.png
 #@+node:ekr.20101113211531.4925: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-008.html
 #@+node:ekr.20101013072903.5237: *3* @slide (("go shopping"
 I typed "go shopping" followed by a return.
 
@@ -813,9 +814,9 @@ The focus is now in the body pane.
 .. image:: slide-009.png
 
 #@+node:ekr.20101018190057.5447: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-009.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-009.png
 #@+node:ekr.20101113211531.4926: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-009.html
 #@+node:ekr.20101014110348.5305: *3* @slide ((typing text (icon box has blue square)
 Whatever I type will appear in the body pane.
 
@@ -831,9 +832,9 @@ The blue square in the icon area indicates that the body pane contains text.
 .. image:: slide-010.png
 
 #@+node:ekr.20101018190057.5448: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-010.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-010.png
 #@+node:ekr.20101113211531.4927: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-010.html
 #@+node:ekr.20101013072903.5244: *3* @slide ((Ctrl-R
 Ctrl-R moves a node right.
 
@@ -845,9 +846,9 @@ The "to do" node is the **parent** node.
 .. image:: slide-011.png
 
 #@+node:ekr.20101018190057.5449: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-011.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-011.png
 #@+node:ekr.20101113211531.4928: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-011.html
 #@+node:ekr.20101014110348.5290: *3* @slide ((Ctrl-L
 Ctrl-L moves the "go shopping" node left.
 
@@ -857,9 +858,9 @@ of the "to do" node.
 .. image:: slide-012.png
 
 #@+node:ekr.20101018190057.5450: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-012.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-012.png
 #@+node:ekr.20101113211531.4929: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-012.html
 #@+node:ekr.20101013072903.5245: *3* @slide ((undo/redo
 Leo has unlimited undo/redo capabilities.
 
@@ -872,27 +873,27 @@ the "to do" node.
 .. image:: slide-013.png
 
 #@+node:ekr.20101018190057.5451: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-013.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-013.png
 #@+node:ekr.20101113211531.4930: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-013.html
 #@+node:ekr.20101014110348.5294: *3* @slide ((new node
 Let's add a new node.  I hit Ctrl-I.
 
 .. image:: slide-014.png
 
 #@+node:ekr.20101018190057.5452: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-014.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-014.png
 #@+node:ekr.20101113211531.4931: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-014.html
 #@+node:ekr.20101014110348.5295: *3* @slide (("fix car"
 I type "fix car" followed by the <return> key.
 
 .. image:: slide-015.png
 
 #@+node:ekr.20101018190057.5453: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-015.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-015.png
 #@+node:ekr.20101113211531.4932: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-015.html
 #@+node:ekr.20101014110348.5296: *3* @slide ((Ctrl-U
 I decide that fixing the car should have first priority.
 
@@ -902,9 +903,9 @@ It becomes the first child of the "to do" node.
 .. image:: slide-016.png
 
 #@+node:ekr.20101018190057.5454: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-016.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-016.png
 #@+node:ekr.20101113211531.4933: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-016.html
 #@+node:ekr.20101014110348.5297: *3* @slide ((contracting nodes
 After creating the to-do list, I want to hide it
 by **collapsing** the "to do" node.
@@ -920,9 +921,9 @@ there are much easier ways.
 .. image:: slide-017.png
 
 #@+node:ekr.20101018190057.5455: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-017.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-017.png
 #@+node:ekr.20101113211531.4934: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-017.html
 #@+node:ekr.20101014110348.5298: *3* @slide ((Up-Arrow
 The focus is in the tree pane, so I can select the "to do"
 node merely by using the Up-Arrow key.
@@ -941,9 +942,9 @@ Now the "to do" node is selected.
 .. image:: slide-018.png
 
 #@+node:ekr.20101018190057.5456: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-018.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-018.png
 #@+node:ekr.20101113211531.4935: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-018.html
 #@+node:ekr.20101014110348.5299: *3* @slide ((Left-Arrow
 With the "to-do" node selected,
 hitting the Left-Arrow key will contract the node.
@@ -953,9 +954,9 @@ hitting the Left-Arrow key will contract the node.
 .. image:: slide-019.png
 
 #@+node:ekr.20101018190057.5457: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-019.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-019.png
 #@+node:ekr.20101113211531.4936: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-019.html
 #@+node:ekr.20101014110348.5300: *3* @slide ((20 Right-Arrow
 To expand the "to do" node,
 I merely hit the Right-Arrow key.
@@ -965,9 +966,9 @@ We can now see the entire to-do list.
 .. image:: slide-020.png
 
 #@+node:ekr.20101018190057.5458: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-020.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-020.png
 #@+node:ekr.20101113211531.4937: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-020.html
 #@+node:ekr.20101014110348.5309: *3* @slide ((no-slide Arrow keys: summary
 The arrow keys do different things depending on
 which pane has focus. Using arrow keys is **much**
@@ -1013,7 +1014,7 @@ easier than using the mouse.
 
 #@+node:ekr.20101014110348.5323: *4* @no-screenshot
 #@+node:ekr.20101113211531.4938: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-021.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-021.html
 #@+node:ekr.20101014110348.5326: *3* @slide ((Shift-Ctrl-C copies
 We can copy and paste nodes and all their descendants.
 
@@ -1028,18 +1029,18 @@ the original node before doing the paste:
 .. image:: slide-022.png
 
 #@+node:ekr.20101018190057.5459: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-022.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-022.png
 #@+node:ekr.20101113211531.4939: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-022.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-022.html
 #@+node:ekr.20101018061243.5397: *3* @slide ((The pasted node
 And here is the pasted node.
 
 .. image:: slide-023.png
 
 #@+node:ekr.20101018190057.5460: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-023.png
 #@+node:ekr.20101113211531.4940: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-023.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-023.html
 #@+node:ekr.20101018061243.5394: *3* @slide ((expanding the pasted node
 Expanding the node shows that the copy operation
 copied the node and all its descendants.
@@ -1047,9 +1048,9 @@ copied the node and all its descendants.
 .. image:: slide-024.png
 
 #@+node:ekr.20101018190057.5461: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/leo-basics-step-by-step/slide-024.png
 #@+node:ekr.20101113211531.4941: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-024.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-024.html
 #@+node:ekr.20101014110348.5336: *3* @slide ((no-slide end slide
 This concludes the step-by-step introduction to
 Leo's outlines.
@@ -1067,7 +1068,7 @@ effectively and enjoyably.
 
 #@+node:ekr.20101018061243.5395: *4* @no-screenshot
 #@+node:ekr.20101113211531.4942: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\leo-basics-step-by-step\_build\html\slide-025.html
 #@+node:ekr.20101011165412.4968: ** @slideshow Scripting Leo
 @pagewidth 50
 
@@ -1084,7 +1085,7 @@ all parts of Leo's source code.
 Leo's Ctrl-B (execute-script) command runs the
 body text of a node as a Leo script.
 #@+node:ekr.20101121125326.4962: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
 #@+node:ekr.20101119112650.5368: *3* @slide c, g and p
 .. _`Scripting Chapter`: http://leoeditor.com/scripting.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
@@ -1109,7 +1110,7 @@ c, g and p in Leo scripts. For full details
 about scripting in Leo, see the `Scripting Chapter`_
 in `Leo's Users Guide`_.
 #@+node:ekr.20101121125326.4963: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-002.html
 #@+node:ekr.20101119112650.5369: *3* @slide Official ivars
 The c, g and p objects give Leo scripts access to
 all parts of Leo and Leo outlines. There are many
@@ -1133,7 +1134,7 @@ and p.b are synonyms for p.v.h and p.v.b.
 **Important**: because of clones, a vnode may
 appear in several positions in a traversal.
 #@+node:ekr.20101121125326.4964: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-003.html
 #@+node:ekr.20101119112650.5374: *3* @slide Hello world
 g.es is a function that prints its arguments to Leo's log pane.
 
@@ -1144,7 +1145,7 @@ Here is the hello world program as a Leo script::
 Leo scripts may also use Python's print command
 provided that Leo is running in a console.
 #@+node:ekr.20101121125326.4965: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-004.html
 #@+node:ekr.20101119112650.5371: *3* @slide p.h and p.b
 .. _`Python properties`: http://docs.python.org/library/functions.html
 
@@ -1162,7 +1163,7 @@ Leo scripts must redraw the outline pane, like this::
 
     c.redraw()
 #@+node:ekr.20101121125326.4966: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-005.html
 #@+node:ekr.20101119112650.5375: *3* @slide Iterators
 .. _`Python iterator`: http://docs.python.org/library/stdtypes.html#iterator-types
 
@@ -1185,7 +1186,7 @@ are few examples (there are many more):
 - **p.children()** returns all the positions of
   all p's direct children.
 #@+node:ekr.20101121125326.4967: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-006.html
 #@+node:ekr.20101121021109.5351: *3* @slide Using iterators
 Using iterators, it is easy to gain access to all
 the data in a Leo outline. For example, the
@@ -1210,7 +1211,7 @@ class that returns the outline level of the node
 at position p: 0 for top-level nodes, 1 for their
 children, and so on.
 #@+node:ekr.20101121125326.4968: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
 #@+node:ekr.20101119112650.5370: *3* @slide Building scripts from outlines
 Leo scripts can be composed of more than one node,
 just as external files are organized. The Execute
@@ -1236,7 +1237,7 @@ And the children of the top-level class node will
 contain all the methods of the controller class.
 This organization is simple, flexible and powerful.
 #@+node:ekr.20101121125326.4969: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-008.html
 #@+node:ekr.20101119112650.5376: *3* @slide g.openWithFileName
 The c and g constants give you access to all of
 Leo's source code. Here, we'll discuss just two of
@@ -1253,7 +1254,7 @@ the commander of the newly-created outline.
 
 #@+node:ekr.20101119112650.5381: *4* @no-screenshot
 #@+node:ekr.20101121125326.4970: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-009.html
 #@+node:ekr.20101119112650.5377: *3* @slide g.pdb
 .. _`Python debugger`: http://docs.python.org/library/pdb.html
 .. _`Pudb debugger`: http://pypi.python.org/pypi/pudb
@@ -1265,7 +1266,7 @@ The pudb plugin changes g.pdb so that it uses the
 full-screen `Pudb debugger`_ instead of pdb.
 #@+node:ekr.20101119112650.5379: *4* @no-screenshot
 #@+node:ekr.20101121130516.4962: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 #@+node:ekr.20101121021109.5352: *3* @slide Further reading
 .. _`Scripting Chapter`: http://leoeditor.com/scripting.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
@@ -1275,7 +1276,7 @@ This concludes our brief introduction to scripting in Leo.
 For full details about scripting in Leo, see the
 `Scripting Chapter`_ in `Leo's Users Guide`_.
 #@+node:ekr.20101121125326.4972: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-011.html
 #@+node:ekr.20101014034526.5296: ** @slideshow Using Leo's minibuffer
 @pagewidth 60
 #@+node:ekr.20101122071746.5047: *3* @wink_path = ../doc/html/slides/using-leos-minibuffer/_files
@@ -1292,9 +1293,9 @@ Type <Alt-x> to put the cursor in the minibuffer.
 .. image:: slide-001.png
 
 #@+node:ekr.20101123095350.5005: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-001.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-001.png
 #@+node:ekr.20101123095813.5004: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-001.html
 #@+node:ekr.20101122071746.4990: *3* @slide Tab completion
 You could type the full command name in the minibuffer,
 followed by the <return> key to invoke the command,
@@ -1323,9 +1324,9 @@ all the commands that start with "print-".
 .. image:: slide-003.png
 
 #@+node:ekr.20101123095350.5006: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-003.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-003.png
 #@+node:ekr.20101123095813.5006: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-003.html
 #@+node:ekr.20101122071746.5005: *3* @slide Example, continued
 Now just type "c<tab>" and you will see one the single
 print-commands command in the minibuffer. Finally, type
@@ -1336,9 +1337,9 @@ print-commands command in the minibuffer. Finally, type
 .. image:: slide-004.png
 
 #@+node:ekr.20101123095350.5007: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-004.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-004.png
 #@+node:ekr.20101123095813.5007: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-004.html
 #@+node:ekr.20101122071746.5006: *3* @slide Example, concluded
 You will see the output of the print-commands command
 in the commands tab, and focus returns to the body pane.
@@ -1348,9 +1349,9 @@ in the commands tab, and focus returns to the body pane.
 .. image:: slide-005.png
 
 #@+node:ekr.20101123095350.5008: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-005.png
 #@+node:ekr.20101123095813.5008: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-005.html
 #@+node:ekr.20101122071746.4994: *3* @slide Details
 Using the minibuffer quickly becomes second nature. When in
 doubt about what the valid completions are, you simply hit
@@ -1384,9 +1385,9 @@ from the minibuffer.
 .. image:: slide-007.png
 
 #@+node:ekr.20101123095350.5009: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-007.png
 #@+node:ekr.20101123095813.5012: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-007.html
 #@+node:ekr.20101122071746.5021: *3* @slide Search string
 Now type the search string, say "def".
 
@@ -1395,9 +1396,9 @@ Now type the search string, say "def".
 .. image:: slide-008.png
 
 #@+node:ekr.20101123095350.5010: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-008.png
 #@+node:ekr.20101123095813.5013: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-008.html
 #@+node:ekr.20101122071746.5008: *3* @slide Replace string
 You can invoke the find by typing <return>.
 
@@ -1411,9 +1412,9 @@ Notice that the status area now shows "def" as the Find string.
 .. image:: slide-009.png
 
 #@+node:ekr.20101123095350.5011: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-009.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-009.png
 #@+node:ekr.20101123095813.5016: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-009.html
 #@+node:ekr.20101122071746.5009: *3* @slide Doing the find
 Type "foo" and hit return to start the find-next command.
 
@@ -1422,9 +1423,9 @@ Type "foo" and hit return to start the find-next command.
 .. image:: slide-010.png
 
 #@+node:ekr.20101123095350.5012: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-010.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-010.png
 #@+node:ekr.20101123095813.5019: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-010.html
 #@+node:ekr.20101122071746.5010: *3* @slide Doing the replace
 Here, Leo has found the next instance of "def" in the body pane.
 
@@ -1438,9 +1439,9 @@ This concludes the discussion of the minibuffer.
 
 .. image:: slide-011.png
 #@+node:ekr.20101123095350.5013: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/using-leos-minibuffer/slide-011.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/using-leos-minibuffer/slide-011.png
 #@+node:ekr.20101123095813.5018: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-011.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\using-leos-minibuffer\_build\html\slide-011.html
 #@+node:ekr.20101014110348.5293: ** @slideshow Clones and views
 @pagewidth 60
 #@+node:ekr.20101123095813.5044: *3* @wink_path ../doc/html/slides/clones-and-views/sc_files
@@ -1459,9 +1460,9 @@ Deleting the penultimate clone removes the red arrow from the node.
 .. image:: slide-001.png
 
 #@+node:ekr.20101123095813.5046: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-001.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-001.png
 #@+node:ekr.20101123095813.5056: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-001.html
 #@+node:ekr.20101122052247.4964: *3* @slide Clones are the same node
 Changing the headline or body text of a clone changes the headline or body
 text of all other clones of that node. Furthermore, changing any descendants
@@ -1474,7 +1475,7 @@ any change to one clone inevitably affects all other clones.
 .. no sc
 #@+node:ekr.20101122052247.4979: *4* @no-screenshot
 #@+node:ekr.20101123095813.5062: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-002.html
 #@+node:ekr.20101122052247.4966: *3* @slide Changing headlines
 Changing the headline of node A changes the headlines of all cloned nodes.
 
@@ -1483,9 +1484,9 @@ Changing the headline of node A changes the headlines of all cloned nodes.
 .. image:: slide-003.png
 
 #@+node:ekr.20101123095813.5047: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-003.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-003.png
 #@+node:ekr.20101123095813.5057: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-003.html
 #@+node:ekr.20101122052247.4968: *3* @slide A new node
 Here we have created a node C following the first clone of B.
 
@@ -1494,9 +1495,9 @@ Here we have created a node C following the first clone of B.
 .. image:: slide-004.png
 
 #@+node:ekr.20101123095813.5048: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-004.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-004.png
 #@+node:ekr.20101123095813.5058: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-004.html
 #@+node:ekr.20101122052247.4970: *3* @slide Adding a child node
 Moving C to the right makes C a child of node B.
 As you can see, C appears as a child of both cloned nodes.
@@ -1509,9 +1510,9 @@ both clones are now expanded.
 .. image:: slide-005.png
 
 #@+node:ekr.20101123095813.5049: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-005.png
 #@+node:ekr.20101123095813.5059: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-005.html
 #@+node:ekr.20101122052247.4972: *3* @slide Creating a new child
 Here, I have created a new node D with Ctrl-I (insert-node).
 
@@ -1525,9 +1526,9 @@ corresponding change in all other clones.
 .. image:: slide-006.png
 
 #@+node:ekr.20101123095813.5050: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-006.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-006.png
 #@+node:ekr.20101123095813.5060: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-006.html
 #@+node:ekr.20101122052247.4974: *3* @slide Keeping track of changes
 Changing a node marks all clones of that node as changed.
 When I save the Leo outline, Leo automatically writes all
@@ -1540,9 +1541,9 @@ For example, the cloned spam node appears in two places.
 .. image:: slide-007.png
 
 #@+node:ekr.20101123095813.5051: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-007.png
 #@+node:ekr.20101123095813.5061: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-007.html
 #@+node:ekr.20101123095813.5042: *3* @slide Keeping track of changes: 2
 Changing either clone marks both as changed and marks any
 ancestor @file nodes as changed as well.
@@ -1555,9 +1556,9 @@ changed external files.
 .. image:: slide-008.png
 
 #@+node:ekr.20101123095813.5052: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-008.png
 #@+node:ekr.20101123095813.5063: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-008.html
 #@+node:ekr.20101122052247.4976: *3* @slide Views
 Clones are important because they allow you to create as
 many views of the data in the outline as you like. In
@@ -1569,7 +1570,7 @@ you like.
 .. no sc
 #@+node:ekr.20101123095813.5045: *4* @no-screenshot
 #@+node:ekr.20101123095813.5064: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-009.html
 #@+node:ekr.20101123095813.5039: *3* @slide Views: 2
 In Leo, a **view** is simply a subset of the nodes of the
 outline. We represent a view as **ordinary** node, called a
@@ -1584,9 +1585,9 @@ is no such thing as a single, "correct" view of data.
 .. image:: slide-010.png
 
 #@+node:ekr.20101123095813.5053: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-010.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-010.png
 #@+node:ekr.20101123095813.5065: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-010.html
 #@+node:ekr.20101122052247.4978: *3* @slide Bug nodes
 I use view nodes to focus attention on a set of disparate
 nodes. For example, when I fix a bug in Leo, I create a **bug
@@ -1602,9 +1603,9 @@ the bug, test data, or any other notes I might want to keep.
 .. image:: slide-011.png
 
 #@+node:ekr.20101123095813.5054: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/clones-and-views/slide-011.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/clones-and-views/slide-011.png
 #@+node:ekr.20101123095813.5066: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-011.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-011.html
 #@+node:ekr.20101123095813.5040: *3* @slide Bug nodes: 2
 Once I have created the bug node, I concentrate *only* on
 that node and its children. I can examine the bug node and
@@ -1622,7 +1623,7 @@ the @<file> nodes that contain any changed clone. Everything
 .. no screenshot
 #@+node:ekr.20101123095813.5043: *4* @no-screenshot
 #@+node:ekr.20101123095813.5067: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\clones-and-views\_build\html\slide-012.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\clones-and-views\_build\html\slide-012.html
 #@+node:ekr.20101014034526.5280: ** @slideshow External files
 @pagewidth 60
 #@+node:ekr.20101123095813.5072: *3* @wink_path = ../doc/html/slides/external-files/_files
@@ -1648,7 +1649,7 @@ Collectively, nodes that create external files are known as
 
 #@+node:ekr.20101123095813.5020: *4* @no-screenshot
 #@+node:ekr.20101123095813.5104: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-001.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-001.html
 #@+node:ekr.20101122052247.4982: *3* @slide Loading and saving files
 Leo automatically loads all @<file> trees when you open a
 Leo outline, and Leo writes any modified @<file> tree when
@@ -1667,7 +1668,7 @@ documentation.
 .. no sc
 #@+node:ekr.20101123095813.5021: *4* @no-screenshot
 #@+node:ekr.20101123095813.5105: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-002.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-002.html
 #@+node:ekr.20101122052247.4984: *3* @slide Sentinel lines
 Leo stores the structure of \@file trees in external files
 themselves using comment lines called **sentinel lines**.
@@ -1683,7 +1684,7 @@ All the data resides in the external files.
 .. no sc
 #@+node:ekr.20101123095813.5023: *4* @no-screenshot
 #@+node:ekr.20101123095813.5106: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-003.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-003.html
 #@+node:ekr.20101123095813.5068: *3* @slide Avoiding sentinels
 In some situations it is not appropriate to use sentinel
 comments in external files. In that case you use \@auto and
@@ -1700,7 +1701,7 @@ their capabilities. We will then discuss \@auto and \@edit.
 .. no sc
 #@+node:ekr.20101123095813.5070: *4* @no-screenshot
 #@+node:ekr.20101123095813.5107: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-004.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-004.html
 #@+node:ekr.20101122052247.4986: *3* @slide Using @file trees
 To repeat, it's best to use \@file to create external files
 if at all possible. The next series of slides will show you
@@ -1719,9 +1720,9 @@ cases, we can ignore the path prefix entirely.
 .. image:: slide-005.png
 
 #@+node:ekr.20101123095813.5074: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-005.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-005.png
 #@+node:ekr.20101123095813.5087: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-005.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-005.html
 #@+node:ekr.20101122052247.4988: *3* @slide Top-level design pattern
 The body text of the @file node contains typical code for a
 file that defines a single Python class. Informally, it says
@@ -1738,9 +1739,9 @@ The next few slides will discuss this pattern line-by-line.
 .. image:: slide-006.png
 
 #@+node:ekr.20101123095813.5075: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-006.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-006.png
 #@+node:ekr.20101123095813.5089: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-006.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-006.html
 #@+node:ekr.20101122052247.4990: *3* @slide Section references
 The << imports >> line is a **section reference**. "Imports"
 is the **section name**. This line tells Leo to insert the
@@ -1752,9 +1753,9 @@ where section reference occurs.
 .. image:: slide-007.png
 
 #@+node:ekr.20101123095813.5076: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-007.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-007.png
 #@+node:ekr.20101123095813.5090: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-007.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-007.html
 #@+node:ekr.20101122052247.4992: *3* @slide Section definitions
 **Section definition nodes** create section definitions.
 Section definition nodes contain a section name in the
@@ -1773,9 +1774,9 @@ node containing the section reference.
 .. image:: slide-008.png
 
 #@+node:ekr.20101123095813.5077: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-008.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-008.png
 #@+node:ekr.20101123095813.5091: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-008.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-008.html
 #@+node:ekr.20101122052247.4994: *3* @slide The @others directive
 The **@others directive** is similar to a section reference;
 \@others tells Leo to insert text into the output file.
@@ -1790,9 +1791,9 @@ nodes. That's where the name comes from: it inserts all the
 .. image:: slide-009.png
 
 #@+node:ekr.20101123095813.5078: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-009.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-009.png
 #@+node:ekr.20101128120258.5095: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-009.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-009.html
 #@+node:ekr.20101123095813.5025: *3* @slide References & expansions
 Let us use the term **reference** to mean either a section
 reference or an \@others directive. The **expansion** of a
@@ -1802,7 +1803,7 @@ output file as the result of that reference.
 .. no sc
 #@+node:ekr.20101123095813.5026: *4* @no-screenshot
 #@+node:ekr.20101123095813.5108: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-010.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-010.html
 #@+node:ekr.20101122052247.4998: *3* @slide Indentation
 The indentation of references is significant. Leo indents
 each line of the expansion of a reference by the total
@@ -1822,9 +1823,9 @@ adds 4 spaces before all nodes written as the result of the
 .. image:: slide-012.png
 
 #@+node:ekr.20101123095813.5080: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-012.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-012.png
 #@+node:ekr.20101128120258.5097: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-011.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-011.html
 #@+node:ekr.20101123095813.5024: *3* @slide Indentation, 2
 Indentation is controlled **only** by the
 indentation of references. The outline level of nodes in
@@ -1838,7 +1839,7 @@ without affecting the external file in any significant way
 .. no sc
 #@+node:ekr.20101123095813.5029: *4* @no-screenshot
 #@+node:ekr.20101123095813.5109: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-012.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-012.html
 #@+node:ekr.20101122052247.5000: *3* @slide Expansions: 2
 Any node may contain one or more section references, and any
 node may also contain a single \@others directive.
@@ -1859,7 +1860,7 @@ B. The expansion of an @others directive is the expansion of
 .. no sc
 #@+node:ekr.20101123095813.5033: *4* @no-screenshot
 #@+node:ekr.20101123095813.5110: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-013.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-013.html
 #@+node:ekr.20101122052247.5013: *3* @slide Orphan nodes
 Each node in an \@file tree, except the \@file node itself,
 must be part of the expansion of exactly one reference. When
@@ -1878,7 +1879,7 @@ Leo will issue an error if these checks are not satisfied.
 .. no sc
 #@+node:ekr.20101123095813.5035: *4* @no-screenshot
 #@+node:ekr.20101123095813.5111: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-014.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-014.html
 #@+node:ekr.20101122052247.5002: *3* @slide Using multiple @others nodes
 Here is a common pattern for a file that defines two
 classes, SpamClass and EggsClass. The top-level node
@@ -1897,9 +1898,9 @@ expansion of the rest of the outline.
 .. image:: slide-016.png
 
 #@+node:ekr.20101123095813.5081: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-016.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-016.png
 #@+node:ekr.20101123095813.5098: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-015.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-015.html
 #@+node:ekr.20101122052247.5004: *3* @slide SpamClass
 The first child node creates the expansion of SpamClass. The
 lines::
@@ -1919,9 +1920,9 @@ indented by 4 spaces.
 .. image:: slide-017.png
 
 #@+node:ekr.20101123095813.5082: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-017.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-017.png
 #@+node:ekr.20101123095813.5099: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-016.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-016.html
 #@+node:ekr.20101122052247.5006: *3* @slide EggsClass
 The second child node creates the expansion of EggsClass in
 a similar manner. It's always perfectly clear what nodes are
@@ -1933,9 +1934,9 @@ descendant nodes of *this* node.
 .. image:: slide-018.png
 
 #@+node:ekr.20101123095813.5083: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-018.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-018.png
 #@+node:ekr.20101123095813.5100: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-017.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-017.html
 #@+node:ekr.20101122052247.5008: *3* @slide Using @others to group code
 You can use \@others to "comment out" all descendant nodes as
 shown. This works in Python because the indentation of the
@@ -1949,9 +1950,9 @@ nodes to have 4 extra spaces.
 .. image:: slide-019.png
 
 #@+node:ekr.20101123095813.5084: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-019.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-019.png
 #@+node:ekr.20101123095813.5101: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-018.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-018.html
 #@+node:ekr.20101123095813.5036: *3* @slide Summary of @file
 This concludes our brief discussion of \@file nodes. The next
 few slides discuss two alternatives to \@file, \@auto and
@@ -1964,7 +1965,7 @@ not preserve outline structure exactly.
 .. no sc
 #@+node:ekr.20101123095813.5037: *4* @no-screenshot
 #@+node:ekr.20101123095813.5112: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-019.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-019.html
 #@+node:ekr.20101122052247.5010: *3* @slide Using @auto nodes
 When Leo reads an **@auto node**, Leo will automatically
 create an outline that shows the class, functions or other
@@ -1980,7 +1981,7 @@ body of the external file into the \@auto node.
 .. no sc
 #@+node:ekr.20101123095813.5073: *4* @no-screenshot
 #@+node:ekr.20101123095813.5113: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-020.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-020.html
 #@+node:ekr.20101123095813.5038: *3* @slide @auto example
 Here is an example of an actual Python file imported into Leo.
 
@@ -1996,9 +1997,9 @@ final top-level lines of the file (2).
 .. image:: slide-022.png
 
 #@+node:ekr.20101123095813.5085: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-022.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-022.png
 #@+node:ekr.20101123095813.5102: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-021.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-021.html
 #@+node:ekr.20101122052247.5012: *3* @slide Using @edit nodes
 When Leo reads and **@edit node**, Leo reads the entire
 contents of the external file into the body text of the
@@ -2013,8 +2014,8 @@ your file system.
 .. image:: slide-023.png
 
 #@+node:ekr.20101123095813.5086: *4* @url final output file
-c:/leo.repo/trunk/leo/doc/html/slides/external-files/slide-023.png
+c:/leo.repo/leo-editor/leo/doc/html/slides/external-files/slide-023.png
 #@+node:ekr.20101123095813.5103: *4* @url built slide
-c:\leo.repo\trunk\leo\doc\html\slides\external-files\_build\html\slide-022.html
+c:\leo.repo\leo-editor\leo\doc\html\slides\external-files\_build\html\slide-022.html
 #@-all
 #@-leo

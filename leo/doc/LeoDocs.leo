@@ -979,7 +979,7 @@
 <v t="ekr.20131008041326.16253"><vh>Leo 4.9 Qt, autocompleter, vr pane</vh></v>
 <v t="ekr.20131031101712.16685"><vh>Leo 4.10 Many improvements</vh></v>
 <v t="ekr.20131031101712.17211"><vh>Leo 4.11 Many more improvements</vh></v>
-<v t="ekr.20150220200101.2"><vh>Leo 5.1 Updating @nosent files</vh></v>
+<v t="ekr.20150220200101.2"><vh>Leo 5.1 Updating @clean files</vh></v>
 <v t="ekr.20050902100834"><vh>@rst-ignore-tree More history</vh>
 <v t="EKR.20040524104904.247"><vh>Versions</vh></v>
 <v t="EKR.20040524104904.248"><vh>Designing @file trees</vh>
@@ -1171,34 +1171,6 @@
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
 <v t="ekr.20150223040723.2"><vh>Importing files (to do, in scripting tutorial)</vh></v>
 </v>
-<v t="ekr.20150221052529.2"><vh>Finished</vh>
-<v t="ekr.20150210062226.4"></v>
-<v t="ekr.20150220083616.4"><vh>Found: (flattened) @nosent</vh>
-<v t="ekr.20150220083616.5"><vh>Revise or eliminate</vh>
-<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
-<v t="ekr.20070806095535.1"></v>
-</v>
-<v t="ekr.20100821182153.4343"></v>
-<v t="ekr.20081205084002.2"></v>
-<v t="ekr.20100809122216.4286"></v>
-<v t="ekr.20100804133903.7250"></v>
-<v t="ekr.20100806170836.4402"></v>
-<v t="ekr.20050830115714.14"></v>
-<v t="ekr.20141120113801.187"><vh>Added support for delegate languages</vh></v>
-<v t="ekr.20150212091950.4"><vh>Using @clean nodes</vh></v>
-<v t="ekr.20131015035606.16799"></v>
-<v t="ekr.20100806170836.4399"></v>
-<v t="ekr.20131215083347.16903"></v>
-<v t="ekr.20100806170836.4392"></v>
-<v t="ekr.20100806170836.4396"></v>
-<v t="ekr.20150212182032.5"></v>
-<v t="ekr.20050830115714.21"></v>
-<v t="ekr.20090706042206.14718"></v>
-<v t="ekr.20150217105817.4"></v>
-</v>
-</v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20131008041326.16245"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -6619,34 +6591,6 @@ runTimerOnNode executes the script in the presently selected node using timit.Ti
 
 runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
 </t>
-<t tx="ekr.20080730212711.39">Using @shadow trees is the best choice when you want to have the full power of
-Leo's outlines, but wish to retain the source files in their original format,
-without Leo sentinels (markup) in comments in the source file. 
-
-Leo's @file trees create external files containing comments called sentinels.
-These sentinel lines allow Leo to recreate the outlines structure of @file
-trees. Alas, many people and organizations find these added sentinel lines
-unacceptable. @nosent nodes create external files without sentinels, but at a
-cost: Leo can not update @nosent trees when the corresponding external file is
-changed outside of Leo.
-
-\@shadow trees provide a way around this dilemma. When Leo saves an @shadow
-tree, it saves two copies of the tree: a **public** file without sentinels, and
-a **private** file containing sentinels. Using Bernhard Mulder's brilliant
-**update algorithm**, Leo is able to update @shadow trees in the Leo outline
-based *solely* on changes to public files.
-
-Leo writes private files to a subfolder of the folder containing the public file:
-by default this folder is called .leo_shadow.
-You can change the name of this folder using the @string shadow_subdir setting.
-Note that private files need not be known to source code control systems such as git.
-
-That's *almost* all there is to it.  The following sections discuss important details:
-
-- How to create @shadow trees.
-- How @shadow works.
-- Why the update algorithm is sound.
-</t>
 <t tx="ekr.20080730212711.52">There are several boundary cases that the update algorithm can not resolve.
 For example, if a line is inserted between nodes, the algorithm can not
 determine whether the line should be inserted at the end of one node or the
@@ -6816,7 +6760,7 @@ False: Leo never attempts to create directories.
 </t>
 <t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example::
 
-d = c.scanAllDirectives(p) g.es(g.dictToString(d))
+    d = c.scanAllDirectives(p) g.es(g.dictToString(d))
 
 In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file::
 
@@ -7085,7 +7029,7 @@ Scripts can get or change the context of the body as follows::
 - Leo can now open any file into an @edit node. This allows Leo to be associated
   with the edit action of .py files. Like this::
 
-    C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+    C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
 
 - Leo now warns if when writing an @auto node if the the file exists and the
   node has not been read previously.  This prevents a newly-created
@@ -7750,8 +7694,8 @@ or download Leo's sources directly.
 
    Sets the page width used to break doc parts into lines.
 
-.. index::
-    pair: @path; Glossary
+..  .. index::
+    ..  pair: \@path; Glossary
 
 @path &lt;path&gt;
 
@@ -9035,30 +8979,6 @@ Leo.
 And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from GitHub, run git pull.
 
-..  If you make modifications to Leo (with the interest in sharing them with the Leo
-..  community), you can check them in to your local branch by doing bzr checkin.
-..  Now, to actually request your changes to be merged to Leo trunk, you need a
-..  Launchpad account with RSA keys in place. There is showmedo video about how to
-..  accomplish this in Windows using puttygen and pageant at
-..  http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
-
-..  After your Launchpad account is set up, go to
-..  https://launchpad.net/leo-editor, choose "Code" tab -&gt; Register Branch,
-..  select Branch type "Hosted" and fill in descriptive details about the branch.
-..  After that, go to the branch home page from Code tab again, and copy-paste the
-..  push command line to terminal. For example, for branch::
-
-    ..  https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
-
-..  The push command is::
-
-    ..  bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch 
-
-..  You may wish to add --remember command line option to bzr push, to direct all
-..  future pushes to that location. Then, you only need to execute bzr push.
-
-..  After your branch is pushed, you can email the Leo mailing list and request it
-..  to be reviewed and merged to trunk.
 </t>
 <t tx="ekr.20100821182153.4343">@ @rst-options
 call_docutils=False
@@ -11898,28 +11818,6 @@ Administrative tips:
 - Never rely on memory. A project like this contains thousands and thousands of details. Everything eventually goes into a Leo node somewhere. If it doesn't it surely *will* be forgotten.
 
 - Do easy items first. This keeps to-do lists short, which keeps energy high.
-
-Tips for using git:
-
-I use the following batch files related to bzr::
-
-    g:      short for git
-    gs:     short for bzr status
-    tr:     short for cd &lt;path to trunk&gt;
-    main:   short for cd &lt;path to copy of trunk&gt;
-
-The "main" (copy) of the trunk is purely for handling git conflicts. If one happens I do this::
-
-    main
-    g pull
-    g merge ../trunk
-    g c -m "my commit message"
-    g push
-
-If the merge goes well (it usually does), I do this to resolve the conflict::
-
-    tr
-    g pull
 </t>
 <t tx="ekr.20110531155858.20563">The following script will create a minimal Leo outline::
 
@@ -14775,7 +14673,7 @@ This chapter introduces Leo's basic operations for creating and changing outline
 .. _Leo:                    http://leoeditor.com/
 .. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
 .. _`programming tutorial`: tutorial-programming.html
-.. _`Using @auto nodes`:    tutorial-programming.html#using-auto-nodes
+.. _`Using @clean nodes`:   tutorial-programming.html#using-clean
 .. _`plugins section`:      tutorial-basics.html#plugins
 
 .. _`Leo plugins`:      plugins.html
@@ -17941,25 +17839,6 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141120113801.187">Allow colorizing for languages to be delegated to another language.
-
-- Added g.app.delegate_language_dict, with three entries for David McNab.
-
-- jEditColorizer.nameToRuleSetName now replaces the original language name
-  with the delegated name.
-  
-There are two other changes you must make if you don't want
-to use @language, as in your example with @clean trees.
-
-1. To write the proper delims for .hbs files, add the
-   following entry in define_language_delims_dict in
-   leoApp.py::
-
-    "hbs" : "&lt;!-- --&gt;", # McNab: delegate to html.
-
-2. To automatically use @language hbs in .hbs files, add the
-   following entry in define_extension_dict in leoApp.py:
-</t>
 <t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
 automatically when Leo first starts.
 
@@ -18079,21 +17958,6 @@ is easy. Crucially, x.a and x.sentinels are *parallel arrays*. That is,
 len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
-<t tx="ekr.20150212091950.4">Use @clean instead of @file when you don't want to add sentinels in the file.
-
-.. index::
-    pair: @clean; Tutorial
-        
-Leo can update @clean trees based on changes you make outside of Leo. Leo
-will perform such updates when you open a .leo file or when you reload the
-external file using Leo's refresh-from-disk command.
-
-.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-
-Updating @clean trees uses `Mulder/Ream update algorithm`_. This algorithm
-places inserted and changed lines in their proper places in the outline!
-
-</t>
 <t tx="ekr.20150212182032.4"></t>
 <t tx="ekr.20150212182032.5">Leo 5.1 b1                          February 20, 2015
 
@@ -18141,6 +18005,7 @@ Quotes:    http://leoeditor.com/testimonials.html
     - Link to the Mulder/Ream algorithm from the release notes.
 
 * Make sure list of command-line arguments is up-to-date.
+* Search for bzr.
 * Document @auto-rst/md/vo/otl.
 * Review docs for uA's and gnx's.
     - Links to main discussion in the tutorial.
@@ -18148,7 +18013,7 @@ Quotes:    http://leoeditor.com/testimonials.html
 
 Done
 * Use unformat-paragraph throughout.
-* Make sure @clean/@nosent is completely documented.
+* Make sure @clean is completely documented.
 * Explain the overall idea of the @shadow algorithm.
 * Deprecate @shadow in all docs.
 </t>
@@ -18178,11 +18043,6 @@ break infrequently. To disable this feature, just delete an existing
 <t tx="ekr.20150217105817.4">Leo updates @clean trees from changes made to external files without sentinel comments, something long thought impossible. As a result, Leo can now be used in any environment, including work groups where no one else uses Leo.
 
 </t>
-<t tx="ekr.20150220083616.4">@nocolor-node
-
-- Added glossary entry for @clean.
-- Rewrite/eliminate @shadow chapter.</t>
-<t tx="ekr.20150220083616.5"></t>
 <t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. The Mulder/Ream algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
 </t>
 <t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
@@ -18236,23 +18096,16 @@ inserts or deletes nodes. The user is responsible for creating nodes to
 hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.
 </t>
-<t tx="ekr.20150220200101.2">Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to
-read @shadow files. Starting with Leo 5.1, Leo uses this algorithm to
-read both @clean and @shadow files.
+<t tx="ekr.20150220200101.2">Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to read @shadow files. Starting with Leo 5.1, Leo uses this algorithm to read both @clean and @shadow files.
 
-In February 2015 I realized that the @shadow algorithm could be used
-to update @nosent (@clean) files. The new, much simpler Mulder/Ream
-algorithm emerged several days later.
+In February 2015 I realized that the @shadow algorithm could be used to update @clean (aka @nosent) files. The new, much simpler Mulder/Ream algorithm emerged several days later.
 
-The ability to update outlines from changes made to external files
-*without* sentinels is one of the most important turning points in
-Leo's history. For the first time, there is no need to make excuses
-for Leo!
+The ability to update outlines from changes made to external files *without* sentinels is one of the most important turning points in Leo's history. For the first time, there is no need to make excuses for Leo!
 
 P.S. Thinking of using Leo as a diff program may have been the line of thought that lead to @clean. It turned my attention to the @shadow algorithm, and that may have been enough to see that the algorithm could get sentinels from the .leo file instead of hidden shadow files.
 
-I'll probably never be able to recreate a clearer picture of how the Aha came to be.  That's the nature of big Aha's: they obliterate previous ways of thought so completely that it's hard to remember the time before the Aha.</t>
-<t tx="ekr.20150221052529.2"></t>
+I'll probably never be able to recreate a clearer picture of how the Aha came to be.  That's the nature of big Aha's: they obliterate previous ways of thought so completely that it's hard to remember the time before the Aha.
+</t>
 <t tx="ekr.20150221052529.3">.. index::
     pair: @file; Tutorial
     pair: sentinel lines; Tutorial

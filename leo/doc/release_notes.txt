@@ -10741,13 +10741,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
 #@+node:ekr.20080624093059.27: *6* Fixed missing redraw problem
 Changed c.outerUpdate and added c.bind and c.bind2.
 #@+node:ekr.20080624093059.28: *6* Fixed new-headline problem
-#@+node:ekr.20080624093059.29: *6* Fixed recent crasher
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 311, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 4781, in selectAllText
-    return w.selectAllText()
-AttributeError: Canvas instance has no attribute 'selectAllText'
 #@+node:ekr.20080624093059.30: *6* Fixed encoding problems with paste from clipboard
 #@+node:ekr.20080624093059.31: *6* Changed installer to support leo-as-a-package
 http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
@@ -12173,7 +12166,7 @@ It will be put in an @edit node in an otherwise-empty outline.
 This allows Leo to be associated with the edit action of .py files.
 Something like this::
 
-C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
 #@+node:ekr.20090620073906.11873: *6* Improved unit testing
 - leoDynamicTest.py now supports a --path argument giving the .leo file.
   This is so useful!
@@ -12706,7 +12699,7 @@ It will be put in an @edit node in an otherwise-empty outline.
 This allows Leo to be associated with the edit action of .py files.
 Something like this::
 
-C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
 #@+node:ekr.20090717084250.10906: *7* Improved unit testing
 - leoDynamicTest.py now supports a --path argument giving the .leo file.
   This is so useful!
@@ -13136,7 +13129,7 @@ It will be put in an @edit node in an otherwise-empty outline.
 This allows Leo to be associated with the edit action of .py files.
 Something like this::
 
-C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
 #@+node:ekr.20090718092032.10503: *7* Improved unit testing
 - leoDynamicTest.py now supports a --path argument giving the .leo file.
   This is so useful!
