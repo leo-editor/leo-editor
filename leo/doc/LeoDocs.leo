@@ -2426,7 +2426,9 @@ David Brock wrote TSyntaxMemo, used in early versions of Leo. Terry Brown contri
 
 Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
 </t>
-<t tx="ekr.20050306090601">Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
+<t tx="ekr.20050306090601">.. index:: uA
+
+Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as **user attributes**, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
 
 Attribute ivars must be Python dictionaries, whose keys are names of plugins and whose values are *other* dictionaries, called **inner dictionaries**, for exclusive use of each plugin.
 
@@ -5067,6 +5069,8 @@ which is certainly *not* what the script writer intended! Rather than defining s
 </t>
 <t tx="ekr.20060921064744.1">This section describe the format of external files. Leo's `sentinel lines`_ are comments, and this section describes those comments.
 
+.. index:: gnx
+
 Files derived from @file use gnx's in @+node sentinels. Such gnx's permanently and uniquely identify nodes. Gnx's have the form::
 
     id.yyyymmddhhmmss
@@ -5074,7 +5078,7 @@ Files derived from @file use gnx's in @+node sentinels. Such gnx's permanently a
 
 The second form is used if two gnx's would otherwise be identical.
 
-- id is a string unique to a developer, e.g., a cvs id.
+- id is a string unique to a developer, e.g., a git id.
 
 - yyyymmddhhmmss is the node's creation date.
 
@@ -7847,6 +7851,17 @@ External file
     A file outside of Leo that is connected to Leo by an @&lt;file&gt; node.
 
 .. index::
+    pair: gnx; Glossary
+    pair: Global Node Index; Glossary
+    
+.. _`format of external files`: http://leoeditor.com/appendices.html#format-of-external-files
+    
+Gnx (Global Node Index)
+
+    A unique, immutable string permanently associated with each vnode.
+    See `format of external files`_.
+
+.. index::
     pair: Grandchild; Glossary
 
 Grandchild
@@ -8092,6 +8107,17 @@ Underindent line
     represent such lines exactly: every line in an external file will have at
     least the indentation of any unindented line of the corresponding node in
     the outline.
+    
+.. index::
+    pair: uA; Glossary
+
+.. _`extensible attributes`: http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+    
+uA
+    
+    uA's (User Attributes) are persistant Python dicts that allows scripts
+    and plugins to associate additional data with each node. See
+    `extensible attributes`_.
 
 .. index::
     pair: View node; Glossary
@@ -18007,29 +18033,25 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20150215071358.87">- Revise 5.1 release notes.
+<t tx="ekr.20150215071358.87">* Document @auto-rst/md/vo/otl.
+    * @auto-org is not @auto-otl.
+* Write a section for Leo 5.0 in the history of Leo.
+* Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
-* Document @auto-rst/md/vo/otl.
-    * @auto-org is not @auto-otl.
-* Add entries for gnx and uA to glossary, with examples in scripting chapter.
-    * Add 
-    * Links to docs for uA's and gnx's.
-* Write a section for Leo 5.0 in the history of Leo.
 * Spell check.
 
 Done:
-
+* Added entries for gnx and uA to glossary, with links.
 * Review docs for uA's and gnx's.
   http://leoeditor.com/tutorial-programming.html#using-persistence
   http://leoeditor.com/appendices.html#format-of-external-files
-* Make sure @clean is completely documented.
+* Made sure @clean is completely documented.
   http://leoeditor.com/tutorial-programming.html#using-clean
   http://leoeditor.com/tutorial-programming.html#summary-clean-vs-file
-* Explain the overall idea of the @shadow algorithm.
+* Explained the overall idea of the @shadow algorithm.
   http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-* Deprecate @shadow in all docs.
-</t>
+* Deprecated @shadow in all docs.</t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
     pair: uA; Tutorial
