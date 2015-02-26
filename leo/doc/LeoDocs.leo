@@ -1346,8 +1346,7 @@ The ``pretty-print-python-code`` and ``pretty-print-all-python-code`` pretty pri
 
 </t>
 <t tx="EKR.20040524104904.211"></t>
-<t tx="EKR.20040524104904.224" str_atime="1376412038.0">Naively using plugins can expose you and your .leo files to malicious attacks.
-The fundamental principles are::
+<t tx="EKR.20040524104904.224" str_atime="1376412038.0">Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are::
 
     Scripts and plugins must never blindly execute code from untrusted sources.
 
@@ -1358,22 +1357,21 @@ and::
 Stephen Schaefer summarizes the danger this way::
 
     I foresee a future in which the majority of leo projects come from
-    marginally trusted sources...a world of leo documents sent hither and yon -
-    resumes, project proposals, textbooks, magazines, contracts - and as a race
-    of Pandora's, we cannot resist wanting to see "What's in the box?" And are
-    we going to fire up a text editor to make a detailed examination of the
-    ASCII XML? Never! We're going to double click on the cute leo file icon, and
-    leo will fire up in all its raging glory. Just like Word (and its macros) or
-    Excel (and its macros).
+    marginally trusted sources...a world of leo documents sent hither
+    and yon - resumes, project proposals, textbooks, magazines,
+    contracts - and as a race of Pandora's, we cannot resist wanting
+    to see "What's in the box?" And are we going to fire up a text
+    editor to make a detailed examination of the ASCII XML? Never!
+    We're going to double click on the cute leo file icon, and leo
+    will fire up in all its raging glory. Just like Word (and its
+    macros) or Excel (and its macros).
 
 In other words::
 
-    When we share "our" .leo files we can NOT assume that
-    we know what is in our "own" documents!
+    When we share "our" .leo files we can NOT assume that we know what
+    is in our "own" documents!
 
-Not all environments are untrustworthy. Code in a commercial cvs repository is
-probably trustworthy: employees might be terminated for posting malicious code.
-Still, the potential for abuse exists anywhere.
+Not all environments are untrustworthy. Code in a commercial cvs repository is probably trustworthy: employees might be terminated for posting malicious code. Still, the potential for abuse exists anywhere.
 
 In Python it is very easy to write a script that will blindly execute other scripts::
 
@@ -1391,10 +1389,7 @@ In Python it is very easy to write a script that will blindly execute other scri
                     except:
                         es_exception()
 
-Executing this kind of code is typically an intolerable security risk.
-**Important**: rexec provides *no protection whatever*.
-Leo is a repository of source code, so any text operation is potentially malicious.
-For example, consider the following script, which is valid in rexec mode::
+Executing this kind of code is typically an intolerable security risk. **Important**: rexec provides *no protection whatever*. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode::
 
     badNode = c.p
     for p in c.all_positions():
@@ -1402,17 +1397,11 @@ For example, consider the following script, which is valid in rexec mode::
     &lt;&lt; delete badNode &gt;&gt;
     &lt;&lt; clear the undo stack &gt;&gt;
 
-This script will introduce a security hole the .leo file without doing anything
-prohibited by rexec, and without leaving any traces of the perpetrating script
-behind. The damage will become permanent *outside* this script when the user
-saves the .leo file.
+This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent *outside* this script when the user saves the .leo file.
 </t>
-<t tx="EKR.20040524104904.240" str_atime="1376411987.0">If a plugin has a function at the outer (module) level called unitTest,
-Leo's unit tests will call that function.
+<t tx="EKR.20040524104904.240" str_atime="1376411987.0">If a plugin has a function at the outer (module) level called unitTest, Leo's unit tests will call that function.
 
-So it would be good if writers of plugins would create such a unitTest
-function. To indicate a failure the unitTest can just throw an exception.
-Leo's plugins test suite takes care of the rest.
+So it would be good if writers of plugins would create such a unitTest function. To indicate a failure the unitTest can just throw an exception. Leo's plugins test suite takes care of the rest.
 </t>
 <t tx="EKR.20040524104904.247">In May of 1999 I began work on the Borland version of Leo for Windows.  The
 Borland Delphi classes were a pleasure to use and free of bugs.  I redesigned
@@ -1705,16 +1694,11 @@ details.
 3. When reading or writing files, Leo converts unicode strings to encoded
    strings.
    
-To make this strategy work, Leo must know the encoding used for external
-files. This is why Leo supports the @encoding directive and various
-encoding-related settings.
+To make this strategy work, Leo must know the encoding used for external files. This is why Leo supports the @encoding directive and various encoding-related settings.
 
-The g.toUnicode and g.toEncodedString functions convert to and from
-unicode. These methods catch all unicode-related exceptions.
+The g.toUnicode and g.toEncodedString functions convert to and from unicode. These methods catch all unicode-related exceptions.
 
-The g.u function should be used *only* to convert from the Qt string type
-(a wrapper for a unicode string) to unicode. Do not use g.u instead of
-g.toUnicode.
+The g.u function should be used *only* to convert from the Qt string type (a wrapper for a unicode string) to unicode. Do not use g.u instead of g.toUnicode.
 </t>
 <t tx="EKR.20040524104904.354">Leo uses unicode internally for all strings.
 
@@ -2333,9 +2317,7 @@ As an alternative to this chapter, Jacob Peck has written a more `informal scrip
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand,
-which calls the "command1" and "command2" hook routines for the given label.
-c.doCommand catches all exceptions thrown by the command::
+<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand, which calls the "command1" and "command2" hook routines for the given label. c.doCommand catches all exceptions thrown by the command::
 
     c.doCommand(c.markHeadline,label="markheadline")
 
@@ -2347,8 +2329,7 @@ You can invoke minibuffer commands by name.  For example::
 
     c.executeMinibufferCommand('open-outline')
 
-c.keyHandler.funcReturn contains the value returned from the command.
-In many cases, as above, this value is simply 'break'.
+c.keyHandler.funcReturn contains the value returned from the command. In many cases, as above, this value is simply 'break'.
 </t>
 <t tx="ekr.20040403173920.19" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e710158040000003c2f613e71025d71032858390000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583b0000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a711058780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a7111652e">Each commander sets ivars corresponding to settings.
 
@@ -2366,8 +2347,7 @@ Scripts can get the following ivars of the Commands class::
     for ivar in ivars:
         print(getattr(c,ivar))
 
-If your script sets c.tab_width it should call f.setTabWidth to redraw the
-screen::
+If your script sets c.tab_width it should call f.setTabWidth to redraw the screen::
 
     c.tab_width = -4    # Change this and see what happens.
     c.frame.setTabWidth(c.tab_width)
@@ -2376,16 +2356,9 @@ screen::
 
     --script scriptFile
 
-If found, Leo enters batch mode. In batch mode Leo does not show any windows.
-Leo assumes the scriptFile contains a Python script and executes the contents of
-that file using Leo's Execute Script command. By default, Leo sends all
-output to the console window. Scripts in the scriptFile may disable or enable
-this output by calling app.log.disable or app.log.enable
+If found, Leo enters batch mode. In batch mode Leo does not show any windows. Leo assumes the scriptFile contains a Python script and executes the contents of that file using Leo's Execute Script command. By default, Leo sends all output to the console window. Scripts in the scriptFile may disable or enable this output by calling app.log.disable or app.log.enable
 
-Scripts in the scriptFile may execute any of Leo's commands except the Edit Body
-and Edit Headline commands. Those commands require interaction with the user.
-For example, the following batch script reads a Leo file and prints all the
-headlines in that file::
+Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands. Those commands require interaction with the user. For example, the following batch script reads a Leo file and prints all the headlines in that file::
 
     path = g.os_path_finalize_join(g.app.loadDir,'..','test','test.leo')
     assert g.os_path_exists(path),path
@@ -2540,33 +2513,15 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 <t tx="ekr.20050407144342.2"></t>
 <t tx="ekr.20050407144342.3"></t>
 <t tx="ekr.20050407144417"></t>
-<t tx="ekr.20050417072710.1">Plugins and scripts should call u.beforeX and u.afterX methods ato
-describe the operation that is being performed. **Note**: u is shorthand for
-c.undoer. Most u.beforeX methods return undoData that the client
-code merely passes to the corresponding u.afterX method. This data contains
-the 'before' snapshot. The u.afterX methods then create a bead containing
-both the 'before' and 'after' snapshots.
+<t tx="ekr.20050417072710.1">Plugins and scripts should call u.beforeX and u.afterX methods ato describe the operation that is being performed. **Note**: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The u.afterX methods then create a bead containing both the 'before' and 'after' snapshots.
 
-u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to
-u.beforeX and u.afterX methods to be treated as a single undoable entry.
-See the code for the Replace All, Sort, Promote and Demote
-commands for examples. The u.beforeChangeGroup and u.afterChangeGroup
-methods substantially reduce the number of u.beforeX and afterX methods
-needed.
+u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
 
-Plugins and scripts may define their own u.beforeX and afterX methods. Indeed,
-u.afterX merely needs to set the bunch.undoHelper and
-bunch.redoHelper ivars to the methods used to undo and redo the operation.
-See the code for the various u.beforeX and afterX methods for guidance.
+Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.
 
-p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
-dirtyVnodeList that all vnodes that became dirty as the result of an
-operation. More than one list may be generated: client code is responsible for
-merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
+p.setDirty and p.setAllAncestorAtFileNodesDirty now return a dirtyVnodeList that all vnodes that became dirty as the result of an operation. More than one list may be generated: client code is responsible for merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
 
-See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py
-for more details. In general, the best way to see how to implement undo is to
-see how Leo's core calls the u.beforeX and afterX methods.
+See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
 </t>
 <t tx="ekr.20050812123002"></t>
 <t tx="ekr.20050812123002.1"></t>
@@ -3855,9 +3810,7 @@ was on a completely firm foundation.
     leoPlugins.registerHandler("idle", on_idle) 
     leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
 
-As shown above, a plugin may register one or more event handlers with a single call to
-leoPlugins.registerHandler. Once a hook is registered, Leo will call the
-registered function' at the named **hook time**. For example::
+As shown above, a plugin may register one or more event handlers with a single call to leoPlugins.registerHandler. Once a hook is registered, Leo will call the registered function' at the named **hook time**. For example::
 
     leoPlugins.registerHandler("idle", on_idle)
 
@@ -3868,9 +3821,8 @@ Event handlers must have the following signature::
     def myHook (tag, keywords):
         whatever
 
--   tag is the name of the hook (a string).
--   keywords is a Python dictionary containing additional information.
-    The following section describes the contents of the keywords dictionary in detail.
+- tag is the name of the hook (a string).
+- keywords is a Python dictionary containing additional information. The following section describes the contents of the keywords dictionary in detail.
 
 **Important**: hooks should get the proper commander this way::
 
@@ -4082,8 +4034,7 @@ The c.config class has the following getters.
 
 These methods return None if no setting exists.
 
-The getBool 'default' argument to getBool specifies the value to be
-returned if the setting does not exist.
+The getBool 'default' argument to getBool specifies the value to be returned if the setting does not exist.
 </t>
 <t tx="ekr.20050912125144" str_atime="1376413890.0"></t>
 <t tx="ekr.20050912125144.1" str_atime="1376413508.0">#######
@@ -4174,58 +4125,32 @@ B has not been destroyed, but B is gone from @file spam.py! So in this sense del
 </t>
 <t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
 </t>
-<t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.**
-Rather than using the xml language description files directly, Leo uses
-Python **colorer control files**, created automatically from the xml files by a
-script called jEdit2Py.  All these files reside in the leo/modes directory.
+<t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
-These Python files contain all the information in the jEdit's xml files, so we
-can (loosely) speak of modes, rulesets, rules, properties and attributes in the
-Python colorer control files. Later sections of this documentation will make
-this loose correspondence exact.
+These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
 
-`jEdit's documentation`_ contain a complete description of these xml files.
-Each xml file describes one **colorizing mode**.
-A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**.
-In addition, modes, rulesets and rules may have associated **properties** and **attributes**.
-Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
 
-**Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements
-Rules are simply sub-elements of an enclosing &lt;RULES&gt; element.
-The element indicates the kind of rule that is specified,
-for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc.
-By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
+**Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
 
-**Important**: throughout this documentation,
-**x.py** will refer to the Python colorer for language x,
-and **x.xml** will refer to the corresponding xml language-description file.
+**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
 
 Using Python colorer control files has the following advantages:
 
-- Running jEdit2Py need only be done when x.xml changes,
-  and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way.
-  Moreover, the jEdit2Py script can contain debugging traces and checks.
+- Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.
 
-- Colorer control files are valid .py files, so all of Python's import optimizations work as usual.
-  In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
+- Colorer control files are valid .py files, so all of Python's import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
 
-- Colorer control files are easier for humans to understand and modify than the equivalent xml file.
-  Furthermore, it is easy to insert debugging information into Python colorer control files.
+- Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.
 
-- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file.
-  In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely
-  by creating functions in a colorer control file.
+- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
 </t>
 <t tx="ekr.20060430221745"></t>
 <t tx="ekr.20060430221745.1">###########################
 Controlling Syntax Coloring
 ###########################
 
-This chapter discusses the settings to control Leo's syntax colorer. This
-chapter also discusses how to extend Leo's colorizer by creating xml language
-descriptions files and corresponding Python files. **Important**: this material
-is for those who want to support Leo's colorizing code. To use Leo's colorizers
-you only need to know about syntax-coloring settings.
+This chapter discusses the settings to control Leo's syntax colorer. This chapter also discusses how to extend Leo's colorizer by creating xml language descriptions files and corresponding Python files. **Important**: this material is for those who want to support Leo's colorizing code. To use Leo's colorizers you only need to know about syntax-coloring settings.
 
 .. contents::
     :depth: 3
@@ -4238,21 +4163,11 @@ you only need to know about syntax-coloring settings.
 .. _`Ruleset name`:      `Ruleset names`_
 .. _`Customizing Leo`:           customizing.html
 </t>
-<t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive,
-it will import x.py from Leo's modes folder.
-The colorer can then access any module-level object obj in x.py as x.obj.
+<t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
-Colorizer control files contain **rules functions** corresponding to rule elements in x.xml.
-The colorizer can call these functions as if they were members of the colorizer class by
-passing 'self' as the first argument of these functions.
-I call these rules *functions* to distinguish them from the corresponding
-**rules methods** which are actual methods of the colorizer class.
-Rules *functions* merely call corresponding rules *methods*.
-Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods.
-These keywords arguments correspond to the xml attributes of rule elements in x.xml.
+Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
 
-The colorizer calls rules functions until one matches, at which point a range of text gets colored and the process repeats.
-The inner loop of the colorizer is this code::
+The colorizer calls rules functions until one matches, at which point a range of text gets colored and the process repeats. The inner loop of the colorizer is this code::
 
     for f in self.rulesDict.get(s[i],[]):
         n = f(self,s,i)
@@ -4272,11 +4187,7 @@ Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they 
 </t>
 <t tx="ekr.20060502084233.1">The following sections describe the top-level data in x.py.
 </t>
-<t tx="ekr.20060502090516">**x.properties** is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml.
-Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml.
-x.properties contains properties for the entire mode.
-That is, only modes have &lt;PROPS&gt; elements.
-For example, here is x.properties in php.py::
+<t tx="ekr.20060502090516">**x.properties** is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py::
 
     # properties for mode php.xml
     properties = {
@@ -4287,17 +4198,9 @@ For example, here is x.properties in php.py::
         "lineUpClosingBracket": "true",
     }
 </t>
-<t tx="ekr.20060502090516.1">x.py contains a **keyword dictionary** for each ruleset in x.xml.
-x.py contains an empty keywords dictionary if a ruleset contains no &lt;KEYWORDS&gt; element.
+<t tx="ekr.20060502090516.1">x.py contains a **keyword dictionary** for each ruleset in x.xml. x.py contains an empty keywords dictionary if a ruleset contains no &lt;KEYWORDS&gt; element.
 
-Keys are strings representing keywords of the language describe by the mode.
-Values are strings representing syntactic categories,
-i.e. a TYPE attribute valid in x.xml, namely:
-COMMENT1, COMMENT2, COMMENT3, COMMENT4,
-FUNCTION,
-KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4,
-LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4,
-MARKUP, NULL and OPERATOR.
+Keys are strings representing keywords of the language describe by the mode. Values are strings representing syntactic categories, i.e. a TYPE attribute valid in x.xml, namely: COMMENT1, COMMENT2, COMMENT3, COMMENT4, FUNCTION, KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4, LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4, MARKUP, NULL and OPERATOR.
 
 For example, here (parts of) some keyword dictionaries in php.py::
 
@@ -4326,9 +4229,7 @@ For example, here (parts of) some keyword dictionaries in php.py::
         "@version": "label",
     }
 
-x.py also contains **x.keywordsDictDict**.
-Keys are ruleset names, values are keywords dictionaries.
-Here is keywordsDictDict for php.py::
+x.py also contains **x.keywordsDictDict**. Keys are ruleset names, values are keywords dictionaries. Here is keywordsDictDict for php.py::
 
     # Dictionary of keywords dictionaries for php mode.
     keywordsDictDict = {
@@ -4346,18 +4247,11 @@ The colorizer can get the keywords dictionary for a ruleset as follows::
 
     keywordsDict = x.keywordsDictDict(rulesetName)
 
-**Note**:
-The jEdit2Py script creates 'friendly' names for keyword dictionaries *solely* as an aid for people reading the code.
-Leo's colorer uses only the name x.keywordsDictDict;
-Leo's colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.
+**Note**: The jEdit2Py script creates 'friendly' names for keyword dictionaries *solely* as an aid for people reading the code. Leo's colorer uses only the name x.keywordsDictDict; Leo's colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.
 </t>
-<t tx="ekr.20060502090516.2">x.py contains one **rule function** for every rule in every ruleset (&lt;RULES&gt; element) in x.xml.
-These rules have names rule1 through  ruleN,
-where N is the total number of rules in all rulesets in x.xml.
+<t tx="ekr.20060502090516.2">x.py contains one **rule function** for every rule in every ruleset (&lt;RULES&gt; element) in x.xml. These rules have names rule1 through  ruleN, where N is the total number of rules in all rulesets in x.xml.
 
-Each rules *function* merely calls a rules *method* in Leo's colorizer.
-Which method gets called depends on the corresponding element in `x.xml`.
-For example, the first rule in php.xml is::
+Each rules *function* merely calls a rules *method* in Leo's colorizer. Which method gets called depends on the corresponding element in `x.xml`. For example, the first rule in php.xml is::
 
     &lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
 		&lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
@@ -4375,10 +4269,7 @@ and the corresponding rule function is::
 
 php_rule0 calls colorer.match_span because the corresponding xml rule is a &lt;SPAN&gt; element.
 
-For each ruleset, x.py also contains a **rules dictionary**,
-a Python dictionary whose keys are characters and whose values are all lists
-of rules functions that that can match the key.
-For example::
+For each ruleset, x.py also contains a **rules dictionary**, a Python dictionary whose keys are characters and whose values are all lists of rules functions that that can match the key. For example::
 
     # Rules dict for phpdoc ruleset.
     rulesDict8 = {
@@ -4411,12 +4302,9 @@ For example::
         "{": [rule63,],
     }
 
-**Note**: The order of rules in each rules list is important;
-it should be the same as rules element in x.xml.
+**Note**: The order of rules in each rules list is important; it should be the same as rules element in x.xml.
 
-Finally, x.py contains **x.rulesDictDict**.
-Keys are ruleset names, values are rules dictionaries.
-The colorer can get the rules list for character ch as follows::
+Finally, x.py contains **x.rulesDictDict**. Keys are ruleset names, values are rules dictionaries. The colorer can get the rules list for character ch as follows::
 
     self.rulesDict = x.rulesDictDict.get(rulesetName) # When a mode is inited.
     ...
@@ -4436,23 +4324,11 @@ For example, here is the rules dictionary for php.py::
         "php_tags_literal": rulesDict3,
     }
 
-**Note**:
-The jEdit2Py script creates 'friendly' names for rules lists *solely* as an aid for people reading the code.
-Leo's colorer uses only the name x.rulesDictDict;
-Leo's colorer never uses the actual names of rules lists such as rulesDict8,
-and Leo's colorer never uses the actual names of rules functions such as rule64.
+**Note**: The jEdit2Py script creates 'friendly' names for rules lists *solely* as an aid for people reading the code. Leo's colorer uses only the name x.rulesDictDict; Leo's colorer never uses the actual names of rules lists such as rulesDict8, and Leo's colorer never uses the actual names of rules functions such as rule64.
 </t>
-<t tx="ekr.20060502100550">A **ruleset name** is a Python string having the form 'x_setname',
-where setname is the value of the SET attribute of the &lt;RULES&gt; element in x.xml.
-For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is
-'php_JAVASCRIPT'.
-**Important**: by convention, the ruleset name of the default &lt;RULES&gt; element is 'x_main';
-note that default &lt;RULES&gt; element have no SET attributes.
+<t tx="ekr.20060502100550">A **ruleset name** is a Python string having the form 'x_setname', where setname is the value of the SET attribute of the &lt;RULES&gt; element in x.xml. For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is 'php_JAVASCRIPT'. **Important**: by convention, the ruleset name of the default &lt;RULES&gt; element is 'x_main'; note that default &lt;RULES&gt; element have no SET attributes.
 
-The colorizer uses ruleset names to gain access to all data structures in x.py.
-To anticipate a bit, ruleset names are keys into two standard dictionaries,
-x.rulesDict and x.keywordsDictDict,
-from which the colorizer can get all other information in x.py::
+The colorizer uses ruleset names to gain access to all data structures in x.py. To anticipate a bit, ruleset names are keys into two standard dictionaries, x.rulesDict and x.keywordsDictDict, from which the colorizer can get all other information in x.py::
 
     # The rules list for the 'JAVASCRIPT' ruleset in php.xml.
     rules = x.rulesDict('php_JAVASCRIPT')
@@ -4460,16 +4336,11 @@ from which the colorizer can get all other information in x.py::
     # The keywords dict for the 'JAVASCRIPT' ruleset in php.xml.
     keywordsDict = x.keywordsDictDict('php_JAVASCRIPT')
 
-In fact, ruleset names (and x.rulesDict and x.keywordsDictDict)
-are the **only** names that the colorizer needs to know in order to access all information in x.py.
+In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the **only** names that the colorizer needs to know in order to access all information in x.py.
 </t>
-<t tx="ekr.20060502122950">This section describes each rules method in Leo's new colorizer.
-Rules methods are called by rules functions in colorizer control file;
-they correspond directly to rules elements in jEdit's language description files.
-In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+<t tx="ekr.20060502122950">This section describes each rules method in Leo's new colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
 
-All rule methods attempt to match a pattern at a particular spot in a string.
-These methods all return True if the match succeeds.
+All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
 </t>
 <t tx="ekr.20060502122950.10">::
 
@@ -4486,9 +4357,7 @@ match_eol_span_exp succeeds if:
 
 2. The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_eol_span_regexp  highlights from i to the end of the line.
-If the exclude_match argument is True, only the text before the matched text will be colored.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_eol_span_regexp  highlights from i to the end of the line. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502122950.13">::
 
@@ -4496,9 +4365,7 @@ The delegate argument, if present, specifies the ruleset to color the colored te
 
 match_keywords succeeds if s[i:] starts with an identifier contained in the mode's keywords dictionary d.
 
-If successful, match_keywords colors the keyword.
-match_keywords does not take a kind keyword argument.
-Instead, the keyword is colored as specified by d.get(theKeyword).
+If successful, match_keywords colors the keyword. match_keywords does not take a kind keyword argument. Instead, the keyword is colored as specified by d.get(theKeyword).
 </t>
 <t tx="ekr.20060502122950.14">::
 
@@ -4508,12 +4375,9 @@ Instead, the keyword is colored as specified by d.get(theKeyword).
         at_word_start = False,
         exclude_match = False):
 
-match_mark_following succeeds if s[i:].startswith(pattern), and
-the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+match_mark_following succeeds if s[i:].startswith(pattern), and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_mark_following colors from i to the start of the next token
-with the color specified by kind.
-If the exclude_match argument is True, only the text after the matched text will be colored.
+If successful, match_mark_following colors from i to the start of the next token with the color specified by kind. If the exclude_match argument is True, only the text after the matched text will be colored.
 </t>
 <t tx="ekr.20060502122950.40">::
 
@@ -4523,12 +4387,9 @@ If the exclude_match argument is True, only the text after the matched text will
         at_word_start = False,
         delegate = ''):
 
-match_seq succeeds if s[i:].startswith(seq) and
-the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+match_seq succeeds if s[i:].startswith(seq) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_seq highlights from i to the end of the sequence
-with the color specified by kind.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_seq highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502122950.41">::
 
@@ -4544,9 +4405,7 @@ match_seq succeeds if:
 
 2. The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_seq_regexp highlights from i to the end of the sequence
-with the color specified by kind.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_seq_regexp highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502122950.42">::
 
@@ -4560,15 +4419,9 @@ The delegate argument, if present, specifies the ruleset to color the colored te
         no_line_break = False,
         no_word_break = False):
 
-match_span succeeds if there is an index j &gt; i such that
-s[:i].startswith(begin) and s[i:j].endswith(end) and the
-at_line_start, at_whitespace_end, at_word_start,
-no_escape, no_line_break and no_word_break conditions are all satisfied.
+match_span succeeds if there is an index j &gt; i such that s[:i].startswith(begin) and s[i:j].endswith(end) and the at_line_start, at_whitespace_end, at_word_start, no_escape, no_line_break and no_word_break conditions are all satisfied.
 
-If successful, match_span highlights from s[i:j
-with the color specified by kind;
-but if the exclude_match argument is True, the begin and end text are not colored.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_span highlights from s[i:j with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502122950.47">::
 
@@ -4591,10 +4444,7 @@ match_span_regex succeeds if:
 3. The at_line_start, at_whitespace_end, at_word_start,
    no_escape, no_line_break and no_word_break conditions are all satisfied.
 
-If successful, match_span colors s[i:j],
-with the color specified by kind;
-but if the exclude_match argument is True, the begin and end text are not colored.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_span colors s[i:j], with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502122950.48">::
 
@@ -4602,8 +4452,7 @@ The delegate argument, if present, specifies the ruleset to color the colored te
 
 match_terminate succeeds if s[i:] contains at least at_char more characters.
 
-If successful, match_terminate colors at_char characters
-with the color specified by kind.
+If successful, match_terminate colors at_char characters with the color specified by kind.
 </t>
 <t tx="ekr.20060502122950.7">::
 
@@ -4614,13 +4463,9 @@ with the color specified by kind.
         delegate = '',
         exclude_match = False):
 
-match_eol_span succeeds if s[i:].startswith(begin) and
-the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+match_eol_span succeeds if s[i:].startswith(begin) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_eol_span highlights from i to the end of the line
-with the color specified by kind.
-If the exclude_match argument is True, only the text before the matched text will be colored.
-The delegate argument, if present, specifies the ruleset to color the colored text.
+If successful, match_eol_span highlights from i to the end of the line with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.
 </t>
 <t tx="ekr.20060502125223">::
 
@@ -4630,12 +4475,9 @@ The delegate argument, if present, specifies the ruleset to color the colored te
         at_word_start = False,
         exclude_match = False):
 
-match_mark_previous succeeds if s[i:].startswith(pattern),and
-the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_mark_previous colors from the end of the previous token to i
-with the color specified by kind.
-If the exclude_match argument is True, only the text before the matched text will be colored.
+If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
 </t>
 <t tx="ekr.20060503064515">All rule methods take three required arguments and zero or more optional keyword arguments.
 
@@ -4686,48 +4528,26 @@ Here is a list of all optional keyword arguments and their meaning:
 New in Leo 4.4.1 final: the regular expression rule matchers no longer get a hash_char argument
 because such matchers are called only if the present search pattern starts with hash_char.
 </t>
-<t tx="ekr.20060503072213">x.importDict is a Python dictionary.
-Keys are ruleset names; values are a list of ruleset names.
-For example::
+<t tx="ekr.20060503072213">x.importDict is a Python dictionary. Keys are ruleset names; values are a list of ruleset names. For example::
 
     # Import dict for php mode.
     importDict = {
         "php_javascript_php": ["javascript::main"],
     }
 
-For any ruleset R whose ruleset name is N, x.importDict.get(N)
-is the list of rulesets names whose rulesets appear in
-a DELEGATE attribute of an &lt;IMPORT&gt; rule element in R's ruleset.
-Such **imported** ruleset are copied to the end of the R's rules list.
-Leo's colorizer does this copying only once, when loading ruleset R for the first time.
+For any ruleset R whose ruleset name is N, x.importDict.get(N) is the list of rulesets names whose rulesets appear in a DELEGATE attribute of an &lt;IMPORT&gt; rule element in R's ruleset. Such **imported** ruleset are copied to the end of the R's rules list. Leo's colorizer does this copying only once, when loading ruleset R for the first time.
 
-**Note 1**: Loading imported rulesets must be done at 'run time'.
-It should definitely not be done by jEdit2Py at 'compile time';
-that would require running jEdit2Py on *all* .xml files whenever any such file changed.
+**Note 1**: Loading imported rulesets must be done at 'run time'. It should definitely not be done by jEdit2Py at 'compile time'; that would require running jEdit2Py on *all* .xml files whenever any such file changed.
 
-**Note 2**:  Multiple &lt;IMPORT&gt; rule elements in a single ruleset are allowed:
-delegated rules are copied to the end of N's rules list in the order they appear in the ruleset.
+**Note 2**:  Multiple &lt;IMPORT&gt; rule elements in a single ruleset are allowed: delegated rules are copied to the end of N's rules list in the order they appear in the ruleset.
 
-**Note 3**: The DELEGATE attribute of &lt;IMPORT&gt; elements is, in fact,
-completely separate from the DELEGATE attributes of other rules as
-discussed in `Arguments to rule methods`_.
-Indeed, the DELEGATE attribute of &lt;IMPORT&gt; elements creates entries in
-x.importDict, which in turn causes the colorizer to append the rules of the imported ruleset
-to the end of the present rules list.
-In contrast, the DELEGATE attributes of other rules sets the delegate argument to rules methods,
-which in tern causes the colorizer to recursively color the matched text with the **delegated** ruleset.
-In short:
+**Note 3**: The DELEGATE attribute of &lt;IMPORT&gt; elements is, in fact, completely separate from the DELEGATE attributes of other rules as discussed in `Arguments to rule methods`_. Indeed, the DELEGATE attribute of &lt;IMPORT&gt; elements creates entries in x.importDict, which in turn causes the colorizer to append the rules of the imported ruleset to the end of the present rules list. In contrast, the DELEGATE attributes of other rules sets the delegate argument to rules methods, which in tern causes the colorizer to recursively color the matched text with the **delegated** ruleset. In short:
 
-- The rules of **imported** rulesets are appended to the end of another rules list;
-  the rules of **delegated** rulesets never are.
+- The rules of **imported** rulesets are appended to the end of another rules list; the rules of **delegated** rulesets never are.
 
-- **Imported** ruleset names appear as the values of items in x.importDict;
-  **delegated** ruleset names appear as delegate arguments to rule methods.
+- **Imported** ruleset names appear as the values of items in x.importDict; **delegated** ruleset names appear as delegate arguments to rule methods.
 </t>
-<t tx="ekr.20060510085547">x.py contains a **attribute dictionary** for each ruleset in x.xml.
-Keys are attribute names, values strings representing the values of the attributes.
-This dictionary is empty if a ruleset contains no attributes.
-The valid keys are:
+<t tx="ekr.20060510085547">x.py contains a **attribute dictionary** for each ruleset in x.xml. Keys are attribute names, values strings representing the values of the attributes. This dictionary is empty if a ruleset contains no attributes. The valid keys are:
 
 - 'default': the default token type.  'null' is the default.
 
@@ -4751,9 +4571,7 @@ For example, here is one attribute dictionary in php.py::
         "no_word_sep": "",
     }
 
-x.py also contains **x.attributesDictDict**.
-Keys are ruleset names, values are attribute dictionaries.
-Here is attributesDictDict for php.py::
+x.py also contains **x.attributesDictDict**. Keys are ruleset names, values are attribute dictionaries. Here is attributesDictDict for php.py::
 
     # Dictionary of attributes dictionaries for php mode.
     attributesDictDict = {
@@ -4767,10 +4585,7 @@ Here is attributesDictDict for php.py::
         "php_tags_literal": php_tags_literal_attributes_dict,
     }
 
-**Note**:
-The jEdit2Py script creates 'friendly' names for attribute dictionaries *solely* as an aid for people reading the code.
-Leo's colorer uses only the name x.attributeDictDict;
-Leo's colorer never uses the actual names of attribute dictionaries.
+**Note**: The jEdit2Py script creates 'friendly' names for attribute dictionaries *solely* as an aid for people reading the code. Leo's colorer uses only the name x.attributeDictDict; Leo's colorer never uses the actual names of attribute dictionaries.
 </t>
 <t tx="ekr.20060527103630">A new method has been added to make it more easily to write rST code from scripts::
 
@@ -4825,21 +4640,15 @@ general scripts do not.
 .. _`run Leo in a console window`:          installing.html#running-leo-from-a-console-window
 .. _`console window`:                       installing.html#running-leo-from-a-console-window
 </t>
-<t tx="ekr.20060527112801">The following settings in leoSettings.leo control debugger operation.
-The settings shown here will be assumed to be in effect throughout this chapter::
+<t tx="ekr.20060527112801">The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter::
 
     @string debugger_kind = winpdb
 
-This setting controls what debugger the 'Debug Script' script button uses.
-Eventually this setting will control what debugger the debug command uses::
-At present the only valid value is 'winpdb'
+This setting controls what debugger the 'Debug Script' script button uses. Eventually this setting will control what debugger the debug command uses:: At present the only valid value is 'winpdb'
 
     @bool write_script_file = True
 
-True: The execute script command writes the script to be executed to a file,
-then executes the script using Python's execFile function. The script_file_path
-setting specifies the path to this file. False (legacy): The execute script
-command uses Python's exec command to execute the script.
+True: The execute script command writes the script to be executed to a file, then executes the script using Python's execFile function. The script_file_path setting specifies the path to this file. False (legacy): The execute script command uses Python's exec command to execute the script.
 
 @string script_file_path = ../test/scriptFile.py
 
@@ -5142,12 +4951,9 @@ Recent projects include:
 
 5. Move **one** of these two legacy nodes up one level so that it is a child of the node 'Keyboard shortcuts'. It should **not** be a child of the node '@ignore Unused key bindings'.
 </t>
-<t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring.
-See `Customizing Leo`_ for a general discussion of Leo's settings.
+<t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
 
-Both the old colorizer (in Leo's core) and the new colorizer (the
-threading_colorizer and qtGui plugins) now support \@color and \@font settings for colorizing
-options. The settings for the old colorizer are::
+Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer and qtGui plugins) now support \@color and \@font settings for colorizing options. The settings for the old colorizer are::
 
     comment_font, cweb_section_name_font, directive_font,
     doc_part_font, keyword_font, leo_keyword_font, section_name_font,
@@ -5170,8 +4976,7 @@ with the language name.  For example::
 
     @color python_comment1_color = pink
 
-To specify a font, say for keyword_font, to be used as the default font for **all** languages,
-put the following in the body text of an @font node in leoSettings.leo::
+To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
 
     # keyword_font_family = None
     keyword_font_size = 16
@@ -5180,12 +4985,9 @@ put the following in the body text of an @font node in leoSettings.leo::
     keyword_font_weight = bold
         # normal, bold
 
-Comments are allowed and undefined settings are set to reasonable defaults. 
-At present, comments can not follow a setting: comments must start a line.
+Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
 
-You can specify per-language settings by preceding the settings names by a prefix x.
-Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer).
-For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
+You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
 
     # php_keyword_font_family = None
     php_keyword_font_size = 16
@@ -5763,32 +5565,20 @@ Putting this all together, we get::
 
 For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
 </t>
-<t tx="ekr.20070115172724">The following three section discuss three ways of debugging scripts with winpdb_.
-The first two sections tell how to debug general scripts;
-the last section tells how to debug Leo-specific scripts.
+<t tx="ekr.20070115172724">The following three section discuss three ways of debugging scripts with winpdb_. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.
 
-winpdb_ and its documentation have been improved recently.
-For more details, see the `embedded winpdb`_ docs.
-The discussion of embedded debugging may have been written specifically with Leo in mind.
+winpdb_ and its documentation have been improved recently. For more details, see the `embedded winpdb`_ docs. The discussion of embedded debugging may have been written specifically with Leo in mind.
 </t>
-<t tx="ekr.20070115172724.1">This way of debugging can only be used for general scripts, not leo-specific scripts.  
-The debug command writes the script to scriptFile.py and invokes winpdb.
-winpdb opens and is already 'attached' to the script to be debugged.
-You can single-step as you like.
-Leo continues to run, but killing the debugger will also kill Leo.
+<t tx="ekr.20070115172724.1">This way of debugging can only be used for general scripts, not leo-specific scripts. The debug command writes the script to scriptFile.py and invokes winpdb. winpdb opens and is already 'attached' to the script to be debugged. You can single-step as you like. Leo continues to run, but killing the debugger will also kill Leo.
 </t>
-<t tx="ekr.20070115172724.3">This way of debugging scripts allows winpdb to debug scripts that use c, g and p.
-A bit more work is needed because winpdb does not start automatically.
-Here are step-by step instructions:
+<t tx="ekr.20070115172724.3">This way of debugging scripts allows winpdb to debug scripts that use c, g and p. A bit more work is needed because winpdb does not start automatically. Here are step-by step instructions:
 
 1. Insert the following two lines of code at the start of the script to be debugged::
 
     import rpdb2
     rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
 
-2. Execute Leo's execute-script command (*not* the debug command).
-   Leo will appear to hang: start_embedded_debugger is waiting for *another* copy of winpdb to 'attach' to the script's process.
-   The default timeout is 5 minutes, after which an exception gets thrown.
+2. Execute Leo's execute-script command (*not* the debug command). Leo will appear to hang: start_embedded_debugger is waiting for *another* copy of winpdb to 'attach' to the script's process. The default timeout is 5 minutes, after which an exception gets thrown.
 
 3. Start winpdb explicitly by executing something like the following in a console::
 
@@ -5798,26 +5588,13 @@ Here are step-by step instructions:
    The password is specified in the call to rpdb2.start_embedded_debugger in your script.
    In our example, the password is 'go'.
 
-4. Use winpdb's File:Attach command to attach winpdb to Leo.
-   Specify the password as 'go' and you will see the scriptFile.py containing your entire script.
-   You can now execute or single-step through the script. 
-   To repeat, c, g and p are defined, so you can debug any script this way.
+4. Use winpdb's File:Attach command to attach winpdb to Leo. Specify the password as 'go' and you will see the scriptFile.py containing your entire script. You can now execute or single-step through the script. To repeat, c, g and p are defined, so you can debug any script this way.
 </t>
-<t tx="ekr.20070116062405">Inserting g.trace statements in my Python code is usually my first debugging
-choice. The g.trace statement prints the name of the function in which the call
-to g.trace occurs, followed by the value of its arguments. The output of the
-g.trace goes to the console, so you must `run Leo in a console window`_ to use
-g.trace.
+<t tx="ekr.20070116062405">Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must `run Leo in a console window`_ to use g.trace.
 
-Inserting and deleting g.trace statements is fast, provided that your `work
-flow`_ makes it easy to restart the program under test. As a result, using
-g.trace statements is similar to setting tracepoints in a debugger, with the
-advantage that (disabled) tracepoints remain in the source code for future use.
-You will find many examples of using g.trace throughout Leo's source code.
+Inserting and deleting g.trace statements is fast, provided that your `work flow`_ makes it easy to restart the program under test. As a result, using g.trace statements is similar to setting tracepoints in a debugger, with the advantage that (disabled) tracepoints remain in the source code for future use. You will find many examples of using g.trace throughout Leo's source code.
 
-My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb
-uses the console for all interaction, so you must `run Leo in a console window`_.
-See `the FAQ`_ for a discussion of both g.trace and g.pdb.
+My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb uses the console for all interaction, so you must `run Leo in a console window`_. See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 </t>
 <t tx="ekr.20070120075236">.. index::
     pair: Predefined Symbols; Tutorial
@@ -5849,8 +5626,7 @@ The next two sections are crucial: they discuss vnodes and positions in all nece
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
-This script finds a position p2 having the same vnode as an invalid
-position p::
+This script finds a position p2 having the same vnode as an invalid position p::
 
     if not c.positionExists(p):
         for p2 in c.all_positions():
@@ -6164,11 +5940,7 @@ test/unitTest.leo contains many examples of using @test and @suite nodes.
 
 .. _`run Leo in a console window`:      installing.html#running-leo-from-a-console-window
 </t>
-<t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test
-commands convert the body text of @test nodes into a unit test automatically.
-That is, Leo's unit test commands automatically create a unittest.TestCase
-instances which run the body text of the @test node. For example, let us
-consider one of Leo's actual unit tests. The headline is::
+<t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test commands convert the body text of @test nodes into a unit test automatically. That is, Leo's unit test commands automatically create a unittest.TestCase instances which run the body text of the @test node. For example, let us consider one of Leo's actual unit tests. The headline is::
 
     @test consistency of back/next links
 
@@ -6208,29 +5980,19 @@ As you can see, using @test nodes saves a lot of typing:
 
     if g.unitTesting:
 
-This guard line is needed because this particular @test node is contained in the
-file leoNodes.py. @test nodes that appear outside of Python source files do not
-need guard lines. The guard line prevents the unit testing code from being
-executed when Python imports the leoNodes module; the g.unitTesting variable is
-True only while running unit tests.
+This guard line is needed because this particular @test node is contained in the file leoNodes.py. @test nodes that appear outside of Python source files do not need guard lines. The guard line prevents the unit testing code from being executed when Python imports the leoNodes module; the g.unitTesting variable is True only while running unit tests.
 
-**New in Leo 4.6**: When Leo runs unit tests, Leo predefines the 'self' variable to
-be the instance of the test itself, that is an instance of unittest.TestCase.
-This allows you to use methods such as self.assertTrue in @test and @suite nodes.
+**New in Leo 4.6**: When Leo runs unit tests, Leo predefines the 'self' variable to be the instance of the test itself, that is an instance of unittest.TestCase. This allows you to use methods such as self.assertTrue in @test and @suite nodes.
 
-**Note**: Leo predefines the c, g, and p variables in @test and @suite nodes,
-just like in other scripts.  Thus, the line::
+**Note**: Leo predefines the c, g, and p variables in @test and @suite nodes, just like in other scripts.  Thus, the line::
 
     c,p = g.getTestVars()
 
-is not needed.  However, it prevents pychecker warnings that c and p are undefined.
+is not needed. However, it prevents pychecker warnings that c and p are undefined.
 </t>
-<t tx="ekr.20070628094515.1">**@suite nodes** are nodes whose headlines start with @suite. @suite nodes allow
-you to create and run custom subclasses of unittest.TestCase.
+<t tx="ekr.20070628094515.1">**@suite nodes** are nodes whose headlines start with @suite. @suite nodes allow you to create and run custom subclasses of unittest.TestCase.
 
-Leo's test commands assume that the body of an suite node is a script that
-creates a suite of tests and places that suite in g.app.scriptDict['suite'].
-Something like this::
+Leo's test commands assume that the body of an suite node is a script that creates a suite of tests and places that suite in g.app.scriptDict['suite']. Something like this::
 
     if g.unitTesting:
         __pychecker__ = '--no-reimport' # Prevents pychecker complaint.
@@ -6243,11 +6005,9 @@ Something like this::
 **Note**: as in @test nodes, the guard line, 'if unitTesting:', is needed only if the
 @suite node appears in a Python source file.
 
-Leo's test commands first execute the script and then run suite in
-g.app.scriptDict.get('suite') using the standard unittest text runner.
+Leo's test commands first execute the script and then run suite in g.app.scriptDict.get('suite') using the standard unittest text runner.
 
-You can organize the script in an @suite nodes just as usual using @others,
-section references, etc. For example::
+You can organize the script in an @suite nodes just as usual using @others, section references, etc. For example::
 
     if g.unitTesting:
         __pychecker__ = '--no-reimport'
@@ -6260,17 +6020,11 @@ section references, etc. For example::
             suite.addTest(test)
         g.app.scriptDict['suite'] = suite
 </t>
-<t tx="ekr.20070628094515.2">The run-all-unit-tests-locally and run-unit-tests-locally commands run unit
-tests in the process that is running Leo. These commands *can* change the
-outline containing the unit tests.
+<t tx="ekr.20070628094515.2">The run-all-unit-tests-locally and run-unit-tests-locally commands run unit tests in the process that is running Leo. These commands *can* change the outline containing the unit tests.
 
-The run-all-unit-tests and run-unit-tests commands run all tests in a separate
-process, so unit tests can never have any side effects. These commands never
-changes the outline from which the tests were run. These commands do the
-following:
+The run-all-unit-tests and run-unit-tests commands run all tests in a separate process, so unit tests can never have any side effects. These commands never changes the outline from which the tests were run. These commands do the following:
 
-1. Copy all @test, @suite, @unit-tests and @mark-for-unit-test nodes
-   (including their descendants) to the file test/dynamicUnitTest.leo.
+1. Copy all @test, @suite, @unit-tests and @mark-for-unit-test nodes (including their descendants) to the file test/dynamicUnitTest.leo.
 
 2. Run test/leoDynamicTest.py in a separate process.
 
@@ -6619,8 +6373,7 @@ icons to do the following:
 Fixed a bug in the icon handling in the outline widget that caused
 duplicate icons not to be drawn properly.
 </t>
-<t tx="ekr.20071026183116">Scripts can invoke various dialogs using the following methods of the
-g.app.gui object.
+<t tx="ekr.20071026183116">Scripts can invoke various dialogs using the following methods of the g.app.gui object.
 
 Here is a partial list. Use typing completion to get the full list::
 
@@ -6631,17 +6384,14 @@ Here is a partial list. Use typing completion to get the full list::
         yesMessage='Yes',noMessage='No',defaultButton='Yes')
     g.app.gui.runAskYesNoDialog(c,title,message=None)
 
-The values returned are in ('ok','yes','no','cancel'), as indicated by the
-method names. Some dialogs also return strings or numbers, again as indicated by
-their names.
+The values returned are in ('ok','yes','no','cancel'), as indicated by the method names. Some dialogs also return strings or numbers, again as indicated by their names.
 
 Scripts can run File Open and Save dialogs with these methods::
 
     g.app.gui.runOpenFileDialog(title,filetypes,defaultextension,multiple=False)
     g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
 
-For details about how to use these file dialogs, look for examples in Leo's own
-source code. The runOpenFileDialog returns a list of file names.
+For details about how to use these file dialogs, look for examples in Leo's own source code. The runOpenFileDialog returns a list of file names.
 </t>
 <t tx="ekr.20071116062917"></t>
 <t tx="ekr.20071116062917.18">::
@@ -6750,10 +6500,7 @@ Replaced the delete-all-icons command with a script in scripts.leo.  This comman
 - The @data import_xml_tags setting specifies the xml tags that act as organizers.
   This settings is used by @auto when importing xml files.
 </t>
-<t tx="ekr.20080109074102">You can add an icon to the presently selected node with
-c.editCommands.insertIconFromFile(path). path is an absolute path or a path
-relative to the leo/Icons folder. A relative path is recommended if you plan to
-use the icons on machines with different directory structures.
+<t tx="ekr.20080109074102">You can add an icon to the presently selected node with c.editCommands.insertIconFromFile(path). path is an absolute path or a path relative to the leo/Icons folder. A relative path is recommended if you plan to use the icons on machines with different directory structures.
 
 For example::
 
@@ -6917,18 +6664,14 @@ The great thing about this was that I just used the Leo @others construct to cre
 
 And that's it! You can run the launchLeo script (in the top-level branch directory) directly. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
 </t>
-<t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module.
-See http://docs.python.org/lib/module-timeit.html.
-The contents of @button timer is::
+<t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module. See http://docs.python.org/lib/module-timeit.html. The contents of @button timer is::
 
     import leo.core.leoTest as leoTest
     leoTest.runTimerOnNode(c,p,count=100)
 
 runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
 </t>
-<t tx="ekr.20080729064227.7">The profile button in unitTest.leo allows you to profile nodes using Python's profiler module.
-See http://docs.python.org/lib/module-profile.html
-The contents of @button profile is::
+<t tx="ekr.20080729064227.7">The profile button in unitTest.leo allows you to profile nodes using Python's profiler module. See http://docs.python.org/lib/module-profile.html The contents of @button profile is::
 
     import leo.core.leoTest as leoTest
     leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
@@ -7109,50 +6852,32 @@ Let's look at this in detail.  The lines::
     k = c.k
     state = k.getState(stateName)
 
-define a state *name*, 'get-input', unique to this code.
-k.getState returns the present state (an int) associated with this state.
+define a state *name*, 'get-input', unique to this code. k.getState returns the present state (an int) associated with this state.
 
-When getInput() is first called, the state returned by k.getState will be 0,
-so the following lines are executed::
+When getInput() is first called, the state returned by k.getState will be 0, so the following lines are executed::
 
     if state == 0:
         k.setLabelBlue('Input: ',protect=True)
         k.getArg(event,stateName,1,getInput)
 
-These lines put a protected label in the minibuffer:
-the user can't delete the label by backspacing.
-getArg, and the rest of Leo's key handling code, take care of the extremely
-complex details of handling key strokes in states.
-The call to getArg never returns.
-Instead, when the user has finished entering the input by typing &lt;Return&gt;
-getArg calls getInput so that k.getState will return state 1, the value
-passed as the third argument to k.getArg.
-The following lines handle state 1::
+These lines put a protected label in the minibuffer: the user can't delete the label by backspacing. getArg, and the rest of Leo's key handling code, take care of the extremely complex details of handling key strokes in states. The call to getArg never returns. Instead, when the user has finished entering the input by typing &lt;Return&gt; getArg calls getInput so that k.getState will return state 1, the value passed as the third argument to k.getArg. The following lines handle state 1::
 
     else:
         k.clearState()
         g.es_print('input: %s' % k.arg)
 
-k.arg is the value returned by k.getArg.
-This example code just prints the value of k.arg and clears the input state.
+k.arg is the value returned by k.getArg. This example code just prints the value of k.arg and clears the input state.
 </t>
 <t tx="ekr.20080923182326.1">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.
 </t>
-<t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular
-position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
-keys are directive names and whose values are the value in effect at position p.
-For example::
+<t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example::
 
-    d = c.scanAllDirectives(p)
-    g.es(g.dictToString(d))
+d = c.scanAllDirectives(p) g.es(g.dictToString(d))
 
-In particular, d.get('path') returns the full, absolute path created by all
-\@path directives that are in ancestors of node p. If p is any kind of @file node
-(including @file, @auto, @clean, etc.), the following script will
-print the full path to the created file::
+In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file::
 
     path = d.get('path')
     name = p.anyAtFileNodeName()
@@ -7371,9 +7096,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
 </t>
-<t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your
-script calls c.frame.body.onBodyChanged after making those changes. This
-method has the following signature::
+<t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
     def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
 
@@ -7397,12 +7120,9 @@ Scripts can get or change the context of the body as follows::
 
 **Notes**:
 
-- These are only the most commonly-used methods.
-  For more information, consult Leo's source code.
+- These are only the most commonly-used methods. For more information, consult Leo's source code.
 
-- i and j are zero-based indices into the the text. When j is not
-  specified, it defaults to i. When the sort parameter is in effect,
-  getSelectionRange ensures i &lt;= j.
+- i and j are zero-based indices into the the text. When j is not specified, it defaults to i. When the sort parameter is in effect, getSelectionRange ensures i &lt;= j.
 
 - color is a Tk color name, even when using the Gt gui.
 </t>
@@ -7833,9 +7553,7 @@ The latter opens vim whenever a new node is selected in Leo.
 </t>
 <t tx="ekr.20100211221936.7098">- The clear-cache and clear-all-caches commands.
 </t>
-<t tx="ekr.20100506062734.11593">The mod_scripting plugin runs @scripts before plugin initiation is complete.
-Thus, such scripts can not directly modify plugins. Instead, a script can create
-an event handler for the after-create-leo-frame that will modify the plugin.
+<t tx="ekr.20100506062734.11593">The mod_scripting plugin runs @scripts before plugin initiation is complete. Thus, such scripts can not directly modify plugins. Instead, a script can create an event handler for the after-create-leo-frame that will modify the plugin.
 
 For example, the following modifies the cleo.py plugin after Leo has completed loading it::
 
@@ -7860,9 +7578,7 @@ For example, the following modifies the cleo.py plugin after Leo has completed l
 
     leoPlugins.registerHandler("after-create-leo-frame",on_create)
 
-Attempting to modify c.cleo.prikey immediately in the @script gives an
-AttributeError as c has no .cleo when the @script is executed. Deferring it by
-using registerHandler() avoids the problem.
+Attempting to modify c.cleo.prikey immediately in the @script gives an AttributeError as c has no .cleo when the @script is executed. Deferring it by using registerHandler() avoids the problem.
 </t>
 <t tx="ekr.20100731112744.7274">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
 .. _`install Leo using pip`: installing.html#installing-using-pip
@@ -13473,13 +13189,11 @@ run-all-unit-tests-externally = Alt-5
     w.show()
     c.my_test = w # &lt;-- Keep a reference to the window!
     
-**Important**: Something like the last line is essential. Without it, the window
-would immediately disappear after being created.  The assignment::
+**Important**: Something like the last line is essential. Without it, the window would immediately disappear after being created.  The assignment::
 
     c.my_test = w
     
-creates a permanent reference to the window so the window won't be garbage
-collected after the Leo script exits.
+creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
     
 </t>
 <t tx="ekr.20111127144911.5544">@pagewidth 75
@@ -13622,17 +13336,11 @@ Similarly to see the list of your \@command nodes, type::
 
 But you don't have to do that.  Instead, use Alt-tab once to change away from Leo, and then use Alt-tab again to change back to Leo.  When you do this, Leo puts focus in the body pane and you are all set.
 </t>
-<t tx="ekr.20120229094652.15125">When running unit tests externally, Leo copies any @mark-for-unit-tests nodes
-to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes
-and @suite nodes that are to be executed.
-You can use @mark-for-unit-test nodes to include any "supporting data"
-you want, including, say, "@common test code" to be imported as
-follows::
+<t tx="ekr.20120229094652.15125">When running unit tests externally, Leo copies any @mark-for-unit-tests nodes to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes and @suite nodes that are to be executed. You can use @mark-for-unit-test nodes to include any "supporting data" you want, including, say, "@common test code" to be imported as follows::
 
     exec(g.findTestScript(c,'@common test code'))
 
-**Note**: putting @settings trees as descendants of an @mark-for-unit-test node
-will copy the @setting tree, but will *not* actually set the corresponding settings.
+**Note**: putting @settings trees as descendants of an @mark-for-unit-test node will copy the @setting tree, but will *not* actually set the corresponding settings.
 </t>
 <t tx="ekr.20120229094652.15130">@pagewidth 75
 
@@ -13706,15 +13414,11 @@ The following script won't work as intended:
     w.setWindowTitle('Simple test')
     w.show()
     
-When the script exits the sole reference to the window, w, ceases to
-exist, so the window is destroyed (garbage collected). To keep the window
-open, add the following code as the last line to keep the reference alive::
+When the script exits the sole reference to the window, w, ceases to exist, so the window is destroyed (garbage collected). To keep the window open, add the following code as the last line to keep the reference alive::
 
     g.app.scriptsDict['my-script_w'] = w
 
-Note that this reference will persist until the next time you run the
-execute-script. If you want something even more permanent, you can do
-something like::
+Note that this reference will persist until the next time you run the execute-script. If you want something even more permanent, you can do something like::
 
     g.app.my_script_w = w
 </t>
@@ -14806,8 +14510,7 @@ commonly used in Leo scripts.
 <t tx="ekr.20131007143750.16111"></t>
 <t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
 
-Every plugin should have a top-level init function that returns True if the
-plugin has been initialized properly. The init function typically:
+Every plugin should have a top-level init function that returns True if the plugin has been initialized properly. The init function typically:
 
 1. Registers an onCreate event handler, called when Leo creates a new window.
 2. Calls g.plugin_signon(__name__)
@@ -14851,8 +14554,7 @@ Plugins gain access to c using event handlers::
             controller = controllers.get(c.hash())
             controller.handleEvent()
             
-Some plugins inject ivars into the Commands class rather than using
-a global controllers dict::
+Some plugins inject ivars into the Commands class rather than using a global controllers dict::
 
     def onCreate (tag, keys):
         c = keys.get('c')
@@ -15563,31 +15265,17 @@ Programmers have contributed dozens of plugins, including:
 </t>
 <t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
-<t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
-objects and settings. This is a complex process. Here is the big picture:
+<t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all objects and settings. This is a complex process. Here is the big picture:
 
-- The LM reads each local (non-settings) file twice.
-  The first load discovers the settings to be used in the second load.
-  This ensures that proper settings are *available* during the second load.
+- The LM reads each local (non-settings) file twice. The first load discovers the settings to be used in the second load. This ensures that proper settings are *available* during the second load.
 
-- Ctors init settings "early", before calling the ctors for subsidiary objects.
-  This ensures that proper settings are *in effect* for subsidiary ctors.
+- Ctors init settings "early", before calling the ctors for subsidiary objects. This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
-<t tx="ekr.20131011050613.16860">In Leo, each class hides (encapsulates) the details of its internal
-workings from user (client) classes. This design principle has been
-spectacularly successful. Leo's overall design has remained remarkably
-stable for 20 years, even as the internal details of many classes have
-radically changed.
+<t tx="ekr.20131011050613.16860">In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo's overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed.
 
-The distinction between gui-dependent and gui-independent is important.
-Almost all gui-dependent code resides in the plugins folder. Leo's core
-code is almost completely gui independent.
+The distinction between gui-dependent and gui-independent is important. Almost all gui-dependent code resides in the plugins folder. Leo's core code is almost completely gui independent.
 
-Leo's core typically assumes that w (an abstract widget) is a subclass of
-the baseTextWidget class. This class implements the DummyHighLevelInterface
-interface. Actually, w is usually a LeoQTextBrowser or leoQtBaseTextWidget
-object, defined in qtGui.py. These classes provide thin wrappers for
-corresponding Qt widgets.
+Leo's core typically assumes that w (an abstract widget) is a subclass of the baseTextWidget class. This class implements the DummyHighLevelInterface interface. Actually, w is usually a LeoQTextBrowser or leoQtBaseTextWidget object, defined in qtGui.py. These classes provide thin wrappers for corresponding Qt widgets.
 
 Wrapper classes are useful, regardless of gui independence:
 
@@ -15629,8 +15317,7 @@ These comments may be helpful, but do *not* assume that they are accurate.
 
 When in doubt, trust the code, not the comments.
 </t>
-<t tx="ekr.20131011050613.16868">You can learn *anything* about Leo, provided that you can cause Leo to
-execute the relevant code. That's usually very easy!
+<t tx="ekr.20131011050613.16868">You can learn *anything* about Leo, provided that you can cause Leo to execute the relevant code. That's usually very easy!
 
 - It should be straightforward to isolate the module or modules involved.
 - The next several sections give hints about finding interesting code.
@@ -15657,9 +15344,7 @@ c.outerUpdate contains several sophisticated and useful traces.
 qtGui.set_focus (qtGui.py) is the only place that actually explicitly sets
 focus in Leo. Enabling a trace there can be useful.
 </t>
-<t tx="ekr.20131011050613.16876">The following methods are surprisingly fragile. Change them only after
-careful thought. Make *sure* to run all unit tests after changing them in
-any way:
+<t tx="ekr.20131011050613.16876">The following methods are surprisingly fragile. Change them only after careful thought. Make *sure* to run all unit tests after changing them in any way:
 
 - leoTree.select and c.selectPosition switch nodes.
 
@@ -15672,9 +15357,7 @@ any way:
   **Note**: This method overrides leoTree.onHeadChanged (leoFrame.py),
   which is not used.
 
-In addition, *all* event handling in baseNativeTree.py is extremely
-fragile. Don't even think about changing this code unless you know exactly
-what you are doing.
+In addition, *all* event handling in baseNativeTree.py is extremely fragile. Don't even think about changing this code unless you know exactly what you are doing.
 </t>
 <t tx="ekr.20131012060912.16768">Leo creates commands in two ways:
 
@@ -15700,8 +15383,7 @@ the sources.
 - k.masterKeyHandler associates incoming LeoKeyEvents with
   mode-and-pane-dependent bindings.
   
-Much of this complexity is a direct result in the flexibility given to
-users in specifying key bindings.
+Much of this complexity is a direct result in the flexibility given to users in specifying key bindings.
 </t>
 <t tx="ekr.20131012060912.16775">.. index::
     pair: Generator; Tutorial
@@ -15731,8 +15413,7 @@ The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's generators.
     g.es('Test',color='blue',tabName='Test')
         # Write to the test tab.
 
-Plugins and scripts may call the c.frame.canvas.createCanvas method to create a
-log tab containing a graphics widget. Here is an example script::
+Plugins and scripts may call the c.frame.canvas.createCanvas method to create a log tab containing a graphics widget. Here is an example script::
 
     log = c.frame.log ; tag = 'my-canvas'
     w = log.canvasDict.get(tag)
@@ -15869,9 +15550,7 @@ This section discusses vnodes; the next discusses positions. To script Leo prope
 
 Because a *single* vnode can represent *many* outline nodes, it is awkward to use vnodes directly. This is where positions come in: **positions simplify access to vnodes**...
 </t>
-<t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many
-disabled), that do repetitive chores. Here is one, @button
-promote-child-bodies, from LeoDocs.leo::
+<t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many disabled), that do repetitive chores. Here is one, @button promote-child-bodies, from LeoDocs.leo::
 
     '''Copy the body text of all children to the parent's body text.'''
 
@@ -16350,23 +16029,15 @@ Used this way, **clones create views**: when you gather cloned nodes together fo
 The Leonine World
 #################
 
-**Leonine** refers to Leo's unique way of organizing data and
-programs. This has many implications:
+**Leonine** refers to Leo's unique way of organizing data and programs. This has many implications:
 
-**Browsing**: Leo remembers your outline organization. Class browsers
-don't. Doh!
+**Browsing**: Leo remembers your outline organization. Class browsers don't. Doh!
 
-**The big picture**: Outline nodes hide messy details, revealing the big
-picture *at all times*.
+**The big picture**: Outline nodes hide messy details, revealing the big picture *at all times*.
 
-**Programming**: Leo outlines naturally organize programs into modules,
-classes and functions. Leonine sources are their own design document. How
-you organize outlines is a choice in a new design space.
+**Programming**: Leo outlines naturally organize programs into modules, classes and functions. Leonine sources are their own design document. How you organize outlines is a choice in a new design space.
 
-**User-defined types**: Headlines naturally describe a node's contents:
-**headlines naturally define types**. Leo's core supports types such as
-@button, @rst, @suite, @url, etc. Plugins define @bookmark, @graph, @html
-and @task types. Scripts can easily define other types.
+**User-defined types**: Headlines naturally describe a node's contents: **headlines naturally define types**. Leo's core supports types such as @button, @rst, @suite, @url, etc. Plugins define @bookmark, @graph, @html and @task types. Scripts can easily define other types.
 
 **Testing**: Leo's @test nodes creates a unique unit-testing framework:
 
@@ -16374,14 +16045,9 @@ and @task types. Scripts can easily define other types.
 - It is easy to run only the @test nodes in a particular suboutline.
 - @test scripts can easily use data in their children.
 
-**Work flow**: Clones accelerate your work flow by focusing your attention
-on the task at hand. Once you have gathered the relevant nodes, there is no
-need to keep searching for them. You can change the clones, and the
-original nodes change as well. This is a great way to fix bugs or to write
-books.
+**Work flow**: Clones accelerate your work flow by focusing your attention on the task at hand. Once you have gathered the relevant nodes, there is no need to keep searching for them. You can change the clones, and the original nodes change as well. This is a great way to fix bugs or to write books.
 
-**Databases**: Leo's clones create new opportunities for scriptable
-databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
+**Databases**: Leo's clones create new opportunities for scriptable databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
 </t>
 <t tx="ekr.20131019061259.16686">execute-script predefines::
 
@@ -17389,85 +17055,50 @@ After creating an @auto-otl node by hand, be sure to use Leo's refresh-from-disk
 The refresh-from-disck command creates an @auto-otl node whose **children** represent the contents of the external .otl file. Leo does *not* write the \@auto-otl node itself. This allows you to put Leo directives in the node.
 </t>
 <t tx="ekr.20140810085801.18216"></t>
-<t tx="ekr.20140810085801.18217">Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to
-**key handlers**.
+<t tx="ekr.20140810085801.18217">Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to **key handlers**.
 
-Each key handler handles the incoming key and then calls either
-vc.accept(), vc.done(), vc.ignore() or vc.quit(). These methods tell
-k.masterKeyHandler whether vim-mode has completely handled the key. If so,
-k.masterKeyHandler simply returns. Otherwise, k.masterKeyHandler handles
-the key as usual.
+Each key handler handles the incoming key and then calls either vc.accept(), vc.done(), vc.ignore() or vc.quit(). These methods tell k.masterKeyHandler whether vim-mode has completely handled the key. If so, k.masterKeyHandler simply returns. Otherwise, k.masterKeyHandler handles the key as usual.
 </t>
-<t tx="ekr.20140810085801.18218">Key handlers handle a single key during the parsing of a vim command. Key
-handlers can either complete a command, thereby actually doing something,
-or change state so as to be able to parse (and possibly complete) the next
-incoming keystroke.
+<t tx="ekr.20140810085801.18218">Key handlers handle a single key during the parsing of a vim command. Key handlers can either complete a command, thereby actually doing something, or change state so as to be able to parse (and possibly complete) the next incoming keystroke.
 
-For example, the key handler for the G command handles the command
-completely. In contrast, two key handlers are needed to handle the gg
-command. The first handler, vc.vim_g, simply calls
-vc.accept(handler=vc.vim_g2). This call changes the vc.handler ivar to
-point to the **follow-on handler**, vim_g2. vim_g2 handles all commands
-after the user has typed 'g' in normal mode.
+For example, the key handler for the G command handles the command completely. In contrast, two key handlers are needed to handle the gg command. The first handler, vc.vim_g, simply calls vc.accept(handler=vc.vim_g2). This call changes the vc.handler ivar to point to the **follow-on handler**, vim_g2. vim_g2 handles all commands after the user has typed 'g' in normal mode.
 
-Each key handler must end with a call to an **acceptance method**.
-vc.accept is one such method. Acceptance methods prepare for the next
-keystroke by setting internal state ivars used by the various dispatchers.
+Each key handler must end with a call to an **acceptance method**. vc.accept is one such method. Acceptance methods prepare for the next keystroke by setting internal state ivars used by the various dispatchers.
 
-Many key handlers simply call vc.done(). This method handles all the
-details of completing a key handler: it hides the details of parsing vim
-command.
+Many key handlers simply call vc.done(). This method handles all the details of completing a key handler: it hides the details of parsing vim command.
 
-**Important**: Any key handler that wants to change vc.state should
-set vc.state *before* calling vc.done()
+**Important**: Any key handler that wants to change vc.state should set vc.state *before* calling vc.done()
 
-Key handlers can call either **direct acceptance methods**, vc.accept,
-vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or
-**indirect acceptance methods**: vc.begin_insert_mode, vc.begin_motion,
-vc.end_insert_mode, and vc.vim_digits. Indirect acceptance methods must
-eventually call direct acceptance methods.
+Key handlers can call either **direct acceptance methods**, vc.accept, vc.delegate, vc.done, vc.ignore, vc.not_ready, vc.quit, and vc.reset, or **indirect acceptance methods**: vc.begin_insert_mode, vc.begin_motion, vc.end_insert_mode, and vc.vim_digits. Indirect acceptance methods must eventually call direct acceptance methods.
 </t>
 <t tx="ekr.20140810085801.18219">Dispatchers set the following ivars for each key handler:
 
-**vc.w** is the widget that has focus. Key handlers may use convenience
-methods to determine the location and type of vc.w. The most important are:
+**vc.w** is the widget that has focus. Key handlers may use convenience methods to determine the location and type of vc.w. The most important are:
 
-- vc.is_text_widget(w): True if w is any text widget, including headlines,
-  body text and log pane.
+- vc.is_text_widget(w): True if w is any text widget, including headlines, body text and log pane.
   
 - vc.in_headline(w): True if w is a headline widget in edit mode.
 
-**vc.stroke** is a standard Leo stroke representing the incoming key. Note
-that the spelling of the stoke using the Tk spellings. Take a look at
-entries in the dispatch dicts to see such spellings. When in doubt, enable
-the trace in vc.do_key to see the incoming strokes.
+**vc.stroke** is a standard Leo stroke representing the incoming key. Note that the spelling of the stoke using the Tk spellings. Take a look at entries in the dispatch dicts to see such spellings. When in doubt, enable the trace in vc.do_key to see the incoming strokes.
 
-**vc.n1** and **vc.n** are the repeat counts in effect for each key
-handler. Dispatchers and their allies handle most details of setting these
-repeat counts, so most key handlers can simply use vc.n1*vc.n as the
-ultimate repeat count.
+**vc.n1** and **vc.n** are the repeat counts in effect for each key handler. Dispatchers and their allies handle most details of setting these repeat counts, so most key handlers can simply use vc.n1*vc.n as the ultimate repeat count.
 
 **vc.motion_i** is the insertion point *before* the motion has taken place.
 </t>
-<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do
-method, a thin wrapper for c.k.simulateCommand.  For example::
+<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do method, a thin wrapper for c.k.simulateCommand.  For example::
 
     if vc.state == 'visual':
         vc.do('end-of-buffer-extend-selection')
     else:
         vc.do('end-of-buffer')
 
-Key handlers may also use the **high-level interface**. This is the API
-used throughout Leo's core. For details, see the HighLevelInterface class
-in leoFrame.py and various subclasses in qtGui.py.
+Key handlers may also use the **high-level interface**. This is the API used throughout Leo's core. For details, see the HighLevelInterface class in leoFrame.py and various subclasses in qtGui.py.
 </t>
 <t tx="ekr.20140810085801.18221">The vc.vim_d method and its follow-on methods handle vim's d commands.
 
 The vc.vis_d method handles the d keystroke that ends visual mode.
 
-The following sections examine each piece of the code in detail. If you
-understand how it works you should know everything you need to write any
-other key handler.
+The following sections examine each piece of the code in detail. If you understand how it works you should know everything you need to write any other key handler.
 </t>
 <t tx="ekr.20140810085801.18222">@language python
 ::
@@ -17621,24 +17252,15 @@ Visual mode has already highlighted the text to be deleted, so this code
 simply deletes the highlighted text and calls vc.done().
 
 </t>
-<t tx="ekr.20140810085801.18226">The VimCommands class in leoVim.py implements Leo's vim mode. Vim mode is
-active only if @bool vim-mode = True.
+<t tx="ekr.20140810085801.18226">The VimCommands class in leoVim.py implements Leo's vim mode. Vim mode is active only if @bool vim-mode = True.
 
-The following sections will be of interest only to those seeking a deep
-knowledge of how vim mode's dispatchers work. Such knowledge should rarely
-be required because dispatchers and key handlers are completely unaware of
-each other. Dispatch dicts and acceptance methods shield dispatchers and
-key handlers of all knowledge of each other. In particular, acceptance
-methods handle the sometimes tricky details of ending a key handler.
+The following sections will be of interest only to those seeking a deep knowledge of how vim mode's dispatchers work. Such knowledge should rarely be required because dispatchers and key handlers are completely unaware of each other. Dispatch dicts and acceptance methods shield dispatchers and key handlers of all knowledge of each other. In particular, acceptance methods handle the sometimes tricky details of ending a key handler.
 
-Leo's vim code is spectacularly different from the real vim's code.
-Wherever possible, Leo uses methods to hide implementation details.
+Leo's vim code is spectacularly different from the real vim's code. Wherever possible, Leo uses methods to hide implementation details.
 
-Ironically, now that everything is hard coded in tables, it would be easy
-for plugins to customize the workings of vim-mode.
+Ironically, now that everything is hard coded in tables, it would be easy for plugins to customize the workings of vim-mode.
 </t>
-<t tx="ekr.20140810085801.18227">The init code for each Leo commander c assigns an instance of VimCommands
-to c.vimCommands. This is done regardless of the @bool vim-mode setting.
+<t tx="ekr.20140810085801.18227">The init code for each Leo commander c assigns an instance of VimCommands to c.vimCommands. This is done regardless of the @bool vim-mode setting.
 
 Each ivar of the VimCommands class is inited by exactly one of the following::
 
@@ -17648,46 +17270,28 @@ Each ivar of the VimCommands class is inited by exactly one of the following::
     vc.init_state_ivars()
     vc.create_dispatch_dicts()
     
-In effect, this code partitions each ivar into disjoint sets. This
-partitioning simplifies code that must re-init some ivars but not others.
+In effect, this code partitions each ivar into disjoint sets. This partitioning simplifies code that must re-init some ivars but not others.
 
 The init code creates **dispatch dicts** used by dispatchers.  
 </t>
-<t tx="ekr.20140810085801.18228">Depending on various state date, dispatchers route incoming keys to the
-proper **key handler**. Dispatchers use **dispatch dicts** to assign
-handlers to incoming keys. These dicts eliminate almost all special case
-code.
+<t tx="ekr.20140810085801.18228">Depending on various state date, dispatchers route incoming keys to the proper **key handler**. Dispatchers use **dispatch dicts** to assign handlers to incoming keys. These dicts eliminate almost all special case code.
    
-vc.do_key is the top-level dispatcher. k.masterKeyHandler calls it for all
-keys *except* Ctrl-G. **Note**: k.masterKeyHandler calls vc.do_key only
-when there no key state in effect, that is, when the minibuffer is not
-active.
+vc.do_key is the top-level dispatcher. k.masterKeyHandler calls it for all keys *except* Ctrl-G. **Note**: k.masterKeyHandler calls vc.do_key only when there no key state in effect, that is, when the minibuffer is not active.
 
-As discussed below, the value returned by vc.do_key tells k.masterKeyHandler
-whether vim mode has completely handled the key.
+As discussed below, the value returned by vc.do_key tells k.masterKeyHandler whether vim mode has completely handled the key.
 
-Depending on the vc.handler ivar, vc.do_key can route the incoming key
-either to an **inner dispatcher** or directly to a key handler.
+Depending on the vc.handler ivar, vc.do_key can route the incoming key either to an **inner dispatcher** or directly to a key handler.
 
-Inner dispatchers handle keys for a particular vim mode using dispatch
-dicts. Inner dispatchers the following ivars behind the scenes::
+Inner dispatchers handle keys for a particular vim mode using dispatch dicts. Inner dispatchers the following ivars behind the scenes::
 
     vc.handler, vc.next_func, vc.return_value
     vc.in_motion and vc.motion_func
     
-Handling these ivars can be tricky; hiding the details greatly simplifies all
-key handlers.
+Handling these ivars can be tricky; hiding the details greatly simplifies all key handlers.
 </t>
-<t tx="ekr.20140810085801.18229">vc.do_key returns the value of vc.return_value. Most the acceptance
-functions set vc.return_value to True, indicating that vim mode has
-completely handled the key and that k.masterKeyHandler should simply
-return. k.masterKeyHandler handles the key as usual if vc.do_key returns
-False.
+<t tx="ekr.20140810085801.18229">vc.do_key returns the value of vc.return_value. Most the acceptance functions set vc.return_value to True, indicating that vim mode has completely handled the key and that k.masterKeyHandler should simply return. k.masterKeyHandler handles the key as usual if vc.do_key returns False.
 
-Each key handler sets vc.return_value indirectly by calling an acceptance
-method. A simple check in vc.do_key ensures that every key handler, has, in
-fact, called an acceptance method. In practice, this check has been very
-effective.
+Each key handler sets vc.return_value indirectly by calling an acceptance method. A simple check in vc.do_key ensures that every key handler, has, in fact, called an acceptance method. In practice, this check has been very effective.
 </t>
 <t tx="ekr.20140810085801.18230">In general, vim-mode in Leo works much as in the real vim. There are three modes, insert, normal and visual.
 
@@ -17772,8 +17376,7 @@ commands may cross line boundaries.
 </t>
 <t tx="ekr.20140811083910.18246">@language rest
 
-The handler for the G command moves or extends the cursor depending on
-vc.state.
+The handler for the G command moves or extends the cursor depending on vc.state.
 
 @language python
 ::
@@ -17791,10 +17394,7 @@ vc.state.
             
 @language rest
 
-On entry, the dispatcher has set vc.w to the widget with focus. First, the
-code ensures that this widget is a text widget. If so, the code uses the
-vc.do method, a thin wrapper for c.k.simulateCommand, to execute Leo
-commands by name.
+On entry, the dispatcher has set vc.w to the widget with focus. First, the code ensures that this widget is a text widget. If so, the code uses the vc.do method, a thin wrapper for c.k.simulateCommand, to execute Leo commands by name.
 </t>
 <t tx="ekr.20141030042423.9">Use the %~dp0 syntax.  Example::
   
@@ -19025,22 +18625,13 @@ Notes:
 </t>
 <t tx="ekr.20150222035621.5"></t>
 <t tx="ekr.20150223040723.2">Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is much more convenient to use a </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
-and use the features they add. To that effect, there are a few
-documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
-- Document the plugin thoroughly in the plugin's docstring. This
-  allows the documentation to be accessed from the Plugins menu.
+- Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
-- Document any new commands with a proper docstring. This allows the
-  minibuffer command `help-for-command` to provide help for the
-  command.
+- Document any new commands with a proper docstring. This allows the minibuffer command `help-for-command` to provide help for the command.
   
-- In `leo/doc/sphinx-docs/sphinxDocs.leo`, to the node `@file
-  leo.plugins.rst`, add the following snippet (preferably in
-  alphabetical order), with the name of the plugin modified to the
-  name of your plugin (here `ipython`). This allows the API docs to be
-  automatically updated::
+- In `leo/doc/sphinx-docs/sphinxDocs.leo`, to the node `@file leo.plugins.rst`, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`). This allows the API docs to be automatically updated::
 
     :mod:`ipython` Module
     ---------------------
