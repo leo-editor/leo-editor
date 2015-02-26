@@ -6616,7 +6616,7 @@ Happily, **guesses don't matter**, for the following reasons:
    next time Leo reads the file the line will be placed in the correct node!
 
 This proves that @shadow and @clean are easy and safe to use. The
-remaining sections of this document discusses code-level details.
+remaining sections of this document discuss code-level details.
 
 </t>
 <t tx="ekr.20080806211440.185"></t>
@@ -18013,6 +18013,7 @@ Quotes:    http://leoeditor.com/testimonials.html
 * Document @auto-rst/md/vo/otl.
     * @auto-org is not @auto-otl.
 * Add entries for gnx and uA to glossary, with examples in scripting chapter.
+    * Add 
     * Links to docs for uA's and gnx's.
 * Write a section for Leo 5.0 in the history of Leo.
 * Spell check.
