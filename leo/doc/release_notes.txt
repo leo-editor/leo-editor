@@ -5259,17 +5259,12 @@ At present, all commands exit to the top-level mode.
 #@+node:ekr.20060116174906.306: *6* keyboard-quit restores default input mode
 #@+node:ekr.20060116174906.257: *5* Added discusion to FAQ about when deleting a node is 'dangerous'
 #@+node:ekr.20060111192108: *6* When is deleting a node dangerous?
-A **dangerous** delete is a deletion of a node so that all the data in the node
-is deleted *everywhere* in an outline. The data is gone, to be retrieved only
-via undo or via backups. It may not be obvious which deletes are dangerous in an
-outline containing clones. Happily, there is a very simple rule of thumb::
+A **dangerous** delete is a deletion of a node so that all the data in the node is deleted *everywhere* in an outline. The data is gone, to be retrieved only via undo or via backups. It may not be obvious which deletes are dangerous in an outline containing clones. Happily, there is a very simple rule of thumb::
 
     Deleting a non-cloned node is *always* dangerous.
     Deleting a cloned node is *never* dangerous.
 
-We could also consider a delete to be dangerous **if it results in a node being
-omitted from an external file.** This can happen as follows. Suppose we have the
-following outline (As usual, A' indicates that A is marked with a clone mark)::
+We could also consider a delete to be dangerous **if it results in a node being omitted from an external file.** This can happen as follows. Suppose we have the following outline (As usual, A' indicates that A is marked with a clone mark)::
 
     - @file spam.py
         - A'

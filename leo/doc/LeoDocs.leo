@@ -3573,20 +3573,15 @@ or::
     @delims /* */
     @last ?&gt;
 </t>
-<t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just
-want to use Leo as an outliner_. If you intend to use Leo for programming, read
-the `tutorial about programming`_, then look at Leo's source code in the file LeoPy.leo.
-Spend 5 or 10 minutes browsing through the outline. Don't worry about details;
-just look for the following common usage patterns:
+<t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just want to use Leo as an outliner_. If you intend to use Leo for programming, read the `tutorial about programming`_, then look at Leo's source code in the file LeoPy.leo. Spend 5 or 10 minutes browsing through the outline. Don't worry about details; just look for the following common usage patterns:
 
--   The (Projects) tree shows how to use clones to represent tasks.
+- The (Projects) tree shows how to use clones to represent tasks.
 
--   Study @file leoNodes.py.
-    It shows how to define more than one class in single file.
+- Study @file leoNodes.py. It shows how to define more than one class in single file.
 
--   Most other files show how to use a single @others directive to define one class.
+- Most other files show how to use a single @others directive to define one class.
 
--   Most methods are defined using @others, *not* section definition nodes.
+- Most methods are defined using @others, *not* section definition nodes.
 </t>
 <t tx="ekr.20050830115714.20">Here is a posting which might be helpful:
 http://sourceforge.net/forum/message.php?msg_id=2300457 The @first
@@ -3669,27 +3664,21 @@ compiler gets it.
 
     Notes:How To:How to add support for a new language section.
 
-This section contains clones of all relevant parts of Leo that you will change.
-Coming in Leo 4.4: Leo will use JEdit's language description files to drive the
-syntax colorer. To add support for a new language, just add another such
-description file.
+This section contains clones of all relevant parts of Leo that you will change. Coming in Leo 4.4: Leo will use JEdit's language description files to drive the syntax colorer. To add support for a new language, just add another such description file.
 </t>
 <t tx="ekr.20050830115714.30" str_atime="1376412828.0">You have two options: 
 
--   Get cvs write access, and add the @file file to the plugins directory.
+- Get git write access, and add the @file file to the plugins directory.
 
--   Just send the @file file to me at edreamleo@gmail.com.
-    That's all you need to do.  In particular that there is no need to change leoPlugins.leo.
+- Just send the @file file to me at edreamleo@gmail.com.
 </t>
-<t tx="ekr.20050830115714.4">You will lose much of Leo's power if you don't use clones.
-See `Clones`_ and `Views`_ for full details.
+<t tx="ekr.20050830115714.4">You will lose much of Leo's power if you don't use clones. See `Clones`_ and `Views`_ for full details.
 </t>
 <t tx="ekr.20050830115714.7">Use methods for any code that is used (called or referenced) more than once.
 
 Sections_ are convenient in the following circumstances:
 
--   When you want to refer to snippets of code the can not be turned into methods.
-    For example, many plugins start with the code like this::
+- When you want to refer to snippets of code the can not be turned into methods. For example, many plugins start with the code like this::
 
     &lt;&lt; docstring &gt;&gt;
     &lt;&lt; imports &gt;&gt;
@@ -3698,14 +3687,11 @@ Sections_ are convenient in the following circumstances:
 
     None of these sections could be replaced by methods.
 
--   When you want to refer to a snippet of code that shares local variables with the enclosing code.
-    This is surprisingly easy and safe to do, *provided* the section is used only in one place.
-    `Section names`_ in such contexts can be clearer than method names.  For example::
+- When you want to refer to a snippet of code that shares local variables with the enclosing code. This is surprisingly easy and safe to do, *provided* the section is used only in one place. `Section names`_ in such contexts can be clearer than method names.  For example::
 
     &lt;&lt; init ivars for writing &gt;&gt;
 
-In short, I create sections when convenient,
-and convert them to functions or methods if they need to be used in several places.
+In short, I create sections when convenient, and convert them to functions or methods if they need to be used in several places.
 </t>
 <t tx="ekr.20050830115714.74">The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in LeoPy.leo.  You can use that script as follows::
@@ -3822,8 +3808,7 @@ new_leo_file_encoding
 .. _setting:                glossary.html#setting
 .. _settings:               glossary.html#settings
 </t>
-<t tx="ekr.20050830120844" str_atime="1376412842.0">c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu.
-For example, the following script will add a new item at the end of the 'File' menu::
+<t tx="ekr.20050830120844" str_atime="1376412842.0">c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu. For example, the following script will add a new item at the end of the 'File' menu::
 
     def callback(*args,**keys):
         g.trace()
@@ -3832,16 +3817,15 @@ For example, the following script will add a new item at the end of the 'File' m
 
     c.frame.menu.createMenuItemsFromTable('File',table)
 
-Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
-is a script that adds a Test menu item after the 'Open With' menu item in the
-File menu::
+Plugins can do anything with menus using c.frame.menu.getMenu. For example, here is a script that adds a Test menu item after the 'Open With' menu item in the File menu::
 
     def callback(*args,**keys):
         g.trace()
 
     fileMenu = c.frame.menu.getMenu('File')
 
-    # 3 is the position in the menu.  Other kinds of indices are possible.
+# 3 is the position in the menu.  Other kinds of indices are possible::
+
     fileMenu.insert(3,'command',label='Test2',command=callback)
 </t>
 <t tx="ekr.20050830120857">The trick is to create a workflow that separates editing from testing. Putting
@@ -4532,17 +4516,12 @@ Creates the enter-abc-mode command, but the prompt for the command is xyz.
 
 With all these options it should be possible to emulate the keyboard behavior of any other editor.
 </t>
-<t tx="ekr.20060111192108">A **dangerous** delete is a deletion of a node so that all the data in the node
-is deleted *everywhere* in an outline. The data is gone, to be retrieved only
-via undo or via backups. It may not be obvious which deletes are dangerous in an
-outline containing clones. Happily, there is a very simple rule of thumb::
+<t tx="ekr.20060111192108">A **dangerous** delete is a deletion of a node so that all the data in the node is deleted *everywhere* in an outline. The data is gone, to be retrieved only via undo or via backups. It may not be obvious which deletes are dangerous in an outline containing clones. Happily, there is a very simple rule of thumb::
 
     Deleting a non-cloned node is *always* dangerous.
     Deleting a cloned node is *never* dangerous.
 
-We could also consider a delete to be dangerous **if it results in a node being
-omitted from an external file.** This can happen as follows. Suppose we have the
-following outline (As usual, A' indicates that A is marked with a clone mark)::
+We could also consider a delete to be dangerous **if it results in a node being omitted from an external file.** This can happen as follows. Suppose we have the following outline (As usual, A' indicates that A is marked with a clone mark)::
 
     - @file spam.py
         - A'
@@ -4571,12 +4550,7 @@ If (maybe much later), we eliminate B' as a child of A will get::
 
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 </t>
-<t tx="ekr.20060329101442">Missing modules can cause installation problems.
-If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
-as described at `How to install Leo on Windows`_.
-However you are installing Leo,
-be sure to `run Leo in a console window`_.
-because as a last resort Leo prints error messages to the console.
+<t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
 </t>
 <t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.**
 Rather than using the xml language description files directly, Leo uses
@@ -5545,23 +5519,15 @@ Recent projects include:
 
 2. Find the node 'Keyboard shortcuts'.
 
-3. Disable the old bindings by moving the node
-   '@keys EKR bindings: Emacs keys + modes'
-   so that it is a child of the node:
-   '@ignore Unused key bindings'.
+3. Disable the old bindings by moving the node '@keys EKR bindings: Emacs keys + modes' so that it is a child of the node: '@ignore Unused key bindings'.
 
-4. Notice that there are two child nodes of the node
-   '@ignore Unused key bindings'
-   that refer to legacy key bindings:
+4. Notice that there are two child nodes of the node '@ignore Unused key bindings' that refer to legacy key bindings:
 
    - '@keys Legacy Leo shortcuts with important Emacs bindings'
 
    - '@keys Legacy Leo bindings'.
 
-5. Move **one** of these two legacy nodes up one level so that it is a child of the node
-   'Keyboard shortcuts'.
-   It should **not** be a child of the node
-   '@ignore Unused key bindings'.
+5. Move **one** of these two legacy nodes up one level so that it is a child of the node 'Keyboard shortcuts'. It should **not** be a child of the node '@ignore Unused key bindings'.
 </t>
 <t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring.
 See `Customizing Leo`_ for a general discussion of Leo's settings.
@@ -5770,14 +5736,11 @@ Unless special zodb precautions are taken (like defining zodb transaction manage
 calling get_transaction().commit() will affect **all** open connections.
 You have been warned.
 </t>
-<t tx="ekr.20060915112109">Find the @file leoApp.py node in leoPy.leo.
-In the ctor for the LeoApp class set self.use_psyco to True or False.
-You will find this ctor in the node::
+<t tx="ekr.20060915112109">Find the @file leoApp.py node in leoPy.leo. In the ctor for the LeoApp class set self.use_psyco to True or False. You will find this ctor in the node::
 
     Code--&gt;Core classes...--&gt;@file leoApp.py--&gt;app.__init__
 
-Note that this ivar can not be set using settings in leoSettings.leo because
-Leo uses g.app.use_psyco before processing configuration settings.
+Note that this ivar can not be set using settings in leoSettings.leo because Leo uses g.app.use_psyco before processing configuration settings.
 </t>
 <t tx="ekr.20060917130130">Add the following to the start of your scripts::
 
@@ -6616,8 +6579,7 @@ It also contains other information of little interest to most Leo users.</t>
 - Added warnings about the @bool expanded_click_area setting.
 </t>
 <t tx="ekr.20070623145346"></t>
-<t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't
-be used to install Leo because Leo is not a Python package.
+<t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't be used to install Leo because Leo is not a Python package.
 </t>
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070628083442.1">#####################
@@ -7443,10 +7405,7 @@ The great thing about this was that I just used the Leo @others construct
 to create a wrapper around the code and did not need to litter my code
 with debug or profiling statements.---Kayvan
 </t>
-<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay
-on top of the latest features and bug fixes. Running the development version is
-quite safe and easy, and it's also a requirement if you want to contribute to
-Leo.
+<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay on top of the latest features and bug fixes. Running the development version is quite safe and easy, and it's also a requirement if you want to contribute to Leo.
 
 1. First, you need to get git from http://git-scm.com/.
 
@@ -7458,35 +7417,7 @@ Leo.
    
         git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 
-And that's it! You can run the launchLeo script (in the top-level branch directory) directly.
-When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
-
-..  If you make modifications to Leo (with the interest in sharing them with the Leo
-..  community), you can check them in to your local branch by doing 'bzr checkin'.
-..  Now, to actually request your changes to be merged to Leo trunk, you need a
-..  Launchpad account with RSA keys in place. There is showmedo video about how to
-..  accomplish this on Windows using puttygen and pageant at
-..  http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
-
-..  After your Launchpad account is set up, go to
-..  https://launchpad.net/leo-editor, choose Code tab -&gt; Register Branch, select
-..  Branch type "Hosted" and fill in descriptive details about the branch. After
-..  that, go to the branch home page from Code tab again, and copy-paste the push
-..  command line to terminal. For example, for branch::
-
- ..  https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
-
-..  The push command is::
-
- ..  bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch
-
-..  You may wish to add --remember command line option to bzr push, to direct all
-..  future pushes to that location. Then, you only need to execute 'bzr push'.
-
-..  After your branch is pushed, you can email the Leo mailing list and request it
-..  to be reviewed and merged to trunk.
-
-..  -- Ville M. Vainio - vivainio.googlepages.com
+And that's it! You can run the launchLeo script (in the top-level branch directory) directly. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
 </t>
 <t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module.
 See http://docs.python.org/lib/module-timeit.html.
@@ -8014,8 +7945,7 @@ When reporting a bug, please include *all* of the following:
 It's polite to make the bug report self contained, so that six weeks later
 somebody will be able to understand the report as it stands.
 </t>
-<t tx="ekr.20090202191501.7">You can simply unpack Leo anywhere and run from there.  You don't need the
-installer.
+<t tx="ekr.20090202191501.7">You can simply unpack Leo anywhere and run from there.  You don't need the installer.
 
 From a console window, cd to the top-level leo folder.  Run Leo as follows::
 
@@ -8030,11 +7960,9 @@ To load Leo's source, load leoPyRef.leo::
     python launchLeo.py --gui=qt leo\\core\\leoPyRef.leo
 </t>
 <t tx="ekr.20090212054250.5"></t>
-<t tx="ekr.20090212054250.6">You can get the latest official releases of Leo at
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+<t tx="ekr.20090212054250.6">You can get the latest official releases of Leo at http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-However, if at all possible, it is better to use git to get the latest
-sources. See the next entry.
+However, if at all possible, it is better to use git to get the latest sources. See the next entry.
 </t>
 <t tx="ekr.20090212054250.7">Daily snapshots are available at http://www.greygreen.org/leo/
 </t>
@@ -8358,8 +8286,7 @@ Here is Leo's main window as it appears on Linux:
 
 |LinuxMainWindow|
 </t>
-<t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts
-using the node in leoSettings.leo called::
+<t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts using the node in leoSettings.leo called::
 
     @data qt-gui-plugin-style-sheet
 
@@ -13396,70 +13323,45 @@ The `PyEnchant`_ package is optional.
 
 **PyEnchant**: You must install the PyEnchant package if you want to use Leo's Spell tab. Download and install the PyEnchant package from http://pythonhosted.org/pyenchant/download.html There is an executable installer for Windows users.
 </t>
-<t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another
-outline. This is a frequently requested feature. For example::
+<t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another outline. This is a frequently requested feature. For example::
 
     I would absolutely love to have the leo files in different project
     directories, and a "master" leo file to rule them all.
 
-However, cross-file clones will never be a part of Leo. Indeed, cross-file
-clones would violate the principle that data should be defined and managed in
-exactly one place. Just as human managers would not willingly accept shared
-responsibility for even a single line of code, every piece of Leonine data
-should be the responsibility of one and *only* one .leo file.
+However, cross-file clones will never be a part of Leo. Indeed, cross-file clones would violate the principle that data should be defined and managed in exactly one place. Just as human managers would not willingly accept shared responsibility for even a single line of code, every piece of Leonine data should be the responsibility of one and *only* one .leo file.
 
-The problem fundamental. If the *same* (cloned) data were "owned" by two
-different Leo files we would have a classic "multiple update problem" for the
-data. Each outline could change the data in incompatible ways, and whichever
-outline changed the data last would "win."
+The problem is fundamental. If the *same* (cloned) data were "owned" by two different Leo files we would have a classic "multiple update problem" for the data. Each outline could change the data in incompatible ways, and whichever outline changed the data last would "win."
 
-To make such a scheme workable and safe, one would have to devise a scheme that
-would keep the data in "component" .leo files consistent even when the component
-.leo files changed "randomly", without the "master" .leo file being in *any* way
-in "control" of the changes. Good luck :-)
+To make such a scheme workable and safe, one would have to devise a scheme that would keep the data in "component" .leo files consistent even when the component .leo files changed "randomly", without the "master" .leo file being in *any* way in "control" of the changes. Good luck :-)
 
-Let us be clear: it's no good having a scheme that works *most* of the time, it
-must work *all* the time, even with unexpected or even pathological file
-updates. If it doesn't you are asking for, and will eventually get, catastrophic
-data loss, without being aware of the loss for an arbitrarily long period of
-time. Even with a source code control system this would be an intolerable
-situation.
+Let us be clear: it's no good having a scheme that works *most* of the time, it must work *all* the time, even with unexpected or even pathological file updates. If it doesn't you are asking for, and will eventually get, catastrophic data loss, without being aware of the loss for an arbitrarily long period of time. Even with a source code control system this would be an intolerable situation.
 </t>
 <t tx="ekr.20110531155858.20559">.. _`This FAQ entry`: FAQ.html#how-can-i-use-leo-to-develop-leo-itself
 
-Here is the workflow I use to develop Leo. The intention is to help
-present and potential developers use Leo effectively.
+Here is the workflow I use to develop Leo. The intention is to help present and potential developers use Leo effectively.
 
 Overview:
 
-- Develop in an outline containing all of Leo's source files. Close this outline
-  rarely: this keeps the code I am using stable while I'm hacking the code.
+- Develop in an outline containing all of Leo's source files. Close this outline rarely: this keeps the code I am using stable while I'm hacking the code.
 
-- Test in a *separate* .leo file, say test.leo. In fact, I often test in a
-  private file, ekr.leo, so that test.leo doesn't get continually updated on git
-  with trivial changes.
+- Test in a *separate* .leo file, say test.leo. In fact, I often test in a private file, ekr.leo, so that test.leo doesn't get continually updated on git with trivial changes.
 
 These two points are covered in a bit more detail in `This FAQ entry`_.
 
 Additional tips:
 
-A. Avoid using the mouse whenever possible. For example, use alt-tab to switch
-between windows.
+A. Avoid using the mouse whenever possible. For example, use alt-tab to switch between windows.
 
 B. Always develop Leo in a console. This allows you to see the output of g.trace.
 
-Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name
-of the function or method in which it appears. The typical pattern for enabling
-traces is::
+Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name of the function or method in which it appears. The typical pattern for enabling traces is::
 
     trace = True and not g.unitTesting
     if trace: g.trace(whatever)
 
-This pattern is especially useful when a method contains multiple calls to
-g.trace.
+This pattern is especially useful when a method contains multiple calls to g.trace.
 
-C. I use scripts to open particular Leo files. These are batch files on Windows,
-   and aliases on Linux, but invoking them is the same on either platform::
+C. I use scripts to open particular Leo files. These are batch files on Windows, and aliases on Linux, but invoking them is the same on either platform::
 
     all:     opens all my main development files using the qt-tabs gui.
     t:       opens test.leo.
@@ -13470,43 +13372,23 @@ C. I use scripts to open particular Leo files. These are batch files on Windows,
     gui:     opens leoGui.leo.
     u:       opens unitTest.leo.
 
-  These run Leo with Python 3.x. There are similar scripts, ending in 2, that run
-  Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x.
-  Thus, to run a test, I alt-tab to an available console window, then type 'e' or
-  't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
+These run Leo with Python 3.x. There are similar scripts, ending in 2, that run Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x. Thus, to run a test, I alt-tab to an available console window, then type 'e' or 't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
 
-D. Use clones to focus attention on the task at hand.
-   For more details, see the tutorial's introduction to `clones`_.
+D. Use clones to focus attention on the task at hand. For more details, see the tutorial's introduction to `clones`_.
 
-E. For thousand of example of my programming style, see leoPy.leo and
-   leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples
-   of using clones to create view nodes. I typically delete the clones in the
-   views shortly before a release.
+E. For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples of using clones to create view nodes. I typically delete the clones in the views shortly before a release.
 
 Writing documentation:
 
-- Use postings as pre-writing for documentation.
-
-  I don't mind blabbing on and on about Leo because all my posts become
-  pre-writing for Leo's documentation. I simply copy posts to nodes in the
-  "documentation to-do" section. At release time, I edit these nodes and put
-  them in Leo's main documentation or the release notes. This posting is an
-  example.
+- Use postings as pre-writing for documentation. I don't mind blabbing on and on about Leo because all my posts become pre-writing for Leo's documentation. I simply copy posts to nodes in the "documentation to-do" section. At release time, I edit these nodes and put them in Leo's main documentation or the release notes. This posting is an example.
   
-- Use the vr command to debug reStructuredText documentation. The viewrendered
-   pane updates as you type. This makes Leo a killer app for rST.
+- Use the vr command to debug reStructuredText documentation. The viewrendered pane updates as you type. This makes Leo a killer app for rST.
    
 Administrative tips:
 
-- Never rely on memory.
+- Never rely on memory. A project like this contains thousands and thousands of details. Everything eventually goes into a Leo node somewhere. If it doesn't it surely *will* be forgotten.
 
-   A project like this contains thousands and thousands of details. Everything
-   eventually goes into a Leo node somewhere. If it doesn't it surely *will* be
-   forgotten.
-
-- Do easy items first.
-   
-   This keeps to-do lists short, which keeps energy high.
+- Do easy items first. This keeps to-do lists short, which keeps energy high.
 
 Tips for using git:
 
@@ -13517,8 +13399,7 @@ I use the following batch files related to bzr::
     tr:     short for cd &lt;path to trunk&gt;
     main:   short for cd &lt;path to copy of trunk&gt;
 
-The "main" (copy) of the trunk is purely for handling git conflicts.
-If one happens I do this::
+The "main" (copy) of the trunk is purely for handling git conflicts. If one happens I do this::
 
     main
     g pull
@@ -13551,14 +13432,12 @@ If the merge goes well (it usually does), I do this to resolve the conflict::
 
     @data qt-gui-plugin-style-sheet
     
-However, settings for colors that can change during Leo's execution
-are found in the node::
+However, settings for colors that can change during Leo's execution are found in the node::
 
     Body pane colors
     
 These settings are as follows, with the defaults as shown::
     
-
     \@color body_cursor_background_color = None
     \@color body_cursor_foreground_color = None
     \@color body_insertion_cursor_color = None
@@ -14921,27 +14800,19 @@ Use the docutils `raw-data`_ syntax. Examples::
       
 For more details, see `this posting about BibTeX citations`_.
 </t>
-<t tx="ekr.20120229094652.15152">Some people seem to think that it is difficult to understand how Leo
-handles "clone wars": differing values for a cloned nodes that appear in
-several external files. That's not true. The rule is::
+<t tx="ekr.20120229094652.15152">Some people seem to think that it is difficult to understand how Leo handles "clone wars": differing values for a cloned nodes that appear in several external files. That's not true. The rule is::
 
     **The last clone that Leo reads wins.**
 
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
+That is, for any cloned node C, Leo takes the value of C.h and C.b to be the values specified by the last copy that Leo reads.
 
 There is only one complication::
 
     **Leo reads the entire outline before reading any external files.**
 
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value for C
-in x.py or y.py, depending on which @&lt;file&gt; node appears later in the
-outline.
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value for C in x.py or y.py, depending on which @&lt;file&gt; node appears later in the outline.
 
-**Note**: Whenever Leo detects multiple values for C when opening an
-outline, Leo creates a "Recovered nodes" tree. This tree contains all the
-various values for C, nicely formatted so that it is easy to determine
-where the differences are.
+**Note**: Whenever Leo detects multiple values for C when opening an outline, Leo creates a "Recovered nodes" tree. This tree contains all the various values for C, nicely formatted so that it is easy to determine where the differences are.
 
 </t>
 <t tx="ekr.20120317130339.8282">@pagewidth 75
@@ -20113,8 +19984,7 @@ clicking the top-level button, set its script to "empty string".
 
     QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
 
-If you wanted node specific backgrounds Leo would have to start setting
-an attribute on the body widget, probably the gnx, so you could do::
+If you wanted node specific backgrounds Leo would have to start setting an attribute on the body widget, probably the gnx, so you could do::
 
     QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
         background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
@@ -20122,21 +19992,13 @@ an attribute on the body widget, probably the gnx, so you could do::
 </t>
 <t tx="ekr.20141108064630.18">@language rest
 
-I'm trying to create a interactive chart in a embedded in a new leo pane
-using matplotlib. However, I am not sure about the the best way to
-implement this. I would appreciate some guidance on this please? The
-questions I would like answered are:
+I'm trying to create a interactive chart in a embedded in a new leo pane using matplotlib. However, I am not sure about the the best way to implement this. I would appreciate some guidance on this please? The questions I would like answered are:
 
-1. How do I create a new blank pane for embedding a chart as well as other
-   QtWidgets.
+1. How do I create a new blank pane for embedding a chart as well as other QtWidgets.
 
 2. Can I do this in a script or do I need to work with leo source?
 
-I want to create a data processing and visualization tool kit in leo. Like
-Excel but using nodes instead of columns. Nodes will have data and I want
-to create new data nodes by applying python functions to data in existing
-nodes. The thing missing is the visualization within a leo pane (I can
-easily launch a chart in it's own window).
+I want to create a data processing and visualization tool kit in leo. Like Excel but using nodes instead of columns. Nodes will have data and I want to create new data nodes by applying python functions to data in existing nodes. The thing missing is the visualization within a leo pane (I can easily launch a chart in it's own window).
 
 ----- Terry Brown
 
@@ -20176,35 +20038,22 @@ You can run this script from any body pane::
 
 ----- OP
 
-I have managed to get a matplotlib graph embedded within a pane in 
-leo as a widget. I now need some help with how to interact with the 
-widget using scripts in leo. I am unsure about the following:
+I have managed to get a matplotlib graph embedded within a pane in leo as a widget. I now need some help with how to interact with the widget using scripts in leo. I am unsure about the following:
  
 *1/ How do I expose the widget within the leo environment?* 
 
-If you were only going to have one and you weren't going to destroy it,
-you could just do something simple like c._matplot = self in its
-constrictor (assuming c was passed to the constructor).
+If you were only going to have one and you weren't going to destroy it, you could just do something simple like c._matplot = self in its constrictor (assuming c was passed to the constructor).
 
-If you're going to have more than one and they may be destroyed, it
-might be simplest to let the free_layout / nested_splitter system manage
-them::
+If you're going to have more than one and they may be destroyed, it might be simplest to let the free_layout / nested_splitter system manage them::
 
     ts = c.free_layout.get_top_splitter()
     matplotters = ts.findChildren(myMatplotWidget)
 
-should return a list of the widgets of your class in the layout, but only
-if they're in the main window, widgets in extra windows opened from the
-"Open window" context menu item would be missed, I can add a
-find_children() method to complement the find_child() method the splitters
-already have to account for this.
+should return a list of the widgets of your class in the layout, but only if they're in the main window, widgets in extra windows opened from the "Open window" context menu item would be missed, I can add a find_children() method to complement the find_child() method the splitters already have to account for this.
 
-Detail: the above is just using Qt's QObject.findChildren(), the
-nested_splitter find_child() and (not yet written) find_children()
-versions search the extra windows as well.
+Detail: the above is just using Qt's QObject.findChildren(), the nested_splitter find_child() and (not yet written) find_children() versions search the extra windows as well.
 
-Here I have created a self.mat in your MatplotPaneProvider class to make 
-the windget accessible but it doesn't feel like the correct way to do this.
+Here I have created a self.mat in your MatplotPaneProvider class to make the windget accessible but it doesn't feel like the correct way to do this.
 
 @language python
 
@@ -20214,121 +20063,73 @@ the windget accessible but it doesn't feel like the correct way to do this.
     
 @language rest
  
-2. I would also like to make the widget accessible from any script within
-   leo. What's the leo way of doing this?
+2. I would also like to make the widget accessible from any script within leo. What's the leo way of doing this?
 
 See above
  
-3. If I create more than 1 pane containing these widgets. How do I switch
-   between them in scripts?*
+3. If I create more than 1 pane containing these widgets. How do I switch between them in scripts?
 
 See above
 
-4. Running this script more than once creates multiple items for Add
-   Matplot when pressing the Action button. How do I stop this from
-   happening? I have already tried returning a unique integer in *
-   ns_provider_id *but that did not work.*
+4. Running this script more than once creates multiple items for Add Matplot when pressing the Action button. How do I stop this from happening? I have already tried returning a unique integer in * ns_provider_id *but that did not work.*
  
-The value returned by ns_provider_id should be unique for the provider
-class, but constant. So it can just return something like "matplotlib provider ver 1"
+The value returned by ns_provider_id should be unique for the provider class, but constant. So it can just return something like "matplotlib provider ver 1"
 </t>
 <t tx="ekr.20141108064630.8">.. https://groups.google.com/d/msg/leo-editor/4s44H9cUJGY/ewRBDBSw-A8J
 
-For the last several weeks I've used clones in a new, more effective way,
-inspired by git's stash/unstash commands. Here are the main ideas.
+For the last several weeks I've used clones in a new, more effective way, inspired by git's stash/unstash commands. Here are the main ideas.
 
-1. [Most important] I avoid putting clones in two different *external*
-   files.
+1. [Most important] I avoid putting clones in two different *external* files.
 
-For any task, I create a task node that resides in @file leoToDo.txt. I
-clone that node and put it in the outline, *never* in any other @file node.
-This instantly eliminates clone wars.
+For any task, I create a task node that resides in @file leoToDo.txt. I clone that node and put it in the outline, *never* in any other @file node. This instantly eliminates clone wars.
 
 2. I use top-level "stashed" nodes/trees in my local copy of leoPy.leo.
 
-These clones are *not* written to any external file, so they would be lost
-if I lost leoPy.leo. But the risks are negligible because all stashed nodes
-are clones of nodes that *do* exist in external files.
+These clones are *not* written to any external file, so they would be lost if I lost leoPy.leo. But the risks are negligible because all stashed nodes are clones of nodes that *do* exist in external files.
 
 3. I have two main stashed trees: recent files and recent code.
 
-The "recent files" tree contains clones of all the @file nodes I have
-worked on recently. This speeds up access to them. That happens
-surprisingly often--often enough to be well worth maintaining the tree.
-Furthermore, because Leo's new pylint command now works on trees, I can
-check all recently-changed files simply by running pylint on the "recent
-files" tree.
+The "recent files" tree contains clones of all the @file nodes I have worked on recently. This speeds up access to them. That happens surprisingly often--often enough to be well worth maintaining the tree. Furthermore, because Leo's new pylint command now works on trees, I can check all recently-changed files simply by running pylint on the "recent files" tree.
 
-The "recent code" tree is even more valuable, for three reasons. The first
-is obvious--it speeds access to recently-changed nodes.
+The "recent code" tree is even more valuable, for three reasons. The first is obvious--it speeds access to recently-changed nodes.
 
-Second, the "recent code" tree allows me to work on multiple tasks without
-getting overwhelmed by details and loose nodes lying around. I add
-organizer nodes as needed to make accessing the nodes faster, and also to
-jog my memory about what I was doing when I changed those nodes ;-)
+Second, the "recent code" tree allows me to work on multiple tasks without getting overwhelmed by details and loose nodes lying around. I add organizer nodes as needed to make accessing the nodes faster, and also to jog my memory about what I was doing when I changed those nodes ;-)
 
-Third, the "recent code" tree allows me *not* to put clones in the @file
-leoProjects.txt tree. This leads me to...
+Third, the "recent code" tree allows me *not* to put clones in the @file leoProjects.txt tree. This leads me to...
 
 4. I use clones in a stylized way when fixing and committing bugs.
 
-I always use clones when working on a project. A "task" node contains
-clones of all nodes related to the task. The task node typically remains in
-leoToDo.txt until the task is completely finished. While working on the
-bug, I create a clone of the task node, and move that clone to the bottom
-top-level node of the outline. Among other things, this makes it easy to
-limit searches without actually choosing "suboutline only" in the Find
-panel. This workflow is decades old.
+I always use clones when working on a project. A "task" node contains clones of all nodes related to the task. The task node typically remains in leoToDo.txt until the task is completely finished. While working on the bug, I create a clone of the task node, and move that clone to the bottom top-level node of the outline. Among other things, this makes it easy to limit searches without actually choosing "suboutline only" in the Find panel. This workflow is decades old.
 
-The following is the heart of the new workflow. When a task is complete, I
-do the following:
+The following is the heart of the new workflow. When a task is complete, I do the following:
 
-A. First, I create a **stashed-task** node, containing all the clones that
-    were previously in the task node.
+A. First, I create a **stashed-task** node, containing all the clones that were previously in the task node.
 
-The *stashed-task* becomes pre-writing for the commit log. The *task* node
-instantly becomes pre-writing for the release notes, so if it needs to
-discuss any code in the clones that have just been moved to the
-stashed-task node, I write those words immediately, while all details are
-fresh in my mind.
+The *stashed-task* becomes pre-writing for the commit log. The *task* node instantly becomes pre-writing for the release notes, so if it needs to discuss any code in the clones that have just been moved to the stashed-task node, I write those words immediately, while all details are fresh in my mind.
 
-B. Now I move the cloned task node that is in leoToDo.txt to the
-   appropriate place in leoProjects.txt.
+B. Now I move the cloned task node that is in leoToDo.txt to the appropriate place in leoProjects.txt.
 
 C. Next I do the commit.
 
-The *other* clone of the task node, and the stashed task node are still
-within easy reach, and I typically use both nodes to create the commit log.
-The commit will typically consist of the changed leoToDo.txt and
-leoProjects.txt and whatever .py files the task itself changed. Happily,
-leoToDo.txt and leoProjects.txt are now up-to-date because of steps A and
-B.
+The *other* clone of the task node, and the stashed task node are still within easy reach, and I typically use both nodes to create the commit log. The commit will typically consist of the changed leoToDo.txt and leoProjects.txt and whatever .py files the task itself changed. Happily, leoToDo.txt and leoProjects.txt are now up-to-date because of steps A and B.
 
 D. Finally, I clean up.
 
 I delete the top-level clone of the task node, and move the stashed-task
 node to the "recent code" tree.
 
-E. Later, when it appears that activity has died down on various projects,
-   I'll delete nodes from the "recent files" an "recent code" trees. This
-   is a minor judgment call: I want to leave nodes in the trees while they
-   are useful, but not significantly longer than that. I do *not* regard
-   these trees as permanently useful. leoProjects.txt should contain *all*
-   permanent notes about a project.
+E. Later, when it appears that activity has died down on various projects, I'll delete nodes from the "recent files" an "recent code" trees. This is a minor judgment call: I want to leave nodes in the trees while they are useful, but not significantly longer than that. I do *not* regard these trees as permanently useful. leoProjects.txt should contain *all* permanent notes about a project.
 
 ===== Conclusions
 
-This work flow may seem complicated. Believe me, it is not. It's easier to
-use than to describe.
+This work flow may seem complicated. Believe me, it is not. It's easier to use than to describe.
 
 This workflow has big advantages:
 
 1. Clone wars are gone for good.
 2. All recent data is easily available.
-3. Task nodes and stashed-task nodes provide natural places for
-   proto-documentation.
-4. Banning clones from leoProjects.txt forces me to complete the first
-   draft of the documentation before committing the fix.
+3. Task nodes and stashed-task nodes provide natural places for proto-documentation.
+4. Banning clones from leoProjects.txt forces me to complete the first draft of the documentation before committing the fix.
 </t>
 <t tx="ekr.20141109053526.4"></t>
 <t tx="ekr.20141109053526.8">GTD (Getting Things Done)
