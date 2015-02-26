@@ -290,7 +290,7 @@
 <v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
 </v>
 <v t="ekr.20101025080245.6084"><vh>Leo in Shared environments</vh>
-<v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr/git/hg/svn/cvs?</vh></v>
+<v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
@@ -312,7 +312,7 @@
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
-<v t="ekr.20130807203905.16526"><vh>How can I use bzr/git to check Leo's importers?</vh></v>
+<v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
 <v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
 <v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
@@ -3334,14 +3334,9 @@ You have two options:
 - Use the @encoding directive_ in an ancestor of the node_ selected when
   doing the Import command_ to specify the encoding of file to be imported.
 </t>
-<t tx="ekr.20050830115714.113">**Question**:
-It would be nice if Leo could open empty files. I tend to be "document oriented"
-rather than "application oriented" in my thinking and prefer "create empty file
-at location -&gt; open it with program" to "start program -&gt; create new file -&gt;
-save it at location".
+<t tx="ekr.20050830115714.113">**Question**: It would be nice if Leo could open empty files. I tend to be "document oriented" rather than "application oriented" in my thinking and prefer "create empty file at location -&gt; open it with program" to "start program -&gt; create new file -&gt; save it at location".
 
-**Answer** by Paul Paterson:
-If you are on Windows 98/2000/XP then the procedure is as follows...
+**Answer** by Paul Paterson: If you are on Windows 98/2000/XP then the procedure is as follows...
 
 1. Start Leo
 2. Click New
@@ -3353,13 +3348,10 @@ If you are on Windows 98/2000/XP then the procedure is as follows...
 8. Call the new key ShellNew 
 9. Select the new key, right-click, choose New...String Value from the context menu
 10. Call it FileName 
-11. Double-click on the string, and modify it to be the filename of the leofile.leo file you created,
-    including the extension
+11. Double-click on the string, and modify it to be the filename of the leofile.leo file you created, including the extension
 12. Exit the registry editor and restart Windows Explorer (you may need to reboot on Windows 98)
 
-Now you should have a New:Leo File option in Explorer. This creates a duplicate
-of the file you saved. This can be useful because you could make a template Leo
-file containing some standard nodes_ that you always have and then save this.
+Now you should have a New:Leo File option in Explorer. This creates a duplicate of the file you saved. This can be useful because you could make a template Leo file containing some standard nodes_ that you always have and then save this.
 </t>
 <t tx="ekr.20050830115714.115" str_atime="1376412852.0">For the most part, docutils_ does a good job of reporting errors. docutils_ prints
 a message to the console and inserts an unmistakable error message in the
@@ -3408,48 +3400,27 @@ problem. There are several workarounds:
     easy enough to do (when using the rst3 plugin) by change a headline 'x' to
     @rst-ignore-tree x.
 </t>
-<t tx="ekr.20050830115714.116">From: http://sourceforge.net/forum/message.php?msg_id=3240374
-Using Leo's File-Export-Flatten Outline commands creates a MORE style outline which places
-all Leo body sections on the left margin.
-The headlines_ are indented with tabs which Excel will read as a tab delimited format.
-Once inside Excel there are benefits.
+<t tx="ekr.20050830115714.116">.. From: http://sourceforge.net/forum/message.php?msg_id=3240374
 
-1.  The most obvious benefit inside Excel is that the body sections (Excel first
-    column) can be selected easily and highlighted with a different font color.
-    This makes the MORE format very readable. Save a copy of your sheet as HTML
-    and now you have a web page with the body sections highlighted.
+Using Leo's File-Export-Flatten Outline commands creates a MORE style outline which places all Leo body sections on the left margin. The headlines_ are indented with tabs which Excel will read as a tab delimited format. Once inside Excel there are benefits.
 
-2.  It is possible to hide columns in Excel.
-    Hiding the first column leaves just the headlines showing.
+1. The most obvious benefit inside Excel is that the body sections (Excel first column) can be selected easily and highlighted with a different font color. This makes the MORE format very readable. Save a copy of your sheet as HTML and now you have a web page with the body sections highlighted.
 
-3.  Formulas based on searching for a string can do calculations in Excel.
-    For example if a heading "Current Assets" appears on level 4 then the body formula::
+2. It is possible to hide columns in Excel. Hiding the first column leaves just the headlines showing.
+
+3. Formulas based on searching for a string can do calculations in Excel. For example if a heading "Current Assets" appears on level 4 then the body formula::
 
         =INDEX(A:A,MATCH("Current Assets",D:D,0)+1)
 
-    will retrieve it. The +1 after match looks down one row below the matched
-    headline. The trick is to place all your headlines in quotes because Excel
-    will see + "Current Assets" from the MORE outline. When Excel tries
-    without the quotes it thinks it is a range name and displays a #N/A
-    error instead of the headline. Also you must place a child node_ below to
-    get the + sign instead of a - sign which would give a MORE headline of
-    -"Current assets" , also is an error.
+will retrieve it. The +1 after match looks down one row below the matched headline. The trick is to place all your headlines in quotes because Excel will see + "Current Assets" from the MORE outline. When Excel tries without the quotes it thinks it is a range name and displays a #N/A error instead of the headline. Also you must place a child node_ below to get the + sign instead of a - sign which would give a MORE headline of -"Current assets" , also is an error.
 
-I think there is some interesting possibility here because of the enforcement of
-Leo body text being always in the first column. The Leo outline provides
-additional reference to organizing the problem not typical of spreadsheet
-models. Beyond scripting in Python, Excel is good at doing interrelated
-calculations and detecting problems like circular references. In Excel
-Tools-Options-General is a setting for r1c1 format which then shows numbers
-instead of letters for column references. Using this would allow entries like
-this in the leo body::
+I think there is some interesting possibility here because of the enforcement of Leo body text being always in the first column. The Leo outline provides additional reference to organizing the problem not typical of spreadsheet models. Beyond scripting in Python, Excel is good at doing interrelated calculations and detecting problems like circular references. In Excel Tools-Options-General is a setting for r1c1 format which then shows numbers instead of letters for column references. Using this would allow entries like this in the leo body::
 
     1000
     3500
     =R[-1]C+R[-2]C
 
-In Excel you would see 4500 below those two numbers. This is completely
-independent of where the block of three cells exists on the sheet.
+In Excel you would see 4500 below those two numbers. This is completely independent of where the block of three cells exists on the sheet.
 </t>
 <t tx="ekr.20050830115714.117">Python's decorator_ syntax is ill-conceived.
 This syntax file hack works well enough anyway to work with Leo '@' markup::
@@ -3458,59 +3429,23 @@ This syntax file hack works well enough anyway to work with Leo '@' markup::
     syn match   pythonDecorator	"@\\S\\S+" display nextgroup=pythonFunction skipwhite
 </t>
 <t tx="ekr.20050830115714.118"></t>
-<t tx="ekr.20050830115714.119">By Rich Ries.
-I often rework C code that's already been "Leo-ized"--the first pass was quick
-and dirty to get it going. When I do subsequent passes, I wind up with subnodes
-that are out of order with the sequence found in the main node_. It's not a big
-deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to
-move would switch focus to that node_. I'd then need to re-focus on the main
-node_. A minor nuisance, but it does slow you down.
+<t tx="ekr.20050830115714.119">By Rich Ries. I often rework C code that's already been "Leo-ized"--the first pass was quick and dirty to get it going. When I do subsequent passes, I wind up with subnodes that are out of order with the sequence found in the main node_. It's not a big deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to move would switch focus to that node_. I'd then need to re-focus on the main node_. A minor nuisance, but it does slow you down.
 
-My solution is to open a second editor with its focus on the main node_. Switch
-to the other editor, and, referring to the first editor pane, move the nodes as
-you like. The second editor's pane will change focus to the node_ you're moving,
-but the first editor will stay focused on the main node_. It's a lot easier to
-do than to describe!
+My solution is to open a second editor with its focus on the main node_. Switch to the other editor, and, referring to the first editor pane, move the nodes as you like. The second editor's pane will change focus to the node_ you're moving, but the first editor will stay focused on the main node_. It's a lot easier to do than to describe!
 </t>
-<t tx="ekr.20050830115714.12">Using @file trees can eliminate most problems with using Leo in cooperative
-(SCCS) environments:
+<t tx="ekr.20050830115714.12">Use @clean or @auto unless everyone in your work group uses Leo.  In that case, using @file is best.
 
-- Developers should use @file trees to create external files in any kind of
-  cooperative environment.
+Leo's repository contains **reference** .leo files. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
-- If sentinels are frowned upon in your development community, use @auto or
-  @shadow instead of @file.
-
-- The repository contains **reference** .leo files. These reference files should
-  contain nothing but @file nodes. Reference files should change only when
-  new external files get added to the project. Leo's `git repository`_ and Leo
-  distributions contain the following reference files: LeoPyRef.leo,
-  LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use
-  local copies of reference files for their own work. For example, instead of
-  using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
 </t>
-<t tx="ekr.20050830115714.120">One way is to link directly to the media file from a Leo node_ (with @url) and
-write a script button to wrap all URL-nodes under the current node_ in a single
-HTML page. Then, you can view your media in two ways:
+<t tx="ekr.20050830115714.120">One way is to link directly to the media file from a Leo node_ (with @url) and write a script button to wrap all URL-nodes under the current node_ in a single HTML page. Then, you can view your media in two ways:
 
--   Individually. You can directly click on the @url link to display the media
-    in the browser (assuming you have your MIME/filetype associations set up
-    correctly for your browser).
+- Individually. You can directly click on the @url link to display the media in the browser (assuming you have your MIME/filetype associations set up correctly for your browser).
 
--   In a group. You can click on a script button (you have to code this yourself,
-    very simple) which should collect all @url nodes_ under the current node_
-    and dynamically generate a HTML page displaying either links to or embedded
-    versions of the media (using the HTML trick described above to invoke the
-    browser). This way, you can create collections of @url nodes under a
-    single node_ (like a bookmark folder), and press a single button to view the
-    @url collection as a single entity in the browser (with all browser
-    capabilities like displaying the media).
+- In a group. You can click on a script button (you have to code this yourself, very simple) which should collect all @url nodes_ under the current node_ and dynamically generate a HTML page displaying either links to or embedded versions of the media (using the HTML trick described above to invoke the browser). This way, you can create collections of @url nodes under a single node_ (like a bookmark folder), and press a single button to view the @url collection as a single entity in the browser (with all browser capabilities like displaying the media).
 
-You could probably generalize this idea of "collect all @url nodes under current
-node_ and display as HTML in browser" into a general-purpose plugin. However,
-the plugin would have to be somewhat smart in mapping a link to its corresponding
-HTML code (e.g. an image link gets mapped to an &lt;img&gt; HTML tag, a link to a
-Flash file gets mapped to an &lt;embed&gt; tag, etc).
+You could probably generalize this idea of "collect all @url nodes under current node_ and display as HTML in browser" into a general-purpose plugin. However, the plugin would have to be somewhat smart in mapping a link to its corresponding HTML code (e.g. an image link gets mapped to an &lt;img&gt; HTML tag, a link to a Flash file gets mapped to an &lt;embed&gt; tag, etc).
 </t>
 <t tx="ekr.20050830115714.13"></t>
 <t tx="ekr.20050830115714.14">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
@@ -3693,14 +3628,12 @@ Sections_ are convenient in the following circumstances:
 
 In short, I create sections when convenient, and convert them to functions or methods if they need to be used in several places.
 </t>
-<t tx="ekr.20050830115714.74">The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
-There is also an importFiles script in LeoPy.leo.  You can use that script as follows::
+<t tx="ekr.20050830115714.74">The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above. There is also an importFiles script in LeoPy.leo.  You can use that script as follows::
 
     import leo.core.leoImport as leoImport
     leoImport.importFiles(aDirectory, ".py")
 
-This will import all .py files from aDirectory, which should be a full path to a particular directory.
-You could use ".c" to import all .c files, etc.
+This will import all .py files from aDirectory, which should be a full path to a particular directory. You could use ".c" to import all .c files, etc.
 </t>
 <t tx="ekr.20050830115714.76" str_atime="1376412985.0"></t>
 <t tx="ekr.20050830115714.77">Just `run Leo in a console window`_. At the point you want to drop into the
@@ -3828,39 +3761,27 @@ Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
 
     fileMenu.insert(3,'command',label='Test2',command=callback)
 </t>
-<t tx="ekr.20050830120857">The trick is to create a workflow that separates editing from testing. Putting
-test code in LeoPy.leo would waste a lot of time. To run tests you would
-have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test
-code in a test.leo file. So to change and test code, do the following:
+<t tx="ekr.20050830120857">The trick is to create a workflow that separates editing from testing. Putting test code in LeoPy.leo would waste a lot of time. To run tests you would have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test code in a test.leo file. So to change and test code, do the following:
 
-1. Save LeoPy.leo but do **not** exit Leo. 
+1. Save LeoPy.leo but do **not** exit Leo.
 
 2. Quit the copy of Leo running test.leo, then reload test.leo.
 
 3. Run test scripts from test.leo.
 
-That's all. Python will recompile any changed .py files in the new copy of Leo.
-**Note**: I create a batch file called t.bat that runs test.leo, so to the
-"edit-reload-test" cycle is just:
+That's all. Python will recompile any changed .py files in the new copy of Leo. **Note**: I create a batch file called t.bat that runs test.leo, so to the "edit-reload-test" cycle is just:
 
 1. Control-S (in LeoPy.leo: saves the .leo file)
-2. t         (in a console window: runs test.leo, compiling all changed .py files as a side effect)
+2. t (in a console window: runs test.leo, compiling all changed .py files as a side effect)
 3. Control-E (in test.leo: runs the test script)
 
 The benefits of the new workflow:
 
-- test.leo loads  _much_ more quickly than LeoPy.leo does.
-  This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10.
-  Hitting Control-S, t, Control-E takes about 5 seconds.
+- test.leo loads  _much_ more quickly than LeoPy.leo does. This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10. Hitting Control-S, t, Control-E takes about 5 seconds.
 
-- LeoPy.leo runs with the *old* code,
-  so it is much easier to fix syntax errors or exceptions in the *new* code:
-  just fix the problem and save LeoPy.leo *without* closing LeoPy.leo,
-  then restart test.leo.
-  You run your tests on the new code, but you edit the new code with the old, stable code.
+- LeoPy.leo runs with the *old* code, so it is much easier to fix syntax errors or exceptions in the *new* code: just fix the problem and save LeoPy.leo *without* closing LeoPy.leo, then restart test.leo. You run your tests on the new code, but you edit the new code with the old, stable code.
 
-- test.leo is the perfect place to develop test.
-  I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
+- test.leo is the perfect place to develop test. I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
 </t>
 <t tx="ekr.20050831184021.1"></t>
 <t tx="ekr.20050831184021.4">.. |---| unicode:: U+02015 .. for quotes
@@ -7366,18 +7287,13 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an @se
   to allow differing settings on only a few machines.
 </t>
 <t tx="ekr.20080412124815.1"></t>
-<t tx="ekr.20080527063511.1">I had a need to figure out why a part of some python code I had written
-was taking too long.
-
-I pulled the code into Leo and the relevant part of the outline looked
-something like this::
+<t tx="ekr.20080527063511.1">I had a need to figure out why a part of some python code I had written was taking too long. I pulled the code into Leo and the relevant part of the outline looked something like this::
 
     + Main module
     -- Generate cryptographic key
     -- Hashing algorithm
 
-etc. So I cloned just the segment I wanted to profile and pulled it under a new
-section::
+etc. So I cloned just the segment I wanted to profile and pulled it under a new section::
 
     + Main module
     -- [clone] Generate cryptographic key
@@ -7396,14 +7312,9 @@ And in the body of the "Profiling experiment", I used this code::
     t = Timer("print my_key_generator()", code_under_here)
     print t.timeit(number = 10)
 
-And then I hit Control-B to execute the Profiling Experiment body. This
-let me make adjustments to the code in the clone body and keep hitting
-Control-B to execute the code with the timeit module to see immediately
-if what I had done was making a difference.
+And then I hit Control-B to execute the Profiling Experiment body. This let me make adjustments to the code in the clone body and keep hitting Control-B to execute the code with the timeit module to see immediately if what I had done was making a difference.
 
-The great thing about this was that I just used the Leo @others construct
-to create a wrapper around the code and did not need to litter my code
-with debug or profiling statements.---Kayvan
+The great thing about this was that I just used the Leo @others construct to create a wrapper around the code and did not need to litter my code with debug or profiling statements.---Kayvan
 </t>
 <t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay on top of the latest features and bug fixes. Running the development version is quite safe and easy, and it's also a requirement if you want to contribute to Leo.
 
@@ -8231,13 +8142,7 @@ Nevertheless, you can steal a peek at the doc here:
 
 http://vvtools.googlecode.com/files/Leodocumentation.pdf 
 </t>
-<t tx="ekr.20090706042206.14718">Leo's sentinels add outline structure to source files. However, those
-sentinels annoy some people who don't use Leo.
-
-Most people will find using @clean trees to be most useful.
-
-Use @auto-rst, @auto-vimoutline or @auto-otl when using rST, vimoutline or
-Emacs org mode files.
+<t tx="ekr.20090706042206.14718">Most people will find using @clean trees to be most useful. Use @auto-rst, @auto-vimoutline or @auto-otl when using rST, vimoutline or Emacs org mode files.
 </t>
 <t tx="ekr.20090711120622.10447">################
 Leo screen shots
@@ -14709,12 +14614,9 @@ It would really be great to get a Leo formula going for Homebrew. As
 mentioned before, the main question is just where to place all the Leo
 files in the /usr/local hierarchy.
 </t>
-<t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo.
-This makes the the @command nodes available to all opened .leo files.
+<t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo. This makes the the @command nodes available to all opened .leo files.
 
-Using @command rather than @button means that there is never any need to
-disable scripts. There is no need for @button. To see the list of your
-\@command nodes, type::
+Using @command rather than @button means that there is never any need to disable scripts. There is no need for @button. To see the list of your @command nodes, type::
 
     &lt;alt-x&gt;@c&lt;tab&gt;
     
@@ -14722,14 +14624,9 @@ Similarly to see the list of your \@command nodes, type::
 
     &lt;alt-x&gt;@b&lt;tab&gt;
 </t>
-<t tx="ekr.20120229094652.15124">It sometimes happens that the focus gets left in a Leo
-widget that doesn't support Leo's key bindings. You would
-think that you would have to use the mouse to click in, say,
-the body pane so that you can use Leo's key bindings again.
+<t tx="ekr.20120229094652.15124">It sometimes happens that the focus gets left in a Leo widget that doesn't support Leo's key bindings. You would think that you would have to use the mouse to click in, say, the body pane so that you can use Leo's key bindings again.
 
-But you don't have to do that.  Instead, use Alt-tab once to change
-away from Leo, and then use Alt-tab again to change back to Leo.  When
-you do this, Leo puts focus in the body pane and you are all set.
+But you don't have to do that.  Instead, use Alt-tab once to change away from Leo, and then use Alt-tab again to change back to Leo.  When you do this, Leo puts focus in the body pane and you are all set.
 </t>
 <t tx="ekr.20120229094652.15125">When running unit tests externally, Leo copies any @mark-for-unit-tests nodes
 to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes
@@ -14776,19 +14673,13 @@ something like::
 3. Unzip it into the same place as the previous version.
 4. Enjoy your up-to-date Leo code...
 
-To make this work, it's important to keep your folder containing Leo
-separate from your .mySettings.leo and any data files.
+To make this work, it's important to keep your folder containing Leo separate from your .mySettings.leo and any data files.
 </t>
 <t tx="ekr.20120229094652.15148">.. _`this posting about BibTeX citations`: http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786/9c2a298049f4f01c
 
 .. _`raw-data`: http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through
 
-When using LaTeX and BibTeX, I would like to use inside of Leo a kind of
-LaTeX-inline-markup, that after generation of the RsT file through Sphinx
-as well as after running of "make latex", generate a LaTeX file containing
-the citation call of the form \cite{CITBook001} as described in a file
-\*.bib. Is there a way to have Leo/Sphinx/RsT generate the inline raw latex
-syntax?
+When using LaTeX and BibTeX, I would like to use inside of Leo a kind of LaTeX-inline-markup, that after generation of the RsT file through Sphinx as well as after running of "make latex", generate a LaTeX file containing the citation call of the form \cite{CITBook001} as described in a file \*.bib. Is there a way to have Leo/Sphinx/RsT generate the inline raw latex syntax?
 
 Use the docutils `raw-data`_ syntax. Examples::
 
@@ -15334,26 +15225,18 @@ while p:
         g.es(p.h)
     p.moveToThreadNext()
 </t>
-<t tx="ekr.20130807203905.16526">When I study a program, I like to import it into Leo. I have several
-scripts that do this: some create @auto nodes; others create @file nodes.
-Whatever the method used, the import process has the potential to change
-many files. Usually, I just change @auto and @file to @@auto or @@file, so
-that any changes I make while studying the code won't affect the originals.
+<t tx="ekr.20130807203905.16526">When I study a program, I like to import it into Leo. I have several scripts that do this: some create @auto nodes; others create @file nodes. Whatever the method used, the import process has the potential to change many files. Usually, I just change @auto and @file to @@auto or @@file, so that any changes I make while studying the code won't affect the originals.
 
-But this "safety first" approach means that I can't actually use Leo to
-insert tracing statements (or for any other changes.) Happily, there is a
-way to import "live" code into Leo safely::
+But this "safety first" approach means that I can't actually use Leo to insert tracing statements (or for any other changes.) Happily, there is a way to import "live" code into Leo safely::
 
-   Create a bzr repository for the code before importing it
+   Create a git repository for the code before importing it
 
 The Aha is to create the repository *wherever the code is*, including,
 say, python/Lib/site-packages.
 
-- bzr qdiff ensures that import hasn't significantly altered the code,
-- bzr revert undoes any unwise or unwanted changes.
+- git diff ensures that import hasn't significantly altered the code,
 
-This is exactly what I need:  I can make changes to important tools
-*safely* within Leo.
+This is exactly what I need:  I can make changes to important tools *safely* within Leo.
 </t>
 <t tx="ekr.20130807203905.16597">*Important*: Leo's binary Windows installer sets file associations
 automatically, so this section is needed only if you are installing Leo
@@ -18639,19 +18522,11 @@ installation will take effect.
 <t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">@language rest
 
-Use .leo files to test settings rather than to contain data. These files
-would typically contain just an @settings tree, and one or two nodes
-illustrating their effect. Opening such files limits the effects of
-experimental/non-standard/risky settings. This is a great tip to know.
+Use .leo files to test settings rather than to contain data. These files would typically contain just an @settings tree, and one or two nodes illustrating their effect. Opening such files limits the effects of experimental/non-standard/risky settings. This is a great tip to know.
 
-For example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo and
-leo14pt.leo in the leo/config folder make it easy to compare different font
-settings.
+For example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo and leo14pt.leo in the leo/config folder make it easy to compare different font settings.
 
-As another example, when starting the vim-mode project I created a .leo
-file containing @bool vim-mode = True. By opening this file I test vim mode
-without interfering with my normal work flow.
-
+As another example, when starting the vim-mode project I created a .leo file containing @bool vim-mode = True. By opening this file I test vim mode without interfering with my normal work flow.
 </t>
 <t tx="ekr.20131120115900.16329">################
 Videos about Leo
@@ -18736,9 +18611,7 @@ Suboutline Only
     selected headline and its offspring.
     Alt+Ctrl+S (set-find-suboutline-only) sets this radio button.
 </t>
-<t tx="ekr.20131122055946.16401">Making screencasts is a lot easier than you probably think.
-
-Here are some tips to get you started quickly.
+<t tx="ekr.20131122055946.16401">Making screencasts is a lot easier than you probably think. Here are some tips to get you started quickly.
 
 
 
@@ -18747,8 +18620,7 @@ Here are some tips to get you started quickly.
 
 
 </t>
-<t tx="ekr.20131122055946.16402">The primary purpose of this script is to open your app at a fixed,
-unchanging size. This is surprisingly important:
+<t tx="ekr.20131122055946.16402">The primary purpose of this script is to open your app at a fixed, unchanging size. This is surprisingly important:
 
 - It ensures that the window will always render to pixels in the same way.
 - It makes it easier to splice in new video to an existing video.
@@ -18760,20 +18632,13 @@ Here is a script that I use when making Leo's screencasts::
     python27 launchLeo.py --no-cache --gui=qttabs
     --window-size=682x1264 &lt;list of .leo files&gt; %*​
     
-This *particular* --window-size causes Camtasia to create a window whose
-actual size is 720x1280, the nominal 720p resolution. It may prevent text
-blur. Or not. I do know that Leo's screencasts look great at 720p.</t>
-<t tx="ekr.20131122055946.16403">Make sure that you can actually upload *excellent quality* videos before
-doing anything else. This step is crucial. If you skip this step, all of
-your initial recording an post-production work could be utterly wasted.
+This *particular* --window-size causes Camtasia to create a window whose actual size is 720x1280, the nominal 720p resolution. It may prevent text blur. Or not. I do know that Leo's screencasts look great at 720p.
+</t>
+<t tx="ekr.20131122055946.16403">Make sure that you can actually upload *excellent quality* videos before doing anything else. This step is crucial. If you skip this step, all of your initial recording an post-production work could be utterly wasted.
 
-Use *short* (10-second) test videos at this step. Their primary purpose
-verify that you can can get to the *end* of the production process
-successfully. You *are* going to make lots of mistakes here: using short
-videos helps you make these mistakes quickly.
+Use *short* (10-second) test videos at this step. Their primary purpose verify that you can can get to the *end* of the production process successfully. You *are* going to make lots of mistakes here: using short videos helps you make these mistakes quickly.
 
-Don't even *think* about making longer videos until the answers to all the
-following questions are clearly "yes":
+Don't even *think* about making longer videos until the answers to all the following questions are clearly "yes":
 
 - Is your camera working?
 - Is your microphone working?
@@ -18783,76 +18648,41 @@ following questions are clearly "yes":
 - Is the sound in your *uploaded* video great?
 - Do the pixels in your *uploaded* look great?
 
-This last item is particularly important. Just because pixels look good in
-your video editor is no guarantee that they will look good when uploaded.
+This last item is particularly important. Just because pixels look good in your video editor is no guarantee that they will look good when uploaded.
 
-You are ready to try your first "real" take *only* when you can upload a
-video that looks and sounds great.
+You are ready to try your first "real" take *only* when you can upload a video that looks and sounds great.
 </t>
-<t tx="ekr.20131122055946.16404">Before rushing right out and making your first video, I recommend
-watching the tutorial screencasts at screencast.com:
-http://www.techsmith.com/tutorial-camtasia-8.html
+<t tx="ekr.20131122055946.16404">Before rushing right out and making your first video, I recommend watching the tutorial screencasts at screencast.com: http://www.techsmith.com/tutorial-camtasia-8.html
 
-Watch the tutorials to see how the presentations themselves are
-organized. Watch them until it feels natural to emulate their style.
+Watch the tutorials to see how the presentations themselves are organized. Watch them until it feels natural to emulate their style.
 
-If you will be using Camtasia, you will also want to watch the tutorials
-to learn how Camtasia works.  But this is a secondary consideration.
+If you will be using Camtasia, you will also want to watch the tutorials to learn how Camtasia works.
 </t>
-<t tx="ekr.20131122055946.16405">Now it's time to go beyond test videos. Even now, though, I recommend
-keeping your first efforts short: one minute or so. Again, this saves time.
-You'll ending up throwing away two or three anyway ;-)
+<t tx="ekr.20131122055946.16405">Now it's time to go beyond test videos. Even now, though, I recommend keeping your first efforts short: one minute or so. Again, this saves time. You'll ending up throwing away two or three anyway ;-)
 
 Bring up your app using you demo script and run through your presentation.
 
-Here's the **most important tip**: As you narrate your video, audio flubs
-are inevitable, but they don't matter at all *provided* that you *realize*
-that you have just flubbed a word or phrase. 
+Here's the **most important tip**: As you narrate your video, audio flubs are inevitable, but they don't matter at all *provided* that you *realize* that you have just flubbed a word or phrase.
 
-When you flub a line, don't panic! Just *pause*, regroup, and repeat the
-phrase until you get it right. *Pausing is essential*: it simplifies
-inserting and deleting sound bites during post production.
+When you flub a line, don't panic! Just *pause*, regroup, and repeat the phrase until you get it right. *Pausing is essential*: it simplifies inserting and deleting sound bites during post production.
 
-You'll relax once you realize that flubs don't matter and that pausing
-makes post-production easier. Once you relax, getting a good take will
-suddenly become easier.
+You'll relax once you realize that flubs don't matter and that pausing makes post-production easier. Once you relax, getting a good take will suddenly become easier.
 
-Correcting flubs *as soon as they happen* is absolutely essential. Don't
-even *think* about fixing audio flubs in post-production. It simply can't
-be done. Instead of spending 20 minutes trying (and failing) to correct a
-flub in post production, it is much faster and better to take 20 seconds
-during your take to correct the flub.
+Correcting flubs *as soon as they happen* is absolutely essential. Don't even *think* about fixing audio flubs in post-production. It simply can't be done. Instead of spending 20 minutes trying (and failing) to correct a flub in post production, it is much faster and better to take 20 seconds during your take to correct the flub.
 
-Similar remarks apply to video, but in my experience it's much easier to
-get the video right. If you do flub the video, it will be much easier if
-you just do a complete retake. With Camtasia, you can separate the audio
-and video tracks, but usually that won't work, especially if there is audio
-of key clicks.
+Similar remarks apply to video, but in my experience it's much easier to get the video right. If you do flub the video, it will be much easier if you just do a complete retake. With Camtasia, you can separate the audio and video tracks, but usually that won't work, especially if there is audio of key clicks.
 
-By retaking audio flubs as they happen, I find it easy to work without a
-script. It feels more natural to me than reading a script. YMMV. When
-I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that
-hard to read a script. Just *pause* before and after each phrase. Never
-rush your audio!
+By retaking audio flubs as they happen, I find it easy to work without a script. It feels more natural to me than reading a script. YMMV. When I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that hard to read a script. Just *pause* before and after each phrase. Never rush your audio!
 
-In short, the key Aha is: insert (audio) pauses *everywhere* as needed.
-It's easy to edit them out. It's virtually impossible to edit in the middle
-of words, even with the world's best audio editor.
+In short, the key Aha is: insert (audio) pauses *everywhere* as needed. It's easy to edit them out. It's virtually impossible to edit in the middle of words, even with the world's best audio editor.
 </t>
-<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio
-flubs as they happen. This keeps the audio and video in synch. Just edit
-out flubs and reduce overly-long pauses.
+<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio flubs as they happen. This keeps the audio and video in synch. Just edit out flubs and reduce overly-long pauses.
 
-I won't discuss production details here because they depend on the editor
-you are using.
+I won't discuss production details here because they depend on the editor you are using.
 
-Do a new take if you don't have clean audio. Depending on the complexity of
-your video, it may be possible to splice a partial take in the middle or
-end of your video. Similarly, it may be possible to splice in a new take to
-add material you didn't cover in your first take.
+Do a new take if you don't have clean audio. Depending on the complexity of your video, it may be possible to splice a partial take in the middle or end of your video. Similarly, it may be possible to splice in a new take to add material you didn't cover in your first take.
 
-One final word of advice. When editing your video, settle for "good
-enough". Perfectionism is not your friend.
+One final word of advice. When editing your video, settle for "good enough". Perfectionism is not your friend.
 </t>
 <t tx="ekr.20131122055946.16407">Making a screencast is a lot easier than you think :-)
 
@@ -18862,44 +18692,27 @@ enough". Perfectionism is not your friend.
 
 - Verify the *entire* production process with short test videos.
 
-  Before making longer videos, make *sure* that the test videos look and
-  sound great *when they have been uploaded*.
+  Before making longer videos, make *sure* that the test videos look and sound great *when they have been uploaded*.
   
-- When doing a take, flubs don't matter, *provided* you correct them
-  *during the take*.  Use pauses.  Make haste slowly!
+- When doing a take, flubs don't matter, *provided* you correct them *during the take*.  Use pauses.  Make haste slowly!
 
-- Splice in new takes during post-production to fix flubs and add new
-  material.
-
+- Splice in new takes during post-production to fix flubs and add new material.
 </t>
 <t tx="ekr.20131129061821.16884">Here are some more tips I've learned from experience:
 
-1. Redo audio tests and video tests every time you start a new
-   session. It's amazing how hum can creep into recordings.
+1. Redo audio tests and video tests every time you start a new session. It's amazing how hum can creep into recordings.
 
-2. The most important step in post production is to get the pacing so
-   it feels right. Beware of editing out pauses. Make sure you give
-   your viewers time to see what you are doing, and to see what you
-   have done.
+2. The most important step in post production is to get the pacing so it feels right. Beware of editing out pauses. Make sure you give your viewers time to see what you are doing, and to see what you have done.
    
-3. Don't waste time on callouts or captions until the audio and video
-   work together at a relaxed pace. It's almost as hard to correct
-   pacing mistakes as it is to correct audio flubs.</t>
-<t tx="ekr.20131211054925.16388">1. Enable volume leveling and noise removal in Camtasia. This tip, all
-   by itself, makes a big difference.
+3. Don't waste time on callouts or captions until the audio and video work together at a relaxed pace. It's almost as hard to correct pacing mistakes as it is to correct audio flubs.
+</t>
+<t tx="ekr.20131211054925.16388">1. Enable volume leveling and noise removal in Camtasia. This tip, all by itself, makes a big difference.
 
-2. Use a better microphone, preferably one with about a 1-inch diaphram.
-   This is the kind of microphone that Andrew Price uses.
-   The Audio-technica AT2020 USB is relatively inexpensive.
+2. Use a better microphone, preferably one with about a 1-inch diaphram. This is the kind of microphone that Andrew Price uses. The Audio-technica AT2020 USB is relatively inexpensive.
   
-3. Use "pop filter" with the microphone. This is a cloth or (better) a
-   metal screen that is placed in front of the microphone. It smooths
-   the sound.
+3. Use "pop filter" with the microphone. This is a cloth or (better) a metal screen that is placed in front of the microphone. It smooths the sound.
   
-4. Adjust the sound level for maximum volume without distortion: With
-   the microphone about a foot from your mouth, turn the volume as
-   loud as possible, then turn down until no red is visible in the
-   meter.
+4. Adjust the sound level for maximum volume without distortion: With the microphone about a foot from your mouth, turn the volume as loud as possible, then turn down until no red is visible in the meter.
 </t>
 <t tx="ekr.20131215083347.16902">Any Leo node may contain a Python script.
 
@@ -19399,9 +19212,7 @@ commands by name.
 http://ss64.com/nt/syntax-args.html
 http://stackoverflow.com/questions/5034076/what-does-dp0-mean-and-how-does-it-work
 
-FYI, this FAQ entry fixes the following bug:
-https://bugs.launchpad.net/leo-editor/+bug/613153
-unable to describe root directory on thumb drive
+FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-editor/+bug/613153 unable to describe root directory on thumb drive
 </t>
 <t tx="ekr.20141105050314.132">- Regularized .wrapper and .widget ivars.
 - Added the IdleTime class.
@@ -19752,10 +19563,7 @@ other precedence.  Parentheses are not supported. See below for more
 details.
 
 </t>
-<t tx="ekr.20141108064630.10">Leo makes it easy to create and run unit tests from individual outline
-nodes or trees. A node whose headline starts with @test defines a unit
-test. The body text of the @test node contains a **self-contained** unit
-test. For example, this creates a complete unit test::
+<t tx="ekr.20141108064630.10">Leo makes it easy to create and run unit tests from individual outline nodes or trees. A node whose headline starts with @test defines a unit test. The body text of the @test node contains a **self-contained** unit test. For example, this creates a complete unit test::
 
     @test fails  (headline)
     assert False (body text)
@@ -19772,8 +19580,7 @@ To see all of Leo's unit testing commands, do::
 
 Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
 
-For more details about unit testing, see: 
-http://leoeditor.com/unitTesting.html
+For more details about unit testing, see: http://leoeditor.com/unitTesting.html
 
 **Notes for Leo developers**
 
@@ -19785,18 +19592,13 @@ Running all tests is not necessary.  Just select::
 
 and then do Alt-4 (run-selected-unit-tests-locally).
 
-**Note**: Some tests will likely fail on machines other than EKR's. You
-only need to be concerned about unit tests that start failing after you
-make your changes.
+**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
 </t>
 <t tx="ekr.20141108064630.12">@language rest
 
 File under things-I-didn't-know-but-should-have:
 
-Instead of creating batch files all over the place to fire up python
-programs, and then having to cope with annoying "Terminate batch job
-(Y/N)?" with Ctrl-C/Break you can ask python setuptools to create an .exe
-in the Python\Scripts folder.
+Instead of creating batch files all over the place to fire up python programs, and then having to cope with annoying "Terminate batch job (Y/N)?" with Ctrl-C/Break you can ask python setuptools to create an .exe in the Python\Scripts folder.
 
 in same folder as foo.py create setup.py, populate like so::
 
@@ -19816,30 +19618,20 @@ in same folder as foo.py create setup.py, populate like so::
     
 @language rest
 
-Then run "pip --editable install . " in the same folder. Foo.exe will be
-created in C:\pythonxx\Scripts. As long as that folder is in path you can
-use foo like any other command line program. Furthermore the "editable"
-parameter means we can continue to edit and change foo.py and the changes
-are always live.
+Then run "pip --editable install . " in the same folder. Foo.exe will be created in C:\pythonxx\Scripts. As long as that folder is in path you can use foo like any other command line program. Furthermore the "editable" parameter means we can continue to edit and change foo.py and the changes are always live.
 
 Yeah! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py
 --do-stuff-here ..." for me. :)
 
-Works for Leo too -- with the existing setup.py. It creates leo.exe and
-leoc.exe for Windowed mode (no log messages to console) and console mode
-respectively.
+Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
 </t>
-<t tx="ekr.20141108064630.13">I am going through something similar Matt Wilkie went through in this post
-https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
+<t tx="ekr.20141108064630.13">I am going through something similar Matt Wilkie went through in this post https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
 
-Basically I can find interesting functions in LeoPyRef.leo but I don't know
-how to access them from my new leo scripts.
+Basically I can find interesting functions in LeoPyRef.leo but I don't know how to access them from my new leo scripts.
 
-I don't get the difference when I have to call them using g.Functionname(), 
-c.functionname(), or when those wont do.
+I don't get the difference when I have to call them using g.Functionname(), c.functionname(), or when those wont do.
 
-How can I call the function "insertIconFromFile"?
-How can I know how to call functions found in LeoPyRef.leo?
+How can I call the function "insertIconFromFile"? How can I know how to call functions found in LeoPyRef.leo?
 
 -----
 
@@ -19851,36 +19643,28 @@ I'm quoting from this Leo manual
 http://leoeditor.com/scripting.html#important-objects,
 http://leoeditor.com/scripting.html#inserting-and-deleting-icons
 
-Although I still have a mess on which functions can be called how, and
-where to find the list of classes that can be called such as "editCommands"
-and the rest that they might exist. Thanks!
+Although I still have a mess on which functions can be called how, and where to find the list of classes that can be called such as "editCommands" and the rest that they might exist. Thanks!
 
-I suppose you could say that there is no general solution, but the
-situation isn't really all that difficult.
+I suppose you could say that there is no general solution, but the situation isn't really all that difficult.
 
-Start with c. We know what that is: it is a commander object representing
-an open outline.
+Start with c. We know what that is: it is a commander object representing an open outline.
 
-There are **official ivars** of c, all referring to wrapper classes defined
-in leoFrame.py::
+There are **official ivars** of c, all referring to wrapper classes defined in leoFrame.py::
 
     c.frame         an instance of leoFrame.
     c.frame.tree    an instance of  leoTree.
     c.frame.body    an instance of leoBody.
     c.frame.log     an instance of leoLog.
 
-The tree, body and log objects have a *wrapper* object
+The tree, body and log objects have a *wrapper* object::
 
-c.frame.tree.wrapper
-c.frame.body.wrapper
-c.frame.log.wrapper
+    c.frame.tree.wrapper
+    c.frame.body.wrapper
+    c.frame.log.wrapper
 
-See http://leoeditor.com/scripting.html#c-frame-body-bodyctrl for a
-description of the high-level text interface supported by all high-level
-text widgets, including the log and body classes.
+See http://leoeditor.com/scripting.html#c-frame-body-bodyctrl for a description of the high-level text interface supported by all high-level text widgets, including the log and body classes.
 
-These wrapper classes have a widget ivar, which is a reference to the
-corresponding Qt widget object.  For example::
+These wrapper classes have a widget ivar, which is a reference to the corresponding Qt widget object.  For example::
 
     import PyQt4.QtGui as QtGui
     w =3D c.frame.body.wrapper.widget
@@ -19896,79 +19680,45 @@ As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
 
 ==== Terry
 
-I'm not aware of a general solution to the problem of finding the various
-pieces of Leo's class structure. Basically there are all these classes
-defined in the source, and instances of these are attached to each other in
-a hierarchical network (with loops).
+I'm not aware of a general solution to the problem of finding the various pieces of Leo's class structure. Basically there are all these classes defined in the source, and instances of these are attached to each other in a hierarchical network (with loops).
 
-I've written an introspection function which lists the methods and instance
-variables (and class variables) of an arbitrary object by name and by type.
-I should release it. It builds its lists in a Leo outline, so you can
-navigate around that outline and expand nodes by introspection as needed.
+I've written an introspection function which lists the methods and instance variables (and class variables) of an arbitrary object by name and by type. I should release it. It builds its lists in a Leo outline, so you can navigate around that outline and expand nodes by introspection as needed.
 
-It occurs to me that the same code could be used to search Leo's runtime
-object hierarchy for you, i.e. you enter 'insertIconFromFile' and it
-recursively searches for it.
+It occurs to me that the same code could be used to search Leo's runtime object hierarchy for you, i.e. you enter 'insertIconFromFile' and it recursively searches for it.
 
 -----
 
-I didn't really finish the above para. The problem is that it's hard to
-guess what the names of the attachment points are, and the attaching is
-done in a variety of places, sometimes by factory functions which further
-obscure linkages. Not a fault with Leo, just the way programs work. So the
-tool I've written may be the best approach to mapping Leo's runtime
-structure. Another thing it could do, try and map 'major' classes, or at
-least classes from leo.core.* - i.e. ignore the built in types.
+I didn't really finish the above para. The problem is that it's hard to guess what the names of the attachment points are, and the attaching is done in a variety of places, sometimes by factory functions which further obscure linkages. Not a fault with Leo, just the way programs work. So the tool I've written may be the best approach to mapping Leo's runtime structure. Another thing it could do, try and map 'major' classes, or at least classes from leo.core.* - i.e. ignore the built in types.
 </t>
-<t tx="ekr.20141108064630.14">If I want to use leo to make mathematical notes, how can I type in some
-special mathematical symbols? Or is there a good way to make mathematical
-notes using leo?
+<t tx="ekr.20141108064630.14">If I want to use leo to make mathematical notes, how can I type in some special mathematical symbols? Or is there a good way to make mathematical notes using leo?
 
 ===== Terry
 
-I use itex2MML with reStructuredText.  So within Leo you're looking at
-LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
-the latter.
+I use itex2MML with reStructuredText.  So within Leo you're looking at LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in the latter.
 
 ===== Jose
 
-I've been doing this for about a year now.  I use the math docutils 
-directive.  A custom .XCompose file (for example: 
-https://github.com/kragen/xcompose)  also helps.
+I've been doing this for about a year now.  I use the math docutils directive.  A custom .XCompose file (for example: https://github.com/kragen/xcompose)  also helps.
 
 ===== Terry
 
-I think math was added to docutils after I started using itex2mml,
-neater to use docutils built in math now I think.
+I think math was added to docutils after I started using itex2mml, neater to use docutils built in math now I think.
 
-Although having said that, playing with docutils math a bit suggests
-itex2mml gives more complete support for both MathML and perhaps LaTeX
-math (with the PDF target).
+Although having said that, playing with docutils math a bit suggests itex2mml gives more complete support for both MathML and perhaps LaTeX math (with the PDF target).
 
 ===== Jose
 
-Terry, your setup is probably more flexible, but I haven't had any problems with 
-docutils math. It seems to support all the syntax that I've found necessary.
+Terry, your setup is probably more flexible, but I haven't had any problems with docutils math. It seems to support all the syntax that I've found necessary.
 
-I forgot to mention that the viewrendered plug-in doesn't display math 
-correctly.  I'm not sure what the problem is, I remember trying to figure 
-it out a while back, but I never got anywhere.  It's not really a big 
-problem though, I have scripts to compile nodes to html/pdfs and open them 
-in firefox/pdf reader; math works fine that way.
+I forgot to mention that the viewrendered plug-in doesn't display math correctly.  I'm not sure what the problem is, I remember trying to figure it out a while back, but I never got anywhere.  It's not really a big problem though, I have scripts to compile nodes to html/pdfs and open them in firefox/pdf reader; math works fine that way.
 
 ===== offray
 
-Is not properly Leo, but is python related, tailored for math and with a
-web interface and has leo bindings, check IPython:
+Is not properly Leo, but is python related, tailored for math and with a web interface and has leo bindings, check IPython: http://ipython.org/
 
-http://ipython.org/
-
-I'm using it for all my math related writing and I think that point the
-future of interactive writing in Python. I dream of a body pane on leo
-with the features of the python qt console.
+I'm using it for all my math related writing and I think that point the future of interactive writing in Python. I dream of a body pane on leo with the features of the python qt console.
 </t>
-<t tx="ekr.20141108064630.15">The code that handles the rclick menu is in the QtIconBarClass class in
-qt_frame.py.
+<t tx="ekr.20141108064630.15">The code that handles the rclick menu is in the QtIconBarClass class in qt_frame.py.
 
 Show that the  top-level button contains structure, do this::
 
@@ -19976,9 +19726,7 @@ Show that the  top-level button contains structure, do this::
 
 An alternative: ▼ U=25BC: Black Down-Pointing Triangle.
 
-It's reasonable to have the top-level button just be a placeholder for
-subsidiary @rclick nodes. To do that without getting a warning when
-clicking the top-level button, set its script to "empty string".
+It's reasonable to have the top-level button just be a placeholder for subsidiary @rclick nodes. To do that without getting a warning when clicking the top-level button, set its script to "empty string".
 </t>
 <t tx="ekr.20141108064630.16">Put the following in the style-sheet:
 
@@ -20132,27 +19880,17 @@ This workflow has big advantages:
 4. Banning clones from leoProjects.txt forces me to complete the first draft of the documentation before committing the fix.
 </t>
 <t tx="ekr.20141109053526.4"></t>
-<t tx="ekr.20141109053526.8">GTD (Getting Things Done)
-http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280
-is, by far, the best productivity book I have ever read. Many aspects of
-Leo are idea for putting GTD into practice.
+<t tx="ekr.20141109053526.8">GTD (Getting Things Done) http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280 is, by far, the best productivity book I have ever read. Many aspects of Leo are idea for putting GTD into practice.
 
 Here is a surprisingly useful workflow tip related to GTD.
 
-Ideas often "intrude" when I am busy with something else. When that
-happens, I create a top-level node of the form::
+Ideas often "intrude" when I am busy with something else. When that happens, I create a top-level node of the form::
 
     ** description of idea
 
-Now I can continue what I was doing! This is such a simple idea, but it's
-really really important: it means I never have to put off getting my ideas
-into Leo. The "**" draws my attention to the new to-do item. Later, when I
-am not fully immersed in the previous task, I can put the "**" node
-somewhere else.
+Now I can continue what I was doing! This is such a simple idea, but it's really really important: it means I never have to put off getting my ideas into Leo. The "**" draws my attention to the new to-do item. Later, when I am not fully immersed in the previous task, I can put the "**" node somewhere else.
 
-It's super important to deal with new ideas *instantly* but *without*
-greatly interrupting the task at hand. Creating "**" nodes does that. This
-new workflow has been a big improvement to my GTD practice.
+It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
 <t tx="ekr.20141120113801.187">Allow colorizing for languages to be delegated to another language.
@@ -20359,6 +20097,8 @@ Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20150215071358.87">* Emphasize that the place to search first is LeoDocs.leo.
   Jake: The above line should be highlighted in big boldface on Leo's website.
+  
+*** Remove \@
   
 - Revise 5.1 release notes.
     - Links to other docs?
