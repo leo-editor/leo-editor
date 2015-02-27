@@ -3130,17 +3130,18 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
+
+    if not unlList:  # *after* recalc. of unlList above
+        return False, 0, p
+
     nds = [i.copy() for i in nds]
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
     pos_pattern = re.compile(r':(\d+),?(\d+)?$')
-    try:
-        target = pos_pattern.sub('', unlList[depth])
-        pos = re.findall(pos_pattern, target)
-    except IndexError:
-        # Fix bug https://github.com/leo-editor/leo-editor/issues/36
-        pos = None
+    target = pos_pattern.sub('', unlList[depth])
+    pos = re.findall(pos_pattern, target)
+
     if pos:
         use_idx_mode = True  # ok to use hard/soft_idx
         nth_sib,nth_same = pos[0]
