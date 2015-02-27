@@ -136,7 +136,7 @@ class Commands (object):
         self.navTime = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars (self):
-
+        '''Init Commander debugging ivars.'''
         self.command_count = 0
         self.scanAtPathDirectivesCount = 0
         self.trace_focus_count = 0
@@ -208,9 +208,7 @@ class Commands (object):
         
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self):
-
-        # print('c.initOptionsIvars')
-
+        '''Init Commander ivars corresponding to user options.'''
         self.fixed = False
         self.fixedWindowPosition = []
         self.forceExecuteEntireBody = False
@@ -463,41 +461,30 @@ class Commands (object):
         c.allow_at_in_paragraphs    = getBool('allow-at-in-paragraphs',default=False)
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
-            # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         c.collapse_on_lt_arrow      = getBool('collapse_on_lt_arrow',default=True)
-            # 2011/11/09: An excellent, subliminal, improvement.
         c.contractVisitedNodes      = getBool('contractVisitedNodes')
         c.fixed                     = getBool('fixedWindow',default=False)
         c.fixedWindowPositionData   = getData('fixedWindowPosition')
         c.focus_border_color        = getColor('focus_border_color') or 'red'
-        c.focus_border_command_state_color = getColor(
-            'focus_border_command_state_color') or 'blue'
-        c.focus_border_overwrite_state_color = getColor(
-            'focus_border_overwrite_state_color') or 'green'
+        c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
+        c.focus_border_overwrite_state_color = getColor('focus_border_overwrite_state_color') or 'green'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.forceExecuteEntireBody    = getBool('force_execute_entire_body',default=False)
+        c.make_node_conflicts_node  = getBool('make-node-conflicts-node',default=True)
         c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
-            # g.trace('c.max_pre_loaded_body_chars',c.max_pre_loaded_body_chars)
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
-        # c.showMinibuffer          = getBool('useMinibuffer')
-            # This option is a bad idea.
         c.page_width                = getInt('page_width') or 132
-            # 2012/02/27: this appears to be a fix of an *ancient* bug.
         c.putBitsFlag               = getBool('put_expansion_bits_in_leo_files',default=True)
         c.sparse_move               = getBool('sparse_move_outline_left')
         c.sparse_find               = getBool('collapse_nodes_during_finds')
         c.sparce_spell              = getBool('collapse_nodes_while_spelling')
         c.stayInTreeAfterSelect     = getBool('stayInTreeAfterSelect')
-        # c.stayInTreeAfterEdit       = getBool('stayInTreeAfterEditHeadline')
         c.smart_tab                 = getBool('smart_tab')
-            # Note: there is also a smart_auto_indent setting.
         c.tab_width                 = getInt('tab_width') or -4
         c.use_body_focus_border     = getBool('use_body_focus_border',default=True)
         c.use_focus_border          = getBool('use_focus_border',default=True)
         c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
-            # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
-            # g.trace(c.sparse_move)
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition (self):
 

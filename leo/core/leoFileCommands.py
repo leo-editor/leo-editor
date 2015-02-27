@@ -800,7 +800,11 @@ class FileCommands:
     def handleNodeConflicts (self):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c
-        if not c.nodeConflictList: return
+        if not c.nodeConflictList:
+            return
+        if not c.make_node_conflicts_node:
+            g.es_print('suppressed node conflicts',color='red')
+            return
         # Find the last top-level node.
         sib = c.rootPosition()
         while sib.hasNext():
@@ -856,16 +860,14 @@ class FileCommands:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles
     def readExternalFiles(self,fileName):
-
+        '''Read all external files.'''
         c,fc = self.c,self
-
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
         recoveryNode = fc.handleNodeConflicts()
-
         # Do this after reading external files.
-        # The descendent nodes won't exist unless we have read the @thin nodes!
+        # The descendent nodes won't exist unless we have read
+        # the @thin nodes!
         fc.restoreDescendentAttributes()
-
         fc.setPositionsFromVnodes()
         c.selectVnode(recoveryNode or c.p) # load body pane
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles

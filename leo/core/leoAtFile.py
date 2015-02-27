@@ -555,6 +555,9 @@ class AtFile:
                 s = f.read()
                 at.bom_encoding,s = g.stripBOM(s)
                 e = at.bom_encoding or at.encoding
+                ### This is too early!
+                ### at.encoding will usually be utf-8,
+                ### but it can be overwritten in the header!!
                 s = g.toUnicode(s,e)
                 s = s.replace('\r\n','\n')
                 at.read_lines = g.splitLines(s)
@@ -661,7 +664,7 @@ class AtFile:
                 # at.page_width
                 # at.tab_width
 
-        if trace: g.trace(repr(at.encoding),fileName)
+        if trace: g.trace('**************',repr(at.encoding),fileName)
         thinFile = at.readOpenFile(root,fileName,deleteNodes=True)
             # Calls at.scanHeader, which sets at.encoding.
         at.inputFile.close()
@@ -2805,7 +2808,8 @@ class AtFile:
         end = s[j:i]
         #@-<< set the closing comment delim >>
         if trace:
-            g.trace('valid',valid,'isThin',isThinDerivedFile)
+            g.trace(s)
+            g.trace('valid',valid,'isThin',isThinDerivedFile,'encoding',at.encoding)
         return valid,new_df,start,end,isThinDerivedFile
     #@+node:ekr.20041005105605.127: *4* at.readError
     def readError(self,message):

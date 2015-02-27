@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="56" left="667" height="1025" width="1174"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -385,6 +385,7 @@
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
+<v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20141011084458.20513"><vh>@bool use_python_tidy = False</vh></v>
@@ -1874,6 +1875,7 @@ The following integer values are supported:
 vertical: body pane on the botton
 </t>
 <t tx="ekr.20041119034357.1">@language rest
+@wrap
 
 This @settings tree contains all active settings.
 
@@ -3769,7 +3771,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="3,15,5,2,2">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -5424,8 +5426,10 @@ ul
 var</t>
 <t tx="ekr.20111109104336.12503">New in Leo 4.9.1.
 
-True (Recommended): The contract-or-goto-parent (Alt-RtArrow) contracts all
-children of the to-be-selected parent.
+True (Recommended):
+    An excellent, subliminal, improvement.
+    The contract-or-goto-parent (Alt-RtArrow) contracts all
+    children of the to-be-selected parent.
 </t>
 <t tx="ekr.20111115083813.12518"></t>
 <t tx="ekr.20120205022040.15410">These are needed to handle shortcuts for the find panel!</t>
@@ -9711,6 +9715,8 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
 <t tx="ekr.20150216135059.1"></t>
+<t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -1438,6 +1438,21 @@ def oldDump(s):
             out += "[" ; out += " " ; out += "]"
         else: out += i
     return out
+#@+node:ekr.20150227102835.8: *4* g.dump_encoded_string
+def dump_encoded_string(encoding,s):
+    '''Dump s, assumed to be an encoded string.'''
+    # Can't use g.trace here: it calls this function!
+    print('dump_encoded_string: %s' % g.callers())
+    print('dump_encoded_string: encoding %s\n' % encoding)
+    print(s)
+    in_comment = False
+    for ch in s:
+        if ch == '#':
+            in_comment = True
+        elif not in_comment:
+            print('%02x %s' % (ord(ch),repr(ch)))
+        elif ch == '\n':
+            in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
 def module_date (mod,format=None):
     theFile = g.os_path_join(app.loadDir,mod.__file__)
@@ -3130,18 +3145,17 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
-
-    if not unlList:  # *after* recalc. of unlList above
-        return False, 0, p
-
     nds = [i.copy() for i in nds]
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
     pos_pattern = re.compile(r':(\d+),?(\d+)?$')
-    target = pos_pattern.sub('', unlList[depth])
-    pos = re.findall(pos_pattern, target)
-
+    try:
+        target = pos_pattern.sub('', unlList[depth])
+        pos = re.findall(pos_pattern, target)
+    except IndexError:
+        # Fix bug https://github.com/leo-editor/leo-editor/issues/36
+        pos = None
     if pos:
         use_idx_mode = True  # ok to use hard/soft_idx
         nth_sib,nth_same = pos[0]
@@ -4732,8 +4746,14 @@ def isValidEncoding (encoding):
     try:
         codecs.lookup(encoding)
         return True
+    except LookupError: # Windows
+        return False
+    except AttributeError: # Linux
+        return False
     except Exception:
-        # UnicodeEncodeError, LookupError, AttributeError.
+        # UnicodeEncodeError
+        g.es_print('Please report the following error')
+        g.es_exception()
         return False
 #@+node:ekr.20061006152327: *4* g.isWordChar & g.isWordChar1
 def isWordChar (ch):
@@ -4778,29 +4798,45 @@ def toEncodedString (s,encoding='utf-8',reportErrors=False):
         return s
     if not encoding:
         encoding = 'utf-8'
+    # These are the only significant calls to s.encode in Leo.
     try:
         s = s.encode(encoding,"strict")
     except UnicodeError:
         s = s.encode(encoding,"replace")
         if reportErrors:
             g.error("Error converting %s from unicode to %s encoding" % (s,encoding))
+    # Tracing these calls directly yields thousands of calls.
+    # Never call g.trace here!
+        # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode (s,encoding='utf-8',reportErrors=False):
     '''Connvert a non-unicode string with the given encoding to unicode.'''
+    trace = False and not g.unitTesting
     if g.isUnicode(s):
         return s
     if not encoding:
         encoding = 'utf-8'
+    # These are the only significant calls to s.decode in Leo.
+    # Tracing these calls directly yields thousands of calls.
+    # Never call g.trace here!
+    if encoding == 'cp1252':
+        g.dump_encoded_string(encoding,s)
     try:
         s = s.decode(encoding,'strict')
     except UnicodeError:
         s = s.decode(encoding,'replace')
-        if reportErrors:
-            g.error("Error converting %s from %s encoding to unicode" % (s,encoding))
+        if trace or reportErrors:
+            g.trace(g.callers())
+            g.error("toUnicode: Error converting %s... from %s encoding to unicode" % (
+                s[:200],encoding))
     except AttributeError:
+        if trace:
+            print('toUnicode: AttributeError!: %s' % s)
         # May be a QString.
         s = g.u(s)
+    if trace and encoding == 'cp1252':
+        print('toUnicode: returns %s' % s)
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
 if isPython3: # g.not defined yet.
