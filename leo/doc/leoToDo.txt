@@ -1,153 +1,29 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
 .. @@language rest # override the default .txt coloring.
-
+.. @@wrap
 .. @+all
-.. @+node:ekr.20150225133846.4: ** Recent to-do
+.. @+node:ekr.20150227040245.8: ** To do today
 @language rest
 @wrap
 
-* Continue work on leo_to_html.xsl.
-
-- Call scanAllDirectives at end of initReadIvars?
-
+* Use import-file logic to get files in --diff mode.
+    (see child node) Document --diff option prominently.
+    
 - Use @auto instead of @edit when reading non.leo files?
 
 - Add setting (not recommended!) to suppress "Recovered Nodes" messages.
-.. @+node:ekr.20150211104036.476: ** To do first
+
+- Call scanAllDirectives at end of initReadIvars?
+.. @+node:ekr.20150227040245.4: ** To do: Leo 5.1 b1
 @language rest
-.. @+node:ekr.20150217154248.4: *3* ** importing to @nosent bug
-@language rest
+@wrap
 
-May need to announce this bug.
+* (See child): what about import to @nosent bug?
 
-This must be an importer bug, maybe in skipDecls or its caller.
-
-Lines like::
-    
-    RCS_id='$Id: Connection1.py,v 1.1 2005-06-13 20:55:22 syt Exp $'
-    
-Appear both at the top level and in an < < declarations > > section.
-.. @+node:ekr.20150215071358.83: *3* Is import-from-disk dangerous?
-@language rest
-
-I just realized that refresh-from-disk *destroys* clone links and uAs in
-@file and @nosent trees. refresh-from-disk is equivalent to using @auto!
-
-It might be better to use the @shadow update algorithm for
-refresh-from-disk. This will preserve clone links and uA's but will not
-restore changed sections in @file nodes as well as the importers Otoh,
-refresh-from-disk on an @file node is definitely not something to be done
-lightly at present.
-
-It's an open question whether refresh-from-disk should use importers as at
-present, or should use the @shadow update algorithm. The latter is safer,
-but otherwise less convenient.
-
-.. @+node:ekr.20150216074433.9: *4* Use @shadow logic in refresh-from-disk?
-.. @+node:ekr.20150215102218.4: *3* Create @ns-rst/vo/otl commands
-@language rest
-
-===== @ns-* write logic
-
-In his initial post, Rob said, "when I change my @auto-rst files to @nosent
-files, the resulting files do not contain the RST section headers that were
-automatically added by @auto-rst."
-
-This proves that @ns-rst must have special logic that writes the proper
-section headers. Happily, this can be done easily with special cases in
-at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
-
-From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
-
-===== @ns-* read logic
-
-No change is actually *required* for @ns-rst and @ns-md. When reading an
-@ns-rst or @ns-md file, added sections could be slurped into the outline as
-under/overlining text. The user could leave the changed node as it is. Or
-the user could create a new node with the indicated headline. Either way,
-the @ns-rst write logic would recreate the changed file.
-
-However, a simple, fast post-pass in the @ns-rst/md read logic could create
-the new nodes automagically. The post-pass would traverse the tree created
-by the @nosent logic looking for under/overlined lines (or # lines for md),
-creating new nodes as needed. The actual code would be similar to the
-@auto-rst logic,but it exists in a far simpler context than @auto-rst.
-
-Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
-vimoutline or otl sentinels should *never* be left as plain text in an
-existing node. The "raw" sentinels would corrupt the vim or Emacs outline
-if the node were later moved. An unpleasant time bomb.
-.. @+node:ekr.20150213061241.4: *3* Create import-rst/vo/otl-file commands
-.. @+node:ekr.20150213061241.6: *3* Bugs
-.. @+node:ekr.20150213061241.5: *4* Before b1
-.. @+node:ekr.20150211104036.473: *5* Fix already-open logic
-This can cause Leo to hang.
-.. @+node:ekr.20150211104036.4: *5* Fix bug 135: drag and drop between trees broken
-https://github.com/leo-editor/leo-editor/issues/135
-drag and drop between trees broken
-
-This may also affect paste-retaining-clones.
-
-4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
-commit 4f848037424544e127166dbb0375f90c6826aa21
-Author: Edward K. Ream <edreamleo@gmail.com>
-Date:   Fri Sep 13 16:44:33 2013 -0500
-
-See 
-.. @+node:ekr.20150211131925.5: *5* Fix doc bug re open directory
-https://groups.google.com/d/msg/leo-editor/1oj9Oznn1as/O5ftHfFLAkMJ
-
-some of the text at http://leoeditor.com/running.html#the-leo-directory is
-a bit ambiguous (it's using "HOME" to refer to both Leo the program's home
-folder AND the user's home folder) and went to clean it up a bit, and then
-realized I had to research how.
-
------
-
-The first sentence is referring to Leo's home, "Python’s HOME environment
-variable specifies Leo’s HOME directory. See
-http://docs.python.org/lib/os-procinfo.html for details.".
-
-I think it rare for Python HOME to expand to C:\users\jane. :)
-.. @+node:ekr.20150211104036.471: *5* Fix bibtex plugin
-@language rest
-
-https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
-
-The problem appears in both Python 2 and Python 3:
-
-The body text of any of the article, journal, etc. nodes is written as body
-text of the @bibtex node. It overwrites each time the previous body text of
-the @bibtex node. The body text of the single bibliography nodes remain
-empty.
-
-@language python
-.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst` should add an empty line after a heading
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/122
-
-When one generates a node (call it Placeholder) without
-any contents, then the resulting rst file is written like:
-
-Placeholder
-***********
-Summary
-*******
-
-That is, there is no space between the two headings. Then if I do Refresh
-from disk, @auto-rst yields an error. This should not happen if @auto-rst
-automatically writes an empty line after each heading.
-.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Bracket matching should take into account the language in effect.
-
-For example, JavaScript regular expressions are not handled properly.
-
-Furthermore, there should be a command to select the region between
-matching brackets.
+* Fix bugs targeted for b1:
+  https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A%225.1+b1%22
+.. @+node:ekr.20150227040245.5: *3* Bugs for b1/b2
 .. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
@@ -227,13 +103,180 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150205181818.7: *4* document idle-time properly in docstrings
+.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst` should add an empty line after a heading
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/122
+
+When one generates a node (call it Placeholder) without
+any contents, then the resulting rst file is written like:
+
+Placeholder
+***********
+Summary
+*******
+
+That is, there is no space between the two headings. Then if I do Refresh
+from disk, @auto-rst yields an error. This should not happen if @auto-rst
+automatically writes an empty line after each heading.
+.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Bracket matching should take into account the language in effect.
+
+For example, JavaScript regular expressions are not handled properly.
+
+Furthermore, there should be a command to select the region between
+matching brackets.
+.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
+https://github.com/leo-editor/leo-editor/issues/135
+drag and drop between trees broken
+
+This may also affect paste-retaining-clones.
+
+4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
+commit 4f848037424544e127166dbb0375f90c6826aa21
+Author: Edward K. Ream <edreamleo@gmail.com>
+Date:   Fri Sep 13 16:44:33 2013 -0500
+
+See 
+.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/142
+
+https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
+
+The problem appears in both Python 2 and Python 3:
+
+The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
+.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150217154248.4: *4* Fix bug 144: Import to @clean produces duplicate lines
+https://github.com/leo-editor/leo-editor/issues/144
+
+This looka like an importer bug, maybe in skipDecls or its caller.
+
+When using an import script to import to @nosent/@clean, lines like::
+
+RCS_id='$Id: Connection1.py,v 1.1 2005-06-13 20:55:22 syt Exp $'
+
+Appear both at the top level and in an < < declarations > > section.
+.. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
+https://github.com/leo-editor/leo-editor/issues/145
+
+Iirc, choosing yes-to-all when Leo reports that a file is already open can cause Leo to hang or crash.
+
+One option would simply be to eliminate the yes-to-all option.
+
+Imo, the present code is too complicated.
+.. @+node:ekr.20150227040245.9: *3* Finish leo reader web page
+leo_to_html.xsl:
+- jQuery script to expand/contract nodes
+- Outline and body panes should be fixed size.
+- Support key bindings.
+.. @+node:ekr.20150227040245.7: *3* Fix unicode bug for @clean
+Run git bisect to find commit that broke code point handling.
+    If necessary, email to OP asking him to run git bisect.
+
+.. @+node:ekr.20150225082604.6: *3* Added --diff command-line option
+@language rest
+@wrap
+
+Leo performs a diff automatically after load when --diff is in effect and exactly two files are given.
+
+===== How to configure git diff:
+
+An excellent reference:
+http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
+
+The essential idea: what you refer to in the config file is actually a shell (/bin/sh) script, not a DOS script.
+
+Here is git-editor.bat::
+@language shell
+
+    #!/bin/sh
+    # Wrapper for git editor
+    "C:/Program Files (x86)/wscite/scite.exe" "$*"
+
+Here is git-difftool.bat::
+    
+    #!/bin/sh
+    
+    # sh wrapper for external git diff
+    # sourceTree now calls this wrapper for external diffs.
+    
+    # http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
+    
+    # diff is called by git with 7 parameters:
+    #  path old-file old-hex old-mode new-file new-hex new-mode
+    #  "<path_to_diff_executable>" "$2" "$5" | cat
+    
+    C:/python27/python.exe C:/leo.repo/leo-editor/launchLeo.py --diff "$2" "$5" | cat
+.. @+node:ekr.20150215071358.83: *3* Is import-from-disk dangerous?
+@language rest
+
+I just realized that refresh-from-disk *destroys* clone links and uAs in
+@file and @nosent trees. refresh-from-disk is equivalent to using @auto!
+
+It might be better to use the @shadow update algorithm for
+refresh-from-disk. This will preserve clone links and uA's but will not
+restore changed sections in @file nodes as well as the importers Otoh,
+refresh-from-disk on an @file node is definitely not something to be done
+lightly at present.
+
+It's an open question whether refresh-from-disk should use importers as at
+present, or should use the @shadow update algorithm. The latter is safer,
+but otherwise less convenient.
+
+.. @+node:ekr.20150216074433.9: *4* Use @shadow logic in refresh-from-disk?
+.. @+node:ekr.20150205181818.7: *3* document idle-time properly in docstrings
 @language rest
 
 Both in the IdleTime class and g.IdleTime.
 
 https://groups.google.com/forum/#!searchin/leo-editor/IdleTime/leo-editor/vRIY_u6vPc0/1ld5jdEYMOkJ
-.. @+node:ekr.20150211104036.477: *3* Investigate smart paste
+.. @+node:ekr.20150211104036.474: ** First improvements
+.. @+node:ekr.20150227040245.10: *3* Jump to [node of selected text]
+https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
+
+Terry: Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+Matt: Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
+
+Consider the following code:
+
+    print "Downloading", ', '.join(packages)
+    for p in packages:
+        do_download(p)
+        ball(p)
+        md5(p)
+
+Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
+.. @+node:ekr.20150211104036.477: *3* Smart paste
 @language rest
 .. @+node:ekr.20150211104036.478: *4* Terry's post
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
@@ -273,7 +316,6 @@ data formats that are currently available on the clipboard. " --
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20150211131925.4: *3* Feature: auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
-.. @+node:ekr.20150211104036.474: ** First improvements
 .. @+node:ekr.20150120155724.4: *3* improve python importer
 @language rest
 
@@ -287,7 +329,7 @@ https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
 to organizer node whose headline is Imports.
 .. @+node:ekr.20141210123805.9: *3* Support rope
 .. @+node:ekr.20130806211959.17377: *3* Add coffeescript importer
-.. @+node:ekr.20120226183512.10195: ** Other bugs Bugs
+.. @+node:ekr.20120226183512.10195: ** Other bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
@@ -11622,5 +11664,38 @@ I think that's really all we're talking about, some @settings to test during imp
 - Change LoadManager to handle a reload flag.
 .. @+node:ekr.20111019104425.15863: *5* Use pygments for syntax coloring
 This has essentially no chance of improving Leo
+.. @+node:ekr.20150215102218.4: *5* Create @ns-rst/vo/otl commands
+@language rest
+
+===== @ns-* write logic
+
+In his initial post, Rob said, "when I change my @auto-rst files to @nosent
+files, the resulting files do not contain the RST section headers that were
+automatically added by @auto-rst."
+
+This proves that @ns-rst must have special logic that writes the proper
+section headers. Happily, this can be done easily with special cases in
+at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
+
+From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
+
+===== @ns-* read logic
+
+No change is actually *required* for @ns-rst and @ns-md. When reading an
+@ns-rst or @ns-md file, added sections could be slurped into the outline as
+under/overlining text. The user could leave the changed node as it is. Or
+the user could create a new node with the indicated headline. Either way,
+the @ns-rst write logic would recreate the changed file.
+
+However, a simple, fast post-pass in the @ns-rst/md read logic could create
+the new nodes automagically. The post-pass would traverse the tree created
+by the @nosent logic looking for under/overlined lines (or # lines for md),
+creating new nodes as needed. The actual code would be similar to the
+@auto-rst logic,but it exists in a far simpler context than @auto-rst.
+
+Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
+vimoutline or otl sentinels should *never* be left as plain text in an
+existing node. The "raw" sentinels would corrupt the vim or Emacs outline
+if the node were later moved. An unpleasant time bomb.
 .. @-all
 .. @-leo
