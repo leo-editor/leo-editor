@@ -105,6 +105,18 @@ should position cursor on the declaration line of function temp7(a), but it
 positions cursor on line 39.
 
 https://groups.google.com/group/leo-editor/attach/63f325cf79f6b2e9/nosent-goto-line-bug.leo?part=0.1
+.. @+node:ekr.20150226111021.4: *4* Fixed bug 140: @clean does not preserve extended ASCII characters on read
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/140
+
+This was a bug in the @file read logic.
+
+The fix was to call at.readFileToUnicode in at.readOpenFile.
+
+The new code is enabled by the new_read_line switch in leoAtFile.py.
+
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.

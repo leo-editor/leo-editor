@@ -4820,7 +4820,7 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
     # These are the only significant calls to s.decode in Leo.
     # Tracing these calls directly yields thousands of calls.
     # Never call g.trace here!
-    if encoding == 'cp1252':
+    if trace and encoding == 'cp1252':
         g.dump_encoded_string(encoding,s)
     try:
         s = s.decode(encoding,'strict')

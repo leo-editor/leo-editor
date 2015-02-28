@@ -9,6 +9,9 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
+new_read_line = True
+    # Don't convert to unicode until the file encoding is known.
+    
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -441,9 +444,7 @@ class AtFile:
             at.root.v._p_changed = True
     #@+node:ekr.20130911110233.11286: *3* at.initReadLine
     def initReadLine(self,s):
-        
         '''Init the ivars so that at.readLine will read all of s.'''
-        
         # This is part of the new_read logic.
         at = self
         at.read_i = 0
@@ -527,7 +528,7 @@ class AtFile:
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
-    #@+node:ekr.20041005105605.19: *4* at.openFileForReading & helper
+    #@+node:ekr.20041005105605.19: *4* at.openFileForReading & helper (*big change*)
     def openFileForReading(self,fromString=False):
         '''
         Open the file given by at.root.
@@ -552,15 +553,25 @@ class AtFile:
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = f = open(fn,'rb')
-                s = f.read()
-                at.bom_encoding,s = g.stripBOM(s)
-                e = at.bom_encoding or at.encoding
-                ### This is too early!
-                ### at.encoding will usually be utf-8,
-                ### but it can be overwritten in the header!!
-                s = g.toUnicode(s,e)
-                s = s.replace('\r\n','\n')
-                at.read_lines = g.splitLines(s)
+                if new_read_line:
+                    at.readFileToUnicode(fn)
+                        # Sets at.encoding...
+                        #   From the BOM, if present.
+                        #   Otherwise from the header, if it has -encoding= 
+                        #   Otherwise, uses existing value of at.encoding.
+                        # Then does:
+                        #    s = s.replace('\r\n','\n')
+                        #    at.initReadLine(s) 
+                else:
+                    s = f.read()
+                    at.bom_encoding,s = g.stripBOM(s)
+                    e = at.bom_encoding or at.encoding
+                    ### This is too early!
+                    ### at.encoding will usually be utf-8,
+                    ### but it can be overwritten in the header!!
+                    s = g.toUnicode(s,e)
+                    s = s.replace('\r\n','\n')
+                    at.read_lines = g.splitLines(s)
                 # g.trace(at.bom_encoding,fn)
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -1341,15 +1352,23 @@ class AtFile:
         return v
     #@+node:ekr.20130911110233.11284: *4* at.readFileToUnicode & helpers
     def readFileToUnicode(self,fn):
-        
-        '''Read the file into a unicode string s and return same.
-        
-        Set at.encoding and init at.readLines if all went well.
-        
-        Return None on failure.
         '''
+        Carefully sets at.encoding, then uses at.encoding to convert the file
+        to a unicode string. Calls at.initReadLine if all went well.
         
-        # This is part of the new_read logic.
+        Sets at.encoding as follows:
+        1. Use the BOM, if present. This unambiguously determines the encoding.
+        2. Use the -encoding= field in the @+leo header, if present and valid.
+        3. Otherwise, uses existing value of at.encoding, which comes from:
+            A. An @encoding directive, found by at.scanAllDirectives.
+            B. The value of c.config.default_derived_file_encoding.
+        
+        Returns the string, or None on failure.
+        
+        This method is now part of the main @file read code.
+        at.openFileForReading calls this method to read all @file nodes.
+        Previously only at.scanHeaderForThin (import code) called this method.
+        '''
         at = self
         s = at.openFileHelper(fn)
         if s is not None:
@@ -1363,12 +1382,14 @@ class AtFile:
                     s = g.toUnicode(s,'ascii',reportErrors=False)
                 e = at.getEncodingFromHeader(fn,s)
                 s = g.toUnicode(s,encoding=e)
+            if new_read_line:
+                s = s.replace('\r\n','\n')
             at.encoding = e
             at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *5* at.openFileHelper
     def openFileHelper(self,fn):
-        
+        '''Open a file, reporting all exceptions.'''
         at = self
         s = None
         try:
@@ -1383,24 +1404,22 @@ class AtFile:
         return s
     #@+node:ekr.20130911110233.11287: *5* at.getEncodingFromHeader
     def getEncodingFromHeader(self,fn,s):
-        
-        ''' Return the encoding given in the @+leo sentinel, if the sentinel is
-        present, or the default external encoding otherwise.
-        
         '''
-        
+        Return the encoding given in the @+leo sentinel, if the sentinel is
+        present, or the previous value of at.encoding otherwise.
+        '''
         at = self
         if at.errors:
             g.trace('can not happen: at.errors > 0')
             e = at.encoding
         else:
             at.initReadLine(s)
-            default_encoding = at.encoding
-            assert default_encoding
+            old_encoding = at.encoding
+            assert old_encoding
             at.encoding = None
             # Execute scanHeader merely to set at.encoding.
             at.scanHeader(fn,giveErrors=False)
-            e = at.encoding or default_encoding
+            e = at.encoding or old_encoding
         assert e
         return e
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
@@ -2889,10 +2908,10 @@ class AtFile:
             firstLines.append(s)
             s = at.readLine()
         return s
-    #@+node:ekr.20050103163224: *4* at.scanHeaderForThin (used by import code)
+    #@+node:ekr.20050103163224: *4* at.scanHeaderForThin (import code)
     def scanHeaderForThin (self,fileName):
-
-        '''Return true if the derived file is a thin file.
+        '''
+        Return true if the derived file is a thin file.
         
         This is a kludgy method used only by the import code.'''
 
@@ -2901,6 +2920,7 @@ class AtFile:
             # inits at.readLine.
         junk,junk,isThin = at.scanHeader(None)
             # scanHeader uses at.readline instead of its args.
+            # scanHeader also sets at.encoding.
         return isThin
     #@+node:ekr.20041005105605.131: *4* at.skipIndent
     # Skip past whitespace equivalent to width spaces.
