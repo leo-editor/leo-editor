@@ -102,7 +102,7 @@ def popup_entry(c,p,menu):
     c.cleo.addPopupMenu(c,p,menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
-    class cleoQtUI(QtWidgets.QWidget):
+    class todoQtUI(QtWidgets.QWidget):
         #@+others
         #@+node:ekr.20111118104929.10204: *3* ctor
         def __init__(self, owner, logTab=True):
@@ -110,7 +110,7 @@ if g.app.gui.guiName() == "qt":
             self.owner = owner
             QtWidgets.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
-            # change dir to get themed icons
+            # change dir to get themed icons, needed for uic resources
             theme = g.app.config.getString('color_theme')
             if theme:
                 testPath = g.os_path_join(
@@ -394,10 +394,10 @@ class todoController:
            ('select3', self.updateUI),
            ('save2', self.loadAllIcons),
         ]
-        # chdir so the Icons can be located
+        # chdir so the Icons can be located, needed for uic resources
         owd = os.getcwd()
-        os.chdir(os.path.split(__file__)[0])
-        self.ui = cleoQtUI(self)
+        os.chdir(g.os_path_join(g.app.loadDir, '..', 'plugins'))
+        self.ui = todoQtUI(self)
         os.chdir(owd)
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
@@ -444,7 +444,7 @@ class todoController:
             else:
                 a = taskmenu.addAction("(%s %s)"%(rnd(time_), self.time_name))
             a.enabled = False
-        cleoQtUI.populateMenu(taskmenu, self)
+        todoQtUI.populateMenu(taskmenu, self)
     #@+node:tbrown.20090630144958.5320: *3* menuicon
     def menuicon(self, pri, progress=False):
         """return icon from cache, placing it there if needed"""
