@@ -2357,17 +2357,18 @@ class FileCommands:
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
     #@+node:ekr.20050418161620.2: *3* fc.putUaHelper
     def putUaHelper (self,torv,key,val):
-
         '''Put attribute whose name is key and value is val to the output stream.'''
-
-        # g.trace(key,repr(val),g.callers())
-
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
             if type(val) == type(''):
                 attr = ' %s="%s"' % (key,xml.sax.saxutils.escape(val))
                 return attr
+            elif g.isUnicode(val):
+                val = g.toEncodedString(val)
+                attr = ' %s="%s"' % (key,xml.sax.saxutils.escape(val))
+                return attr
             else:
+                g.trace(type(val),repr(val))
                 g.warning("ignoring non-string attribute",key,"in",torv)
                 return ''
         else:
