@@ -7970,20 +7970,9 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070915101157.3: *7* Fixed UNL bug1
 Email from Terry Brown
 
-A softish bug, but the use of findNodeInTree() in the UNL code can 
-take you to the wrong place if more than one node in the tree has 
-the same headString.  Patch below - can still go wrong if more than 
-one sibling has the same name, but the UNL system doesn't have a 
-solution for that.
+A softish bug, but the use of findNodeInTree() in the UNL code can take you to the wrong place if more than one node in the tree has the same headString.  Patch below - can still go wrong if more than one sibling has the same name, but the UNL system doesn't have a solution for that.
 
-An observation - the UNL jumping code will drop you as far down the 
-path as it gets, i.e. you're moved to the last node that was one the 
-path, even if the path ends before the last part of the UNL is 
-reached.  This is ok, i.e. "this is as far as I could follow the 
-UNL", the alternative would be to not move at all if the whole UNL 
-can't be followed.
-
-Cheers -Terry
+An observation - the UNL jumping code will drop you as far down the path as it gets, i.e. you're moved to the last node that was one the path, even if the path ends before the last part of the UNL is reached.  This is ok, i.e. "this is as far as I could follow the UNL", the alternative would be to not move at all if the whole UNL can't be followed.
 
 anon_cvs> cvs diff leo/plugins/UNL.py
 Index: leo/plugins/UNL.py
@@ -8013,7 +8002,7 @@ http://sourceforge.net/forum/message.php?msg_id=4445685
 #@+node:ekr.20070915101157.16: *7* fixed c parser so it handles non-ascii declaratsions
 http://sourceforge.net/forum/message.php?msg_id=4446937
 #@+node:ekr.20070915101157.17: *7* Fixed colorizing bug and moved calls to w.toGuiIndex out of some loops
-# The code that was removing tags was not working properly.
+The code that was removing tags was not working properly.
 #@+node:ekr.20070915101157.18: *7* Fixed unicode bug in http plugin
 http://sourceforge.net/forum/message.php?msg_id=4437415
 #@+node:ekr.20070915101157.19: *7* Fixed new @path problem
@@ -8021,8 +8010,6 @@ http://sourceforge.net/forum/message.php?msg_id=4462693
 #@+node:ekr.20070915101157.40: *7* Fixed @auto path bug
 http://sourceforge.net/forum/message.php?msg_id=4464980
 #@+node:ekr.20070915101157.45: *7* Improved messages on @import failure
-@nocolor
-
 http://sourceforge.net/forum/message.php?msg_id=4465132
 By: terry_n_brown
 
@@ -8033,11 +8020,7 @@ leo said this when it read the file:
 
 @auto did not import the file perfectly
 
-but never mentioned @ignore or anything.  I made a trivial change and saved
-and diff could find no difference except my trivial change... which seems perfect
-to me...?
-
-@color
+but never mentioned @ignore or anything.  I made a trivial change and saved and diff could find no difference except my trivial change... which seems perfect to me...?
 #@+node:ekr.20070915101157.48: *7* Fixed problem with space in path names in runLeoDynamicTest
 https://sourceforge.net/forum/message.php?msg_id=4459798
 #@+node:ekr.20070915101157.50: *7* Fixed bad drag & drop bug
@@ -8070,17 +8053,11 @@ languages.
 These changes mean that Leo might change a external file if such a change occurs
 only in leading whitespace in a non-strict language.
 #@+node:ekr.20070920092716: *7* New commands for resolving cvs conflicts
-The so-called resolve-cvs-conflict project has resolved itself into small,
-easily understood commands.
+The so-called resolve-cvs-conflict project has resolved itself into small, easily understood commands.
 
-The **read-file-into-node** command prompts for a filename, and creates an node
-whose headline is @read-file-into-node <filename> and whose body text is the
-entire contents of the file.
+The **read-file-into-node** command prompts for a filename, and creates an node whose headline is @read-file-into-node <filename> and whose body text is the entire contents of the file.
 
-The **write-file-from-node** command writes the body text of the selected not to a file.
-If the headline of the presently selected node starts with @read-file-into-node
-the command use the filename that follows in the headline. Otherwise, the
-command prompts for a filename.
+The **write-file-from-node** command writes the body text of the selected not to a file. If the headline of the presently selected node starts with @read-file-into-node the command use the filename that follows in the headline. Otherwise, the command prompts for a filename.
 
 When a cvs conflict occurs, the user will:
 
@@ -8090,17 +8067,9 @@ When a cvs conflict occurs, the user will:
 
 - write the file with the write-file-from-node command.
 
-Any file can be fixed in this way, including external files and .leo files. The
-only complication is that the user must not change sentinel lines. Two new
-commands check the contents of a node: The **check-derived-file** and
-**check-leo-file** commands tell whether a trial read of the presently selected
-node can be done successfully. The check-derived-file command assumes the body
-text is a external file; the check-leo-file command assumes the body text is an
-entire .leo file.
+Any file can be fixed in this way, including external files and .leo files. The only complication is that the user must not change sentinel lines. Two new commands check the contents of a node: The **check-derived-file** and **check-leo-file** commands tell whether a trial read of the presently selected node can be done successfully. The check-derived-file command assumes the body text is a external file; the check-leo-file command assumes the body text is an entire .leo file.
 
-The **compare-leo-outlines** command prompts for another (presumably similar)
-.leo file that will be compared with the presently selected outline file (main
-window). It then creates clones of all inserted, deleted and changed nodes.
+The **compare-leo-outlines** command prompts for another (presumably similar) .leo file that will be compared with the presently selected outline file (main window). It then creates clones of all inserted, deleted and changed nodes.
 #@+node:ekr.20071004101349: *5* 4.4.4 b3
 Leo 4.4.4 beta 3                            October 23, 2007
 
@@ -8186,35 +8155,25 @@ Suppressed doc-part-delims when show_doc_parts_as_paragraphs is True.
 #@+node:ekr.20071023080957: *7* Fixed bugs when running unit tests externally
 The run-unit-tests command runs tests using the bridge, which uses a nullGui and a stringTextWidget.
 
-Added a hack to g.getScript so it always gets the script from p.bodyString when
-g.app.gui.inBridge is True.
+Added a hack to g.getScript so it always gets the script from p.bodyString when g.app.gui.inBridge is True.
 #@+node:ekr.20071004101443.29: *6* New Features
 #@+node:ekr.20071004103659: *7* The Great Graph Aha
 The Great Graph Aha is:
 
 A Leo outline doesn't have to *be* an arbitrary graph in order to *represent* an arbitrary graph.
 
-So the graph world is unnecessary because we can use Leo nodes and trees as data
-to other graphing packages.** That is, Python scripts can build arbitrary graphs
-using Leo's existing nodes and trees. And Python scripts can manipulate those
-graphs. And Python scripts could do the reverse: manipulate the Leo outline by
-traversing general graphs. So there is no need to complicate Leo's fundamental
-data structures. Hurray! Instead, we build on the strengths of already existing
-graphing packages.
+So the graph world is unnecessary because we can use Leo nodes and trees as data to other graphing packages.** That is, Python scripts can build arbitrary graphs using Leo's existing nodes and trees. And Python scripts can manipulate those graphs. And Python scripts could do the reverse: manipulate the Leo outline by traversing general graphs. So there is no need to complicate Leo's fundamental data structures. Hurray! Instead, we build on the strengths of already existing graphing packages.
 
 The Great Graph Aha created the opportunity for immediate action:
 
-1. test.leo contains the essential scripts to implement graphs in Leo files.
-   These short, simple, self-contained, easily modifiable scripts make possible
-   everything ever envisaged by the (now-defunct) graph world project::
+1. test.leo contains the essential scripts to implement graphs in Leo files. These short, simple, self-contained, easily modifiable scripts make possible everything ever envisaged by the (now-defunct) graph world project::
 
     leo2graph: convert a normal Leo tree to a NetworkX graph. 
     at-graph2graph: convert an @graph tree to a NetworkX graph. 
     at-networkx2graph: convert an @networkx tree to a NetworkX graph 
     at-networkx2at-graph: create an @graph tree from an @networkx tree.
 
-2. The graphed plugin allows users to manipulate parts of Leo outlines as if
-they were general graphs. It is still early days for this exciting plugin.
+2. The graphed plugin allows users to manipulate parts of Leo outlines as if they were general graphs. It is still early days for this exciting plugin.
 #@+node:ekr.20071021111856.441: *7* Rewrote threading colorizer
 The new code is simple and elegant.  Almost all flash is gone.
 #@+node:ekr.20070806090226.15: *7* Added support for @auto files
@@ -8316,41 +8275,27 @@ in leoPy.leo to see how easy it is to create new parsers.
 #@+node:ekr.20071004101443.52: *7* Added @buttons trees in @settings trees
 @button nodes in the @buttons tree in settings file define **global buttons** that appear in all Leo outlines.
 #@+node:ekr.20071004101443.105: *7* Added @menus trees in @settings trees
-Leo creates its menus using @menus trees. Within @menus trees,
-@menu nodes create menus and @item nodes create menu items.
+Leo creates its menus using @menus trees. Within @menus trees, @menu nodes create menus and @item nodes create menu items.
 
 Notes:
 
-- The menu name always follows @menu. If the menu name is 'Plugins', Leo will
-  create the Plugins menu and populate the menu by calling the
-  'create-optional-menus' hook. This creates the Plugins menu as usual.
+- The menu name always follows @menu. If the menu name is 'Plugins', Leo will create the Plugins menu and populate the menu by calling the 'create-optional-menus' hook. This creates the Plugins menu as usual.
 
 - Nested @menu nodes contain submenus.
 
-- The command name follows @item. If the body text of an @item node exists, this
-  body text is the menu name. Otherwise, the menu name is the command name.
-  However, if the command name starts with a '*', hyphens are removed from the
-  menu name.
+- The command name follows @item. If the body text of an @item node exists, this body text is the menu name. Otherwise, the menu name is the command name. However, if the command name starts with a '*', hyphens are removed from the menu name.
 
-- Menu names and command names may contain a single ampersand (&). If present,
-  the following character is underlined in the name.
+- Menu names and command names may contain a single ampersand (&). If present, the following character is underlined in the name.
 
-- If the command name in an @item node is just a hyphen (-), the item represents
-  a menu separator.
+- If the command name in an @item node is just a hyphen (-), the item represents a menu separator.
 
 - Unicode characters, e.g., Chinese characters *are* allowed.
 #@+node:ekr.20070920092716: *7* New commands for resolving cvs conflicts
-The so-called resolve-cvs-conflict project has resolved itself into small,
-easily understood commands.
+The so-called resolve-cvs-conflict project has resolved itself into small, easily understood commands.
 
-The **read-file-into-node** command prompts for a filename, and creates an node
-whose headline is @read-file-into-node <filename> and whose body text is the
-entire contents of the file.
+The **read-file-into-node** command prompts for a filename, and creates an node whose headline is @read-file-into-node <filename> and whose body text is the entire contents of the file.
 
-The **write-file-from-node** command writes the body text of the selected not to a file.
-If the headline of the presently selected node starts with @read-file-into-node
-the command use the filename that follows in the headline. Otherwise, the
-command prompts for a filename.
+The **write-file-from-node** command writes the body text of the selected not to a file. If the headline of the presently selected node starts with @read-file-into-node the command use the filename that follows in the headline. Otherwise, the command prompts for a filename.
 
 When a cvs conflict occurs, the user will:
 
@@ -8360,20 +8305,11 @@ When a cvs conflict occurs, the user will:
 
 - write the file with the write-file-from-node command.
 
-Any file can be fixed in this way, including external files and .leo files. The
-only complication is that the user must not change sentinel lines. Two new
-commands check the contents of a node: The **check-derived-file** and
-**check-leo-file** commands tell whether a trial read of the presently selected
-node can be done successfully. The check-derived-file command assumes the body
-text is a external file; the check-leo-file command assumes the body text is an
-entire .leo file.
+Any file can be fixed in this way, including external files and .leo files. The only complication is that the user must not change sentinel lines. Two new commands check the contents of a node: The **check-derived-file** and **check-leo-file** commands tell whether a trial read of the presently selected node can be done successfully. The check-derived-file command assumes the body text is a external file; the check-leo-file command assumes the body text is an entire .leo file.
 
-The **compare-leo-outlines** command prompts for another (presumably similar)
-.leo file that will be compared with the presently selected outline file (main
-window). It then creates clones of all inserted, deleted and changed nodes.
+The **compare-leo-outlines** command prompts for another (presumably similar) .leo file that will be compared with the presently selected outline file (main window). It then creates clones of all inserted, deleted and changed nodes.
 #@+node:ekr.20071004105000: *7* Added the graphed plugin
-The graphed plugin allows users to manipulate parts of Leo outlines as if
-they were general graphs. It is still early days for this exciting plugin.
+The graphed plugin allows users to manipulate parts of Leo outlines as if they were general graphs. It is still early days for this exciting plugin.
 #@+node:ekr.20071004101443.178: *7* New convenience methods
 The c.frame.logcreateCanvas convenience method create a canvas tab in the log pane.
 Here is a sample script:
@@ -8491,19 +8427,14 @@ This fixes a fairly old crasher in the fastGotoNode plugin.
 False (legacy): Top pane contains outline and log panes.
 True: Top pane contains only the outline pane.  Bottom pane contains body and log panes.
 #@+node:ekr.20071026053931.234: *7* Can print *can* handle unicode
-To allow Python's print statement to print unicode characters properly, you must
-change Python's default encoding to something other than 'ascii'. To do this,
-put the following in your sitecustomize.py file in Python's Lib folder::
+To allow Python's print statement to print unicode characters properly, you must change Python's default encoding to something other than 'ascii'. To do this, put the following in your sitecustomize.py file in Python's Lib folder::
 
     import sys 
     sys.setdefaultencoding('utf-8') # 'iso-8859-1' is another choice.
 
-You must restart Python after doing this: sys.setdefaultencoding can not be
-called after Python starts up.
+You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up.
 
-Leo's g.es_print function attempts to convert incoming arguments to unicode
-using the default encoding. For example, the following Leo script always prints
-La Pe��a::
+Leo's g.es_print function attempts to convert incoming arguments to unicode using the default encoding. For example, the following Leo script always prints La Pe��a::
 
     @first # -*- coding: utf-8 -*-
     # The line above is required for Python 2.5
@@ -8515,8 +8446,7 @@ For still more details, see:
 
 http://www.diveintopython.org/xml_processing/unicode.html 
 #@+node:ekr.20071026180804.1: *7* Improved the prototype of icon handling
-The prototype in test.leo now uses PIL (Python Imaging Library) if available,
-so many more kinds of icons can be used.
+The prototype in test.leo now uses PIL (Python Imaging Library) if available, so many more kinds of icons can be used.
 
 Buttons now exist to add icons to do the following:
 
@@ -8525,8 +8455,7 @@ Buttons now exist to add icons to do the following:
 - Print the icon files associated with a node.
 - Print the sizes of icons in a directory.
 
-In addition, fixed a bug in the icon handling in the outline widget that caused
-duplicate icons not to be drawn properly.
+In addition, fixed a bug in the icon handling in the outline widget that caused duplicate icons not to be drawn properly.
 #@+node:ekr.20071101162646: *5* 4.4.4 Final
 Leo 4.4.4 Final                           November 2, 2007
 
@@ -8579,11 +8508,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 http://sourceforge.net/forum/message.php?msg_id=4591494
 #@+node:ekr.20071101162751.4: *7* Fixed scrolling problem with chapters
 #@+node:ekr.20071101162751.19: *7* Fixed bug: select a chapter containing the initially selected node
-The fix doesn't actually remember which chapter was previously selected; it
-picks some chapter containing the initially selected node. This works exactly
-for non-cloned nodes, but can select the 'wrong' chapter for cloned nodes.
-Still, this is a big improvement over the previous code, which would not select
-any node if the selected node was not in the main chapters.
+The fix doesn't actually remember which chapter was previously selected; it picks some chapter containing the initially selected node. This works exactly for non-cloned nodes, but can select the 'wrong' chapter for cloned nodes. Still, this is a big improvement over the previous code, which would not select any node if the selected node was not in the main chapters.
 #@+node:ekr.20071101162751.28: *7* Fixed Apple help menu reversion
 #@+node:ekr.20071101162751.32: *7* Disabled the plugins manage plugin
 It is too confusing at present, because it doesn't support @enabled-plugins nodes.
@@ -8630,8 +8555,6 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071115102156.5: *6* Fixed bugs
 #@+node:ekr.20071115102156.2: *7* Removed all references to pluginsManager.txt
 #@+node:ekr.20071115102156.6: *7* Fixed hung windows
-@nocolor
-
 https://sourceforge.net/forum/message.php?msg_id=3768494
 By: ktenney
 
@@ -8646,30 +8569,17 @@ I'm using current CVS, W2k
 4 click Help->Open leoDocs.leo
 
 Zombie!
-
-@color
 #@+node:ekr.20071115102156.11: *7* Warn on resurrected (vampire) nodes
 http://sourceforge.net/forum/message.php?msg_id=3525277
 
-The atFile read logic only **adds** nodes, it never deletes nodes. Thus,
-the 'changed2' node 'survived' the atFile read logic. The 'changed2' node became
-a 'vampire' node that couldn't be killed.
+The atFile read logic only **adds** nodes, it never deletes nodes. Thus, the 'changed2' node 'survived' the atFile read logic. The 'changed2' node became a 'vampire' node that couldn't be killed.
 
-The fix will require some care. The present atFile.read logic is robust because
-it *doesn't* delete nodes. I suspect the solutions will be as follows:
+The fix will require some care. The present atFile.read logic is robust because it *doesn't* delete nodes. I suspect the solutions will be as follows:
 
-A. The atFile.read code can not delete the subtree of @thin nodes initially,
-because it doesn't know whether there will be read errors later. If there are
-read errors absolutely nothing must change. This ensures that read errors never
-destroy information.
+A. The atFile.read code can not delete the subtree of @thin nodes initially, because it doesn't know whether there will be read errors later. If there are read errors absolutely nothing must change. This ensures that read errors never destroy information.
 
-B. A new post-pass will look for vampire nodes: nodes that were not actually
-read from the external file. I think (but haven't proven) that all descendants of
-vampire nodes are also vampire nodes. If that is so the post-pass will simply
-delete vampire nodes without worrying about whether they have descendants.
+B. A new post-pass will look for vampire nodes: nodes that were not actually read from the external file. I think (but haven't proven) that all descendants of vampire nodes are also vampire nodes. If that is so the post-pass will simply delete vampire nodes without worrying about whether they have descendants.
 #@+node:ekr.20071115102156.21: *7* Fixed new @auto bug (python)
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 ** Also, no ignore inserted.
@@ -8692,11 +8602,7 @@ Errors inhibited read
 In the code below line 119 is not the first "def provide(self, what):"
 but the second, the one in class mainPages - I've included the preceding
 class def because context seems to be important.
-
-@color
 #@+node:ekr.20071115102156.78: *7* Fixed new @auto bug: c++
-@nocolor
-
 In the following code:
 
 extern  "C"
@@ -8735,8 +8641,6 @@ output...
   1
 inserting @ignore
 imported C:/test/aa.cc
-
-@color
 #@+node:ekr.20071115102156.79: *7* Fixed various @auto comparison problems
 @bool at_auto_warns_about_leading_whitespace
 #@+node:ekr.20071115102156.81: *7* Retain relative paths in recent files menu
@@ -8773,15 +8677,9 @@ python /home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leo.py /home/tbrown/.
 
 gives the traceback below.  Opening the file from within Leo works fine.
 
-Bah - I just now looked at it closely enough to realize it's the evil
-pickled Tk classes in cleo uAs.  So I don't know whether you want to
-fix that or not, it makes sense Leo would read the file specified on
-the command line before Tk is initialized - if it's just scanning for
-settings maybe it could catch and ignore failed uA reads at that time?
+Bah - I just now looked at it closely enough to realize it's the evil pickled Tk classes in cleo uAs.  So I don't know whether you want to fix that or not, it makes sense Leo would read the file specified on the command line before Tk is initialized - if it's just scanning for settings maybe it could catch and ignore failed uA reads at that time?
 
-At some point I want to take pickled Tk vars out of cleo, I was
-thinking when that guy was working on the wx gui would be a good time,
-too bad he got sick.
+At some point I want to take pickled Tk vars out of cleo, I was thinking when that guy was working on the wx gui would be a good time, too bad he got sick.
 
 reading settings in /mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/config/leoSettings.leo
 reading settings in /home/tbrown/leoSettings.leo
@@ -8931,8 +8829,6 @@ http://sourceforge.net/forum/message.php?msg_id=4652514
 #@+node:ekr.20071206093323.87: *7* Fixed @auto bug
 http://sourceforge.net/forum/message.php?msg_id=4654762
 #@+node:ekr.20071206093323.96: *7* Fixed  focus problem with goto-next clone command
-@nocolor
-
 I have clones that traverse chapters.
 
 Given the following Chapters:
@@ -8994,8 +8890,6 @@ In cases with NO [f], the outline pane seems moved to the "end", but no node
 selected.
 
 Not a show stopper, but a bug nonetheless.
-
-@color
 #@+node:ekr.20071211083251: *5* Leo 4.4.5 final
 Leo 4.4.5 final                               December 11, 2007
 
@@ -9053,10 +8947,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071217092203.2: *7* Fixed undo (dirty bit) problem)
 http://sourceforge.net/forum/message.php?msg_id=4668960
 
-It seems in external files you can delete some text and save, causing the derived
-file to be written and all dirty flags cleared.  But then undo makes the text
-come back, as expected, but save only saves the outline, because the dirty flag
-wasn't set on the node in which the text was restored by undo.
+It seems in external files you can delete some text and save, causing the derived file to be written and all dirty flags cleared.  But then undo makes the text come back, as expected, but save only saves the outline, because the dirty flag wasn't set on the node in which the text was restored by undo.
 #@+node:ekr.20071217092203.30: *7* Fixed cursesGui  plugin
 #@+node:ekr.20071217092203.31: *7* Fixed script_io_to_body plugin
 Added k.overrideCommand.
@@ -9084,29 +8975,19 @@ This fixes a focus problem.
 #@+node:ekr.20071217092203.136: *7* Repaired damaged minusnode.gif icon
 #@+node:ekr.20071217092203.137: *6* New features
 #@+node:ekr.20071217092203.138: *7* Applied Terry Brown's config patch
-The patch attached against leoConfig.py (current CVS) adds a machine
-specific config file to the config files Leo loads.
+The patch attached against leoConfig.py (current CVS) adds a machine specific config file to the config files Leo loads.
 
-I synchronize files between multiple (3) machines. This means I can't
-use different myLeoSettings files on each.
+I synchronize files between multiple (3) machines. This means I can't use different myLeoSettings files on each.
 
-Tk fonts are screen dpi sensitive.  But (in Linux at least)
-Tk's attempts to switch a font you picked to something equivalent at a
-different dpi always result in a font that looks terrible.
+Tk fonts are screen dpi sensitive.  But (in Linux at least) Tk's attempts to switch a font you picked to something equivalent at a different dpi always result in a font that looks terrible.
 
-So every time I switch machines I edit ~/myLeoSettings.leo to move the
-font defs I picked for the current machine to the bottom of the body
-text for the appropriate settings node, and then restart Leo.
+So every time I switch machines I edit ~/myLeoSettings.leo to move the font defs I picked for the current machine to the bottom of the body text for the appropriate settings node, and then restart Leo.
 
-This patch means I don't have to do that any more.  I'm sure there are
-other uses for it.  Python doesn't seem to have a generic machine name
-finding function, hence the sequence of alternatives.
+This patch means I don't have to do that any more.  I'm sure there are other uses for it.  Python doesn't seem to have a generic machine name finding function, hence the sequence of alternatives.
 #@+node:ekr.20071217092203.145: *7* Applied plumloco's patch to plugins_menu.py
-The version of plugins_menu.py at http://leo.zwiki.org/Plumloco separates out
-the gui dependent dialogs (the menus are already gui independent) and made them
-general purpose dialogs available to all plugins.
+The version of plugins_menu.py at http://leo.zwiki.org/Plumloco separates out the gui dependent dialogs (the menus are already gui independent) and made them general purpose dialogs available to all plugins.
 
-I have also slightly enhanced the dialogs to provide user defined buttons. 
+I have also slightly enhanced the dialogs to provide user defined buttons.
 #@+node:ekr.20071217092203.146: *7* Upgraded to Pmw 1.3
 #@+node:ekr.20071217092203.147: *7* Added find-next-clone command
 The finds the next cloned node, regardless of whether the presently selected node is a clone or not.
@@ -9149,11 +9030,8 @@ http://sourceforge.net/forum/message.php?msg_id=4681175
 
 - There was a horrendous bug in the match_seq_regexp matcher which could cause the colorizer to loop.
 - There was another horrendous bug in match_regexp_helper that cause spurious matches.
-- Added some more defensive code to have the colorizer recover more gracefully in this case. 
-- The jedit2py script was not associating regexp rules whose regex starts with
-  '\' with the proper character. The proper character is the hash_char
-  character, not the '\' character. As a result, regexp's that start with '\'
-  never got matched.
+- Added some more defensive code to have the colorizer recover more gracefully in this case.
+- The jedit2py script was not associating regexp rules whose regex starts with '\' with the proper character. The proper character is the hash_char character, not the '\' character. As a result, regexp's that start with '\' never got matched.
 
 The following colorizers are affected by the change:
 
@@ -9245,9 +9123,7 @@ located in the python- imaging-tk package.
 #@+node:ekr.20080212221711.33: *7* All import commands now honor @path
 #@+node:ekr.20080212221711.34: *7* Added ipython plugin
 #@+node:ekr.20080212221711.47: *7* Added support for @bool open_with_save_on_update setting
-If the @bool open_with_save_on_update setting is True,
-Leo will automatically save the outline whenever an external editor
-changes the outline.
+If the @bool open_with_save_on_update setting is True, Leo will automatically save the outline whenever an external editor changes the outline.
 #@+node:ekr.20080212221711.26: *7* Improved handling of unicode for @auto files
 When reading an @auto tree, createOutline now does the following:
 
@@ -9354,18 +9230,13 @@ http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
 Leo now contains minimal support for arguments to minibuffer commands.
 
-- k.simulateCommand now puts arguments following the command name in k.givenArgs.
-  Whitespace separates arguments.
+- k.simulateCommand now puts arguments following the command name in k.givenArgs. Whitespace separates arguments.
 
-- k.simulateCommand knows nothing about what the arguments mean. That is up to
-  the individual commands.
+- k.simulateCommand knows nothing about what the arguments mean. That is up to the individual commands.
 
-- At present, only the following minibuffer commands now support k.givenArgs:
-  open-outline, open-outline-by-name, save-file, save-file-as,
-  save-file-as-unzipped and save-file-as-zipped.
+- At present, only the following minibuffer commands now support k.givenArgs: open-outline, open-outline-by-name, save-file, save-file-as, save-file-as-unzipped and save-file-as-zipped.
 
-  These commands use ''.join(k.givenArgs) to get the file name,
-  which may cause problems if the file name contains whitespace.
+These commands use ''.join(k.givenArgs) to get the file name, which may cause problems if the file name contains whitespace.
 
 - At present, the repeat-complex-command command does not support arguments.
 #@+node:ekr.20080304112802.25: *6* Added translation services
@@ -9423,18 +9294,13 @@ http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
 Leo now contains minimal support for arguments to minibuffer commands.
 
-- k.simulateCommand now puts arguments following the command name in k.givenArgs.
-  Whitespace separates arguments.
+- k.simulateCommand now puts arguments following the command name in k.givenArgs. Whitespace separates arguments.
 
-- k.simulateCommand knows nothing about what the arguments mean. That is up to
-  the individual commands.
+- k.simulateCommand knows nothing about what the arguments mean. That is up to the individual commands.
 
-- At present, only the following minibuffer commands now support k.givenArgs:
-  open-outline, open-outline-by-name, save-file, save-file-as,
-  save-file-as-unzipped and save-file-as-zipped.
+- At present, only the following minibuffer commands now support k.givenArgs: open-outline, open-outline-by-name, save-file, save-file-as, save-file-as-unzipped and save-file-as-zipped.
 
-  These commands use ''.join(k.givenArgs) to get the file name,
-  which may cause problems if the file name contains whitespace.
+These commands use ''.join(k.givenArgs) to get the file name, which may cause problems if the file name contains whitespace.
 
 - At present, the repeat-complex-command command does not support arguments.
 #@+node:ekr.20080311060457.212: *7* Added translation services
@@ -9463,47 +9329,22 @@ Leo now contains support for translating messages sent to Leo's log:
 #@+node:ekr.20080311060457.216: *6* b2
 #@+node:ekr.20080311060457.2: *7* Bug fixes
 #@+node:ekr.20080311060457.3: *8* Assigned g.fileIndex on the fly
-@nocolor
-
 Eureka! I have just discovered an elegant solution to this problem!
 
-The Aha is this:  we can create a "base" timestamp just *once*, when
-the commander (i.e. the NodeIndices class) is created.  Thereafter,
-code that writes gnx's simply calls NodeIndices.getIndex if the node
-doesn't already have an index (or if indices are being reassigned in a
-copied tree).
+The Aha is this:  we can create a "base" timestamp just *once*, when the commander (i.e. the NodeIndices class) is created.  Thereafter, code that writes gnx's simply calls NodeIndices.getIndex if the node doesn't already have an index (or if indices are being reassigned in a copied tree).
 
-In other words, there is no need to be picky about timestamps, the
-base timestamp will do, so there is no need to assign indices before
-writing nodes!
+In other words, there is no need to be picky about timestamps, the base timestamp will do, so there is no need to assign indices before writing nodes!
 
-I didn't see this before because computing timestamps is quite time
-consuming.  In fact, we can't do so "on the fly".  That being so, the
-old code computed the "new" timestamp once in assignFileIndices, which
-lead me away from getting gnx's as needed.  But if there is only *one*
-timestamp everything becomes easy.  There is no need to "batch" the
-computation of gnx's.  In other words, timestamps don't have to be up-
-to-the-second accurate.  They simply guarantee that two nodes (in a
-particular outline) created by the *same* person can't collide.
+I didn't see this before because computing timestamps is quite time consuming.  In fact, we can't do so "on the fly".  That being so, the old code computed the "new" timestamp once in assignFileIndices, which lead me away from getting gnx's as needed.  But if there is only *one* timestamp everything becomes easy.  There is no need to "batch" the computation of gnx's.  In other words, timestamps don't have to be up- to-the-second accurate.  They simply guarantee that two nodes (in a particular outline) created by the *same* person can't collide.
 
-This is the way it is written in "The Book". All calls to
-assignFileIndices disappear!  All the code I wrote this morning that
-remembers whether indices have been assigned disappears.  I'll keep a
-do-nothing assignFileIndices around for compatibility with old
-scripts.
+This is the way it is written in "The Book". All calls to assignFileIndices disappear!  All the code I wrote this morning that remembers whether indices have been assigned disappears.  I'll keep a do-nothing assignFileIndices around for compatibility with old scripts.
 
-This is *so* important.  It eliminates forever a source of serious
-file write problems.  Furthermore, NodeIndices.getIndex becomes
-substantially simpler. Even though the code was short, it implied some
-very tricky assumptions.  Every time I read it I had to recreate why
-it worked.  Those mental gymnastics should disappear.
+This is *so* important.  It eliminates forever a source of serious file write problems.  Furthermore, NodeIndices.getIndex becomes substantially simpler. Even though the code was short, it implied some very tricky assumptions.  Every time I read it I had to recreate why it worked.  Those mental gymnastics should disappear.
 
-A great day for Leo. 
-
-@color
+A great day for Leo.
 #@+node:ekr.20080311060457.28: *8* Allow tkFrame to complete before killing it
 #@+node:ekr.20080311060457.38: *8* Renamed self.fileIndex to  readBufferIndex in file read logic
-# This should have been done long ago.
+This should have been done long ago.
 #@+node:ekr.20080311060457.125: *8* Made sure that all fileIndex fields get converted on read
 #@+node:ekr.20080311060457.128: *7* Features
 #@+node:ekr.20080311060457.188: *8* Compile regexp's once in findNextMatch
@@ -9557,16 +9398,12 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
 #@+node:ekr.20080328074117.76: *7* Fixed undo problem with mutliple editors
 http://mail.google.com/mail/#inbox/11899019a43f74ca
 
-When you have two editors open on the same node most actions show up in both
-editors, however, if you do an undo the change only show up in the selected
-editor. (The change shows up in the other editor when you select it).
+When you have two editors open on the same node most actions show up in both editors, however, if you do an undo the change only show up in the selected editor. (The change shows up in the other editor when you select it).
 #@+node:ekr.20080328074117.77: *7* Write dirty bit if write fails
 http://groups.google.com/group/leo-editor/browse_thread/thread/71822f48720e71bc/6e0fd1c72fa39817#6e0fd1c72fa39817
 #@+node:ekr.20080328074117.135: *7* Fixed bug involving default_target_language
 The new setting is @string target_language, not @language default_target_language.
 #@+node:ekr.20080328074117.215: *7* Fixed plugins that create new menu items
-@nocolor
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/6a5087a59d6d23
 
 - Changed menu1 to menu2 in several plugins.
@@ -9577,19 +9414,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/6a5087a59d6d23
 This hugely speeds up spelling when there are lots of misspelled words.
 #@+node:ekr.20080328074117.220: *7* Errors reading external files give line numbers
 #@+node:ekr.20080328074117.262: *7* Added @bool allow_middle_button_paste
-@nocolor
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
 
-And, while you're looking at the editor code :-) - in linux when you paste in
-text to a body editor with a middle mouse button click, it's not stored unless
-you follow that with a key stroke or some other action in the body editor. If
-you instead middle button paste to the editor and then click on another node in
-the tree, the text's forgotten.
+And, while you're looking at the editor code :-) - in linux when you paste in text to a body editor with a middle mouse button click, it's not stored unless you follow that with a key stroke or some other action in the body editor. If you instead middle button paste to the editor and then click on another node in the tree, the text's forgotten.
 
 To do-->@thin ../doc/leoToDoLater.txt-->Can't or won't-->Known Bugs: can't be fixed or can wait-->Bug: can't be fixed-->Cut/paste bug on X windows (waiting for help)
-
-@color
 #@+node:ekr.20080328074117.297: *7* Added support for @popup settings
 #@+node:ekr.20080403065258.10: *5* 4.4.8 rc1
 Leo 4.4.8 rc1                        April 3, 2008
@@ -9667,949 +9496,6 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080405074410.9: *5* Fixed big performance bug in find/spell commands.
 #@+node:ekr.20080405074410.38: *5* Fixed several unit testing bugs relating to doTests(all=True)
 #@+node:ekr.20080730095710.1: *3* 4.5 code reorgs, vim bindings, @shadow
-#@+node:ekr.20080624093059.1: *4* 4.5 b1
-Leo 4.5 beta 1                      June 28, 2008
-
-Leo 4.5 beta 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.5:
---------------------------
-- A major revision of Leo's node structures, compatible with so-called unified nodes.
-- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
-- A major revision of Leo's outline drawing and focus handling code.
-  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
-- The beginning of usable vim-like bindings.  More support is coming.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20080624093059.2: *5* Bug fixes
-#@+node:ekr.20080624093059.3: *6* Fixed bug in appendToRecentFiles
-#@+node:ekr.20080624093059.4: *6* Fixed bug in install script
-On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
-
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-With the change the installation worked.
-#@+node:ekr.20080624093059.5: *6* Fixed bug: no focus after save-as and save-to commands
-#@+node:ekr.20080624093059.6: *6* Fixed find bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
-#@+node:ekr.20080624093059.7: *6* Fixed find completion bug
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@+node:ekr.20080624093059.8: *6* Fixed how-many, find-word and goto-character commands
-find-word
-=========
-This command is supposed to:
-
-"Put the cursor at the next word (on a line) that starts with a
-character"
-
-It does not. You have to type in a whole word to get any result and
-even then
-it only selects the word it does not move the cursor to it.
-
-
-goto-character
-==============
-'''Put the cursor at the n'th character of the buffer.'''
-
-Doesn't do anything.
-#@+node:ekr.20080624093059.9: *6* Fixed import PHP bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
-#@+node:ekr.20080624093059.10: *6* Fixed keyword handling in g.es and g.es_print
-#@+node:ekr.20080624093059.11: *6* Fixed new @auto bug
-Leo's running, so I create a new outline with File->New
-
-Then I save as in a location where foo.py exists.
-
-The I create a node '@auto foo.py'
-
-Then I use File->Read/Write->Read @auto (with that node selected)
-
-Leo says it can't read it.
-
-I close the leo file, re-open in from the recent files menu of the
-outline that spawned it, and the @auto file is read no problems.
-#@+node:ekr.20080624093059.12: *6* Fixed recent files bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
-#@+node:ekr.20080624093059.14: *6* Greatly increased speed of undo clone-find-all
-findAll now just creates undo info for clone-find-all for one inserted node.
-#@+node:ekr.20080624093059.15: *6* Temporary fix for php import bug
-#@+node:ekr.20080624093059.16: *6* Fixed unbounded loop in autocompleter.findAnchor
-#@+node:ekr.20080624093059.17: *6* Fixed insert-newline bug
-exception executing command
-Traceback (most recent call last):
- File "C:\_Proj\Leo\key-handling\leo\src\leoCommands.py", line 298, in doCommand
-   val = command(event)
- File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 2946, in insertNewLine
-   self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
- File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 3104, in insertNewlineHelper
-   w.setInsertPoint(i+1)
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
-truncating headline to one line
-#@+node:ekr.20080624093059.18: *6* Single click did not color body correctly
-#@+node:ekr.20080624093059.19: *6* Body not colored correctly after find
-#@+node:ekr.20080624093059.20: *6* Fixed big performance bug in contract-all command
-#@+node:ekr.20080624093059.21: *6* Changed bindings so Home and end keys work as expected when editing a headline
-#@+node:ekr.20080624093059.22: *6* Fixed bug: myLeoSettings.leo sometimes read twice
-http://groups.google.com/group/leo-editor/browse_thread/thread/35a8ea2024036623s
-#@+node:ekr.20080624093059.23: *6* Compute menus list for each c
-http://sourceforge.net/forum/forum.php?thread_id=1858451&forum_id=10228
-#@+node:ekr.20080624093059.24: *6* Fixed minor spelling bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
-#@+node:ekr.20080624093059.25: *6* Fixed spell bug: words containing unicode characters aren't saved properly
-#@+node:ekr.20080624093059.26: *6* Fixed coloring bugs in reformatParagraph and c.redraw
-#@+node:ekr.20080624093059.27: *6* Fixed missing redraw problem
-Changed c.outerUpdate and added c.bind and c.bind2.
-#@+node:ekr.20080624093059.28: *6* Fixed new-headline problem
-#@+node:ekr.20080624093059.30: *6* Fixed encoding problems with paste from clipboard
-#@+node:ekr.20080624093059.31: *6* Changed installer to support leo-as-a-package
-http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
-#@+node:ekr.20080628062747.69: *6* Fixed undo problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
-
-The fix was to call c.redraw_now in undo() and redo().  This allows the undo interlock to work.
-#@+node:ekr.20080628062747.70: *6* Fixed insert-file bug
-Minor nit - insert-file to load a file into a node, text appears in the
-body pane.  Without doing anything else to the body pane click on
-another node.  Inserted text is lost - body for node is empty.  As long
-as you move the cursor into the body frame and press a key after
-inserting the contents, it's retained.
-#@+node:ekr.20080628062747.71: *6* Fixed script button bug
-@nocolor
-
-c.beginUpdate()
-try:
- add / change icons on some nodes
- c.setChanged(True)
-finally:
- c.endUpdate()
-
-seems not to give a redraw *after* a script button is pressed.
-
-It does give one before the action is taken, so pressing the button
-twice shows the change.
-
-EKR: The fix was to mod_scripting.py.
-
-@color
-#@+node:ekr.20080628062747.72: *6* Fixed dragging bug
-The fix was a major addition to p._adjustPositionBeforeUnlink.
-
-Report:
-
-Run this script:
-
-t = p.insertAfter()
-c.setHeadString(t, 'test node 1')
-t = t.insertAfter()
-c.setHeadString(t, 'test node 2')
-t = t.insertAfter()
-c.setHeadString(t, 'test area')
-for i in range(200):
-   n = t.insertAsLastChild()
-   c.setHeadString(n, str(i))
-   if i == 3: x = n
-
-for i in range(100):
-   n = x.insertAsLastChild()
-   c.setHeadString(n, str(i+500))
-
-t.expand()
-
-It creates an outline, you might need to click on the node from which
-the script was run to see what was added.  It should look like this:
-
-test node 1
-test node 2
-test area
-   1
-   2
-  +3
-   4
-   5
-   etc.
-
-Now, use the mouse to drag test node 1 down to a position after node
-4... for me at least this results in the outline view leaping to the
-bottom of the tree, which it shouldn't do.
-
-Scroll back up to the top, and drag test node 2 down to a position
-after node 4, this time no leap.
-
-It appears that the first time you drag something into the test area it
-reacts as if 3 is expanded and repositions to allow for all those
-actually not visible lines, but the second time you drag something in
-it's ok, as if it has an accurate count on visible lines now.
-#@+node:ekr.20080624093059.32: *5* Features
-#@+node:ekr.20080624093059.33: *6* Remove useTextWidget option from leoKeys.py
-#@+node:ekr.20080624093059.34: *6* Set use_sax = True always
-#@+node:ekr.20080624093059.35: *6* Added g.unified_nodes
-- Made t arg optional in vnode ctor.
-
-- Removed the t arg from insertAsX.  Affects these plugins:
-
-wrote:     base64Packager.py
-wrote:     macros.py
-wrote:     table.py
-wrote:     templates.py
-wrote:     xsltWithNodes.py
-
-Search for tnode.
-#@+node:ekr.20080624093059.36: *6* Added install nodes re Leo's home directory
-Leo puts several files in the home directory: .leoID.txt,
-.leoRecentFiles.txt, and myLeoSettings.leo.  There are various fallback directories if there is no home directory.
-
-If you want more details, you can do what I did: do a clone-find-all for homeDir.
-
-As for how the home directory is set, the code to do this is g.computeHomeDir.  We get the home directory with
-
-home = os.getenv('HOME',default=None)
-
-There are some mind-numbing details to be handled if there os.getenv does, in fact, return a directory.
-#@+node:ekr.20080624093059.37: *6* Added support for @bool fixedWindow option
-Leo suppresses marks, expansion state, orphan bits and current
-position bits when writing fixed .leo files.  As a result, all nodes
-will be collapsed and the root node will always be selected when Leo
-opens a fixed .leo file.
-
-When writing fixed .leo files, Leo writes fixed, immutable, reasonable
-defaults for window size, position and body-outline ratio.
-Specifically, width,height,left,top = 700,500,50,50 and the ratio is
-0.5. These values are written so older versions of Leo can read fixed
-files.
-
-You make a file fixed by putting '@bool fixedWindow = True' in the
-@settings tree of a particular .leo file.  The file will be fixed
-after you save the file, reload the file, and save the file again.
-Yes, this is clumsy, but it only has to be done once.  A toggle-fixed
-file command doesn't seem that useful: using an @bool node is simple
-and clear.
-
-You can optionally specify the size and position on the screen of
-fixed .leo files by putting an '@data fixedWindowPosition' node in the
-@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-**not** put such a node in the fixed .leo file itself--everyone who
-opens the file would get that fixed position.
-
-The body of the '@data fixedWindowPosition' node should contain
-something like this:
-
-# Must be four entries: width,height,left,top.
-# Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-1200
-800
-50
-50
-
-Leo uses reasonable defaults for fixed .leo files if this node does
-not exist, or contains something other than 4 numbers, one per line. 
-#@+node:ekr.20080624093059.38: *6* Added new key-handling
-This allows substantially simpler key bindings. Indeed, most per-pane bindings
-have been eliminate.
-#@+node:ekr.20080624093059.39: *6* New drawing/focus code
-#@+node:ekr.20080624093059.40: *6* Improved end of calltips
-# Added ')' at end.
-#@+node:ekr.20080624093059.41: *6* Find character crosses lines
-#@+node:ekr.20080624093059.42: *6* Added os.curdir to sys.path if possible
-This is necessary to simulate operation as a package.
-#@+node:ekr.20080624093059.43: *6* Added support for single-config option
-This code appears to have been reverted in such a way that it never got pushed to launchpad.
-#@+node:ekr.20080624093059.44: *6* Finished Tracer class
-This is a Python 'debugger' that computes a call graph.
-
-To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()
-#@+node:ekr.20080624093059.45: *6* Rewrote option-parsing code using optparse
-#@+node:ekr.20080624093059.46: *6* Added @bool cleo_color_ignore = True
-This determines whether cleo colors @ignore headlines. The default is True.
-#@+node:ekr.20080624093059.47: *6* Set cwd in read/write commands
-This affect the following commands:
-
-open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.
-#@+node:ekr.20080624093059.48: *6* Added  vim patches
-Headline pane:
-
-- Prevented "--> exit-named-modes" from switching focus to the Body pane.
-    Removed 'c.frame.log.deleteTab('Mode') from endMode
-
-Body pane:
-
-- Enabled search for 'space' character in text
-    Removed 'if ch.isspace(): return' in zapToCharacter:
-
-- Eliminated delete-word from removing trailing white space
-    Removed 'self.killWs(event)' in killWord and backwardKillWord
-
-- Put zapped text to clipboard
-    Added 'g.app.gui.replaceClipboardWith(s[ins:i])' after 'sel.addToKillBuffer(s[ins:i])' in zapToCharacter
-
-@nocolor
-#@+node:ekr.20080624093059.49: *7* Realization
-Leo Configuration:
-    | The following configuration was used for all testing:
-        @strings  top_level_unbound_key_action = command
-        @bool stayInTreeAfterEditHeadline = True
-        @bool stayInTreeAfterSelect = True
-        @bool outline_pane_has_initial_focus = True
-
-Leo's Panes:
-    | A "pane" is a area of the screen containing a user interface
-    | dedicated to supporting a common set of tasks.  Vi key mappings are
-    | associated with the Outline pane, the Body pane, or to the Leo
-    | program.  See the no pane (see "General Commands" below). (Outline
-    | pane, Body pane)
-
-Leo's Command/Insert States:
-    Command state - Denoted by a blue background color (Outline,Body pane)
-        | Keys are mapped to commands.
-    Insert state - Denoted by a red background color (Outline,Body pane)
-        | Keys pressed are inserted into the text.
-    Grayed state - Denoted by a gray background color (Outline pane)
-        | Keys pressed will cause the next node with a headline starting
-        | with that key to be selected.  This "select node by first
-        | character" feature is built into Leo. It is not part of the vi
-        | support.
-        | 
-        | This state is intentionally avoided in the vi based outline key
-        | mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
-        | "Command" state.  The "Grayed" state can be entered from the
-        | outline's "Command" state by pressing the Ctrl-] key.
-
-Leo's modes:
-| Most vi commands are implemented using Leo's "mode" functionality.
-| Modes beginning with "vi-" denote a vi command for the body pane.
-| Modes beginning with "tree-" denote a vi-like command for the outline.
-| Modes beginning with "body-" denote outline commands that can be called
-| from the body pane (and return focus back to the body pane)
-| 
-| Modes are used both for managing multi-key vi commands and for defining
-| macros.
-
-    Multi-key command modes:
-    | Vi has many commands that require multiple keys to invoke.  Each key
-    | accept the last in the command are assigned to a mode that, when
-    | executed, maps the subsequent allowed keys in the command sequence.
-    | The last key in the sequence is mapped directly to a Leo command or
-    | to a "Macro" mode (see below). Any modes mapped to a key by another
-    | mode are located in a child node of the mode node doing the mapping.
-    | 
-    | Example:
-    |     dtw = Delete To the 'W' character (note the capital letters)
-    |   The 'd' key is mapped to vi-delete-object
-    |   vi-delete-object maps the 't' key to vi-delete-to-char
-    |   vi-delete-to-char contains Leo commands to perform the vi command.
-
-    Macros modes:
-    | Most vi commands do not have an equivalent Leo command.  Instead, a
-    | series of Leo commands must be issued to emulate the vi command.
-    | The Leo commands needed to emulate a vi command are placed in a
-    | single @mode node.
-
-Code limitations:
-    Current character:
-    | Vi implementation normally use two different "current character"
-    | designators depending on the current state.
-
-        Insert state:
-        | In the Insert state, a vertical bar is placed between two
-        | characters to indicate where the next key will be inserted.
-        | Leo's cursor is of this type.
-
-        Command state: 
-        | In the Command state, vi expects that the cursor is highlighting
-        | a current character and provides commands to enter the insert
-        | state or paste text either before or after that current
-        | character.  Leo's vi emulation currently does not support a
-        | "current character" cursor. As a result, inserting and pasting
-        | before or after is replaced by inserting or pasting "at" the
-        | current cursor location.  For example, the 'i' and 'a' command
-        | are both mapped to enter the insert state at the current cursor
-        | location.
-
-    Conditional code execution:
-    | No conditional command invocation exits.  Instead, conditional
-    | branching is replace by setup commands that insure that, regardless
-    | of current state, the command performs correctly.  For example,
-    | Beginning-of-line command will go to previous line if called when
-    | cursor is at beginning of line.  Vi requires that '|' always goes to
-    | beginning of current line.  Problem is solved by issuing
-    | forward-char command to insure cursor is moved off of the beginning
-    | of the line before beginning-of-line command is issued.
-
-    Commands requesting user input:
-    | Commands getting user input must be the last command within the
-    | mode.  See "Commands getting user input" in Problems section below.
-
-    Edit headings using modes:
-    | Commands modifying or selecting headline text do not work correctly
-    | within a mode.  See "Editing headlines within modes" in Problems
-    | section below.  This eliminates accurate implementation of vi's
-    | delete/change/substitute/yank object commands.  Instead, the
-    | commands are modified to only select text.
-#@+node:ekr.20080624093059.50: *7* Problems
-Binding numeric keys:
-| Mapping a number to a command or mode prevents the number from being
-| entered as text while in the insert state.
-
-Binding '?' key:
-| No response when key pressed.
-
-Binding 'bksp' key:
-| Binding 'bksp' key to back-char to move back a character in command mode
-| prevents 'bksp' from deleting characters in text edit mode.
-
-Commands getting user input:
-| Commands requesting user input must be the last command executed.  These
-| commands include: find-character and zap-to-character.
-
-Editing headlines within modes:
-| Text editing commands do not work within modes assigned to outline key
-| mappings.
-
-Undo command:
-| The 'undo' command sometimes does not work when returning to a node's
-| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
-
-Matching bracket command:
-| Performs bracket matching on Body text when in node's headline command
-| state.
-
-Word definition:
-| "Word" related commands determine boundaries of a word differently.
-
-Toggle case:
-| Leo provides support for switching to upper or lower case but no method |
-| exists to toggle between cases.
-
-Find settings
-| Leo commands only allow toggling of search settings.  If specific "set"
-| and "clear" search setting commands were available then searches from the
-| body pane could be restricted to the body pane and searches from the
-| outline could be restricted to the outline.
-Forward and backward sentences:
-| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
-| at empty lines nor do they skip over periods within words nor do they stop
-| at sentences ending in non-periods nor do they stop at the end or
-| beginning of the buffer.
-
-Focus to Body pane:
-| Leo functions exist which unconditionally set focus to the body pane
-| regardless of the active pane.
-    deleteTab() function:
-        | Issuing "--> exit-named-mode" calls "endMode" function which calls
-        | "c.frame.log.deleteTab('Mode')" function which sets the focus to the
-        | body pane.  
-
-Displaying mode help:
-| The "--> mode-help" command displays all mapped keys using a capitol
-| letter regardless of the actual binding.
-    Recommendations:
-    | To better support narrow tab cards, display the mode's label without
-    | the "enter-" and "-mode" text and place key label before mode label.
-    | Results in change from:
-    |                enter-vi-delete-line-mode D
-    |    enter-vi-delete-to-begin-of-word-mode B 
-    | to:
-    |    D : vi-delete-line
-    |    B : vi-delete-to-begin-of-word
-#@+node:ekr.20080624093059.51: *7* Notes
-Yank vs. Yank
-| A vi "yank" operation copies the selected text TO the clipboard.
-| A Leo "yank" operation inserts text FROM the clipboard.
-
-copy-text in modes:
-| Leo's copy-text does not work within a mode.  As a result, all "copy to
-| clipboard" capability is being implemented using kill-<object> command
-| followed by a "yank" command.
-
-paste-text in modes:
-| paste-text in modes does not work.  Use Leo's "yank" instead.
-
-delete-node does not copy node to clipboard:
-| Issue copy-node command followed by delete-node
-#@+node:ekr.20080624093059.52: *6* Added 'kill' bindings
-#@+node:ekr.20080624093059.53: *6* Added check for empty @nosent nodes
-These are now treated much like empty @auto nodes
-#@+node:ekr.20080730095710.2: *4* 4.5 b2
-Leo 4.5 beta 2                      August 7, 2008
-
-Leo 4.5 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20080806211440.188: *5* Major new features
-.. _`v.uA's`: http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
-
-- Added support for @shadow files.
-  This is a major breakthrough.
-  See the `Using @shadow`_ chapter for full details.
-
-- Added much improved support for vim bindings.
-
-- Allow `v.uA's`_ in @file and @shadow nodes.
-#@+node:ekr.20080806211440.253: *5* Major code reorganizations
-- Leo now uses a sax-based parser to read .leo files.
-  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
-
-- Leo now supports the so-called 'Graph World'.
-  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
-
-- Leo now uses a new key binding scheme.
-  This allows substantially simpler key bindings. Indeed, most per-pane bindings
-  have been eliminated.
-  Added support for kill bindings.
-
-- Leo is now an installable package.
-  To make this work, Leo adds os.curdir to sys.path if needed on startup.
-
-- Reorganized Leo's drawing and focus code.
-  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
-
-- Leo is now ready for Python 3.x:
-  Change most print statements to calls to g.pr.
-#@+node:ekr.20080806211440.256: *5* Minor new features
-- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
-  To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()
-
-- The find-character command now finds characters across line boundaries.
-
-- Set cwd in read/write commands. This affect the following commands:
-  open, save, save-as, save-to, read-outline-only, read-file-into-node,
-  write-file-from-node and all the import/export commands.
-
-- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-  Leo looks for myLeoSettings.leo in HOME/.leo.
-  Leo uses os.path.expanduser("~") if there is no home setting.
-#@+node:ekr.20080806211440.189: *5* New settings
-- The default settings for @shadow files are now located in leoSettings.leo in the node::
-
-        @settings-->File options-->Shadow files
-
-    The defaults for these settings are::
-
-        @string shadow_prefix = x
-        @string shadow_subdir = .leo_shadow
-
-- Added support for @bool fixedWindow option.
-
-    Leo suppresses marks, expansion state, orphan bits and current position bits
-    when writing fixed .leo files. As a result, all nodes will be collapsed and
-    the root node will always be selected when Leo opens a fixed .leo file.
-
-    You can optionally specify the size and position on the screen of fixed .leo
-    files by putting an '@data fixedWindowPosition' node in the
-    @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-    **not** put such a node in the fixed .leo file itself--everyone who
-    opens the file would get that fixed position.
-
-    The body of the '@data fixedWindowPosition' node should contain
-    something like this::
-
-        # Must be four entries: width,height,left,top.
-        # Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-        1200
-        800
-        50
-        50
-
-- Added @bool cleo_color_ignore = True
-
-    This determines whether cleo colors @ignore headlines. The default is True.
-#@+node:ekr.20080815093141.89: *4* 4.5 b3
-Leo 4.5 beta 3                      August 15, 2008
-
-Leo 4.5 beta 3 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20080815093141.90: *5* Major new features
-- Added support for @shadow files.
-  This is a major breakthrough.
-  See `Chapter 23`_ for full details.
-
-- Added much improved support for vim bindings.
-
-- Allow v.uA's in @thin and @shadow nodes.
-  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
-#@+node:ekr.20080815093141.91: *5* Major code reorganizations
-- Leo now uses a sax-based parser to read .leo files.
-  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
-
-- Leo now supports the so-called 'Graph World'.
-  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
-
-- Leo now uses a new key binding scheme.
-  This allows substantially simpler key bindings. Indeed, most per-pane bindings
-  have been eliminated.
-  Added support for kill bindings.
-
-- Leo is now an installable package.
-  To make this work, Leo adds os.curdir to sys.path if needed on startup.
-
-- Reorganized Leo's drawing and focus code.
-  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
-
-- Leo is now ready for Python 3.x:
-  Change most print statements to calls to g.pr.
-#@+node:ekr.20080815093141.92: *5* Minor new features
-- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
-  To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()
-
-- The find-character command now finds characters across line boundaries.
-
-- Set cwd in read/write commands. This affect the following commands:
-  open, save, save-as, save-to, read-outline-only, read-file-into-node,
-  write-file-from-node and all the import/export commands.
-
-- Create myLeoSettings.leo if it does not exist.
-  Leo create a simple template myLeoSettings.leo in the home directory if no other
-  copy of myLeoSettings.leo exists.
-
-- Added support for @args list for @button nodes.
-  See the docstring for the mod_scripting plugin for details.
-
-#@+node:ekr.20080815093141.93: *5* New settings
-- The default settings for @shadow files are now located in leoSettings.leo in the node::
-
-    @settings-->File options-->Shadow files
-
-  The defaults for these settings are::
-
-    @string shadow_prefix = x
-    @string shadow_subdir = .leo_shadow
-
-- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
-  state, orphan bits and current position bits when writing fixed .leo files. As
-  a result, all nodes will be collapsed and the root node will always be
-  selected when Leo opens a fixed .leo file.
-
-  You can optionally specify the size and position on the screen of fixed .leo
-  files by putting an '@data fixedWindowPosition' node in the
-  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-  **not** put such a node in the fixed .leo file itself--everyone who
-  opens the file would get that fixed position.
-
-  The body of the '@data fixedWindowPosition' node should contain
-  something like this::
-
-    # Must be four entries: width,height,left,top.
-    # Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-    1200
-    800
-    50
-    50
-
-- Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.
-
-- Added @bool suppress_import_parsing setting
-  When True, @auto and @shadow import the entire file into a single node.
-#@+node:ekr.20080827175609.55: *4* 4.5 rc1
-Leo 4.5 release candidate 1                      August 28, 2008
-
-Leo 4.5 rc1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20080827175609.56: *5* Major new features
-- Added support for @shadow files.
-  This is a major breakthrough.
-  See `Chapter 23`_ for full details.
-
-- Added much improved support for vim bindings.
-
-- Allow v.uA's in @thin and @shadow nodes.
-  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
-#@+node:ekr.20080827175609.57: *5* Major code reorganizations
-- Leo now uses a sax-based parser to read .leo files.
-  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
-
-- Leo now supports the so-called 'Graph World'.
-  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
-
-- Leo now uses a new key binding scheme.
-  This allows substantially simpler key bindings. Indeed, most per-pane bindings
-  have been eliminated.
-  Added support for kill bindings.
-
-- Leo is now an installable package.
-  To make this work, Leo adds os.curdir to sys.path if needed on startup.
-
-- Reorganized Leo's drawing and focus code.
-  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
-
-- Leo is now ready for Python 3.x:
-  Change most print statements to calls to g.pr.
-#@+node:ekr.20080827175609.58: *5* Minor new features
-- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
-  To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()
-
-- The find-character command now finds characters across line boundaries.
-
-- Set cwd in read/write commands. This affect the following commands:
-  open, save, save-as, save-to, read-outline-only, read-file-into-node,
-  write-file-from-node and all the import/export commands.
-
-- Added support for @args list for @button nodes.
-  See the docstring for the mod_scripting plugin for details.
-
-- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-  Leo looks for myLeoSettings.leo in HOME/.leo.
-#@+node:ekr.20080827175609.59: *5* New settings
-- The default settings for @shadow files are now located in leoSettings.leo in the node::
-
-    @settings-->File options-->Shadow files
-
-  The defaults for these settings are::
-
-    @string shadow_prefix = x
-    @string shadow_subdir = .leo_shadow
-
-- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
-  state, orphan bits and current position bits when writing fixed .leo files. As
-  a result, all nodes will be collapsed and the root node will always be
-  selected when Leo opens a fixed .leo file.
-
-  You can optionally specify the size and position on the screen of fixed .leo
-  files by putting an '@data fixedWindowPosition' node in the
-  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-  **not** put such a node in the fixed .leo file itself--everyone who
-  opens the file would get that fixed position.
-
-  The body of the '@data fixedWindowPosition' node should contain
-  something like this::
-
-    # Must be four entries: width,height,left,top.
-    # Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-    1200
-    800
-    50
-    50
-
-- Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.
-
-- Added @bool suppress_import_parsing setting
-  When True, @auto and @shadow import the entire file into a single node.
-#@+node:ekr.20080830082008.1: *4* 4.5 rc2
-Leo 4.5 release candidate 2                     August 30, 2008
-
-Leo 4.5 rc2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20080830082008.2: *5* Major new features
-- Added support for @shadow files.
-  This is a major breakthrough.
-  See `Chapter 23`_ for full details.
-
-- Added much improved support for vim bindings.
-
-- Allow v.uA's in @thin and @shadow nodes.
-  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
-#@+node:ekr.20080830082008.3: *5* Major code reorganizations
-- Leo now uses a sax-based parser to read .leo files.
-  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
-
-- Leo now supports the so-called 'Graph World'.
-  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
-
-- Leo now uses a new key binding scheme.
-  This allows substantially simpler key bindings. Indeed, most per-pane bindings
-  have been eliminated.
-  Added support for kill bindings.
-
-- Leo is now an installable package.
-  To make this work, Leo adds os.curdir to sys.path if needed on startup.
-
-- Reorganized Leo's drawing and focus code.
-  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
-
-- Leo is now ready for Python 3.x:
-  Change most print statements to calls to g.pr.
-#@+node:ekr.20080830082008.4: *5* Minor new features
-- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
-  To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()
-
-- The find-character command now finds characters across line boundaries.
-
-- Set cwd in read/write commands. This affect the following commands:
-  open, save, save-as, save-to, read-outline-only, read-file-into-node,
-  write-file-from-node and all the import/export commands.
-
-- Added support for @args list for @button nodes.
-  See the docstring for the mod_scripting plugin for details.
-
-- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-  Leo looks for myLeoSettings.leo in HOME/.leo.
-#@+node:ekr.20080830082008.5: *5* New settings
-- The default settings for @shadow files are now located in leoSettings.leo in the node::
-
-    @settings-->File options-->Shadow files
-
-  The defaults for these settings are::
-
-    @string shadow_prefix = x
-    @string shadow_subdir = .leo_shadow
-
-- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
-  state, orphan bits and current position bits when writing fixed .leo files. As
-  a result, all nodes will be collapsed and the root node will always be
-  selected when Leo opens a fixed .leo file.
-
-  You can optionally specify the size and position on the screen of fixed .leo
-  files by putting an '@data fixedWindowPosition' node in the
-  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-  **not** put such a node in the fixed .leo file itself--everyone who
-  opens the file would get that fixed position.
-
-  The body of the '@data fixedWindowPosition' node should contain
-  something like this::
-
-    # Must be four entries: width,height,left,top.
-    # Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-    1200
-    800
-    50
-    50
-
-- Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.
-
-- Added @bool suppress_import_parsing setting
-  When True, @auto and @shadow import the entire file into a single node.
 #@+node:ekr.20080902080930.2: *4* 4.5 final
 Leo 4.5 final                                  September 2, 2008
 
@@ -10648,49 +9534,36 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080902080930.3: *5* Major new features
 - Added support for @shadow files.
   This is a major breakthrough.
-  See `Chapter 23`_ for full details.
+  See @shadow chapter for full details.
 
 - Added much improved support for vim bindings.
 
 - Allow v.uA's in @thin and @shadow nodes.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
 #@+node:ekr.20080902080930.4: *5* Major code reorganizations
-- Leo now uses a sax-based parser to read .leo files.
-  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
+- Leo now uses a sax-based parser to read .leo files. This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
 
-- Leo now supports the so-called 'Graph World'.
-  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
+- Leo now supports the so-called 'Graph World'. When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
 
-- Leo now uses a new key binding scheme.
-  This allows substantially simpler key bindings. Indeed, most per-pane bindings
-  have been eliminated.
-  Added support for kill bindings.
+- Leo now uses a new key binding scheme. This allows substantially simpler key bindings. Indeed, most per-pane bindings have been eliminated. Added support for kill bindings.
 
-- Leo is now an installable package.
-  To make this work, Leo adds os.curdir to sys.path if needed on startup.
+- Leo is now an installable package. To make this work, Leo adds os.curdir to sys.path if needed on startup.
 
-- Reorganized Leo's drawing and focus code.
-  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
+- Reorganized Leo's drawing and focus code. As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
 
-- Leo is now ready for Python 3.x:
-  Change most print statements to calls to g.pr.
+- Leo is now ready for Python 3.x: Change most print statements to calls to g.pr.
 #@+node:ekr.20080902080930.5: *5* Minor new features
-- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
-  To trace a function and its callers, put the following at the function's start::
+- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph. To trace a function and its callers, put the following at the function's start::
 
     g.startTracer()
 
 - The find-character command now finds characters across line boundaries.
 
-- Set cwd in read/write commands. This affect the following commands:
-  open, save, save-as, save-to, read-outline-only, read-file-into-node,
-  write-file-from-node and all the import/export commands.
+- Set cwd in read/write commands. This affect the following commands: open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.
 
-- Added support for @args list for @button nodes.
-  See the docstring for the mod_scripting plugin for details.
+- Added support for @args list for @button nodes. See the docstring for the mod_scripting plugin for details.
 
-- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-  Leo looks for myLeoSettings.leo in HOME/.leo.
+- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there. Leo looks for myLeoSettings.leo in HOME/.leo.
 #@+node:ekr.20080902080930.6: *5* New settings
 - The default settings for @shadow files are now located in leoSettings.leo in the node::
 
@@ -10701,19 +9574,11 @@ Quotes:   http://leoeditor.com/testimonials.html
     @string shadow_prefix = x
     @string shadow_subdir = .leo_shadow
 
-- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
-  state, orphan bits and current position bits when writing fixed .leo files. As
-  a result, all nodes will be collapsed and the root node will always be
-  selected when Leo opens a fixed .leo file.
+- Added support for @bool fixedWindow option. Leo suppresses marks, expansion state, orphan bits and current position bits when writing fixed .leo files. As a result, all nodes will be collapsed and the root node will always be selected when Leo opens a fixed .leo file.
 
-  You can optionally specify the size and position on the screen of fixed .leo
-  files by putting an '@data fixedWindowPosition' node in the
-  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-  **not** put such a node in the fixed .leo file itself--everyone who
-  opens the file would get that fixed position.
+You can optionally specify the size and position on the screen of fixed .leo files by putting an '@data fixedWindowPosition' node in the @settings tree of myLeoSettings.leo or leoSettings.leo.  You should **not** put such a node in the fixed .leo file itself--everyone who opens the file would get that fixed position.
 
-  The body of the '@data fixedWindowPosition' node should contain
-  something like this::
+The body of the '@data fixedWindowPosition' node should contain something like this::
 
     # Must be four entries: width,height,left,top.
     # Put this in myLeoSettings.leo, **not** in individual .leo files.
@@ -10723,11 +9588,9 @@ Quotes:   http://leoeditor.com/testimonials.html
     50
     50
 
-- Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.
+- Added @bool cleo_color_ignore = True This determines whether cleo colors @ignore headlines. The default is True.
 
-- Added @bool suppress_import_parsing setting
-  When True, @auto and @shadow import the entire file into a single node.
+- Added @bool suppress_import_parsing setting When True, @auto and @shadow import the entire file into a single node.
 #@+node:ekr.20080912143702.137: *4* 4.5.1 final
 Leo 4.5.1 final                                  September 14, 2008
 
@@ -10770,15 +9633,11 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080912143702.138: *5* Fixed line number problems
-# goToLineNumber was always complaining about a missing private shadow file.
+goToLineNumber was always complaining about a missing private shadow file.
 #@+node:ekr.20080912143702.139: *5* Fixed problems with @shadow files with unknown file extensions
-@
-
-adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
-c.target_language to 'unknown_language' when the file extension is unknown.
+adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets c.target_language to 'unknown_language' when the file extension is unknown.
 #@+node:ekr.20080912143702.140: *5* Fixed bug in Leo's pre-install script
-The script failed for paths such as c:\xp\python25\python.exe
-for which python was not the top-most directory.
+The script failed for paths such as c:\xp\python25\python.exe for which python was not the top-most directory.
 #@+node:ekr.20090717084250.10704: *3* 4.6 file caching, qt gui, @edit, @auto-rst
 #@+node:ekr.20090324085713.2: *4* 4.6 b1
 Leo 4.6 beta 1                                       March 23, 2009
