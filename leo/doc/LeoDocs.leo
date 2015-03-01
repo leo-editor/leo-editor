@@ -1158,8 +1158,8 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285809000000302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e302e322e3371097d710a6803580c000000313337363431323838382e30710b735810000000302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73580b000000302e302e332e312e312e3371107d71116803580c000000313337363431323838392e30711273752e"
-expanded="ekr.20071115102156.5,ekr.20071116081521,ekr.20071115102156.148,ekr.20071116081521.1,ekr.20071217092203.1,ekr.20071217092203.137,ekr.20090717084250.10882,ekr.20090717084250.10886,ekr.20090717084250.10892,ekr.20090717084250.10895,ekr.20090717084250.10900,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285810000000302e302e31322e302e302e372e302e3171017d710258090000007374725f6174696d657103580c000000313337363431323238382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e302e322e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323838382e30710c73580b000000302e302e332e312e312e33710d7d710e680b580c000000313337363431323838392e30710f73752e"
+marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"></v>
@@ -1177,80 +1177,142 @@ expanded="ekr.20071115102156.5,ekr.20071116081521,ekr.20071115102156.148,ekr.200
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
-<v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
 <v t="edream.110203163054.67"><vh>4.0 final</vh>
-<v t="edream.110203163054.68"><vh>4.0 beta 4</vh></v>
-<v t="edream.110203163054.69"><vh>4.0 beta 3</vh>
-<v t="edream.110203163054.70"><vh>Fixed bugs</vh>
-<v t="edream.110203163054.71"><vh>Fixed bug that caused some clones not to be marked as clones</vh></v>
-<v t="edream.110203163054.72"><vh>Corrected problems with setting icons on Linux</vh></v>
-<v t="edream.110203163054.73"><vh>Fixed crasher in sentinelName</vh></v>
-<v t="edream.110203163054.74"><vh>Reenabled orphans &amp; ignored test in new write logic</vh></v>
-</v>
-<v t="edream.110203163054.75"><vh>New features</vh>
-<v t="edream.110203163054.76"><vh>Added support for unknown tnode and vnode attributes</vh></v>
-<v t="edream.110203163054.77"><vh>Added build number to signon</vh></v>
-<v t="edream.110203163054.78"><vh>Added better error message in setDefaultIcon</vh></v>
-</v>
-</v>
-<v t="edream.110203163054.79"><vh>4.0 beta 2</vh>
-<v t="edream.110203163054.80"><vh>To-do for 4.0 final</vh></v>
-<v t="edream.110203163054.81"><vh>Fixed Bugs</vh>
-<v t="edream.110203163054.82"><vh>Added crucial defensive checks in v.headString() and v.bodySting()</vh></v>
-<v t="edream.110203163054.83"><vh>Ensured newlines before all sentinels in @rawfile</vh></v>
-<v t="edream.110203163054.84"><vh>Fixed bugs involving find params</vh></v>
-<v t="edream.110203163054.85"><vh>Fixed Python Import bug</vh></v>
-<v t="edream.110203163054.86"><vh>Fixed several more unicode bugs</vh></v>
-<v t="edream.110203163054.87"><vh>Fixed crasher in Go To Outline command.</vh></v>
-<v t="edream.110203163054.88"><vh>Fixed @rawfile write problem</vh></v>
-</v>
-<v t="edream.110203163054.89"><vh>Improved commands</vh>
-<v t="edream.110203163054.90"><vh>Finished Import External File command and made it undoable</vh></v>
-<v t="edream.110203163054.91"><vh>Moved Clear Recent Files menu item into Recent Files menu</vh></v>
-<v t="edream.110203163054.92"><vh>Added better log message for Convert All Tabs/Blanks commands</vh></v>
-<v t="edream.110203163054.93"><vh>Marked changed nodes &amp; make the @file node and the outline dirty.</vh></v>
-<v t="edream.110203163054.94"><vh>Rewrote icon code so it doesn't use PIL or tkIcon in Python 2.3</vh></v>
-<v t="edream.110203163054.95"><vh>Created leoGui base class for tkinterGui class</vh></v>
-</v>
-<v t="edream.110203163054.96"><vh>New and improved settings</vh>
-<v t="edream.110203163054.97"><vh>Added support for two new settings affecting drags</vh></v>
-<v t="edream.110203163054.98"><vh>changed default for config.write_old_format_derived_files</vh></v>
-</v>
-</v>
-<v t="edream.110203163054.99"><vh>4.0 beta 1</vh>
-<v t="edream.110203163054.100"><vh>4.0 Theory of operation</vh></v>
-<v t="edream.110203163054.101"><vh>New commands &amp; options</vh>
-<v t="edream.110203163054.102"><vh>New write_old_format_derived_files option</vh></v>
-<v t="edream.110203163054.103"><vh>New Clear Recent Files command</vh></v>
-<v t="edream.110203163054.104"><vh>New Import External File command</vh></v>
-<v t="edream.110203163054.105"><vh>New Write 3.x/4.x External Files &amp; autosave</vh></v>
-</v>
-<v t="edream.110203163054.106"><vh>New plugins</vh></v>
-<v t="edream.110203163054.107"><vh>New read logic and greatly inproved error recovery</vh>
+<v t="edream.110203163054.100"><vh>* 4.0 Theory of operation</vh></v>
+<v t="edream.110203163054.107"><vh>* New read logic &amp; inproved error recovery</vh>
 <v t="edream.110203163054.108"><vh>Added test for unvisited nodes in read logic</vh></v>
 <v t="edream.110203163054.109"><vh>Error recovery is _much_ better than before</vh></v>
 </v>
-<v t="edream.110203163054.110"><vh>Improvements &amp; bug fixes</vh>
-<v t="edream.110203163054.111"><vh>Added horizontal scrollbar in body pane when @nowrap in effect</vh></v>
+<v t="ekr.20150301045135.4"><vh>Bugs fixed</vh>
+<v t="edream.110203163054.82"><vh>Added crucial defensive checks in v.headString() and v.bodySting()</vh></v>
+<v t="edream.110203163054.72"><vh>Corrected problems with setting icons on Linux</vh></v>
+<v t="edream.110203163054.83"><vh>Ensured newlines before all sentinels in @rawfile</vh></v>
+<v t="edream.110203163054.88"><vh>Fixed @rawfile write problem</vh></v>
+<v t="edream.110203163054.71"><vh>Fixed bug that caused some clones not to be marked as clones</vh></v>
+<v t="edream.110203163054.84"><vh>Fixed bugs involving find params</vh></v>
+<v t="edream.110203163054.87"><vh>Fixed crasher in Go To Outline command.</vh></v>
+<v t="edream.110203163054.73"><vh>Fixed crasher in sentinelName</vh></v>
+<v t="edream.110203163054.85"><vh>Fixed Python Import bug</vh></v>
+<v t="edream.110203163054.86"><vh>Fixed several more unicode bugs</vh></v>
+<v t="edream.110203163054.74"><vh>Reenabled orphans &amp; ignored test in new write logic</vh></v>
+</v>
+<v t="ekr.20150301045135.6"><vh>Code </vh>
 <v t="edream.110203163054.112"><vh>Added support for Python 2.3</vh></v>
 <v t="edream.110203163054.113"><vh>Leo recycles window objects only if more than one window open</vh></v>
-<v t="edream.110203163054.114"><vh>Removed "not undoable" message from Read @file Nodes command</vh></v>
-<v t="edream.110203163054.115"><vh>Removed Open Python Window command</vh></v>
 <v t="edream.110203163054.116"><vh>Simplified read and write code</vh></v>
+<v t="ekr.20150301045135.10"><vh>Use string methods</vh></v>
+</v>
+<v t="edream.110203163054.89"><vh>Commands</vh>
+<v t="edream.110203163054.90"><vh>Finished Import External File command and made it undoable</vh></v>
+<v t="edream.110203163054.91"><vh>Moved Clear Recent Files menu item into Recent Files menu</vh></v>
+<v t="edream.110203163054.92"><vh>Added better log message for Convert All Tabs/Blanks commands</vh></v>
+<v t="edream.110203163054.94"><vh>Rewrote icon code so it doesn't use PIL or tkIcon in Python 2.3</vh></v>
+<v t="edream.110203163054.95"><vh>Created leoGui base class for tkinterGui class</vh></v>
+<v t="edream.110203163054.103"><vh>New Clear Recent Files command</vh></v>
+<v t="edream.110203163054.104"><vh>New Import External File command</vh></v>
+<v t="edream.110203163054.105"><vh>New Write 3.x/4.x External Files &amp; autosave</vh></v>
+<v t="edream.110203163054.115"><vh>Removed Open Python Window command</vh></v>
+</v>
+<v t="ekr.20150301045135.5"><vh>Features</vh>
+<v t="edream.110203163054.78"><vh>Added better error message in setDefaultIcon</vh></v>
+<v t="edream.110203163054.77"><vh>Added build number to signon</vh></v>
+<v t="edream.110203163054.111"><vh>Added horizontal scrollbar in body pane when @nowrap in effect</vh></v>
+<v t="edream.110203163054.76"><vh>Added support for unknown tnode and vnode attributes</vh></v>
+<v t="edream.110203163054.93"><vh>Marked changed nodes &amp; make the @file node and the outline dirty.</vh></v>
+<v t="edream.110203163054.114"><vh>Removed "not undoable" message from Read @file Nodes command</vh></v>
+</v>
+<v t="edream.110203163054.106"><vh>Plugins</vh></v>
+<v t="edream.110203163054.96"><vh>Settings</vh>
+<v t="edream.110203163054.97"><vh>Added support for two new settings affecting drags</vh></v>
+<v t="edream.110203163054.98"><vh>changed default for config.write_old_format_derived_files</vh></v>
+<v t="edream.110203163054.102"><vh>New write_old_format_derived_files option</vh></v>
 </v>
 </v>
-</v>
+<v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
 </v>
 <v t="ekr.20050210102150.1"><vh>4.1... gnx's</vh>
 <v t="ekr.20040216151748"><vh>4.1 final</vh>
-<v t="ekr.20040217085036"><vh>Added several new plugins</vh></v>
+<v t="edream.110603192009"><vh>* Improved format of .leo files</vh>
+<v t="edream.110603190322.9"><vh>Leo now ignores unknown prefs and find prefs</vh></v>
+<v t="edream.110603190322.10"><vh>Leo now writes node_only find prefs</vh></v>
+<v t="edream.110603190125.1"><vh>.leo files are now cvs-friendly</vh></v>
+</v>
+<v t="ekr.20150301045135.11"><vh>Bugs Fixed</vh>
+<v t="ekr.20040131040544.5"><vh>Fixed "bad leo file" when reading some 3.x .leo files</vh></v>
+<v t="edream.110603190322.3"><vh>Fixed bug in idle_body_key</vh></v>
+<v t="ekr.20040131040544.81"><vh>Fixed bug in Import External File</vh></v>
+<v t="ekr.20040131040544.169"><vh>Fixed bug in Import Python Window command when using Python 2.2</vh></v>
+<v t="ekr.20040131040544.73"><vh>Fixed bug in Move Up command</vh></v>
+<v t="edream.110603190322.13"><vh>Fixed bug involving 0x1a characters in body text.</vh></v>
+<v t="ekr.20040131040544.228"><vh>Fixed bugs in Convert All BlanksTabs commands</vh></v>
+<v t="ekr.20040203084228"><vh>Fixed bugs in search command</vh></v>
+<v t="ekr.20040131040544.146"><vh>Fixed bugs related to saving read-only files</vh></v>
+<v t="ekr.20040217075627"><vh>Fixed clone bug when pasting nodes</vh></v>
+<v t="edream.120403174147.30"><vh>Fixed crasher in Apply Settings command</vh></v>
+<v t="edream.120403174147.102"><vh>Fixed crasher in Toggle Angle Brackets command</vh></v>
+<v t="edream.120403174147.109"><vh>Fixed crasher when setting Icon in Linux)</vh></v>
+<v t="ekr.20040131040544.258"><vh>Fixed crashes in open_shell.py plugin</vh></v>
+<v t="edream.120403174147.33"><vh>Fixed Find panel bug on the Mac</vh></v>
+<v t="edream.110603190322.11"><vh>Fixed first node-only find bug</vh></v>
+<v t="ekr.20040131100557"><vh>Fixed glitches when inserting node in hoisted outline</vh></v>
+<v t="ekr.20040131040544.18"><vh>Fixed huge performance bug in cut/copy node commands</vh></v>
+<v t="edream.120403174147.36"><vh>Fixed Import backslash-newline bug</vh></v>
+<v t="edream.121403165221"><vh>Fixed in rc3</vh></v>
+<v t="edream.111803060643"><vh>Fixed LaTeX syntax coloring bug</vh></v>
+<v t="edream.120403174147.61"><vh>Fixed Linux import problem</vh></v>
+<v t="ekr.20040201114855.107"><vh>Fixed major bug in tkFind.init</vh></v>
+<v t="edream.121403161017"><vh>Fixed prior to rc3</vh></v>
+<v t="edream.120403174147.63"><vh>Fixed Recent files crasher</vh></v>
+<v t="edream.120403174147.65"><vh>Fixed Replace Blanks command</vh></v>
+<v t="edream.110603190322.8"><vh>Fixed Serious Undo Change All bugs</vh></v>
+<v t="ekr.20040131044136"><vh>Fixed several bugs involving cut &amp; paste</vh></v>
+<v t="ekr.20040131044727"><vh>Fixed several bugs when writing external files</vh></v>
+<v t="ekr.20040131040754"><vh>Fixed several crashers</vh></v>
+<v t="edream.120403174147.94"><vh>Fixed several long-standing bugs related to Extract commands</vh></v>
+<v t="ekr.20040131040544.227"><vh>Fixed whitespace problem in leoTkinterGui.py</vh></v>
+<v t="ekr.20040217085036.1"><vh>Investigated encoding problem: it's a Python 2.3 bug</vh></v>
+<v t="ekr.20040131040544.32"><vh>Leo now properly re-enables drawing after exceptions</vh></v>
+</v>
+<v t="ekr.20150301045135.16"><vh>Code</vh>
+<v t="edream.110603190125.4"><vh>Code reorganized to support other guis</vh></v>
+<v t="edream.110303182253.39"><vh>Made app.forceShutdown work in "idle" hook</vh></v>
+<v t="edream.110603190125.3"><vh>Regression tests started</vh></v>
+<v t="edream.121403161017.1"><vh>New code-level features</vh></v>
+</v>
+<v t="ekr.20150301045135.12"><vh>Commands</vh>
+<v t="edream.110603190322.14"><vh>Added Check Outline command</vh></v>
+<v t="edream.110603190322.15"><vh>Added Hoist/De-Hoist commands</vh></v>
+<v t="edream.111803060152"><vh>Added script-based find/change commands</vh>
+<v t="edream.110603190322.6"><vh> Script Find and Script Change</vh>
+<v t="edream.111803060152.1"><vh>How it works</vh></v>
+<v t="ekr.20040201113232"><vh>Using the initScriptFind script</vh></v>
+<v t="edream.111803060152.2"><vh>Ideas for using scripts</vh></v>
+</v>
+</v>
 <v t="ekr.20040216152948"><vh>Added Toggle Angle Brackets command</vh></v>
 <v t="ekr.20040216153725"><vh>Changed Undo/Redo messages</vh></v>
-<v t="ekr.20040217075627"><vh>Fixed clone bug when pasting nodes</vh></v>
-<v t="ekr.20040217085036.1"><vh>Investigated encoding problem: it's a Python 2.3 bug</vh></v>
+<v t="edream.110203163054.833"><vh>Executing Python scripts in body text</vh></v>
+<v t="edream.121403161340"><vh>import-file</vh></v>
+<v t="edream.110303182253.3"><vh>Leo now does an auto-save only if files have actually been changed.</vh></v>
+<v t="edream.112303173638"><vh>Running Leo in batch mode</vh></v>
+<v t="edream.111803062437"><vh>Shift commands now shift single line if no selection</vh></v>
 </v>
-<v t="ekr.20040131040356"><vh>4.1 rc4</vh>
-<v t="ekr.20040201114855"><vh>New plugins in 4.1 rc4</vh>
+<v t="ekr.20150301045135.13"><vh>Features</vh>
+<v t="edream.110603190322.6"></v>
+<v t="edream.120403174147.128"><vh>Added code so @url nodes may open .leo files</vh></v>
+<v t="ekr.20040131040544.2"><vh>Added message when plugins are disabled</vh></v>
+<v t="ekr.20040201061329"><vh>Created status_line.py plugin</vh></v>
+<v t="ekr.20040131040544.178"><vh>Eliminated marking nodes dirty unnecessarily</vh></v>
+<v t="ekr.20040131040544.21"><vh>Esc and enter key now work in the find panel</vh></v>
+<v t="ekr.20040131040544.222"><vh>Execute Script command now ends all nodes with a newline</vh></v>
+<v t="edream.120403174147.56"><vh>Fixed problems with @lineending platform</vh></v>
+<v t="edream.120403174147.105"><vh>Honor outline/body pane ratio when opening files</vh></v>
+<v t="ekr.20040131040544.55"><vh>Improved message for orphan nodes</vh></v>
+<v t="ekr.20040131040544.10"><vh>Leo no longer automatically draws the status area</vh></v>
+<v t="edream.120403174147.112"><vh>Leo now adjusts newly opened windows so they fit on the screen</vh></v>
+<v t="edream.120403174147.119"><vh>Tested support for Unicode file &amp; directory names</vh></v>
+</v>
+<v t="ekr.20150301045135.15"><vh>Plugins</vh>
 <v t="ekr.20040201114855.42"><vh>mod_http.py plugin: Bernhard Mulder</vh></v>
 <v t="ekr.20040201114855.91"><vh>newButtons.py plugin: Paul Paterson</vh></v>
 <v t="ekr.20040201114855.29"><vh>nodenavigator.py plugin: Paul Paterson</vh></v>
@@ -1259,252 +1321,135 @@ expanded="ekr.20071115102156.5,ekr.20071116081521,ekr.20071115102156.148,ekr.200
 <v t="ekr.20040201114855.13"><vh>searchbox.py plugin: Paul Paterson</vh></v>
 <v t="ekr.20040201120903"><vh>status_line.py plugin: EKR</vh></v>
 </v>
-<v t="ekr.20040131041015"><vh>New features in 4.1 rc4</vh>
-<v t="ekr.20040131040544.10"><vh>Leo no longer automatically draws the status area</vh></v>
-<v t="ekr.20040131040544.21"><vh>Esc and enter key now work in the find panel</vh></v>
-<v t="ekr.20040131040544.55"><vh>Improved message for orphan nodes</vh></v>
-<v t="ekr.20040131040544.178"><vh>Eliminated marking nodes dirty unnecessarily</vh></v>
-<v t="ekr.20040131040544.222"><vh>Execute Script command now ends all nodes with a newline</vh></v>
-<v t="ekr.20040131040544.2"><vh>Added message when plugins are disabled</vh></v>
-<v t="ekr.20040201061329"><vh>Created status_line.py plugin</vh></v>
-<v t="edream.110603190322.6"><vh> Script Find and Script Change</vh>
-<v t="edream.111803060152.1"><vh>How it works</vh></v>
-<v t="ekr.20040201113232"><vh>Using the initScriptFind script</vh></v>
-<v t="edream.111803060152.2"><vh>Ideas for using scripts</vh></v>
+<v t="edream.110303182719"><vh>Settings</vh></v>
 </v>
 </v>
-<v t="ekr.20040131040356.1"><vh>Bugs fixed in 4.1 rc4</vh>
-<v t="ekr.20040131044727"><vh>Fixed several bugs when writing external files</vh></v>
-<v t="ekr.20040131040754"><vh>Fixed several crashers</vh></v>
-<v t="ekr.20040131040544.5"><vh>Fixed "bad leo file" when reading some 3.x .leo files</vh></v>
-<v t="ekr.20040131040544.18"><vh>Fixed huge performance bug in cut/copy node commands</vh></v>
-<v t="ekr.20040131040544.32"><vh>Leo now properly re-enables drawing after exceptions</vh></v>
-<v t="ekr.20040201114855.107"><vh>Fixed major bug in tkFind.init</vh></v>
-<v t="ekr.20040131040544.73"><vh>Fixed bug in Move Up command</vh></v>
-<v t="ekr.20040131040544.81"><vh>Fixed bug in Import External File</vh></v>
-<v t="ekr.20040131040544.146"><vh>Fixed bugs related to saving read-only files</vh></v>
-<v t="ekr.20040131040544.169"><vh>Fixed bug in Import Python Window command when using Python 2.2</vh></v>
-<v t="ekr.20040131040544.228"><vh>Fixed bugs in Convert All BlanksTabs commands</vh></v>
-<v t="ekr.20040131040544.258"><vh>Fixed crashes in open_shell.py plugin</vh></v>
-<v t="ekr.20040131044136"><vh>Fixed several bugs involving cut &amp; paste</vh></v>
-<v t="ekr.20040131040544.227"><vh>Fixed whitespace problem in leoTkinterGui.py</vh></v>
-<v t="ekr.20040131100557"><vh>Fixed glitches when inserting node in hoisted outline</vh></v>
-<v t="ekr.20040203084228"><vh>Fixed bugs in search command</vh></v>
+<v t="ekr.20050210102150"><vh>4.2... @file-thin, shared tnodes, generators</vh>
+<v t="ekr.20040922074200"><vh>4.2 final</vh>
+<v t="ekr.20150301045135.20"><vh>* File-related</vh>
+<v t="EKR.20040601101430.1"><vh>@+-middle sentinels allow sections to be defined in grandchildren</vh></v>
+<v t="EKR.20040601101510"><vh>@clone sentinel allows siblings to be cloned</vh></v>
+<v t="EKR.20040628095213.52"><vh>Allowed &lt;/leo_header&gt; tag</vh></v>
+<v t="EKR.20040524104904.242"><vh>Extending the format of .leo files</vh></v>
+<v t="ekr.20040705111716.45"><vh>Marked all related @thin nodes dirty when a node changesd</vh></v>
+<v t="EKR.20040628095213.501"><vh>Read and write all t.unknownAttributes in top vnode of an @thin tree</vh></v>
+<v t="ekr.20040705111716.1"><vh>Saved marks and expantion state in &lt;v&gt; elements for @thin nodes</vh></v>
+<v t="EKR.20040628095213.425"><vh>Write entire @thin tree on write errors</vh></v>
 </v>
-<v t="ekr.20040131040356.2"><vh>Bug fixed in previous 4.1 releases</vh></v>
-<v t="ekr.20040131040356.3"><vh>New code-level features</vh></v>
-<v t="ekr.20040131040356.4"><vh>New configuration settings</vh></v>
-<v t="ekr.20040131040356.5"><vh>New features</vh></v>
-</v>
-<v t="edream.121403160546"><vh>4.1 rc3</vh>
-<v t="edream.121403165221"><vh>Bugs fixed in this release</vh></v>
-<v t="edream.121403161017"><vh>Bug fixed in previous 4.1 releases</vh></v>
-<v t="edream.121403161017.1"><vh>New code-level features</vh></v>
-<v t="edream.121403161017.2"><vh>New configuration settings</vh></v>
-<v t="edream.121403161340"><vh>New features</vh></v>
-</v>
-<v t="edream.110603185805"><vh>4.1 beta 5</vh>
-<v t="edream.120403174147"><vh>Changes made in 4.1 beta 5</vh>
-<v t="edream.120403180443"><vh>New and improved features</vh>
-<v t="edream.120403174147.105"><vh>Honor outline/body pane ratio when opening files</vh></v>
-<v t="edream.120403174147.112"><vh>Leo now adjusts newly opened windows so they fit on the screen</vh></v>
-<v t="edream.120403174147.119"><vh>Tested support for Unicode file &amp; directory names</vh></v>
-<v t="edream.120403174147.128"><vh>Added code so @url nodes may open .leo files</vh></v>
-<v t="edream.120403174147.56"><vh>Fixed problems with @lineending platform</vh></v>
-</v>
-<v t="edream.120403174241"><vh>Bugs fixed</vh>
-<v t="edream.120403174147.30"><vh>Fixed crasher in Apply Settings command</vh></v>
-<v t="edream.120403174147.102"><vh>Fixed crasher in Toggle Angle Brackets command</vh></v>
-<v t="edream.120403174147.109"><vh>Fixed crasher when setting Icon in Linux)</vh></v>
-<v t="edream.120403174147.33"><vh>Fixed Find panel bug on the Mac</vh></v>
-<v t="edream.120403174147.36"><vh>Fixed Import backslash-newline bug</vh></v>
-<v t="edream.120403174147.61"><vh>Fixed Linux import problem</vh></v>
-<v t="edream.120403174147.63"><vh>Fixed Recent files crasher</vh></v>
-<v t="edream.120403174147.65"><vh>Fixed Replace Blanks command</vh></v>
-<v t="edream.110603190322.8"><vh>Fixed Serious Undo Change All bugs</vh></v>
-<v t="edream.120403174147.94"><vh>Fixed several long-standing bugs related to Extract commands</vh></v>
-</v>
-</v>
-<v t="edream.120403180443.1"><vh>Changes made in earlier 4.1 betas</vh>
-<v t="edream.110603190234.1"><vh>Code-level features</vh>
-<v t="edream.110603190125.3"><vh>Regression tests started</vh></v>
-<v t="edream.110603190125.4"><vh>Code reorganized to support other guis</vh></v>
-<v t="edream.110303182253.39"><vh>Made app.forceShutdown work in "idle" hook</vh></v>
-</v>
-<v t="edream.110603190404"><vh>Fixed bugs</vh>
-<v t="edream.110603190322.13"><vh>Fixed bug involving 0x1a characters in body text.</vh></v>
-<v t="edream.110603190322.11"><vh>Fixed first node-only find bug</vh></v>
-<v t="edream.110603190322.3"><vh>Fixed bug in idle_body_key</vh></v>
-<v t="edream.111803060643"><vh>Fixed LaTeX syntax coloring bug</vh></v>
-</v>
-<v t="edream.110603192009"><vh>Improved format of .leo files</vh>
-<v t="edream.110603190322.9"><vh>Leo now ignores unknown prefs and find prefs</vh></v>
-<v t="edream.110603190322.10"><vh>Leo now writes node_only find prefs</vh></v>
-<v t="edream.110603190125.1"><vh>.leo files are now cvs-friendly</vh></v>
-</v>
-<v t="edream.110603192009.1"><vh>New &amp; improved commands</vh>
-<v t="edream.112303173638"><vh>Running Leo in batch mode</vh></v>
-<v t="edream.110203163054.833"><vh>Executing Python scripts in body text</vh></v>
-<v t="edream.110603190322.14"><vh>Added Check Outline command</vh></v>
-<v t="edream.110603190322.15"><vh>Added Hoist/De-Hoist commands</vh></v>
-<v t="edream.111803060152"><vh>Added script-based find/change commands</vh>
-<v t="edream.110603190322.6"></v>
-</v>
-<v t="edream.110303182253.3"><vh>Leo now does an auto-save only if files have actually been changed.</vh></v>
-<v t="edream.111803062437"><vh>Shift commands now shift single line if no selection</vh></v>
-</v>
-<v t="edream.110303182719"><vh>New config settings</vh></v>
-</v>
-</v>
-<v t="edream.110203163054.64"><vh>4.1 alpha 1</vh></v>
-</v>
-<v t="ekr.20050210102150"><vh>4.2... @file-thin, shared tnodes</vh>
-<v t="ekr.20040922074200"><vh>4.2 final</vh></v>
-<v t="ekr.20040914103359"><vh>4.2 rc1</vh>
-<v t="ekr.20040914103743.1"><vh>Added new features</vh>
-<v t="ekr.20040914103359.137"><vh>Added c.frame.openDirectory to sys.path when executing scripts</vh></v>
-<v t="ekr.20040914103359.37"><vh>Added expanded_click_area option to disable left click logic in outline pane</vh></v>
-<v t="ekr.20040914103359.2"><vh>Restored the "iconclick1/2" hooks</vh></v>
-<v t="ekr.20040914103359.19"><vh>(Allow longer headlines for to support long url's)</vh>
-<v t="ekr.20040914103359.20"><vh>Report</vh></v>
-</v>
-</v>
-<v t="ekr.20040914103743"><vh>Fixed bugs</vh>
+<v t="ekr.20150301045135.17"><vh>Bugs fixed</vh>
+<v t="ekr.20040804164600.56"><vh>Added 3 .cascading style sheets to the distribution list</vh></v>
+<v t="EKR.20040518070940.164"><vh>Added t.writeBit</vh></v>
+<v t="EKR.20040628095213.60"><vh>Colorizing fixes</vh></v>
 <v t="ekr.20040914103359.47"><vh>Disabled perfect import</vh></v>
+<v t="EKR.20040601084317.99"><vh>Eliminated spurious "Not written x.tmp" message after write errors</vh></v>
+<v t="EKR.20040628095213.160"><vh>Eliminated spurious error messages in Import External File command</vh></v>
+<v t="ekr.20040804171818"><vh>Fixed all unit tests so they work with both Python 2.2 and Python 2.3</vh></v>
+<v t="EKR.20040628095213.308"><vh>Fixed bug in delete command</vh></v>
+<v t="EKR.20040628095213.442"><vh>Fixed bug in getScript</vh></v>
+<v t="EKR.20040628095213.279"><vh>Fixed bug in insertBodyTime</vh></v>
+<v t="ekr.20040804164600.265"><vh>Fixed bug in p.isAncestorOf</vh></v>
+<v t="EKR.20040628095213.512"><vh>Fixed bug reading leo.nsi</vh></v>
+<v t="EKR.20040628095213.297"><vh>Fixed bug when pasting large text into headlines</vh></v>
+<v t="ekr.20040705111716.126"><vh>Fixed bug when reading  4.1 files with topology errors</vh></v>
+<v t="EKR.20040628095213.366"><vh>Fixed bug when writing unknownAttributes</vh></v>
+<v t="EKR.20040628095213.404"><vh>Fixed bug: @last silently failed when extra lines exist</vh></v>
+<v t="EKR.20040628095213.121"><vh>Fixed bugs in @tab_width: support backspace with negative tab width</vh></v>
+<v t="EKR.20040628095213.143"><vh>Fixed bugs in Remove Sentinel command</vh></v>
+<v t="EKR.20040628095213.368"><vh>Fixed bugs opening a second file</vh></v>
+<v t="EKR.20040628095213.202"><vh>Fixed bugs reading 4.1 files</vh></v>
+<v t="EKR.20040601101430"><vh>Fixed Change Headline command</vh></v>
+<v t="EKR.20040518071415"><vh>Fixed clone bug that caused parts of outlines to disappear</vh></v>
+<v t="EKR.20040601101118"><vh>Fixed copy/paste operations involving @thin trees</vh></v>
+<v t="EKR.20040628095213.412"><vh>Fixed crash in Write Missing</vh></v>
+<v t="EKR.20040628095213.246"><vh>Fixed crash when importing Borland wstring.cpp</vh></v>
+<v t="EKR.20040628095213.499"><vh>Fixed double print in Execute Script command</vh></v>
+<v t="EKR.20040628095213.225"><vh>Fixed Go To Line Number command</vh></v>
+<v t="EKR.20040628095213.407"><vh>Fixed hang when dragging from one clone copy to another</vh></v>
+<v t="EKR.20040628095213.346"><vh>Fixed headline key handling</vh></v>
 <v t="ekr.20040914103359.12"><vh>Fixed Import External Files command</vh></v>
+<v t="EKR.20040518070940.156"><vh>Fixed long-standing problem with the outline-only command</vh></v>
+<v t="ekr.20040804164600.102"><vh>Fixed major bug in write logic</vh></v>
+<v t="ekr.20040804164600.421"><vh>Fixed major bug: changing headline now marks subnodes dirty</vh></v>
+<v t="EKR.20040628095213.312"><vh>Fixed oops: nullGui setIdleTimeHook</vh></v>
+<v t="EKR.20040628095213.213"><vh>Fixed Open With bug</vh></v>
 <v t="ekr.20040914103359.15"><vh>Fixed parsing of minimal &lt;preferences&gt; tag</vh></v>
+<v t="ekr.20040804164600.377"><vh>Fixed performance bug when reading .leo files</vh></v>
+<v t="EKR.20040628095213.354"><vh>Fixed problem with PHP and @last</vh></v>
 <v t="ekr.20040914103359.7"><vh>Fixed problem with tabs on MacOs</vh></v>
+<v t="EKR.20040628095213.348"><vh>Fixed Problems executing script</vh></v>
+<v t="EKR.20040601084317.142"><vh>Fixed problems saving unknownAttribute field</vh></v>
+<v t="EKR.20040628095213.444"><vh>Fixed problems with @all</vh></v>
+<v t="EKR.20040518070940"><vh>Fixed problems with missing tnodeList with @file-noref</vh></v>
+<v t="EKR.20040628095213.324"><vh>Fixed problems with trailing newlines and spurious changed bit</vh></v>
 <v t="ekr.20040914103359.28"><vh>Fixed read errors with @language html</vh></v>
+<v t="EKR.20040628095213.113"><vh>Fixed Select All bug</vh></v>
+<v t="ekr.20040804164600.515"><vh>Fixed several leaks of positions</vh></v>
+<v t="ekr.20040804164600.98"><vh>Fixed some bugs in g.importFromPath</vh></v>
+<v t="ekr.20040804164600.36"><vh>Fixed some unit-test bugs</vh></v>
+<v t="EKR.20040628095213.56"><vh>Fixed syntax colouring Bug in html mode</vh></v>
+<v t="EKR.20040601102115"><vh>Fixed unicode problem in the Dump Outline command</vh></v>
+<v t="EKR.20040628095213.485"><vh>Handled inner @language and @comment properly</vh></v>
+<v t="ekr.20040804164600.419"><vh>Improved how es_exception gets line number of errors</vh></v>
+<v t="ekr.20040804164600.16"><vh>Leo gives the user a chance to save read-only files</vh></v>
+<v t="ekr.20040804164600.406"><vh>Leo makes brings the confirm save box to the front</vh></v>
+<v t="ekr.20040804164600.470"><vh>Leo now gives update warning only once per external file</vh></v>
+<v t="ekr.20040804170846"><vh>Leo now reports problems with bad directories more clearly</vh></v>
+<v t="ekr.20040804164600.275"><vh>Leo now writes only the currently selected tree when pasting to the clipboard</vh></v>
+<v t="ekr.20040804164600.394"><vh>Leo reads collapsed xml tags properly in .leo files</vh></v>
+<v t="ekr.20040804164600.471"><vh>Leo updates tnodeLists properly in all situations</vh></v>
+<v t="EKR.20040628095213.3"><vh>Made "end1" and "ilde"events work again</vh></v>
 <v t="ekr.20040914103359.4"><vh>Made sure a proper message is given with invalid versions of Python</vh></v>
+<v t="EKR.20040518070824.1"><vh>Made sure file indices are always assigned when writing files.</vh></v>
+<v t="EKR.20040628095213.23"><vh>Put drawing hooks back in</vh></v>
 <v t="ekr.20040914103359.110"><vh>Removed failed assert from colorizer</vh></v>
+<v t="EKR.20040628095213.192"><vh>Removed gnx in headlines when importing thin external files</vh></v>
 <v t="ekr.20040914103359.31"><vh>Removed spurious "Warning: updating changed text" messages</vh></v>
 <v t="ekr.20040914103359.129"><vh>Shifted all Alt-shortcuts to Ctrl shortcuts on the Mac</vh></v>
 </v>
+<v t="EKR.20040628095213.311"><vh>Code</vh>
+<v t="EKR.20040628095213.314"><vh>Added readLineGenerator &amp; readLineClass to leoGlobals</vh></v>
+<v t="EKR.20040628095213.513"><vh>Changed *nix install script</vh></v>
+<v t="ekr.20040705150130"><vh>Leo passes all important pychecker tests</vh></v>
+<v t="EKR.20040601084317.102"><vh>Made undo extensible</vh></v>
 </v>
-<v t="ekr.20040713110718"><vh>4.2 beta 3</vh>
-<v t="ekr.20040804165258.1"><vh>Bug fixes</vh>
-<v t="ekr.20040804164600.16"><vh>Leo gives the user a chance to save read-only files</vh></v>
-<v t="ekr.20040804164600.36"><vh>Fixed some unit-test bugs</vh></v>
-<v t="ekr.20040804164600.56"><vh>Added 3 .cascading style sheets to the distribution list</vh></v>
-<v t="ekr.20040804164600.98"><vh>Fixed some bugs in g.importFromPath</vh></v>
-<v t="ekr.20040804164600.102"><vh>Fixed major bug in write logic</vh></v>
-<v t="ekr.20040804164600.265"><vh>Fixed bug in p.isAncestorOf</vh></v>
-<v t="ekr.20040804164600.275"><vh>Leo now writes only the currently selected tree when pasting to the clipboard</vh></v>
-<v t="ekr.20040804164600.377"><vh>Fixed performance bug when reading .leo files</vh></v>
-<v t="ekr.20040804170846"><vh>Leo now reports problems with bad directories more clearly</vh></v>
-<v t="ekr.20040804164600.394"><vh>Leo reads collapsed xml tags properly in .leo files</vh></v>
-<v t="ekr.20040804164600.406"><vh>Leo makes brings the confirm save box to the front</vh></v>
-<v t="ekr.20040804164600.419"><vh>Improved how es_exception gets line number of errors</vh></v>
-<v t="ekr.20040804164600.421"><vh>Fixed major bug: changing headline now marks subnodes dirty</vh></v>
-<v t="ekr.20040804164600.470"><vh>Leo now gives update warning only once per external file</vh></v>
-<v t="ekr.20040804164600.471"><vh>Leo updates tnodeLists properly in all situations</vh></v>
-<v t="ekr.20040804164600.515"><vh>Fixed several leaks of positions</vh></v>
-<v t="ekr.20040804171818"><vh>Fixed all unit tests so they work with both Python 2.2 and Python 2.3</vh></v>
-</v>
-<v t="ekr.20040804165258.2"><vh>Features</vh>
-<v t="ekr.20040804172113"><vh>@test and @suite greatly aid unit testing</vh></v>
-<v t="ekr.20040804172113.1"><vh>New scripts in test.leo make it very easy to use the gc, profile and timeit modules</vh></v>
-<v t="ekr.20040804165258.3"><vh>Import dialogs allow multiple selections</vh></v>
+<v t="ekr.20150301045135.19"><vh>Commands</vh>
+<v t="EKR.20040628095213.282"><vh>Added Paste Retaining Clones command</vh></v>
 <v t="ekr.20040804165258.4"><vh>New Check menu and commands</vh></v>
-<v t="ekr.20040804170531"><vh>Perfect Import feature automatically corrects imported files</vh></v>
+<v t="EKR.20040628095213.198"><vh>Supported @tabwidth in indent/dedent</vh></v>
+</v>
+<v t="ekr.20150301045135.21"><vh>Directives</vh>
+<v t="ekr.20040804172113"><vh>@test and @suite greatly aid unit testing</vh></v>
+<v t="EKR.20040601101547"><vh>Created @thin, @nosent, @noref and @asis abbreviations</vh></v>
+<v t="EKR.20040628095213.269"><vh>Created @killcolor directive</vh></v>
+<v t="EKR.20040601101227.1"><vh>Leo ignores all directives in @all trees</vh></v>
+</v>
+<v t="ekr.20150301045135.18"><vh>Features</vh>
+<v t="EKR.20040628095213.197"><vh>Added 3 files to distribution lists</vh></v>
+<v t="ekr.20040914103359.137"><vh>Added c.frame.openDirectory to sys.path when executing scripts</vh></v>
+<v t="EKR.20040628095213.408"><vh>Added case_sensitiveLanguage to colorizer</vh></v>
+<v t="ekr.20040914103359.37"><vh>Added expanded_click_area option to disable left click logic in outline pane</vh></v>
+<v t="ekr.20040914103359.19"><vh>Allow longer headlines to support long url's</vh>
+<v t="ekr.20040914103359.20"><vh>Report</vh></v>
+</v>
+<v t="EKR.20040628095213.490"><vh>Better reporting of body text conflicts</vh></v>
+<v t="ekr.20040804165258.3"><vh>Import dialogs allow multiple selections</vh></v>
+<v t="EKR.20040628095213.264"><vh>Import now creates absolute path</vh></v>
+<v t="EKR.20040628095213.493"><vh>Improved error handling for unknownAttributes</vh></v>
+<v t="EKR.20040628095213.110"><vh>Improved Import command slightly</vh></v>
 <v t="ekr.20040804170657"><vh>Improved performance of outline pane</vh></v>
+<v t="EKR.20040628095213.334"><vh>Much better error handling in executeScript</vh></v>
+<v t="ekr.20040804172113.1"><vh>New scripts in test.leo make it very easy to use the gc, profile and timeit modules</vh></v>
+<v t="ekr.20040804170531"><vh>Perfect Import feature automatically corrects imported files</vh></v>
+<v t="EKR.20040628095213.377"><vh>Recovered nodes when reading .leo files containing topology errors</vh></v>
+<v t="EKR.20040628095213.109"><vh>Replaced the word "Leo" with Leo icon in Find/Compare/Prefs windows</vh></v>
+<v t="ekr.20040914103359.2"><vh>Restored the "iconclick1/2" hooks</vh></v>
+<v t="EKR.20040601102703"><vh>Started work on simple new undo scheme</vh></v>
 <v t="ekr.20040804164600.424"><vh>The Go To Line Number command ignores all @all nodes</vh></v>
 </v>
-</v>
-<v t="EKR.20040628095213"><vh>4.2 beta 1 &amp; beta 2</vh>
-<v t="EKR.20040628095213.311"><vh>New coding conventions</vh></v>
-<v t="EKR.20040524104904.242"><vh>Extending the format of .leo files</vh></v>
-<v t="ekr.20040705111716"><vh>in 4.2 b2</vh>
-<v t="ekr.20040705111716.1"><vh>Saved marks and expantion state in &lt;v&gt; elements for @thin nodes</vh></v>
-<v t="ekr.20040705111716.45"><vh>Marked all related @thin nodes dirty when a node changesd</vh></v>
-<v t="ekr.20040705111716.126"><vh>Fixed bug when reading  4.1 files with topology errors</vh></v>
-<v t="ekr.20040705150130"><vh>Leo passes all important pychecker tests</vh></v>
-</v>
-<v t="ekr.20040705112148"><vh>in 4.2 b1</vh>
-<v t="EKR.20040628095213.513"><vh>Changed *nix install script</vh></v>
-<v t="EKR.20040628100535"><vh>Fixed bugs</vh>
-<v t="EKR.20040628095213.3"><vh>Made "end1" and "ilde"events work again</vh></v>
-<v t="EKR.20040628095213.23"><vh>Put drawing hooks back in</vh></v>
-<v t="EKR.20040628095213.56"><vh>Fixed syntax colouring Bug in html mode</vh></v>
-<v t="EKR.20040628095213.60"><vh>Colorizing fixes</vh></v>
-<v t="EKR.20040628095213.113"><vh>Fixed Select All bug</vh></v>
-<v t="EKR.20040628095213.121"><vh>Fixed bugs in @tab_width: support backspace with negative tab width</vh></v>
-<v t="EKR.20040628095213.143"><vh>Fixed bugs in Remove Sentinel command</vh></v>
-<v t="EKR.20040628095213.160"><vh>Eliminated spurious error messages in Import External File command</vh></v>
-<v t="EKR.20040628095213.192"><vh>Removed gnx in headlines when importing thin external files</vh></v>
-<v t="EKR.20040628095213.202"><vh>Fixed bugs reading 4.1 files</vh></v>
-<v t="EKR.20040628095213.213"><vh>Fixed Open With bug</vh></v>
-<v t="EKR.20040628095213.225"><vh>Fixed Go To Line Number command</vh></v>
-<v t="EKR.20040628095213.246"><vh>Fixed crash when importing Borland wstring.cpp</vh></v>
-<v t="EKR.20040628095213.279"><vh>Fixed bug in insertBodyTime</vh></v>
-<v t="EKR.20040628095213.297"><vh>Fixed bug when pasting large text into headlines</vh></v>
-<v t="EKR.20040628095213.308"><vh>Fixed bug in delete command</vh></v>
-<v t="EKR.20040628095213.312"><vh>Fixed oops: nullGui setIdleTimeHook</vh></v>
-<v t="EKR.20040628095213.324"><vh>Fixed problems with trailing newlines and spurious changed bit</vh></v>
-<v t="EKR.20040628095213.346"><vh>Fixed headline key handling</vh></v>
-<v t="EKR.20040628095213.348"><vh>Fixed Problems executing script</vh></v>
-<v t="EKR.20040628095213.354"><vh>Fixed problem with PHP and @last</vh></v>
-<v t="EKR.20040628095213.366"><vh>Fixed bug when writing unknownAttributes</vh></v>
-<v t="EKR.20040628095213.368"><vh>Fixed bugs opening a second file</vh></v>
-<v t="EKR.20040628095213.404"><vh>Fixed bug: @last silently failed when extra lines exist</vh></v>
-<v t="EKR.20040628095213.407"><vh>Fixed hang when dragging from one clone copy to another</vh></v>
-<v t="EKR.20040628095213.412"><vh>Fixed crash in Write Missing</vh></v>
-<v t="EKR.20040628095213.442"><vh>Fixed bug in getScript</vh></v>
-<v t="EKR.20040628095213.444"><vh>Fixed problems with @all</vh></v>
-<v t="EKR.20040628095213.499"><vh>Fixed double print in Execute Script command</vh></v>
-<v t="EKR.20040628095213.512"><vh>Fixed bug reading leo.nsi</vh></v>
-</v>
-<v t="EKR.20040628100535.1"><vh>Added new features</vh>
-<v t="EKR.20040628095213.52"><vh>Allowed &lt;/leo_header&gt; tag</vh></v>
-<v t="EKR.20040628095213.109"><vh>Replaced the word "Leo" with Leo icon in Find/Compare/Prefs windows</vh></v>
-<v t="EKR.20040628095213.110"><vh>Improved Import command slightly</vh></v>
-<v t="EKR.20040628095213.197"><vh>Added 3 files to distribution lists</vh></v>
-<v t="EKR.20040628095213.198"><vh>Supported @tabwidth in indent/dedent</vh></v>
-<v t="EKR.20040628095213.264"><vh>Import now creates absolute path</vh></v>
-<v t="EKR.20040628095213.269"><vh>Created @killcolor directive</vh></v>
-<v t="EKR.20040628095213.282"><vh>Added Paste Retaining Clones command</vh></v>
-<v t="EKR.20040628095213.314"><vh>Added readLineGenerator &amp; readLineClass to leoGlobals</vh></v>
-<v t="EKR.20040628095213.334"><vh>Much better error handling in executeScript</vh></v>
-<v t="EKR.20040628095213.377"><vh>Recovered nodes when reading .leo files containing topology errors</vh></v>
-<v t="EKR.20040628095213.391"><vh>Generalized write-to-string logic</vh></v>
-<v t="EKR.20040628095213.408"><vh>Added case_sensitiveLanguage to colorizer</vh></v>
-<v t="EKR.20040628095213.425"><vh>Write entire @thin tree on write errors</vh></v>
-<v t="EKR.20040628095213.485"><vh>Handled inner @language and @comment properly</vh></v>
-<v t="EKR.20040628095213.490"><vh>Better reporting of body text conflicts</vh></v>
-<v t="EKR.20040628095213.493"><vh>Improved error handling for unknownAttributes</vh></v>
-<v t="EKR.20040628095213.501"><vh>Read and write all t.unknownAttributes in top vnode of an @thin tree</vh></v>
-</v>
-</v>
-</v>
-<v t="EKR.20040601084317"><vh>4.2 a3</vh>
-<v t="EKR.20040601084317.2"><vh>Bug fixes</vh>
-<v t="EKR.20040601101118"><vh>Fixed copy/paste operations involving @thin trees</vh></v>
-<v t="EKR.20040601101430"><vh>Fixed Change Headline command</vh></v>
-<v t="EKR.20040601084317.99"><vh>Eliminated spurious "Not written x.tmp" message after write errors</vh></v>
-<v t="EKR.20040601084317.142"><vh>Fixed problems saving unknownAttribute field</vh></v>
-<v t="EKR.20040601102115"><vh>Fixed unicode problem in the Dump Outline command</vh></v>
-</v>
-<v t="EKR.20040601101227"><vh>New Features</vh>
-<v t="EKR.20040601101227.1"><vh>Leo ignores all directives in @all trees</vh></v>
-<v t="EKR.20040601101430.1"><vh>@+-middle sentinels allow sections to be defined in grandchildren</vh></v>
-<v t="EKR.20040601101510"><vh>@clone sentinel allows siblings to be cloned</vh></v>
-<v t="EKR.20040601101547"><vh>Created @thin, @nosent, @noref and @asis abbreviations</vh></v>
-<v t="EKR.20040601084317.102"><vh>Made undo extensible</vh></v>
-<v t="EKR.20040601102703"><vh>Started work on simple new undo scheme</vh></v>
+<v t="ekr.20150301045135.22"><vh>Scripting</vh>
 <v t="EKR.20040601084317.161"><vh>Created new c, p, v iterators</vh></v>
+<v t="EKR.20040628095213.391"><vh>Generalized write-to-string logic</vh></v>
 </v>
-<v t="EKR.20040601102808"><vh>Known bugs</vh></v>
-</v>
-<v t="EKR.20040518070558"><vh>4.2 a2</vh>
-<v t="EKR.20040518070940.5"><vh>Implemented @file-thin</vh></v>
-<v t="EKR.20040518070824"><vh>Fixed bugs</vh>
-<v t="EKR.20040518071415"><vh>Fixed clone bug that caused parts of outlines to disappear</vh></v>
-<v t="EKR.20040518070940.156"><vh>Fixed long-standing problem with the outline-only command</vh></v>
-<v t="EKR.20040518070824.1"><vh>Made sure file indices are always assigned when writing files.</vh></v>
-<v t="EKR.20040518070940"><vh>Fixed problems with missing tnodeList with @file-noref</vh></v>
-<v t="EKR.20040518070940.164"><vh>Added t.writeBit</vh></v>
-</v>
-<v t="EKR.20040518075457"><vh>Dangers of @file-thin</vh></v>
 </v>
 </v>
 <v t="ekr.20060206111600"><vh>4.3...@settings</vh>
@@ -3097,7 +3042,7 @@ expanded="ekr.20071115102156.5,ekr.20071116081521,ekr.20071115102156.148,ekr.200
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
 </v>
-<v t="ekr.20101104091058.5045"><vh>4.8 Simpler sentinels, better installer, recovery nodes</vh>
+<v t="ekr.20101104091058.5045" a="M"><vh>4.8 Simpler sentinels, better installer, recovery nodes</vh>
 <v t="ekr.20101024234254.5433"><vh>4.8 a1</vh></v>
 <v t="ekr.20101114081049.5004"><vh>4.8 b1</vh></v>
 <v t="ekr.20101104091058.4975"><vh>4.8 rc1</vh>
@@ -4455,60 +4400,6 @@ expanded="ekr.20071115102156.5,ekr.20071116081521,ekr.20071115102156.148,ekr.200
 </v>
 </vnodes>
 <tnodes>
-<t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
-
-This is an important milestone in Leo's history; the two defining features of
-the 4.2 code base are complete:
-
-1. This is the first stable version using the "shared nodes" code base.
-
-Shared nodes dramatically improve the time needed to insert, delete, and move
-nodes. Moreover, the new code base is code compatible with the old. Indeed, much
-of Leo still uses the old code base. See the Scripting Leo for full details of how to
-script Leo with the 4.2 code base.
-
-2. This is the first version to use @file-thin for most external files.
-
-@file-thin makes it possible to use Leo effectively in a cvs environment.  Indeed, cvs now contains only a "dummy" version of LeoPy.leo.  The idea is that:
-
-- LeoPyRef.leo hardly ever changes. Developers will download LeoPyRef.leo once
-from cvs, then rename LeoPyRef.leo to be LeoPy.leo. LeoPy.leo is private to each
-developer.
-
-- Developers will commit and update to cvs only thin external files. There is no
-longer any need to keep .leo files and the files derived from them "in sync".
-
-- Similar remarks apply to LeoPlugins.leo. Cvs contains only LeoPluginsRef.leo,
-and contributors will need only to submit thin external files.
-
-I have been using the new code base without incident for weeks now, and I am
-fairly confident that it is safe to use. Nevertheless, I would suggest routine
-caution when dealing with this version until more people have tested it.
-
-Known bugs
-
-- Cutting and pasting an @file-thin node does not work properly. This will be
-easy to fix, I think.
-
-- The present algorithm for reading thin external files probably does not handle
-properly the situation in which a named node is some kind of grand child of the
-referencing node rather than being an immediate child of the referencing node.
-This is a rare situation, easily avoided, and it doesn't happen at all in
-LeoPy.leo. Nevertheless, something must be done.
-
-Other improvements:
-
-- Fixed a number of problems with using Leo on MacOS X. In particular, Leo now
-uses the clover key as is usual on the Mac. More Mac and *nix specific
-improvements are coming.
-
-Still to do:
-
-- Perfect import and @import. - Make the Go To Line Number command work with
-@file-thin files. - Fix minor bugs and add new features See the "To Do: 4.2"
-node in the leoToDo.txt node in LeoPy.leo.
-</t>
-<t tx="EKR.20040518070824"></t>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
 - Called assignFileIndices in writeAtFileNodes, writeDirtyAtFileNodes, writeMissingAtFileNodes
 </t>
@@ -4526,51 +4417,7 @@ What I did:
 - Call t.setWriteBit in putVnode unless we are in a thin node.
 - putTnodes tests for t.writeBit rather than t.visitedBit.
 </t>
-<t tx="EKR.20040518070940.5">What I did:
-
-File format
-
-Added -thin field to @+leo sentinel
-
-Recognizers
-
-- Added vnode recognizers for @file-thin option.
-- Added position proxies for vnode recognizers.
-
-Directives &amp; sentinels
-- Added support for @all.
-
-Writing
-
-- Added top-level atFile code to write @file-thin tree.
-- DO write @file-thin vnodes if there was an error writing the external file.
-	- No autosave for @file-thin.
- 	- Leo writes @file nodes first, so this is not a problem.
-	- putVnode checks orphan bit, which gets set if there was an error.
-- Don't write vnodes (or related tnodes) for @file-thin trees. (fileCommands).
-- Do write empty nodes in @thin trees.
-- Don't generate close node sentinels until all children have been generated.
-
-Reading
-
-- Set at.thinFile when reading thin files.
-- Suppressed changed message and related items for thin files.
-- Modified scanText4 and allies to read thin external files.
-	- Don't look for tnodeList for thin files.
-	- Initially, at.lastThinNode is at.root.v
-	- readStartNode calls createThinChild
-	- createThinChild makes a child of at.lastThinNode if needed and sets at.lastThinNode.
-- Updated fc.tnodesDict in at.createThinChild.
-	Otherwise clones existing only in two thin files won't be linked properly.
-</t>
 <t tx="EKR.20040518071415">Leo did not handle moving a node to the root position of the outline correctly.
-</t>
-<t tx="EKR.20040518075457">Using @ignore with @file-thin is asking for trouble. If you remove the @ignore and then save, you will lose data.
-
-How to recover the data:
-	- Read Outline.
-	- Remove @ignore
-	- Import External File... 
 </t>
 <t tx="EKR.20040524104904.100"></t>
 <t tx="EKR.20040524104904.101">The ``new`` (Ctrl-N) command creates a new Leo main window. The ``open-outline`` (Ctrl-O) command opens an existing Leo file and shows it in a main window. The ``close-window`` (Ctrl-F4) command closes the selected Leo window, giving you an opportunity to save your work if you haven't yet done so.
@@ -5272,35 +5119,6 @@ words, undo will work safely regardless of the value returned. See the actual
 code for recognizeStartOfTypingWord() for more details.
 </t>
 <t tx="EKR.20040524104904.99"></t>
-<t tx="EKR.20040601084317">Leo 4.2 alpha 3           June 1, 2004
-
-This version fixes completes the essential features of version 4.2. All known
-incompletions and bugs involving shared nodes and Leo's new file format have
-been fixed. BTW, this version of Leo completes Leaps 201 and 202.
-
-It should be safe to use this version for collaboration between Leo's
-developers. I hereby encourage people to start using cvs for collaboration. Only
-by doing so will we discover any possible problems.
-
-The only item that must be completed before releasing 4.2 beta is fixing the Go
-To Line Number command so it supports thin external files.
-
-There are many known bugs in this version: most are minor bugs that have been
-around for a long time. All known bugs will be fixed by the first release
-candidate. See the to-do list in LeoPy.leo for the complete list.
-
-The highlights of this version:
-
-- All features of @file-thin are now complete and appear to be stable. - All
-	.leo files in the distribution use @thin files where possible. - Leo ignores
-	all directives within the range of the @all directive. - The @+middle and
-	@-middle sentinels allow sections to be defined in any descendant node. -
-	The @clone sentinel marks duplicate cloned siblings. - The beginnings of a
-	new undo scheme are in place. - @thin, @nosent, @noref and @asis are
-	abbreviations for @file-thin, @file-nosent, @file-noref and @file-asis. -
-	Created new iterators that return lists of vnodes and tnodes, including
-	iterators that remove all duplicates from those lists.
-</t>
 <t tx="EKR.20040601084317.102">Added u.registerUndoHandlers.
 
 This will become largely unnecessary in the new undo scheme.  It's good to have though.
@@ -5328,12 +5146,10 @@ p.unique_vnodes_iter
 v.self_and__subtree_iter
 v.self_and_unique_subtree_iter
 </t>
-<t tx="EKR.20040601084317.2"></t>
 <t tx="EKR.20040601084317.99">This happened after write errors such as orphan nodes.
 </t>
 <t tx="EKR.20040601101118">If the copied node was an @thin or @file-thin node node only the root node was copied.
 </t>
-<t tx="EKR.20040601101227"></t>
 <t tx="EKR.20040601101227.1"></t>
 <t tx="EKR.20040601101430">This bug exists in 4.1 final. Leo did not properly show the found text in
 headlines. The fix was in the code that redraws the screen, not in the
@@ -5349,57 +5165,6 @@ command.
 
 At present only the u.saveTree method exists. Coming soon, u.saveNode,
 u.saveNodeAndChildren and u.saveListOfNodes.
-</t>
-<t tx="EKR.20040601102808">See the to-do list in LeoPy.leo for a list of known bugs in this version.
-
-None of these bugs is serious:  I consider this version to be suitable for day-to-day work.
-</t>
-<t tx="EKR.20040628095213">Leo 4.2 beta 2           July 5, 2004
-Leo 4.2 beta 1           June 30, 2004
-
-The highlights of 4.2 beta 2:
-
-- Leo now writes the entire contents of @ignore'd @thin trees to the .leo file.
-This change ensures that users can create and remove @ignore directives without
-any chance of losing data inadvertently.
-
-- Leo now saves and restores marks and the expansion state of nodes in @thin trees.
-
-- Leo marks @thin nodes as dirty whenever they become "newly unignored", i.e.,
-when an @thin node no longer falls in the range of an @ignore directive.
-
-Beta 1 completes all fundamental work in the 4.2 code base. All essential code
-is complete. Dozens of bugs have been fixed since the Alpha 3 release about a
-month ago.
-
-Known bugs in 4.2 beta 2:
-
-- Not all plugins work correctly.
-- Some plugins leak memory very slightly.
-
-The highlights of Leo 4.2:
-
-- @thin trees make Leo much more friendly to cvs. Files derived from @thin can
-be committed to cvs and updated from cvs without having to commit or update the
-corresponding .leo file. There is no longer any need to keep .leo files and
-external files in sync.
-
-- Leo's data structures have been reorganized. As a result, all outline
-operations are much faster. To support this organization, scripts that traverse
-Leo's data structures must now use a positions rather than vnodes. Old scripts
-that appear to use vnodes will still work because methods like c.currentVnode
-that appear to return vnodes actually return positions.
-
-Other features of 4.2:
-
-- Leo is now much more friendly to using spaces instead of tabs.
-- The Execute Script command reports erroneous lines more clearly.
-- The usual assortment of bug features and minor features.
-
-Coming soon in 4.2:
-
-- Perfect Import will guarantee that Leo imports file perfectly.
-- @import will allow you to study files using Leo without changing those files.
 </t>
 <t tx="EKR.20040628095213.109">http://sourceforge.net/forum/message.php?msg_id=2429098
 
@@ -5574,9 +5339,6 @@ The code is pretty fragile; it should handle either None or "", but in fact it r
 <t tx="EKR.20040628095213.56"></t>
 <t tx="EKR.20040628095213.60">Added support for RapidQ, css, shell scripts and PHP.
 </t>
-<t tx="EKR.20040628100535">@killcolor
-</t>
-<t tx="EKR.20040628100535.1"></t>
 <t tx="TL.20080804095315.1"></t>
 <t tx="TL.20080804095315.2">###################
 Using Vim with Leo
@@ -6030,7 +5792,6 @@ The Synchronization Principle has the following happy consequences:
 
 5. The new Import External File command is the _only_ way to recover data from mismatched external file.
 </t>
-<t tx="edream.110203163054.101"></t>
 <t tx="edream.110203163054.102">The write_old_format_derived_files option in leoConfig.leo and leoConfig.txt
 determines which format of external file Leo's Write and Save commands write by
 default. If this option is 0 (recommended) Leo writes 4.x format external files.
@@ -6097,7 +5858,6 @@ body text in the external file does not match the body text in the outline. Thes
 messages do not indicate errors, only that the body text has been changed
 outside of Leo, say in an external editor or by cvs.
 </t>
-<t tx="edream.110203163054.110"></t>
 <t tx="edream.110203163054.111"></t>
 <t tx="edream.110203163054.112">Added encoding comments to leoGlobals.py and French plugins
 
@@ -6112,41 +5872,6 @@ This removes a warning new in Python 2.3.
 <t tx="edream.110203163054.116">The read code has much simplified using look-behind rather than look-ahead.  Both the read and write code write the file line-by-line without recursion.
 </t>
 <t tx="edream.110203163054.117"></t>
-<t tx="edream.110203163054.64">Leo 4.1 alpha 1                   November 3, 2003
-
-*** Alpha quality code:  Please make full backups before playing with this code!
-
-This release marks another significant milestone in Leo's history:
-
-- Leo's 4.x file code is complete. At present I have no plans to change the
-format of .leo files or external files. I am eating my own dog food: I do all my
-editing with the 4.1 code base.
-
-- Leo uses immutable gnx's (id:timestamp:n) by default to associate tnodes with
-vnodes in .leo files. This makes Leo as cvs friendly as possible. From now on
-.leo files will be checked in to cvs with the -ko (text/keywords off) option.
-
-- The use_gnx setting in leoConfig.txt determines whether uses gnx's (cvs
-friendly) or ints. No version of Leo before 4.1 can read .leo files containing
-gnx. Only gnx's are immutable. Leo recomputes all non-gnx indices from scratch
-whenever writing a .leo file. It is possible to convert between 3.x and 4.1 file
-formats by changing the use_gnx setting.
-
-- The 4.1 code base has been reorganized to support gui's other than tkinter.
-Leo's src directory contains several new source files.
-
-- The file test.leo in the test directory contains real regression tests for
-syntax coloring. Regression testing scripts create regression tests dynamically
-from data in Leo's outline. Very cool, very easy, very general. In particular,
-regression tests may use temporary nodes in test.leo rather than creating
-separate Tk windows for testing.
-
-Known bugs:
-
-- The Extract commands eat one character too much.
-
-- The __wx_gui.py plugin is only partly functional.
-</t>
 <t tx="edream.110203163054.66">Leo 4.0.4                         October 29, 2003
 
 - Fixed a problem with the titles in Font and Color panels.
@@ -6217,40 +5942,12 @@ Highlights of 4.0 final:
 
 See the notes for the various beta releases for full details.
 </t>
-<t tx="edream.110203163054.68">Leo 4.0 beta 4                      October 13, 2003
-
-This is the third public release of Leo 4.0. There are no known serious bugs in
-this version of Leo.  This will be the last beta release before 4.0 final.
-
-Changes made in 4.0 beta 4
---------------------------
-
-- Changed all instances of string.letters to string.ascii_letters.
-  string.letters can cause crashes in some locales (Unicode environments).
-- Fixed several bugs that caused clone marks not to be set properly.
-</t>
-<t tx="edream.110203163054.69">Leo 4.0 beta 3                      October 9, 2003
-
-This is the third public release of Leo 4.0. There are no known serious bugs in
-this version of Leo.
-
-Highlights of 4.0 beta 3
-------------------------
-
-- Fixed problems with setting Leo's window icons.
-- Plugins may now save their own information in &lt;v&gt; and &lt;t&gt; elements in .leo files.
-- The usual assortment of bug fixes and minor improvements.
-
-See the children of this node for full details.
-</t>
-<t tx="edream.110203163054.70"></t>
 <t tx="edream.110203163054.71">This was a long-standing bug.  It's effect was cosmetic, and it was important to fix.
 </t>
 <t tx="edream.110203163054.72"></t>
 <t tx="edream.110203163054.73">This could happen when the external file was corrupted.
 </t>
 <t tx="edream.110203163054.74"></t>
-<t tx="edream.110203163054.75"></t>
 <t tx="edream.110203163054.76">Leo can now read and write "foreign" attributes in &lt;v&gt; and &lt;t&gt; elements in .leo
 files:
 
@@ -6294,40 +5991,6 @@ Another way:
 <t tx="edream.110203163054.77"></t>
 <t tx="edream.110203163054.78">Leo now warns if it can't find either the Icons directory or the LeoApp16.ico icon in that directory.
 </t>
-<t tx="edream.110203163054.79">Leo 4.0 beta 2                      October 3, 2003
-
-This is the second public release of Leo 4.0. There are no known serious bugs
-in this version of Leo. Version 4.0 is the culmination of over a year of
-collaborative design work and several months of actual implementation.
-
-Highlights of 4.0 beta 2
-------------------------
-* Fixed several bugs:
-  - Fixed several problems with reading and writing 4.0 external files.
-  - Fixed several Unicode-related bugs.
-  - Fixed a crasher in the Go To Line Number command.
-  - Fixed a problem with Importing Python files.
-* Important improvements:
-  - Added allow_clone_drags setting.  N.B. Allows Leo to be used with Aqua.
-  - When running Python 2.3 Leo can now create window icons without third-party packages.
-- The usual minor improvements and bug fixes.
-
-See the children of this node for full details.
-
-Highlights of 4.0 beta 1
-------------------------
-* Improved and simplified format of external files.
-* Greatly improved error handling.
-* Full compatibility will previous versions of Leo.
-</t>
-<t tx="edream.110203163054.80">- Fix undo/redo bug for all commands that change body text in multiple nodes without changing outline structure.
-	- This is a long-standing bug that came to light when trying to make Read @file Nodes undoable.
-
-- Make Read @file Nodes command undoable.
-
-- Fix small bugs in the Go To Line Number command.
-</t>
-<t tx="edream.110203163054.81"></t>
 <t tx="edream.110203163054.82">The new code prints a warning if Leo's key internal strings are not Unicode.
 </t>
 <t tx="edream.110203163054.83"></t>
@@ -6379,107 +6042,13 @@ them or clone them. The default is to enable those messages.
 <t tx="edream.110203163054.98">After the 4.0 beta 1 release I changed the default so that _new_ format derived
 files are written if leoConfig.txt does not exist.
 </t>
-<t tx="edream.110203163054.99">leo.py 4.0 beta 1                      September 26, 2003
-
-This is the first public release of Leo 4.0.  Version 4.0 is the culmination of over a year of collaborative design work and several months of actual implementation.
-
-Please use caution when using this beta version of Leo.  It appears very solid and it has been tested by only a few people.
-
-Highlights of 4.0:
-
-** Improved and simplified format of external files.
-	- Eliminated child indices, extraneous blank lines and @body sentinels.
-	- Eliminated @node sentinels that indicate outline structure.
-	- New @nl and @nonl sentinels indicate where newlines are and aren't.
-	- These changes will largely eliminate unwanted cvs conflicts.
-
-** Greatly improved error handling.
-	- Reading external files _never_ alter outline structure or links.
-	- Read errors leave the outline completely unchanged.
-	- Broken clone links are gone forever.
-	- As a result, using 4.0 is much safer than all previous versions.
-
-** Full compatibility will previous versions of Leo.
-	- Leo reads all external files properly, regardless of version.
-	- Leo writes new-format external files by default, and this default may be changed.
-	- New commands in the read/write menu allow you to explicitly specify the format of external files.
-
-* New commands:
-	- Write 3.x external file.
-	- Write 4.x external file.
-	- Import external file.
-	- Clear Recent Files.
-
-- Several new plugins.
-- Several minor bug fixes.
-
-See the children of this node for full details.
-</t>
 <t tx="edream.110303182253.3">Leo does an auto-save only if something has actually been changed.
 </t>
 <t tx="edream.110303182253.39"></t>
 <t tx="edream.110303182719">The config_encoding setting controls the encoding of non-ascii characters in leoConfig.txt.
 
 The use_gnx setting in leoConfig.txt determines whether uses gnx's (cvs friendly) or ints.  No version of Leo before 4.1 can read .leo files containing gnx.   Only gnx's are immutable.  Leo recomputes all non-gnx indices from scratch whenever writing a .leo file. It is possible to convert between 3.x and 4.1 file formats by changing the use_gnx setting.
-</t>
-<t tx="edream.110603185805">Leo 4.1 beta 5                   December 5, 2003
 
-This is the fifth release of the reorganized 4.1 code base.
-
-For the first time in months there are no serious bugs outstanding.
-
-Warning: By default Leo 4.1 creates .leo files that can not be read by older versions of Leo.
-
-Warning: Use the __wx_gui.py plugin with extreme caution until further notice:
-bugs in this plugin could cause body text to be cleared improperly when changing nodes.
-
-Beta 5:
-  * Leo runs in batch mode when invoked with --script aScriptFile.py
-    - Created "null gui" classes that do not use any gui code.
-  * Leo supports Unicode characters (e.g. Chinese) in path and file names.
-  * Fixed several long-standing bugs:
-    - Fixed several minor problems with the Extract Section and Import commands.
-    - Fixed problem that prevent the Find panel from working on the Mac.
-    - Improved @url handling so that @url file:\\path\x.leo works properly.
-    - Improved support for @lineending platform.
-    - Leo honors outline/body pane ratio when opening .leo files.
-    - Leo now ensures that newly-opened windows fit entirely on the screen.
-    - Fixed a crasher when Undoing a Change All command when searching headlines.
-  - Fixed other bugs resulting from the 4.1 reorg:
-    - Fixed problem loading plugins on Linux.
-    - Fixed crashers in the Extract Section and Extract commands.
-    - Fixed a crasher when writing a file containing an undefined section.
-    - Removed duplicate bindings in popup menus.
-    - Made sure to show Leo's windows in wx gui plugin.
-
-Beta 4:
-  - Fixed several "reorg" bugs, some of which affected plugins.
-  - Allow @directives and section references when executing scripts!
-  - More than one section reference may now appear on the same line.
-  - Use "utf-8" encoding for filenames under MacOS (Darwin)
-  - Allow command or cmnd prefix for menu shortcuts under Darwin.
-
-Beta 3:
-  - Completed the reorg, making many changes to the code base.
-  - Fixed a LaTeX coloring bug
-
-Beta 2:
-  - Fixed a startup problem on Linux: the "mbcs" text encoding is not valid on Linux.
-
-Beta 1:
-  * Script-based find/change commands.
-  - Hoist &amp; DeHoist commands for viewing parts of an outline.
-  - Check Outline command finds user clone mistakes.
-  * New configuration settings:
-    - use_gnx specifies whether .leo files use integers as indices:
-      use_gnx = 0 makes .leo files compatible with previous versions of Leo.
-      use_gnx = 1 makes .leo files cvs-friendly
-    - config_encoding specifies the encoding of leoConfig.txt.
-  * Several significant code-level changes:
-    - The 4.1 code base has been reorganized to support gui plugins.
-    - An example wx_gui plugin is partly functional.
-    - Created a flexible framework for creating &amp; running regression tests.
-    - app.forceShutdown now works when called from plugins.
 </t>
 <t tx="edream.110603190125.1">Leo 4.1 uses immutable gnx's (id:timestamp:n) by default to associate tnodes with vnodes in .leo files.  This makes Leo as cvs friendly as possible.  From now on .leo files will be checked in to cvs with the -ko (text/keywords off) option.
 </t>
@@ -6491,7 +6060,6 @@ This reorg affects almost all plugins. Considerably more work and testing will b
 
 The __wx_gui.py plugin is uses the newly reorganized code.  It is functional except for gui-dependent commands like Toggle-Split Direction.  WARNING: treat the this plugin with extreme caution until further notice.  The possibility exists that bugs in the code could cause body text to be cleared improperly when changing nodes.
 </t>
-<t tx="edream.110603190234.1"></t>
 <t tx="edream.110603190322.10"></t>
 <t tx="edream.110603190322.11">The node-only option wasn't working due to a bug in createFrame.
 
@@ -6518,9 +6086,7 @@ Script-based find/change frees the user from having to control script-based sear
 The fix was simple: call setUndoParams instead of setUndoTypingParams in batchChange.
 </t>
 <t tx="edream.110603190322.9"></t>
-<t tx="edream.110603190404"></t>
 <t tx="edream.110603192009"></t>
-<t tx="edream.110603192009.1"></t>
 <t tx="edream.111803060152"></t>
 <t tx="edream.111803060152.1">Leo dedicates a Python dictionary called app.searchDict for communication
 between Leo and the search and change scripts. The search and change scripts may
@@ -6595,7 +6161,6 @@ For example, the following batch script reads a Leo file and prints all the head
     for p in newFrame.c.all_positions():
         g.es(g.toEncodedString(p.headString(),"utf-8"))
 </t>
-<t tx="edream.120403174147"></t>
 <t tx="edream.120403174147.102">Another 4.1 reorg bug.
 </t>
 <t tx="edream.120403174147.105">This bug has been around for a long time.
@@ -6624,32 +6189,7 @@ For example, the following batch script reads a Leo file and prints all the head
 - Leo no longer removes leading forward slashes in section names in headlines.
 - Corrected the documentation for the Extract Section command.
 </t>
-<t tx="edream.120403174241"></t>
-<t tx="edream.120403180443"></t>
-<t tx="edream.120403180443.1"></t>
-<t tx="edream.121403160546">Leo 4.1 Release Candidate 3              December 19, 2003
-
-This release fixes a serious bug in the logic that reads old-style external files.
-
-There are no known bugs in this version of Leo.
-
-The highlights of this release:
-
-- Leo runs in batch mode when invoked with --script aScriptFile.py
-- Leo supports Unicode characters (e.g. Chinese) in path and file names.
-- @directives and section references are now valid when executing scripts.
-- @ignored and orphan nodes now valid in @file-nosent trees.
-- Script-based find/change commands.
-- Check Outline command.
-- Hoist &amp; DeHoist commands.
-- A new gui-agnostic architecture: useful for batch mode and unit tests.
-- Several new configuration settings.
-- Many new unit tests.
-- A host of bug fixes.
-</t>
-<t tx="edream.121403161017">See previous release notes for more details:
-
-- Fixed several minor problems with the Extract Section and Import commands.
+<t tx="edream.121403161017">- Fixed several minor problems with the Extract Section and Import commands.
 - Fixed problem that prevent the Find panel from working on the Mac.
 - Improved @url handling so that @url file:\\path\x.leo works properly.
 - Improved support for @lineending platform.
@@ -6677,16 +6217,9 @@ The highlights of this release:
 	Warning: Use the __wx_gui.py plugin with extreme caution until further notice:
 	bugs in this plugin could cause body text to be cleared improperly when changing nodes.
 </t>
-<t tx="edream.121403161017.2">- use_gnx specifies whether .leo files use integers as indices:
-
-	use_gnx = 0 makes .leo files compatible with previous versions of Leo.
-	use_gnx = 1 makes .leo files cvs-friendly
-
-- config_encoding specifies the encoding of leoConfig.txt.
-</t>
 <t tx="edream.121403161340">- Import External File command now uses a file dialog.
 
-	This is much more natural than using @file nodes.
+This is much more natural than using @file nodes.
 </t>
 <t tx="edream.121403165221">- Corrected counts when replacing tabs/blanks.
 - Don't write tnodeList when executing scripts.
@@ -6699,84 +6232,6 @@ The highlights of this release:
   This bug prevented Leo from untangling some valid html/xml files.
 - Leo now puts class docstrings in class nodes when importing .py files.
 - Fixed several reorg bugs.
-</t>
-<t tx="ekr.20040131040356">Leo 4.1 Release Candidate 4              February 3, 2004
-
-This release fixes numerous bugs reported since 4.1 rc3 and makes several other
-minor improvements, including several nifty new plugins.
-
-The highlights of Leo 4.1:
-
-- Leo runs in batch mode when invoked with --script aScriptFile.py
-- Leo supports Unicode characters (e.g. Chinese) in path and file names.
-- @directives and section references are now valid when executing scripts.
-- @ignored and orphan nodes now valid in @file-nosent trees.
-- Script-based find/change commands.
-- Check Outline command.
-- Hoist &amp; DeHoist commands.
-- A new gui-agnostic architecture: useful for batch mode and unit tests.
-- Several new configuration settings.
-- Many new unit tests.
-- Excellent new plugins.
-- A host of bug fixes.
-</t>
-<t tx="ekr.20040131040356.1"></t>
-<t tx="ekr.20040131040356.2">See previous release notes for more details:
-
-4.1 rc3:
-
-- Corrected counts when replacing tabs/blanks.
-- Don't write tnodeList when executing scripts.
-- Fixed long-standing clone-drag bug.
-- Fixed inconsistency between how 4.x and 3.x handle @others.
-  The code now works as it did in all 3.x versions, namely
-  @others does not terminate doc parts.
-- Leo now properly sets clone marks when when cutting and pasting nodes.
-- Only double-quotes delimit strings in html files.
-  This bug prevented Leo from untangling some valid html/xml files.
-- Leo now puts class docstrings in class nodes when importing .py files.
-- Fixed several reorg bugs.
-
-4.1 rc2, rc1, betas, alphas:
-
-- Fixed several minor problems with the Extract Section and Import commands.
-- Fixed problem that prevent the Find panel from working on the Mac.
-- Improved @url handling so that @url file:\\path\x.leo works properly.
-- Improved support for @lineending platform.
-- Leo honors outline/body pane ratio when opening .leo files.
-- Leo now ensures that newly-opened windows fit entirely on the screen.
-- Fixed a crasher when Undoing a Change All command when searching headlines.
-- Fixed other bugs resulting from the 4.1 reorg:
-- Fixed problem loading plugins on Linux.
-- Fixed crashers in the Extract Section and Extract commands.
-- Fixed a crasher when writing a file containing an undefined section.
-- Removed duplicate bindings in popup menus.
-- Made sure to show Leo's windows in wx gui plugin.
-- More than one section reference may now appear on the same line.
-- Use "utf-8" encoding for filenames under MacOS (Darwin)
-- Allow command or cmnd prefix for menu shortcuts under Darwin.
-- Fixed a LaTeX coloring bug
-</t>
-<t tx="ekr.20040131040356.3">- The 4.1 code base has been reorganized to support gui plugins.
-- Created a flexible framework for creating &amp; running regression tests.
-- app.forceShutdown now works when called from plugins.
-- Created app.unitTestDict for communication between tests and between tests and code.
-
-- An example wx_gui plugin is partly functional.
-
-	Warning: Use the __wx_gui.py plugin with extreme caution until further notice:
-	bugs in this plugin could cause body text to be cleared improperly when changing nodes.
-</t>
-<t tx="ekr.20040131040356.4">- use_gnx specifies whether .leo files use integers as indices:
-
-	use_gnx = 0 makes .leo files compatible with previous versions of Leo.
-	use_gnx = 1 makes .leo files cvs-friendly
-
-- config_encoding specifies the encoding of leoConfig.txt.
-</t>
-<t tx="ekr.20040131040356.5">- Import External File command now uses a file dialog.
-
-	This is much more natural than using @file nodes.
 </t>
 <t tx="ekr.20040131040544.10">This allows plugins to draw the status area in the icon area.
 </t>
@@ -6818,7 +6273,6 @@ The highlights of Leo 4.1:
 - Write Dirty/Missing @file Nodes commands.
 - Batch mode.
 </t>
-<t tx="ekr.20040131041015"></t>
 <t tx="ekr.20040131044136">- Fixed a bug that caused cut and paste operations in headlines to revert when those commands were chosen from the Edit menu.
 
 - Extended control-v bug fix to "darwin","freebsd4","freebsd5"
@@ -6869,7 +6323,6 @@ top().selectVnode(c.rootVnode())
 
 Presto!  Leo is ready for a script search.
 </t>
-<t tx="ekr.20040201114855"></t>
 <t tx="ekr.20040201114855.107">This bug happened when executing the initScriptFind script.  This bug could cause Leo not to be able to save files.
 </t>
 <t tx="ekr.20040201114855.13">Adds a quick search to the toolbar in Leo.
@@ -6980,8 +6433,6 @@ Steps to reproduce:
 5. Copy node 'dummy'.
 6. Paste node 'dummy' in between 'dummy' and 'bottom'.
 7. After pasting you'll see that 'bottom' is now marked as a cloned node.
-</t>
-<t tx="ekr.20040217085036" str_atime="1376412872.0">See leoPlugins.leo for full details.
 </t>
 <t tx="ekr.20040217085036.1">Here is the bug report I submitted to Python:
 
@@ -7159,7 +6610,6 @@ David Brock wrote TSyntaxMemo, used in early versions of Leo. Terry Brown contri
 
 Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
 </t>
-<t tx="ekr.20040705111716"></t>
 <t tx="ekr.20040705111716.1">Leo will write only t.unknownAttributes to the .leo file when writing the &lt;v&gt; element corresponding to the root of an @thin tree. Leo will do this by writing a new xml attribute, say descendentTnodeUnknownAttributes, in &lt;v&gt; element.
 
 The reason that Leo will only write t.unknownAttributes and not v.unknownAttributes is that only tnodes have gnx's in thin external files. In effect, vnodes are anonymous. We could attempt to get around this by identifying vnodes by their corresponding tnodes, but that's not a general solution and it is, in effect, equivalent to writing only t.unknownAttributes. This being so, it seems pointless to "pretend" to be writing v.unknownAttributes.
@@ -7175,40 +6625,7 @@ The effect of this is to make all vnodes identical, as far as using unknownAttri
 <t tx="ekr.20040705111716.126"></t>
 <t tx="ekr.20040705111716.45">Leo marks as dirty all @file nodes when they become "newly unignored".
 </t>
-<t tx="ekr.20040705112148"></t>
 <t tx="ekr.20040705150130">Leo now generates no warnings with all significant tests enabled.  Some tests have been disabled in bases classes, and in a few cases pychecker gives erroneous warnings that have been suppressed directly in the source code using the __pychecker__ = arg syntax.
-</t>
-<t tx="ekr.20040713110718">Leo 4.2 beta 3           August 10, 2004
-
-This version of Leo is feature complete.  Leo's core code has been stable for several months.
-
-To do: most plugins work with the new code base, but other plugins need some more work.
-
-The highlights of Leo 4.2:
-
-- @thin trees make Leo much more friendly to cvs. Files derived from @thin can
-be committed to cvs and updated from cvs without having to commit or update the
-corresponding .leo file. There is no longer any need to keep .leo files and
-external files in sync.
-
-- Leo's data structures have been reorganized. As a result, all outline
-operations are much faster. To support this organization, scripts that traverse
-Leo's data structures must now use a positions rather than vnodes. Old scripts
-that appear to use vnodes will still work because methods like c.currentVnode
-that appear to return vnodes actually return positions.
-
-- A new mod_scripting plugin is a big advance in scripting and testing.
-test.leo now uses @test and @script nodes to define unit tests without
-explicitly creating subclasses of unittest.TestCase. Converting scripts to unit
-tests now takes a few seconds!
-
-- A much faster and more robust spell checker plugin. (requires Python 2.3)
-
-- Leo is now much more friendly to using spaces instead of tabs.
-
-- The Execute Script command reports erroneous lines more clearly.
-
-- The Perfect Import feature guarantee that Leo imports file exactly.
 </t>
 <t tx="ekr.20040804164600.102">Spurious entries in a tnodeList for @thin trees wiped out all the headlines in
 the @thin tree.
@@ -7275,8 +6692,6 @@ Instead it issues an informational message and deletes the tnodeList.
 </t>
 <t tx="ekr.20040804164600.56"></t>
 <t tx="ekr.20040804164600.98"></t>
-<t tx="ekr.20040804165258.1"></t>
-<t tx="ekr.20040804165258.2"></t>
 <t tx="ekr.20040804165258.3">Leo now allows you to select multiple files in the dialogs for all Import commands. This fixes a major annoyance. However, you must be running Python 2.3 or above to get this feature.
 </t>
 <t tx="ekr.20040804165258.4">Added the Check submenu of the Outline menu. This contains the Check Outline and Dump Outline commands, as well as four new commands:
@@ -7296,37 +6711,6 @@ The Check Python Code and Pretty Print Python Code commands replace nodes with t
 <t tx="ekr.20040804171818"></t>
 <t tx="ekr.20040804172113"></t>
 <t tx="ekr.20040804172113.1"></t>
-<t tx="ekr.20040914103359">Leo 4.2 release candidate 1        September 14, 2004
-
-This version fixes a number of minor bugs reported since the last release. See
-the children of this node for details.
-
-The highlights of Leo 4.2:
-
-- @thin trees make Leo much more friendly to cvs. Files derived from @thin can
-be committed to cvs and updated from cvs without having to commit or update the
-corresponding .leo file. There is no longer any need to keep .leo files and
-external files in sync.
-
-- Leo's data structures have been reorganized. As a result, all outline
-operations are much faster. To support this organization, scripts that traverse
-Leo's data structures must now use a positions rather than vnodes. Old scripts
-that appear to use vnodes will still work because methods like c.currentVnode
-that appear to return vnodes actually return positions.
-
-- A new mod_scripting plugin is a big advance in scripting and testing.
-test.leo now uses @test and @script nodes to define unit tests without
-explicitly creating subclasses of unittest.TestCase. Converting scripts to unit
-tests now takes a few seconds!
-
-- A much faster and more robust spell checker plugin. (requires Python 2.3)
-
-- Leo is now much more friendly to using spaces instead of tabs.
-
-- The Execute Script command reports erroneous lines more clearly.
-
-- The Perfect Import feature guarantee that Leo imports file exactly.
-</t>
 <t tx="ekr.20040914103359.110"></t>
 <t tx="ekr.20040914103359.12">If only one file was specified Leo gave an error for every character of the file name!
 </t>
@@ -7364,8 +6748,6 @@ Check Import command.
 </t>
 <t tx="ekr.20040914103359.7">With TclTkAqua on the Mac (but *not* with tcltk installed via Fink), the tab problem doesn't exist there), the tab, return, and backspace keys did not generate ASCII codes, i.e. event.char is an empty string. So when I press the tab key, Tk inserts a tab character and Leo isn't even aware of it.
 </t>
-<t tx="ekr.20040914103743"></t>
-<t tx="ekr.20040914103743.1"></t>
 <t tx="ekr.20040922074200">Leo 4.2 Final       September 20, 2004
 
 The highlights of Leo 4.2:
@@ -46571,6 +45953,46 @@ I think it rare for Python HOME to expand to C:\users\jane. :)
 - Explained the overall idea of the @shadow algorithm.
   http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 - Deprecated @shadow in all docs.</t>
+<t tx="ekr.20150301045135.10">Changed all instances of string.letters to string.ascii_letters. string.letters can cause crashes in some locales (Unicode environments).
+</t>
+<t tx="ekr.20150301045135.11"></t>
+<t tx="ekr.20150301045135.12"></t>
+<t tx="ekr.20150301045135.13"></t>
+<t tx="ekr.20150301045135.15"></t>
+<t tx="ekr.20150301045135.16"></t>
+<t tx="ekr.20150301045135.17"></t>
+<t tx="ekr.20150301045135.18"></t>
+<t tx="ekr.20150301045135.19"></t>
+<t tx="ekr.20150301045135.20">This is an important milestone in Leo's history; the two defining features of
+the 4.2 code base are complete:
+
+1. This is the first stable version using the "shared nodes" code base.
+
+Shared nodes dramatically improve the time needed to insert, delete, and move
+nodes. Moreover, the new code base is code compatible with the old. Indeed, much
+of Leo still uses the old code base. See the Scripting Leo for full details of how to
+script Leo with the 4.2 code base.
+
+2. This is the first version to use @file-thin for most external files.
+
+@file-thin makes it possible to use Leo effectively in a cvs environment.  Indeed, cvs now contains only a "dummy" version of LeoPy.leo.  The idea is that:
+
+- LeoPyRef.leo hardly ever changes. Developers will download LeoPyRef.leo once
+from cvs, then rename LeoPyRef.leo to be LeoPy.leo. LeoPy.leo is private to each
+developer.
+
+- Developers will commit and update to cvs only thin external files. There is no
+longer any need to keep .leo files and the files derived from them "in sync".
+
+- Similar remarks apply to LeoPlugins.leo. Cvs contains only LeoPluginsRef.leo,
+and contributors will need only to submit thin external files.
+</t>
+<t tx="ekr.20150301045135.21"></t>
+<t tx="ekr.20150301045135.22"></t>
+<t tx="ekr.20150301045135.4"></t>
+<t tx="ekr.20150301045135.5"></t>
+<t tx="ekr.20150301045135.6">- Changed all instances of string.letters to string.ascii_letters.
+  string.letters can cause crashes in some locales (Unicode environments).</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
