@@ -9639,561 +9639,6 @@ adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets c.target_
 #@+node:ekr.20080912143702.140: *5* Fixed bug in Leo's pre-install script
 The script failed for paths such as c:\xp\python25\python.exe for which python was not the top-most directory.
 #@+node:ekr.20090717084250.10704: *3* 4.6 file caching, qt gui, @edit, @auto-rst
-#@+node:ekr.20090324085713.2: *4* 4.6 b1
-Leo 4.6 beta 1                                       March 23, 2009
-
-Leo 4.6 b1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Leo now requires Python 2.4 or later.
-- Leo now features a modern Qt interface;
-  Leo's legacy Tk interface can also be used.
-- New --config --file and --gui command-line options.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20090324085713.285: *5* Bugs fixed
-#@+node:ekr.20090324085713.292: *6* Fixed goto-global-line crasher
-#@+node:ekr.20090324085713.326: *6* Fixed bug that prevented Leo from opening files on the XP desktop
-#@+node:ekr.20090324085713.350: *6* Save/restore tnodeList in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@+node:ekr.20090324085713.358: *6* Paste outline problem
-The problem was missing calls to initAfterLoad in c.new.
-#@+node:ekr.20090324085713.395: *6* Made sure $Home works for @nosent
-http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90
-#@+node:ekr.20090324085713.404: *6* Fixed atFile unicode bug
-#@+node:ekr.20090324085713.513: *6* Fixed Mark Edgington's @shadow bug
-#@+node:ekr.20090324085713.605: *6* Fixed whitespace problems with @auto/@shadow
-Pulled trunk, got r1599
-
-python launchLeo.py leo/plugins/leoPlugins.leo
-
-go to
-
-Plugins-->Graph world-->@shadow backlink.py-->backlink declarations
-
-All I did was add the full stop at the end of the docstring, but see
-the diff:
-
-=== modified file 'leo/plugins/backlink.py'
---- leo/plugins/backlink.py     2009-02-19 18:16:01 +0000
-+++ leo/plugins/backlink.py     2009-02-25 22:14:46 +0000
-@@ -1,4 +1,4 @@
--'''Backlink - allow arbitrary links between nodes
-+'''Backlink - allow arbitrary links between nodes.
- '''
-
- # Notes
-@@ -296,7 +296,7 @@
-                break
-        else:
-            self.showMessage("Error: no such link")
--
-+
-        gcc = getattr(self.c, 'graphcanvasController')
-        if gcc:
-            gcc.update()
-#@+node:ekr.20090324085713.327: *6* Fixed nested @path problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/7d8325d055cbef30
-#@+node:ekr.20090324085713.289: *6* Fixed encoding problems with rst3 plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
-#@+node:ekr.20090324085713.318: *6* Fixed new rst3 crash
-http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
-
-Calls g.makeAllNonExistentDirectories instead of os.mkdir.
-#@+node:ekr.20090324085713.320: *6* Fixed two c syntax-coloring bugs
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
-
-There were two separate bugs:
-
-1. The eol_span and eol_span_regex now honor the mode's escape character.
-
-2. colorRangeWithTag now colors delegates with the default tag color.
-
-No changes were made in modes/c.py or modes/c.xml.
-#@+node:ekr.20090324085713.690: *5* Improved file handling
-#@+node:ekr.20090324085713.726: *6* Open a default .leo file if no other is specified
-http://groups.google.com/group/leo-editor/browse_thread/thread/d6449236bc140713#
-
-Added support for @string default_leo_file = ~/.leo/workbook.leo
-#@+node:ekr.20090324085713.748: *6* Added escapes for underindented lines
-@string underindent-escape-string = \-
-#@+node:ekr.20090324085713.792: *6* Warn when writing an externally changed file
-http://groups.google.com/group/leo-editor/browse_thread/thread/c80fd8375534afdf
-#@+node:ekr.20090324085713.661: *5* New code features
-#@+node:ekr.20090324085713.662: *6* Added autoCompleter.getExternalCompletions
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
-
-> As I said, all I need would be is for leo to call callback/hook with
-> signature like
-> def complete(line-up-to-cursor, current_node) => list of strings
-
-The actual signature is:
-
-theObject,completionList = getExternalCompletions (self,s,p=None,language='python')
-
-p is used only to get the language, or you can set the language by hand.
-
-@color
-#@+node:ekr.20090324085713.663: *6* Added g.PosList
-#@+node:ekr.20090324085713.666: *6* Better plugin info
-c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
-#@+node:ekr.20090324085713.672: *6* Added properties to leoNodes.py
-p.b, p.h and p.gnx
-t.b, t.h, t.gnx and t.u
-v.b, v.h, v.gnx, and v.u
-#@+node:ekr.20090324085713.688: *6* Added script to leoSettings.leo to ensure all menu items are valid
-#@+node:ekr.20090324085713.689: *6* Added c.config.getSettingSource
-c.config.getSettingSource('show_full_tracebacks_in_scripts')
-returns the name of the file which Leo used to determine the setting
-
-- D indicates default settings.
-- F indicates the file being loaded
-- L indicates leoSettings.leo
-- M indicates myLeoSettings.leo
-#@+node:ekr.20090324085713.272: *6* Predefined 'self' in @test/@suite nodes
-#@+node:ekr.20090324085713.745: *6* Added c.getNodePath and c.getNodeFileName
-http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7
-#@+node:ekr.20090324105223.15: *5* New command-line options
-#@+node:ekr.20090324085713.849: *6* Added -c option to specify config files
-@nocolor
-
-The setting is called -c or --config.  The one-config-file arg no longer exists.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
-
-Personally, I'd like to see another config file available via -c on
-the command line:
-(a common idiom)
-
-leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
-
-or better yet:
-
-leo myproject.leo -c /etc/leo/style01.leo
-leo myotherproject.leo -c /etc/leo/style02.leo
-leo anotherproject.leo -c /etc/leo/style23.leo
-
-Each file opens in an editor with the shortcuts, buttons, commands,
-plugins, appearance etc.  that has been tuned for that data management task.
-
-or best yet:
-
-leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo
-
-==================
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b5a736089079acaf#
-
-Please, I think each file has a distinct and required role.
-
-- config/leoSettings.leo = Edward's base, required for a sane starting point
-
-- home/.leo/myLeoSettings.leo = adjust Edwards suggestions to taste
-
-- cwd/myLeoSettings.leo = provide a customized working environment in
-this folder
-
-- leo -c /usr/lib/leo-editor/src/config/zope3_ide.leo =
-  - open this file in a specialized environments, mine or community contributed
-  - ...
-
-- currentfile/@settings =
-  - I'm working on some customization ideas
-  - Here, try out this Leo file I sent you, check out all the spiffy
-modifications 
-
-@color
-#@+node:ekr.20090324085713.835: *6* Added support for --file=fileName command-line option
-Only .zip and .leo extensions are allowed at present.
-#@+node:ekr.20090324085713.867: *6* Added support for --gui option
-#@+node:ekr.20090324105223.9: *5* New commands
-#@+node:ekr.20090324085713.747: *6* Added smart home (back-to-home) command
-#@+node:ekr.20090324085713.817: *6* The open command creates @edit nodes when opening non-.leo files
-http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
-
-The open file dialog now shows all files by default.
-Selecting a non-.leo file will load that file into a new node in the present outline.
-
-This plugs what may have been the biggest hole in Leo's history.
-#@+node:ekr.20090324085713.836: *6* added pdb minibuffer command
-This works, but stops Leo in the middle of the command-handling logic.
-
-However, it is possible to pick up the commander by stepping out into
-k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all
-other info.
-#@+node:ekr.20090324085713.837: *6* Added support for smart_tab setting
-- Tab = indent when there is a text selection
-- Shift-Tab unindents always
-#@+node:ekr.20090324085713.847: *6* Improved isearch commands
-Escape now ends isearch
-#@+node:ekr.20090324105223.10: *5* New and improved directives
-#@+node:ekr.20090324085713.740: *6* Added @nocolor-node directive
-# Useful: we don't need a closing @color to enable coloring in descendants.
-#@+node:ekr.20090324085713.691: *6* Improved @path handling
-#@+node:ekr.20090324085713.848: *5* New settings
-#@+node:ekr.20090324085713.732: *6* Added better default fonts for Leo on Linux
-http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
-#@+node:ekr.20090324085713.850: *6* Added support for @int icon_bar_widgets_per_row setting
-#@+node:ekr.20090324085713.746: *6* Added support for meta keys
-http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
-#@+node:ekr.20090324085713.814: *6* Use myLeoSettings when opening leoSettings.leo
-Changed config.get so that settings in leoSettings.leo are read *last*.
-This means that myLeoSettings.leo will override leoSettings.leo,
-even when leoSettings.leo is the local file.
-#@+node:ekr.20090324085713.868: *5* Plugins
-#@+node:ekr.20090324085713.869: *6* Improved nav_buttons plugin and corresponding nodeHistory class
-#@+node:ekr.20090324085713.881: *6* Created qtGui and tkGui plugins
-#@+node:ekr.20090324085713.890: *6* Created leoGuiPluginsRef.leo
-This contains all gui plugins.
-#@+node:ekr.20090620073906.11072: *4* 4.6 b2
-Leo 4.6 beta 2                                  June 22, 2009
-
-Leo 4.6 b2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes support "round-tripping" of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20090620073906.11073: *5* Bugs
-#@+node:ekr.20090620073906.11083: *6* Added patch for startup logic
-A patch at the start of loadOnePlugin prevents leo from crashing and allows the
-gui prompt for a leoID to come up.
-#@+node:ekr.20090620073906.11087: *6* Allocate gnx's when nodes are created
-This is reasonable now that old-style file indices are rare.
-#@+node:ekr.20090620073906.11960: *6* Allow block comments in private shadow files
-Html files are a good test case.
-#@+node:ekr.20090620073906.11590: *6* Compute delims from private shadow file as needed
-#@+node:ekr.20090620073906.11376: *6* Don't copy @edit trees to outline
-http://bugs.launchpad.net/leo-editor/+bug/376634
-
-The fix was to putVnodes.
-#@+node:ekr.20090620073906.11981: *6* Don't expand ancestors of @chapter node when selecting chapter
-#@+node:ekr.20090620073906.12044: *6* Entries in recent files menu now have absolute paths
-http://bugs.launchpad.net/leo-editor/+bug/383204
-#@+node:ekr.20090620073906.11865: *6* Fixed (worked around) tk chapters bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/981c27d5c24c90f8
-#@+node:ekr.20090620073906.11850: *6* Fixed @edit bug
-The generated @nocolor line now ends with a newline.
-#@+node:ekr.20090620073906.11564: *6* Fixed @shadow crasher
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-#@+node:ekr.20090620073906.11296: *6* Fixed @thin bug
-- Removed forceGnxOnPosition from leoImport.py and leoAtFile.py.
-
-- readStartNode now always uses root.v for the first node
-  instead of calling createThinChild4
-#@+node:ekr.20090620073906.11081: *6* Fixed back-to-home so it works as expected
-https://bugs.launchpad.net/leo-editor/+bug/367462
-
-The expected/customary behavior (one you get used to in almost every editor) is:
-
-End: always move to end of line
-Home: Move to first visible character on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
-
-This is also the way emacs behaves, though ctrl+a always moves to column zero.
-#@+node:ekr.20090620103431.5601: *6* Fixed bad @verbatim bug
-The @verbatim was being inserted into the outline.
-#@+node:ekr.20090620073906.11833: *6* Fixed binding problem with notebook
-#@+node:ekr.20090620073906.11374: *6* Fixed bug: sorting could revert headline changes
-#@+node:ekr.20090620073906.11521: *6* Fixed crash when reading .zip files
-The problem arose when reading a zipped file:
-
- File "C:\Programme\Leo-4-6-b1\leo\core\leoFileCommands.py", line
-1265, in parse_leo_file
-   s = theFile.read()
-TypeError: read() takes at least 2 arguments (1 given)
-saved: [zipped] Dive-into-Python-3.leo
-#@+node:ekr.20090620073906.11091: *6* Fixed crasher when creating .leoID.txt
-exception loading plugin
-Traceback (most recent call last):
-
-  File "C:\leo.repo\trunk\leo\core\leoPlugins.py", line 429, in loadOnePlugin
-    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-
-AttributeError: StubConfig instance has no attribute 'enabledPluginsFileName'
-
-leoID='ekr'
-.leoID.txt created in C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo
-load 
-#@+node:ekr.20090620073906.11380: *6* Fixed dabbrev-expands bug
-http://bugs.launchpad.net/leo-editor/+bug/362048
-
-I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
-the word "freq" in a body pane containing the word "frequency" then
-Leo 4.5.1 shows a hour-glass for a while before giving an empty
-dabbrev-expand: prompt in the minibuffer.
-
-If I back up one character, putting point between the e and q and then
-type F4, I get the expected behavior: the word "frequency" is inserted
-immediately.
-
-What I did:
-
-- Removed "not ready messages".
-- Made the code undoable.
-- Added wimpy unit test.
-#@+node:ekr.20090620073906.11074: *6* Fixed elisp importer problem
-#@+node:ekr.20090620073906.11137: *6* Fixed F10/11/12 key bug
-Added call to isFKey in k.handleUnboundKeys.
-#@+node:ekr.20090620073906.11387: *6* Fixed file bug re unicode characters
-http://bugs.launchpad.net/leo-editor/+bug/376189
-#@+node:ekr.20090620073906.11776: *6* Fixed hoist problems
-http://bugs.launchpad.net/leo-editor/+bug/382221
-#@+node:ekr.20090620073906.11707: *6* Fixed lost anchor bug page up/down
-http://bugs.launchpad.net/leo-editor/+bug/363403
-
-With a long body text you might place the cursor on a line, hold down Shift, and
-PgDn several pages to select a large block of text. The last PgDn may overshoot
-the range you want selected, so you should be able to use UpArrow to bring the
-bottom of the range back up to where you want it. However, on the first UpArrow
-the selection is lost and restarted from the current cursor position. I.e. you
-end up with just one line selected, instead of trimming one line of the
-selection of several pages, as intended.
-#@+node:ekr.20090620073906.11377: *6* Fixed minor @auto bug
-http://bugs.launchpad.net/leo-editor/+bug/306671
-
-If a Leo editor window is opened, and the "NewHeadline" node is renamed to
-"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
-nodes" menu option is selected, the renamed node reverts to its previous name
-("NewHeadline"), and nothing is loaded into the node.
-#@+node:ekr.20090620073906.11864: *6* Fixed multiple-editor focus problems
-http://groups.google.com/group/leo-editor/browse_thread/thread/21bddd50f3400bdc?hl=en
-#@+node:ekr.20090620073906.11352: *6* Fixed new command
-The outline wasn't being redrawn properly.
-#@+node:ekr.20090620073906.11740: *6* Fixed problems with change-all command
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The fix to minibufferFind.changeAll fixes a bug that is several years old.
-The fix to findNextMatch fixes a bug that is likely much older than that.
-#@+node:ekr.20090620073906.11818: *6* Fixed read clone bug
-#@+node:ekr.20090620073906.11390: *6* Fixed rst import bug
-#@+node:ekr.20090620073906.11086: *6* Fixed rst3 problem
-http://mail.google.com/mail/#inbox/11ef0076a3f4d866
-#@+node:ekr.20090620073906.11760: *6* Fixed seg-fault bug
-The crash happened inside the call to::
-
-    c.widgetWantsFocusNow(event.widget)
-
-in callAltXFunction. Actually, the crash happened later, in c.outerUpdate.
-
-A better fix would be to use wrappers for all edit widgets, and recalculate the
-edit widget any it needs to be used.
-#@+node:ekr.20090620073906.11666: *6* Fixed Shift-Arrow in headlines
-#@+node:ekr.20090620073906.11866: *6* Fixed startup problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
-#@+node:ekr.20090620073906.11349: *6* Fixed stubConfig problems
-#@+node:ekr.20090620073906.11107: *6* Fixed undo bug
-onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundantly and with bad params.
-
-It remains to be seen whether onTextChanged is ever needed. If it is, it may be
-difficult to set the old selection properly.
-#@+node:ekr.20090620073906.11378: *6* Fixed vim bindings (dd) bug
-http://bugs.launchpad.net/leo-editor/+bug/353925
-
-The "kill-region" function did nothing when using the qt gui.
-
-The fix was to replace tag_ranges with w.getSelectionRange, etc.
-This was the only call to tag_ranges in the core.
-#@+node:ekr.20090620073906.11759: *6* Investigated bug: File->Export->write failed due to incorrect path
-http://bugs.launchpad.net/leo-editor/+bug/377907
-
-I'm going to mark this invalid, although the behavior is way too confusing.
-
-I added the following to the plugin's docstring:
-
-Configuration
-~~~~~~~~~~~~~
-
-At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
-In particular, the default export path, "c:\" must be changed for *nix systems.
-#@+node:ekr.20090620073906.11094: *6* Investigated speed of external unit tests
-The problem is imports in the Commands ctor. When executed the first time from
-the bridge the imports take about 3/4 sec. on my machine. There is nothing that
-can or should be done. Ctrl-5 is still hugely faster than opening unitTest.leo!
-#@+node:ekr.20090620073906.11612: *6* Made @url nodes work with qt gui
-#@+node:ekr.20090620073906.11620: *6* Mark @<file> nodes dirty when @path nodes change
-#@+node:ekr.20090620073906.11824: *6* Removed duplicate messages when opening non-existent .leo file
-#@+node:ekr.20090620073906.11771: *6* Reversed messages about redefined keys
-http://groups.google.com/group/leo-editor/browse_thread/thread/a04dcefbb672078f
-#@+node:ekr.20090620073906.11973: *6* Scroll commands now affect only scrollbars
-#@+node:ekr.20090620073906.11870: *5* New features
-#@+node:ekr.20090620073906.11923: *6* Allow Leo to open any file
-Leo can now open, for example, any .py file.
-It will be put in an @edit node in an otherwise-empty outline.
-
-This allows Leo to be associated with the edit action of .py files.
-Something like this::
-
-C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
-#@+node:ekr.20090620073906.11873: *6* Improved unit testing
-- leoDynamicTest.py now supports a --path argument giving the .leo file.
-  This is so useful!
-
-- leoDynamicTest.py now honors the --silent argument.
-
-- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
-  in a separate process.
-
-- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
-  dynamicUnitTest.leo.
-
-- When reporting that no unit tests were found, all unit tests commands tell
-  whether the entire outline or just the selected outline was searched.
-  This fixes sometimes-misleading error messages.
-
-- test.leo contains a 'run-test.leo-tests' button.
-
-- leoPy.leo contains a 'run-all-core-tests' button.
-#@+node:ekr.20090620073906.11898: *6* Leo tests syntax of .py files when saving them
-#@+node:ekr.20090620073906.12061: *6* Made qt gui the default
-#@+node:ekr.20090620073906.11935: *6* Support @auto-rst
-#@+node:ekr.20090709084001.5944: *4* 4.6 rc1
-Leo 4.6 release candidate 1                             July 9, 2009
-
-Leo 4.6 rc1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes allow easy editing of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20090709084001.5945: *5* Bugs
-#@+node:ekr.20090709084001.5968: *6* Fixed unicode problem with spell checker
-#@+node:ekr.20090709084001.6086: *6* Ensure newline at end of each @auto node
-#@+node:ekr.20090709084001.6096: *6* Fixed bugs with goto-global-line and @auto
-#@+node:ekr.20090709084001.6119: *6* Added key bindings in log pane
-#@+node:ekr.20090709084001.6138: *6* Honor split ratios
-#@+node:ekr.20090709084001.6140: *6* Click in body after editing activates body
-#@+node:ekr.20090709084001.6144: *6* Rewrote string-rectangle command for speed
-#@+node:ekr.20090709084001.6149: *6* Fixed read-at-auto-nodes bug
-#@+node:ekr.20090709084001.6153: *6* Fixed major focus problems
-Various get-focus methods must translate from wrapped widget to wrapper widget.
-This happens in g.app.gui.get_focus, which needs a c arg to work properly in some cases!
-#@+node:ekr.20090709084001.6156: *6* Fixed problem with read-at-file/shadow-nodes
-#@+node:ekr.20090709084001.6164: *6* Fixed major icon/t.uA bug
-https://bugs.launchpad.net/leo-editor/+bug/345917
-#@+node:ekr.20090709084001.6192: *6* Fixed rst bug
-Exact repro steps (using trunk):
-
-Help -> open quickstart.leo
-
-Go to Programming-->External files-->reStructuredText (@auto-
-rst)-->@path ~-->@@auto-rst myfile_rst.txt
-
-Remove first @ from @auto-rst
-
-Save => exception occurs.
-#@+node:ekr.20090709084001.6204: *6* Made alt-6 run all unit tests
-@test nodes in the generated file were being run when modules were imported.
-
-The fix was to set g.unitTesting = False while importing in safeImportModule.
-#@+node:ekr.20090709084001.6238: *6* Fixed crasher in dynamicExpanderHelper
-#@+node:ekr.20090709084001.6241: *6* Don't collapse initial node automatically
-#@+node:ekr.20090709084001.6254: *6* Fixed bug: don't duplicate standard buttons
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/394965
-
-Several changes:
-
-- Fixed bug in runLeo.py.completeFileName.
-  Do not add ".leo" suffix if the file exists without it!
-
-- Fixed (???) the bug by not calling g.doHook("new"...) in g.openWrapperFile.
-  This **might** be a perfect fix, but maybe not.
-  But if a bug remains, it might be less bad than the duplicated buttons bug :-)
-#@+node:ekr.20090709084001.6283: *6* Fixed critical @file data-loss problem
-The culprit was the code in atFile.read that deleted all children.
-
-Added several important new unit tests.
-#@+node:ekr.20090709084001.6291: *6* Added hasSelection to leoQtBody
-Also added test for leoQtBody to existing test.
-#@+node:ekr.20090709084001.6296: *5* Features
-#@+node:ekr.20090709084001.6297: *6* Added open-quickstart-leo command
-#@+node:ekr.20090709084001.6300: *6* Added tree bindings for page-up/down commands
-This was a binding issue. Leo has a full range of scrolling commands. They work.
-
-The old bindings bound the PageUp/Down keys to back/forward page commands, and
-these commands work only for text.
-
-The new default bindings in leoSettings.leo: @keys EKR bindings are:
-
-back-page                       ! text = PageUp
-back-page-extend-selection      ! text = Shift-PageUp
-forward-page                    ! text = PageDn
-forward-page-extend-selection   ! text = Shift-PageDn
-
-scroll-down-half-page   ! tree = Shift-PageDn
-scroll-down-page        ! tree = PageDn
-scroll-up-half-page     ! tree = Shift-PageUp
-scroll-up-page          ! tree = PageUp         
-#@+node:ekr.20090709084001.6301: *6* Issue error message re non-existent plugins
-Leo now prints an error message when @enabled-plugins node contains a plugin
-that does not exist.
-#@+node:ekr.20090709084001.6304: *6* Expanded Alt-lt/rt arrows
-#@+node:ekr.20090709084001.6307: *6* Added important @auto warning
-Warn if the file exists and has never been read. This prevents a newly-created
-@auto node from overwriting an existing file.
 #@+node:ekr.20090717084250.10808: *4* 4.6 final
 Leo 4.6 final                             July 15, 2009
 
@@ -10228,8 +9673,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090717084250.10809: *5* Bug fixes
 #@+node:ekr.20090717084250.10810: *6* Bugs fixed in 4.6 b2
 #@+node:ekr.20090717084250.10811: *7* Added patch for startup logic
-A patch at the start of loadOnePlugin prevents leo from crashing and allows the
-gui prompt for a leoID to come up.
+A patch at the start of loadOnePlugin prevents leo from crashing and allows the gui prompt for a leoID to come up.
 #@+node:ekr.20090717084250.10812: *7* Allocate gnx's when nodes are created
 This is reasonable now that old-style file indices are rare.
 #@+node:ekr.20090717084250.10813: *7* Allow block comments in private shadow files
@@ -10267,36 +9711,13 @@ The @verbatim was being inserted into the outline.
 #@+node:ekr.20090717084250.10824: *7* Fixed binding problem with notebook
 #@+node:ekr.20090717084250.10825: *7* Fixed bug: sorting could revert headline changes
 #@+node:ekr.20090717084250.10826: *7* Fixed crash when reading .zip files
-The problem arose when reading a zipped file:
-
- File "C:\Programme\Leo-4-6-b1\leo\core\leoFileCommands.py", line
-1265, in parse_leo_file
-   s = theFile.read()
-TypeError: read() takes at least 2 arguments (1 given)
-saved: [zipped] Dive-into-Python-3.leo
 #@+node:ekr.20090717084250.10827: *7* Fixed crasher when creating .leoID.txt
-exception loading plugin
-Traceback (most recent call last):
-
-  File "C:\leo.repo\trunk\leo\core\leoPlugins.py", line 429, in loadOnePlugin
-    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-
-AttributeError: StubConfig instance has no attribute 'enabledPluginsFileName'
-
-leoID='ekr'
-.leoID.txt created in C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo
-load 
 #@+node:ekr.20090717084250.10828: *7* Fixed dabbrev-expands bug
 http://bugs.launchpad.net/leo-editor/+bug/362048
 
-I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
-the word "freq" in a body pane containing the word "frequency" then
-Leo 4.5.1 shows a hour-glass for a while before giving an empty
-dabbrev-expand: prompt in the minibuffer.
+I have 'dabbrev-expands' bound to the F4 key. When I press F4 after the word "freq" in a body pane containing the word "frequency" then Leo 4.5.1 shows a hour-glass for a while before giving an empty dabbrev-expand: prompt in the minibuffer.
 
-If I back up one character, putting point between the e and q and then
-type F4, I get the expected behavior: the word "frequency" is inserted
-immediately.
+If I back up one character, putting point between the e and q and then type F4, I get the expected behavior: the word "frequency" is inserted immediately.
 
 What I did:
 
@@ -10313,20 +9734,11 @@ http://bugs.launchpad.net/leo-editor/+bug/382221
 #@+node:ekr.20090717084250.10833: *7* Fixed lost anchor bug page up/down
 http://bugs.launchpad.net/leo-editor/+bug/363403
 
-With a long body text you might place the cursor on a line, hold down Shift, and
-PgDn several pages to select a large block of text. The last PgDn may overshoot
-the range you want selected, so you should be able to use UpArrow to bring the
-bottom of the range back up to where you want it. However, on the first UpArrow
-the selection is lost and restarted from the current cursor position. I.e. you
-end up with just one line selected, instead of trimming one line of the
-selection of several pages, as intended.
+With a long body text you might place the cursor on a line, hold down Shift, and PgDn several pages to select a large block of text. The last PgDn may overshoot the range you want selected, so you should be able to use UpArrow to bring the bottom of the range back up to where you want it. However, on the first UpArrow the selection is lost and restarted from the current cursor position. I.e. you end up with just one line selected, instead of trimming one line of the selection of several pages, as intended.
 #@+node:ekr.20090717084250.10834: *7* Fixed minor @auto bug
 http://bugs.launchpad.net/leo-editor/+bug/306671
 
-If a Leo editor window is opened, and the "NewHeadline" node is renamed to
-"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
-nodes" menu option is selected, the renamed node reverts to its previous name
-("NewHeadline"), and nothing is loaded into the node.
+If a Leo editor window is opened, and the "NewHeadline" node is renamed to "@auto <path to some valid file>", and then the "File->Read/Write->Read @auto nodes" menu option is selected, the renamed node reverts to its previous name ("NewHeadline"), and nothing is loaded into the node.
 #@+node:ekr.20090717084250.10835: *7* Fixed multiple-editor focus problems
 http://groups.google.com/group/leo-editor/browse_thread/thread/21bddd50f3400bdc?hl=en
 #@+node:ekr.20090717084250.10836: *7* Fixed new command
@@ -10354,11 +9766,9 @@ edit widget any it needs to be used.
 http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
 #@+node:ekr.20090717084250.10844: *7* Fixed stubConfig problems
 #@+node:ekr.20090717084250.10845: *7* Fixed undo bug
-onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundantly and with bad params.
+onTextChanged in the qt gui was calling setUndoTypingParams, in many case redundantly and with bad params.
 
-It remains to be seen whether onTextChanged is ever needed. If it is, it may be
-difficult to set the old selection properly.
+It remains to be seen whether onTextChanged is ever needed. If it is, it may be difficult to set the old selection properly.
 #@+node:ekr.20090717084250.10846: *7* Fixed vim bindings (dd) bug
 http://bugs.launchpad.net/leo-editor/+bug/353925
 
@@ -10379,9 +9789,7 @@ Configuration
 At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
 In particular, the default export path, "c:\" must be changed for *nix systems.
 #@+node:ekr.20090717084250.10848: *7* Investigated speed of external unit tests
-The problem is imports in the Commands ctor. When executed the first time from
-the bridge the imports take about 3/4 sec. on my machine. There is nothing that
-can or should be done. Ctrl-5 is still hugely faster than opening unitTest.leo!
+The problem is imports in the Commands ctor. When executed the first time from the bridge the imports take about 3/4 sec. on my machine. There is nothing that can or should be done. Ctrl-5 is still hugely faster than opening unitTest.leo!
 #@+node:ekr.20090717084250.10849: *7* Made @url nodes work with qt gui
 #@+node:ekr.20090717084250.10850: *7* Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090717084250.10851: *7* Removed duplicate messages when opening non-existent .leo file
@@ -10462,8 +9870,6 @@ Added support for @string default_leo_file = ~/.leo/workbook.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/c80fd8375534afdf
 #@+node:ekr.20090717084250.10873: *7* New code features
 #@+node:ekr.20090717084250.10874: *8* Added autoCompleter.getExternalCompletions
-@nocolor
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
 
 > As I said, all I need would be is for leo to call callback/hook with
@@ -10498,8 +9904,6 @@ returns the name of the file which Leo used to determine the setting
 http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7
 #@+node:ekr.20090717084250.10882: *7* New command-line options
 #@+node:ekr.20090717084250.10883: *8* Added -c option to specify config files
-@nocolor
-
 The setting is called -c or --config.  The one-config-file arg no longer exists.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
@@ -10554,16 +9958,13 @@ Only .zip and .leo extensions are allowed at present.
 #@+node:ekr.20090717084250.10888: *8* The open command creates @edit nodes when opening non-.leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 
-The open file dialog now shows all files by default.
-Selecting a non-.leo file will load that file into a new node in the present outline.
+The open file dialog now shows all files by default. Selecting a non-.leo file will load that file into a new node in the present outline.
 
 This plugs what may have been the biggest hole in Leo's history.
 #@+node:ekr.20090717084250.10889: *8* added pdb minibuffer command
 This works, but stops Leo in the middle of the command-handling logic.
 
-However, it is possible to pick up the commander by stepping out into
-k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all
-other info.
+However, it is possible to pick up the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
 #@+node:ekr.20090717084250.10890: *8* Added support for smart_tab setting
 - Tab = indent when there is a text selection
 - Shift-Tab unindents always
@@ -10571,7 +9972,7 @@ other info.
 Escape now ends isearch
 #@+node:ekr.20090717084250.10892: *7* New and improved directives
 #@+node:ekr.20090717084250.10893: *8* Added @nocolor-node directive
-# Useful: we don't need a closing @color to enable coloring in descendants.
+Useful: we don't need a closing @color to enable coloring in descendants.
 #@+node:ekr.20090717084250.10894: *8* Improved @path handling
 #@+node:ekr.20090717084250.10895: *7* New settings
 #@+node:ekr.20090717084250.10896: *8* Added better default fonts for Leo on Linux
@@ -10580,9 +9981,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
 #@+node:ekr.20090717084250.10898: *8* Added support for meta keys
 http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
 #@+node:ekr.20090717084250.10899: *8* Use myLeoSettings when opening leoSettings.leo
-Changed config.get so that settings in leoSettings.leo are read *last*.
-This means that myLeoSettings.leo will override leoSettings.leo,
-even when leoSettings.leo is the local file.
+Changed config.get so that settings in leoSettings.leo are read *last*. This means that myLeoSettings.leo will override leoSettings.leo, even when leoSettings.leo is the local file.
 #@+node:ekr.20090717084250.10900: *7* Plugins
 #@+node:ekr.20090717084250.10901: *8* Improved nav_buttons plugin and corresponding nodeHistory class
 #@+node:ekr.20090717084250.10902: *8* Created qtGui and tkGui plugins
@@ -10590,28 +9989,21 @@ even when leoSettings.leo is the local file.
 This contains all gui plugins.
 #@+node:ekr.20090717084250.10904: *6* New features in 4.6 b2
 #@+node:ekr.20090717084250.10905: *7* Allow Leo to open any file
-Leo can now open, for example, any .py file.
-It will be put in an @edit node in an otherwise-empty outline.
+Leo can now open, for example, any .py file. It will be put in an @edit node in an otherwise-empty outline.
 
-This allows Leo to be associated with the edit action of .py files.
-Something like this::
+This allows Leo to be associated with the edit action of .py files. Something like this::
 
 C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
 #@+node:ekr.20090717084250.10906: *7* Improved unit testing
-- leoDynamicTest.py now supports a --path argument giving the .leo file.
-  This is so useful!
+- leoDynamicTest.py now supports a --path argument giving the .leo file. This is so useful!
 
 - leoDynamicTest.py now honors the --silent argument.
 
-- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
-  in a separate process.
+- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file in a separate process.
 
-- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
-  dynamicUnitTest.leo.
+- leoTest.runTestsExternally calls runUnitTestLeoFile after creating dynamicUnitTest.leo.
 
-- When reporting that no unit tests were found, all unit tests commands tell
-  whether the entire outline or just the selected outline was searched.
-  This fixes sometimes-misleading error messages.
+- When reporting that no unit tests were found, all unit tests commands tell whether the entire outline or just the selected outline was searched. This fixes sometimes-misleading error messages.
 
 - test.leo contains a 'run-test.leo-tests' button.
 
@@ -10655,402 +10047,6 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
-#@+node:ekr.20090718092032.10406: *5* Bug fixes
-#@+node:ekr.20090718092032.10407: *6* Bugs fixed in 4.6 b2
-#@+node:ekr.20090718092032.10408: *7* Added patch for startup logic
-A patch at the start of loadOnePlugin prevents leo from crashing and allows the
-gui prompt for a leoID to come up.
-#@+node:ekr.20090718092032.10409: *7* Allocate gnx's when nodes are created
-This is reasonable now that old-style file indices are rare.
-#@+node:ekr.20090718092032.10410: *7* Allow block comments in private shadow files
-Html files are a good test case.
-#@+node:ekr.20090718092032.10411: *7* Compute delims from private shadow file as needed
-#@+node:ekr.20090718092032.10412: *7* Don't copy @edit trees to outline
-http://bugs.launchpad.net/leo-editor/+bug/376634
-
-The fix was to putVnodes.
-#@+node:ekr.20090718092032.10413: *7* Don't expand ancestors of @chapter node when selecting chapter
-#@+node:ekr.20090718092032.10414: *7* Entries in recent files menu now have absolute paths
-http://bugs.launchpad.net/leo-editor/+bug/383204
-#@+node:ekr.20090718092032.10415: *7* Fixed (worked around) tk chapters bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/981c27d5c24c90f8
-#@+node:ekr.20090718092032.10416: *7* Fixed @edit bug
-The generated @nocolor line now ends with a newline.
-#@+node:ekr.20090718092032.10417: *7* Fixed @shadow crasher
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-#@+node:ekr.20090718092032.10418: *7* Fixed @thin bug
-- Removed forceGnxOnPosition from leoImport.py and leoAtFile.py.
-
-- readStartNode now always uses root.v for the first node
-  instead of calling createThinChild4
-#@+node:ekr.20090718092032.10419: *7* Fixed back-to-home so it works as expected
-https://bugs.launchpad.net/leo-editor/+bug/367462
-
-The expected/customary behavior (one you get used to in almost every editor) is:
-
-End: always move to end of line
-Home: Move to first visible character on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
-
-This is also the way emacs behaves, though ctrl+a always moves to column zero.
-#@+node:ekr.20090718092032.10420: *7* Fixed bad @verbatim bug
-The @verbatim was being inserted into the outline.
-#@+node:ekr.20090718092032.10421: *7* Fixed binding problem with notebook
-#@+node:ekr.20090718092032.10422: *7* Fixed bug: sorting could revert headline changes
-#@+node:ekr.20090718092032.10423: *7* Fixed crash when reading .zip files
-The problem arose when reading a zipped file:
-
- File "C:\Programme\Leo-4-6-b1\leo\core\leoFileCommands.py", line
-1265, in parse_leo_file
-   s = theFile.read()
-TypeError: read() takes at least 2 arguments (1 given)
-saved: [zipped] Dive-into-Python-3.leo
-#@+node:ekr.20090718092032.10424: *7* Fixed crasher when creating .leoID.txt
-exception loading plugin
-Traceback (most recent call last):
-
-  File "C:\leo.repo\trunk\leo\core\leoPlugins.py", line 429, in loadOnePlugin
-    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-
-AttributeError: StubConfig instance has no attribute 'enabledPluginsFileName'
-
-leoID='ekr'
-.leoID.txt created in C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo
-load 
-#@+node:ekr.20090718092032.10425: *7* Fixed dabbrev-expands bug
-http://bugs.launchpad.net/leo-editor/+bug/362048
-
-I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
-the word "freq" in a body pane containing the word "frequency" then
-Leo 4.5.1 shows a hour-glass for a while before giving an empty
-dabbrev-expand: prompt in the minibuffer.
-
-If I back up one character, putting point between the e and q and then
-type F4, I get the expected behavior: the word "frequency" is inserted
-immediately.
-
-What I did:
-
-- Removed "not ready messages".
-- Made the code undoable.
-- Added wimpy unit test.
-#@+node:ekr.20090718092032.10426: *7* Fixed elisp importer problem
-#@+node:ekr.20090718092032.10427: *7* Fixed F10/11/12 key bug
-Added call to isFKey in k.handleUnboundKeys.
-#@+node:ekr.20090718092032.10428: *7* Fixed file bug re unicode characters
-http://bugs.launchpad.net/leo-editor/+bug/376189
-#@+node:ekr.20090718092032.10429: *7* Fixed hoist problems
-http://bugs.launchpad.net/leo-editor/+bug/382221
-#@+node:ekr.20090718092032.10430: *7* Fixed lost anchor bug page up/down
-http://bugs.launchpad.net/leo-editor/+bug/363403
-
-With a long body text you might place the cursor on a line, hold down Shift, and
-PgDn several pages to select a large block of text. The last PgDn may overshoot
-the range you want selected, so you should be able to use UpArrow to bring the
-bottom of the range back up to where you want it. However, on the first UpArrow
-the selection is lost and restarted from the current cursor position. I.e. you
-end up with just one line selected, instead of trimming one line of the
-selection of several pages, as intended.
-#@+node:ekr.20090718092032.10431: *7* Fixed minor @auto bug
-http://bugs.launchpad.net/leo-editor/+bug/306671
-
-If a Leo editor window is opened, and the "NewHeadline" node is renamed to
-"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
-nodes" menu option is selected, the renamed node reverts to its previous name
-("NewHeadline"), and nothing is loaded into the node.
-#@+node:ekr.20090718092032.10432: *7* Fixed multiple-editor focus problems
-http://groups.google.com/group/leo-editor/browse_thread/thread/21bddd50f3400bdc?hl=en
-#@+node:ekr.20090718092032.10433: *7* Fixed new command
-The outline wasn't being redrawn properly.
-#@+node:ekr.20090718092032.10434: *7* Fixed problems with change-all command
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The fix to minibufferFind.changeAll fixes a bug that is several years old.
-The fix to findNextMatch fixes a bug that is likely much older than that.
-#@+node:ekr.20090718092032.10435: *7* Fixed read clone bug
-#@+node:ekr.20090718092032.10436: *7* Fixed rst import bug
-#@+node:ekr.20090718092032.10437: *7* Fixed rst3 problem
-http://mail.google.com/mail/#inbox/11ef0076a3f4d866
-#@+node:ekr.20090718092032.10438: *7* Fixed seg-fault bug
-The crash happened inside the call to::
-
-    c.widgetWantsFocusNow(event.widget)
-
-in callAltXFunction. Actually, the crash happened later, in c.outerUpdate.
-
-A better fix would be to use wrappers for all edit widgets, and recalculate the
-edit widget any it needs to be used.
-#@+node:ekr.20090718092032.10439: *7* Fixed Shift-Arrow in headlines
-#@+node:ekr.20090718092032.10440: *7* Fixed startup problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
-#@+node:ekr.20090718092032.10441: *7* Fixed stubConfig problems
-#@+node:ekr.20090718092032.10442: *7* Fixed undo bug
-onTextChanged in the qt gui was calling setUndoTypingParams, in many case
-redundantly and with bad params.
-
-It remains to be seen whether onTextChanged is ever needed. If it is, it may be
-difficult to set the old selection properly.
-#@+node:ekr.20090718092032.10443: *7* Fixed vim bindings (dd) bug
-http://bugs.launchpad.net/leo-editor/+bug/353925
-
-The "kill-region" function did nothing when using the qt gui.
-
-The fix was to replace tag_ranges with w.getSelectionRange, etc.
-This was the only call to tag_ranges in the core.
-#@+node:ekr.20090718092032.10444: *7* Investigated bug: File->Export->write failed due to incorrect path
-http://bugs.launchpad.net/leo-editor/+bug/377907
-
-I'm going to mark this invalid, although the behavior is way too confusing.
-
-I added the following to the plugin's docstring:
-
-Configuration
-~~~~~~~~~~~~~
-
-At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
-In particular, the default export path, "c:\" must be changed for *nix systems.
-#@+node:ekr.20090718092032.10445: *7* Investigated speed of external unit tests
-The problem is imports in the Commands ctor. When executed the first time from
-the bridge the imports take about 3/4 sec. on my machine. There is nothing that
-can or should be done. Ctrl-5 is still hugely faster than opening unitTest.leo!
-#@+node:ekr.20090718092032.10446: *7* Made @url nodes work with qt gui
-#@+node:ekr.20090718092032.10447: *7* Mark @<file> nodes dirty when @path nodes change
-#@+node:ekr.20090718092032.10448: *7* Removed duplicate messages when opening non-existent .leo file
-#@+node:ekr.20090718092032.10449: *7* Reversed messages about redefined keys
-http://groups.google.com/group/leo-editor/browse_thread/thread/a04dcefbb672078f
-#@+node:ekr.20090718092032.10450: *7* Scroll commands now affect only scrollbars
-#@+node:ekr.20090718092032.10451: *6* Bugs fixed in 4.6 b1
-#@+node:ekr.20090718092032.10452: *7* Fixed goto-global-line crasher
-#@+node:ekr.20090718092032.10453: *7* Fixed bug that prevented Leo from opening files on the XP desktop
-#@+node:ekr.20090718092032.10454: *7* Save/restore tnodeList in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@+node:ekr.20090718092032.10455: *7* Paste outline problem
-The problem was missing calls to initAfterLoad in c.new.
-#@+node:ekr.20090718092032.10456: *7* Made sure $Home works for @nosent
-http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90
-#@+node:ekr.20090718092032.10457: *7* Fixed atFile unicode bug
-#@+node:ekr.20090718092032.10458: *7* Fixed Mark Edgington's @shadow bug
-#@+node:ekr.20090718092032.10459: *7* Fixed whitespace problems with @auto/@shadow
-Pulled trunk, got r1599
-
-python launchLeo.py leo/plugins/leoPlugins.leo
-
-go to
-
-Plugins-->Graph world-->@shadow backlink.py-->backlink declarations
-
-All I did was add the full stop at the end of the docstring, but see
-the diff:
-
-=== modified file 'leo/plugins/backlink.py'
---- leo/plugins/backlink.py     2009-02-19 18:16:01 +0000
-+++ leo/plugins/backlink.py     2009-02-25 22:14:46 +0000
-@@ -1,4 +1,4 @@
--'''Backlink - allow arbitrary links between nodes
-+'''Backlink - allow arbitrary links between nodes.
- '''
-
- # Notes
-@@ -296,7 +296,7 @@
-                break
-        else:
-            self.showMessage("Error: no such link")
--
-+
-        gcc = getattr(self.c, 'graphcanvasController')
-        if gcc:
-            gcc.update()
-#@+node:ekr.20090718092032.10460: *7* Fixed nested @path problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/7d8325d055cbef30
-#@+node:ekr.20090718092032.10461: *7* Fixed encoding problems with rst3 plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
-#@+node:ekr.20090718092032.10462: *7* Fixed new rst3 crash
-http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
-
-Calls g.makeAllNonExistentDirectories instead of os.mkdir.
-#@+node:ekr.20090718092032.10463: *7* Fixed two c syntax-coloring bugs
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
-
-There were two separate bugs:
-
-1. The eol_span and eol_span_regex now honor the mode's escape character.
-
-2. colorRangeWithTag now colors delegates with the default tag color.
-
-No changes were made in modes/c.py or modes/c.xml.
-#@+node:ekr.20090718092032.10464: *5* New features
-#@+node:ekr.20090718092032.10465: *6* New features in 4.6 b1
-#@+node:ekr.20090718092032.10466: *7* Improved file handling
-#@+node:ekr.20090718092032.10467: *8* Open a default .leo file if no other is specified
-http://groups.google.com/group/leo-editor/browse_thread/thread/d6449236bc140713#
-
-Added support for @string default_leo_file = ~/.leo/workbook.leo
-#@+node:ekr.20090718092032.10468: *8* Added escapes for underindented lines
-@string underindent-escape-string = \-
-#@+node:ekr.20090718092032.10469: *8* Warn when writing an externally changed file
-http://groups.google.com/group/leo-editor/browse_thread/thread/c80fd8375534afdf
-#@+node:ekr.20090718092032.10470: *7* New code features
-#@+node:ekr.20090718092032.10471: *8* Added autoCompleter.getExternalCompletions
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
-
-> As I said, all I need would be is for leo to call callback/hook with
-> signature like
-> def complete(line-up-to-cursor, current_node) => list of strings
-
-The actual signature is:
-
-theObject,completionList = getExternalCompletions (self,s,p=None,language='python')
-
-p is used only to get the language, or you can set the language by hand.
-
-@color
-#@+node:ekr.20090718092032.10472: *8* Added g.PosList
-#@+node:ekr.20090718092032.10473: *8* Better plugin info
-c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
-#@+node:ekr.20090718092032.10474: *8* Added properties to leoNodes.py
-p.b, p.h and p.gnx
-t.b, t.h, t.gnx and t.u
-v.b, v.h, v.gnx, and v.u
-#@+node:ekr.20090718092032.10475: *8* Added script to leoSettings.leo to ensure all menu items are valid
-#@+node:ekr.20090718092032.10476: *8* Added c.config.getSettingSource
-c.config.getSettingSource('show_full_tracebacks_in_scripts')
-returns the name of the file which Leo used to determine the setting
-
-- D indicates default settings.
-- F indicates the file being loaded
-- L indicates leoSettings.leo
-- M indicates myLeoSettings.leo
-#@+node:ekr.20090718092032.10477: *8* Predefined 'self' in @test/@suite nodes
-#@+node:ekr.20090718092032.10478: *8* Added c.getNodePath and c.getNodeFileName
-http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7
-#@+node:ekr.20090718092032.10479: *7* New command-line options
-#@+node:ekr.20090718092032.10480: *8* Added -c option to specify config files
-@nocolor
-
-The setting is called -c or --config.  The one-config-file arg no longer exists.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
-
-Personally, I'd like to see another config file available via -c on
-the command line:
-(a common idiom)
-
-leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
-
-or better yet:
-
-leo myproject.leo -c /etc/leo/style01.leo
-leo myotherproject.leo -c /etc/leo/style02.leo
-leo anotherproject.leo -c /etc/leo/style23.leo
-
-Each file opens in an editor with the shortcuts, buttons, commands,
-plugins, appearance etc.  that has been tuned for that data management task.
-
-or best yet:
-
-leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo
-
-==================
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b5a736089079acaf#
-
-Please, I think each file has a distinct and required role.
-
-- config/leoSettings.leo = Edward's base, required for a sane starting point
-
-- home/.leo/myLeoSettings.leo = adjust Edwards suggestions to taste
-
-- cwd/myLeoSettings.leo = provide a customized working environment in
-this folder
-
-- leo -c /usr/lib/leo-editor/src/config/zope3_ide.leo =
-  - open this file in a specialized environments, mine or community contributed
-  - ...
-
-- currentfile/@settings =
-  - I'm working on some customization ideas
-  - Here, try out this Leo file I sent you, check out all the spiffy
-modifications 
-
-@color
-#@+node:ekr.20090718092032.10481: *8* Added support for --file=fileName command-line option
-Only .zip and .leo extensions are allowed at present.
-#@+node:ekr.20090718092032.10482: *8* Added support for --gui option
-#@+node:ekr.20090718092032.10483: *7* New commands
-#@+node:ekr.20090718092032.10484: *8* Added smart home (back-to-home) command
-#@+node:ekr.20090718092032.10485: *8* The open command creates @edit nodes when opening non-.leo files
-http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
-
-The open file dialog now shows all files by default.
-Selecting a non-.leo file will load that file into a new node in the present outline.
-
-This plugs what may have been the biggest hole in Leo's history.
-#@+node:ekr.20090718092032.10486: *8* added pdb minibuffer command
-This works, but stops Leo in the middle of the command-handling logic.
-
-However, it is possible to pick up the commander by stepping out into
-k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all
-other info.
-#@+node:ekr.20090718092032.10487: *8* Added support for smart_tab setting
-- Tab = indent when there is a text selection
-- Shift-Tab unindents always
-#@+node:ekr.20090718092032.10488: *8* Improved isearch commands
-Escape now ends isearch
-#@+node:ekr.20090718092032.10489: *7* New and improved directives
-#@+node:ekr.20090718092032.10490: *8* Added @nocolor-node directive
-# Useful: we don't need a closing @color to enable coloring in descendants.
-#@+node:ekr.20090718092032.10491: *8* Improved @path handling
-#@+node:ekr.20090718092032.10492: *7* New settings
-#@+node:ekr.20090718092032.10493: *8* Added better default fonts for Leo on Linux
-http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
-#@+node:ekr.20090718092032.10494: *8* Added support for @int icon_bar_widgets_per_row setting
-#@+node:ekr.20090718092032.10495: *8* Added support for meta keys
-http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
-#@+node:ekr.20090718092032.10496: *8* Use myLeoSettings when opening leoSettings.leo
-Changed config.get so that settings in leoSettings.leo are read *last*.
-This means that myLeoSettings.leo will override leoSettings.leo,
-even when leoSettings.leo is the local file.
-#@+node:ekr.20090718092032.10497: *7* Plugins
-#@+node:ekr.20090718092032.10498: *8* Improved nav_buttons plugin and corresponding nodeHistory class
-#@+node:ekr.20090718092032.10499: *8* Created qtGui and tkGui plugins
-#@+node:ekr.20090718092032.10500: *8* Created leoGuiPluginsRef.leo
-This contains all gui plugins.
-#@+node:ekr.20090718092032.10501: *6* New features in 4.6 b2
-#@+node:ekr.20090718092032.10502: *7* Allow Leo to open any file
-Leo can now open, for example, any .py file.
-It will be put in an @edit node in an otherwise-empty outline.
-
-This allows Leo to be associated with the edit action of .py files.
-Something like this::
-
-C:\Python26\python.exe "c:\leo.repo\leo-editor\launchLeo.py" --gui=qt %1 %2
-#@+node:ekr.20090718092032.10503: *7* Improved unit testing
-- leoDynamicTest.py now supports a --path argument giving the .leo file.
-  This is so useful!
-
-- leoDynamicTest.py now honors the --silent argument.
-
-- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
-  in a separate process.
-
-- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
-  dynamicUnitTest.leo.
-
-- When reporting that no unit tests were found, all unit tests commands tell
-  whether the entire outline or just the selected outline was searched.
-  This fixes sometimes-misleading error messages.
-
-- test.leo contains a 'run-test.leo-tests' button.
-
-- leoPy.leo contains a 'run-all-core-tests' button.
-#@+node:ekr.20090718092032.10504: *7* Leo tests syntax of .py files when saving them
-#@+node:ekr.20090718092032.10505: *7* Made qt gui the default
-#@+node:ekr.20090718092032.10506: *7* Support @auto-rst
-#@+node:ekr.20090718092032.10507: *6* New features in 4.6 final
-Leo now warns on dangerous writes to @thin and @file nodes.
 #@+node:ekr.20090802162204.5798: *4* 4.6.2 final
 Leo 4.6.2 final                             August 3, 2009
 
