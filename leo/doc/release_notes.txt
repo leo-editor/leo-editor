@@ -3476,7 +3476,7 @@ All changes were to g.app.leoID():
 - Improved signon message.
 - Better error handling and reporting. 
 #@+node:ekr.20050209141626.113: *6* Leo now prints unicode characters properly in the log pane
-This now works: g.es('ﺻﺱ',color='red')
+This now works: g.es('������',color='red')
 
 g.es must send the original unicode string to the log pane widget, NOT an encoded string.
 #@+node:ekr.20050209141626.114: *6* Fixed various problems with opening files with Unicode filenames
@@ -9443,12 +9443,12 @@ called after Python starts up.
 
 Leo's g.es_print function attempts to convert incoming arguments to unicode
 using the default encoding. For example, the following Leo script always prints
-La Peña::
+La Pe��a::
 
     @first # -*- coding: utf-8 -*-
     # The line above is required for Python 2.5
 
-    for s in (u'La Pe\xf1a','La Peña',u'La Peña'): 
+    for s in (u'La Pe\xf1a','La Pe��a',u'La Pe��a'): 
         g.es_print(s)
 
 For still more details, see:
@@ -14492,7 +14492,7 @@ Other approaches are fraught with difficulties.
 #@+node:ekr.20101104091058.5011: *8* Fixed unicode bug in files
 I created a file time.leo. When it's in the dir d:/Dmitry it's being
 opened fine. But when I put it into the dir with Russian characters:
-D:/Личное/Время leo prints squares at the window header and doesn't
+D:/������������/���������� leo prints squares at the window header and doesn't
 open the file correctly. This problem existed in one of the revisions,
 then it was fixed in the last official release. Now it emerged again
 in my Leo 4.8 devel, build 3005
@@ -14505,8 +14505,8 @@ Traceback (most recent call last):
 
 UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position
 31: character maps to <undefined> path changed for @thin
-Unicode-Â-folder/unicode-Â-test2.txt created:
-C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
+Unicode-��-folder/unicode-��-test2.txt created:
+C:\Users\edreamleo\Unicode-��-folder\unicode-��-test2.txt
 #@+node:ekr.20101104091058.5012: *8* Eliminated check python syntax commands, but retained code
 @nocolor-node
 
@@ -15237,7 +15237,7 @@ Other approaches are fraught with difficulties.
 #@+node:ekr.20101124102457.5167: *8* Fixed unicode bug in files
 I created a file time.leo. When it's in the dir d:/Dmitry it's being
 opened fine. But when I put it into the dir with Russian characters:
-D:/Личное/Время leo prints squares at the window header and doesn't
+D:/������������/���������� leo prints squares at the window header and doesn't
 open the file correctly. This problem existed in one of the revisions,
 then it was fixed in the last official release. Now it emerged again
 in my Leo 4.8 devel, build 3005
@@ -15250,8 +15250,8 @@ Traceback (most recent call last):
 
 UnicodeEncodeError: 'charmap' codec can't encode character '\xc2' in position
 31: character maps to <undefined> path changed for @thin
-Unicode-Â-folder/unicode-Â-test2.txt created:
-C:\Users\edreamleo\Unicode-Â-folder\unicode-Â-test2.txt
+Unicode-��-folder/unicode-��-test2.txt created:
+C:\Users\edreamleo\Unicode-��-folder\unicode-��-test2.txt
 #@+node:ekr.20101124102457.5168: *8* Eliminated check python syntax commands, but retained code
 @nocolor-node
 
@@ -16067,7 +16067,7 @@ probably is close to optimal in most situations.
 - Improved the reformat-paragraph command. The command detects paragraphs more
   reliably. The next line is now visible, which is a big improvement.
 
-- Added patch to g.wrap_lines from José Rojas Echenique
+- Added patch to g.wrap_lines from Jos�� Rojas Echenique
   It regularizes the number of spaces after periods.
 
 - Improved expansion of abbreviations. Abbreviations are checked any time a
@@ -16390,7 +16390,7 @@ You can execute the scripts by name without the "@command-" prefix.
 
 2. Improved abbreviation capabilities.
 
-Virtually any kind of abbreviation is possible. For example, ~a to ã.
+Virtually any kind of abbreviation is possible. For example, ~a to ��.
 
 3. Improved handling of URL's.
 
@@ -17595,8 +17595,8 @@ Of course, you could also turn abbreviations off while defining abbreviations...
 Instant abbreviations solve the problems with Brazilian
 keyboards. Just define::
 
-    ~a=ã
-    ~A=Ã
+    ~a=��
+    ~A=��
     etc.
 
 This works regardless of keyboard, regardless of OS, etc.
@@ -20621,7 +20621,7 @@ The fix was to createUrlForBinaryFile.
 https://bugs.launchpad.net/leo-editor/+bug/1046195
 
 If I drag part of an outline from one leo file to another and the source
-outline contain special characters (ä, ö, ü, ß, ...), then they are
+outline contain special characters (��, ��, ��, ��, ...), then they are
 misrepresented in the target file.
 
 The fix was to use g.toUnicode rather than g.u in parseText.
@@ -29023,7 +29023,7 @@ For example, this setting works without any explicit definition of mistyrose2.
     @color head-bg = @mistyrose2
 #@+node:edream.110203163054.63: ** Latest version
 #@+node:ekr.20150212182032.5: *3* 5.1 No more sentinels!
-Leo 5.1 b1                          February 20, 2015
+Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
@@ -29032,20 +29032,13 @@ Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/scre
 The highlights of Leo 5.1
 --------------------------
 
-* @clean trees are the new recommended way of creating external files. Such files contain no sentinels, yet using @clean is as convenient as using @file:
-  
-  - Leo updates @clean trees from changes made to external files, something
-    long thought impossible. The Aha was to apply the @shadow algorithm to
-    @clean trees.
-  
-  - @clean trees preserve clone links and user attributes (uA's) as in
-    @file trees.
+* @clean trees, one of the most important developments in Leo's history.
+
+    - @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
     
-  - Updating @clean trees is significantly faster than updating @shadow
-    trees or importing @auto trees.
-  
-* @shadow is officially deprecated. @clean is superior to @shadow in all
-  respects. Leo will support @auto, @auto-rst, etc. indefinitely.
+    - The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
 
 Links:
 ------

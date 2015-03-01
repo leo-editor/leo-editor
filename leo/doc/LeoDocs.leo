@@ -161,13 +161,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047355013071057d71066803580c000000313337363431323932332e307107735503302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000007374725f6174696d657103580c000000313337363431323932372e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3171087d71096803580c000000313337363431323739362e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1158,9 +1158,10 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285809000000302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e302e322e3371097d710a6803580c000000313337363431323838382e30710b735810000000302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73580b000000302e302e332e312e312e3371107d71116803580c000000313337363431323838392e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20060620094033"></v>
 <v t="ekr.20150212182032.4"></v>
 <v t="ekr.20150212182032.5"><vh>5.1 No more sentinels!</vh>
 <v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
@@ -17967,8 +17968,11 @@ is easy. Crucially, x.a and x.sentinels are *parallel arrays*. That is,
 len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
-<t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150212182032.5">Leo 5.1 b1                          February 20, 2015
+<t tx="ekr.20150212182032.4">- @clean trees, one of the most important developments in Leo's history. @clean trees create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading and updating @clean trees is faster than reading @auto or @shadow trees.
+    
+- The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+</t>
+<t tx="ekr.20150212182032.5">Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
@@ -17977,20 +17981,13 @@ Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/scre
 The highlights of Leo 5.1
 --------------------------
 
-* @clean trees are the new recommended way of creating external files. Such files contain no sentinels, yet using @clean is as convenient as using @file:
-  
-  - Leo updates @clean trees from changes made to external files, something
-    long thought impossible. The Aha was to apply the @shadow algorithm to
-    @clean trees.
-  
-  - @clean trees preserve clone links and user attributes (uA's) as in
-    @file trees.
+* @clean trees, one of the most important developments in Leo's history.
+
+    - @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
     
-  - Updating @clean trees is significantly faster than updating @shadow
-    trees or importing @auto trees.
-  
-* @shadow is officially deprecated. @clean is superior to @shadow in all
-  respects. Leo will support @auto, @auto-rst, etc. indefinitely.
+    - The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
 
 Links:
 ------
@@ -18336,7 +18333,7 @@ I think it rare for Python HOME to expand to C:\users\jane. :)
 - Explained the overall idea of the @shadow algorithm.
   http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 - Deprecated @shadow in all docs.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
