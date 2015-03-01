@@ -737,7 +737,6 @@ class AtFile:
         Actually, instead of deleting the nodes, we move them to be children of the
         'Resurrected Nodes' r.
         '''
-
         at = self
         # Find the unvisited nodes.
         aList = [z.copy() for z in root.subtree() if not z.isVisited()]
@@ -1069,6 +1068,7 @@ class AtFile:
         # The following is like at.read() w/o caching logic.
         root.clearVisitedInTree()
         # Init the input stream used by read-open file.
+        # g.trace('\nnew_private_lines...\n',''.join(new_private_lines))
         at.read_lines = new_private_lines
         at.read_ptr = 0
         # Read the file using the @file read logic.
@@ -2979,6 +2979,7 @@ class AtFile:
     #@+node:ekr.20100628124907.5816: *5* at.indicateNodeChanged
     def indicateNodeChanged (self,old,new,postPass,v):
         '''Add an entry to c.nodeConflictList.'''
+        # g.trace(repr(v.h),g.callers())
         at,c = self,self.c
         if at.perfectImportRoot:
             if not postPass:
