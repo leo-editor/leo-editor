@@ -1158,7 +1158,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285810000000302e302e31322e302e302e372e302e3171017d710258090000007374725f6174696d657103580c000000313337363431323238382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873580b000000302e302e332e302e322e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323838382e30710c73580b000000302e302e332e312e312e33710d7d710e680b580c000000313337363431323838392e30710f73752e"
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e307108735810000000302e302e31322e302e302e372e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323238382e30710c73752e"
 marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
@@ -1230,7 +1230,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
 </v>
-<v t="ekr.20050210102150.1"><vh>4.1... gnx's</vh>
+<v t="ekr.20050210102150.1"><vh>4.1 gnx's</vh>
 <v t="ekr.20040216151748"><vh>4.1 final</vh>
 <v t="edream.110603192009"><vh>* Improved format of .leo files</vh>
 <v t="edream.110603190322.9"><vh>Leo now ignores unknown prefs and find prefs</vh></v>
@@ -1324,7 +1324,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="edream.110303182719"><vh>Settings</vh></v>
 </v>
 </v>
-<v t="ekr.20050210102150"><vh>4.2... @file-thin, shared tnodes, generators</vh>
+<v t="ekr.20050210102150"><vh>4.2.@file-thin, shared tnodes, generators</vh>
 <v t="ekr.20040922074200"><vh>4.2 final</vh>
 <v t="ekr.20150301045135.20"><vh>* File-related</vh>
 <v t="EKR.20040601101430.1"><vh>@+-middle sentinels allow sections to be defined in grandchildren</vh></v>
@@ -1452,47 +1452,30 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20060206111600"><vh>4.3...@settings</vh>
+<v t="ekr.20060206111600"><vh>4.3 @settings, Plugins manager</vh>
 <v t="ekr.20050917092557"><vh>4.3.3 final</vh>
-<v t="ekr.20050917105646"><vh>Fixes made in 4.3.3</vh></v>
-<v t="ekr.20050917092557.1"><vh>Rewrote documentation</vh></v>
-<v t="ekr.20050917092557.2"><vh>Bug fixes...</vh>
-<v t="ekr.20050917092557.3"><vh>Fixed various unicode bugs</vh></v>
+<v t="ekr.20050917105646"><vh>Bugs fixed</vh>
+<v t="ekr.20050917092557.7"><vh>Added test files to distribution list and cvs</vh></v>
 <v t="ekr.20050917092557.4"><vh>Fixed bugs relating to recent files</vh></v>
 <v t="ekr.20050917092557.5"><vh>Fixed minor crasher in colorizer</vh></v>
+<v t="ekr.20150301045135.23"><vh>Fixed Open With crasher</vh></v>
+<v t="ekr.20050917092557.3"><vh>Fixed various unicode bugs</vh></v>
 <v t="ekr.20050917092557.6"><vh>Protected several methods used by plugin manager</vh></v>
-<v t="ekr.20050917092557.7"><vh>Added test files to distribution list and cvs</vh></v>
 </v>
-<v t="ekr.20050917092557.8"><vh>New and improved  plugins</vh>
-<v t="ekr.20050917092557.9"><vh>New rst3 plugin</vh></v>
-<v t="ekr.20050917092557.11"><vh>Improved vim plugin</vh></v>
-</v>
-<v t="ekr.20050917092557.12"><vh>New &amp; improved features...</vh>
+<v t="ekr.20050917092557.12"><vh>Features</vh>
 <v t="ekr.20050917092557.13"><vh>Added g.es_print, g.es_trace function</vh></v>
 <v t="ekr.20050917092557.14"><vh>Improved PrettyPrinting</vh></v>
 </v>
+<v t="ekr.20050917092557.8"><vh>Plugins</vh>
+<v t="ekr.20150301045135.24"><vh>Fixed bugs in niceNocent and fastGotoNode plugins</vh></v>
+<v t="ekr.20050917092557.9"><vh>New rst3 plugin</vh></v>
+<v t="ekr.20050917092557.11"><vh>Improved vim plugin</vh></v>
 </v>
-<v t="ekr.20050913131848"><vh>4.3.2 final</vh>
 <v t="ekr.20050906104918.1"><vh>Rewrote documentation</vh></v>
-<v t="ekr.20050906104931.1"><vh>Bug fixes...</vh>
-<v t="ekr.20050909082711"><vh>Fixed various unicode bugs</vh></v>
-<v t="ekr.20050906104931.15"><vh>Fixed bugs relating to recent files</vh></v>
-<v t="ekr.20050906104931.38"><vh>Fixed minor crasher in colorizer</vh></v>
-<v t="ekr.20050906104931.42"><vh>Protected several methods used by plugin manager</vh></v>
-<v t="ekr.20050906104931.43"><vh>Added test files to distribution list and cvs</vh></v>
 </v>
-<v t="ekr.20050908164150"><vh>New and improved  plugins</vh>
-<v t="ekr.20050908164150.1"><vh>New rst3 plugin</vh></v>
-<v t="ekr.20050910143326"><vh>Improved vim plugin</vh></v>
-</v>
-<v t="ekr.20050906104931.48"><vh>New &amp; improved features...</vh>
-<v t="ekr.20050906104931.49"><vh>Added g.es_print, g.es_trace function</vh></v>
-<v t="ekr.20050906104931.56"><vh>Improved PrettyPrinting</vh></v>
-</v>
-</v>
-<v t="ekr.20050906104918"><vh>4.3.2 beta 1</vh></v>
+<v t="ekr.20050913131848"><vh>4.3.2 final</vh></v>
 <v t="ekr.20050620144052"><vh>4.3.1</vh>
-<v t="ekr.20050620144052.2"><vh>Bug fixes...</vh>
+<v t="ekr.20050620144052.2"><vh>Bugs fixed</vh>
 <v t="ekr.20050620144052.3"><vh>Fixed bug in @ratio setting</vh></v>
 <v t="ekr.20050620144052.6"><vh>Fixed crasher footprint plugin</vh></v>
 <v t="ekr.20050620144052.8"><vh>Fixed invalid position bug)</vh></v>
@@ -1507,7 +1490,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050620144052.185"><vh>Fixed problem with coloring @language plain</vh></v>
 <v t="ekr.20050620144602"><vh>Fixed bug: Mark Clones command did not work</vh></v>
 </v>
-<v t="ekr.20050620144052.207"><vh>New features...</vh>
+<v t="ekr.20050620144052.207"><vh>Features</vh>
 <v t="ekr.20050620144052.208"><vh>Created separate helpers for idle_body_key</vh></v>
 <v t="ekr.20050620144052.210"><vh>Made all Mark commands undoable</vh></v>
 <v t="ekr.20050620144052.222"><vh>Removed dependence on profile and pstats modules from leoTest.py</vh></v>
@@ -1516,138 +1499,11 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20050523092026"><vh>4.3-final</vh>
-<v t="ekr.20050523092056.1"><vh>Fixed crasher when pie-menu plugin enabled</vh></v>
-<v t="ekr.20050523092056.4"><vh>Fixed crasher in Extract Section Command</vh></v>
-</v>
-<v t="ekr.20050513141852"><vh>4.3-beta 2</vh>
-<v t="ekr.20050513141913.1"><vh>Fixed bugs...</vh>
-<v t="ekr.20050513141913.16"><vh>Fixed nodenavagator bug</vh></v>
-<v t="ekr.20050513141913.17"><vh>Fixed LaTex Coloring bug</vh></v>
-<v t="ekr.20050513141913.22"><vh>Error messages in scripts are now redirected properly.</vh></v>
-<v t="ekr.20050513141913.30"><vh>Fixed 2 crashers in nav_buttons plugin</vh></v>
-<v t="ekr.20050513141913.57"><vh>Fixed crasher in yoffsetTree</vh></v>
-<v t="ekr.20050513141913.60"><vh>Fixed crasher in undo</vh></v>
-<v t="ekr.20050513141913.82"><vh>Fixed  several problems with Extract and Extract Section</vh></v>
-<v t="ekr.20050513141913.91"><vh>Fixed bug with Delete in headlines</vh></v>
-<v t="ekr.20050513141913.127"><vh>Fixed bugs re initial_splitter_orientation &amp; @strings &amp; @ints generally</vh></v>
-<v t="ekr.20050513141913.140"><vh>Fixed bug with hoist + insert</vh></v>
-<v t="ekr.20050513141913.145"><vh>Fixed problem with settings dialog position when panes split horizontally</vh></v>
-<v t="ekr.20050513141913.149"><vh>Fixed problem changing shortcut &amp; redid shortcuts widget</vh></v>
-</v>
-<v t="ekr.20050513141913.187"><vh>New Features...</vh>
-<v t="ekr.20050513141913.97"><vh>Marking any node sets the outline changed</vh></v>
-<v t="ekr.20050513141913.188"><vh>Allow quoted urls in  @urls nodes</vh></v>
-<v t="ekr.20050513141913.194"><vh>Moved executeFile into core</vh></v>
-<v t="ekr.20050513141913.197"><vh>Rewrote g.getScript using at.writeFromString</vh></v>
-<v t="ekr.20050513141913.233"><vh>Added define_name arg to c.executeScript</vh></v>
-</v>
-</v>
-<v t="ekr.20050429094215"><vh>4.3-beta 1</vh>
-<v t="ekr.20050429094215.2"><vh>Fixed bugs...</vh>
-<v t="ekr.20050429094215.3"><vh>Made sure NameErrors are reported with tracebacks in scripts</vh></v>
-<v t="ekr.20050429094215.22"><vh>Finally! fixed .leoID problem!</vh></v>
-<v t="ekr.20050429094215.31"><vh>Investigated problem with LeoPluginsRef.leo</vh></v>
-<v t="ekr.20050429094215.41"><vh>Fixed conflicts in menu shortcuts</vh></v>
-<v t="ekr.20050429094215.113"><vh>Fixed bug in p.initStatus caught by pychecker</vh></v>
-<v t="ekr.20050429094215.116"><vh>Fixed crasher in import logic (leoAtFile)</vh></v>
-<v t="ekr.20050429094215.120"><vh>Put in protections against unbounded recursion in idle_scrollTo</vh></v>
-</v>
-<v t="ekr.20050429094215.130"><vh>New features...</vh>
-<v t="ekr.20050429094215.131"><vh>Created stand-alone leoGlobals.py module</vh></v>
-<v t="ekr.20050429094215.139"><vh>Leo now ignores problems opening settings file for chapters plugin</vh></v>
-<v t="ekr.20050429094215.145"><vh>Improved write logic</vh></v>
-<v t="ekr.20050429094215.173"><vh>Rewrote the undo code</vh></v>
-<v t="ekr.20050429094215.286"><vh>Implemented undo/redo for Paste Retaining clones</vh></v>
-<v t="ekr.20050429094215.316"><vh>Added support for 'str_' uA's</vh></v>
-<v t="ekr.20050429094215.347"><vh>Removed unused params from leoAtFile.py</vh></v>
-<v t="ekr.20050429094215.353"><vh>Leo  saves recent files info in .leoRecentFiles.txt files</vh>
-<v t="ekr.20050429094215.354"><vh>What I did</vh></v>
-<v t="ekr.20050429094215.355"><vh>New plan</vh></v>
-</v>
-<v t="ekr.20050429095849"><vh>Finished all @settings coding</vh></v>
-</v>
-</v>
-<v t="ekr.20050313101229"><vh>4.3-a4</vh>
-<v t="ekr.20050313101229.2"><vh>Fixed bugs...</vh>
-<v t="ekr.20050313101229.74"><vh>Fixed @wrap bug</vh></v>
-<v t="ekr.20050313101229.77"><vh>Fixed change-all bug</vh></v>
-</v>
-<v t="ekr.20050313103448"><vh>New features...</vh>
-<v t="ekr.20050313101229.95"><vh>Created Add Comments and Delete Comments commands</vh></v>
-<v t="ekr.20050313101229.94"><vh>Deprecated new_c key in hooks, added c key</vh></v>
-<v t="ekr.20050313103448.1"><vh>Added the 'before-create-leo-frame' hook</vh></v>
-<v t="ekr.20050313101229.101"><vh>Added support for mod_labels plugin</vh></v>
-</v>
-<v t="ekr.20050313101229.100"><vh>Revised plugins for the 4.3 code base</vh></v>
-</v>
-<v t="ekr.20050221104844"><vh>4.3-a3</vh>
-<v t="ekr.20050221104844.2"><vh>Bugs</vh>
-<v t="ekr.20050221104844.12"><vh>Applied patch to rst2 plugin</vh></v>
-<v t="ekr.20050221104844.14"><vh>Revised searchbox plugin so it works with Leo 4.3</vh></v>
-<v t="ekr.20050221104844.27"><vh>Fixed bugs in nav_buttons and nodenavigator plugins</vh></v>
-<v t="ekr.20050221104844.45"><vh>Made sure Leo asks for leoID at most once</vh></v>
-<v t="ekr.20050221104844.54"><vh>Fixed botch in g.pdb</vh></v>
-<v t="ekr.20050222100936"><vh>Fixed crasher when executing a script if the script was selected text in a new window</vh></v>
-</v>
-<v t="ekr.20050221104844.57"><vh>New features</vh>
-<v t="ekr.20050221104844.58"><vh>Added sets.py to distribution</vh></v>
-<v t="ekr.20050221104844.59"><vh>Added color='suppress' hack to g.es</vh></v>
-</v>
-</v>
-<v t="ekr.20050126100405"><vh>4.3-a2</vh>
-<v t="ekr.20050130112336.1"><vh>To do: Improve how Leo handles recent files</vh></v>
-<v t="ekr.20050209141626.3"><vh>Bugs fixed...</vh>
-<v t="ekr.20050209141626.4"><vh>Fixed very old bug in Undo Insert Node</vh></v>
-<v t="ekr.20050209141626.8"><vh>Made sure to remove duplicates from recent files</vh></v>
-<v t="ekr.20050209141626.12"><vh>Fixed indentation problems in leoTkinterFind.py</vh></v>
-<v t="ekr.20050209141626.13"><vh>Changed leoConfig.txt to leoSettings.leo in Help menu, etc.</vh></v>
-<v t="ekr.20050209141626.16"><vh>Investigated recent files problems</vh></v>
-<v t="ekr.20050209141626.23"><vh>Improved queuing of log messages</vh></v>
-<v t="ekr.20050209141626.42"><vh>Fixed crasher in Change All command</vh></v>
-<v t="ekr.20050209141626.43"><vh>Fixed crasher in script button</vh></v>
-<v t="ekr.20050209141626.46"><vh>Fixed print problems on the Mac</vh></v>
-<v t="ekr.20050209141626.53"><vh>leoTest.runTests now makes copies of all positions</vh></v>
-<v t="ekr.20050209141626.54"><vh>Fixed problems with unit test file paths</vh></v>
-<v t="ekr.20050209141626.55"><vh>Made local config settings work again</vh></v>
-<v t="ekr.20050209141626.91"><vh>Fix problems searching for nothing but whitespace</vh></v>
-<v t="ekr.20050210101318"><vh>Fixed problems with typing return in the Find panel</vh></v>
-<v t="ekr.20050209141626.101"><vh>Buttons no longer work in toolbars when settings dialog is open</vh></v>
-<v t="ekr.20050209141626.102"><vh>Fixed bug in delayed focus logic</vh></v>
-<v t="ekr.20050209141626.105"><vh>Made sure Leo asks for leoID at most once</vh></v>
-<v t="ekr.20050209141626.113"><vh>Leo now prints unicode characters properly in the log pane</vh></v>
-<v t="ekr.20050209141626.114"><vh>Fixed various problems with opening files with Unicode filenames</vh></v>
-<v t="ekr.20050211095754"><vh>Fixed bug reading encoding field in external files</vh></v>
+<v t="ekr.20150301045135.25"><vh>Bugs fixed</vh>
 <v t="ekr.20050212054743"><vh>Allow indented code blocks to be run using Execute Script command</vh></v>
-<v t="ekr.20050212144116"><vh>Fixed problems found by pychecker</vh></v>
-</v>
-<v t="ekr.20050209141626.150"><vh>New features...</vh>
-<v t="ekr.20050126100405.1"><vh>Added undo granularity</vh>
-<v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
-</v>
-<v t="ekr.20050209141626.185"><vh>Added support for top-level init function in plugins</vh></v>
-<v t="ekr.20050209141626.190"><vh>Changed name of Paste Retaining Clones to Paste Node As Clone</vh></v>
-<v t="ekr.20050209141626.193"><vh>Added leoPlugins.leo to Help menu</vh></v>
-<v t="ekr.20050209141626.194"><vh>Script buttons can request to be removed</vh></v>
-<v t="ekr.20050209141626.195"><vh>Improved documentation in several nodes in leoSettings.leo</vh></v>
-<v t="ekr.20050209141626.196"><vh>Predefined c,g &amp; p in scripts, unit tests &amp; test routines</vh></v>
-<v t="ekr.20050209141626.198"><vh>Changed name of Preferences command to Settings</vh></v>
-</v>
-</v>
-<v t="ekr.20050122090311"><vh>4.3-a1</vh>
-<v t="ekr.20050123112834"><vh>Defining features of 4.3</vh>
-<v t="ekr.20050123110009"><vh>Using @settings trees and leoSettings.leo</vh>
-<v t="ekr.20050122084954"><vh>Using leoSettings.leo and @settings trees</vh></v>
-<v t="ekr.20050122091036"><vh>Unfinished configuration features</vh></v>
-</v>
-<v t="ekr.20050123092834.520"><vh>Rewrote Leo's read/write logic</vh></v>
-<v t="ekr.20050123115804"><vh>Added Plugins Manager plugin</vh></v>
-<v t="ekr.20050123115804.1"><vh>You can install third-party extensions in Leo's extensions directory</vh></v>
-</v>
-<v t="ekr.20050123092834.1"><vh>Fixed bugs...</vh>
-<v t="ekr.20050123101208"><vh> Major bugs: these bugs corrupted external files!</vh>
-<v t="ekr.20050123092834.432"><vh>Fixed double doc part bug</vh></v>
-<v t="ekr.20050123092834.497"><vh>Fixed bug in how Leo writes thin external files</vh></v>
-</v>
+<v t="ekr.20050221104844.12"><vh>Applied patch to rst2 plugin</vh></v>
+<v t="ekr.20050209141626.101"><vh>Buttons no longer work in toolbars when settings dialog is open</vh></v>
+<v t="ekr.20050209141626.13"><vh>Changed leoConfig.txt to leoSettings.leo in Help menu, etc.</vh></v>
 <v t="ekr.20050123092834.2"><vh>Commands</vh>
 <v t="ekr.20050123092834.6"><vh>Fixed problems with spawnv option of openWith</vh></v>
 <v t="ekr.20050123092834.19"><vh>Fixed bug in  Remove Sentinels command</vh></v>
@@ -1659,6 +1515,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123100706.1"><vh>Distribution</vh>
 <v t="ekr.20050123092834.491"><vh>Fixed file association in leoDist.leo</vh></v>
 </v>
+<v t="ekr.20050513141913.22"><vh>Error messages in scripts are now redirected properly.</vh></v>
 <v t="ekr.20050123092834.165"><vh>Files</vh>
 <v t="ekr.20050123092834.492"><vh>g.import wrappers return module if it is in sys.modules</vh></v>
 <v t="ekr.20050123092834.166"><vh>Disabled changes to comment delims in @@language and @@comment sentinels</vh></v>
@@ -1672,9 +1529,55 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123092834.544"><vh>Always use os.rename in utils_rename</vh></v>
 <v t="ekr.20050123151338"><vh>Fixed bugs handling @language &amp; @comment in atFile.scanAllDirectives &amp; g.scanDirectives)</vh></v>
 </v>
+<v t="ekr.20050429094215.22"><vh>Finally! fixed .leoID problem!</vh></v>
+<v t="ekr.20050209141626.91"><vh>Fix problems searching for nothing but whitespace</vh></v>
+<v t="ekr.20050513141913.82"><vh>Fixed  several problems with Extract and Extract Section</vh></v>
+<v t="ekr.20050513141913.30"><vh>Fixed 2 crashers in nav_buttons plugin</vh></v>
+<v t="ekr.20050313101229.74"><vh>Fixed @wrap bug</vh></v>
+<v t="ekr.20050221104844.54"><vh>Fixed botch in g.pdb</vh></v>
+<v t="ekr.20050209141626.102"><vh>Fixed bug in delayed focus logic</vh></v>
+<v t="ekr.20050123092834.497"><vh>Fixed bug in how Leo writes thin external files</vh></v>
+<v t="ekr.20050429094215.113"><vh>Fixed bug in p.initStatus caught by pychecker</vh></v>
+<v t="ekr.20050211095754"><vh>Fixed bug reading encoding field in external files</vh></v>
+<v t="ekr.20050513141913.91"><vh>Fixed bug with Delete in headlines</vh></v>
+<v t="ekr.20050513141913.140"><vh>Fixed bug with hoist + insert</vh></v>
+<v t="ekr.20050221104844.27"><vh>Fixed bugs in nav_buttons and nodenavigator plugins</vh></v>
+<v t="ekr.20050513141913.127"><vh>Fixed bugs re initial_splitter_orientation &amp; @strings &amp; @ints generally</vh></v>
+<v t="ekr.20050313101229.77"><vh>Fixed change-all bug</vh></v>
+<v t="ekr.20050429094215.41"><vh>Fixed conflicts in menu shortcuts</vh></v>
+<v t="ekr.20050209141626.42"><vh>Fixed crasher in Change All command</vh></v>
+<v t="ekr.20050523092056.4"><vh>Fixed crasher in Extract Section Command</vh></v>
+<v t="ekr.20050429094215.116"><vh>Fixed crasher in import logic (leoAtFile)</vh></v>
+<v t="ekr.20050209141626.43"><vh>Fixed crasher in script button</vh></v>
+<v t="ekr.20050513141913.60"><vh>Fixed crasher in undo</vh></v>
+<v t="ekr.20050513141913.57"><vh>Fixed crasher in yoffsetTree</vh></v>
+<v t="ekr.20050222100936"><vh>Fixed crasher when executing a script if the script was selected text in a new window</vh></v>
+<v t="ekr.20050523092056.1"><vh>Fixed crasher when pie-menu plugin enabled</vh></v>
+<v t="ekr.20050123092834.432"><vh>Fixed double doc part bug</vh></v>
+<v t="ekr.20050209141626.12"><vh>Fixed indentation problems in leoTkinterFind.py</vh></v>
+<v t="ekr.20050513141913.17"><vh>Fixed LaTex Coloring bug</vh></v>
+<v t="ekr.20050513141913.16"><vh>Fixed nodenavagator bug</vh></v>
+<v t="ekr.20050209141626.46"><vh>Fixed print problems on the Mac</vh></v>
+<v t="ekr.20050513141913.149"><vh>Fixed problem changing shortcut &amp; redid shortcuts widget</vh></v>
+<v t="ekr.20050513141913.145"><vh>Fixed problem with settings dialog position when panes split horizontally</vh></v>
+<v t="ekr.20050212144116"><vh>Fixed problems found by pychecker</vh></v>
+<v t="ekr.20050210101318"><vh>Fixed problems with typing return in the Find panel</vh></v>
+<v t="ekr.20050209141626.54"><vh>Fixed problems with unit test file paths</vh></v>
+<v t="ekr.20050209141626.114"><vh>Fixed various problems with opening files with Unicode filenames</vh></v>
+<v t="ekr.20050209141626.4"><vh>Fixed very old bug in Undo Insert Node</vh></v>
 <v t="ekr.20050123103303"><vh>Gui</vh>
 <v t="ekr.20050123092834.502"><vh>Put the scrollWheel workaround in createTkTreeCanvas</vh></v>
 </v>
+<v t="ekr.20050209141626.23"><vh>Improved queuing of log messages</vh></v>
+<v t="ekr.20050429094215.31"><vh>Investigated problem with LeoPluginsRef.leo</vh></v>
+<v t="ekr.20050209141626.16"><vh>Investigated recent files problems</vh></v>
+<v t="ekr.20050209141626.113"><vh>Leo now prints unicode characters properly in the log pane</vh></v>
+<v t="ekr.20050209141626.53"><vh>leoTest.runTests now makes copies of all positions</vh></v>
+<v t="ekr.20050209141626.55"><vh>Made local config settings work again</vh></v>
+<v t="ekr.20050221104844.45"><vh>Made sure Leo asks for leoID at most once</vh></v>
+<v t="ekr.20050209141626.105"><vh>Made sure Leo asks for leoID at most once</vh></v>
+<v t="ekr.20050429094215.3"><vh>Made sure NameErrors are reported with tracebacks in scripts</vh></v>
+<v t="ekr.20050209141626.8"><vh>Made sure to remove duplicates from recent files</vh></v>
 <v t="ekr.20050123100706.2"><vh>Menus</vh>
 <v t="ekr.20050123092834.81"><vh>Fixed problems with Control-E</vh></v>
 <v t="ekr.20050123092834.490"><vh>Better handling of duplicate menu shortcuts</vh></v>
@@ -1690,6 +1593,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123092834.1057"><vh>Fixed bug in registerOneHandler</vh></v>
 <v t="ekr.20050123092834.506"><vh>Fixed conflict between settings panel and chapters plugin</vh></v>
 </v>
+<v t="ekr.20050429094215.120"><vh>Put in protections against unbounded recursion in idle_scrollTo</vh></v>
 <v t="ekr.20050123092834.526"><vh>Pychecker</vh></v>
 <v t="ekr.20050123092834.438"><vh>Scripting</vh>
 <v t="ekr.20050123092834.439"><vh>Fixed unbounded recursion with --script and redirected output</vh></v>
@@ -1701,10 +1605,41 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123092834.1011"><vh>computeHomeDir now handles references to other vars</vh></v>
 </v>
 </v>
-<v t="ekr.20050123092834.896"><vh>New or improved features...</vh>
-<v t="ekr.20050123110009"></v>
+<v t="ekr.20150301045135.26"><vh>Code &amp; scripting</vh>
+<v t="ekr.20050221104844.59"><vh>Added color='suppress' hack to g.es</vh></v>
+<v t="ekr.20050513141913.233"><vh>Added define_name arg to c.executeScript</vh></v>
+<v t="ekr.20050429094215.316"><vh>Added support for 'str_' uA's</vh></v>
+<v t="ekr.20050313103448.1"><vh>Added the 'before-create-leo-frame' hook</vh></v>
+<v t="ekr.20050429094215.131"><vh>Created stand-alone leoGlobals.py module</vh></v>
+<v t="ekr.20050313101229.94"><vh>Deprecated new_c key in hooks, added c key</vh></v>
+<v t="ekr.20050429095849"><vh>Finished all @settings coding</vh></v>
+<v t="ekr.20050429094215.145"><vh>Improved write logic</vh></v>
+<v t="ekr.20050429094215.139"><vh>Leo now ignores problems opening settings file for chapters plugin</vh></v>
+<v t="ekr.20050513141913.194"><vh>Moved executeFile into core</vh></v>
+<v t="ekr.20050429094215.347"><vh>Removed unused params from leoAtFile.py</vh></v>
+<v t="ekr.20050513141913.197"><vh>Rewrote g.getScript using at.writeFromString</vh></v>
+<v t="ekr.20050429094215.173"><vh>Rewrote the undo code</vh></v>
+</v>
+<v t="ekr.20150301045135.28"><vh>Commands</vh>
+<v t="ekr.20050313101229.95"><vh>Created Add Comments and Delete Comments commands</vh></v>
+</v>
+<v t="ekr.20050513141913.187"><vh>Features</vh>
+<v t="ekr.20050209141626.193"><vh>Added leoPlugins.leo to Help menu</vh></v>
+<v t="ekr.20050221104844.58"><vh>Added sets.py to distribution</vh></v>
+<v t="ekr.20050313101229.101"><vh>Added support for mod_labels plugin</vh></v>
+<v t="ekr.20050209141626.185"><vh>Added support for top-level init function in plugins</vh></v>
+<v t="ekr.20050126100405.1"><vh>Added undo granularity</vh>
+<v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
+</v>
+<v t="ekr.20050513141913.188"><vh>Allow quoted urls in  @urls nodes</vh></v>
+<v t="ekr.20050209141626.190"><vh>Changed name of Paste Retaining Clones to Paste Node As Clone</vh></v>
+<v t="ekr.20050209141626.198"><vh>Changed name of Preferences command to Settings</vh></v>
+<v t="ekr.20050429094215.286"><vh>Implemented undo/redo for Paste Retaining clones</vh></v>
+<v t="ekr.20050209141626.195"><vh>Improved documentation in several nodes in leoSettings.leo</vh></v>
+<v t="ekr.20050513141913.97"><vh>Marking any node sets the outline changed</vh></v>
+<v t="ekr.20050209141626.196"><vh>Predefined c,g &amp; p in scripts, unit tests &amp; test routines</vh></v>
+<v t="ekr.20050209141626.194"><vh>Script buttons can request to be removed</vh></v>
 <v t="ekr.20050123103303.1"><vh>Code</vh>
-<v t="ekr.20050123092834.520"></v>
 <v t="ekr.20050123092834.173"><vh>Added g.cantImport</vh></v>
 <v t="ekr.20050123092834.901"><vh>Added g.fileLikeObject.readline</vh></v>
 <v t="ekr.20050123092834.928"><vh>Added support for g.app.debugSwitch in es_exception</vh></v>
@@ -1722,9 +1657,11 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123092834.1043"><vh>Implemented 'Undo Clear Recent Files'</vh></v>
 <v t="ekr.20050123092834.517"><vh>Removed old-style write commands</vh></v>
 </v>
+<v t="ekr.20150301045135.31"><vh>Files</vh>
+<v t="ekr.20050123092834.520"><vh>Rewrote Leo's read/write logic</vh></v>
+</v>
 <v t="ekr.20050123092834.1044"><vh>Plugins &amp; extensions</vh>
-<v t="ekr.20050123115804"></v>
-<v t="ekr.20050123115804.1"></v>
+<v t="ekr.20050123115804.1"><vh>You can install third-party extensions in Leo's extensions directory</vh></v>
 <v t="ekr.20050123112151"><vh>Improved doHandlersForTag</vh></v>
 <v t="ekr.20050123092834.1013"><vh>Leo now associates modules with hook handlers</vh></v>
 </v>
@@ -1733,6 +1670,18 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20050123092834.929"><vh>Added support for Forth</vh></v>
 </v>
 </v>
+<v t="ekr.20150301045135.29"><vh>Files</vh>
+<v t="ekr.20050429094215.353"><vh>Leo  saves recent files info in .leoRecentFiles.txt files</vh>
+<v t="ekr.20050429094215.354"><vh>What I did</vh></v>
+<v t="ekr.20050429094215.355"><vh>New plan</vh></v>
+</v>
+</v>
+<v t="ekr.20150301045135.27"><vh>Plugins</vh>
+<v t="ekr.20050123115804"><vh>Added Plugins Manager plugin</vh></v>
+<v t="ekr.20150301045135.32"><vh>Fixed bugs in plugins</vh></v>
+<v t="ekr.20050221104844.14"><vh>Revised searchbox plugin so it works with Leo 4.3</vh></v>
+</v>
+<v t="ekr.20050123110009"><vh>Settings</vh></v>
 </v>
 </v>
 <v t="ekr.20060206111717.1"><vh>4.4 minibuffer, keys, autocompletion, multiple log panes</vh>
@@ -6774,130 +6723,6 @@ tests now takes a few seconds!
 
 - The Execute Script command reports erroneous lines more clearly.
 </t>
-<t tx="ekr.20050122084954">Leo stores options in @settings trees, that is, parts of Leo outlines whose root node has the headline @settings.  When opening a .leo file, Leo looks for @settings trees in the following places:
-
-- The file called leoSettings.leo in the leo/config directory.
-- The file called leoSettings.leo in the users home directory.
-- The file being loaded.
-
-Settings that later in the above list override settings found earlier. For example, any setting specified in an @settings tree in the file being loaded overrides any setting seen in any leoSettings.leo file.
-
-The Settings command temporarily replaces the outline pane with an outline showing all the @settings trees in effect. The Settings command also replaces the body pane with a "settings dialog" pane. This settings dialog pane allows you to change the settings selected in the outline pane using standard gui widgets.
-
-The format of nodes in @settings trees are as follows:
-
-1. "Simple settings nodes" have headlines of the form::
-
-    @&lt;type&gt; name = val
-
-set the value of name to val, with the indicated type.
-
-&lt;type&gt; may be one of the following, with valid values shown::
-
-    &lt;type&gt;          Valid values
-    -----           ------------
-    \@bool           True, False, 0, 1
-    \@color          A Tk color name or value,
-                     such as 'red' or 'xf2fddff' (without the quotes)
-    
-For a list of Tk color specifiers see:
-
-- http://www.tcl.tk/man/tcl8.4/TkCmd/colors.htm
-- http://www.tcl.tk/man/tcl8.4/TkLib/GetColor.htm
-
-\@directory      A path to a directory
-\@float          A floating point number of the form nn.ff.
-\@int            An integer
-\@ints[list]     An integer (must be one of the ints in the list).
-                 Example: @ints meaningOfLife[0,42,666]=42
-\@path           A path to a directory or file
-\@ratio          A floating point number between 0.0 and 1.0, inclusive.
-\@string         A string
-\@strings[list]  A string (must be one of the strings in the list).
-                 Example: @strings tk_relief['flat','groove','raised']='groove'
-
-2. "Complex settings nodes" have headlines of the form::
-
-    @&lt;type&gt; description
-
-The actual settings are specified in the body text.  At present, there are two such kinds of complex settings nodes:
-
-- @font
-
-The body text contains a list of settings for a font.  For example:
-
-body_text_font_family = Courier New
-body_text_font_size = None
-body_text_font_slant = None
-body_text_font_weight = None
-
-- @recentFiles
-
-The body text contains a list of paths of recently opened files, one path per line.
-
-Warning: The following features of @recentfiles nodes are confusing and probably
-will be changed:
-
-- Leo does not save recent file information unless the open .leo file has an
-@settings tree and an @recentfiles node within the @settings tree. That is, Leo
-does not save recent files information in leoSettings.leo files.
-
-- Changing the @rencentfiles node doesn't mark the Leo file as dirty, so if you don't save the .leo file the recent files information will not be updated.
-
-3.  All other nodes are "Organizer" nodes.  Such nodes have no effect on the settings shown in the dialog.  You may use them as you please to organize settings.
-
-Notes:
-
-A.  At present, you can not change @settings trees while executing the Settings command.  You can, however, change any @settings tree normally when not executing the Settings command.
-
-B. Other kinds of settings nodes are planned for future releases.
-</t>
-<t tx="ekr.20050122090311">Leo 4.3 alpha 1                 January 24, 2005
-
-Leo 4.3 is the culmination of more than four months of work. 
-
-The defining features of Leo 4.3:
-
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-4. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically. This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-5. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail.
-</t>
-<t tx="ekr.20050122091036">The essential features of @settings trees and the settings dialog appear to be stable.  However, many improvements can be imagined, including the following:
-
-- Allow searching for nodes while in the settings dialog.
-
-- Allow adding, deleting, rearranging nodes while in the settings dialog.
-
-- Allow adding, deleting, rearranging recent files while in the settings dialog.
-
-These will be added as time permits and people request.
-</t>
-<t tx="ekr.20050123092834.1"></t>
 <t tx="ekr.20050123092834.1004">Changed these hooks:
 
 "bodyclick1", "bodyclick2",
@@ -7169,7 +6994,6 @@ I am tempted to remove all the default entries entirely. This would simplify
 error reporting, but then Leo would hardly work at all if leoSettings.leo were
 not present.
 </t>
-<t tx="ekr.20050123092834.896"></t>
 <t tx="ekr.20050123092834.897">These commands work as do the similar commands in Windows Explorer. How did we
 ever live without them?
 </t>
@@ -7222,7 +7046,6 @@ The following already existed.  I added v=p keyword params:
 </t>
 <t tx="ekr.20050123100706.1"></t>
 <t tx="ekr.20050123100706.2"></t>
-<t tx="ekr.20050123101208"></t>
 <t tx="ekr.20050123103303"></t>
 <t tx="ekr.20050123103303.1"></t>
 <t tx="ekr.20050123103521"></t>
@@ -7243,16 +7066,12 @@ The following already existed.  I added v=p keyword params:
 
 The key design goal of @settings trees was that Leo's user options must be infinitely flexible. That goal has been accomplished. Indeed, users can create arbitrarily complex user options with @settings trees. Leo settings outlines are, in fact, infinitely more flexible and powerful than any scheme based on flat text.
 
-The Settings command temporarily replaces the outline pane with an outline showing all the @settings trees in effect. The Settings command also replaces the body pane with a "settings pane". This settings pane allows you to change the settings selected in the outline pane using standard gui widgets. The settings pane is dynamically created from nodes in the settings tree; it is as extensible as the @settings tree itself.
-
-For full details, see the children of this node.
-</t>
+The Settings command temporarily replaces the outline pane with an outline showing all the @settings trees in effect. The Settings command also replaces the body pane with a "settings pane". This settings pane allows you to change the settings selected in the outline pane using standard gui widgets. The settings pane is dynamically created from nodes in the settings tree; it is as extensible as the @settings tree itself.</t>
 <t tx="ekr.20050123111723"></t>
 <t tx="ekr.20050123112151">- leoPlugins.doHandlersForTag now executes the list of hook handlers for a particular tag (hook name) until one of the handlers returns a non-None result. doHandersForTag no longer tries to "sort" handlers, so the order that the handlers are executed is the order in which they were registered.
 
 I finally understand the concerns people have raised several times about hooks interfering with each other. If two handlers try to return a non-None result only one of them will ever execute. doHandlersForTag can't do much about this: a better solution would require more conceptual framework. Not now...
 </t>
-<t tx="ekr.20050123112834"></t>
 <t tx="ekr.20050123115804">Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables and disables plugins automatically.This plugin also tells you everything you need to know about each plugin. Finally, this plugin also lets you download plugins from Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
 
 Note. The Plugins Manager plugin requires Pmw. You can install Pmw in Leo's extensions directory if you like.
@@ -7279,59 +7098,7 @@ So I rearranged the outline (probably more logical anyway) to
 + SQL 
   ... 
 </t>
-<t tx="ekr.20050126100405">Leo 4.3 alpha 2                 February 14, 2005
-
-Leo 4.3 is the culmination of more than four months of work. This alpha 2
-release corrects various bugs and distribution problems.
-
-a2 also adds several new features:
-
-- Adds 'word', 'line' and 'node' undo granularities.
-- Predefines 'c','g', and 'p' in scripts and unit tests.
-- Added support for top-level init functions in plugins.
-- Buttons can remove themselves when their scripts fail.
-
-The defining features of Leo 4.3:
-
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-4. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically. 
-This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-5. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail.  Leo is distributed with Pmw (Python Mega Widgets) in this directory.
-</t>
 <t tx="ekr.20050126100405.1"></t>
-<t tx="ekr.20050130112336.1">Warning: The following features of @recentfiles nodes are confusing and probably will be changed:
-
-- Leo does not save recent file information unless the open .leo file has an
-@settings tree and an @recentfiles node within the @settings tree. That is, Leo
-does not save recent files information in leoSettings.leo files.
-
-- Changing the @rencentfiles node doesn't mark the Leo file as dirty, so if you don't save the .leo file the recent files information will not be updated.
-</t>
 <t tx="ekr.20050209141626.101"></t>
 <t tx="ekr.20050209141626.102">http://sourceforge.net/forum/message.php?msg_id=2958470
 
@@ -7360,7 +7127,6 @@ g.es must send the original unicode string to the log pane widget, NOT an encode
 </t>
 <t tx="ekr.20050209141626.12"></t>
 <t tx="ekr.20050209141626.13"></t>
-<t tx="ekr.20050209141626.150"></t>
 <t tx="ekr.20050209141626.16">http://sourceforge.net/forum/message.php?msg_id=2966541
 
 ---- Report:
@@ -7421,7 +7187,6 @@ This writes the queued log messages in the proper order: a major advance in clar
 
 This allows the 'reading settings from' message to be sent to the log instead of the default 'reading' message.
 </t>
-<t tx="ekr.20050209141626.3"></t>
 <t tx="ekr.20050209141626.4">http://sourceforge.net/forum/message.php?msg_id=2795653
 
 1. Select a node in the tree
@@ -7523,45 +7288,6 @@ else:
 5. (removed code) from &lt;&lt; create a node p for  kind &amp; root2 &gt;&gt;
     - last_p is None at first, so last_p.insertAfter does not make sense.
 </t>
-<t tx="ekr.20050221104844">Leo 4.3 alpha 3                 February 24, 2005
-
-Leo 4.3 is the culmination of more than five months of work. This alpha 3
-release corrects various bugs in Leo's core and in plugins. This is the first
-release that include an installer for MacOSX.
-
-The defining features of Leo 4.3:
-
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-4. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically.
-This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-5. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
-sets.py in this directory.
-</t>
 <t tx="ekr.20050221104844.12">http://sourceforge.net/forum/message.php?msg_id=2999651
 
 I was pleasantly surprised to discover the reST2 plug-in working under 4.3a2 (this is one the first thing I try as I'd like to use Leo as an editor for that).
@@ -7588,7 +7314,6 @@ writeTreeAsRst(rstFile,fname,p,c,syntax)
 And it worked!
 </t>
 <t tx="ekr.20050221104844.14"></t>
-<t tx="ekr.20050221104844.2"></t>
 <t tx="ekr.20050221104844.27">http://sourceforge.net/forum/message.php?msg_id=3005140
 By: ktenney
 
@@ -7625,7 +7350,6 @@ All changes were to g.app.leoID():
 </t>
 <t tx="ekr.20050221104844.54">g.pdb wasn't working because pdb wasn't imported inside the function.
 </t>
-<t tx="ekr.20050221104844.57"></t>
 <t tx="ekr.20050221104844.58">This allows plugins such as plugin_manager.py to work on Python 2.2.x.
 </t>
 <t tx="ekr.20050221104844.59">g.es does nothing if color=='suppress'.  This can be useful in unit tests.
@@ -7694,107 +7418,10 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 
 - Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
 </t>
-<t tx="ekr.20050313101229">Leo 4.3 alpha 4                 March 15, 2005
-
-Leo 4.3 is the culmination of more than five months of work. This alpha 4
-focuses on plugins: all known plugins are now in leoPlugins.leo. Most plugins
-now work with the 4.3 code base. Warning: not all plugins have been tested
-thoroughly.
-
-This alpha 4 release also adds the frequently-requested Add Comments and Delete
-Comments commands to Leo's Edit Body menu.
-
-The defining features of Leo 4.3:
-
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-4. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically. 
-This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-5. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
-sets.py in this directory.
-</t>
-<t tx="ekr.20050313101229.100">Fixed problems in the following plugins. See the &lt;&lt; version history &gt;&gt; section
-in each plugin for details.
-
-autocompleter.py
-cleo.py
-mod_scripting.py
-mod_tempfname.py
-templates.py
-vim.py
-xemacs.py
-
-Replaced the 'new_c' key by the 'c' key in the following plugins:
-
-ConceptualSort.py
-URLloader.py
-UASearch.py
-arrows.py
-autocompleter.py
-base64Packager.py
-cleo.py
-dyna_menu.py
-macros.py
-mod_read_dir_outline.py
-mod_scripting.py
-multifile.py
-nodebar.py
-nodenavigator.py
-open_with.py
-scheduler.py
-read_only_nodes.py
-templates.py
-
-Replaced the 'start2' hook by the 'new' hook in the following plugins: (This was
-made possible now that 'new' is called when opening a new window if the
-'open1/2' hooks are not called.
-
-URLloader.py
-UASearch.py
-at_produce.py
-autocompleter.py
-color_markup.py
-fastGotoNode.py
-groupOperations.py
-import_cisco_config.py
-multifile.py
-nodebar.py
-open_with.py
-read_only_nodes.py
-scheduler.py
-table.py
-usetemacs.py
-xsltWithNodes.py
-</t>
 <t tx="ekr.20050313101229.101">atFile.copyAllTempBodyStringsToTnodes calls:
 
     c.mod_label_controller.add_label(p,"before change:",old_body)
 </t>
-<t tx="ekr.20050313101229.2"></t>
 <t tx="ekr.20050313101229.74">http://sourceforge.net/forum/message.php?msg_id=3035471
 
 Leo was not inserting a visible horizontal scrollbar when @nowrap was in effect.
@@ -7836,7 +7463,6 @@ The Delete Comments command deletes the comments specified by the Add Comments c
 </t>
 <t tx="ekr.20050313102319">The ``add-comments`` (Ctrl-)) command puts comments around a block of code. This command uses single-line comments if possible. The ``delete-comments`` (Ctrl-() command deletes the comments.
 </t>
-<t tx="ekr.20050313103448"></t>
 <t tx="ekr.20050313103448.1">Leo calls the 'before-create-leo-frame' hook just before calling frame.onCreate. Similarly, Leo calls the 'after-create-leo-frame' just after calling frame.onCreate.
 </t>
 <t tx="ekr.20050407144342">
@@ -7858,51 +7484,10 @@ p.setDirty and p.setAllAncestorAtFileNodesDirty now return a dirtyVnodeList that
 
 See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
 </t>
-<t tx="ekr.20050429094215">Leo 4.3 beta 1                 April 30, 2005
-
-Leo 4.3 beta 1 completes all major features of Leo 4.3. There are no known
-significant bugs remaining.
-
-The defining features of Leo 4.3:
----------------------------------
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo now stores recent files information in .leoRecentFiles.txt files.
-
-4. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-5. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically. 
-This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-6. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
-sets.py in this directory.
-</t>
 <t tx="ekr.20050429094215.113">The status bits weren't being passed to v.initStatus!
 </t>
 <t tx="ekr.20050429094215.116"></t>
 <t tx="ekr.20050429094215.120"></t>
-<t tx="ekr.20050429094215.130"></t>
 <t tx="ekr.20050429094215.131">- Moved computeGlobalConfigDir, computeHomeDir, computeLoadDir and startupEncoding from leo.py to leoGlobals.py.
 
 - Created g.computeStandardDirectories and used it in leo.py.
@@ -7954,7 +7539,6 @@ and it appears that the call to g.toEncodedString is the limiting factor.
 - Moved undo methods from leoNodes.py to leoUndo.py
 - Added dirtyVnodeList param to afterChangeNodeContents.
 </t>
-<t tx="ekr.20050429094215.2"></t>
 <t tx="ekr.20050429094215.22">Initial bug report:
 
 http://sourceforge.net/forum/message.php?msg_id=3053699
@@ -8091,46 +7675,6 @@ The Paste Node As Clone conflicted with the Mark submenu.
 
 - Removed support for @recent-files nodes.  This is now handled by .leoRecentFiles.txt files.
 </t>
-<t tx="ekr.20050513141852">Leo 4.3 beta 2                 May 15, 2005
-
-Leo 4.3 beta 2 completes all major features of Leo 4.3 and fixes all bugs
-reported since the beta 1 release.
-
-The defining features of Leo 4.3:
----------------------------------
-1. Leo now stores options in @settings trees, that is, outlines whose headline
-is '@settings'. When opening a .leo file, Leo looks for @settings trees not only
-in the outline being opened but also in various leoSettings.leo files.
-
-The key design goal of @settings trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with @settings trees. Leo settings outlines
-are, in fact, infinitely more flexible and powerful than any scheme based on
-flat text.  Readers of Python's configParser shootout take note!
-
-2. The Settings command temporarily replaces the outline pane with an outline
-showing all the @settings trees in effect. The Settings command also replaces
-the body pane with a "settings pane". This settings pane allows you to change
-the settings selected in the outline pane using standard gui widgets. The
-settings pane is dynamically created from nodes in the settings tree; it is as
-extensible as the @settings tree itself.
-
-3. Leo now stores recent files information in .leoRecentFiles.txt files.
-
-4. Leo's read/write code in leoAtFile.py has been rewritten to support user-
-defined tangling and untangling.  This is a major cleanup of Leo's core.
-
-5. Leo now boasts a wonderful new Plugins Manager plugin. This plugin enables
-and disables plugins automatically. This plugin also tells you everything you need to know
-about each plugin. Finally, this plugin also lets you download plugins from
-Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
-
-6. You can install third-party extensions in Leo's extensions directory. Leo
-will attempt to import such extensions from the extensions directory if normal
-imports fail. Leo is distributed with Pmw (Python Mega Widgets), path.py and
-sets.py in this directory.
-</t>
-<t tx="ekr.20050513141913.1"></t>
 <t tx="ekr.20050513141913.127">doStrings now accepts either:
 
 @strings[values]name=value
@@ -9841,32 +9385,6 @@ Script buttons **bring scripts to outlines** a powerful pattern. Creating an @bu
 </t>
 <t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to stderr, the output stream that goes to the console window. In Linux and MacOS environments, python programs normally execute with the console window visible. On Windows, can run Leo with the console window visible by associating .leo files with python.exe *not* pythonw.exe.
 </t>
-<t tx="ekr.20050906104918">Leo 4.3.2 beta 1                  September 10, 2005
-
-To learn about Leo, see: http://leoeditor.com/tutorial.html
-
-The highlights of 4.3.2:
------------------------
-
-- Improved Leo's documentation:
-    - A tutorial introduction to Leo.
-    - A 5-minute guide to programming with Leo.
-
-- The new rst3 plugin creates .html and .tex files from reStructuredText
-  embedded in Leo files. Any node of the source outline may contain options for
-  the rst3 plugin, which makes this plugin much more useful and flexible than
-  the previous rst plugins. All of Leo's documentation was created using this
-  plugin from sources in LeoDocs.leo. For full documentation for rst3 see:
-  http://leoeditor.com/rstplugin3.html.
-
-- The spellpyx (spell checking) plugin is now much easier to use.
-
-- The vim plugin now uses Python's subprocess module if it is present.
-
-- Improved the Pretty Printing command.
-
-- The usual assortment of bug fixes.
-</t>
 <t tx="ekr.20050906104918.1">Here is a summary of the changes:
 
 - General: All chapters created with rst3 plugin. This ensures a uniform look. The source is in LeoDocs.leo. Removed all references to older versions of Leo, except when discussing old file formats in the Appendices. Corrected all text so it discusses present version.
@@ -9905,40 +9423,6 @@ The highlights of 4.3.2:
 
 - Glossary: A separate chapter. All terms have links to their definition. All definitions are rST targets so other chapters may refer to them. Added several new entries.
 </t>
-<t tx="ekr.20050906104931.1"></t>
-<t tx="ekr.20050906104931.15">http://sourceforge.net/forum/message.php?msg_id=3218558
-</t>
-<t tx="ekr.20050906104931.38">The fix was to add an entry of 'unknown' state to state_dict. This fixes the crash by brute force, but may not be strictly correct. However, this is pretty much moot: we shall soon be moving to the new colorizer.
-</t>
-<t tx="ekr.20050906104931.42" str_atime="1376412889.0">The code gets c = keywords.get('c') in several places.
-The protection is to return if c is None.
-This affects the following files: plugins_menu.py, pluginsTest.py, plugin_manager.py
-</t>
-<t tx="ekr.20050906104931.43">http://sourceforge.net/forum/message.php?msg_id=3231597
-
-test.leo had some non-@ignore'd @thin nodes for files not in the distribution.
-
-- Only files used by unit tests should be on cvs and the distribution.
-    - test\unittest\batchTest.py and test\unittest\errorTest.py were already on cvs.
-    - Added these files to the distribution.
-
-- Other test files should be distributed in @ignore nodes.
-
-- Leo's distribution checklist now has an item to check that the distributed test.leo can be opened without errors.
-</t>
-<t tx="ekr.20050906104931.48"></t>
-<t tx="ekr.20050906104931.49">Calling print directly is dangerous: it will fail for unicode characters.
-</t>
-<t tx="ekr.20050906104931.56">The new Pretty Print code has the following improvements:
-
-- Strip trailing blanks in get.
-- Many improvement to doOp.
-- Improved DoMultiline:
-    - Added special case logic to ensure '#' is preceded by space except at start of line.
-    - Added blank after multi-line string if needed.
-- Added lastName token for special-case handling depending on previous token.
-- No change to put, putArray or doName.
-</t>
 <t tx="ekr.20050907094633">Settings may be different for each commander.
 
 The c.config class has the following getters.
@@ -9956,49 +9440,6 @@ The c.config class has the following getters.
 These methods return None if no setting exists.
 
 The getBool 'default' argument to getBool specifies the value to be returned if the setting does not exist.
-</t>
-<t tx="ekr.20050908164150"></t>
-<t tx="ekr.20050908164150.1">See http://leoeditor.com/rstplugin3.html for full documentation
-of this plugin.
-
-The rst3 plugin creates output files from Leo outlines containing reStructuredText (rST) ReStructuredText is a simple and powerful text formatting markup language. Outlines are a natural way to organize rST (or any text).
-
-This plugin adds the Write Restructured Text command to Leo's Edit menu. The Write Restructured Text command searches the selected outline looking for rst root nodes whose headline have the form @rst &lt;filename&gt;. The plugin then creates the named file in various ways depending which rst3 options are in effect.
-
-By default, the rst3 plugin creates rST headings automatically from outlines, so the higher-level nodes in the outline correspond to higher-level sections in the output. Creating rST headings automatically relieves you from one of the most tedious chores in creating rST markup.
-
-To use this plugin effectively, Python's docutils module must be installed.
-
-This plugin sends .htm, .html or .tex files to the docutils module for further processing. Docutils generates HTML files or LaTeX files depending on the file's extension. HTML files generated by docutils refer to three .css (cascading style sheet) files that should exist in the same directory as the generated HTML file. You can control the formatting of the HTML file by altering these .css files.
-</t>
-<t tx="ekr.20050909082711">- Fixed bug with non-unicode characters in file name
-
-    http://sourceforge.net/forum/message.php?msg_id=3224635
-
-    Leo crashed try to read .leo files whose name contained non-ascii characters.
-
-- Fixed bug with non-unicode characters in settings value
-
-    http://sourceforge.net/forum/message.php?msg_id=3222750
-
-    Leo crashed try to write settings whose values contained non-ascii characters.
-
-- Fixed bug tangling sections with non-unicode characters.
-
-    http://sourceforge.net/forum/message.php?msg_id=3307318
-</t>
-<t tx="ekr.20050910143326">These plugins now use Python's subprocess module if it is present. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
-
-For Windows systems you can install Python's subprocess module in Python 2.2 or
-2.3 as follows:
-
-    - Go to http://www.effbot.org/downloads/#subprocess
-
-    - Download and execute one of the following installers, depending on your version of Python:
-        subprocess-0.1-20041012.win32-py2.3.exe 
-        subprocess-0.1-20041012.win32-py2.2.exe
-
-This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.
 </t>
 <t tx="ekr.20050912125144" str_atime="1376413890.0"></t>
 <t tx="ekr.20050912125144.1" str_atime="1376413508.0">#######
@@ -10082,44 +9523,6 @@ The highlights of 4.3.3 (and 4.3.2)
 
 - The usual assortment of bug fixes.
 </t>
-<t tx="ekr.20050917092557.1">Here is a summary of the changes:
-
-- General: All chapters created with rst3 plugin. This ensures a uniform look. The source is in LeoDocs.leo. Removed all references to older versions of Leo, except when discussing old file formats in the Appendices. Corrected all text so it discusses present version.
-
-- rst3 plugin itself: Correct bug that caused chapters to be formatted differently when processing multiple @rst trees.
-
-- rst3 button in LeoDocs.leo: The script first looks *up* the tree, looking for an @rst node. If found, it processes just that tree. If not found, it processes all @rst nodes *below* the originally selected node. The button is now much more convenient to use.
-
-- Preface: Shorter, no history. No longer a dead end.
-
-- What People are Saying About Leo: No longer a dead end.
-
-- FAQ: Reorganized, simplified, revised. Added entries for running Leo in a console window and debugging docutils. Improved entry for using cvs.
-
-- Installation: Now the first chapter. Revised.
-
-- Tutorial: Completely rewritten. Like Python's tutorial, this chapter contains everything a beginner needs to understand and use Leo. The `Quickstart for programmers` section is the heart of this chapter. All terms used have links either to their definition in the tutorial or in the Glossary. Newbies should be able to digest this chapter easily. This chapter should make Leo comprehensible to many more people.
-
-- Using Outlines: Revised per general remarks above.
-
-- Writing Programs in Leo. Completely rewritten. The old chapter was an embarrassment. The new chapter is a reference guide, properly organized as such. The introduction warns newbies away.
-
-- Using Leo's Commands. 'Minor' revisions and corrections create a substantially better result.
-
-- Scripting Leo with Python: Rewritten, simplified, updated and corrected. The sources in LeoDocs.leo are directly executable. rST sources use literal blocks instead of code-blocks so that the sources are simplified. (Important when executing examples). Properly discusses positions, including 'supremely important' section on copying positions.
-
-- Customizing Leo. Heavily revised. Discusses leoSettings.leo, not leoConfig.txt. Security warnings are more reasonable. Section on script buttons. Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
-
-- History of Leo. Rewritten. Much shorter and more useful. Discusses the major milestones, concentrating on explaining the major differences between versions. Gone are details of how discoveries came to be. They are in LeoPostings.leo, which will be included in the distribution.
-
-- Theory of Operation. Largely rewritten. Discusses positions properly. Omits discussion of how clones were implemented before 4.2.
-
-- White Papers. A new chapter. This is a slightly-edited version of writing that had been buried in the appendices.
-
-- Appendices. Heavily revised and reformatted. Rewrote sections on file formats.
-
-- Glossary: A separate chapter. All terms have links to their definition. All definitions are rST targets so other chapters may refer to them. Added several new entries.
-</t>
 <t tx="ekr.20050917092557.11">The vim plugin now uses Python's subprocess module if it is present. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
 
 For Windows systems you can install Python's subprocess module in Python 2.2 or
@@ -10146,7 +9549,6 @@ This installer installs the subprocess sources and also _subprocess.pyd in Pytho
 - Added lastName token for special-case handling depending on previous token.
 - No change to put, putArray or doName.
 </t>
-<t tx="ekr.20050917092557.2"></t>
 <t tx="ekr.20050917092557.3">- Fixed bug with non-unicode characters in file name
 
     http://sourceforge.net/forum/message.php?msg_id=3224635
@@ -10194,10 +9596,7 @@ To use this plugin effectively, Python's docutils module must be installed.
 
 This plugin sends .htm, .html or .tex files to the docutils module for further processing. Docutils generates HTML files or LaTeX files depending on the file's extension. HTML files generated by docutils refer to three .css (cascading style sheet) files that should exist in the same directory as the generated HTML file. You can control the formatting of the HTML file by altering these .css files.
 </t>
-<t tx="ekr.20050917105646">- Fixed bug that caused the Open With command to crash if the subprocess module was not installed.
-
-- Fixed problems in the niceNocent and fastGotoNode plugins.
-</t>
+<t tx="ekr.20050917105646"></t>
 <t tx="ekr.20051028051444">Leo 4.4 alpha 4                                         December 5, 2005
 
 Leo 4.4 a4 introduces the 'Newer World Order' for redrawing the screen,
@@ -45989,6 +45388,66 @@ and contributors will need only to submit thin external files.
 </t>
 <t tx="ekr.20150301045135.21"></t>
 <t tx="ekr.20150301045135.22"></t>
+<t tx="ekr.20150301045135.23"></t>
+<t tx="ekr.20150301045135.24"></t>
+<t tx="ekr.20150301045135.25"></t>
+<t tx="ekr.20150301045135.26"></t>
+<t tx="ekr.20150301045135.27"></t>
+<t tx="ekr.20150301045135.28"></t>
+<t tx="ekr.20150301045135.29"></t>
+<t tx="ekr.20150301045135.31"></t>
+<t tx="ekr.20150301045135.32">Fixed problems in the following plugins.
+
+autocompleter.py
+cleo.py
+mod_scripting.py
+mod_tempfname.py
+templates.py
+vim.py
+xemacs.py
+
+Replaced the 'new_c' key by the 'c' key in the following plugins:
+
+ConceptualSort.py
+URLloader.py
+UASearch.py
+arrows.py
+autocompleter.py
+base64Packager.py
+cleo.py
+dyna_menu.py
+macros.py
+mod_read_dir_outline.py
+mod_scripting.py
+multifile.py
+nodebar.py
+nodenavigator.py
+open_with.py
+scheduler.py
+read_only_nodes.py
+templates.py
+
+Replaced the 'start2' hook by the 'new' hook in the following plugins: (This was
+made possible now that 'new' is called when opening a new window if the
+'open1/2' hooks are not called.
+
+URLloader.py
+UASearch.py
+at_produce.py
+autocompleter.py
+color_markup.py
+fastGotoNode.py
+groupOperations.py
+import_cisco_config.py
+multifile.py
+nodebar.py
+open_with.py
+read_only_nodes.py
+scheduler.py
+table.py
+usetemacs.py
+xsltWithNodes.py
+</t>
 <t tx="ekr.20150301045135.4"></t>
 <t tx="ekr.20150301045135.5"></t>
 <t tx="ekr.20150301045135.6">- Changed all instances of string.letters to string.ascii_letters.
