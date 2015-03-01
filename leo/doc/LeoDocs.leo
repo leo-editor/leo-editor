@@ -1169,7 +1169,8 @@
 <v t="ekr.20150220115528.4"><vh>A better update algorithm</vh></v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150223040723.2"><vh>Importing files (to do, in scripting tutorial)</vh></v>
+<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
+<v t="ekr.20150227184811.5"><vh>Done</vh></v>
 </v>
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 </vnodes>
@@ -2377,49 +2378,17 @@ From one of my all-time favorite movie scenes, in My Cousin Vinny::
     [pause]
     Oh my God, what a fucking nightmare! 
 
-Leo owes much of its visual design to MORE, possibly the most elegant
-computer program ever written. Leo's clone nodes are inspired by MORE.
+Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. Leo's clone nodes are inspired by MORE.
 
-The following people have made generous donations to the Leo project:
-Robert Low, Nic Cave-Lynch.
+The following people have made generous donations to the Leo project: Robert Low, Nic Cave-Lynch.
 
-The following people reported bugs, answered questions, and made suggestions for
-improving Leo:
+The following people reported bugs, answered questions, and made suggestions for improving Leo:
 
-Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker,
-Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown,
-Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil
-Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe
-Elza, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz
-Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak
-Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro
-Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias
-Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P.
-Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola
-Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis
-(Loewis), Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli,
-Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin
-Montcrieffe, Will Munslow, Chad Netzer, Derick van Niekerk, Jeff
-Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson,
-Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott
-Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed
-Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide
-Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey
-Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen
-Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey
-Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck,
-Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley,
-Wim Wijnders, Dan Winkler, Vadim Zeitlin.
+Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown, Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe Elza, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P. Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis, Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli, Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin Montcrieffe, Will Munslow, Chad Netzer, Derick van Niekerk, Jeff Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson, Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck, Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley, Wim Wijnders, Dan Winkler, Vadim Zeitlin.
 
 The following have contributed plugins to Leo:
 
-Rodrigo Benenson, Pierre Bidon, Felix Breuer, Terry Brown, Mike Crowe,
-Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti,
-Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang
-Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis
-Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide
-Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio,
-Steve Zatz.
+Rodrigo Benenson, Pierre Bidon, Felix Breuer, Terry Brown, Mike Crowe, Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti, Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio, Steve Zatz.
 </t>
 <t tx="ekr.20040416080538">The following deserve special mention:
 
@@ -2485,7 +2454,7 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 <t tx="ekr.20050407144342.2"></t>
 <t tx="ekr.20050407144342.3"></t>
 <t tx="ekr.20050407144417"></t>
-<t tx="ekr.20050417072710.1">Plugins and scripts should call u.beforeX and u.afterX methods ato describe the operation that is being performed. **Note**: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The u.afterX methods then create a bead containing both the 'before' and 'after' snapshots.
+<t tx="ekr.20050417072710.1">Plugins and scripts should call u.beforeX and u.afterX methods to describe the operation that is being performed. **Note**: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The u.afterX methods then create a bead containing both the 'before' and 'after' snapshots.
 
 u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
 
@@ -2913,11 +2882,11 @@ Some other cool things about Leo which Word doesn't feature:
 
 So today I copied all my data (personal information manager and project management stuff) out of my old outliner (ThoughtManager, which syncs with and runs on the Palm) and put it into Leo. It took me hours to do it and then to rearrange it the way I really wanted it. But having the ability to make clones and have different ways to view my data is, as you know, fabulous. In my case, for personal information and project management things, I used the flexibility of clones to allow me to see my data in several different views: 1) by project, the logical hierarchical breakdown by topic, 2) by person, so whenever I'm talking to someone I can easily see all the pending items related to them which may be spread over multiple projects, 3) by priority, so I can see what needs to get done sooner and what can wait for later and, 4) a special case of priority called "Today" for the things I'm going to focus on in the coming hours.
 
-Now here's why I don't miss the ability of my old outliner to synch the entire outline with the Palm. It turns out the main thing I really want in the Palm is the top category "Today" so all I have to do is have Leo flatten that one heading into a text file (and it kindly remembers the name and directory of the file I used last time) and then I'm done because I've told the Palm Hotsync manager that that file should be sent to Palm memo pad every time I synch. The Palm Hotsync manager does a nice job of sending a text file to the Palm memo pad and even breaks the file up into multiple memo records if it's too big to fit in just one. So that gives me enough to be able to browse (or full text search) the small amount of data that I really want right inside my Palm (which is also my cell phone). Quick and dirty but it works.
+Now here's why I don't miss the ability of my old outliner to sync the entire outline with the Palm. It turns out the main thing I really want in the Palm is the top category "Today" so all I have to do is have Leo flatten that one heading into a text file (and it kindly remembers the name and directory of the file I used last time) and then I'm done because I've told the Palm Hotsync manager that that file should be sent to Palm memo pad every time I sync. The Palm Hotsync manager does a nice job of sending a text file to the Palm memo pad and even breaks the file up into multiple memo records if it's too big to fit in just one. So that gives me enough to be able to browse (or full text search) the small amount of data that I really want right inside my Palm (which is also my cell phone). Quick and dirty but it works.
 
 For times when I want my whole outline with me, Leo wins again because thanks to its cross platform nature I can take my whole outline with me on my Mac iBook, even though I usually edit it on a Windows PC (which is the only kind of machine my old outliner would run on). Quite frankly, although my old outliner was able to shoehorn the whole thing into my palm/cellphone, it was a pain to access it on the small screen and slow processor. Now when I anticipate I'll need the whole thing, for example when I'm going to a meeting, I can put it on my Mac iBook (under X and Fink for now until Python can do it native under Aqua) and have real, full access to it all.
 
-I think now in addition to being great for programming Leo is also a great PIM. Being able to flatten a strategically chosen portion of the outline into a known file name that the Palm synch manager has been told to send to the Palm on every synch does the trick for me. I wonder if you would consider something like an @flatten directive so I can have that done automatically for me every time I save my outline? For now it's up to me to flatten the node I want manually, although once I've done that the transfer to the Palm is automatic.
+I think now in addition to being great for programming Leo is also a great PIM. Being able to flatten a strategically chosen portion of the outline into a known file name that the Palm sync manager has been told to send to the Palm on every sync does the trick for me. I wonder if you would consider something like an @flatten directive so I can have that done automatically for me every time I save my outline? For now it's up to me to flatten the node I want manually, although once I've done that the transfer to the Palm is automatic.
 
 You're my hero! Thank you so much.
 </t>
@@ -2992,7 +2961,7 @@ Leo is my Favorites Mind Capsule ;-)
 
 - she can contain all kinds of my Works (novel, code, slides, documents...)
 - and she can magic record my chaos mind in same time and same place and NOT Disturb my working...
-- livin Leo, make me freedom with chaos mind and structuring work export!
+- luvin Leo, make me freedom with chaos mind and structuring work export!
 - all my Slides is make with rst2s5
 - write rst in Leo
 - usage CLI tools generate html slides
@@ -3617,7 +3586,7 @@ This surely is one of the most significant dates in Leo's history:
 
 -   This marked the end worries about consistency of outlines and external files:
     Leo recreates all essential information from thin external files,
-    so *there is nothing left in the .leo file to get out of synch*.
+    so *there is nothing left in the .leo file to get out of sync*.
 
 - Thin external files use gnx's extensively. This simplifies the file format and
     makes thin external files more cvs friendly.
@@ -8116,7 +8085,7 @@ Underindent line
     
 uA
     
-    uA's (User Attributes) are persistant Python dicts that allows scripts
+    uA's (User Attributes) are persistent Python dicts that allows scripts
     and plugins to associate additional data with each node. See
     `extensible attributes`_.
 
@@ -9362,7 +9331,7 @@ Important files:
 
 '''Creates an outline containing most docstrings from leoPlugins.leo.
 
-Documentation for some docstings are suppressed.'''
+Documentation for some docstrings are suppressed.'''
 
 @others
 
@@ -9476,7 +9445,7 @@ controller(c).run()
     '''Return True if we should allow scan of a file at p.'''
 
     aList = (
-        # Suppresssed files.
+        # Suppressed files.
         '@file bookmarks.py',       # Replaced by better @url.
         '@file rst3.py',            # Replaced by core rst3 command.
         '@file stickynotes_plus.py', # Experimental version of stickynotes
@@ -10089,7 +10058,7 @@ will look something like:
 
 </t>
 <t tx="ekr.20101113063552.9412"></t>
-<t tx="ekr.20101113063552.9413">Allows users to define new @direcives.
+<t tx="ekr.20101113063552.9413">Allows users to define new @directives.
 
 </t>
 <t tx="ekr.20101113063552.9414">Adds a context menu to each node containing all the commands in the bzr Qt interface. Bzr is invoked based on the path of the current node.
@@ -10162,7 +10131,7 @@ To see this in action, do the following:
 
 3. In a node called B, type::
 
-         &lt; &lt; meow ( spit or puke, blinkin  )  &gt; &gt;
+         &lt; &lt; meow ( spit or puke, blinking  )  &gt; &gt;
         (leave the cursor at the end of the line)
 
 4. Leave the cursor in Node A at the designated point.
@@ -10785,7 +10754,7 @@ In a Leo file full of interactive SQL analysis, I have::
 
 which creates a button to rollback messed up queries, another to commit (requiring additional action to supply the newline as a safeguard) and sets the prefix to "-- " for text pulled back from the SQL session into Leo.
 
-**Implementation note**: screen behave's differently if screen -X is executed with the same stdout as the target screen, vs. a different stdout. Although stdout is ignored, Popen() needs to ensure it's not just inherited.
+**Implementation note**: screen behaves differently if screen -X is executed with the same stdout as the target screen, vs. a different stdout. Although stdout is ignored, Popen() needs to ensure it's not just inherited.
 </t>
 <t tx="ekr.20101113063552.9469">Creates script buttons and @button, @command, @plugin and @script nodes.
 
@@ -12216,7 +12185,7 @@ Settings
   creating it as needed.  In particular, the plugins_menu plugin
   will show plugin docstrings in the rendering pane.
   
-Acknowledgement
+Acknowledgment
 
 Terry Brown created this initial version of this plugin,
 and the free_layout and NestedSplitter plugins used by viewrendered.
@@ -12595,7 +12564,7 @@ July 2
 July 3
     Keeping my diary very regularly.
 July 5
-    Oops...Yesterday I forgot towrite in my diary.
+    Oops...Yesterday I forgot to write in my diary.
 </t>
 <t tx="ekr.20111017085134.16169"></t>
 <t tx="ekr.20111017085134.16170"></t>
@@ -13123,10 +13092,10 @@ Here is my installation write-up:
   (or ~/.profile on Leopard). This is the default for LION::
 
       export PATH=/usr/local/bin:$PATH
-      # This is for SIP (and PyQT) as suggested by Homebrew
+      # This is for SIP (and PyQt) as suggested by Homebrew
       export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 
-- Install PyQT::
+- Install PyQt::
 
     brew install pyqt
  
@@ -13848,7 +13817,7 @@ Within @settings trees, you specify boolean settings with @bool nodes, string se
 
 - You script Leo in Python, not elisp.
 
-- Emacs has no notion of nodes, cloned or otherwise. Emcas will never have
+- Emacs has no notion of nodes, cloned or otherwise. Emacs will never have
   anything like @file, @test, @button, @command or @url nodes (etc.!), not
   even in Emacs org-mode.
   
@@ -16138,7 +16107,7 @@ By Brian Theado::
 
 From Terry Brown:
 
-    If you're looking for an *environment* which includes a good editor and outliner and is completely scriptable / interactive / "live-code" in Python, then Leo wins hands down. Of course, it's basically alone in this field, as far as I know, but I'm sure it would do well even if it wasn't :-). Take out the Python part, and maybe there're some others out there, but who'd want to take out the Python part :) I guess Emacs is sort of an environment like this, only in Lisp with a prehistoric GUI system.
+    If you're looking for an *environment* which includes a good editor and outliner and is completely scriptable / interactive / "live-code" in Python, then Leo wins hands down. Of course, it's basically alone in this field, as far as I know, but I'm sure it would do well even if it wasn't :-). Take out the Python part, and maybe they're some others out there, but who'd want to take out the Python part :) I guess Emacs is sort of an environment like this, only in Lisp with a prehistoric GUI system.
 
     Sometimes I've wondered why Leo seems to appeal to people who aren't comfortable in Python, I think now it's because they still recognize the value of an *environment*, and there's just not much in this niche.
     
@@ -16197,13 +16166,13 @@ From Terry Brown:
 
 I still think the best way to do is to put examples. I was not able to
 realize how to -clearly- say this until I read a recent post talking about
-how tutos are right now regarding the hello world, and how they should be.
+how tutorials are right now regarding the hello world, and how they should be.
 
 That made me realize that that is exactly what I have being missing so far:
 A step by step guide of the cool things Leo can do.
 
 I wish I could get a step by step guide on how to transform an outline or a
-subtree into a website html and open it. That is cool but I dont know how
+subtree into a website html and open it. That is cool but I don't know how
 to do that. How to post a node into a blog How to call and run an R file
 from Leo Use RST properly
 
@@ -16218,9 +16187,9 @@ website, as a document, posted into a blog, etc.
 
 Thanks to the new changes in the tutorial, now I clearly know how to find
 strings, but it got me some months to be able to easily do something as
-simple as that. But since the new tuto explains that step by step (copy
+simple as that. But since the new tutorial explains that step by step (copy
 this, insert text etc) as soon as I read that I could do that. There are
-more Leo skills that dont come to mind but often find myself wandering
+more Leo skills that don't come to mind but often find myself wandering
 about when will I be able to do those, that is why I often ask for examples
 on how do you guys use things, because without those, the new user has to
 figure out how are the steps by himself without guides, and even though
@@ -16300,7 +16269,7 @@ hard-to-extend, way. But simulation has its limits: features like @button
 and @test do not exist in org mode.</t>
 <t tx="ekr.20131025044901.17144">"Not sure why you said 'you can specify a computer program as an outline like thing in an outliner like setting.' Why not just say, 'write a computer program in an outline?' Is there some nuance I am missing?"---EKR
 
-There are probably a million reasons I said it like that, but I think the main one is my everpresent, brightly burning belief that a program should be designed before its coded. Remember those guys, back in the day, who after receiving their programming assignment, would go to the keyboard and start pounding out C code? Remember their finished product? Remember how long it took them to finally complete the project?
+There are probably a million reasons I said it like that, but I think the main one is my ever present, brightly burning belief that a program should be designed before its coded. Remember those guys, back in the day, who after receiving their programming assignment, would go to the keyboard and start pounding out C code? Remember their finished product? Remember how long it took them to finally complete the project?
 
 Meanwhile, when receiving an assignment, I'd spend hours to days with a bunch of paper, drawing diagrams. By the time I sat down at the terminal, I knew my data structures and algorithms. The hours to days head start of the "start coding immediately" guys evaporated because for me, coding was just a secretarial task, and I was required to do less refactoring, or even worse, kludging. Later, sometimes I'd substitute an outliner for the diagrams on paper; in the days of functional decomposition, an outliner was the perfect fit.
 
@@ -16347,7 +16316,7 @@ and external files (code that creates vnodes from sentinel comments).
 ..  but neither elisp nor vimscript is anywhere near as easy to use as Python.
 
 Emulating Leo in emacs or vim would have one advantage, it would not have to duplicate
-the 15+ year process of improvement in Leo's read code (sentinals), data structures (vnodes)
+the 15+ year process of improvement in Leo's read code (sentinels), data structures (vnodes)
 and support code (generators).  But this would be a gigantic effort: to get the benefits of Leo
 in either vim or Emacs the leoFileCommands, leoAtFileCommands and leoNodes modules would have to
 be emulated.
@@ -16407,8 +16376,8 @@ myDocument.html.txt is the **input** file for sphinx.
 
     And as many other practical and ready-to-go samples that could impress
     the new user. All of them, ready to go, no edit required to view. There
-    are ways of using Leo that beginers cant think of and those would make
-    a great addon for such a beginer leo file.
+    are ways of using Leo that beginners can't think of and those would make
+    a great addon for such a beginner's leo file.
 
 Other (JKN)
     how to invoke Leo (short list of command-line parameters    
@@ -16419,11 +16388,11 @@ Other (JKN)
 More: Rest of the directives:
     @button    
     @rclick    
-    and all of them, with sample of ussage    
+    and all of them, with sample of usage    
 
 More: Associate leo files    
     Include the bat + instructions on how to associate Leo files for
-    double-click oppening in windows.
+    double-click opening in windows.
 </t>
 <t tx="ekr.20131028213522.17138">::
 
@@ -16753,7 +16722,7 @@ By retaking audio flubs as they happen, I find it easy to work without a script.
 
 In short, the key Aha is: insert (audio) pauses *everywhere* as needed. It's easy to edit them out. It's virtually impossible to edit in the middle of words, even with the world's best audio editor.
 </t>
-<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio flubs as they happen. This keeps the audio and video in synch. Just edit out flubs and reduce overly-long pauses.
+<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio flubs as they happen. This keeps the audio and video in sync. Just edit out flubs and reduce overly-long pauses.
 
 I won't discuss production details here because they depend on the editor you are using.
 
@@ -16785,7 +16754,7 @@ One final word of advice. When editing your video, settle for "good enough". Per
 </t>
 <t tx="ekr.20131211054925.16388">1. Enable volume leveling and noise removal in Camtasia. This tip, all by itself, makes a big difference.
 
-2. Use a better microphone, preferably one with about a 1-inch diaphram. This is the kind of microphone that Andrew Price uses. The Audio-technica AT2020 USB is relatively inexpensive.
+2. Use a better microphone, preferably one with about a 1-inch diaphragm. This is the kind of microphone that Andrew Price uses. The Audio-technica AT2020 USB is relatively inexpensive.
   
 3. Use "pop filter" with the microphone. This is a cloth or (better) a metal screen that is placed in front of the microphone. It smooths the sound.
   
@@ -16854,7 +16823,7 @@ These nodes work like other @auto nodes: when Leo loads an outline, Leo reads th
 
 After creating an @auto-otl node by hand, be sure to use Leo's refresh-from-disk command to populate the node. Do this *before* saving the .leo file. If you try to save an empty @auto-otl node Leo will warn you that you are about to overwrite the file.
 
-The refresh-from-disck command creates an @auto-otl node whose **children** represent the contents of the external .otl file. Leo does *not* write the @auto-otl node itself. This allows you to put Leo directives in the node.
+The refresh-from-disk command creates an @auto-otl node whose **children** represent the contents of the external .otl file. Leo does *not* write the @auto-otl node itself. This allows you to put Leo directives in the node.
 </t>
 <t tx="ekr.20140810085801.18216"></t>
 <t tx="ekr.20140810085801.18217">Leo's vim mode dispatches keystrokes sent to it from k.masterKeyHandler to **key handlers**.
@@ -17377,7 +17346,7 @@ zero-length, and it automatically removes surrounding whitespace
 <t tx="ekr.20141105085003.12">I like to use reStructuredText (reST) for all of my note-taking, idea
 development, project and task management and automation of desktop
 activities (e.g. initiating a backup). You could say it is the control
-centre of my daily activities, including calculating and showing dashboards
+center of my daily activities, including calculating and showing dashboards
 of where I am and where I'm going.
 
 This means I need a tool which seamlessly shows me the full-fidelity
@@ -17890,9 +17859,9 @@ open, and the nodes focused as when the previous session ended.
 
 Leo stores session state in ~/.leo/leo.session
 </t>
-<t tx="ekr.20141210095600.11">I am a microbiologist mostly analysing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organising my notes with.
+<t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
-Not only do I now use Leo is a central repository for scripts I write as I explore the data, generate plots, start analyses with third party applications etc., but also for storing and organising ideas for research and notes parsed out of PDFs of academic papers. And that's just for work!
+Not only do I now use Leo is a central repository for scripts I write as I explore the data, generate plots, start analyses with third party applications etc., but also for storing and organizing ideas for research and notes parsed out of PDFs of academic papers. And that's just for work!
 
 I have a calendar, addresses all my general PIM-type info, and notes for any project I'm tinkering with. In short whether I'm at work or play Leo is usually involved :-)
 </t>
@@ -18034,25 +18003,16 @@ Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20150215071358.87">* Document @auto-rst/md/vo/otl.
-    * @auto-org is not @auto-otl.
-* Write a section for Leo 5.0 in the history of Leo.
-* Revise 5.1 release notes.
+<t tx="ekr.20150215071358.87">- Review all mentions of @auto in docs.
+- Document importing files in tutorial (See child)
+- Document @auto-rst/md/vo/otl.
+    - Bug: @auto-org is not @auto-otl.
+- Write a section for Leo 5.0 in the history of Leo.
+- Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
-* Spell check.
-
-Done:
-* Added entries for gnx and uA to glossary, with links.
-* Review docs for uA's and gnx's.
-  http://leoeditor.com/tutorial-programming.html#using-persistence
-  http://leoeditor.com/appendices.html#format-of-external-files
-* Made sure @clean is completely documented.
-  http://leoeditor.com/tutorial-programming.html#using-clean
-  http://leoeditor.com/tutorial-programming.html#summary-clean-vs-file
-* Explained the overall idea of the @shadow algorithm.
-  http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-* Deprecated @shadow in all docs.</t>
+- Spell check.
+</t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
     pair: uA; Tutorial
@@ -18366,6 +18326,16 @@ http://docs.python.org/lib/os-procinfo.html for details.".
 
 I think it rare for Python HOME to expand to C:\users\jane. :)
 </t>
+<t tx="ekr.20150227184811.5">- Added entries for gnx and uA to glossary, with links.
+- Reviewed docs for uA's and gnx's.
+  http://leoeditor.com/tutorial-programming.html#using-persistence
+  http://leoeditor.com/appendices.html#format-of-external-files
+- Made sure @clean is completely documented.
+  http://leoeditor.com/tutorial-programming.html#using-clean
+  http://leoeditor.com/tutorial-programming.html#summary-clean-vs-file
+- Explained the overall idea of the @shadow algorithm.
+  http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+- Deprecated @shadow in all docs.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
