@@ -258,7 +258,7 @@ class PluginCatalog(object):
         parser.add_option("--css-file", type="string",
             help="Use this CSS file in the HTML output")
         parser.add_option("--max-files", type="int",
-            help="Stope after this many files, mainly for testing")
+            help="Stop after this many files, mainly for testing")
         parser.add_option("--include-contents", action="store_true", 
             default=False,
             help="Include table of contents (the summary is more useful)")

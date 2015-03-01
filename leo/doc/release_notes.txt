@@ -264,44 +264,22 @@ Highlights of 4.0:
 
 See the children of this node for full details.
 #@+node:edream.110203163054.100: *6* 4.0 Theory of operation
-The Synchronization Principle simplifies everything and at long last puts Leo on
-a firm theoretical foundation. This principle states that the "smallest unit of
-meaning" of any Leo outline is the entire outline itself. In particular,
-individual external files have meaning only in the context of a particular
-outline.
+The Synchronization Principle simplifies everything and at long last puts Leo on a firm theoretical foundation. This principle states that the "smallest unit of meaning" of any Leo outline is the entire outline itself. In particular, individual external files have meaning only in the context of a particular outline.
 
 The Synchronization Principle has the following happy consequences:
 
-1. We may assume that all external files are in synch with the outline that wrote
-them. This assumption allows Leo to use "hidden machinery" in the outline to
-associate nodes in the external file with nodes in the outline. This "hidden"
-machinery consists of a list of tnodes associated with @file vnodes in the
-outline. When writing a external file Leo creates a list of tnodes in the order
-they were written to the external file. When reading the external file, Leo uses
-this list to associate nodes in the external file with nodes in the outline.
+1. We may assume that all external files are in sync with the outline that wrote them. This assumption allows Leo to use "hidden machinery" in the outline to associate nodes in the external file with nodes in the outline. This "hidden" machinery consists of a list of tnodes associated with @file vnodes in the outline. When writing a external file Leo creates a list of tnodes in the order they were written to the external file. When reading the external file, Leo uses this list to associate nodes in the external file with nodes in the outline.
 
-2. external files must get their structure from the .leo file that wrote them. As
-we have seen, this is done using the hidden machinery in the .leo file.
-Consequently, there is no further need to represent outline structure in derived
-files. There is no need any longer either for child indices or for sentinels to
-represent outline structure. As a result, we can eliminate @+body and @-body
-nodes entirely because all @+node sentinels are followed by body text.
+2. external files must get their structure from the .leo file that wrote them. As we have seen, this is done using the hidden machinery in the .leo file. Consequently, there is no further need to represent outline structure in derived files. There is no need any longer either for child indices or for sentinels to represent outline structure. As a result, we can eliminate @+body and @-body nodes entirely because all @+node sentinels are followed by body text.
 
-3. All .leo files must contain full outline structure. Even "thin" outline will
-contain the full representation of the outline as vnodes.
+3. All .leo files must contain full outline structure. Even "thin" outline will contain the full representation of the outline as vnodes.
 
-4. Reading _never_ alters outline structure in the outline. No vnodes are ever
-created or destroyed and reading never alters clone links. This is true whether
-or not read errors occur. The read code sets a temporary attribute of tnodes
-while reading. These attributes are copied to the permanent t.bodyString
-attribute only if no read errors were encountered.
+4. Reading _never_ alters outline structure in the outline. No vnodes are ever created or destroyed and reading never alters clone links. This is true whether or not read errors occur. The read code sets a temporary attribute of tnodes while reading. These attributes are copied to the permanent t.bodyString attribute only if no read errors were encountered.
 
-4. Error recovery is now trivial: Read errors indicate that the .leo files and
-one or more external files are out-of-synch. No error recovery is attempted: the
+4. Error recovery is now trivial: Read errors indicate that the .leo files and one or more external files are out-of-sync. No error recovery is attempted: the
 @file tree in which the error occurred reverts back to its original state.
 
-5. The new Import External File command is the _only_ way to recover data from
-mismatched external file.
+5. The new Import External File command is the _only_ way to recover data from mismatched external file.
 #@+node:edream.110203163054.101: *6* New commands & options
 #@+node:edream.110203163054.102: *7* New write_old_format_derived_files option
 The write_old_format_derived_files option in leoConfig.leo and leoConfig.txt
@@ -320,7 +298,7 @@ outline. Unlike the read commands, no outline structure is preserved. This
 command can import either 3.x or 4.x external files.
 
 This command is necessary in version 4.0 because there is no other way to read
-external files that are out-of-synch with a .leo file.
+external files that are out-of-sync with a .leo file.
 #@+node:edream.110203163054.105: *7* New Write 3.x/4.x External Files & autosave
 The Write 4.x External Files command and Write 3.x External Files command work
 just like the Write @file Nodes command, except that they write the indicated
@@ -330,7 +308,7 @@ leoConfig.txt.
 
 All three of these commands automatically save the outline (the .leo file) if
 any external file was actually written. This is necessary so that information in
-the .leo file always remains in synch with all external files.
+the .leo file always remains in sync with all external files.
 #@+node:edream.110203163054.106: *6* New plugins
 Paul Paterson contributed the following new plugins:
 
@@ -350,7 +328,7 @@ open (empty) document before executing this command.
 #@+node:edream.110203163054.107: *6* New read logic and greatly inproved error recovery
 #@+node:edream.110203163054.108: *7* Added test for unvisited nodes in read logic
 Leo's read code now warns if any non-empty node is unvisited. This check, and
-the check that headlines match pretty much guarantees that out-of-synch outlines
+the check that headlines match pretty much guarantees that out-of-sync outlines
 will generate errors. Thus, there is no need a gnx timestamp in @+leo sentinels!
 #@+node:edream.110203163054.109: *7* Error recovery is _much_ better than before
 Version 4.0 is a major advance in Leo's error handling. Using 4.0 is much safer
@@ -1236,7 +1214,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-external files in synch.
+external files in sync.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -1265,7 +1243,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-external files in synch.
+external files in sync.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -1350,7 +1328,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-external files in synch.
+external files in sync.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -1508,7 +1486,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-external files in synch.
+external files in sync.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -1909,7 +1887,7 @@ from cvs, then rename LeoPyRef.leo to be LeoPy.leo. LeoPy.leo is private to each
 developer.
 
 - Developers will commit and update to cvs only thin external files. There is no
-longer any need to keep .leo files and the files derived from them "in synch".
+longer any need to keep .leo files and the files derived from them "in sync".
 
 - Similar remarks apply to LeoPlugins.leo. Cvs contains only LeoPluginsRef.leo,
 and contributors will need only to submit thin external files.
@@ -4687,7 +4665,7 @@ http://sourceforge.net/forum/message.php?msg_id=3355954
 parent node.
 
 - The goto-first-sibling and goto-last-sibling commands allow rapid movement
-through an ouline without collapsing nodes.
+through an outline without collapsing nodes.
 
 - The print-bindings and print-commands show what commands exist and what keys
 are bound to them.
@@ -11014,7 +10992,7 @@ Code limitations:
     | of current state, the command performs correctly.  For example,
     | Beginning-of-line command will go to previous line if called when
     | cursor is at beginning of line.  Vi requires that '|' always goes to
-    | beginning of current line.  Problme is solved by issueing
+    | beginning of current line.  Problem is solved by issuing
     | forward-char command to insure cursor is moved off of the beginning
     | of the line before beginning-of-line command is issued.
 
@@ -11057,7 +11035,7 @@ Matching bracket command:
 | state.
 
 Word definition:
-| "Word" related commands determine boundries of a word differently.
+| "Word" related commands determine boundaries of a word differently.
 
 Toggle case:
 | Leo provides support for switching to upper or lower case but no method |
@@ -16352,7 +16330,7 @@ Other changes
 
 - Fixed bug 797470: File data sometimes silently erased when the tangler fails.
   https://bugs.launchpad.net/leo-editor/+bug/797470 This was a serious bug, but
-  it could happen only when saving an errorneous file twice.
+  it could happen only when saving an erroneous file twice.
 
 - Fixed bug 798194: --maximized has no effect
   https://bugs.launchpad.net/leo-editor/+bug/798194
@@ -17241,7 +17219,7 @@ leoQtBaseTextWidget: calls g.toPythonIndex.
 #@+node:ekr.20120229094652.14526: *6* Create properties for logCtrl & bodyCtrl
 This is an important addition to reliability.
 
-It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in synch.
+It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in sync.
 #@+node:ekr.20120229094652.14527: *6* Added eventFilters to top-level frames
 Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
 #@+node:ekr.20120229094652.14528: *6* Added log.orderedTabNames
@@ -17612,7 +17590,7 @@ is to type::
 
 and then delete the leading x with a backspace character.
 
-Of course, you could also turn abbrevions off while defining abbreviations...
+Of course, you could also turn abbreviations off while defining abbreviations...
 
 Instant abbreviations solve the problems with Brazilian
 keyboards. Just define::
@@ -19193,7 +19171,7 @@ you want to try it, open the .leo file, ensure you are running latest Leo
 from trunk, and press ctrl+b on the first node.
 
 It's probably the first stab at using QML to solve a problem in Leo. It
-doesn't run from leo yet (it's not a plugin, more protoing needed before
+doesn't run from leo yet (it's not a plugin, more prototyping needed before
 it's worthwhile to make it a plugin.
 
 When you add and delete text, the cells resize naturally.
@@ -19222,7 +19200,7 @@ away.
 
 Interesting ...
 
-Am I correct: this is POC, edits in your serialized pane don't reflect in
+Am I correct: edits in your serialized pane don't reflect in
 the Leo file?
 
 ===== Ville
@@ -21467,7 +21445,7 @@ The highlights of Leo 4.11.1:
 - Simplified and reorganized global settings in leoSetting.leo.
 - Reorganized menus, including a new Settings menu.
 - Added @data qt-gui-user-style-sheet
-- More untuitive bindings for Return, Insert and Delete keys.
+- More intuitive bindings for Return, Insert and Delete keys.
 - Per-node expansions of cloned nodes.
 
 Links:
@@ -21993,11 +21971,9 @@ https://github.com/leo-editor/leo-editor/issues/103
 #@+node:ekr.20141120113801.34: *6* Bugs fixed in 5.0b1
 #@+node:ekr.20141120113801.35: *7* Fixed
 #@+node:ekr.20141120113801.36: *8* The spell checker handles apostrophes correctly
-Previously, when checking "didn't" the spell checker would complain that
-"didn" wasn't in the dictionary. Now it checks (and accepts) "didn't".
+Previously, the spell checker would complain that "didn't" wasn't in the dictionary. Now it checks (and accepts) "didn't".
 
-We have all been putting up with this annoyance for *far* to long. Changing
-just two lines of code was all that was required.
+We have all been putting up with this annoyance for *far* to long. Changing just two lines of code was all that was required.
 #@+node:ekr.20141120113801.37: *8* fixed bug 1159490: "Open with" fails to copy changes by external editor back to Leo-Editor node
 https://bugs.launchpad.net/leo-editor/+bug/1159490
 
@@ -22415,7 +22391,7 @@ moin.py:
 erlang.py:  no obvious problem.
 lilypond.py:no obvious problem.
 perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
+pl1.py:     no obvious problem.
 rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
@@ -24039,7 +24015,7 @@ https://raw.githubusercontent.com/leo-editor/leo-editor/master/leo/plugins/wikiv
 This plugin only addresses the visual aspects of wiki links.  Leo
 already supports internal wikilinks as
 file://#headline-->other%20headline-->Setup, which will now appear as
-just 'Setup' with this pluing active.
+just 'Setup' with this plugin active.
 
 #@+node:ekr.20141120113801.196: *6* Converted 7 plugins so they work with PyQt5
 active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
@@ -24477,7 +24453,7 @@ Fixed at 614817a, October 26, 2014.
 https://github.com/leo-editor/leo-editor/issues/101
 
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-Cancelling save of dirty untitled commander doesn't work with --ipython
+Canceling save of dirty untitled commander doesn't work with --ipython
 Works for me.
 
 https://bugs.launchpad.net/leo-editor/+bug/1258512
@@ -24503,8 +24479,8 @@ https://github.com/leo-editor/leo-editor/issues/103
 #@+node:ekr.20141113102829.170: *6* Bugs fixed in 5.0b1
 #@+node:ekr.20141113102829.234: *7* Fixed
 #@+node:ekr.20141113102829.173: *8* The spell checker handles apostrophes correctly
-Previously, when checking "didn't" the spell checker would complain that
-"didn" wasn't in the dictionary. Now it checks (and accepts) "didn't".
+Previously, the spell checker would complain that
+"didn't" wasn't in the dictionary. Now it checks (and accepts) "didn't".
 
 We have all been putting up with this annoyance for *far* to long. Changing
 just two lines of code was all that was required.
@@ -24925,7 +24901,7 @@ moin.py:
 erlang.py:  no obvious problem.
 lilypond.py:no obvious problem.
 perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
+pl1.py:     no obvious problem.
 rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
@@ -26549,7 +26525,7 @@ https://raw.githubusercontent.com/leo-editor/leo-editor/master/leo/plugins/wikiv
 This plugin only addresses the visual aspects of wiki links.  Leo
 already supports internal wikilinks as
 file://#headline-->other%20headline-->Setup, which will now appear as
-just 'Setup' with this pluing active.
+just 'Setup' with this plugin active.
 
 #@+node:ekr.20141113102829.158: *6* Converted 7 plugins so they work with PyQt5
 active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
@@ -26987,7 +26963,7 @@ fc.getLeoFile calls the new fc.setMaxNodeIndex after reading all nodes.
 https://github.com/leo-editor/leo-editor/issues/36
 
 The report seems misleading: it says this happens when Leo tries to load an
-@auto file that is in the outline but which's file was erased outside Leo,
+@auto file that is in the outline but whose file was erased outside Leo,
 but it worked for me.
 
 I did add a guard in g.recureiveUNLFind to ensure that the IndexError shown
@@ -27393,7 +27369,7 @@ moin.py:
 erlang.py:  no obvious problem.
 lilypond.py:no obvious problem.
 perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
+pl1.py:     no obvious problem.
 rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
@@ -28865,7 +28841,7 @@ https://raw.githubusercontent.com/leo-editor/leo-editor/master/leo/plugins/wikiv
 This plugin only addresses the visual aspects of wiki links.  Leo
 already supports internal wikilinks as
 file://#headline-->other%20headline-->Setup, which will now appear as
-just 'Setup' with this pluing active.
+just 'Setup' with this plugin active.
 
 #@+node:ekr.20141103061944.195: *6* Converted 7 plugins so they work with PyQt5
 active_path.py, attrib_edit.py, contextmenu.py, graphcanvas.py,
