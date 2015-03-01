@@ -20044,9 +20044,7 @@ Leo no longer adds directories to sys.path on startup.
 
 (Merged the clean-sys-path branch into the trunk.)_
 </t>
-<t tx="ekr.20090909083000.6555">@nocolor-node
-
-New command-line option
+<t tx="ekr.20090909083000.6555">New command-line option
     --gui=qttabs
 
 new plugins:
@@ -20063,8 +20061,7 @@ Improved plugin: contextmenu.py
     that folder (using xdg-open on linux, os.startfile on windows). I have no
     idea what to do with mac, now it runs xdg-open and probably fails.
 </t>
-<t tx="ekr.20090909083000.6556">Unlike previous installers, the manifest is created from the
-@button make leo.nsi script in dist.leo.
+<t tx="ekr.20090909083000.6556">Unlike previous installers, the manifest is created from the @button make leo.nsi script in dist.leo.
 </t>
 <t tx="ekr.20091006093902.6558">Leo 4.6.3 final                             September 4, 2009
 
@@ -20392,39 +20389,27 @@ There is one more detail. Sometimes the ivars above are not sufficient to get th
 
 That's about it. It would be pointless to give you more details, because those details would lead you *away* from the process you need to follow. Having said that, feel free to ask further questions. I'll be glad to answer them.
 </t>
-<t tx="ekr.20100124164700.11919">@nocolor-node
-
-It looks like you should be able to put the following in an
-@font node, and get restructured text bold to appear in bold on screen:
+<t tx="ekr.20100124164700.11919">It looks like you should be able to put the following in an @font node, and get restructured text bold to appear in bold on screen:
 
 rest_keyword2_font_size = 16
 rest_keyword2_font_family = Bitstream Charter
 rest_keyword2_font_slant = roman
 rest_keyword2_font_weight = bold
 
-However nothing happens when I do this. The python examples in the
-test.leo file work fine for me, so I'm not sure what's gone wrong.
+However nothing happens when I do this. The python examples in the test.leo file work fine for me, so I'm not sure what's gone wrong.
 
-I think that the following should also work, but it's also currently
-not doing anything for me:
+I think that the following should also work, but it's also currently not doing anything for me:
 
-@color rest_keyword2_color = black
+\@color rest_keyword2_color = black
 
 ==================
 
-Rev 2706 fixes a significant colorizer bug that caused your problem.
-Previously, the colorizer inited the so-called configuration tags only
-once, which is wrong. These tags are what the @font settings specify.
-Now, the colorizer inits the tags when the language changes when
-switching nodes.  Usually the language doesn't change, so the new code
-will be approximately as fast as the old. 
+Rev 2706 fixes a significant colorizer bug that caused your problem. Previously, the colorizer inited the so-called configuration tags only once, which is wrong. These tags are what the @font settings specify. Now, the colorizer inits the tags when the language changes when switching nodes.  Usually the language doesn't change, so the new code will be approximately as fast as the old.
 </t>
 <t tx="ekr.20100124164700.11920">'backward-find-character'
 'find-character'
 </t>
-<t tx="ekr.20100124164700.11921">@nocolor-node
-
-On Mon, Jan 18, 2010 at 9:25 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
+<t tx="ekr.20100124164700.11921">On Mon, Jan 18, 2010 at 9:25 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
 
 cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
 
@@ -20434,16 +20419,11 @@ cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
    get saved ... in log, however, tab title does not change unless I close and
    reload it.
 </t>
-<t tx="ekr.20100124164700.11922">@
-The problem occurs because the QtGui.QLineEdit object goes away
-when the minibuffer gets focus and the QTreeWidget loses focus.
+<t tx="ekr.20100124164700.11922">The problem occurs because the QtGui.QLineEdit object goes away when the minibuffer gets focus and the QTreeWidget loses focus.
 
-The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
-this ivar to False for headline widgets.
+The fix: add a 'permanent' ivar to leoQtTextWidgets, and set this ivar to False for headline widgets.
 </t>
-<t tx="ekr.20100124164700.11923">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+<t tx="ekr.20100124164700.11923">http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
 
 1) Create an @thin file based outline.
 2) In the @thin file, create an unreferenced section (something like a
@@ -20455,25 +20435,15 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
 6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
   and in the console window, you see "undefined section: ..."
 
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
+The point is that I can't kill Leo if I keep saying "Yes" to the "Save change before quitting" dialog. This is definitely not the intended behavior. The correct behavior would be to save the file, give me the warning about the undefined section, and exit.
 
-EKR: The fix was simple: write_leo_file ignores the status returned from
-c.atFileCommands.writeAll.
+EKR: The fix was simple: write_leo_file ignores the status returned from c.atFileCommands.writeAll.
 
-Note that Leo writes the write error to the console as well as the log pane,
-so this should be safe enough.
+Note that Leo writes the write error to the console as well as the log pane, so this should be safe enough.
 </t>
 <t tx="ekr.20100124164700.11924"></t>
 <t tx="ekr.20100124164700.11925"></t>
-<t tx="ekr.20100124164700.11926">@nocolor-node
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-===========
+<t tx="ekr.20100124164700.11926">I also unhappily discovered that any file named somedoc.leo.bak will get deleted whenever you save a file named somedoc.leo.
 
 This turned into a major refactoring of write_Leo_file.
 </t>
@@ -20481,9 +20451,7 @@ This turned into a major refactoring of write_Leo_file.
 
 The fix was in sortSiblings.
 </t>
-<t tx="ekr.20100124164700.11928">@nocolor-node
-
-- 'encoding' arg removed from appendStringToBody, setBodyString
+<t tx="ekr.20100124164700.11928">- 'encoding' arg removed from appendStringToBody, setBodyString
 
 - There are too many usages of _bodyString !!
 
@@ -20492,9 +20460,7 @@ The fix was in sortSiblings.
 </t>
 <t tx="ekr.20100124164700.11938"></t>
 <t tx="ekr.20100124164700.11944"></t>
-<t tx="ekr.20100124164700.11946">@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/510145
+<t tx="ekr.20100124164700.11946">https://bugs.launchpad.net/leo-editor/+bug/510145
 
 Current leo trunk, r2732, Slackware Linux
 
@@ -20513,18 +20479,14 @@ IOError: [Errno 2] No such file or directory: u'/tmp/aaa.leo'
 
 The solution was to create the backup file only if fileName exists.
 </t>
-<t tx="ekr.20100124164700.11951">@nocolor-node
-
-Made sure _bodyString _headString used only in leoNodes.py.
+<t tx="ekr.20100124164700.11951">Made sure _bodyString _headString used only in leoNodes.py.
 
 We allow setting this vars in file reading code.
 
 *** p.b/p.h setters call c.setBody/HeadString,
     which are very slow!
 </t>
-<t tx="ekr.20100124164700.11965">@nocolor-node
-
-- Removed thinFile arg from atFile.read.
+<t tx="ekr.20100124164700.11965">- Removed thinFile arg from atFile.read.
   atFile.read can uncache *any* cached file.
 - Removed thinFile arg from initReadIvars.
 - self.thinFile ivar set only in readOpenFile.
@@ -20539,31 +20501,17 @@ We allow setting this vars in file reading code.
 <t tx="ekr.20100128094926.12756">Deleting a range of line containing unicode characters deletes too much.
 </t>
 <t tx="ekr.20100129054823.11924"></t>
-<t tx="ekr.20100129054823.11928">- Leo now treats @file nodes just like it treats @thin nodes. This makes Leo
-  much safer to use in cooperative environments that use source code control
-  systems. As part of this change, Leo no longer supports @noref nodes.
+<t tx="ekr.20100129054823.11928">- Leo now treats @file nodes just like it treats @thin nodes. This makes Leo much safer to use in cooperative environments that use source code control systems. As part of this change, Leo no longer supports @noref nodes.
 
 - @auto-rst now works much more reliably.
 
-- Leo now has a simple, robust, and extremely useful scheme to recover from
-  clone conflicts, no matter how they may arise. This removes all the dread from
-  "node changed" messages. It is easy to see what the changes were, and it is
-  easy to choose what, if anything to do.
+- Leo now has a simple, robust, and extremely useful scheme to recover from clone conflicts, no matter how they may arise. This removes all the dread from "node changed" messages. It is easy to see what the changes were, and it is easy to choose what, if anything to do.
 
-  When a clone conflict occurs, you will see a red message in the log pane and a
-  "Recovered Nodes" node as the last top-level node. This node has one child per
-  red message. Each of these children contains two nodes: an "old" node and a
-  "new" node. Unless there are multiple conflicts for a single node, the "new"
-  node will have "won": every clone contains the new node's headline and body
-  text. All these nodes are plain nodes, *not* clones. It is up to you to change
-  the corresponding clone nodes if you choose to do so.
+When a clone conflict occurs, you will see a red message in the log pane and a "Recovered Nodes" node as the last top-level node. This node has one child per red message. Each of these children contains two nodes: an "old" node and a "new" node. Unless there are multiple conflicts for a single node, the "new" node will have "won": every clone contains the new node's headline and body text. All these nodes are plain nodes, *not* clones. It is up to you to change the corresponding clone nodes if you choose to do so.
 
-- Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and
-  orientation to the cache in your .leo directory. This eliminates unnecessary
-  changes to .leo files.
+- Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and orientation to the cache in your .leo directory. This eliminates unnecessary changes to .leo files.
 
-- Leo now creates temporary files in the systems standard temporary directory.
-  This prevents Leo from over-writing user-generated .bak files.
+- Leo now creates temporary files in the systems standard temporary directory. This prevents Leo from over-writing user-generated .bak files.
 </t>
 <t tx="ekr.20100129054823.11931">- The ``--debug`` command-line option sets g.debug.
 
@@ -20637,9 +20585,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 <t tx="ekr.20100201192329.7106">This only happened if two nodes had the same headline.
 </t>
 <t tx="ekr.20100201192329.7108"></t>
-<t tx="ekr.20100201192329.7113">@nocolor-node
-
-The problem arises because an @path directive ended with ':':
+<t tx="ekr.20100201192329.7113">The problem arises because an @path directive ended with ':':
 
     @path: aPath
 
@@ -20696,48 +20642,29 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20100205152016.14054">Leo now has a simple, robust, and extremely useful scheme to recover from clone
-battles, no matter how they may arise. This removes all the dread from "node
-changed" messages. It is easy to see what the changes were, and it is easy to
-choose what, if anything to do.
+<t tx="ekr.20100205152016.14054">Leo now has a simple, robust, and extremely useful scheme to recover from clone battles, no matter how they may arise. This removes all the dread from "node changed" messages. It is easy to see what the changes were, and it is easy to choose what, if anything to do.
 
 It is easy to test the code to see how it works:
 
-1. Put a clone in an external file, and put another clone in Leo
-outside of any external file.
+1. Put a clone in an external file, and put another clone in Leo outside of any external file.
 
 2. Change the clone outside of Leo using an external editor.
 
 3. Reload Leo.
 
-When a clone conflict occurs, you will see a red message in the log pane and a
-"Recovered Nodes" node as the last top-level node. This node has one child per
-red message. Each of these children contains two nodes: an "old" node and a
-"new" node. Unless there are multiple conflicts for a single node, the "new"
-node will have "won": every clone contains the new node's headline and body
-text. All these nodes are plain nodes, *not* clones. It is up to you to change
-the corresponding clone nodes if you choose to do so.
+When a clone conflict occurs, you will see a red message in the log pane and a "Recovered Nodes" node as the last top-level node. This node has one child per red message. Each of these children contains two nodes: an "old" node and a "new" node. Unless there are multiple conflicts for a single node, the "new" node will have "won": every clone contains the new node's headline and body text. All these nodes are plain nodes, *not* clones. It is up to you to change the corresponding clone nodes if you choose to do so.
 </t>
 <t tx="ekr.20100209160132.11690"></t>
 <t tx="ekr.20100209160132.11691"></t>
-<t tx="ekr.20100209160132.11692">@nocolor-node
-
-The fix: back-to-home is now included in k.singleLineCommandList.
+<t tx="ekr.20100209160132.11692">The fix: back-to-home is now included in k.singleLineCommandList.
 </t>
 <t tx="ekr.20100209160132.11694">There was code in tnodeAttributes that did something brain-dead when unit
 testing, just to support a unit test!
 </t>
 <t tx="ekr.20100209160132.11700"></t>
-<t tx="ekr.20100209160132.11701">@nocolor-node
+<t tx="ekr.20100209160132.11701">http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
+If a @path directive is within the body text of an @thin node then the file write uses the @path directive but the file read does not.  Since the file read cannot know of the @path directive until after it has read the file it has no choice but to not use it.  The @thin file write code should not use any @path declarations found in its body text.
 
 What I did:
 
@@ -20747,69 +20674,19 @@ What I did:
 - atFile.scanAllDirectives issues a warning if g.app.atPathInBodyWarning is true,
   but only if the issuePathWarning keyword arg is true.
 </t>
-<t tx="ekr.20100209160132.11711">@nocolor-node
-
-Traceback (most recent call last):
-  File "launchLeo.py", line 8, in &lt;module&gt;
-    leo.core.runLeo.run()
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 95, in run
-    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 354, in doPostPluginsInit
-    c,frame = createFrame(fileName,relativeFileName,script)
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 383, in createFrame
-    ok, frame = g.openWithFileName(relativeFileName or fileName,None)
-  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2439, in openWithFileName
-    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
-  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2502, in handleOpenHooks
-    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 911, in open
-    silent=silent)
-  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 811, in getLeoFile
-    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 659, in readAll
-    at.readOneAtAutoNode (fileName,p)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 732, in readOneAtAutoNode
-    self.writeCachedTree(p, cachefile)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 593, in writeCachedTree
-    elif cachefile in c.db:
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 138, in __contains__
-    return self.has_key(key)
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 234, in has_key
-    value = self[key]
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 160, in __getitem__
-    fil = self.root / key
-  File "c:\leo.repo\trunk\leo\external\path.py", line 102, in __div__
-    return path(os.path.join(self, rel))
-  File "c:\python31\lib\ntpath.py", line 111, in join
-    elif isabs(b):
-  File "c:\python31\lib\ntpath.py", line 92, in isabs
-    s = splitdrive(s)[1]
-  File "c:\python31\lib\ntpath.py", line 198, in splitdrive
-    if len(p) &gt; 1:
-TypeError: object of type 'NoneType' has no len()
-
-c:\leo.repo\trunk&gt;
-</t>
-<t tx="ekr.20100209160132.11712">@nocolor-node
-
-Adding a blank line did not change the file!
+<t tx="ekr.20100209160132.11711"></t>
+<t tx="ekr.20100209160132.11712">Adding a blank line did not change the file!
 
 The culprit was the ignoreLineEndings logic in compareFiles.
 A new unit test is needed.
 </t>
-<t tx="ekr.20100209160132.11718">@nocolor-node
+<t tx="ekr.20100209160132.11718">What I did:
 
-What I did:
-
-- fc.createBackupFile now calls shutils.move directly,
-  avoiding g.utils_rename which does way too much:
-  it calls g.makeAllNonExistentDirectories(!!)
+- fc.createBackupFile now calls shutils.move directly, avoiding g.utils_rename which does way too much: it calls g.makeAllNonExistentDirectories(!!)
 
 - Simplified g.utils_rename.  We can assume shutils exists.
 
-- Removed an unwise call to g.utils_remove in g.utils_rename.
-  This could cause havoc with the following call to
-  shutils_move!!
+- Removed an unwise call to g.utils_remove in g.utils_rename. This could cause havoc with the following call to shutils_move!!
 </t>
 <t tx="ekr.20100209160132.11736"></t>
 <t tx="ekr.20100209160132.11742">Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
@@ -20827,17 +20704,12 @@ This has global effects. Happily, there were only three callers of g.utils_renam
 
 This was likely fixed at rev 2438 of the trunk, in early October, 2009.
 </t>
-<t tx="ekr.20100209160132.11765">@nocolor-node
-
-The module imported correctly, but leoTest.checkFileSyntax was failing.
+<t tx="ekr.20100209160132.11765">The module imported correctly, but leoTest.checkFileSyntax was failing.
 
 It was a whitespace problem--the fix was stripping '\r' characters in checkFileSyntax.
 </t>
 <t tx="ekr.20100209160132.11767"></t>
-<t tx="ekr.20100209160132.11770">@nocolor-node
-
-There may have been a bug in the (no-longer-existing) open_with plugin that allowed it to be active
-when it shouldn't have been.
+<t tx="ekr.20100209160132.11770">There may have been a bug in the (no-longer-existing) open_with plugin that allowed it to be active when it shouldn't have been.
 </t>
 <t tx="ekr.20100209160132.11771">@nocolor-node
 
@@ -20871,22 +20743,18 @@ TypeError: must be str, not bytes
 
 Clone headline modification not propagated after edit
 </t>
-<t tx="ekr.20100209160132.11888">@nocolor-node
-
-Global entries are in g.app.leoHomeDir/db/global
+<t tx="ekr.20100209160132.11888">Global entries are in g.app.leoHomeDir/db/global
 
 Per-leo-files entries are in g.app.homeLeoDir/db/&lt;filename&gt;_&lt;hash&gt;
 </t>
 <t tx="ekr.20100211125418.11596"></t>
-<t tx="ekr.20100211125418.11599">This bug was highly annoying: it caused the newly-selected node to have the
-insert point of a just-deleted node. This bug made it difficult, for example, to
-delete nodes while examining the nodes created by clone-find-all.
+<t tx="ekr.20100211125418.11599">This bug was highly annoying: it caused the newly-selected node to have the insert point of a just-deleted node. This bug made it difficult, for example, to delete nodes while examining the nodes created by clone-find-all.
 </t>
 <t tx="ekr.20100211125418.11602"></t>
 <t tx="ekr.20100211125418.11611"></t>
 <t tx="ekr.20100211221936.7098">- The clear-cache and clear-all-caches commands.
 </t>
-<t tx="ekr.20100223063657.7182"># This fixed a Python 3.x compatibility problem.
+<t tx="ekr.20100223063657.7182">This fixed a Python 3.x compatibility problem.
 </t>
 <t tx="ekr.20100223063657.7192"></t>
 <t tx="ekr.20100223063657.7212">The edit pane lost focus after save commands.
@@ -20981,19 +20849,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20100225102026.7140">- Fixed a dangerous bug that could cause data loss when converting @file nodes
-  from file-like to thin-like sentinels. The problem arose because it was too
-  easy to save the .leo file (thus deleting the tnodeList) without forcing the
-  converted external files to be saved. The next time Leo attempted to read the
-  external files, the tnodeList would be missing and data would be lost.
+<t tx="ekr.20100225102026.7140">- Fixed a dangerous bug that could cause data loss when converting @file nodes from file-like to thin-like sentinels. The problem arose because it was too easy to save the .leo file (thus deleting the tnodeList) without forcing the converted external files to be saved. The next time Leo attempted to read the external files, the tnodeList would be missing and data would be lost.
 
-  Leo's read logic now determines whether the file has file-like sentinels by
-  reading the *uncached* contents of the file. When converting file-like
-  sentinels to thin-like sentinels, Leo warns that it is converting the file and
-  sets the @file node dirty. This ensures that Leo will write the converted
-  external file whenever Leo writes the .leo file. This will make it impossible
-  for a naive user to lose data. A sophisticated user might cause problems by
-  using the write-outline-only command...
+Leo's read logic now determines whether the file has file-like sentinels by reading the *uncached* contents of the file. When converting file-like sentinels to thin-like sentinels, Leo warns that it is converting the file and sets the @file node dirty. This ensures that Leo will write the converted external file whenever Leo writes the .leo file. This will make it impossible for a naive user to lose data. A sophisticated user might cause problems by using the write-outline-only command...
 
 - Fixed expand/contract-pane commands.
 

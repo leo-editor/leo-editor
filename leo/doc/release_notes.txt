@@ -10173,11 +10173,8 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090909083000.6556: *5* Added new Windows installer
-Unlike previous installers, the manifest is created from the
-@button make leo.nsi script in dist.leo.
+Unlike previous installers, the manifest is created from the @button make leo.nsi script in dist.leo.
 #@+node:ekr.20090909083000.6555: *5* Added new plugins
-@nocolor-node
-
 New command-line option
     --gui=qttabs
 
@@ -10385,38 +10382,26 @@ The only bug was that redraw_after_head_changed must update icons.
 #@+node:ekr.20100119145003.7643: *7* Config coloring tags whenever the language changes
 #@+node:ekr.20100119145003.7718: *7* Update qttabs when saving a new file
 #@+node:ekr.20100124164700.11919: *6* Fixed colorizer bug affecting per-language @font settings
-@nocolor-node
-
-It looks like you should be able to put the following in an
-@font node, and get restructured text bold to appear in bold on screen:
+It looks like you should be able to put the following in an @font node, and get restructured text bold to appear in bold on screen:
 
 rest_keyword2_font_size = 16
 rest_keyword2_font_family = Bitstream Charter
 rest_keyword2_font_slant = roman
 rest_keyword2_font_weight = bold
 
-However nothing happens when I do this. The python examples in the
-test.leo file work fine for me, so I'm not sure what's gone wrong.
+However nothing happens when I do this. The python examples in the test.leo file work fine for me, so I'm not sure what's gone wrong.
 
-I think that the following should also work, but it's also currently
-not doing anything for me:
+I think that the following should also work, but it's also currently not doing anything for me:
 
-@color rest_keyword2_color = black
+\@color rest_keyword2_color = black
 
 ==================
 
-Rev 2706 fixes a significant colorizer bug that caused your problem.
-Previously, the colorizer inited the so-called configuration tags only
-once, which is wrong. These tags are what the @font settings specify.
-Now, the colorizer inits the tags when the language changes when
-switching nodes.  Usually the language doesn't change, so the new code
-will be approximately as fast as the old. 
+Rev 2706 fixes a significant colorizer bug that caused your problem. Previously, the colorizer inited the so-called configuration tags only once, which is wrong. These tags are what the @font settings specify. Now, the colorizer inits the tags when the language changes when switching nodes.  Usually the language doesn't change, so the new code will be approximately as fast as the old.
 #@+node:ekr.20100124164700.11920: *6* support extend-mode for several commands
 'backward-find-character'
 'find-character'
 #@+node:ekr.20100124164700.11921: *6* Fixed qttab problem
-@nocolor-node
-
 On Mon, Jan 18, 2010 at 9:25 PM, tfer <tfetherston@aol.com> wrote:
 
 cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
@@ -10427,15 +10412,10 @@ cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
    get saved ... in log, however, tab title does not change unless I close and
    reload it.
 #@+node:ekr.20100124164700.11922: *6* <alt-x> select-all crashes python when focus is in headline
-@
-The problem occurs because the QtGui.QLineEdit object goes away
-when the minibuffer gets focus and the QTreeWidget loses focus.
+The problem occurs because the QtGui.QLineEdit object goes away when the minibuffer gets focus and the QTreeWidget loses focus.
 
-The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
-this ivar to False for headline widgets.
+The fix: add a 'permanent' ivar to leoQtTextWidgets, and set this ivar to False for headline widgets.
 #@+node:ekr.20100124164700.11923: *6* Allow saving .leo files with undefined-sections
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
 
 1) Create an @thin file based outline.
@@ -10448,25 +10428,15 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
 6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
   and in the console window, you see "undefined section: ..."
 
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
+The point is that I can't kill Leo if I keep saying "Yes" to the "Save change before quitting" dialog. This is definitely not the intended behavior. The correct behavior would be to save the file, give me the warning about the undefined section, and exit.
 
-EKR: The fix was simple: write_leo_file ignores the status returned from
-c.atFileCommands.writeAll.
+EKR: The fix was simple: write_leo_file ignores the status returned from c.atFileCommands.writeAll.
 
-Note that Leo writes the write error to the console as well as the log pane,
-so this should be safe enough.
+Note that Leo writes the write error to the console as well as the log pane, so this should be safe enough.
 #@+node:ekr.20100124164700.11924: *6* Refactored write_Leo_file
 #@+node:ekr.20100124164700.11925: *6* Fixed print-bindings crasher w/ leo3k
 #@+node:ekr.20100124164700.11926: *6* Fixed problem with already-existing .leo.bak files
-@nocolor-node
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-===========
+I also unhappily discovered that any file named somedoc.leo.bak will get deleted whenever you save a file named somedoc.leo.
 
 This turned into a major refactoring of write_Leo_file.
 #@+node:ekr.20100124164700.11927: *6* Fixed sort children bug
@@ -10474,8 +10444,6 @@ https://bugs.launchpad.net/leo-editor/+bug/510148
 
 The fix was in sortSiblings.
 #@+node:ekr.20100124164700.11928: *6* Fixed unicode problems
-@nocolor-node
-
 - 'encoding' arg removed from appendStringToBody, setBodyString
 
 - There are too many usages of _bodyString !!
@@ -10485,8 +10453,6 @@ The fix was in sortSiblings.
 #@+node:ekr.20100124164700.11938: *6* Fixed crash in writeToFileHelper
 #@+node:ekr.20100124164700.11944: *6* Add warnings when @file logic happens
 #@+node:ekr.20100124164700.11946: *6* Fixed mkstemp bug
-@nocolor-node
-
 https://bugs.launchpad.net/leo-editor/+bug/510145
 
 Current leo trunk, r2732, Slackware Linux
@@ -10506,8 +10472,6 @@ IOError: [Errno 2] No such file or directory: u'/tmp/aaa.leo'
 
 The solution was to create the backup file only if fileName exists.
 #@+node:ekr.20100124164700.11951: *6* Removed most usage of _bodyString & _headString
-@nocolor-node
-
 Made sure _bodyString _headString used only in leoNodes.py.
 
 We allow setting this vars in file reading code.
@@ -10515,8 +10479,6 @@ We allow setting this vars in file reading code.
 *** p.b/p.h setters call c.setBody/HeadString,
     which are very slow!
 #@+node:ekr.20100124164700.11965: *6* Don't use tnodeList to separate old/new @file nodes
-@nocolor-node
-
 - Removed thinFile arg from atFile.read.
   atFile.read can uncache *any* cached file.
 - Removed thinFile arg from initReadIvars.
@@ -10534,31 +10496,17 @@ Deleting a range of line containing unicode characters deletes too much.
 #@+node:ekr.20100118181428.8815: *6* Leo supports Python 3.x
 Leo requires Python 2.6 or above, including Python 3.0 and above.
 #@+node:ekr.20100129054823.11928: *6* Improved file handling
-- Leo now treats @file nodes just like it treats @thin nodes. This makes Leo
-  much safer to use in cooperative environments that use source code control
-  systems. As part of this change, Leo no longer supports @noref nodes.
+- Leo now treats @file nodes just like it treats @thin nodes. This makes Leo much safer to use in cooperative environments that use source code control systems. As part of this change, Leo no longer supports @noref nodes.
 
 - @auto-rst now works much more reliably.
 
-- Leo now has a simple, robust, and extremely useful scheme to recover from
-  clone conflicts, no matter how they may arise. This removes all the dread from
-  "node changed" messages. It is easy to see what the changes were, and it is
-  easy to choose what, if anything to do.
+- Leo now has a simple, robust, and extremely useful scheme to recover from clone conflicts, no matter how they may arise. This removes all the dread from "node changed" messages. It is easy to see what the changes were, and it is easy to choose what, if anything to do.
 
-  When a clone conflict occurs, you will see a red message in the log pane and a
-  "Recovered Nodes" node as the last top-level node. This node has one child per
-  red message. Each of these children contains two nodes: an "old" node and a
-  "new" node. Unless there are multiple conflicts for a single node, the "new"
-  node will have "won": every clone contains the new node's headline and body
-  text. All these nodes are plain nodes, *not* clones. It is up to you to change
-  the corresponding clone nodes if you choose to do so.
+When a clone conflict occurs, you will see a red message in the log pane and a "Recovered Nodes" node as the last top-level node. This node has one child per red message. Each of these children contains two nodes: an "old" node and a "new" node. Unless there are multiple conflicts for a single node, the "new" node will have "won": every clone contains the new node's headline and body text. All these nodes are plain nodes, *not* clones. It is up to you to change the corresponding clone nodes if you choose to do so.
 
-- Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and
-  orientation to the cache in your .leo directory. This eliminates unnecessary
-  changes to .leo files.
+- Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and orientation to the cache in your .leo directory. This eliminates unnecessary changes to .leo files.
 
-- Leo now creates temporary files in the systems standard temporary directory.
-  This prevents Leo from over-writing user-generated .bak files.
+- Leo now creates temporary files in the systems standard temporary directory. This prevents Leo from over-writing user-generated .bak files.
 #@+node:ekr.20100129054823.17683: *6* New command-line options
 - The --debug command-line option sets g.debug.
 
@@ -10630,8 +10578,6 @@ This was a serious error.  It could cause clone clashes on later reloads.
 This only happened if two nodes had the same headline.
 #@+node:ekr.20100201192329.7108: *6* Fixed bug 515164: a crasher in p.positionExists
 #@+node:ekr.20100201192329.7113: *6* Fixed problem with colon following @path
-@nocolor-node
-
 The problem arises because an @path directive ended with ':':
 
     @path: aPath
@@ -10681,48 +10627,29 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100205152016.14054: *5* Recovering from clone conflicts
-Leo now has a simple, robust, and extremely useful scheme to recover from clone
-battles, no matter how they may arise. This removes all the dread from "node
-changed" messages. It is easy to see what the changes were, and it is easy to
-choose what, if anything to do.
+Leo now has a simple, robust, and extremely useful scheme to recover from clone battles, no matter how they may arise. This removes all the dread from "node changed" messages. It is easy to see what the changes were, and it is easy to choose what, if anything to do.
 
 It is easy to test the code to see how it works:
 
-1. Put a clone in an external file, and put another clone in Leo
-outside of any external file.
+1. Put a clone in an external file, and put another clone in Leo outside of any external file.
 
 2. Change the clone outside of Leo using an external editor.
 
 3. Reload Leo.
 
-When a clone conflict occurs, you will see a red message in the log pane and a
-"Recovered Nodes" node as the last top-level node. This node has one child per
-red message. Each of these children contains two nodes: an "old" node and a
-"new" node. Unless there are multiple conflicts for a single node, the "new"
-node will have "won": every clone contains the new node's headline and body
-text. All these nodes are plain nodes, *not* clones. It is up to you to change
-the corresponding clone nodes if you choose to do so.
+When a clone conflict occurs, you will see a red message in the log pane and a "Recovered Nodes" node as the last top-level node. This node has one child per red message. Each of these children contains two nodes: an "old" node and a "new" node. Unless there are multiple conflicts for a single node, the "new" node will have "won": every clone contains the new node's headline and body text. All these nodes are plain nodes, *not* clones. It is up to you to change the corresponding clone nodes if you choose to do so.
 #@+node:ekr.20100209160132.11690: *5* Bugs fixed
 #@+node:ekr.20100209160132.11691: *6* Fixed unicode bug in setSelectionRangeHelper
 #@+node:ekr.20100209160132.11692: *6* Home key no longer clears the minibuffer
-@nocolor-node
-
 The fix: back-to-home is now included in k.singleLineCommandList.
 #@+node:ekr.20100209160132.11694: *6* Fixed bug in c.pasteOutline when run from unit tests
 There was code in tnodeAttributes that did something brain-dead when unit
 testing, just to support a unit test!
 #@+node:ekr.20100209160132.11700: *6* Removed all references to isAtNorefFileNode
 #@+node:ekr.20100209160132.11701: *6* Fixed inconsistency in how @path works
-@nocolor-node
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
 
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
+If a @path directive is within the body text of an @thin node then the file write uses the @path directive but the file read does not.  Since the file read cannot know of the @path directive until after it has read the file it has no choice but to not use it.  The @thin file write code should not use any @path declarations found in its body text.
 
 What I did:
 
@@ -10732,69 +10659,19 @@ What I did:
 - atFile.scanAllDirectives issues a warning if g.app.atPathInBodyWarning is true,
   but only if the issuePathWarning keyword arg is true.
 #@+node:ekr.20100209160132.11711: *6* Fixed crasher in path.py
-@nocolor-node
-
-Traceback (most recent call last):
-  File "launchLeo.py", line 8, in <module>
-    leo.core.runLeo.run()
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 95, in run
-    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 354, in doPostPluginsInit
-    c,frame = createFrame(fileName,relativeFileName,script)
-  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 383, in createFrame
-    ok, frame = g.openWithFileName(relativeFileName or fileName,None)
-  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2439, in openWithFileName
-    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
-  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2502, in handleOpenHooks
-    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 911, in open
-    silent=silent)
-  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 811, in getLeoFile
-    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 659, in readAll
-    at.readOneAtAutoNode (fileName,p)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 732, in readOneAtAutoNode
-    self.writeCachedTree(p, cachefile)
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 593, in writeCachedTree
-    elif cachefile in c.db:
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 138, in __contains__
-    return self.has_key(key)
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 234, in has_key
-    value = self[key]
-  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 160, in __getitem__
-    fil = self.root / key
-  File "c:\leo.repo\trunk\leo\external\path.py", line 102, in __div__
-    return path(os.path.join(self, rel))
-  File "c:\python31\lib\ntpath.py", line 111, in join
-    elif isabs(b):
-  File "c:\python31\lib\ntpath.py", line 92, in isabs
-    s = splitdrive(s)[1]
-  File "c:\python31\lib\ntpath.py", line 198, in splitdrive
-    if len(p) > 1:
-TypeError: object of type 'NoneType' has no len()
-
-c:\leo.repo\trunk>
 #@+node:ekr.20100209160132.11712: *6* Fixed at-auto write bug
-@nocolor-node
-
 Adding a blank line did not change the file!
 
 The culprit was the ignoreLineEndings logic in compareFiles.
 A new unit test is needed.
 #@+node:ekr.20100209160132.11718: *6* Fixed the critical 'file used by another process' bug
-@nocolor-node
-
 What I did:
 
-- fc.createBackupFile now calls shutils.move directly,
-  avoiding g.utils_rename which does way too much:
-  it calls g.makeAllNonExistentDirectories(!!)
+- fc.createBackupFile now calls shutils.move directly, avoiding g.utils_rename which does way too much: it calls g.makeAllNonExistentDirectories(!!)
 
 - Simplified g.utils_rename.  We can assume shutils exists.
 
-- Removed an unwise call to g.utils_remove in g.utils_rename.
-  This could cause havoc with the following call to
-  shutils_move!!
+- Removed an unwise call to g.utils_remove in g.utils_rename. This could cause havoc with the following call to shutils_move!!
 #@+node:ekr.20100209160132.11736: *6* Alt-right should *not* go down
 #@+node:ekr.20100209160132.11742: *6* Big change: simplified g.utils_rename
 Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
@@ -10812,17 +10689,12 @@ The title says it all.
 
 This was likely fixed at rev 2438 of the trunk, in early October, 2009.
 #@+node:ekr.20100209160132.11765: *6* Fixed unit test for leo_interface.py
-@nocolor-node
-
 The module imported correctly, but leoTest.checkFileSyntax was failing.
 
 It was a whitespace problem--the fix was stripping '\r' characters in checkFileSyntax.
 #@+node:ekr.20100209160132.11767: *6* Fixed g.getLastTracebackFileAndLineNubmer
 #@+node:ekr.20100209160132.11770: *6* Fixed open-with crash
-@nocolor-node
-
-There may have been a bug in the (no-longer-existing) open_with plugin that allowed it to be active
-when it shouldn't have been.
+There may have been a bug in the (no-longer-existing) open_with plugin that allowed it to be active when it shouldn't have been.
 #@+node:ekr.20100209160132.11771: *7* Report
 @nocolor-node
 
@@ -10857,14 +10729,10 @@ https://bugs.launchpad.net/leo-editor/+bug/518823
 Clone headline modification not propagated after edit
 #@+node:ekr.20100211125418.11596: *6* Removed duplicate can not open message for @auto file
 #@+node:ekr.20100211125418.11599: *6* Fixed minor bug involving insertion point
-This bug was highly annoying: it caused the newly-selected node to have the
-insert point of a just-deleted node. This bug made it difficult, for example, to
-delete nodes while examining the nodes created by clone-find-all.
+This bug was highly annoying: it caused the newly-selected node to have the insert point of a just-deleted node. This bug made it difficult, for example, to delete nodes while examining the nodes created by clone-find-all.
 #@+node:ekr.20100211125418.11602: *6* Fixed unicode crasher in write-recent-files logic
 #@+node:ekr.20100211125418.11611: *5* New commands
 #@+node:ekr.20100209160132.11888: *6* Created clear-cache and clear-all-caches commands
-@nocolor-node
-
 Global entries are in g.app.leoHomeDir/db/global
 
 Per-leo-files entries are in g.app.homeLeoDir/db/<filename>_<hash>
@@ -10906,7 +10774,7 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100223063657.7264: *5* Bug fixed
 #@+node:ekr.20100223063657.7182: *6* Fixed calls to sort in 6 places
-# This fixed a Python 3.x compatibility problem.
+This fixed a Python 3.x compatibility problem.
 #@+node:ekr.20100223063657.7192: *6* Fix bug 363406: goto-global-line works with @auto files
 #@+node:ekr.20100223063657.7212: *6* Put focus in a standard place after save commands
 The edit pane lost focus after save commands.
@@ -10964,19 +10832,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100225102026.7140: *5* Changes made to Leo 4.7.1
-- Fixed a dangerous bug that could cause data loss when converting @file nodes
-  from file-like to thin-like sentinels. The problem arose because it was too
-  easy to save the .leo file (thus deleting the tnodeList) without forcing the
-  converted external files to be saved. The next time Leo attempted to read the
-  external files, the tnodeList would be missing and data would be lost.
+- Fixed a dangerous bug that could cause data loss when converting @file nodes from file-like to thin-like sentinels. The problem arose because it was too easy to save the .leo file (thus deleting the tnodeList) without forcing the converted external files to be saved. The next time Leo attempted to read the external files, the tnodeList would be missing and data would be lost.
 
-  Leo's read logic now determines whether the file has file-like sentinels by
-  reading the *uncached* contents of the file. When converting file-like
-  sentinels to thin-like sentinels, Leo warns that it is converting the file and
-  sets the @file node dirty. This ensures that Leo will write the converted
-  external file whenever Leo writes the .leo file. This will make it impossible
-  for a naive user to lose data. A sophisticated user might cause problems by
-  using the write-outline-only command...
+Leo's read logic now determines whether the file has file-like sentinels by reading the *uncached* contents of the file. When converting file-like sentinels to thin-like sentinels, Leo warns that it is converting the file and sets the @file node dirty. This ensures that Leo will write the converted external file whenever Leo writes the .leo file. This will make it impossible for a naive user to lose data. A sophisticated user might cause problems by using the write-outline-only command...
 
 - Fixed expand/contract-pane commands.
 
