@@ -1159,22 +1159,9 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550b302e302e332e302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473550a302e302e31322e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873550c302e302e31322e302e372e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323238382e30710c73752e"
-expanded="ekr.20071211083251,ekr.20150301140303.5,ekr.20141113102829.6,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20071211083251,ekr.20150301140303.5,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20060620094033"></v>
-<v t="ekr.20150212182032.4"></v>
-<v t="ekr.20150212182032.5"><vh>5.1 No more sentinels!</vh>
-<v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
-<v t="ekr.20150220115528.6"><vh>\@clean is better than \auto</vh></v>
-<v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
-<v t="ekr.20150220115528.4"><vh>A better update algorithm</vh></v>
-</v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
-<v t="ekr.20150227184811.5"><vh>Done</vh></v>
-</v>
-<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.67"><vh>4.0 final</vh>
@@ -3617,6 +3604,18 @@ expanded="ekr.20071211083251,ekr.20150301140303.5,ekr.20141113102829.6,"><vh>@fi
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20150301140303.15"><vh>Leo 5.1 b1</vh>
+<v t="ekr.20150301140303.16"><vh>Highlights</vh>
+<v t="ekr.20150217105817.4"><vh>* @clean</vh></v>
+<v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
+</v>
+<v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
+</v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
+<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
+<v t="ekr.20150227184811.5"><vh>Done</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8841,7 +8840,7 @@ This installer installs the subprocess sources and also _subprocess.pyd in Pytho
 </t>
 <t tx="ekr.20050917092557.5">The fix was to add an entry of 'unknown' state to state_dict. This fixes the crash by brute force, but may not be strictly correct. However, this is pretty much moot: we shall soon be moving to the new colorizer.
 </t>
-<t tx="ekr.20050917092557.6">The code gets c = keywords.get('c') in several places. The protection is to return if c is None. This affects the following files: plugins_menu.py, pluginsTest.py, plugin_manager.py
+<t tx="ekr.20050917092557.6" str_atime="1376412888.0">The code gets c = keywords.get('c') in several places. The protection is to return if c is None. This affects the following files: plugins_menu.py, pluginsTest.py, plugin_manager.py
 </t>
 <t tx="ekr.20050917092557.7">http://sourceforge.net/forum/message.php?msg_id=3231597
 
@@ -31270,7 +31269,7 @@ much pervasively used ... it could be a good thing for leo (-:
 Created at.writeAtAutoOtlFile.
 </t>
 <t tx="ekr.20131105110107.16948"></t>
-<t tx="ekr.20131105110107.16949">Added markup_inline.py, printing.py, richtext.py, rss.py.
+<t tx="ekr.20131105110107.16949" str_atime="1376412280.0">Added markup_inline.py, printing.py, richtext.py, rss.py.
 </t>
 <t tx="ekr.20131105110107.16951">From: Ville M. Vainio
 See: http://en.wikipedia.org/wiki/Mylyn
@@ -31294,7 +31293,7 @@ Mylyn was a nice boost back in the eclipse days, it could work for Leo
 too. My main motivation right now was to demonstrate the signals with
 something that is much simpler than using them in qmlnotebook.
 </t>
-<t tx="ekr.20131105110107.16952">The printing.py plugin fixes this bug:
+<t tx="ekr.20131105110107.16952" str_atime="1376412288.0">The printing.py plugin fixes this bug:
 https://bugs.launchpad.net/leo-editor/+bug/1132804
 
 Here's the docstring:
@@ -36832,37 +36831,9 @@ is easy. Crucially, x.a and x.sentinels are *parallel arrays*. That is,
 len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
-<t tx="ekr.20150212182032.4">- @clean trees, one of the most important developments in Leo's history. @clean trees create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading and updating @clean trees is faster than reading @auto or @shadow trees.
+<t tx="ekr.20150212182032.4">@clean trees are one of the most important developments in Leo's history. They create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading and updating @clean trees is faster than reading @auto or @shadow trees.
     
-- The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
-</t>
-<t tx="ekr.20150212182032.5">Leo 5.1 b1                          March 9, 2015
-
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
-
-Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/screencasts.html Text tutorials: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 5.1
---------------------------
-
-* @clean trees, one of the most important developments in Leo's history.
-
-    - @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
-    
-    - The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
-
-* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
-
-Links:
-------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
+The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
 </t>
 <t tx="ekr.20150215071358.87">- Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
@@ -36872,7 +36843,6 @@ Quotes:    http://leoeditor.com/testimonials.html
 - Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
-- Spell check.
 </t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
@@ -36899,18 +36869,19 @@ break infrequently. To disable this feature, just delete an existing
 @persistence node or change @persistence to @@persistence.</t>
 <t tx="ekr.20150217105817.4">Leo updates @clean trees from changes made to external files without sentinel comments, something long thought impossible. As a result, Leo can now be used in any environment, including work groups where no one else uses Leo.
 
-</t>
-<t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. The Mulder/Ream algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
-</t>
-<t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
-</t>
-<t tx="ekr.20150220115528.6">\@clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
+@clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
 
 - Updating an @clean tree is faster that importing an @auto tree.
 
 - @clean trees preserve outline structure, clone links and uA's without the need for @persistence trees.
 
 However, Leo will continue to support all forms of @auto for the foreseeable future, especially @auto-rst, @auto-vimoutline and @auto-otl.
+</t>
+<t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
+
+http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+</t>
+<t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
 </t>
 <t tx="ekr.20150220145456.4">For simplicity, this discussion will assume that we are updating an
 external file, x, created with @clean x. The update algorithm works
@@ -37343,6 +37314,35 @@ xsltWithNodes.py
 </t>
 <t tx="ekr.20150301140303.13">Added @bool forbid_invalid_completions.
 </t>
+<t tx="ekr.20150301140303.15">Leo 5.1 b1                          March 9, 2015
+
+Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+
+Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/screencasts.html Text tutorials: http://leoeditor.com/tutorial.html
+
+The highlights of Leo 5.1
+--------------------------
+
+* @clean trees, one of the most important developments in Leo's history.
+
+    - @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
+    
+    - The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
+
+Links:
+------
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Github:    https://github.com/leo-editor/leo-editor
+Quotes:    http://leoeditor.com/testimonials.html
+</t>
+<t tx="ekr.20150301140303.16"></t>
 <t tx="ekr.20150301140303.4">Removed the keybindings.py plugin.  The print-bindings command should suffice.
 
 The plugins_menu.py has been renamed old_plugin_menu.py to indicate that it

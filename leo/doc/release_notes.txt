@@ -16994,6 +16994,7 @@ For example, this setting works without any explicit definition of mistyrose2.
     @color head-bg = @mistyrose2
 #@+node:edream.110203163054.63: ** Latest version
 #@+node:ekr.20150212182032.5: *3* 5.1 No more sentinels!
+#@+node:ekr.20150301140303.15: *4* Leo 5.1 b1
 Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
@@ -17021,20 +17022,22 @@ Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
-#@+node:ekr.20150217105817.4: *4* \@clean
+#@+node:ekr.20150301140303.16: *5* Highlights
+#@+node:ekr.20150217105817.4: *6* * @clean
 Leo updates @clean trees from changes made to external files without sentinel comments, something long thought impossible. As a result, Leo can now be used in any environment, including work groups where no one else uses Leo.
 
-#@+node:ekr.20150220115528.6: *4* \@clean is better than \auto
-\@clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
+@clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
 
 - Updating an @clean tree is faster that importing an @auto tree.
 
 - @clean trees preserve outline structure, clone links and uA's without the need for @persistence trees.
 
 However, Leo will continue to support all forms of @auto for the foreseeable future, especially @auto-rst, @auto-vimoutline and @auto-otl.
-#@+node:ekr.20150220115528.5: *4* \@shadow is deprecated
+#@+node:ekr.20150220115528.5: *6* \@shadow is deprecated
 \@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
-#@+node:ekr.20150220115528.4: *4* A better update algorithm
-Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. The Mulder/Ream algorithm, http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
+#@+node:ekr.20150220115528.4: *5* The Mulder/Ream update algorithm
+Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
+
+http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 #@-all
 #@-leo
