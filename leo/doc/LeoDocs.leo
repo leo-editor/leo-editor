@@ -1159,7 +1159,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028580b000000302e302e332e302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473580c000000302e302e31322e302e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e307108735810000000302e302e31322e302e302e372e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323238382e30710c73752e"
-marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
+marks="ekr.20080311060457.214,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"></v>
@@ -1685,319 +1685,244 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20060206111717.1"><vh>4.4 minibuffer, keys, autocompletion, multiple log panes</vh>
-<v t="ekr.20051219150602"><vh>4.4 alpha 5</vh>
-<v t="ekr.20051219150602.2"><vh>Fixed bugs</vh>
-<v t="ekr.20051219150602.3"><vh>Made sure focus doesn't go to log during tab completion or after writes to log</vh></v>
-<v t="ekr.20051219150602.7"><vh>Fixed problem with getScript in batch mode</vh></v>
-<v t="ekr.20051219150602.10"><vh>Text box is now selected in goto-line-number command</vh></v>
-<v t="ekr.20051219150602.13"><vh>Restored headkey  &amp; bodykey hooks</vh></v>
-<v t="ekr.20051219150602.28"><vh>Fixed ancient bug in read error logic that hung Leo</vh></v>
-<v t="ekr.20051219150602.75"><vh>Fixed many headline problems</vh></v>
-<v t="ekr.20051219150602.81"><vh>Fixed problem in reformatParagraph</vh></v>
-<v t="ekr.20051219150602.85"><vh>Installed LeoUsers patch</vh></v>
-<v t="ekr.20060105182648.376"><vh>Improved Import external files command.</vh></v>
-<v t="ekr.20060105182648.377"><vh>Fixed crasher in backwardDeleteCharacter</vh></v>
-<v t="ekr.20060105182648.378"><vh>Fixed recent bug: dialogs now get focus properly when first opened.</vh></v>
-<v t="ekr.20060105182648.379"><vh>Made sure shortcuts are printed clearly by k.registerCommand</vh></v>
-<v t="ekr.20060105182648.382"><vh>Suppressed crash undoing a clone followed by a drag</vh></v>
-</v>
-<v t="ekr.20051219150602.100"><vh>New features</vh>
-<v t="ekr.20051219150602.101"><vh>created ut.leo, ut.py and ut.bat</vh></v>
-<v t="ekr.20051219150602.102"><vh>Added modes/*.xml to distribution</vh></v>
-<v t="ekr.20051219150602.105"><vh>Revised cursor movement commands and added selection-extension commands</vh></v>
-<v t="ekr.20051219151926"><vh>Added classic key bindings in leoSettings.leo</vh></v>
-<v t="ekr.20060105182648.432"><vh>Allow multiple key bindings to the same command</vh></v>
-<v t="ekr.20060105182648.469"><vh>Settings command now opens leoSettings.leo</vh></v>
-</v>
-</v>
-<v t="ekr.20051028051444"><vh>4.4 alpha 4</vh>
-<v t="ekr.20051028051444.1"><vh>Quick Start</vh></v>
-<v t="ekr.20051028051444.2"><vh>The 'key' features of 4.4</vh>
+<v t="ekr.20060511074853"><vh>4.4 final</vh>
+<v t="ekr.20051028051444.1"><vh>* Quick Start</vh></v>
+<v t="ekr.20051028051444.2"><vh>* Key features of 4.4</vh>
 <v t="ekr.20051101161405"><vh>Leo's minibuffer works like the Emacs mini-buffer</vh></v>
 <v t="ekr.20051101161405.1"><vh>@shortcuts nodes in leoSettings.leo allow per-pane bindings</vh></v>
+<v t="ekr.20060214092741"><vh>User input modes</vh></v>
 <v t="ekr.20051101161405.2"><vh>The scripting plugin allows key bindings</vh></v>
-<v t="ekr.20051101161405.3"><vh>EKR shortcuts</vh></v>
-<v t="ekr.20051101162123"><vh>Leo now ignores key bindings in menu tables</vh></v>
 </v>
-<v t="ekr.20051205091625"><vh>Status of minibuffer commands</vh></v>
-<v t="ekr.20051028051616"><vh>New in alpha 1...</vh>
-<v t="ekr.20051028051444.4"><vh>New options</vh>
-<v t="ekr.20051028051444.5"><vh>The @bool useMinibuffer option</vh></v>
-<v t="ekr.20051028051444.6"><vh>The @bool useCmdMenu option</vh></v>
-<v t="ekr.20051028051444.7"><vh>Options for selected body text</vh></v>
-</v>
-<v t="ekr.20051028051444.8"><vh>New mini-buffer commands</vh></v>
-<v t="ekr.20051028051444.9"><vh>New code-level features</vh>
-<v t="ekr.20051028051444.10"><vh>Dictionaries of keys and commands</vh></v>
-<v t="ekr.20051028051444.11"><vh>Functions that return the present key bindings</vh></v>
-<v t="ekr.20051028051444.12"><vh>Added registerCommand helper</vh></v>
-</v>
-<v t="ekr.20051028051444.13"><vh>Bugs fixed (in 4.3 code base)</vh>
-<v t="ekr.20051028051444.14"><vh>Leo protects c.endUpdate with a 'finally' clause</vh></v>
-<v t="ekr.20051028051444.15"><vh>Added kludge to solve infamous control-v problems</vh></v>
-<v t="ekr.20051028051444.16"><vh>Fixed bug in Leo's read logic</vh></v>
-<v t="ekr.20051028051444.17"><vh>Fixed bug in goto-last-node.</vh></v>
-<v t="ekr.20051028051444.18"><vh>Leo now reads @settings trees when opening a .leo file from another outline.</vh></v>
-<v t="ekr.20051028051444.19"><vh>Improved g.removeExtraLws</vh></v>
-</v>
-</v>
-<v t="ekr.20051028051616.1"><vh>New in alpha 2</vh>
-<v t="ekr.20051101162123.1"><vh>The tabbed log</vh>
-<v t="ekr.20051028051616.172"><vh>Programming the tabbed log</vh></v>
-</v>
-<v t="ekr.20051028061322"><vh>New minibuffer commands</vh></v>
-<v t="ekr.20051028051616.299"><vh>Optional generation of closing brackets</vh></v>
-<v t="ekr.20051101182739"><vh>New settings in leoSettings.leo</vh></v>
-<v t="ekr.20051101161949"><vh>Improved and retired plugins</vh>
-<v t="ekr.20051028051616.160"><vh>Improved the scripting plugin</vh></v>
-<v t="ekr.20051101162947"><vh>Retired the TabbedLog plugin</vh></v>
-</v>
-<v t="ekr.20051101163145"><vh>Many code-level improvements</vh></v>
-<v t="ekr.20051101163404"><vh>Fixed minor bugs</vh></v>
-</v>
-<v t="ekr.20051109112610"><vh>New in alpha 3</vh>
-<v t="ekr.20051109112826"><vh>The New and Newer World Orders</vh></v>
-<v t="ekr.20051109141223"><vh>Bugs fixed...</vh>
+<v t="ekr.20051219150602.2"><vh>Bugs fixed</vh>
+<v t="ekr.20150301045135.42"><vh>Bugs in code</vh>
 <v t="ekr.20051109112826.217"><vh>Fix crasher in Open logic</vh></v>
-<v t="ekr.20051109112826.227"><vh>(Undo ends editing</vh></v>
-<v t="ekr.20051109112826.257"><vh>Disabled minibuffer when not in use</vh></v>
-<v t="ekr.20051109112826.315"><vh>Fixed bug in Find Backward</vh></v>
-<v t="ekr.20051109112826.265"><vh>Improved Spell tab</vh></v>
-</v>
-<v t="ekr.20051109141524"><vh>New features</vh>
-<v t="ekr.20051109112826.222"><vh>Created scripts.leo and unitTest.leo</vh></v>
-<v t="ekr.20051109112826.254"><vh>c.executeMinibufferCommand executes a minibuffer command by name</vh></v>
-<v t="ekr.20051109112826.310"><vh>Improved perl entries in language dicts</vh></v>
-</v>
-<v t="ekr.20051109141524.1"><vh>Code-level changes</vh>
-<v t="ekr.20051109112826.223"><vh>Changed  edit_text to edit_widget everywhere</vh></v>
-<v t="ekr.20051109112826.224"><vh>Removed tree ivars</vh></v>
-<v t="ekr.20051109142920"><vh>Removed frame.begin/endUpdate</vh></v>
-</v>
-</v>
-<v t="ekr.20051128181229"><vh>New in alpha 4</vh>
-<v t="ekr.20051128181351"><vh>Bugs fixed</vh>
-<v t="ekr.20051128181302.148"><vh>Changed scripting plugin so files opened with buttons stay in front</vh></v>
-<v t="ekr.20051128181302.183"><vh>Fixed undo/redo bugs</vh></v>
-<v t="ekr.20051128181302.192"><vh>Fixed focus problem with tab completion</vh></v>
-<v t="ekr.20051128181302.193"><vh>Fixed minor Save bug</vh></v>
-<v t="ekr.20051128181302.231"><vh>Fixed long-standing problem with Plugins Manager plugin</vh></v>
-<v t="ekr.20051128181302.244"><vh>Fixed 2 outline editing bugs</vh></v>
-<v t="ekr.20051205090923.13"><vh>Fixed crasher in deleteNextChar</vh></v>
-<v t="ekr.20051205090923.16"><vh>Fixed new headline bug</vh></v>
-<v t="ekr.20051205090923.22"><vh>Fix problems applying settings</vh></v>
-<v t="ekr.20051128181302.204"><vh>Fixed several bugs in rst3 plugin</vh></v>
-</v>
-<v t="ekr.20051128181651"><vh>Code changes</vh>
-<v t="ekr.20051128181302.149"><vh>Removed later arg from c.frame.xWantsFocus</vh></v>
-<v t="ekr.20051128181302.196"><vh>Created enableTclTraces</vh></v>
-<v t="ekr.20051128181302.208"><vh>Eliminated w.update in g.app.gui.set_focus</vh></v>
-</v>
-<v t="ekr.20051128181651.1"><vh>New &amp; improved features and files</vh>
-<v t="ekr.20051128181302.147"><vh>Moved all scripts into scripts.leo</vh></v>
-<v t="ekr.20051128181302.150"><vh>Improved how the New Tab and Rename Tab commands work in the log pane</vh></v>
-<v t="ekr.20051128181302.151"><vh>Improved the appearance of the Spell tab</vh></v>
-<v t="ekr.20051128181302.156"><vh>Added Clone-find checkbox to the Find tab</vh></v>
-<v t="ekr.20051128181302.171"><vh>Improved find tab</vh></v>
-<v t="ekr.20051128181302.211"><vh>Improved formatting of shortcuts in print-commands and print-bindings</vh></v>
-<v t="ekr.20051128181302.213"><vh>Added settings for vim plugin</vh></v>
-<v t="ekr.20051128181302.214"><vh>Put up a dialog if can't import Pmw</vh></v>
-<v t="ekr.20051128181302.229"><vh>Bound &lt;Return&gt; to end-edit-headline</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20060116174906"><vh>4.4 beta 1</vh>
-<v t="ekr.20060116174906.2"><vh>Bugs fixed</vh>
-<v t="ekr.20060116174906.3"><vh>Fixed minor headline problems</vh></v>
-<v t="ekr.20060116174906.63"><vh>Fixed undo problems</vh></v>
-<v t="ekr.20060116174906.86"><vh>Improved word-export plugin</vh></v>
+<v t="ekr.20060328171518.152"><vh>Fixed a bug in c.openWith</vh></v>
+<v t="ekr.20051219150602.7"><vh>Fixed problem with getScript in batch mode</vh></v>
+<v t="ekr.20051028051444.19"><vh>Improved g.removeExtraLws</vh></v>
+<v t="ekr.20051028051444.14"><vh>Leo protects c.endUpdate with a 'finally' clause</vh></v>
 <v t="ekr.20060116174906.87"><vh>Removed a bad use of g.app.log in the find panel</vh></v>
-<v t="ekr.20060116174906.88"><vh>Fix crash: tab in minibuffer</vh></v>
-<v t="ekr.20060116174906.90"><vh>Installed patch for headline width</vh></v>
-<v t="ekr.20060116174906.97"><vh>Redraw screen properly after Move To Next Dirty</vh></v>
-<v t="ekr.20060116174906.100"><vh>Fixed focus bug</vh></v>
-<v t="ekr.20060116174906.103"><vh>Made sure to bring proper window on top in settings.leo button</vh></v>
-<v t="ekr.20060116174906.104"><vh>Arrow keys now clear the text selection</vh></v>
-<v t="ekr.20060116174906.113"><vh>Fixed several minor bugs</vh></v>
-<v t="ekr.20060116174906.118"><vh>Fixed problems with plugins</vh></v>
-<v t="ekr.20060116174906.122"><vh>Fixed old file handling bug</vh></v>
+<v t="ekr.20060414071350.8"><vh>Removed calls to lstrip and rstrip for compatibility with Python 2.2.1</vh></v>
+<v t="ekr.20060227102028.17"><vh>Removed horrible g.app.dialogs hack</vh></v>
+<v t="ekr.20051219150602.13"><vh>Restored headkey  &amp; bodykey hooks</vh></v>
+<v t="ekr.20060414071350.1"><vh>Rewrote g.importExtension to simplify startup logic</vh></v>
 <v t="ekr.20060116174906.125"><vh>Use shutil.move in g.utils_rename</vh></v>
-<v t="ekr.20060116174906.130"><vh>Simplified k.copyBindingsToWidget and eliminated k.onTextWidgetKey</vh></v>
-<v t="ekr.20060116174906.160"><vh>Made sure that focus stays in body during tab completion</vh></v>
-<v t="ekr.20060116174906.163"><vh>Leo now puts focus in body pane after deleting a window</vh></v>
-<v t="ekr.20060116174906.164"><vh>Fixed many binding problems</vh></v>
-<v t="ekr.20060116174906.185"><vh>Fixed extend-selection problems</vh></v>
-<v t="ekr.20060116174906.187"><vh>Fixed per-pane bindings!</vh></v>
-<v t="ekr.20060116174906.194"><vh>Always redraw the screen after editing a label</vh></v>
 </v>
-<v t="ekr.20060116174906.195"><vh>Code level changes</vh>
-<v t="ekr.20060116174906.198"><vh>Removed g.top from Leo's core and all plugins</vh></v>
-<v t="ekr.20060116174906.199"><vh>Created c.exists ivar and related logic</vh></v>
-<v t="ekr.20060116174906.213"><vh>Call c.setLog in all entries into code</vh></v>
-<v t="ekr.20060116174906.255"><vh>Generalized doCommand</vh></v>
-</v>
-<v t="ekr.20060116174906.258"><vh>New features</vh>
-<v t="ekr.20060116174906.259"><vh>Installed many standard bindings to leoSettings.leo</vh></v>
-<v t="ekr.20060116174906.262"><vh>Added Check Bindings script in leoSettings.leo</vh></v>
-<v t="ekr.20060116174906.263"><vh>Scripts now maintain original focus</vh></v>
-<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
-<v t="ekr.20060116174906.272"><vh>Improved cursor move/extend commands</vh></v>
-<v t="ekr.20060116174906.296"><vh>Added support for @mode nodes</vh></v>
-<v t="ekr.20060116174906.306"><vh>keyboard-quit restores default input mode</vh></v>
-</v>
-<v t="ekr.20060116174906.257"><vh>Added discusion to FAQ about when deleting a node is 'dangerous'</vh>
-<v t="ekr.20060111192108"></v>
-</v>
-</v>
-<v t="ekr.20060206111508"><vh>4.4 beta 2</vh>
-<v t="ekr.20060206111508.2"><vh>Bugs fixed</vh>
-<v t="ekr.20060206111508.3"><vh>Fixed crasher in Save button</vh></v>
-<v t="ekr.20060206111508.4"><vh>Fixed minor bugs &amp; made minor improvements</vh>
-<v t="ekr.20060206111508.5"><vh>Fixed two annoying headline glitches</vh></v>
-<v t="ekr.20060206111508.14"><vh>Insert headline didn't redraw headline properly in vim mode</vh></v>
-<v t="ekr.20060206111508.40"><vh>Improved printBindings, printCommands &amp; modeHelp</vh></v>
-</v>
-<v t="ekr.20060206111508.48"><vh>Fixed crasher re BackSpace in log window</vh></v>
-<v t="ekr.20060206111508.49"><vh>Fixed crashers in cut/copy/paste commands</vh></v>
-<v t="ekr.20060206111508.54"><vh>Fixed crasher when clicking the close box during a long command</vh></v>
+<v t="ekr.20150301045135.40"><vh>Bugs in commands</vh>
 <v t="ekr.20060206111508.58"><vh>cloneFindAll now honor present find settings</vh></v>
-<v t="ekr.20060206111508.63"><vh>Double-click didn't work in the body pane.</vh></v>
-<v t="ekr.20060206111508.74"><vh>Improved body.makeInsertPointVisible</vh></v>
+<v t="ekr.20051109112826.315"><vh>Fixed bug in Find Backward</vh></v>
+<v t="ekr.20051028051444.17"><vh>Fixed bug in goto-last-node.</vh></v>
+<v t="ekr.20060227102028.14"><vh>Fixed bug in open-find-dialog</vh></v>
+<v t="ekr.20060428084553.4"><vh>Fixed bug when cutting text in headline</vh></v>
+<v t="ekr.20060414071350.47"><vh>Fixed crash after undoing clearRecentFiles command</vh></v>
+<v t="ekr.20060421070409.36"><vh>Fixed crash in undo</vh></v>
+<v t="ekr.20060105182648.377"><vh>Fixed crasher in backwardDeleteCharacter</vh></v>
+<v t="ekr.20051205090923.13"><vh>Fixed crasher in deleteNextChar</vh></v>
+<v t="ekr.20060215112429.3"><vh>Fixed crasher in Go To Line command</vh></v>
+<v t="ekr.20060428084553.10"><vh>Fixed crasher in open-find-dialog</vh></v>
+<v t="ekr.20060206111508.3"><vh>Fixed crasher in Save button</vh></v>
+<v t="ekr.20060206111508.49"><vh>Fixed crashers in cut/copy/paste commands</vh></v>
 <v t="ekr.20060206111508.75"><vh>Fixed cut/copy/paste from menu</vh></v>
-<v t="ekr.20060206111508.553"><vh>Fixed major blunder: tree.onHeadChanged sets focus only if there was a real change</vh></v>
-<v t="ekr.20060206111508.97"><vh>Disabled plain-key bindings in insert/overwrite modes</vh></v>
-<v t="ekr.20060206111508.103"><vh>Disabled auto-scrolling in outline pane on clicks</vh></v>
-<v t="ekr.20060206111508.136"><vh>move-outline and find commands force a screen scroll</vh></v>
-<v t="ekr.20060211104746.2"><vh>Fixed undo problem in headlines</vh></v>
-<v t="ekr.20060214085054"><vh>Found the cause of 'sticking focus' problem</vh></v>
-<v t="ekr.20060211104746.162"><vh>Fixed tree icon bug</vh></v>
-<v t="ekr.20060211104746.177"><vh>Set remembered column properly in prev-line and next-line</vh></v>
-<v t="ekr.20060211104746.208"><vh>Fixed focus problems in spell tab</vh></v>
-<v t="ekr.20060214074035.9"><vh>Fixed problem with body_gmt_time setting</vh></v>
-<v t="ekr.20060214074035.20"><vh>Made sure save updates the open directory</vh></v>
+<v t="ekr.20051128181302.193"><vh>Fixed minor Save bug</vh></v>
+<v t="ekr.20051219150602.81"><vh>Fixed problem in reformatParagraph</vh></v>
+<v t="ekr.20060421070602"><vh>Fixed rename-buffer command</vh></v>
 <v t="ekr.20060214074035.41"><vh>Fixed sort-lines problems</vh></v>
-<v t="ekr.20060214074035.101"><vh>Fixed bug: paste outline lost headline editing</vh></v>
+<v t="ekr.20060211104746.2"><vh>Fixed undo problem in headlines</vh></v>
+<v t="ekr.20060328171518.57"><vh>Fixed undo problem with clones</vh></v>
+<v t="ekr.20060116174906.63"><vh>Fixed undo problems</vh></v>
+<v t="ekr.20051128181302.183"><vh>Fixed undo/redo bugs</vh></v>
+<v t="ekr.20060328171518.169"><vh>Import/export commands now set directory for next open</vh></v>
+<v t="ekr.20060105182648.376"><vh>Improved Import external files command.</vh></v>
+<v t="ekr.20060214074035.20"><vh>Made sure save updates the open directory</vh></v>
+<v t="ekr.20060206111508.136"><vh>move-outline and find commands force a screen scroll</vh></v>
+<v t="ekr.20060211104746.177"><vh>Set remembered column properly in prev-line and next-line</vh></v>
+<v t="ekr.20051109112826.227"><vh>Undo ends editing</vh></v>
 </v>
-<v t="ekr.20060206111508.547"><vh>Code improvements</vh>
-<v t="ekr.20060206111508.550"><vh>Removed code in c.begin/EndUpdate and c.endEditLabel that tried to save/restore focus</vh></v>
-<v t="ekr.20060206111508.596"><vh>Improved tree allocation</vh></v>
-<v t="ekr.20060211104746.12"><vh>Created c.masterFocusHandler</vh></v>
+<v t="ekr.20150301045135.39"><vh>Bugs in drawing &amp; events</vh>
+<v t="ekr.20060116174906.194"><vh>Always redraw the screen after editing a label</vh></v>
+<v t="ekr.20060328171518.108"><vh>Clicks outside minibuffer no longer rip focus</vh></v>
+<v t="ekr.20060206111508.103"><vh>Disabled auto-scrolling in outline pane on clicks</vh></v>
+<v t="ekr.20060206111508.63"><vh>Double-click didn't work in the body pane.</vh></v>
+<v t="ekr.20060227102028.15"><vh>Ensure dialogs properly get focus</vh></v>
+<v t="ekr.20051128181302.244"><vh>Fixed 2 outline editing bugs</vh></v>
+<v t="ekr.20060214074035.101"><vh>Fixed bug: paste outline lost headline editing</vh></v>
+<v t="ekr.20060206111508.54"><vh>Fixed crasher when clicking the close box during a long command</vh></v>
+<v t="ekr.20060116174906.185"><vh>Fixed extend-selection problems</vh></v>
+<v t="ekr.20060116174906.100"><vh>Fixed focus bug</vh></v>
+<v t="ekr.20051128181302.192"><vh>Fixed focus problem with tab completion</vh></v>
+<v t="ekr.20060211104746.208"><vh>Fixed focus problems in spell tab</vh></v>
+<v t="ekr.20060206111508.553"><vh>Fixed major blunder: tree.onHeadChanged sets focus only if there was a real change</vh></v>
+<v t="ekr.20051219150602.75"><vh>Fixed many headline problems</vh></v>
+<v t="ekr.20060215112429.6"><vh>Fixed menu problem on Linux</vh></v>
+<v t="ekr.20060116174906.3"><vh>Fixed minor headline problems</vh></v>
+<v t="ekr.20051205090923.16"><vh>Fixed new headline bug</vh></v>
+<v t="ekr.20060105182648.378"><vh>Fixed recent bug: dialogs now get focus properly when first opened.</vh></v>
+<v t="ekr.20060211104746.162"><vh>Fixed tree icon bug</vh></v>
+<v t="ekr.20060206111508.5"><vh>Fixed two annoying headline glitches</vh></v>
+<v t="ekr.20060214085054"><vh>Found the cause of 'sticking focus' problem</vh></v>
+<v t="ekr.20060206111508.74"><vh>Improved body.makeInsertPointVisible</vh></v>
+<v t="ekr.20051109112826.265"><vh>Improved Spell tab</vh></v>
+<v t="ekr.20060206111508.14"><vh>Insert headline didn't redraw headline properly in vim mode</vh></v>
+<v t="ekr.20060116174906.90"><vh>Installed patch for headline width</vh></v>
+<v t="ekr.20060328171518.190"><vh>Investigated colorizer problems: can not reproduce</vh></v>
+<v t="ekr.20060116174906.163"><vh>Leo now puts focus in body pane after deleting a window</vh></v>
+<v t="ekr.20051219150602.3"><vh>Made sure focus doesn't go to log during tab completion or after writes to log</vh></v>
+<v t="ekr.20060116174906.160"><vh>Made sure that focus stays in body during tab completion</vh></v>
+<v t="ekr.20060116174906.103"><vh>Made sure to bring proper window on top in settings.leo button</vh></v>
+<v t="ekr.20060116174906.97"><vh>Redraw screen properly after Move To Next Dirty</vh></v>
+<v t="ekr.20060105182648.382"><vh>Suppressed crash undoing a clone followed by a drag</vh></v>
+<v t="ekr.20051219150602.10"><vh>Text box is now selected in goto-line-number command</vh></v>
+</v>
+<v t="ekr.20150301045135.43"><vh>Bugs in file code</vh>
+<v t="ekr.20051219150602.28"><vh>Fixed ancient bug in read error logic that hung Leo</vh></v>
+<v t="ekr.20051028051444.16"><vh>Fixed bug in Leo's read logic</vh></v>
+<v t="ekr.20060116174906.122"><vh>Fixed old file handling bug</vh></v>
+<v t="ekr.20051219150602.85"><vh>Installed LeoUsers patch</vh></v>
+<v t="ekr.20060328171518.83"><vh>Investigated setting descendant @file nodes dirty when changing body text</vh></v>
+<v t="ekr.20051028051444.18"><vh>Leo now reads @settings trees when opening a .leo file from another outline.</vh></v>
+</v>
+<v t="ekr.20150301045135.38"><vh>Bugs in key handling</vh>
+<v t="ekr.20051028051444.15"><vh>Added kludge to solve infamous control-v problems</vh></v>
+<v t="ekr.20060116174906.104"><vh>Arrow keys now clear the text selection</vh></v>
+<v t="ekr.20060227102028.16"><vh>Disabled autocompleter in headlines</vh></v>
+<v t="ekr.20051109112826.257"><vh>Disabled minibuffer when not in use</vh></v>
+<v t="ekr.20060206111508.97"><vh>Disabled plain-key bindings in insert/overwrite modes</vh></v>
+<v t="ekr.20060421070409.33"><vh>Don't do typing completion for numbers</vh></v>
+<v t="ekr.20060116174906.88"><vh>Fix crash: tab in minibuffer</vh></v>
+<v t="ekr.20060206111508.48"><vh>Fixed crasher re BackSpace in log window</vh></v>
+<v t="ekr.20060328171518.48"><vh>Fixed problem with left &amp; right arrows in outline mode</vh></v>
+<v t="ekr.20060215112429.9"><vh>Fixed problems with unicode characters &amp; caps lock</vh></v>
+<v t="ekr.20060217071505.1"><vh>Fixed urgent compatibility problems</vh></v>
+<v t="ekr.20060421070409.2"><vh>Investigated problems with legacy bindings</vh></v>
+<v t="ekr.20060328171518.151"><vh>Made sure autocompleter and calltip text stick</vh></v>
+<v t="ekr.20060105182648.379"><vh>Made sure shortcuts are printed clearly by k.registerCommand</vh></v>
+<v t="ekr.20060328171518.249"><vh>Removed autocompletion for self</vh></v>
+<v t="ekr.20060428084553.34"><vh>Suppressed typing completion for numbers</vh></v>
+</v>
+<v t="ekr.20150301045135.37"><vh>Bugs in plugins</vh>
+<v t="ekr.20060227102028.18"><vh>Fix crasher in plugin</vh></v>
+<v t="ekr.20060428084711"><vh>Fixed crash in datenodes plugin</vh></v>
+<v t="ekr.20051128181302.231"><vh>Fixed long-standing problem with Plugins Manager plugin</vh></v>
+<v t="ekr.20060116174906.118"><vh>Fixed problems with plugins</vh></v>
+<v t="ekr.20051128181302.204"><vh>Fixed several bugs in rst3 plugin</vh></v>
+<v t="ekr.20060116174906.86"><vh>Improved word-export plugin</vh></v>
+</v>
+<v t="ekr.20150301045135.41"><vh>Bugs in settings</vh>
+<v t="ekr.20060328171518.119"><vh>Converted all shortcuts to unicode</vh></v>
+<v t="ekr.20051205090923.22"><vh>Fix problems applying settings</vh></v>
+<v t="ekr.20060227102028.3"><vh>Fixed binding bug</vh></v>
+<v t="ekr.20060116174906.164"><vh>Fixed many binding problems</vh></v>
+<v t="ekr.20060214074035.9"><vh>Fixed problem with body_gmt_time setting</vh></v>
+<v t="ekr.20060328171518.111"><vh>Handled missing leoSettings.leo files more gracefully</vh></v>
+<v t="ekr.20060328171518.135"><vh>Made Open With shortcuts work again</vh></v>
+<v t="ekr.20060328171518.248"><vh>Removed support @ifgui: it doesn't and can't work</vh></v>
+<v t="ekr.20060116174906.130"><vh>Simplified k.copyBindingsToWidget and eliminated k.onTextWidgetKey</vh></v>
+</v>
+<v t="ekr.20150301045135.46"><vh>Minor bugs</vh>
+<v t="ekr.20060206111508.4"><vh>Fixed minor bugs &amp; made minor improvements</vh></v>
+<v t="ekr.20060116174906.113"><vh>Fixed several minor bugs</vh></v>
+<v t="ekr.20060217072324"><vh>Minor bugs fixed</vh></v>
+<v t="ekr.20051101163404"><vh>Removed warnings from compare dialog</vh></v>
+</v>
+</v>
+<v t="ekr.20150301045135.33"><vh>Code</vh>
+<v t="ekr.20051109112826"><vh>* The New and Newer World Orders</vh></v>
+<v t="ekr.20051028051444.12"><vh>Added registerCommand helper</vh></v>
 <v t="ekr.20060211104746.168"><vh>Added unit tests for key dicts</vh></v>
-<v t="ekr.20060211104746.346"><vh>Special-cased commands for minibuffer</vh></v>
+<v t="ekr.20051109112826.254"><vh>c.executeMinibufferCommand executes a minibuffer command by name</vh></v>
+<v t="ekr.20060116174906.213"><vh>Call c.setLog in all entries into code</vh></v>
+<v t="ekr.20051109112826.223"><vh>Changed  edit_text to edit_widget everywhere</vh></v>
+<v t="ekr.20060206111508.547"><vh>Code improvements</vh></v>
+<v t="ekr.20060116174906.199"><vh>Created c.exists ivar and related logic</vh></v>
+<v t="ekr.20060211104746.12"><vh>Created c.masterFocusHandler</vh></v>
+<v t="ekr.20051128181302.196"><vh>Created enableTclTraces</vh></v>
+<v t="ekr.20051028051444.10"><vh>Dictionaries of keys and commands</vh></v>
+<v t="ekr.20051128181302.208"><vh>Eliminated w.update in g.app.gui.set_focus</vh></v>
+<v t="ekr.20051028051444.11"><vh>Functions that return the present key bindings</vh></v>
+<v t="ekr.20060116174906.255"><vh>Generalized doCommand</vh></v>
+<v t="ekr.20060206111508.596"><vh>Improved tree allocation</vh></v>
+<v t="ekr.20051101162123"><vh>Leo now ignores key bindings in menu tables</vh></v>
 <v t="ekr.20060214074035.6"><vh>Made sure yield works with Python 2.2</vh></v>
+<v t="ekr.20060206111508.550"><vh>Removed code in c.begin/EndUpdate and c.endEditLabel that tried to save/restore focus</vh></v>
+<v t="ekr.20051109142920"><vh>Removed frame.begin/endUpdate</vh></v>
+<v t="ekr.20060116174906.198"><vh>Removed g.top from Leo's core and all plugins</vh></v>
+<v t="ekr.20051128181302.149"><vh>Removed later arg from c.frame.xWantsFocus</vh></v>
+<v t="ekr.20051109112826.224"><vh>Removed tree ivars</vh></v>
+<v t="ekr.20060211104746.346"><vh>Special-cased commands for minibuffer</vh></v>
 <v t="ekr.20060214074035.12"><vh>Use os.getenv('User") if it exists to get initial cvs name</vh></v>
 </v>
-<v t="ekr.20060206112001"><vh>Improved commands</vh>
-<v t="ekr.20060212102459.4"><vh>Minibuffer-oriented find commands</vh></v>
-<v t="ekr.20060214074035.67"><vh>Leo remembers the previous open directory</vh></v>
+<v t="ekr.20150301045135.34"><vh>Commands</vh>
+<v t="ekr.20051101162123.1"><vh>Added commands for the tabbed log</vh>
+<v t="ekr.20051028051616.172"><vh>Programming the tabbed log</vh></v>
 </v>
-<v t="ekr.20060214090742"><vh>Improved plugins</vh>
-<v t="ekr.20060214074035.65"><vh>Fixed problem with view plugin</vh></v>
-<v t="ekr.20060214074035.66"><vh>Installed cleo patch</vh></v>
-</v>
-<v t="ekr.20060214083808"><vh>New commands</vh>
-<v t="ekr.20060212102459.4"></v>
-</v>
-<v t="ekr.20060214083647"><vh>New settings</vh></v>
-<v t="ekr.20060214092741"><vh>User input modes</vh></v>
-</v>
-<v t="ekr.20060215112429"><vh>4.4 experimental 1</vh>
-<v t="ekr.20060215112429.9"><vh>Fixed (maybe) problems with unicode characters &amp; caps lock</vh></v>
-<v t="ekr.20060215112429.2"><vh>Restored some legacy bindings</vh></v>
-<v t="ekr.20060215112429.3"><vh>Fixed crasher in Go To Line command</vh></v>
-<v t="ekr.20060215112429.6"><vh>Fixed menu problem on Linux</vh></v>
-</v>
-<v t="ekr.20060217071505"><vh>4.4 a6</vh>
-<v t="ekr.20060217071505.1"><vh>Fixed urgent compatibility problems</vh></v>
-<v t="ekr.20060217072324"><vh>Minor bugs fixed</vh></v>
-<v t="ekr.20060217072647"><vh>New debugging options in leoSettings.leo</vh></v>
-</v>
-<v t="ekr.20060227102028"><vh>4.4 a7</vh>
-<v t="ekr.20060227102028.2"><vh>Bugs Fixed</vh>
-<v t="ekr.20060227102028.3"><vh>Fixed binding bug</vh></v>
-<v t="ekr.20060227102028.14"><vh>Fixed bug in open-find-dialog</vh></v>
-<v t="ekr.20060227102028.15"><vh>Ensure dialogs properly get focus</vh></v>
-<v t="ekr.20060227102028.16"><vh>Disabled autocompleter in headlines</vh></v>
-<v t="ekr.20060227102028.17"><vh>Removed horrible g.app.dialogs hack</vh></v>
-<v t="ekr.20060227102028.18"><vh>Fix crasher in plugin</vh></v>
-</v>
-</v>
-<v t="ekr.20060328171518"><vh>4.4 b3</vh>
-<v t="ekr.20060328171518.1"><vh>New features</vh>
-<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
-<v t="ekr.20060328171518.11"><vh>Improved registerCommand</vh></v>
-<v t="ekr.20060328171518.15"><vh>Suppressed autocompletion after numbers</vh></v>
-<v t="ekr.20060328171518.16"><vh>Added colorizing support for Lua language</vh></v>
+<v t="ekr.20060212102459.4"><vh>Added minibuffer-oriented find commands</vh></v>
+<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
+<v t="ekr.20051028051444.8"><vh>Added new commands</vh></v>
+<v t="ekr.20051028061322"><vh>Added new commands</vh></v>
+<v t="ekr.20060214083808"><vh>Added new commands</vh></v>
 <v t="ekr.20060328171518.45"><vh>Added run-unit-test command</vh></v>
-</v>
-<v t="ekr.20060328171518.47"><vh>Bugs</vh>
-<v t="ekr.20060328171518.48"><vh>Fixed problem with left &amp; right arrows in outline mode</vh></v>
-<v t="ekr.20060328171518.57"><vh>Fixed undo problem with clones</vh></v>
-<v t="ekr.20060328171518.83"><vh>Investigated setting descendant @file nodes dirty when changing body text</vh></v>
+<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
+<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
+<v t="ekr.20060206112001"><vh>Improved commands</vh></v>
+<v t="ekr.20060206111508.40"><vh>Improved printBindings, printCommands &amp; modeHelp</vh></v>
+<v t="ekr.20060214074035.67"><vh>Leo remembers the previous open directory</vh></v>
 <v t="ekr.20060328171518.85"><vh>Work around newline problems on the Mac</vh></v>
-<v t="ekr.20060328171518.101"><vh>Got rid of settings messages</vh></v>
-<v t="ekr.20060328171518.108"><vh>Clicks outside minibuffer no longer rip focus</vh></v>
-<v t="ekr.20060328171518.111"><vh>Handled missing leoSettings.leo files more gracefully</vh></v>
-<v t="ekr.20060328171518.119"><vh>Converted all shortcuts to unicode</vh></v>
-<v t="ekr.20060328171518.135"><vh>Made Open With shortcuts work again</vh></v>
-<v t="ekr.20060328171518.151"><vh>Made sure autocompleter and calltip text stick</vh></v>
-<v t="ekr.20060328171518.152"><vh>Fixed a bug in c.openWith</vh></v>
-<v t="ekr.20060328171518.169"><vh>Import/export commands now set directory for next open</vh></v>
-<v t="ekr.20060328171518.190"><vh>Investigated colorizer problems: can not reproduce</vh></v>
-<v t="ekr.20060328171518.248"><vh>Removed support @ifgui: it doesn't and can't work</vh></v>
-<v t="ekr.20060328171518.249"><vh>Removed autocompletion for self</vh></v>
-<v t="ekr.20060414071350.1"><vh>Rewrote g.importExtension to simplify startup logic</vh></v>
-<v t="ekr.20060414071350.8"><vh>Removed calls to lstrip and rstrip for compatibility with Python 2.2.1</vh></v>
-<v t="ekr.20060414071350.47"><vh>Fixed Crash after undoing clearRecentFiles command</vh></v>
-<v t="ekr.20060414071350.58"><vh>Fixed minor problems reported by Pychecker</vh></v>
 </v>
-<v t="ekr.20060328171518.191"><vh>Plugins</vh>
+<v t="ekr.20051219150602.100"><vh>Features</vh>
+<v t="ekr.20060116174906.262"><vh>Added Check Bindings script in leoSettings.leo</vh></v>
+<v t="ekr.20051219151926"><vh>Added classic key bindings in leoSettings.leo</vh></v>
+<v t="ekr.20060428084553.39"><vh>Added clear-selection command</vh></v>
+<v t="ekr.20051128181302.156"><vh>Added clone-find checkbox to the Find tab</vh></v>
+<v t="ekr.20060328171518.16"><vh>Added colorizing support for Lua language</vh></v>
+<v t="ekr.20060428084553.273"><vh>Added filename completion</vh></v>
+<v t="ekr.20051219150602.102"><vh>Added modes/*.xml to distribution</vh></v>
+<v t="ekr.20060417092825.1"><vh>Added script to update new copies of leoSettting.leo from previous copies</vh></v>
+<v t="ekr.20060116174906.296"><vh>Added support for @mode nodes</vh></v>
+<v t="ekr.20060105182648.432"><vh>Allow multiple key bindings to the same command</vh></v>
+<v t="ekr.20051128181302.229"><vh>Bound &lt;Return&gt; to end-edit-headline</vh></v>
+<v t="ekr.20051109112826.222"><vh>Created scripts.leo and unitTest.leo</vh></v>
+<v t="ekr.20051219150602.101"><vh>created ut.leo, ut.py and ut.bat</vh></v>
+<v t="ekr.20060116174906.272"><vh>Improved cursor move/extend commands</vh></v>
+<v t="ekr.20051128181302.171"><vh>Improved find tab</vh></v>
+<v t="ekr.20051128181302.211"><vh>Improved formatting of shortcuts in print-commands and print-bindings</vh></v>
+<v t="ekr.20051128181302.150"><vh>Improved how the New Tab and Rename Tab commands work in the log pane</vh></v>
+<v t="ekr.20051109112826.310"><vh>Improved perl entries in language dicts</vh></v>
+<v t="ekr.20060328171518.11"><vh>Improved registerCommand</vh></v>
+<v t="ekr.20051128181302.151"><vh>Improved the appearance of the Spell tab</vh></v>
+<v t="ekr.20060116174906.259"><vh>Installed many standard bindings to leoSettings.leo</vh></v>
+<v t="ekr.20060116174906.306"><vh>keyboard-quit restores default input mode</vh></v>
+<v t="ekr.20060428084553.41"><vh>Made all edit command undoable</vh></v>
+<v t="ekr.20051128181302.147"><vh>Moved all scripts into scripts.leo</vh></v>
+<v t="ekr.20051028051616.299"><vh>Optional generation of closing brackets</vh></v>
+<v t="ekr.20051128181302.214"><vh>Put up a dialog if can't import Pmw</vh></v>
+<v t="ekr.20051219150602.105"><vh>Revised cursor movement commands and added selection-extension commands</vh></v>
+<v t="ekr.20060116174906.263"><vh>Scripts now maintain original focus</vh></v>
+<v t="ekr.20060328171518.15"><vh>Suppressed autocompletion after numbers</vh></v>
+</v>
+<v t="ekr.20051028051444.4"><vh>Settings</vh>
+<v t="ekr.20051128181302.213"><vh>Added settings for vim plugin</vh></v>
+<v t="ekr.20060217072647"><vh>New debugging options</vh></v>
+<v t="ekr.20060214083647"><vh>New settings</vh></v>
+<v t="ekr.20051101182739"><vh>New settings</vh></v>
+<v t="ekr.20051028051444.7"><vh>Options for selected body text</vh></v>
+<v t="ekr.20060215112429.2"><vh>Restored some legacy bindings</vh></v>
+<v t="ekr.20051028051444.6"><vh>The @bool useCmdMenu option</vh></v>
+<v t="ekr.20051028051444.5"><vh>The @bool useMinibuffer option</vh></v>
+</v>
+<v t="ekr.20051101161949"><vh>Plugins</vh>
 <v t="ekr.20060328171518.238"><vh>Changed path to stylesheet in the rst3 plugin</vh></v>
-<v t="ekr.20060328171518.240"><vh>Fixed problems with chapters plugin</vh></v>
-<v t="ekr.20060328171518.244"><vh>Improved groupoperations plugin</vh></v>
+<v t="ekr.20051128181302.148"><vh>Changed scripting plugin so files opened with buttons stay in front</vh></v>
 <v t="ekr.20060328171518.245"><vh>Fixed crasher in Word (and other) plugins</vh></v>
 <v t="ekr.20060328171518.246"><vh>Fixed problem with labels plugin</vh></v>
+<v t="ekr.20060214074035.65"><vh>Fixed problem with view plugin</vh></v>
+<v t="ekr.20060328171518.240"><vh>Fixed problems with chapters plugin</vh></v>
+<v t="ekr.20060328171518.244"><vh>Improved groupoperations plugin</vh></v>
+<v t="ekr.20051028051616.160"><vh>Improved the scripting plugin</vh></v>
+<v t="ekr.20060214074035.66"><vh>Installed cleo patch</vh></v>
+<v t="ekr.20051101162947"><vh>Retired the TabbedLog plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20060417092536"><vh>4.4 b4</vh>
-<v t="ekr.20060421070409.1"><vh>Bugs</vh>
-<v t="ekr.20060421070602"><vh>Fixed rename-buffer command</vh></v>
-<v t="ekr.20060421070409.2"><vh>Investigated problems with legacy bindings</vh></v>
-<v t="ekr.20060421070409.3"><vh>Fixed bug when cutting text in headline</vh>
-<v t="ekr.20060421070409.4"><vh>Report</vh></v>
 </v>
-<v t="ekr.20060421070409.9"><vh>Fixed crasher in open-find-dialog</vh>
-<v t="ekr.20060421070409.10"><vh>Report</vh></v>
-<v t="ekr.20060421070409.11"><vh>Traceback</vh></v>
-</v>
-<v t="ekr.20060421070409.33"><vh>Don't do typing completion for numbers</vh></v>
-<v t="ekr.20060421070409.36"><vh>Fixed crash in undo</vh></v>
-</v>
-<v t="ekr.20060421070409.37"><vh>New features</vh>
-<v t="ekr.20060417092825.1"><vh>Added script to update new copies of leoSettting.leo from previous copies</vh></v>
-<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
-<v t="ekr.20060421070409.40"><vh>Made all edit command undoable</vh></v>
-</v>
-</v>
-<v t="ekr.20060428084553"><vh>4.4 rc1</vh>
-<v t="ekr.20060428084553.2"><vh>Bugs</vh>
-<v t="ekr.20060428084957"><vh>Fixed rename-buffer command</vh></v>
-<v t="ekr.20060428084553.4"><vh>Fixed bug when cutting text in headline</vh></v>
-<v t="ekr.20060428084553.10"><vh>Fixed crasher in open-find-dialog</vh></v>
-<v t="ekr.20060428084553.34"><vh>Suppressed typing completion for numbers</vh></v>
-<v t="ekr.20060428084553.37"><vh>Fixed crash in undo</vh></v>
-<v t="ekr.20060428084711"><vh>Fixed crash in datenodes plugin</vh></v>
-</v>
-<v t="ekr.20060428084553.38"><vh>New features</vh>
-<v t="ekr.20060428084553.39"><vh>Added clear-selection command</vh></v>
-<v t="ekr.20060428084553.41"><vh>Made all edit command undoable</vh></v>
-<v t="ekr.20060428084553.42"><vh>Added new commands</vh></v>
-<v t="ekr.20060428084553.273"><vh>Added filename completion</vh></v>
-</v>
-</v>
-<v t="ekr.20060511074853"><vh>4.4 final</vh></v>
-</v>
-<v t="ekr.20080311060457.214"><vh>4.4.x</vh>
+<v t="ekr.20080311060457.214" a="M"><vh>4.4.x</vh>
 <v t="ekr.20060822140418"><vh>4.4.1...new colorizer, slideshow, multiple editors</vh>
 <v t="ekr.20060830141224"><vh>4.4.1 final</vh>
 <v t="ekr.20060830141224.2"><vh>Removed warning about changed nodes</vh></v>
@@ -2991,7 +2916,7 @@ marks="ekr.20101104091058.5045,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
 </v>
-<v t="ekr.20101104091058.5045" a="M"><vh>4.8 Simpler sentinels, better installer, recovery nodes</vh>
+<v t="ekr.20101104091058.5045"><vh>4.8 Simpler sentinels, better installer, recovery nodes</vh>
 <v t="ekr.20101024234254.5433"><vh>4.8 a1</vh></v>
 <v t="ekr.20101114081049.5004"><vh>4.8 b1</vh></v>
 <v t="ekr.20101104091058.4975"><vh>4.8 rc1</vh>
@@ -9597,60 +9522,6 @@ To use this plugin effectively, Python's docutils module must be installed.
 This plugin sends .htm, .html or .tex files to the docutils module for further processing. Docutils generates HTML files or LaTeX files depending on the file's extension. HTML files generated by docutils refer to three .css (cascading style sheet) files that should exist in the same directory as the generated HTML file. You can control the formatting of the HTML file by altering these .css files.
 </t>
 <t tx="ekr.20050917105646"></t>
-<t tx="ekr.20051028051444">Leo 4.4 alpha 4                                         December 5, 2005
-
-Leo 4.4 a4 introduces the 'Newer World Order' for redrawing the screen,
-corrects numerous bugs in the 4.4 code base, and introduces several new features.
-
-You should be able to use this version safely. There are no known serious bugs,
-but several minibuffer commands are not ready for prime time. All the major
-features of 4.4 are in place.
-
-To learn about Leo, see: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
-----------------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name. Support for tab completion.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Support for almost all commands in the Emacs Cmds menu, including cursor
-and screen movement, basic character, word and paragraph manipulation, and
-commands to manipulate buffers, the kill ring, regions and rectangles.
-
-- Per-pane key bindings. You can bind shortcuts to multiple commands depending
-on which of Leo's panes presently has focus. For example, you can use arrow keys
-to move nodes in the outline pane, while retaining their defaults in Leo's body
-pane. Per-pane key bindings are essential for mouseless Leo.
-
-- @command nodes create minibuffer commands. You can bind key shortcuts to
-@button and @command nodes.
-
-- A rewrite of Leo's keystroke handling. In particular, Leo handles key events
-immediately rather than queuing them for idle time.
-
-- Leo recovers from crashes much more reliably than in any previous version.
-
-- Leo updates the screen immediately rather than waiting for idle time.
-This 'Newer World Order' simplifies the code and improves performance.
-
-Known bugs in Leo 4.4a4
------------------------
-- Several minibuffer commands do not work.  See the release notes for details.
-
-Coming in later releases of Leo 4.4:
-------------------------------------
-- An auto-complete command that shows class members in the Completion tab.
-
-- More support for mouseless Leo. There will be commands to manipulate all
-aspects of Leo using commands, so your fingers will never have to leave the
-keyboard.
-
-- Support for Vim and other 'plain-key' input modes.
-</t>
 <t tx="ekr.20051028051444.1">Here are the default bindings relating to the minibuffer. Any of
 these may be changed by changing @shortcuts nodes in leoSettings.leo.
 
@@ -9713,8 +9584,6 @@ def f (event):
 k.registerCommand('print-hello','Alt-Ctrl-Shift-p',f)
 k.registerCommand('print-hello2',None,f)
 </t>
-<t tx="ekr.20051028051444.13">The following bugs exist in 4.3 final.
-</t>
 <t tx="ekr.20051028051444.14">This makes it much harder to hang Leo after taking an exception. Leo 4.4a1 is
 *much* more robust than Leo 4.3 final in this regard.
 </t>
@@ -9767,9 +9636,6 @@ This menu is not ready yet, though nothing bad happens if this option is True.
 
 - The help command gives a brief quick start introduction to Leo's Emacs-like features.
 </t>
-<t tx="ekr.20051028051444.9"></t>
-<t tx="ekr.20051028051616"></t>
-<t tx="ekr.20051028051616.1"></t>
 <t tx="ekr.20051028051616.160">@nocolor
 
 The scripting plugin has been improved as follows:
@@ -9917,8 +9783,6 @@ This binds the shortcut to the script in the script button. The button's name is
 
 This creates a new minibuffer command and binds shortcut to it.
 </t>
-<t tx="ekr.20051101161405.3">Abbreviations may not work at present. A new kind of abbreviation is presently hard coded in add_ekr_altx_commands in leoKeys.py. For example, one ekr-shortcut is: 'f', which is bound to leo-find-panel. Typing Alt-x f Return executes leo-find-panel. These may be quicker than Emacs abbreviations, or not.
-</t>
 <t tx="ekr.20051101161949"></t>
 <t tx="ekr.20051101162123">These 'hard-coded' bindings are no longer needed and interfere with per-pane bindings.
 </t>
@@ -9942,12 +9806,7 @@ Chapter 7 of the Users Guide for details.
 </t>
 <t tx="ekr.20051101162947">Leo's core now supports tabs in the log pane.
 </t>
-<t tx="ekr.20051101163145">Leo 4.4a2 contains a large number of code-level improvements--some very significant. For full details, see the (Projects) section of LeoPy.leo.
-</t>
-<t tx="ekr.20051101163404">The following bugs existed in the 4.4a1 code base and have now been fixed:
-
-- Removed warnings from compare dialog.
-</t>
+<t tx="ekr.20051101163404"></t>
 <t tx="ekr.20051101182739">- The node::
 
     @shortcuts traditional Leo shortcuts with important emacs bindings
@@ -9967,10 +9826,7 @@ For example::
 - The @bool autocomplete-brackets setting controls whether Leo types a matching
 closing bracket immediately when you type '(', '[' or '{'.
 </t>
-<t tx="ekr.20051109112610"></t>
-<t tx="ekr.20051109112826">@nocolor
-
-The New World Order means that drawing happens immediately, not at idle time.
+<t tx="ekr.20051109112826">The New World Order means that drawing happens immediately, not at idle time.
 
 The Newer World Order means that c.endUpdate is equivalent to c.redraw_now.
 </t>
@@ -10028,12 +9884,8 @@ The entries for Perl and Perlpod are now as follows::
 
 Fixed an edge effect when backward searching for a match that occurs at the very end of body text. In the process I removed an ancient hack.
 </t>
-<t tx="ekr.20051109141223"></t>
-<t tx="ekr.20051109141524"></t>
-<t tx="ekr.20051109141524.1"></t>
 <t tx="ekr.20051109142920">This code should never have existed.  It was used only in the macro plugin.
 </t>
-<t tx="ekr.20051128181229"></t>
 <t tx="ekr.20051128181302.147"></t>
 <t tx="ekr.20051128181302.148">The plugin can not call bodyWantsFocus.
 </t>
@@ -10127,84 +9979,11 @@ https://sourceforge.net/forum/message.php?msg_id=3447570
 
 2: Inserting a headline didn't save previous edits of headlines
 </t>
-<t tx="ekr.20051128181351"></t>
-<t tx="ekr.20051128181651">Leo 4.4a4 completes the transition to the 'Newer World Order'.
-</t>
-<t tx="ekr.20051128181651.1"></t>
 <t tx="ekr.20051202072010"></t>
 <t tx="ekr.20051205090923.13"></t>
 <t tx="ekr.20051205090923.16">http://sourceforge.net/forum/message.php?msg_id=3450435
 </t>
 <t tx="ekr.20051205090923.22">http://sourceforge.net/forum/message.php?msg_id=3389810
-</t>
-<t tx="ekr.20051205091625">- The abbreviation and buffer commands are not ready yet.
-
-- repeat-complex-command does not work.
-
-- Moving the cursor when the 'mark' has been defined does not expand the visibly
-selected text.
-
-- Yanking and killing have not been well tested.
-
-- C-u 5 &lt;return&gt; works but is not undone properly. Also, the kill-line command
-does not work as in Emacs.
-
-- Many new commands must be generalized to handle the more complex environment
-Leo offers. For example, search commands must be told whether to limit the
-search a single node, or a node or and its descendants, or the entire outline.
-We need a set-variable command that sets a (Python) variable using an
-emacs-style variable name.
-
-- The notion of the 'point' must be expanded so it indicates a node as well as
-text location.
-
-- New commands are needed to support 'mouseless-Leo'. The user must be able to
-drive all dialogs from the keyboard, or to get the same effect without using a
-dialog at all. Examples: dismiss-top-dialog, scroll-outline-up/down. We also
-need commands to change focus and to manage menus. Examples: focus-in-body,
-focus-in-tree, etc, activate-edit-menu, etc.
-</t>
-<t tx="ekr.20051219150602">Leo 4.4 alpha 5                                             January 6, 2006
-
-This release completes the last major features of Leo 4.4:
-
-- User-specified key-binding modes.
-- Support for multiple key-bindings for individual minibuffer commands.
-
-This will be the last alpha version of Leo 4.4. Beta 1 is coming in about a
-week. You should be able to use this version safely; there are no known serious
-bugs.
-
-To learn about Leo, see: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
-----------------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name. Support for tab completion.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Support for most commands in the Emacs Cmds menu, including cursor and screen
-movement, basic character, word and paragraph manipulation, and commands to
-manipulate buffers, the kill ring, regions and rectangles.
-
-- Per-pane key bindings. You can bind shortcuts to multiple commands depending
-on which of Leo's panes presently has focus. For example, you can use arrow keys
-to move nodes in the outline pane, while retaining their defaults in Leo's body
-pane.
-
-- User-specified key-binding modes. This feature makes it possible to emulate all
-aspects of Emacs and Vim as far as key bindings are concerned.
-
-- @command nodes create minibuffer commands. You can bind key shortcuts to
-@button and @command nodes.
-
-- Leo recovers from crashes much more reliably than in any previous version.
-
-- Leo handles keystrokes and updates the screen immediately rather than waiting
-for idle time.
 </t>
 <t tx="ekr.20051219150602.10">http://sourceforge.net/forum/message.php?msg_id=3464874
 </t>
@@ -10301,10 +10080,6 @@ The code is due to LeoUser.
 <t tx="ekr.20060105182648.382">The reason for this assert is unclear.
 </t>
 <t tx="ekr.20060105182648.432"></t>
-<t tx="ekr.20060105182648.469">This is the end of the ill-fated settings dialog.
-
-Important: you can use the show-colors and show-fonts commands to help set colors and fonts in leoSettings.leo.
-</t>
 <t tx="ekr.20060105214753">Leo now allows you to specify input modes. You enter mode x with the enter-x-mode command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.
 
 You can specify modes with @mode nodes in leoSettings.leo. @mode nodes work just like @shortcuts nodes, but in addition they have the side effect of creating the enter-&lt;mode name&gt;-mode command.
@@ -10362,40 +10137,6 @@ If (maybe much later), we eliminate B' as a child of A will get::
         - B
 
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
-</t>
-<t tx="ekr.20060116174906">Leo 4.4 beta 1                                             January 17, 2006
-
-The code is stable; there are no known serious bugs. Some features are
-incomplete.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20060116174906.100">https://sourceforge.net/forum/message.php?msg_id=3514627
 
@@ -10457,22 +10198,17 @@ The problem was in log.clearTab.  It must do call t.update().
 <t tx="ekr.20060116174906.164"></t>
 <t tx="ekr.20060116174906.185">extensionHelper resets movePoint any time there is no selection.
 </t>
-<t tx="ekr.20060116174906.187"></t>
 <t tx="ekr.20060116174906.194">The fix was to call endUpdate() rather than endUpdate(changed) in onHeadChanged.
 </t>
-<t tx="ekr.20060116174906.195"></t>
 <t tx="ekr.20060116174906.198">g.top and the associated g.app.log logic is inherently unreliable.
 </t>
 <t tx="ekr.20060116174906.199">This allows code to determine in a standard way whether a window is in the process of being destroyed.
 </t>
-<t tx="ekr.20060116174906.2"></t>
 <t tx="ekr.20060116174906.213">This includes k.masterCommand and all event handlers.
 </t>
 <t tx="ekr.20060116174906.255">Leo now calls doCommand on all commands, so the 'command' hooks and error
 processing always get done.
 </t>
-<t tx="ekr.20060116174906.257"></t>
-<t tx="ekr.20060116174906.258"></t>
 <t tx="ekr.20060116174906.259"></t>
 <t tx="ekr.20060116174906.262"></t>
 <t tx="ekr.20060116174906.263">http://sourceforge.net/forum/message.php?msg_id=3518792
@@ -10524,54 +10260,6 @@ The plugin now uses sys.getdefaultencoding() to set the encoding.
 <t tx="ekr.20060116174906.90">http://sourceforge.net/forum/message.php?msg_id=3510983
 </t>
 <t tx="ekr.20060116174906.97"></t>
-<t tx="ekr.20060206111508">Leo 4.4 beta 2                                              February 14, 2006
-
-This version fixes dozens of bugs, improves performance and polishes the user
-interface. The code is stable; there are no known serious bugs.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4b2:
-----------------------------
-- Much better 'fit and finishes'.
-- New commands that support mouseless Leo.
-- Minibuffer search commands provide all features of Leo's legacy search commands.
-- User modes are fully functional and you can create special bindings for the minibuffer.
-- New master key and click handlers and improved allocation of screen widgets.
-
-Coming in Leo 4.4b3:
---------------------
-- A revived chapters plugin.
-- Autocompleter Tab.
-- Improved incremental searches.
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
 <t tx="ekr.20060206111508.103">The outline jumps around too much when expanding/contracting nodes
 </t>
 <t tx="ekr.20060206111508.136">This is required now that scrolling is disabled by default.
@@ -10582,7 +10270,6 @@ Quotes:   http://leoeditor.com/testimonials.html
 
 - modeHelp calls c.endEditing(retainFocus=True)
 </t>
-<t tx="ekr.20060206111508.2"></t>
 <t tx="ekr.20060206111508.3">Must check for c.exists in c.executeScript after executing the script.
 </t>
 <t tx="ekr.20060206111508.4">- keyboard-quit now ends editing.
@@ -10946,37 +10633,12 @@ Remove almost all calls to w.update in Leo.
 
 No more calls to w.after that were used to draw the status line. The master key and click handlers now call the label update method directly. This may ease a major stress on Tk.
 </t>
-<t tx="ekr.20060214090742"></t>
 <t tx="ekr.20060214092741">- @mode nodes in leoSettings.leo allow you to specify input modes with separate key bindings.
 
 See the child of this node for full details.
 
 - All key bindings specified with !mini pane specifier apply to all modes.
 
-</t>
-<t tx="ekr.20060215112429">Leo 4.4 experimental 1                                      February 15, 2006
-
-This version is an emergency measure.  It's goals:
-
-1.  To fix some of the key-handling issues in Leo 4.4 b2.
-2.  To allow further experimentation with key handling.
-3.  To allow easy reporting of any other key handling problems.
-
-Please do not use this version (or Leo 4.4b2) unless you are ready to report bugs.
-
-My apologies for the key handling problems in Leo 4.4 b2.  I hope this version will
-be all that is necessary to fix those problems.
-
-Here are the details of the key-handling changes:
-
-- Added support for trace_key_event setting.
-- Added support for ignore_caps_lock setting.
-- Added Caps_Lock and Num_Lock to k.tkNamesList and in the list of
-  special keys in k.masterCommand and k.masterKeyHandlerHelper.
-- Added support for k.ignore_unbound_non_ascii_keys logic in masterKeyHandlerHelper.
-- Disabled unknown keysym trace in k.strokeFromEvent.
-- Enabled the international keyboard on XP as an aid to testing.
-- Added support for swap_mac_keys setting in k.shortcutFromSetting.
 </t>
 <t tx="ekr.20060215112429.2">extract                             = Shift-Ctrl-D
 extract-names                       = Shift-Ctrl-N
@@ -11006,57 +10668,6 @@ What I did:
 - Enabled the international keyboard on XP as an aid to testing.
 - Added support for swap_mac_keys setting in k.shortcutFromSetting.
 </t>
-<t tx="ekr.20060217071505">Leo 4.4 alpha 6                                         February 17, 2006
-
-Leo 4.4 b2 was broken on some platforms.  Leo 4.4 a6 should fix those problems
-forever.  However, only wider distribution will verify that for certain.
-
-Besides fixing the fatal problems with Leo 4.4b2, this version fixes two minor bugs
-and adds some new settings in leoSettings.leo.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4 b2 and a6:
-----------------------------
-- Smoother user interface.
-- New commands that support mouseless Leo.
-- Minibuffer search commands provide all features of Leo's legacy search commands.
-- User modes are fully functional; you can create special bindings for the minibuffer.
-- New master key and click handlers and improved allocation of screen widgets.
-
-Coming in Leo 4.4b3:
---------------------
-- A revived chapters plugin.
-- Autocompleter Tab.
-- Improved incremental searches.
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
 <t tx="ekr.20060217071505.1">The new scheme binds to keystrokes, not commands.  This should be as portable and robust as all previous versions (except b2, which was broken).
 
 - Created k.completeAllBindings, called last in k.makeAllBindings. This binds all keystrokes in k.bindingsDict to k.masterKeyHandler with an optional stroke argument. This allows k.masterKeyhandler to dispense with the problematic call to k.strokeFromEvent. This is all that is really required.
@@ -11076,42 +10687,6 @@ Quotes:   http://leoeditor.com/testimonials.html
 - @bool trace_minibuffer
 - @bool trace_status_line
 </t>
-<t tx="ekr.20060227102028">Leo 4.4 alpha 7                                             February 28, 2006
-
-This version fixes some minor problems with Leo 4.4a6 and adds autocompletion
-and calltips.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Autocompletion and calltips.  Autocompletion works much like tab completion.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
 <t tx="ekr.20060227102028.14">http://sourceforge.net/forum/message.php?msg_id=3586962
 By: bwmulder
 
@@ -11129,50 +10704,11 @@ TypeError: findButtonCallback() takes at least 1 argument (0 given)
 <t tx="ekr.20060227102028.15"></t>
 <t tx="ekr.20060227102028.16">This was causing problems.  It may be an easy fix, but I kinda doubt it.
 </t>
-<t tx="ekr.20060227102028.17">
-</t>
+<t tx="ekr.20060227102028.17"></t>
 <t tx="ekr.20060227102028.18">http://sourceforge.net/forum/message.php?msg_id=3597694
 </t>
-<t tx="ekr.20060227102028.2"></t>
 <t tx="ekr.20060227102028.3">http://sourceforge.net/forum/message.php?msg_id=3583335
 </t>
-<t tx="ekr.20060328171518">Leo 4.4 beta 3                                             April 14, 2006
-
-This version fixes some minor problems and adds various features.  This code
-has been in use for several weeks without any major problems reported.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Autocompletion and calltips.  Autocompletion works much like tab completion.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
-<t tx="ekr.20060328171518.1"></t>
 <t tx="ekr.20060328171518.10">http://sourceforge.net/forum/message.php?msg_id=3608246
 
 Added the following commands:
@@ -11181,8 +10717,6 @@ scroll-outline-down-line
 scroll-outline-down-page       
 scroll-outline-up-line       
 scroll-outline-up-page
-</t>
-<t tx="ekr.20060328171518.101">Apparently g.app.unitTesting isn't set properly for the new-window test.
 </t>
 <t tx="ekr.20060328171518.108">The bug: Hit control-f, then select the text that doesn't have focus.
 </t>
@@ -11218,7 +10752,6 @@ c.openWith now calls g.enableIdleTimeHook
 </t>
 <t tx="ekr.20060328171518.190">http://sourceforge.net/forum/message.php?msg_id=3585710
 </t>
-<t tx="ekr.20060328171518.191"></t>
 <t tx="ekr.20060328171518.238">http://sourceforge.net/forum/message.php?msg_id=3637393
 
 I'm trying to set up a default stylesheet for a project and want this to be held relative to the project directory (where the .leo file is). The default is to place it in the same directory as the output, which is a couple of levels down.
@@ -11261,7 +10794,6 @@ The fix was to plugins_menu.py: the cmd_callback must have an event argument.
 </t>
 <t tx="ekr.20060328171518.45">This is equivalent to the Unit Test script button in unitTest.leo
 </t>
-<t tx="ekr.20060328171518.47"></t>
 <t tx="ekr.20060328171518.48">http://sourceforge.net/forum/message.php?msg_id=3619340
 
 Just tried out CVS today, and on Linux left/right and L/R in outline mode (Ctrl-Shift-O) seem to do nothing, whereas they should expand/contract parent nodes.
@@ -11282,60 +10814,9 @@ Added insert-newline command and fixed some related commands.
 </t>
 <t tx="ekr.20060414071350.1"></t>
 <t tx="ekr.20060414071350.47"></t>
-<t tx="ekr.20060414071350.58"># No change for now
-C:\prog\tigris-cvs\leo\src\leoKeys.py:1050: Parameter (thread) not used
-
-# Fixed
-C:\prog\tigris-cvs\leo\src\leoTkinterFrame.py:1428: Function returns a value and also implicitly returns None
-C:\prog\tigris-cvs\leo\src\leoTkinterTree.py:1222: Local variable (delta) not used
-C:\prog\tigris-cvs\leo\src\leoKeys.py:1931: Local variable (f) not used
-C:\prog\tigris-cvs\leo\src\leoGlobals.py:5246: Local variable (buttonList) not used
-C:\prog\tigris-cvs\leo\src\leoCommands.py:493: No global (enableIdleTimeHook) found
-</t>
 <t tx="ekr.20060414071350.8">http://sourceforge.net/forum/message.php?msg_id=3671350
 
 Change aString.lstrip and aString.rstrip to the aString.replace.
-</t>
-<t tx="ekr.20060417092536">Leo 4.4 beta 4                                             April 21, 2006
-
-This version fixes a long-standing MacOS bug.  It is likely to be the last
-beta release before 4.4 final.  This release also adds several new commands
-and contains a script for updating leoSettings.leo.
-
-Warning: The previous beta was not widely distributed. Please do some testing in
-your environment before recommending this version of Leo to others, (such as
-your students).
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Autocompletion and calltips.  Autocompletion works much like tab completion.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20060417092825.1">See the (presently disabled) script button in scripts.leo at:
 
@@ -11350,67 +10831,6 @@ Here is a **preliminary** script that updates a new leoSettings.leo file (path2)
 **Warning**: This script is unsophisticated in its update algorithm. If if finds corresponding nodes (node with the same settings name) in both outlines it simply replaces the node in the path2 file with the node in the path1 file. In particular, it does not keep track of individual shortcuts: it replaces the body of one @shortcuts node with the body of the corresponding @shortcuts node.
 
 **Note**: If the path1 file contains a settings node not in the path2 file it attempts to create a new node in the corresponding place in the path2 file. If this is not possible, say because the structures of the files are different, the script places the new node as the last child of the @settings node in the path2 file.
-</t>
-<t tx="ekr.20060421070409.1"></t>
-<t tx="ekr.20060421070409.10">@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3692247
-
-Find panel cannot be re-opened. Run open-find-dialog. Close it. Run open-find-dialog
-again -- crash.
-
-The fix was to move the line:
-
-self.top.protocol("WM_DELETE_WINDOW", self.onCloseWindow)
-
-from createBindings to createFrame in the leoTkinterFind class.
-</t>
-<t tx="ekr.20060421070409.11">TclError Exception in Tk callback
-  Function: &lt;function bindKeyCallback at 0x0169B170&gt; (type: &lt;type 'function'&gt;)
-  Args: (&lt;Tkinter.Event instance at 0x01865EB8&gt;,)
-  Event type: KeyPress (type num: 2)
-Traceback (innermost last):
-  File "C:\prog\tigris-cvs\leo\extensions\Pmw\Pmw_1_2\lib\PmwBase.py", line 1752, in __call__
-    return apply(self.func, args)
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 1991, in bindKeyCallback
-    return k.masterKeyHandler(event,stroke=stroke)
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2931, in masterKeyHandler
-    val = self.masterKeyHandlerHelper(event,stroke)
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2990, in masterKeyHandlerHelper
-    val = k.callStateFunction(event) # Calls end-command.
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2208, in callStateFunction
-    val = k.state.handler(event)
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2289, in fullCommand
-    k.callAltXFunction(k.mb_event)
-  File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2327, in callAltXFunction
-    func(event)
-  File "C:\prog\tigris-cvs\leo\src\leoCommands.py", line 2801, in showFindPanel
-    c.frame.findPanel{|{ingToFront()
-  File "C:\prog\tigris-cvs\leo\src\leoTkinterFind.py", line 469, in bringToFront
-    self.top.withdraw() # Helps bring the window to the front.
-  File "c:\python24\lib\lib-tk\Tkinter.py", line 1562, in wm_withdraw
-    return self.tk.call('wm', 'withdraw', self._w)
-TclError: bad window path name ".25637872"
-
-================================================
-  Event contents:
-    char:
-    delta: 13
-    height: ??
-    keycode: 13
-    keysym: Return
-    keysym_num: 65293
-    num: ??
-    serial: 1486
-    state: 0
-    time: 1717970
-    type: 2
-    widget: .17570752.17571352.19882152.minibuffer
-    width: ??
-    x: 183
-    x_root: 576
-    y: -62
-    y_root: 859
-
 </t>
 <t tx="ekr.20060421070409.2">http://sourceforge.net/forum/message.php?msg_id=3688804
 By: paulpaterson
@@ -11428,29 +10848,9 @@ commands
 *** Also on legacy bindings the arrow keys don't seem to move the cursor in the
 body.
 </t>
-<t tx="ekr.20060421070409.3"></t>
 <t tx="ekr.20060421070409.33">getLeadinWord must clear self.membersList to disable completion.
 </t>
 <t tx="ekr.20060421070409.36"></t>
-<t tx="ekr.20060421070409.37"></t>
-<t tx="ekr.20060421070409.4">@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3692247
-By: vpe
-
-After cutting selection in the headline, headline area shrinks too much.  Example:
-headline is 'NewHeadline', select last 'e', ctrl-x, it shrinks to 'Ne'
-
-To fix by hand: add
-
-s=g.app.gui.getAllText(w)
-
-Just before
-
-w.configure(width=f.tree.headWidth(s=s))
-
-in cutText in leoTkFrame.py
-</t>
-<t tx="ekr.20060421070409.40"></t>
 <t tx="ekr.20060421070409.41">New commands:
 
 add-space-to-lines,
@@ -11463,56 +10863,16 @@ open-outline-by-name (filename completion)
 remove-space-from-lines
 remove-tab-from-lines
 </t>
-<t tx="ekr.20060421070409.9"></t>
 <t tx="ekr.20060421070602"></t>
-<t tx="ekr.20060428084553">Leo 4.4 release candidate 1                                 April 28, 2006
-
-This version fixes a few minor bug reported in 4.4b4 and adds 9 new commands.
-The open-outline-by-name command supports filename completion.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4:
---------------------------
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
-
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
-
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
-
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
-
-- Autocompletion and calltips.  Autocompletion works much like tab completion.
-
-- Dozens of other new features and bug fixes since Leo 4.3.3.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
 <t tx="ekr.20060428084553.10">http://sourceforge.net/forum/message.php?msg_id=3692247
 
 Find panel cannot be re-opened. Run open-find-dialog. Close it. Run open-find-dialog
 again -- crash.
 </t>
-<t tx="ekr.20060428084553.2"></t>
 <t tx="ekr.20060428084553.273">At present, only the open-outline-by-name command supports filename completion.
 </t>
 <t tx="ekr.20060428084553.34">getLeadinWord must clear self.membersList to disable completion.
 </t>
-<t tx="ekr.20060428084553.37"></t>
-<t tx="ekr.20060428084553.38"></t>
 <t tx="ekr.20060428084553.39">Useful, e.g., after a find.
 </t>
 <t tx="ekr.20060428084553.4">http://sourceforge.net/forum/message.php?msg_id=3692247
@@ -11523,20 +10883,8 @@ After cutting selection in the headline, headline area shrank too much.
 ...
 self.endCommand(changed=True,setLabel=True)
 </t>
-<t tx="ekr.20060428084553.42">New commands:
-
-add-space-to-lines
-add-tab-to-lines
-clean-lines
-clear-selected-text
-goto-global-line
-help-for-command
-remove-space-from-lines
-remove-tab-from-lines
-</t>
 <t tx="ekr.20060428084711">https://sourceforge.net/forum/message.php?msg_id=3699799
 </t>
-<t tx="ekr.20060428084957"></t>
 <t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
 These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
@@ -45448,7 +44796,17 @@ table.py
 usetemacs.py
 xsltWithNodes.py
 </t>
+<t tx="ekr.20150301045135.33"></t>
+<t tx="ekr.20150301045135.34"></t>
+<t tx="ekr.20150301045135.37"></t>
+<t tx="ekr.20150301045135.38"></t>
+<t tx="ekr.20150301045135.39"></t>
 <t tx="ekr.20150301045135.4"></t>
+<t tx="ekr.20150301045135.40"></t>
+<t tx="ekr.20150301045135.41"></t>
+<t tx="ekr.20150301045135.42"></t>
+<t tx="ekr.20150301045135.43"></t>
+<t tx="ekr.20150301045135.46"></t>
 <t tx="ekr.20150301045135.5"></t>
 <t tx="ekr.20150301045135.6">- Changed all instances of string.letters to string.ascii_letters.
   string.letters can cause crashes in some locales (Unicode environments).</t>
