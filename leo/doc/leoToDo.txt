@@ -22,7 +22,91 @@ Script to merge spellpyx.txt from two searches.
   - Create @clean nodes?
 
 * Document --diff option prominently.
-.. @+node:ekr.20150227040245.5: *3* Bugs for b1/b2
+.. @+node:ekr.20150227040245.5: *3* Bugs for b1
+.. @+node:ekr.20150217154248.4: *4* Fix bug 146: Recursive import script may add extra declaration lines
+https://github.com/leo-editor/leo-editor/issues/146
+.. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
+https://github.com/leo-editor/leo-editor/issues/145
+
+It just happened again:
+- use e.bat when ekr.leo is already open.
+- Choose No.
+- Hard Python crash.
+
+Not easily reproducible, which makes the bug more serious, not less.
+.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
+https://github.com/leo-editor/leo-editor/issues/135
+drag and drop between trees broken
+
+This may also affect paste-retaining-clones.
+
+4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
+commit 4f848037424544e127166dbb0375f90c6826aa21
+Author: Edward K. Ream <edreamleo@gmail.com>
+Date:   Fri Sep 13 16:44:33 2013 -0500
+
+See 
+.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/142
+
+https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
+
+The problem appears in both Python 2 and Python 3:
+
+The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
+.. @+node:ekr.20150302140653.4: *3* Bugs for b2
+.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Bracket matching should take into account the language in effect.
+
+For example, JavaScript regular expressions are not handled properly.
+
+Furthermore, there should be a command to select the region between
+matching brackets.
+.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/122
+
+When one generates a node (call it Placeholder) without
+any contents, then the resulting rst file is written like:
+
+Placeholder
+***********
+Summary
+*******
+
+That is, there is no space between the two headings. Then if I do Refresh
+from disk, @auto-rst yields an error. This should not happen if @auto-rst
+automatically writes an empty line after each heading.
 .. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
@@ -102,110 +186,6 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst` should add an empty line after a heading
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/122
-
-When one generates a node (call it Placeholder) without
-any contents, then the resulting rst file is written like:
-
-Placeholder
-***********
-Summary
-*******
-
-That is, there is no space between the two headings. Then if I do Refresh
-from disk, @auto-rst yields an error. This should not happen if @auto-rst
-automatically writes an empty line after each heading.
-.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Bracket matching should take into account the language in effect.
-
-For example, JavaScript regular expressions are not handled properly.
-
-Furthermore, there should be a command to select the region between
-matching brackets.
-.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
-https://github.com/leo-editor/leo-editor/issues/135
-drag and drop between trees broken
-
-This may also affect paste-retaining-clones.
-
-4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
-commit 4f848037424544e127166dbb0375f90c6826aa21
-Author: Edward K. Ream <edreamleo@gmail.com>
-Date:   Fri Sep 13 16:44:33 2013 -0500
-
-See 
-.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/142
-
-https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
-
-The problem appears in both Python 2 and Python 3:
-
-The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150217154248.4: *4* Fix bug 144: Import to @clean produces duplicate lines
-https://github.com/leo-editor/leo-editor/issues/144
-
-This looka like an importer bug, maybe in skipDecls or its caller.
-
-When using an import script to import to @nosent/@clean, lines like::
-
-RCS_id='$Id: Connection1.py,v 1.1 2005-06-13 20:55:22 syt Exp $'
-
-Appear both at the top level and in an < < declarations > > section.
-.. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
-https://github.com/leo-editor/leo-editor/issues/145
-
-Iirc, choosing yes-to-all when Leo reports that a file is already open can cause Leo to hang or crash.
-
-One option would simply be to eliminate the yes-to-all option.
-
-Imo, the present code is too complicated.
-.. @+node:ekr.20150227184811.7: *4* Fix bug 146: Recursive import script may add extra declaration lines
-https://github.com/leo-editor/leo-editor/issues/146
-
-A serious problem, which does not seem to be caught by the perfect import logic. I discovered this problem when git reported changes. For example::
-
-c.recursiveImport(
-    dir_ = r'<path to mypy>/mypy',
-    kind = '@clean',
-    one_file = False,
-    safe_at_file = False,
-    theTypes = ['.py',],
-)
-
-It's not clear whether importing to @clean nodes is part of the problem.
 .. @+node:ekr.20150227040245.9: *3* Finish leo reader web page
 leo_to_html.xsl:
 - jQuery script to expand/contract nodes
