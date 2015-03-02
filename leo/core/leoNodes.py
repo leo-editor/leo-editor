@@ -147,7 +147,10 @@ class NodeIndices (object):
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex (self,v,cached=False):
-        '''Create a new gnx for v or an empty string if the hold flag is set.'''
+        '''
+        Create a new gnx for v or an empty string if the hold flag is set.
+        **Important**: the method must allocate a new gnx even if v.fileIndex exists.
+        '''
         trace,verbose = False and not g.unitTesting,False
         if trace:
             fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
