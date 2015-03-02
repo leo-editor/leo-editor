@@ -48,7 +48,8 @@ class NodeIndices (object):
         self.lastIndex = 0
         self.stack = []
             # A stack of open commanders.
-        self.timeString = '' # Set by setTimeStamp.
+        self.timeString = ''
+            # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
@@ -63,8 +64,7 @@ class NodeIndices (object):
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self,c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        trace = False and not g.unitTesting
-        verbose = True
+        trace,verbose = True and not g.unitTesting,False
         if trace: t1 = time.time()
         ni = self
         old_lastIndex = self.lastIndex
@@ -95,8 +95,7 @@ class NodeIndices (object):
         Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
         It's not an error for v.fileIndex to exist.
         '''
-        trace = False and not g.unitTesting
-        verbose = True
+        trace,verbose = False and not g.unitTesting,False
         fc = c.fileCommands
         if not c:
             g.trace('can not happen: no c.fileCommands')
@@ -114,7 +113,8 @@ class NodeIndices (object):
                 g.trace('********** still holding',c2.shortFileName())
             return
         self.compute_last_index(c)
-            # Important: this *must* be done even if the hold_gnx_set is empty!
+            # This *must* be done even if the hold_gnx_set is empty!
+            # Failure to do this might cause gnx collisions later.
             # Fix bug #130: bug in fix to Issue #35
         if not self.hold_gnx_set:
             if trace and verbose:
@@ -124,11 +124,11 @@ class NodeIndices (object):
         for v in list(self.hold_gnx_set):
             if v.fileIndex:
                 if trace and verbose:
-                    g.trace('*** already allocated',v.fileIndex,v.h)
+                    g.trace('===== already allocated',v.fileIndex,v.h)
             else:
                 # This case can happen when @auto finds a node that
                 # has been created outside of Leo.
-                v.fileIndex = index = self.getNewIndex(v)
+                v.fileIndex = index = self.getNewIndex(v,cached=True)
                 if index:
                     if trace: g.trace('new gnx',index,v.h)
                     fc.gnxDict[index] = v
@@ -146,21 +146,21 @@ class NodeIndices (object):
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex (self,v):
+    def getNewIndex (self,v,cached=False):
         '''Create a new gnx for v or an empty string if the hold flag is set.'''
-        trace = False and not g.unitTesting
-        index = hasattr(v,'fileIndex') and v.fileIndex or ''
+        trace,verbose = False and not g.unitTesting,False
         if trace:
             fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
         if self.hold_gnx_flag:
-            if trace: g.trace(fn,'holding',v.h)
+            if trace and verbose: g.trace('holding',fn,v.h)
             self.hold_gnx_set.add(v)
             return ''
         else:
             self.lastIndex += 1
             s = g.toUnicode("%s.%s.%d" % (
                 self.userId,self.timeString,self.lastIndex))
-            if trace: g.trace(fn,'allocating',s,v.h)
+            if trace and not cached:
+                g.trace('allocating %s %s %s' % (fn,s,v.h))
             return s
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):

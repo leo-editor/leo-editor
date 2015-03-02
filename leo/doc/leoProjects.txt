@@ -117,6 +117,22 @@ The fix was to call at.readFileToUnicode in at.readOpenFile.
 
 The new code is enabled by the new_read_line switch in leoAtFile.py.
 
+.. @+node:ekr.20150302115538.5: *4* Fixed bug 130: bug in fix to Issue #35
+@language rest
+
+bug in fix to Issue #35
+https://github.com/leo-editor/leo-editor/issues/130
+
+leoBridge sometimes assigns the same GNX to two distinct vnodes
+https://github.com/leo-editor/leo-editor/issues/35
+
+c.initObjects sets c.hiddenRootNode.fileIndex to 'hidden-root-vnode-gnx'
+
+# wrong: fc.getLeoFile calls fc.setMaxNodeIndex after reading all nodes.
+# correct: fc.getLeoFile calls ni.end_holding
+
+ni.end_holding now calls ni.compute_last_index.
+This *must* be done every time Leo reads a .leo file!
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
