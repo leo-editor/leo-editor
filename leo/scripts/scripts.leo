@@ -2832,7 +2832,6 @@ c.redraw()
 <t tx="ekr.20150302053516.3"></t>
 <t tx="ekr.20150302053516.4">if 1:
     fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-spellpyx.txt')
-    assert g.os_path_exists(fn),fn
     with open(fn) as f:
         s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
     g.trace(len(s))
