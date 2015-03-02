@@ -1089,8 +1089,8 @@ class ParserBaseClass:
         d [key] = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse (self):
-
-        trace = True and not g.unitTesting
+        '''Traverse the entire settings tree.'''
+        trace = False and not g.unitTesting
         c,k = self.c,self.c.k
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
