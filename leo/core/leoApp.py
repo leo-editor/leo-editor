@@ -1191,9 +1191,10 @@ class LeoApp:
         app = self
         if trace:
             # Do not call g.es, g.es_print, g.pr or g.trace here!
-            print('** writeWaitingLog: silent: %s c: %s' % (
+            print('***** writeWaitingLog: silent: %s c: %s' % (
                 app.silentMode,c and c.shortFileName() or '<no c>'))
-            # print('writeWaitingLog',g.callers())
+            # print('***** %s' % g.callers(8))
+            # print('***** writeWaitingLog: %s' % ''.join(app.printWaiting))
             # import sys ; print('writeWaitingLog: argv',sys.argv)
         if not c or not c.exists:
             return
@@ -3169,7 +3170,8 @@ class RecentFilesManager:
                     ok = rf.writeRecentFilesFileHelper(fileName)
                     if force or not rf.recentFileMessageWritten:
                         if ok:
-                            g.pr('wrote recent file: %s' % fileName)
+                            if not g.app.silentMode:
+                                g.pr('wrote recent file: %s' % fileName)
                             written = True
                         else:
                             g.error('failed to write recent file: %s' % (fileName))

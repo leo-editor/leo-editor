@@ -55,16 +55,52 @@ class NodeIndices (object):
     #@+node:ekr.20141022143218.18354: *3* ni.begin_holding
     def begin_holding(self,c):
         '''Begin queuing vnodes that may need new gnx's.'''
+        trace = False and not g.unitTesting
         self.stack.append(c)
         self.hold_gnx_flag = True
-        # g.trace('==========',[z.shortFileName() for z in self.stack])
+        if trace:
+            g.trace('==========',[z.shortFileName() for z in self.stack])
+    #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
+    def compute_last_index(self,c):
+        '''Scan the entire leo outline to compute ni.last_index.'''
+        trace = True and not g.unitTesting
+        verbose = True
+        if trace: t1 = time.time()
+        ni = self
+        old_lastIndex = self.lastIndex
+        self.lastIndex = 0
+        for v in c.all_unique_nodes():
+            gnx = v.fileIndex
+            if gnx:
+                id_,t,n = self.scanGnx(gnx)
+                if t == ni.timeString and n is not None:
+                    try:
+                        n = int(n)
+                        self.lastIndex = max(self.lastIndex,n)
+                    except Exception:
+                        g.es_exception()
+                        self.lastIndex += 1
+        if trace:
+            changed = self.lastIndex > old_lastIndex
+            t2 = time.time()
+            if verbose:
+                g.trace('========== time %4.2f changed: %5s lastIndex: old: %s new: %s' % (
+                    t2-t1,changed,old_lastIndex,self.lastIndex))
+            elif changed:
+                g.trace('========== time %4.2f lastIndex: old: %s new: %s' % (
+                    t2-t1,old_lastIndex,self.lastIndex))
     #@+node:ekr.20141022133457.12621: *3* ni.end_holding
-    def end_holding(self,c,fc):
+    def end_holding(self,c):
         '''
         Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
         It's not an error for v.fileIndex to exist.
         '''
         trace = False and not g.unitTesting
+        verbose = True
+        fc = c.fileCommands
+        if not c:
+            g.trace('can not happen: no c.fileCommands')
+            return
         fn = c.shortFileName()
         if not self.stack:
             g.trace('can not happen: stack underflow',c)
@@ -74,19 +110,21 @@ class NodeIndices (object):
             g.trace('can not happen',c.shortFileName(),c2.shortFileName())
         self.hold_gnx_flag = bool(self.stack)
         if self.hold_gnx_flag:
-            # if trace: g.trace('********** still holding',c2.shortFileName())
+            if trace and verbose:
+                g.trace('********** still holding',c2.shortFileName())
             return
+        self.compute_last_index(c)
+            # Important: this *must* be done even if the hold_gnx_set is empty!
+            # Fix bug #130: bug in fix to Issue #35
         if not self.hold_gnx_set:
-            # if trace: g.trace('********** nothing to do',c2.shortFileName())
+            if trace and verbose:
+                g.trace('********** nothing to do',c2.shortFileName())
             return
-        old_time = self.timeString
-        self.setTimeStamp()
-        if old_time != self.timeString:
-            self.lastIndex = 0
         if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
         for v in list(self.hold_gnx_set):
             if v.fileIndex:
-                if False and trace: g.trace('*** already allocated',v.fileIndex,v.h)
+                if trace and verbose:
+                    g.trace('*** already allocated',v.fileIndex,v.h)
             else:
                 # This case can happen when @auto finds a node that
                 # has been created outside of Leo.
@@ -112,7 +150,8 @@ class NodeIndices (object):
         '''Create a new gnx for v or an empty string if the hold flag is set.'''
         trace = False and not g.unitTesting
         index = hasattr(v,'fileIndex') and v.fileIndex or ''
-        if trace: fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
+        if trace:
+            fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
         if self.hold_gnx_flag:
             if trace: g.trace(fn,'holding',v.h)
             self.hold_gnx_set.add(v)
@@ -169,8 +208,10 @@ class NodeIndices (object):
     #@+node:ekr.20141023110422.4: *3* ni.updateLastIndex
     def updateLastIndex(self,gnx):
         '''Update ni.lastIndex if the gnx affects it.'''
+        trace = False and not g.unitTesting
         id_,t,n = self.scanGnx(gnx)
-        if not id_ or not n:
+        if trace: g.trace('lastIndex',self.lastIndex,gnx)
+        if not id_ or (n is not 0 and not n):
             return # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
             try:

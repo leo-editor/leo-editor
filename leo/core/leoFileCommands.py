@@ -758,8 +758,8 @@ class FileCommands:
                 if c.config.getBool('check_outline_after_read'):
                     c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
-            ni.end_holding(c,fc=self)
-                # Fix bug https://github.com/leo-editor/leo-editor/issues/35
+            ni.end_holding(c)
+                    # Fix bug https://github.com/leo-editor/leo-editor/issues/35
             c.loading = False # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
@@ -898,22 +898,20 @@ class FileCommands:
         c.frame.body.onBodyChanged(undoType=None)
     #@+node:ekr.20031218072017.2297: *4* fc.openLeoFile
     def openLeoFile(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
-
-        c = self.c ; frame = c.frame
-
+        '''Open a Leo file.'''
+        c,frame = self.c,self.c.frame
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
         if theDir:
             c.openDirectory = c.frame.openDirectory = theDir
-
+        # Get the file.
         ok, ratio = self.getLeoFile(
             theFile,fileName,
             readAtFileNodesFlag=readAtFileNodesFlag,
-            silent=silent)
-
+            silent=silent,
+        )
         if ok:
             frame.resizePanesToRatio(ratio,frame.secondary_ratio)
-
         return ok
     #@+node:ekr.20031218072017.3030: *4* fc.readOutlineOnly
     def readOutlineOnly (self,theFile,fileName):
