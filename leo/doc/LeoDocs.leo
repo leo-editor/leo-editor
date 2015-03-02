@@ -1159,7 +1159,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550b302e302e332e302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473550a302e302e31322e302e3771057d710658090000007374725f6174696d657107580c000000313337363431323238302e30710873550c302e302e31322e302e372e3371097d710a58090000007374725f6174696d65710b580c000000313337363431323238382e30710c73752e"
-expanded="ekr.20071211083251,ekr.20150301140303.5,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20071211083251,ekr.20150301140303.5,ekr.20141120113801.6,ekr.20141120113801.23,ekr.20141124033239.2,ekr.20141120113801.45,ekr.20141120113801.46,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
@@ -3404,7 +3404,7 @@ expanded="ekr.20071211083251,ekr.20150301140303.5,"><vh>@file release_notes.txt<
 </v>
 <v t="ekr.20141120113801.24"><vh>Bugs fixed in 5.0b2</vh>
 <v t="ekr.20141120113801.25"><vh>Fixed bug  38: autocompleter gives a strange traceback</vh></v>
-<v t="ekr.20141120113801.26"><vh>Fixed bug  78?: find-next target not always scrolled into view</vh></v>
+<v t="ekr.20141120113801.26"><vh>Fixed bug  78: find-next target not always scrolled into view</vh></v>
 <v t="ekr.20141120113801.27"><vh>Fixed bug  80: Find-previous fails at last node with mouse click</vh></v>
 <v t="ekr.20141120113801.28"><vh>Fixed bug 101: IPython issues</vh></v>
 <v t="ekr.20141120113801.29"><vh>Fixed bug 102: Loading @file node with embedded code broken</vh></v>
@@ -3605,6 +3605,7 @@ expanded="ekr.20071211083251,ekr.20150301140303.5,"><vh>@file release_notes.txt<
 </v>
 </v>
 </v>
+<v t="ekr.20141113102829.6"></v>
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>* @clean</vh></v>

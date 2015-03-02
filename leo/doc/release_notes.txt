@@ -14751,7 +14751,7 @@ remains with the replaced text.
 https://github.com/leo-editor/leo-editor/issues/38
 
 Fixed by Terry Brown at e8c0e27.
-#@+node:ekr.20141120113801.26: *7* Fixed bug  78?: find-next target not always scrolled into view
+#@+node:ekr.20141120113801.26: *7* Fixed bug  78: find-next target not always scrolled into view
 https://github.com/leo-editor/leo-editor/issues/78
 
 It's hard to know whether the change did anything.  It does not appear to have hurt.
