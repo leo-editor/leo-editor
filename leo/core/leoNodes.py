@@ -64,7 +64,7 @@ class NodeIndices (object):
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self,c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        trace,verbose = True and not g.unitTesting,False
+        trace,verbose = False and not g.unitTesting,False
         if trace: t1 = time.time()
         ni = self
         old_lastIndex = self.lastIndex
