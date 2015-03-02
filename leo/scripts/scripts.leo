@@ -11,6 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070615131954"><vh>Startup</vh>
+<v t="ekr.20150302053516.3"><vh>@settings</vh></v>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20111017085134.16069"><vh>Disabled buttons</vh>
 <v t="ekr.20111017085134.16070"><vh>@@button jython</vh></v>
@@ -116,6 +117,7 @@
 <v t="ekr.20141105055521.18"><vh>Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
+<v t="ekr.20150302053516.4"><vh>Script: clean ekr-spellpyx.txt</vh></v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
 <v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
 <v t="ekr.20121220111212.13259"><vh>class TestWriter</vh>
@@ -934,7 +936,7 @@ w.clipboard_append(result)</t>
 
 c.recursiveImport(
     dir_ = r'C:\prog\pyflakes-0.6.0\pyflakes',
-    kind = '@nosent', # The new best practice.
+    kind = '@clean', # The new best practice.
     one_file = False,
     safe_at_file = False,
     theTypes = None, # Same as ['.py']
@@ -2827,6 +2829,17 @@ c.redraw()
 <t tx="ekr.20141116105945.3">gnx: maphew.20130809155103.2862
 </t>
 <t tx="ekr.20141116105945.4"></t>
+<t tx="ekr.20150302053516.3"></t>
+<t tx="ekr.20150302053516.4">if 1:
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-spellpyx.txt')
+    assert g.os_path_exists(fn),fn
+    with open(fn) as f:
+        s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
+    g.trace(len(s))
+    with open(fn,'w') as f:
+        f.write(s)
+else:
+    p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 <t tx="tbrown.20141110113251.1">@g.command('x')
 def add_note(args):

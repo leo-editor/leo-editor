@@ -6121,7 +6121,7 @@ def importFiles (theDir,type=None,recursive=False):
 
 c.recursiveImport(
     dir_ = r'C:\prog\pyflakes-0.6.0\pyflakes',
-    kind = '@nosent', # The new best practice.
+    kind = '@clean', # The new best practice.
     one_file = False,
     safe_at_file = False,
     theTypes = None, # Same as ['.py']
