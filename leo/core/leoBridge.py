@@ -82,7 +82,7 @@ class BridgeController:
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
-        self.silent = silent
+        self.silentMode = silent
         self.tracePlugins = tracePlugins
         self.verbose = verbose
         self.mainLoop = False # True only if a non-null-gui mainloop is active.
@@ -121,13 +121,13 @@ class BridgeController:
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
-        g.app.trace_plugins = self.tracePlugins # 2014/09/18
-        g.app.silentMode = self.silent # 2011/11/02.
+        g.app.trace_plugins = self.tracePlugins
+        g.app.silentMode = self.silentMode
         if trace:
             import sys
             g.trace(sys.argv)
             g.trace('g.app.silentMode',g.app.silentMode)
-        # 2010/09/09: create the g.app.pluginsController here.
+        # Create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
         try:
@@ -327,6 +327,7 @@ class BridgeController:
     def openLeoFile (self,fileName):
         '''Open a .leo file, or create a new Leo frame if no fileName is given.'''
         g = self.g
+        g.app.silentMode = self.silentMode
         useLog = False
         if self.isOpen():
             fileName = self.completeFileName(fileName)
@@ -360,7 +361,6 @@ class BridgeController:
 
         trace = False
         g = self.g
-
         if fileName.strip():
             if g.os_path_exists(fileName):
                 if trace:
@@ -371,7 +371,7 @@ class BridgeController:
                     t2 = time.time()
                     g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
                 if c: return c
-            else:
+            elif not self.silentMode:
                 print('file not found: %s. creating new window' % (fileName))
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
