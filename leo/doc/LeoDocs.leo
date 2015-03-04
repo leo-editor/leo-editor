@@ -3617,8 +3617,6 @@
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="ekr.20150227184811.5"><vh>Done</vh></v>
 </v>
-<v t="ekr.20050831184021.4"></v>
-<v t="ekr.20150304093940.4"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
@@ -37458,8 +37456,6 @@ Notes:
   descendant nodes until over-ridden), but by splitting nodes one can change the
   settings on an expansion-by-expansion basis. It is easy to split nodes without
   creating new sections using @rst-no-head in the headline.
-</t>
-<t tx="ekr.20150304093940.4">I had used Leo for a long time as a PIM to track my work, but moved to emacs org mode for a period of time because of its explicit agenda and work tracking capabilities. But I went back to Leo because it seems more flexible when it comes to viewing various aspects of a project. For some recent performance data collection work, under one outline are the theory behind the project, the code (generation) for the project, the project web page (generated from an @rst node tree),  and project deployment (little more than clicking a button). One can change focus from one aspect to another very quickly and use clones to really drill down into an area (for me it's typically the code) when needed. Leo is an impressive tool, and I have only scratched the surface--Robert Shanley.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
