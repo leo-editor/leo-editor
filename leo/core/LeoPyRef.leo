@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="30" left="643" height="1002" width="1191"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -24,19 +24,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20141025071403.17"><vh>@gnxs</vh></v>
+<v t="ekr.20150227182423.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20141025071403.18"><vh>@gnxs</vh></v>
+<v t="ekr.20150227182423.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20141025071403.19"><vh>@gnxs</vh></v>
+<v t="ekr.20150227182423.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20141025071403.20"><vh>@gnxs</vh></v>
+<v t="ekr.20150227182423.7"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20141025071403.21"><vh>@gnxs</vh></v>
+<v t="ekr.20150227182423.8"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -121,6 +121,11 @@
 </v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
+<v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
+<v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
+</v>
+<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
@@ -227,7 +232,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="0"></t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.5">
 
 
@@ -435,10 +440,10 @@ print('\n'.join(aList))
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140923085942.17943"></t>
-<t tx="ekr.20141025071403.17">gnx: ekr.20140225224703.8169
+<t tx="ekr.20150227182423.4">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20141025071403.18">gnx: ekr.20140225224703.8170
+<t tx="ekr.20150227182423.5">gnx: ekr.20140225224703.8170
 unl: qt_main declarations
 gnx: ekr.20140225224703.8171
 unl: class Ui_MainWindow
@@ -447,8 +452,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20140225224703.8173
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20141025071403.19"></t>
-<t tx="ekr.20141025071403.20">gnx: ekr.20140225224703.8174
+<t tx="ekr.20150227182423.6"></t>
+<t tx="ekr.20150227182423.7">gnx: ekr.20140225224703.8174
 unl: qt_quicksearch declarations
 gnx: ekr.20140225224703.8175
 unl: class Ui_LeoQuickSearchWidget
@@ -457,6 +462,166 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20141025071403.21"></t>
+<t tx="ekr.20150227182423.8"></t>
+<t tx="ekr.20150304125314.4">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+
+&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
+
+&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
+  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
+
+&lt;xsl:template match ='leo_file'&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;&lt;style&gt;&gt;
+    &lt;&lt;scripts&gt;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;xsl:apply-templates select='tnodes'/&gt;
+    &lt;div class="outlinepane"&gt;
+      &lt;xsl:apply-templates select='vnodes'/&gt;
+    &lt;/div&gt;
+    &lt;div class="bodypane"&gt;
+      &lt;h1&gt;Body Pane&lt;/h1&gt;
+      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'tnodes'&gt;
+&lt;div class="tnodes"&gt;
+  &lt;xsl:for-each select = 't'&gt;
+    &lt;div class="tnode"&gt;
+      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
+      &lt;xsl:value-of select='.'/&gt;
+    &lt;/div&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'vnodes'&gt;
+  &lt;xsl:for-each select = 'v'&gt;
+    &lt;xsl:apply-templates select ='.'/&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match='v'&gt;
+  &lt;div class="node"&gt;
+    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
+    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+    &lt;xsl:if test ='./v' &gt;
+      &lt;xsl:apply-templates select = 'v'/&gt;
+    &lt;/xsl:if&gt;
+  &lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+</t>
+<t tx="ekr.20150304130753.4">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+
+&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
+
+&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
+  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
+
+&lt;xsl:template match ='leo_file'&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;&lt;style&gt;&gt;
+    &lt;&lt;scripts&gt;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;xsl:apply-templates select='tnodes'/&gt;
+    &lt;div class="outlinepane"&gt;
+      &lt;xsl:apply-templates select='vnodes'/&gt;
+    &lt;/div&gt;
+    &lt;div class="bodypane"&gt;
+      &lt;h1&gt;Body Pane&lt;/h1&gt;
+      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'tnodes'&gt;
+&lt;div class="tnodes"&gt;
+  &lt;xsl:for-each select = 't'&gt;
+    &lt;div class="tnode"&gt;
+      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
+      &lt;xsl:value-of select='.'/&gt;
+    &lt;/div&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'vnodes'&gt;
+  &lt;xsl:for-each select = 'v'&gt;
+    &lt;xsl:apply-templates select ='.'/&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match='v'&gt;
+  &lt;div class="node"&gt;
+    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
+    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+    &lt;xsl:if test ='./v' &gt;
+      &lt;xsl:apply-templates select = 'v'/&gt;
+    &lt;/xsl:if&gt;
+  &lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+</t>
+<t tx="ekr.20150304130753.5">&lt;style&gt;
+    pre { background:#FFE7C6; }
+    div.outlinepane,div.bodypane {
+      height: 50%;
+      overflow: auto;
+    }
+    div.tnode {
+        visibility: hidden;
+        height: 0;
+    }
+    div.node {
+        position: relative;
+        left: 20px;
+        background:Khaki;
+    }
+&lt;/style&gt;
+</t>
+<t tx="ekr.20150304130753.6">&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+@language javascript
+  $(document).ready(function(){
+    $("h1").click(function(){
+      $(this).parent().children("div.node").toggle();
+      // The parent div's id is v.x.
+      // Find the tnode div whose id is t.x.
+      console.clear();
+      parent_id=$(this).parent().attr("id");
+      if (parent_id) {
+        target=$(this).parent().attr("id").substring(2);
+          console.log("clicked:"+$(this).text())
+          // console.log("parent:"+$(this).parent())
+          // console.log("target:"+target)
+        $(".tnode").each(function(){
+          console.log($(this).attr("id"))
+          target2=$(this).attr("id").substring(2);
+          if (target === target2) {
+            console.log("found:"+target2)
+            $("pre.body-text").text($(this).text());
+          };
+        }); // end .each.
+      };
+    });
+  });
+@language html
+&lt;/script&gt;
+</t>
 </tnodes>
 </leo_file>
