@@ -2974,8 +2974,6 @@ class AtFile:
                 c.setChanged(True)
         else:
             # Do nothing if only trailing whitespace is involved.
-            g.trace('new',repr(new))
-            g.trace('old',repr(old))
             if new.endswith('\n') and old == new[:-1]: return
             if old.endswith('\n') and new == old[:-1]: return
             c.nodeConflictList.append(g.bunch(
