@@ -490,6 +490,20 @@ class quickMove(object):
             def wrap(cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
                 self.do_wrap(cb, name)
             a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
+        # actions within this outline
+        need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
+        current_kind = None
+        current_submenu = None
+        for name,dummy,command in self.local_imps:
+            kind = name.split()[0]
+            if kind in need_submenu:
+                if current_kind != kind:
+                    current_submenu = pathmenu.addMenu(kind)
+                    current_kind = kind
+            else:
+                current_submenu = pathmenu
+            a = current_submenu.addAction(name)
+            a.connect(a, QtCore.SIGNAL("triggered()"), command)
         # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
@@ -500,10 +514,6 @@ class quickMove(object):
         a = pathmenu.addAction("Read targets")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
              lambda p=p: self.read_targets())
-        # actions within this outline
-        for name,dummy,command in self.local_imps:
-            a = pathmenu.addAction(name)
-            a.connect(a, QtCore.SIGNAL("triggered()"), command)
     #@+node:tbrown.20131219205216.30229: *3* keyboard_popup, action
     def keyboard_popup(self):
         """Assign a quick move action with the current node
@@ -514,6 +524,9 @@ class quickMove(object):
         
         cmds = {}
         
+        need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
+        current_kind = None
+        current_submenu = None
         for name, first_last, long, short in quickMove.flavors:
             if first_last:
                 todo = 'first child', 'last child', 'next sibling', 'prev sibling'
@@ -524,7 +537,14 @@ class quickMove(object):
                     which = " "+which.title()
                 k = "Set as "+long+" "+short+which+' target'
                 cmds[k] = {'first': which, 'type': name}
-                menu.addAction(k)
+                kind = long.split()[0]
+                if kind in need_submenu:
+                    if current_kind != kind:
+                        current_submenu = menu.addMenu(kind)
+                        current_kind = kind
+                else:
+                    current_submenu = menu
+                current_submenu.addAction(k)
                 
         pos = c.frame.top.window().frameGeometry().center()
         action = menu.exec_(pos)
@@ -836,10 +856,13 @@ class quickMoveButton:
                 p.moveToFirstChildOf(p2)
             elif self.which == 'last child':
                 p.moveToLastChildOf(p2)
-            elif self.which == 'next sibling':
-                p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
-            elif self.which == 'prev sibling':
-                p.moveToNthChildOf(p2.parent(), p2._childIndex)
+            elif self.which in ('next sibling', 'prev sibling'):
+                if not p2.parent():
+                    raise Exception("Not implemented for top-level nodes") #FIXME
+                if self.which == 'next sibling':
+                    p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
+                elif self.which == 'prev sibling':
+                    p.moveToNthChildOf(p2.parent(), p2._childIndex)
             else:
                 raise Exception("Unknown move type "+self.which)
 
