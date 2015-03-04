@@ -792,7 +792,11 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         '''Handle a wheel event.'''
         if QtCore.Qt.ControlModifier & event.modifiers():
             d = {'c':self.leo_c}
-            delta = event.angleDelta() if isQt5 else event.delta()
+            if isQt5:
+                point = event.angleDelta()
+                delta = point.y() or point.x()
+            else:
+                delta = event.delta()
             if delta < 0:
                 zoom_out(d)
             else:
