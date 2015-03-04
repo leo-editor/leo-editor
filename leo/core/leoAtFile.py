@@ -9,8 +9,6 @@
 #@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-new_read_line = True
-    # Don't convert to unicode until the file encoding is known.
     
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -553,26 +551,15 @@ class AtFile:
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = f = open(fn,'rb')
-                if new_read_line:
-                    at.readFileToUnicode(fn)
-                        # Sets at.encoding...
-                        #   From the BOM, if present.
-                        #   Otherwise from the header, if it has -encoding= 
-                        #   Otherwise, uses existing value of at.encoding.
-                        # Then does:
-                        #    s = s.replace('\r\n','\n')
-                        #    at.initReadLine(s) 
-                else:
-                    s = f.read()
-                    at.bom_encoding,s = g.stripBOM(s)
-                    e = at.bom_encoding or at.encoding
-                    ### This is too early!
-                    ### at.encoding will usually be utf-8,
-                    ### but it can be overwritten in the header!!
-                    s = g.toUnicode(s,e)
-                    s = s.replace('\r\n','\n')
-                    at.read_lines = g.splitLines(s)
-                # g.trace(at.bom_encoding,fn)
+                # new_read_line logic.
+                at.readFileToUnicode(fn)
+                    # Sets at.encoding...
+                    #   From the BOM, if present.
+                    #   Otherwise from the header, if it has -encoding= 
+                    #   Otherwise, uses existing value of at.encoding.
+                    # Then does:
+                    #    s = s.replace('\r\n','\n')
+                    #    at.initReadLine(s) 
                 at.warnOnReadOnlyFile(fn)
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
@@ -1035,14 +1022,11 @@ class AtFile:
             g.es('not found: %s' % (fileName),color='red')
             return
         at.rememberReadPath(fileName,root)
-        # if not g.unitTesting:
-            # g.es("reading:",root.h)
         # Set at.encoding first.
         at.initReadIvars(root,fileName)
             # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(root)
             # Sets at.startSentinelComment/endSentinelComment.
-        # Update the outline using the @shadow algorithm.
         new_public_lines = at.read_at_nosent_lines(fileName)
         old_private_lines = self.write_nosent_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines,fileName)
@@ -1096,13 +1080,12 @@ class AtFile:
     def read_at_nosent_lines(self,fn):
         '''Return all lines of the @clean/@nosent file at fn.'''
         at = self
-        try:
-            f = open(fn,'r')
-            s = f.read()
-            f.close()
-        except IOError:
-            s = ''
+        s = at.openFileHelper(fn)
+            # Use the standard helper. Better error reporting.
+            # Important: uses 'rb' to open the file.
         s = g.toUnicode(s,encoding = at.encoding)
+        s = s.replace('\r\n','\n')
+            # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *5* at.write_nosent_sentinels
     def write_nosent_sentinels(self,root):
@@ -1378,12 +1361,11 @@ class AtFile:
                 s = g.toUnicode(s,encoding=e)
             else:
                 # Get the encoding from the header, or the default encoding.
-                if g.isPython3: # Must convert s to unicode first.
-                    s = g.toUnicode(s,'ascii',reportErrors=False)
-                e = at.getEncodingFromHeader(fn,s)
+                s_temp = g.toUnicode(s,'ascii',reportErrors=False)
+                e = at.getEncodingFromHeader(fn,s_temp)
+                # g.trace(e,g.shortFileName(fn))
                 s = g.toUnicode(s,encoding=e)
-            if new_read_line:
-                s = s.replace('\r\n','\n')
+            s = s.replace('\r\n','\n')
             at.encoding = e
             at.initReadLine(s)
         return s
@@ -2992,6 +2974,8 @@ class AtFile:
                 c.setChanged(True)
         else:
             # Do nothing if only trailing whitespace is involved.
+            g.trace('new',repr(new))
+            g.trace('old',repr(old))
             if new.endswith('\n') and old == new[:-1]: return
             if old.endswith('\n') and new == old[:-1]: return
             c.nodeConflictList.append(g.bunch(
@@ -3018,13 +3002,12 @@ class AtFile:
         for p in at.perfectImportRoot.self_and_subtree():
             if p.v == v:
                 found = True ; break
-
         if found:
             if 0: # For debugging.
                 g.pr('\n','-' * 40)
                 g.pr("old",len(old))
                 for line in g.splitLines(old):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
+                    line = line.replace(' ','< >').replace('\t','<TAB>').replace('\n','<NL>')
                     g.pr(repr(str(line)))
                 g.pr('\n','-' * 40)
                 g.pr("new",len(new))

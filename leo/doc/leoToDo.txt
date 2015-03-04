@@ -25,111 +25,18 @@ Script to merge spellpyx.txt from two searches.
   - Create @clean nodes?
 
 * Document --diff option prominently.
-.. @+node:ekr.20150227040245.5: *3* Bugs for b1/b2
-.. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
-@language rest
+.. @+node:ekr.20150227040245.5: *3* Bugs for b1
+.. @+node:ekr.20150217154248.4: *4* Fix bug 146: Recursive import script may add extra declaration lines
+https://github.com/leo-editor/leo-editor/issues/146
+.. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
+https://github.com/leo-editor/leo-editor/issues/145
 
-https://github.com/leo-editor/leo-editor/issues/106
+It just happened again:
+- use e.bat when ekr.leo is already open.
+- Choose No.
+- Hard Python crash.
 
-https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-
-http://brew.sh/
-
-https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
-
-Do this after creating official release.
-
-@language ruby
-@tabwidth -2
-.. @+node:ekr.20141210123805.4: *5* brew install (original)
-require 'formula'
-
-class Leo < Formula
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
-  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
-  head 'https://code.launchpad.net/leo-editor', :using => :bzr
-  devel do
-    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
-    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
-  end
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
-.. @+node:ekr.20141210123805.5: *5* brew install (new)
-require 'formula'
-
-class Leo < Formula
-
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
-  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
-  
-  head https://github.com/leo-editor/leo-editor, :using => :git
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
-.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst` should add an empty line after a heading
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/122
-
-When one generates a node (call it Placeholder) without
-any contents, then the resulting rst file is written like:
-
-Placeholder
-***********
-Summary
-*******
-
-That is, there is no space between the two headings. Then if I do Refresh
-from disk, @auto-rst yields an error. This should not happen if @auto-rst
-automatically writes an empty line after each heading.
-.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Bracket matching should take into account the language in effect.
-
-For example, JavaScript regular expressions are not handled properly.
-
-Furthermore, there should be a command to select the region between
-matching brackets.
+Not easily reproducible, which makes the bug more serious, not less.
 .. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
@@ -142,6 +49,16 @@ Author: Edward K. Ream <edreamleo@gmail.com>
 Date:   Fri Sep 13 16:44:33 2013 -0500
 
 See 
+.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/142
+
+https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
+
+The problem appears in both Python 2 and Python 3:
+
+The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
 .. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
 @language rest
 
@@ -177,7 +94,7 @@ On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
            
             main
             m
-.. @+node:ekr.20150217154248.4: *4* Fix bug 144: Import to @clean produces duplicate lines
+.. @+node:ekr.20150217154248.4: *4* Fix bug 146: Recursive import script may add extra declaration lines
 https://github.com/leo-editor/leo-editor/issues/146
 .. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
 https://github.com/leo-editor/leo-editor/issues/145
@@ -223,7 +140,7 @@ For example, JavaScript regular expressions are not handled properly.
 
 Furthermore, there should be a command to select the region between
 matching brackets.
-.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst` should add an empty line after a heading
+.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/122

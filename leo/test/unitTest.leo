@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.57" body_secondary_ratio="0.84">
+<globals body_outline_ratio="0.57" body_secondary_ratio="0.69">
 	<global_window_position top="70" left="568" height="947" width="1195"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -122,27 +122,6 @@
 </v>
 </v>
 <v t="ekr.20071113203234"><vh>Test files</vh>
-<v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
-<v t="ekr.20090704085350.5029"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
-<v t="ekr.20111214104615.3942"><vh>@auto ../test/unittest/at-auto-section-ref-test.py</vh></v>
-<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
-<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
-<v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
-<v t="ekr.20110615130436.3318"><vh>Child goes here.</vh></v>
-</v>
-<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
-<v t="ekr.20130912092638.4150"><vh>@file ../test/utf-16-test.txt</vh></v>
-<v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
-<v t="ekr.20090704085350.5035"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
-</v>
 <v t="ekr.20090704085350.5014"><vh>@@shadow ../test/unittest/at-shadow-test.py</vh>
 <v t="ekr.20150208213643.12"><vh>spam</vh></v>
 <v t="ekr.20150208213643.13"><vh>eggs</vh></v>
@@ -154,6 +133,27 @@
 <v t="ekr.20111213122041.3930"><vh>@@shadow unittest/at-shadow-unlink-clones.py</vh>
 <v t="ekr.20150208213643.18"><vh>Node 1</vh></v>
 <v t="ekr.20150208213643.19"><vh>Node 2</vh></v>
+</v>
+<v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
+<v t="ekr.20090704085350.5029"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
+<v t="ekr.20111214104615.3942"><vh>@auto ../test/unittest/at-auto-section-ref-test.py</vh></v>
+<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
+<v t="ekr.20130912092638.4150"><vh>@file ../test/utf-16-test.txt</vh></v>
+<v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
+<v t="ekr.20110615130436.3318"><vh>Child goes here.</vh></v>
+</v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
+<v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
+<v t="ekr.20090704085350.5035"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
@@ -1726,12 +1726,16 @@ finally:
     pass</t>
 <t tx="ekr.20090704085350.5030">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5034">@language python
-@others</t>
+<t tx="ekr.20090704085350.5034">@first
+@language python
+@others
+</t>
 <t tx="ekr.20090704085350.5035">def spam():
-    pass # Unicode test: Ã</t>
+    pass # Unicode test: Ã after.
+</t>
 <t tx="ekr.20090704085350.5036">def eggs():
-    pass</t>
+    pass
+</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
 for p in c.all_unique_positions():
