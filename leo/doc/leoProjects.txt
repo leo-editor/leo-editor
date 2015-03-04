@@ -132,6 +132,8 @@ There were two bugs:
 1. A bug in the @file read logic. The fix was to call at.readFileToUnicode in at.readOpenFile.
 
 2. A bug in the @clean read logic. The fix was a rewrite of read_at_nosent_lines.
+.. @+node:ekr.20150304131453.5: *4* Fixed crasher in scroll-wheel code
+This was a PyQt5 compatibility problem in lqtb.wheelEvent.
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
