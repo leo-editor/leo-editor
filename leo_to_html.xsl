@@ -25,10 +25,24 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             left: 20px;
             background:Khaki;
         }
+        div.node[has-children] > h1 {
+            <!-- works -->
+            <!-- background: red; -->
+        }
     </style>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>
       $(document).ready(function(){
+        if (true) {
+            // Toggle all but top-level nodes.
+            // This requires an indication
+            $(".node").toggle()
+            $(".outlinepane").children(".node").toggle()
+        } else {
+            // Toggle all second-level nodes.
+            // Safer, until we can see which nodes have children.
+            $(".outlinepane").children(".node").children(".node").toggle()
+        }
         $("h1").click(function(){
           $(this).parent().children("div.node").toggle();
           // The parent div's id is v.x.
@@ -86,10 +100,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match='v'>
   <div class="node">
     <xsl:attribute name="id"><xsl:value-of select='@t'/></xsl:attribute>
-    <h1><xsl:value-of select='vh'/></h1>
-    <xsl:if test ='./v' >
-      <xsl:apply-templates select = 'v'/>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test ='./v' >
+        <xsl:attribute name="has-children">1</xsl:attribute>
+        <h1>+ <xsl:value-of select='vh'/></h1>
+        <xsl:apply-templates select = 'v'/>
+      </xsl:when>
+      <xsl:otherwise>
+        <h1>- <xsl:value-of select='vh'/></h1>
+      </xsl:otherwise>
+    </xsl:choose>
   </div>
 </xsl:template>
 
