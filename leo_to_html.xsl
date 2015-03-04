@@ -12,11 +12,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <head>
     <style>
         pre { background:#FFE7C6; }
-        div.outlinepane {
-          height: 3.0in;
-        }
-        div.bodypane,div.body-text {
-          height: 2.0in;
+        div.outlinepane,div.bodypane {
+          height: 50%;
+          overflow: auto;
         }
         div.tnode {
             visibility: hidden;
