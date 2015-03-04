@@ -415,7 +415,7 @@ class quickMove(object):
         for mover, button in qm.buttons:
             if (mover.target == v and
                 (not type_ or mover.type_ == type_) and
-                (not first or mover.first == first)):
+                (not first or mover.which == first)):  # TNB untested .first -> .which
                 cnt += 1
                 v.u['quickMove']['buttons'].append(
                     {'first':mover.which, 'type': mover.type_})
@@ -557,7 +557,8 @@ class quickMove(object):
 
         ans = []
         for i in self.buttons:
-            if i[0].target is v and i[0].first == first and i[0].type_ == type_:
+            if i[0].target is v and i[0].which == first and i[0].type_ == type_:
+                  # TNB untested .first -> .which
                 ans.append(i)
 
         if not ans:
@@ -595,14 +596,14 @@ class quickMove(object):
             self.permanentButton(v=v, type_=type_, first=first)
 
         for i in v.u['quickMove']['buttons']:
-            if i['type'] == qmb.type_ and i['first'] == qmb.first:
+            if i['type'] == qmb.type_ and i['first'] == qmb.which:   # TNB untested .first -> .which
                 i['parent'] = parent.gnx
                 break
         else:
             v.u['quickMove']['buttons'].append({'type':qmb.type_,
-                'first':qmb.first, 'parent':parent.gnx})
+                'first':qmb.which, 'parent':parent.gnx})  # TNB untested .first -> .which
 
-        self.addButton(qmb.first, qmb.type_, v=qmb.target, parent=parent.gnx)
+        self.addButton(qmb.which, qmb.type_, v=qmb.target, parent=parent.gnx)  # TNB untested .first -> .which
         self.buttons = [i for i in self.buttons if i[0] is not qmb]
         print(b)
         b.button.parent().layout().removeWidget(b.button)
