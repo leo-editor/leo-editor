@@ -1,4 +1,5 @@
+
 def spam():
-    pass # Unicode test: Ã after.
+    pass # Unicode test: Ãƒ after.
 def eggs():
     pass
