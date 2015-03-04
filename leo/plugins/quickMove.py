@@ -836,10 +836,13 @@ class quickMoveButton:
                 p.moveToFirstChildOf(p2)
             elif self.which == 'last child':
                 p.moveToLastChildOf(p2)
-            elif self.which == 'next sibling':
-                p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
-            elif self.which == 'prev sibling':
-                p.moveToNthChildOf(p2.parent(), p2._childIndex)
+            elif self.which in ('next sibling', 'prev sibling'):
+                if not p2.parent():
+                    raise Exception("Not implemented for top-level nodes") #FIXME
+                if self.which == 'next sibling':
+                    p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
+                elif self.which == 'prev sibling':
+                    p.moveToNthChildOf(p2.parent(), p2._childIndex)
             else:
                 raise Exception("Unknown move type "+self.which)
 
