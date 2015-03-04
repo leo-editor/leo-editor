@@ -2492,6 +2492,7 @@ def set_delims_from_string(s):
                     
                 try:
                     delims[i] = binascii.unhexlify(delims[i][3:])
+                    delims[i] = delims[i].decode('utf-8')
                 except Exception as e:
                     g.warning("'%s' delimiter is invalid: %s" % (delims[i], e))
                     return None, None, None
