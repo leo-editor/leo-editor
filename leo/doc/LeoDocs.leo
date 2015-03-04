@@ -3617,6 +3617,8 @@
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="ekr.20150227184811.5"><vh>Done</vh></v>
 </v>
+<v t="ekr.20050831184021.4"></v>
+<v t="ekr.20150304093940.4"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
@@ -7747,6 +7749,8 @@ Leo is my Favorites Mind Capsule ;-)
 "Cloning is pure genius!... Leo's cloning facility, allows me to create several views on the CFA course material. My main view follows the prescribed study guide. Another view is organized like the textbooks. Yet another gives me a glossary of terms. And when I'm done, I'll have some nice libraries...I can re-use later in other projects."---Michael Manti
 
 Despite I am no programmer, I have been using Leo for some years now as my "Intelligent PIM" - I organize my (complex) life with Leo. Many thanks to Edward and others for the great application -- vili &lt;viljem.tisnikar@gmail.com&gt;
+
+I had used Leo for a long time as a PIM to track my work, but moved to emacs org mode for a period of time because of its explicit agenda and work tracking capabilities. But I went back to Leo because it seems more flexible when it comes to viewing various aspects of a project. For some recent performance data collection work, under one outline are the theory behind the project, the code (generation) for the project, the project web page (generated from an @rst node tree),  and project deployment (little more than clicking a button). One can change focus from one aspect to another very quickly and use clones to really drill down into an area (for me it's typically the code) when needed. Leo is an impressive tool, and I have only scratched the surface--Robert Shanley.
 </t>
 <t tx="ekr.20050830074815.8">"I've written documentation in WordPerfert, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
 
@@ -37454,6 +37458,8 @@ Notes:
   descendant nodes until over-ridden), but by splitting nodes one can change the
   settings on an expansion-by-expansion basis. It is easy to split nodes without
   creating new sections using @rst-no-head in the headline.
+</t>
+<t tx="ekr.20150304093940.4">I had used Leo for a long time as a PIM to track my work, but moved to emacs org mode for a period of time because of its explicit agenda and work tracking capabilities. But I went back to Leo because it seems more flexible when it comes to viewing various aspects of a project. For some recent performance data collection work, under one outline are the theory behind the project, the code (generation) for the project, the project web page (generated from an @rst node tree),  and project deployment (little more than clicking a button). One can change focus from one aspect to another very quickly and use clones to really drill down into an area (for me it's typically the code) when needed. Leo is an impressive tool, and I have only scratched the surface--Robert Shanley.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
