@@ -12,16 +12,6 @@
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/142
-
-https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
-
-The problem appears in both Python 2 and Python 3:
-
-The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
 .. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
@@ -173,6 +163,213 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20150305084546.4: *3* Can't fix
+.. @+node:ekr.20150305053156.5: *4* Fix bug 147: Python 3 clipboard encoding
+@language rest
+@wrap
+https://github.com/leo-editor/leo-editor/issues/147
+
+Text: ÷ Σ
+
+In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
+
+This appears to be a serious bug on older version of pyqt...
+
+@language python
+.. @+node:ekr.20110605121601.18485: *5* LeoQtGui.Clipboard
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        s = g.toUnicode(s)
+        QtWidgets.QApplication.processEvents()
+        cb.setText(s)
+        QtWidgets.QApplication.processEvents()
+        if trace: g.trace(len(s),type(s),s[:25])
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        QtWidgets.QApplication.processEvents()
+        s = cb.text()
+        if trace: g.trace (len(s),type(s),s[:25])
+        # Fix bug 147: Python 3 clipboard encoding
+        s = g.u(s)
+            # Don't call g.toUnicode here!
+            # s is a QString, which isn't exactly a unicode string!
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+.. @+node:ekr.20091206161352.6232: *5* g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return s if g.isUnicode(s) else str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+.. @+node:ekr.20110605121601.18081: *5* qtew.getAllText
+def getAllText(self):
+    '''QTextEditWrapper.'''
+    w = self.widget
+    s = g.u(w.toPlainText())
+    return s
+.. @+node:ekr.20070130115927.4: *5* Cut/Copy/Paste (LeoFrame)
+.. @+node:ekr.20070130115927.5: *6* copyText (LeoFrame)
+def copyText (self,event=None):
+    '''Copy the selected text from the widget to the clipboard.'''
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    if trace: g.trace(g.isTextWrapper(w),wname,w)
+    if not w or not g.isTextWrapper(w):
+        return
+    # Set the clipboard text.
+    i,j = w.getSelectionRange()
+    if i != j:
+        s = w.get(i,j)
+        g.app.gui.replaceClipboardWith(s)
+
+OnCopyFromMenu = copyText
+.. @+node:ekr.20070130115927.6: *6* LeoFrame.cutText
+def cutText (self,event=None):
+
+    '''Invoked from the mini-buffer and from shortcuts.'''
+
+    f = self ; c = f.c ; w = event and event.widget
+    if not w or not g.isTextWrapper(w): return
+
+    name = c.widget_name(w)
+    oldSel = w.getSelectionRange()
+    oldText = w.getAllText()
+    i,j = w.getSelectionRange()
+
+    # Update the widget and set the clipboard text.
+    s = w.get(i,j)
+    if i != j:
+        w.delete(i,j)
+        g.app.gui.replaceClipboardWith(s)
+
+    if name.startswith('body'):
+        c.frame.body.forceFullRecolor()
+        c.frame.body.onBodyChanged('Cut',oldSel=oldSel,oldText=oldText)
+    elif name.startswith('head'):
+        # The headline is not officially changed yet.
+        # p.initHeadString(s)
+        s = w.getAllText()
+        # 2011/11/14: Not used at present.
+        # width = f.tree.headWidth(p=None,s=s)
+        # w.setWidth(width)
+    else: pass
+
+OnCutFromMenu = cutText
+.. @+node:ekr.20070130115927.7: *6* LeoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+    '''
+    Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.
+    '''
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    # if trace: g.trace(g.isTextWrapper(w),w)
+    if not w or not g.isTextWrapper(w):
+        if trace: g.trace('not a text widget',w)
+        return
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = g.app.gui.getTextFromClipboard()
+    s = g.toUnicode(s)
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+    # Save the horizontal scroll position.
+    if hasattr(w,'getXScrollPosition'):
+        x_pos = w.getXScrollPosition()
+    # Update the widget.
+    if i != j:
+        w.delete(i,j)
+    w.insert(i,s)
+    w.see(i+len(s) + 2)
+    if wname.startswith('body'):
+        c.frame.body.forceFullRecolor()
+        c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+    elif singleLine:
+        s = w.getAllText()
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+        # 2011/11/14: headline width methods do nothing at present.
+        # if wname.startswith('head'):
+            # The headline is not officially changed yet.
+            # p.initHeadString(s)
+            # width = f.tree.headWidth(p=None,s=s)
+            # w.setWidth(width)
+    else:
+        pass
+    # Never scroll horizontally.
+    if hasattr(w,'getXScrollPosition'):
+        w.setXScrollPosition(x_pos)
+
+OnPasteFromMenu = pasteText
+.. @+node:ekr.20061016071937: *6* OnPaste (To support middle-button paste)
+def OnPaste (self,event=None):
+
+    return self.pasteText(event=event,middleButton=True)
+.. @+node:ekr.20110605121601.18092: *5* qtew.setAllText
+def setAllText(self,s):
+    '''Set the text of body pane.'''
+    trace = False and not g.unitTesting
+    traceTime = False and not g.unitTesting
+    c,w = self.c,self.widget
+    if trace: g.trace(len(s),c.p and c.p.h)
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    # Be careful: Scintilla doesn't have a colorer.
+    colorer = highlighter and highlighter.colorer
+    if colorer: colorer.initFlag = True
+    try:
+        if traceTime:
+            t1 = time.time()
+        self.changingText = True # Disable onTextChanged.
+        colorizer.changingText = True # Disable colorizer.
+        # g.trace('read/write text')
+        w.setReadOnly(False)
+        w.setPlainText(s)
+        # w.update()
+            # 2014/08/30: w.update does not ensure that all text is loaded
+            # before the user starts editing it!
+        if traceTime:
+            delta_t = time.time()-t1
+            if False or delta_t > 0.1:
+                g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
+    finally:
+        self.changingText = False
+        colorizer.changingText = False
 .. @+node:ekr.20150304232409.4: *3* Docs
 .. @+node:ekr.20150304232409.5: *4* document --diff
 Search for added --diff

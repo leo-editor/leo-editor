@@ -138,6 +138,14 @@ This was a PyQt5 compatibility problem in lqtb.wheelEvent.
 https://github.com/leo-editor/leo-editor/issues/146
 
 It appears that fixing bug 140 fixed all the import problems!
+.. @+node:ekr.20150211104036.471: *4* Fixed bug 142: bibtex plugin overwrites body text of @bibtex nodes
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/142
+
+- Rewrote & simplified readBibTexFileIntoTree & writeTreeAsBibTex.
+- Fixed the actual bug in onHeadKey.  Inserting a new node put the template in the root node rather than the newly-inserted node.
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
