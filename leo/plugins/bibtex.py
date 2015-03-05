@@ -2,20 +2,20 @@
 #@+node:timo.20050213160555: * @file bibtex.py
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>
-r''' Creates a BibTex fkile from an  '@bibtex <filename>' tree.
+#@@nocolor-node
+#@@wrap
+r''' Creates a BibTex file from an  '@bibtex <filename>' tree.
 
-Nodes of the form '@entrytype key' create entries in the file.
+Nodes of the form '@<x> key' create entries in the file.
 
-When the user creates a new node (presses enter in headline text) the
-plugin automatically inserts a template for the entry in the body pane.
+When the user creates a new node (presses enter in headline text) the plugin automatically inserts a template for the entry in the body pane.
 
-The 'templates' dict in the <\< globals >\> section defines the template. The default,
-the template creates all required entries.
+The 'templates' dict in the <\< globals >\> section defines the template. The default, the template creates all required entries.
 
 Double-clicking the @bibtex node writes the file. For example, the following outline::
 
     -@bibtex biblio.bib
-     +@book key
+     +@book key,
       author = {A. Uthor},
       year = 1999
 
@@ -25,9 +25,7 @@ creates the following 'biblio.bib' files::
     author = {A. Uthor},
     year= 1999}
 
-\@string nodes define strings and may contain multiple entries. The plugin
-writes all @string nodes at the start of the file. For example, the
-following outline::
+@string nodes define strings and may contain multiple entries. The plugin writes all @string nodes at the start of the file. For example, the following outline::
 
     -@bibtext biblio.bib
      +@string
@@ -49,23 +47,20 @@ creates the following file::
     author = {A. Uthor},
     journal = j1}
 
-Headlines that do not start with '@' are organizer nodes: the plugin does
-not write organizer nodes, but does write descendant nodes.
+Headlines that do not start with '@' are organizer nodes: the plugin does not write organizer nodes, but does write descendant nodes.
 
-BibTeX files can be imported by creating an empty node with '@bibtex
-filename' in the headline. Double-clicking it will read the file and parse
-it into a @bibtex tree. No syntax checks are made: the file is expected to
-be a valid BibTeX file.
+BibTeX files can be imported by creating an empty node with '@bibtex filename' in the headline. Double-clicking it will read the file and parse it into a @bibtex tree. No syntax checks are made: the file is expected to be a valid BibTeX file.
 
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
 
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
-__version__ = '0.5'
+__version__ = '0.7'
 #@+<< change log >>
 #@+node:timo.20050213160555.2: ** <<change log>>
 #@@nocolor-node
+#@@wrap
 #@+at
 # 
 # 0.1 Timo Honkasalo 2005/02/13
@@ -88,7 +83,11 @@ __version__ = '0.5'
 # - Use p, not v, for positions.
 # - Improved messages and cleaned up code.
 # 
-# 0.6 EKR: Rewrote the docstring:  use the active voice!
+# 0.6 EKR: Rewrote the docstring.
+# 0.7 EKR:
+# - Rewrote readBibTexFileIntoTree & writeTreeAsBibTex.
+# - Fixed bug 142 (in onHeadKey)
+#   https://github.com/leo-editor/leo-editor/issues/142
 #@-<< change log >>
 #@+<< define templates dict>>
 #@+node:timo.20050215183130: ** <<define templates dict>>
@@ -154,12 +153,17 @@ def onHeadKey(tag,keywords):
     p = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
     h = p.h.strip()
-    if h[:h.find(' ')] in templates.keys() and not p.b.strip():
-        for p in p.parents():
-            if p.h.startswith('@bibtex ') and not p.b.strip():
+    i = h.find(' ')
+    kind = h[:i]
+    g.trace(kind)
+    if kind in templates.keys() and not p.b.strip():
+        # Fix bug 142: plugin overwrites body text.
+        # Iterate on p2, not p!
+        for p2 in p.parents():
+            if p2.h.startswith('@bibtex ') and not p.b.strip():
                 # write template, but only for new nodes.
-                c.setBodyString(p,templates[h[:h.find(' ')]])
-                c.frame.body.wrapper.setInsertPoint(16)
+                p.b = templates.get(kind)
+                # c.frame.body.wrapper.setInsertPoint(16)
                 return
 #@+node:timo.20050213160555.3: ** onIconDoubleClick
 #
@@ -197,70 +201,55 @@ def onIconDoubleClick(tag,keywords):
             bibFile.close()
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(bibFile, c):
-    """Read BibTeX file and parse it into @bibtex tree
-
-    The file is split at '\n@' and each section is divided into headline
-    ('@string' in strings and '@entrytype key' in others) and body text
-    (without outmost braces). These are stored in biblist, which is a list
-    of tuples ('headline', 'body text') for each entry, all the strings in
-    the first element. For each element of biblist, a vnode is created and
-    headline and body text put into place."""
-    entrylist, biblist = [],[]
-    strings = ''
-    rawstring = '\n'
-    # read 'bibFile' by lines, strip leading whitespace and store as one 
-    # string into 'rawstring'. Split 'rawstring' at '\n@' get a list of entries.
-    for i in [o.lstrip() for o in bibFile.readlines()]:
-        rawstring = rawstring + i
-    for i in rawstring.split('\n@')[1:]:
-        if i[:6] == 'string':
-            # store all @string declarations into 'strings'
-            strings = strings + i[7:].strip()[:-1] + '\n'
+    '''Import a BibTeX file into a @bibtex tree.'''
+    bibList,entries, strings = [],[],[]
+        # bibList is a list of tuples (h,b).
+    s = '\n'+''.join([z.lstrip() for z in bibFile.readlines()])
+    s = g.toUnicode(s)
+    for line in s.split('\n@')[1:]:
+        kind,rest = line[:6],line[7:].strip()
+        if kind == 'string':
+            strings.append(rest[:-1] + '\n')
         else:
-            # store all alse into 'entrylist'
-            entrylist.append(('@' + i[:i.find(',')].replace('{',' ').replace('(',
-            ' ').replace('\n',''), i[i.find(',')+1:].rstrip().lstrip('\n')[:-1]))
+            i = min(line.find(','),line.find('\n'))
+            h = '@' + line[:i]
+            h = h.replace('{',' ').replace('(',' ').replace('\n','')
+            b = line[i+1:].rstrip().lstrip('\n')[:-1]
+            entries.append((h,b),)
     if strings:
-        biblist.append(('@string', strings)) 
-    biblist = biblist + entrylist
-    p = c.p
-    for i in biblist:
-        p2 = p.insertAsLastChild()
-        c.setHeadString(p2,g.toUnicode(i[0]))
-        c.setBodyString(p2,g.toUnicode(i[1]))
+        h,b = '@string',''.join(strings)
+        bibList.append((h,b),)
+    bibList.extend(entries)
+    for h,b in bibList:
+        p = c.p.insertAsLastChild()
+        p.b,p.h = b,h
+    c.p.expand()
+    c.redraw()
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(bibFile,root,c):
-    """Write root's tree to the file bibFile"""
-    # body text of @bibtex node is ignored
-    dict = c.scanAllDirectives(p=root)
-    encoding = dict.get("encoding",None)
-    if encoding == None:
-        encoding = g.app.config.default_derived_file_encoding
-    strings = ''
-    entries = ''
-    # iterate over nodes in this tree
+    """Write root's *subtree* to bibFile."""
+    trace = True and not g.unitTesting
+    d = c.scanAllDirectives(p=root)
+    encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
+    strings,entries = [],[]
     for p in root.subtree():    
         h = p.h
         if h.lower() == '@string':
-            typestring = '@string'
+            strings.extend([('@string{%s}\n\n' % z.rstrip())
+                for z in g.splitLines(p.b) if z.strip()])
         else:
-            typestring = h[:h.find(' ')].lower()
-        if typestring in entrytypes:
-            s = p.b
-            if h == '@string':
-                # store string declarations in strings
-                for i in s.split('\n'):
-                    if i and (not i.isspace()):
-                        strings = strings + '@string{' + i + '}\n'
-            else:
-                # store other stuff in entries  
-                entries = (entries + typestring +
-                    '{' + h[h.find(' ')+1:]+  ',\n' + s + '}\n\n'
-                )
+            i = h.find(' ')
+            kind,rest = h[:i].lower(),h[i+1:].rstrip()
+            if kind in entrytypes:
+                entries.append('%s{%s,\n%s}\n\n' % (kind,rest,p.b.rstrip()))
     if strings:
-        s = g.toEncodedString(strings+'\n\n',encoding=encoding,reportErrors=True)
+        s = ''.join(strings)
+        if trace: g.trace('strings...\n%s' % s)
         bibFile.write(s)
-    bibFile.write(entries)  
+    if entries:
+        s = ''.join(entries)
+        if trace: g.trace('entries...\n%s' % s)
+        bibFile.write(s)  
 #@-others
 #@@language python
 #@@tabwidth -4
