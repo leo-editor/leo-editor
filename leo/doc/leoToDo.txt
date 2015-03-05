@@ -11,23 +11,13 @@
 * Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150227184811.4: *3* Add scripts to manage spellpyx.txt
-@language rest
-
-These will save time immediately.
-
-Script to short & clean spellpyx.txt
-
-Script to merge spellpyx.txt from two searches.
 .. @+node:ekr.20150227100703.5: *3* Finish --diff work
-* Use import-file logic to get files in --diff mode.
+* Use import-file logic to get files in --diff mode??
   - This will use importers if possible.
   - Create @clean nodes?
 
 * Document --diff option prominently.
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150217154248.4: *4* Fix bug 146: Recursive import script may add extra declaration lines
-https://github.com/leo-editor/leo-editor/issues/146
 .. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
 https://github.com/leo-editor/leo-editor/issues/145
 
@@ -59,43 +49,6 @@ https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
 The problem appears in both Python 2 and Python 3:
 
 The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
-.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/142
-
-https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
-
-The problem appears in both Python 2 and Python 3:
-
-The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150217154248.4: *4* Fix bug 146: Recursive import script may add extra declaration lines
-https://github.com/leo-editor/leo-editor/issues/146
 .. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
 https://github.com/leo-editor/leo-editor/issues/145
 
