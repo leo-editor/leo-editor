@@ -12,6 +12,8 @@
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
+.. @+node:ekr.20150305172417.5: *4* Fix bug 149: Caching sometimes reverts recent git updates
+https://github.com/leo-editor/leo-editor/issues/149
 .. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
@@ -24,6 +26,7 @@ Author: Edward K. Ream <edreamleo@gmail.com>
 Date:   Fri Sep 13 16:44:33 2013 -0500
 
 See 
+.. @+node:ekr.20150302140653.4: *3* Bugs for b2
 .. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
 https://github.com/leo-editor/leo-editor/issues/143
 
@@ -49,7 +52,6 @@ On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
            
             main
             m
-.. @+node:ekr.20150302140653.4: *3* Bugs for b2
 .. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
 https://github.com/leo-editor/leo-editor/issues/127
 
