@@ -737,11 +737,16 @@ class LeoApp:
         }
 
     #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
-    def closeLeoWindow (self,frame,new_c=None):
+    def closeLeoWindow (self,frame,new_c=None,finish_quit=True):
         """
         Attempt to close a Leo window.
 
         Return False if the user veto's the close.
+
+        finish_quit - usually True, close Leo when last file closes, but
+                      False when closing an already-open-elsewhere file
+                      during initial load, so UI remains for files
+                      further along the command line.
         """
         trace = False and not g.unitTesting
         c = frame.c
@@ -768,7 +773,7 @@ class LeoApp:
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
-        elif not g.app.unitTesting:
+        elif finish_quit and not g.app.unitTesting:
             g.app.finishQuit()
         return True # The window has been closed.
     #@+node:ville.20090602181814.6219: *3* app.commanders
@@ -1345,6 +1350,12 @@ class LoadManager:
             # Dictionary of user options. Keys are option names.
         self.old_argv = []
             # A copy of sys.argv for debugging.
+        self.more_cmdline_files = False
+            # True when more files remain on the command line to be
+            # loaded.  If the user is answering "No" to each file as Leo asks
+            # "file already open, open again", this must be False for
+            # a complete exit to be appropriate (finish_quit=True param for
+            # closeLeoWindow())
 
         if 0: # use lm.options.get instead.
             self.script = None          # The fileName of a script, or None.
@@ -2313,7 +2324,8 @@ class LoadManager:
         # Create the main frame.  Show it and all queued messages.
         c = c1 = None
         if lm.files:
-            for fn in lm.files:
+            for n, fn in enumerate(lm.files):
+                lm.more_cmdline_files = n < len(lm.files)-1
                 c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c 
@@ -2324,7 +2336,7 @@ class LoadManager:
                 if aList:
                     m.load_session(c1,aList)
                     c = c1 = g.app.windowList[0].c
-        if not g.app.windowList:
+        if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
@@ -2817,7 +2829,7 @@ class LoadManager:
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir 
         else:
-            g.app.closeLeoWindow(c.frame)
+            g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
         return ok
     #@-others
 
