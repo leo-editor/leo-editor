@@ -155,7 +155,6 @@ def onHeadKey(tag,keywords):
     h = p.h.strip()
     i = h.find(' ')
     kind = h[:i]
-    g.trace(kind)
     if kind in templates.keys() and not p.b.strip():
         # Fix bug 142: plugin overwrites body text.
         # Iterate on p2, not p!
@@ -228,7 +227,7 @@ def readBibTexFileIntoTree(bibFile, c):
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(bibFile,root,c):
     """Write root's *subtree* to bibFile."""
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     d = c.scanAllDirectives(p=root)
     encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
     strings,entries = [],[]
