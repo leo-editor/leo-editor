@@ -2454,17 +2454,18 @@ def set_delims_from_language(language):
         return '','','' # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
 def set_delims_from_string(s):
+    """
+    Return (delim1, delim2, delim2), the delims following the @comment
+    directive.
 
-    """Returns (delim1, delim2, delim2), the delims following the @comment directive.
-
-    This code can be called from @language logic, in which case s can point at @comment"""
-
+    This code can be called from @language logic, in which case s can
+    point at @comment
+    """
     # Skip an optional @comment
     tag = "@comment"
     i = 0
     if g.match_word(s,i,tag):
         i += len(tag)
-
     count = 0 ; delims = ['','','']
     while count < 3 and i < len(s):
         i = j = g.skip_ws(s,i)
@@ -2473,13 +2474,11 @@ def set_delims_from_string(s):
         if j == i: break
         delims[count] = s[j:i] or ''
         count += 1
-
     # 'rr 09/25/02
     if count == 2: # delims[0] is always the single-line delim.
         delims[2] = delims[1]
         delims[1] = delims[0]
         delims[0] = ''
-
     for i in range(0,3):
         if delims[i]:
             if delims[i].startswith("@0x"):
@@ -2489,12 +2488,9 @@ def set_delims_from_string(s):
                 if len(delims[i]) == 3:
                     g.warning("'%s' delimiter is invalid" % delims[i])
                     return None, None, None
-                    
                 try:
                     delims[i] = binascii.unhexlify(delims[i][3:])
-                    if g.isPython3:
-                        delims[i] = delims[i].decode('utf-8')
-                        
+                    delims[i] = g.toUnicode(delims[i])
                 except Exception as e:
                     g.warning("'%s' delimiter is invalid: %s" % (delims[i], e))
                     return None, None, None
@@ -2502,8 +2498,6 @@ def set_delims_from_string(s):
                 # 7/8/02: The "REM hack": replace underscores by blanks.
                 # 9/25/02: The "perlpod hack": replace double underscores by newlines.
                 delims[i] = delims[i].replace("__",'\n').replace('_',' ')
-    
-
     return delims[0], delims[1], delims[2]
 #@+node:ekr.20031218072017.1384: *3* g.set_language
 def set_language(s,i,issue_errors_flag=False):
@@ -4823,8 +4817,6 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
     # These are the only significant calls to s.decode in Leo.
     # Tracing these calls directly yields thousands of calls.
     # Never call g.trace here!
-    if trace and encoding == 'cp1252':
-        g.dump_encoded_string(encoding,s)
     try:
         s = s.decode(encoding,'strict')
     except UnicodeError:
