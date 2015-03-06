@@ -2189,8 +2189,7 @@ class LoadManager:
         # Handle the args...
         # --debug
         g.app.debug = options.debug
-        if g.app.debug:
-            g.trace_startup = True
+        # if g.app.debug: g.trace_startup = True
         # --git-diff
         if options.diff:
             g.app.diff = options.diff
@@ -2283,8 +2282,8 @@ class LoadManager:
                 g.trace('bad --window-size:',windowSize)
         # Compute lm.files
         lm.files = lm.computeFilesList(fileName)
-        if options.debug:
-            g.es_debug('lm.files',lm.files)
+        # if options.debug:
+        #    g.es_debug('lm.files',lm.files)
         # Post-process the options.
         if pymacs:
             script = None

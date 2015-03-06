@@ -6734,7 +6734,7 @@ class Commands (object):
         The callback takes one explicit argument, p. As usual, the callback can bind
         values using keyword arguments.
         '''
-        trace = False and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         c = self
         # Verify all positions *before* altering the tree.
         aList2 = []

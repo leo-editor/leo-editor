@@ -154,30 +154,24 @@ class Cacher:
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
     #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
-
-        """ Create outline structure from recursive aList
-        built by makeCacheList."""
-
+        """
+        Create outline structure from recursive aList built by makeCacheList.
+        """
         trace = False and not g.unitTesting
-        verbose = False
         c = self.c
         if not c:
             g.internalError('no c')
-
         if top:
-            if trace and verbose: g.trace(fileName)
+            if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
-
         h,b,gnx,children = aList
         if h is not None:
             v = parent_v
             v._headString = h    
             v._bodyString = b
-
         for z in children:
             h,b,gnx,grandChildren = z
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
-
             if isClone:
                 self.reportChangedClone(child_v,b,h,gnx)
             else:
@@ -220,26 +214,21 @@ class Cacher:
     #@+node:ekr.20100705083838.5740: *5* cashe.reportChangedClone
     def reportChangedClone (self,child_v,b,h,gnx):
 
-        trace = False and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         c = self.c
         fileName=c.cacheListFileName
         old,new = child_v.b,b
-
         same = (
             old == new or
             new.endswith('\n') and old == new[:-1] or
             old.endswith('\n') and new == old[:-1])
-
         # if trace and not same:
         if trace and (not same or h == 'writeException'):
             g.trace('same %s old %s new %s %s %s' % (
                 same,len(old),len(new),h,fileName))
-
         # This would make it impossible to clear nodes!
         # if not new: return same
-
         if same: return
-
         c.nodeConflictList.append(g.bunch(
             tag='(cached)',
             fileName=fileName,
@@ -249,10 +238,8 @@ class Cacher:
             b_new=b,
             h_new=h,
         ))
-
         # Always issue the warning.
         g.error("cached read node changed:",child_v.h)
-
         child_v.h,child_v.b = h,b
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
@@ -320,7 +307,7 @@ class Cacher:
         Read the file from the cache if possible.
         Return (s,ok,key)
         '''
-        trace = True and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         showHits,showLines,verbose = False,False,True
         sfn = g.shortFileName(fileName)
         if not g.enableDB:
@@ -355,10 +342,8 @@ class Cacher:
         '''Create a recursive list describing a tree
         for use by createOutlineFromCacheList.
         '''
-
         # This is called after at.copyAllTempBodyStringsToVnodes,
         # so p.b *is* the body text.
-
         return [
             p.h,p.b,p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]
@@ -406,7 +391,7 @@ class Cacher:
     #@+node:ekr.20100208071151.5903: *4* cacher.writeFile
     def writeFile(self,p,fileKey):
         '''Update the cache after reading the file.'''
-        trace = False and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         # Check g.enableDB before giving internal error.
         if not g.enableDB:
             if trace: g.trace('cache disabled')
@@ -418,6 +403,7 @@ class Cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
+              ### Isn't this the only possible place for errors?
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
 

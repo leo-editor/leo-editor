@@ -593,8 +593,8 @@ class AtFile:
         fromString=None,atShadow=False,force=False
     ):
         """Read an @thin or @file tree."""
-        trace = False and not g.unitTesting
-        if trace: g.trace(root.h)
+        trace = (False or g.app.debug) and not g.unitTesting
+        # if trace: g.trace(root.h)
         at = self ; c = at.c
         fileName = at.initFileName(fromString,importFileName,root)
         if not fileName:
@@ -638,11 +638,12 @@ class AtFile:
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
-            if trace: g.trace('in cache',fileName)
+            if trace: g.trace('cache hit',g.shortFileName(fileName))
             at.inputFile.close()
             root.clearDirty()
             return True
         if not g.unitTesting:
+            if trace: g.trace('***** cache miss',repr(at.encoding),g.shortFileName(fileName))
             g.es("reading:",root.h)
         if isFileLike:
             if g.unitTesting:
@@ -651,7 +652,6 @@ class AtFile:
             else:
                 g.red("converting @file format in",root.h)
         root.clearVisitedInTree()
-
         at.scanAllDirectives(root,importing=at.importing,reading=True)
             # Sets the following ivars:
                 # at.default_directory
@@ -662,8 +662,6 @@ class AtFile:
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
-
-        if trace: g.trace('**************',repr(at.encoding),fileName)
         thinFile = at.readOpenFile(root,fileName,deleteNodes=True)
             # Calls at.scanHeader, which sets at.encoding.
         at.inputFile.close()
@@ -694,7 +692,6 @@ class AtFile:
         ### This is not the cause of the bug.
         if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
-
         if trace: g.trace('at.errors',at.errors)
         return at.errors == 0
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
@@ -929,8 +926,8 @@ class AtFile:
     #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(fileName)
+        trace = (False or g.app.debug) and not g.unitTesting
+        # if trace: g.trace(fileName)
         at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)

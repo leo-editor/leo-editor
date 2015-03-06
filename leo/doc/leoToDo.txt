@@ -12,13 +12,12 @@
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150305172417.5: *4* Fix bug 149: Caching sometimes reverts recent git updates
-https://github.com/leo-editor/leo-editor/issues/149
 .. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
 
 This may also affect paste-retaining-clones.
+https://github.com/leo-editor/leo-editor/issues/141
 
 4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
 commit 4f848037424544e127166dbb0375f90c6826aa21
@@ -26,6 +25,12 @@ Author: Edward K. Ream <edreamleo@gmail.com>
 Date:   Fri Sep 13 16:44:33 2013 -0500
 
 See 
+.. @+node:ekr.20150306050816.6: *4* Fix bug 138: goto-global-line doesn't work properly in @nosent files
+https://github.com/leo-editor/leo-editor/issues/138
+
+nosent-goto-line-bug.leo demonstrates the bug.
+
+Under the '@clean test.js' node goto-global-line command with any line number.
 .. @+node:ekr.20150302140653.4: *3* Bugs for b2
 .. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
 https://github.com/leo-editor/leo-editor/issues/143
@@ -156,6 +161,9 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20150305172417.5: *4* Fix bug 149: (minor) Caching sometimes reverts recent git updates
+https://github.com/leo-editor/leo-editor/issues/149
+This looks like a minor bug.
 .. @+node:ekr.20150305084546.4: *3* Can't fix
 .. @+node:ekr.20150305053156.5: *4* Fix bug 147: Python 3 clipboard encoding
 @language rest
