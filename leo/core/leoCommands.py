@@ -2216,14 +2216,11 @@ class Commands (object):
                 return the number of lines scanned by this call.
             '''
             if self.trace: g.trace('='*10,n,p.h)
-            ao = None # None if @others has not been scanned.
+            ao = False # True if @others has been seen in this node.
             lines = g.splitLines(p.b)
-            i = 0
-                # The index of the line being scanning in this node.
-            effective_n = 0
-                # The number of "counted" lines including the present line i.
-            # Invariant: the target n never changes in this method.
-            while i < len(lines):
+            effective_n = 0 # The number effective lines, not counting sentinels.
+            # Invariant: the target n never changes in this method!
+            for i,line in enumerate(lines):
                 progress = i
                 line = lines[i]
                 if self.trace: g.trace('i %3s effective_n %3s %s' % (
@@ -2236,16 +2233,10 @@ class Commands (object):
                     raise self.Found(i,p)
                 else:
                     effective_n += 1
-                # This is the one and only place we update i in this loop.
-                i += 1
-                assert i > progress
-            # Fix bug 138:
-            if ao is None:
+            if not ao:
                 new_n = n-effective_n
                 effective_n += self.countLinesInChildren(new_n,p)
-            if self.trace:
-                g.trace('Not found. n: %s effective_n: %s %s' % (
-                    n,effective_n,p.h))
+            if self.trace: g.trace('Not found. n: %s effective_n: %s %s' % (n,effective_n,p.h))
             return effective_n
         #@+node:ekr.20100216141722.5625: *8* countLinesInChildren
         def countLinesInChildren(self,n,p):
