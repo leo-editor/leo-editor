@@ -2247,7 +2247,7 @@ class Commands (object):
                 g.trace('Not found. n: %s %s' % (self.n,p.h))
         #@+node:ekr.20150306083738.11: *8* countLinesInDirective
         def countLinesInDirective(self,ao,i,line,p):
-            '''Return the number of lines in the directive, including @others.'''
+            '''Handle a possible Leo directive, including @others.'''
             if line.strip().startswith('@others'):
                 if not ao and p.hasChildren():
                     ao = True # We have seen @others in p.
@@ -2263,7 +2263,7 @@ class Commands (object):
                     pass # A regular directive: don't change effective_n.
                 else:
                     # Fix bug 1182864: goto-global-line cmd bug.
-                    # Do count everything (like decorators) that is not a Leo directive.
+                    # Count everything (like decorators) that is not a Leo directive.
                     if self.n == self.target:
                         if self.trace:
                             g.trace('Found in @others! n: %s i: %s %s\n%s' % (
