@@ -2216,42 +2216,53 @@ class Commands (object):
         #@+node:ekr.20100216141722.5624: *8* countBodyLines
         def countBodyLines (self,p):
             '''
-            Count effective lines in p's body text, looking for line n
-            (zero-based), incrementing self.n.
+            Scan p.b, incrementing self.n, looking for self.target.
             
-            raise Found(i,p) if the line is found.
+            raise Found(i,p) if the target line is found.
             '''
+            if not p: return
             if self.trace: g.trace('='*10,self.n,p.h)
             ao = False # True: @others has been seen in this node.
             for i,line in enumerate(g.splitLines(p.b)):
                 if self.trace: g.trace('i %3s n %3s %s' % (i,self.n,line.rstrip()))
+                ref = self.findDefinition(line,p)
                 if line.strip().startswith('@'):
-                    ao = self.countLinesInDirective(ao,i,line,p)
+                    ao = self.countDirectiveLines(ao,i,line,p)
+                elif ref:
+                    self.countBodyLines(ref)
                 elif self.n == self.target:
                     if self.trace: g.trace('Found! n: %s i: %s in: %s' % (self.n,i,p.h))
                     raise self.Found(i,p)
                 else:
                     self.n += 1
             if not ao:
-                self.countLinesInChildren(p)
+                self.countChildLines(p)
             if self.trace: g.trace('Not found. %s %s' % (self.n,p.h))
-        #@+node:ekr.20100216141722.5625: *8* countLinesInChildren
-        def countLinesInChildren(self,p):
-            '''Scan p's children, throwing Found on success.'''
+        #@+node:ekr.20100216141722.5625: *8* countChildLines
+        def countChildLines(self,p):
+            '''
+            Scan p's children, incrementing self.n, looking for self.target.
+            Skip section defintion nodes.
+            
+            raise Found(i,p) if the target line is found.
+            '''
             if self.trace:
                 g.trace('-'*10,self.n,p.h)
             for child in p.children():
                 if self.trace:g.trace('child: %s' % child.h)
-                self.countBodyLines(child)
+                if self.sectionName(child.h):
+                    pass # Assume the node will be expanded via a section reference.
+                else:
+                    self.countBodyLines(child)
             if self.trace:
                 g.trace('Not found. n: %s %s' % (self.n,p.h))
-        #@+node:ekr.20150306083738.11: *8* countLinesInDirective
-        def countLinesInDirective(self,ao,i,line,p):
+        #@+node:ekr.20150306083738.11: *8* countDirectiveLines
+        def countDirectiveLines(self,ao,i,line,p):
             '''Handle a possible Leo directive, including @others.'''
             if line.strip().startswith('@others'):
                 if not ao and p.hasChildren():
                     ao = True # We have seen @others in p.
-                    self.countLinesInChildren(p)
+                    self.countChildLines(p)
                 else:
                     pass # silently ignore erroneous @others.
             else:
@@ -2272,6 +2283,25 @@ class Commands (object):
                     else:
                         self.n += 1
             return ao
+        #@+node:ekr.20150306124034.6: *8* findDefinition
+        def findDefinition(self,line,p):
+            '''
+            Return the section definition node corresponding to the section
+            reference in the given line of p.b.
+            '''
+            trace = False and not g.unitTesting
+            name = self.sectionName(line)
+            ref = name and g.findReference(self.c,name,p)
+            if trace and name:
+                if ref: g.trace('found',ref.h)
+                else: g.trace('not found',name)
+            return ref
+        #@+node:ekr.20150306124034.7: *8* sectionName
+        def sectionName(self,line):
+            '''Return True if the line contains a section definition.'''
+            i = line.find('<<')
+            j = line.find('>>')
+            return line[i:j+2] if -1 < i < j else None
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
             '''
