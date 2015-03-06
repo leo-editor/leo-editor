@@ -526,7 +526,7 @@ class AtFile:
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
-    #@+node:ekr.20041005105605.19: *4* at.openFileForReading & helper (*big change*)
+    #@+node:ekr.20041005105605.19: *4* at.openFileForReading & helper
     def openFileForReading(self,fromString=False):
         '''
         Open the file given by at.root.
@@ -588,7 +588,7 @@ class AtFile:
             g.trace('reading: shadow_fn:',shadow_fn)
         x.updatePublicAndPrivateFiles(at.root,fn,shadow_fn)
         return shadow_fn
-    #@+node:ekr.20041005105605.21: *4* at.read & helpers
+    #@+node:ekr.20041005105605.21: *4* at.read & helpers (** better guards for writeFile)
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
     ):
@@ -618,6 +618,8 @@ class AtFile:
             return False
         fileName = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
+            # Calls at.initReadLine(s), where s is the file contents.
+            # This will be used only if not cached.
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
         elif fromString: # 2010/09/02.
@@ -625,7 +627,6 @@ class AtFile:
         else:
             if trace: g.trace('No inputFile')
             return False
-
         # Get the file from the cache if possible.
         if fromString:
             s,loaded,fileKey = fromString,False,None
@@ -689,6 +690,7 @@ class AtFile:
             # c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
+        ############ test fileKey.
         if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
 
@@ -923,7 +925,7 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
+    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode (** better guards for writeFile)
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
         trace = False and not g.unitTesting

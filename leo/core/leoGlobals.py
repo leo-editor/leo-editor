@@ -2866,7 +2866,7 @@ def openWithFileName(fileName,old_c=None,gui=None):
     """
 
     return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
-#@+node:ekr.20100125073206.8710: *3* g.readFileIntoString (Leo 4.7)
+#@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString (fn,
     encoding='utf-8',
     kind=None,
