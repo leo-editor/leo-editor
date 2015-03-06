@@ -2399,7 +2399,9 @@ class VNodeBase (object):
     #@+node:ekr.20031218072017.3399: *5* v.setOrphan
     def setOrphan (self):
         '''Set the vnode's orphan bit.'''
-        # if self.h.startswith('@file'): g.trace(self.h,g.callers())
+        trace = (False or g.app.debug) and not g.unitTesting
+        if trace and self.h.startswith('@file'):
+            g.trace(self.h,g.callers())
         self.statusBits |= self.orphanBit
     #@+node:ekr.20031218072017.3400: *5* v.setSelected
     # This only sets the selected bit.
