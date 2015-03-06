@@ -2287,7 +2287,7 @@ class Commands (object):
                     if effective_n == n:
                         if self.trace:
                             g.trace('Found in @others! n: %s i: %s %s\n%s' % (
-                                n,i,lines[i],p.h))
+                                n,i,line,p.h))
                         raise self.Found(i,p)
                     else:
                         effective_n += 1
