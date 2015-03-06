@@ -134,6 +134,11 @@ There were two bugs:
 2. A bug in the @clean read logic. The fix was a rewrite of read_at_nosent_lines.
 .. @+node:ekr.20150304131453.5: *4* Fixed crasher in scroll-wheel code
 This was a PyQt5 compatibility problem in lqtb.wheelEvent.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qt_text.py", line 796, in wheelEvent
+    if delta < 0:
+TypeError: unorderable types: QPoint() < int()
 .. @+node:ekr.20150217154248.4: *4* Investigated bug 146: Recursive import script may add extra declaration lines
 https://github.com/leo-editor/leo-editor/issues/146
 

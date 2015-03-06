@@ -164,6 +164,8 @@ end
 .. @+node:ekr.20150305172417.5: *4* Fix bug 149: (minor) Caching sometimes reverts recent git updates
 https://github.com/leo-editor/leo-editor/issues/149
 This looks like a minor bug.
+.. @+node:ekr.20150306075700.4: *4* Fix bug 89: Spontaneous clones when using sections
+https://github.com/leo-editor/leo-editor/issues/89
 .. @+node:ekr.20150305084546.4: *3* Can't fix
 .. @+node:ekr.20150305053156.5: *4* Fix bug 147: Python 3 clipboard encoding
 @language rest
