@@ -2134,15 +2134,23 @@ class Commands (object):
     class GoToLineNumber:
 
         '''A class implementing goto-global-line.'''
+        
+        class Found(Exception):
+            def __init__(self,i,p):
+                self.i = i
+                self.p = p
+            def __str__(self):
+                return "Found line at %s in %s" % (self.i,self.p.h)
 
         #@+others
         #@+node:ekr.20100216141722.5621: *7*  __init__ (gotoLineNumber)
         def __init__ (self,c):
-
+            '''Ctor for GoToLineNumber class.'''
             # g.trace('(c.gotoLineNumber)')
             self.c = c
             self.p = c.p.copy()
             self.isAtAuto = False
+            self.trace = False # set in countLines.
         #@+node:ekr.20100216141722.5622: *7* go
         def go (self,n,p=None,scriptData=None):
 
@@ -2180,134 +2188,106 @@ class Commands (object):
         def countLines (self,root,n):
             '''
             Scan through root's outline, looking for line n (one based).
-            Return (p,i,found)
-                p:      the found node.
-                i:      the offset of the line within the node.
-                found:  True if the line was found.
+            Return (p,i)
+                p: the found node.
+                i: the zero-based offset of the line within the node.
             '''
-            trace = False and not g.unitTesting
-            # c = self.c
-            # Start the recursion.
-            n = max(0,n-1)# Convert to zero based internally.
-            if trace: g.trace('%s %s (zero-based) %s' % ('*' * 20,n,root.h))
-            p,i,junk,found = self.countLinesHelper(root,n,trace)
-            return p,i,found # The index is zero-based.
+            self.trace = False and not g.unitTesting
+            n = max(0,n-1) # Convert n to zero based.
+            if self.trace: g.trace('%s n: %s (zero-based) %s' % ('*' * 20,n,root.h))
+            try:
+                self.countLinesHelper(root,n)
+                p,i,found = None,-1,False
+            except self.Found as e:
+                p,i,found = e.p,e.i,True
+            except Exception:
+                g.es_exception()
+                p,i,found = None,-1,False
+            return p,i,found
         #@+node:ekr.20100216141722.5624: *8* countLinesHelper
-        def countLinesHelper (self,p,n,trace):
+        def countLinesHelper (self,p,n):
             '''
             Scan p's body text, looking for line n (zero-based).
-            ao is the index of the line containing @others or None.
-
-            Return (p,i,n,effective_lines,found)
-            found: True if the line was found.
             if found::
-                p:              The found node.
-                i:              The offset of the line within the node.
-                effective_lines:-1 (not used)
-
-            if not found::
-                p:              The original node.
-                i:              -1 (not used)
-                effective_lines:The number of lines in this node and all descendant nodes.
+                raise Found(i,p)
+                p:  The found node.
+                i:  The offset of the line within the node.
+            Otherwise:
+                return the number of lines scanned by this call.
             '''
-            if trace: g.trace('='*10,n,p.h)
-            # c = self.c
-            ao = None
+            if self.trace: g.trace('='*10,n,p.h)
+            ao = None # None if @others has not been scanned.
             lines = g.splitLines(p.b)
             i = 0
                 # The index of the line being scanning in this node.
-            effective_lines = 0
+            effective_n = 0
                 # The number of "counted" lines including the present line i.
             # Invariant 1: n never changes in this method(!)
             # Invariant 2: n is alway the target line.
             while i < len(lines):
                 progress = i
                 line = lines[i]
-                if trace: g.trace('i %3s effective %3s %s' % (
-                    i,effective_lines,line.rstrip()))
+                if self.trace: g.trace('i %3s effective_n %3s %s' % (
+                    i,effective_n,line.rstrip()))
                 if line.strip().startswith('@'):
                     if line.strip().startswith('@others'):
                         if ao is None and p.hasChildren():
-                            ao = i
+                            ao = i # indicate that we have seen @others.
                             # Count lines in inner nodes.
-                            # Pass n-effective_lines as the targe line number.
-                            new_n = n-effective_lines
-                            p2,i2,effective_lines2,found = \
-                                self.countLinesInChildren(new_n,p,trace)
-                            if found:
-                                return p2,i2,-1,True # effective_lines doesn't matter.
-                            else:
-                                # Assert that the line has not been found.
-                                if effective_lines2 > new_n:
-                                    if trace: g.trace(
-                                        '***oops! effective_lines2: %s, new_n: %s' % (
-                                        effective_lines2,new_n))
-                                    if g.unitTesting: assert False
-                                effective_lines += effective_lines2
-                                # Do *not* change i: it will be bumped below.
-                                # Invariant: n never changes!
+                            new_n = n-effective_n
+                            effective_n += self.countLinesInChildren(new_n,p)
                         else:
                             pass # silently ignore erroneous @others.
                     else:
                         s = line.strip()
                         k = g.skip_id(s,1)
                         word = s[1:k]
-                        # g.trace('word',repr(word))
-                        # Fix bug 138: goto-global-line doesn't work properly in @nosent files
-                        # Treat a bare '@' as a Leo directive.
+                        # Fix bug 138: Treat a bare '@' as a Leo directive.
                         if not word or word in g.globalDirectiveList:
                             pass # A regular directive: don't change n or i here.
                         else:
                             # Fix bug 1182864: goto-global-line cmd bug.
                             # Do count everything (like decorators) that is not a Leo directive.
-                            if effective_lines == n:
-                                if trace: g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
-                                return p,i,-1,True # effective_lines doesn't matter.
+                            if effective_n == n:
+                                if self.trace:
+                                    g.trace('Found in @others! n: %s i: %s %s\n%s' % (
+                                        n,i,lines[i],p.h))
+                                raise self.Found(i,p)
                             else:
-                                effective_lines += 1
-                else:
-                    # Bug fix 2011/01/21: use effective_lines, not i, in this comparison.
+                                effective_n += 1
+                elif effective_n == n:
                     # The line is now known to be effective.
-                    if effective_lines == n:
-                        if trace: g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
-                        return p,i,-1,True # effective_lines doesn't matter.
-                    else:
-                        effective_lines += 1
+                    if self.trace: g.trace('Found! n: %s i: %s in: %s' % (n,i,p.h))
+                    raise self.Found(i,p)
+                else:
+                    effective_n += 1
                 # This is the one and only place we update i in this loop.
                 i += 1
                 assert i > progress
-            if trace:
-                g.trace('Not found. n: %s effective_lines: %s %s' % (
-                    n,effective_lines,p.h))
-            return p,-1,effective_lines,False # i doesn't matter.
+            # Fix bug 138:
+            if ao is None:
+                new_n = n-effective_n
+                effective_n += self.countLinesInChildren(new_n,p)
+            if self.trace:
+                g.trace('Not found. n: %s effective_n: %s %s' % (
+                    n,effective_n,p.h))
+            return effective_n
         #@+node:ekr.20100216141722.5625: *8* countLinesInChildren
-        def countLinesInChildren(self,n,p,trace):
-
-            if trace: g.trace('-'*10,n,p.h)
-            effective_lines = 0
+        def countLinesInChildren(self,n,p):
+            '''
+            Scan p's children looking for line n.
+            This method returns only if the target has not been found.
+            In that case, return the number of lines scanned in the children.
+            '''
+            if self.trace: g.trace('-'*10,n,p.h)
+            effective_n = 0
             for child in p.children():
-                if trace:g.trace('child %s' % child.h)
-                # Recursively scan the children.
-                # Pass n-effective_lines as the targe line number for each child.
-                new_n = n-effective_lines
-                p2,i2,effective_lines2,found = \
-                    self.countLinesHelper(child,new_n,trace)
-                if found:
-                    if trace: g.trace('Found! i2: %s %s' % (i2,child.h))
-                    return p2,i2,-1,True # effective_lines doesn't matter.
-                else:
-                    # Assert that the line has not been found.
-                    if effective_lines2 > new_n:
-                        if trace: g.trace(
-                            '*** oops! effective_lines2: %s, new_n: %s n: %s %s' % (
-                                effective_lines2,new_n,n,p.h))
-                        if g.unitTesting: assert False
-                    # i2 is not used
-                    effective_lines += effective_lines2
-
-            if trace: g.trace('Not found. effective_lines: %s %s' % (
-                effective_lines,p.h))
-            return p,-1,effective_lines,False # i does not matter.
+                if self.trace:g.trace('child: %s' % child.h)
+                new_n = n-effective_n
+                effective_n += self.countLinesHelper(child,new_n)
+            if self.trace: g.trace('Not found. effective_n: %s %s' % (
+                effective_n,p.h))
+            return effective_n
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
             '''
