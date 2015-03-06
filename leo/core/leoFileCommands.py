@@ -821,7 +821,7 @@ class FileCommands:
             b1,h1 = bunch.get('b_old'),bunch.get('h_old')
             b2,h2 = bunch.get('b_new'),bunch.get('h_new')
             child = root.insertAsLastChild()
-            h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
+            h = 'Recovered node "%s" from %s' % (h1,g.shortFileName(fn))
             child.setHeadString(h)
             # child.setBodyString('%s %s' % (tag,gnx))
             line1 = '%s %s\nDiff...\n' % (tag,gnx)
