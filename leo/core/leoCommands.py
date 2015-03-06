@@ -1246,7 +1246,11 @@ class Commands (object):
                 p.deleteAllChildren()
                 at.read(p,force=True)
             elif word in ('@clean','@nosent'):
-                at.readOneAtNosentNode(p)
+                # Wishlist 148: use @auto parser if the node is empty.
+                if p.b.strip() or p.hasChildren():
+                    at.readOneAtNosentNode(p)
+                else:
+                    at.readOneAtAutoNode(fn,p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
                 at.read(p,force=True,atShadow=True)
