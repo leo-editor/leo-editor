@@ -2222,39 +2222,14 @@ class Commands (object):
                 # The index of the line being scanning in this node.
             effective_n = 0
                 # The number of "counted" lines including the present line i.
-            # Invariant 1: n never changes in this method(!)
-            # Invariant 2: n is alway the target line.
+            # Invariant: the target n never changes in this method.
             while i < len(lines):
                 progress = i
                 line = lines[i]
                 if self.trace: g.trace('i %3s effective_n %3s %s' % (
                     i,effective_n,line.rstrip()))
                 if line.strip().startswith('@'):
-                    if line.strip().startswith('@others'):
-                        if ao is None and p.hasChildren():
-                            ao = i # indicate that we have seen @others.
-                            # Count lines in inner nodes.
-                            new_n = n-effective_n
-                            effective_n += self.countLinesInChildren(new_n,p)
-                        else:
-                            pass # silently ignore erroneous @others.
-                    else:
-                        s = line.strip()
-                        k = g.skip_id(s,1)
-                        word = s[1:k]
-                        # Fix bug 138: Treat a bare '@' as a Leo directive.
-                        if not word or word in g.globalDirectiveList:
-                            pass # A regular directive: don't change n or i here.
-                        else:
-                            # Fix bug 1182864: goto-global-line cmd bug.
-                            # Do count everything (like decorators) that is not a Leo directive.
-                            if effective_n == n:
-                                if self.trace:
-                                    g.trace('Found in @others! n: %s i: %s %s\n%s' % (
-                                        n,i,lines[i],p.h))
-                                raise self.Found(i,p)
-                            else:
-                                effective_n += 1
+                    ao,effective_n = self.countLinesInDirective(ao,effective_n,i,line,n,p)
                 elif effective_n == n:
                     # The line is now known to be effective.
                     if self.trace: g.trace('Found! n: %s i: %s in: %s' % (n,i,p.h))
@@ -2288,6 +2263,35 @@ class Commands (object):
             if self.trace: g.trace('Not found. effective_n: %s %s' % (
                 effective_n,p.h))
             return effective_n
+        #@+node:ekr.20150306083738.11: *8* countLinesInDirective
+        def countLinesInDirective(self,ao,effective_n,i,line,n,p):
+            '''Return the number of lines in the directive, including @others.'''
+            if line.strip().startswith('@others'):
+                if not ao and p.hasChildren():
+                    ao = True # We have seen @others in p.
+                    new_n = n-effective_n
+                    effective_n += self.countLinesInChildren(new_n,p)
+                        # may raise Found.
+                else:
+                    pass # silently ignore erroneous @others.
+            else:
+                s = line.strip()
+                k = g.skip_id(s,1)
+                word = s[1:k]
+                # Fix bug 138: Treat a bare '@' as a Leo directive.
+                if not word or word in g.globalDirectiveList:
+                    pass # A regular directive: don't change effective_n.
+                else:
+                    # Fix bug 1182864: goto-global-line cmd bug.
+                    # Do count everything (like decorators) that is not a Leo directive.
+                    if effective_n == n:
+                        if self.trace:
+                            g.trace('Found in @others! n: %s i: %s %s\n%s' % (
+                                n,i,lines[i],p.h))
+                        raise self.Found(i,p)
+                    else:
+                        effective_n += 1
+            return ao,effective_n
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
             '''
@@ -2622,8 +2626,11 @@ class Commands (object):
                 ins = g.convertRowColToPythonIndex(s,n2-1,0)
             else:
                 ins = len(s)
-                if len(lines) < n and not g.unitTesting:
-                    g.warning('only',len(lines),'lines')
+                if not g.unitTesting:
+                    if len(lines) < n:
+                        g.warning('only',len(lines),'lines')
+                    else:
+                        g.warning('line',n,'not found')
 
             if trace:
                 i,j = g.getLine(s,ins)
