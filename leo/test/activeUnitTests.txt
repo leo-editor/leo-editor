@@ -14593,9 +14593,10 @@ aList = []
 nodes = 0
 for p in root.subtree():
     nodes += 1
-    if p.h == 'b': # and p.level()-n != 1:
-        parent = p.stack[-1][0]
-        # print('found',p.level()-n,p.h,'childIndex',p.childIndex(),'parent:',parent.h)
+    if p.h == 'b':
+        if 0:
+            parent = p.stack[-1][0]
+            print('found',p.level()-n,p.h,'childIndex',p.childIndex(),'parent:',parent.h)
         aList.append(p.copy())
 n_aList = len(aList)
 assert n_aList == 6,n_aList

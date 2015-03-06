@@ -6746,7 +6746,10 @@ class Commands (object):
         # Delete p.v for all positions p in reversed(sorted(aList2)).
         if callback:
             for p in reversed(sorted(aList2)):
-                callback(p)
+                if c.positionExists(p):
+                    callback(p)
+                elif trace:
+                    g.trace('position does not exist',p and p.h)
         else:
             for p in reversed(sorted(aList2)):
                 if c.positionExists(p):
@@ -6758,8 +6761,8 @@ class Commands (object):
                         v._cutLink(childIndex,parent_v)
                     else:
                         if trace: g.trace('already deleted',parent_v,v)
-                else:
-                    if trace: g.trace('can not happen',p and p.h)
+                elif trace:
+                    g.trace('position does not exist',p and p.h)
         # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
