@@ -324,7 +324,6 @@ class Cacher:
         if not g.enableDB:
             if trace and verbose: g.trace('g.enableDB is False',sfn)
             return '',False,None
-        ### s,e = g.readFileIntoString(fileName,raw=True,silent=True)
         s = g.readFileIntoEncodedString(fileName,silent=True)
         if s is None:
             if trace: g.trace('empty file contents',sfn)

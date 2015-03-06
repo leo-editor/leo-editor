@@ -588,7 +588,7 @@ class AtFile:
             g.trace('reading: shadow_fn:',shadow_fn)
         x.updatePublicAndPrivateFiles(at.root,fn,shadow_fn)
         return shadow_fn
-    #@+node:ekr.20041005105605.21: *4* at.read & helpers (** better guards for writeFile)
+    #@+node:ekr.20041005105605.21: *4* at.read & helpers
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
     ):
@@ -690,7 +690,8 @@ class AtFile:
             # c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
-        ############ test fileKey.
+        ### There will be an internal error if fileKey is None.
+        ### This is not the cause of the bug.
         if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
 
@@ -925,7 +926,7 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode (** better guards for writeFile)
+    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
         trace = False and not g.unitTesting
@@ -972,7 +973,7 @@ class AtFile:
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)
-        else:
+        else: ### else on multiple conditions is dubious
             c.cacher.writeFile(p,fileKey)
             g.doHook('after-auto',c=c,p=p)
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
