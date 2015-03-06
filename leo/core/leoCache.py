@@ -139,6 +139,8 @@ class Cacher:
         Compute the hash of s (usually a headline) and content.
         s may be unicode, content must be bytes (or plain string in Python 2.x)
         '''
+        ### Changed for reversion testing.
+        ### This comment will be reverted in git to attempt to recreate the caching problem.
         m = hashlib.md5()
         if g.isUnicode(s):
             s = g.toEncodedString(s)
