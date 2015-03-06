@@ -2866,6 +2866,21 @@ def openWithFileName(fileName,old_c=None,gui=None):
     """
 
     return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
+#@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
+def readFileIntoEncodedString(fn,silent=False):
+    '''Return the raw contents of the file whose full path is fn.'''
+    try:
+        f = open(fn,'rb')
+        s = f.read()
+        f.close()
+        return s
+    except IOError:
+        if not silent:
+            g.error('can not open',fn)
+    except Exception:
+        g.error('readFileIntoEncodedString: unexpected exception reading %s' % (fn))
+        g.es_exception()
+    return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString (fn,
     encoding='utf-8',
