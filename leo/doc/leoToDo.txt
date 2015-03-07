@@ -12,7 +12,7 @@
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
+.. @+node:ekr.20150211104036.4: *4* Fix bugs 135 & 141: DnD & paste-retaing-clones
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
 
@@ -23,45 +23,6 @@ https://github.com/leo-editor/leo-editor/issues/141
 commit 4f848037424544e127166dbb0375f90c6826aa21
 Author: Edward K. Ream <edreamleo@gmail.com>
 Date:   Fri Sep 13 16:44:33 2013 -0500
-
-See 
-.. @+node:ekr.20150306050816.6: *4* Fixed bug 138: goto-global-line doesn't work properly in @nosent files
-https://github.com/leo-editor/leo-editor/issues/138
-.. @+node:ekr.20150302140653.4: *3* Bugs for b2
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Bracket matching should take into account the language in effect.
-
-For example, JavaScript regular expressions are not handled properly.
-
-Furthermore, there should be a command to select the region between
-matching brackets.
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
 
@@ -157,12 +118,44 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150305172417.5: *4* Fix bug 149: (minor) Caching sometimes reverts recent git updates
-https://github.com/leo-editor/leo-editor/issues/149
-This looks like a minor bug.
+.. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
+.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Bracket matching should take into account the language in effect.
+
+For example, JavaScript regular expressions are not handled properly.
+
+Furthermore, there should be a command to select the region between
+matching brackets.
+.. @+node:ekr.20150305084546.4: *3* Can't/won't fix/waiting for symptoms
 .. @+node:ekr.20150306075700.4: *4* Fix bug 89: Spontaneous clones when using sections
 https://github.com/leo-editor/leo-editor/issues/89
-.. @+node:ekr.20150305084546.4: *3* Can't fix
 .. @+node:ekr.20150305053156.5: *4* Fix bug 147: Python 3 clipboard encoding
 @language rest
 @wrap
@@ -369,6 +362,9 @@ def setAllText(self,s):
     finally:
         self.changingText = False
         colorizer.changingText = False
+.. @+node:ekr.20150305172417.5: *4* Fix bug 149: (minor) Caching sometimes reverts recent git updates
+https://github.com/leo-editor/leo-editor/issues/149
+This looks like a minor bug.
 .. @+node:ekr.20150304232409.4: *3* Docs
 .. @+node:ekr.20150304232409.5: *4* document --diff
 Search for added --diff
