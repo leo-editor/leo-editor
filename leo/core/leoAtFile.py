@@ -820,9 +820,9 @@ class AtFile:
     #@+node:ekr.20041005105605.26: *4* at.readAll
     def readAll(self,root,partialFlag=False):
         """Scan positions, looking for @<file> nodes to read."""
+        at,c = self,self.c
         use_tracer = False
         if use_tracer: tt = g.startTracer()
-        at = self ; c = at.c
         force = partialFlag
         if partialFlag:
             # Capture the current headline only if
@@ -1293,43 +1293,39 @@ class AtFile:
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() ; j -= 1
     #@+node:ekr.20041005105605.71: *3* at.Reading (4.x)
-    #@+node:ekr.20041005105605.73: *4* at.findChild4
+    #@+node:ekr.20041005105605.73: *4* at.findChild4 (legacy only)
     def findChild4 (self,headline):
 
-        """Return the next VNode in at.root.tnodeList.
-        This is called only for **legacy** @file nodes"""
-
-        # tnodeLists are used *only* when reading @file (not @thin) nodes.
-        # tnodeLists compensate for not having gnx's in derived files! 
-
-        trace = False and not g.unitTesting
+        """
+        Return the next VNode in at.root.tnodeList.
+        Called only for **legacy** @file nodes.
+        
+        tnodeLists are used *only* when reading @file (not @thin) nodes.
+        tnodeLists compensate for not having gnx's in derived files!
+        """
+        trace = True and not g.unitTesting
         at = self ; v = at.root.v
-
+        if trace: g.trace('legacy file',headline)
         # if not g.unitTesting:
             # if headline.startswith('@file'):
                 # g.es_print('Warning: @file logic',headline)
-
         if trace: g.trace('%s %s %s' % (
             at.tnodeListIndex,
             v.tnodeList[at.tnodeListIndex],headline))
-
         if not hasattr(v,"tnodeList"):
             at.readError("no tnodeList for " + repr(v))
             g.es("write the @file node or use the Import Derived File command")
             g.trace("no tnodeList for ",v,g.callers())
             return None
-
         if at.tnodeListIndex >= len(v.tnodeList):
             at.readError("bad tnodeList index: %d, %s" % (
                 at.tnodeListIndex,repr(v)))
             g.trace("bad tnodeList index",
                 at.tnodeListIndex,len(v.tnodeList),v)
             return None
-
         v = v.tnodeList[at.tnodeListIndex]
         assert(v)
         at.tnodeListIndex += 1
-
         # Don't check the headline.  It simply causes problems.
         v.setVisited() # Supress warning/deletion of unvisited nodes.
         return v
@@ -1564,7 +1560,6 @@ class AtFile:
         gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
         if not ok: return
         at.root_seen = True
-
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
@@ -1607,9 +1602,13 @@ class AtFile:
             at.endSentinelStack.append(at.endNode)
     #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helpers
     def createNewThinNode (self,gnx,headline,level):
-
+        '''Create a new (new-style) vnode.'''
         at = self
-
+        testFile = at.targetFileName.endswith('clone-revert-test.txt')
+        trace = (True and testFile) and not g.unitTesting
+        if trace:
+            g.trace('targetFileName',at.targetFileName)
+            g.trace('level: %2s %-24s %s' % (level,gnx,headline))
         if at.thinNodeStack:
             if at.readVersion5:
                 v = self.createV5ThinNode(gnx,headline,level)
@@ -1621,7 +1620,6 @@ class AtFile:
             if allow_cloned_sibs and at.readVersion5:
                 at.thinChildIndexStack.append(0)
             at.thinNodeStack.append(v)
-
         at.lastThinNode = v
         return v
     #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode
@@ -2074,7 +2072,7 @@ class AtFile:
         at = self
 
         at.readEndNode(s,i,middle=True)
-    #@+node:ekr.20041005105605.95: *6* at.readEndNode
+    #@+node:ekr.20041005105605.95: *6* at.readEndNode (old sentinels only)
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle @-node sentinels."""
