@@ -153,6 +153,8 @@ https://github.com/leo-editor/leo-editor/issues/142
 - Fixed the actual bug in onHeadKey.  Inserting a new node put the template in the root node rather than the newly-inserted node.
 .. @+node:ekr.20150211104036.473: *4* Fixed bug 145: The already open dialog can cause Leo to hang
 https://github.com/leo-editor/leo-editor/issues/145
+.. @+node:ekr.20150306050816.6: *4* Fixed bug 138: goto-global-line doesn't work properly in @nosent files
+https://github.com/leo-editor/leo-editor/issues/138
 .. @+node:ekr.20150206064817.9: *3* Code
 .. @+node:ekr.20150206064817.4: *4* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.

@@ -2201,17 +2201,15 @@ class Commands (object):
             '''
             self.trace = False and not g.unitTesting
             self.target = max(0,n-1)
-                # Invariant: the zero-based self.target never changes!
-            self.n = 0 # The number of lines seen so far.
-            if self.trace: g.trace('%s n: %s (zero-based) %s' % ('*' * 20,n,root.h))
+                # Invariant: the target never changes!
+            self.n = 0
+                # The number of "effective" lines seen in the outline.
+            if self.trace: g.trace('n (zero-based):',n,root.h)
             try:
                 self.countBodyLines(root)
                 p,i,found = None,-1,False
             except self.Found as e:
                 p,i,found = e.p,e.i,True
-            except Exception:
-                g.es_exception()
-                p,i,found = None,-1,False
             return p,i,found
         #@+node:ekr.20100216141722.5624: *8* countBodyLines
         def countBodyLines (self,p):
@@ -2237,7 +2235,6 @@ class Commands (object):
                     self.n += 1
             if not ao:
                 self.countChildLines(p)
-            if self.trace: g.trace('Not found. %s %s' % (self.n,p.h))
         #@+node:ekr.20100216141722.5625: *8* countChildLines
         def countChildLines(self,p):
             '''
@@ -2254,8 +2251,6 @@ class Commands (object):
                     pass # Assume the node will be expanded via a section reference.
                 else:
                     self.countBodyLines(child)
-            if self.trace:
-                g.trace('Not found. n: %s %s' % (self.n,p.h))
         #@+node:ekr.20150306083738.11: *8* countDirectiveLines
         def countDirectiveLines(self,ao,i,line,p):
             '''Handle a possible Leo directive, including @others.'''
@@ -2289,16 +2284,14 @@ class Commands (object):
             Return the section definition node corresponding to the section
             reference in the given line of p.b.
             '''
-            trace = False and not g.unitTesting
             name = self.sectionName(line)
             ref = name and g.findReference(self.c,name,p)
-            if trace and name:
-                if ref: g.trace('found',ref.h)
-                else: g.trace('not found',name)
+            if name and not ref:
+                g.error('section reference not found: %s' % (g.angleBrackets(name)))
             return ref
         #@+node:ekr.20150306124034.7: *8* sectionName
         def sectionName(self,line):
-            '''Return True if the line contains a section definition.'''
+            '''Return the first section reference in line.'''
             i = line.find('<<')
             j = line.find('>>')
             return line[i:j+2] if -1 < i < j else None
