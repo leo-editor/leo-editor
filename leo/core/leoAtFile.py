@@ -492,7 +492,7 @@ class AtFile:
     # - Leo always writes private @shadow files using old sentines. This guarantees
     #   permanent compatibility with older versions of Leo.
     #@-<< about new sentinels >>
-    #@+node:ekr.20041005105605.18: *3* Reading (top level)
+    #@+node:ekr.20041005105605.18: *3* at.Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
     # should need to override only this method.
     #@+node:ekr.20070919133659: *4* at.checkDerivedFile
@@ -1292,7 +1292,7 @@ class AtFile:
             # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() ; j -= 1
-    #@+node:ekr.20041005105605.71: *3* Reading (4.x)
+    #@+node:ekr.20041005105605.71: *3* at.Reading (4.x)
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
 
@@ -2618,7 +2618,7 @@ class AtFile:
         i = g.skip_ws(s,i)
         assert i < len(s) and s[i] == '@','skipSentinelStart4 3'
         return i + 1
-    #@+node:ekr.20041005105605.116: *3* Reading utils...
+    #@+node:ekr.20041005105605.116: *3* at.Reading utils...
     #@+node:ekr.20100625092449.5963: *4* at.appendToOut
     def appendToOut (self,s):
 
