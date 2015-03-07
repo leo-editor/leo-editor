@@ -65,7 +65,7 @@ if sys.platform != 'cli':
         '''A sax content handler class that reads Leo files.'''
 
         #@+others
-        #@+node:ekr.20060919110638.20: *4*  __init__ & helpers (SaxContentHandler)
+        #@+node:ekr.20060919110638.20: *4*  sax.__init__ & helpers
         def __init__ (self,c,fileName,silent,inClipboard):
             '''Ctor for SaxContentHandler class.'''
             self.c = c
@@ -117,7 +117,7 @@ if sys.platform != 'cli':
             self.nodeStack = []
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
-        #@+node:ekr.20060919110638.29: *4*  Do nothing
+        #@+node:ekr.20060919110638.29: *4*  sax.Do nothing
         def endElementNS(self,unused_name,unused_qname):
             g.trace(unused_name)
 
@@ -135,7 +135,7 @@ if sys.platform != 'cli':
 
         def startDocument(self):
             pass
-        #@+node:ekr.20060919134313: *4*  Utils
+        #@+node:ekr.20060919134313: *4*  sax.Utils
         #@+node:ekr.20060919110638.23: *5* attrsToList
         def attrsToList (self,attrs):
 
@@ -194,7 +194,7 @@ if sys.platform != 'cli':
         def clean(self,s):
 
             return g.toEncodedString(s,"ascii")
-        #@+node:ekr.20060919110638.30: *4* characters
+        #@+node:ekr.20060919110638.30: *4* sax.characters
         def characters(self,content):
 
             if g.isPython3:
@@ -218,7 +218,7 @@ if sys.platform != 'cli':
 
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
-        #@+node:ekr.20060919110638.31: *4* endElement & helpers
+        #@+node:ekr.20060919110638.31: *4* sax.endElement & helpers
         def endElement(self,name):
 
             name = name.lower()
@@ -239,7 +239,7 @@ if sys.platform != 'cli':
             name2 = self.elementStack.pop()
             assert name == name2
             # if self.trace: g.trace('** pop',name2)
-        #@+node:ekr.20060919110638.32: *5* endTnode
+        #@+node:ekr.20060919110638.32: *5* sax.endTnode
         def endTnode (self):
 
             for sax_node in self.nodeList:
@@ -247,13 +247,13 @@ if sys.platform != 'cli':
                 # if self.trace: g.trace(repr(sax_node))
 
             self.content = []
-        #@+node:ekr.20060919110638.33: *5* endVnode
+        #@+node:ekr.20060919110638.33: *5* sax.endVnode
         def endVnode (self):
 
             self.level -= 1
             self.node = self.nodeStack.pop()
             # if self.trace: g.trace(repr(self.node))
-        #@+node:ekr.20060919110638.34: *5* endVH
+        #@+node:ekr.20060919110638.34: *5* sax.endVH
         def endVH (self):
 
             if self.node:
@@ -261,7 +261,7 @@ if sys.platform != 'cli':
                 # if self.trace: g.trace(repr(self.node))
 
             self.content = []
-        #@+node:ekr.20060919110638.45: *4* getRootNode
+        #@+node:ekr.20060919110638.45: *4* sax.getRootNode
         def getRootNode (self):
             if self.trace:
                 g.trace()
@@ -269,7 +269,7 @@ if sys.platform != 'cli':
                 for child in self.rootNode.children:
                     child.dump()
             return self.rootNode
-        #@+node:ekr.20061004054323: *4* processingInstruction (stylesheet)
+        #@+node:ekr.20061004054323: *4* sax.processingInstruction (stylesheet)
         def processingInstruction (self,target,data):
 
             if target == 'xml-stylesheet':
@@ -278,7 +278,7 @@ if sys.platform != 'cli':
                     g.warning('','%s: %s' % (target,data))
             else:
                 g.trace(target,data)
-        #@+node:ekr.20060919110638.35: *4* startElement & helpers
+        #@+node:ekr.20060919110638.35: *4* sax.startElement & helpers
         def startElement(self,name,attrs):
 
             name = name.lower()
@@ -297,7 +297,7 @@ if sys.platform != 'cli':
                 func,junk = data
                 if func:
                     func(attrs)
-        #@+node:ekr.20060919110638.36: *5* getWindowPositionAttributes
+        #@+node:ekr.20060919110638.36: *5* sax.getWindowPositionAttributes
         def getWindowPositionAttributes (self,attrs):
 
             trace = False and not g.unitTesting
@@ -333,7 +333,7 @@ if sys.platform != 'cli':
                         g.trace(name,len(val))
             if trace: g.trace(c.mFileName,d)
             return d # Assigned to self.global_window_position
-        #@+node:ekr.20060919110638.37: *5* startGlobals (sax read)
+        #@+node:ekr.20060919110638.37: *5* sax.startGlobals
         def startGlobals (self,attrs):
 
             trace = False and not g.unitTesting
@@ -362,19 +362,19 @@ if sys.platform != 'cli':
                         c.frame.ratio,c.frame.secondary_ratio))
                 except Exception:
                     pass
-        #@+node:ekr.20060919110638.38: *5* startWinPos
+        #@+node:ekr.20060919110638.38: *5* sax.startWinPos
         def startWinPos (self,attrs):
 
             self.global_window_position = self.getWindowPositionAttributes(attrs)
-        #@+node:ekr.20060919110638.39: *5* startLeoHeader
+        #@+node:ekr.20060919110638.39: *5* sax.startLeoHeader
         def startLeoHeader (self,unused_attrs):
 
             self.tnxToListDict = {}
-        #@+node:ekr.20060919110638.40: *5* startVH
+        #@+node:ekr.20060919110638.40: *5* sax.startVH
         def startVH (self,unused_attrs):
 
             self.content = []
-        #@+node:ekr.20060919112118: *5* startVnodes
+        #@+node:ekr.20060919112118: *5* sax.startVnodes
         def startVnodes (self,unused_attrs):
 
             if self.inClipboard:
@@ -406,7 +406,7 @@ if sys.platform != 'cli':
                     c.frame.ratio,c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:",self.fileName)
-        #@+node:ekr.20060919110638.41: *5* startTnode
+        #@+node:ekr.20060919110638.41: *5* sax.startTnode
         def startTnode (self,attrs):
 
             if not self.inElement('tnodes'):
@@ -415,7 +415,7 @@ if sys.platform != 'cli':
             self.content = []
 
             self.tnodeAttributes(attrs)
-        #@+node:ekr.20060919110638.42: *6* tnodeAttributes (SaxContentHandler)
+        #@+node:ekr.20060919110638.42: *6* sax.tnodeAttributes (SaxContentHandler)
         def tnodeAttributes (self,attrs):
 
             # The VNode must have a tx attribute to associate content
@@ -453,7 +453,7 @@ if sys.platform != 'cli':
 
             # if not self.nodeList:
                 # self.error('Bad leo file: no tx attribute for VNode')
-        #@+node:ekr.20060919110638.43: *5* startVnode
+        #@+node:ekr.20060919110638.43: *5* sax.startVnode
         def startVnode (self,attrs):
 
             if not self.inElement('vnodes'):
@@ -472,7 +472,7 @@ if sys.platform != 'cli':
             self.nodeStack.append(parent)
 
             return parent
-        #@+node:ekr.20060919110638.44: *6* vnodeAttributes
+        #@+node:ekr.20060919110638.44: *6* sax.vnodeAttributes
         # The native attributes of <v> elements are a, t, vtag, tnodeList,
         # marks, expanded and descendentTnodeUnknownAttributes.
 
