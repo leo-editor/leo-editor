@@ -342,8 +342,7 @@ class Cacher:
         '''Create a recursive list describing a tree
         for use by createOutlineFromCacheList.
         '''
-        # This is called after at.copyAllTempBodyStringsToVnodes,
-        # so p.b *is* the body text.
+        # This is called after at.readPostPass, so p.b *is* the body text.
         return [
             p.h,p.b,p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]

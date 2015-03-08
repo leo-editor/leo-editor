@@ -315,6 +315,25 @@ This setting is highly recommended.
 The message is given when clone conflicts may have caused data loss.
 .. @+node:ekr.20150306050816.4: *4* Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'
 https://github.com/leo-editor/leo-editor/issues/148
+.. @+node:ekr.20150307155029.6: *4* colorizer for @ & @doc now honor @language
+Example 1:
+
+    @wrap
+    @
+    @language rest
+    
+    My *lengthy* comments.
+    
+Example 2:
+   
+    @
+    @language rest
+    
+    My lengthy comments.
+    @c
+    @language python
+    # resume python code.
+    
 .. @+node:ekr.20150225133846.10: *3* Major features
 .. @+node:ekr.20150206064817.5: *4* @clean updates automatically
 Rev 7a851eb enables automatic updating of @nosent files. When loading a .leo file, Leo will automatically update @nosent trees if the corresponding external file has been changed outside Leo! This is one of the most important advances in Leo's history.

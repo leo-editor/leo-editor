@@ -244,6 +244,8 @@ if sys.platform != 'cli':
 
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
+                if self.fileName.endswith('clone-test.leo'):
+                    g.trace(repr(sax_node))
                 # if self.trace: g.trace(repr(sax_node))
 
             self.content = []
@@ -1777,19 +1779,18 @@ class FileCommands:
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
     #@+node:ekr.20031218072017.1575: *4* fc.putTnodes
     def putTnodes (self):
-
         """Puts all tnodes as required for copy or save commands"""
-
-        c = self.c
-
         self.put("<tnodes>\n")
-        #@+<< write only those tnodes that were referenced >>
-        #@+node:ekr.20031218072017.1576: *5* << write only those tnodes that were referenced >>
+        self.putReferencedTnodes()
+        self.put("</tnodes>\n")
+    #@+node:ekr.20031218072017.1576: *5* fc.putReferencedTnodes
+    def putReferencedTnodes(self):
+        '''Put all referenced tnodes.'''
+        c = self.c
         if self.usingClipboard: # write the current tree.
             theIter = c.p.self_and_subtree()
         else: # write everything
             theIter = c.all_unique_positions()
-
         # Populate tnodes
         tnodes = {}
         for p in theIter:
@@ -1797,21 +1798,19 @@ class FileCommands:
             # pylint: disable=unbalanced-tuple-unpacking
             index = p.v.fileIndex
             tnodes[index] = p.v
-
         # Put all tnodes in index order.
         for index in sorted(tnodes):
             # g.trace(index)
             v = tnodes.get(index)
             if v:
                 # Write only those tnodes whose vnodes were written.
+                # **Note**: @<file> trees are not written unless they contain clones.
                 if v.isWriteBit():
                     self.putTnode(v)
             else:
                 g.trace('can not happen: no VNode for',repr(index))
                 # This prevents the file from being written.
                 raise BadLeoFile('no VNode for %s' % repr(index))
-        #@-<< write only those tnodes that were referenced >>
-        self.put("</tnodes>\n")
     #@+node:ekr.20031218072017.1863: *4* fc.putVnode
     def putVnode (self,p,isIgnore=False):
 

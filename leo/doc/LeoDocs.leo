@@ -11801,7 +11801,7 @@ which is certainly *not* what the script writer intended! Rather than defining s
 
 .. index:: gnx
 
-Files derived from @file use gnx's in @+node sentinels. Such gnx's permanently and uniquely identify nodes. Gnx's have the form::
+External files created by @file use gnx's in @+node sentinels. Such gnx's permanently and uniquely identify nodes. Gnx's have the form::
 
     id.yyyymmddhhmmss
     id.yyyymmddhhmmss.n
@@ -11813,6 +11813,10 @@ The second form is used if two gnx's would otherwise be identical.
 - yyyymmddhhmmss is the node's creation date.
 
 - n is an integer.
+
+Closing sentinels are required for section references and the @all and @others directives, collectively known as **embedding constructs.** Proof: These constructs do not terminate the node in which they appear. Without a closing sentinel there would be no way to know where the construct ended and the following lines of the enclosing node began.
+
+New sentinels do not include @nonl or @nl. As a result, body text always ends with at least one newline.
 
 Here are the sentinels used by Leo, in alphabetical order. Unless otherwise noted, the documentation applies to all versions of Leo. In the following discussion, gnx denotes a gnx as described above.
 
@@ -11896,11 +11900,17 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 \@-middle **(Leo 4.0 and later)**
     Marks the end of intermediate nodes between the node that
     references a section and the node that defines the section.
+    
+\@nl **(Leo 3.x only)**
+    Insert a newline in the outline.
 
 \@+node
-    Mark the start and end of a node.
+    Mark the start and end of a node::
 
         @+node:gnx:&lt;headline&gt;
+        
+\@nonl **(Leo 3.x only)**
+    Suppresses a newline in the outline.
 
 \@others
     The @+others sentinel indicates the start of the expansion of an @+others          
