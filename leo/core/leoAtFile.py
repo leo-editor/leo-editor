@@ -461,9 +461,7 @@ class AtFile:
     # 
     # The vnode ctor must not create these two ivars!
     # 
-    # A **post-pass** (at.readPostPass and its helpers) computes the new value of v.b for each vnode and detects clone conflicts.
-    # 
-    # A clone conflict exists if and *only* if::
+    # A **post-pass** (at.readPostPass and its helpers) computes the new value of v.b for each vnode and detects clone conflicts. A clone conflict exists if and *only* if::
     # 
     #     hasattr(v,'tempBodyString') and v.b != v.tempBodyString.
     #     
