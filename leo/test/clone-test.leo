@@ -23,9 +23,9 @@ expanded="ekr.20150308092755.3,"><vh>@file clone-test.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20150307092801.4">Doc part 8.
+<t tx="ekr.20150307092801.4">Doc part.
 </t>
-<t tx="ekr.20150307092801.5" str_leo_pos="2"></t>
+<t tx="ekr.20150307092801.5" str_leo_pos="3"></t>
 <t tx="ekr.20150307092801.6"></t>
 <t tx="ekr.20150308092755.1">Start with this outline structure::
 
