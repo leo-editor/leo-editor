@@ -10,13 +10,8 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20150307092801.5"><vh>Startup</vh>
-<v t="ekr.20150307092801.6"><vh>@settings</vh></v>
-</v>
-<v t="ekr.20150308092755.1"><vh>How to recreate bug 149</vh></v>
 <v t="ekr.20150308092755.2"><vh>To do</vh>
-<v t="ekr.20150307092801.3"
-expanded="ekr.20150308092755.3,"><vh>@file clone-test.txt</vh></v>
+<v t="ekr.20150307092801.3"><vh>@file clone-test.txt</vh></v>
 </v>
 <v t="ekr.20150308092755.3"><vh>To do: Leo 5.1 b1</vh>
 <v t="ekr.20150307092801.4"><vh>Doc</vh></v>
@@ -24,24 +19,7 @@ expanded="ekr.20150308092755.3,"><vh>@file clone-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150307092801.4"></t>
-<t tx="ekr.20150307092801.5" str_leo_pos="3,0"></t>
-<t tx="ekr.20150307092801.6"></t>
-<t tx="ekr.20150308092755.1">Start with this outline structure::
-
-To do:
-    @file ../doc/leoToDo.txt
-        (clone) To do: Leo 5.1 b1
-            Docs
-(clone) To do: Leo 5.1 b1
-    Docs
-
-- In the Docs node write changed. Save .leo file and quit.
-- Revert the change in git.
-- Reload Leo.
-
-The change reappears regardless of --no-cache option!
-</t>
-<t tx="ekr.20150308092755.2"></t>
+<t tx="ekr.20150308092755.2" str_leo_pos="1"></t>
 <t tx="ekr.20150308092755.3"></t>
 </tnodes>
 </leo_file>
