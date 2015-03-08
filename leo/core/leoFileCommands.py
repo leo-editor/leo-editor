@@ -196,72 +196,63 @@ if sys.platform != 'cli':
             return g.toEncodedString(s,"ascii")
         #@+node:ekr.20060919110638.30: *4* sax.characters
         def characters(self,content):
-
+            '''Handle the characters element.'''
             if g.isPython3:
                 if content and type(content) != type('a'):
                     g.trace('Non-unicode content',repr(content))
             else:
                 if content and type(content) != types.UnicodeType:
                     g.trace('Non-unicode content',repr(content))
-
             content = content.replace('\r','')
-
-            if not content: return
-
-            elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
-
+            if not content:
+                return
+            elementName = (self.elementStack and self.elementStack[-1].lower() or 
+                '<no element name>')
             # if self.trace: g.trace(elementName,content.strip())
-
             if elementName in ('t','vh'):
                 # if elementName == 'vh': g.trace(elementName,repr(content))
                 self.content.append(content)
-
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
         #@+node:ekr.20060919110638.31: *4* sax.endElement & helpers
         def endElement(self,name):
-
+            '''Handle the end of any xml element.'''
             name = name.lower()
-
             if name in self.printElements or 'all' in self.printElements:
                 indent = '\t' * (self.level-1) or ''
                 g.pr('%s</%s>' % (indent,self.clean(name).strip()))
-
             data = self.dispatchDict.get(name)
-
             if data is None:
                 if 1: g.trace('unknown end element',name)
             else:
                 junk,func = data
                 if func:
                     func()
-
             name2 = self.elementStack.pop()
             assert name == name2
             # if self.trace: g.trace('** pop',name2)
         #@+node:ekr.20060919110638.32: *5* sax.endTnode
         def endTnode (self):
-
+            '''Handle the end of a <tnode> element.'''
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
-                if self.fileName.endswith('clone-test.leo'):
-                    g.trace(repr(sax_node))
+                # if self.fileName.endswith('clone-test.leo'):
+                    # g.trace(repr(sax_node))
                 # if self.trace: g.trace(repr(sax_node))
 
             self.content = []
         #@+node:ekr.20060919110638.33: *5* sax.endVnode
         def endVnode (self):
-
+            '''Handle the end of a <vnode> element.'''
             self.level -= 1
             self.node = self.nodeStack.pop()
             # if self.trace: g.trace(repr(self.node))
         #@+node:ekr.20060919110638.34: *5* sax.endVH
         def endVH (self):
-
+            '''Handle the end of a <vh> element.'''
             if self.node:
                 self.node.headString = ''.join(self.content)
                 # if self.trace: g.trace(repr(self.node))
-
             self.content = []
         #@+node:ekr.20060919110638.45: *4* sax.getRootNode
         def getRootNode (self):
