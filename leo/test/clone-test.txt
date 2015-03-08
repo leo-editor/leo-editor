@@ -2,10 +2,9 @@
 .. @+node:ekr.20150307092801.3: * @file clone-test.txt
 .. @@language rest
 .. @@wrap
-.. A test file to investigate bug 
+.. A test file to investigate bug 149.
 .. @+all
 .. @+node:ekr.20150308092755.3: ** To do: Leo 5.1 b1
 .. @+node:ekr.20150307092801.4: *3* Doc
-Doc part.
 .. @-all
 .. @-leo
