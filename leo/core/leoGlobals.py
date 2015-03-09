@@ -15,6 +15,11 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
+new_clone_check = False
+    # True: enable experimental code to set v.tempBodyString.
+if new_clone_check:
+    print('***** new_clone_check *****')
+
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
@@ -57,7 +62,6 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
-
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)

@@ -4,12 +4,8 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 60
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-    
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -1182,7 +1178,10 @@ class AtFile:
                 delattr(v,'tempBodyList') # So the change below "takes".
             elif hasattr(v,'tempBodyString'):
                 body = tempString
-                delattr(v,'tempBodyString')
+                if g.new_clone_check:
+                    pass
+                else:
+                    delattr(v,'tempBodyString')
             else:
                 body = ''
         else:
@@ -1196,9 +1195,12 @@ class AtFile:
         s = '\n'.join(lines).replace('\r', '')
 
         # *Always* put the temp body text into at.v.tempBodyString.
-        v.tempBodyString = s
+        if g.new_clone_check:
+            pass
+        else:
+            v.tempBodyString = s
         #@-<< handle first and last lines >>
-        if trace: g.trace(at.encoding,fileName) # root.v.tempBodyString)
+        if trace: g.trace(at.encoding,fileName)
         return thinFile
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):
@@ -1375,7 +1377,7 @@ class AtFile:
             e = at.encoding or old_encoding
         assert e
         return e
-    #@+node:ekr.20050301105854: *4* at.readPostPass & helpers (suspect)
+    #@+node:ekr.20050301105854: *4* at.readPostPass & helpers
     def readPostPass (self,root,thinFile):
         '''Post-process all vnodes.'''
         trace = False and not g.unitTesting
@@ -1387,14 +1389,17 @@ class AtFile:
             if not hasString and not hasList:
                 continue # Bug fix 2010/07/06: do nothing!
             # Terminate the node if v.tempBodyList exists.
-            ########### Shouldn't empty nodes be checked for clone conflicts ??????
+            #### Shouldn't empty nodes be checked for clone conflicts?
             if hasList:
                 at.terminateNode(v=p.v)
                     # Sets v.tempBodyString and clears v.tempBodyList.
                 assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
                 assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
             s = p.v.tempBodyString
-            delattr(p.v,'tempBodyString') # essential.
+            if g.new_clone_check:
+                pass
+            else:
+                delattr(p.v,'tempBodyString') # essential.
             old_body = p.b
             if s != old_body:
                 if thinFile:
@@ -1455,7 +1460,10 @@ class AtFile:
             if not postPass:
                 at.correctedLines += 1
                 at.reportCorrection(old,new,v)
-                v._bodyString = new # Allowed use of _bodyString.
+                if g.new_clone_check:
+                    pass
+                else:
+                    v._bodyString = new # Allowed use of _bodyString.
                     # Just setting v.tempBodyString won't work here.
                 v.setDirty()
                     # Mark the node dirty. Ancestors will be marked dirty later.
@@ -1520,8 +1528,8 @@ class AtFile:
         # The old temp text is *always* in tempBodyString.
         new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
-        old = tempString or v.getBody()
-            # v.getBody returns v._bodyString.
+        old = tempString or v.bodyString()
+            # v.bodyString returns v._bodyString.
 
         # Warn if the body text has changed.
         # Don't warn about the root node.
@@ -1534,12 +1542,15 @@ class AtFile:
                 at.indicateNodeChanged(old,new,postPass,v)
 
         # *Always* put the new text into tempBodyString.
-        v.tempBodyString = new
+        if g.new_clone_check:
+            pass
+        else:
+            v.tempBodyString = new
 
         if trace: g.trace(
             v.gnx,
-            'tempString %3s getBody %3s old %3s new %3s' % (
-                len(tempString),len(v.getBody()),len(old),len(new)),
+            'tempString %3s v.b %3s old %3s new %3s' % (
+                len(tempString),len(v.bodyString()),len(old),len(new)),
             v.h,at.root.h)
             # '\n* callers',g.callers(4))
 
@@ -1768,7 +1779,7 @@ class AtFile:
             at.thinNodeStack.append(v)
         at.lastThinNode = v
         return v
-    #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode & helper (*** suspect ***)
+    #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode & helper
     def createV5ThinNode(self,gnx,headline,level):
         '''Create a version 5 vnode.'''
         at = self
@@ -1802,22 +1813,25 @@ class AtFile:
         # Common exit code. 
         # Terminate a previous clone if it exists.
         # Do not use the full terminateNode logic!
-        if hasattr(v,'tempBodyList'):
-            # To keep pylint happy.
-            v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-            if trace and trace_s: g.trace(repr(v.tempBodyString))
-            delattr(v,'tempBodyList')
+        if g.new_clone_check:
+            pass
         else:
-            # Major bug fix: 2010/07/6:
-            # Do *not* create v.tempBodyString here!
-            # That would tell at.readPostPass
-            # that an older (empty) version exists!
-            if trace and trace_s: g.trace('no body string. v.b:',repr(v.b))
+            if hasattr(v,'tempBodyList'):
+                # To keep pylint happy.
+                v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
+                if trace and trace_s: g.trace(repr(v.tempBodyString))
+                delattr(v,'tempBodyList')
+            else:
+                # Major bug fix: 2010/07/6:
+                # Do *not* create v.tempBodyString here!
+                # That would tell at.readPostPass
+                # that an older (empty) version exists!
+                if trace and trace_s: g.trace('no body string. v.b:',repr(v.b))
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
+    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4 (sets v.tempBodyString)
     def new_createThinChild4 (self,gnxString,headline,n,parent):
         """
-        Find or create a new *VNode* whose parent (also a VNode)
+        Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
         trace = False and not g.unitTesting
@@ -1828,6 +1842,9 @@ class AtFile:
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
+            if g.new_clone_check:
+                v.tempBodyString = v.bodyString()
+                    # Faster than using v.b.
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
                 if trace and v.h != headline:
@@ -1853,7 +1870,7 @@ class AtFile:
     #@+node:ekr.20130121075058.10245: *8* at.old_createThinChild4
     def old_createThinChild4 (self,gnxString,headline):
         """
-        Find or create a new *VNode* whose parent (also a VNode)
+        Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
         trace = False and not g.unitTesting
@@ -5904,5 +5921,7 @@ class AtFile:
             g.error("read only:",fn)
     #@-others
 atFile = AtFile # compatibility
-
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 60
 #@-leo

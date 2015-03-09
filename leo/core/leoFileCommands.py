@@ -1101,7 +1101,7 @@ class FileCommands:
                 '*** added parent',parent_v,'to',child,
                 'len(child.parents)',len(child.parents))
         return children
-    #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
+    #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers (sets v.tempBodyString)
     def createSaxVnode (self,sax_node,parent_v,v=None):
 
         c = self.c
@@ -1113,6 +1113,9 @@ class FileCommands:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
             # This may be an internal error.
+            if g.new_clone_check:
+                v.tempBodyString = b
+                    # Remember the *old* value of v.b
             if v.b == b:
                 if trace and verbose: g.trace(
                     '***no update\nold: %s\nnew: %s' % (v.b,b))
