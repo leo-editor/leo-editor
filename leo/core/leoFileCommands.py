@@ -1104,7 +1104,7 @@ class FileCommands:
     def createSaxVnode (self,sax_node,parent_v,v=None):
         '''Create a vnode, or use an existing vnode.'''
         c = self.c
-        trace = (False and self.mFileName and
+        trace = (True and self.mFileName and sax_node.headString == 'clone-test' and
             # g.new_clone_test and
             not g.app.openingSettingsFile and not g.unitTesting)
         trace_update,verbose = False,False

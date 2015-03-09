@@ -1176,6 +1176,13 @@ class AtFile:
         if at.readVersion5:
             if g.new_clone_test:
                 body = tempList
+                ### 
+                # if hasattr(v,'tempBodyList'):
+                    # body = tempList
+                # elif hasattr(v,'tempBodyString'):
+                    # body = tempString
+                # else:
+                    # body = ''
             else:
                 if hasattr(v,'tempBodyList'):
                     body = tempList
@@ -1451,7 +1458,7 @@ class AtFile:
     #@+node:ekr.20100628124907.5816: *6* at.indicateNodeChanged
     def indicateNodeChanged (self,old,new,postPass,v):
         '''Add an entry to c.nodeConflictList.'''
-        # g.trace(repr(v.h),g.callers())
+        trace = False and not g.unitTesting
         at,c = self,self.c
         if at.perfectImportRoot:
             if not postPass:
@@ -1479,7 +1486,11 @@ class AtFile:
                 h_new=v._headString,
             ))
             if not g.unitTesting:
-                g.error("uncached read node changed",v.h)
+                if v.h == 'clone-test': ####
+                    g.error("uncached read node changed",v.h)
+            if trace and v.h == 'clone-test':
+                s = v.tempBodyString if hasattr(v,'tempBodyString') else '<no v.tempBodyString>'
+                g.trace('isClone:',v.isCloned(),repr(s))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
             c.changed = True
@@ -1512,7 +1523,8 @@ class AtFile:
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        trace = trace and v.h == 'clone-test' ###
         at = self
         hasString  = hasattr(v,'tempBodyString')
         hasList    = hasattr(v,'tempBodyList')
@@ -1533,21 +1545,18 @@ class AtFile:
                 warn = old and new # Both must exit.
             if warn:
                 at.indicateNodeChanged(old,new,postPass,v)
-
-        # *Always* put the new text into tempBodyString.
         if g.new_clone_test:
             v.b = new
         else:
+            # *Always* put the new text into tempBodyString.
             v.tempBodyString = new
 
         if trace: g.trace(
             v.gnx,
             'tempString %3s v.b %3s old %3s new %3s' % (
-                len(tempString),len(v.b),len(old),len(new)),
-            v.h,at.root.h)
+                len(tempString),len(v.b),len(old),len(new)),v.h)
             # '\n* callers',g.callers(4))
-
-        # *Always* delete tempBodyList.  Do not leave this lying around!
+       # *Always* delete tempBodyList.  Do not leave this lying around!
         if hasList: delattr(v,'tempBodyList')
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
     def scanText4 (self,fileName,p,verbose=False):
@@ -1827,7 +1836,7 @@ class AtFile:
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = False and not g.unitTesting # and g.new_clone_test 
+        trace = True and not g.unitTesting # and g.new_clone_test 
         trace_tree = False
         at,c,indices = self,self.c,g.app.nodeIndices
         if trace and trace_tree:
@@ -1837,9 +1846,11 @@ class AtFile:
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
+            trace = trace and v.h == 'clone-test' ###
             if g.new_clone_test:
-                v.tempBodyString = v.bodyString()
-                if trace: g.trace('old: %r' % v.bodyString())
+                ### Do nothing here. v.b will be set *later*.
+                ### v.tempBodyString = v.bodyString()
+                if trace: g.trace('**clone**',id(v),v.gnx,v.h)
                     # Faster than using v.b.
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
@@ -1863,7 +1874,8 @@ class AtFile:
             if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             child = v
             child._linkAsNthChild(parent,n)
-            if trace: g.trace('NEW n: %s parent: %s -> %s' % (n,parent.h,child.h))
+            if trace and v.h == 'clone-test':
+                g.trace('NEW n: %s parent: %s -> %s' % (n,parent.h,child.h))
         return child
     #@+node:ekr.20130121075058.10245: *8* at.old_createThinChild4
     def old_createThinChild4 (self,gnxString,headline):
