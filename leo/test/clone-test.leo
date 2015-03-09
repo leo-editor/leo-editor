@@ -20,7 +20,8 @@
 <tnodes>
 <t tx="ekr.20150307092801.4">changed A.
 </t>
-<t tx="ekr.20150308092755.2" str_leo_pos="1"></t>
-<t tx="ekr.20150308092755.3"># aaa</t>
+<t tx="ekr.20150308092755.2" str_leo_pos="1,0">Body text: to do</t>
+<t tx="ekr.20150308092755.3"># body text: To do: Leo 5.1 b1
+</t>
 </tnodes>
 </leo_file>
