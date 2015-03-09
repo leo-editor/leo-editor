@@ -1105,7 +1105,8 @@ class FileCommands:
     def createSaxVnode (self,sax_node,parent_v,v=None):
 
         c = self.c
-        trace = False and not g.unitTesting
+        trace = (False and g.new_clone_check and
+            not g.app.openingSettingsFile and not g.unitTesting)
         verbose = False
         h = sax_node.headString
         b = sax_node.bodyString
@@ -1114,8 +1115,9 @@ class FileCommands:
             # Don't set t.h: h is always empty.
             # This may be an internal error.
             if g.new_clone_check:
-                v.tempBodyString = b
-                    # Remember the *old* value of v.b
+                v.tempBodyString = v.bodyString()
+                 # Remember the *old* value of v.b
+                if trace: g.trace('old: %s new: %s' % (v.bodyString(),b))
             if v.b == b:
                 if trace and verbose: g.trace(
                     '***no update\nold: %s\nnew: %s' % (v.b,b))

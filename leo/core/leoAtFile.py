@@ -1386,19 +1386,21 @@ class AtFile:
         for p in root.self_and_subtree():
             hasList = hasattr(p.v,'tempBodyList')
             hasString = hasattr(p.v,'tempBodyString')
-            if not hasString and not hasList:
-                continue # Bug fix 2010/07/06: do nothing!
-            # Terminate the node if v.tempBodyList exists.
-            #### Shouldn't empty nodes be checked for clone conflicts?
-            if hasList:
-                at.terminateNode(v=p.v)
-                    # Sets v.tempBodyString and clears v.tempBodyList.
-                assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
-                assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
-            s = p.v.tempBodyString
             if g.new_clone_check:
-                pass
+                at.terminateNode(v=p.v)
             else:
+                # Terminate the node if v.tempBodyList exists.
+                if not hasString and not hasList:
+                    continue # Bug fix 2010/07/06: do nothing!
+                if hasList:
+                    at.terminateNode(v=p.v)
+                        # Sets v.tempBodyString and clears v.tempBodyList.
+                    assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
+                    assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
+            if g.new_clone_check:
+                s = p.b
+            else:
+                s = p.v.tempBodyString
                 delattr(p.v,'tempBodyString') # essential.
             old_body = p.b
             if s != old_body:
@@ -1834,7 +1836,7 @@ class AtFile:
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = False and not g.unitTesting
+        trace = False and g.new_clone_check and not g.unitTesting
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,' -> ',headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
@@ -1844,6 +1846,7 @@ class AtFile:
         if v:
             if g.new_clone_check:
                 v.tempBodyString = v.bodyString()
+                if trace: g.trace('old: %s' % (v.bodyString()))
                     # Faster than using v.b.
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
