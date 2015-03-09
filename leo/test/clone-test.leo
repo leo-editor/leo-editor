@@ -18,8 +18,9 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20150307092801.4"></t>
+<t tx="ekr.20150307092801.4">changed A.
+</t>
 <t tx="ekr.20150308092755.2" str_leo_pos="1"></t>
-<t tx="ekr.20150308092755.3"></t>
+<t tx="ekr.20150308092755.3"># aaa</t>
 </tnodes>
 </leo_file>
