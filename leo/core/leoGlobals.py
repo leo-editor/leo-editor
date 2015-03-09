@@ -15,10 +15,10 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_clone_check = False
+new_clone_test = False
     # True: enable experimental code to set v.tempBodyString.
-if new_clone_check:
-    print('***** new_clone_check *****')
+if new_clone_test:
+    print('***** new_clone_test *****')
 
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.

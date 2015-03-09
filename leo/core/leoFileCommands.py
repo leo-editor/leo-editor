@@ -234,12 +234,11 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.32: *5* sax.endTnode
         def endTnode (self):
             '''Handle the end of a <tnode> element.'''
+            trace = (False or self.trace) and g.new_clone_test and not g.unitTesting
+            # trace = trace and self.fileName.endswith('clone-test.leo')
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
-                # if self.fileName.endswith('clone-test.leo'):
-                    # g.trace(repr(sax_node))
-                # if self.trace: g.trace(repr(sax_node))
-
+                if trace: g.trace(repr(sax_node))
             self.content = []
         #@+node:ekr.20060919110638.33: *5* sax.endVnode
         def endVnode (self):
@@ -1105,8 +1104,8 @@ class FileCommands:
     def createSaxVnode (self,sax_node,parent_v,v=None):
         '''Create a vnode, or use an existing vnode.'''
         c = self.c
-        trace = (True and self.mFileName and
-            # g.new_clone_check and
+        trace = (False and self.mFileName and
+            # g.new_clone_test and
             not g.app.openingSettingsFile and not g.unitTesting)
         trace_update,verbose = False,False
         h = sax_node.headString
@@ -1115,7 +1114,7 @@ class FileCommands:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
             # This may be an internal error.
-            if g.new_clone_check:
+            if g.new_clone_test:
                 v.tempBodyString = v.bodyString()
                  # Remember the *old* value of v.b
                 if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)

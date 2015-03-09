@@ -1163,45 +1163,39 @@ class AtFile:
                 # g.trace('root',root and root.h,fileName)
         if root:
             root.v.setVisited() # Disable warning about set nodes.
-        #@+<< handle first and last lines >>
-        #@+node:ekr.20041005105605.28: *5* << handle first and last lines >> (at.readOpenFile)
-        # The code below only deals with the root node!
-        # We terminate the root's body text if it exists.
-        # This is a hack to allow us to handle @first and @last.
+        at.completeRootNode(firstLines,lastLines,root)
+        if trace: g.trace(at.encoding,fileName)
+        return thinFile
+    #@+node:ekr.20041005105605.28: *5* at.completeRootNode
+    def completeRootNode(self,firstLines,lastLines,root):
+        '''Terminate the root's body text, handling @first and @last.'''
+        at = self
         v = root.v
         tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
         tempList = hasattr(v,'tempBodyList') and ''.join(v.tempBodyList) or ''
-
         if at.readVersion5:
-            if hasattr(v,'tempBodyList'):
+            if g.new_clone_test:
                 body = tempList
-                delattr(v,'tempBodyList') # So the change below "takes".
-            elif hasattr(v,'tempBodyString'):
-                body = tempString
-                if g.new_clone_check:
-                    pass
-                else:
-                    delattr(v,'tempBodyString')
             else:
-                body = ''
+                if hasattr(v,'tempBodyList'):
+                    body = tempList
+                    delattr(v,'tempBodyList') # So the change below "takes".
+                elif hasattr(v,'tempBodyString'):
+                    body = tempString
+                    delattr(v,'tempBodyString')
+                else:
+                    body = ''
         else:
             body = tempString
-
         lines = body.split('\n')
-
         at.completeFirstDirectives(lines,firstLines)
         at.completeLastDirectives(lines,lastLines)
-
         s = '\n'.join(lines).replace('\r', '')
-
-        # *Always* put the temp body text into at.v.tempBodyString.
-        if g.new_clone_check:
-            pass
+        if g.new_clone_test:
+            v.b = s
         else:
+            # *Always* put the temp body text into at.v.tempBodyString.
             v.tempBodyString = s
-        #@-<< handle first and last lines >>
-        if trace: g.trace(at.encoding,fileName)
-        return thinFile
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):
 
@@ -1382,11 +1376,12 @@ class AtFile:
         '''Post-process all vnodes.'''
         trace = False and not g.unitTesting
         if trace: g.trace('*****',root.h)
-        at = self ; c = at.c
+        at,c = self,self.c
         for p in root.self_and_subtree():
+            if trace: g.trace(p.h)
             hasList = hasattr(p.v,'tempBodyList')
             hasString = hasattr(p.v,'tempBodyString')
-            if g.new_clone_check:
+            if g.new_clone_test:
                 at.terminateNode(v=p.v)
             else:
                 # Terminate the node if v.tempBodyList exists.
@@ -1397,7 +1392,7 @@ class AtFile:
                         # Sets v.tempBodyString and clears v.tempBodyList.
                     assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
                     assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
-            if g.new_clone_check:
+            if g.new_clone_test:
                 s = p.b
             else:
                 s = p.v.tempBodyString
@@ -1462,7 +1457,7 @@ class AtFile:
             if not postPass:
                 at.correctedLines += 1
                 at.reportCorrection(old,new,v)
-                if g.new_clone_check:
+                if g.new_clone_test:
                     pass
                 else:
                     v._bodyString = new # Allowed use of _bodyString.
@@ -1517,7 +1512,7 @@ class AtFile:
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self
         hasString  = hasattr(v,'tempBodyString')
         hasList    = hasattr(v,'tempBodyList')
@@ -1540,7 +1535,7 @@ class AtFile:
                 at.indicateNodeChanged(old,new,postPass,v)
 
         # *Always* put the new text into tempBodyString.
-        if g.new_clone_check:
+        if g.new_clone_test:
             v.b = new
         else:
             v.tempBodyString = new
@@ -1811,7 +1806,7 @@ class AtFile:
         # Common exit code. 
         # Terminate a previous clone if it exists.
         # Do not use the full terminateNode logic!
-        if g.new_clone_check:
+        if g.new_clone_test:
             pass
         else:
             if hasattr(v,'tempBodyList'):
@@ -1832,7 +1827,7 @@ class AtFile:
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = True and not g.unitTesting # and g.new_clone_check 
+        trace = False and not g.unitTesting # and g.new_clone_test 
         trace_tree = False
         at,c,indices = self,self.c,g.app.nodeIndices
         if trace and trace_tree:
@@ -1842,7 +1837,7 @@ class AtFile:
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
-            if g.new_clone_check:
+            if g.new_clone_test:
                 v.tempBodyString = v.bodyString()
                 if trace: g.trace('old: %r' % v.bodyString())
                     # Faster than using v.b.
