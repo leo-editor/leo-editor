@@ -11,6 +11,10 @@
 * Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150308094911.33: *3* Eliminate writeVersion5 & allow_clone_sibs switches
+It's important to remove these switches now.
+
+See the section, < < define atFile constants > >
 .. @+node:ekr.20150304232409.4: *3* Docs
 .. @+node:ekr.20150304232409.5: *4* document --diff
 Search for added --diff
@@ -40,6 +44,8 @@ I attach the images I use for my solarized dark theme, both small triangles and 
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
 .. @+node:ekr.20150305172417.5: *4* Fix bug 149: Clones can revert changes made by git discard...
 https://github.com/leo-editor/leo-editor/issues/149
+
+This is a release blocker.
 
 This is apparently a clone update problem.  That may be good news.
 
