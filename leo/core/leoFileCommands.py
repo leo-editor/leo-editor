@@ -1103,11 +1103,12 @@ class FileCommands:
         return children
     #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers (sets v.tempBodyString)
     def createSaxVnode (self,sax_node,parent_v,v=None):
-
+        '''Create a vnode, or use an existing vnode.'''
         c = self.c
-        trace = (False and g.new_clone_check and
+        trace = (True and self.mFileName and
+            # g.new_clone_check and
             not g.app.openingSettingsFile and not g.unitTesting)
-        verbose = False
+        trace_update,verbose = False,False
         h = sax_node.headString
         b = sax_node.bodyString
         if v:
@@ -1117,12 +1118,12 @@ class FileCommands:
             if g.new_clone_check:
                 v.tempBodyString = v.bodyString()
                  # Remember the *old* value of v.b
-                if trace: g.trace('old: %s new: %s' % (v.bodyString(),b))
+                if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
             if v.b == b:
                 if trace and verbose: g.trace(
                     '***no update\nold: %s\nnew: %s' % (v.b,b))
             else:
-                if trace: g.trace(
+                if trace and trace_update: g.trace(
                     '***update\nold: %s\nnew: %s' % (v.b,b))
                 v.b = b 
         else:
@@ -1133,6 +1134,7 @@ class FileCommands:
             else:
                 gnx = x.getNewIndex(v)
                 g.trace('no txn! allocated new gnx',gnx)
+            if trace: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
             v.setHeadString(h)

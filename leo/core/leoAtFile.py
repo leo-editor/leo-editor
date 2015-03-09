@@ -1516,22 +1516,18 @@ class AtFile:
             g.error("correcting hidden node: v=",repr(v))
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody
     def terminateBody (self,v,postPass=False):
-
-        '''Terminate the scanning of body text for node v.'''
-
-        trace = False and not g.unitTesting
+        '''Terminate scanning of body text for node v. Set v.b.'''
+        trace = True and not g.unitTesting
         at = self
-
         hasString  = hasattr(v,'tempBodyString')
         hasList    = hasattr(v,'tempBodyList')
         tempString = hasString and v.tempBodyString or ''
         tempList   = hasList and ''.join(v.tempBodyList) or ''
-
         # The old temp text is *always* in tempBodyString.
         new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
         old = tempString or v.bodyString()
-            # v.bodyString returns v._bodyString.
+            # Faster than v.b.
 
         # Warn if the body text has changed.
         # Don't warn about the root node.
@@ -1545,14 +1541,14 @@ class AtFile:
 
         # *Always* put the new text into tempBodyString.
         if g.new_clone_check:
-            pass
+            v.b = new
         else:
             v.tempBodyString = new
 
         if trace: g.trace(
             v.gnx,
             'tempString %3s v.b %3s old %3s new %3s' % (
-                len(tempString),len(v.bodyString()),len(old),len(new)),
+                len(tempString),len(v.b),len(old),len(new)),
             v.h,at.root.h)
             # '\n* callers',g.callers(4))
 
@@ -1836,9 +1832,11 @@ class AtFile:
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = False and g.new_clone_check and not g.unitTesting
-        at = self ; c = at.c ; indices = g.app.nodeIndices
-        if trace: g.trace(n,len(parent.children),parent.h,' -> ',headline)
+        trace = True and not g.unitTesting # and g.new_clone_check 
+        trace_tree = False
+        at,c,indices = self,self.c,g.app.nodeIndices
+        if trace and trace_tree:
+            g.trace(n,len(parent.children),parent.h,' -> ',headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
         gnx = gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
@@ -1846,7 +1844,7 @@ class AtFile:
         if v:
             if g.new_clone_check:
                 v.tempBodyString = v.bodyString()
-                if trace: g.trace('old: %s' % (v.bodyString()))
+                if trace: g.trace('old: %r' % v.bodyString())
                     # Faster than using v.b.
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
@@ -1855,9 +1853,11 @@ class AtFile:
                 child = v
                 if n >= len(parent.children):
                     child._linkAsNthChild(parent,n)
-                    if trace: g.trace('OLD n: %s parent: %s -> %s' % (n,parent.h,child.h))
+                    if trace and trace_tree:
+                        g.trace('OLD n: %s parent: %s -> %s' % (n,parent.h,child.h))
                 else:
-                    if trace: g.trace('DUP n: %s parent: %s -> %s' % (n,parent.h,child.h))
+                    if trace and trace_tree: g.trace(
+                        'DUP n: %s parent: %s -> %s' % (n,parent.h,child.h))
             else:
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
                 return None
