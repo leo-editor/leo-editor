@@ -117,10 +117,11 @@ class LeoApp:
         self.sessionManager = None      # The singleton SessionManager instance.
 
         # Global status vars...
+        self.openingSettingsFile = False # True, opening a settings file.
 
-        if 1: #### To be moved to the Commands class...
-            self.commandName = None         # The name of the command being executed.
-            self.commandInterruptFlag=False # True: command within a command.
+        # The Commands class...
+        self.commandName = None         # The name of the command being executed.
+        self.commandInterruptFlag=False # True: command within a command.
 
         # self.dragging = False         # True: dragging.
         self.allow_delayed_see = False  # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
@@ -1882,9 +1883,13 @@ class LoadManager:
         frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
-        ok = c.fileCommands.openLeoFile(theFile,fn,
-            readAtFileNodesFlag=False,silent=True)
-                # closes theFile.
+        g.app.openingSettingsFile = True
+        try:
+            ok = c.fileCommands.openLeoFile(theFile,fn,
+                readAtFileNodesFlag=False,silent=True)
+                    # closes theFile.
+        finally:
+            g.app.openingSettingsFile = False
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
