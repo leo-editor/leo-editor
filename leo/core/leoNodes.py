@@ -2151,7 +2151,7 @@ class VNodeBase (object):
                 g.internalError('not unicode:',repr(self._bodyString))
             return g.toUnicode(self._bodyString)
 
-    getBody = bodyString
+    ### getBody = bodyString
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild (self):
