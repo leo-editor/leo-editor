@@ -165,6 +165,7 @@ rope = g.importModule('rope',verbose=True)
 print(rope)
 .. @+node:ekr.20150309154506.10: *4* Added g.app.openingSettingsFile
 Set in leoApp.openSettingsFile.
+.. @+node:ekr.20150310100036.4: *4* Removed allow_cloned_sibs switch
 .. @+node:ekr.20150206064817.12: *3* Doc
 .. @+node:ekr.20150206064817.13: *4* Leo must have sentinels, even without clones
 Sentinels are necessary for clones, but sentinels would
