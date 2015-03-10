@@ -21565,7 +21565,7 @@ if s:
     
 @ The last line is the url
 http://webpages.charter.net/edreamleo/front.html
-#@+node:ekr.20100131171342.5500: *3* @test macros.parameterize
+#@+node:ekr.20100131171342.5500: *3* @@test macros.parameterize
 import leo.plugins.macros as macros
 
 controller = macros.ParamClass(c)
