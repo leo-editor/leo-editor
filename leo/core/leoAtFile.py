@@ -657,8 +657,8 @@ class AtFile:
             # c.setChanged(True) # 2011/06/17.
         else:
             root.clearOrphan()
-        ### There will be an internal error if fileKey is None.
-        ### This is not the cause of the bug.
+        # There will be an internal error if fileKey is None.
+        # This is not the cause of the bug.
         if at.errors == 0 and not isFileLike and not fromString:
             c.cacher.writeFile(root,fileKey)
         if trace: g.trace('at.errors',at.errors)
@@ -666,12 +666,7 @@ class AtFile:
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
         '''Delete all v.tempBodyString & v.tempBodyList attributes.'''
-        ###
-        # # # for v in self.c.all_unique_nodes():
-            # # # if hasattr(v,"tempBodyString"):
-                # # # delattr(v,"tempBodyString")
-            # # # if hasattr(v,"tempBodyList"):
-                # # # delattr(v,"tempBodyList")
+        # No longer used.
     #@+node:ekr.20100122130101.6174: *5* at.deleteTnodeList
     def deleteTnodeList (self,p): # AtFile method.
 
@@ -940,7 +935,7 @@ class AtFile:
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)
-        else: ### else on multiple conditions is dubious
+        else:
             c.cacher.writeFile(p,fileKey)
             g.doHook('after-auto',c=c,p=p)
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
@@ -1367,37 +1362,20 @@ class AtFile:
     #@+node:ekr.20050301105854: *4* at.readPostPass & helpers
     def readPostPass (self,root,thinFile):
         '''Post-process all vnodes.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('*****',root.h)
-        at,c = self,self.c
+        at = self
+        ### Could use for v in root.all_unique_nodes()
         seen = {}
         for p in root.self_and_subtree():
-            if trace: g.trace(p.h)
             v = p.v
-            old_body = p.bodyString()
             if not v.gnx in seen:
+                old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(v=v)
-            new_body = p.bodyString()
-            if hasattr(v,'tempBodyList'):
-                delattr(v,'tempBodyList')
-            ###
-            # # # else:
-                ### hasList = hasattr(p.v,'tempBodyList')
-                # # # # Terminate the node if v.tempBodyList exists.
-                # # # hasString = hasattr(p.v,'tempBodyString')
-                # # # if not hasString and not hasList:
-                    # # # continue # Bug fix 2010/07/06: do nothing!
-                # # # if hasList:
-                    # # # at.terminateNode(v=p.v)
-                        # # # # Sets v.tempBodyString and clears v.tempBodyList.
-                    # # # assert not hasattr(p.v,'tempBodyList'),p.v
-                    # # # assert hasattr(p.v,'tempBodyString'),p.v
-                # # # new_body = p.v.tempBodyString
-                # # # delattr(p.v,'tempBodyString') # essential.
-                # # # old_body = p.b
-            if new_body != old_body:
-                at.handleChangedNode(new_body,old_body,p,thinFile)
+                new_body = p.bodyString()
+                if hasattr(v,'tempBodyList'):
+                    delattr(v,'tempBodyList')
+                if new_body != old_body:
+                    at.handleChangedNode(new_body,old_body,p,thinFile)
     #@+node:ekr.20150309154506.27: *5* at.handleChangedNode
     def handleChangedNode(self,new_body,old_body,p,thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -1801,7 +1779,6 @@ class AtFile:
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
-            trace = trace and v.h == 'clone-test' ###
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
                 if trace and v.h != headline:
