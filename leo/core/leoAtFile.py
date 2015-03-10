@@ -1168,55 +1168,13 @@ class AtFile:
     #@+node:ekr.20041005105605.28: *5* at.completeRootNode & helpers
     def completeRootNode(self,firstLines,lastLines,root):
         '''Terminate the root's body text, handling @first and @last.'''
-        trace = True and not g.unitTesting
         at = self
         v = root.v
-        ###
-        # # # if g.new_clone_test:
-            # # # pass
-        # # # else:
-            # # # tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
-        # # # tempList = hasattr(v,'tempBodyList') and ''.join(v.tempBodyList) or ''
-
-        ###
-        # # # if at.readVersion5:
-            # # # if g.new_clone_test:
-                # # # pass
-            # # # else:
-                # # # if hasattr(v,'tempBodyList'):
-                    # # # body = tempList
-                    # # # delattr(v,'tempBodyList') # So the change below "takes".
-                # # # elif hasattr(v,'tempBodyString'):
-                    # # # body = tempString
-                    # # # delattr(v,'tempBodyString')
-                # # # else:
-                    # # # body = ''
-        # # # else:
-            # # # if g.new_clone_test:
-                # # # pass
-            # # # else:
-                # # # body = tempString
-                
         lines = v.tempBodyList if hasattr(v,'tempBodyList') else []
         at.completeFirstDirectives(lines,firstLines)
         at.completeLastDirectives(lines,lastLines)
         v.tempBodyList = lines
-            # at.readPostPass requires v.tempBodyList. 
-
-        ###
-        # # # if g.new_clone_test:
-            # # # lines = v.tempBodyList if hasattr(v,'tempBodyList') else []
-            # # # at.completeFirstDirectives(lines,firstLines)
-            # # # at.completeLastDirectives(lines,lastLines)
-            # # # v.tempBodyList = lines
-                # # # # at.readPostPass requires v.tempBodyList. 
-        # # # else:
-            # # # lines = body.split('\n')
-            # # # at.completeFirstDirectives(lines,firstLines)
-            # # # at.completeLastDirectives(lines,lastLines)
-            # # # # *Always* put the temp body text into at.v.tempBodyString.
-            # # # s = '\n'.join(lines).replace('\r', '')
-            # # # v.tempBodyString = s
+            # Don't set v.b here: at.readPostPass uses v.tempBodyList. 
     #@+node:ekr.20041005105605.117: *6* at.completeFirstDirective
     def completeFirstDirectives(self,out,firstLines):
         '''
@@ -1249,11 +1207,6 @@ class AtFile:
             # No trailing whitespace on empty @first directive
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() + '\n'
-            ###
-            # if g.new_clone_test:
-                # out[k] = tag + leadingLine.rstrip() + '\n'
-            # else:
-                # out[k] = tag + leadingLine.rstrip()
             j += 1
             if trace: g.trace(repr(out[k]))
     #@+node:ekr.20041005105605.118: *6* at.completeLastDirectives
@@ -1288,11 +1241,6 @@ class AtFile:
             # No trailing whitespace on empty @last directive
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() + '\n'
-            ###
-            # # # if g.new_clone_test:
-                # # # out[k] = tag + trailingLine.rstrip() + '\n'
-            # # # else:
-                # # # out[k] = tag + trailingLine.rstrip()
             j -= 1
             if trace: g.trace(repr(out[k]))
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
@@ -1511,14 +1459,9 @@ class AtFile:
             if not postPass:
                 at.correctedLines += 1
                 at.reportCorrection(old,new,v)
-                ###
-                # # # if g.new_clone_test:
-                    # # # pass
-                # # # else:
-                    # # # v._bodyString = new # Allowed use of _bodyString.
-                    # # # # Just setting v.tempBodyString won't work here.
                 v.setDirty()
-                    # Mark the node dirty. Ancestors will be marked dirty later.
+                    # Just mark the vnode dirty.
+                    # Ancestors will be marked dirty later.
                 c.setChanged(True)
         else:
             # Do nothing if only trailing whitespace is involved.
@@ -1533,17 +1476,6 @@ class AtFile:
                 h_old=v._headString,
                 h_new=v._headString,
             ))
-            ###
-            # # # if not g.unitTesting:
-               # # # if v.h == 'clone-test': ####
-                    # # # g.error("uncached read node changed",v.h)
-            ###
-            # # # if trace and v.h == 'clone-test':
-                # # # if g.new_clone_test:
-                    # # # s = v.b
-                # # # else:
-                    # # # s = v.tempBodyString if hasattr(v,'tempBodyString') else '<no v.tempBodyString>'
-                # # # g.trace('isClone:',v.isCloned(),repr(s))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
             c.changed = True
@@ -1577,7 +1509,6 @@ class AtFile:
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
-        # trace = trace and v.h == 'clone-test'
         at = self
         if at.readVersion5:
             new = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
@@ -1585,20 +1516,9 @@ class AtFile:
             new = ''.join(at.out)
         new = g.toUnicode(new)
         old = v.bodyString() # Faster than v.b.
-        ###
-        # # # if g.new_clone_test:
-            # # # old = v.bodyString() # Faster than v.b.
-        # # # else:
-            # # # # The old temp text is *always* in tempBodyString.
-            # # # ### Probably should be::
-            # # # ### old = tempString if hasString else v.bodyString()
-            # # # old = tempString or v.bodyString()
-                # # # # Faster than v.b.
-
-        # Warn if the body text has changed.
-        # Don't warn about the root node.
+        # Warn if the body text has changed. Don't warn about the root node.
         if v != at.root.v and old != new:
-            # Not exactly correct.  Old could be empty.
+            # Not exactly correct. Old could be empty.
             # However, it appears to be good enough.
             if postPass:
                 warn = old # The previous text must exist.
@@ -1607,12 +1527,6 @@ class AtFile:
             if warn:
                 at.indicateNodeChanged(old,new,postPass,v)
         v.b = new
-        ###
-        # # # if g.new_clone_test:
-            # # # v.b = new
-        # # # else:
-            # # # # *Always* put the new text into tempBodyString.
-            # # # v.tempBodyString = new
         if trace:
             g.trace('%25s v.b %3s old %3s new %3s' % (
                 v.gnx,len(v.b),len(old),len(new)),v.h)
@@ -1870,24 +1784,6 @@ class AtFile:
         else:
             v = at.old_createThinChild4(gnx,headline)
             at.thinNodeStack.append(v)
-        ###
-        # # # # Common exit code. 
-        # # # # Terminate a previous clone if it exists.
-        # # # # Do not use the full terminateNode logic!
-        # # # if g.new_clone_test:
-            # # # pass
-        # # # else:
-            # # # if hasattr(v,'tempBodyList'):
-                # # # # To keep pylint happy.
-                # # # v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-                # # # if trace and trace_s: g.trace(repr(v.tempBodyString))
-                # # # delattr(v,'tempBodyList')
-            # # # else:
-                # # # # Major bug fix: 2010/07/6:
-                # # # # Do *not* create v.tempBodyString here!
-                # # # # That would tell at.readPostPass
-                # # # # that an older (empty) version exists!
-                # # # if trace and trace_s: g.trace('no body string. v.b:',repr(v.b))
         return v
     #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):

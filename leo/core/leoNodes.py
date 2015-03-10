@@ -2151,7 +2151,8 @@ class VNodeBase (object):
                 g.internalError('not unicode:',repr(self._bodyString))
             return g.toUnicode(self._bodyString)
 
-    ### getBody = bodyString
+    getBody = bodyString
+        # Deprecated, but here for compatibility.
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild (self):
@@ -2450,7 +2451,7 @@ class VNodeBase (object):
         if traceTime: t1 = time.time()
         if hasattr(body.wrapper,'setInsertPoint'):
             if trace and ins: g.trace('ins',ins,'spot',spot)
-            w.setInsertPoint(ins) ##### ,s=v._bodyString)
+            w.setInsertPoint(ins)
         if traceTime: 
             delta_t = time.time()-t1
             if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
