@@ -668,11 +668,14 @@ class AtFile:
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
         '''Delete all v.tempBodyString & v.tempBodyList attributes.'''
-        for v in self.c.all_unique_nodes():
-            if hasattr(v,"tempBodyString"):
-                delattr(v,"tempBodyString")
-            if hasattr(v,"tempBodyList"):
-                delattr(v,"tempBodyList")
+        if g.new_clone_test:
+            pass
+        else:
+            for v in self.c.all_unique_nodes():
+                if hasattr(v,"tempBodyString"):
+                    delattr(v,"tempBodyString")
+                if hasattr(v,"tempBodyList"):
+                    delattr(v,"tempBodyList")
     #@+node:ekr.20100122130101.6174: *5* at.deleteTnodeList
     def deleteTnodeList (self,p): # AtFile method.
 
@@ -1172,18 +1175,14 @@ class AtFile:
         trace = True and not g.unitTesting
         at = self
         v = root.v
-        tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
+        if g.new_clone_test:
+            pass
+        else:
+            tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
         tempList = hasattr(v,'tempBodyList') and ''.join(v.tempBodyList) or ''
         if at.readVersion5:
             if g.new_clone_test:
-                body = tempList
-                ### 
-                # if hasattr(v,'tempBodyList'):
-                    # body = tempList
-                # elif hasattr(v,'tempBodyString'):
-                    # body = tempString
-                # else:
-                    # body = ''
+                pass
             else:
                 if hasattr(v,'tempBodyList'):
                     body = tempList
@@ -1195,17 +1194,23 @@ class AtFile:
                     body = ''
         else:
             if g.new_clone_test:
-                body = tempList
+                pass
             else:
                 body = tempString
-        lines = body.split('\n')
-        at.completeFirstDirectives(lines,firstLines)
-        at.completeLastDirectives(lines,lastLines)
-        s = '\n'.join(lines).replace('\r', '')
         if g.new_clone_test:
-            v.b = s
+            ### body = tempList
+            ### lines = body.split('\n')
+            lines = v.tempBodyList if hasattr(v,'tempBodyList') else []
+            at.completeFirstDirectives(lines,firstLines)
+            at.completeLastDirectives(lines,lastLines)
+            ### v.setBodyString(s)
+            v.tempBodyList = lines
         else:
+            lines = body.split('\n')
+            at.completeFirstDirectives(lines,firstLines)
+            at.completeLastDirectives(lines,lastLines)
             # *Always* put the temp body text into at.v.tempBodyString.
+            s = '\n'.join(lines).replace('\r', '')
             v.tempBodyString = s
     #@+node:ekr.20041005105605.117: *6* at.completeFirstDirective
     def completeFirstDirectives(self,out,firstLines):
@@ -1217,7 +1222,7 @@ class AtFile:
         
         NOTE: the @first directives must be the very first lines in 'out'.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if not firstLines:
             return
         tag = "@first"
@@ -1238,7 +1243,10 @@ class AtFile:
             # Remove trailing newlines because they are inserted later
             # No trailing whitespace on empty @first directive
             leadingLine = " " + firstLines[j]
-            out[k] = tag + leadingLine.rstrip()
+            if g.new_clone_test:
+                out[k] = tag + leadingLine.rstrip() + '\n'
+            else:
+                out[k] = tag + leadingLine.rstrip()
             j += 1
             if trace: g.trace(repr(out[k]))
     #@+node:ekr.20041005105605.118: *6* at.completeLastDirectives
@@ -1272,7 +1280,11 @@ class AtFile:
             # Remove trailing newlines because they are inserted later
             # No trailing whitespace on empty @last directive
             trailingLine = " " + lastLines[j]
-            out[k] = tag + trailingLine.rstrip()
+            ### out[k] = tag + trailingLine.rstrip()
+            if g.new_clone_test:
+                out[k] = tag + trailingLine.rstrip() + '\n'
+            else:
+                out[k] = tag + trailingLine.rstrip()
             j -= 1
             if trace: g.trace(repr(out[k]))
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
@@ -1400,20 +1412,27 @@ class AtFile:
     def readPostPass (self,root,thinFile):
         '''Post-process all vnodes.'''
         trace = False and not g.unitTesting
+        verbose = False
         if trace: g.trace('*****',root.h)
         at,c = self,self.c
         seen = {}
         for p in root.self_and_subtree():
             if trace: g.trace(p.h)
             hasList = hasattr(p.v,'tempBodyList')
-            hasString = hasattr(p.v,'tempBodyString')
             if g.new_clone_test:
                 v = p.v
+                old_body = p.bodyString()
+                if trace and verbose: g.trace('old',repr(old_body))
                 if not v.gnx in seen:
                     seen[v.gnx] = v
                     at.terminateNode(v=v)
+                new_body = p.bodyString()
+                if trace and verbose: g.trace('new',repr(new_body))
+                assert not hasattr(v,'tempBodyList')
+                assert not hasattr(v,'tempBodyString')
             else:
                 # Terminate the node if v.tempBodyList exists.
+                hasString = hasattr(p.v,'tempBodyString')
                 if not hasString and not hasList:
                     continue # Bug fix 2010/07/06: do nothing!
                 if hasList:
@@ -1421,28 +1440,29 @@ class AtFile:
                         # Sets v.tempBodyString and clears v.tempBodyList.
                     assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
                     assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
-            if g.new_clone_test:
-                s = p.b
-            else:
-                s = p.v.tempBodyString
+                new_body = p.v.tempBodyString
                 delattr(p.v,'tempBodyString') # essential.
-            old_body = p.b
-            if s != old_body:
-                if thinFile:
-                    p.v.setBodyString(s)
-                    if p.v.isDirty():
-                        p.setAllAncestorAtFileNodesDirty()
-                else:
-                    c.setBodyString(p,s) # Sets c and p dirty.
-
-                if p.v.isDirty():
-                    # New in Leo 4.3: support for mod_labels plugin:
-                    try:
-                        c.mod_label_controller.add_label(p,"before change:",old_body)
-                    except Exception:
-                        pass
-                    # This warning is given elsewhere.
-                    # g.warning("changed:",p.h)
+                old_body = p.b
+            if new_body != old_body:
+                at.handleChangedNode(new_body,old_body,p,thinFile)
+    #@+node:ekr.20150309154506.27: *5* at.handleChangedNode
+    def handleChangedNode(self,new_body,old_body,p,thinFile):
+        '''Set ancestor files dirty and support mod_labels plugin.'''
+        c = self.c
+        if thinFile: # Expected.
+            p.v.setBodyString(new_body)
+            if p.v.isDirty():
+                p.setAllAncestorAtFileNodesDirty()
+        else:
+            c.setBodyString(p,new_body) # Sets c and p dirty.
+        if p.v.isDirty():
+            # New in Leo 4.3: support for mod_labels plugin:
+            try:
+                c.mod_label_controller.add_label(p,"before change:",old_body)
+            except Exception:
+                pass
+            # This warning is given elsewhere.
+            # g.warning("changed:",p.h)
     #@+node:ekr.20100628072537.5814: *5* at.terminateNode & helpers
     def terminateNode (self,middle=False,v=None):
         '''
@@ -1511,7 +1531,10 @@ class AtFile:
                 if v.h == 'clone-test': ####
                     g.error("uncached read node changed",v.h)
             if trace and v.h == 'clone-test':
-                s = v.tempBodyString if hasattr(v,'tempBodyString') else '<no v.tempBodyString>'
+                if g.new_clone_test:
+                    s = v.b
+                else:
+                    s = v.tempBodyString if hasattr(v,'tempBodyString') else '<no v.tempBodyString>'
                 g.trace('isClone:',v.isCloned(),repr(s))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
@@ -1545,22 +1568,26 @@ class AtFile:
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
-        trace = True and not g.unitTesting
-        trace = trace and v.h == 'clone-test' ###
+        trace = False and not g.unitTesting
+        # trace = trace and v.h == 'clone-test'
         at = self
         if g.new_clone_test:
             pass
         else:
             hasString  = hasattr(v,'tempBodyString')
             tempString = hasString and v.tempBodyString or ''
-        hasList    = hasattr(v,'tempBodyList')
-        tempList   = hasList and ''.join(v.tempBodyList) or ''
-        # The old temp text is *always* in tempBodyString.
+
+        hasList  = hasattr(v,'tempBodyList')
+        tempList = hasList and ''.join(v.tempBodyList) or ''
+        
         new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
         if g.new_clone_test:
             old = v.bodyString() # Faster than v.b.
         else:
+            # The old temp text is *always* in tempBodyString.
+            ### Probably should be::
+            ### old = tempString if hasString else v.bodyString()
             old = tempString or v.bodyString()
                 # Faster than v.b.
 
@@ -1586,7 +1613,8 @@ class AtFile:
                 g.trace('%25s tempString %3s v.b %3s old %3s new %3s' % (
                     v.gnx,len(tempString),len(v.b),len(old),len(new)),v.h)
             # g.trace(g.callers(8))
-       # *Always* delete tempBodyList.  Do not leave this lying around!
+
+        # *Always* delete tempBodyList.
         if hasList: delattr(v,'tempBodyList')
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
     def scanText4 (self,fileName,p,verbose=False):
@@ -1860,13 +1888,13 @@ class AtFile:
                 # that an older (empty) version exists!
                 if trace and trace_s: g.trace('no body string. v.b:',repr(v.b))
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4 (sets v.tempBodyString)
+    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
         """
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = True and not g.unitTesting # and g.new_clone_test 
+        trace = False and not g.unitTesting # and g.new_clone_test 
         trace_tree = False
         at,c,indices = self,self.c,g.app.nodeIndices
         if trace and trace_tree:

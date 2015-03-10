@@ -1115,7 +1115,7 @@ class FileCommands:
             # Don't set t.h: h is always empty.
             # This may be an internal error.
             if g.new_clone_test:
-                v.tempBodyString = v.bodyString()
+                #### v.tempBodyString = v.bodyString()
                  # Remember the *old* value of v.b
                 if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
             if v.b == b:
