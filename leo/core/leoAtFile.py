@@ -1198,13 +1198,11 @@ class AtFile:
             else:
                 body = tempString
         if g.new_clone_test:
-            ### body = tempList
-            ### lines = body.split('\n')
             lines = v.tempBodyList if hasattr(v,'tempBodyList') else []
             at.completeFirstDirectives(lines,firstLines)
             at.completeLastDirectives(lines,lastLines)
-            ### v.setBodyString(s)
             v.tempBodyList = lines
+                # at.readPostPass requires v.tempBodyList. 
         else:
             lines = body.split('\n')
             at.completeFirstDirectives(lines,firstLines)
@@ -1429,7 +1427,7 @@ class AtFile:
                 new_body = p.bodyString()
                 if trace and verbose: g.trace('new',repr(new_body))
                 assert not hasattr(v,'tempBodyList')
-                assert not hasattr(v,'tempBodyString')
+                assert not hasattr(v,'tempBodyString') ### To be removed.
             else:
                 # Terminate the node if v.tempBodyList exists.
                 hasString = hasattr(p.v,'tempBodyString')
@@ -1438,8 +1436,8 @@ class AtFile:
                 if hasList:
                     at.terminateNode(v=p.v)
                         # Sets v.tempBodyString and clears v.tempBodyList.
-                    assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
-                    assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
+                    assert not hasattr(p.v,'tempBodyList'),p.v
+                    assert hasattr(p.v,'tempBodyString'),p.v
                 new_body = p.v.tempBodyString
                 delattr(p.v,'tempBodyString') # essential.
                 old_body = p.b
