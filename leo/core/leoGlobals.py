@@ -16,7 +16,7 @@ isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
 new_clone_test = False
-    # True: enable experimental code to set v.tempBodyString.
+    # True: enable experimental code to detect clones.
 if new_clone_test:
     print('***** new_clone_test *****')
 
