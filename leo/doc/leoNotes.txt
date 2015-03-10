@@ -14930,165 +14930,22 @@ def has_at_recovery_node(pd,root):
     '''
     p = pd.has_at_data_node(root)
     return p and g.findNodeInTree(pd.c,p,'@recovery')
-.. @+node:ekr.20150212133633.4: *3* Unused (old @shadow code)
-.. @+node:ekr.20080708094444.12: *4* class Sourcereader
-class SourceReader:
-    '''
-    A class to read lines sequentially.
-    A thin wrapper around a list of lines and a pointer.
-    '''
-    @others
-Sourcereader = SourceReader
-    # Compatibility.
-.. @+node:ekr.20080708094444.13: *5* __init__ (Sourcereader)
-def __init__ (self,ShadowController,lines):
-    '''Ctor for SourceReader class.'''
-    self.i = 0
-    self.lines = lines 
-    self.x = ShadowController
-        # To allow access to the x.trace var.
-.. @+node:ekr.20080708094444.15: *5* get
-def get (self):
-    '''Return the next line, always incrementing self.i'''
-    line = self.lines[self.i] if self.i < len(self.lines) else ''
-    self.i += 1
-        # Defensive code: make sure loops on self.i terminate.
-    if self.x.trace:
-        g.trace(repr(line))
-    return line 
-.. @+node:ekr.20080708094444.37: *4* x.copy_sentinels
-def copy_sentinels(self,limit):
-    '''Copy sentinels from x.sent_rdr to x.results while x.sent_rdr.i < limit.'''
-    x = self
-    # if x.trace: g.trace(limit)
-    marker,sent_rdr = x.marker,x.sent_rdr
-    while sent_rdr.i < limit:
-        line = sent_rdr.get()
-        if marker.isSentinel(line):
-            if marker.isVerbatimSentinel(line):
-                # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
-                # We must **extend** the limit to get the next line.
-                if sent_rdr.i < limit + 1:
-                    # Skip the next line, whatever it is.
-                    # Important: this **deletes** the @verbatim sentinel,
-                    # so this is a exception to the rule that sentinels are preserved.
-                    line = sent_rdr.get()
-                else:
-                    x.verbatim_error()
-            else:
-                x.put(line)
-    # if x.trace: g.trace('done')
-.. @+node:ekr.20080708094444.30: *4* x.push_filter_mapping
-def push_filter_mapping (self,lines, marker):
-    """
-    Given the lines of a file, filter out all
-    Leo sentinels, and return a mapping:
+.. @+node:ekr.20150310080823.5: *3* << Detecting clone conflicts >>
+@wrap
+@
+@language rest
 
-      stripped file -> original file
+The read code uses the following *temporary* ivars to compute v.b and to detect clone conflicts:
 
-    Filtering should be the same as
-    separate_sentinels
-    """
+- **v.tempBodyList**: accumulates lines of body text during reading.
+- **v.tempBodyString**: contains the previous value of v.b, if any.
 
-    x = self ; mapping = [None]
-    i = 0 ; n = len(lines)
-    while i < n:
-        line = lines[i]
-        if marker.isSentinel(line):
-            if marker.isVerbatimSentinel(line):
-                i += 1
-                if i < n:
-                    mapping.append(i+1)
-                else:
-                    x.verbatim_error()
-        else:
-            mapping.append(i+1)
-        i += 1
+The vnode ctor must not create these two ivars!
 
-    return mapping 
-.. @+node:ekr.20150207111757.5: *4* x.put (old code only)
-def put(self,line):
-    '''Put the line to x.results.'''
-    x = self
-    x.results.append(line)
-    if x.trace:
-        g.trace(repr(line))
-.. @+node:ekr.20080708094444.34: *4* x.strip_sentinels_with_map
-def strip_sentinels_with_map (self, lines, marker, tag=''):
-    '''
-    Strip sentinels from lines, a list of lines with sentinels.
+A **post-pass** (at.readPostPass and its helpers) computes the new value of v.b for each vnode and detects clone conflicts. A clone conflict exists if and *only* if::
 
-    Return (results,mapping)
-
-    'lines':     A list of lines containing sentinels.
-    'results':   The list of non-sentinel lines.
-    'mapping':   A list mapping each line in results to the original list.
-                results[i] comes from line mapping[i] of the original lines.
-    '''
-    x = self
-    mapping, results = [],[]
-    i, n = 0,len(lines)
-    while i < n:
-        line = lines[i]
-        if marker.isSentinel(line):
-            if marker.isVerbatimSentinel(line):
-                i += 1
-                if i < n:
-                    # Not a sentinel, whatever it looks like.
-                    line = lines[i]
-                    # g.trace('not a sentinel',repr(line))
-                    results.append(line)
-                    mapping.append(i)
-                else:
-                    x.verbatim_error()
-        else:
-            results.append(line)
-            mapping.append(i)
-        i += 1
-    mapping.append(len(lines)) # To terminate loops.
-    if x.trace:
-        g.trace('mapping for',tag)
-        for i in range(len(results)):
-            print('%4s %4s %s' % (i,mapping[i],repr(results[i])))
-        i = len(results)
-        print('%4s %4s %s' % (i,mapping[i],'None'))
-    return results, mapping 
-.. @+node:ekr.20150308094911.23: *3* OLD at.readPostPass & helpers
-def readPostPass (self,root,thinFile):
-    '''Post-process all vnodes.'''
-    trace,verbose = True and not g.unitTesting,True
-    if trace: g.trace('*****',root.h)
-    at,c = self,self.c
-    for p in root.self_and_subtree():
-        hasList = hasattr(p.v,'tempBodyList')
-        hasString = hasattr(p.v,'tempBodyString')
-        if trace and verbose:
-            g.trace('hasList: %s hasString: %s %s' % (hasList,hasString,p.h))
-        if not hasString and not hasList:
-            continue # Bug fix 2010/07/06: do nothing!
-        # Terminate the node if v.tempBodyList exists.
-        ########### Shouldn't empty nodes be checked for clone conflicts ??????
-        if hasList:
-            at.terminateNode(v=p.v)
-                # Calls at.terminateBody.
-                # Sets v.tempBodyString and clears v.tempBodyList.
-            assert not hasattr(p.v,'tempBodyList'),'readPostPass 1'
-            assert hasattr(p.v,'tempBodyString'),'readPostPass 2'
-        s = p.v.tempBodyString
-        delattr(p.v,'tempBodyString') # essential.
-        old_body = p.b
-        if s != old_body:
-            if thinFile:
-                p.v.setBodyString(s)
-                if p.v.isDirty():
-                    p.setAllAncestorAtFileNodesDirty()
-            else:
-                c.setBodyString(p,s) # Sets c and p dirty.
-            if p.v.isDirty():
-                # Support for mod_labels plugin:
-                try:
-                    c.mod_label_controller.add_label(p,"before change:",old_body)
-                except Exception:
-                    pass
+    hasattr(v,'tempBodyString') and v.b != v.tempBodyString.
+    
+The post pass adds an entry in c.nodeConflictList for each clone conflict. Later, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
 .. @-all
 .. @-leo
