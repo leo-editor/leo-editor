@@ -3,9 +3,7 @@
 #@+node:ekr.20041005105605.1: * @file leoAtFile.py
 #@@first
     # Needed because of unicode characters in tests.
-"""Classes to read and write @file nodes."""
-allow_cloned_sibs = True
-    # True: allow cloned siblings in @file nodes.
+"""Classes to read and write @file nodes."""\
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -337,8 +335,9 @@ class AtFile:
         at.tnodeListIndex = 0
         at.v = None
         at.vStack = [] # Stack of at.v values.
-        if allow_cloned_sibs:
-            at.thinChildIndexStack = [] # 2013/01/20: number of siblings at this level.
+        ### if allow_cloned_sibs:
+        ###    at.thinChildIndexStack = [] # 2013/01/20: number of siblings at this level.
+        at.thinChildIndexStack = [] # number of siblings at this level.
         at.thinFile = False # 2010/01/22: was thinFile
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
@@ -1535,8 +1534,9 @@ class AtFile:
         at.vStack = []
 
         # New code: always identify root @thin node with self.root:
-        if allow_cloned_sibs:
-            at.thinChildIndexStack = []
+        ### if allow_cloned_sibs:
+        ###     at.thinChildIndexStack = []
+        at.thinChildIndexStack = []
         at.lastThinNode = None
         at.thinNodeStack = []
         #@-<< init ivars for scanText4 >>
@@ -1700,8 +1700,8 @@ class AtFile:
         if not at.v:
             return # 2010/08/02: This can happen when reading strange files.
 
-        if allow_cloned_sibs:
-            assert at.v == at.root.v or at.v.isVisited(),at.v.h
+        ### if allow_cloned_sibs:
+        assert at.v == at.root.v or at.v.isVisited(),at.v.h
 
         at.v.setVisited()
             # Indicate that the VNode has been set in the external file.
@@ -1725,7 +1725,7 @@ class AtFile:
                 v = at.old_createThinChild4(gnx,headline)
         else:
             v = at.root.v
-            if allow_cloned_sibs and at.readVersion5:
+            if at.readVersion5: ### and allow_cloned_sibs 
                 at.thinChildIndexStack.append(0)
             at.thinNodeStack.append(v)
         at.lastThinNode = v
@@ -1742,25 +1742,26 @@ class AtFile:
         assert newLevel >= 1
         # The invariant: top of at.thinNodeStack after changeLevel is the parent.
         at.changeLevel(oldLevel,newLevel-1)
-        if allow_cloned_sibs:
-            parent = at.thinNodeStack[-1]
-            n = at.thinChildIndexStack[-1]
-            if trace: g.trace(oldLevel,newLevel-1,n,parent.h,headline)
-            v = at.new_createThinChild4(gnx,headline,n,parent)
-            at.thinChildIndexStack[-1]=n+1
-            at.thinNodeStack.append(v)
-            at.thinChildIndexStack.append(0)
-            at.lastThinNode = v
-            # Ensure that the body text is set only once.
-            if v.isVisited():
-                if hasattr(v,'tempBodyList'):
-                    delattr(v,'tempBodyList')
-            else:
-                # This is the only place we call v.setVisited in the read logic.
-                v.setVisited()
+        ### if allow_cloned_sibs:
+        parent = at.thinNodeStack[-1]
+        n = at.thinChildIndexStack[-1]
+        if trace: g.trace(oldLevel,newLevel-1,n,parent.h,headline)
+        v = at.new_createThinChild4(gnx,headline,n,parent)
+        at.thinChildIndexStack[-1]=n+1
+        at.thinNodeStack.append(v)
+        at.thinChildIndexStack.append(0)
+        at.lastThinNode = v
+        # Ensure that the body text is set only once.
+        if v.isVisited():
+            if hasattr(v,'tempBodyList'):
+                delattr(v,'tempBodyList')
         else:
-            v = at.old_createThinChild4(gnx,headline)
-            at.thinNodeStack.append(v)
+            # This is the only place we call v.setVisited in the read logic.
+            v.setVisited()
+        ###
+        # # # else:
+            # # # v = at.old_createThinChild4(gnx,headline)
+            # # # at.thinNodeStack.append(v)
         return v
     #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
@@ -2587,8 +2588,9 @@ class AtFile:
         else:
             while oldLevel > newLevel:
                 oldLevel -= 1
-                if allow_cloned_sibs:
-                    at.thinChildIndexStack.pop()
+                ### if allow_cloned_sibs:
+                ###    at.thinChildIndexStack.pop()
+                at.thinChildIndexStack.pop()
                 at.indentStack.pop()
                 at.thinNodeStack.pop()
                 at.vStack.pop()
@@ -4119,26 +4121,26 @@ class AtFile:
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
 
-        if allow_cloned_sibs:
-            for child in p.children():
-                p = child.copy()
-                after = p.nodeAfterTree()
-                while p and p != after:
-                    if at.validInAtOthers(p):
-                        at.putOpenNodeSentinel(p)
-                        at_others_flag = at.putBody(p)
-                        at.putCloseNodeSentinel(p)
-                        if at_others_flag:
-                            p.moveToNodeAfterTree()
-                        else:
-                            p.moveToThreadNext()
-                    else:
+        ### if allow_cloned_sibs:
+        for child in p.children():
+            p = child.copy()
+            after = p.nodeAfterTree()
+            while p and p != after:
+                if at.validInAtOthers(p):
+                    at.putOpenNodeSentinel(p)
+                    at_others_flag = at.putBody(p)
+                    at.putCloseNodeSentinel(p)
+                    if at_others_flag:
                         p.moveToNodeAfterTree()
-        else:
-            for child in p.children():
-                # g.trace(child.h)
-                if at.validInAtOthers(child):
-                    at.putAtOthersChild(child)
+                    else:
+                        p.moveToThreadNext()
+                else:
+                    p.moveToNodeAfterTree()
+        # # # else:
+            # # # for child in p.children():
+                # # # # g.trace(child.h)
+                # # # if at.validInAtOthers(child):
+                    # # # at.putAtOthersChild(child)
 
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
@@ -4149,21 +4151,23 @@ class AtFile:
         at = self
         parent_v = p._parentVnode()
 
-        if not allow_cloned_sibs:
-            clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
-            if clonedSibs > 1 and thisClonedSibIndex == 1:
-                at.writeError("Cloned siblings are not valid in @thin trees")
-                g.error(p.h)
+        ###
+        # # # if not allow_cloned_sibs:
+            # # # clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+            # # # if clonedSibs > 1 and thisClonedSibIndex == 1:
+                # # # at.writeError("Cloned siblings are not valid in @thin trees")
+                # # # g.error(p.h)
 
         at.putOpenNodeSentinel(p)
         at.putBody(p)
 
-        if not allow_cloned_sibs:
-            # Insert expansions of all children.
-            for child in p.children():
-                # g.trace(child.h)
-                if at.validInAtOthers(child):
-                    at.putAtOthersChild(child)
+        ###
+        # if not allow_cloned_sibs:
+            # # Insert expansions of all children.
+            # for child in p.children():
+                # # g.trace(child.h)
+                # if at.validInAtOthers(child):
+                    # at.putAtOthersChild(child)
 
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.171: *7* validInAtOthers (write)
@@ -4175,9 +4179,10 @@ class AtFile:
 
         trace = False and not g.unitTesting
         at = self
-        if not allow_cloned_sibs and p.v.isVisited():
-            if trace: g.trace("previously visited",p.v.h)
-            return False
+        ###
+        # # # if not allow_cloned_sibs and p.v.isVisited():
+            # # # if trace: g.trace("previously visited",p.v.h)
+            # # # return False
         i = g.skip_ws(p.h,0)
         isSection,junk = at.isSectionName(p.h,i)
         if isSection:
