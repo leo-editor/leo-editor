@@ -339,7 +339,7 @@ class AtFile:
         at.thinFile = False # 2010/01/22: was thinFile
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
-    #@+node:ekr.20041005105605.15: *3* at.initWriteIvars
+    #@+node:ekr.20041005105605.15: *3* at.initWriteIvars (The only setter)
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,atEdit=False,atShadow=False,
         forcePythonSentinels=None,
@@ -393,7 +393,8 @@ class AtFile:
             # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        at.writeVersion5 = not atShadow
+        ### at.writeVersion5 = not atShadow
+        at.writeVersion5 = True
 
         at.scanAllDirectives(root,
             scripting=scriptWrite,
