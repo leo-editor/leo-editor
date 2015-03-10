@@ -450,18 +450,16 @@ class AtFile:
     #@+at
     #@@language rest
     # 
-    # The read code uses the following *temporary* ivars to compute v.b and to detect clone conflicts:
+    # The read code uses **v.tempBodyString**, a *temporary* ivar, to accumulate v.b
+    # and to detect clone conflicts. The vnode ctor must not create this ivar!
     # 
-    # - **v.tempBodyList**: accumulates lines of body text during reading.
-    # - **v.tempBodyString**: contains the previous value of v.b, if any.
+    # at.terminateBody sets v.b and detects clone conflicts. The new value is:: 
     # 
-    # The vnode ctor must not create these two ivars!
-    # 
-    # A **post-pass** (at.readPostPass and its helpers) computes the new value of v.b for each vnode and detects clone conflicts. A clone conflict exists if and *only* if::
-    # 
-    #     hasattr(v,'tempBodyString') and v.b != v.tempBodyString.
+    #     ''.join(v.tempBodyList)
     #     
-    # The post pass adds an entry in c.nodeConflictList for each clone conflict. Later, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
+    # at.terminateBody calls at.indicateNodeChanged when a mismatch is detected. at.indicateNodeChanged adds an entry in c.nodeConflictList for each clone conflict.
+    # 
+    # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
     #@-<< Detecting clone conflicts >>
     #@+node:ekr.20041005105605.18: *3* at.Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
@@ -1563,7 +1561,7 @@ class AtFile:
         else:
             # This should never happen.
             g.error("correcting hidden node: v=",repr(v))
-    #@+node:ekr.20100702062857.5824: *6* at.terminateBody
+    #@+node:ekr.20100702062857.5824: *6* at.terminateBody (detects changes)
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1577,7 +1575,6 @@ class AtFile:
 
         hasList  = hasattr(v,'tempBodyList')
         tempList = hasList and ''.join(v.tempBodyList) or ''
-        
         new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
         if g.new_clone_test:
