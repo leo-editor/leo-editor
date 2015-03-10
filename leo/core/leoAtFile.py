@@ -1376,8 +1376,10 @@ class AtFile:
     #@+node:ekr.20150309154506.27: *5* at.handleChangedNode
     def handleChangedNode(self,new_body,old_body,p,thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
+        trace = True and not g.unitTesting
         c = self.c
         if thinFile: # Expected.
+            if trace: g.trace('****',p.h)
             p.v.setBodyString(new_body)
             if p.v.isDirty():
                 p.setAllAncestorAtFileNodesDirty()
@@ -1477,7 +1479,7 @@ class AtFile:
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody (detects changes)
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         at = self
         if at.readVersion5:
             new = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
@@ -1495,10 +1497,9 @@ class AtFile:
                 warn = old and new # Both must exit.
             if warn:
                 at.indicateNodeChanged(old,new,postPass,v)
-        v.b = new
+        v.setBodyString(new)
         if trace:
-            g.trace('%25s v.b %3s old %3s new %3s' % (
-                v.gnx,len(v.b),len(old),len(new)),v.h)
+            g.trace('%25s old %3s new %3s' % (v.gnx,len(old),len(new)),v.h)
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
     def scanText4 (self,fileName,p,verbose=False):
         """Scan a 4.x derived file non-recursively."""
