@@ -15,11 +15,6 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_clone_test = False
-    # True: enable experimental code to detect clones.
-if new_clone_test:
-    print('***** new_clone_test *****')
-
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
