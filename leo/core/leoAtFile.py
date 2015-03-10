@@ -1370,7 +1370,7 @@ class AtFile:
             if not v.gnx in seen:
                 old_body = p.bodyString()
                 seen[v.gnx] = v
-                at.terminateNode(v=v)
+                at.terminateNode(postPass=True,v=v)
                 new_body = p.bodyString()
                 if hasattr(v,'tempBodyList'):
                     delattr(v,'tempBodyList')
@@ -1395,7 +1395,7 @@ class AtFile:
             # This warning is given elsewhere.
             # g.warning("changed:",p.h)
     #@+node:ekr.20100628072537.5814: *5* at.terminateNode & helpers
-    def terminateNode (self,middle=False,v=None):
+    def terminateNode (self,middle=False,postPass=True,v=None):
         '''
         Set the body text of at.v, and issue warning if it has changed.
 
@@ -1406,18 +1406,18 @@ class AtFile:
         '''
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
-        postPass = v is not None
-            # A little kludge: v is given only when this is called from readPostPass.
+        ###
+        # # # postPass = v is not None
+            # # # # A little kludge: v is given only when this is called from readPostPass.
         if not v: v = at.v
-        if at.readVersion5:
-            # A vital assertion.
-            # We must *never* terminate a node before the post pass.
-            assert postPass,'terminateNode'
         # Get the temp attributes.
-        hasList  = hasattr(v,'tempBodyList')
-        tempList = hasList and ''.join(v.tempBodyList) or ''
+        ### hasList  = hasattr(v,'tempBodyList')
+        ### tempList = hasList and ''.join(v.tempBodyList) or ''
         # Compute the new text.
-        s = tempList if at.readVersion5 else ''.join(at.out)
+        if at.readVersion5:
+            s = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
+        else:
+            s = ''.join(at.out)
         s = g.toUnicode(s)
         if trace: g.trace('%28s %s' % (v.h,repr(s)))
         if at.importing:
@@ -1426,7 +1426,7 @@ class AtFile:
             pass # Middle sentinels never alter text.
         else:
             at.terminateBody(v,postPass)
-        # *Always delete tempBodyList. Do not leave this lying around!
+        # Delete tempBodyList. Do not leave this lying around!
         if hasattr(v,'tempBodyList'): delattr(v,'tempBodyList')
     #@+node:ekr.20100628124907.5816: *6* at.indicateNodeChanged
     def indicateNodeChanged (self,old,new,postPass,v):
@@ -2179,27 +2179,20 @@ class AtFile:
         Handle old-style @-node sentinels.
         In the new scheme, only the post-pass terminates nodes.
         """
-
         at = self
-
         assert not at.readVersion5,'not at.readVersion5'
             # Must not be called for new sentinels.
-
         at.raw = False # End raw mode.
-
-        at.terminateNode(middle)
+        at.terminateNode(middle=middle,postPass=False)
             # Set the body text and warn about changed text.
             # This must not be called when handling new sentinels!
-
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
         at.out = at.outStack.pop()
         at.docOut = []
         at.v = at.vStack.pop()
-
         if at.thinFile and not at.importing:
             at.lastThinNode = at.thinNodeStack.pop()
-
         at.popSentinelStack(at.endNode)
     #@+node:ekr.20041005105605.98: *6* at.readEndOthers
     def readEndOthers (self,unused_s,unused_i):
