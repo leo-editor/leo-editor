@@ -1100,7 +1100,7 @@ class FileCommands:
                 '*** added parent',parent_v,'to',child,
                 'len(child.parents)',len(child.parents))
         return children
-    #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers (sets v.tempBodyString)
+    #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,v=None):
         '''Create a vnode, or use an existing vnode.'''
         c = self.c
@@ -1115,7 +1115,6 @@ class FileCommands:
             # Don't set t.h: h is always empty.
             # This may be an internal error.
             if g.new_clone_test:
-                #### v.tempBodyString = v.bodyString()
                  # Remember the *old* value of v.b
                 if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
             if v.b == b:
