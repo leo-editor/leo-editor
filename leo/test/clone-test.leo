@@ -19,8 +19,7 @@ expanded="ekr.20150310023037.1,"><vh>@file clone-test.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20150307092801.4">
-</t>
+<t tx="ekr.20150307092801.4"></t>
 <t tx="ekr.20150308092755.2" str_leo_pos="1,0">Body text: to do</t>
 <t tx="ekr.20150308092755.3"># body text: To do: Leo 5.1 b1
 </t>
