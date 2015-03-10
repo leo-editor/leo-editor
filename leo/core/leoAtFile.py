@@ -1166,9 +1166,10 @@ class AtFile:
         at.completeRootNode(firstLines,lastLines,root)
         if trace: g.trace(at.encoding,fileName)
         return thinFile
-    #@+node:ekr.20041005105605.28: *5* at.completeRootNode
+    #@+node:ekr.20041005105605.28: *5* at.completeRootNode & helpers
     def completeRootNode(self,firstLines,lastLines,root):
         '''Terminate the root's body text, handling @first and @last.'''
+        trace = True and not g.unitTesting
         at = self
         v = root.v
         tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
@@ -1193,7 +1194,10 @@ class AtFile:
                 else:
                     body = ''
         else:
-            body = tempString
+            if g.new_clone_test:
+                body = tempList
+            else:
+                body = tempString
         lines = body.split('\n')
         at.completeFirstDirectives(lines,firstLines)
         at.completeLastDirectives(lines,lastLines)
@@ -1203,6 +1207,74 @@ class AtFile:
         else:
             # *Always* put the temp body text into at.v.tempBodyString.
             v.tempBodyString = s
+    #@+node:ekr.20041005105605.117: *6* at.completeFirstDirective
+    def completeFirstDirectives(self,out,firstLines):
+        '''
+        14-SEP-2002 DTHEIN
+        
+        Scans the lines in the list 'out' for @first directives, appending the
+        corresponding line from 'firstLines' to each @first directive found.
+        
+        NOTE: the @first directives must be the very first lines in 'out'.
+        '''
+        trace = True and not g.unitTesting
+        if not firstLines:
+            return
+        tag = "@first"
+        foundAtFirstYet = 0
+        j = 0
+        for k in range(len(out)):
+            # skip leading whitespace lines
+            if not foundAtFirstYet and len(out[k].strip()) == 0:
+                continue
+            # quit if something other than @first directive
+            if not g.match(out[k],0,tag):
+                break
+            foundAtFirstYet = 1
+            # quit if no leading lines to apply
+            if j >= len(firstLines):
+                break
+            # make the new @first directive
+            # Remove trailing newlines because they are inserted later
+            # No trailing whitespace on empty @first directive
+            leadingLine = " " + firstLines[j]
+            out[k] = tag + leadingLine.rstrip()
+            j += 1
+            if trace: g.trace(repr(out[k]))
+    #@+node:ekr.20041005105605.118: *6* at.completeLastDirectives
+    def completeLastDirectives(self,out,lastLines):
+        '''
+        14-SEP-2002 DTHEIN.
+        
+        Scans the lines in the list 'out' for @last directives, appending the
+        corresponding line from 'lastLines' to each @last directive found.
+        
+        NOTE: the @last directives must be the very last lines in 'out'.
+        '''
+        trace = False and not g.unitTesting
+        if not lastLines:
+            return
+        tag = "@last"
+        foundAtLastYet = 0
+        j = -1
+        for k in range(-1,-len(out),-1):
+            # skip trailing whitespace lines
+            if not foundAtLastYet and len(out[k].strip()) == 0:
+                continue
+            # quit if something other than @last directive
+            if not g.match(out[k],0,tag):
+                break
+            foundAtLastYet = 1
+            # quit if no trailing lines to apply
+            if j < -len(lastLines):
+                break
+            # make the new @last directive
+            # Remove trailing newlines because they are inserted later
+            # No trailing whitespace on empty @last directive
+            trailingLine = " " + lastLines[j]
+            out[k] = tag + trailingLine.rstrip()
+            j -= 1
+            if trace: g.trace(repr(out[k]))
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):
 
@@ -1216,60 +1288,6 @@ class AtFile:
             return False
         else:
             return True
-    #@+node:ekr.20041005105605.117: *5* at.completeFirstDirective
-    # 14-SEP-2002 DTHEIN: added for use by AtFile.read()
-
-    # this function scans the lines in the list 'out' for @first directives
-    # and appends the corresponding line from 'firstLines' to each @first 
-    # directive found.  NOTE: the @first directives must be the very first
-    # lines in 'out'.
-    def completeFirstDirectives(self,out,firstLines):
-
-        tag = "@first"
-        foundAtFirstYet = 0
-        outRange = range(len(out))
-        j = 0
-        for k in outRange:
-            # skip leading whitespace lines
-            if (not foundAtFirstYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @first directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtFirstYet = 1
-            # quit if no leading lines to apply
-            if j >= len(firstLines): break
-            # make the new @first directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @first directive
-            leadingLine = " " + firstLines[j]
-            out[k] = tag + leadingLine.rstrip() ; j += 1
-    #@+node:ekr.20041005105605.118: *5* at.completeLastDirectives
-    # 14-SEP-2002 DTHEIN: added for use by AtFile.read()
-
-    # this function scans the lines in the list 'out' for @last directives
-    # and appends the corresponding line from 'lastLines' to each @last 
-    # directive found.  NOTE: the @last directives must be the very last
-    # lines in 'out'.
-    def completeLastDirectives(self,out,lastLines):
-
-        tag = "@last"
-        foundAtLastYet = 0
-        outRange = range(-1,-len(out),-1)
-        j = -1
-        for k in outRange:
-            # skip trailing whitespace lines
-            if (not foundAtLastYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @last directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtLastYet = 1
-            # quit if no trailing lines to apply
-            if j < -len(lastLines): break
-            # make the new @last directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
-            trailingLine = " " + lastLines[j]
-            out[k] = tag + trailingLine.rstrip() ; j -= 1
     #@+node:ekr.20041005105605.71: *3* at.Reading (4.x)
     #@+node:ekr.20041005105605.73: *4* at.findChild4 (legacy only)
     def findChild4 (self,headline):
@@ -1384,12 +1402,16 @@ class AtFile:
         trace = False and not g.unitTesting
         if trace: g.trace('*****',root.h)
         at,c = self,self.c
+        seen = {}
         for p in root.self_and_subtree():
             if trace: g.trace(p.h)
             hasList = hasattr(p.v,'tempBodyList')
             hasString = hasattr(p.v,'tempBodyString')
             if g.new_clone_test:
-                at.terminateNode(v=p.v)
+                v = p.v
+                if not v.gnx in seen:
+                    seen[v.gnx] = v
+                    at.terminateNode(v=v)
             else:
                 # Terminate the node if v.tempBodyList exists.
                 if not hasString and not hasList:
@@ -1526,15 +1548,21 @@ class AtFile:
         trace = True and not g.unitTesting
         trace = trace and v.h == 'clone-test' ###
         at = self
-        hasString  = hasattr(v,'tempBodyString')
+        if g.new_clone_test:
+            pass
+        else:
+            hasString  = hasattr(v,'tempBodyString')
+            tempString = hasString and v.tempBodyString or ''
         hasList    = hasattr(v,'tempBodyList')
-        tempString = hasString and v.tempBodyString or ''
         tempList   = hasList and ''.join(v.tempBodyList) or ''
         # The old temp text is *always* in tempBodyString.
         new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
-        old = tempString or v.bodyString()
-            # Faster than v.b.
+        if g.new_clone_test:
+            old = v.bodyString() # Faster than v.b.
+        else:
+            old = tempString or v.bodyString()
+                # Faster than v.b.
 
         # Warn if the body text has changed.
         # Don't warn about the root node.
@@ -1550,12 +1578,14 @@ class AtFile:
         else:
             # *Always* put the new text into tempBodyString.
             v.tempBodyString = new
-
-        if trace: g.trace(
-            v.gnx,
-            'tempString %3s v.b %3s old %3s new %3s' % (
-                len(tempString),len(v.b),len(old),len(new)),v.h)
-            # '\n* callers',g.callers(4))
+        if trace:
+            if g.new_clone_test:
+                g.trace('%25s v.b %3s old %3s new %3s' % (
+                    v.gnx,len(v.b),len(old),len(new)),v.h)
+            else:
+                g.trace('%25s tempString %3s v.b %3s old %3s new %3s' % (
+                    v.gnx,len(tempString),len(v.b),len(old),len(new)),v.h)
+            # g.trace(g.callers(8))
        # *Always* delete tempBodyList.  Do not leave this lying around!
         if hasList: delattr(v,'tempBodyList')
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
@@ -1847,23 +1877,20 @@ class AtFile:
         v = gnxDict.get(gnxString)
         if v:
             trace = trace and v.h == 'clone-test' ###
-            if g.new_clone_test:
-                ### Do nothing here. v.b will be set *later*.
-                ### v.tempBodyString = v.bodyString()
-                if trace: g.trace('**clone**',id(v),v.gnx,v.h)
-                    # Faster than using v.b.
             if gnx == v.fileIndex:
                 # Always use v.h, regardless of headline.
                 if trace and v.h != headline:
                     g.trace('read error v.h: %s headline: %s' % (v.h,headline))
-                child = v
+                child = v # The return value.
                 if n >= len(parent.children):
                     child._linkAsNthChild(parent,n)
                     if trace and trace_tree:
                         g.trace('OLD n: %s parent: %s -> %s' % (n,parent.h,child.h))
-                else:
-                    if trace and trace_tree: g.trace(
-                        'DUP n: %s parent: %s -> %s' % (n,parent.h,child.h))
+                elif trace:
+                    if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
+                        n,parent.h,child.h))
+                    else:
+                        g.trace('CLONE',id(v),v.gnx,v.h)
             else:
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
                 return None
