@@ -335,8 +335,6 @@ class AtFile:
         at.tnodeListIndex = 0
         at.v = None
         at.vStack = [] # Stack of at.v values.
-        ### if allow_cloned_sibs:
-        ###    at.thinChildIndexStack = [] # 2013/01/20: number of siblings at this level.
         at.thinChildIndexStack = [] # number of siblings at this level.
         at.thinFile = False # 2010/01/22: was thinFile
         at.thinNodeStack = [] # Entries are vnodes.
@@ -1404,13 +1402,7 @@ class AtFile:
         '''
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
-        ###
-        # # # postPass = v is not None
-            # # # # A little kludge: v is given only when this is called from readPostPass.
         if not v: v = at.v
-        # Get the temp attributes.
-        ### hasList  = hasattr(v,'tempBodyList')
-        ### tempList = hasList and ''.join(v.tempBodyList) or ''
         # Compute the new text.
         if at.readVersion5:
             s = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
@@ -1527,18 +1519,15 @@ class AtFile:
         at.updateWarningGiven = False
 
         # Stacked ivars...
-        at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
         at.endSentinelNodeStack = [None]
-        at.out = [] ; at.outStack = []
+        at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
+        at.lastThinNode = None
+        at.out = []
+        at.outStack = []
+        at.thinChildIndexStack = []
+        at.thinNodeStack = []
         at.v = p.v
         at.vStack = []
-
-        # New code: always identify root @thin node with self.root:
-        ### if allow_cloned_sibs:
-        ###     at.thinChildIndexStack = []
-        at.thinChildIndexStack = []
-        at.lastThinNode = None
-        at.thinNodeStack = []
         #@-<< init ivars for scanText4 >>
         if trace:
             print('')
@@ -1683,12 +1672,9 @@ class AtFile:
 
         at.inCode = True
         at.raw = False # End raw mode.
-
         at.vStack.append(at.v)
-
         at.indentStack.append(at.indent)
         i,at.indent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
-
         if at.importing:
             p = at.createImportedNode(at.root,headline)
             at.v = p.v
@@ -1696,16 +1682,11 @@ class AtFile:
             at.v = at.createNewThinNode(gnx,headline,level)
         else:
             at.v = at.findChild4(headline)
-
         if not at.v:
-            return # 2010/08/02: This can happen when reading strange files.
-
-        ### if allow_cloned_sibs:
+            return # This can happen when reading strange files.
         assert at.v == at.root.v or at.v.isVisited(),at.v.h
-
         at.v.setVisited()
             # Indicate that the VNode has been set in the external file.
-
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
     #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helpers
@@ -1725,7 +1706,7 @@ class AtFile:
                 v = at.old_createThinChild4(gnx,headline)
         else:
             v = at.root.v
-            if at.readVersion5: ### and allow_cloned_sibs 
+            if at.readVersion5: 
                 at.thinChildIndexStack.append(0)
             at.thinNodeStack.append(v)
         at.lastThinNode = v
@@ -1742,7 +1723,6 @@ class AtFile:
         assert newLevel >= 1
         # The invariant: top of at.thinNodeStack after changeLevel is the parent.
         at.changeLevel(oldLevel,newLevel-1)
-        ### if allow_cloned_sibs:
         parent = at.thinNodeStack[-1]
         n = at.thinChildIndexStack[-1]
         if trace: g.trace(oldLevel,newLevel-1,n,parent.h,headline)
@@ -1758,10 +1738,6 @@ class AtFile:
         else:
             # This is the only place we call v.setVisited in the read logic.
             v.setVisited()
-        ###
-        # # # else:
-            # # # v = at.old_createThinChild4(gnx,headline)
-            # # # at.thinNodeStack.append(v)
         return v
     #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
@@ -2570,14 +2546,12 @@ class AtFile:
                 g.callers(4)))
             at.badEndSentinel(expectedKind)
     #@+node:ekr.20130121102851.10249: *5* at.changeLevel
-    # Called from various methods.
-
     def changeLevel (self,oldLevel,newLevel):
+        '''
+        Update data structures when changing node level.
 
-        '''Update data structures when changing node level.
-
-        The key invariant: on exit, the top of at.thinNodeStack is the new parent node.'''
-
+        The key invariant: on exit, the top of at.thinNodeStack is the new parent node.
+        '''
         at = self
         # Crucial: we must be using new-style sentinels.
         assert at.readVersion5,'at.readVersion5'
@@ -2588,15 +2562,12 @@ class AtFile:
         else:
             while oldLevel > newLevel:
                 oldLevel -= 1
-                ### if allow_cloned_sibs:
-                ###    at.thinChildIndexStack.pop()
                 at.thinChildIndexStack.pop()
                 at.indentStack.pop()
                 at.thinNodeStack.pop()
                 at.vStack.pop()
             assert oldLevel == newLevel,'oldLevel: %s newLevel: %s' % (oldLevel,newLevel)
             assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
-
         # The last node is the node at the top of the stack.
         # This node will be the parent of any newly created node.
         at.lastThinNode = at.thinNodeStack[-1]
@@ -4120,8 +4091,6 @@ class AtFile:
             # Use the old (bizarre) convention when writing old sentinels.
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
-
-        ### if allow_cloned_sibs:
         for child in p.children():
             p = child.copy()
             after = p.nodeAfterTree()
@@ -4136,12 +4105,6 @@ class AtFile:
                         p.moveToThreadNext()
                 else:
                     p.moveToNodeAfterTree()
-        # # # else:
-            # # # for child in p.children():
-                # # # # g.trace(child.h)
-                # # # if at.validInAtOthers(child):
-                    # # # at.putAtOthersChild(child)
-
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
         at.indent -= delta
@@ -4150,39 +4113,17 @@ class AtFile:
 
         at = self
         parent_v = p._parentVnode()
-
-        ###
-        # # # if not allow_cloned_sibs:
-            # # # clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
-            # # # if clonedSibs > 1 and thisClonedSibIndex == 1:
-                # # # at.writeError("Cloned siblings are not valid in @thin trees")
-                # # # g.error(p.h)
-
         at.putOpenNodeSentinel(p)
         at.putBody(p)
-
-        ###
-        # if not allow_cloned_sibs:
-            # # Insert expansions of all children.
-            # for child in p.children():
-                # # g.trace(child.h)
-                # if at.validInAtOthers(child):
-                    # at.putAtOthersChild(child)
-
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.171: *7* validInAtOthers (write)
     def validInAtOthers(self,p):
-
-        """Returns True if p should be included in the expansion of the at-others directive
-
-        in the body text of p's parent."""
-
+        """
+        Return True if p should be included in the expansion of the @others
+        directive in the body text of p's parent.
+        """
         trace = False and not g.unitTesting
         at = self
-        ###
-        # # # if not allow_cloned_sibs and p.v.isVisited():
-            # # # if trace: g.trace("previously visited",p.v.h)
-            # # # return False
         i = g.skip_ws(p.h,0)
         isSection,junk = at.isSectionName(p.h,i)
         if isSection:
