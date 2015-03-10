@@ -1363,7 +1363,6 @@ class AtFile:
     def readPostPass (self,root,thinFile):
         '''Post-process all vnodes.'''
         at = self
-        ### Could use for v in root.all_unique_nodes()
         seen = {}
         for p in root.self_and_subtree():
             v = p.v
