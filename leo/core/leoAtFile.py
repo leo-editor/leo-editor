@@ -450,10 +450,10 @@ class AtFile:
     #@+at
     #@@language rest
     # 
-    # The read code uses **v.tempBodyString**, a *temporary* ivar, to accumulate v.b
-    # and to detect clone conflicts. The vnode ctor must not create this ivar!
+    # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
+    # The vnode ctor must not create this ivar!
     # 
-    # at.terminateBody sets v.b and detects clone conflicts. The new value is:: 
+    # at.terminateBody detects clone conflicts. The old value is v.b. The new value is:: 
     # 
     #     ''.join(v.tempBodyList)
     #     
@@ -1424,8 +1424,8 @@ class AtFile:
                     at.terminateNode(v=v)
                 new_body = p.bodyString()
                 if trace and verbose: g.trace('new',repr(new_body))
-                assert not hasattr(v,'tempBodyList')
-                assert not hasattr(v,'tempBodyString') ### To be removed.
+                if hasattr(v,'tempBodyList'):
+                    delattr(v,'tempBodyList')
             else:
                 # Terminate the node if v.tempBodyList exists.
                 hasString = hasattr(p.v,'tempBodyString')
@@ -1572,10 +1572,12 @@ class AtFile:
         else:
             hasString  = hasattr(v,'tempBodyString')
             tempString = hasString and v.tempBodyString or ''
-
-        hasList  = hasattr(v,'tempBodyList')
-        tempList = hasList and ''.join(v.tempBodyList) or ''
-        new = tempList if at.readVersion5 else ''.join(at.out)
+        ### hasList  = hasattr(v,'tempBodyList')
+        ### tempList = hasList and ''.join(v.tempBodyList) or ''
+        if at.readVersion5:
+            new = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
+        else:
+            new = ''.join(at.out)
         new = g.toUnicode(new)
         if g.new_clone_test:
             old = v.bodyString() # Faster than v.b.
@@ -1589,6 +1591,8 @@ class AtFile:
         # Warn if the body text has changed.
         # Don't warn about the root node.
         if v != at.root.v and old != new:
+            # Not exactly correct.  Old could be empty.
+            # However, it appears to be good enough.
             if postPass:
                 warn = old # The previous text must exist.
             else:
@@ -1609,8 +1613,12 @@ class AtFile:
                     v.gnx,len(tempString),len(v.b),len(old),len(new)),v.h)
             # g.trace(g.callers(8))
 
-        # *Always* delete tempBodyList.
-        if hasList: delattr(v,'tempBodyList')
+        if g.new_clone_test:
+            pass # It's clearer to do this in readPostPass.
+        else:
+            # *Always* delete tempBodyList.
+            if hasattr(v,'tempBodyList'):
+                delattr(v,'tempBodyList')
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
     def scanText4 (self,fileName,p,verbose=False):
         """Scan a 4.x derived file non-recursively."""
