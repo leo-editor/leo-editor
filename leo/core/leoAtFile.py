@@ -1181,23 +1181,19 @@ class AtFile:
         trace = False and not g.unitTesting
         if not firstLines:
             return
-        tag = "@first"
-        foundAtFirstYet = 0
-        j = 0
+        found,j,tag = False,0,"@first"
         for k in range(len(out)):
-            # skip leading whitespace lines
-            if not foundAtFirstYet and len(out[k].strip()) == 0:
+            # Skip leading whitespace lines.
+            if not found and not out[k].strip():
                 continue
-            # quit if something other than @first directive
+            # Quit if something other than @first directive.
             if not g.match(out[k],0,tag):
                 break
-            foundAtFirstYet = 1
-            # quit if no leading lines to apply
+            found = True
+            # Quit if no leading lines to apply.
             if j >= len(firstLines):
                 break
-            # make the new @first directive
-            # Remove trailing newlines because they are inserted later
-            # No trailing whitespace on empty @first directive
+            # Make the  @first directive.
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() + '\n'
             j += 1
@@ -1215,23 +1211,19 @@ class AtFile:
         trace = False and not g.unitTesting
         if not lastLines:
             return
-        tag = "@last"
-        foundAtLastYet = 0
-        j = -1
+        found,j,tag = False,-1,"@last"
         for k in range(-1,-len(out),-1):
-            # skip trailing whitespace lines
-            if not foundAtLastYet and len(out[k].strip()) == 0:
+            # Skip trailing whitespace lines.
+            if not found and not out[k].strip():
                 continue
-            # quit if something other than @last directive
+            # Quit if something other than @last directive.
             if not g.match(out[k],0,tag):
                 break
-            foundAtLastYet = 1
-            # quit if no trailing lines to apply
+            found = True
+            # Quit if no trailing lines to apply.
             if j < -len(lastLines):
                 break
-            # make the new @last directive
-            # Remove trailing newlines because they are inserted later
-            # No trailing whitespace on empty @last directive
+            # Make the @last directive.
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() + '\n'
             j -= 1
@@ -1376,7 +1368,7 @@ class AtFile:
     #@+node:ekr.20150309154506.27: *5* at.handleChangedNode
     def handleChangedNode(self,new_body,old_body,p,thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         if thinFile: # Expected.
             if trace: g.trace('****',p.h)
@@ -1479,7 +1471,7 @@ class AtFile:
     #@+node:ekr.20100702062857.5824: *6* at.terminateBody (detects changes)
     def terminateBody (self,v,postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self
         if at.readVersion5:
             new = ''.join(v.tempBodyList) if hasattr(v,'tempBodyList') else ''
@@ -1734,6 +1726,7 @@ class AtFile:
         at.thinChildIndexStack.append(0)
         at.lastThinNode = v
         # Ensure that the body text is set only once.
+        ### ???
         if v.isVisited():
             if hasattr(v,'tempBodyList'):
                 delattr(v,'tempBodyList')
