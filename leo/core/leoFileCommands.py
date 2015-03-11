@@ -1103,7 +1103,7 @@ class FileCommands:
     #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,v=None):
         '''Create a vnode, or use an existing vnode.'''
-        c = self.c
+        c,at = self.c,self.c.atFileCommands
         trace = False and not g.unitTesting
             # and self.mFileName and sax_node.headString == 'clone-test'
             # and not g.app.openingSettingsFile)
@@ -1120,7 +1120,8 @@ class FileCommands:
             else:
                 if trace and trace_update: g.trace(
                     '***update\nold: %s\nnew: %s' % (v.b,b))
-                v.b = b 
+                v.setBodyString(b)
+                at.bodySetInited(v)
         else:
             x = g.app.nodeIndices
             if sax_node.tnx:
@@ -1132,6 +1133,7 @@ class FileCommands:
             if trace: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
+            at.bodySetInited(v)
             v.setHeadString(h)
             self.gnxDict [gnx] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)

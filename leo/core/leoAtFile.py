@@ -1480,16 +1480,22 @@ class AtFile:
         new = g.toUnicode(new)
         old = v.bodyString() # Faster than v.b.
         # Warn if the body text has changed. Don't warn about the root node.
-        if v != at.root.v and old != new:
-            # Not exactly correct. Old could be empty.
-            # However, it appears to be good enough.
-            if postPass:
-                warn = old # The previous text must exist.
-            else:
-                warn = old and new # Both must exit.
-            if warn:
+        if 1: # New code
+            if at.bodyIsInited(v) and new != old:
                 at.indicateNodeChanged(old,new,postPass,v)
-        v.setBodyString(new)
+            v.setBodyString(new)
+            at.bodySetInited(v)
+        else:
+            if v != at.root.v and old != new:
+                # Not exactly correct. Old could be empty.
+                # However, it appears to be good enough.
+                if postPass:
+                    warn = old # The previous text must exist.
+                else:
+                    warn = old and new # Both must exit.
+                if warn:
+                    at.indicateNodeChanged(old,new,postPass,v)
+            v.setBodyString(new)
         if trace:
             g.trace('%25s old %3s new %3s' % (v.gnx,len(old),len(new)),v.h)
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
@@ -2701,6 +2707,24 @@ class AtFile:
         if trace:
             g.trace('%4s %25s %s' % (
                 'code' if at.inCode else 'doc',at.v.h,repr(s)))
+    #@+node:ekr.20150310141151.5: *4* at.body inited accessors
+    def bodyIsInited(self,v):
+        '''Return True if v.b has been inited.'''
+        c = self.c
+        return hasattr(c,'bodyInitedDict') and v.gnx in c.bodyInitedDict
+        
+    def bodySetInited(self,v):
+        '''Indicate that v.b has been inited.'''
+        c = self.c
+        if not hasattr(c,'bodyInitedDict'):
+            c.bodyInitedDict = {}
+        c.bodyInitedDict[v.gnx] = True
+        
+    def clearAllBodyInited(self):
+        '''Clear all v.b inited bits.'''
+        c = self.c
+        if hasattr(c,'bodyInitedDict'):
+            delattr(c,'bodyInitedDict')
     #@+node:ekr.20041005105605.119: *4* at.createImportedNode
     def createImportedNode (self,root,headline):
 
