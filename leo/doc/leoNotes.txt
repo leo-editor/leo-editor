@@ -14947,5 +14947,49 @@ A **post-pass** (at.readPostPass and its helpers) computes the new value of v.b 
     hasattr(v,'tempBodyString') and v.b != v.tempBodyString.
     
 The post pass adds an entry in c.nodeConflictList for each clone conflict. Later, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
+.. @+node:ekr.20150311055201.4: *3* No longer used (at.writeVersion5 = False)
+.. @+node:ekr.20150311055201.5: *4* From putDocLine
+.. @+node:ekr.20041005105605.184: *5* << append words to pending line, splitting the line if needed >>
+@ All inserted newlines are preceeded by whitespace:
+we remove trailing whitespace from lines that have not been split.
+@c
+
+i = 0
+while i < len(s):
+
+    # Scan to the next word.
+    word1 = i # Start of the current word.
+    word2 = i = g.skip_ws(s,i)
+    while i < len(s) and s[i] not in (' ','\t'):
+        i += 1
+    word3 = i = g.skip_ws(s,i)
+    # g.trace(s[word1:i])
+
+    if leading + word3 - word1 + len(''.join(at.pending)) >= at.page_width:
+        if at.pending:
+            # g.trace("splitting long line.")
+            # Ouput the pending line, and start a new line.
+            at.putPending(split=True)
+            at.pending = [s[word2:word3]]
+        else:
+            # Output a long word on a line by itself.
+            # g.trace("long word:",s[word2:word3])
+            at.pending = [s[word2:word3]]
+            at.putPending(split=True)
+    else:
+        # Append the entire word to the pending line.
+        # g.trace("appending",s[word1:word3])
+        at.pending.append(s[word1:word3])
+
+# Output the remaining line: no more is left.
+at.putPending(split=False)
+.. @+node:ekr.20100629190353.5831: *5* << write the line as is >>
+at.putIndent(at.indent)
+
+if not at.endSentinelComment:
+    at.os(at.startSentinelComment) ; at.oblank()
+
+at.os(s)
+if not s.endswith('\n'): at.onl()
 .. @-all
 .. @-leo

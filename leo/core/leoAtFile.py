@@ -393,8 +393,6 @@ class AtFile:
             # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        ### at.writeVersion5 = True
-
         at.scanAllDirectives(root,
             scripting=scriptWrite,
             forcePythonSentinels=forcePythonSentinels,
@@ -3800,16 +3798,12 @@ class AtFile:
         c.raise_error_dialogs(kind='write')
         return ok
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile
-    # New in 4.3: must be inited before calling this method.
-    # New in 4.3 b2: support for writing from a string.
     def writeOpenFile(self,root,nosentinels=False,toString=False,fromString=''):
         """Do all writes except asis writes."""
         at = self
         s = fromString if fromString else root.v.b
         root.clearAllVisitedInTree()
         at.putAtFirstLines(s)
-        ### at.putOpenLeoSentinel("@+leo-ver=%s" % (5 if at.writeVersion5 else 4))
-         ### Use version 4 for @shadow, verion 5 otherwise.
         at.putOpenLeoSentinel("@+leo-ver=5")
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
@@ -3968,18 +3962,10 @@ class AtFile:
         if not inCode:
             at.putEndDocLine()
         if not trailingNewlineFlag:
-            ### if at.writeVersion5:
             if at.sentinels:
                 pass # Never write @nonl
             elif at.atAuto and not at.atEdit:
                 at.onl() # 2010/08/01: bug fix: ensure newline here.
-            ###
-            # # # else:
-                # # # if at.sentinels:
-                    # # # at.putSentinel("@nonl")
-                # # # elif at.atAuto and not at.atEdit:
-                    # # # # Ensure all @auto nodes end in a newline!
-                    # # # at.onl()
         return has_at_others # 2013/01/19: for new @others logic.
     #@+node:ekr.20041005105605.164: *4* writing code lines...
     #@+node:ekr.20041005105605.165: *5* @all
@@ -3990,11 +3976,7 @@ class AtFile:
         j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
         at.putLeadInSentinel(s,i,j,delta)
         at.indent += delta
-        lws = at.leadingWs or ''
-        ###if at.writeVersion5 or not lws:
         at.putSentinel("@+all")
-        # # # else:
-            # # # at.putSentinel("@" + at.leadingWs + "@+all") 
         for child in p.children():
             at.putAtAllChild(child)
         at.putSentinel("@-all")
@@ -4035,9 +4017,6 @@ class AtFile:
             i = next_i
         if not inCode:
             at.putEndDocLine()
-        ###
-        # # # if at.sentinels and not trailingNewlineFlag and not at.writeVersion5:
-            # # # at.putSentinel("@nonl")
     #@+node:ekr.20041005105605.169: *6* putAtAllChild
     #@+at This code puts only the first of two or more cloned siblings, preceding the
     # clone with an @clone n sentinel.
@@ -4078,16 +4057,8 @@ class AtFile:
         j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
         at.putLeadInSentinel(s,i,j,delta)
         at.indent += delta
-        lws = at.leadingWs or ''
-
-        ### if at.writeVersion5 or not lws:
-        # Never write lws in new sentinels.
         at.putSentinel("@+others")
-        
-        # # # else:
-            # # # # Use the old (bizarre) convention when writing old sentinels.
-            # # # # Note: there are *two* at signs here.
-            # # # at.putSentinel("@" + lws + "@+others")
+            # Never write lws in new sentinels.
         for child in p.children():
             p = child.copy()
             after = p.nodeAfterTree()
@@ -4207,11 +4178,7 @@ class AtFile:
                 inBetween.append(parent)
                 parent = parent.parent()
         at.indent += delta
-        lws = at.leadingWs or ''
-        ###if at.writeVersion5:
         at.putSentinel("@+" + name)
-        # # # else:
-            # # # at.putSentinel("@" + lws + name)
         if inBetween:
             # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
             inBetween.reverse()
@@ -4224,19 +4191,14 @@ class AtFile:
             inBetween.reverse()
             for p2 in inBetween:
                 at.putCloseNodeSentinel(p2,middle=True)
-        ### if at.writeVersion5:
         at.putSentinel("@-" + name)
         at.indent -= delta
         return delta
     #@+node:ekr.20041005105605.178: *6* putAfterLastRef
     def putAfterLastRef (self,s,start,delta):
-
         """Handle whatever follows the last ref of a line."""
-
         at = self
-
         j = g.skip_ws(s,start)
-
         if j < len(s) and s[j] != '\n':
             end = g.skip_line(s,start)
             after = s[start:end] # Ends with a newline only if the line did.
@@ -4247,15 +4209,6 @@ class AtFile:
             if at.sentinels and after and after[-1] != '\n':
                 at.onl() # Add a newline if the line didn't end with one.
             at.indent -= delta
-        ###
-        # # # else:
-            # # # if at.writeVersion5:
-                # # # pass # Never write @nl sentinels.
-            # # # else:
-                # # # # Temporarily readjust delta to make @nl look better.
-                # # # at.indent += delta
-                # # # at.putSentinel("@nl")
-                # # # at.indent -= delta
     #@+node:ekr.20041005105605.179: *6* putAfterMiddleRef
     def putAfterMiddleRef (self,s,start,end,delta):
         """Handle whatever follows a ref that is not the last ref of a line."""
@@ -4266,11 +4219,6 @@ class AtFile:
             at.putSentinel("@afterref")
             at.os(after)
             at.onl_sent() # Not a real newline.
-            ###
-            # # # if at.writeVersion5:
-                # # # pass # Never write @nonl sentinels.
-            # # # else:
-                # # # at.putSentinel("@nonl")
             at.indent -= delta
     #@+node:ekr.20041005105605.180: *4* writing doc lines...
     #@+node:ekr.20041005105605.181: *5* putBlankDocLine
@@ -4303,7 +4251,6 @@ class AtFile:
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
-        ### elif at.writeVersion5:
         else:
             # Write the line as it is.
             at.putIndent(at.indent)
@@ -4315,24 +4262,14 @@ class AtFile:
                 at.onl()
     #@+node:ekr.20041005105605.185: *5* putEndDocLine
     def putEndDocLine (self):
-
         """Write the conclusion of a doc part."""
-
         at = self
-
         at.putPending(split=False)
-
         # Put the closing delimiter if we are using block comments.
         if at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.endSentinelComment)
             at.onl() # Note: no trailing whitespace.
-        ###
-        # # # if at.writeVersion5:
-            # # # pass # Never write @-doc or @-at sentinels.
-        # # # else:
-            # # # sentinel = "@-doc" if at.docKind == at.docDirective else "@-at"
-            # # # at.putSentinel(sentinel)
     #@+node:ekr.20041005105605.186: *5* putPending (old only)
     def putPending (self,split):
 
@@ -4366,8 +4303,7 @@ class AtFile:
         at.docKind = kind
         sentinel = "@+doc" if kind == at.docDirective else "@+at"
         directive = "@doc" if kind == at.docDirective else "@"
-
-        ###if at.writeVersion5: # Put whatever follows the directive in the sentinel
+        # Put whatever follows the directive in the sentinel.
         # Skip past the directive.
         i += len(directive)
         j = g.skip_to_end_of_line(s,i)
@@ -4378,35 +4314,12 @@ class AtFile:
         if at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment) ; at.onl()
-
-        # # # else: # old code.
-            # # # # Skip past the directive.
-            # # # i += len(directive)
-
-            # # # # Get the trailing whitespace.
-            # # # j = g.skip_ws(s,i)
-            # # # ws = s[i:j]
-
-            # # # # Put the opening @+doc or @-doc sentinel, including trailing whitespace.
-            # # # at.putSentinel(sentinel + ws)
-
-            # # # # Put the opening comment.
-            # # # if at.endSentinelComment:
-                # # # at.putIndent(at.indent)
-                # # # at.os(at.startSentinelComment) ; at.onl()
-
-            # # # # Put an @nonl sentinel if there is significant text following @doc or @.
-            # # # if not g.is_nl(s,j):
-                # # # # Doesn't work if we are using block comments.
-                # # # at.putSentinel("@nonl")
-                # # # at.putDocLine(s,j)
     #@+node:ekr.20041005105605.187: *3* Writing 4,x sentinels...
     #@+node:ekr.20041005105605.188: *4* nodeSentinelText 4.x
     def nodeSentinelText(self,p):
-
         """Return the text of a @+node or @-node sentinel for p."""
-
-        at = self ; h = p.h
+        at = self
+        h = p.h
         #@+<< remove comment delims from h if necessary >>
         #@+node:ekr.20041005105605.189: *5* << remove comment delims from h if necessary >>
         #@+at Bug fix 1/24/03:
@@ -4423,10 +4336,8 @@ class AtFile:
             h = h.replace(start,"")
             h = h.replace(end,"")
         #@-<< remove comment delims from h if necessary >>
-
         if at.thinFile:
             gnx = p.v.fileIndex
-            ### if at.writeVersion5:
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
             if 1: # Put the gnx in the traditional place.
@@ -4437,9 +4348,6 @@ class AtFile:
             else: # Hide the gnx to the right.
                 pad = max(1,100-len(stars)-len(h)) * ' '
                 return '%s %s%s::%s' % (stars,h,pad,gnx)
-            ###
-            # # # else:
-                # # # return "%s:%s" % (gnx,h)
         else:
             return h
     #@+node:ekr.20041005105605.190: *4* putLeadInSentinel 4.x
@@ -4463,30 +4371,11 @@ class AtFile:
             self.putIndent(at.indent) # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
             at.onl_sent()
-            ###
-            # # # if at.writeVersion5:
-                # # # pass # Never write @nonl sentinels.
-            # # # else:
-                # # # at.indent += delta # Align the @nonl with the following line.
-                # # # at.putSentinel("@nonl")
-                # # # at.indent -= delta # Let the caller set at.indent permanently.
     #@+node:ekr.20041005105605.191: *4* putCloseNodeSentinel 4.x
     def putCloseNodeSentinel(self,p,middle=False):
-        '''End a node.  No new-style sentinel is written.'''
+        '''End a node.'''
         at = self
         at.raw = False # Bug fix: 2010/07/04
-        
-        ###
-        # # # if at.writeVersion5:
-            # # # at.raw = False # Bug fix: 2010/07/04
-            # # # return # Never write @-node or @-middle sentinels.
-
-        # # # s = self.nodeSentinelText(p)
-
-        # # # if middle:
-            # # # at.putSentinel("@-middle:" + s)
-        # # # else:
-            # # # at.putSentinel("@-node:" + s)
     #@+node:ekr.20041005105605.192: *4* putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self,s):
 
