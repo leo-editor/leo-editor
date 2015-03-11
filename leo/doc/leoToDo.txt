@@ -14,12 +14,6 @@
 .. @+node:ekr.20150304232409.4: *3* Docs
 .. @+node:ekr.20150304232409.5: *4* document --diff
 Search for added --diff
-.. @+node:ekr.20150205181818.7: *4* document idle-time properly in docstrings
-@language rest
-
-Both in the IdleTime class and g.IdleTime.
-
-https://groups.google.com/forum/#!searchin/leo-editor/IdleTime/leo-editor/vRIY_u6vPc0/1ld5jdEYMOkJ
 .. @+node:ekr.20150307034303.6: *4* Document nodes-dark icons & stylesheet
 https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
 By Andrea Nuvola

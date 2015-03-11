@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -3617,6 +3617,7 @@
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="ekr.20150227184811.5"><vh>Done</vh></v>
 </v>
+<v t="ekr.20150311123850.5"><vh>Documentation for g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
@@ -37466,6 +37467,87 @@ Notes:
   descendant nodes until over-ridden), but by splitting nodes one can change the
   settings on an expansion-by-expansion basis. It is easy to split nodes without
   creating new sections using @rst-no-head in the headline.
+</t>
+<t tx="ekr.20150311123850.5">@language rest
+@wrap
+
+https://groups.google.com/forum/#!searchin/leo-editor/IdleTime/leo-editor/vRIY_u6vPc0/1ld5jdEYMOkJ
+
+Leo 5.1 features the new LeoQtGui.IdleTime class. Creating multiple instances of this class allows multiple, independent (or cooperating) idle-time handlers. g.IdleTime is a thin wrapper that returns None if g.app.gui doesn't an IdleTime class. 
+
+For example, the following creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec::
+    
+@language python
+
+    def handler(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count &gt;= 5:
+            g.trace('done')
+            it.stop()
+
+    it = g.IdleTime(c,handler,delay=500)
+    if it: it.start()
+    
+@language rest
+
+Here is the output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+
+Timer instances are completely independent::
+
+@language python
+
+    def handler1(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count &gt;= 5:
+            g.trace('done')
+            it.stop()
+
+    def handler2(it):
+        '''The IdleTime handler: called at idle time.'''
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count &gt;= 10:
+            g.trace('done')
+            it.stop()
+
+    it1 = g.IdleTime(c,handler1,delay=500)
+    it2 = g.IdleTime(c,handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+        
+@language rest
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

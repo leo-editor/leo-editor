@@ -3954,15 +3954,23 @@ def skip_ws_and_nl(s,i):
 #@+node:ekr.20031218072017.1315: *3* g.idle time functions
 #@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 def disableIdleTimeHook():
-    '''Disable the global idle-time hook.'''
+    '''
+    (Deprecated) Disable the global idle-time hook.
+    
+    Recommended: use g.idleTime instead.
+    '''
     trace = g.app.trace_idle_time and not g.unitTesting
     if trace: g.trace()
     g.app.idleTimeHook = False
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
 def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     '''
-    Enable idle-time processing: Leo will call the *global* "idle" hook
-    about every g.idleTimeDelay milliseconds.
+    (Deprecated) Enable idle-time processing.
+    
+    Leo will call the *global* "idle" hook about every g.idleTimeDelay
+    milliseconds.
+    
+    Recommended: use g.idleTime instead.
     '''
     trace = g.app.trace_idle_time and not g.unitTesting
     if not idleTimeHandler:
@@ -3976,7 +3984,46 @@ def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     g.app.gui.setIdleTimeHook()
 #@+node:ekr.20140825042850.18410: *4* g.IdleTime
 def IdleTime(handler,delay=500,tag=None):
-    '''A proxy for the g.app.gui.IdleTime class.'''
+    '''
+    A thin wrapper for the LeoQtGui.IdleTime class.
+
+    The IdleTime class executes a handler with a given delay at idle time.
+    The handler takes a single argument, the IdleTime instance::
+        
+        def handler(it):
+            """IdleTime handler.  it is an IdleTime instance."""
+            delta_t = it.time-it.starting_time
+            g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+            if it.count >= 5:
+                g.trace('done')
+                it.stop()
+    
+        # Execute handler every 500 msec. at idle time.
+        it = g.IdleTime(c,handler,delay=500)
+        if it: it.start()
+        
+    Timer instances are completely independent::
+
+        def handler1(it):
+            delta_t = it.time-it.starting_time
+            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+            if it.count >= 5:
+                g.trace('done')
+                it.stop()
+    
+        def handler2(it):
+            delta_t = it.time-it.starting_time
+            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+            if it.count >= 10:
+                g.trace('done')
+                it.stop()
+    
+        it1 = g.IdleTime(c,handler1,delay=500)
+        it2 = g.IdleTime(c,handler2,delay=1000)
+        if it1 and it2:
+            it1.start()
+            it2.start()
+    '''
     if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
         return g.app.gui.idleTimeClass(handler,delay,tag)
     else:
@@ -3986,8 +4033,10 @@ trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
     '''
-    This is the default **global** idle-time event handler.
+    (Deprecated) The default **global** idle-time event handler.
     It calls c.doHook('idle') for each commander.
+    
+    Recommended: use g.idleTime instead.
     '''
     global trace_count
     trace_count += 1

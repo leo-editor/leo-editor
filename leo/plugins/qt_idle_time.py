@@ -11,14 +11,59 @@ from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
 class IdleTime:
-    '''A class that executes a handler at idle time.'''
+    '''
+    A class that executes a handler with a given delay at idle time. The
+    handler takes a single argument, the IdleTime instance::
+        
+        def handler(it):
+            """IdleTime handler.  it is an IdleTime instance."""
+            delta_t = it.time-it.starting_time
+            g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+            if it.count >= 5:
+                g.trace('done')
+                it.stop()
+    
+        # Execute handler every 500 msec. at idle time.
+        it = g.IdleTime(c,handler,delay=500)
+        if it: it.start()
+        
+    Timer instances are completely independent::
+
+        def handler1(it):
+            delta_t = it.time-it.starting_time
+            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+            if it.count >= 5:
+                g.trace('done')
+                it.stop()
+    
+        def handler2(it):
+            delta_t = it.time-it.starting_time
+            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+            if it.count >= 10:
+                g.trace('done')
+                it.stop()
+    
+        it1 = g.IdleTime(c,handler1,delay=500)
+        it2 = g.IdleTime(c,handler2,delay=1000)
+        if it1 and it2:
+            it1.start()
+            it2.start()
+    '''
     #@+others
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
     def __init__(self,handler,delay=500,tag=None):
         '''ctor for IdleTime class.'''
-        # g.trace('(IdleTime)',g.callers(2))
+        # For use by handlers...
         self.count = 0
             # The number of times handler has been called.
+        self.starting_time = None
+            # Time that the timer started.
+        self.time = None
+            # Time that the handle is called.
+        self.tag = tag
+            # An arbitrary string/object for use during debugging.
+            
+        # For use by the IdleTime class...
         self.delay = delay
             # The argument to self.timer.start:
             # 0 for idle time, otherwise a delay in msec.
@@ -26,14 +71,9 @@ class IdleTime:
             # True: run the timer continuously.
         self.handler = handler
             # The user-provided idle-time handler.
-        self.starting_time = None
-            # Time that the timer started.
-        self.tag = tag
-            # An arbitrary string/object for use during debugging.
-        self.time = None
-            # Time that the handle is called.
         self.waiting_for_idle = False
-            # True if we have already waited for the minimum delay
+            # True if we have already waited for the minimum delay\
+
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.at_idle_time)
