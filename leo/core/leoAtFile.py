@@ -1479,24 +1479,12 @@ class AtFile:
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        old = v.bodyString() # Faster than v.b.
+        old = v.bodyString()
         # Warn if the body text has changed. Don't warn about the root node.
-        if 1: # New code
-            if v != at.root.v and at.bodyIsInited(v) and new != old:
-                at.indicateNodeChanged(old,new,postPass,v)
-            v.setBodyString(new)
-            at.bodySetInited(v)
-        else:
-            if v != at.root.v and old != new:
-                # Not exactly correct. Old could be empty.
-                # However, it appears to be good enough.
-                if postPass:
-                    warn = old # The previous text must exist.
-                else:
-                    warn = old and new # Both must exit.
-                if warn:
-                    at.indicateNodeChanged(old,new,postPass,v)
-            v.setBodyString(new)
+        if v != at.root.v and at.bodyIsInited(v) and new != old:
+            at.indicateNodeChanged(old,new,postPass,v)
+        v.setBodyString(new)
+        at.bodySetInited(v)
         if trace:
             g.trace('%25s old %3s new %3s' % (v.gnx,len(old),len(new)),v.h)
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
