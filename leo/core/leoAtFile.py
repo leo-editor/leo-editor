@@ -4315,7 +4315,7 @@ class AtFile:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment) ; at.onl()
     #@+node:ekr.20041005105605.187: *3* Writing 4,x sentinels...
-    #@+node:ekr.20041005105605.188: *4* nodeSentinelText 4.x
+    #@+node:ekr.20041005105605.188: *4* nodeSentinelText
     def nodeSentinelText(self,p):
         """Return the text of a @+node or @-node sentinel for p."""
         at = self
@@ -4350,7 +4350,7 @@ class AtFile:
                 return '%s %s%s::%s' % (stars,h,pad,gnx)
         else:
             return h
-    #@+node:ekr.20041005105605.190: *4* putLeadInSentinel 4.x
+    #@+node:ekr.20041005105605.190: *4* putLeadInSentinel
     def putLeadInSentinel (self,s,i,j,delta):
         """
         Set at.leadingWs as needed for @+others and @+<< sentinels.
@@ -4371,7 +4371,7 @@ class AtFile:
             self.putIndent(at.indent) # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
             at.onl_sent()
-    #@+node:ekr.20041005105605.191: *4* putCloseNodeSentinel 4.x
+    #@+node:ekr.20041005105605.191: *4* putCloseNodeSentinel
     def putCloseNodeSentinel(self,p,middle=False):
         '''End a node.'''
         at = self
