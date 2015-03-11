@@ -4258,16 +4258,14 @@ class AtFile:
                 # # # at.indent -= delta
     #@+node:ekr.20041005105605.179: *6* putAfterMiddleRef
     def putAfterMiddleRef (self,s,start,end,delta):
-
         """Handle whatever follows a ref that is not the last ref of a line."""
-
         at = self
-
         if start < end:
             after = s[start:end]
             at.indent += delta
             at.putSentinel("@afterref")
-            at.os(after) ; at.onl_sent() # Not a real newline.
+            at.os(after)
+            at.onl_sent() # Not a real newline.
             ###
             # # # if at.writeVersion5:
                 # # # pass # Never write @nonl sentinels.
@@ -4474,7 +4472,7 @@ class AtFile:
                 # # # at.indent -= delta # Let the caller set at.indent permanently.
     #@+node:ekr.20041005105605.191: *4* putCloseNodeSentinel 4.x
     def putCloseNodeSentinel(self,p,middle=False):
-
+        '''End a node.  No new-style sentinel is written.'''
         at = self
         at.raw = False # Bug fix: 2010/07/04
         
