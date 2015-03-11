@@ -53,6 +53,7 @@ https://github.com/leo-editor/leo-editor/issues/141
 4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
 Author: Me
 Date:   Fri Sep 13 16:44:33 2013 -0500
+Tag: Bug-135
 .. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
@@ -195,7 +196,7 @@ Text: ÷ Σ
 
 In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
 
-This appears to be a serious bug on older version of pyqt...
+This appears to be a serious bug in older version of pyqt...
 
 @language python
 .. @+node:ekr.20110605121601.18485: *5* LeoQtGui.Clipboard
