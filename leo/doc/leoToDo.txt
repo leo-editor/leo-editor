@@ -48,6 +48,8 @@ https://github.com/leo-editor/leo-editor/issues/141
 Author: Me
 Date:   Fri Sep 13 16:44:33 2013 -0500
 Tag: Bug-135
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
 .. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest

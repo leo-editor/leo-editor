@@ -3605,19 +3605,70 @@
 </v>
 </v>
 <v t="ekr.20141113102829.6"></v>
-<v t="ekr.20150301140303.15"><vh>Leo 5.1 b1</vh>
+<v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>* @clean</vh></v>
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
+<v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 </v>
 <v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
+<v t="ekr.20150311123850.11"><vh>Bugs fixed</vh>
+<v t="ekr.20150311123850.12"><vh>Fixed bug in g.reportBadChars</vh></v>
+<v t="ekr.20150311123850.13"><vh>Fixed Python3 compatibility bug in g.pause</vh></v>
+<v t="ekr.20150311123850.14"><vh>Fixed bug 108: can't write spellpyx.txt</vh></v>
+<v t="ekr.20150311123850.15"><vh>Fixed bug 78: find-next match not always scrolled into view</vh></v>
+<v t="ekr.20150311123850.16"><vh>Fixed bug 117: &lt;Return&gt; causes unwanted scrolling</vh></v>
+<v t="ekr.20150311123850.17"><vh>Fixed bug 119: new setting for @auto-org-mode</vh></v>
+<v t="ekr.20150311123850.18"><vh>Fixed bug 126:  Inproper handling of @chapter nodes with non ASCII headlines</vh></v>
+<v t="ekr.20150311123850.19"><vh>Fixed bug 124: Viewrendered can't display @image</vh></v>
+<v t="ekr.20150311123850.20"><vh>Fixed bug: Made last log line visible</vh></v>
+<v t="ekr.20150311123850.21"><vh>Fixed crash in v._cutLine after paste-retaining-clones</vh></v>
+<v t="ekr.20150311123850.22"><vh>Fixed Zatz @nosent problem with @verbatim sentinels</vh></v>
+<v t="ekr.20150311123850.23"><vh>Fixed bug 138: goto-global-line fails in @clean</vh></v>
+<v t="ekr.20150311123850.24"><vh>Fixed bug 130: bug in fix to Issue #35</vh></v>
+<v t="ekr.20150311123850.25"><vh>Fixed bug 140: @clean does not preserve extended ASCII characters on read</vh></v>
+<v t="ekr.20150311123850.26"><vh>Fixed crasher in scroll-wheel code</vh></v>
+<v t="ekr.20150311123850.27"><vh>Investigated bug 146: Recursive import script may add extra declaration lines</vh></v>
+<v t="ekr.20150311123850.28"><vh>Fixed bug 142: bibtex plugin overwrites body text of @bibtex nodes</vh></v>
+<v t="ekr.20150311123850.29"><vh>Fixed bug 145: The already open dialog can cause Leo to hang</vh></v>
+<v t="ekr.20150311123850.30"><vh>Fixed bug 138: goto-global-line doesn't work properly in @nosent files</vh></v>
+<v t="ekr.20150311123850.31"><vh>Fixed bug 149: Clones can revert changes made by git discard...</vh></v>
+</v>
+<v t="ekr.20150311123850.32"><vh>Code level</vh>
+<v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
+<v t="ekr.20150311123850.34"><vh>Added external/rope folder</vh></v>
+<v t="ekr.20150311123850.35"><vh>Added g.app.openingSettingsFile</vh></v>
+<v t="ekr.20150311123850.36"><vh>Removed allow_cloned_sibs switch</vh></v>
+<v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
+</v>
+<v t="ekr.20150311123850.41"><vh>Features</vh>
+<v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
+<v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable.</vh></v>
+<v t="ekr.20150311123850.44"><vh>import-file command create @nosent nodes</vh></v>
+<v t="ekr.20150311123850.45"><vh>Added --old-nosent command-line option</vh></v>
+<v t="ekr.20150311123850.46"><vh>The presence of @persistence enables @auto persistence</vh></v>
+<v t="ekr.20150311123850.47"><vh>Support @clean as the preferred form of @nosent</vh></v>
+<v t="ekr.20150311123850.48"><vh>Added unformat-paragraph command</vh></v>
+<v t="ekr.20150311123850.49"><vh>To be documented: xslt</vh></v>
+<v t="ekr.20150311123850.50"><vh>Added @bool make-node-conflicts-node = True</vh></v>
+<v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
+<v t="ekr.20150311123850.52"><vh>colorizer for @ &amp; @doc now honors @language</vh></v>
+</v>
+<v t="ekr.20150311123850.53"><vh>Major features</vh>
+<v t="ekr.20150311123850.54"><vh>@clean updates outlines automatically</vh></v>
+<v t="ekr.20150311123850.55"><vh>Steve Zatz: in praise of @clean</vh></v>
+<v t="ekr.20150311123850.56"><vh>Why @clean is so important</vh></v>
+<v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
+<v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
+</v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
 <v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
 <v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
 <v t="ekr.20150227184811.5"><vh>Done</vh></v>
+<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
+<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
 </v>
-<v t="ekr.20150311123850.5"><vh>Documentation for g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
@@ -37338,11 +37389,23 @@ The highlights of Leo 5.1
 
 * @clean trees, one of the most important developments in Leo's history.
 
-    - @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
+  @clean create external files without sentinel comments, yet Leo can
+  update @trees from changes made to the corresponding external files,
+  something long thought impossible. @clean trees preserve clone links and
+  user attributes (uA's). Reading @clean trees is faster than reading @auto
+  or @shadow trees.
     
-    - The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+  The Mulder/Ream algorithm updates @clean trees from changes made from the
+  corresponding external files. This is a completely rewritten and much
+  simpler version of Bernhard Mulder's original @shadow update algorithm.
 
-* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
+  @shadow is now deprecated. @clean is superior to @shadow in all respects.
+  Leo will support all flavors of @auto indefinitely.
+  
+* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
+  in the browser.
+
+* A new IdleTime class greatly simplifies idle-time handling.
 
 Links:
 ------
@@ -37354,6 +37417,7 @@ Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
 Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
+Viewer:    http://leoeditor.com/load-leo.html
 </t>
 <t tx="ekr.20150301140303.16"></t>
 <t tx="ekr.20150301140303.4">Removed the keybindings.py plugin.  The print-bindings command should suffice.
@@ -37468,14 +37532,336 @@ Notes:
   settings on an expansion-by-expansion basis. It is easy to split nodes without
   creating new sections using @rst-no-head in the headline.
 </t>
+<t tx="ekr.20150311123850.11"></t>
+<t tx="ekr.20150311123850.12">https://groups.google.com/forum/#!topic/leo-editor/X9rePlT6Meg
+
+In Python 3 there is no 'unicode' function.
+
+- A big collapse in complexity in g.reportBadChars.
+- Added an important guard in g.ue for Python 3.
+
+</t>
+<t tx="ekr.20150311123850.13"></t>
+<t tx="ekr.20150311123850.14">@language rest
+
+https://github.com/leo-editor/leo-editor/issues/108
+
+The plugin tries to create a new file inside the install path, and doesn't
+have the permission.
+
+Is there a way to configure the path of this spellpyx.txt to, say, $HOME/.leo?
+
+@language python
+</t>
+<t tx="ekr.20150311123850.15">@language rest
+
+https://github.com/leo-editor/leo-editor/issues/78
+
+The problem was in the PythonQSyntaxHighlighter class: it does not work
+*exactly* like QSyntaxHighlighter. The fix was to call w.seeInsertPoint()
+in pqsh.reformat_blocks_helper.
+
+The fix now involves the g.app.all_delayed_see switch.
+
+Here is how to demonstrate the bug:
+
+- Open leoPy.leo
+- select @file ../external/PythonTidy.py
+- search for print (whole word)
+- The first match shows properly (it doesn't scroll).
+- The second match does *not* scroll properly.
+
+@language python
+</t>
+<t tx="ekr.20150311123850.16">https://github.com/leo-editor/leo-editor/issues/117
+
+This was a side effect of fixing https://github.com/leo-editor/leo-editor/issues/78
+
+Added g.app.allow_see and related logic.
+</t>
+<t tx="ekr.20150311123850.17">https://github.com/leo-editor/leo-editor/issues/119
+</t>
+<t tx="ekr.20150311123850.18">https://github.com/leo-editor/leo-editor/issues/126
+Call g.toUnicode in cc.findChapterNode.
+Added test for QString in g.toUnicode.
+</t>
+<t tx="ekr.20150311123850.19">https://github.com/leo-editor/leo-editor/issues/124
+</t>
+<t tx="ekr.20150311123850.20">LeoQtLog.put and app.writeWaitingLog changed.
+</t>
+<t tx="ekr.20150311123850.21">The fix was to add the obvious guard.
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 556, in doCommand
+    val = command(event)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 3642, in cutOutline
+    c.deleteOutline("Cut Node")
+
+  File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 3932, in deleteOutline
+    p.doDelete(newNode)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 1216, in doDelete
+    p._unlink()
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 1791, in _unlink
+    child._cutLink(n,parent_v)
+
+  File "c:\leo.repo\leo-editor\leo\core\leoNodes.py", line 2544, in _cutLink
+    v.parents.remove(parent_v)
+
+ValueError: list.remove(x): x not in list
+</t>
+<t tx="ekr.20150311123850.22">The fix was to x.separate_sentinels.
+I no longer adds @verbatim sentinels to the returned list of sentinels.
+</t>
+<t tx="ekr.20150311123850.23">@nocolor-node
+
+https://github.com/leo-editor/leo-editor/issues/138
+
+goto-global-line doesn't work properly on @nosent files.
+
+It seems that it counts non-existing sentinel lines so it positions cursor
+few lines before the requested. The exact difference between required line
+number and found one depends on size of file and number of nodes, and also
+grows with required line number.
+
+You can exhibit this by looking in attached Leo file. For example Alt+g 45
+should position cursor on the declaration line of function temp7(a), but it
+positions cursor on line 39.
+
+https://groups.google.com/group/leo-editor/attach/63f325cf79f6b2e9/nosent-goto-line-bug.leo?part=0.1
+</t>
+<t tx="ekr.20150311123850.24">@language rest
+
+bug in fix to Issue #35
+https://github.com/leo-editor/leo-editor/issues/130
+
+leoBridge sometimes assigns the same GNX to two distinct vnodes
+https://github.com/leo-editor/leo-editor/issues/35
+
+c.initObjects sets c.hiddenRootNode.fileIndex to 'hidden-root-vnode-gnx'
+
+# wrong: fc.getLeoFile calls fc.setMaxNodeIndex after reading all nodes.
+# correct: fc.getLeoFile calls ni.end_holding
+
+ni.end_holding now calls ni.compute_last_index.
+This *must* be done every time Leo reads a .leo file!
+</t>
+<t tx="ekr.20150311123850.25">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/140
+
+There were two bugs:
+
+1. A bug in the @file read logic. The fix was to call at.readFileToUnicode in at.readOpenFile.
+
+2. A bug in the @clean read logic. The fix was a rewrite of read_at_nosent_lines.
+</t>
+<t tx="ekr.20150311123850.26">This was a PyQt5 compatibility problem in lqtb.wheelEvent.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qt_text.py", line 796, in wheelEvent
+    if delta &lt; 0:
+TypeError: unorderable types: QPoint() &lt; int()
+</t>
+<t tx="ekr.20150311123850.27">https://github.com/leo-editor/leo-editor/issues/146
+
+It appears that fixing bug 140 fixed all the import problems!
+</t>
+<t tx="ekr.20150311123850.28">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/142
+
+- Rewrote &amp; simplified readBibTexFileIntoTree &amp; writeTreeAsBibTex.
+- Fixed the actual bug in onHeadKey.  Inserting a new node put the template in the root node rather than the newly-inserted node.
+</t>
+<t tx="ekr.20150311123850.29">https://github.com/leo-editor/leo-editor/issues/145
+</t>
+<t tx="ekr.20150311123850.30">https://github.com/leo-editor/leo-editor/issues/138
+</t>
+<t tx="ekr.20150311123850.31">https://github.com/leo-editor/leo-editor/issues/149
+
+Outline structure::
+    
+    To do:
+        @file ../doc/leoToDo.txt
+            (clone) To do: Leo 5.1 b1
+                Docs
+    (clone) To do: Leo 5.1 b1
+        Docs
+
+- In the Docs node write changed.  Save .leo file and quit Leo.
+- Revert the change in git.
+- Reload Leo.  Change reappears **regardless** of --no-cache option!
+</t>
+<t tx="ekr.20150311123850.32"></t>
+<t tx="ekr.20150311123850.33">From at.readOpenFile, at.scanHeader and at.scanText4.
+</t>
+<t tx="ekr.20150311123850.34"># import rope ; print(rope)
+
+rope = g.importModule('rope',verbose=True)
+print(rope)
+</t>
+<t tx="ekr.20150311123850.35">Set in leoApp.openSettingsFile.
+</t>
+<t tx="ekr.20150311123850.36"></t>
+<t tx="ekr.20150311123850.37"></t>
+<t tx="ekr.20150311123850.39">Sentinels are necessary for clones, but sentinels would
+still be necessary if clones did not exist.
+
+Sentinels create **identity**, the notion that a particular
+nodes starts at *this* place in the external file and
+extends to *this other* place. Identity is a persistent,
+invariant attribute of a file: Leo recreates all the nodes
+of the external files when re-reading the file.
+
+It's really that simple, but here are some consequences:
+
+1. Identity remains even when the contents of a node
+   changes. Thus, there is *no way* to use content-related
+   mechanisms to recreate identity. This means, for example,
+   that git can never help recover identity.
+
+2. Leo's sentinels mark an *arbitrary* range of text within
+   the external file. Thus, @auto files can never be as
+   flexible as @file nodes.
+
+</t>
+<t tx="ekr.20150311123850.40"></t>
+<t tx="ekr.20150311123850.41"></t>
+<t tx="ekr.20150311123850.42">- Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
+- Contract all imported nodes.
+</t>
+<t tx="ekr.20150311123850.43"></t>
+<t tx="ekr.20150311123850.44"></t>
+<t tx="ekr.20150311123850.45"></t>
+<t tx="ekr.20150311123850.46">The @persistence code is now enabled if and only if a .leo file has an
+@persistence node.
+
+Removed @bool enable-persistence from leoSettings.leo.
+
+Added @bool create-at-persistence-nodes-automatically = False.
+</t>
+<t tx="ekr.20150311123850.47"></t>
+<t tx="ekr.20150311123850.48">The reformat-paragraph command is surprisingly useful.  It is somewhat like the reverse of the reformat-paragraph command: it removes all extra whitespace from a paragraph.
+
+Extraneous whitespace causes problems with rST text--various kinds of rST markup can't be split between lines. LeoDocs.leo used various workarounds, including preceding @ signs with a backslash.
+
+unformat-paragraph makes all these problems disappear.  Furthermore, the appearance of the text in LeoDocs.leo improves provided that @wrap is in effect.
+</t>
+<t tx="ekr.20150311123850.49">@language rest
+
+I have been wondering whether it would be possible to use xslt to render
+.leo files from web pages. This would build on Ville's work. First, a demo:
+
+1. Copy the two attached files to the same folder on your hard drive.
+
+Note: recent revs have added these two files to the top-level leo folder,
+so you could also use those files instead. Both demo files are now in the
+top-level leo-editor in the git repo *and* on leoeditor.com.
+
+2. Open xslt-test.leo in your browser.  You should see something like this:
+
+    test.leo
+
+    This is a test
+
+        node 1
+
+        Node 1 text.
+
+        node 2
+
+        Node 2 text.
+
+That is, browsers (tested with IE and Mozilla) can render .leo files on
+your file system as html.
+
+Alas, there are problems rending .leo files from urls instead of files. But
+when we succeed we will have a read-only version of Leo as a web app!
+
+===== About leo_to_html.xsl
+
+Ville created leo_to_html.xsl, but I didn't understand its significance
+until early this morning. This xslt file tells a web browser (or other xslt
+processor) how to render a .leo file as html.
+
+I made several changes this morning to leo_to_html.xsl so that it works
+with the "tryit" editor for xslt at w3schools:
+http://www.w3schools.com/xsl/tryxslt.asp?xmlfile=cdcatalog&amp;xsltfile=cdcatalog_ex1
+
+This editor is a good way to discover problems either in .xsl files
+themselves or references to .xsl files from .xml files.
+
+===== Problems
+
+It does not seem possible to use leo_to_html.xsl directly:
+
+1. Visiting http://leoeditor.com/xslt-test.leo does not work.
+
+The browser renders xslt-test.leo xml, not html. That is, the browser does
+not perform the xslt transformations.
+
+2. Visiting
+   https://github.com/leo-editor/leo-editor/blob/master/xslt-test.leo shows
+   the "raw" xml, without the xslt transformations being applied.
+
+The reason is clear enough. The url is a *representation* of the .leo file,
+not the .leo file itself.
+
+3. xslt-test.leo contains the following line::
+
+    &lt;?xml-stylesheet type="text/xsl" href="leo_to_html.xsl"?&gt;
+
+This line is supposed to be set by the following setting::
+
+    @string stylesheet = ekr_test
+
+This default is useless, and setting it to::
+
+    @string stylesheet = type="text/xsl" href="leo_to_html.xsl"
+
+does not appear to work. I'll look into this, but cutting and pasting the
+desired &lt;?xml-stylesheet &gt; element into .leo files should work well enough
+for testing.
+
+4. By default, Mozilla refuses to render xslt-test.leo containing the
+   following stylesheet element::
+
+    &lt;?xml-stylesheet type="text/xsl" href="leoeditor.com/leo_to_html.xsl"?&gt;
+
+In other words, Mozilla refuses to execute "remote" .xsl files. A cryptic
+message is shown instead. Googling that message gives:
+http://stackoverflow.com/questions/3420513/firefox-and-remote-xsl-stylesheets
+
+Apparently Mozilla enforces "same origin" policy. But it's no good relaxing
+that policy: browsers on smart phones are probably even more restrictive.
+
+===== Conclusions
+
+The tryit editor shows that it is possible to apply arbitrary xslt style
+sheets to arbitrary xml files. We should be able to create a page, say on
+leoeditor.com, that would render .leo files properly using leo_to_html.xsl.
+The question is, how exactly to do this?
+
+This is exciting, despite the problem listed above, and probably others.
+The xslt approach is almost infinitely easier than alternative approaches.
+
+Once we can properly render, say, a link to a .leo file on GitHub, we can
+start improving leo_to_html.xsl. The obvious thing to do is to change the
+xsl so that it generates html similar to that generated by Bernhard
+Mulder's mod_http plugin.
+</t>
 <t tx="ekr.20150311123850.5">@language rest
 @wrap
 
-https://groups.google.com/forum/#!searchin/leo-editor/IdleTime/leo-editor/vRIY_u6vPc0/1ld5jdEYMOkJ
+Leo 5.1 adds the LeoQtGui.IdleTime class. Creating multiple instances of this class allows multiple, independent (or cooperating) idle-time handlers. g.IdleTime is a thin wrapper that returns None if g.app.gui doesn't an IdleTime class. 
 
-Leo 5.1 features the new LeoQtGui.IdleTime class. Creating multiple instances of this class allows multiple, independent (or cooperating) idle-time handlers. g.IdleTime is a thin wrapper that returns None if g.app.gui doesn't an IdleTime class. 
-
-For example, the following creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec::
+The following creates an instance of the IdleTime class that calls the given handler at idle time, no more than once every 500 msec::
     
 @language python
 
@@ -37548,6 +37934,156 @@ Here is the output::
     handler2  9 ekr.leo 9.1300
     handler2 10 ekr.leo 10.1400
     handler2 done
+</t>
+<t tx="ekr.20150311123850.50">This setting is highly recommended.
+
+The message is given when clone conflicts may have caused data loss.
+</t>
+<t tx="ekr.20150311123850.51">https://github.com/leo-editor/leo-editor/issues/148
+</t>
+<t tx="ekr.20150311123850.52">Example 1:
+
+    @wrap
+    @
+    @language rest
+    
+    My *lengthy* comments.
+    
+Example 2:
+   
+    @
+    @language rest
+    
+    My lengthy comments.
+    @c
+    @language python
+    # resume python code.
+    
+</t>
+<t tx="ekr.20150311123850.53"></t>
+<t tx="ekr.20150311123850.54">Rev 7a851eb enables automatic updating of @nosent files. When loading a .leo file, Leo will automatically update @nosent trees if the corresponding external file has been changed outside Leo! This is one of the most important advances in Leo's history.
+
+As discussed yesterday, using @nosent files is about twice as fast as using @shadow trees. No shadow directories or shadow files are needed: it's trivial to recreate the "shadow" data from the @nosent tree!
+
+Why, of why, did we never see this before? It could have been done at any time since Leo supported @shadow.
+
+Finally, Leo reports all changes using the "recovered nodes" mechanism. No new code was required: the core @shadow code was not changed in any way.
+
+at.readOneAtNosentNode and two simple helpers handle all the details. readOneAtNosentNode uses the @shadow algorithm to compute the updated lines of the @nosent tree, exactly as described yesterday. If the new lines match the old, nothing more need be done: we can use the existing @nosent tree as is. Otherwise, the new lines are passed to at.readOpenFile to delete the old tree and create the @nosent tree. This part of the code is similar to the code in at.read, but it is much simpler because caching is not involved. In essence, everything "just worked" from the get go.
+</t>
+<t tx="ekr.20150311123850.55">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in leo, particularly if it was based on code I developed in the past using leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use leo at all. I missed many of the features of leo but just couldn't get over the sentinel issue.
+
+@clean really seems to solve all the issues that I had. In particular--and somehow this point doesn't seem to me to have been emphasized enough--it seems to fully support organizer nodes. They are one of the great things about leo--it's happy to guess initially at what the structure of your program is but it's completely up to you to determine the structure and the ability to do things like break up long methods, group like methods, group menu actions in GUI code, etc etc is one of the very cool things about leo. My limited but growing experience with @clean's handling of external changes has been mainly with incremental (as opposed to more sweeping) code changes, and the assignment of new lines is reasonable and you can always fix them it quickly if you don't like how external changes have been handled.
+
+There have been some posts about the recovered nodes, comparing the old and new nodes where there were external changes. I think it's genius. As opposed to hoping that leo has correctly incorporated external changes, it's all there in case you want to take a closer look. Without this, I would just not have the confidence that external changes were being applied correctly and while you can always do a git diff, I am not looking to do that every time I change a file externally especially if I am not at the point where I am about to do a commit.
+
+There has been some discussion of @auto v. @clean. Preference is obviously a matter of taste. I will say that for me the fact that node headlines are unaffected by external file changes is a feature not a problem since I place notes in the headlines that I want preserved when I edit files externally. Yes, if the node headlines are the method names then they won't be updated if an external edit changes a method name but this was true of @file as well.
+
+The ability to work on projects with people who don't have leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with leo sentinels (unless the potential cloner is a leo loyalist). The one downside to no sentinels--there is no evidence that leo is being used but I think that raises the broader question of marketing leo, which I certainly believe will be aided significantly by being able to take advantage of leo without sentinels in external files.
+</t>
+<t tx="ekr.20150311123850.56">@clean removes barriers to using Leo that prevented its widespread adoption.  Only now, after the barriers have been removed, do I see how important those barriers were.
+
+For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
+
+Not only did I not see how damaging sentinels might be for non-Leo users, I did not see how inconvenient sentinels might be for my *own* work flow.  This was a shocking revelation.  To illustrate, here is the first draft of a new comparison between @clean and @file in the programming tutorial:
+
+QQQQQ
+This tutorial discussed @clean first for three reasons:
+
+1. To avoid making excuses for sentinel lines.
+
+2. To brag about the @clean update algorithm.
+
+3. It is often more convenient to avoid sentinels. For example, when I study other people's code I do the following:
+
+- Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
+ 
+- Use an `import script`_ to create the desired @clean nodes.
+
+- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
+
+- Use `git`_ diff to ensure that no important changes have been made while importing the nodes.
+
+- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code.
+
+Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
+
+Nevertheless, there are advantages to using @file instead of @clean. All these advantages arise because external files created by @file contain explicit outline structure.
+
+1. Leo can read @file trees more quickly and without guesses. There is never any need for you to move ambiguous lines from one node to another.
+  
+2. Sentinels allow you to share structure simply by sending the external file. This is an overwhelming advantage for Leo's developers.
+  
+3. A minor advantage: @file makes Leo files smaller. Leo stores the entire @clean *tree* in the .leo file, but only stores the top-level @file *node* in the .leo file.
+  
+In short: use @clean for most purposes. Use @file when all developers in a project use Leo.
+QQQQQ
+
+The point is that I have just, in the past few days, realized how badly sentinels interfered with git diffs.
+
+Imo, @clean is the long-sought breakthrough that just might allow Leo to "go viral".  In retrospect, we can see that sentinels were a *fundamental* problem that neither exhortations nor documentation could remedy.  @clean removes the one and only real barrier to using Leo everywhere.
+</t>
+<t tx="ekr.20150311123850.57">http://leoeditor.com/load-leo.html is a web page that will show you the contents of a .leo file.
+
+The "Upload from your hard drive" button loads a .leo file from you hard drive. Alternatively, you can paste a url into the text box and click the "Upload from the internet" button.  If you want to view a .leo file on github, be sure to use the "raw" url.  For example, use::
+
+    https://raw.githubusercontent.com/leo-editor/leoeditor/master/leo/test/test.leo
+
+*not*::
+
+    https://github.com/leo-editor/leo-editor/blob/master/leo/test/test.leo
+
+Either way, the leoeditor.com server will replace the page by the .leo file as rendered by Ville's leo_to_html.xsl file. The new page will be called something like::
+
+    http://leoeditor.com/show-leo-0004.leo
+
+There can be up to 1000 such pages open at once.
+
+**Important**: At present, there must be *some* kind of &lt;?xml-stylesheet&gt; element in the .leo file. Many leo files have the following do-nothing line near the start::
+
+    &lt;?xml-stylesheet ekr_test?&gt;
+
+That's fine. If there is *any* such line, Speed's server-side stuff will replace it with::
+
+    &lt;?xml-stylesheet type="text/xsl" href="leo_to_html.xsl"?&gt;
+
+Speed will soon add the above line even if there is no stylesheet element.
+
+I am working on leo_to_html.xsl so that nodes can be expanded and contracted.
+</t>
+<t tx="ekr.20150311123850.58">@language rest
+@wrap
+
+Leo performs a diff automatically after load when --diff is in effect and exactly two files are given.
+
+===== How to configure git diff:
+
+An excellent reference:
+http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
+
+The essential idea: what you refer to in the config file is actually a shell (/bin/sh) script, not a DOS script.
+
+Here is git-editor.bat::
+@language shell
+
+    #!/bin/sh
+    # Wrapper for git editor
+    "C:/Program Files (x86)/wscite/scite.exe" "$*"
+
+Here is git-difftool.bat::
+    
+    #!/bin/sh
+    
+    # sh wrapper for external git diff
+    # sourceTree now calls this wrapper for external diffs.
+    
+    # http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
+    
+    # diff is called by git with 7 parameters:
+    #  path old-file old-hex old-mode new-file new-hex new-mode
+    #  "&lt;path_to_diff_executable&gt;" "$2" "$5" | cat
+    
+    C:/python27/python.exe C:/leo.repo/leo-editor/launchLeo.py --diff "$2" "$5" | cat
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
