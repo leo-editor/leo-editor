@@ -663,8 +663,9 @@ class AtFile:
         return at.errors == 0
     #@+node:ekr.20041005105605.25: *5* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
-        '''Delete all v.tempBodyString & v.tempBodyList attributes.'''
-        # No longer used.
+        '''Delete all temp attributes.'''
+        at = self
+        at.clearAllBodyInited()
     #@+node:ekr.20100122130101.6174: *5* at.deleteTnodeList
     def deleteTnodeList (self,p): # AtFile method.
 
@@ -1481,7 +1482,7 @@ class AtFile:
         old = v.bodyString() # Faster than v.b.
         # Warn if the body text has changed. Don't warn about the root node.
         if 1: # New code
-            if at.bodyIsInited(v) and new != old:
+            if v != at.root.v and at.bodyIsInited(v) and new != old:
                 at.indicateNodeChanged(old,new,postPass,v)
             v.setBodyString(new)
             at.bodySetInited(v)
