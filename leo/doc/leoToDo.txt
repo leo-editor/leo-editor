@@ -38,6 +38,11 @@ QTreeView::branch:open:has-children{
 
 I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation.
+@nocolor-node
+
+- Detect changes in root node, if possible.
+- Detect changes in headlines, if possible.
 .. @+node:ekr.20150211104036.4: *4* Fix bugs 135 & 141: DnD & paste-retaing-clones
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
@@ -48,6 +53,7 @@ https://github.com/leo-editor/leo-editor/issues/141
 4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
 Author: Me
 Date:   Fri Sep 13 16:44:33 2013 -0500
+.. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
 
@@ -143,7 +149,6 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
 .. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
 https://github.com/leo-editor/leo-editor/issues/143
 
