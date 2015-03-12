@@ -976,7 +976,7 @@
 </v>
 <v t="ekr.20050902105852.7"><vh>2002: Untangling @file is easy!</vh></v>
 <v t="ekr.20050902105852.8"><vh>2002: Leo 3.x: Continuous improvement</vh></v>
-<v t="ekr.20050902105852.5"><vh>2003: SourceForge</vh></v>
+<v t="ekr.20050902105852.5"><vh>2003: SourceForge: new energy</vh></v>
 <v t="ekr.20050902105852.9"><vh>2003: 4.0: New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.67"><vh>4.0 final</vh></v>
 <v t="edream.110203163054.100"><vh>4.0 Theory of operation</vh></v>
@@ -2225,36 +2225,18 @@
 <v t="ekr.20150301045135.12"><vh>Commands 4.1</vh>
 <v t="edream.110603190322.14"><vh>Added Check Outline command</vh></v>
 <v t="edream.110603190322.15"><vh>Added Hoist/De-Hoist commands</vh></v>
-<v t="edream.111803060152"><vh>Added script-based find/change commands</vh>
-<v t="edream.110603190322.6"><vh> Script Find and Script Change</vh>
-<v t="edream.111803060152.1"><vh>How it works</vh></v>
-<v t="ekr.20040201113232"><vh>Using the initScriptFind script</vh></v>
-<v t="edream.111803060152.2"><vh>Ideas for using scripts</vh></v>
-</v>
-</v>
 <v t="ekr.20040216152948"><vh>Added Toggle Angle Brackets command</vh></v>
-<v t="ekr.20040216153725"><vh>Changed Undo/Redo messages</vh></v>
 <v t="edream.110203163054.833"><vh>Executing Python scripts in body text</vh></v>
-<v t="edream.121403161340"><vh>import-file</vh></v>
-<v t="edream.110303182253.3"><vh>Leo now does an auto-save only if files have actually been changed.</vh></v>
 <v t="edream.112303173638"><vh>Running Leo in batch mode</vh></v>
-<v t="edream.111803062437"><vh>Shift commands now shift single line if no selection</vh></v>
 </v>
 <v t="ekr.20150301045135.19"><vh>Commands 4.2</vh>
 <v t="EKR.20040628095213.282"><vh>Added Paste Retaining Clones command</vh></v>
-<v t="ekr.20040804165258.4"><vh>New Check menu and commands</vh></v>
-<v t="EKR.20040628095213.198"><vh>Supported @tabwidth in indent/dedent</vh></v>
+<v t="ekr.20040804165258.4"><vh>Added Check commands</vh></v>
 </v>
 <v t="ekr.20050123103521"><vh>Commands 4.3</vh>
 <v t="ekr.20050123092834.897"><vh>Added 'Expand Or Go Right' and 'Contract or Go Left' commands</vh></v>
-<v t="ekr.20050123092834.908"><vh>Added keyboard shortcuts to find panel</vh></v>
-<v t="ekr.20050123092834.1005"><vh>Find panels are now associated with individual Leo windows</vh></v>
-<v t="ekr.20050123105026"><vh>Find panels are now inited from @settings nodes</vh></v>
-<v t="ekr.20050123092834.961"><vh>Improved Go To Line Number and Execute Script commands</vh></v>
-<v t="ekr.20050123092834.1018"><vh>Improved support for relative path names</vh></v>
-<v t="ekr.20050123092834.1043"><vh>Implemented 'Undo Clear Recent Files'</vh></v>
-<v t="ekr.20050123092834.517"><vh>Removed old-style write commands</vh></v>
-<v t="ekr.20050313101229.95"><vh>Created Add Comments and Delete Comments commands</vh></v>
+<v t="ekr.20050123092834.1043"><vh>Added 'Undo Clear Recent Files'</vh></v>
+<v t="ekr.20050313101229.95"><vh>Added Add Comments and Delete Comments commands</vh></v>
 </v>
 <v t="ekr.20150301045135.34"><vh>Commands 4.4</vh>
 <v t="ekr.20060428084553.39"><vh>Added clear-selection command</vh></v>
@@ -2269,38 +2251,33 @@
 <v t="ekr.20060328171518.45"><vh>Added run-unit-test command</vh></v>
 <v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
 <v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
-<v t="ekr.20060206112001"><vh>Improved commands</vh></v>
-<v t="ekr.20060206111508.40"><vh>Improved printBindings, printCommands &amp; modeHelp</vh></v>
-<v t="ekr.20060214074035.67"><vh>Leo remembers the previous open directory</vh></v>
-<v t="ekr.20060328171518.85"><vh>Work around newline problems on the Mac</vh></v>
 </v>
 <v t="ekr.20090717084250.10886"><vh>Commands 4.6</vh>
 <v t="ekr.20090717084250.10887"><vh>Added smart home (back-to-home) command</vh></v>
 <v t="ekr.20090717084250.10888"><vh>The open command creates @edit nodes when opening non-.leo files</vh></v>
-<v t="ekr.20090717084250.10889"><vh>added pdb minibuffer command</vh></v>
-<v t="ekr.20090717084250.10890"><vh>Added support for smart_tab setting</vh></v>
+<v t="ekr.20090717084250.10889"><vh>added pdb command</vh></v>
 <v t="ekr.20090717084250.10891"><vh>Improved isearch commands</vh></v>
 </v>
 <v t="ekr.20100211125418.11611"><vh>Commands 4.7</vh>
-<v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
+<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
 </v>
 <v t="ekr.20101104091058.5019"><vh>Commands 4.8</vh>
+<v t="ekr.20101104091058.5252"><vh>Added  head-to-prev-node and tail-to-next-node commands</vh></v>
 <v t="ekr.20101124102457.5183"><vh>Added cascade-windows and minimize-all-windows commands</vh></v>
 <v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
 <v t="ekr.20101124102457.5224"><vh>Added extract-python-method command</vh></v>
 <v t="ekr.20101124102457.5184"><vh>Added head-to-prev-node and tail-to-next-node commands</vh></v>
 <v t="ekr.20101104091058.5020"><vh>Added legend for print-settings command</vh></v>
-<v t="ekr.20101104091058.5150"><vh>Completed cascade-windows and minimize-all-windows commands</vh></v>
-<v t="ekr.20101104091058.5252"><vh>Created head-to-prev-node and tail-to-next-node commands</vh></v>
 <v t="ekr.20101104091058.5023"><vh>Improved abbreviation commands</vh></v>
-<v t="ekr.20101124102457.5223"><vh>Improved execute-script command</vh></v>
 <v t="ekr.20101104091058.5022"><vh>Removed mark-clones command</vh></v>
 </v>
 <v t="ekr.20150301140303.8"><vh>Commands 4.9</vh>
+<v t="ekr.20150312025000.2398"><vh>import-file replaces several commands</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Changed command names</vh></v>
-<v t="ekr.20150301140303.12"><vh>Improved open-python-window</vh></v>
+<v t="ekr.20150312025000.2362"><vh>Improved rst3 command</vh></v>
 </v>
 <v t="ekr.20150312025000.2349"><vh>Commands 4.10</vh>
+<v t="ekr.20150312025000.2363"><vh>Added "smart" jumps/deletes</vh></v>
 <v t="ekr.20150312025000.2350"><vh>Added @button split-defs</vh></v>
 <v t="ekr.20150312025000.2351"><vh>Added beautify-c command</vh></v>
 <v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
@@ -2308,34 +2285,21 @@
 <v t="ekr.20150312025000.2354"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
 <v t="ekr.20150312025000.2355"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
 <v t="ekr.20150312025000.2356"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20150312025000.2357"><vh>Improved add/delete-comments</vh></v>
 <v t="ekr.20150312025000.2358"><vh>Improved open command</vh></v>
-<v t="ekr.20150312025000.2359"><vh>Improved page-up &amp; page-down commands</vh></v>
-<v t="ekr.20150312025000.2360"><vh>Improved presentation of autocompletion list</vh></v>
-<v t="ekr.20150312025000.2361"><vh>Improved print-bindings &amp; print-commands</vh></v>
-<v t="ekr.20150312025000.2362"><vh>Improved rst3 command</vh></v>
-<v t="ekr.20150312025000.2363"><vh>Improved word jumps/deletes</vh></v>
 </v>
 <v t="ekr.20131105110107.16906"><vh>Commands 4.11</vh>
-<v t="ekr.20131105110107.16907"><vh>Added docstrings for all commands</vh></v>
 <v t="ekr.20131105110107.17032"><vh>Added insert-node-before command &amp; p.insertBefore</vh></v>
 <v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh></v>
-<v t="ekr.20131105110107.16909"><vh>Allow periods before section names in headlines</vh></v>
 <v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-<v t="ekr.20131105110107.16911"><vh>Ensure selected @test node is run</vh></v>
-<v t="ekr.20131105110107.16912"><vh>Fixed dabbrev commands</vh></v>
 <v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
-<v t="ekr.20131105110107.16914"><vh>Help commands now use &lt;pre&gt; formatting if docutils is not available</vh></v>
 <v t="ekr.20131105110107.16915"><vh>help-for-command executes apropos commands</vh></v>
 <v t="ekr.20131105110107.16916"><vh>help-for-python now uses vr window</vh></v>
 <v t="ekr.20131105110107.16917"><vh>help-for-regular-expressions command</vh></v>
-<v t="ekr.20131105110107.16918"><vh>Improved incremental search commands</vh></v>
 <v t="ekr.20131105110107.17042"><vh>Improved reformat-paragraph</vh></v>
 <v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
 <v t="ekr.20131105110107.16920"><vh>normalize-whitespace</vh></v>
 <v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
 <v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
-<v t="ekr.20131105110107.16923"><vh>Refresh from disk menu command now refreshes all selected nodes</vh></v>
 <v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
 <v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
 <v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
@@ -2851,10 +2815,6 @@ v.self_and__subtree_iter
 v.self_and_unique_subtree_iter
 </t>
 <t tx="EKR.20040601101227.1"></t>
-<t tx="EKR.20040628095213.198">The old code used at c.tab_width.  It should also look for @tabwidth directives.
-
-This was not good when @tabwidth -4 was in effect.
-</t>
 <t tx="EKR.20040628095213.282">- By default, finishPaste command reassigns all indices in copied nodes.
 - Created pasteOutlineRetainingClones.
 - Added reassignIndices arg to pasteOutline, getLeoOutline and finishPaste.
@@ -3390,81 +3350,21 @@ Section definitions must appear in the node containing the script or in descenda
 
 The Execute Script command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing. Scripts may examine and change app.scriptDict as they please.
 </t>
-<t tx="edream.110303182253.3">Leo does an auto-save only if something has actually been changed.
-</t>
 <t tx="edream.110603190322.14">This command checks for unused tnodeLists and checks the topology of all clones.
 </t>
 <t tx="edream.110603190322.15">The Hoist command redraws the screen so presently selected tree becomes the only visible part of the outline.  Leo prevents the you from moving nodes outside the hoisted outline.  The De-hoist command restores the outline.  Hoist commands may be nested.
 </t>
-<t tx="edream.110603190322.6">New in 4.1: Leo now supports scripts in Leo's Find/Change dialog.
+<t tx="edream.112303173638">@language rest
 
-Leo's find panel now contains the Script Search radio button and the Script Change checkbox. When the Script Search radio button is selected Leo treats the contents of the Search Text as a script to execute whenever any kind of Find command is executed. Similarly, when the Script Change checkbox is selected Leo treats the context of the Change Text as a script to execute whenever any kind of Change command is executed. See below for just how this works.
-
-Script-based find-change is extremely powerful. In effect, Leo's Find/Change panel becomes a new platform for running scripts interactively. Leo now has all the find/change capability of pattern matching languages like Snobol and Icon, just by using the capabilities of the plain Python language. Moreover, Leo can deliver these capabilities interactively or not depending which buttons you push in Leo's Find/Change panel.
-
-Script-based find/change frees the user from having to control script-based searches interactively. Rather than forcing find/change scripts to implement their own interactive controls, it is much easier to use what Leo already has.
-</t>
-<t tx="edream.111803060152"></t>
-<t tx="edream.111803060152.1">Leo dedicates a Python dictionary called app.searchDict for communication
-between Leo and the search and change scripts. The search and change scripts may
-also use app.searchDict for communication between themselves. Leo sets
-app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to indicate
-the kind of command being executed. Scripts may use all other entries in
-app.searchDict as they please.
-
-Leo executes the find script once when you press the Find button (or the Change
-then Find button) in Leo's Find/Change dialog. Typically, the find script would
-traversing the tree and highlight the found text or otherwise indicate to the
-user that the find operation has succeeded. However, the script can do anything
-it pleases.
-
-Leo executes the the find script repeatedly when you press the Find All button.
-Leo keeps executing the find script until app.searchDict["continue"] evaluates
-to false. Initially there is no entry for app.searchDict["continue"], so the
-find script must set app.searchDict["continue"] = true if it wants Leo to keep
-executing it.
-
-Leo executes the change script once when you press the Change button. Typically,
-the change script would change the selected text. Usually the change script will
-compute the new value of body text and call c.setBodyString(p,newText) to
-make that change permanent. 
-
-The change script also may handle undo, typically by calling
-c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
-automatically. Indeed, Leo makes no assumptions whatever about what the change
-script really does.
-
-Leo executes the the change script repeatedly when you press the Replace All
-button. Just as with the Find All command, Leo keeps executing the change script
-until app.searchDict["continue"] evaluates to false.
-
-Most find and change scripts will ignore settings in the Find Panel like "whole
-word", "pattern match", and "reverse". However, these settings are available to
-the scripts via ivars such as c.whole_word_flag, etc. if desired.
-</t>
-<t tx="edream.111803060152.2">@nocolor
-
-Some ideas for using scripts:
-
-Either the find and change scripts may use Python's re module.  For
-example, the find script could set app.searchDict["m"] to the match object
-returned by re's match method.  The change script would then compute the
-result, change the text and set the undo info as usual.
-
-There is no reason to confine find/change scripts to operate on data only
-within a Leo outline. These scripts could as easily traverse your file system
-as the Leo outline. But notice: scripts could pull data from the file system
-into the outline so that you can see the effects of changes as the scripts
-operate. Again, this can all happen interactively if you like.
-</t>
-<t tx="edream.111803062437"></t>
-<t tx="edream.112303173638">New in version 4.1: On startup, Leo looks for two arguments of the form --script scriptFile.  If found, Leo enters batch mode.
+New in version 4.1: On startup, Leo looks for two arguments of the form --script scriptFile.  If found, Leo enters batch mode.
 
 In batch mode Leo does not show any windows.  Leo assumes the scriptFile contains a Python script and executes the contents of that file using Leo's Execute Script command.  By default, Leo sends all output to Leo's log pane to the console window.  Scripts in the scriptFile may disable or enable this output by calling app.log.disable() or app.log.enable()
 
 Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands.  Those commands require interaction with the user.
 
 For example, the following batch script reads a Leo file and prints all the headlines in that file::
+
+@language python
 
     import leoGlobals as g
     
@@ -3477,47 +3377,7 @@ For example, the following batch script reads a Leo file and prints all the head
     for p in newFrame.c.all_positions():
         g.es(g.toEncodedString(p.headString(),"utf-8"))
 </t>
-<t tx="edream.121403161340">- Import External File command now uses a file dialog.
-
-This is much more natural than using @file nodes.
-</t>
-<t tx="ekr.20040201113232">@nocolor
-
-The Scripts node in LeoPy.leo contains a script called initScriptFind.  This script makes it easy to set up script based searches as follows:
-
-1. Put the following code in the root of a tree that will contain your script search:
-
-@color
-# Initialize Leo's find panel using the named children of this node.
-from leoGlobals import *
-initScriptFind("Find script","Change script") # Second argument is optional.
-# Start searching at the top.
-top().selectVnode(c.rootVnode())
-@nocolor
-
-2. Put the search script in a child node called "Find script" (no quotes).
-
-3. (Optional) Put the change script in a child node called "Change script"
-
-4.  Execute the code above.  Leo does the following:
-
-- Puts the body of the "Find script" into the find text of Leo's Find/Change dialog.
-- Puts the body of the "Change script" into the change text of Leo's Find/Change dialog.
-- Selects the Script Find radio button.
-- Selects the Script Change checkbox if the change script exists.
-- Selects the root of the entire outline.
-
-Presto!  Leo is ready for a script search.
-</t>
 <t tx="ekr.20040216152948"></t>
-<t tx="ekr.20040216153725">Changed Undo/Redo messages:
-
-- Insert Outline to Insert Node.
-- Delete Outline to Delete Node.
-- Clone to Clone Node.
-
-This is a real code change: it affects the undo/redo logic.
-</t>
 <t tx="ekr.20040403171740">@ @rst-options
 .. A very cool option: doc parts will be rendered properly,
 .. but will be ignored by the Execute script command.
@@ -3673,9 +3533,7 @@ The effect of this is to make all vnodes identical, as far as using unknownAttri
 
 - VERY IMPORTANT.  Leo now writes entire tree of @ignored @thin nodes.  This fixes a major bug.
 </t>
-<t tx="ekr.20040804165258.4">Added the Check submenu of the Outline menu. This contains the Check Outline and Dump Outline commands, as well as four new commands:
-
-The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors. These commands mark erroneous nodes. These commands work on the selected Node and its descendants. These commands ignore any nodes for which a) @ignore is in effect or b) @language python is in not effect.
+<t tx="ekr.20040804165258.4">The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors. These commands mark erroneous nodes. These commands work on the selected Node and its descendants. These commands ignore any nodes for which a) @ignore is in effect or b) @language python is in not effect.
 
 The Check Python Code and Pretty Print Python Code commands replace nodes with their pretty-printed alternative. No doubt everyone will have their own favorite style. You could implement alternate pretty printers in a plugin merely by overriding the following methods of class prettyPrinter in leoCommands.py:
 
@@ -3706,61 +3564,11 @@ tests now takes a few seconds!
 
 - A much faster and more robust spell checker plugin. (requires Python 2.3)
 </t>
-<t tx="ekr.20050123092834.1005">Leo no loner has any global windows!
-
-- Each commander has its own find window.
-    - It's title tells to what commander it applies.
-</t>
-<t tx="ekr.20050123092834.1018">Actually, support already existed for them in getBaseDirectly!
-
-What I did.
-
-- Added a c keyword to getBaseDirectory.
-- Added similar logic to os_path_join.
-
-- Changed some stupid code in g.openWithFileName (called by @url logic):
-    changed: fileName = g.os_path_join(os.getcwd(),fileName)
-    to:      fileName = g.os_path_abspath(fileName)
-
-MAYBE g.os_path_abspath should force '.' to mean c.openDir, but I kinda doubt
-it. This could be asking for trouble.
-
-OTOH, the various flavors of scanAllDirectives already do this.  Hmmmmmm.
-</t>
 <t tx="ekr.20050123092834.1043"></t>
-<t tx="ekr.20050123092834.517">Leo can still read such files, but old-style file formats are now deprecated
-</t>
 <t tx="ekr.20050123092834.897">These commands work as do the similar commands in Windows Explorer. How did we
 ever live without them?
 </t>
-<t tx="ekr.20050123092834.908">- Tab toggles between the Search to the Replace areas.
-
-- Control-Tab inserts a tab.
-
-- Added hot keys for all settings.  Use Alt-x to activate hot key x.
-  The Enter key activates the Find button.
-
-- As usual, Alt-F4 dismisses the Find panel.
-</t>
-<t tx="ekr.20050123092834.961">- Go To Line Number command now assumes the presently selected node is a script if there is no ancestor @file node.
-
-- Execute Script command uses this new logic to select the proper node and line in a script if there is an error.
-
-How did we ever live without these features?
-</t>
 <t tx="ekr.20050123103521"></t>
-<t tx="ekr.20050123105026">- Leo now ignores all find settings in .leo files.  Instead, Leo inits find settings from @settings entries.
-
-- Removed all c ivars corresponding to leoFind ivars.
-    - This eliminates the ugliest code in Leo.
-    - Inits all leoFind ivars from @settings in init, a helper of the ctor.
-    - Updates all the leoFind ivars in update_ivars, called just before doing any find.
-
-- Removed the _flag suffix from leoFind ivars.
-    - Another major mess cleaned up.
-
-- Renamed find/change_text to find/change_ctrl to avoid name conflict.
-</t>
 <t tx="ekr.20050306090601">.. index:: uA
 
 Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as **user attributes**, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
@@ -5003,7 +4811,7 @@ In October of 2001 I began work on the leo.py, an Open Software version of leo.p
 
 Tk was officially retired in June 2011.
 </t>
-<t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. It is certainly no accident that Leo started a new life shortly thereafter. Prior to SourceForge my interest in Leo had been waning.
+<t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. Leo started a new life shortly thereafter. Prior to SourceForge my interest in Leo had been waning.
 </t>
 <t tx="ekr.20050902105852.6">In the summer of 2001 I began to consider using sentinel lines in external files. Previously I had thought that outline structure must be 'protected' by remaining inside .leo files. Accepting the possibility that sentinels might be corrupted opened vast new design possibilities. In retrospect, problems with sentinels almost never happen, but that wasn't obvious at the time! The result of this design was known then as Leo2. That terminology is extinct. I think of this version as the first version to support @file and automatic tangling and untangling.
 
@@ -5516,20 +5324,6 @@ If (maybe much later), we eliminate B' as a child of A will get::
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 </t>
 <t tx="ekr.20060116174906.267"></t>
-<t tx="ekr.20060206111508.40"></t>
-<t tx="ekr.20060206112001">- Improved format of print-commands and print-bindings commands.
-
-- Eliminated clone-find-all, selection-only, show-context checkboxes
-  when show_only_find_tab_options setting is True.
-
-- All minibuffer find commands copy the find string from the Find tab into the minibuffer.
-
-- The replace-string command sets up arguments for Tab find. This is different
-  from the normal Emacs replace-string command, but it works well in Leo.
-
-- Leo doesn't abort the minibuffer if the command does not exist.
-  This is much more convenient.
-</t>
 <t tx="ekr.20060212102459.4">All minibuffer search commands, with the exception of the isearch (incremental) commands, simply provide a minibuffer interface to Leo's legacy find commands.  This means that all the powerful features of Leo's legacy commands are available to the minibuffer search commands.
 
 Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
@@ -5621,18 +5415,6 @@ Furthermore, this list makes it easy to detect the end of a wrapped incremental 
 Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
 isearch-forward-regexp.'''
 </t>
-<t tx="ekr.20060214074035.67">http://sourceforge.net/forum/message.php?msg_id=3571431
-By: ktenney
-
-To reiterate a request:
-
-When doing File-&gt;Open the default directory should the directory which
-was navigated to for previous 'Open'
-
-What I did:
-
-- Defined g.app.globalOpenDir # The directory last used to open a file.
-</t>
 <t tx="ekr.20060214083808">Debugging commands:
 
 - dump-all-objects, ump-new-objects, verbose-dump-objects.
@@ -5694,15 +5476,9 @@ scroll-outline-up-page
 </t>
 <t tx="ekr.20060328171518.45">This is equivalent to the Unit Test script button in unitTest.leo
 </t>
-<t tx="ekr.20060328171518.85">http://sourceforge.net/forum/message.php?msg_id=3606515
-
-Added insert-newline command and fixed some related commands.
-</t>
 <t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
 </t>
-<t tx="ekr.20060421070409.41">New commands:
-
-add-space-to-lines,
+<t tx="ekr.20060421070409.41">add-space-to-lines,
 add-tab-to-lines
 clean-lines
 clear-selected-text
@@ -11351,9 +11127,6 @@ This plugs what may have been the biggest hole in Leo's history.
 
 However, it is possible to pick up the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
 </t>
-<t tx="ekr.20090717084250.10890">- Tab = indent when there is a text selection
-- Shift-Tab unindents always
-</t>
 <t tx="ekr.20090717084250.10891">Escape now ends isearch
 </t>
 <t tx="ekr.20090811090022.14452">.. |leoQtMainWindow|    image:: screen-shots/leo-main-window.png
@@ -13889,7 +13662,6 @@ The add-global-abbreviation command (&lt;alt-x&gt;add-gl&lt;tab&gt;&lt;return&gt
 selected text as the replacement value of the abbreviation. The minibuffer
 prompts you for the name of the abbreviation.
 </t>
-<t tx="ekr.20101104091058.5150"></t>
 <t tx="ekr.20101104091058.5252">@nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/611413
@@ -16397,11 +16169,6 @@ function definition to the end of the previous sibling node.
 
 The tail-to-next-node command moves non-empty text following a class, method or
 function definition to the start of the next sibling node.
-</t>
-<t tx="ekr.20101124102457.5223">execute-script now calls execfile (or its equivalent when using Python 3k)
-when @bool write_script_file = True.
-
-This allows pdb to show the text of scripts!
 </t>
 <t tx="ekr.20101124102457.5224">This should have been done *ages* ago. The command makes it easy to put python
 methods in separate nodes.
@@ -22398,22 +22165,8 @@ Also, hope someone else finds this useful.  Once it's cleaned up, I
 might do a leo-editor blog post about it.
 </t>
 <t tx="ekr.20131105110107.16906"></t>
-<t tx="ekr.20131105110107.16907">Help-for command translate !&lt;command-name&gt;! in the docstring to the binding for command-name.
-</t>
 <t tx="ekr.20131105110107.16908"></t>
-<t tx="ekr.20131105110107.16909">Skip '.' before section names in v.matchHeadline.
-
-2013/08/01: bug fix: allow leading periods in at.isSectionName.
-</t>
 <t tx="ekr.20131105110107.16910"></t>
-<t tx="ekr.20131105110107.16911">In earlier version of Leo if one runs test externally with the selected
-position under @test node, that @test was executed with
-(run-marked-unit-tests-externally)
-
-The fix was to the "important special case" in TM.findAllUnitTestNodes.
-</t>
-<t tx="ekr.20131105110107.16912">The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
-</t>
 <t tx="ekr.20131105110107.16913">The quicksearch plugin now supports the go-anywhere command. It works "sort
 of" like Nav bar. Also Nav bar now does live search on headline (you have
 to press enter to force search of bodies as well)
@@ -22426,18 +22179,10 @@ This has a very clever hack (even if I say so myself)--spaces in search
 string are replaced with * wild card. So if you search for, say "file txt",
 it will search for "file*txt", matching e.g. @file readme.txt
 </t>
-<t tx="ekr.20131105110107.16914"></t>
 <t tx="ekr.20131105110107.16915">Instead of just printing their docstrings.
 </t>
 <t tx="ekr.20131105110107.16916"></t>
 <t tx="ekr.20131105110107.16917"></t>
-<t tx="ekr.20131105110107.16918">- Documented that return ends the search.
-- Documented that deleting the entire search pattern aborts the search.
-- Removed annoying status messages printed to log.
-
-- (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
-
-</t>
 <t tx="ekr.20131105110107.16919">By Terry Brown
 
 I assume all *nix shell users use the screen shell multiplexer, and
@@ -22485,23 +22230,6 @@ lists of (p.copy(),script) rather than (p.h,script)
 
 Added g.app.config.atLocalButtonsList &amp; g.app.config.atLocalCommandsList
 for use by print-buttons command.
-</t>
-<t tx="ekr.20131105110107.16923">"refresh from disk" is now done for all selected nodes. You can either
-
-ctrl-click each @&lt;file&gt; node you want refreshed, then "refresh from
-disk" to refresh all of them, or
-
-shift-click the first and last @&lt;file&gt; node you want refreshed, to
-select the entries in between, then "refresh from
-disk" to refresh all of them.
-
-(i.e. standard UI list multi item selection)
-
-But be aware of this bug:
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-using refresh from disk immediately after cutting nodes from the
-outline has odd effects.
 </t>
 <t tx="ekr.20131105110107.16924">A simple change to k.computeCompletionList was all that was needed.
 
@@ -27248,8 +26976,6 @@ developer.</t>
 <t tx="ekr.20150301130652.25"></t>
 <t tx="ekr.20150301130652.4"></t>
 <t tx="ekr.20150301130652.8"></t>
-<t tx="ekr.20150301140303.12">open-python-window issues a message instead of crashing if idlelib does not exist.
-</t>
 <t tx="ekr.20150301140303.15">Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
@@ -27311,23 +27037,7 @@ Viewer:    http://leoeditor.com/load-leo.html
 - New commands to insert, delete, change or print uA's.
 - Added namespace directive to .leo files.
 </t>
-<t tx="ekr.20150301140303.8">- The import-file commands replaces all the following commands::
-    
-    import-at-file                    
-    import-cweb-files         
-    import-derived-file       
-    import-flattened-outline      
-    import-noweb-files
-    
-Leo chooses one of the above commands as follows.  First, if the file looks like an external file that Leo wrote, the command works like import-derived-file command.  Otherwise, the file's extension determines the importer::
-        
-    .cw, .cweb:     import-cweb-files
-    .nw, .noweb:    import-noweb-files
-    .txt:           import-flattened-outline
-    all others:     import-at-file
-    
-The import-at-root command is no longer supported.
-</t>
+<t tx="ekr.20150301140303.8"></t>
 <t tx="ekr.20150311123850.11"></t>
 <t tx="ekr.20150311123850.12">https://groups.google.com/forum/#!topic/leo-editor/X9rePlT6Meg
 
@@ -27886,7 +27596,7 @@ Here is git-difftool.bat::
 <t tx="ekr.20150311164212.7">https://github.com/leo-editor/leo-editor/issues/151
 </t>
 <t tx="ekr.20150312013449.4"></t>
-<t tx="ekr.20150312013449.5"></t>
+<t tx="ekr.20150312013449.5">This documentation should be folded into the users guide.</t>
 <t tx="ekr.20150312025000.2197">Leo 4.10 final: March 29, 2012
 
 * Dozens of new and improved features and commands, including...
@@ -28249,10 +27959,6 @@ top-level list of nodes. I find this less confusing.
     run-selected-unit-tests-locally     = None
 </t>
 <t tx="ekr.20150312025000.2356"></t>
-<t tx="ekr.20150312025000.2357">add-comments preserves trailing whitespace.
-
-delete-comments now works whether or not blanks surround comments delims.
-</t>
 <t tx="ekr.20150312025000.2358">Leo creates @file nodes (not @thin nodes) when opening an external file.
 
 Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
@@ -28260,20 +27966,7 @@ Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
 Open now shows all files. This is a cue that *any* file may be opened:
 non-Leo files are opened in @edit nodes.
 </t>
-<t tx="ekr.20150312025000.2359"></t>
-<t tx="ekr.20150312025000.2360">- don't print 'all' in bindings.
-
-- pad bindings properly, as is done in print-commands/bindings.
-</t>
-<t tx="ekr.20150312025000.2361">- print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
-
-- print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
-
-- print-commands &amp; print-bindings do not print 'all'.
-</t>
-<t tx="ekr.20150312025000.2362">**Important**: This was all done in Leo 4.9, but not properly documented.
-
-Allow section references in rst3 command.
+<t tx="ekr.20150312025000.2362">Allow section references in rst3 command.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
@@ -28303,6 +27996,23 @@ Users wanting to use these commands can set in their myLeoSettings.leo::
 </t>
 <t tx="ekr.20150312025000.2396"></t>
 <t tx="ekr.20150312025000.2397"></t>
+<t tx="ekr.20150312025000.2398">- The import-file commands replaces all the following commands::
+    
+    import-at-file                    
+    import-cweb-files         
+    import-derived-file       
+    import-flattened-outline      
+    import-noweb-files
+    
+Leo chooses one of the above commands as follows.  First, if the file looks like an external file that Leo wrote, the command works like import-derived-file command.  Otherwise, the file's extension determines the importer::
+        
+    .cw, .cweb:     import-cweb-files
+    .nw, .noweb:    import-noweb-files
+    .txt:           import-flattened-outline
+    all others:     import-at-file
+    
+The import-at-root command is no longer supported.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
