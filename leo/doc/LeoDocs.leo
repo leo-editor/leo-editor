@@ -3633,6 +3633,7 @@
 <v t="ekr.20150311123850.29"><vh>Fixed bug 145: The already open dialog can cause Leo to hang</vh></v>
 <v t="ekr.20150311123850.30"><vh>Fixed bug 138: goto-global-line doesn't work properly in @nosent files</vh></v>
 <v t="ekr.20150311123850.31"><vh>Fixed bug 149: Clones can revert changes made by git discard...</vh></v>
+<v t="ekr.20150311164212.5"><vh>Fixed a unicode-related problem in the flatten-outline command</vh></v>
 </v>
 <v t="ekr.20150311123850.32"><vh>Code level</vh>
 <v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
@@ -36899,7 +36900,10 @@ x.sentinels.
     
 The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files.  This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
 </t>
-<t tx="ekr.20150215071358.87">- Review all mentions of @auto in docs.
+<t tx="ekr.20150215071358.87">** Less is more
+    - Revise history of Leo
+    - Greatly reduce old release notes.
+- Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
 - Document @auto-rst/md/vo/otl.
     - Bug: @auto-org is not @auto-otl.
@@ -36907,6 +36911,9 @@ The Mulder/Ream algorithm updates @clean trees from changes made from the corres
 - Revise 5.1 release notes.
     - Links to other docs?
     - Link to the Mulder/Ream algorithm from the release notes.
+- Improve scripting chapter, cheat sheet.
+    - Mention Aha's, scripts, etc.
+
 </t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
@@ -37373,7 +37380,8 @@ xsltWithNodes.py
   it could happen only when saving an erroneous file twice.
 
 - Fixed bug 798194: --maximized has no effect
-  https://bugs.launchpad.net/leo-editor/+bug/798194</t>
+  https://bugs.launchpad.net/leo-editor/+bug/798194
+</t>
 <t tx="ekr.20150301140303.12">open-python-window issues a message instead of crashing if idlelib does not exist.
 </t>
 <t tx="ekr.20150301140303.13">Added @bool forbid_invalid_completions.
@@ -37406,6 +37414,8 @@ The highlights of Leo 5.1
   in the browser.
 
 * A new IdleTime class greatly simplifies idle-time handling.
+
+* Leo now honors @language inside @doc parts, a major convenience.
 
 Links:
 ------
@@ -38085,6 +38095,7 @@ Here is git-difftool.bat::
     
     C:/python27/python.exe C:/leo.repo/leo-editor/launchLeo.py --diff "$2" "$5" | cat
 </t>
+<t tx="ekr.20150311164212.5">Fixed in rev fc3ea68.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

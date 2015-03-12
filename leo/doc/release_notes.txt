@@ -17024,6 +17024,8 @@ The highlights of Leo 5.1
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
+* Leo now honors @language inside @doc parts, a major convenience.
+
 Links:
 ------
 Leo:       http://leoeditor.com
@@ -17297,6 +17299,8 @@ Outline structure::
 - In the Docs node write changed.  Save .leo file and quit Leo.
 - Revert the change in git.
 - Reload Leo.  Change reappears **regardless** of --no-cache option!
+#@+node:ekr.20150311164212.5: *6* Fixed a unicode-related problem in the flatten-outline command
+Fixed in rev fc3ea68.
 #@+node:ekr.20150311123850.32: *5* Code level
 #@+node:ekr.20150311123850.33: *6* Removed unused file arguments in leoAtFile
 From at.readOpenFile, at.scanHeader and at.scanText4.
