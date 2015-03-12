@@ -1354,7 +1354,7 @@ class LeoImportCommands:
             fn = p.anyAtFileNodeName()
             ic.methodName,ic.fileType = g.os_path_splitext(fn)
         else:
-            d = g.app.define_language_extension_dict
+            d = g.app.language_extension_dict
             fileType = d.get(language,'py')
             ic.methodName,ic.fileType = p.h,fileType
         # g.trace(language,ext,parser and parser.__name__)
