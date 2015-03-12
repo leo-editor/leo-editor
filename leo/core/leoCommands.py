@@ -1764,12 +1764,11 @@ class Commands (object):
             c.importCommands.exportHeadlines(fileName)
     #@+node:ekr.20031218072017.2851: *6* c.flattenOutline
     def flattenOutline (self,event=None):
-
-        '''Export the selected outline to an external file.
-        The outline is represented in MORE format.'''
-
+        '''
+        Export the selected outline to an external file.
+        The outline is represented in MORE format.
+        '''
         c = self
-
         filetypes = [("Text files", "*.txt"),("All files", "*")]
 
         fileName = g.app.gui.runSaveFileDialog(

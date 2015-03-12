@@ -385,13 +385,19 @@ class LeoImportCommands:
         theFile.close()
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline (self,fileName):
+        '''
+        A helper for the flatten-outline command.
 
-        c = self.c ; nl = g.u(self.output_newline)
-        p = c.currentVnode()
-        if not p: return
+        Export the selected outline to an external file.
+        The outline is represented in MORE format.
+        '''
+        c = self.c
+        nl = g.u(self.output_newline)
+        p = c.p
+        if not p:
+            return
         self.setEncoding()
         firstLevel = p.level()
-
         try:
             theFile = open(fileName,'wb')
                 # Fix crasher: open in 'wb' mode.
@@ -399,16 +405,13 @@ class LeoImportCommands:
             g.warning("can not open",fileName)
             c.testManager.fail()
             return
-
         for p in p.self_and_subtree():
-            head = p.moreHead(firstLevel)
-            s = head + nl
-            if g.isPython3:
-                s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+            s = p.moreHead(firstLevel) + nl
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
             theFile.write(s)
-            body = p.moreBody() # Inserts escapes.
-            if len(body) > 0:
-                s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            s = p.moreBody() + nl # Inserts escapes.
+            if s.strip():
+                s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 theFile.write(s)
         theFile.close()
     #@+node:ekr.20031218072017.1148: *4* ic.outlineToWeb
