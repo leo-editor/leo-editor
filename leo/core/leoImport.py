@@ -1349,6 +1349,14 @@ class LeoImportCommands:
         self.treeType = '@file'
         ext = '.' + g.app.language_extension_dict.get(language)
         parser = self.body_parser_for_ext(ext)
+        # Fix bug 151: parse-body creates "None declarations"
+        if p.isAnyAtFileNode():
+            fn = p.anyAtFileNodeName()
+            ic.methodName,ic.fileType = g.os_path_splitext(fn)
+        else:
+            d = define_language_extension_dict
+            fileType = d.get(language,'py')
+            ic.methodName,ic.fileType = p.h,fileType
         # g.trace(language,ext,parser and parser.__name__)
         if parser:
             bunch = c.undoer.beforeChangeTree(p)

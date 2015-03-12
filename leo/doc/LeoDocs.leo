@@ -3634,6 +3634,7 @@
 <v t="ekr.20150311123850.30"><vh>Fixed bug 138: goto-global-line doesn't work properly in @nosent files</vh></v>
 <v t="ekr.20150311123850.31"><vh>Fixed bug 149: Clones can revert changes made by git discard...</vh></v>
 <v t="ekr.20150311164212.5"><vh>Fixed a unicode-related problem in the flatten-outline command</vh></v>
+<v t="ekr.20150311164212.7"><vh>Fixed bug 151: parse-body creates "None declarations"</vh></v>
 </v>
 <v t="ekr.20150311123850.32"><vh>Code level</vh>
 <v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
@@ -38096,6 +38097,8 @@ Here is git-difftool.bat::
     C:/python27/python.exe C:/leo.repo/leo-editor/launchLeo.py --diff "$2" "$5" | cat
 </t>
 <t tx="ekr.20150311164212.5">Fixed in rev fc3ea68.</t>
+<t tx="ekr.20150311164212.7">https://github.com/leo-editor/leo-editor/issues/151
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
