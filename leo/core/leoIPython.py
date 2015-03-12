@@ -2,14 +2,23 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
 #@@first
+
 '''
 Support for the --ipython command-line option and the IPython bridge:
 http://leoeditor.com/IPythonBridge.html
 
-This code will run on IPython 1.0 and higher, as well as the IPython 0.x
-versions that define the IPKernelApp class.
+This code will run on IPython 1.0 and higher, as well as the IPython
+0.x versions that define the IPKernelApp class.
 
-This module replaces leo.external.ipy_leo and leo.plugins.internal_ipkernel.
+This module replaces leo.external.ipy_leo and
+leo.plugins.internal_ipkernel.
+
+The ``--ipython`` command-line argument creates g.app.ipk, a
+*singleton* IPython shell, shared by all IPython consoles.
+
+The startup code injects a single object, _leo, into the IPython namespace.
+This object, a LeoNameSpace instance, simplifies dealing with multiple open
+Leo commanders.
 '''
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
@@ -194,5 +203,6 @@ class LeoNameSpace(object):
 #@-others
 #@@language python
 #@@tabwidth -4
+
 
 #@-leo
