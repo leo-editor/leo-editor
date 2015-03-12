@@ -2214,7 +2214,7 @@
 <v t="ekr.20150311123850.52"><vh>colorizer for @ &amp; @doc now honors @language</vh></v>
 </v>
 <v t="ekr.20150311123850.53"><vh>Major features</vh>
-<v t="ekr.20150311123850.54"><vh>@clean updates outlines automatically</vh></v>
+<v t="ekr.20150311123850.54"><vh>\@clean updates outlines automatically</vh></v>
 <v t="ekr.20150311123850.55"><vh>Steve Zatz: in praise of @clean</vh></v>
 <v t="ekr.20150311123850.56"><vh>Why @clean is so important</vh></v>
 <v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>

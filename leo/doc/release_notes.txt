@@ -474,7 +474,7 @@ Example 2:
     # resume python code.
     
 #@+node:ekr.20150311123850.53: *3* Major features
-#@+node:ekr.20150311123850.54: *4* @clean updates outlines automatically
+#@+node:ekr.20150311123850.54: *4* \@clean updates outlines automatically
 Rev 7a851eb enables automatic updating of @nosent files. When loading a .leo file, Leo will automatically update @nosent trees if the corresponding external file has been changed outside Leo! This is one of the most important advances in Leo's history.
 
 As discussed yesterday, using @nosent files is about twice as fast as using @shadow trees. No shadow directories or shadow files are needed: it's trivial to recreate the "shadow" data from the @nosent tree!
