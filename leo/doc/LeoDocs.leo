@@ -16930,22 +16930,22 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">** New scripts chapter: will contain important scripts from scripts.leo
-** Ask people to report poor docstrings.
-** Scan for poor docstrings:  Use a script.
-
+<t tx="ekr.20150215071358.87">First:
+- New scripts chapter: will contain important scripts from scripts.leo
+- Ask people to report poor docstrings.
+- Scan for poor docstrings:  Use a script.
+- Revise 5.1 release notes.
+    - Links to other docs?
+    - Link to the Mulder/Ream algorithm from the release notes.
+    
+Next:
 - Test read web page
 - Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
 - Document @auto-rst/md/vo/otl.
     - Bug: @auto-org is not @auto-otl.
-- Write a section for Leo 5.0 in the history of Leo.
-- Revise 5.1 release notes.
-    - Links to other docs?
-    - Link to the Mulder/Ream algorithm from the release notes.
 - Improve scripting chapter, cheat sheet.
     - Mention Aha's, scripts, etc.
-
 </t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
