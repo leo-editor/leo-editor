@@ -2027,7 +2027,7 @@
 <v t="ekr.20150312080344.15"><vh>** For scripting Chapter</vh>
 <v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
 <v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
-<v t="ekr.20150312080344.14"><vh>Using classes instead of functions</vh></v>
+<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
 <v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
 </v>
 <v t="ekr.20150312013449.5"><vh>Commands to be documented</vh>
@@ -15634,17 +15634,11 @@ After installing docutils or sphinx, you must restart Leo so that the new instal
 </t>
 <t tx="ekr.20131105110107.16908"></t>
 <t tx="ekr.20131105110107.16910"></t>
-<t tx="ekr.20131105110107.16913">The quicksearch plugin now supports the go-anywhere command. It works "sort
-of" like Nav bar. Also Nav bar now does live search on headline (you have
-to press enter to force search of bodies as well)
+<t tx="ekr.20131105110107.16913">The quicksearch plugin now supports the go-anywhere command. It works "sort of" like Nav bar. Also Nav bar now does live search on headline (you have to press enter to force search of bodies as well)
 
-Once the hits are shows, you can navigate them by pressing up/down while
-focus is still in line editor &amp; you can keep on typing (sort of like
-sublime text).
+Once the hits are shows, you can navigate them by pressing up/down while focus is still in line editor &amp; you can keep on typing (sort of like sublime text).
 
-This has a very clever hack (even if I say so myself)--spaces in search
-string are replaced with * wild card. So if you search for, say "file txt",
-it will search for "file*txt", matching e.g. @file readme.txt
+This has a very clever hack (even if I say so myself)--spaces in search string are replaced with * wild card. So if you search for, say "file txt", it will search for "file*txt", matching e.g. @file readme.txt
 </t>
 <t tx="ekr.20131105110107.16915">Instead of just printing their docstrings.
 </t>
@@ -16976,28 +16970,15 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141120113801.164">A head-slapping moment: the so-called high-level interfaced throughout
-Leo's core to interact with Leo's text panes lacks a way of getting the
-length of text *without* making a copy of the text.
+<t tx="ekr.20141120113801.164">@language rest
+.. @language python below
+A head-slapping moment: the so-called high-level interfaced throughout Leo's core to interact with Leo's text panes lacks a way of getting the length of text *without* making a copy of the text.
 
-This is more than a slight oversight: I imagine there are several place
-were the code does s = w.getAllText() merely so it can use len(s)! This is
-a huge strain on the GC for large p.b.
+This is more than a slight oversight: I imagine there are several place were the code does s = w.getAllText() merely so it can use len(s)! This is a huge strain on the GC for large p.b.
 
-Worse, the absence of w.getTextLength() has lead to the most unfortunate
-LeoQTextEditWidget.lengthHelper, which calculated the length of the text
-using QTextCursor methods! This is catastrophically slow for large text.
-This method was doubling node load times for large nodes.
+Worse, the absence of w.getTextLength() has lead to the most unfortunate LeoQTextEditWidget.lengthHelper, which calculated the length of the text using QTextCursor methods! This is catastrophically slow for large text. This method was doubling node load times for large nodes. In other words, w.getTextLength() is an essential part of fixing git bug 28: https://github.com/leo-editor/leo-editor/issues/28
 
-@language rest
-
-In other words, w.getTextLength() is an essential part of fixing git bug 28:
-https://github.com/leo-editor/leo-editor/issues/28
-
-But nooooooo... w.getTextLength() is far from easy to do. There is no
-QTextEdit or QTextDocument method that delivers the length of the text!
-This is a *huge* hole in the QTextEdit and QTextDocument api's, but there
-is nothing we can do about that.
+But nooooooo... w.getTextLength() is far from easy to do. There is no QTextEdit or QTextDocument method that delivers the length of the text! This is a *huge* hole in the QTextEdit and QTextDocument api's, but there is nothing we can do about that.
 
 The simplest thing that could possibly work would be::
 
@@ -17009,17 +16990,11 @@ The simplest thing that could possibly work would be::
         
 @language rest
 
-But this would be a step backwards because it hides the fact that it is
-expensive.
+But this would be a step backwards because it hides the fact that it is expensive.
 
-It might be possible to cache the value of w.getAllText in an "text
-changed" event handler in LeoQTextBrowser:(QTextBrowser). But I would like
-to avoid this approach--any bug would lead to data loss or corruption. I
-may play around with this, but for now it's not likely to happen. See below
-for a workaround.
+It might be possible to cache the value of w.getAllText in an "text changed" event handler in LeoQTextBrowser:(QTextBrowser). But I would like to avoid this approach--any bug would lead to data loss or corruption. I may play around with this, but for now it's not likely to happen. See below for a workaround.
 
-By analogy with w.getTextLength(), we can imagine a p.b_length method that
-would simply return len(p.v._bodyString). This, at least, is worth doing.
+By analogy with w.getTextLength(), we can imagine a p.b_length method that would simply return len(p.v._bodyString). This, at least, is worth doing.
 
 ===== Summary
 
@@ -17027,10 +17002,7 @@ w.getTextLength() isn't trivial.
 
 Caching the value returned by w.getAllText() seems too dangerous.
 
-As a work-around, the crucial node-selection logic will attempt to minimize
-calls to w.getAllText. There, and *only* there, it should be possible to
-create a *single* copy of the text and pass that copy around to all code
-that needs it. It would be a complication, but a completely safe one.
+As a work-around, the crucial node-selection logic will attempt to minimize calls to w.getAllText. There, and *only* there, it should be possible to create a *single* copy of the text and pass that copy around to all code that needs it. It would be a complication, but a completely safe one.
 
 Otoh, p/v.b_length are trivial and useful. They will be added asap.
 
@@ -17040,11 +17012,9 @@ Two parts to this reply:
 
 ===== Part 1: defining w.getTextLength
 
-&gt; w.getTextLength() isn't trivial...Caching the value returned by
-w.getAllText() seems too dangerous.
+&gt; w.getTextLength() isn't trivial...Caching the value returned by w.getAllText() seems too dangerous.
 
-Actually, defining w.getTextLength using a textChanged event handler in
-LeoQTextBrowser is straightforward::
+Actually, defining w.getTextLength using a textChanged event handler in LeoQTextBrowser is straightforward::
 
 @language python
 
@@ -17065,34 +17035,25 @@ LeoQTextBrowser is straightforward::
             
 @language rest
 
-We can use the "safe" version of getTextLength until we are *sure* the can
-not happen message never happens ;-)
+We can use the "safe" version of getTextLength until we are *sure* the can not happen message never happens ;-)
 
-Otoh, we must be careful: onTextChanged will be called in the middle of the
-node-switching logic.
+Otoh, we must be careful: onTextChanged will be called in the middle of the node-switching logic.
 
 ===== Part 2: doing without w.getTextLength
 
-Imo, the simplest thing that could possibly work is to avoid the extra call
-to w.getAllText in the node switching logic in selectHelper.
+The simplest thing that could possibly work is to avoid the extra call to w.getAllText in the node switching logic in selectHelper.
 
 Here are the relevant parts of selectHelper. (w is a LeoQTextEditWidget).
 
-1. setBodyTextAfterSelect *already* calls w.getAllText() to get the
-   "before" text. This is unavoidable.
+1. setBodyTextAfterSelect *already* calls w.getAllText() to get the "before" text. This is unavoidable.
 
 The "after" text will be p.b, where p is the *new* position.
 
-2. restoreCursorAndScroll calls w.setInsertPoint, which just calls
-   w.setSelectionRangeHelper.
+2. restoreCursorAndScroll calls w.setInsertPoint, which just calls w.setSelectionRangeHelper.
 
-3. w.setSelectionRangeHelper is the problem It used to call the horribly
-   slow lengthHelper. Now it calls w.getAllText()
+3. w.setSelectionRangeHelper is the problem It used to call the horribly slow lengthHelper. Now it calls w.getAllText()
 
-But w.getAllText must be the new p.b! So the selectHelper logic could
-simply pass an optional s argument to w.setInsertPoint and
-w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s
-rather than calling w.getAllText.
+But w.getAllText must be the new p.b! So the selectHelper logic could simply pass an optional s argument to w.setInsertPoint and w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s rather than calling w.getAllText.
 
 Imo, this is the safe, if not exactly elegant way.
 </t>
@@ -18265,9 +18226,8 @@ Here is git-difftool.bat::
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
 </t>
-<t tx="ekr.20150312013449.5">@language rest
-
-This documentation should be folded into the users guide.</t>
+<t tx="ekr.20150312013449.5">
+</t>
 <t tx="ekr.20150312025000.2351">beautify
 beautify-all
 beautify-c
@@ -18306,13 +18266,13 @@ Users wanting to use these commands can set in their myLeoSettings.leo::
   backward-delete-word-smart = Ctrl-BackSpace
 </t>
 <t tx="ekr.20150312080344.12">@language rest
+.. @language python below
 
 This post will summarize what has already been done and what will be done in the next few days.  Let's start with the basics...
 
 ===== About wrappers and widgets
 
-Wrapper and widget classes are at the heart of Leo's design. Clarifying the
-relationships between wrappers and widgets started the present avalanche.
+Wrapper and widget classes are at the heart of Leo's design. Clarifying the relationships between wrappers and widgets started the present avalanche.
 
 Here is what you *must know* to understand Leo's core:
 
@@ -18320,69 +18280,37 @@ Here is what you *must know* to understand Leo's core:
 
 Leo's core seldom accesses widgets directly. Instead...
 
-2. A **wrapper class** defines a standard api that hides the details of the
-   underlying gui **text** widgets.
+2. A **wrapper class** defines a standard api that hides the details of the underlying gui **text** widgets.
 
-Leo's core uses this api almost exclusively. That is, Leo's core code
-treats wrappers *as if* they were only text widgets there are!
+Leo's core uses this api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
 
-There is, however, a back door for (hopefully rare!) special cases. All
-wrapper classes define an official "widget" ivar, so core or plugin code
-can gain access to the real Qt widget using wrapper.widget. Searching for
-wrapper.widget will (or soon will) find all gui-dependent snippets of code
-in Leo's core.
+There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official "widget" ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget should find all gui-dependent snippets of code in Leo's core.
 
-3. Wrappers are crucial, even if Leo *always* uses the Qt gui.
-
-This has just become crystal clear to me. Indeed:
-
-- Wrappers allow users to choose different Qt widgets for the body pane,
-  without changing *any* of Leo's core code (except the startup code).
-
-- Wrappers allow Leo's text-handling code to remain unchanged regardless of
-  whether the body or log panes are a QTextBrowser or a QsciScintilla
-  widget.
-
-- Without wrappers, all of Leo's text-editing commands would have to know
-  the details of the api of the actual Qt text widget!
+Wrappers are crucial, even if Leo *always* uses the Qt gui. Wrappers allow users to choose different Qt widgets for the body pane, without changing *any* of Leo's core code, except the startup code that actually allocates widgets. Wrappers allow Leo's text-handling code to remain unchanged regardless of whether the body or log panes are a QTextBrowser or a QsciScintilla widget. Without wrappers, all of Leo's text-editing commands would have to know the details of the api of the actual Qt text widget!
 
 ==== Summary of the avalanche
 
 Here is what is happening now in Leo's code base, and in my thinking!
 
-1. A collapse in the complexity of relationships between Leo's most
-   important classes and between the files containing those classes.
+1. A collapse in the complexity of relationships between Leo's most important classes and between the files containing those classes.
 
-qt_text.py was supposedly a minor reorg. Wrong! It has become the road map
-to the reorganization of all of Leo's fundamental classes:
+qt_text.py was supposedly a minor reorg. Wrong! It has become the road map to the reorganization of all of Leo's fundamental classes:
 
 - qt_text.py is *self contained*: it doesn't depend on any other classes!
 
-- qt_text.py defines a QTextMixin class. This is a new kind of class for
-  me. As its name suggest, it is not so much a base class as a helper
-  class. It provides helper code for all of Leo's Qt wrapper widgets.
+- qt_text.py defines a QTextMixin class. This is a new kind of class for me. As its name suggest, it is not so much a base class as a helper class. It provides helper code for all of Leo's Qt wrapper widgets.
 
-- All the classes that use QTextMixin implement the HighLevelInterface
-  class in leoFrame.py.
+- All the classes that use QTextMixin implement the HighLevelInterface class in leoFrame.py.
 
-The HighLevelInterface class will soon morph into the WrapperInterface
-class. Th WrapperInterface class will contain only the definition of
-methods and their docstrings. Unlike the HighLevelInterface class, the
-WrapperInterface will contain *no* redirection code!
+The HighLevelInterface class will soon morph into the WrapperInterface class. Th WrapperInterface class will contain only the definition of methods and their docstrings. Unlike the HighLevelInterface class, the WrapperInterface will contain *no* redirection code!
 
-- If we were (heaven forbid) going to change Leo's gui, we would simply use
-  a copy of qt_text.py, say new_gui.text.py, as a starting point.
+- If we were (heaven forbid) going to change Leo's gui, we would simply use a copy of qt_text.py, say new_gui.text.py, as a starting point.
 
 2. All "redirection" code will soon be gone.
 
-Ville, Terry and I will be much happier. Eliminating this cruft makes Leo's
-code both lighter and thicker, to use the go terminology. It's lighter
-because there is far less blah, blah, blah. It's thicker because there is
-less to check and to fail.
+Ville, Terry and I will be much happier. Eliminating this cruft makes Leo's code both lighter and thicker, to use the go terminology. It's lighter because there is far less blah, blah, blah. It's thicker because there is less to check and to fail.
 
-It's easy to eliminate redirection. For example, the LeoBody methods that
-just call the corresponding wrapper methods will soon be gone. We'll
-change::
+It's easy to eliminate redirection. For example, the LeoBody methods that just call the corresponding wrapper methods will soon be gone. We'll change::
 
     c.frame.body.wrapperMethod
 
@@ -18390,81 +18318,48 @@ to::
 
     c.frame.body.wrapper.wrapperMethod
 
-Doh! This should have been done years ago. Yes, it's more verbose, but it's
-also more explicit. Furthermore, few such calls actually exist!
+Doh! This should have been done years ago. Yes, it's more verbose, but it's also more explicit. Furthermore, few such calls actually exist!
 
-3. widget.widget and other type-checking horrors will soon be a thing of
-   the past.
+3. widget.widget and other type-checking horrors will soon be a thing of the past.
 
-New coding conventions will remove all confusion between wrappers and
-widgets. Wrappers will *always* be called wrappers, never widgets.
+New coding conventions will remove all confusion between wrappers and widgets. Wrappers will *always* be called wrappers, never widgets.
 
-There is/was something both fundamentally wrong and confusing about
-widget.widget. The first widget must have a different type than the second,
-but there is *no* indication of this fundamental fact. The reorg changes
-widget.widget to wrapper.widget everywhere.
+There has always been something both fundamentally wrong and confusing about widget.widget. The first widget must have a different type than the second, but there is *no* indication of this fundamental fact. The reorg changes widget.widget to wrapper.widget everywhere.
 
 4. I have a new approach toward type checking.
 
-It is obvious now, in retrospect, that clarity of design is something much
-more important than type checking! Leo's code will soon make the types of
-objects *explicit* and this far more important in practice than even
-"perfect" static type checking. This is a revolution in my thinking.
+It is obvious now, in retrospect, that clarity of design is something much more important than type checking! Leo's code will soon make the types of objects *explicit* and this far more important in practice than even "perfect" static type checking. This is a revolution in my thinking.
 
-pylint, while supremely important for day-to-day programming, is *totally
-inadequate* to have produced the design changes I have been discussing.
+pylint, while supremely important for day-to-day programming, is *totally inadequate* to have produced the design changes I have been discussing.
 
-Now that widgets are always clearly distinct from wrappers, we could
-imaging type-checking assertions to verify their apparent types. Imo, such
-assertions are seldom pythonic, but in this case assertions might be good
-documentation, if nothing else. The assertions would be based on the
-following functions:
+Now that widgets are always clearly distinct from wrappers, we could imaging type-checking assertions to verify their apparent types. Imo, such assertions are seldom pythonic, but in this case assertions might be good documentation, if nothing else. The assertions would be based on the following functions:
 
 - g.isWrapper(obj): calls g.app.gui.isWrapper(obj)
 - g.isWidget(obj): calls g.app.gui.isWidget(obj)
 
-5. A dead-easy script shows how to enforce the relationships between types
-   that really matter.
+5. A dead-easy script shows how to enforce the relationships between types that really matter.
 
-This is a big Aha. The script merely compares dir(o1) with dir(o2), where
-o1 is the "template" HighLevelInterface class in leoFrame.py and o2 is one
-of QTextEditWrapper or QScintillaWrapper. You could call this the "back
-door" approach to type checking. It's sooo easy! No more messing with
-ast's!
+This is a big Aha. The script merely compares dir(o1) with dir(o2), where o1 is the "template" HighLevelInterface class in leoFrame.py and o2 is one of QTextEditWrapper or QScintillaWrapper. You could call this the "back door" approach to type checking. It's sooo easy! No more messing with ast's!
 
-As a result of running this script, (given in the P.P.S.) I was able to
-removed cruft from both the HighLevelInterface class, and other parts of
-Leo's code.
+As a result of running this script, (given in the P.P.S.) I was able to removed cruft from both the HighLevelInterface class, and other parts of Leo's code.
 
 ===== Summary
 
 None of these massive changes adds anything directly to Leo :-)
 
-However, they make understanding and changing Leo's code far easier and
-more pleasant. Leo's code is now more beautiful.
+However, they make understanding and changing Leo's code far easier and more pleasant. Leo's code is now more beautiful.
 
-Imo, these changes are long overdue. They fundamentally improve Leo's code
-base.
-
-That's all for now. I'll keep you posted as I change code, but this post
-covers all the essentials.
+Imo, these changes are long overdue. They fundamentally improve Leo's code base.
 
 Edward
 
-P.S. git and easier access to pylint contributed to the present avalanche
-of energy and ideas.
+P.S. git and easier access to pylint contributed to the present avalanche of energy and ideas.
 
-Git has allowed me to revise Leo's source code radically, with complete
-safety. I would never have done what I have done lately with bzr.
+Git has allowed me to revise Leo's source code radically, with complete safety. I would never have done what I have done lately with bzr.
 
-Leo's new pylint command allows me to run pylint *easily* on one or more
-"recent" files, *without* having to change any list. As a result, I run
-pylint much more often.
+Leo's new pylint command allows me to run pylint *easily* on one or more "recent" files, *without* having to change any list. As a result, I run pylint much more often.
 
-P.P.S. Here is the script that checks that all text wrapper classes
-implement all required methods. This is, to the first approximation, the
-only type checking that Leo really needs. It will probably become a unit
-test.
+P.P.S. Here is the script that checks that all text wrapper classes implement all required methods. This is, to the first approximation, the only type checking that Leo really needs. It will probably become a unit test.
 
 @language python
 
@@ -18497,46 +18392,30 @@ test.
 
 =====
 
-This project appears to be a complete success. No further work is planned.
-I have encountered no problems at all during this reorg, and don't expect
-any, but we shall see...
+This project appears to be a complete success. No further work is planned. I have encountered no problems at all during this reorg, and don't expect any, but we shall see...
 
 Here are the highlights:
 
 1. *All* of the odious redirection code in Leo is gone.
  
-The redirection code appeared in various places, especially in the
-HighLevelInterface class.
+The redirection code appeared in various places, especially in the HighLevelInterface class.
 
-2. The HighLevelInterface class is gone: the LeoBody and LeoLog classes are
-   now subclasses of object.
+2. The HighLevelInterface class is gone: the LeoBody and LeoLog classes are now subclasses of object.
 
-3. The logCtrl property is gone: the LeoLog class now defines a .logCtrl
-   ivar.
+3. The logCtrl property is gone: the LeoLog class now defines a .logCtrl ivar.
 
-This ivar is inherently tricky: depending on which log *tab* is selected,
-LeoLog.logCtrl may be either a wrapper or a widget!
+This ivar is inherently tricky: depending on which log *tab* is selected, LeoLog.logCtrl may be either a wrapper or a widget!
 
-Because LeoLog no longer contains redirection code a hack was needed.
-k.masterKeyHandler redirects text-related events originally sent to the
-c.frame.log to c.frame.log.logWidget, which, confusingly enough, is
-actually a text wrapper.
+Because LeoLog no longer contains redirection code a hack was needed. k.masterKeyHandler redirects text-related events originally sent to the c.frame.log to c.frame.log.logWidget, which, confusingly enough, is actually a text wrapper.
 
-4. leoFrame.py contains several new API classes: ColorizerAPI, IconBarAPI,
-   StatusLineAPI and WrapperAPI.
+4. leoFrame.py contains several new API classes: ColorizerAPI, IconBarAPI, StatusLineAPI and WrapperAPI.
 
 No class is a subclass of these classes: they are for unit testing only.
 
-The new unit test, "@test interfaces using API classes", checks that
-classes implement all the methods in the corresponding API class. This is
-not a perfect solution and it is no substitute for pylint. Nevertheless,
-these API classes are good documentation, and they did result in a few new
-methods being added to each tested "Null" class.
-
-That's all! You may not believe it, but I think of all this work as being
-related to fixing bugs. I'll now return more directly to bug fixes.
+The new unit test, "@test interfaces using API classes", checks that classes implement all the methods in the corresponding API class. This is not a perfect solution and it is no substitute for pylint. Nevertheless, these API classes are good documentation, and they did result in a few new methods being added to each tested "Null" class.
 </t>
 <t tx="ekr.20150312080344.13">@language rest
+.. @language python below
 
 Rev 060c33a contains a spectacular collapse in complexity in idle-time
 handling.
@@ -18639,59 +18518,16 @@ Here is the output::
     handler2 10 ekr.leo 10.1400
     handler2 done
 </t>
-<t tx="ekr.20150312080344.14">In an earlier post I said:
+<t tx="ekr.20150312080344.14">@language rest
+.. @language python below
 
-QQQ
+It's easy to replace methods with classes.  Just add a __call__ method. Yes, several of Leo's commands are implemented this way. But read on...
 
-Strictly speaking, tab cycling doesn't have to be disabled for all colon
-commands. One could imaging a list of commands that use tab to complete
-file names. Otoh, maintaining that list would be clumsy, and it would add
-still more special cases to ga.do_tab.
+Various vim commands advertise, by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim's tab handler no longer knows *anything* about colon commands, or what any command intends to do with the tab! If the command handler has a tab_callback attribute, vim's tab handler just calls it!
 
-QQQ
+Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial::
 
-This post describes a much better way, done at rev 3994eca.
-
-The new code is gorgeous, if I do say so myself. Even better, the solution
-is a design pattern with many applications.
-
-The trick is to replace functions implementing commands by classes having
-`__call__` methods. See the P.P.S for details.
-
-Yes, this has all been done before. Several of Leo's commands are
-implemented this way. But read on...
-
-What's new is that classes can "advertise" their ability to do various
-things. Here, the classes implementing vim commands advertise, by having a
-tab_callback method, that they want to handle a tab that follows their
-name. ga.do_tab then defers to the vim command.
-
-There are several really cool things about this code.
-
-1. ga.do_tab, and its helper, ga.do_tab_callback, no longer know *anything*
-    about colon commands, or what any command intends to do with the
-    tab(!!). If the command handler has a tab_callback attribute,
-    ga.do_tab_callback just does::
-
-     ga.reset_tab_cycling()
-     k.functionTail = tail # For k.getFileName.
-     handler.tab_callback()
-
-Nothing could be simpler, or more general.
-
-2. The code in the command classes is simplified as well. No need for a
-   kludgy test event.get_arg_value. See the P.S. for the full
-   implementation of the :tabnew command.
-
-The overall result is a spectacular collapse in complexity, which the
-attendant increase in power and generality.
-
-Edward
-
-P.S. Here is the flattened form of the class that handles the :tabnew
-command (does not require vim-mode). In particular, note that the __call__
-and tab_callback methods are trivial. This is the way it is written in The
-Book.
+@language python
 
 class Tabnew:
     '''
@@ -18722,18 +18558,15 @@ class Tabnew:
                 pass
         else:
             c.new()
+            
+@language rest
 
-P.P.S. This pattern is particularly well suited to Leo, because the various
-getPublicCommands methods reference those functions when create command
-dictionaries. Here, we replace just two entries in the dict::
+This pattern is particularly well suited to Leo, because the various getPublicCommands methods reference those functions in their command dictionaries. Here, the new entries are::
 
-    ':r':   vc.LoadFileAtCursor(vc),
-    ':tabnew': vc.Tabnew(vc),
+@language python
 
-This creates instances of the LoadFileAtCursor and Tabnew classes. In other
-words, we replace a function by an instance of a class. All such classes
-must have __call__ methods, so that Leo can "call" the instance as if it
-were a function.
+    ':r':       vc.LoadFileAtCursor(vc),
+    ':tabnew':  vc.Tabnew(vc),
 </t>
 <t tx="ekr.20150312080344.15"></t>
 <t tx="ekr.20150312080344.16">The default workbook contains both the cheat sheet and an example from the
@@ -21479,7 +21312,8 @@ requires that @font-size-body is being used in stylesheet
     putOperator:      puts whitespace around operators.
     putNormalToken:   puts whitespace around everything else.
 </t>
-<t tx="ekr.20150313083748.12118"></t>
+<t tx="ekr.20150313083748.12118">This documentation should be folded into the users guide.
+</t>
 <t tx="ekr.20150313083748.12122"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
