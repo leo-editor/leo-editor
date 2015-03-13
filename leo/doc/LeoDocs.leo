@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
+<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -666,6 +666,7 @@
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
+<v t="ekr.20150313083748.12115"><vh>Toggling angle brackets</vh></v>
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
 <v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
 <v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
@@ -684,12 +685,13 @@
 <v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes</vh></v>
 <v t="ekr.20120319170934.6097"><vh>Cutting, pasting and deleting nodes</vh></v>
 <v t="ekr.20120319170934.6094"><vh>Navigating through the outline</vh></v>
-<v t="ekr.20120319170934.6098"><vh>Moving &amp; Reorganizing nodes</vh></v>
+<v t="ekr.20120319170934.6098"><vh>Moving &amp; reorganizing nodes</vh></v>
 <v t="ekr.20120319170934.6099"><vh>Cloning nodes</vh></v>
 <v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
 <v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
-<v t="EKR.20040524104904.144"><vh>Checking outlines</vh></v>
+<v t="EKR.20040524104904.144"><vh>Checking python syntax</vh></v>
+<v t="ekr.20150313083748.12117"><vh>Pretty printing Python code</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
 <v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
@@ -1175,94 +1177,877 @@
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 </v>
 </v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
+<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
+<v t="ekr.20150227184811.5"><vh>Done</vh></v>
+<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
+<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
+</v>
+<v t="ekr.20150313083748.11306"><vh>Docstrings</vh>
+<v t="ekr.20150313083748.11307"><vh>:%</vh>
+<v t="ekr.20150313083748.11308"><vh>:%s</vh></v>
+<v t="ekr.20150313083748.11309"><vh>:s</vh></v>
+</v>
+<v t="ekr.20150313083748.11310"><vh>:r</vh>
+<v t="ekr.20150313083748.11311"><vh>:r</vh></v>
+</v>
+<v t="ekr.20150313083748.11312"><vh>:tabnew</vh>
+<v t="ekr.20150313083748.11313"><vh>:e</vh></v>
+<v t="ekr.20150313083748.11314"><vh>:tabnew</vh></v>
+</v>
+<v t="ekr.20150313083748.11315"><vh>AbbrevCommandsClass</vh>
+<v t="ekr.20150313083748.11316"><vh>abbrev-add-global</vh></v>
+<v t="ekr.20150313083748.11317"><vh>abbrev-inverse-add-global</vh></v>
+<v t="ekr.20150313083748.11318"><vh>abbrev-kill-all</vh></v>
+<v t="ekr.20150313083748.11319"><vh>abbrev-list</vh></v>
+<v t="ekr.20150313083748.11320"><vh>abbrev-read</vh></v>
+<v t="ekr.20150313083748.11321"><vh>abbrev-write</vh></v>
+<v t="ekr.20150313083748.11322"><vh>dabbrev-completion</vh></v>
+<v t="ekr.20150313083748.11323"><vh>dabbrev-expands</vh></v>
+<v t="ekr.20150313083748.11324"><vh>toggle-abbrev-mode</vh></v>
+</v>
+<v t="ekr.20150313083748.11325"><vh>AtFile</vh>
+<v t="ekr.20150313083748.11326"><vh>check-derived-file</vh></v>
+<v t="ekr.20150313083748.11327"><vh>write-at-auto-nodes</vh></v>
+<v t="ekr.20150313083748.11328"><vh>write-dirty-at-auto-nodes</vh></v>
+</v>
+<v t="ekr.20150313083748.11329"><vh>AutoCompleterClass</vh>
+<v t="ekr.20150313083748.11330"><vh>auto-complete</vh></v>
+<v t="ekr.20150313083748.11331"><vh>auto-complete-force</vh></v>
+<v t="ekr.20150313083748.11332"><vh>disable-autocompleter</vh></v>
+<v t="ekr.20150313083748.11333"><vh>disable-calltips</vh></v>
+<v t="ekr.20150313083748.11334"><vh>enable-autocompleter</vh></v>
+<v t="ekr.20150313083748.11335"><vh>enable-calltips</vh></v>
+<v t="ekr.20150313083748.11336"><vh>show-calltips</vh></v>
+<v t="ekr.20150313083748.11337"><vh>show-calltips-force</vh></v>
+<v t="ekr.20150313083748.11338"><vh>toggle-autocompleter</vh></v>
+<v t="ekr.20150313083748.11339"><vh>toggle-calltips</vh></v>
+</v>
+<v t="ekr.20150313083748.11340"><vh>BufferCommandsClass</vh>
+<v t="ekr.20150313083748.11341"><vh>buffer-append-to</vh></v>
+<v t="ekr.20150313083748.11342"><vh>buffer-kill</vh></v>
+<v t="ekr.20150313083748.11343"><vh>buffer-prepend-to</vh></v>
+<v t="ekr.20150313083748.11344"><vh>buffer-switch-to</vh></v>
+<v t="ekr.20150313083748.11345"><vh>buffers-list</vh></v>
+<v t="ekr.20150313083748.11346"><vh>buffers-list-alphabetically</vh></v>
+</v>
+<v t="ekr.20150313083748.11347"><vh>ChapterController</vh>
+<v t="ekr.20150313083748.11348"><vh>chapter-clone-node-to</vh></v>
+<v t="ekr.20150313083748.11349"><vh>chapter-convert-node-to</vh></v>
+<v t="ekr.20150313083748.11350"><vh>chapter-copy-node-to</vh></v>
+<v t="ekr.20150313083748.11351"><vh>chapter-create</vh></v>
+<v t="ekr.20150313083748.11352"><vh>chapter-create-from-node</vh></v>
+<v t="ekr.20150313083748.11353"><vh>chapter-move-node-to</vh></v>
+<v t="ekr.20150313083748.11354"><vh>chapter-remove</vh></v>
+<v t="ekr.20150313083748.11355"><vh>chapter-rename</vh></v>
+<v t="ekr.20150313083748.11356"><vh>chapter-select</vh></v>
+</v>
+<v t="ekr.20150313083748.11357"><vh>Commands</vh>
+<v t="ekr.20150313083748.11358"><vh>about-leo</vh></v>
+<v t="ekr.20150313083748.11359"><vh>add-comments</vh></v>
+<v t="ekr.20150313083748.11360"><vh>beautify</vh></v>
+<v t="ekr.20150313083748.11361"><vh>beautify-all</vh></v>
+<v t="ekr.20150313083748.11362"><vh>beautify-c</vh></v>
+<v t="ekr.20150313083748.11363"><vh>beautify-tree</vh></v>
+<v t="ekr.20150313083748.11364"><vh>check-outline</vh></v>
+<v t="ekr.20150313083748.11365"><vh>clean-recent-files</vh></v>
+<v t="ekr.20150313083748.11366"><vh>clear-recent-files</vh></v>
+<v t="ekr.20150313083748.11367"><vh>clone-find-parents</vh></v>
+<v t="ekr.20150313083748.11368"><vh>clone-marked-nodes</vh></v>
+<v t="ekr.20150313083748.11369"><vh>clone-node</vh></v>
+<v t="ekr.20150313083748.11370"><vh>clone-node-to-last-node</vh></v>
+<v t="ekr.20150313083748.11371"><vh>close-window</vh></v>
+<v t="ekr.20150313083748.11372"><vh>contract-all</vh></v>
+<v t="ekr.20150313083748.11373"><vh>contract-all-other-nodes</vh></v>
+<v t="ekr.20150313083748.11374"><vh>contract-node</vh></v>
+<v t="ekr.20150313083748.11375"><vh>contract-or-go-left</vh></v>
+<v t="ekr.20150313083748.11376"><vh>contract-parent</vh></v>
+<v t="ekr.20150313083748.11377"><vh>convert-all-blanks</vh></v>
+<v t="ekr.20150313083748.11378"><vh>convert-all-tabs</vh></v>
+<v t="ekr.20150313083748.11379"><vh>convert-blanks</vh></v>
+<v t="ekr.20150313083748.11380"><vh>convert-tabs</vh></v>
+<v t="ekr.20150313083748.11381"><vh>copy-node</vh></v>
+<v t="ekr.20150313083748.11382"><vh>cut-node</vh></v>
+<v t="ekr.20150313083748.11383"><vh>de-hoist</vh></v>
+<v t="ekr.20150313083748.11384"><vh>delete-comments</vh></v>
+<v t="ekr.20150313083748.11385"><vh>delete-marked-nodes</vh></v>
+<v t="ekr.20150313083748.11386"><vh>delete-node</vh></v>
+<v t="ekr.20150313083748.11387"><vh>demote</vh></v>
+<v t="ekr.20150313083748.11388"><vh>dump-outline</vh></v>
+<v t="ekr.20150313083748.11389"><vh>edit-headline</vh></v>
+<v t="ekr.20150313083748.11390"><vh>execute-script</vh></v>
+<v t="ekr.20150313083748.11391"><vh>expand-all</vh></v>
+<v t="ekr.20150313083748.11392"><vh>expand-all-subheads</vh></v>
+<v t="ekr.20150313083748.11393"><vh>expand-ancestors-only</vh></v>
+<v t="ekr.20150313083748.11394"><vh>expand-and-go-right</vh></v>
+<v t="ekr.20150313083748.11395"><vh>expand-next-level</vh></v>
+<v t="ekr.20150313083748.11396"><vh>expand-node</vh></v>
+<v t="ekr.20150313083748.11397"><vh>expand-or-go-right</vh></v>
+<v t="ekr.20150313083748.11398"><vh>expand-prev-level</vh></v>
+<v t="ekr.20150313083748.11399"><vh>expand-to-level-1</vh></v>
+<v t="ekr.20150313083748.11400"><vh>expand-to-level-2</vh></v>
+<v t="ekr.20150313083748.11401"><vh>expand-to-level-3</vh></v>
+<v t="ekr.20150313083748.11402"><vh>expand-to-level-4</vh></v>
+<v t="ekr.20150313083748.11403"><vh>expand-to-level-5</vh></v>
+<v t="ekr.20150313083748.11404"><vh>expand-to-level-6</vh></v>
+<v t="ekr.20150313083748.11405"><vh>expand-to-level-7</vh></v>
+<v t="ekr.20150313083748.11406"><vh>expand-to-level-8</vh></v>
+<v t="ekr.20150313083748.11407"><vh>expand-to-level-9</vh></v>
+<v t="ekr.20150313083748.11408"><vh>export-headlines</vh></v>
+<v t="ekr.20150313083748.11409"><vh>extract</vh></v>
+<v t="ekr.20150313083748.11410"><vh>extract-names</vh></v>
+<v t="ekr.20150313083748.11411"><vh>find-next-clone</vh></v>
+<v t="ekr.20150313083748.11412"><vh>flatten-outline</vh></v>
+<v t="ekr.20150313083748.11413"><vh>flatten-outline-to-node</vh></v>
+<v t="ekr.20150313083748.11414"><vh>go-back</vh></v>
+<v t="ekr.20150313083748.11415"><vh>go-forward</vh></v>
+<v t="ekr.20150313083748.11416"><vh>goto-first-node</vh></v>
+<v t="ekr.20150313083748.11417"><vh>goto-first-sibling</vh></v>
+<v t="ekr.20150313083748.11418"><vh>goto-first-visible-node</vh></v>
+<v t="ekr.20150313083748.11419"><vh>goto-last-node</vh></v>
+<v t="ekr.20150313083748.11420"><vh>goto-last-sibling</vh></v>
+<v t="ekr.20150313083748.11421"><vh>goto-last-visible-node</vh></v>
+<v t="ekr.20150313083748.11422"><vh>goto-next-changed</vh></v>
+<v t="ekr.20150313083748.11423"><vh>goto-next-clone</vh></v>
+<v t="ekr.20150313083748.11424"><vh>goto-next-history-node</vh></v>
+<v t="ekr.20150313083748.11425"><vh>goto-next-marked</vh></v>
+<v t="ekr.20150313083748.11426"><vh>goto-next-node</vh></v>
+<v t="ekr.20150313083748.11427"><vh>goto-next-sibling</vh></v>
+<v t="ekr.20150313083748.11428"><vh>goto-next-visible</vh></v>
+<v t="ekr.20150313083748.11429"><vh>goto-parent</vh></v>
+<v t="ekr.20150313083748.11430"><vh>goto-prev-history-node</vh></v>
+<v t="ekr.20150313083748.11431"><vh>goto-prev-node</vh></v>
+<v t="ekr.20150313083748.11432"><vh>goto-prev-sibling</vh></v>
+<v t="ekr.20150313083748.11433"><vh>goto-prev-visible</vh></v>
+<v t="ekr.20150313083748.11434"><vh>hide-invisibles</vh></v>
+<v t="ekr.20150313083748.11435"><vh>hoist</vh></v>
+<v t="ekr.20150313083748.11436"><vh>import-file</vh></v>
+<v t="ekr.20150313083748.11437"><vh>indent-region</vh></v>
+<v t="ekr.20150313083748.11438"><vh>insert-body-time</vh></v>
+<v t="ekr.20150313083748.11439"><vh>insert-child</vh></v>
+<v t="ekr.20150313083748.11440"><vh>insert-node</vh></v>
+<v t="ekr.20150313083748.11441"><vh>insert-node-before</vh></v>
+<v t="ekr.20150313083748.11442"><vh>mark</vh></v>
+<v t="ekr.20150313083748.11443"><vh>mark-changed-items</vh></v>
+<v t="ekr.20150313083748.11444"><vh>mark-subheads</vh></v>
+<v t="ekr.20150313083748.11445"><vh>match-brackets</vh></v>
+<v t="ekr.20150313083748.11446"><vh>move-marked-nodes</vh></v>
+<v t="ekr.20150313083748.11447"><vh>move-outline-down</vh></v>
+<v t="ekr.20150313083748.11448"><vh>move-outline-left</vh></v>
+<v t="ekr.20150313083748.11449"><vh>move-outline-right</vh></v>
+<v t="ekr.20150313083748.11450"><vh>move-outline-up</vh></v>
+<v t="ekr.20150313083748.11451"><vh>new</vh></v>
+<v t="ekr.20150313083748.11452"><vh>open-cheat-sheet-leo</vh></v>
+<v t="ekr.20150313083748.11453"><vh>open-leoDocs-leo</vh></v>
+<v t="ekr.20150313083748.11454"><vh>open-leoPlugins-leo</vh></v>
+<v t="ekr.20150313083748.11455"><vh>open-leoSettings-leo</vh></v>
+<v t="ekr.20150313083748.11456"><vh>open-local-settings</vh></v>
+<v t="ekr.20150313083748.11457"><vh>open-myLeoSettings-leo</vh></v>
+<v t="ekr.20150313083748.11458"><vh>open-online-home</vh></v>
+<v t="ekr.20150313083748.11459"><vh>open-online-toc</vh></v>
+<v t="ekr.20150313083748.11460"><vh>open-online-tutorials</vh></v>
+<v t="ekr.20150313083748.11461"><vh>open-online-videos</vh></v>
+<v t="ekr.20150313083748.11462"><vh>open-outline</vh></v>
+<v t="ekr.20150313083748.11463"><vh>open-python-window</vh></v>
+<v t="ekr.20150313083748.11464"><vh>open-quickstart-leo</vh></v>
+<v t="ekr.20150313083748.11465"><vh>open-scripts-leo</vh></v>
+<v t="ekr.20150313083748.11466"><vh>open-users-guide</vh></v>
+<v t="ekr.20150313083748.11467"><vh>open-with</vh></v>
+<v t="ekr.20150313083748.11468"><vh>outline-to-cweb</vh></v>
+<v t="ekr.20150313083748.11469"><vh>outline-to-noweb</vh></v>
+<v t="ekr.20150313083748.11470"><vh>paste-node</vh></v>
+<v t="ekr.20150313083748.11471"><vh>paste-retaining-clones</vh></v>
+<v t="ekr.20150313083748.11472"><vh>pretty-print-all-python-code</vh></v>
+<v t="ekr.20150313083748.11473"><vh>pretty-print-python-code</vh></v>
+<v t="ekr.20150313083748.11474"><vh>promote</vh></v>
+<v t="ekr.20150313083748.11475"><vh>read-at-auto-nodes</vh></v>
+<v t="ekr.20150313083748.11476"><vh>read-at-file-nodes</vh></v>
+<v t="ekr.20150313083748.11477"><vh>read-at-shadow-nodes</vh></v>
+<v t="ekr.20150313083748.11478"><vh>read-file-into-node</vh></v>
+<v t="ekr.20150313083748.11479"><vh>read-outline-only</vh></v>
+<v t="ekr.20150313083748.11480"><vh>reformat-paragraph</vh></v>
+<v t="ekr.20150313083748.11481"><vh>refresh-from-disk</vh></v>
+<v t="ekr.20150313083748.11482"><vh>remove-sentinels</vh></v>
+<v t="ekr.20150313083748.11483"><vh>revert</vh></v>
+<v t="ekr.20150313083748.11484"><vh>save-all</vh></v>
+<v t="ekr.20150313083748.11485"><vh>save-file</vh></v>
+<v t="ekr.20150313083748.11486"><vh>save-file-as</vh></v>
+<v t="ekr.20150313083748.11487"><vh>save-file-as-unzipped</vh></v>
+<v t="ekr.20150313083748.11488"><vh>save-file-as-zipped</vh></v>
+<v t="ekr.20150313083748.11489"><vh>save-file-to</vh></v>
+<v t="ekr.20150313083748.11490"><vh>set-colors</vh></v>
+<v t="ekr.20150313083748.11491"><vh>set-font</vh></v>
+<v t="ekr.20150313083748.11492"><vh>settings</vh></v>
+<v t="ekr.20150313083748.11493"><vh>show-invisibles</vh></v>
+<v t="ekr.20150313083748.11494"><vh>sort-children</vh></v>
+<v t="ekr.20150313083748.11495"><vh>sort-recent-files</vh></v>
+<v t="ekr.20150313083748.11496"><vh>sort-siblings</vh></v>
+<v t="ekr.20150313083748.11497"><vh>tangle</vh></v>
+<v t="ekr.20150313083748.11498"><vh>tangle-all</vh></v>
+<v t="ekr.20150313083748.11499"><vh>tangle-marked</vh></v>
+<v t="ekr.20150313083748.11500"><vh>toggle-angle-brackets</vh></v>
+<v t="ekr.20150313083748.11501"><vh>toggle-invisibles</vh></v>
+<v t="ekr.20150313083748.11502"><vh>toggle-sparse-move</vh></v>
+<v t="ekr.20150313083748.11503"><vh>unformat-paragraph</vh></v>
+<v t="ekr.20150313083748.11504"><vh>unindent-region</vh></v>
+<v t="ekr.20150313083748.11505"><vh>unmark-all</vh></v>
+<v t="ekr.20150313083748.11506"><vh>untangle</vh></v>
+<v t="ekr.20150313083748.11507"><vh>untangle-all</vh></v>
+<v t="ekr.20150313083748.11508"><vh>untangle-marked</vh></v>
+<v t="ekr.20150313083748.11509"><vh>weave</vh></v>
+<v t="ekr.20150313083748.11510"><vh>write-file-from-node</vh></v>
+</v>
+<v t="ekr.20150313083748.11511"><vh>ControlCommandsClass</vh>
+<v t="ekr.20150313083748.11512"><vh>act-on-node</vh></v>
+<v t="ekr.20150313083748.11513"><vh>advertised-undo</vh></v>
+<v t="ekr.20150313083748.11514"><vh>iconify-frame</vh></v>
+<v t="ekr.20150313083748.11515"><vh>print-plugin-handlers</vh></v>
+<v t="ekr.20150313083748.11516"><vh>print-plugins-info</vh></v>
+<v t="ekr.20150313083748.11517"><vh>save-buffers-kill-leo</vh></v>
+<v t="ekr.20150313083748.11518"><vh>set-silent-mode</vh></v>
+<v t="ekr.20150313083748.11519"><vh>shell-command</vh></v>
+<v t="ekr.20150313083748.11520"><vh>shell-command-on-region</vh></v>
+<v t="ekr.20150313083748.11521"><vh>suspend</vh></v>
+</v>
+<v t="ekr.20150313083748.11522"><vh>DebugCommandsClass</vh>
+<v t="ekr.20150313083748.11523"><vh>debug</vh></v>
+<v t="ekr.20150313083748.11524"><vh>gc-collect-garbage</vh></v>
+<v t="ekr.20150313083748.11525"><vh>gc-dump-all-objects</vh></v>
+<v t="ekr.20150313083748.11526"><vh>gc-dump-new-objects</vh></v>
+<v t="ekr.20150313083748.11527"><vh>gc-dump-objects-verbose</vh></v>
+<v t="ekr.20150313083748.11528"><vh>gc-print-summary</vh></v>
+<v t="ekr.20150313083748.11529"><vh>gc-trace-disable</vh></v>
+<v t="ekr.20150313083748.11530"><vh>gc-trace-enable</vh></v>
+<v t="ekr.20150313083748.11531"><vh>pdb</vh></v>
+<v t="ekr.20150313083748.11532"><vh>print-focus</vh></v>
+<v t="ekr.20150313083748.11533"><vh>run-all-unit-tests-externally</vh></v>
+<v t="ekr.20150313083748.11534"><vh>run-all-unit-tests-locally</vh></v>
+<v t="ekr.20150313083748.11535"><vh>run-marked-unit-tests-externally</vh></v>
+<v t="ekr.20150313083748.11536"><vh>run-marked-unit-tests-locally</vh></v>
+<v t="ekr.20150313083748.11537"><vh>run-selected-unit-tests-externally</vh></v>
+<v t="ekr.20150313083748.11538"><vh>run-selected-unit-tests-locally</vh></v>
+</v>
+<v t="ekr.20150313083748.11539"><vh>EditCommandsClass</vh>
+<v t="ekr.20150313083748.11540"><vh>activate-cmds-menu</vh></v>
+<v t="ekr.20150313083748.11541"><vh>activate-edit-menu</vh></v>
+<v t="ekr.20150313083748.11542"><vh>activate-file-menu</vh></v>
+<v t="ekr.20150313083748.11543"><vh>activate-help-menu</vh></v>
+<v t="ekr.20150313083748.11544"><vh>activate-outline-menu</vh></v>
+<v t="ekr.20150313083748.11545"><vh>activate-plugins-menu</vh></v>
+<v t="ekr.20150313083748.11546"><vh>activate-window-menu</vh></v>
+<v t="ekr.20150313083748.11547"><vh>add-space-to-lines</vh></v>
+<v t="ekr.20150313083748.11548"><vh>add-tab-to-lines</vh></v>
+<v t="ekr.20150313083748.11549"><vh>back-char</vh></v>
+<v t="ekr.20150313083748.11550"><vh>back-char-extend-selection</vh></v>
+<v t="ekr.20150313083748.11551"><vh>back-page</vh></v>
+<v t="ekr.20150313083748.11552"><vh>back-page-extend-selection</vh></v>
+<v t="ekr.20150313083748.11553"><vh>back-paragraph</vh></v>
+<v t="ekr.20150313083748.11554"><vh>back-paragraph-extend-selection</vh></v>
+<v t="ekr.20150313083748.11555"><vh>back-sentence</vh></v>
+<v t="ekr.20150313083748.11556"><vh>back-sentence-extend-selection</vh></v>
+<v t="ekr.20150313083748.11557"><vh>back-to-home</vh></v>
+<v t="ekr.20150313083748.11558"><vh>back-to-home-extend-selection</vh></v>
+<v t="ekr.20150313083748.11559"><vh>back-to-indentation</vh></v>
+<v t="ekr.20150313083748.11560"><vh>back-word</vh></v>
+<v t="ekr.20150313083748.11561"><vh>back-word-extend-selection</vh></v>
+<v t="ekr.20150313083748.11562"><vh>back-word-smart</vh></v>
+<v t="ekr.20150313083748.11563"><vh>back-word-smart-extend-selection</vh></v>
+<v t="ekr.20150313083748.11564"><vh>backward-delete-char</vh></v>
+<v t="ekr.20150313083748.11565"><vh>backward-delete-word</vh></v>
+<v t="ekr.20150313083748.11566"><vh>backward-delete-word-smart</vh></v>
+<v t="ekr.20150313083748.11567"><vh>backward-find-character</vh></v>
+<v t="ekr.20150313083748.11568"><vh>backward-find-character-extend-selection</vh></v>
+<v t="ekr.20150313083748.11569"><vh>backward-kill-paragraph</vh></v>
+<v t="ekr.20150313083748.11570"><vh>beginning-of-buffer</vh></v>
+<v t="ekr.20150313083748.11571"><vh>beginning-of-buffer-extend-selection</vh></v>
+<v t="ekr.20150313083748.11572"><vh>beginning-of-line</vh></v>
+<v t="ekr.20150313083748.11573"><vh>beginning-of-line-extend-selection</vh></v>
+<v t="ekr.20150313083748.11574"><vh>c-to-python</vh></v>
+<v t="ekr.20150313083748.11575"><vh>capitalize-word</vh></v>
+<v t="ekr.20150313083748.11576"><vh>center-line</vh></v>
+<v t="ekr.20150313083748.11577"><vh>center-region</vh></v>
+<v t="ekr.20150313083748.11578"><vh>clean-all-lines</vh></v>
+<v t="ekr.20150313083748.11579"><vh>clean-lines</vh></v>
+<v t="ekr.20150313083748.11580"><vh>clear-all-caches</vh></v>
+<v t="ekr.20150313083748.11581"><vh>clear-all-uas</vh></v>
+<v t="ekr.20150313083748.11582"><vh>clear-cache</vh></v>
+<v t="ekr.20150313083748.11583"><vh>clear-extend-mode</vh></v>
+<v t="ekr.20150313083748.11584"><vh>clear-node-uas</vh></v>
+<v t="ekr.20150313083748.11586"><vh>click-click-box</vh></v>
+<v t="ekr.20150313083748.11587"><vh>click-headline</vh></v>
+<v t="ekr.20150313083748.11588"><vh>click-icon-box</vh></v>
+<v t="ekr.20150313083748.11589"><vh>count-region</vh></v>
+<v t="ekr.20150313083748.11590"><vh>ctrl-click-icon</vh></v>
+<v t="ekr.20150313083748.11591"><vh>cycle-focus</vh></v>
+<v t="ekr.20150313083748.11592"><vh>delete-char</vh></v>
+<v t="ekr.20150313083748.11593"><vh>delete-first-icon</vh></v>
+<v t="ekr.20150313083748.11594"><vh>delete-indentation</vh></v>
+<v t="ekr.20150313083748.11595"><vh>delete-last-icon</vh></v>
+<v t="ekr.20150313083748.11596"><vh>delete-node-icons</vh></v>
+<v t="ekr.20150313083748.11597"><vh>delete-spaces</vh></v>
+<v t="ekr.20150313083748.11598"><vh>delete-word</vh></v>
+<v t="ekr.20150313083748.11599"><vh>delete-word-smart</vh></v>
+<v t="ekr.20150313083748.11600"><vh>do-nothing</vh></v>
+<v t="ekr.20150313083748.11601"><vh>double-click-headline</vh></v>
+<v t="ekr.20150313083748.11602"><vh>double-click-icon-box</vh></v>
+<v t="ekr.20150313083748.11603"><vh>downcase-region</vh></v>
+<v t="ekr.20150313083748.11604"><vh>downcase-word</vh></v>
+<v t="ekr.20150313083748.11605"><vh>end-of-buffer</vh></v>
+<v t="ekr.20150313083748.11606"><vh>end-of-buffer-extend-selection</vh></v>
+<v t="ekr.20150313083748.11607"><vh>end-of-line</vh></v>
+<v t="ekr.20150313083748.11608"><vh>end-of-line-extend-selection</vh></v>
+<v t="ekr.20150313083748.11609"><vh>escape</vh></v>
+<v t="ekr.20150313083748.11610"><vh>eval-expression</vh></v>
+<v t="ekr.20150313083748.11611"><vh>exchange-point-mark</vh></v>
+<v t="ekr.20150313083748.11612"><vh>extend-to-line</vh></v>
+<v t="ekr.20150313083748.11613"><vh>extend-to-paragraph</vh></v>
+<v t="ekr.20150313083748.11614"><vh>extend-to-sentence</vh></v>
+<v t="ekr.20150313083748.11615"><vh>extend-to-word</vh></v>
+<v t="ekr.20150313083748.11616"><vh>fill-paragraph</vh></v>
+<v t="ekr.20150313083748.11617"><vh>fill-region</vh></v>
+<v t="ekr.20150313083748.11618"><vh>fill-region-as-paragraph</vh></v>
+<v t="ekr.20150313083748.11619"><vh>find-character</vh></v>
+<v t="ekr.20150313083748.11620"><vh>find-character-extend-selection</vh></v>
+<v t="ekr.20150313083748.11621"><vh>find-word</vh></v>
+<v t="ekr.20150313083748.11622"><vh>find-word-in-line</vh></v>
+<v t="ekr.20150313083748.11623"><vh>flush-lines</vh></v>
+<v t="ekr.20150313083748.11624"><vh>focus-to-body</vh></v>
+<v t="ekr.20150313083748.11625"><vh>focus-to-log</vh></v>
+<v t="ekr.20150313083748.11626"><vh>focus-to-minibuffer</vh></v>
+<v t="ekr.20150313083748.11627"><vh>focus-to-tree</vh></v>
+<v t="ekr.20150313083748.11628"><vh>forward-char</vh></v>
+<v t="ekr.20150313083748.11629"><vh>forward-char-extend-selection</vh></v>
+<v t="ekr.20150313083748.11630"><vh>forward-end-word</vh></v>
+<v t="ekr.20150313083748.11631"><vh>forward-end-word-extend-selection</vh></v>
+<v t="ekr.20150313083748.11632"><vh>forward-page</vh></v>
+<v t="ekr.20150313083748.11633"><vh>forward-page-extend-selection</vh></v>
+<v t="ekr.20150313083748.11634"><vh>forward-paragraph</vh></v>
+<v t="ekr.20150313083748.11635"><vh>forward-paragraph-extend-selection</vh></v>
+<v t="ekr.20150313083748.11636"><vh>forward-sentence</vh></v>
+<v t="ekr.20150313083748.11637"><vh>forward-sentence-extend-selection</vh></v>
+<v t="ekr.20150313083748.11638"><vh>forward-word</vh></v>
+<v t="ekr.20150313083748.11639"><vh>forward-word-extend-selection</vh></v>
+<v t="ekr.20150313083748.11640"><vh>forward-word-smart</vh></v>
+<v t="ekr.20150313083748.11641"><vh>forward-word-smart-extend-selection</vh></v>
+<v t="ekr.20150313083748.11642"><vh>goto-char</vh></v>
+<v t="ekr.20150313083748.11643"><vh>goto-global-line</vh></v>
+<v t="ekr.20150313083748.11644"><vh>goto-line</vh></v>
+<v t="ekr.20150313083748.11645"><vh>how-many</vh></v>
+<v t="ekr.20150313083748.11646"><vh>indent-relative</vh></v>
+<v t="ekr.20150313083748.11647"><vh>indent-rigidly</vh></v>
+<v t="ekr.20150313083748.11648"><vh>indent-to-comment-column</vh></v>
+<v t="ekr.20150313083748.11649"><vh>insert-file-name</vh></v>
+<v t="ekr.20150313083748.11650"><vh>insert-hard-tab</vh></v>
+<v t="ekr.20150313083748.11651"><vh>insert-headline-time</vh></v>
+<v t="ekr.20150313083748.11652"><vh>insert-icon</vh></v>
+<v t="ekr.20150313083748.11653"><vh>insert-newline</vh></v>
+<v t="ekr.20150313083748.11654"><vh>insert-parentheses</vh></v>
+<v t="ekr.20150313083748.11655"><vh>insert-soft-tab</vh></v>
+<v t="ekr.20150313083748.11656"><vh>keep-lines</vh></v>
+<v t="ekr.20150313083748.11657"><vh>kill-paragraph</vh></v>
+<v t="ekr.20150313083748.11658"><vh>line-number</vh></v>
+<v t="ekr.20150313083748.11659"><vh>move-lines-down</vh></v>
+<v t="ekr.20150313083748.11660"><vh>move-lines-up</vh></v>
+<v t="ekr.20150313083748.11661"><vh>move-past-close</vh></v>
+<v t="ekr.20150313083748.11662"><vh>move-past-close-extend-selection</vh></v>
+<v t="ekr.20150313083748.11663"><vh>newline-and-indent</vh></v>
+<v t="ekr.20150313083748.11664"><vh>next-line</vh></v>
+<v t="ekr.20150313083748.11665"><vh>next-line-extend-selection</vh></v>
+<v t="ekr.20150313083748.11666"><vh>previous-line</vh></v>
+<v t="ekr.20150313083748.11667"><vh>previous-line-extend-selection</vh></v>
+<v t="ekr.20150313083748.11668"><vh>print-all-uas</vh></v>
+<v t="ekr.20150313083748.11669"><vh>print-node-uas</vh></v>
+<v t="ekr.20150313083748.11670"><vh>remove-blank-lines</vh></v>
+<v t="ekr.20150313083748.11671"><vh>remove-space-from-lines</vh></v>
+<v t="ekr.20150313083748.11672"><vh>remove-tab-from-lines</vh></v>
+<v t="ekr.20150313083748.11673"><vh>replace-current-character</vh></v>
+<v t="ekr.20150313083748.11674"><vh>reverse-region</vh></v>
+<v t="ekr.20150313083748.11675"><vh>reverse-sort-lines</vh></v>
+<v t="ekr.20150313083748.11676"><vh>reverse-sort-lines-ignoring-case</vh></v>
+<v t="ekr.20150313083748.11677"><vh>scroll-down-half-page</vh></v>
+<v t="ekr.20150313083748.11678"><vh>scroll-down-line</vh></v>
+<v t="ekr.20150313083748.11679"><vh>scroll-down-page</vh></v>
+<v t="ekr.20150313083748.11680"><vh>scroll-outline-down-line</vh></v>
+<v t="ekr.20150313083748.11681"><vh>scroll-outline-down-page</vh></v>
+<v t="ekr.20150313083748.11682"><vh>scroll-outline-left</vh></v>
+<v t="ekr.20150313083748.11683"><vh>scroll-outline-right</vh></v>
+<v t="ekr.20150313083748.11684"><vh>scroll-outline-up-line</vh></v>
+<v t="ekr.20150313083748.11685"><vh>scroll-outline-up-page</vh></v>
+<v t="ekr.20150313083748.11686"><vh>scroll-up-half-page</vh></v>
+<v t="ekr.20150313083748.11687"><vh>scroll-up-line</vh></v>
+<v t="ekr.20150313083748.11688"><vh>scroll-up-page</vh></v>
+<v t="ekr.20150313083748.11689"><vh>select-all</vh></v>
+<v t="ekr.20150313083748.11690"><vh>select-to-matching-bracket</vh></v>
+<v t="ekr.20150313083748.11691"><vh>self-insert-command</vh></v>
+<v t="ekr.20150313083748.11692"><vh>set-comment-column</vh></v>
+<v t="ekr.20150313083748.11693"><vh>set-extend-mode</vh></v>
+<v t="ekr.20150313083748.11694"><vh>set-fill-column</vh></v>
+<v t="ekr.20150313083748.11695"><vh>set-fill-prefix</vh></v>
+<v t="ekr.20150313083748.11696"><vh>set-ua</vh></v>
+<v t="ekr.20150313083748.11699"><vh>simulate-begin-drag</vh></v>
+<v t="ekr.20150313083748.11700"><vh>simulate-end-drag</vh></v>
+<v t="ekr.20150313083748.11701"><vh>sort-columns</vh></v>
+<v t="ekr.20150313083748.11702"><vh>sort-fields</vh></v>
+<v t="ekr.20150313083748.11703"><vh>sort-lines</vh></v>
+<v t="ekr.20150313083748.11704"><vh>sort-lines-ignoring-case</vh></v>
+<v t="ekr.20150313083748.11705"><vh>split-line</vh></v>
+<v t="ekr.20150313083748.11706"><vh>tabify</vh></v>
+<v t="ekr.20150313083748.11707"><vh>toggle-case-region</vh></v>
+<v t="ekr.20150313083748.11708"><vh>toggle-extend-mode</vh></v>
+<v t="ekr.20150313083748.11709"><vh>transpose-chars</vh></v>
+<v t="ekr.20150313083748.11710"><vh>transpose-lines</vh></v>
+<v t="ekr.20150313083748.11711"><vh>transpose-words</vh></v>
+<v t="ekr.20150313083748.11712"><vh>typescript-to-py</vh></v>
+<v t="ekr.20150313083748.11713"><vh>untabify</vh></v>
+<v t="ekr.20150313083748.11714"><vh>upcase-region</vh></v>
+<v t="ekr.20150313083748.11715"><vh>upcase-word</vh></v>
+<v t="ekr.20150313083748.11716"><vh>view-lossage</vh></v>
+<v t="ekr.20150313083748.11717"><vh>what-line</vh></v>
+</v>
+<v t="ekr.20150313083748.11718"><vh>EditFileCommandsClass</vh>
+<v t="ekr.20150313083748.11719"><vh>directory-make</vh></v>
+<v t="ekr.20150313083748.11720"><vh>directory-remove</vh></v>
+<v t="ekr.20150313083748.11721"><vh>file-compare-leo-files</vh></v>
+<v t="ekr.20150313083748.11722"><vh>file-delete</vh></v>
+<v t="ekr.20150313083748.11723"><vh>file-diff-files</vh></v>
+<v t="ekr.20150313083748.11724"><vh>file-insert</vh></v>
+<v t="ekr.20150313083748.11725"><vh>file-open-by-name</vh></v>
+<v t="ekr.20150313083748.11726"><vh>file-save</vh></v>
+</v>
+<v t="ekr.20150313083748.11727"><vh>FileCommands</vh>
+<v t="ekr.20150313083748.11728"><vh>check-leo-file</vh></v>
+<v t="ekr.20150313083748.11729"><vh>write-at-file-nodes</vh></v>
+<v t="ekr.20150313083748.11730"><vh>write-at-shadow-nodes</vh></v>
+<v t="ekr.20150313083748.11731"><vh>write-dirty-at-file-nodes</vh></v>
+<v t="ekr.20150313083748.11732"><vh>write-dirty-at-shadow-nodes</vh></v>
+<v t="ekr.20150313083748.11733"><vh>write-missing-at-file-nodes</vh></v>
+<v t="ekr.20150313083748.11734"><vh>write-outline-only</vh></v>
+</v>
+<v t="ekr.20150313083748.11735"><vh>HelpCommandsClass</vh>
+<v t="ekr.20150313083748.11736"><vh>help</vh></v>
+<v t="ekr.20150313083748.11737"><vh>help-for-abbreviations</vh></v>
+<v t="ekr.20150313083748.11738"><vh>help-for-autocompletion</vh></v>
+<v t="ekr.20150313083748.11739"><vh>help-for-bindings</vh></v>
+<v t="ekr.20150313083748.11740"><vh>help-for-command</vh></v>
+<v t="ekr.20150313083748.11741"><vh>help-for-creating-external-files</vh></v>
+<v t="ekr.20150313083748.11742"><vh>help-for-debugging-commands</vh></v>
+<v t="ekr.20150313083748.11743"><vh>help-for-drag-and-drop</vh></v>
+<v t="ekr.20150313083748.11744"><vh>help-for-dynamic-abbreviations</vh></v>
+<v t="ekr.20150313083748.11745"><vh>help-for-find-commands</vh></v>
+<v t="ekr.20150313083748.11746"><vh>help-for-minibuffer</vh></v>
+<v t="ekr.20150313083748.11747"><vh>help-for-python</vh></v>
+<v t="ekr.20150313083748.11748"><vh>help-for-regular-expressions</vh></v>
+<v t="ekr.20150313083748.11749"><vh>help-for-scripting</vh></v>
+<v t="ekr.20150313083748.11750"><vh>print-settings</vh></v>
+</v>
+<v t="ekr.20150313083748.11751"><vh>KeyHandlerClass</vh>
+<v t="ekr.20150313083748.11752"><vh>digit-argument</vh></v>
+<v t="ekr.20150313083748.11753"><vh>exit-named-mode</vh></v>
+<v t="ekr.20150313083748.11754"><vh>full-command</vh></v>
+<v t="ekr.20150313083748.11755"><vh>keyboard-quit</vh></v>
+<v t="ekr.20150313083748.11756"><vh>mode-help</vh></v>
+<v t="ekr.20150313083748.11757"><vh>negative-argument</vh></v>
+<v t="ekr.20150313083748.11758"><vh>number-command</vh></v>
+<v t="ekr.20150313083748.11759"><vh>number-command-0</vh></v>
+<v t="ekr.20150313083748.11760"><vh>number-command-1</vh></v>
+<v t="ekr.20150313083748.11761"><vh>number-command-2</vh></v>
+<v t="ekr.20150313083748.11762"><vh>number-command-3</vh></v>
+<v t="ekr.20150313083748.11763"><vh>number-command-4</vh></v>
+<v t="ekr.20150313083748.11764"><vh>number-command-5</vh></v>
+<v t="ekr.20150313083748.11765"><vh>number-command-6</vh></v>
+<v t="ekr.20150313083748.11766"><vh>number-command-7</vh></v>
+<v t="ekr.20150313083748.11767"><vh>number-command-8</vh></v>
+<v t="ekr.20150313083748.11768"><vh>number-command-9</vh></v>
+<v t="ekr.20150313083748.11769"><vh>print-bindings</vh></v>
+<v t="ekr.20150313083748.11770"><vh>print-buttons</vh></v>
+<v t="ekr.20150313083748.11771"><vh>print-commands</vh></v>
+<v t="ekr.20150313083748.11772"><vh>repeat-complex-command</vh></v>
+<v t="ekr.20150313083748.11773"><vh>set-command-state</vh></v>
+<v t="ekr.20150313083748.11774"><vh>set-insert-state</vh></v>
+<v t="ekr.20150313083748.11775"><vh>set-overwrite-state</vh></v>
+<v t="ekr.20150313083748.11776"><vh>toggle-input-state</vh></v>
+<v t="ekr.20150313083748.11777"><vh>universal-argument</vh></v>
+</v>
+<v t="ekr.20150313083748.11778"><vh>KeyHandlerCommandsClass</vh>
+<v t="ekr.20150313083748.11779"><vh>menu-shortcut</vh></v>
+</v>
+<v t="ekr.20150313083748.11780"><vh>KillBufferCommandsClass</vh>
+<v t="ekr.20150313083748.11781"><vh>backward-kill-sentence</vh></v>
+<v t="ekr.20150313083748.11782"><vh>backward-kill-word</vh></v>
+<v t="ekr.20150313083748.11783"><vh>clear-kill-ring</vh></v>
+<v t="ekr.20150313083748.11784"><vh>kill-line</vh></v>
+<v t="ekr.20150313083748.11785"><vh>kill-region</vh></v>
+<v t="ekr.20150313083748.11786"><vh>kill-region-save</vh></v>
+<v t="ekr.20150313083748.11787"><vh>kill-sentence</vh></v>
+<v t="ekr.20150313083748.11788"><vh>kill-to-end-of-line</vh></v>
+<v t="ekr.20150313083748.11789"><vh>kill-word</vh></v>
+<v t="ekr.20150313083748.11790"><vh>kill-ws</vh></v>
+<v t="ekr.20150313083748.11791"><vh>yank</vh></v>
+<v t="ekr.20150313083748.11792"><vh>yank-pop</vh></v>
+<v t="ekr.20150313083748.11793"><vh>zap-to-character</vh></v>
+</v>
+<v t="ekr.20150313083748.11794"><vh>LeoApp</vh>
+<v t="ekr.20150313083748.11795"><vh>exit-leo</vh></v>
+</v>
+<v t="ekr.20150313083748.11796"><vh>LeoFind</vh>
+<v t="ekr.20150313083748.11797"><vh>clone-find-all</vh></v>
+<v t="ekr.20150313083748.11798"><vh>clone-find-all-flattened</vh></v>
+<v t="ekr.20150313083748.11799"><vh>find-all</vh></v>
+<v t="ekr.20150313083748.11800"><vh>find-clone-all</vh></v>
+<v t="ekr.20150313083748.11801"><vh>find-clone-all-flattened</vh></v>
+<v t="ekr.20150313083748.11802"><vh>find-next</vh></v>
+<v t="ekr.20150313083748.11803"><vh>find-prev</vh></v>
+<v t="ekr.20150313083748.11804"><vh>find-tab-hide</vh></v>
+<v t="ekr.20150313083748.11805"><vh>find-tab-open</vh></v>
+<v t="ekr.20150313083748.11806"><vh>focus-to-find</vh></v>
+<v t="ekr.20150313083748.11807"><vh>isearch-backward</vh></v>
+<v t="ekr.20150313083748.11808"><vh>isearch-backward-regexp</vh></v>
+<v t="ekr.20150313083748.11809"><vh>isearch-forward</vh></v>
+<v t="ekr.20150313083748.11810"><vh>isearch-forward-regexp</vh></v>
+<v t="ekr.20150313083748.11811"><vh>isearch-with-present-options</vh></v>
+<v t="ekr.20150313083748.11812"><vh>re-search-backward</vh></v>
+<v t="ekr.20150313083748.11813"><vh>re-search-forward</vh></v>
+<v t="ekr.20150313083748.11814"><vh>replace</vh></v>
+<v t="ekr.20150313083748.11815"><vh>replace-all</vh></v>
+<v t="ekr.20150313083748.11816"><vh>replace-then-find</vh></v>
+<v t="ekr.20150313083748.11817"><vh>search-backward</vh></v>
+<v t="ekr.20150313083748.11818"><vh>search-forward</vh></v>
+<v t="ekr.20150313083748.11819"><vh>search-with-present-options</vh></v>
+<v t="ekr.20150313083748.11820"><vh>set-find-everywhere</vh></v>
+<v t="ekr.20150313083748.11821"><vh>set-find-node-only</vh></v>
+<v t="ekr.20150313083748.11822"><vh>set-find-suboutline-only</vh></v>
+<v t="ekr.20150313083748.11823"><vh>set-replace-string</vh></v>
+<v t="ekr.20150313083748.11824"><vh>set-search-string</vh></v>
+<v t="ekr.20150313083748.11825"><vh>show-find-options</vh></v>
+<v t="ekr.20150313083748.11826"><vh>start-search</vh></v>
+<v t="ekr.20150313083748.11827"><vh>toggle-find-collapses-nodes</vh></v>
+<v t="ekr.20150313083748.11828"><vh>toggle-find-ignore-case-option</vh></v>
+<v t="ekr.20150313083748.11829"><vh>toggle-find-in-body-option</vh></v>
+<v t="ekr.20150313083748.11830"><vh>toggle-find-in-headline-option</vh></v>
+<v t="ekr.20150313083748.11831"><vh>toggle-find-mark-changes-option</vh></v>
+<v t="ekr.20150313083748.11832"><vh>toggle-find-mark-finds-option</vh></v>
+<v t="ekr.20150313083748.11833"><vh>toggle-find-regex-option</vh></v>
+<v t="ekr.20150313083748.11834"><vh>toggle-find-word-option</vh></v>
+<v t="ekr.20150313083748.11835"><vh>toggle-find-wrap-around-option</vh></v>
+<v t="ekr.20150313083748.11836"><vh>word-search-backward</vh></v>
+<v t="ekr.20150313083748.11837"><vh>word-search-forward</vh></v>
+</v>
+<v t="ekr.20150313083748.11838"><vh>LeoQtBody</vh>
+<v t="ekr.20150313083748.11839"><vh>add-editor</vh></v>
+<v t="ekr.20150313083748.11840"><vh>cycle-editor-focus</vh></v>
+<v t="ekr.20150313083748.11841"><vh>delete-editor</vh></v>
+</v>
+<v t="ekr.20150313083748.11842"><vh>LeoQtFrame</vh>
+<v t="ekr.20150313083748.11843"><vh>abort-edit-headline</vh></v>
+<v t="ekr.20150313083748.11844"><vh>cascade-windows</vh></v>
+<v t="ekr.20150313083748.11845"><vh>contract-body-pane</vh></v>
+<v t="ekr.20150313083748.11846"><vh>contract-log-pane</vh></v>
+<v t="ekr.20150313083748.11847"><vh>contract-outline-pane</vh></v>
+<v t="ekr.20150313083748.11848"><vh>contract-pane</vh></v>
+<v t="ekr.20150313083748.11849"><vh>copy-text</vh></v>
+<v t="ekr.20150313083748.11850"><vh>cut-text</vh></v>
+<v t="ekr.20150313083748.11851"><vh>end-edit-headline</vh></v>
+<v t="ekr.20150313083748.11852"><vh>equal-sized-panes</vh></v>
+<v t="ekr.20150313083748.11853"><vh>expand-body-pane</vh></v>
+<v t="ekr.20150313083748.11854"><vh>expand-log-pane</vh></v>
+<v t="ekr.20150313083748.11855"><vh>expand-outline-pane</vh></v>
+<v t="ekr.20150313083748.11856"><vh>expand-pane</vh></v>
+<v t="ekr.20150313083748.11857"><vh>fully-expand-body-pane</vh></v>
+<v t="ekr.20150313083748.11858"><vh>fully-expand-log-pane</vh></v>
+<v t="ekr.20150313083748.11859"><vh>fully-expand-outline-pane</vh></v>
+<v t="ekr.20150313083748.11860"><vh>fully-expand-pane</vh></v>
+<v t="ekr.20150313083748.11861"><vh>hide-body-pane</vh></v>
+<v t="ekr.20150313083748.11862"><vh>hide-log-pane</vh></v>
+<v t="ekr.20150313083748.11863"><vh>hide-outline-pane</vh></v>
+<v t="ekr.20150313083748.11864"><vh>hide-pane</vh></v>
+<v t="ekr.20150313083748.11865"><vh>minimize-all</vh></v>
+<v t="ekr.20150313083748.11866"><vh>open-offline-tutorial</vh></v>
+<v t="ekr.20150313083748.11867"><vh>paste-text</vh></v>
+<v t="ekr.20150313083748.11868"><vh>resize-to-screen</vh></v>
+<v t="ekr.20150313083748.11869"><vh>toggle-active-pane</vh></v>
+<v t="ekr.20150313083748.11870"><vh>toggle-split-direction</vh></v>
+</v>
+<v t="ekr.20150313083748.11871"><vh>LeoQtLog</vh>
+<v t="ekr.20150313083748.11872"><vh>cycle-log-focus</vh></v>
+</v>
+<v t="ekr.20150313083748.11873"><vh>MacroCommandsClass</vh>
+<v t="ekr.20150313083748.11874"><vh>macro-call</vh></v>
+<v t="ekr.20150313083748.11875"><vh>macro-call-last</vh></v>
+<v t="ekr.20150313083748.11876"><vh>macro-end-recording</vh></v>
+<v t="ekr.20150313083748.11877"><vh>macro-load-all</vh></v>
+<v t="ekr.20150313083748.11878"><vh>macro-name-last</vh></v>
+<v t="ekr.20150313083748.11879"><vh>macro-print-all</vh></v>
+<v t="ekr.20150313083748.11880"><vh>macro-print-last</vh></v>
+<v t="ekr.20150313083748.11881"><vh>macro-save-all</vh></v>
+<v t="ekr.20150313083748.11882"><vh>macro-start-recording</vh></v>
+</v>
+<v t="ekr.20150313083748.11883"><vh>RecTangleCommandsClass</vh>
+<v t="ekr.20150313083748.11884"><vh>rectangle-clear</vh></v>
+<v t="ekr.20150313083748.11885"><vh>rectangle-close</vh></v>
+<v t="ekr.20150313083748.11886"><vh>rectangle-delete</vh></v>
+<v t="ekr.20150313083748.11887"><vh>rectangle-kill</vh></v>
+<v t="ekr.20150313083748.11888"><vh>rectangle-open</vh></v>
+<v t="ekr.20150313083748.11889"><vh>rectangle-string</vh></v>
+<v t="ekr.20150313083748.11890"><vh>rectangle-yank</vh></v>
+</v>
+<v t="ekr.20150313083748.11891"><vh>RegisterCommandsClass</vh>
+<v t="ekr.20150313083748.11892"><vh>register-append-to</vh></v>
+<v t="ekr.20150313083748.11893"><vh>register-copy-rectangle-to</vh></v>
+<v t="ekr.20150313083748.11894"><vh>register-copy-to</vh></v>
+<v t="ekr.20150313083748.11895"><vh>register-increment</vh></v>
+<v t="ekr.20150313083748.11896"><vh>register-insert</vh></v>
+<v t="ekr.20150313083748.11897"><vh>register-jump-to</vh></v>
+<v t="ekr.20150313083748.11898"><vh>register-point-to</vh></v>
+<v t="ekr.20150313083748.11899"><vh>register-prepend-to</vh></v>
+<v t="ekr.20150313083748.11900"><vh>register-view</vh></v>
+</v>
+<v t="ekr.20150313083748.11901"><vh>RstCommands</vh>
+<v t="ekr.20150313083748.11902"><vh>code-to-rst</vh></v>
+<v t="ekr.20150313083748.11903"><vh>rst3</vh></v>
+</v>
+<v t="ekr.20150313083748.11904"><vh>SpellCommandsClass</vh>
+<v t="ekr.20150313083748.11905"><vh>focus-to-spell</vh></v>
+<v t="ekr.20150313083748.11906"><vh>hide-spell-tab</vh></v>
+<v t="ekr.20150313083748.11907"><vh>open-spell-tab</vh></v>
+<v t="ekr.20150313083748.11908"><vh>spell-as-you-type-next</vh></v>
+<v t="ekr.20150313083748.11909"><vh>spell-as-you-type-toggle</vh></v>
+<v t="ekr.20150313083748.11910"><vh>spell-as-you-type-undo</vh></v>
+<v t="ekr.20150313083748.11911"><vh>spell-as-you-type-wrap</vh></v>
+<v t="ekr.20150313083748.11912"><vh>spell-change</vh></v>
+<v t="ekr.20150313083748.11913"><vh>spell-change-then-find</vh></v>
+<v t="ekr.20150313083748.11914"><vh>spell-find</vh></v>
+<v t="ekr.20150313083748.11915"><vh>spell-ignore</vh></v>
+</v>
+<v t="ekr.20150313083748.11916"><vh>Undoer</vh>
+<v t="ekr.20150313083748.11917"><vh>redo</vh></v>
+<v t="ekr.20150313083748.11918"><vh>undo</vh></v>
+</v>
+<v t="ekr.20150313083748.11919"><vh>VimCommands</vh>
+<v t="ekr.20150313083748.11920"><vh>:!</vh></v>
+<v t="ekr.20150313083748.11921"><vh>:e!</vh></v>
+<v t="ekr.20150313083748.11922"><vh>:gT</vh></v>
+<v t="ekr.20150313083748.11923"><vh>:gt</vh></v>
+<v t="ekr.20150313083748.11924"><vh>:print-dot</vh></v>
+<v t="ekr.20150313083748.11925"><vh>:q</vh></v>
+<v t="ekr.20150313083748.11926"><vh>:q!</vh></v>
+<v t="ekr.20150313083748.11927"><vh>:qa</vh></v>
+<v t="ekr.20150313083748.11928"><vh>:toggle-vim-mode</vh></v>
+<v t="ekr.20150313083748.11929"><vh>:toggle-vim-trace</vh></v>
+<v t="ekr.20150313083748.11930"><vh>:toggle-vim-trainer-mode</vh></v>
+<v t="ekr.20150313083748.11931"><vh>:w</vh></v>
+<v t="ekr.20150313083748.11932"><vh>:wq</vh></v>
+<v t="ekr.20150313083748.11933"><vh>:xa</vh></v>
+</v>
+<v t="ekr.20150313083748.11934"><vh>cls</vh>
+<v t="ekr.20150313083748.11935"><vh>cls</vh></v>
+</v>
+<v t="ekr.20150313083748.11936"><vh>enterModeCallback</vh>
+<v t="ekr.20150313083748.11937"><vh>enter-quick-command-mode</vh></v>
+</v>
+<v t="ekr.20150313083748.11938"><vh>minibufferCallback</vh>
+<v t="ekr.20150313083748.11939"><vh>@button-jedit2py</vh></v>
+<v t="ekr.20150313083748.11940"><vh>@button-replace-g-choose</vh></v>
+<v t="ekr.20150313083748.11941"><vh>@button-write-unit-tests</vh></v>
+<v t="ekr.20150313083748.11942"><vh>@command-align-eq-signs</vh></v>
+<v t="ekr.20150313083748.11943"><vh>@command-c-to-python-clean-docs</vh></v>
+<v t="ekr.20150313083748.11944"><vh>@command-clean-all-blank-lines</vh></v>
+<v t="ekr.20150313083748.11945"><vh>@command-clean-body</vh></v>
+<v t="ekr.20150313083748.11946"><vh>@command-clean-diff</vh></v>
+<v t="ekr.20150313083748.11947"><vh>@command-clean-spellpyx</vh></v>
+<v t="ekr.20150313083748.11948"><vh>@command-count-pages</vh></v>
+<v t="ekr.20150313083748.11949"><vh>@command-create-@auto-nodes</vh></v>
+<v t="ekr.20150313083748.11950"><vh>@command-create-def-list</vh></v>
+<v t="ekr.20150313083748.11951"><vh>@command-do-after</vh></v>
+<v t="ekr.20150313083748.11952"><vh>@command-do-before</vh></v>
+<v t="ekr.20150313083748.11953"><vh>@command-flatten-script</vh></v>
+<v t="ekr.20150313083748.11954"><vh>@command-join-node-above</vh></v>
+<v t="ekr.20150313083748.11955"><vh>@command-join-node-below</vh></v>
+<v t="ekr.20150313083748.11956"><vh>@command-join-selection-to-node-below</vh></v>
+<v t="ekr.20150313083748.11957"><vh>@command-load-all-leo-files</vh></v>
+<v t="ekr.20150313083748.11958"><vh>@command-make-test</vh></v>
+<v t="ekr.20150313083748.11959"><vh>@command-preview-node</vh></v>
+<v t="ekr.20150313083748.11960"><vh>@command-preview-tree</vh></v>
+<v t="ekr.20150313083748.11961"><vh>@command-print-cmd-docstrings</vh></v>
+<v t="ekr.20150313083748.11962"><vh>@command-promote-bodies</vh></v>
+<v t="ekr.20150313083748.11963"><vh>@command-remove-newlines</vh></v>
+<v t="ekr.20150313083748.11964"><vh>@command-split-defs</vh></v>
+<v t="ekr.20150313083748.11965"><vh>align-eq-signs</vh></v>
+<v t="ekr.20150313083748.11966"><vh>at-file-to-at-auto</vh></v>
+<v t="ekr.20150313083748.11967"><vh>bookmarks-bookmark</vh></v>
+<v t="ekr.20150313083748.11968"><vh>bookmarks-bookmark-child</vh></v>
+<v t="ekr.20150313083748.11969"><vh>bookmarks-level-decrease</vh></v>
+<v t="ekr.20150313083748.11970"><vh>bookmarks-level-increase</vh></v>
+<v t="ekr.20150313083748.11971"><vh>bookmarks-mark-as-target</vh></v>
+<v t="ekr.20150313083748.11972"><vh>bookmarks-open-bookmark</vh></v>
+<v t="ekr.20150313083748.11973"><vh>bookmarks-open-node</vh></v>
+<v t="ekr.20150313083748.11974"><vh>bookmarks-show</vh></v>
+<v t="ekr.20150313083748.11975"><vh>bookmarks-switch</vh></v>
+<v t="ekr.20150313083748.11976"><vh>bookmarks-use-other-outline</vh></v>
+<v t="ekr.20150313083748.11977"><vh>c-to-python-clean-docs</vh></v>
+<v t="ekr.20150313083748.11978"><vh>cke-text-close</vh></v>
+<v t="ekr.20150313083748.11979"><vh>cke-text-open</vh></v>
+<v t="ekr.20150313083748.11980"><vh>cke-text-switch</vh></v>
+<v t="ekr.20150313083748.11981"><vh>cke-text-toggle-autosave</vh></v>
+<v t="ekr.20150313083748.11982"><vh>clean-all-blank-lines</vh></v>
+<v t="ekr.20150313083748.11983"><vh>clean-body</vh></v>
+<v t="ekr.20150313083748.11984"><vh>clean-diff</vh></v>
+<v t="ekr.20150313083748.11985"><vh>clean-persistence</vh></v>
+<v t="ekr.20150313083748.11986"><vh>clean-spellpyx</vh></v>
+<v t="ekr.20150313083748.11987"><vh>close-others</vh></v>
+<v t="ekr.20150313083748.11988"><vh>cm-external-editor</vh></v>
+<v t="ekr.20150313083748.11989"><vh>context-menu-open</vh></v>
+<v t="ekr.20150313083748.11990"><vh>count-pages</vh></v>
+<v t="ekr.20150313083748.11991"><vh>create-@auto-nodes</vh></v>
+<v t="ekr.20150313083748.11992"><vh>create-def-list</vh></v>
+<v t="ekr.20150313083748.11993"><vh>ctrl-click-at-cursor</vh></v>
+<v t="ekr.20150313083748.11994"><vh>delete-@button-jedit2py-button</vh></v>
+<v t="ekr.20150313083748.11995"><vh>delete-@button-replace-g-choose-button</vh></v>
+<v t="ekr.20150313083748.11996"><vh>delete-@button-write-unit-tests-button</vh></v>
+<v t="ekr.20150313083748.11997"><vh>delete-script-button-button</vh></v>
+<v t="ekr.20150313083748.11998"><vh>detach-editor-toggle</vh></v>
+<v t="ekr.20150313083748.11999"><vh>detach-editor-toggle-max</vh></v>
+<v t="ekr.20150313083748.12000"><vh>disable-idle-time-events</vh></v>
+<v t="ekr.20150313083748.12001"><vh>disable-idle-time-tracing</vh></v>
+<v t="ekr.20150313083748.12002"><vh>do-after</vh></v>
+<v t="ekr.20150313083748.12003"><vh>do-before</vh></v>
+<v t="ekr.20150313083748.12004"><vh>enable-idle-time-events</vh></v>
+<v t="ekr.20150313083748.12005"><vh>enable-idle-time-tracing</vh></v>
+<v t="ekr.20150313083748.12006"><vh>find-quick</vh></v>
+<v t="ekr.20150313083748.12007"><vh>find-quick-changed</vh></v>
+<v t="ekr.20150313083748.12008"><vh>find-quick-selected</vh></v>
+<v t="ekr.20150313083748.12009"><vh>find-quick-test-failures</vh></v>
+<v t="ekr.20150313083748.12010"><vh>find-quick-timeline</vh></v>
+<v t="ekr.20150313083748.12011"><vh>flatten-script</vh></v>
+<v t="ekr.20150313083748.12012"><vh>focus-to-nav</vh></v>
+<v t="ekr.20150313083748.12013"><vh>free-layout-context-menu</vh></v>
+<v t="ekr.20150313083748.12014"><vh>free-layout-load</vh></v>
+<v t="ekr.20150313083748.12015"><vh>free-layout-load-alternate</vh></v>
+<v t="ekr.20150313083748.12016"><vh>free-layout-load-detached-body</vh></v>
+<v t="ekr.20150313083748.12017"><vh>free-layout-load-no-log</vh></v>
+<v t="ekr.20150313083748.12018"><vh>free-layout-load-standard</vh></v>
+<v t="ekr.20150313083748.12019"><vh>free-layout-restore</vh></v>
+<v t="ekr.20150313083748.12020"><vh>free-layout-zoom</vh></v>
+<v t="ekr.20150313083748.12021"><vh>global-search</vh></v>
+<v t="ekr.20150313083748.12022"><vh>go-anywhere</vh></v>
+<v t="ekr.20150313083748.12023"><vh>gui-all-hide</vh></v>
+<v t="ekr.20150313083748.12024"><vh>gui-all-show</vh></v>
+<v t="ekr.20150313083748.12025"><vh>gui-all-toggle</vh></v>
+<v t="ekr.20150313083748.12026"><vh>gui-iconbar-hide</vh></v>
+<v t="ekr.20150313083748.12027"><vh>gui-iconbar-show</vh></v>
+<v t="ekr.20150313083748.12028"><vh>gui-iconbar-toggle</vh></v>
+<v t="ekr.20150313083748.12029"><vh>gui-menu-hide</vh></v>
+<v t="ekr.20150313083748.12030"><vh>gui-menu-show</vh></v>
+<v t="ekr.20150313083748.12031"><vh>gui-menu-toggle</vh></v>
+<v t="ekr.20150313083748.12032"><vh>gui-minibuffer-hide</vh></v>
+<v t="ekr.20150313083748.12033"><vh>gui-minibuffer-show</vh></v>
+<v t="ekr.20150313083748.12034"><vh>gui-minibuffer-toggle</vh></v>
+<v t="ekr.20150313083748.12035"><vh>gui-statusbar-hide</vh></v>
+<v t="ekr.20150313083748.12036"><vh>gui-statusbar-show</vh></v>
+<v t="ekr.20150313083748.12037"><vh>gui-statusbar-toggle</vh></v>
+<v t="ekr.20150313083748.12038"><vh>gui-tabbar-hide</vh></v>
+<v t="ekr.20150313083748.12039"><vh>gui-tabbar-show</vh></v>
+<v t="ekr.20150313083748.12040"><vh>gui-tabbar-toggle</vh></v>
+<v t="ekr.20150313083748.12041"><vh>head-to-prev-node</vh></v>
+<v t="ekr.20150313083748.12042"><vh>history</vh></v>
+<v t="ekr.20150313083748.12043"><vh>import-zim-folder</vh></v>
+<v t="ekr.20150313083748.12044"><vh>jedit2py</vh></v>
+<v t="ekr.20150313083748.12045"><vh>join-leo-irc</vh></v>
+<v t="ekr.20150313083748.12046"><vh>join-node-above</vh></v>
+<v t="ekr.20150313083748.12047"><vh>join-node-below</vh></v>
+<v t="ekr.20150313083748.12048"><vh>join-selection-to-node-below</vh></v>
+<v t="ekr.20150313083748.12049"><vh>load-all-leo-files</vh></v>
+<v t="ekr.20150313083748.12050"><vh>make-test</vh></v>
+<v t="ekr.20150313083748.12051"><vh>marked-list</vh></v>
+<v t="ekr.20150313083748.12052"><vh>open-url</vh></v>
+<v t="ekr.20150313083748.12053"><vh>open-url-under-cursor</vh></v>
+<v t="ekr.20150313083748.12054"><vh>open-with-idle</vh></v>
+<v t="ekr.20150313083748.12055"><vh>open-with-open office</vh></v>
+<v t="ekr.20150313083748.12056"><vh>open-with-scite</vh></v>
+<v t="ekr.20150313083748.12057"><vh>open-with-word</vh></v>
+<v t="ekr.20150313083748.12058"><vh>parse-body</vh></v>
+<v t="ekr.20150313083748.12059"><vh>preview</vh></v>
+<v t="ekr.20150313083748.12060"><vh>preview-node</vh></v>
+<v t="ekr.20150313083748.12061"><vh>preview-tree</vh></v>
+<v t="ekr.20150313083748.12062"><vh>print-cmd-docstrings</vh></v>
+<v t="ekr.20150313083748.12063"><vh>print-expanded-node</vh></v>
+<v t="ekr.20150313083748.12064"><vh>print-expanded-node-body</vh></v>
+<v t="ekr.20150313083748.12065"><vh>print-marked-node-bodies</vh></v>
+<v t="ekr.20150313083748.12066"><vh>print-marked-nodes</vh></v>
+<v t="ekr.20150313083748.12067"><vh>print-preview-expanded-node</vh></v>
+<v t="ekr.20150313083748.12068"><vh>print-preview-expanded-node-body</vh></v>
+<v t="ekr.20150313083748.12069"><vh>print-preview-marked-node-bodies</vh></v>
+<v t="ekr.20150313083748.12070"><vh>print-preview-marked-nodes</vh></v>
+<v t="ekr.20150313083748.12071"><vh>print-preview-selected-node</vh></v>
+<v t="ekr.20150313083748.12072"><vh>print-preview-selected-node-body</vh></v>
+<v t="ekr.20150313083748.12073"><vh>print-preview-selected-node-body-html</vh></v>
+<v t="ekr.20150313083748.12074"><vh>print-selected-node</vh></v>
+<v t="ekr.20150313083748.12075"><vh>print-selected-node-body</vh></v>
+<v t="ekr.20150313083748.12076"><vh>print-selected-node-body-html</vh></v>
+<v t="ekr.20150313083748.12077"><vh>print-style-sheet</vh></v>
+<v t="ekr.20150313083748.12078"><vh>promote-bodies</vh></v>
+<v t="ekr.20150313083748.12079"><vh>pylint</vh></v>
+<v t="ekr.20150313083748.12080"><vh>remove-newlines</vh></v>
+<v t="ekr.20150313083748.12081"><vh>replace-g-choose</vh></v>
+<v t="ekr.20150313083748.12082"><vh>richtext-close-editor</vh></v>
+<v t="ekr.20150313083748.12083"><vh>richtext-open-editor</vh></v>
+<v t="ekr.20150313083748.12084"><vh>richtext-switch-editor</vh></v>
+<v t="ekr.20150313083748.12085"><vh>richtext-toggle-autosave</vh></v>
+<v t="ekr.20150313083748.12086"><vh>script-button</vh></v>
+<v t="ekr.20150313083748.12087"><vh>session-clear</vh></v>
+<v t="ekr.20150313083748.12088"><vh>session-create</vh></v>
+<v t="ekr.20150313083748.12089"><vh>session-refresh</vh></v>
+<v t="ekr.20150313083748.12090"><vh>session-restore</vh></v>
+<v t="ekr.20150313083748.12091"><vh>session-snapshot-load</vh></v>
+<v t="ekr.20150313083748.12092"><vh>session-snapshot-save</vh></v>
+<v t="ekr.20150313083748.12093"><vh>split-defs</vh></v>
+<v t="ekr.20150313083748.12094"><vh>style-reload</vh></v>
+<v t="ekr.20150313083748.12095"><vh>style-set-selected</vh></v>
+<v t="ekr.20150313083748.12096"><vh>tab-cycle-next</vh></v>
+<v t="ekr.20150313083748.12097"><vh>tab-cycle-previous</vh></v>
+<v t="ekr.20150313083748.12098"><vh>tab-detach</vh></v>
+<v t="ekr.20150313083748.12099"><vh>tail-to-next-node</vh></v>
+<v t="ekr.20150313083748.12100"><vh>toggle-idle-time-events</vh></v>
+<v t="ekr.20150313083748.12101"><vh>toggle-idle-time-tracing</vh></v>
+<v t="ekr.20150313083748.12102"><vh>vr</vh></v>
+<v t="ekr.20150313083748.12103"><vh>vr-contract</vh></v>
+<v t="ekr.20150313083748.12104"><vh>vr-expand</vh></v>
+<v t="ekr.20150313083748.12105"><vh>vr-hide</vh></v>
+<v t="ekr.20150313083748.12106"><vh>vr-lock</vh></v>
+<v t="ekr.20150313083748.12107"><vh>vr-pause-play-movie</vh></v>
+<v t="ekr.20150313083748.12108"><vh>vr-show</vh></v>
+<v t="ekr.20150313083748.12109"><vh>vr-toggle</vh></v>
+<v t="ekr.20150313083748.12110"><vh>vr-unlock</vh></v>
+<v t="ekr.20150313083748.12111"><vh>vr-update</vh></v>
+<v t="ekr.20150313083748.12112"><vh>write-unit-tests</vh></v>
+<v t="ekr.20150313083748.12113"><vh>zoom-in</vh></v>
+<v t="ekr.20150313083748.12114"><vh>zoom-out</vh></v>
+</v>
+</v>
+<v t="ekr.20150312080344.15"><vh>** For scripting Chapter</vh>
+<v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
+<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
+<v t="ekr.20150312080344.14"><vh>Using classes instead of functions</vh></v>
+<v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
+</v>
 <v t="ekr.20150312013449.5"><vh>Commands to be documented</vh>
-<v t="ekr.20150301045135.12"><vh>Commands 4.1</vh>
-<v t="edream.110603190322.14"><vh>Added Check Outline command</vh></v>
-<v t="edream.110603190322.15"><vh>Added Hoist/De-Hoist commands</vh></v>
-<v t="ekr.20040216152948"><vh>Added Toggle Angle Brackets command</vh></v>
-<v t="edream.110203163054.833"><vh>Executing Python scripts in body text</vh></v>
-<v t="edream.112303173638"><vh>Running Leo in batch mode</vh></v>
-</v>
-<v t="ekr.20150301045135.19"><vh>Commands 4.2</vh>
-<v t="EKR.20040628095213.282"><vh>Added Paste Retaining Clones command</vh></v>
-<v t="ekr.20040804165258.4"><vh>Added Check commands</vh></v>
-</v>
-<v t="ekr.20050123103521"><vh>Commands 4.3</vh>
-<v t="ekr.20050123092834.897"><vh>Added 'Expand Or Go Right' and 'Contract or Go Left' commands</vh></v>
-<v t="ekr.20050123092834.1043"><vh>Added 'Undo Clear Recent Files'</vh></v>
-<v t="ekr.20050313101229.95"><vh>Added Add Comments and Delete Comments commands</vh></v>
-</v>
-<v t="ekr.20150301045135.34"><vh>Commands 4.4</vh>
-<v t="ekr.20060428084553.39"><vh>Added clear-selection command</vh></v>
-<v t="ekr.20051101162123.1"><vh>Added commands for the tabbed log</vh>
-<v t="ekr.20051028051616.172"><vh>Programming the tabbed log</vh></v>
-</v>
-<v t="ekr.20060212102459.4"><vh>Added minibuffer-oriented find commands</vh></v>
-<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
-<v t="ekr.20051028051444.8"><vh>Added new commands</vh></v>
-<v t="ekr.20051028061322"><vh>Added new commands</vh></v>
-<v t="ekr.20060214083808"><vh>Added new commands</vh></v>
-<v t="ekr.20060328171518.45"><vh>Added run-unit-test command</vh></v>
-<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
-<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
-<v t="ekr.20150312080344.40"><vh>4.4.3? New commands for resolving cvs conflicts</vh></v>
-</v>
-<v t="ekr.20090717084250.10886"><vh>Commands 4.6</vh>
-<v t="ekr.20090717084250.10887"><vh>Added smart home (back-to-home) command</vh></v>
-<v t="ekr.20090717084250.10888"><vh>The open command creates @edit nodes when opening non-.leo files</vh></v>
-<v t="ekr.20090717084250.10889"><vh>added pdb command</vh></v>
-<v t="ekr.20090717084250.10891"><vh>Improved isearch commands</vh></v>
-</v>
-<v t="ekr.20100211125418.11611"><vh>Commands 4.7</vh>
-<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
-</v>
-<v t="ekr.20101104091058.5019"><vh>Commands 4.8</vh>
-<v t="ekr.20101104091058.5252"><vh>Added  head-to-prev-node and tail-to-next-node commands</vh></v>
-<v t="ekr.20101124102457.5183"><vh>Added cascade-windows and minimize-all-windows commands</vh></v>
-<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
-<v t="ekr.20101124102457.5224"><vh>Added extract-python-method command</vh></v>
-<v t="ekr.20101124102457.5184"><vh>Added head-to-prev-node and tail-to-next-node commands</vh></v>
-<v t="ekr.20101104091058.5020"><vh>Added legend for print-settings command</vh></v>
-<v t="ekr.20101104091058.5023"><vh>Improved abbreviation commands</vh></v>
-<v t="ekr.20101104091058.5022"><vh>Removed mark-clones command</vh></v>
-</v>
-<v t="ekr.20150301140303.8"><vh>Commands 4.9</vh>
-<v t="ekr.20150312025000.2398"><vh>import-file replaces several commands</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Changed command names</vh></v>
-<v t="ekr.20150312025000.2362"><vh>Improved rst3 command</vh></v>
-</v>
-<v t="ekr.20150312025000.2349"><vh>Commands 4.10</vh>
-<v t="ekr.20150312025000.2363"><vh>Added "smart" jumps/deletes</vh></v>
-<v t="ekr.20150312025000.2350"><vh>Added @button split-defs</vh></v>
-<v t="ekr.20150312025000.2351"><vh>Added beautify-c command</vh></v>
-<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20150312025000.2353"><vh>Added clone-find-all-flattened command</vh></v>
-<v t="ekr.20150312025000.2354"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
-<v t="ekr.20150312025000.2355"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
-<v t="ekr.20150312025000.2356"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20150312025000.2358"><vh>Improved open command</vh></v>
-</v>
-<v t="ekr.20131105110107.16906"><vh>Commands 4.11</vh>
-<v t="ekr.20150312080344.9"><vh>Major improvements to abbreviations</vh></v>
-<v t="ekr.20150312080344.6"><vh>Added more intuitive key bindings</vh></v>
-<v t="ekr.20131105110107.17032"><vh>Added insert-node-before command &amp; p.insertBefore</vh></v>
-<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+<v t="ekr.20131105110107.17032"><vh>insert-node-before</vh></v>
 <v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
-<v t="ekr.20131105110107.16915"><vh>help-for-command executes apropos commands</vh></v>
-<v t="ekr.20131105110107.16916"><vh>help-for-python now uses vr window</vh></v>
-<v t="ekr.20131105110107.16917"><vh>help-for-regular-expressions command</vh></v>
-<v t="ekr.20131105110107.17042"><vh>Improved reformat-paragraph</vh></v>
 <v t="ekr.20150312080344.5"><vh>join-leo-irc command</vh></v>
 <v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
 <v t="ekr.20131105110107.16920"><vh>normalize-whitespace</vh></v>
-<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
-<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
 <v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
-<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
-<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
-</v>
-<v t="ekr.20150312025000.2396"><vh>Commands 5.0</vh>
+<v t="ekr.20141120113801.168"><vh>Added focus-to-find/spell commands</vh></v>
+<v t="ekr.20141120113801.169"><vh>Added clone-find-parents command</vh></v>
+<v t="ekr.20141120113801.170"><vh>Added clone-to-last-node</vh></v>
+<v t="ekr.20141120113801.171"><vh>Added flatten-outline-to-node</vh></v>
+<v t="ekr.20141120113801.172"><vh>Added help-for-drag-and-drop command</vh></v>
+<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
+<v t="ekr.20141120113801.174"><vh>Added insert-file-name command</vh></v>
+<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
+<v t="ekr.20141120113801.176"><vh>Added spell-as-you-type commands</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20150312080344.18"><vh>Power features: 5.0</vh>
 <v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
@@ -1273,49 +2058,55 @@
 <v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
 <v t="ekr.20150312080344.26"><vh>The style-reload command changes Leo's appearance instantly</vh></v>
 </v>
-<v t="ekr.20141120113801.167"><vh>New commands</vh>
-<v t="ekr.20141120113801.168"><vh>Added focus-to-find/spell commands</vh></v>
-<v t="ekr.20141120113801.169"><vh>Added clone-find-parents command</vh></v>
-<v t="ekr.20141120113801.170"><vh>Added clone-to-last-node</vh></v>
-<v t="ekr.20141120113801.171"><vh>Added flatten-outline-to-node</vh></v>
-<v t="ekr.20141120113801.172"><vh>Added help-for-drag-and-drop command</vh></v>
-<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
-<v t="ekr.20141120113801.174"><vh>Added insert-file-name command</vh></v>
-<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
-<v t="ekr.20141120113801.176"><vh>Added spell-as-you-type commands</vh></v>
 </v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20141120113801.177"><vh>Improved commands</vh>
-<v t="ekr.20141120113801.178"><vh>Improved find/replace-all commands</vh></v>
-<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-<v t="ekr.20141120113801.180"><vh>Improved check outline</vh></v>
-<v t="ekr.20141120113801.181"><vh>Added Yes To All and No To All buttons to dialogs</vh></v>
-<v t="ekr.20141120113801.182"><vh>Added more files to pylint -a &amp; -p</vh></v>
-<v t="ekr.20141120113801.183"><vh>The clean-all-lines command strips trailing whitespace</vh></v>
+<v t="ekr.20150313083748.12118"><vh>** Missing in ref</vh>
+<v t="ekr.20110611055444.16726"><vh>** Changed command names</vh></v>
+<v t="ekr.20101104091058.5252"><vh>Added  head-to-prev-node and tail-to-next-node commands</vh></v>
+<v t="ekr.20150312025000.2363"><vh>Added "smart" jumps/deletes</vh></v>
+<v t="ekr.20150312025000.2351"><vh>Added beautify commands</vh></v>
+<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20101124102457.5183"><vh>Added cascade-windows and minimize-all-windows commands</vh></v>
+<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
+<v t="ekr.20150312025000.2354"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
+<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
+<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
+<v t="ekr.20051028051444.8"><vh>Added new commands</vh></v>
+<v t="ekr.20060214083808"><vh>Added new commands</vh></v>
+<v t="ekr.20090717084250.10889"><vh>added pdb command</vh></v>
+<v t="ekr.20150312025000.2355"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
+<v t="ekr.20060328171518.45"><vh>Added run-unit-test command</vh></v>
+<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
+<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
+<v t="ekr.20150312025000.2356"><vh>Added select-to-matching-bracket command</vh></v>
+<v t="ekr.20090717084250.10887"><vh>Added smart home (back-to-home) command</vh></v>
+<v t="ekr.20150313083748.11585"><vh>clear-selected-text</vh></v>
+<v t="ekr.20150312080344.9"><vh>Major improvements to abbreviations</vh></v>
+<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
+<v t="ekr.20150312080344.40"><vh>read-file-into-node &amp; write-file-from-node</vh></v>
+<v t="ekr.20150313083748.11697"><vh>show-colors (not implemented in Qt)</vh></v>
+<v t="ekr.20150313083748.11698"><vh>show-fonts</vh></v>
+<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh>
+<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
 </v>
+<v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+<v t="ekr.20150313083748.12122"><vh>** help-for commands</vh>
+<v t="ekr.20131105110107.16915"><vh>help-for-command executes apropos commands</vh></v>
+<v t="ekr.20131105110107.16917"><vh>help-for-regular-expressions command</vh></v>
 </v>
-<v t="ekr.20150312080344.15"><vh>For scripting Chapter</vh>
-<v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
-<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
-<v t="ekr.20150312080344.14"><vh>Using classes instead of functions</vh></v>
-<v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
+<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
+<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
 </v>
-</v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
-<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
-<v t="ekr.20150227184811.5"><vh>Done</vh></v>
-<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
-<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
-</v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
-<t tx="EKR.20040524104904.101">The ``new`` (Ctrl-N) command creates a new Leo main window. The ``open-outline`` (Ctrl-O) command opens an existing Leo file and shows it in a main window. The ``close-window`` (Ctrl-F4) command closes the selected Leo window, giving you an opportunity to save your work if you haven't yet done so.
+<t tx="EKR.20040524104904.101">The ``new`` (Ctrl-N) command creates a new Leo main window. The ``open-outline`` (Ctrl-O) command opens an existing Leo file and shows it in a main window. This command also works with non-Leo files. Selecting a non-.leo file will load that file into an @edit node in the present outline. The ``close-window`` (Ctrl-F4) command closes the selected Leo window, giving you an opportunity to save your work if you haven't yet done so.
 
 The ``save-file`` (Ctrl-S), ``save-file-as`` and ``save-file-to`` commands save the Leo window to a file. The ``save-files-as`` command changes the name of the outline being edited; the ``save-file-to`` command does not. The ``save-file-as-zipped`` command is the same as the ``save-file-as`` command except that the resulting .leo file is compressed with Python's zipfile module. Similarly, the ``save-file-as-unzipped`` command is the same as the ``save-as`` command except that the resulting .leo file is not compressed. The ``save-file``, ``save-file-as`` and ``save-file-to`` commands compress the file if it was originally compressed. **Note**: Leo writes files with .leo extension, regardless of whether the file is zipped or not. Zipped .leo files contain a single archive, whose name is the same as the .leo file itself. Outside of Leo you can change the extension to .leo.zip and use stuffit or other program to expand the .leo file contained within. The ``revert`` command reloads a file, discarding any changes made to the file since it was last saved.
 
 The Recent Files menu shows a list of recently opened files. Choosing an item in this submenu opens the selected file or brings it to the front. The ``clear-recent-files`` command deletes all entries in the Recent Files submenu except the most recent file. The files themselves are not affected, just the menu entries.
+
+The ``open-leoDocs-leo`` command opens LeoDocs.leo. The ``open-leoPlugins-leo`` command opens LeoPlugins.leo. The ``open-leoSettings-leo`` command opens LeoSettings.leo. The ``open-cheat-sheet-leo`` command opens CheatSheet.leo.
 
 The following commands are located in the File:Read/Write menu...
 
@@ -1324,6 +2115,7 @@ The ``read-outline-only`` command reads an outline using only the .leo file, not
 <t tx="EKR.20040524104904.102">The ``open-with`` command allows you to communicate with external editor. When you select this command Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an @openwith in myLeoSettings.leo. See the documentation in leoSettings.leo.
 </t>
 <t tx="EKR.20040524104904.108">The ``import-file`` command imports a file in various ways depending on the contents of the file. For plain files, the command creates an @file node. If the file looks like an external file written by Leo, the import command will recreate the outline structure based on the sentinels in the file. This command can also read files written in MORE outline format.
+
 </t>
 <t tx="EKR.20040524104904.109">The ``outline-to-cweb`` command creates a `CWEB`_ file from the selected outline. The ``outline-to-noweb`` command creates a `noweb`_ file from the selected outline. The ``flatten-outline`` command creates a text file in MORE format from the selected outline. The ``remove-sentinels`` command removes all sentinel lines from a file derived from an @file node. The ``weave`` command formats the selected text and writes it to a file.
 </t>
@@ -1416,12 +2208,8 @@ There are four kinds of settings files:
 The following sections describe the kinds of nodes in @settings trees.
 </t>
 <t tx="EKR.20040524104904.143"></t>
-<t tx="EKR.20040524104904.144">The ``check-outline`` command checks the outline for consistency. Leo automatically check the syntax of Python external files when Leo writes the external file.
+<t tx="EKR.20040524104904.144">The ``check-outline`` command checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 
-The ``pretty-print-python-code`` and ``pretty-print-all-python-code`` pretty print body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
-
-    putOperator:      puts whitespace around operators.
-    putNormalToken:   puts whitespace around everything else.
 </t>
 <t tx="EKR.20040524104904.148">The ``hoist`` command redraws the screen so presently selected tree becomes the only visible part of the outline. You may hoist an outline as many times as you wish. The ``dehoist`` command undoes the effect of the previous ``hoist`` command.
 </t>
@@ -1448,10 +2236,6 @@ The ``pretty-print-python-code`` and ``pretty-print-all-python-code`` pretty pri
     Otherwise, you will be asked whether you want to download it from Leo's SourceForge web site.
     If you say yes, the page http://sourceforge.net/project/showfiles.php?group_id=3458 will open.
     You may then download sbooks.sbm to the folder containing leo.py.
--   The Open LeoDocs.leo command opens LeoDocs.leo.
--   The Open LeoPlugins.leo command opens LeoPlugins.leo.
--   The Open LeoSettings.leo command opens LeoSettings.leo.
-
 </t>
 <t tx="EKR.20040524104904.211"></t>
 <t tx="EKR.20040524104904.224" str_atime="1376412038.0">Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are::
@@ -1745,12 +2529,6 @@ The g.u function should be used *only* to convert from the Qt string type (a wra
     elements. See `Writing plugins`_ for details.
 </t>
 <t tx="EKR.20040524104904.99"></t>
-<t tx="EKR.20040628095213.282">- By default, finishPaste command reassigns all indices in copied nodes.
-- Created pasteOutlineRetainingClones.
-- Added reassignIndices arg to pasteOutline, getLeoOutline and finishPaste.
-- Added &lt;&lt; recreate tnodesDict &gt;&gt; in getLeoOutline.
-- Simplified getTnode slightly: the "if t" code is the same for both kinds of reads.
-</t>
 <t tx="TL.20080804095315.1"></t>
 <t tx="TL.20080804095315.2">###################
 Using Vim with Leo
@@ -2187,44 +2965,6 @@ The number of lines that Vim checks at the top and bottom of the buffer is confi
 
 Issue the ":help modeline" command within Vim for the more information about modelines.
 </t>
-<t tx="edream.110203163054.833">The Execute Script command executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected.
-
-Scripts are executed in a "pristine" environment, that is, with __builtins__ as both the local and global environments.
-
-New in version 4.1: Body text may now contain @directives and section references. This is a major step forward: you can now use all of Leo's features to organize scripts that you execute interactively.
-
-Section definitions must appear in the node containing the script or in descendant nodes. Leo "preprocesses" all scripts by simulating the writing of a external file to a string.
-
-The Execute Script command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing. Scripts may examine and change app.scriptDict as they please.
-</t>
-<t tx="edream.110603190322.14">This command checks for unused tnodeLists and checks the topology of all clones.
-</t>
-<t tx="edream.110603190322.15">The Hoist command redraws the screen so presently selected tree becomes the only visible part of the outline.  Leo prevents the you from moving nodes outside the hoisted outline.  The De-hoist command restores the outline.  Hoist commands may be nested.
-</t>
-<t tx="edream.112303173638">@language rest
-
-New in version 4.1: On startup, Leo looks for two arguments of the form --script scriptFile.  If found, Leo enters batch mode.
-
-In batch mode Leo does not show any windows.  Leo assumes the scriptFile contains a Python script and executes the contents of that file using Leo's Execute Script command.  By default, Leo sends all output to Leo's log pane to the console window.  Scripts in the scriptFile may disable or enable this output by calling app.log.disable() or app.log.enable()
-
-Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands.  Those commands require interaction with the user.
-
-For example, the following batch script reads a Leo file and prints all the headlines in that file::
-
-@language python
-
-    import leoGlobals as g
-    
-    path = r"c:\prog\leoCVS\leo\test\test.leo"
-    
-    g.app.log.disable() # disable reading messages while opening the file
-    flag,newFrame = g.openWithFileName(path,None)
-    g.app.log.enable() # re-enable the log.
-    
-    for p in newFrame.c.all_positions():
-        g.es(g.toEncodedString(p.headString(),"utf-8"))
-</t>
-<t tx="ekr.20040216152948"></t>
 <t tx="ekr.20040403171740">@ @rst-options
 .. A very cool option: doc parts will be rendered properly,
 .. but will be ignored by the Execute script command.
@@ -2368,18 +3108,6 @@ David Brock wrote TSyntaxMemo, used in early versions of Leo. Terry Brown contri
 
 Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
 </t>
-<t tx="ekr.20040804165258.4">The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors. These commands mark erroneous nodes. These commands work on the selected Node and its descendants. These commands ignore any nodes for which a) @ignore is in effect or b) @language python is in not effect.
-
-The Check Python Code and Pretty Print Python Code commands replace nodes with their pretty-printed alternative. No doubt everyone will have their own favorite style. You could implement alternate pretty printers in a plugin merely by overriding the following methods of class prettyPrinter in leoCommands.py:
-
----- putOperator:      puts whitespace around operators.
----- putNormalToken:   puts whitespace around everything else.
-</t>
-<t tx="ekr.20050123092834.1043"></t>
-<t tx="ekr.20050123092834.897">These commands work as do the similar commands in Windows Explorer. How did we
-ever live without them?
-</t>
-<t tx="ekr.20050123103521"></t>
 <t tx="ekr.20050306090601">.. index:: uA
 
 Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as **user attributes**, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
@@ -2426,10 +3154,6 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 - When writing a file, Leo will write foreign xml attributes in &lt;v&gt; elements if the corresponding vnode contains an unknownAttributes ivar.
 
 - Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
-</t>
-<t tx="ekr.20050313101229.95">The Add Comments command puts comments around a block of code. This command uses single-line comments if the language in effect for the node supports single-line comments.
-
-The Delete Comments command deletes the comments specified by the Add Comments command.
 </t>
 <t tx="ekr.20050313102319">The ``add-comments`` (Ctrl-)) command puts comments around a block of code. This command uses single-line comments if possible. The ``delete-comments`` (Ctrl-() command deletes the comments.
 </t>
@@ -3894,78 +4618,6 @@ The scripting plugin (mod_scripting.py) deserves special mention. This plugin le
 
 - The help command gives a brief quick start introduction to Leo's Emacs-like features.
 </t>
-<t tx="ekr.20051028051616.172">@color
-
-# Plugins and scripts can easily create new tabs in the log panel.
-# Important: you can run any of these examples using the 'Run Script' button.
-
-# To create a tab named "Test" or make it visible if it already exists:
-
-c.frame.log.selectTab('Test')
-
-# When first created, a tab contains a text widget.
-# To write to this widget, add the tabName argument to g.es:
-
-g.es('Test',color='blue',tabName='Test')
-
-# Plugins and scripts can easily replace the default Text widget with other Tk widgets.
-# c.frame.log.tabFrame contains the Tk.Frame that contains all the other widgets of the frame.
-# c.frame.log.logCtrl contains the Tk.Text widget that is initially the only widget in this frame.
-# So to remove this text widget just do:
-
-c.frame.log.logCtrl.pack_forget()
-
-# Now you can pack any other widgets into c.frame.log.tabFrame.
-
-import Tkinter as Tk ; log = c.frame.log
-log.selectTab('Test')
-log.logCtrl.pack_forget()
-f = Tk.Frame(log.tabFrame,bg='red',height='1inch',width='2inch')
-f.pack(side='left',expand=0,fill='none')
-</t>
-<t tx="ekr.20051028061322">**Important**: The print-bindings and print-commands commands (new in a1) show
-what commands exist and what keys are bound to them.
-
-- The help command tells how to use the minibuffer.
-
-- The show-minibuffer, hide-minibuffer and toggle-mini-buffer commands show and hide the minibuffer.
-
-It *is* possible to execute these command even if the minibuffer isn't presently
-visible. For example, typing 
-
-&lt;alt-x&gt;toggle-mini-buffer&lt;return&gt;
-
-should always work.
-
-- The open-find-tab command opens the Find tab. The Find tab replaces the old
-Find panel. The Find panel is deprecated.
-
-- The open-spell-tab command opens the Spell-checking tab.
-
-- The show-colors command creates the 'Colors' tab in the log pane. This tab allows you to
-experiment with picking fonts.
-
-- The show-fonts command creates the 'Fonts' tab in the log pane. This tab allows you to
-experiment with picking colors.
-</t>
-<t tx="ekr.20051101162123.1">- The open-find-tab command opens the Find tab.
-
-- The open-spell-tab command opens the Spell-checking tab.
-
-The Find and Spell *tabs* replace the corresponding legacy *dialogs*. Using tabs
-eliminates previous problems with dialogs obscuring Leo's main window.
-
-Two essential components of the settings dialog now are implemented in the tabbed log:
-
-- The show-colors command creates the 'Colors' tab in the log pane.
-
-- The show-fonts command creates the 'Fonts' tab in the log pane.
-
-These two tabs allow you to pick color or font names without using the @settings dialog.
-
-Important: scripts and plugins can easily create new tabs in the Log pane. See
-Chapter 7 of the Users Guide for details.
-</t>
 <t tx="ekr.20051202072010"></t>
 <t tx="ekr.20060105214753">Leo now allows you to specify input modes. You enter mode x with the enter-x-mode command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.
 
@@ -4026,126 +4678,10 @@ If (maybe much later), we eliminate B' as a child of A will get::
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 </t>
 <t tx="ekr.20060116174906.267"></t>
-<t tx="ekr.20060212102459.4">All minibuffer search commands, with the exception of the isearch (incremental) commands, simply provide a minibuffer interface to Leo's legacy find commands.  This means that all the powerful features of Leo's legacy commands are available to the minibuffer search commands.
-
-Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
-
-Settings
-
-leoSettings.leo now contains several settings related to the Find tab:
-
-- @bool show_only_find_tab_options = True
-
-When True (recommended), the Find tab does not show the 'Find', 'Change', 'Change, Then Find', 'Find All' and 'Change All' buttons.
-
-- @bool minibufferSearchesShowFindTab = True
-
-When True, Leo shows the Find tab when executing most of the commands discussed below.  It's not necessary for it to be visible, but I think it provides good feedback about what search-with-present-options does.  YMMY.  When True, the sequence Control-F, Control-G is one way to show the Find Tab.
-
-Basic find commands
-
-- The open-find-tab command makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
-
-- The hide-find-tab commands hides the Find tab, but retains all the present settings.
-
-- The search-with-present-options command (Control-F) prompts for a search string.  Typing the &lt;Return&gt; key puts the search string in the Find tab and executes a search based on all the settings in the Find tab.   This command is my 'workhorse' search command.
-
-- The show-search-options command shows the present search options in the status line.  At present, this command also shows the Find tab.
-
-Search again commands
-
-- The find-tab-find command (F3) is the same as the search-with-present-options command, except that it uses the search string in the find-tab.  This is what I use as my default 'search again' command.
-
-- Similarly, the find-tab-find-previous command (F2) repeats the command specified by the Find tab, but in reverse.
-
-- The find-again command a combination of the search-with-present-options and find-tab-find command.  It is the same as the find-tab-find command if a search pattern other than '&lt;find pattern here&gt;' exists in the Find tab.  Otherwise, the find-again is the same as the search-with-present-options command.
-
-Setting find options
-
-- Several minibuffer commands toggle the checkboxes and radio buttons in the Find tab, and thus affect the operation of the search-with-present-options command. Some may want to bind these commands to keys. Others, will prefer to toggle options in a mode.
-
-
-Here are the commands that toggle checkboxes: toggle-find-ignore-case-option, toggle-find-in-body-option, toggle-find-in-headline-option, toggle-find-mark-changes-option, toggle-find-mark-finds-option, toggle-find-regex-option, toggle-find-reverse-option, toggle-find-word-option, and toggle-find-wrap-around-option.
-
-Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
-
-- The enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
-
-Search commands that set options as a side effect
-
-The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
-
-- The search-backward and search-forward commands set the 'Whole Word' checkbox to False.
-
-- The word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
-
-- The re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
-
-Find all commands
-
-- The find-all command prints all matches in the log pane.
-
-- The clone-find-all command replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
-
-Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
-
-Search and replace commands
-
-The replace-string prompts for a search string.  Type &lt;Return&gt; to end the search string.  The command will then prompt for the replacement string.  Typing a second &lt;Return&gt; key will place both strings in the Find tab and executes a **find** command, that is, the search-with-present-options command.
-
-So the only difference between the replace-string and search-with-present-options commands is that the replace-string command has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
-
-- The find-tab-change command (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
-
-- The find-tab-change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
-
-The find-tab-find, find-tab-change and find-tab-change-then-find commands can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
-
-- The find-tab-change-all command changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
-
-Incremental search commands
-
-Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
-
-Coming in Leo 4.4b3: the incremental commands will maintain a list of previous matches.  This allows for
-
-a) support for backspace and
-b) an incremental-search-again command.
-
-Furthermore, this list makes it easy to detect the end of a wrapped incremental search.
-
-Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
-isearch-forward-regexp.'''
-</t>
 <t tx="ekr.20060214083808">Debugging commands:
 
 - dump-all-objects, ump-new-objects, verbose-dump-objects.
 - free-text-widgets.
-
-Find commands:
-
-See the child of this node for details.
-
-- find-again.
-- find-all and clone-find-all.
-- find-tab-find command, find-tab-find-previous.
-- find-tab-change, find-tab-change-all, find-tab-change-then-find.
-- hide-find-tab, open-find-tab.
-- re-search-forward and re-search-backward.
-- replace-string.
-- search-with-present-options.
-- search-backward and search-forward.
-- show-search-options.
-- word-search-backward and word-search-forward.
-
-Search options:
-
-- set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
-- toggle-find-ignore-case-option, toggle-find-in-body-option,
-  toggle-find-in-headline-option, toggle-find-mark-changes-option,
-  toggle-find-mark-finds-option, toggle-find-regex-option,
-  toggle-find-reverse-option, toggle-find-word-option, 
-  toggle-find-wrap-around-option.
 
 Mouseless Leo:
 
@@ -4160,11 +4696,7 @@ Mouseless Leo:
   (These commands trigger event hooks. In particular, double-click-icon-box will
   invoke the vim or xemacs plugins if they are enabled.)
 </t>
-<t tx="ekr.20060328171518.10">http://sourceforge.net/forum/message.php?msg_id=3608246
-
-Added the following commands:
-
-scroll-outline-down-line       
+<t tx="ekr.20060328171518.10">scroll-outline-down-line       
 scroll-outline-down-page       
 scroll-outline-up-line       
 scroll-outline-up-page
@@ -4177,13 +4709,10 @@ scroll-outline-up-page
 add-tab-to-lines
 clean-lines
 clear-selected-text
-goto-global-line
 help-for-command
 open-outline-by-name (filename completion)
 remove-space-from-lines
 remove-tab-from-lines
-</t>
-<t tx="ekr.20060428084553.39">Useful, e.g., after a find.
 </t>
 <t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
@@ -6762,19 +7291,10 @@ Leo screen shots
 ################
 
 </t>
-<t tx="ekr.20090717084250.10886"></t>
 <t tx="ekr.20090717084250.10887"></t>
-<t tx="ekr.20090717084250.10888">http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
-
-The open file dialog now shows all files by default. Selecting a non-.leo file will load that file into a new node in the present outline.
-
-This plugs what may have been the biggest hole in Leo's history.
-</t>
 <t tx="ekr.20090717084250.10889">This works, but stops Leo in the middle of the command-handling logic.
 
 However, it is possible to pick up the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
-</t>
-<t tx="ekr.20090717084250.10891">Escape now ends isearch
 </t>
 <t tx="ekr.20090811090022.14452">.. |leoQtMainWindow|    image:: screen-shots/leo-main-window.png
 
@@ -6935,7 +7455,6 @@ That's about it. It would be pointless to give you more details, because those d
 
 Per-leo-files entries are in g.app.homeLeoDir/db/&lt;filename&gt;_&lt;hash&gt;
 </t>
-<t tx="ekr.20100211125418.11611"></t>
 <t tx="ekr.20100211221936.7098">::
 
     clear-all-caches
@@ -8650,38 +9169,9 @@ Important files:
   document: leo_toc.html.txt.
 
 </t>
-<t tx="ekr.20101104091058.5019"></t>
-<t tx="ekr.20101104091058.5020"></t>
 <t tx="ekr.20101104091058.5021">And deprecated code mode.
 </t>
-<t tx="ekr.20101104091058.5022">It is useless in the one-node world.
-</t>
-<t tx="ekr.20101104091058.5023">http://groups.google.com/group/leo-editor/browse_thread/thread/24cb88a8c2a20a07#
-
-- Space activates abbreviations.
-- Multi-line abbreviations handled properly.
-- add-global-abbrev command uses entire selected text as the value of the abbreviation.
-- Inserted abbreviations are undoable.
-- Added support for @data abbreviations and @data global-abbreviations.
-- Added support for @bool enable-abbreviations.
-
-apropos-abbreviations
-=====================
-
-When abbreviation mode is on (abbrev-mode toggles this mode) Leo will expand
-abbreviations as you type. Type the name of an abbreviation, followed by a
-space. As soon as you type the space, Leo will replace the name by the
-abbreviations value. You can undo the replacement as usual.
-
-Note that defining any abbreviation automatically turns on abbreviation mode.
-
-The add-global-abbreviation command (&lt;alt-x&gt;add-gl&lt;tab&gt;&lt;return&gt;) takes the
-selected text as the replacement value of the abbreviation. The minibuffer
-prompts you for the name of the abbreviation.
-</t>
-<t tx="ekr.20101104091058.5252">@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/611413
+<t tx="ekr.20101104091058.5252">https://bugs.launchpad.net/leo-editor/+bug/611413
 
 These work around the lack of AI in Python's importer.
 
@@ -11141,35 +11631,6 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     root is the position of an @&lt;file&gt; node
 </t>
 <t tx="ekr.20101124102457.5183"></t>
-<t tx="ekr.20101124102457.5184">@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/611413
-
-These work around the lack of AI in Python's importer.
-
-Added leoImport.findClass helper.
-
-The head-to-prev-node command moves non-empty text preceding a class, method or
-function definition to the end of the previous sibling node.
-
-The tail-to-next-node command moves non-empty text following a class, method or
-function definition to the start of the next sibling node.
-</t>
-<t tx="ekr.20101124102457.5224">This should have been done *ages* ago. The command makes it easy to put python
-methods in separate nodes.
-
-Select a range of text, the first line of which starts with 'def foo (...)'
-
-Do alt-x extract-python-method (or ctrl-p if you are repeating the command).
-
-What happens:
-
-- Creates a new child node whose headline is 'foo'.
-
-- The body of foo contains all the selected text, properly indented.
-
-The command is undoable.
-</t>
 <t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt_` package.
 The `PyEnchant`_ package is optional. 
 
@@ -11313,7 +11774,6 @@ These settings are as follows, with the defaults as shown::
         run-        run unit tests
         toggle-     toggle settings
         yank-       yank
-        
 
 </t>
 <t tx="ekr.20110612104631.16414">**New in Leo 4.9**: The following three options allow you to expand noweb section references, much like Leo itself does.
@@ -15172,7 +15632,6 @@ Leo 4.11.1 final was released December 20, 2013.
 
 After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
-<t tx="ekr.20131105110107.16906">Added open-cheat-sheet-leo command.</t>
 <t tx="ekr.20131105110107.16908"></t>
 <t tx="ekr.20131105110107.16910"></t>
 <t tx="ekr.20131105110107.16913">The quicksearch plugin now supports the go-anywhere command. It works "sort
@@ -15189,7 +15648,6 @@ it will search for "file*txt", matching e.g. @file readme.txt
 </t>
 <t tx="ekr.20131105110107.16915">Instead of just printing their docstrings.
 </t>
-<t tx="ekr.20131105110107.16916"></t>
 <t tx="ekr.20131105110107.16917"></t>
 <t tx="ekr.20131105110107.16919">By Terry Brown
 
@@ -15274,33 +15732,6 @@ commit log:
   rename solarized_dark theme leo_dark_0
 </t>
 <t tx="ekr.20131105110107.17032">Added c.insertHeadlineBefore and unit tests for same.
-</t>
-<t tx="ekr.20131105110107.17042">1. The following are always single-line paragraphs::
-    
-    @anything
-    '''         # on a line all by itself. 
-    """         # on a line all by itself.
-
-2. The following always start a paragraph, terminating the previous
-   paragraph::
-
-    - Whatever
-    1. Whatever
-    22) Whatever
-    a. Whatever # single character only.
-    Z. Whatever # single character only.
-
-3. The leading indentation in lists will be at least the the number of
-   characters preceding "Whatever".
-
-Not yet: support for non-breaking space (unicode code point U+00A0).
-
-What I did:
-    
-- Rewrote c.findBoundParagraph &amp; added helpers:
-    - c.starts/endParagraph
-    - c.singleLineParagraph.
-- Add space adjustments to rp_wrap_all_lines.
 </t>
 <t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">@language rest
@@ -16665,7 +17096,6 @@ rather than calling w.getAllText.
 
 Imo, this is the safe, if not exactly elegant way.
 </t>
-<t tx="ekr.20141120113801.167"></t>
 <t tx="ekr.20141120113801.168">The focus-to-spell command just makes the spell tab visible.
 
 It would not be a good idea actually to transfer focus.
@@ -16756,20 +17186,6 @@ spell-as-you-type-next
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
 </t>
-<t tx="ekr.20141120113801.177"></t>
-<t tx="ekr.20141120113801.178">These commands now get their arguments from the Find Panel.
-
-Changed the following methods:
-
-generalChangeHelper,
-minibufferFind/ReplaceAll,
-searchWithPresentOptions,
-setReplaceString,
-
-Also fixed the bindings in create_find_buttons so buttons
-are bound to the proper button-related methods. As a result,
-the find-all and change-all buttons now work as expected.
-</t>
 <t tx="ekr.20141120113801.179">This is a major upgrade to the beautify command.
 
 PythonTidy (tidy for short) does a full parse of the Python sources:
@@ -16801,15 +17217,6 @@ What I did today.  See the &lt; &lt; version info &gt; &gt; section for all the 
 - Tidy now properly handles the tidy_add_blank_lines_around_comments and
   tidy_double_quoted_strings settings.
 </t>
-<t tx="ekr.20141120113801.180">It now tests that all gnx's exist and are unique.
-</t>
-<t tx="ekr.20141120113801.181">Added YesToAll and NoToAll capability to g.app.gui.runAskYesNoDialog
-and uses this in the open file again? questions when opening Leo after a
-crash.
-</t>
-<t tx="ekr.20141120113801.182">Used glob to discover files, not static lists.
-</t>
-<t tx="ekr.20141120113801.183"></t>
 <t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
 automatically when Leo first starts.
 
@@ -16930,13 +17337,9 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">First:
-- New scripts chapter: will contain important scripts from scripts.leo
-- Ask people to report poor docstrings.
-- Scan for poor docstrings:  Use a script.
-- Revise 5.1 release notes.
-    - Links to other docs?
-    - Link to the Mulder/Ream algorithm from the release notes.
+<t tx="ekr.20150215071358.87">Revise 5.1 release notes.
+- Links to other docs?
+- Link to the Mulder/Ream algorithm from the release notes.
     
 Next:
 - Test read web page
@@ -17270,9 +17673,6 @@ I think it rare for Python HOME to expand to C:\users\jane. :)
 - Explained the overall idea of the @shadow algorithm.
   http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 - Deprecated @shadow in all docs.</t>
-<t tx="ekr.20150301045135.12"></t>
-<t tx="ekr.20150301045135.19"></t>
-<t tx="ekr.20150301045135.34"></t>
 <t tx="ekr.20150301140303.15">Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
@@ -17317,7 +17717,6 @@ Quotes:    http://leoeditor.com/testimonials.html
 Viewer:    http://leoeditor.com/load-leo.html
 </t>
 <t tx="ekr.20150301140303.16"></t>
-<t tx="ekr.20150301140303.8"></t>
 <t tx="ekr.20150311123850.11"></t>
 <t tx="ekr.20150311123850.12">https://groups.google.com/forum/#!topic/leo-editor/X9rePlT6Meg
 
@@ -17866,19 +18265,16 @@ Here is git-difftool.bat::
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
 </t>
-<t tx="ekr.20150312013449.5">This documentation should be folded into the users guide.</t>
-<t tx="ekr.20150312025000.2349"></t>
-<t tx="ekr.20150312025000.2350"></t>
-<t tx="ekr.20150312025000.2351">Added class CPrettyPrinter &amp; beatifyCCode
-</t>
+<t tx="ekr.20150312013449.5">@language rest
+
+This documentation should be folded into the users guide.</t>
+<t tx="ekr.20150312025000.2351">beautify
+beautify-all
+beautify-c
+beautify-tree</t>
 <t tx="ekr.20150312025000.2352">This command is a rewrapping of the first Python script I ever wrote. It
 takes much of the scut work away from the task of converting C code to
 Python code.
-</t>
-<t tx="ekr.20150312025000.2353">The clone-find-all command includes nodes only once: if a node's ancestor
-appears in the list, the node is not include again in the top-level list.
-The new clone-find-all-flattened command includes every found node in the
-top-level list of nodes. I find this less confusing.
 </t>
 <t tx="ekr.20150312025000.2354">http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
 </t>
@@ -17892,24 +18288,6 @@ top-level list of nodes. I find this less confusing.
     run-selected-unit-tests-locally     = None
 </t>
 <t tx="ekr.20150312025000.2356"></t>
-<t tx="ekr.20150312025000.2358">Leo creates @file nodes (not @thin nodes) when opening an external file.
-
-Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
-
-Open now shows all files. This is a cue that *any* file may be opened:
-non-Leo files are opened in @edit nodes.
-</t>
-<t tx="ekr.20150312025000.2362">Allow section references in rst3 command.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-- Added support for the following options:
-    - expand_noweb_references:  default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-</t>
 <t tx="ekr.20150312025000.2363">Many editors allow you to jump over, select and delete words, especially
 those containing or surrounded by special characters, in a smarter way than
 just "going to the beginning of the word before" (back-word) or "going to
@@ -17926,24 +18304,6 @@ Users wanting to use these commands can set in their myLeoSettings.leo::
 
   delete-word-smart          = Ctrl-Delete
   backward-delete-word-smart = Ctrl-BackSpace
-</t>
-<t tx="ekr.20150312025000.2396"></t>
-<t tx="ekr.20150312025000.2398">- The import-file commands replaces all the following commands::
-    
-    import-at-file                    
-    import-cweb-files         
-    import-derived-file       
-    import-flattened-outline      
-    import-noweb-files
-    
-Leo chooses one of the above commands as follows.  First, if the file looks like an external file that Leo wrote, the command works like import-derived-file command.  Otherwise, the file's extension determines the importer::
-        
-    .cw, .cweb:     import-cweb-files
-    .nw, .noweb:    import-noweb-files
-    .txt:           import-flattened-outline
-    all others:     import-at-file
-    
-The import-at-root command is no longer supported.
 </t>
 <t tx="ekr.20150312080344.12">@language rest
 
@@ -18680,10 +19040,6 @@ The **compare-leo-outlines** command prompts for another (presumably similar) .l
     Unified extract and import commands
     Greatly improved the autocompleter
     The rendering pane displays movies, html, svg images, etc.</t>
-<t tx="ekr.20150312080344.6">- When editing a headline, the Return key leaves focus in the tree.
-- When focus is in the outline pane, the Insert key inserts a node.
-- When focus is in the outline pane, the Delete and BackSpace keys deletes node.
-</t>
 <t tx="ekr.20150312080344.60">::
 
     Added --no-splash, --script and --silent command-line options
@@ -18828,6 +19184,2303 @@ When I study other people's code I do the following:
 
 In short, I have just now realized how badly sentinels interfered with git diffs.
 </t>
+<t tx="ekr.20150313083748.11306"></t>
+<t tx="ekr.20150313083748.11307"></t>
+<t tx="ekr.20150313083748.11308">:%
+'''A class to handle Vim's :% command.'''</t>
+<t tx="ekr.20150313083748.11309">:%
+'''A class to handle Vim's :% command.'''</t>
+<t tx="ekr.20150313083748.11310"></t>
+<t tx="ekr.20150313083748.11311">:r
+'''
+A class to handle Vim's :r command.
+This class supports the do_tab callback.
+'''</t>
+<t tx="ekr.20150313083748.11312"></t>
+<t tx="ekr.20150313083748.11313">:tabnew
+'''
+A class to handle Vim's :tabnew command.
+This class supports the do_tab callback.
+'''</t>
+<t tx="ekr.20150313083748.11314">:tabnew
+'''
+A class to handle Vim's :tabnew command.
+This class supports the do_tab callback.
+'''</t>
+<t tx="ekr.20150313083748.11315"></t>
+<t tx="ekr.20150313083748.11316">addAbbreviation
+'''
+Add an abbreviation:
+The selected text is the abbreviation;
+the minibuffer prompts you for the name of the abbreviation.
+Also sets abbreviations on.
+'''</t>
+<t tx="ekr.20150313083748.11317">addInverseAbbreviation
+'''
+Add an inverse abbreviation:
+The selected text is the abbreviation name;
+the minibuffer prompts you for the value of the abbreviation.
+'''</t>
+<t tx="ekr.20150313083748.11318">killAllAbbrevs
+'''Delete all abbreviations.'''</t>
+<t tx="ekr.20150313083748.11319">listAbbrevs
+'''List all abbreviations.'''</t>
+<t tx="ekr.20150313083748.11320">readAbbreviations
+'''Read abbreviations from a file.'''</t>
+<t tx="ekr.20150313083748.11321">writeAbbreviations
+'''Write abbreviations to a file.'''</t>
+<t tx="ekr.20150313083748.11322">dynamicCompletion
+'''
+dabbrev-completion
+Insert the common prefix of all dynamic abbrev's matching the present word.
+This corresponds to C-M-/ in Emacs.
+'''</t>
+<t tx="ekr.20150313083748.11323">dynamicExpansion
+'''
+dabbrev-expands (M-/ in Emacs).
+Inserts the longest common prefix of the word at the cursor. Displays
+all possible completions if the prefix is the same as the word.
+'''</t>
+<t tx="ekr.20150313083748.11324">toggleAbbrevMode
+'''Toggle abbreviation mode.'''</t>
+<t tx="ekr.20150313083748.11325"></t>
+<t tx="ekr.20150313083748.11326">checkDerivedFile
+'''Make sure an external file written by Leo may be read properly.'''</t>
+<t tx="ekr.20150313083748.11327">writeAtAutoNodes
+'''Write all @auto nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11328">writeDirtyAtAutoNodes
+'''Write all dirty @auto nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11329"></t>
+<t tx="ekr.20150313083748.11330">autoComplete
+'''An event handler for autocompletion.'''</t>
+<t tx="ekr.20150313083748.11331">autoCompleteForce
+'''Show autocompletion, even if autocompletion is not presently enabled.'''</t>
+<t tx="ekr.20150313083748.11332">disableAutocompleter
+'''Disable the autocompleter.'''</t>
+<t tx="ekr.20150313083748.11333">disableCalltips
+'''Disable calltips.'''</t>
+<t tx="ekr.20150313083748.11334">enableAutocompleter
+'''Enable the autocompleter.'''</t>
+<t tx="ekr.20150313083748.11335">enableCalltips
+'''Enable calltips.'''</t>
+<t tx="ekr.20150313083748.11336">showCalltips
+'''Show the calltips at the cursor.'''</t>
+<t tx="ekr.20150313083748.11337">showCalltipsForce
+'''Show the calltips at the cursor, even if calltips are not presently enabled.'''</t>
+<t tx="ekr.20150313083748.11338">toggleAutocompleter
+'''Toggle whether the autocompleter is enabled.'''</t>
+<t tx="ekr.20150313083748.11339">toggleCalltips
+'''Toggle whether calltips are enabled.'''</t>
+<t tx="ekr.20150313083748.11340"></t>
+<t tx="ekr.20150313083748.11341">appendToBuffer
+'''Add the selected body text to the end of the body text of a named buffer (node).'''</t>
+<t tx="ekr.20150313083748.11342">killBuffer
+'''Delete a buffer (node) and all its descendants.'''</t>
+<t tx="ekr.20150313083748.11343">prependToBuffer
+'''Add the selected body text to the start of the body text of a named buffer (node).'''</t>
+<t tx="ekr.20150313083748.11344">switchToBuffer
+'''Select a buffer (node) by its name (headline).'''</t>
+<t tx="ekr.20150313083748.11345">listBuffers
+'''
+List all buffers (node headlines), in outline order.
+Nodes with the same headline are disambiguated by giving their parent or child index.
+'''</t>
+<t tx="ekr.20150313083748.11346">listBuffersAlphabetically
+'''
+List all buffers (node headlines), in alphabetical order.
+Nodes with the same headline are disambiguated by giving their parent or child index.
+'''</t>
+<t tx="ekr.20150313083748.11347"></t>
+<t tx="ekr.20150313083748.11348">cloneNodeToChapter
+'''
+Prompt for a chapter name,
+then clone the selected node to the chapter.
+'''</t>
+<t tx="ekr.20150313083748.11349">convertNodeToChapter
+'''
+convert-node-to-chapter command.
+Make the selected node into a new chapter, 'in place'.
+That is, create the new @chapter node as the next sibling of the node,
+then move the node as the first child of the new @chapter node.
+'''</t>
+<t tx="ekr.20150313083748.11350">copyNodeToChapter
+'''
+Prompt for a chapter name,
+then copy the selected node to the chapter.
+'''</t>
+<t tx="ekr.20150313083748.11351">createChapter
+'''
+create-chapter command.
+Create a chapter with a dummy first node.
+'''</t>
+<t tx="ekr.20150313083748.11352">createChapterFromNode
+'''
+create-chapter-from-node command.
+Create a chapter whose first node is a clone of the presently selected node.
+'''</t>
+<t tx="ekr.20150313083748.11353">moveNodeToChapter
+'''
+Prompt for a chapter name,
+then move the selected node to the chapter.
+'''</t>
+<t tx="ekr.20150313083748.11354">removeChapter
+'''Prompt for the name of a chapter, then remove it.'''</t>
+<t tx="ekr.20150313083748.11355">renameChapter
+'''Use the minibuffer to get a new name for the present chapter.'''</t>
+<t tx="ekr.20150313083748.11356">selectChapter
+'''
+Use the minibuffer to get a chapter name,
+then create the chapter.
+'''</t>
+<t tx="ekr.20150313083748.11357"></t>
+<t tx="ekr.20150313083748.11358">about
+'''Bring up an About Leo Dialog.'''</t>
+<t tx="ekr.20150313083748.11359">addComments
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable @language directive.
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+@bool indent_added_comments
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+*See also*: delete-comments.
+'''</t>
+<t tx="ekr.20150313083748.11360">beautifyPythonCode
+'''Beautify all Python code in the selected tree.'''</t>
+<t tx="ekr.20150313083748.11361">beautifyAllPythonCode
+'''Reformat all Python code in the outline.'''</t>
+<t tx="ekr.20150313083748.11362">beautifyCCode
+'''Reformat all C code in the selected tree.'''</t>
+<t tx="ekr.20150313083748.11363">beautifyPythonTree
+'''Beautify all Python code in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11364">checkOutline
+'''
+Report any possible clone errors in the outline.
+Remove any tnodeLists.
+'''</t>
+<t tx="ekr.20150313083748.11365">cleanRecentFiles
+'''Remove items from the recent files list that are no longer valid.'''</t>
+<t tx="ekr.20150313083748.11366">clearRecentFiles
+'''Clear the recent files list, then add the present file.'''</t>
+<t tx="ekr.20150313083748.11367">cloneFindParents
+'''Create a "Found: parents of p.h for all parents of p or c.p.'''</t>
+<t tx="ekr.20150313083748.11368">cloneMarked
+'''Clone all marked nodes as children of a new node.'''</t>
+<t tx="ekr.20150313083748.11369">clone
+'''Create a clone of the selected outline.'''</t>
+<t tx="ekr.20150313083748.11370">cloneToLastNode
+'''
+Clone the selected node and move it to the last node.
+Do *not* change the selected node.
+'''</t>
+<t tx="ekr.20150313083748.11371">close
+'''Close the Leo window, prompting to save it if it has been changed.'''</t>
+<t tx="ekr.20150313083748.11372">contractAllHeadlines
+'''Contract all nodes in the outline.'''</t>
+<t tx="ekr.20150313083748.11373">contractAllOtherNodes
+'''
+Contract all nodes except those needed to make the
+presently selected node visible.
+'''</t>
+<t tx="ekr.20150313083748.11374">contractNode
+'''Contract the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11375">contractNodeOrGoToParent
+'''Simulate the left Arrow Key in folder of Windows Explorer.'''</t>
+<t tx="ekr.20150313083748.11376">contractParent
+'''Contract the parent of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11377">convertAllBlanks
+'''Convert all blanks to tabs in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11378">convertAllTabs
+'''Convert all tabs to blanks in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11379">convertBlanks
+'''Convert all blanks to tabs in the selected node.'''</t>
+<t tx="ekr.20150313083748.11380">convertTabs
+'''Convert all tabs to blanks in the selected node.'''</t>
+<t tx="ekr.20150313083748.11381">copyOutline
+'''Copy the selected outline to the clipboard.'''</t>
+<t tx="ekr.20150313083748.11382">cutOutline
+'''Delete the selected outline and send it to the clipboard.'''</t>
+<t tx="ekr.20150313083748.11383">dehoist
+'''Undo a previous hoist of an outline.'''</t>
+<t tx="ekr.20150313083748.11384">deleteComments
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+*See also*: add-comments.
+'''</t>
+<t tx="ekr.20150313083748.11385">deleteMarked
+'''Delete all marked nodes.'''</t>
+<t tx="ekr.20150313083748.11386">deleteOutline
+'''Deletes the selected outline.'''</t>
+<t tx="ekr.20150313083748.11387">demote
+'''Make all following siblings children of the selected node.'''</t>
+<t tx="ekr.20150313083748.11388">dumpOutline
+''' Dump all nodes in the outline.'''</t>
+<t tx="ekr.20150313083748.11389">editHeadline
+'''Begin editing the headline of the selected node.'''</t>
+<t tx="ekr.20150313083748.11390">executeScript
+'''
+Execute a *Leo* script.
+Keyword args:
+args=None               Not None: set script_args in the execution environment.
+p=None                  Get the script from p.b, unless script is given.
+script=None             None: use script in p.b or c.p.b
+useSelectedText=True    False: use all the text in p.b or c.p.b.
+define_g=True           True: define g for the script.
+define_name='__main__'  Not None: define the name symbol.
+silent=False            No longer used.
+namespace=None          Not None: execute the script in this namespace.
+raiseFlag=False         True: reraise any exceptions.
+'''</t>
+<t tx="ekr.20150313083748.11391">expandAllHeadlines
+'''
+Expand all headlines.
+Warning: this can take a long time for large outlines.
+'''</t>
+<t tx="ekr.20150313083748.11392">expandAllSubheads
+'''Expand all children of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11393">expandOnlyAncestorsOfNode
+'''Contract all nodes in the outline.'''</t>
+<t tx="ekr.20150313083748.11394">expandNodeAndGoToFirstChild
+'''If a node has children, expand it if needed and go to the first child.'''</t>
+<t tx="ekr.20150313083748.11395">expandNextLevel
+'''
+Increase the expansion level of the outline and
+Expand all nodes at that level or lower.
+'''</t>
+<t tx="ekr.20150313083748.11396">expandNode
+'''Expand the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11397">expandNodeOrGoToFirstChild
+'''Simulate the Right Arrow Key in folder of Windows Explorer.'''</t>
+<t tx="ekr.20150313083748.11398">expandPrevLevel
+'''
+Decrease the expansion level of the outline and
+Expand all nodes at that level or lower.
+'''</t>
+<t tx="ekr.20150313083748.11399">expandLevel1
+'''Expand the outline to level 1'''</t>
+<t tx="ekr.20150313083748.11400">expandLevel2
+'''Expand the outline to level 2'''</t>
+<t tx="ekr.20150313083748.11401">expandLevel3
+'''Expand the outline to level 3'''</t>
+<t tx="ekr.20150313083748.11402">expandLevel4
+'''Expand the outline to level 4'''</t>
+<t tx="ekr.20150313083748.11403">expandLevel5
+'''Expand the outline to level 5'''</t>
+<t tx="ekr.20150313083748.11404">expandLevel6
+'''Expand the outline to level 6'''</t>
+<t tx="ekr.20150313083748.11405">expandLevel7
+'''Expand the outline to level 7'''</t>
+<t tx="ekr.20150313083748.11406">expandLevel8
+'''Expand the outline to level 8'''</t>
+<t tx="ekr.20150313083748.11407">expandLevel9
+'''Expand the outline to level 9'''</t>
+<t tx="ekr.20150313083748.11408">exportHeadlines
+'''Export all headlines to an external file.'''</t>
+<t tx="ekr.20150313083748.11409">extract
+'''
+Create child node from the selected body text.
+1. If the selection starts with a section reference, the section name become
+the child's headline. All following lines become the child's body text.
+The section reference line remains in the original body text.
+2. If the selection looks like a Python class or definition line, the
+class/function/method name becmes child's headline and all selected lines
+become the child's body text.
+3. Otherwise, the first line becomes the child's headline, and all selected
+lines become the child's body text.
+'''</t>
+<t tx="ekr.20150313083748.11410">extractSectionNames
+'''
+Create child nodes for every section reference in the selected text.
+The headline of each new child node is the section reference.
+The body of each child node is empty.
+'''</t>
+<t tx="ekr.20150313083748.11411">findNextClone
+'''Select the next cloned node.'''</t>
+<t tx="ekr.20150313083748.11412">flattenOutline
+'''
+Export the selected outline to an external file.
+The outline is represented in MORE format.
+'''</t>
+<t tx="ekr.20150313083748.11413">flattenOutlineToNode
+'''
+Append the headline and body text of all descendants of the selected
+node to the body text of the selected node.
+'''</t>
+<t tx="ekr.20150313083748.11414">goPrevVisitedNode
+'''Select the previously visited node.'''</t>
+<t tx="ekr.20150313083748.11415">goNextVisitedNode
+'''Select the next visited node.'''</t>
+<t tx="ekr.20150313083748.11416">goToFirstNode
+'''Select the first node of the entire outline.'''</t>
+<t tx="ekr.20150313083748.11417">goToFirstSibling
+'''Select the first sibling of the selected node.'''</t>
+<t tx="ekr.20150313083748.11418">goToFirstVisibleNode
+'''Select the first visible node of the selected chapter or hoist.'''</t>
+<t tx="ekr.20150313083748.11419">goToLastNode
+'''Select the last node in the entire tree.'''</t>
+<t tx="ekr.20150313083748.11420">goToLastSibling
+'''Select the last sibling of the selected node.'''</t>
+<t tx="ekr.20150313083748.11421">goToLastVisibleNode
+'''Select the last visible node of selected chapter or hoist.'''</t>
+<t tx="ekr.20150313083748.11422">goToNextDirtyHeadline
+'''Select the node that is marked as changed.'''</t>
+<t tx="ekr.20150313083748.11423">goToNextClone
+'''Select the next node that is a clone of the selected node.'''</t>
+<t tx="ekr.20150313083748.11424">goToNextHistory
+'''Go to the next node in the history list.'''</t>
+<t tx="ekr.20150313083748.11425">goToNextMarkedHeadline
+'''Select the next marked node.'''</t>
+<t tx="ekr.20150313083748.11426">selectThreadNext
+'''Select the node following the selected node in outline order.'''</t>
+<t tx="ekr.20150313083748.11427">goToNextSibling
+'''Select the next sibling of the selected node.'''</t>
+<t tx="ekr.20150313083748.11428">selectVisNext
+'''Select the visible node following the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11429">goToParent
+'''Select the parent of the selected node.'''</t>
+<t tx="ekr.20150313083748.11430">goToPrevHistory
+'''Go to the previous node in the history list.'''</t>
+<t tx="ekr.20150313083748.11431">selectThreadBack
+'''Select the node preceding the selected node in outline order.'''</t>
+<t tx="ekr.20150313083748.11432">goToPrevSibling
+'''Select the previous sibling of the selected node.'''</t>
+<t tx="ekr.20150313083748.11433">selectVisBack
+'''Select the visible node preceding the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11434">hideInvisibles
+'''Hide invisible (whitespace) characters.'''</t>
+<t tx="ekr.20150313083748.11435">hoist
+'''Make only the selected outline visible.'''</t>
+<t tx="ekr.20150313083748.11436">importAnyFile
+'''Import one or more files.'''</t>
+<t tx="ekr.20150313083748.11437">indentBody
+'''
+The indent-region command indents each line of the selected body text,
+or each line of a node if there is no selected text. The @tabwidth directive
+in effect determines amount of indentation. (not yet) A numeric argument
+specifies the column to indent to.
+'''</t>
+<t tx="ekr.20150313083748.11438">insertBodyTime
+'''Insert a time/date stamp at the cursor.'''</t>
+<t tx="ekr.20150313083748.11439">insertChild
+'''Insert a node after the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11440">insertHeadline
+'''Insert a node after the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11441">insertHeadlineBefore
+'''Insert a node before the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11442">markHeadline
+'''Toggle the mark of the selected node.'''</t>
+<t tx="ekr.20150313083748.11443">markChangedHeadlines
+'''Mark all nodes that have been changed.'''</t>
+<t tx="ekr.20150313083748.11444">markSubheads
+'''Mark all children of the selected node as changed.'''</t>
+<t tx="ekr.20150313083748.11445">findMatchingBracket
+'''Select the text between matching brackets.'''</t>
+<t tx="ekr.20150313083748.11446">moveMarked
+'''Move all marked nodes as children of parent position.'''</t>
+<t tx="ekr.20150313083748.11447">moveOutlineDown
+'''Move the selected node down.'''</t>
+<t tx="ekr.20150313083748.11448">moveOutlineLeft
+'''Move the selected node left if possible.'''</t>
+<t tx="ekr.20150313083748.11449">moveOutlineRight
+'''Move the selected node right if possible.'''</t>
+<t tx="ekr.20150313083748.11450">moveOutlineUp
+'''Move the selected node up if possible.'''</t>
+<t tx="ekr.20150313083748.11451">new
+'''Create a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11452">openCheatSheet
+'''Open leo/doc/cheatSheet.leo'''</t>
+<t tx="ekr.20150313083748.11453">leoDocumentation
+'''Open LeoDocs.leo in a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11454">openLeoPlugins
+'''Open leoPlugins.leo in a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11455">openLeoSettings
+'''Open leoSettings.leo in a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11456">selectAtSettingsNode
+'''Select the @settings node, if there is one.'''</t>
+<t tx="ekr.20150313083748.11457">openMyLeoSettings
+'''Open myLeoSettings.leo in a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11458">leoHome
+'''Open Leo's Home page in a web browser.'''</t>
+<t tx="ekr.20150313083748.11459">openLeoTOC
+'''Open Leo's tutorials page in a web browser.'''</t>
+<t tx="ekr.20150313083748.11460">openLeoTutorials
+'''Open Leo's tutorials page in a web browser.'''</t>
+<t tx="ekr.20150313083748.11461">openLeoVideos
+'''Open Leo's videos page in a web browser.'''</t>
+<t tx="ekr.20150313083748.11462">open
+'''Open a Leo window containing the contents of a .leo file.'''</t>
+<t tx="ekr.20150313083748.11463">openPythonWindow
+'''Open Python's Idle debugger in a separate process.'''</t>
+<t tx="ekr.20150313083748.11464">leoQuickStart
+'''Open quickstart.leo in a new Leo window.'''</t>
+<t tx="ekr.20150313083748.11465">openLeoScripts
+'''Open scripts.leo.'''</t>
+<t tx="ekr.20150313083748.11466">openLeoUsersGuide
+'''Open Leo's users guide in a web browser.'''</t>
+<t tx="ekr.20150313083748.11467">openWith
+'''
+This routine handles the items in the Open With... menu.
+The "d" arg is a Python dictionary whose keys and values
+are set from the body text of @openwith nodes.
+d.get('ext'):   The temp file's extension.
+d.get('kind'):  The method used to open the file.
+One of: ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+d.get('args'):  A list of arguments specified by the arg tag.
+'''</t>
+<t tx="ekr.20150313083748.11468">outlineToCWEB
+'''
+Export the selected outline to an external file.
+The outline is represented in CWEB format.
+'''</t>
+<t tx="ekr.20150313083748.11469">outlineToNoweb
+'''
+Export the selected outline to an external file.
+The outline is represented in noweb format.
+'''</t>
+<t tx="ekr.20150313083748.11470">pasteOutline
+'''
+Paste an outline into the present outline from the clipboard.
+Nodes do *not* retain their original identify.
+'''</t>
+<t tx="ekr.20150313083748.11471">pasteOutlineRetainingClones
+'''
+Paste an outline into the present outline from the clipboard.
+Nodes *retain* their original identify.
+'''</t>
+<t tx="ekr.20150313083748.11472">prettyPrintAllPythonCode
+'''Reformat all Python code in the outline to make it look more beautiful.'''</t>
+<t tx="ekr.20150313083748.11473">prettyPrintPythonCode
+'''Reformat all Python code in the selected tree.'''</t>
+<t tx="ekr.20150313083748.11474">promote
+'''Make all children of the selected nodes siblings of the selected node.'''</t>
+<t tx="ekr.20150313083748.11475">readAtAutoNodes
+'''Read all @auto nodes in the presently selected outline.'''</t>
+<t tx="ekr.20150313083748.11476">readAtFileNodes
+'''Read all @file nodes in the presently selected outline.'''</t>
+<t tx="ekr.20150313083748.11477">readAtShadowNodes
+'''Read all @shadow nodes in the presently selected outline.'''</t>
+<t tx="ekr.20150313083748.11478">readFileIntoNode
+'''Read a file into a single node.'''</t>
+<t tx="ekr.20150313083748.11479">readOutlineOnly
+'''Open a Leo outline from a .leo file, but do not read any derived files.'''</t>
+<t tx="ekr.20150313083748.11480">reformatParagraph
+'''
+Reformat a text paragraph
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
+Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+selected by position of current insertion cursor.
+'''</t>
+<t tx="ekr.20150313083748.11481">refreshFromDisk
+'''Refresh and @&lt;file&gt; node from disk.'''</t>
+<t tx="ekr.20150313083748.11482">removeSentinels
+'''Import one or more files, removing any sentinels.'''</t>
+<t tx="ekr.20150313083748.11483">revert
+'''Revert the contents of a Leo outline to last saved contents.'''</t>
+<t tx="ekr.20150313083748.11484">saveAll
+'''Save all open tabs windows/tabs.'''</t>
+<t tx="ekr.20150313083748.11485">save
+'''Save a Leo outline to a file.'''</t>
+<t tx="ekr.20150313083748.11486">saveAs
+'''Save a Leo outline to a file with a new filename.'''</t>
+<t tx="ekr.20150313083748.11487">saveAsUnzipped
+'''
+Save a Leo outline to a file with a new filename,
+ensuring that the file is not compressed.
+'''</t>
+<t tx="ekr.20150313083748.11488">saveAsZipped
+'''
+Save a Leo outline to a file with a new filename,
+ensuring that the file is compressed.
+'''</t>
+<t tx="ekr.20150313083748.11489">saveTo
+'''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''</t>
+<t tx="ekr.20150313083748.11490">colorPanel
+'''Open the color dialog.'''</t>
+<t tx="ekr.20150313083748.11491">fontPanel
+'''Open the font dialog.'''</t>
+<t tx="ekr.20150313083748.11492">preferences
+'''Handle the preferences command.'''</t>
+<t tx="ekr.20150313083748.11493">showInvisibles
+'''Show invisible (whitespace) characters.'''</t>
+<t tx="ekr.20150313083748.11494">sortChildren
+'''Sort the children of a node.'''</t>
+<t tx="ekr.20150313083748.11495">sortRecentFiles
+'''Sort the recent files list.'''</t>
+<t tx="ekr.20150313083748.11496">sortSiblings
+'''Sort the siblings of a node.'''</t>
+<t tx="ekr.20150313083748.11497">tangle
+'''Tangle all @root nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11498">tangleAll
+'''Tangle all @root nodes in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11499">tangleMarked
+'''Tangle all marked @root nodes in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11500">toggleAngleBrackets
+'''Add or remove double angle brackets from the headline of the selected node.'''</t>
+<t tx="ekr.20150313083748.11501">toggleShowInvisibles
+'''Toggle showing of invisible (whitespace) characters.'''</t>
+<t tx="ekr.20150313083748.11502">toggleSparseMove
+'''Toggle whether moves collapse the outline.'''</t>
+<t tx="ekr.20150313083748.11503">unformatParagraph
+'''
+Unformat a text paragraph. Removes all extra whitespace in a paragraph.
+Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+selected by position of current insertion cursor.
+'''</t>
+<t tx="ekr.20150313083748.11504">dedentBody
+'''Remove one tab's worth of indentation from all presently selected lines.'''</t>
+<t tx="ekr.20150313083748.11505">unmarkAll
+'''Unmark all nodes in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11506">untangle
+'''Untangle all @root nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11507">untangleAll
+'''Untangle all @root nodes in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11508">untangleMarked
+'''Untangle all marked @root nodes in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11509">weave
+'''Simulate a literate-programming weave operation by writing the outline to a text file.'''</t>
+<t tx="ekr.20150313083748.11510">writeFileFromNode
+'''
+If node starts with @read-file-into-node, use the full path name in the headline.
+Otherwise, prompt for a file name.
+'''</t>
+<t tx="ekr.20150313083748.11511"></t>
+<t tx="ekr.20150313083748.11512">actOnNode
+'''
+Execute node-specific action (typically defined by plugins)
+Actual behaviour is to be defined by plugins.
+Here's how to define actions for nodes in your plugins::
+import leo.core.leoPlugins
+def act_print_upcase(c,p,event):
+if not p.h.startswith('@up'):
+raise leo.core.leoPlugins.TryNext
+p.h = p.h.upper()
+g.act_on_node.add(act_print_upcase)        
+This will upcase the headline when it starts with @up.
+'''</t>
+<t tx="ekr.20150313083748.11513">advertizedUndo
+'''Undo the previous command.'''</t>
+<t tx="ekr.20150313083748.11514">iconifyFrame
+'''Minimize the present Leo window.'''</t>
+<t tx="ekr.20150313083748.11515">printPluginHandlers
+'''Print the handlers for each plugin.'''</t>
+<t tx="ekr.20150313083748.11516">printPluginsInfo
+'''
+Print the file name responsible for loading a plugin.
+This is the first .leo file containing an @enabled-plugins node
+that enables the plugin.
+'''</t>
+<t tx="ekr.20150313083748.11517">shutdown
+'''Quit Leo, prompting to save any unsaved files first.'''</t>
+<t tx="ekr.20150313083748.11518">setSilentMode
+'''
+Set the mode to be run silently, without the minibuffer.
+The only use for this command is to put the following in an @mode node::
+--&gt; set-silent-mode
+'''</t>
+<t tx="ekr.20150313083748.11519">shellCommand
+'''Execute a shell command.'''</t>
+<t tx="ekr.20150313083748.11520">shellCommandOnRegion
+'''Execute a command taken from the selected text in a separate process.'''</t>
+<t tx="ekr.20150313083748.11521">suspend
+'''Minimize the present Leo window.'''</t>
+<t tx="ekr.20150313083748.11522"></t>
+<t tx="ekr.20150313083748.11523">invoke_debugger
+'''
+Start an external debugger in another process to debug a script.
+The script is the presently selected text or then entire tree's script.
+'''</t>
+<t tx="ekr.20150313083748.11524">collectGarbage
+'''Run Python's Gargabe Collector.'''</t>
+<t tx="ekr.20150313083748.11525">dumpAllObjects
+'''Print a summary of all existing Python objects.'''</t>
+<t tx="ekr.20150313083748.11526">dumpNewObjects
+'''
+Print a summary of all Python objects created
+since the last time Python's Garbage collector was run.
+'''</t>
+<t tx="ekr.20150313083748.11527">verboseDumpObjects
+'''Print a more verbose listing of all existing Python objects.'''</t>
+<t tx="ekr.20150313083748.11528">printGcSummary
+'''Print a brief summary of all Python objects.'''</t>
+<t tx="ekr.20150313083748.11529">disableGcTrace
+'''Enable tracing of Python's Garbage Collector.'''</t>
+<t tx="ekr.20150313083748.11530">enableGcTrace
+'''Disable tracing of Python's Garbage Collector.'''</t>
+<t tx="ekr.20150313083748.11531">pdb
+'''Fall into pdb.'''</t>
+<t tx="ekr.20150313083748.11532">printFocus
+'''Print information about the requested focus (for debugging).'''</t>
+<t tx="ekr.20150313083748.11533">runAllUnitTestsExternally
+'''
+Run all unit tests contained in the entire outline.
+Tests are run in an external process, so tests *cannot* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11534">runAllUnitTestsLocally
+'''
+Run all unit tests contained in the presently selected outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11535">runMarkedUnitTestsExternally
+'''
+Run all marked unit tests in the outline.
+Tests are run in an external process, so tests *cannot* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11536">runMarkedUnitTestsLocally
+'''
+Run marked unit tests in the outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11537">runSelectedUnitTestsExternally
+'''
+Run all unit tests contained in the presently selected outline
+Tests are run in an external process, so tests *cannot* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11538">runSelectedUnitTestsLocally
+'''
+Run all unit tests contained in the presently selected outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''</t>
+<t tx="ekr.20150313083748.11539"></t>
+<t tx="ekr.20150313083748.11540">activateCmdsMenu
+'''Activate Leo's Cmnds menu.'''</t>
+<t tx="ekr.20150313083748.11541">activateEditMenu
+'''Activate Leo's Edit menu.'''</t>
+<t tx="ekr.20150313083748.11542">activateFileMenu
+'''Activate Leo's File menu.'''</t>
+<t tx="ekr.20150313083748.11543">activateHelpMenu
+'''Activate Leo's Help menu.'''</t>
+<t tx="ekr.20150313083748.11544">activateOutlineMenu
+'''Activate Leo's Outline menu.'''</t>
+<t tx="ekr.20150313083748.11545">activatePluginsMenu
+'''Activate Leo's Plugins menu.'''</t>
+<t tx="ekr.20150313083748.11546">activateWindowMenu
+'''Activate Leo's Window menu.'''</t>
+<t tx="ekr.20150313083748.11547">addSpaceToLines
+'''Add a space to start of all lines, or all selected lines.'''</t>
+<t tx="ekr.20150313083748.11548">addTabToLines
+'''Add a tab to start of all lines, or all selected lines.'''</t>
+<t tx="ekr.20150313083748.11549">backCharacter
+'''Move the cursor back one character, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11550">backCharacterExtendSelection
+'''Extend the selection by moving the cursor back one character.'''</t>
+<t tx="ekr.20150313083748.11551">backPage
+'''
+Move the cursor back one page,
+extending the selection if in extend mode.
+'''</t>
+<t tx="ekr.20150313083748.11552">backPageExtendSelection
+'''Extend the selection by moving the cursor back one page.'''</t>
+<t tx="ekr.20150313083748.11553">backwardParagraph
+'''Move the cursor to the previous paragraph.'''</t>
+<t tx="ekr.20150313083748.11554">backwardParagraphExtendSelection
+'''Extend the selection by moving the cursor to the previous paragraph.'''</t>
+<t tx="ekr.20150313083748.11555">backSentence
+'''Move the cursor to the previous sentence.'''</t>
+<t tx="ekr.20150313083748.11556">backSentenceExtendSelection
+'''Extend the selection by moving the cursor to the previous sentence.'''</t>
+<t tx="ekr.20150313083748.11557">backToHome
+'''
+Smart home:
+Position the point at the first non-blank character on the line,
+or the start of the line if already there.
+'''</t>
+<t tx="ekr.20150313083748.11558">backToHomeExtendSelection
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11559">backToIndentation
+'''Position the point at the first non-blank character on the line.'''</t>
+<t tx="ekr.20150313083748.11560">backwardWord
+'''Move the cursor to the previous word.'''</t>
+<t tx="ekr.20150313083748.11561">backwardWordExtendSelection
+'''Extend the selection by moving the cursor to the previous word.'''</t>
+<t tx="ekr.20150313083748.11562">backwardWordSmart
+'''Move the cursor to the beginning of the current or the end of the previous word.'''</t>
+<t tx="ekr.20150313083748.11563">backwardWordSmartExtendSelection
+'''
+Extend the selection by moving the cursor to the beginning of the current
+or the end of the previous word.
+'''</t>
+<t tx="ekr.20150313083748.11564">backwardDeleteCharacter
+'''Delete the character to the left of the cursor.'''</t>
+<t tx="ekr.20150313083748.11565">backwardDeleteWord
+'''Delete the word in front of the cursor.'''</t>
+<t tx="ekr.20150313083748.11566">backwardDeleteWordSmart
+'''
+Delete the word in front of the cursor, treating whitespace
+and symbols smartly.
+'''</t>
+<t tx="ekr.20150313083748.11567">backwardFindCharacter
+'''Search backwards for a character.'''</t>
+<t tx="ekr.20150313083748.11568">backwardFindCharacterExtendSelection
+'''Search backward for a character, extending the selection.'''</t>
+<t tx="ekr.20150313083748.11569">backwardKillParagraph
+'''Kill the previous paragraph.'''</t>
+<t tx="ekr.20150313083748.11570">beginningOfBuffer
+'''Move the cursor to the start of the body text.'''</t>
+<t tx="ekr.20150313083748.11571">beginningOfBufferExtendSelection
+'''Extend the text selection by moving the cursor to the start of the body text.'''</t>
+<t tx="ekr.20150313083748.11572">beginningOfLine
+'''Move the cursor to the start of the line, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11573">beginningOfLineExtendSelection
+'''Extend the selection by moving the cursor to the start of the line.'''</t>
+<t tx="ekr.20150313083748.11574">cToPy
+'''
+The c-to-python command converts c or c++ text to python text.
+The conversion is not perfect, but it eliminates a lot of tedious
+text manipulation.
+'''</t>
+<t tx="ekr.20150313083748.11575">capitalizeWord
+'''Capitalize the word at the cursor.'''</t>
+<t tx="ekr.20150313083748.11576">centerLine
+'''Centers line within current fill column'''</t>
+<t tx="ekr.20150313083748.11577">centerRegion
+'''Centers the selected text within the fill column'''</t>
+<t tx="ekr.20150313083748.11578">cleanAllLines
+'''Clean all lines in the selected tree.'''</t>
+<t tx="ekr.20150313083748.11579">cleanLines
+'''
+Removes trailing whitespace from all lines, preserving newlines.
+'''</t>
+<t tx="ekr.20150313083748.11580">clearAllCaches
+'''Clear all of Leo's file caches.'''</t>
+<t tx="ekr.20150313083748.11581">clearAllUas
+'''Clear all uAs in the entire outline.'''</t>
+<t tx="ekr.20150313083748.11582">clearCache
+'''Clear the outline's file cache.'''</t>
+<t tx="ekr.20150313083748.11583">clearExtendMode
+'''Turn off extend mode: cursor movement commands do not extend the selection.'''</t>
+<t tx="ekr.20150313083748.11584">clearNodeUas
+'''Clear the uA's in the selected VNode.'''</t>
+<t tx="ekr.20150313083748.11585">clearSelectedText
+'''Delete the selected text.'''
+
+Useful, e.g., after a find.</t>
+<t tx="ekr.20150313083748.11586">clickClickBox
+'''Simulate a click in the click box (+- box) of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11587">clickHeadline
+'''Simulate a click in the headline of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11588">clickIconBox
+'''Simulate a click in the icon box of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11589">countRegion
+'''Print the number of lines and characters in the selected text.'''</t>
+<t tx="ekr.20150313083748.11590">ctrlClickIconBox
+'''Simulate a ctrl-click in the icon box of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11591">cycleFocus
+'''Cycle the keyboard focus between Leo's outline, body and log panes.'''</t>
+<t tx="ekr.20150313083748.11592">deleteNextChar
+'''Delete the character to the right of the cursor.'''</t>
+<t tx="ekr.20150313083748.11593">deleteFirstIcon
+'''Delete the first icon in the selected node's icon list.'''</t>
+<t tx="ekr.20150313083748.11594">deleteIndentation
+'''Delete indentation in the presently line.'''</t>
+<t tx="ekr.20150313083748.11595">deleteLastIcon
+'''Delete the first icon in the selected node's icon list.'''</t>
+<t tx="ekr.20150313083748.11596">deleteNodeIcons
+'''Delete all of the selected node's icons.'''</t>
+<t tx="ekr.20150313083748.11597">deleteSpaces
+'''Delete all whitespace surrounding the cursor.'''</t>
+<t tx="ekr.20150313083748.11598">deleteWord
+'''Delete the word at the cursor.'''</t>
+<t tx="ekr.20150313083748.11599">deleteWordSmart
+'''
+Delete the word at the cursor, treating whitespace
+and symbols smartly.
+'''</t>
+<t tx="ekr.20150313083748.11600">doNothing
+'''A placeholder command, useful for testing bindings.'''</t>
+<t tx="ekr.20150313083748.11601">doubleClickHeadline
+'''Simulate a double click in headline of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11602">doubleClickIconBox
+'''Simulate a double-click in the icon box of the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11603">downCaseRegion
+'''Convert all characters in the selected text to lower case.'''</t>
+<t tx="ekr.20150313083748.11604">downCaseWord
+'''Convert all characters of the word at the cursor to lower case.'''</t>
+<t tx="ekr.20150313083748.11605">endOfBuffer
+'''Move the cursor to the end of the body text.'''</t>
+<t tx="ekr.20150313083748.11606">endOfBufferExtendSelection
+'''Extend the text selection by moving the cursor to the end of the body text.'''</t>
+<t tx="ekr.20150313083748.11607">endOfLine
+'''Move the cursor to the end of the line, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11608">endOfLineExtendSelection
+'''Extend the selection by moving the cursor to the end of the line.'''</t>
+<t tx="ekr.20150313083748.11609">watchEscape
+'''Enter watch escape mode.'''</t>
+<t tx="ekr.20150313083748.11610">evalExpression
+'''Evaluate a Python Expression entered in the minibuffer.'''</t>
+<t tx="ekr.20150313083748.11611">exchangePointMark
+'''Exchange the point (insert point) with the mark (the other end of the selected text).'''</t>
+<t tx="ekr.20150313083748.11612">extendToLine
+'''Select the line at the cursor.'''</t>
+<t tx="ekr.20150313083748.11613">extendToParagraph
+'''Select the paragraph surrounding the cursor.'''</t>
+<t tx="ekr.20150313083748.11614">extendToSentence
+'''Select the line at the cursor.'''</t>
+<t tx="ekr.20150313083748.11615">extendToWord
+'''Compute the word at the cursor. Select it if select arg is True.'''</t>
+<t tx="ekr.20150313083748.11616">fillParagraph
+'''Fill the selected paragraph'''</t>
+<t tx="ekr.20150313083748.11617">fillRegion
+'''Fill all paragraphs in the selected text.'''</t>
+<t tx="ekr.20150313083748.11618">fillRegionAsParagraph
+'''Fill the selected text.'''</t>
+<t tx="ekr.20150313083748.11619">findCharacter
+'''Search for a character.'''</t>
+<t tx="ekr.20150313083748.11620">findCharacterExtendSelection
+'''Search for a character, extending the selection.'''</t>
+<t tx="ekr.20150313083748.11621">findWord
+'''Put the cursor at the next word that starts with a character.'''</t>
+<t tx="ekr.20150313083748.11622">findWordInLine
+'''Put the cursor at the next word (on a line) that starts with a character.'''</t>
+<t tx="ekr.20150313083748.11623">flushLines
+'''
+Delete each line that contains a match for regexp, operating on the text after point.
+In Transient Mark mode, if the region is active, the command operates on the region instead.
+'''</t>
+<t tx="ekr.20150313083748.11624">focusToBody
+'''Put the keyboard focus in Leo's body pane.'''</t>
+<t tx="ekr.20150313083748.11625">focusToLog
+'''Put the keyboard focus in Leo's log pane.'''</t>
+<t tx="ekr.20150313083748.11626">focusToMinibuffer
+'''Put the keyboard focus in Leo's minibuffer.'''</t>
+<t tx="ekr.20150313083748.11627">focusToTree
+'''Put the keyboard focus in Leo's outline pane.'''</t>
+<t tx="ekr.20150313083748.11628">forwardCharacter
+'''Move the cursor forward one character, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11629">forwardCharacterExtendSelection
+'''Extend the selection by moving the cursor forward one character.'''</t>
+<t tx="ekr.20150313083748.11630">forwardEndWord
+'''Move the cursor to the next word.'''</t>
+<t tx="ekr.20150313083748.11631">forwardEndWordExtendSelection
+'''Extend the selection by moving the cursor to the next word.'''</t>
+<t tx="ekr.20150313083748.11632">forwardPage
+'''
+Move the cursor forward one page,
+extending the selection if in extend mode.
+'''</t>
+<t tx="ekr.20150313083748.11633">forwardPageExtendSelection
+'''Extend the selection by moving the cursor forward one page.'''</t>
+<t tx="ekr.20150313083748.11634">forwardParagraph
+'''Move the cursor to the next paragraph.'''</t>
+<t tx="ekr.20150313083748.11635">forwardParagraphExtendSelection
+'''Extend the selection by moving the cursor to the next paragraph.'''</t>
+<t tx="ekr.20150313083748.11636">forwardSentence
+'''Move the cursor to the next sentence.'''</t>
+<t tx="ekr.20150313083748.11637">forwardSentenceExtendSelection
+'''Extend the selection by moving the cursor to the next sentence.'''</t>
+<t tx="ekr.20150313083748.11638">forwardWord
+'''Move the cursor to the next word.'''</t>
+<t tx="ekr.20150313083748.11639">forwardWordExtendSelection
+'''Extend the selection by moving the cursor to the end of the next word.'''</t>
+<t tx="ekr.20150313083748.11640">forwardWordSmart
+'''Move the cursor to the end of the current or the beginning of the next word.'''</t>
+<t tx="ekr.20150313083748.11641">forwardWordSmartExtendSelection
+'''
+Extend the selection by moving the cursor to the end of the current
+or the beginning of the next word.
+'''</t>
+<t tx="ekr.20150313083748.11642">gotoCharacter
+'''Put the cursor at the n'th character of the buffer.'''</t>
+<t tx="ekr.20150313083748.11643">gotoGlobalLine
+'''
+Put the cursor at the n'th line of a file or script.
+This is a minibuffer interface to Leo's legacy Go To Line number command.
+'''</t>
+<t tx="ekr.20150313083748.11644">gotoLine
+'''Put the cursor at the n'th line of the buffer.'''</t>
+<t tx="ekr.20150313083748.11645">howMany
+'''
+Print how many occurances of a regular expression are found
+in the body text of the presently selected node.
+'''</t>
+<t tx="ekr.20150313083748.11646">indentRelative
+'''
+The indent-relative command indents at the point based on the previous
+line (actually, the last non-empty line.) It inserts whitespace at the
+point, moving point, until it is underneath an indentation point in the
+previous line.
+An indentation point is the end of a sequence of whitespace or the end of
+the line. If the point is farther right than any indentation point in the
+previous line, the whitespace before point is deleted and the first
+indentation point then applicable is used. If no indentation point is
+applicable even then whitespace equivalent to a single tab is inserted.
+'''</t>
+<t tx="ekr.20150313083748.11647">tabIndentRegion
+'''Insert a hard tab at the start of each line of the selected text.'''</t>
+<t tx="ekr.20150313083748.11648">indentToCommentColumn
+'''Insert whitespace to indent the line containing the insert point to the comment column.'''</t>
+<t tx="ekr.20150313083748.11649">insertFileName
+'''
+Prompt for a file name, then insert it at the cursor position.
+This operation is undoable if done in the body pane.
+'''</t>
+<t tx="ekr.20150313083748.11650">insertHardTab
+'''Insert one hard tab.'''</t>
+<t tx="ekr.20150313083748.11651">insertHeadlineTime
+'''Insert a date/time stamp in the headline of the selected node.'''</t>
+<t tx="ekr.20150313083748.11652">insertIcon
+'''Prompt for an icon, and insert it into the node's icon list.'''</t>
+<t tx="ekr.20150313083748.11653">insertNewLine
+'''Insert a newline at the cursor.'''</t>
+<t tx="ekr.20150313083748.11654">insertParentheses
+'''Insert () at the cursor.'''</t>
+<t tx="ekr.20150313083748.11655">insertSoftTab
+'''Insert spaces equivalent to one tab.'''</t>
+<t tx="ekr.20150313083748.11656">keepLines
+'''
+Delete each line that does not contain a match for regexp, operating on the text after point.
+In Transient Mark mode, if the region is active, the command operates on the region instead.
+'''</t>
+<t tx="ekr.20150313083748.11657">killParagraph
+'''Kill the present paragraph.'''</t>
+<t tx="ekr.20150313083748.11658">lineNumber
+'''Print the line and column number and percentage of insert point.'''</t>
+<t tx="ekr.20150313083748.11659">moveLinesDown
+'''
+Move all lines containing any selected text down one line,
+moving to the next node if the lines are the last lines of the body.
+'''</t>
+<t tx="ekr.20150313083748.11660">moveLinesUp
+'''
+Move all lines containing any selected text up one line,
+moving to the previous node as needed.
+'''</t>
+<t tx="ekr.20150313083748.11661">movePastClose
+'''Move the cursor past the closing parenthesis.'''</t>
+<t tx="ekr.20150313083748.11662">movePastCloseExtendSelection
+'''Extend the selection by moving the cursor past the closing parenthesis.'''</t>
+<t tx="ekr.20150313083748.11663">insertNewLineAndTab
+'''Insert a newline and tab at the cursor.'''</t>
+<t tx="ekr.20150313083748.11664">nextLine
+'''Move the cursor down, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11665">nextLineExtendSelection
+'''Extend the selection by moving the cursor down.'''</t>
+<t tx="ekr.20150313083748.11666">prevLine
+'''Move the cursor up, extending the selection if in extend mode.'''</t>
+<t tx="ekr.20150313083748.11667">prevLineExtendSelection
+'''Extend the selection by moving the cursor up.'''</t>
+<t tx="ekr.20150313083748.11668">printAllUas
+'''Print all uA's in the outline.'''</t>
+<t tx="ekr.20150313083748.11669">printUas
+'''Print the uA's in the selected node.'''</t>
+<t tx="ekr.20150313083748.11670">removeBlankLines
+'''
+The remove-blank-lines command removes lines containing nothing but
+whitespace. If there is a text selection, only lines within the selected
+text are affected; otherwise all blank lines in the selected node are
+affected.
+'''</t>
+<t tx="ekr.20150313083748.11671">removeSpaceFromLines
+'''Remove a space from start of all lines, or all selected lines.'''</t>
+<t tx="ekr.20150313083748.11672">removeTabFromLines
+'''Remove a tab from start of all lines, or all selected lines.'''</t>
+<t tx="ekr.20150313083748.11673">replaceCurrentCharacter
+'''Replace the current character with the next character typed.'''</t>
+<t tx="ekr.20150313083748.11674">reverseRegion
+'''Reverse the order of lines in the selected text.'''</t>
+<t tx="ekr.20150313083748.11675">reverseSortLines
+'''Sort the selected lines in reverse order.'''</t>
+<t tx="ekr.20150313083748.11676">reverseSortLinesIgnoringCase
+'''Sort the selected lines in reverse order, ignoring case.'''</t>
+<t tx="ekr.20150313083748.11677">scrollDownHalfPage
+'''Scroll the presently selected pane down one lline.'''</t>
+<t tx="ekr.20150313083748.11678">scrollDownLine
+'''Scroll the presently selected pane down one lline.'''</t>
+<t tx="ekr.20150313083748.11679">scrollDownPage
+'''Scroll the presently selected pane down one page.'''</t>
+<t tx="ekr.20150313083748.11680">scrollOutlineDownLine
+'''Scroll the outline pane down one line.'''</t>
+<t tx="ekr.20150313083748.11681">scrollOutlineDownPage
+'''Scroll the outline pane down one page.'''</t>
+<t tx="ekr.20150313083748.11682">scrollOutlineLeft
+'''Scroll the outline left.'''</t>
+<t tx="ekr.20150313083748.11683">scrollOutlineRight
+'''Scroll the outline left.'''</t>
+<t tx="ekr.20150313083748.11684">scrollOutlineUpLine
+'''Scroll the outline pane up one line.'''</t>
+<t tx="ekr.20150313083748.11685">scrollOutlineUpPage
+'''Scroll the outline pane up one page.'''</t>
+<t tx="ekr.20150313083748.11686">scrollUpHalfPage
+'''Scroll the presently selected pane down one lline.'''</t>
+<t tx="ekr.20150313083748.11687">scrollUpLine
+'''Scroll the presently selected pane up one page.'''</t>
+<t tx="ekr.20150313083748.11688">scrollUpPage
+'''Scroll the presently selected pane up one page.'''</t>
+<t tx="ekr.20150313083748.11689">selectAllText
+'''Select all text.'''</t>
+<t tx="ekr.20150313083748.11690">selectToMatchingBracket
+'''Select text that matches the bracket near the cursor.'''</t>
+<t tx="ekr.20150313083748.11691">selfInsertCommand
+'''
+Insert a character in the body pane.
+This is the default binding for all keys in the body pane.
+'''</t>
+<t tx="ekr.20150313083748.11692">setCommentColumn
+'''Set the comment column for the indent-to-comment-column command.'''</t>
+<t tx="ekr.20150313083748.11693">setExtendMode
+'''Turn on extend mode: cursor movement commands do extend the selection.'''</t>
+<t tx="ekr.20150313083748.11694">setFillColumn
+'''Set the fill column used by the center-line and center-region commands.'''</t>
+<t tx="ekr.20150313083748.11695">setFillPrefix
+'''Make the selected text the fill prefix.'''</t>
+<t tx="ekr.20150313083748.11696">setUa
+'''Prompt for the name and value of a uA, then set the uA in the present node.'''</t>
+<t tx="ekr.20150313083748.11697">showColors
+'''Open a tab in the log pane showing various color pickers.'''</t>
+<t tx="ekr.20150313083748.11698">showFonts
+'''Open a tab in the log pane showing a font picker.'''</t>
+<t tx="ekr.20150313083748.11699">simulateBeginDrag
+'''Simulate the start of a drag in the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11700">simulateEndDrag
+'''Simulate the end of a drag in the presently selected node.'''</t>
+<t tx="ekr.20150313083748.11701">sortColumns
+'''Sort lines of selected text using only lines in the given columns to do the comparison.'''</t>
+<t tx="ekr.20150313083748.11702">sortFields
+'''
+Divide the selected text into lines and sort by comparing the contents of
+one field in each line. Fields are defined as separated by whitespace, so
+the first run of consecutive non-whitespace characters in a line
+constitutes field 1, the second such run constitutes field 2, etc.
+You specify which field to sort by with a numeric argument: 1 to sort by
+field 1, etc. A negative argument means sort in descending order. Thus,
+minus 2 means sort by field 2 in reverse-alphabetical order.
+'''</t>
+<t tx="ekr.20150313083748.11703">sortLines
+'''Sort the selected lines.'''</t>
+<t tx="ekr.20150313083748.11704">sortLinesIgnoringCase
+'''Sort the selected lines, ignoring case.'''</t>
+<t tx="ekr.20150313083748.11705">splitLine
+'''Split a line at the cursor position.'''</t>
+<t tx="ekr.20150313083748.11706">tabify
+'''Convert 4 spaces to tabs in the selected text.'''</t>
+<t tx="ekr.20150313083748.11707">toggleCaseRegion
+'''Toggle the case of all characters in the selected text.'''</t>
+<t tx="ekr.20150313083748.11708">toggleExtendMode
+'''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''</t>
+<t tx="ekr.20150313083748.11709">swapCharacters
+'''Swap the characters at the cursor.'''</t>
+<t tx="ekr.20150313083748.11710">transposeLines
+'''Transpose the line containing the cursor with the preceding line.'''</t>
+<t tx="ekr.20150313083748.11711">transposeWords
+'''Transpose the word at the cursor with the preceding or following word.'''</t>
+<t tx="ekr.20150313083748.11712">tsToPy
+'''
+The typescript-to-python command converts typescript text to python
+text. The conversion is not perfect, but it eliminates a lot of tedious
+text manipulation.
+'''</t>
+<t tx="ekr.20150313083748.11713">untabify
+'''Convert tabs to 4 spaces in the selected text.'''</t>
+<t tx="ekr.20150313083748.11714">upCaseRegion
+'''Convert all characters in the selected text to UPPER CASE.'''</t>
+<t tx="ekr.20150313083748.11715">upCaseWord
+'''Convert all characters of the word at the cursor to UPPER CASE.'''</t>
+<t tx="ekr.20150313083748.11716">viewLossage
+'''Put the Emacs-lossage in the minibuffer label.'''</t>
+<t tx="ekr.20150313083748.11717">whatLine
+'''Print the line number of the line containing the cursor.'''</t>
+<t tx="ekr.20150313083748.11718"></t>
+<t tx="ekr.20150313083748.11719">makeDirectory
+'''Prompt for the name of a directory and create it.'''</t>
+<t tx="ekr.20150313083748.11720">removeDirectory
+'''Prompt for the name of a directory and delete it.'''</t>
+<t tx="ekr.20150313083748.11721">compareAnyTwoFiles
+'''Compare two files.'''</t>
+<t tx="ekr.20150313083748.11722">deleteFile
+'''Prompt for the name of a file and delete it.'''</t>
+<t tx="ekr.20150313083748.11723">diff
+'''Creates a node and puts the diff between 2 files into it.'''</t>
+<t tx="ekr.20150313083748.11724">insertFile
+'''Prompt for the name of a file and put the selected text into it.'''</t>
+<t tx="ekr.20150313083748.11725">openOutlineByName
+'''file-open-by-name: Prompt for the name of a Leo outline and open it.'''</t>
+<t tx="ekr.20150313083748.11726">saveFile
+'''Prompt for the name of a file and put the body text of the selected node into it..'''</t>
+<t tx="ekr.20150313083748.11727"></t>
+<t tx="ekr.20150313083748.11728">checkLeoFile
+'''The check-leo-file command.'''</t>
+<t tx="ekr.20150313083748.11729">writeAtFileNodes
+'''Write all @file nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11730">writeAtShadowNodes
+'''Write all @file nodes in the selected outline.'''</t>
+<t tx="ekr.20150313083748.11731">writeDirtyAtFileNodes
+'''Write all changed @file Nodes.'''</t>
+<t tx="ekr.20150313083748.11732">writeDirtyAtShadowNodes
+'''Write all changed @shadow Nodes.'''</t>
+<t tx="ekr.20150313083748.11733">writeMissingAtFileNodes
+'''Write all missing @file nodes.'''</t>
+<t tx="ekr.20150313083748.11734">writeOutlineOnly
+'''Write the entire outline without writing any derived files.'''</t>
+<t tx="ekr.20150313083748.11735"></t>
+<t tx="ekr.20150313083748.11736">help
+'''Prints and introduction to Leo's help system.'''</t>
+<t tx="ekr.20150313083748.11737">helpForAbbreviations
+'''Prints a discussion of abbreviations.'''</t>
+<t tx="ekr.20150313083748.11738">helpForAutocompletion
+'''Prints a discussion of autocompletion.'''</t>
+<t tx="ekr.20150313083748.11739">helpForBindings
+'''Prints a discussion of keyboard bindings.'''</t>
+<t tx="ekr.20150313083748.11740">helpForCommand
+'''Prompts for a command name and prints the help message for that command.'''</t>
+<t tx="ekr.20150313083748.11741">helpForCreatingExternalFiles
+'''Prints a discussion of creating external files.'''</t>
+<t tx="ekr.20150313083748.11742">helpForDebuggingCommands
+'''Prints a discussion of of Leo's debugging commands.'''</t>
+<t tx="ekr.20150313083748.11743">helpForDragAndDrop
+'''Prints a discussion of of Leo's debugging commands.'''</t>
+<t tx="ekr.20150313083748.11744">helpForDynamicAbbreviations
+'''Prints a discussion of abbreviations.'''</t>
+<t tx="ekr.20150313083748.11745">helpForFindCommands
+'''Prints a discussion of of Leo's find commands.'''</t>
+<t tx="ekr.20150313083748.11746">helpForMinibuffer
+'''Print a messages telling you how to get started with Leo.'''</t>
+<t tx="ekr.20150313083748.11747">pythonHelp
+'''Prompt for a arg for Python's help function, and put it to the log pane.'''</t>
+<t tx="ekr.20150313083748.11748">helpForRegularExpressions
+'''Prints a discussion of of Leo's find commands.'''</t>
+<t tx="ekr.20150313083748.11749">helpForScripting
+'''Prints a discussion of Leo scripting.'''</t>
+<t tx="ekr.20150313083748.11750">printSettings
+'''
+Prints the value of every setting, except key bindings and commands and
+open-with tables. The following shows where the active setting came
+from:
+-     leoSettings.leo,
+- [D] default settings.
+- [F] indicates the file being loaded,
+- [M] myLeoSettings.leo,
+'''</t>
+<t tx="ekr.20150313083748.11751"></t>
+<t tx="ekr.20150313083748.11752">digitArgument
+'''Prompt for a digit argument.'''</t>
+<t tx="ekr.20150313083748.11753">exitNamedMode
+'''Exit an input mode.'''</t>
+<t tx="ekr.20150313083748.11754">fullCommand
+'''Handle 'full-command' (alt-x) mode.'''</t>
+<t tx="ekr.20150313083748.11755">keyboardQuit
+'''
+This method clears the state and the minibuffer label.
+k.endCommand handles all other end-of-command chores.
+'''</t>
+<t tx="ekr.20150313083748.11756">modeHelp
+'''
+The mode-help command.
+A possible convention would be to bind &lt;Tab&gt; to this command in most modes,
+by analogy with tab completion.
+'''</t>
+<t tx="ekr.20150313083748.11757">negativeArgument
+'''Prompt for a negative digit argument.'''</t>
+<t tx="ekr.20150313083748.11758">numberCommand
+'''Enter a number prefix for commands.'''</t>
+<t tx="ekr.20150313083748.11759">numberCommand0
+'''Execute command number 0.'''</t>
+<t tx="ekr.20150313083748.11760">numberCommand1
+'''Execute command number 1.'''</t>
+<t tx="ekr.20150313083748.11761">numberCommand2
+'''Execute command number 2.'''</t>
+<t tx="ekr.20150313083748.11762">numberCommand3
+'''Execute command number 3.'''</t>
+<t tx="ekr.20150313083748.11763">numberCommand4
+'''Execute command number 4.'''</t>
+<t tx="ekr.20150313083748.11764">numberCommand5
+'''Execute command number 5.'''</t>
+<t tx="ekr.20150313083748.11765">numberCommand6
+'''Execute command number 6.'''</t>
+<t tx="ekr.20150313083748.11766">numberCommand7
+'''Execute command number 7.'''</t>
+<t tx="ekr.20150313083748.11767">numberCommand8
+'''Execute command number 8.'''</t>
+<t tx="ekr.20150313083748.11768">numberCommand9
+'''Execute command number 9.'''</t>
+<t tx="ekr.20150313083748.11769">printBindings
+'''Print all the bindings presently in effect.'''</t>
+<t tx="ekr.20150313083748.11770">printButtons
+'''Print all @button and @command commands, their bindings and their source.'''</t>
+<t tx="ekr.20150313083748.11771">printCommands
+'''Print all the known commands and their bindings, if any.'''</t>
+<t tx="ekr.20150313083748.11772">repeatComplexCommand
+'''Repeat the previously executed minibuffer command.'''</t>
+<t tx="ekr.20150313083748.11773">setCommandState
+'''Enter the 'command' editing state.'''</t>
+<t tx="ekr.20150313083748.11774">setInsertState
+'''Enter the 'insert' editing state.'''</t>
+<t tx="ekr.20150313083748.11775">setOverwriteState
+'''Enter the 'overwrite' editing state.'''</t>
+<t tx="ekr.20150313083748.11776">toggleInputState
+'''The toggle-input-state command.'''</t>
+<t tx="ekr.20150313083748.11777">universalArgument
+'''Prompt for a universal argument.'''</t>
+<t tx="ekr.20150313083748.11778"></t>
+<t tx="ekr.20150313083748.11779">menuShortcutPlaceHolder
+'''
+This will never be called.
+It serves as a placeholder for the print-bindings command.
+'''</t>
+<t tx="ekr.20150313083748.11780"></t>
+<t tx="ekr.20150313083748.11781">backwardKillSentence
+'''Kill the previous sentence.'''</t>
+<t tx="ekr.20150313083748.11782">backwardKillWord
+'''Kill the previous word.'''</t>
+<t tx="ekr.20150313083748.11783">clearKillRing
+'''Clear the kill ring.'''</t>
+<t tx="ekr.20150313083748.11784">killLine
+'''Kill the line containing the cursor.'''</t>
+<t tx="ekr.20150313083748.11785">killRegion
+'''Kill the text selection.'''</t>
+<t tx="ekr.20150313083748.11786">killRegionSave
+'''Add the selected text to the kill ring, but do not delete it.'''</t>
+<t tx="ekr.20150313083748.11787">killSentence
+'''Kill the sentence containing the cursor.'''</t>
+<t tx="ekr.20150313083748.11788">killToEndOfLine
+'''Kill from the cursor to end of the line.'''</t>
+<t tx="ekr.20150313083748.11789">killWord
+'''Kill the word containing the cursor.'''</t>
+<t tx="ekr.20150313083748.11790">killWs
+'''Kill whitespace.'''</t>
+<t tx="ekr.20150313083748.11791">yank
+'''
+yank: insert the first entry of the kill ring.
+yank-pop: insert the next entry of the kill ring.
+'''</t>
+<t tx="ekr.20150313083748.11792">yankPop
+'''Insert the next entry of the kill ring.'''</t>
+<t tx="ekr.20150313083748.11793">zapToCharacter
+'''Kill characters from the insertion point to a given character.'''</t>
+<t tx="ekr.20150313083748.11794"></t>
+<t tx="ekr.20150313083748.11795">onQuit
+'''Exit Leo, prompting to save unsaved outlines first.'''</t>
+<t tx="ekr.20150313083748.11796"></t>
+<t tx="ekr.20150313083748.11797">minibufferCloneFindAll
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11798">minibufferCloneFindAllFlattened
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11799">minibufferFindAll
+'''handle the find-all command.'''</t>
+<t tx="ekr.20150313083748.11800">minibufferCloneFindAll
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11801">minibufferCloneFindAllFlattened
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11802">findNextCommand
+'''The find-next command.'''</t>
+<t tx="ekr.20150313083748.11803">findPrevCommand
+'''Handle F2 (find-previous)'''</t>
+<t tx="ekr.20150313083748.11804">hideFindTab
+'''Hide the Find tab.'''</t>
+<t tx="ekr.20150313083748.11805">openFindTab
+'''Open the Find tab in the log pane.'''</t>
+<t tx="ekr.20150313083748.11806">focusToFind
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11807">isearchBackward
+'''
+Begin a backward incremental search.
+- Plain characters extend the search backward.
+- !&lt;isearch-forward&gt;! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern 
+completely undoes the effect of the search.
+'''</t>
+<t tx="ekr.20150313083748.11808">isearchBackwardRegexp
+'''
+Begin a backward incremental regexp search.
+- Plain characters extend the search.
+- !&lt;isearch-forward-regexp&gt;! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern 
+completely undoes the effect of the search.
+'''</t>
+<t tx="ekr.20150313083748.11809">isearchForward
+'''
+Begin a forward incremental search.
+- Plain characters extend the search.
+- !&lt;isearch-forward&gt;! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern 
+completely undoes the effect of the search.
+'''</t>
+<t tx="ekr.20150313083748.11810">isearchForwardRegexp
+'''
+Begin a forward incremental regexp search.
+- Plain characters extend the search.
+- !&lt;isearch-forward-regexp&gt;! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern 
+completely undoes the effect of the search.
+'''</t>
+<t tx="ekr.20150313083748.11811">isearchWithPresentOptions
+'''
+Begin an incremental search using find panel options.
+- Plain characters extend the search.
+- !&lt;isearch-forward-regexp&gt;! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern 
+completely undoes the effect of the search.
+'''</t>
+<t tx="ekr.20150313083748.11812">reSearchBackward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11813">reSearchForward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11814">change
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11815">minibufferReplaceAll
+'''Handle the change-all command.'''</t>
+<t tx="ekr.20150313083748.11816">changeThenFindCommand
+'''Handle the replace-then-find command.'''</t>
+<t tx="ekr.20150313083748.11817">searchBackward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11818">searchForward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11819">searchWithPresentOptions
+'''Open the search pane and get the search string.'''</t>
+<t tx="ekr.20150313083748.11820">setFindScopeEveryWhere
+'''Set the 'Entire Outline' radio button in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11821">setFindScopeNodeOnly
+'''Set the 'Node Only' radio button in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11822">setFindScopeSuboutlineOnly
+'''Set the 'Suboutline Only' radio button in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11823">setReplaceString
+'''A state handler to get the replacement string.'''</t>
+<t tx="ekr.20150313083748.11824">searchWithPresentOptions
+'''Open the search pane and get the search string.'''</t>
+<t tx="ekr.20150313083748.11825">showFindOptions
+'''
+Show the present find options in the status line.
+This is useful for commands like search-forward that do not show the Find Panel.
+'''</t>
+<t tx="ekr.20150313083748.11826">startSearch
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11827">toggleFindCollapesNodes
+'''Toggle the 'Collapse Nodes' checkbox in the find tab.'''</t>
+<t tx="ekr.20150313083748.11828">toggleIgnoreCaseOption
+'''Toggle the 'Ignore Case' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11829">toggleSearchBodyOption
+'''Set the 'Search Body' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11830">toggleSearchHeadlineOption
+'''Toggle the 'Search Headline' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11831">toggleMarkChangesOption
+'''Toggle the 'Mark Changes' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11832">toggleMarkFindsOption
+'''Toggle the 'Mark Finds' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11833">toggleRegexOption
+'''Toggle the 'Regexp' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11834">toggleWholeWordOption
+'''Toggle the 'Whole Word' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11835">toggleWrapSearchOption
+'''Toggle the 'Wrap Around' checkbox in the Find tab.'''</t>
+<t tx="ekr.20150313083748.11836">wordSearchBackward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11837">wordSearchForward
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11838"></t>
+<t tx="ekr.20150313083748.11839">addEditor
+'''Add another editor to the body pane.'''</t>
+<t tx="ekr.20150313083748.11840">cycleEditorFocus
+'''Cycle keyboard focus between the body text editors.'''</t>
+<t tx="ekr.20150313083748.11841">deleteEditor
+'''Delete the presently selected body text editor.'''</t>
+<t tx="ekr.20150313083748.11842"></t>
+<t tx="ekr.20150313083748.11843">abortEditLabelCommand
+'''End editing of a headline and revert to its previous value.'''</t>
+<t tx="ekr.20150313083748.11844">cascade
+'''Cascade all Leo windows.'''</t>
+<t tx="ekr.20150313083748.11845">contractBodyPane
+'''Contract the body pane.'''</t>
+<t tx="ekr.20150313083748.11846">contractLogPane
+'''Contract the log pane.'''</t>
+<t tx="ekr.20150313083748.11847">contractOutlinePane
+'''Contract the outline pane.'''</t>
+<t tx="ekr.20150313083748.11848">contractPane
+'''Contract the selected pane.'''</t>
+<t tx="ekr.20150313083748.11849">copyText
+'''Copy the selected text from the widget to the clipboard.'''</t>
+<t tx="ekr.20150313083748.11850">cutText
+'''Invoked from the mini-buffer and from shortcuts.'''</t>
+<t tx="ekr.20150313083748.11851">endEditLabelCommand
+'''End editing of a headline and move focus to the body pane.'''</t>
+<t tx="ekr.20150313083748.11852">equalSizedPanes
+'''Make the outline and body panes have the same size.'''</t>
+<t tx="ekr.20150313083748.11853">expandBodyPane
+'''Expand the body pane.'''</t>
+<t tx="ekr.20150313083748.11854">expandLogPane
+'''Expand the log pane.'''</t>
+<t tx="ekr.20150313083748.11855">expandOutlinePane
+'''Expand the outline pane.'''</t>
+<t tx="ekr.20150313083748.11856">expandPane
+'''Expand the selected pane.'''</t>
+<t tx="ekr.20150313083748.11857">fullyExpandBodyPane
+'''Fully expand the body pane.'''</t>
+<t tx="ekr.20150313083748.11858">fullyExpandLogPane
+'''Fully expand the log pane.'''</t>
+<t tx="ekr.20150313083748.11859">fullyExpandOutlinePane
+'''Fully expand the outline pane.'''</t>
+<t tx="ekr.20150313083748.11860">fullyExpandPane
+'''Fully expand the selected pane.'''</t>
+<t tx="ekr.20150313083748.11861">hideBodyPane
+'''Completely contract the body pane.'''</t>
+<t tx="ekr.20150313083748.11862">hideLogPane
+'''Completely contract the log pane.'''</t>
+<t tx="ekr.20150313083748.11863">hideOutlinePane
+'''Completely contract the outline pane.'''</t>
+<t tx="ekr.20150313083748.11864">hidePane
+'''Completely contract the selected pane.'''</t>
+<t tx="ekr.20150313083748.11865">minimizeAll
+'''Minimize all Leo's windows.'''</t>
+<t tx="ekr.20150313083748.11866">leoHelp
+'''Open Leo's offline tutorial.'''</t>
+<t tx="ekr.20150313083748.11867">pasteText
+'''
+Paste the clipboard into a widget.
+If middleButton is True, support x-windows middle-mouse-button easter-egg.
+'''</t>
+<t tx="ekr.20150313083748.11868">resizeToScreen
+'''Resize the Leo window so it fill the entire screen.'''</t>
+<t tx="ekr.20150313083748.11869">toggleActivePane
+'''Toggle the focus between the outline and body panes.'''</t>
+<t tx="ekr.20150313083748.11870">toggleSplitDirection
+'''Toggle the split direction in the present Leo window.'''</t>
+<t tx="ekr.20150313083748.11871"></t>
+<t tx="ekr.20150313083748.11872">cycleTabFocus
+'''Cycle keyboard focus between the tabs in the log pane.'''</t>
+<t tx="ekr.20150313083748.11873"></t>
+<t tx="ekr.20150313083748.11874">callNamedMacro
+'''Prompts for a macro name, then executes it.'''</t>
+<t tx="ekr.20150313083748.11875">callLastMacro
+'''Call the last recorded keyboard macro.'''</t>
+<t tx="ekr.20150313083748.11876">endMacro
+'''Stops recording a macro.'''</t>
+<t tx="ekr.20150313083748.11877">loadMacros
+'''Load macros from the @macros node.'''</t>
+<t tx="ekr.20150313083748.11878">nameLastMacro
+'''Prompts for the name to be given to the last recorded macro.'''</t>
+<t tx="ekr.20150313083748.11879">printMacros
+'''Prints the name and definition of all named macros.'''</t>
+<t tx="ekr.20150313083748.11880">printLastMacro
+'''Print the last (unnamed) macro.'''</t>
+<t tx="ekr.20150313083748.11881">saveMacros
+'''Store macros in the @macros node..'''</t>
+<t tx="ekr.20150313083748.11882">startRecordingMacro
+'''Start recording or continue to record a macro.'''</t>
+<t tx="ekr.20150313083748.11883"></t>
+<t tx="ekr.20150313083748.11884">clearRectangle
+'''Clear the rectangle defined by the start and end of selected text.'''</t>
+<t tx="ekr.20150313083748.11885">closeRectangle
+'''Delete the rectangle if it contains nothing but whitespace..'''</t>
+<t tx="ekr.20150313083748.11886">deleteRectangle
+'''Delete the rectangle defined by the start and end of selected text.'''</t>
+<t tx="ekr.20150313083748.11887">killRectangle
+'''Kill the rectangle defined by the start and end of selected text.'''</t>
+<t tx="ekr.20150313083748.11888">openRectangle
+'''
+Insert blanks in the rectangle defined by the start and end of selected text.
+This pushes the previous contents of the rectangle rightward.
+'''</t>
+<t tx="ekr.20150313083748.11889">stringRectangle
+'''
+Prompt for a string, then replace the contents of a rectangle
+with a string on each line.
+'''</t>
+<t tx="ekr.20150313083748.11890">yankRectangle
+'''Yank into the rectangle defined by the start and end of selected text.'''</t>
+<t tx="ekr.20150313083748.11891"></t>
+<t tx="ekr.20150313083748.11892">appendToRegister
+'''Prompt for a register name and append the selected text to the register's contents.'''</t>
+<t tx="ekr.20150313083748.11893">copyRectangleToRegister
+'''
+Prompt for a register name and append the rectangle defined by selected
+text to the register's contents.
+'''</t>
+<t tx="ekr.20150313083748.11894">copyToRegister
+'''Prompt for a register name and append the selected text to the register's contents.'''</t>
+<t tx="ekr.20150313083748.11895">incrementRegister
+'''Prompt for a register name and increment its value if it has a numeric value.'''</t>
+<t tx="ekr.20150313083748.11896">insertRegister
+'''Prompt for a register name and and insert the value of another register into its contents.'''</t>
+<t tx="ekr.20150313083748.11897">jumpToRegister
+'''Prompt for a register name and set the insert point to the value in its register.'''</t>
+<t tx="ekr.20150313083748.11898">pointToRegister
+'''Prompt for a register name and put a value indicating the insert point in the register.'''</t>
+<t tx="ekr.20150313083748.11899">prependToRegister
+'''Prompt for a register name and prepend the selected text to the register's contents.'''</t>
+<t tx="ekr.20150313083748.11900">viewRegister
+'''Prompt for a register name and print its contents.'''</t>
+<t tx="ekr.20150313083748.11901"></t>
+<t tx="ekr.20150313083748.11902">code_to_rst_command
+'''
+Format the presently selected node as computer code.
+Settings from scriptSettingsDict override normal settings.
+On exit:
+self.source contains rst sources
+self.stringOutput contains docutils output if docutils called.
+'''</t>
+<t tx="ekr.20150313083748.11903">rst3
+'''Write all @rst nodes.'''</t>
+<t tx="ekr.20150313083748.11904"></t>
+<t tx="ekr.20150313083748.11905">focusToSpell
+'''Put focus in the spell tab.'''</t>
+<t tx="ekr.20150313083748.11906">hide
+'''Hide the Spell tab.'''</t>
+<t tx="ekr.20150313083748.11907">openSpellTab
+'''Open the Spell Checker tab in the log pane.'''</t>
+<t tx="ekr.20150313083748.11908">as_you_type_next
+'''
+as_you_type_next - cycle word behind cursor to next suggestion
+:Parameters:
+- `event`: triggering key event
+'''</t>
+<t tx="ekr.20150313083748.11909">as_you_type_toggle
+'''
+as_you_type_toggle - toggle spell as you type
+:Parameters:
+- `event`: event triggering toggle, not useful
+'''</t>
+<t tx="ekr.20150313083748.11910">as_you_type_undo
+'''
+as_you_type_undo - replace word behind cursor with word
+user typed before it started cycling suggestions
+:Parameters:
+- `event`: triggering event
+'''</t>
+<t tx="ekr.20150313083748.11911">as_you_type_wrap
+'''
+as_you_type_wrap - toggle wrap as you type
+:Parameters:
+- `event`: event triggering toggle, not useful
+'''</t>
+<t tx="ekr.20150313083748.11912">change
+'''Simulate pressing the 'Change' button in the Spell tab.'''</t>
+<t tx="ekr.20150313083748.11913">changeThenFind
+'''Simulate pressing the 'Change, Find' button in the Spell tab.'''</t>
+<t tx="ekr.20150313083748.11914">find
+'''
+Simulate pressing the 'Find' button in the Spell tab.
+Just open the Spell tab if it has never been opened.
+For minibuffer commands, we must also force the Spell tab to be visible.
+'''</t>
+<t tx="ekr.20150313083748.11915">ignore
+'''Simulate pressing the 'Ignore' button in the Spell tab.'''</t>
+<t tx="ekr.20150313083748.11916"></t>
+<t tx="ekr.20150313083748.11917">redo
+'''Redo the operation undone by the last undo.'''</t>
+<t tx="ekr.20150313083748.11918">undo
+'''Undo the operation described by the undo parameters.'''</t>
+<t tx="ekr.20150313083748.11919"></t>
+<t tx="ekr.20150313083748.11920">shell_command
+'''Execute a shell command.'''</t>
+<t tx="ekr.20150313083748.11921">revert
+'''Revert all changes to a .leo file, prompting if there have been changes.'''</t>
+<t tx="ekr.20150313083748.11922">cycle_all_focus
+'''Cycle all focus'''</t>
+<t tx="ekr.20150313083748.11923">cycle_focus
+'''Cycle focus'''</t>
+<t tx="ekr.20150313083748.11924">print_dot
+'''Print the dot.'''</t>
+<t tx="ekr.20150313083748.11925">q_command
+'''Quit the present Leo outline, prompting for saves.'''</t>
+<t tx="ekr.20150313083748.11926">quit_now
+'''Quit immediately.'''</t>
+<t tx="ekr.20150313083748.11927">qa_command
+'''Quit only if there are no unsaved changes.'''</t>
+<t tx="ekr.20150313083748.11928">toggle_vim_mode
+'''toggle vim-mode.'''</t>
+<t tx="ekr.20150313083748.11929">toggle_vim_trace
+'''toggle vim tracing.'''</t>
+<t tx="ekr.20150313083748.11930">toggle_vim_trainer_mode
+'''toggle vim-trainer mode.'''</t>
+<t tx="ekr.20150313083748.11931">w_command
+'''Save the .leo file.'''</t>
+<t tx="ekr.20150313083748.11932">wq_command
+'''Save all open files and exit.'''</t>
+<t tx="ekr.20150313083748.11933">xa_command
+'''Save all open files and keep working.'''</t>
+<t tx="ekr.20150313083748.11934"></t>
+<t tx="ekr.20150313083748.11935">cls
+'''Clear the screen.'''</t>
+<t tx="ekr.20150313083748.11936"></t>
+<t tx="ekr.20150313083748.11937">enterModeCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11938"></t>
+<t tx="ekr.20150313083748.11939">minibufferCallback
+'''Convert jEdit language description file to an equivalent .py file.'''</t>
+<t tx="ekr.20150313083748.11940">minibufferCallback
+'''Replace "g.choose(test,a,b)" by "a if test else b".'''</t>
+<t tx="ekr.20150313083748.11941">minibufferCallback
+'''
+&lt;&lt; about this script &gt;&gt;
+'''</t>
+<t tx="ekr.20150313083748.11942">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11943">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11944">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11945">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11946">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11947">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11948">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11949">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11950">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11951">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11952">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11953">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11954">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11955">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11956">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11957">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11958">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11959">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11960">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11961">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11962">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11963">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11964">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11965">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11966">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11967">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11968">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11969">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11970">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11971">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11972">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11973">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11974">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11975">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11976">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11977">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11978">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11979">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11980">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11981">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11982">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11983">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11984">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11985">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11986">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11987">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11988">minibufferCallback
+'''
+Open node in external editor 
+Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
+'''</t>
+<t tx="ekr.20150313083748.11989">minibufferCallback
+'''Provide a command for key binding to open the context menu'''</t>
+<t tx="ekr.20150313083748.11990">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11991">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11992">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11993">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11994">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11995">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11996">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11997">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.11998">minibufferCallback
+''' Detach or undetach body editor '''</t>
+<t tx="ekr.20150313083748.11999">minibufferCallback
+''' Detach editor, maximize '''</t>
+<t tx="ekr.20150313083748.12000">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12001">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12002">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12003">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12004">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12005">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12006">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12007">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12008">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12009">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12010">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12011">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12012">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12013">minibufferCallback
+'''
+free_layout_context_menu - open free layout's context menu, using
+the first divider of the top splitter for context, for now.
+:Parameters:
+- `kwargs`: from command callback
+'''</t>
+<t tx="ekr.20150313083748.12014">minibufferCallback
+'''
+free_layout_load - load layout from menu
+:Parameters:
+- `kwargs`: from command callback
+'''</t>
+<t tx="ekr.20150313083748.12015">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12016">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12017">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12018">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12019">minibufferCallback
+'''
+free_layout_restore - restore layout outline had when it was loaded
+:Parameters:
+- `kwargs`: from command callback
+'''</t>
+<t tx="ekr.20150313083748.12020">minibufferCallback
+'''
+free_layout_zoom - (un)zoom the current pane
+:Parameters:
+- `kwargs`: from command callback
+'''</t>
+<t tx="ekr.20150313083748.12021">minibufferCallback
+'''
+Do global search.
+To restore the original appearance of the window, type help.
+The per-commander @int fts_max_hits setting controls the maximum hits returned.
+'''</t>
+<t tx="ekr.20150313083748.12022">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12023">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12024">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12025">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12026">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12027">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12028">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12029">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12030">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12031">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12032">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12033">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12034">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12035">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12036">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12037">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12038">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12039">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12040">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12041">minibufferCallback
+'''Move the code following a def to end of previous node.'''</t>
+<t tx="ekr.20150313083748.12042">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12043">minibufferCallback
+'''
+Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+This command requires the following Leo settings::
+@int rst_level = 0
+@string rst_type
+@string zim_node_name
+@string path_to_zim
+'''</t>
+<t tx="ekr.20150313083748.12044">minibufferCallback
+'''Convert jEdit language description file to an equivalent .py file.'''</t>
+<t tx="ekr.20150313083748.12045">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12046">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12047">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12048">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12049">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12050">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12051">minibufferCallback
+''' List marked nodes in nav tab '''</t>
+<t tx="ekr.20150313083748.12052">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12053">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12054">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12055">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12056">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12057">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12058">minibufferCallback
+'''The parse-body command.'''</t>
+<t tx="ekr.20150313083748.12059">minibufferCallback
+'''A synonym for the vr-toggle command.'''</t>
+<t tx="ekr.20150313083748.12060">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12061">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12062">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12063">minibufferCallback
+''' prints the expanded selected node '''</t>
+<t tx="ekr.20150313083748.12064">minibufferCallback
+''' prints the expanded selected node body '''</t>
+<t tx="ekr.20150313083748.12065">minibufferCallback
+''' prints the marked node bodies'''</t>
+<t tx="ekr.20150313083748.12066">minibufferCallback
+''' prints the marked nodes'''</t>
+<t tx="ekr.20150313083748.12067">minibufferCallback
+''' prints the expanded selected node '''</t>
+<t tx="ekr.20150313083748.12068">minibufferCallback
+''' print previews the expanded selected node body'''</t>
+<t tx="ekr.20150313083748.12069">minibufferCallback
+''' print previews the marked node bodies'''</t>
+<t tx="ekr.20150313083748.12070">minibufferCallback
+''' print previews the marked nodes'''</t>
+<t tx="ekr.20150313083748.12071">minibufferCallback
+''' prints the selected node '''</t>
+<t tx="ekr.20150313083748.12072">minibufferCallback
+''' print previews the selected node body'''</t>
+<t tx="ekr.20150313083748.12073">minibufferCallback
+''' print previews the selected node body as html (rich text)'''</t>
+<t tx="ekr.20150313083748.12074">minibufferCallback
+''' prints the selected node '''</t>
+<t tx="ekr.20150313083748.12075">minibufferCallback
+''' prints the selected node body'''</t>
+<t tx="ekr.20150313083748.12076">minibufferCallback
+''' prints the selected node body as html (rich text)'''</t>
+<t tx="ekr.20150313083748.12077">minibufferCallback
+'''print-style-sheet command.'''</t>
+<t tx="ekr.20150313083748.12078">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12079">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12080">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12081">minibufferCallback
+'''Replace "g.choose(test,a,b)" by "a if test else b".'''</t>
+<t tx="ekr.20150313083748.12082">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12083">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12084">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12085">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12086">minibufferCallback
+'''Called when the user presses the 'script-button' button or executes the script-button command.'''</t>
+<t tx="ekr.20150313083748.12087">minibufferCallback
+'''Close all tabs except the presently selected tab.'''</t>
+<t tx="ekr.20150313083748.12088">minibufferCallback
+'''Create a new session node.'''</t>
+<t tx="ekr.20150313083748.12089">minibufferCallback
+'''Refresh the current session node.'''</t>
+<t tx="ekr.20150313083748.12090">minibufferCallback
+'''Open a tab for each item in UNLs &amp; select the indicated node in each.'''</t>
+<t tx="ekr.20150313083748.12091">minibufferCallback
+'''Load a snapshot of a session from the leo.session file.'''</t>
+<t tx="ekr.20150313083748.12092">minibufferCallback
+'''Save a snapshot of the present session to the leo.session file.'''</t>
+<t tx="ekr.20150313083748.12093">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12094">minibufferCallback
+'''
+reload-styles command.
+Find the appropriate style sheet and re-apply it.
+This replaces execution of the `stylesheet &amp; source` node in settings files.
+'''</t>
+<t tx="ekr.20150313083748.12095">minibufferCallback
+'''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''</t>
+<t tx="ekr.20150313083748.12096">minibufferCallback
+''' Cycle to next tab '''</t>
+<t tx="ekr.20150313083748.12097">minibufferCallback
+''' Cycle to next tab '''</t>
+<t tx="ekr.20150313083748.12098">minibufferCallback
+''' Detach current tab from tab bar '''</t>
+<t tx="ekr.20150313083748.12099">minibufferCallback
+'''Move the code following a def to end of previous node.'''</t>
+<t tx="ekr.20150313083748.12100">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12101">minibufferCallback
+'''
+
+'''</t>
+<t tx="ekr.20150313083748.12102">minibufferCallback
+'''Open render view for commander'''</t>
+<t tx="ekr.20150313083748.12103">minibufferCallback
+'''Contract the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12104">minibufferCallback
+'''Expand the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12105">minibufferCallback
+'''Close the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12106">minibufferCallback
+'''Lock rendereing pane.'''</t>
+<t tx="ekr.20150313083748.12107">minibufferCallback
+'''Pause or play a movie in the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12108">minibufferCallback
+'''Show the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12109">minibufferCallback
+'''Toggle the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12110">minibufferCallback
+'''Pause or play a movie in the rendering pane.'''</t>
+<t tx="ekr.20150313083748.12111">minibufferCallback
+'''Update the rendering pane'''</t>
+<t tx="ekr.20150313083748.12112">minibufferCallback
+'''
+&lt;&lt; about this script &gt;&gt;
+'''</t>
+<t tx="ekr.20150313083748.12113">minibufferCallback
+'''
+increase body font size by one
+requires that @font-size-body is being used in stylesheet
+'''</t>
+<t tx="ekr.20150313083748.12114">minibufferCallback
+'''
+decrease body font size by one
+requires that @font-size-body is being used in stylesheet
+'''</t>
+<t tx="ekr.20150313083748.12115">The ``toggle-angle-brackets`` command adds or removes double angle brackets from the headline of the selected node.</t>
+<t tx="ekr.20150313083748.12117">The ``pretty-print-python-code`` and ``pretty-print-all-python-code`` pretty print body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
+
+    putOperator:      puts whitespace around operators.
+    putNormalToken:   puts whitespace around everything else.
+</t>
+<t tx="ekr.20150313083748.12118"></t>
+<t tx="ekr.20150313083748.12122"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
