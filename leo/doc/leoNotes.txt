@@ -6312,5 +6312,22 @@ these two cases **does not matter**, for three very important reasons:
 
 Understanding these three reasons finally convinced me that @shadow could be
 made to work reliably.
+.. @+node:ekr.20150312080344.78: ** Unused
+.. @+node:ekr.20150312080344.79: *3* Theory of operation
+The Synchronization Principle simplifies everything and at long last puts Leo on a firm theoretical foundation. This principle states that the "smallest unit of meaning" of any Leo outline is the entire outline itself. In particular, individual external files have meaning only in the context of a particular outline.
+
+The Synchronization Principle has the following happy consequences:
+
+1. We may assume that all external files are in sync with the outline that wrote them. This assumption allows Leo to use "hidden machinery" in the outline to associate nodes in the external file with nodes in the outline. This "hidden" machinery consists of a list of tnodes associated with @file vnodes in the outline. When writing a external file Leo creates a list of tnodes in the order they were written to the external file. When reading the external file, Leo uses this list to associate nodes in the external file with nodes in the outline.
+
+2. External files must get their structure from the .leo file that wrote them. As we have seen, this is done using the hidden machinery in the .leo file. Consequently, there is no further need to represent outline structure in derived files. There is no need any longer either for child indices or for sentinels to represent outline structure. As a result, we can eliminate @+body and @-body nodes entirely because all @+node sentinels are followed by body text.
+
+3. All .leo files must contain full outline structure. Even "thin" outline will contain the full representation of the outline as vnodes.
+
+4. Reading *never* alters outline structure in the outline. No vnodes are ever created or destroyed and reading never alters clone links. This is true whether or not read errors occur. The read code sets a temporary attribute of tnodes while reading. These attributes are copied to the permanent t.bodyString attribute only if no read errors were encountered.
+
+4. Error recovery is now trivial: Read errors indicate that the .leo files and one or more external files are out-of-sync. No error recovery is attempted: the @file tree in which the error occurred reverts back to its original state.
+
+5. The new Import External File command is the *only* way to recover data from mismatched external file.
 .. @-all
 .. @-leo

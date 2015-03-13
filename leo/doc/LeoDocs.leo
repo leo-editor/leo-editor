@@ -958,8 +958,7 @@
 <v t="ekr.20050902105852.5"><vh>2003: SourceForge: new energy</vh></v>
 <v t="ekr.20050902105852.9"><vh>2003: 4.0: New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.67"><vh>4.0 final</vh></v>
-<v t="edream.110203163054.100"><vh>4.0 Theory of operation</vh></v>
-<v t="edream.110203163054.109"><vh>4.0 Error recovery is _much_ better than before</vh></v>
+<v t="edream.110203163054.109"><vh>Improved error recovery</vh></v>
 <v t="edream.110203163054.76"><vh>Added support uA's</vh></v>
 </v>
 <v t="ekr.20050902105852.10"><vh>2004: 4.1: The debut of gnx's</vh></v>
@@ -1710,11 +1709,12 @@
 <v t="ekr.20150312080344.51"><vh>** New scripts chapter</vh>
 <v t="ekr.20120320153011.8537"><vh>Scripts 4.5</vh></v>
 </v>
+<v t="ekr.20150312080344.76"><vh>** Remove all clones from this file</vh></v>
 <v t="ekr.20150312080344.44"><vh>** Ask people to report poor docstrings</vh></v>
 <v t="ekr.20150312080344.41"><vh>** scan for poor docstrings</vh></v>
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20150312080344.68"></v>
-<v t="ekr.20150312080344.69"><vh>In history DO NOT DELETE</vh></v>
+<v t="ekr.20150312080344.77"><vh>** test ctrl-shift-u</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2651,33 +2651,15 @@ The number of lines that Vim checks at the top and bottom of the buffer is confi
 
 Issue the ":help modeline" command within Vim for the more information about modelines.
 </t>
-<t tx="edream.110203163054.100">The Synchronization Principle simplifies everything and at long last puts Leo on a firm theoretical foundation. This principle states that the "smallest unit of meaning" of any Leo outline is the entire outline itself. In particular, individual external files have meaning only in the context of a particular outline.
-
-The Synchronization Principle has the following happy consequences:
-
-1. We may assume that all external files are in sync with the outline that wrote them. This assumption allows Leo to use "hidden machinery" in the outline to associate nodes in the external file with nodes in the outline. This "hidden" machinery consists of a list of tnodes associated with @file vnodes in the outline. When writing a external file Leo creates a list of tnodes in the order they were written to the external file. When reading the external file, Leo uses this list to associate nodes in the external file with nodes in the outline.
-
-2. external files must get their structure from the .leo file that wrote them. As we have seen, this is done using the hidden machinery in the .leo file. Consequently, there is no further need to represent outline structure in derived files. There is no need any longer either for child indices or for sentinels to represent outline structure. As a result, we can eliminate @+body and @-body nodes entirely because all @+node sentinels are followed by body text.
-
-3. All .leo files must contain full outline structure. Even "thin" outline will contain the full representation of the outline as vnodes.
-
-4. Reading *never* alters outline structure in the outline. No vnodes are ever created or destroyed and reading never alters clone links. This is true whether or not read errors occur. The read code sets a temporary attribute of tnodes while reading. These attributes are copied to the permanent t.bodyString attribute only if no read errors were encountered.
-
-4. Error recovery is now trivial: Read errors indicate that the .leo files and one or more external files are out-of-sync. No error recovery is attempted: the @file tree in which the error occurred reverts back to its original state.
-
-5. The new Import External File command is the *only* way to recover data from mismatched external file.
-</t>
 <t tx="edream.110203163054.109">Version 4.0 is a major advance in Leo's error handling. Using 4.0 is much safer than all previous versions. This new error handling applies to all derived files, both 3.x and 4.x format.
 
 Leo's read code never alters the structure of an outline, regardless of whether read errors are encountered. This means that clone links, marks, and all other information in the outline except body text remains completely unchanged during reads. Broken clone links (the dreaded read errors) are gone forever. Also, the new read code makes no changes to any body text until it is known that no read errors have occurred. This ensures that absolutely no changes at all are made to the outline if there are read errors.
 
-Leo's read code now writes a message to the log pane whenever it sees that the body text in the external file does not match the body text in the outline. These messages do not indicate errors, only that the body text has been changed outside of Leo, say in an external editor or by cvs.
+Leo's read code now writes a message to the log pane whenever it sees that the body text in the external file does not match the body text in the outline. These messages do not indicate errors, only that the body text has been changed outside of Leo.
 
 Leo's read code now warns if any non-empty node is unvisited. This check, and the check that headlines match pretty much guarantees that out-of-sync outlines will generate errors. Thus, there is no need a gnx timestamp in @+leo sentinels!
 </t>
-<t tx="edream.110203163054.67">Leo 4.0 final: October 17, 2003
-
-** Improved and simplified format of external files.
+<t tx="edream.110203163054.67">** Improved and simplified format of external files.
     - Eliminated child indices, extraneous blank lines and @body sentinels.
     - Eliminated @node sentinels that indicate outline structure.
     - New @nl and @nonl sentinels indicate where newlines are and aren't.
@@ -4216,11 +4198,13 @@ Tk was officially retired in June 2011.
 - @first and @last appeared in 3.7
 - @asis and @nosent appeared in 3.8.
 - Incremental syntax coloring and incremental undo appeared in 3.9.
-- Paul Paterson created Leo's plugin architecture sometime during this period. Plugins have been a driving force in Leo's development because people can change how Leo works without altering Leo's core.
+- Paul Paterson created Leo's plugin architecture sometime during this period.
 - 3.12 fixed a huge memory leak.
 - 3.12 Final, the last 3.x version, appeared July 17, 2003.
 </t>
-<t tx="ekr.20050902105852.9">In late 2002 and throughout 2003 I worked on an entirely new file format. 4.0 final went out the door October 17, 2003 after almost a year intense design work trying to improve error recovery scheme used while reading external files. In the summer of 2003 I realized that orphan and @ignore'd nodes must be prohibited in @file trees. With this restriction, Leo could finally recreate @file trees in outlines using **only** the information in external files. This made the read code much more robust, and eliminated all the previous unworkable error recovery schemes. At last Leo was on a completely firm foundation.
+<t tx="ekr.20050902105852.9">In late 2002 and throughout 2003 I worked on an entirely new file format. 4.0 final went out the door October 17, 2003.
+
+This was a time of intense design work trying to improve error recovery scheme used while reading external files. In the summer of 2003 I realized that orphan and @ignore'd nodes must be prohibited in @file trees. With this restriction, Leo could finally recreate @file trees in outlines using **only** the information in external files. This made the read code much more robust, and eliminated all the previous unworkable error recovery schemes. At last Leo was on a completely firm foundation.
 </t>
 <t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks)::
 
@@ -21504,12 +21488,11 @@ The **compare-leo-outlines** command prompts for another (presumably similar) .l
 History of Leo
 ##############
 
-This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronical of every little detail.
+This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronical of every change made to Leo.
 
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20150312080344.69"></t>
 <t tx="ekr.20150312080344.70">1. Tab completion now shows all @command &amp; @button nodes.
 
 Put all your common scripts in @command nodes in myLeoSettings.leo. Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts. You can execute the scripts by name without the "@command-" prefix.
@@ -21555,6 +21538,8 @@ In most cases the scheme is extremely fast: calls to get_completions replace cal
 
 Happily, the new scheme is still *completely* stateless: the completionDict does *not* define state (it is valid everywhere) and no state variables had to be added. In short, the new caching scheme is much better than before, and it probably is close to optimal in most situations.
 </t>
+<t tx="ekr.20150312080344.76"></t>
+<t tx="ekr.20150312080344.77"></t>
 <t tx="ekr.20150312080344.9">1. The @data abbreviations-subst-env node contains a script defining the environment in which all abbreviations execute. This allows helper functions to be defined. Very handy.
    
 2. Scripts may span multiple lines. Line starting with "\:" (2 characters) continue a script. This allows abbreviations to define multi-line templates.  Helpers defined in @data abbreviations-subst-env can fill in templates with *calculated* (not predefined) data.
