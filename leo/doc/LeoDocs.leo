@@ -276,8 +276,7 @@
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
-<v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
-<v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
+<v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
@@ -335,9 +334,9 @@
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
-<v t="ekr.20060329101442"></v>
+<v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
-<v t="ekr.20070623145346.1"></v>
+<v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 <v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
@@ -933,7 +932,7 @@
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
 </v>
 </v>
-<v t="ekr.20150312080344.67"><vh>History</vh>
+<v t="ekr.20150312080344.67"><vh>History of Leo</vh>
 <v t="ekr.20150312080344.68"><vh>@rst html/history.html</vh>
 <v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>1995: Beginnings</vh></v>
@@ -1111,9 +1110,6 @@
 <v t="ekr.20060620140228"><vh>Settings</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
@@ -1308,14 +1304,6 @@
 <v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
 </v>
 </v>
-<v t="ekr.20150312080344.51"><vh>** New scripts chapter</vh>
-<v t="ekr.20120320153011.8537"><vh>Scripts 4.5</vh></v>
-</v>
-<v t="ekr.20150312080344.76"><vh>** Remove all clones from this file</vh></v>
-<v t="ekr.20150312080344.44"><vh>** Ask people to report poor docstrings</vh></v>
-<v t="ekr.20150312080344.41"><vh>** scan for poor docstrings</vh></v>
-<v t="ekr.20150312080344.68"></v>
-<v t="ekr.20060620094033"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -8631,7 +8619,6 @@ Leo 4.7.1 fixed dangerous bug in Leo 4.7. The problem arose because it was too e
     Leo now uses PyEnchant to check spelling
     Deprecated the ancient Tangle and Untangle commands
 </t>
-<t tx="ekr.20101026082911.5536"></t>
 <t tx="ekr.20101026082911.5538">The update algorithm guarantees *only* that writing an updated @clean outline will generate the updated **public** file.  **Ambiguous lines** could be placed either at the end of one node or the beginning of the following nodes. The update algorithm *guesses* that such lines should be placed at the end of the previous node.
 
 Happily, guesses are not serious. Once you move an ambiguous node and save the Leo file, the update algorithm will not have to guess where the line belongs the next time Leo reads the @clean files.
@@ -12232,20 +12219,6 @@ When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapte
     Leo can highlight the pane containing the focus
     The bigdash plugin searches across multiple files
     The new quick edit/save mode makes Leo work like SciTe
-</t>
-<t tx="ekr.20120320153011.8537">- Improved the create @auto nodes script.
-
-- Added import-org-mode script.
-
-- Added a script for displaying a function call hierarchy in Leo.
-
-- Improved recursive import script.
-
-- Created a script for replacing Qt stylesheets on the fly.
-
-- Scripts to add bookmarks automatically.
-
-- A new "magic refactor" button.
 </t>
 <t tx="ekr.20130803073926.17120">target = '-- \nYou received this message because'
 target = '--=20\nYou received this message because'
@@ -16953,8 +16926,9 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">* Add History Chapter
-* Revise What's New chapter.
+<t tx="ekr.20150215071358.87">** New scripts chapter: will contain important scripts from scripts.leo
+** Ask people to report poor docstrings.
+** Scan for poor docstrings:  Use a script.
 
 - Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
@@ -18633,11 +18607,6 @@ Any file can be fixed in this way, including external files and .leo files. The 
 
 The **compare-leo-outlines** command prompts for another (presumably similar) .leo file that will be compared with the presently selected outline file (main window). It then creates clones of all inserted, deleted and changed nodes.
 </t>
-<t tx="ekr.20150312080344.41">- Use a script.  Does it exist?
-  Much easier than tedious hand searches.
-  
-- Post: clones considered harmful.</t>
-<t tx="ekr.20150312080344.44"></t>
 <t tx="ekr.20150312080344.45">::
 
     Leo 4.4.5 final released December 11, 2007
@@ -18666,7 +18635,6 @@ The **compare-leo-outlines** command prompts for another (presumably similar) .l
     Completed ILeo: a bridge between IPython and Leo
     Common @commands nodes in settings files
 </t>
-<t tx="ekr.20150312080344.51"></t>
 <t tx="ekr.20150312080344.52">::
 
     Leo 4.6 final released July 15, 2009
@@ -18825,7 +18793,6 @@ This chapter discusses the most important milestones in history of Leo and summa
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20150312080344.76"></t>
 <t tx="ekr.20150312080344.9">1. The @data abbreviations-subst-env node contains a script defining the environment in which all abbreviations execute. This allows helper functions to be defined. Very handy.
    
 2. Scripts may span multiple lines. Line starting with "\:" (2 characters) continue a script. This allows abbreviations to define multi-line templates.  Helpers defined in @data abbreviations-subst-env can fill in templates with *calculated* (not predefined) data.
@@ -18841,6 +18808,10 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 
 5. Added a new example node: @@data abbreviations examples.  This contains
    several extremely useful scripts.
+</t>
+<t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
+
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
