@@ -56,7 +56,15 @@ leo/dist/*.zip
 leo/dist/*.exe
 
 leo/doc/leoTechReport.*
-leo/doc/*.txt
+leo/doc/Clones and views-*
+leo/doc/External files-*
+leo/doc/Installation-*
+leo/doc/Leo basics step by step-*
+leo/doc/Leo's NSIS Installer-*
+leo/doc/Scripting Leo-*
+leo/doc/Using Leo's minibuffer-*
+leo/doc/What is Leo-*
+leo/doc/Whetting Your Appetite-*
 
 leo/doc/_build
 leo/doc/_build/*
