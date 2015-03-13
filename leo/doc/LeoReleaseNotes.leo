@@ -10,7 +10,42 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20150313054219.2"><vh>Release Notes</vh></v>
+<v t="ekr.20150313053238.1"><vh>@settings</vh>
+<v t="ekr.20150313053238.2"><vh>@bool wikiview-active = False</vh></v>
+<v t="ekr.20150313053238.4"><vh>@string target_language = rest</vh></v>
+<v t="ekr.20150313053238.5"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="ekr.20150313053238.12"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
+<v t="ekr.20150313053238.13"><vh>Plugins options</vh>
+<v t="ekr.20150313053238.14"><vh>@page http plugin</vh>
+<v t="ekr.20150313053238.15"><vh>@bool http_active = False</vh></v>
+<v t="ekr.20150313053238.16"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20150313053238.17"><vh>@string rst_http_attributename = rst_http_attribute</vh></v>
+</v>
+<v t="ekr.20150313053238.18"><vh>@page rst3 options</vh>
+<v t="ekr.20150313053238.19"><vh>@bool rst3_call_docutils = False</vh></v>
+<v t="ekr.20150313053238.20"><vh>@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20150313053238.21"><vh>@bool rst3_format_headlines = True</vh></v>
+<v t="ekr.20150313053238.22"><vh>@bool rst3_generate_rst = True</vh></v>
+<v t="ekr.20150313053238.23"><vh>@bool rst3_http_server_support = False</vh></v>
+<v t="ekr.20150313053238.24"><vh>@bool rst3_massage_body = False</vh></v>
+<v t="ekr.20150313053238.25"><vh>@bool rst3_show_headlines = True</vh></v>
+<v t="ekr.20150313053238.26"><vh>@bool rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20150313053238.27"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20150313053238.28"><vh>@bool rst3_verbose = True</vh></v>
+<v t="ekr.20150313053238.29"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+<v t="ekr.20150313053238.30"><vh>@string rst3_default_path =</vh></v>
+<v t="ekr.20150313053238.31"><vh>@string rst3_stylesheet_path = ..\doc</vh></v>
+<v t="ekr.20150313053238.32"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
+<v t="ekr.20150313053238.33"><vh>Http options...</vh>
+<v t="ekr.20150313053238.34"><vh>@bool rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20150313053238.35"><vh>@string rst3_http_attributename = 'rst_http_attribute'</vh></v>
+<v t="ekr.20150313053238.36"><vh>@bool rst3_http_server_support = False</vh></v>
+<v t="ekr.20150313053238.37"><vh>@string rst3_node_begin_marker = 'http-node-marker-'</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20150313053238.38"><vh>Read Me</vh></v>
 <v t="ekr.20150313054219.4"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="ekr.20150313054219.5"><vh>4.0 final</vh>
 <v t="ekr.20150313054219.6"><vh>* 4.0 Theory of operation</vh></v>
@@ -2459,6 +2494,93 @@
 </v>
 </vnodes>
 <tnodes>
+<t tx="ekr.20150313053238.1"></t>
+<t tx="ekr.20150313053238.12">@nocolor-node
+
+Formerly, this had to be on because the expansion bits
+of @screenshot trees were significant.
+
+Happily, this is no longer true.
+
+True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
+</t>
+<t tx="ekr.20150313053238.13"></t>
+<t tx="ekr.20150313053238.14">
+
+
+
+</t>
+<t tx="ekr.20150313053238.15"></t>
+<t tx="ekr.20150313053238.16"></t>
+<t tx="ekr.20150313053238.17"></t>
+<t tx="ekr.20150313053238.18"></t>
+<t tx="ekr.20150313053238.19"></t>
+<t tx="ekr.20150313053238.2"></t>
+<t tx="ekr.20150313053238.20"># True: generate rst markup from @code and @doc parts.</t>
+<t tx="ekr.20150313053238.21">Used differently.  See rst2_pure_document.
+</t>
+<t tx="ekr.20150313053238.22"># True: generate rst markup. False: generate plain text.</t>
+<t tx="ekr.20150313053238.23"></t>
+<t tx="ekr.20150313053238.24">True: call body_filter to massage text.
+
+Removes @ignore, @nocolor, @wrap directives.
+</t>
+<t tx="ekr.20150313053238.25"># Can be set by @rst-no-head headlines.</t>
+<t tx="ekr.20150313053238.26"></t>
+<t tx="ekr.20150313053238.27"></t>
+<t tx="ekr.20150313053238.28"></t>
+<t tx="ekr.20150313053238.29"># Used only if generate_rst is True.</t>
+<t tx="ekr.20150313053238.30"></t>
+<t tx="ekr.20150313053238.31"></t>
+<t tx="ekr.20150313053238.32"></t>
+<t tx="ekr.20150313053238.33"></t>
+<t tx="ekr.20150313053238.34">Deletes p.v.rst2_http_attributename from all nodes after writing.
+
+Deletes p.v.unknownAttributes if it then becomes empty.
+</t>
+<t tx="ekr.20150313053238.35"></t>
+<t tx="ekr.20150313053238.36">@nocolor
+
+If False, add_node_marker and http_support_main  do nothing.  Otherwise add_node_marker does the following:
+
+1. add_node_marker writes a string using generate_node_marker.
+
+Generates 'http-node-marker-'+str(number), where number is config.node_counter
+(incremented each time add_node_marker is called.
+
+2. Enables the following code in :
+@color
+
+    if config.tag == 'open2':
+        http_map = self.http_map
+    else:
+        http_map = {}
+        config.anchormap = {}
+        # maps v nodes to markers.
+        config.node_counter = 0
+    # [snip] code to write the tree
+    if config.rst2_http_server_support:
+        self.http_map = http_map
+</t>
+<t tx="ekr.20150313053238.37"></t>
+<t tx="ekr.20150313053238.38">This file contains an archival record of all of Leo's release notes.
+
+It will be updated only when a final release goes out the door.</t>
+<t tx="ekr.20150313053238.4">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20150313053238.5"></t>
 <t tx="ekr.20150313054219.10"></t>
 <t tx="ekr.20150313054219.1000"></t>
 <t tx="ekr.20150313054219.1001">It is too confusing at present, because it doesn't support @enabled-plugins nodes.
@@ -11967,7 +12089,6 @@ completely new idea in Leo's history!
 
 I bind Ctrl-O to file-open-by-name to bypass the Windows open file dialog.
 </t>
-<t tx="ekr.20150313054219.2"></t>
 <t tx="ekr.20150313054219.20">The new code ensures that Leo creates and uses only Unicode strings internally.
 </t>
 <t tx="ekr.20150313054219.200">There was a small hole in the format of external files. Leo assumed that comment delimiters do not change within any particular external file. This assumption is not necessarily true in files like leoProjects.txt.
