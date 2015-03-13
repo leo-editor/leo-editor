@@ -38,12 +38,12 @@ Leo's Documentation Page
    Users Guide <usersguide>
    leoandotherprograms
    intermediatetopics
-   history
    appendices
 
 .. toctree::
    :maxdepth: 1
 
+   history
    FAQ
    glossary
    What's New <what-is-new>
