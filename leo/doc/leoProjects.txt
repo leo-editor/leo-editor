@@ -2,6 +2,7 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20141203092457.6: ** Leo 5.1
+.. @+node:ekr.20150313082245.5: *3* Added LeoReleaseNotes.leo
 .. @-all
 .. @@pagewidth 60
 .. @@wrap

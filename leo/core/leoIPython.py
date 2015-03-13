@@ -71,7 +71,7 @@ class InternalIPKernel(object):
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self,gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
-        log_debug,pdb,trace = False,True,False
+        log_debug,pdb,trace = False,False,False
         tag = 'leoIPython.py:pylab_kernel'
         kernel = IPKernelApp.instance()
             # IPKernalApp is a singleton class.
