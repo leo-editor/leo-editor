@@ -933,29 +933,8 @@
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
 </v>
 </v>
-<v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
-<v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
-<v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
-<v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
-<v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
-<v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
-<v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
-<v t="ekr.20150220145456.4"><vh>What the algorithm does</vh></v>
-<v t="ekr.20080730212711.52"><vh>Guesses don't matter</vh></v>
-<v t="ekr.20150210062226.5"><vh>Background of the code</vh></v>
-<v t="ekr.20150211131925.9"><vh>Aha: the x.sentinels array</vh></v>
-<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
-<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20050901084134"><vh>Why I like Python</vh>
-<v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
-<v t="ekr.20050901092232.3"><vh>Power</vh></v>
-<v t="ekr.20050901092232.4"><vh>Safety</vh></v>
-<v t="ekr.20050901092232.5"><vh>Speed</vh></v>
-<v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
-</v>
-<v t="ekr.20131008041326.16177"><vh>History of Leo</vh>
+<v t="ekr.20150312080344.67"><vh>History</vh>
+<v t="ekr.20150312080344.68"><vh>@rst html/history.html</vh>
 <v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>1995: Beginnings</vh></v>
 <v t="ekr.20050902105852.1"><vh>1996: Breakthroughs</vh></v>
@@ -985,15 +964,11 @@
 </v>
 <v t="ekr.20050902105852.10"><vh>2004: 4.1: The debut of gnx's</vh></v>
 <v t="ekr.20050902105852.11" a="M"><vh>2004: 4.2: generators, uA's the end of sync problems, shared tnodes</vh>
-<v t="ekr.20040922074200"><vh>4.2 final</vh>
-<v t="ekr.20150301045135.20"><vh>* File-related</vh>
+<v t="EKR.20040601084317.161"><vh>Created new c, p, v iterators</vh></v>
+<v t="ekr.20150301045135.20"><vh>File-related</vh>
 <v t="EKR.20040524104904.242"><vh>Extending the format of .leo files</vh></v>
 <v t="EKR.20040628095213.501"><vh>Read and write all t.unknownAttributes in top vnode of an @thin tree</vh></v>
 <v t="ekr.20040705111716.1"><vh>Saved marks and expantion state in &lt;v&gt; elements for @thin nodes</vh></v>
-</v>
-<v t="EKR.20040601101227.1"><vh>@all</vh></v>
-<v t="ekr.20040804172113"><vh>@test and @suite greatly aid unit testing</vh></v>
-<v t="EKR.20040601084317.161"><vh>Created new c, p, v iterators</vh></v>
 </v>
 </v>
 <v t="ekr.20050902105852.12"><vh>2005: 4.3: @settings trees, plugins manager, predefined c, g, p</vh>
@@ -1002,72 +977,19 @@
 </v>
 <v t="ekr.20060629083935" a="M"><vh>2006: 4.4: The minibuffer, key bindings autocompletion, multiple log panes</vh>
 <v t="ekr.20060511074853"><vh>4.4 final</vh>
-<v t="ekr.20051028051444.1"><vh>* Quick Start</vh></v>
-<v t="ekr.20051028051444.2"><vh>* Key features of 4.4</vh>
+<v t="ekr.20051028051444.1"><vh>Quick Start</vh></v>
+<v t="ekr.20051028051444.2"><vh>Key features of 4.4</vh>
 <v t="ekr.20051101161405"><vh>Leo's minibuffer works like the Emacs mini-buffer</vh></v>
 <v t="ekr.20051101161405.1"><vh>@shortcuts nodes in leoSettings.leo allow per-pane bindings</vh></v>
 <v t="ekr.20060214092741"><vh>User input modes</vh></v>
 <v t="ekr.20051101161405.2"><vh>The scripting plugin allows key bindings</vh></v>
 </v>
-<v t="ekr.20051109112826"><vh>* The New and Newer World Orders</vh></v>
+<v t="ekr.20051109112826"><vh>The New and Newer World Orders</vh></v>
 </v>
 </v>
 <v t="ekr.20080315115427.568" a="M"><vh>2006-2008: 4.4.x: Hundreds of improvements</vh>
 <v t="ekr.20060822140418"><vh>4.4.1...new colorizer, slideshow, multiple editors</vh>
 <v t="ekr.20060830141224"><vh>4.4.1 final</vh>
-<v t="ekr.20060830141224.13"><vh>Bugs fixed</vh>
-<v t="ekr.20150301124500.8"><vh>Bugs in commands</vh>
-<v t="ekr.20060620094645.50"><vh>Fix crasher in kill-region command</vh></v>
-<v t="ekr.20060822140418.36"><vh>Fixed bug in backward-kill-word</vh></v>
-<v t="ekr.20060620094645.52"><vh>Fixed bug: cycle-editor hung Leo</vh></v>
-<v t="ekr.20060620094645.103"><vh>Fixed find-character &amp; find-word commands</vh></v>
-<v t="ekr.20060822140418.26"><vh>Fixed kill-line, kill-word, kill-sentence, etc</vh></v>
-<v t="ekr.20060629083935.25"><vh>Fixed long-standing bug in Remove Sentinels command</vh></v>
-<v t="ekr.20060830141224.14"><vh>Fixed serious bug in Paste Node as Clone</vh>
-<v t="ekr.20060830141224.15"><vh>Report</vh></v>
-<v t="ekr.20060830141224.16"><vh>What I did</vh></v>
-</v>
-<v t="ekr.20060622130815.3"><vh>Fixed show-invisibles crasher</vh></v>
-<v t="ekr.20060822140418.39"><vh>Fixed unicode bug in forward-word and backward-word commands</vh></v>
-<v t="ekr.20060830141224.45"><vh>Improved speed of unmark-all and corresponding undo/redo</vh></v>
-<v t="ekr.20060629083935.71"><vh>Improved view-lossage command</vh></v>
-<v t="ekr.20060620094645.43"><vh>word matches now succeed if first character of the pattern is not in word-chars.</vh></v>
-</v>
-<v t="ekr.20150301124500.13"><vh>Bugs in directives</vh>
-<v t="ekr.20060603082009"><vh>Fixed long-standing bug involving @comment and @language</vh></v>
-</v>
-<v t="ekr.20150301124500.11"><vh>Bugs in drawing &amp; events</vh>
-<v t="ekr.20060620094645.44"><vh>Dialogs now bring the Leo window back to the front</vh></v>
-<v t="ekr.20060822140418.29"><vh>Fixed minor scrolling problem</vh></v>
-<v t="ekr.20060822140418.41"><vh>Fixed problem setting body background color</vh></v>
-<v t="ekr.20060629083935.61"><vh>Overwrite mode now works in headllines</vh></v>
-<v t="ekr.20060620094645.46"><vh>Remember scrolling postion, insert point and selection range in multiple editors</vh></v>
-<v t="ekr.20060620094645.76"><vh>Restore cursor when changing focus in editors</vh></v>
-<v t="ekr.20060620094645.77"><vh>Undo restores focus again</vh></v>
-<v t="ekr.20060629083935.8"><vh>Update column display when typing</vh></v>
-<v t="ekr.20060622130815"><vh>Updated row/col indicators when using arrow keys</vh></v>
-</v>
-<v t="ekr.20150301124500.9"><vh>Bugs in plugins</vh>
-<v t="ekr.20060601101958.13"><vh>Fixed crasher in macros plugin</vh></v>
-<v t="ekr.20060601101958.2"><vh>Fixed crasher in searchbox plugin</vh></v>
-<v t="ekr.20060601101958.14"><vh>Fixed crasher in UNL plugin</vh></v>
-</v>
-<v t="ekr.20150301124500.10"><vh>Bugs in settings &amp; key bindings</vh>
-<v t="ekr.20060601101958.6"><vh>Fixed binding problems in leoSettings.leo reported by Check bindings script.</vh></v>
-<v t="ekr.20060620094645.35"><vh>Made sure calltip always adds '('</vh></v>
-</v>
-<v t="ekr.20150301124500.12"><vh>Code-level bugs</vh>
-<v t="ekr.20060620094645.64"><vh>Fixed crasher in init code</vh></v>
-<v t="ekr.20060629083935.70"><vh>Fixed crasher in masterCommand</vh></v>
-<v t="ekr.20060629083935.32"><vh>Fixed long-standing bugs in import code</vh></v>
-<v t="ekr.20060629083935.15"><vh>Fixed long-standing problem reporting indentation errors</vh></v>
-<v t="ekr.20060830141224.37"><vh>Fixed minor .leoID.txt bug</vh></v>
-<v t="ekr.20060822140418.97"><vh>Removed component classes</vh></v>
-<v t="ekr.20060601101958.16"><vh>Suppressed traceback in g.callers when the call stack isn't deep enough</vh></v>
-<v t="ekr.20060601101958.56"><vh>The Open Python Window command runs Idle in a separate process</vh></v>
-<v t="ekr.20060620094645.68"><vh>use g.stripBrackets instead of lstrip and rstrip</vh></v>
-</v>
-</v>
 <v t="ekr.20060620094645.78"><vh>Code &amp; scripting</vh>
 <v t="ekr.20060622130815.9"><vh>Created g.app.gui.makeScriptButton</vh></v>
 <v t="ekr.20060620094645.108"><vh>Improved check bindings script in leoSettings.leo</vh></v>
@@ -1141,41 +1063,8 @@
 </v>
 <v t="ekr.20061008190905"><vh>4.4.2... opml, zodb, sax, myLeoSettings, leoPymacs, autocontract, outline nav</vh>
 <v t="ekr.20061026095728"><vh>4.4.2 final and 4.4.2.1 final</vh>
-<v t="ekr.20060928172525.81"><vh>* The 'big reorg'</vh></v>
-<v t="ekr.20061009074305"><vh>* "New" positions allow Leo outlines to represent arbitrary directed graphs</vh></v>
-<v t="ekr.20061026095922.1"><vh>Bugs Fixed</vh>
-<v t="ekr.20061026095922.2"><vh>Changed leo_rst.css to pass the w3 validator</vh></v>
-<v t="ekr.20061008190633.283"><vh>Do full recolor after cut/paste/yank</vh></v>
-<v t="ekr.20061020155235.36"><vh>Fix bug: closing a window after removing a script button can crash</vh></v>
-<v t="ekr.20061020155235.41"><vh>Fixed  warning if minibuffer command does not exist when making menus</vh></v>
-<v t="ekr.20061026095922.3"><vh>Fixed 'Run on string' message when typing</vh></v>
-<v t="ekr.20061008190633.250"><vh>Fixed apparent bug in pmw</vh></v>
-<v t="ekr.20061020155235.185"><vh>Fixed body editor problems</vh></v>
-<v t="ekr.20061026095922.32"><vh>Fixed bug in new colorizer</vh></v>
-<v t="ekr.20061020155235.149"><vh>Fixed bug in new colorizer</vh></v>
-<v t="ekr.20061020155235.27"><vh>Fixed bug with Alt-n keys</vh></v>
-<v t="ekr.20061026095922.33"><vh>Fixed config bug</vh></v>
-<v t="ekr.20061008190633.294"><vh>Fixed crash when pasting a node</vh></v>
-<v t="ekr.20061020155235.2"><vh>Fixed crash when searching for headllines containing unicode chars</vh></v>
-<v t="ekr.20061020155235.255"><vh>Fixed focus problem when double-clicking @url nodes</vh></v>
-<v t="ekr.20061026095922.25"><vh>Fixed multipath plugin so it works with new colorizier</vh></v>
-<v t="ekr.20061020155235.47"><vh>Fixed new unicode bug</vh></v>
-<v t="ekr.20061026095922.15"><vh>Fixed problem with c++ extensions</vh></v>
-<v t="ekr.20061008190633.249"><vh>Fixed rst3 problem</vh></v>
-<v t="ekr.20061026095922.19"><vh>Fixed several bugs related to multiple body panes</vh></v>
-<v t="ekr.20061008190633.257"><vh>Fixed various unicode word-select problems</vh></v>
-<v t="ekr.20061008190633.261"><vh>Installed installer patch</vh></v>
-<v t="ekr.20061020155235.123"><vh>Made 'About Plugin' dialog scrollable</vh></v>
-<v t="ekr.20061020155235.126"><vh>Made sure all kill commands do a full recolor</vh></v>
-<v t="ekr.20061008190633.264"><vh>Made yank work in minibuffer</vh></v>
-<v t="ekr.20061008190633.265"><vh>Mass change to edit commands: made sure w is a text widget</vh></v>
-<v t="ekr.20061026095922.17"><vh>Move on if regexp matches an empty string</vh></v>
-<v t="ekr.20061020155235.254"><vh>Moved @import to top of doc/default.css</vh></v>
-<v t="ekr.20061020155235.180"><vh>Removed set-mark-command and all calls to removeRKeys</vh></v>
-<v t="ekr.20061020155235.124"><vh>Removed unwanted key-state message</vh></v>
-<v t="ekr.20061020155235.37"><vh>The end-of-script message no longer yanks focus from tabs</vh></v>
-<v t="ekr.20061008190633.262"><vh>Use letter accellerators for recent files after 9</vh></v>
-</v>
+<v t="ekr.20060928172525.81"><vh>The 'big reorg'</vh></v>
+<v t="ekr.20061009074305"><vh>"New" positions allow Leo outlines to represent arbitrary directed graphs</vh></v>
 <v t="ekr.20150301130652.4"><vh>Code level</vh>
 <v t="ekr.20061008190633.382"><vh>Integrated sax with read logic</vh></v>
 <v t="ekr.20061020155235.308"><vh>Removed all references to commands from menu tables</vh></v>
@@ -1193,7 +1082,6 @@
 <v t="ekr.20061008190633.356"><vh>Improved print-bindings command</vh></v>
 </v>
 <v t="ekr.20061026095922.35"><vh>Features</vh>
-<v t="ekr.20061020155235.307"><vh>'*command-name' in headline means convert '-' to blanks</vh></v>
 <v t="ekr.20061020155235.335"><vh>Add Open scripts.leo to help menu</vh></v>
 <v t="ekr.20070622180342"><vh>Added chapters</vh></v>
 <v t="ekr.20061020155235.271"><vh>Added minibuffer and Settings menus</vh></v>
@@ -1247,48 +1135,6 @@
 </v>
 <v t="ekr.20070316182323"><vh>4.4.3... winpdb, leoBridge, gui reorg, chapters</vh>
 <v t="ekr.20070626082732"><vh>4.4.3 final</vh>
-<v t="ekr.20070122070634.1"><vh>Bugs fixed</vh>
-<v t="ekr.20070610063538.151"><vh>Alt-4 did not work in tree pane in unitTest.leo</vh></v>
-<v t="ekr.20070610063538.209"><vh>Don't change focus in the save command</vh></v>
-<v t="ekr.20070610063538.212"><vh>downcase-region and upcase-region didn't color body text.</vh></v>
-<v t="ekr.20070610063538.175"><vh>Fix crasher in maximizeNewWindows</vh></v>
-<v t="ekr.20070611161859"><vh>Fixed *major* demote bug</vh></v>
-<v t="ekr.20070622090350.8"><vh>Fixed a bug that disabled icon button colors on Linux</vh></v>
-<v t="ekr.20070122070634.2"><vh>Fixed an escape bug in new colorizer</vh></v>
-<v t="ekr.20070610063538.165"><vh>Fixed automatic directory creation</vh></v>
-<v t="ekr.20070316182341.56"><vh>Fixed backspace in headline bug</vh></v>
-<v t="ekr.20070122070634.54"><vh>Fixed bug in CheckVersion</vh></v>
-<v t="ekr.20070316182341.112"><vh>Fixed bug in nav button plugin</vh></v>
-<v t="ekr.20070513111526.78"><vh>Fixed bug: new-file doesn't allow edit of initial headline</vh></v>
-<v t="ekr.20070610063538.168"><vh>Fixed bug: shift-arrow keys not bound properly when node is clicked</vh></v>
-<v t="ekr.20070316182341.43"><vh>Fixed bugs in regular expressions</vh></v>
-<v t="ekr.20070316182341.2"><vh>Fixed bugs in undo/redoNodeContents</vh></v>
-<v t="ekr.20070316182341.10"><vh>Fixed C++ import bug</vh></v>
-<v t="ekr.20070122070634.40"><vh>Fixed clone-drag problem</vh></v>
-<v t="ekr.20070513111526.200"><vh>Fixed crasher in plugins_menu.py</vh></v>
-<v t="ekr.20070316182341.138"><vh>Fixed crasher in rclicker plugin</vh></v>
-<v t="ekr.20070610063538.164"><vh>Fixed crashers in leoupate plugin</vh></v>
-<v t="ekr.20070622090350.57"><vh>Fixed failing bridge unit test</vh></v>
-<v t="ekr.20070316182341.54"><vh>Fixed memory error in leoBridge</vh></v>
-<v t="ekr.20070513111526.198"><vh>Fixed minor chapter hoist bug</vh></v>
-<v t="ekr.20070316182341.6"><vh>Fixed minor xml problem</vh></v>
-<v t="ekr.20070610063538.2"><vh>Fixed noweb hangs</vh></v>
-<v t="ekr.20070316182341.39"><vh>Fixed recent bug in next-line command</vh></v>
-<v t="ekr.20070316182341.139"><vh>Fixed recent problem with settings report</vh></v>
-<v t="ekr.20070513111526.105"><vh>Fixed repeatComplexCommand weirdness</vh></v>
-<v t="ekr.20070122070634.13"><vh>Fixed undo problems with yank/kill</vh></v>
-<v t="ekr.20070316182341.42"><vh>Fixed wiki markup bug</vh></v>
-<v t="ekr.20070316182341.113"><vh>Fixed yet another cursor down bug</vh></v>
-<v t="ekr.20070622090350.42"><vh>Improved goto-next/prev-node commands</vh></v>
-<v t="ekr.20070316182341.137"><vh>Improved special case in moveOutlineUp</vh></v>
-<v t="ekr.20070610063538.163"><vh>Investigated problem with subprocess (works for me)</vh></v>
-<v t="ekr.20070316182341.41"><vh>Made standalone plugins manager work again</vh></v>
-<v t="ekr.20070122070634.51"><vh>Made sure all ancestors expanded when select a body editor with multiple body editors</vh></v>
-<v t="ekr.20070316182341.66"><vh>Made sure alt-arrow keys honor focus settings</vh></v>
-<v t="ekr.20070610063538.171"><vh>Made sure the new outlines aren't marked dirty</vh></v>
-<v t="ekr.20070622090350.22"><vh>Switch chapters if new position isn't in current chapter</vh></v>
-<v t="ekr.20070122070634.4"><vh>Treat escaped characters in find patterns as a single character</vh></v>
-</v>
 <v t="ekr.20070122070634.305"><vh>Code level</vh>
 <v t="ekr.20070622090350.65"><vh>Added @button dynamic-tests.</vh></v>
 <v t="ekr.20070122070634.59"><vh>Added handleUrlInUrlNode helper for OnIconDoubleClick</vh></v>
@@ -1365,56 +1211,11 @@
 </v>
 <v t="ekr.20070806090235"><vh>4.4.4 @auto, @menus, threading syntax colorer, the Great Graph Aha</vh>
 <v t="ekr.20071101162646"><vh>4.4.4 Final</vh>
-<v t="ekr.20070806090226.15"><vh>* Added support for @auto files</vh>
+<v t="ekr.20070806090226.15"><vh>Added support for @auto files</vh>
 <v t="ekr.20070806095535.1"><vh>What @auto does</vh></v>
 <v t="ekr.20070809141529"><vh>Perfect import checks</vh></v>
 <v t="ekr.20070806101412"><vh>Commands related to @auto</vh></v>
 <v t="ekr.20070806100055"><vh>Extending the code: adding new parsers</vh></v>
-</v>
-<v t="ekr.20071101162751"><vh>Bugs fixed</vh>
-<v t="ekr.20071026075016"><vh>Added support for fastGotoNode plugin to leoKeyEvent classes</vh></v>
-<v t="ekr.20071021111856.461"><vh>Allow unicode characters in Leo file names</vh></v>
-<v t="ekr.20071101162751.32"><vh>Disabled the plugins manage plugin</vh></v>
-<v t="ekr.20071026053931.157"><vh>Fixed (maybe) multi-editor bug</vh></v>
-<v t="ekr.20071101162751.34"><vh>Fixed @auto java bug</vh></v>
-<v t="ekr.20070915101157.40"><vh>Fixed @auto path bug</vh></v>
-<v t="ekr.20070915101157.14"><vh>Fixed another path bug</vh></v>
-<v t="ekr.20071101162751.28"><vh>Fixed Apple help menu reversion</vh></v>
-<v t="ekr.20071021111856.20"><vh>Fixed backward find bug</vh></v>
-<v t="ekr.20070915101157.50"><vh>Fixed bad drag &amp; drop bug</vh></v>
-<v t="ekr.20070915101157.70"><vh>Fixed bug 'node note selected' bug</vh></v>
-<v t="ekr.20071021111856.437"><vh>Fixed bug in rst3 plugin</vh></v>
-<v t="ekr.20071101162751.184"><vh>Fixed bug that cause the import of PyParse.py to fail</vh></v>
-<v t="ekr.20071101162751.2"><vh>Fixed bug that caused rClick plugin to crash</vh></v>
-<v t="ekr.20071026092552"><vh>Fixed bug that disabled multiple occurances of the same user icon</vh></v>
-<v t="ekr.20071101162751.19"><vh>Fixed bug: select a chapter containing the initially selected node</vh></v>
-<v t="ekr.20071026053931.13"><vh>Fixed bug: utf-8 files now get imported properly</vh></v>
-<v t="ekr.20071023080957"><vh>Fixed bugs when running unit tests externally</vh></v>
-<v t="ekr.20070915101157.16"><vh>fixed c parser so it handles non-ascii declaratsions</vh></v>
-<v t="ekr.20071021111856.127"><vh>Fixed chapter crasher</vh></v>
-<v t="ekr.20071026053931.220"><vh>Fixed colorizer end-of-text bug</vh></v>
-<v t="ekr.20070915101157.17"><vh>Fixed colorizing bug and moved calls to w.toGuiIndex out of some loops</vh></v>
-<v t="ekr.20071021111856.83"><vh>Fixed cursor up/down problem</vh></v>
-<v t="ekr.20070915101157.5"><vh>Fixed how @auto handles paths</vh></v>
-<v t="ekr.20071101162751.150"><vh>Fixed long-standing and important body editor bug</vh></v>
-<v t="ekr.20070915101157.19"><vh>Fixed new @path problem</vh></v>
-<v t="ekr.20070915101157.48"><vh>Fixed problem with space in path names in runLeoDynamicTest</vh></v>
-<v t="ekr.20071101162751.4"><vh>Fixed scrolling problem with chapters</vh></v>
-<v t="ekr.20071101162751.97"><vh>Fixed spell-check problem on Linux</vh></v>
-<v t="ekr.20070915101157.18"><vh>Fixed unicode bug in http plugin</vh></v>
-<v t="ekr.20071021111856.124"><vh>Fixed unicode bug in trace</vh></v>
-<v t="ekr.20070915101157.3"><vh>Fixed UNL bug1</vh></v>
-<v t="ekr.20071004101443.18"><vh>Greatly improved speed of unmark-all</vh></v>
-<v t="ekr.20071101163257"><vh>Improved error reporting in rst3 plugins for code_block directive</vh></v>
-<v t="ekr.20070915101157.45"><vh>Improved messages on @import failure</vh></v>
-<v t="ekr.20071021111856.252"><vh>Installed patch to fix Fedora Tk.Text bug</vh></v>
-<v t="ekr.20071004101443.26"><vh>Made sure dirty bits get updated in xemacs plugin</vh></v>
-<v t="ekr.20071101162751.33"><vh>Made sure plugins work if frame.iconFrame is None</vh></v>
-<v t="ekr.20071026053931.219"><vh>Made sure proper node is visible when deleting a body editor</vh></v>
-<v t="ekr.20071101162751.178"><vh>Non-ignored @auto trees do not get saved to the .leo file</vh></v>
-<v t="ekr.20071026053931.156"><vh>Replaced c.frame.body with c.frame.body.bodyCtrl</vh></v>
-<v t="ekr.20070915101157.81"><vh>Retain dirty bit after write @auto fails</vh></v>
-<v t="ekr.20071101162751.149"><vh>Use the default spell tab</vh></v>
 </v>
 <v t="ekr.20150301130652.16"><vh>Commands</vh>
 <v t="ekr.20071006093614"><vh>Added the insert-child command</vh></v>
@@ -1449,30 +1250,6 @@
 </v>
 <v t="ekr.20071115102421"><vh>4.4.5 bug fixes</vh>
 <v t="ekr.20071211083251"><vh>Leo 4.4.5 final</vh>
-<v t="ekr.20071115102156.5"><vh>Bugs fixed</vh>
-<v t="ekr.20071206093323.87"><vh>Fixed @auto bug</vh></v>
-<v t="ekr.20071206093323.30"><vh>Fixed C++ importer crash</vh></v>
-<v t="ekr.20071206093323.59"><vh>Fixed command lockout problem</vh></v>
-<v t="ekr.20071206093323.3"><vh>Fixed crasher in regularizeWhitespace</vh></v>
-<v t="ekr.20071206093323.96"><vh>Fixed focus problem with goto-next clone command</vh></v>
-<v t="ekr.20071115102156.141"><vh>Fixed hoist crasher</vh></v>
-<v t="ekr.20071115102156.6"><vh>Fixed hung windows</vh></v>
-<v t="ekr.20071115102156.21"><vh>Fixed new @auto bug (python)</vh></v>
-<v t="ekr.20071115102156.78"><vh>Fixed new @auto bug: c++</vh></v>
-<v t="ekr.20071115102156.124"><vh>Fixed paste node as clone crasher</vh></v>
-<v t="ekr.20071206093323.4"><vh>Fixed paste-node-as-clone</vh></v>
-<v t="ekr.20071206093323.80"><vh>Fixed problem with decorators</vh></v>
-<v t="ekr.20071206093323.29"><vh>Fixed threading colorizer hang with perl</vh></v>
-<v t="ekr.20071206093323.2"><vh>Fixed two crashers in the @noref logic</vh></v>
-<v t="ekr.20071115102156.79"><vh>Fixed various @auto comparison problems</vh></v>
-<v t="ekr.20071115102156.123"><vh>Fixed windows registry problem</vh></v>
-<v t="ekr.20071115102156.146"><vh>Ignore unpickling problems in getUa</vh></v>
-<v t="ekr.20071115102156.2"><vh>Removed all references to pluginsManager.txt</vh></v>
-<v t="ekr.20071206093323.31"><vh>Reorganized leoImport.py</vh></v>
-<v t="ekr.20071115102156.81"><vh>Retain relative paths in recent files menu</vh></v>
-<v t="ekr.20071206093323.76"><vh>Simplified perl colorizer and added progress checks</vh></v>
-<v t="ekr.20071115102156.11"><vh>Warn on resurrected (vampire) nodes</vh></v>
-</v>
 <v t="ekr.20150301130652.17"><vh>Code level</vh>
 <v t="ekr.20071206093323.72"><vh>Improved @auto code</vh></v>
 </v>
@@ -1496,31 +1273,6 @@
 </v>
 <v t="ekr.20080106114331"><vh>4.4.6 bug fixes</vh>
 <v t="ekr.20080126090039"><vh>leo 4.4.6 final</vh>
-<v t="ekr.20071217092203.1"><vh>Bugs fixed</vh>
-<v t="ekr.20080115093848.18"><vh>Added convenience methods for icons</vh></v>
-<v t="ekr.20071217092203.161"><vh>Added text bindings to status area</vh></v>
-<v t="ekr.20080115093848.23"><vh>Don't mark nodes dirty if insert-icon is cancelled</vh></v>
-<v t="ekr.20080106114203.1"><vh>Fixed bug in nav_buttons plugin</vh></v>
-<v t="ekr.20071217092203.52"><vh>Fixed bug with clear-recent-files</vh></v>
-<v t="ekr.20071217092203.64"><vh>Fixed bug: replace didn't always start in the correct place</vh></v>
-<v t="ekr.20071217092203.51"><vh>Fixed bug: rst3 plugin now finds default.css file correctly</vh></v>
-<v t="ekr.20071217092203.128"><vh>Fixed clone focus bug</vh></v>
-<v t="ekr.20071217092203.127"><vh>fixed colorizer bug</vh></v>
-<v t="ekr.20071217092203.131"><vh>Fixed crash when copying or cloning to non-exisitent chapter</vh></v>
-<v t="ekr.20071217092203.30"><vh>Fixed cursesGui  plugin</vh></v>
-<v t="ekr.20080106114203.2"><vh>Fixed problems with modes/rest.py</vh></v>
-<v t="ekr.20071217092203.31"><vh>Fixed script_io_to_body plugin</vh></v>
-<v t="ekr.20071217092203.2"><vh>Fixed undo (dirty bit) problem)</vh></v>
-<v t="ekr.20080115093848.19"><vh>Fixed undo bug</vh></v>
-<v t="ekr.20080106114203.4"><vh>Leo issues better messages if Image can not be imported</vh></v>
-<v t="ekr.20071217092203.45"><vh>Make Import to @file create @file nodes</vh></v>
-<v t="ekr.20071217092203.130"><vh>Removed call to printLine in change-all logic</vh></v>
-<v t="ekr.20071217092203.136"><vh>Repaired damaged minusnode.gif icon</vh></v>
-<v t="ekr.20080106114203.3"><vh>Replaced delete-all-icons command with a script in script.leo</vh></v>
-</v>
-<v t="ekr.20071217092203.137"><vh>Features</vh>
-<v t="ekr.20071217092203.138"><vh>Applied Terry Brown's config patch</vh></v>
-<v t="ekr.20071217092203.145"><vh>Applied plumloco's patch to plugins_menu.py</vh></v>
 <v t="ekr.20071217092203.147"><vh>Added find-next-clone command</vh></v>
 <v t="ekr.20071217092203.149"><vh>Added toggle-sparse-move command</vh></v>
 <v t="ekr.20071217092203.152"><vh>Added support for @data nodes in @settings trees</vh></v>
@@ -1528,20 +1280,9 @@
 <v t="ekr.20071217092203.163"><vh>Added @import scanners for javascript and xml files</vh></v>
 </v>
 </v>
-</v>
 <v t="ekr.20080218154129"><vh>4.4.7 ipython plugin</vh>
 <v t="ekr.20080218153931"><vh>leo 4.4.7 final</vh>
-<v t="ekr.20080218153931.1"><vh>Bugs fixed</vh>
-<v t="ekr.20080218153931.7"><vh>Fixed new problem with image.py</vh></v>
-<v t="ekr.20080218153931.4"><vh>Fixed pascal import bug</vh></v>
-<v t="ekr.20080218153931.2"><vh>Fixed perl syntax coloring bug</vh></v>
-<v t="ekr.20080218154129.1"><vh>Leo's old colorizer now colorizes Leo directives properly</vh></v>
-<v t="ekr.20080218153931.3"><vh>Removed warnings while typing @language directives</vh></v>
-<v t="ekr.20080218153931.6"><vh>Worked around problems with winpdb</vh></v>
-<v t="ekr.20080218153931.5"><vh>write-outline-only command now prints a 'done' message</vh></v>
-</v>
 <v t="ekr.20080218153931.8"><vh>Features</vh>
-<v t="ekr.20080218153931.9"><vh>All import commands now honor @path</vh></v>
 <v t="ekr.20080218153931.10"><vh>Added ipython plugin</vh></v>
 <v t="ekr.20080218153931.11"><vh>Added support for @bool open_with_save_on_update setting</vh></v>
 <v t="ekr.20080218153931.12"><vh>Improved handling of unicode for @auto files</vh></v>
@@ -1550,22 +1291,6 @@
 </v>
 <v t="ekr.20080311060457.215"><vh>4.4.8 translating args to g.es and g.es_print</vh>
 <v t="ekr.20080405074410.4"><vh>4.4.8 final</vh>
-<v t="ekr.20150301130652.18"><vh>Bugs fixed</vh>
-<v t="ekr.20080311060457.28"><vh>Allow tkFrame to complete before killing it</vh></v>
-<v t="ekr.20080311060457.3"><vh>Assigned g.fileIndex on the fly</vh></v>
-<v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
-<v t="ekr.20080328074117.30"><vh>Fixed @lineending botch</vh></v>
-<v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
-<v t="ekr.20080328074117.135"><vh>Fixed bug involving default_target_language</vh></v>
-<v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
-<v t="ekr.20080328074117.12"><vh>Fixed Open With menu</vh></v>
-<v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
-<v t="ekr.20080328074117.76"><vh>Fixed undo problem with mutliple editors</vh></v>
-<v t="ekr.20080311060457.125"><vh>Made sure that all fileIndex fields get converted on read</vh></v>
-<v t="ekr.20080328074117.4"><vh>Removed '.' from leoID</vh></v>
-<v t="ekr.20080311060457.38"><vh>Renamed self.fileIndex to  readBufferIndex in file read logic</vh></v>
-<v t="ekr.20080328074117.77"><vh>Write dirty bit if write fails</vh></v>
-</v>
 <v t="ekr.20150301130652.19"><vh>Features</vh>
 <v t="ekr.20080304112802.25"><vh>Added translation services</vh>
 <v t="ekr.20080310093038.4"></v>
@@ -1598,132 +1323,8 @@
 </v>
 <v t="ekr.20101025080245.6087" a="M"><vh>2010: 4.7: The one node world and Python 3k</vh>
 <v t="ekr.20100223063657.7262"><vh>4.7 final</vh>
-<v t="ekr.20100205152016.14054"><vh>* Recovering from clone conflicts</vh></v>
+<v t="ekr.20100205152016.14054"><vh>Recovering from clone conflicts</vh></v>
 <v t="ekr.20100129054823.11928"><vh>Improved file handling</vh></v>
-<v t="ekr.20100223063657.7264"><vh>Bug fixed</vh>
-<v t="ekr.20100124164700.11922"><vh>&lt;alt-x&gt; select-all crashes python when focus is in headline</vh></v>
-<v t="ekr.20100124164700.11944"><vh>Add warnings when @file logic happens</vh></v>
-<v t="ekr.20100118181428.8077"><vh>Allow hyphens in xml tags</vh></v>
-<v t="ekr.20100124164700.11923"><vh>Allow saving .leo files with undefined-sections</vh></v>
-<v t="ekr.20100209160132.11736"><vh>Alt-right should *not* go down</vh></v>
-<v t="ekr.20100118181428.8481"><vh>Applied patches to fix bug: 451377 Make Leo frienly to mac apps</vh></v>
-<v t="ekr.20100209160132.11742"><vh>Big change: simplified g.utils_rename</vh></v>
-<v t="ekr.20100209160132.11756"><vh>Bug 399720: (fixed) goto-global-line doesn't work with @edit nodes</vh></v>
-<v t="ekr.20100201192329.7116"><vh>Code cleanup</vh></v>
-<v t="ekr.20100209160132.11755"><vh>Do a full redraw when contracting a cloned node</vh></v>
-<v t="ekr.20100118181428.8524"><vh>Don't colorize @others and @all unless they start a line</vh></v>
-<v t="ekr.20100124164700.11965"><vh>Don't use tnodeList to separate old/new @file nodes</vh></v>
-<v t="ekr.20100128094926.12524"><vh>Eliminated node-changed marks</vh></v>
-<v t="ekr.20100124164700.12027"><vh>Eliminated warning re orphan nodes</vh></v>
-<v t="ekr.20100118181428.8522"><vh>Finished bug 486433: non-breaking space etc. are invisible</vh></v>
-<v t="ekr.20100223063657.7192"><vh>Fix bug 363406: goto-global-line works with @auto files</vh></v>
-<v t="ekr.20100118181428.8517"><vh>Fixed 349027: body doesn't get focus after headline edit</vh></v>
-<v t="ekr.20100118181428.8090"><vh>Fixed Alt-u bug and refactored k.masterKeyHandler</vh></v>
-<v t="ekr.20100223063657.7246"><vh>Fixed ancient minibuffer bug</vh></v>
-<v t="ekr.20100209160132.11712"><vh>Fixed at-auto write bug</vh></v>
-<v t="ekr.20100118181428.7831"><vh>Fixed at-auto-rst problems</vh></v>
-<v t="ekr.20100118181428.8109"><vh>Fixed at-shadow error</vh></v>
-<v t="ekr.20100118181428.8497"><vh>Fixed auto-save problem</vh></v>
-<v t="ekr.20100118181428.7715"><vh>Fixed bug 362950: during body text undo selection goes nuts...</vh></v>
-<v t="ekr.20100118181428.8236"><vh>Fixed bug 408886: qttabs gui doesn't mark commanders dirty properly</vh></v>
-<v t="ekr.20100118181428.8413"><vh>Fixed bug 452303 @auto-rst can be dangerous</vh></v>
-<v t="ekr.20100118181428.8239"><vh>Fixed bug 476653: @nowrap isn't working for qt / @edit nodes</vh></v>
-<v t="ekr.20100118181428.8240"><vh>Fixed bug 480422: string-rectangle kills syntax highlighting</vh></v>
-<v t="ekr.20100118181428.7614"><vh>Fixed bug 498688: Undo back to last saved content...</vh></v>
-<v t="ekr.20100118181428.7571"><vh>Fixed bug 498692: Undo renames headline</vh></v>
-<v t="ekr.20100118181428.8518"><vh>Fixed bug 507559: Can't use End key while editing node headline</vh></v>
-<v t="ekr.20100201192329.7108"><vh>Fixed bug 515164: a crasher in p.positionExists</vh></v>
-<v t="ekr.20100209160132.11773"><vh>Fixed bug 518823: clone headline updates</vh></v>
-<v t="ekr.20100209160132.11694"><vh>Fixed bug in c.pasteOutline when run from unit tests</vh></v>
-<v t="ekr.20100118181428.8242"><vh>Fixed bug in g.adjustTripleString</vh></v>
-<v t="ekr.20100118181428.8248"><vh>Fixed bug in writeNodeToString</vh></v>
-<v t="ekr.20100118181428.8473"><vh>Fixed bug: 381895 qtGui Split ratio is not saved in .leo file</vh></v>
-<v t="ekr.20100118181428.8485"><vh>Fixed bug: 394445 Chapters selection button: in qt, missing, in Tk, only one option</vh></v>
-<v t="ekr.20100118181428.8523"><vh>Fixed bug: 420988 @tabwith 8 not honored</vh></v>
-<v t="ekr.20100118181428.8252"><vh>Fixed bug: @nosent should warn about orphan nodes</vh></v>
-<v t="ekr.20100118181428.8070"><vh>Fixed bug: at-nosent nodes were not being dirty when headline changes</vh></v>
-<v t="ekr.20100118181428.7712"><vh>Fixed bug: no log when notebook does not exist</vh></v>
-<v t="ekr.20100118181428.8486"><vh>Fixed bug: overwrite modified file message</vh></v>
-<v t="ekr.20100118181428.8257"><vh>Fixed bug: Sometimes 'redefining shortcut' message is backwards</vh></v>
-<v t="ekr.20100223063657.7182"><vh>Fixed calls to sort in 6 places</vh></v>
-<v t="ekr.20100118181428.7559"><vh>Fixed calltips on leo3k</vh></v>
-<v t="ekr.20100124164700.11919"><vh>Fixed colorizer bug affecting per-language @font settings</vh></v>
-<v t="ekr.20100118181428.8262"><vh>Fixed contract-or-go-right</vh></v>
-<v t="ekr.20100124164700.11938"><vh>Fixed crash in writeToFileHelper</vh></v>
-<v t="ekr.20100209160132.11711"><vh>Fixed crasher in path.py</vh></v>
-<v t="ekr.20100201192329.7106"><vh>Fixed crasher in sort-siblings</vh></v>
-<v t="ekr.20100118181428.8275"><vh>Fixed crasher when writing to a newly-deleted file</vh></v>
-<v t="ekr.20100118181428.8514"><vh>Fixed ctrl-tab bug</vh></v>
-<v t="ekr.20100209160132.11751"><vh>Fixed cursor hangnail</vh></v>
-<v t="ekr.20100118181428.8278"><vh>Fixed double prompt in c.close()</vh></v>
-<v t="ekr.20100118181428.8281"><vh>Fixed elisp parsing bug</vh></v>
-<v t="ekr.20100209160132.11767"><vh>Fixed g.getLastTracebackFileAndLineNubmer</vh></v>
-<v t="ekr.20100118181428.7570"><vh>Fixed headline scrolling</vh></v>
-<v t="ekr.20100209160132.11701"><vh>Fixed inconsistency in how @path works</vh></v>
-<v t="ekr.20100223063657.7232"><vh>Fixed internal Leo error in atFile.read method</vh></v>
-<v t="ekr.20100211125418.11599"><vh>Fixed minor bug involving insertion point</vh></v>
-<v t="ekr.20100124164700.11946"><vh>Fixed mkstemp bug</vh></v>
-<v t="ekr.20100118181428.8502"><vh>Fixed old at-shadow problem</vh></v>
-<v t="ekr.20100209160132.11770"><vh>Fixed open-with crash</vh>
-<v t="ekr.20100209160132.11771"><vh>Report</vh></v>
-</v>
-<v t="ekr.20100124164700.11925"><vh>Fixed print-bindings crasher w/ leo3k</vh></v>
-<v t="ekr.20100124164700.11926"><vh>Fixed problem with already-existing .leo.bak files</vh></v>
-<v t="ekr.20100201192329.7113"><vh>Fixed problem with colon following @path</vh></v>
-<v t="ekr.20100118181428.8294"><vh>Fixed publish-argv-for-missing-stylesheets</vh></v>
-<v t="ekr.20100223063657.7245"><vh>Fixed qt colorizer bug</vh></v>
-<v t="ekr.20100118181428.8449"><vh>Fixed qt key problems</vh></v>
-<v t="ekr.20100124164700.11921"><vh>Fixed qttab problem</vh></v>
-<v t="ekr.20100118181428.8297"><vh>Fixed registerHandler bug</vh></v>
-<v t="ekr.20100118181428.8298"><vh>Fixed scrolling problem with multiple editors</vh></v>
-<v t="ekr.20100124164700.11927"><vh>Fixed sort children bug</vh></v>
-<v t="ekr.20100118181428.8299"><vh>Fixed startup reversion when .leoID.txt does not exist</vh></v>
-<v t="ekr.20100128094926.12756"><vh>Fixed Terry's unicode problem</vh></v>
-<v t="ekr.20100209160132.11718"><vh>Fixed the critical 'file used by another process' bug</vh></v>
-<v t="ekr.20100118181428.8447"><vh>Fixed underlining problem in rst</vh></v>
-<v t="ekr.20100209160132.11691"><vh>Fixed unicode bug in setSelectionRangeHelper</vh></v>
-<v t="ekr.20100211125418.11602"><vh>Fixed unicode crasher in write-recent-files logic</vh></v>
-<v t="ekr.20100201192329.7141"><vh>Fixed unicode problems</vh></v>
-<v t="ekr.20100209160132.11765"><vh>Fixed unit test for leo_interface.py</vh></v>
-<v t="ekr.20100223063657.7238"><vh>Fixed wish-list bug 508108: No methods sub-nodes in PHP class import</vh></v>
-<v t="ekr.20100119145003.7319"><vh>Gui bugs</vh>
-<v t="ekr.20100119145003.7320"><vh>Fixed file-open focus problem</vh></v>
-<v t="ekr.20100119145003.7322"><vh>Eliminate double close prompt</vh></v>
-<v t="ekr.20100119145003.7324"><vh>Fixed scrolling problem with multiple editors</vh></v>
-<v t="ekr.20100119145003.7325"><vh>Fixed crash in quicksearch plugin</vh></v>
-<v t="ekr.20100119145003.7327"><vh>Fixed @nosent dirty bug</vh></v>
-<v t="ekr.20100119145003.7358"><vh>Allow horizontal scrolling in QtTree</vh></v>
-<v t="ekr.20100119145003.7531"><vh>Correct binding of insert key</vh></v>
-<v t="ekr.20100119145003.7546"><vh>Update tab names when the commander is dirty</vh></v>
-<v t="ekr.20100119145003.7612"><vh>Made @nowrap work</vh></v>
-<v t="ekr.20100119145003.7618"><vh>Added leoMoveCursorHelper</vh></v>
-<v t="ekr.20100119145003.7625"><vh>Remember the ratios when the user moves splitters by hand.</vh></v>
-<v t="ekr.20100119145003.7629"><vh>Chapter tabs require both_chapters and use_chapters_tabs</vh></v>
-<v t="ekr.20100119145003.7632"><vh>Don't colorize directives unless they start a line</vh></v>
-<v t="ekr.20100119145003.7643"><vh>Config coloring tags whenever the language changes</vh></v>
-<v t="ekr.20100119145003.7718"><vh>Update qttabs when saving a new file</vh></v>
-</v>
-<v t="ekr.20100118181428.8302"><vh>Handle Insert key properly</vh></v>
-<v t="ekr.20100209160132.11692"><vh>Home key no longer clears the minibuffer</vh></v>
-<v t="ekr.20100223063657.7249"><vh>Improved support for wrapping in the log pane</vh></v>
-<v t="ekr.20100118181428.8306"><vh>Improved the install docs</vh></v>
-<v t="ekr.20100118181428.8307"><vh>Made add-comments and delete-comments commands work with shortcuts</vh></v>
-<v t="ekr.20100118181428.8334"><vh>Marked @&lt;file&gt; nodes dirty if nodes change during read.</vh></v>
-<v t="ekr.20100201192329.7101"><vh>paste-node-as-clone now sets dirty bits properly</vh></v>
-<v t="ekr.20100223063657.7212"><vh>Put focus in a standard place after save commands</vh></v>
-<v t="ekr.20100118181428.8358"><vh>Recover from bad chars in .leo files</vh></v>
-<v t="ekr.20100124164700.11924"><vh>Refactored write_Leo_file</vh></v>
-<v t="ekr.20100223063657.7263"><vh>Reformatted the output of the apropos commands</vh></v>
-<v t="ekr.20100209160132.11700"><vh>Removed all references to isAtNorefFileNode</vh></v>
-<v t="ekr.20100211125418.11596"><vh>Removed duplicate can not open message for @auto file</vh></v>
-<v t="ekr.20100124164700.11951"><vh>Removed most usage of _bodyString &amp; _headString</vh></v>
-<v t="ekr.20100118181428.7830"><vh>Removed unsettling @auto warning</vh></v>
-<v t="ekr.20100118181428.8362"><vh>Select main chapter initially</vh></v>
-<v t="ekr.20100124164700.11920"><vh>support extend-mode for several commands</vh></v>
-<v t="ekr.20100128094926.12739"><vh>Suppress path changed message in save-as and save-to</vh></v>
-<v t="ekr.20100118181428.8363"><vh>Suppressed dangerous write prompt for clones</vh></v>
-<v t="ekr.20100118181428.8365"><vh>Use w.leoMoveCursorHelper if it exists</vh></v>
-</v>
 <v t="ekr.20150301130652.23"><vh>Features</vh>
 <v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
 <v t="ekr.20090909083000.6553"><vh>Leo no longer adds directories to sys.path</vh></v>
@@ -1746,10 +1347,15 @@
 </v>
 <v t="ekr.20131008041326.16253"><vh>2011: 4.9: The end of Tk, autocompleter, vr pane</vh>
 <v t="ekr.20150301140303.5"><vh>4.9 Final</vh></v>
-<v t="ekr.20110602091552.16904"><vh>Completed Leo's autocompleter</vh></v>
+<v t="ekr.20110602091552.16904"><vh>Completed Leo's autocompleter</vh>
+<v t="ekr.20150312080344.71"><vh>Appearance</vh></v>
+<v t="ekr.20150312080344.72"><vh>Function and design</vh></v>
+<v t="ekr.20150312080344.73"><vh>Codewise completions</vh></v>
+<v t="ekr.20150312080344.74"><vh>Performance</vh></v>
 </v>
-<v t="ekr.20131031101712.16685"><vh>2012: 4.10 Many improvements</vh>
-<v t="ekr.20150312025000.2197"><vh>4.10 final</vh>
+</v>
+<v t="ekr.20131031101712.16685" a="M"><vh>2012: 4.10: Many improvements</vh>
+<v t="ekr.20150312080344.70"><vh>The Easter Eggs</vh></v>
 <v t="ekr.20150312025000.2288"><vh>Leo's new classes</vh>
 <v t="ekr.20150312025000.2289"><vh>LoadManager</vh></v>
 <v t="ekr.20150312025000.2290"><vh>ModeController &amp; ModeInfo (not used yet)</vh></v>
@@ -1764,7 +1370,6 @@
 <v t="ekr.20150312025000.2324"><vh>Detached windows</vh></v>
 <v t="ekr.20150312025000.2326"><vh>Instant abbreviations (~a)</vh></v>
 </v>
-</v>
 <v t="ekr.20131031101712.17211"><vh>2013: 4.11 Better abbreviations, ease of use</vh>
 <v t="ekr.20131105110107.16836"><vh>4.11 final</vh></v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1</vh></v>
@@ -1776,6 +1381,29 @@
 <v t="ekr.20150312080344.27"><vh>Leo 5.1 b1</vh></v>
 <v t="ekr.20150312080344.28"><vh>About @clean</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
+<v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
+<v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
+<v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
+<v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
+<v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
+<v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
+<v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
+<v t="ekr.20150220145456.4"><vh>What the algorithm does</vh></v>
+<v t="ekr.20080730212711.52"><vh>Guesses don't matter</vh></v>
+<v t="ekr.20150210062226.5"><vh>Background of the code</vh></v>
+<v t="ekr.20150211131925.9"><vh>Aha: the x.sentinels array</vh></v>
+<v t="ekr.20150210062226.6"><vh>Strategy &amp; proof of correctness</vh></v>
+<v t="ekr.20150210062226.7"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20050901084134"><vh>Why I like Python</vh>
+<v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
+<v t="ekr.20050901092232.3"><vh>Power</vh></v>
+<v t="ekr.20050901092232.4"><vh>Safety</vh></v>
+<v t="ekr.20050901092232.5"><vh>Speed</vh></v>
+<v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
 </v>
 </v>
 <v t="ekr.20091111112709.6672"><vh>@rst html/glossary.html</vh>
@@ -2084,8 +1712,9 @@
 </v>
 <v t="ekr.20150312080344.44"><vh>** Ask people to report poor docstrings</vh></v>
 <v t="ekr.20150312080344.41"><vh>** scan for poor docstrings</vh></v>
-<v t="ekr.20131008041326.16177"></v>
 <v t="ekr.20060620094033"></v>
+<v t="ekr.20150312080344.68"></v>
+<v t="ekr.20150312080344.69"><vh>In history DO NOT DELETE</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2301,11 +1930,13 @@ So it would be good if writers of plugins would create such a unitTest function.
 
 - The native attributes of &lt;v&gt; elements are a, t, vtag and tnodeList.
 
-- The native attributes of &lt;v&gt; elements are marks, expanded and descendentTnodeUnknownAttributes.
+- The native attributes of &lt;v&gt; elements are marks, expanded and
+  descendentTnodeUnknownAttributes.
 
 - Non-native attributes are called **foreign** attributes.
 
-- Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
+- Leo performs the usual xml escapes on these strings when reading or
+  writing the unknownAttributes ivars.
 
 Plugins may cause Leo to write such foreign attributes simply by attaching unknownAttributes ivars to a vnode or tnode. Like this::
 
@@ -2556,24 +2187,22 @@ The g.u function should be used *only* to convert from the Qt string type (a wra
     elements. See `Writing plugins`_ for details.
 </t>
 <t tx="EKR.20040524104904.99"></t>
-<t tx="EKR.20040601084317.161">I have fallen madly in love with generators.
-The following new iterators are defined with generators.
+<t tx="EKR.20040601084317.161">I have fallen madly in love with generators. The following new iterators are defined with generators::
 
-c.all_positions_iter
-c.all_tnodes_iter
-c.all_vnodes_iter
-c.all_unique_tnodes_iter
-c.all_unique_vnodes_iter
-
-p.tnodes_iter
-p.vnodes_iter
-p.unique_tnodes_iter
-p.unique_vnodes_iter
-
-v.self_and__subtree_iter
-v.self_and_unique_subtree_iter
+    c.all_positions_iter
+    c.all_tnodes_iter
+    c.all_vnodes_iter
+    c.all_unique_tnodes_iter
+    c.all_unique_vnodes_iter
+    
+    p.tnodes_iter
+    p.vnodes_iter
+    p.unique_tnodes_iter
+    p.unique_vnodes_iter
+    
+    v.self_and__subtree_iter
+    v.self_and_unique_subtree_iter
 </t>
-<t tx="EKR.20040601101227.1"></t>
 <t tx="EKR.20040628095213.282">- By default, finishPaste command reassigns all indices in copied nodes.
 - Created pasteOutlineRetainingClones.
 - Added reassignIndices arg to pasteOutline, getLeoOutline and finishPaste.
@@ -3063,21 +2692,22 @@ Leo's read code now warns if any non-empty node is unvisited. This check, and th
 files:
 
 - When reading a .leo file, Leo will create t.unknownAttributes or
-v.unknownAttributes ivars for any tnode and vnode object whose corresponding &lt;v&gt;
-or &lt;t&gt; element in the .leo file contains a foreign attribute.
+  v.unknownAttributes ivars for any tnode and vnode object whose
+  corresponding &lt;v&gt; or &lt;t&gt; element in the .leo file contains a foreign
+  attribute.
 
 - The unknownAttributes ivars are a dictionary whose keys are the attribute
-names and whose values are strings.
+  names and whose values are strings.
 
-- When writing a file, Leo will write "foreign" attributes if a vnode or tnode
-contains an unknownAttributes ivar.
+- When writing a file, Leo will write "foreign" attributes if a vnode or
+  tnode contains an unknownAttributes ivar.
 
-- The only "native" attributes that Leo expects to find are the "tx" attribute
-in &lt;t&gt; elements and the "a", "t", "vtag" and "tnodeList" attributes of &lt;v&gt;
-elements. Everything else is a foreign attribute.
+- The only "native" attributes that Leo expects to find are the "tx"
+  attribute in &lt;t&gt; elements and the "a", "t", "vtag" and "tnodeList"
+  attributes of &lt;v&gt; elements. Everything else is a foreign attribute.
 
-- Leo performs the usual xml escapes on these strings when reading or writing
-the unknownAttributes ivars.
+- Leo performs the usual xml escapes on these strings when reading or
+  writing the unknownAttributes ivars.
 
 Plugins may cause Leo to write such foreign attributes simply by attaching
 unknownAttributes ivars to a vnode or tnode. For example:
@@ -3085,14 +2715,14 @@ unknownAttributes ivars to a vnode or tnode. For example:
 	v.unknownAttributes = {"vnodeIcon" : pathToIcon}
 
 It would be best not to delete other foreign attributes, so the following would
-be preferred:
+be preferred::
 
 	if hasattr(v,"unknownAttributes"):
 		v.unknownAttributes["vnodeIcon"] = pathToIcon
 	else:
 		v.unknownAttributes = {"vnodeIcon" : pathToIcon}
 
-Another way:
+Another way::
 
 	try:
 		v.unknownAttributes["vnodeIcon"] = pathToIcon
@@ -3288,9 +2918,11 @@ The effect of this is to make all vnodes identical, as far as using unknownAttri
 
 7/1/04:
 
-- Leo now writes "marks" and "expanded" attributes in the root &lt;v&gt; element for @thin trees.
+- Leo now writes "marks" and "expanded" attributes in the root &lt;v&gt; element
+  for @thin trees.
 
-- VERY IMPORTANT.  Leo now writes entire tree of @ignored @thin nodes.  This fixes a major bug.
+- VERY IMPORTANT. Leo now writes entire tree of @ignored @thin nodes. This
+  fixes a major bug.
 </t>
 <t tx="ekr.20040804165258.4">The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors. These commands mark erroneous nodes. These commands work on the selected Node and its descendants. These commands ignore any nodes for which a) @ignore is in effect or b) @language python is in not effect.
 
@@ -3298,30 +2930,6 @@ The Check Python Code and Pretty Print Python Code commands replace nodes with t
 
 ---- putOperator:      puts whitespace around operators.
 ---- putNormalToken:   puts whitespace around everything else.
-</t>
-<t tx="ekr.20040804172113"></t>
-<t tx="ekr.20040922074200">Leo 4.2 Final       September 20, 2004
-
-The highlights of Leo 4.2:
-
-- @thin trees make Leo much more friendly to cvs. Files derived from @thin can
-be committed to cvs and updated from cvs without having to commit or update the
-corresponding .leo file. There is no longer any need to keep .leo files and
-external files in sync.
-
-- Leo's data structures have been reorganized. As a result, all outline
-operations are much faster. To support this organization, scripts that traverse
-Leo's data structures must now use a positions rather than vnodes. Old scripts
-that appear to use vnodes will still work because methods like c.currentVnode
-that appear to return vnodes actually return positions.
-
-- A new mod_scripting plugin is a big advance in scripting and testing.
-
-- test.leo now uses @test and @script nodes to define unit tests without
-explicitly creating subclasses of unittest.TestCase. Converting scripts to unit
-tests now takes a few seconds!
-
-- A much faster and more robust spell checker plugin. (requires Python 2.3)
 </t>
 <t tx="ekr.20050123092834.1043"></t>
 <t tx="ekr.20050123092834.897">These commands work as do the similar commands in Windows Explorer. How did we
@@ -4536,15 +4144,39 @@ Leo first used gnx's (global node indices) as a foolproof way of associating nod
 
 The 4.1 code base was reorganized to support gui's other than tkinter.
 </t>
-<t tx="ekr.20050902105852.11">Leo 4.2 Final: September 20, 2004, one of the most significant dates in Leo's history:
+<t tx="ekr.20050902105852.11">Leo 4.2 Final was released September 20, 2004.  This is one of the most significant dates in Leo's history:
 
-- This marked the end of worries about consistency of outlines and external files: Leo recreates all essential information from thin external files, so *there is nothing left in the .leo file to get out of sync*.
+- This marked the end of worries about consistency of outlines and external
+  files: Leo recreates all essential information from @thin files, so
+  *there is nothing left in the .leo file to get out of sync*.
 
-- Thin external files use gnx's extensively. This simplifies the file format and makes thin external files more cvs friendly.
+- Thin external files use gnx's extensively. This simplifies the file
+  format and makes thin external files more cvs friendly.
+  
+- The debut of @all, @test and @suite.
 
-- A sensational scripting plugin showed how to create script buttons. This has lead to improvements in the Execute Script command and other significant improvements in Unit testing.
+- A sensational mod_scripting plugin showed how to create script buttons. This
+  has lead to improvements in the Execute Script command and other
+  significant improvements in Unit testing.
+  
+- test.leo now uses @test and @script nodes to define unit tests without
+  explicitly creating subclasses of unittest.TestCase. Converting scripts
+  to unit tests now takes a few seconds!
 
-- As if this were not enough, 4.2 marked the **great divide** in Leo's internal data structures. Before 4.2, Leo every node in the outline had its own vnode. This was a big performance problem: clone operations had to traverse the entire outline! 4.2 represents clones by sharing subtrees. Changing Leo's fundamental data structures while retaining compatibility with old scripts was engineering work of which the entire Leo community can be proud. `Scripting Leo with Python`_ tells how the position class makes this happen. This was a cooperative effort. Kent Tenney and Bernhard Mulder made absolutely crucial contributions. Kent pointed out that it is a tnode, not a vnode that must form the root of the shared data. Bernhard showed that iterators are the way to avoid creating huge numbers of positions.
+- A much faster and more robust spell checker plugin.
+
+- As if this were not enough, 4.2 marked the **great divide** in Leo's
+  internal data structures. Before 4.2, Leo every node in the outline had
+  its own vnode. This was a big performance problem: clone operations had
+  to traverse the entire outline! 4.2 represents clones by sharing
+  subtrees. Changing Leo's fundamental data structures while retaining
+  compatibility with old scripts was engineering work of which the entire
+  Leo community can be proud. `Scripting Leo with Python`_ tells how the
+  position class makes this happen. This was a cooperative effort. Kent
+  Tenney and Bernhard Mulder made absolutely crucial contributions. Kent
+  pointed out that it is a tnode, not a vnode that must form the root of
+  the shared data. Bernhard showed that iterators are the way to avoid
+  creating huge numbers of positions.
 
 Leo 4.2 marked so many significant changes. I often find it hard to remember what life with Leo was like before it.
 </t>
@@ -4584,9 +4216,7 @@ Tk was officially retired in June 2011.
 - @first and @last appeared in 3.7
 - @asis and @nosent appeared in 3.8.
 - Incremental syntax coloring and incremental undo appeared in 3.9.
-- Paul Paterson created Leo's plugin architecture sometime during this period.
-  Plugins have been a driving force in Leo's development because people can
-  change how Leo works without altering Leo's core.
+- Paul Paterson created Leo's plugin architecture sometime during this period. Plugins have been a driving force in Leo's development because people can change how Leo works without altering Leo's core.
 - 3.12 fixed a huge memory leak.
 - 3.12 Final, the last 3.x version, appeared July 17, 2003.
 </t>
@@ -5713,19 +5343,20 @@ x.py also contains **x.attributesDictDict**. Keys are ruleset names, values are 
 </t>
 <t tx="ekr.20060511074853">Leo 4.4 Final: May 11, 2006
 
-- An Emacs-like mini-buffer: you can now execute any command by typing its long
-name, with tab completion.
+- An Emacs-like mini-buffer: you can now execute any command by typing its
+  long name, with tab completion.
 
-- Many new commands, including cursor and screen movement, basic character, word
-and paragraph manipulation, and commands to manipulate buffers, the kill ring,
-regions and rectangles. You can use Leo without using a mouse.
+- Many new commands, including cursor and screen movement, basic character,
+  word and paragraph manipulation, and commands to manipulate buffers, the
+  kill ring, regions and rectangles. You can use Leo without using a mouse.
 
-- Flexible key bindings and input modes. You can emulate the operation of Emacs,
-Vim, or any other editor.
+- Flexible key bindings and input modes. You can emulate the operation of
+  Emacs, Vim, or any other editor.
 
-- A tabbed log pane. The Find and Spell Check commands now use tabs instead of
-dialogs, making those commands much easier to use. Plugins or scripts can easily
-create new tabs. The Completion tab shows possible typing completions.
+- A tabbed log pane. The Find and Spell Check commands now use tabs instead
+  of dialogs, making those commands much easier to use. Plugins or scripts
+  can easily create new tabs. The Completion tab shows possible typing
+  completions.
 
 - Autocompletion and calltips.  Autocompletion works much like tab completion.
   To enable autocompletion, bind a key to the auto-complete command.
@@ -5816,15 +5447,6 @@ There are several workaround, as shown in LeoPy.leo:
 
 - Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
 </t>
-<t tx="ekr.20060601101958.13">http://sourceforge.net/forum/message.php?msg_id=3737745
-
-- Added event keyword argument to parameterize function.
-</t>
-<t tx="ekr.20060601101958.14">http://sourceforge.net/forum/message.php?msg_id=3737745
-
-The fix was to add a c argument to g.findTopLevelNode and g.findNodeInTree.
-</t>
-<t tx="ekr.20060601101958.16"></t>
 <t tx="ekr.20060601101958.172">http://sourceforge.net/forum/message.php?msg_id=3575014
 
 Actually, the run-unit-tests command first appeared in Leo 4.4, but it never got
@@ -5833,10 +5455,6 @@ properly announced.
 <t tx="ekr.20060601101958.174">http://sourceforge.net/forum/message.php?msg_id=3729823
 
 This is intended to help with redraw problems on Linux.
-</t>
-<t tx="ekr.20060601101958.2">http://sourceforge.net/forum/message.php?msg_id=3729858
-
-Fixed crasher in Leo 4.4 by initing self.p in Quickfind ctor.
 </t>
 <t tx="ekr.20060601101958.218"></t>
 <t tx="ekr.20060601101958.234"></t>
@@ -5872,30 +5490,18 @@ The winpdb debugger must be installed for this command to work.
 
 For more details, see: http://leoeditor.com/debuggers.html
 </t>
-<t tx="ekr.20060601101958.56">This fixes all conflicts between Leo and Idle.
-</t>
 <t tx="ekr.20060601101958.58"></t>
-<t tx="ekr.20060601101958.6">http://sourceforge.net/forum/message.php?msg_id=3737879
-</t>
 <t tx="ekr.20060601101958.70">- Allow \1, \2, etc. replacements in re searches.
 
 - Allow \n and \t in plain searches.
 
-- The shortcut for the replace-string command now changes from the find command
-to the replace command.
+- The shortcut for the replace-string command now changes from the find
+  command to the replace command.
 </t>
 <t tx="ekr.20060601102802.2"></t>
 <t tx="ekr.20060603072938">This prompts for a string s, then puts the result of help(s) in Leo's log pane.
 </t>
 <t tx="ekr.20060603081537">This plugin creates a 'Shortcut' button in the icon area. Pressing the Shortcut button creates *another* button which when pressed will select the presently selected node at the time the button was created.
-</t>
-<t tx="ekr.20060603082009">http://sourceforge.net/forum/message.php?msg_id=3761285
-
-There were actually two bugs:
-
-- parseLeoSentinel was not recognizing the closing comment delim (!!)
-
-- putDirective was incorrectly setting delims for @language and @comment delims. This is wrong: the init code calls scanAllDirectives, and the comment delims **must not change** in the file (except as the result of @delims.)
 </t>
 <t tx="ekr.20060612102055" str_atime="1376414161.0">.. Most of this has nothing to do with *writing* plugins.</t>
 <t tx="ekr.20060612103240" str_atime="1376414163.0">###############
@@ -5935,7 +5541,6 @@ The rest of this chapters discusses topics related specifically to plugins.
 <t tx="ekr.20060620094033"></t>
 <t tx="ekr.20060620094033.1"></t>
 <t tx="ekr.20060620094033.2"></t>
-<t tx="ekr.20060620094645.103"></t>
 <t tx="ekr.20060620094645.106"></t>
 <t tx="ekr.20060620094645.107">Leo now supports bindings of the form:
 
@@ -5997,15 +5602,20 @@ A small glitch. Starting a regexp pattern with '.' will cause the entire pattern
 
 What I did:
 
-- The scripting plugin now defines button bindings with the 'button' pane specifier. This takes precedence over all other specifiers.
+- The scripting plugin now defines button bindings with the 'button' pane
+  specifier. This takes precedence over all other specifiers.
 
-- k.bindKeyToDict now does a better job of detecting and warning about redefinitions.
+- k.bindKeyToDict now does a better job of detecting and warning about
+  redefinitions.
 
-- k.printBindings now properly sorts entries. This was causing me a great deal of confusion.
+- k.printBindings now properly sorts entries. This was causing me a great
+  deal of confusion.
 
-- k.registerCommand now properly gets shortcuts from settings if possible, and makes bindings in the new 'button' pane specifier.
+- k.registerCommand now properly gets shortcuts from settings if possible,
+  and makes bindings in the new 'button' pane specifier.
 
-- masterKeyHandlerHelper now supports the 'button' pane specifier, which overrides all others.
+- masterKeyHandlerHelper now supports the 'button' pane specifier, which
+  overrides all others.
 </t>
 <t tx="ekr.20060620094645.242"></t>
 <t tx="ekr.20060620094645.243">http://sourceforge.net/forum/message.php?msg_id=3772475
@@ -6107,30 +5717,6 @@ The problem was that all commands now get an event arg.
 
 The Begin Recording and End Recording commands do not seem to work...
 </t>
-<t tx="ekr.20060620094645.35"></t>
-<t tx="ekr.20060620094645.43"></t>
-<t tx="ekr.20060620094645.44">Called c.bringToFront() after open/save/import dialogs.
-</t>
-<t tx="ekr.20060620094645.46">http://sourceforge.net/forum/message.php?msg_id=3764077
-</t>
-<t tx="ekr.20060620094645.50"></t>
-<t tx="ekr.20060620094645.52">http://sourceforge.net/forum/message.php?msg_id=3771032
-By: paulpaterson
-
-The cycle-editor-focus command causes Leo to lock up  on my machine (WinXP,
-Python 2.4).
-</t>
-<t tx="ekr.20060620094645.64">http://sourceforge.net/forum/message.php?msg_id=3771014
-</t>
-<t tx="ekr.20060620094645.68">lstrip and rstrip do not exist in Python 2.2.1.
-</t>
-<t tx="ekr.20060620094645.76">http://sourceforge.net/forum/message.php?msg_id=3778764
-By: davidmcnab
-
-When I hit my 'change-editor-focus' binding, the cursor jumps
-to unpredictable places within the next editor pane.
-</t>
-<t tx="ekr.20060620094645.77"></t>
 <t tx="ekr.20060620094645.78"></t>
 <t tx="ekr.20060620094645.79">Added makeMasterGuiBinding.
 </t>
@@ -6291,10 +5877,6 @@ http://leoeditor.com/installing.html#updating-settings-from-previous-versions-of
 
 http://leoeditor.com/writingPlugins.html#turning-script-buttons-into-plugins
 </t>
-<t tx="ekr.20060622130815">http://sourceforge.net/forum/message.php?msg_id=3790857
-</t>
-<t tx="ekr.20060622130815.3">http://sourceforge.net/forum/message.php?msg_id=3790814
-</t>
 <t tx="ekr.20060622130815.9"></t>
 <t tx="ekr.20060629083935">Leo 4.4 was a year-long effort to incorporate an Emacs-style minibuffer and related commands into Leo. Thinking in terms of minibuffer commands frees my thinking. Leo 4.4 also featured many improvements in how keys are bound to commands, including per-pane bindings and user-defined key-binding modes.
 
@@ -6316,37 +5898,11 @@ Development on long-delayed projects accelerated after 4.4 final went out the do
 
 @int flash-brackets-delay: One half the total cycle time of bracket flashes, in milliseconds.
 </t>
-<t tx="ekr.20060629083935.15">http://sourceforge.net/forum/message.php?msg_id=3510448
-
-The fix was to getLastTracebackFileAndLineNumber.
-
-I also created handleScriptException.
-</t>
-<t tx="ekr.20060629083935.25">http://sourceforge.net/forum/message.php?msg_id=3413805
-</t>
-<t tx="ekr.20060629083935.32">- Underindented comments do not end the scan of Python classes or methods.
-- Handles continued signature lines properly.
-</t>
-<t tx="ekr.20060629083935.61">Note: Editing headline text will happen in insert mode unless
-
-@strings top_level_unbound_key_action = overwrite
-</t>
-<t tx="ekr.20060629083935.70">After executing a command we must be careful to test c.exists.
-</t>
-<t tx="ekr.20060629083935.71">- A better trace, and the trace goes to the log pane.
-
-- Eliminated k.keysymHistory: Tk keysyms are pretty useless.
-</t>
 <t tx="ekr.20060629083935.75">- Improved prompt.
 - Added message if no previous complex command.
 - Added mode entries.
 </t>
 <t tx="ekr.20060629083935.76">http://sourceforge.net/forum/message.php?msg_id=3794854
-</t>
-<t tx="ekr.20060629083935.8">http://sourceforge.net/forum/message.php?msg_id=3795258
-
-The column display doesn't change while typing.
-
 </t>
 <t tx="ekr.20060629083935.93">Here are the relevant settings:
 
@@ -6380,25 +5936,7 @@ The column display doesn't change while typing.
 5. Move **one** of these two legacy nodes up one level so that it is a child of the node 'Keyboard shortcuts'. It should **not** be a child of the node '@ignore Unused key bindings'.
 </t>
 <t tx="ekr.20060822140418"></t>
-<t tx="ekr.20060822140418.26">http://sourceforge.net/forum/message.php?msg_id=3839322
-</t>
-<t tx="ekr.20060822140418.29">http://sourceforge.net/forum/message.php?msg_id=3805745
-</t>
-<t tx="ekr.20060822140418.36">http://sourceforge.net/forum/message.php?msg_id=3841115
-
-There is still some doubt about what the best operation of this command should be.
-</t>
-<t tx="ekr.20060822140418.39">http://leo.zwiki.org/9RussianUnicodeWordsAreNotDetectedProperlyInBodyPane
-</t>
 <t tx="ekr.20060822140418.4">http://sourceforge.net/forum/forum.php?thread_id=1542384&amp;forum_id=10228
-</t>
-<t tx="ekr.20060822140418.41">http://sourceforge.net/forum/message.php?msg_id=3874380
-
-Setting a value for background color in the body pane had no effect.
-
-There were several problems, among which conflicting and confusing settings. In particular, the insert_mode_bg_color setting overrides the body_text_background_color setting.
-
-I changed the code so that insert_mode_bg_color defaults to body_text_background_color, and put all the settings for the body text in one place.
 </t>
 <t tx="ekr.20060822140418.70">http://sourceforge.net/forum/message.php?msg_id=3802624
 
@@ -6415,11 +5953,10 @@ Added these settings:
 </t>
 <t tx="ekr.20060822140418.92">http://sourceforge.net/forum/message.php?msg_id=3858363
 </t>
-<t tx="ekr.20060822140418.97">These were overly complicated an not useful.
-</t>
 <t tx="ekr.20060830141224">Leo 4.4.1 final: August 30, 2006
 
-- Leo outputs decorators correctly, provided that the decorator is not a Leo directive.
+- Leo outputs decorators correctly, provided that the decorator is not a
+  Leo directive.
 - A new colorizer plugin controlled by jEdit language description files.
 - A new shadow files plugin that allows external files not to have sentinel lines.
 - Multiple editors in Leo's body pane.
@@ -6431,57 +5968,6 @@ Added these settings:
 - The help-for-command commands now contains information for almost all commands.
 - A new shortcut_button plugin.
 
-</t>
-<t tx="ekr.20060830141224.13"></t>
-<t tx="ekr.20060830141224.14"></t>
-<t tx="ekr.20060830141224.15">http://sourceforge.net/forum/message.php?msg_id=3885494
-By: mikecrowe
-
-OK, I found out how to duplicate this one.  This caused me a lot of grief until
-I found out what is causing it.
-
-NodeA:
-...Child1
-...Child2
-...Child3
-
-NodeB:
-...CloneChild1
-...CloneChild2
-...CloneChild3
-
-Now, put cursor on NodaA.  Ctrl-Shift-C (copy node).
-Next, put cursor on CloneChild3.  Paste Node as Clone
-You should get an invalid paste clone message.
-
-Now, first cursor move (for me) puts NodeB as top node, ERASING all other nodes.
-Warning:  DO NOT SAVE NOW.  It will erase all other nodes.
-</t>
-<t tx="ekr.20060830141224.16">- Created getLeoOutlineHelper.  This simplifies the code.
-- Init self.checking in getLeoFile and getLeoOutline.
-- Use self.checking in getVnodes, getVnode and createVnode.
-  Using self.checking in getVnode complicates an already way-too-complex method, but it can't be helped.
-</t>
-<t tx="ekr.20060830141224.37">http://sourceforge.net/forum/message.php?msg_id=3886250
-By: znafets
-
-A .leoID.txt with a \n behind the idstring creates a problem. 
-It will be read in g.app.leoID and being used as is when writing the Leo file.
-
-The fix is in app.setLeoID -&gt; &lt;&lt; return if we can set leoID from "leoID.txt" &gt;&gt;
-</t>
-<t tx="ekr.20060830141224.45">http://sourceforge.net/forum/message.php?msg_id=3890031
-By: terry_n_brown
-
-I have a tree of some 2500 nodes, run a script that marks
-probably 1500-2000 of them, and that's quick (2-3 seconds max.).
-
-I can clear all the marks with:
-
-for p in c.all_positions():
-    p.v.clearMarked()
-
-and that also is quick (2-3 seconds max.).  But when I use the menu option Unmark All, that takes forever (1-2 minutes :-) running 100% CPU all the while.
 </t>
 <t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
 
@@ -6528,20 +6014,10 @@ You can specify per-language settings by preceding the settings names by a prefi
     php_keyword_font_weight = bold
         # normal, bold
 </t>
-<t tx="ekr.20060903102158">Leo 4.4.1.1 final                                       September 3, 2006
+<t tx="ekr.20060903102158">Leo 4.4.1.1 final was released September 3, 2006
 
-Leo 4.4.1.1 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.4.1.1 corrects a serious last-minute unicode bug in Leo 4.4.1.
-This version also adds the new slideshow plugin.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.1:
-----------------------------
-- Leo outputs decorators correctly, provided that the decorator is not a Leo directive.
+- Leo outputs decorators correctly, provided that the decorator is not a
+  Leo directive.
 - A new colorizer plugin controlled by jEdit language description files.
 - A new shadow files plugin that allows external files not to have sentinel lines.
 - A new slide show plugin allows you to use Leo outlines as slide shows.
@@ -6553,14 +6029,6 @@ The highlights of Leo 4.4.1:
   and scroll-outline-left/right.
 - The help-for-command commands now contains information for almost all commands.
 - A new shortcut_button plugin.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20060913164304"></t>
 <t tx="ekr.20060913164304.1">###################
@@ -6942,35 +6410,40 @@ EKR
 - Put focus commands in Cmds menu.
 - When focus is in outline, normal character navigates like Windows explorer.
 - Put Scrolling commands in Cmds menu.
-- Screened out(some) unwanted characters from affecting outline navigation.More work is needed.
+- Screened out(some) unwanted characters from affecting outline
+  navigation.More work is needed.
 - Esc character is never inserted into text.
 - Replaced @button clones-tab with @command clones-tab.
 - Scripting plugins now sets verbose=True so @commands get shown.
-* Alt keys (outline move commands) should set focus to outline even if nothing else happens.
-- Closing a window no longer puts focus in limbo: added force argument to c.set_focus.
-- New gui bindings: (I should actually be able to remember these).
-    contract-pane                       = Alt+Ctrl+-
-    expand-pane                         = Alt+Ctrl-=
-    focus-to-tree                       = Alt-space
-    scroll-outline-down-page            = Alt-PageDn
-    scroll-outline-down-page            ! tree = PageDn
-    scroll-outline-up-page              = Alt-PageUp
-    scroll-outline-up-page              ! tree = PageUp
-    scroll-outline-left                 = Alt+Ctrl+LtArrow
-    scroll-outline-right                = Alt+Ctrl+RtArrow
+- Alt keys (outline move commands) should set focus to outline even if
+  nothing else happens.
+- Closing a window no longer puts focus in limbo: added force argument to
+  c.set_focus.
+- New gui bindings: (I should actually be able to remember these)::
+
+    contract-pane               = Alt+Ctrl+-
+    expand-pane                 = Alt+Ctrl-=
+    focus-to-tree               = Alt-space
+    scroll-outline-down-page    = Alt-PageDn
+    scroll-outline-down-page    ! tree = PageDn
+    scroll-outline-up-page      = Alt-PageUp
+    scroll-outline-up-page      ! tree = PageUp
+    scroll-outline-left         = Alt+Ctrl+LtArrow
+    scroll-outline-right        = Alt+Ctrl+RtArrow
+    
 - Put find-character and back-find-character in Edit:Find menu.
 - Use Alt-S,Alt-R for incremental searches.
 - Created find-character-extend-selection and back-find-character-extend-selection.
 - Added binding (Ctrl-W) and entry in Cmds menu for select-word-at-cursor.
 - Added binding (Ctrl-P) for repeat-complex-command.
 - Added binding (Ctrl-B) for execute-script.
-* Fixed bug in extend mode.
 - Added binding (Ctrl-space) for toggle extend mode.
-- Removed most cursor move bindings involving ctrl keys. Exception: ctrl-a and ctrl-e.
-    ** The idea is that I'll use extend mode instead.
+- Removed most cursor move bindings involving ctrl keys. Exception: ctrl-a
+  and ctrl-e. The idea is that I'll use extend mode instead.
 - Stay in outline mode: added @bool stayInTreeAfterEditHeadline setting.
 - Added Cmds:Toggle Settings submenu.
-- Use emacs names in Cmds menu (and in some other places): allow single item in menu tables.
+- Use emacs names in Cmds menu (and in some other places): allow single
+  item in menu tables.
 </t>
 <t tx="ekr.20060928172525.237">http://sourceforge.net/forum/message.php?msg_id=3935368
 </t>
@@ -6993,9 +6466,10 @@ Such url's need not be quoted if they contain spaces.
 What I did:
 
 - Removed c argument from t, v and p ctors.
-- Removed c argument from most position methods.
-    - In particular, p.link, p.unlink, v.link and v.unlink no longer update c.currentPosition()
-    - Moved all position methods that still had a c argument to the Commands class.
+- Removed c argument from most position methods. In particular, p.link,
+  p.unlink, v.link and v.unlink no longer update c.currentPosition()
+- Moved all position methods that still had a c argument to the Commands
+  class.
 - Removed p.all_positions.
 - Added c.findRootPosition and c.findRootVnode.
 - c.rootPosition now returns c.findRootPosition(c.currentPosition())
@@ -7030,47 +6504,6 @@ It will be folded into Leo's core in the near future.
     The 'big reorg': vnode and tnode classes are independent of Leo's core
     Support for ZODB in the vnode and tnode classes
     The find command closes nodes behind it
-</t>
-<t tx="ekr.20061008190633.249">http://sourceforge.net/forum/message.php?msg_id=3932641
-
-Leo *always* outputs the first line of a node without indentation even if it is indented in the node.
-</t>
-<t tx="ekr.20061008190633.250">This was a very weird one.  It's not clear why it wasn't biting before.
-
-Traceback (most recent call last):
-  File "c:\prog\tigris-cvs\leo\src\leo.py", line 321, in &lt;module&gt;
-    run(fileName)
-  File "c:\prog\tigris-cvs\leo\src\leo.py", line 151, in run
-    g.app.gui.runMainLoop()
-  File "c:\prog\tigris-cvs\leo\src\leoTkinterGui.py", line 182, in runMainLoop
-    self.root.mainloop()
-  File "c:\python25\lib\lib-tk\Tkinter.py", line 1023, in mainloop
-    self.tk.mainloop(n)
-  File "C:\prog\tigris-cvs\leo\extensions\Pmw\Pmw_1_2\lib\PmwBase.py", line 1756, in __call__
-    _reporterror(self.func, args)
-  File "C:\prog\tigris-cvs\leo\extensions\Pmw\Pmw_1_2\lib\PmwBase.py", line 1782, in _reporterror
-    msg = exc_type + ' Exception in Tk callback\n'
-TypeError: unsupported operand type(s) for +: 'type' and 'str'
-</t>
-<t tx="ekr.20061008190633.257">- created g.isWordChar.  It does proper test for letters and numbers.
-- Used g.isWordChar in extendToWord and moveWordHelper.
-- OnBodyDoubleClick now just calls c.editCommands.extendToWord.
-
-So Russian characters, e.g., no longer 'interrupt' words.
-
-Another fix: extend-to-word now works properly at the very end of a word.
-</t>
-<t tx="ekr.20061008190633.261">Installer does not complain about missing Python and does not install anything either. Here is a fix to this behavior. In most user-friendly way it would be better to provide a clickable link to Python site and a way to specify the path manually, but for now it is just that - a fix.
-</t>
-<t tx="ekr.20061008190633.262"></t>
-<t tx="ekr.20061008190633.264">w was set to self.w, rather than event.widget.
-</t>
-<t tx="ekr.20061008190633.265">Added self.editWidget.  This sets self.w and makes sure w is a text widget.
-</t>
-<t tx="ekr.20061008190633.283">This fixes a long-standing, annoying bug.
-</t>
-<t tx="ekr.20061008190633.294">The solution was to call setTimestamp if needed in getNewIndex.
-
 </t>
 <t tx="ekr.20061008190633.296">- Make showing the Run Script button optional.
 - The Script Button button now creates the press-script-button-button command.
@@ -7125,17 +6558,42 @@ For each prefix, first print items with only a single character after the prefix
 
 2. Leo's position class can be based on parents index lists. Let us call such positions **new positions**. Replacing legacy positions with new position will have important benefits:
 
-- The only structure information in vnodes will be a v.links field. Two interpretations of v.links are possible. When Leo's data is a DAG (the clone world), v.links is a lists of v's children. This is the legacy world we all know and love. When Leo's data is an arbitrary graph, v.links is simply the list of all vnodes to which v points, with *no* necessary restrictions on what nodes may be contained in v.links.
+- The only structure information in vnodes will be a v.links field. Two
+  interpretations of v.links are possible. When Leo's data is a DAG (the
+  clone world), v.links is a lists of v's children. This is the legacy
+  world we all know and love. When Leo's data is an arbitrary graph,
+  v.links is simply the list of all vnodes to which v points, with *no*
+  necessary restrictions on what nodes may be contained in v.links.
 
-- New positions provide a self contained way of traversing an arbitrary graphs **largely independently** of the data. This is Leo's theory of relativity. The notions of 'parent' and 'sibling' have meaning *only* in the context of a particular position. The v.links field appears to be the absolute minimum amount of structure information that vnodes must contain. v.links defines the children or linked-to nodes in a general graph.
+- New positions provide a self contained way of traversing an arbitrary
+  graphs **largely independently** of the data. This is Leo's theory of
+  relativity. The notions of 'parent' and 'sibling' have meaning *only* in
+  the context of a particular position. The v.links field appears to be the
+  absolute minimum amount of structure information that vnodes must
+  contain. v.links defines the children or linked-to nodes in a general
+  graph.
 
-- Leo's data can be considered an unrooted tree: *any* node could be considered the root. New positions provide enough information to traverse an arbitrary graph starting at any node.
+- Leo's data can be considered an unrooted tree: *any* node could be
+  considered the root. New positions provide enough information to traverse
+  an arbitrary graph starting at any node.
 
-- The fundamental p.moveToX methods should be significantly faster. All of Leo's iterators use p.moveToX methods.
+- The fundamental p.moveToX methods should be significantly faster. All of
+  Leo's iterators use p.moveToX methods.
 
-3. The changeover to new positions can be done easily. Initially, the api of the new position class will be identical to the api of the present position class. Later, the api for the new position class might be extended in an upward compatible manner. The api's for the vnode and tnode class will remain strictly unchanged.
+3. The changeover to new positions can be done easily. Initially, the api
+   of the new position class will be identical to the api of the present
+   position class. Later, the api for the new position class might be
+   extended in an upward compatible manner. The api's for the vnode and
+   tnode class will remain strictly unchanged.
 
-4. These changes imply no change to the separation of data into vnodes and tnodes. This separation is required to handle clones. Furthermore, the format of .leo files is a separate issue from the internal representation of Leo's data, as proved by the opml plugin. Thus, the transition to new positions will have *no* effect on file formats, and no effect of scripts. All scripts will continue to work *exactly* as they have before, *except* scripts, e.g. unit tests, that probe Leo's internals.
+4. These changes imply no change to the separation of data into vnodes and
+   tnodes. This separation is required to handle clones. Furthermore, the
+   format of .leo files is a separate issue from the internal
+   representation of Leo's data, as proved by the opml plugin. Thus, the
+   transition to new positions will have *no* effect on file formats, and
+   no effect of scripts. All scripts will continue to work *exactly* as
+   they have before, *except* scripts, e.g. unit tests, that probe Leo's
+   internals.
 
 Summary
 
@@ -7161,34 +6619,7 @@ Leo's position class, far from being just a technical tool, is important theoret
 
 False: Use Leo's legacy xml parser code.
 </t>
-<t tx="ekr.20061020155235.123">http://sourceforge.net/forum/message.php?msg_id=3960993
-</t>
-<t tx="ekr.20061020155235.124">https://sourceforge.net/forum/message.php?msg_id=3961623
-</t>
 <t tx="ekr.20061020155235.125">No longer needed now that the datenodes plugins gets settings from cvs.
-</t>
-<t tx="ekr.20061020155235.126"></t>
-<t tx="ekr.20061020155235.149">Did not restore selection after indent/undent commands.
-</t>
-<t tx="ekr.20061020155235.180">The 'hang' was due to removeRKeys, which removes the bindings create by setRegion (set-mark-command) by *also* cleared all the other bindings! For now I have simply disabled the set-mark-command and commented out all calls to removeRKeys.
-
-Note that toggle-extend-mode (Alt-3) is a good way to define regions.
-</t>
-<t tx="ekr.20061020155235.185">onFocusIn and its associated binding were a very bad idea.  It is not needed: k.masterClickHandler simply calls the new onClick method.
-
-What I did:
-
-- Eliminating onFocusIn and its associated binding.
-  Hurray: this also fixed the Find problem.
-- Fixed problem with deleting nodes when multiple editors are present.
-- Removed title bar when penultimate editor is deleted.
-</t>
-<t tx="ekr.20061020155235.2"></t>
-<t tx="ekr.20061020155235.254"></t>
-<t tx="ekr.20061020155235.255">Double-clicking  @url &lt;leo-file&gt; did not bring Leo file to top.
-</t>
-<t tx="ekr.20061020155235.27">@command whatever @key Alt-1 didn't work
-Actually, no Alt-n keys worked for n in (1,2,3,4,5) in any context.
 </t>
 <t tx="ekr.20061020155235.271">http://sourceforge.net/forum/message.php?msg_id=3588148
 
@@ -7206,8 +6637,6 @@ Note that the move-outline-up/down commands can have the effect of moving an out
 </t>
 <t tx="ekr.20061020155235.304">At long last Leo creates a proper help menu on the Mac.
 </t>
-<t tx="ekr.20061020155235.307">This would greatly simplify menu entries.
-</t>
 <t tx="ekr.20061020155235.308">This is an important step towards making all menus configurable.
 </t>
 <t tx="ekr.20061020155235.335">The open-scripts-leo command.
@@ -7217,8 +6646,6 @@ Note that the move-outline-up/down commands can have the effect of moving an out
 </t>
 <t tx="ekr.20061020155235.35">http://sourceforge.net/forum/message.php?msg_id=3958333
 </t>
-<t tx="ekr.20061020155235.36"></t>
-<t tx="ekr.20061020155235.37"></t>
 <t tx="ekr.20061020155235.385"></t>
 <t tx="ekr.20061020155235.393"></t>
 <t tx="ekr.20061020155235.394">http://sourceforge.net/forum/message.php?msg_id=3958380
@@ -7243,8 +6670,6 @@ Note that the move-outline-up/down commands can have the effect of moving an out
 </t>
 <t tx="ekr.20061020155235.405">A highly useful option. However, creating a new node always selects the entire text, regardless of this option.
 </t>
-<t tx="ekr.20061020155235.41">The warning was disabled due to a programming error (not not) Enabling this found two errors: view-lossage (missing comma) and find-with-present-options --&gt; search-with-present-options.
-</t>
 <t tx="ekr.20061020155235.410">- Added bindings for toggle-autocompleter (Alt-1) and toggle-calltips (Alt-2)
 
 - Ctrl-. and ctrl-( do not seem to do anything.
@@ -7265,28 +6690,14 @@ This is a complex problem, and not very serious now that there is an easy way of
 toggling autocompleter and calltips on and off. It's been added to a 'later'
 section of the to-do list.
 </t>
-<t tx="ekr.20061020155235.412">- Added shift-ctrl keys to extend the selection.
-focus-to-body = Alt-D
-focus-to-tree = Alt-T
-toggle-extend-mode = Alt-3
+<t tx="ekr.20061020155235.412">::
+
+    Added shift-ctrl keys to extend the selection.
+    focus-to-body = Alt-D
+    focus-to-tree = Alt-T
+    toggle-extend-mode = Alt-3
 </t>
 <t tx="ekr.20061020155235.413"></t>
-<t tx="ekr.20061020155235.47">https://sourceforge.net/forum/message.php?msg_id=3957980
-
-This was a major effort.  What I did:
-
-- Defined g.isWordChar in terms of ch.isalnum()
-
-- Replace almost all instances of string.letters and string.digits by calls to
-  ch.isalnum(), ch.isalpha(), ch.isdigit(), etc.
-
-- Similarly, replaced word_chars.
-
-- The new code uses string literals only for
-
-a) small constants like '+-' and
-b) constants in a very limited context, as in the input to regexp.
-</t>
 <t tx="ekr.20061021164213">Set @bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.
 </t>
 <t tx="ekr.20061025065357"></t>
@@ -7476,63 +6887,46 @@ Putting this all together, we get::
 
 For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
 </t>
-<t tx="ekr.20061026095728">Leo 4.4.2.1 final                                October 29, 2006
-
-Leo 4.4.2.1 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.4.2.1 final fixes a recent bug that caused Leo not to create the
-.leoRecentFiles.txt file properly in some situations. There are no known
-significant bugs in this version of Leo.
+<t tx="ekr.20061026095728">Leo 4.4.2.1 final was released October 29, 2006
 
 Leo 4.4.2 final fixes a few bugs and adds support for pymacs. 
 
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
+- You can now store settings in myLeoSettings.leo without fear of those
+  settings being changed by cvs updates or in future versions of Leo.
+  
+- Leo's vnode and tnode classes are now completely independent of the rest
+  of Leo. Some api's have been changed. This 'big reorg' and may affect
+  scripts and plugins.
+  
+- Leo's vnode and tnode classes can optionally be compatible with ZODB
+  databases, i.e., they can optionally derive from
+  ZODB.Persistence.Persistent.
 
-The highlights of Leo 4.4.2:
-----------------------------
-- You can now store settings in myLeoSettings.leo without fear of those settings
-  being changed by cvs updates or in future versions of Leo.
-- Leo's vnode and tnode classes are now completely independent of the rest of Leo.
-  Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.
-- Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
-  i.e., they can optionally derive from ZODB.Persistence.Persistent.
-  See Chapter 17: Using ZODB with Leo for details.
 - The leoOPML plugin defines commands to read and write OPML files.
-- The slideshow plugin allows Leo to run slideshows defined by @slideshow and @slide nodes.
-- The leo_to_rtf and leo_to_html plugins create rtf and html files from Leo outlines.
-- Much faster navigation through the outline.
-- When focus is in the outline pane, you can move to headlines by typing the first letter of headlines.
-- The find command now optionally closes nodes not needed to show the node containing the present match.
-- Numerous changes that make Leo easier to use without using a mouse, including new commands and options.
-- Many new minibuffer commands now appear in the Cmds menu.
-- A sax parser can now optionally read .leo files.
-- Fixed numerous bugs.
 
-Links:
-------
-Leo:        http://leoeditor.com
-What's new: http://leoeditor.com/new-4-4-2.html
-Home:       http://sourceforge.net/projects/leo/
-Download:   http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:        http://leo.tigris.org/source/browse/leo/
-Quotes:     http://leoeditor.com/testimonials.html
+- The slideshow plugin allows Leo to run slideshows defined by @slideshow
+  and @slide nodes.
+  
+- The leo_to_rtf and leo_to_html plugins create rtf and html files from Leo
+  outlines.
+  
+- Much faster navigation through the outline.
+
+- When focus is in the outline pane, you can move to headlines by typing
+  the first letter of headlines.
+  
+- The find command now optionally closes nodes not needed to show the node
+  containing the present match.
+  
+- Numerous changes that make Leo easier to use without using a mouse,
+  including new commands and options.
+
+- A sax parser can now optionally read .leo files.
 </t>
-<t tx="ekr.20061026095922.1"></t>
-<t tx="ekr.20061026095922.15">http://sourceforge.net/forum/message.php?msg_id=3971242
+<t tx="ekr.20061026095922.35">::
+
+    *command-name' in headline means convert '-' to blanks
 </t>
-<t tx="ekr.20061026095922.17"></t>
-<t tx="ekr.20061026095922.19"></t>
-<t tx="ekr.20061026095922.2"></t>
-<t tx="ekr.20061026095922.25">The new colorizer was innocent: the problem is that at.directiveKind4 uses leoColor.leoKeywords, so multipath must add entries to leoColor.leoColors.
-</t>
-<t tx="ekr.20061026095922.3"></t>
-<t tx="ekr.20061026095922.32">It required a space after the '@'
-</t>
-<t tx="ekr.20061026095922.33">http://sourceforge.net/forum/message.php?msg_id=3975898
-</t>
-<t tx="ekr.20061026095922.35"></t>
 <t tx="ekr.20061026095922.36">For full details, see Chapter 18 of Leo's Users Guide: Emacs and Leo.
 </t>
 <t tx="ekr.20061026095922.51">http://sourceforge.net/forum/message.php?msg_id=3980193
@@ -7597,17 +6991,6 @@ p is the **position** of the presently selected node.
 
 The next two sections are crucial: they discuss vnodes and positions in all necessary detail.
 </t>
-<t tx="ekr.20070122070634.1"></t>
-<t tx="ekr.20070122070634.13">http://sourceforge.net/forum/message.php?msg_id=3924236
-
-Added unit tests for yank and all kill commands.
-</t>
-<t tx="ekr.20070122070634.2">Example:
-
-print "\\" + " this is a test"
-
-The escape mechanism must treat an even number of trailing escapes as not an escape.
-</t>
 <t tx="ekr.20070122070634.209">
 </t>
 <t tx="ekr.20070122070634.220">http://sourceforge.net/forum/message.php?msg_id=3987635
@@ -7656,8 +7039,8 @@ In contrast to the previous two ways, a little more work is needed because winpd
 
 To use this way, insert the following two lines of code at the start of the script to be debugged::
 
-import rpdb2
-rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
+    import rpdb2
+    rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
 
 Now just execute the execute-script command (*not* the debug command)  Leo will appear to hang.  Indeed, the  start_embedded_debugger command is waiting for *another* copy of winpdb to 'attach' to the script's process.  This process is all of Leo!  The default timeout is 5 minutes: I'm not sure what happens when the timeout happens: probably an exception gets thrown.
 
@@ -7702,14 +7085,6 @@ I set this option to False because it is too easy form me to type Shift-whatever
 </t>
 <t tx="ekr.20070122070634.305">Leo's core is now largely free of gui-dependent code, and should be completely free of such code by the time Leo 4.4.3 final is released.
 </t>
-<t tx="ekr.20070122070634.4"></t>
-<t tx="ekr.20070122070634.40">http://sourceforge.net/forum/message.php?msg_id=3991369
-
-The bindings to f.f.OnControlKeyDown/Up were mistakenly deleted in createOuterFrames.
-</t>
-<t tx="ekr.20070122070634.51"></t>
-<t tx="ekr.20070122070634.54">http://sourceforge.net/forum/message.php?msg_id=4112347
-</t>
 <t tx="ekr.20070122070634.58"></t>
 <t tx="ekr.20070122070634.59"></t>
 <t tx="ekr.20070122070634.66"></t>
@@ -7747,38 +7122,7 @@ This script finds a position p2 having the same vnode as an invalid position p::
 <t tx="ekr.20070122104240">http://sourceforge.net/forum/message.php?msg_id=4113315
 </t>
 <t tx="ekr.20070316182323"></t>
-<t tx="ekr.20070316182341.10">http://sourceforge.net/forum/message.php?msg_id=4134384
-</t>
-<t tx="ekr.20070316182341.112">It's about Nav_buttons v1.5 (cvs version from last Saturday) 
-
-Pressing the green back button causes 
-
-Error: 1 
-AttributeError Exception in Tk callback 
-Function: &lt;bound method Commands.goPrevVisitedNode of Commander 39717104: u'F:\\D\\PIM\\PIM_main.leo'&gt; (type: &lt;type 'instancemethod'&gt;) 
-Args: () 
-Traceback (innermost last): 
-File "F:\C\Programs\Leo_cvs\extensions\Pmw\Pmw_1_2\lib\PmwBase.py", line 1752, in __call__ 
-return apply(self.func, args) 
-File "F:\C\Programs\Leo_cvs\src\leoCommands.py", line 4435, in goPrevVisitedNode 
-c.treeCommandHelper(v) 
-AttributeError: Commands instance has no attribute 'treeCommandHelper' 
-</t>
-<t tx="ekr.20070316182341.113">http://sourceforge.net/forum/message.php?msg_id=4201463
-</t>
-<t tx="ekr.20070316182341.137">http://sourceforge.net/forum/message.php?msg_id=4205072
-</t>
-<t tx="ekr.20070316182341.138"></t>
-<t tx="ekr.20070316182341.139">Leo did not write to the log pane that settings, either present in myLeoSettings.leo or the current file, were read.
-</t>
 <t tx="ekr.20070316182341.155"></t>
-<t tx="ekr.20070316182341.2"></t>
-<t tx="ekr.20070316182341.39">Down arrow wasn't handled properly.
-</t>
-<t tx="ekr.20070316182341.41"></t>
-<t tx="ekr.20070316182341.42">http://sourceforge.net/forum/message.php?msg_id=3994218
-</t>
-<t tx="ekr.20070316182341.43"></t>
 <t tx="ekr.20070316182341.438">http://sourceforge.net/forum/message.php?msg_id=4162357
 </t>
 <t tx="ekr.20070316182341.440">The leoBridge module allows complete access to all aspects of Leo from programs running independently of Leo. Let us call such a program a **host** program. Using the leoBridge module, foreign programs can get access to:
@@ -7823,39 +7167,6 @@ The following script runs leo/test/leoBridgeTest.py outside of Leo. leoBridgeTes
 
     os.system('%s %s' % (sys.executable,path))
 </t>
-<t tx="ekr.20070316182341.54"></t>
-<t tx="ekr.20070316182341.56">The buggy code only happens when there is no binding for backward-delete-char.
-
-http://sourceforge.net/forum/forum.php?thread_id=1681392&amp;forum_id=10227
-</t>
-<t tx="ekr.20070316182341.6">http://sourceforge.net/forum/message.php?msg_id=4132529
-
-I'm generating Leo files with ElementTree and ran into a minor issue.
-
-ElementTree generates an empty tag with a space before the closing slash:
-
-&lt;globals /&gt;
-
-in Leo's code for dummy elements to allow copied nodes to be valid Leo files,
-the empty tags are generated without the space
-
-leoFileCommands.py 2917
-        self.put('&lt;globals/&gt;\n')
-        self.put('&lt;preferences/&gt;\n')
-        self.put('&lt;find_panel_settings/&gt;\n')
-
-it then checks for these tags in getDummyElements() leoFileCommands.py 1298
-
-Since ElementTree has the space before the slash, 
-it's XML is considered invalid by Leo according to
-this test.
-
-I would like it if the space could be added in Leo's
-self.put(...) and the check in getDummyElements()
-
-The XML specs show the space as optional.
-</t>
-<t tx="ekr.20070316182341.66"></t>
 <t tx="ekr.20070316182341.718">http://sourceforge.net/forum/message.php?msg_id=4169720
 </t>
 <t tx="ekr.20070316182341.723">Any .leo file may now contain an @enabled-plugins node as a child of an
@@ -8028,21 +7339,14 @@ See the following sections for details.
 </t>
 <t tx="ekr.20070325123558"></t>
 <t tx="ekr.20070513111526.10"></t>
-<t tx="ekr.20070513111526.105"></t>
 <t tx="ekr.20070513111526.14">http://sourceforge.net/forum/message.php?msg_id=3737745
 
 http://sourceforge.net/forum/message.php?msg_id=3785897
 
 Would it be possible to have the table of "Open With" editors to be part of the config system? I find myself patching the list every time I D/L a new Leo version to add the editor I use. This would also help isolate the user from the "guts" of Leo, thereby being less intimidating.
 </t>
-<t tx="ekr.20070513111526.198">http://sourceforge.net/forum/message.php?msg_id=4215654
-
-There was a bug with ordinary hoisting: in the "Outline" menu the "Delete Node"
-menu item was not disabled when the local root is selected.
-</t>
 <t tx="ekr.20070513111526.2">It is True by default. In effect, this setting was False in previous versions of Leo, which might be considered a bug.
 </t>
-<t tx="ekr.20070513111526.200"></t>
 <t tx="ekr.20070513111526.39"></t>
 <t tx="ekr.20070513111526.42">Leo now supports zipped .leo files:
 
@@ -8061,8 +7365,6 @@ Notes:
 - At present the code uses Python's zipfile module to read and write zipped files. In turn, the zipfile module uses the zlib module to do the compression. Conceivably somebody might want Leo to use some other compression technique, say Python's tarfile module. However, I think the present way should suffice for most people.
 </t>
 <t tx="ekr.20070513111526.7"></t>
-<t tx="ekr.20070513111526.78">Found via unit test.  Happens regardless of chapters.
-</t>
 <t tx="ekr.20070513111526.8"></t>
 <t tx="ekr.20070513111526.80">Returns in finally clauses prevent the re-raising of the saved exception(!!)
 </t>
@@ -8087,35 +7389,6 @@ Associated settings:
     add a node (and its descendants) to another chapter.
 </t>
 <t tx="ekr.20070513113903"></t>
-<t tx="ekr.20070610063538.151"></t>
-<t tx="ekr.20070610063538.163">http://sourceforge.net/forum/message.php?msg_id=4320971
-</t>
-<t tx="ekr.20070610063538.164">http://sourceforge.net/forum/message.php?msg_id=4309448
-
-Still to do: update urls for tigris.
-</t>
-<t tx="ekr.20070610063538.165">http://sourceforge.net/forum/message.php?msg_id=4301021
-</t>
-<t tx="ekr.20070610063538.168">- Select a node by clicking on it.
-- The node is selected, but shift-arrow does not work.
-
-However, clicking the canvas does work.
-
-The fix was to give the canvas, not the headline focus when clicking on a headline. This results in canvas bindings, not text bindings, having priority. This is not a kludge: the text widget isn't active, so text bindings should not be in effect.
-</t>
-<t tx="ekr.20070610063538.171"></t>
-<t tx="ekr.20070610063538.175">http://sourceforge.net/forum/message.php?msg_id=4340244
-</t>
-<t tx="ekr.20070610063538.2">http://sourceforge.net/forum/message.php?msg_id=4315027
-
-The fix was to g.skip_to_end_of_line (!)
-
-All such functions now return len(s) as a boundary condition.
-This is a major change.  All unit tests pass.
-</t>
-<t tx="ekr.20070610063538.209">http://sourceforge.net/forum/message.php?msg_id=4341644
-</t>
-<t tx="ekr.20070610063538.212"></t>
 <t tx="ekr.20070610063538.281"></t>
 <t tx="ekr.20070610063538.334">The following chapter commands now exist:
 
@@ -8159,15 +7432,6 @@ I left out cleo because it has been reported not to be fully functional with Leo
 <t tx="ekr.20070610174018">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
-<t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197
-</t>
-<t tx="ekr.20070622090350.22">http://sourceforge.net/forum/message.php?msg_id=4362825
-</t>
-<t tx="ekr.20070622090350.42">Selecting a node now never truncates the beadList.
-</t>
-<t tx="ekr.20070622090350.57">CleanLines was adding a trailing newline.
-The fix was to suppress this during unit tests.
-</t>
 <t tx="ekr.20070622090350.60"></t>
 <t tx="ekr.20070622090350.61"></t>
 <t tx="ekr.20070622090350.62">Alt-home is now bound to goto-first-visible rather than goto-first.
@@ -8189,7 +7453,6 @@ the code they are intended to test.
 
 Using g.getTestVars eliminates pychecker warnings about undefined c and p variables.
 </t>
-<t tx="ekr.20070622090350.8"></t>
 <t tx="ekr.20070622090350.9">Created menu-command-key command that just returns 'continue'.
 </t>
 <t tx="ekr.20070622180342">- Added support for chapters to Leo's core
@@ -8310,16 +7573,8 @@ Associated settings:
 <t tx="ekr.20070623145346"></t>
 <t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't be used to install Leo because Leo is not a Python package.
 </t>
-<t tx="ekr.20070626082732">Leo 4.4.3 final                                  June 26, 2006
+<t tx="ekr.20070626082732">Leo 4.4.3 final was released June 26, 2006
 
-Leo 4.4.3 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.3:
-----------------------------
 - Added support for chapters in Leo's core.
 - Added support for zipped .leo files.
 - Added a leoBridge module that allows full access to all of Leo's capabilities
@@ -8333,14 +7588,6 @@ The highlights of Leo 4.4.3:
 - Leo can use aspell on Linux when using Python 2.5 or later.
 - @test nodes can now be run from any .leo file.
 - Many minor improvements, new settings, commands and bug fixes.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070628083442.1">#####################
@@ -8468,26 +7715,11 @@ The run-all-unit-tests and run-unit-tests commands run all tests in a separate p
      different from as described, but they usually don't matter. If you *really*
      care, see the source code for leoTests.doTests.
 </t>
-<t tx="ekr.20070702162421">Leo 4.4.3.1                                 July 3, 2006
+<t tx="ekr.20070702162421">Leo 4.4.3.1 was released July 3, 2006
 
-Leo 4.4.3.1 is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.3.1:
-----------------------------
 - Fixed a few minor bugs reported since Leo 4.4.3 was released.
 - Added better support for unit testing in Leo.
 
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20070703095207.1"></t>
 <t tx="ekr.20070703095207.2"></t>
@@ -8675,15 +7907,11 @@ in leoBridge after import leo.core.leoGlobals as leoGlobals
 
 This allows my scripts to be portable over the several computers/platforms I need to use them on, and makes testing scripts against multiple leo versions easy. It does mean that my scripts are not portable to other leo users but that is not likely to be a problem.
 </t>
-<t tx="ekr.20070915101157.14">http://sourceforge.net/forum/message.php?msg_id=4445685
-</t>
-<t tx="ekr.20070915101157.16">http://sourceforge.net/forum/message.php?msg_id=4446937
-</t>
 <t tx="ekr.20070915101157.168">When saving a .leo file, Leo now *reads* an @auto node if
 
 1) the external file exists,
 2) an 'insignificant' amount of data exists in the @auto tree, and
-3)the @auto node has not been read previously.
+3) the @auto node has not been read previously.
 
 This promises to fix some quite awkward use cases.
 
@@ -8693,71 +7921,13 @@ languages (all languages except Python):
 - Leo leaves leading whitespace alone for non-strict languages.
 
 - Leo complains about intermixed tabs and blanks in leading whitespace only for
-strict languages.
+  strict languages.
 
 - Leo ignores leading whitespace in the perfect import tests for non-strict
-languages.
+  languages.
 
 These changes mean that Leo might change a external file if such a change occurs
 only in leading whitespace in a non-strict language.
-</t>
-<t tx="ekr.20070915101157.17">The code that was removing tags was not working properly.
-</t>
-<t tx="ekr.20070915101157.18">http://sourceforge.net/forum/message.php?msg_id=4437415
-</t>
-<t tx="ekr.20070915101157.19">http://sourceforge.net/forum/message.php?msg_id=4462693
-</t>
-<t tx="ekr.20070915101157.3">Email from Terry Brown
-
-A softish bug, but the use of findNodeInTree() in the UNL code can take you to the wrong place if more than one node in the tree has the same headString.  Patch below - can still go wrong if more than one sibling has the same name, but the UNL system doesn't have a solution for that.
-
-An observation - the UNL jumping code will drop you as far down the path as it gets, i.e. you're moved to the last node that was one the path, even if the path ends before the last part of the UNL is reached.  This is ok, i.e. "this is as far as I could follow the UNL", the alternative would be to not move at all if the whole UNL can't be followed.
-
-anon_cvs&gt; cvs diff leo/plugins/UNL.py
-Index: leo/plugins/UNL.py
-===================================================================
-RCS file: /cvs/leo/plugins/UNL.py,v
-retrieving revision 1.14
-diff -r1.14 UNL.py
-183c183,186
-&lt;                             p = g.findNodeInTree(c2,p,headline)
----
-&gt;                             for tmpp in p.copy().children_iter():
-&gt;                                 if tmpp.headString() == headline:
-&gt;                                     p = tmpp
-&gt;                                     break
-206c209,212
-&lt;                             p = g.findNodeInTree(c,p,headline)
----
-&gt;                             for tmpp in p.copy().children_iter():
-&gt;                                 if tmpp.headString() == headline:
-&gt;                                     p = tmpp
-&gt;                                     break
-
-</t>
-<t tx="ekr.20070915101157.40">http://sourceforge.net/forum/message.php?msg_id=4464980
-</t>
-<t tx="ekr.20070915101157.45">http://sourceforge.net/forum/message.php?msg_id=4465132
-By: terry_n_brown
-
-So I changed all my indentation to multiples of four, having decided I like
-the extra line space this buys over aligning with the opening (.
-
-leo said this when it read the file:
-
-@auto did not import the file perfectly
-
-but never mentioned @ignore or anything.  I made a trivial change and saved and diff could find no difference except my trivial change... which seems perfect to me...?
-</t>
-<t tx="ekr.20070915101157.48">https://sourceforge.net/forum/message.php?msg_id=4459798
-</t>
-<t tx="ekr.20070915101157.5">http://sourceforge.net/forum/message.php?msg_id=4444579
-</t>
-<t tx="ekr.20070915101157.50">http://sourceforge.net/forum/message.php?msg_id=4509897
-</t>
-<t tx="ekr.20070915101157.70">http://sourceforge.net/forum/message.php?msg_id=4514130
-</t>
-<t tx="ekr.20070915101157.81">http://sourceforge.net/forum/message.php?msg_id=4468174
 </t>
 <t tx="ekr.20070920092716">The so-called resolve-cvs-conflict project has resolved itself into small, easily understood commands.
 
@@ -8805,9 +7975,6 @@ if not w:
 
 log.selectTab(tag)
 </t>
-<t tx="ekr.20071004101443.18"></t>
-<t tx="ekr.20071004101443.26">http://sourceforge.net/forum/message.php?msg_id=4543844
-</t>
 <t tx="ekr.20071004101443.30">See the node:
 
 @settings--&gt;Fonts--&gt;@font button font
@@ -8844,27 +8011,9 @@ The Great Graph Aha created the opportunity for immediate action:
 <t tx="ekr.20071006093614">This inserts a child node.
 </t>
 <t tx="ekr.20071006155647"></t>
-<t tx="ekr.20071021111856.124">This should have been done long ago.
-</t>
-<t tx="ekr.20071021111856.127">http://sourceforge.net/forum/message.php?msg_id=4573990
-</t>
-<t tx="ekr.20071021111856.20">In some cases the find-previous command did not work.
-
-After much investigation, the cause of the bug was found to be a blunder in backwardsHelper.  Changed:
-
-pattern.lower()
-
-to:
-
-pattern = pattern.lower()
-</t>
-<t tx="ekr.20071021111856.252">https://sourceforge.net/forum/message.php?msg_id=4576436
-</t>
 <t tx="ekr.20071021111856.412">Optimized yank, by using yanked leading whitespace if it exists
 
 New option: add-ws-to-kill-ring (or kill-ws-adds-to-kill-ring)
-</t>
-<t tx="ekr.20071021111856.437">Suppressed doc-part-delims when show_doc_parts_as_paragraphs is True.
 </t>
 <t tx="ekr.20071021111856.441">The new code is simple and elegant.  Almost all flash is gone.
 </t>
@@ -8876,37 +8025,8 @@ strip_at_file_prefixes (default: True)
 
 True: remove @auto, @file, @nosent and @thin from the start of headlines.
 </t>
-<t tx="ekr.20071021111856.461"></t>
 <t tx="ekr.20071021111856.476">This is used, at present, by g.getScript.  It is a natural status ivar in any case.
 </t>
-<t tx="ekr.20071021111856.83">There were at least 3 bugs:
-
-At least three bugs.
-
-- Place cursor on last (blank) line.  Cursor up goes one line too far.
-- Place cursor at end of line 1.  Second cursor down does nothing.
-- Place cursor at end of xxxx line.  Second cursor down goes one line too far.
-
-xxxxxxxxx
-line 1
-line 2
-
-The fix was to g.getLine--potentially a major change.
-</t>
-<t tx="ekr.20071023080957">The run-unit-tests command runs tests using the bridge, which uses a nullGui and a stringTextWidget.
-
-Added a hack to g.getScript so it always gets the script from p.bodyString when g.app.gui.inBridge is True.
-</t>
-<t tx="ekr.20071026053931.13">http://sourceforge.net/forum/message.php?msg_id=4574271
-</t>
-<t tx="ekr.20071026053931.156">This should have been done a long time ago.
-</t>
-<t tx="ekr.20071026053931.157">http://sourceforge.net/forum/message.php?msg_id=4585396
-
-The threading colorizer must be run with interruptible=False when there are multiple body editors.
-</t>
-<t tx="ekr.20071026053931.219"></t>
-<t tx="ekr.20071026053931.220"></t>
 <t tx="ekr.20071026053931.221">False (legacy): Top pane contains outline and log panes.
 True: Top pane contains only the outline pane.  Bottom pane contains body and log panes.
 </t>
@@ -8961,9 +8081,6 @@ Leo's g.es_print and g.pr functions attempts to convert incoming arguments to un
 
 For still more details, see: http://www.diveintopython.org/xml_processing/unicode.html
 </t>
-<t tx="ekr.20071026075016">This fixes a fairly old crasher in the fastGotoNode plugin.
-</t>
-<t tx="ekr.20071026092552"></t>
 <t tx="ekr.20071026180804.1">The prototype in test.leo now uses PIL (Python Imaging Library) if available, so many more kinds of icons can be used.
 
 Buttons now exist to add icons to do the following:
@@ -8995,183 +8112,30 @@ Scripts can run File Open and Save dialogs with these methods::
 
 For details about how to use these file dialogs, look for examples in Leo's own source code. The runOpenFileDialog returns a list of file names.
 </t>
-<t tx="ekr.20071101162646">Leo 4.4.4 Final: November 2, 2007
+<t tx="ekr.20071101162646">Leo 4.4.4 Final was released November 2, 2007
 
-Leo 4.4.4 Final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+- The Great Graph Aha (tm): simple scripts allow Leo outlines to represent arbitrary directed graphs. There is no need for a separate 'graph world'. The graphed.py plugin is a direct result of this Aha. The graphed.py plugin allows you to create general graphs from Leo outlines.
 
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
+- @menus trees in settings files create all of Leo's menus.  It is now dead easy to make Leo's menus look the way you want.
 
-Leo 4.4.4 contains many important features originally planned for later releases.
+- @buttons trees in settings files create common @button nodes created in all Leo outlines.
 
-The highlights of Leo 4.4.4:
-----------------------------
-
-- The Great Graph Aha (tm): simple scripts allow Leo outlines to represent
-  arbitrary directed graphs. There is no need for a separate 'graph world'. The
-  graphed.py plugin is a direct result of this Aha. The graphed.py plugin allows
-  you to create general graphs from Leo outlines.
-
-- @menus trees in settings files create all of Leo's menus.  It is now dead
-  easy to make Leo's menus look the way you want.
-
-- @buttons trees in settings files create common @button nodes created in all
-  Leo outlines.
-
-- @auto nodes eliminate sentinels in external files, thereby allowing people to
-  collaborate using Leo more easily. **Warning**: for now, please make backup
-  copies of files imported with @auto.
+- @auto nodes eliminate sentinels in external files, thereby allowing
+  people to collaborate using Leo more easily. **Warning**: for now, please
+  make backup copies of files imported with @auto.
 
 - New commands for resolving cvs conflicts.
 
 - A threading_colorizer plugin replaces the __jEdit_colorizer__ plugin.
-  This plugin features much better performance and a new, elegant algorithm.
+  This plugin features much better performance and a new, elegant
+  algorithm.
 
 - Leo is now compatible with jython.
 
 - Better support for icons in headlines.
-
-- Many bug fixes and other minor improvements.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
-<t tx="ekr.20071101162751"></t>
-<t tx="ekr.20071101162751.149">The spell tab now uses the same font as the find tab.
-</t>
-<t tx="ekr.20071101162751.150">http://sourceforge.net/forum/message.php?msg_id=4596477
-</t>
-<t tx="ekr.20071101162751.178"></t>
-<t tx="ekr.20071101162751.184"></t>
-<t tx="ekr.20071101162751.19">The fix doesn't actually remember which chapter was previously selected; it picks some chapter containing the initially selected node. This works exactly for non-cloned nodes, but can select the 'wrong' chapter for cloned nodes. Still, this is a big improvement over the previous code, which would not select any node if the selected node was not in the main chapters.
-</t>
-<t tx="ekr.20071101162751.2">http://sourceforge.net/forum/message.php?msg_id=4591494
-</t>
-<t tx="ekr.20071101162751.28"></t>
-<t tx="ekr.20071101162751.32">It is too confusing at present, because it doesn't support @enabled-plugins nodes.
-</t>
-<t tx="ekr.20071101162751.33"></t>
-<t tx="ekr.20071101162751.34"></t>
-<t tx="ekr.20071101162751.4"></t>
-<t tx="ekr.20071101162751.97">http://sourceforge.net/forum/forum.php?thread_id=1853660&amp;forum_id=10228
-</t>
-<t tx="ekr.20071101163257"></t>
-<t tx="ekr.20071115102156.11">http://sourceforge.net/forum/message.php?msg_id=3525277
-
-The atFile read logic only **adds** nodes, it never deletes nodes. Thus, the 'changed2' node 'survived' the atFile read logic. The 'changed2' node became a 'vampire' node that couldn't be killed.
-
-The fix will require some care. The present atFile.read logic is robust because it *doesn't* delete nodes. I suspect the solutions will be as follows:
-
-A. The atFile.read code can not delete the subtree of @thin nodes initially, because it doesn't know whether there will be read errors later. If there are read errors absolutely nothing must change. This ensures that read errors never destroy information.
-
-B. A new post-pass will look for vampire nodes: nodes that were not actually read from the external file. I think (but haven't proven) that all descendants of vampire nodes are also vampire nodes. If that is so the post-pass will simply delete vampire nodes without worrying about whether they have descendants.
-</t>
-<t tx="ekr.20071115102156.123">http://sourceforge.net/forum/message.php?msg_id=4615931
-</t>
-<t tx="ekr.20071115102156.124">http://sourceforge.net/forum/message.php?msg_id=4618014
-</t>
-<t tx="ekr.20071115102156.141">http://sourceforge.net/forum/message.php?msg_id=4620890
-</t>
-<t tx="ekr.20071115102156.146">From email from Terry Brown
-
-python /home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leo.py /home/tbrown/.tnb.leo
-
-(should be all on one line, i.e. run and open /home/tbrown/.tnb.leo)
-
-gives the traceback below.  Opening the file from within Leo works fine.
-
-Bah - I just now looked at it closely enough to realize it's the evil pickled Tk classes in cleo uAs.  So I don't know whether you want to fix that or not, it makes sense Leo would read the file specified on the command line before Tk is initialized - if it's just scanning for settings maybe it could catch and ignore failed uA reads at that time?
-
-At some point I want to take pickled Tk vars out of cleo, I was thinking when that guy was working on the wx gui would be a good time, too bad he got sick.
-
-reading settings in /mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/config/leoSettings.leo
-reading settings in /home/tbrown/leoSettings.leo
-reading settings in /home/tbrown/myLeoSettings.leo
-reading settings in /home/tbrown/.tnb.leo
-Traceback (most recent call last):
-  File "/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leo.py", line 398, in &lt;module&gt;
-    run(fileName)
-  File "/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leo.py", line 118, in run
-    g.app.config.readSettingsFiles(fileName,verbose)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoConfig.py", line 1649, in readSettingsFiles
-    c = self.openSettingsFile(path)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoConfig.py", line 1674, in openSettingsFile
-    theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 892, in open
-    silent=silent)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 779, in getLeoFile
-    self.getAllLeoElements(fileName,silent)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1317, in getAllLeoElements
-    self.getVnodes()
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1898, in getVnodes
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1781, in getVnode
-    appendToCurrentStack=append1,appendToTopStack=append2)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1738, in getVnode
-    attr,val = self.getUa("vnode")
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/src/leoFileCommands.py", line 1658, in getUa
-    val2 = pickle.loads(binString)
-  File "/usr/lib/python2.5/pickle.py", line 1374, in loads
-    return Unpickler(file).load()
-  File "/usr/lib/python2.5/pickle.py", line 858, in load
-    dispatch[key](self)
-  File "/usr/lib/python2.5/pickle.py", line 1217, in load_build
-    setstate(state)
-  File "/mnt/removable/bkup_usr1/home/tbrown/.gnome-desktop/Package/leo/cvs/leo/plugins/cleo.py", line 130, in __setstate__
-    Tk.Variable.__init__(self)
-  File "/usr/lib/python2.5/lib-tk/Tkinter.py", line 188, in __init__
-    self._tk = master.tk
-AttributeError: 'NoneType' object has no attribute 'tk'
-Exception exceptions.AttributeError: "TkPickleVar instance has no attribute '_tk'" in &lt;bound method TkPickleVar.__del__ of &lt;cleo.TkPickleVar instance at 0xb73a876c&gt;&gt; ignored
 </t>
 <t tx="ekr.20071115102156.148"></t>
 <t tx="ekr.20071115102156.149"></t>
-<t tx="ekr.20071115102156.2"></t>
-<t tx="ekr.20071115102156.21">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-** Also, no ignore inserted.
-
-Current CVS, ubuntu
-
-From the code below I get:
-
-reading: /mnt/removable/bkup_proj/Mammals/mammaldb/mammaldb.leo
-*** first mismatch at line 119
-original line:      def provide(self, what):
-generated line: def provide(self, what):
-@auto did not import the file perfectly
-first mismatched line: 119
-u'def provide(self, what):\n'
-inserting @ignore
-Errors inhibited read
-@auto /mnt/removable/bkup_proj/Mammals/mammaldb/mammalShow.py
-
-In the code below line 119 is not the first "def provide(self, what):"
-but the second, the one in class mainPages - I've included the preceding
-class def because context seems to be important.
-</t>
 <t tx="ekr.20071115102156.237">This option has effect only when importing so-called non-strict languages,
 for which leading whitespace is not terribly significant.
 
@@ -9200,82 +8164,6 @@ This allows Leo to find the icon when multiple machines are involved.
 <t tx="ekr.20071115102156.321">http://tango.freedesktop.org/Tango_Icon_Library
 
 These icons are now part of Leo's distribution.
-</t>
-<t tx="ekr.20071115102156.5"></t>
-<t tx="ekr.20071115102156.6">https://sourceforge.net/forum/message.php?msg_id=3768494
-By: ktenney
-
-I'm using current CVS, W2k
-
-1 open a Leo file (I'm using a batch file / console)
-
-2 click Edit-&gt;Open   &lt;-- Having this dialog open is the problem.
-
-3 return focus to the Leo window
-
-4 click Help-&gt;Open leoDocs.leo
-
-Zombie!
-</t>
-<t tx="ekr.20071115102156.78">In the following code:
-
-extern  "C"
-{
-#include "stuff.h"
-void    init(void);
-#include "that.h"
-}
-
-produces the following in the log window:
-
-Leo Log Window...
-Leo 4.4.4 final, build  1.216 , November 2, 2007
-Python 2.5.1, Tk 8.4.14, Pmw 1.2
-Windows 5, 1, 2600, 2, Service Pack 2
-
-leoID = rshanley (in C:\)
-global config dir: C:\Program Files\Leo\config
-home dir: C:\
-reading settings in C:\Program Files\Leo\config\leoSettings.leo
-*** first mismatch at line 2
-original line:  {
-generated line:
-import command did not import the file perfectly
-first mismatched line: 2
-u'\n'
-input...
-  0 extern  "C"
-  1 {
-  2 #include "stuff.h"
-  3 void    init(void);
-  4 #include "that.h"
-  5 }
-output...
-  0 extern  "C"
-  1
-inserting @ignore
-imported C:/test/aa.cc
-</t>
-<t tx="ekr.20071115102156.79">@bool at_auto_warns_about_leading_whitespace
-</t>
-<t tx="ekr.20071115102156.81">http://sourceforge.net/forum/message.php?msg_id=4464649
-By: terry_n_brown
-
-An argument I'm always having with leo has to do with its conversion of file
-paths to 'absolute' forms.
-
-In the file browser I select '/home/tbrown/misc/foo.leo'.
-Leo reinterprets this as '/media/hda2/usr1/home/tbrown/misc/foo.leo'
-
-Then I switch machines, and while
-'/home/tbrown/misc/foo.leo' would still be valid,
-'/media/hda2/usr1/home/tbrown/misc/foo.leo' isn't - on the other machine it
-would be '/media/hdb1/home/tbrown/misc/foo.leo'.
-
-I end up with the two entries in recent files, having to identify the right one.
-
-If the Tk dialog is returning '/home/tbrown/misc/foo.leo', which I assume it is
-because that's what it's displaying, I wish leo would use and store that.
 </t>
 <t tx="ekr.20071115102421"></t>
 <t tx="ekr.20071116062917"></t>
@@ -9309,94 +8197,11 @@ because that's what it's displaying, I wish leo would use and store that.
 </t>
 <t tx="ekr.20071116081521"></t>
 <t tx="ekr.20071116081521.1"></t>
-<t tx="ekr.20071206093323.2">pylint reported the following errors:
-
-E1101:1877:atFile.readEndNode: Instance of 'atFile' has no 'correctedLines' member
-E1101:2725:atFile.norefWrite:  Instance of 'atFile' has no 'putBuffered' member
-</t>
-<t tx="ekr.20071206093323.29">http://sourceforge.net/forum/message.php?msg_id=4646055
-</t>
-<t tx="ekr.20071206093323.3"></t>
-<t tx="ekr.20071206093323.30">https://sourceforge.net/forum/message.php?msg_id=4643992
-</t>
-<t tx="ekr.20071206093323.31">The init base classes can now be inited in a more standard way.
-</t>
-<t tx="ekr.20071206093323.4">http://sourceforge.net/forum/message.php?msg_id=4632695
-</t>
-<t tx="ekr.20071206093323.59">http://sourceforge.net/forum/message.php?msg_id=4639872
-</t>
 <t tx="ekr.20071206093323.72">Several problems still remain:
 
 - Files that contain what look like section references.
 
 - Underindented docstrings.
-</t>
-<t tx="ekr.20071206093323.76"></t>
-<t tx="ekr.20071206093323.80">http://sourceforge.net/forum/message.php?msg_id=4652514
-</t>
-<t tx="ekr.20071206093323.87">http://sourceforge.net/forum/message.php?msg_id=4654762
-</t>
-<t tx="ekr.20071206093323.96">I have clones that traverse chapters.
-
-Given the following Chapters:
-
-&gt; Main
-&gt; Big Picture
-&gt; Smaller Chunk
-
-I have in Main, my organization, with my group in it.  It's also cloned around
-all the other views (really, everything starts in the Big Picture).
-
-This is the layout of my clone:
-
-1:  Chapter:Main &gt; me
-2:  Chapter:Main &gt; MyOrg &gt; me
-3:  Chapter:Big Picture &gt; CEO &gt; Some Big Honcho &gt; MyOrg &gt; me
-4:  Chapter:Smaller Chunk &gt; Some Big Honcho &gt; MyOrg &gt; me
-
-If I Go-To-Next-Clone  (ALT-N) from (1), focus will move to the selected node
-in Chapter:Main, namely (2).
-
-So here's the issue: 
-
-Let each successive line below represent a starting focus, and the next line
-the node that ALT-N selects.  If focus changes in the Outline pane (including
-Chapter pane change) to match the Node, that case is marked with [f] - a successful
-focus transition.
-
-The issue are the lines w/o [f];  Here's a couple of test runs.
-
-1: [f] (starting node / focus)
-2: [f]
-3:
-4:
-1: [f]
-
-Next test:
-
-3: [f]
-1: [f]
-1: [f]
-4:
-3:
-1: [f]
-
-Next test:
-
-4: [f]
-3:
-1: [f]
-2: [f]
-4:
-3:
-1: [f]
-2: [f]
-... and so on...
-
-In cases with NO [f], the outline pane seems moved to the "end", but no node
-selected.
-
-Not a show stopper, but a bug nonetheless.
 </t>
 <t tx="ekr.20071210094621">This following is adapted from Terry Brown's entry in Leo's wiki.
 
@@ -9439,18 +8244,7 @@ at the end of script B. Back in script A, after you've rebuilt
     g.app.gui.replaceClipboardWith(response)
     c.pasteOutline()
 </t>
-<t tx="ekr.20071211083251">Leo 4.4.5 final                               December 11, 2007
-
-Leo 4.4.5 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.5:
-----------------------------
+<t tx="ekr.20071211083251">Leo 4.4.5 final was released December 11, 2007
 
 - Fixes all known bugs.
 - Leo now recognizes directives in headlines.
@@ -9458,42 +8252,6 @@ The highlights of Leo 4.4.5:
 - Adds commands to insert and delete icons from headlines.
 - Adds all the Tango 16x16 icons to Leo's icon library.
 - Adds support for @rst-preformat nodes to the rst3 plugin.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
-<t tx="ekr.20071217092203.1"></t>
-<t tx="ekr.20071217092203.127">The last char was not colored in the following doc part:
-
-@
-
-&lt;tag /&gt;
-</t>
-<t tx="ekr.20071217092203.128">http://sourceforge.net/forum/message.php?msg_id=4676037
-</t>
-<t tx="ekr.20071217092203.130">This prevents over-long traces.
-</t>
-<t tx="ekr.20071217092203.131"></t>
-<t tx="ekr.20071217092203.136"></t>
-<t tx="ekr.20071217092203.137"></t>
-<t tx="ekr.20071217092203.138">The patch attached against leoConfig.py (current CVS) adds a machine specific config file to the config files Leo loads.
-
-I synchronize files between multiple (3) machines. This means I can't use different myLeoSettings files on each.
-
-Tk fonts are screen dpi sensitive.  But (in Linux at least) Tk's attempts to switch a font you picked to something equivalent at a different dpi always result in a font that looks terrible.
-
-So every time I switch machines I edit ~/myLeoSettings.leo to move the font defs I picked for the current machine to the bottom of the body text for the appropriate settings node, and then restart Leo.
-
-This patch means I don't have to do that any more.  I'm sure there are other uses for it.  Python doesn't seem to have a generic machine name finding function, hence the sequence of alternatives.
-</t>
-<t tx="ekr.20071217092203.145">The version of plugins_menu.py at http://leo.zwiki.org/Plumloco separates out the gui dependent dialogs (the menus are already gui independent) and made them general purpose dialogs available to all plugins.
-
-I have also slightly enhanced the dialogs to provide user defined buttons.
 </t>
 <t tx="ekr.20071217092203.147">The finds the next cloned node, regardless of whether the presently selected node is a clone or not.
 </t>
@@ -9502,50 +8260,9 @@ I have also slightly enhanced the dialogs to provide user defined buttons.
 <t tx="ekr.20071217092203.152"></t>
 <t tx="ekr.20071217092203.154">Use @data import_xml_tags setting to specify the xml tags that act as organizers.
 </t>
-<t tx="ekr.20071217092203.161">This fixes a focus problem.
-</t>
 <t tx="ekr.20071217092203.163">Javascript regexps that look like section references cause problems, but that can not be helped.
 </t>
-<t tx="ekr.20071217092203.2">http://sourceforge.net/forum/message.php?msg_id=4668960
-
-It seems in external files you can delete some text and save, causing the derived file to be written and all dirty flags cleared.  But then undo makes the text come back, as expected, but save only saves the outline, because the dirty flag wasn't set on the node in which the text was restored by undo.
-</t>
-<t tx="ekr.20071217092203.30"></t>
-<t tx="ekr.20071217092203.31">Added k.overrideCommand.
-</t>
-<t tx="ekr.20071217092203.45">http://sourceforge.net/forum/message.php?msg_id=4671771
-</t>
-<t tx="ekr.20071217092203.51">http://sourceforge.net/forum/message.php?msg_id=4667105
-</t>
-<t tx="ekr.20071217092203.52">The command now clears all .leoRecentFiles.txt files and write a message.
-</t>
-<t tx="ekr.20071217092203.64">This was a very long-standing bug: the most annoying in all of Leo.
-</t>
 <t tx="ekr.20071217093444"></t>
-<t tx="ekr.20080106114203.1">http://sourceforge.net/forum/message.php?msg_id=4682598
-</t>
-<t tx="ekr.20080106114203.2">http://sourceforge.net/forum/message.php?msg_id=4681175
-
-- There was a horrendous bug in the match_seq_regexp matcher which could cause the colorizer to loop.
-- There was another horrendous bug in match_regexp_helper that cause spurious matches.
-- Added some more defensive code to have the colorizer recover more gracefully in this case.
-- The jedit2py script was not associating regexp rules whose regex starts with '\' with the proper character. The proper character is the hash_char character, not the '\' character. As a result, regexp's that start with '\' never got matched.
-
-The following colorizers are affected by the change:
-
-modes/apacheconf.py
-modes/erlang.py
-modes/moin.py
-modes/perl.py
-modes/php.py
-modes/pl1.py
-modes/rest.py
-modes/shell.py
-modes/shellscript.py
-</t>
-<t tx="ekr.20080106114203.3"></t>
-<t tx="ekr.20080106114203.4">http://sourceforge.net/forum/message.php?msg_id=4687706
-</t>
 <t tx="ekr.20080106114331"></t>
 <t tx="ekr.20080109074102">You can add an icon to the presently selected node with c.editCommands.insertIconFromFile(path). path is an absolute path or a path relative to the leo/Icons folder. A relative path is recommended if you plan to use the icons on machines with different directory structures.
 
@@ -9560,35 +8277,10 @@ Scripts can delete icons from the presently selected node using the following me
     c.editCommands.deleteLastIcon() 
     c.editCommands.deleteNodeIcons() 
 </t>
-<t tx="ekr.20080115093848.18">http://leoeditor.com/scripting.html#inserting-and-deleting-icons
-</t>
-<t tx="ekr.20080115093848.19">http://sourceforge.net/forum/message.php?msg_id=4712329
-</t>
-<t tx="ekr.20080115093848.23">http://sourceforge.net/forum/message.php?msg_id=4714779
-</t>
-<t tx="ekr.20080126090039">Leo 4.4.6 final                           January 26, 2008
+<t tx="ekr.20080126090039">Leo 4.4.6 final was released January 26, 2008
 
-Leo 4.4.6 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.4.6 fixes several recently reported bugs, all minor.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.6:
-----------------------------
-- Fixes all known bugs.
 - Added @auto importers for javascript and xml files.
 - Added find-next-clone and toggle-sparse-move commands.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Home:     http://sourceforge.net/projects/leo/
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20080203101507"></t>
 <t tx="ekr.20080203101507.1">##########################
@@ -9611,34 +8303,14 @@ ILeo: Leo's IPython Bridge
 .. _`console window`:               installing.html#running-leo-from-a-console-window
 
 </t>
-<t tx="ekr.20080218153931">Leo 4.4.7 final                           February 18, 2008
+<t tx="ekr.20080218153931">Leo 4.4.7 final was released February 18, 2008
 
-Leo 4.4.7 final is available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.7:
-----------------------------
-- The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
-  See http://leoeditor.com/IPythonBridge.html
+- The ipython plugin creates a simple, powerful, effective bridge between
+  IPython and Leo. See http://leoeditor.com/IPythonBridge.html
 - Improved handling of unicode encodings in @auto files.
 - All import commands now support @path directives in ancestor nodes.
 - Fixed several minor bugs.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
-<t tx="ekr.20080218153931.1"></t>
 <t tx="ekr.20080218153931.10"></t>
 <t tx="ekr.20080218153931.11">If the @bool open_with_save_on_update setting is True,
 Leo will automatically save the outline whenever an external editor
@@ -9647,7 +8319,11 @@ changes the outline.
 <t tx="ekr.20080218153931.12">When reading an @auto tree, createOutline now does the following:
 
 1. When importing Python files, createOutline uses the encoding implied by
-Python's # -*- coding line. This line must be the first line of the imported file.
+Python's coding line::
+
+    # -*- coding
+
+This line must be the first line of the imported file.
 
 2. Otherwise, createOutline scans the @auto node and its ancestors for Leo's @encoding directive.
 
@@ -9655,21 +8331,8 @@ Python's # -*- coding line. This line must be the first line of the imported fil
 
 4. If this setting does not exist, the utf-8 encoding is used.
 </t>
-<t tx="ekr.20080218153931.2"></t>
-<t tx="ekr.20080218153931.3"></t>
-<t tx="ekr.20080218153931.4">http://groups.google.com/group/leo-editor/browse_thread/thread/4fa4709969fc04d
-</t>
-<t tx="ekr.20080218153931.5"></t>
-<t tx="ekr.20080218153931.6">There appear to be problems with Python's subprocess module on Ubuntu.
-</t>
-<t tx="ekr.20080218153931.7">The version of PIL that ships with Ubuntu (and presumably Debian and maybe some
-other distributions) no longer includes the ImageTk module. ImageTk is now
-located in the python- imaging-tk package.
-</t>
 <t tx="ekr.20080218153931.8"></t>
-<t tx="ekr.20080218153931.9"></t>
 <t tx="ekr.20080218154129"></t>
-<t tx="ekr.20080218154129.1"></t>
 <t tx="ekr.20080304112802.1">http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
 Leo now contains minimal support for arguments to minibuffer commands.
@@ -9699,29 +8362,11 @@ It is easy to translate Leo's menu strings: simply create an @menus tree in leoS
 
 - You can use the script in the node "@button print g.es stats" in scripts.leo to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's gettext module. (This script was also used to check that the proper arguments to g.es and g.es_print were translated.)
 </t>
-<t tx="ekr.20080311060457.125"></t>
 <t tx="ekr.20080311060457.188">http://sourceforge.net/forum/message.php?msg_id=4677335
 </t>
 <t tx="ekr.20080311060457.198">This allows @menu items to refer to commands created by @button.
 </t>
 <t tx="ekr.20080311060457.215"></t>
-<t tx="ekr.20080311060457.28"></t>
-<t tx="ekr.20080311060457.3">Eureka! I have just discovered an elegant solution to this problem!
-
-The Aha is this:  we can create a "base" timestamp just *once*, when the commander (i.e. the NodeIndices class) is created.  Thereafter, code that writes gnx's simply calls NodeIndices.getIndex if the node doesn't already have an index (or if indices are being reassigned in a copied tree).
-
-In other words, there is no need to be picky about timestamps, the base timestamp will do, so there is no need to assign indices before writing nodes!
-
-I didn't see this before because computing timestamps is quite time consuming.  In fact, we can't do so "on the fly".  That being so, the old code computed the "new" timestamp once in assignFileIndices, which lead me away from getting gnx's as needed.  But if there is only *one* timestamp everything becomes easy.  There is no need to "batch" the computation of gnx's.  In other words, timestamps don't have to be up- to-the-second accurate.  They simply guarantee that two nodes (in a particular outline) created by the *same* person can't collide.
-
-This is the way it is written in "The Book". All calls to assignFileIndices disappear!  All the code I wrote this morning that remembers whether indices have been assigned disappears.  I'll keep a do-nothing assignFileIndices around for compatibility with old scripts.
-
-This is *so* important.  It eliminates forever a source of serious file write problems.  Furthermore, NodeIndices.getIndex becomes substantially simpler. Even though the code was short, it implied some very tricky assumptions.  Every time I read it I had to recreate why it worked.  Those mental gymnastics should disappear.
-
-A great day for Leo.
-</t>
-<t tx="ekr.20080311060457.38">This should have been done long ago.
-</t>
 <t tx="ekr.20080314081157.1">- Added show-marks-dialog and show-recent-sections-dialog commands.
 - Select an item initially.
 - Added bindings for up and down arrows.
@@ -9732,7 +8377,8 @@ A great day for Leo.
 
 - Added the leoBridge module. See `Embedding Leo with the leoBridge Module`_.
 
-- Added support for @enabled-plugins and @openwith (formerly @open-with) nodes in settings files.
+- Added support for @enabled-plugins and @openwith (formerly @open-with)
+  nodes in settings files.
 
 - Added support for ZODB. See `Using ZODB with Leo`_.
 
@@ -9740,8 +8386,8 @@ A great day for Leo.
 
 - Added perfect import of external files with @auto nodes.
 
-- Used the sax parser to .leo files. This allows the format of .leo files to be
-  expanded easily.
+- Used the sax parser to .leo files. This allows the format of .leo files
+  to be expanded easily.
 
 - Added support for myLeoSettings.leo.
 
@@ -9752,10 +8398,6 @@ A great day for Leo.
 - Many other new plugins.
 
 For a complete list, see the `What's New`_ chapter.
-</t>
-<t tx="ekr.20080328074117.12">http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
-</t>
-<t tx="ekr.20080328074117.135">The new setting is @string target_language, not @language default_target_language.
 </t>
 <t tx="ekr.20080328074117.215">http://groups.google.com/group/leo-editor/browse_thread/thread/6a5087a59d6d23
 
@@ -9773,41 +8415,8 @@ And, while you're looking at the editor code :-) - in linux when you paste in te
 To do--&gt;@thin ../doc/leoToDoLater.txt--&gt;Can't or won't--&gt;Known Bugs: can't be fixed or can wait--&gt;Bug: can't be fixed--&gt;Cut/paste bug on X windows (waiting for help)
 </t>
 <t tx="ekr.20080328074117.297"></t>
-<t tx="ekr.20080328074117.3"></t>
-<t tx="ekr.20080328074117.30">http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
-</t>
-<t tx="ekr.20080328074117.4">This fixes a bug that can corrupt .leo files.
-</t>
-<t tx="ekr.20080328074117.76">http://mail.google.com/mail/#inbox/11899019a43f74ca
+<t tx="ekr.20080405074410.4">Leo 4.4.8 final was released April 6, 2008
 
-When you have two editors open on the same node most actions show up in both editors, however, if you do an undo the change only show up in the selected editor. (The change shows up in the other editor when you select it).
-</t>
-<t tx="ekr.20080328074117.77">http://groups.google.com/group/leo-editor/browse_thread/thread/71822f48720e71bc/6e0fd1c72fa39817#6e0fd1c72fa39817
-</t>
-<t tx="ekr.20080403065258.6">http://groups.google.com/group/leo-editor/browse_thread/thread/ed5d82429e1ec821
-
-The following sequence of commands caused problems:
-
-add-editor
-add-editor
-delete-editor
-delete-editor
-add-editor
-</t>
-<t tx="ekr.20080405074410.38"></t>
-<t tx="ekr.20080405074410.4">Leo 4.4.8 final                        April 6, 2008
-
-Leo 4.4.8 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/tutorial.html
-
-The highlights of Leo 4.4.8:
-----------------------------
 - Leo's source code is now managed by bzr: see link below.
 - Leo's discussion is now hosted by Google Groups: see link below.
 - Arguments to g.es and g.es_print can be translated using gettext.
@@ -9817,17 +8426,8 @@ The highlights of Leo 4.4.8:
 - @menu trees can now refer to commands created by
   @command and @button nodes.
 - Added support for common @commands nodes in settings files.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20080405074410.7"></t>
-<t tx="ekr.20080405074410.9"></t>
 <t tx="ekr.20080411111008.1">Leo ignores any subtree of an @settings tree whose headline starts with @ignore.
 
 You can use several other kinds of nodes to cause Leo to ignore parts of  an @settings tree:
@@ -10509,141 +9109,8 @@ The last two parts are for computer programmers; they assume some familiarity wi
     tutorial-programming
     tutorial-scripting
 </t>
-<t tx="ekr.20100118181428.7559">They wiped out the newly-inserted selection range.
-</t>
-<t tx="ekr.20100118181428.7570">My biggest annoyance is the invalid bug 409442, I have to use the tk
-GUI because of it.
-
-I've also complained about it in this thread:
-http://groups.google.com/group/leo-editor/browse_thread/thread/07cdbb... 
-
------ Ville +1
-I feel your pain.
-
-Please try this workaround (run with ctrl+b):
-
-tree = c.frame.tree.treeWidget
-tree.setColumnCount(2)
-
------
-&gt; Isn't it possible to stick this tree.setColumnCount(2) into some
-&gt; constructor in the leo qt GUI plugin so the outline pane would have
-&gt; the horizontal scrollbar by default?
-
-Yes, but it's not sure we want to have 2 columns in the tree widget -
-and it would create scrollbar on many occasions when it's not
-necessary.
-
-So this is not a simple fix for your problem, it has implications
-beyond your problem. 
-</t>
-<t tx="ekr.20100118181428.7571"></t>
-<t tx="ekr.20100118181428.7614">Fixed bug Bug 498688: Undo back to last saved content still shows file as
-modified ("*" in title)
-</t>
-<t tx="ekr.20100118181428.7712"></t>
-<t tx="ekr.20100118181428.7715">Bug 362950: during body text undo selection goes nuts and view moves
-</t>
-<t tx="ekr.20100118181428.7830"></t>
-<t tx="ekr.20100118181428.7831"></t>
-<t tx="ekr.20100118181428.8070"></t>
-<t tx="ekr.20100118181428.8077">Fixes bug 497332: importing xml via @data import_xml_tags does not allow dashes in tag.
-
-For characters valid in names see:
-www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
-</t>
-<t tx="ekr.20100118181428.8090">Bug 404993: alt+U (universal argument) "freezes" leo state
-
-Press alt+U displays "Universal argument:" in minibuffer, and there is no
-obvious way to get out of this state. It seems ctrl+G gets you out of it, but
-that's not really obvious. ESC should do it.
-</t>
-<t tx="ekr.20100118181428.8109">http://groups.google.com/group/leo-editor/browse_thread/thread/81f7bb5060ed8b01
-</t>
-<t tx="ekr.20100118181428.8236"></t>
-<t tx="ekr.20100118181428.8239"></t>
-<t tx="ekr.20100118181428.8240"></t>
-<t tx="ekr.20100118181428.8242"></t>
-<t tx="ekr.20100118181428.8248">Leo now adds a leading period if needed.
-</t>
-<t tx="ekr.20100118181428.8252"></t>
-<t tx="ekr.20100118181428.8257"></t>
-<t tx="ekr.20100118181428.8262"></t>
-<t tx="ekr.20100118181428.8275"></t>
-<t tx="ekr.20100118181428.8278"></t>
-<t tx="ekr.20100118181428.8281"></t>
-<t tx="ekr.20100118181428.8294"></t>
-<t tx="ekr.20100118181428.8297">http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
-</t>
-<t tx="ekr.20100118181428.8298">http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
-</t>
-<t tx="ekr.20100118181428.8299"></t>
-<t tx="ekr.20100118181428.8302">This is now bound in the EKR bindings to insert-node.
-</t>
-<t tx="ekr.20100118181428.8306">http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476
-</t>
-<t tx="ekr.20100118181428.8307"></t>
-<t tx="ekr.20100118181428.8334"></t>
-<t tx="ekr.20100118181428.8358">Form-feed characters were causing problems with Python 3k.
-</t>
-<t tx="ekr.20100118181428.8362">It can be alarming to select a small chapter in a large outline.
-</t>
-<t tx="ekr.20100118181428.8363"></t>
-<t tx="ekr.20100118181428.8365">This fixes the following two bugs:
-
-- 421957 When body_pane_wraps is set to true, Previous-Line and Next-Line do not
-  work as expected.
-
-- 489917 Cursor placement defect 
-</t>
-<t tx="ekr.20100118181428.8413">http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
-</t>
-<t tx="ekr.20100118181428.8447">http://groups.google.com/group/leo-editor/browse_thread/thread/cdf78cbca5c526be
-</t>
-<t tx="ekr.20100118181428.8449">Shift-PageUp/Down were not working.
-</t>
-<t tx="ekr.20100118181428.8473">http://bugs.launchpad.net/leo-editor/+bug/381895
-</t>
-<t tx="ekr.20100118181428.8481">https://bugs.launchpad.net/leo-editor/+bug/451377
-</t>
-<t tx="ekr.20100118181428.8485">The Tk part of this bug can not be fixed.
-</t>
-<t tx="ekr.20100118181428.8486">http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
-</t>
-<t tx="ekr.20100118181428.8497">http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
-</t>
-<t tx="ekr.20100118181428.8502">http://groups.google.com/group/leo-editor/browse_thread/thread/c8f3edda9de05484
-</t>
-<t tx="ekr.20100118181428.8514">ctrl-tab (currently binded to cycle-focus) didn't work in windows with pyqt.
-</t>
-<t tx="ekr.20100118181428.8517">https://bugs.launchpad.net/leo-editor/+bug/349027
-</t>
-<t tx="ekr.20100118181428.8518"></t>
-<t tx="ekr.20100118181428.8522">https://bugs.launchpad.net/leo-editor/+bug/486433
-</t>
-<t tx="ekr.20100118181428.8523">https://bugs.launchpad.net/leo-editor/+bug/420988
-</t>
-<t tx="ekr.20100118181428.8524"></t>
 <t tx="ekr.20100118181428.8815">Leo requires Python 2.6 or above, including Python 3.0 and above.
 </t>
-<t tx="ekr.20100119145003.7319"></t>
-<t tx="ekr.20100119145003.7320"></t>
-<t tx="ekr.20100119145003.7322"></t>
-<t tx="ekr.20100119145003.7324"></t>
-<t tx="ekr.20100119145003.7325"></t>
-<t tx="ekr.20100119145003.7327">Note: changing a headline as *no effect* on an @nosent file!
-The only bug was that redraw_after_head_changed must update icons.
-</t>
-<t tx="ekr.20100119145003.7358"></t>
-<t tx="ekr.20100119145003.7531"></t>
-<t tx="ekr.20100119145003.7546"></t>
-<t tx="ekr.20100119145003.7612"></t>
-<t tx="ekr.20100119145003.7618"></t>
-<t tx="ekr.20100119145003.7625"></t>
-<t tx="ekr.20100119145003.7629"></t>
-<t tx="ekr.20100119145003.7632"></t>
-<t tx="ekr.20100119145003.7643"></t>
-<t tx="ekr.20100119145003.7718"></t>
 <t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language. There are a set of "importers" in leoImport.py, all based on the baseScannerClass class. You can define your own importer by creating a subclass. This shouldn't be too difficult: baseScannerClass is supposed to do almost all the work. With luck, your subclass might be very simple, as with class cScanner.
 
 **Important** As I write this, I realize that I remember very little about the code, but I do remember its general organization and the process of creating a new importer. The following should be all you need to write any importer.
@@ -10692,110 +9159,6 @@ There is one more detail. Sometimes the ivars above are not sufficient to get th
 
 That's about it. It would be pointless to give you more details, because those details would lead you *away* from the process you need to follow. Having said that, feel free to ask further questions. I'll be glad to answer them.
 </t>
-<t tx="ekr.20100124164700.11919">It looks like you should be able to put the following in an @font node, and get restructured text bold to appear in bold on screen:
-
-rest_keyword2_font_size = 16
-rest_keyword2_font_family = Bitstream Charter
-rest_keyword2_font_slant = roman
-rest_keyword2_font_weight = bold
-
-However nothing happens when I do this. The python examples in the test.leo file work fine for me, so I'm not sure what's gone wrong.
-
-I think that the following should also work, but it's also currently not doing anything for me:
-
-\@color rest_keyword2_color = black
-
-==================
-
-Rev 2706 fixes a significant colorizer bug that caused your problem. Previously, the colorizer inited the so-called configuration tags only once, which is wrong. These tags are what the @font settings specify. Now, the colorizer inits the tags when the language changes when switching nodes.  Usually the language doesn't change, so the new code will be approximately as fast as the old.
-</t>
-<t tx="ekr.20100124164700.11920">'backward-find-character'
-'find-character'
-</t>
-<t tx="ekr.20100124164700.11921">On Mon, Jan 18, 2010 at 9:25 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-
-cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
-
-1) (??) the button removal menu just flash on right mouse click, disappears immediately.
-
-2) Leo opens up the workbook, I open a new doc in a tab, 'untitled', save it,
-   get saved ... in log, however, tab title does not change unless I close and
-   reload it.
-</t>
-<t tx="ekr.20100124164700.11922">The problem occurs because the QtGui.QLineEdit object goes away when the minibuffer gets focus and the QTreeWidget loses focus.
-
-The fix: add a 'permanent' ivar to leoQtTextWidgets, and set this ivar to False for headline widgets.
-</t>
-<t tx="ekr.20100124164700.11923">http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header &lt;&lt;This Section Is Bogus&gt;&gt;).
-3) Now, File-&gt;Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-The point is that I can't kill Leo if I keep saying "Yes" to the "Save change before quitting" dialog. This is definitely not the intended behavior. The correct behavior would be to save the file, give me the warning about the undefined section, and exit.
-
-EKR: The fix was simple: write_leo_file ignores the status returned from c.atFileCommands.writeAll.
-
-Note that Leo writes the write error to the console as well as the log pane, so this should be safe enough.
-</t>
-<t tx="ekr.20100124164700.11924"></t>
-<t tx="ekr.20100124164700.11925"></t>
-<t tx="ekr.20100124164700.11926">I also unhappily discovered that any file named somedoc.leo.bak will get deleted whenever you save a file named somedoc.leo.
-
-This turned into a major refactoring of write_Leo_file.
-</t>
-<t tx="ekr.20100124164700.11927">https://bugs.launchpad.net/leo-editor/+bug/510148
-
-The fix was in sortSiblings.
-</t>
-<t tx="ekr.20100124164700.11938"></t>
-<t tx="ekr.20100124164700.11944"></t>
-<t tx="ekr.20100124164700.11946">https://bugs.launchpad.net/leo-editor/+bug/510145
-
-Current leo trunk, r2732, Slackware Linux
-
-- I go to /tmp in terminal
-- there is no aaa.leo there (this is important, see below why)
-- I launch leo (the current working directory is /tmp)
-- I select "File-&gt;Save as" menu item
-- the save file dialog opens in /tmp, this is correct
-- I type in the file name "aaa" then hit "Save" button
-- leo dumps an error in the log pane:
-
-exception renaming /tmp/aaa.leo to /tmp/tmpbNydoS
-IOError: [Errno 2] No such file or directory: u'/tmp/aaa.leo'
-
-=============
-
-The solution was to create the backup file only if fileName exists.
-</t>
-<t tx="ekr.20100124164700.11951">Made sure _bodyString _headString used only in leoNodes.py.
-
-We allow setting this vars in file reading code.
-
-*** p.b/p.h setters call c.setBody/HeadString,
-    which are very slow!
-</t>
-<t tx="ekr.20100124164700.11965">- Removed thinFile arg from atFile.read.
-  atFile.read can uncache *any* cached file.
-- Removed thinFile arg from initReadIvars.
-- self.thinFile ivar set only in readOpenFile.
-- atFile.read no longer calls scanHeaderForThin:
-  we simply use the thinFile value returned by scanHeader.
-- atFile.readOpenFile deletes children as needed.
-</t>
-<t tx="ekr.20100124164700.12027"></t>
-<t tx="ekr.20100128094926.12524">These marks were just annoying.
-</t>
-<t tx="ekr.20100128094926.12739"></t>
-<t tx="ekr.20100128094926.12756">Deleting a range of line containing unicode characters deletes too much.
-</t>
 <t tx="ekr.20100129054823.11924"></t>
 <t tx="ekr.20100129054823.11928">Leo now treats @file nodes just like it treats @thin nodes. This makes Leo much safer to use in cooperative environments that use source code control systems. As part of this change, Leo no longer supports @noref nodes.
 
@@ -10836,32 +9199,6 @@ The latter opens vim whenever a new node is selected in Leo.
 </t>
 <t tx="ekr.20100129054823.17685">The qt colorizer now supports font specifications in @font nodes.
 </t>
-<t tx="ekr.20100201192329.7101">This was a serious error.  It could cause clone clashes on later reloads.
-</t>
-<t tx="ekr.20100201192329.7106">This only happened if two nodes had the same headline.
-</t>
-<t tx="ekr.20100201192329.7108"></t>
-<t tx="ekr.20100201192329.7113">The problem arises because an @path directive ended with ':':
-
-    @path: aPath
-
-What I did:
-
-- g.get_directives_dict now carefully checks for non-whitespace following a directive.
-- The qt colorizer does the same.
-- Added unit test to check for this.
-</t>
-<t tx="ekr.20100201192329.7116">Eliminated most imports from the leo/extensions folder.
-
-</t>
-<t tx="ekr.20100201192329.7141">'utf-8' is now the official, explicit unicode encoding unless overridden when
-reading files.
-
-This simplifies the code in several ways. In particular, the 'mbcs' encoding is
-never used by default, and there is no g.app.defaultEncoding argument.
-
-The rst3 command now uses 'utf-8' for all encodings unless explicitly overridden.
-</t>
 <t tx="ekr.20100205152016.14054">Leo now has a simple, robust, and extremely useful scheme to recover from clone battles, no matter how they may arise. This removes all the dread from "node changed" messages. It is easy to see what the changes were, and it is easy to choose what, if anything to do.
 
 It is easy to test the code to see how it works:
@@ -10874,125 +9211,16 @@ It is easy to test the code to see how it works:
 
 When a clone conflict occurs, you will see a red message in the log pane and a "Recovered Nodes" node as the last top-level node. This node has one child per red message. Each of these children contains two nodes: an "old" node and a "new" node. Unless there are multiple conflicts for a single node, the "new" node will have "won": every clone contains the new node's headline and body text. All these nodes are plain nodes, *not* clones. It is up to you to change the corresponding clone nodes if you choose to do so.
 </t>
-<t tx="ekr.20100209160132.11691"></t>
-<t tx="ekr.20100209160132.11692">The fix: back-to-home is now included in k.singleLineCommandList.
-</t>
-<t tx="ekr.20100209160132.11694">There was code in tnodeAttributes that did something brain-dead when unit
-testing, just to support a unit test!
-</t>
-<t tx="ekr.20100209160132.11700"></t>
-<t tx="ekr.20100209160132.11701">http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the file write uses the @path directive but the file read does not.  Since the file read cannot know of the @path directive until after it has read the file it has no choice but to not use it.  The @thin file write code should not use any @path declarations found in its body text.
-
-What I did:
-
-- Defined g.app.atPathInBodyWarning, set by g.get_directives_dict to p.h
-- g.get_directives_dict also sets d['@path_in_body'] = p.h
-- c.scanAtPathDirectives doesn't set the path if d['@path_in_body'] is true.
-- atFile.scanAllDirectives issues a warning if g.app.atPathInBodyWarning is true,
-  but only if the issuePathWarning keyword arg is true.
-</t>
-<t tx="ekr.20100209160132.11711"></t>
-<t tx="ekr.20100209160132.11712">Adding a blank line did not change the file!
-
-The culprit was the ignoreLineEndings logic in compareFiles.
-A new unit test is needed.
-</t>
-<t tx="ekr.20100209160132.11718">What I did:
-
-- fc.createBackupFile now calls shutils.move directly, avoiding g.utils_rename which does way too much: it calls g.makeAllNonExistentDirectories(!!)
-
-- Simplified g.utils_rename.  We can assume shutils exists.
-
-- Removed an unwise call to g.utils_remove in g.utils_rename. This could cause havoc with the following call to shutils_move!!
-</t>
-<t tx="ekr.20100209160132.11736"></t>
-<t tx="ekr.20100209160132.11742">Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
-
-This has global effects. Happily, there were only three callers of g.utils_rename:
-
-- handleWriteLeoFileException: should *not* create directories.
-
-- x.rename: no longer used!
-</t>
-<t tx="ekr.20100209160132.11751">Non-extending cursor moves now always clear the selection.
-</t>
-<t tx="ekr.20100209160132.11755"></t>
-<t tx="ekr.20100209160132.11756">The title says it all.
-
-This was likely fixed at rev 2438 of the trunk, in early October, 2009.
-</t>
-<t tx="ekr.20100209160132.11765">The module imported correctly, but leoTest.checkFileSyntax was failing.
-
-It was a whitespace problem--the fix was stripping '\r' characters in checkFileSyntax.
-</t>
-<t tx="ekr.20100209160132.11767"></t>
-<t tx="ekr.20100209160132.11770">There may have been a bug in the (no-longer-existing) open_with plugin that allowed it to be active when it shouldn't have been.
-</t>
-<t tx="ekr.20100209160132.11771">@nocolor-node
-
-I am getting an exception when double-clicking to rename a node. The
-exception does not occur when I rename a new node immediately
-following creation while it is highlighted.
-
-#---#
-Leo Log Window
-Leo 4.7 beta 3, build 2835, February 2, 2010
-Python 3.1.1, qt version 4.6.1
-Windows 6, 1, 7600, 2,
-reading: C:\Users\skrivsm\Documents\toolbox\scratch\ruby_scratch.leo
-creating:   newHeadline_LeoTemp_63898064.py
-exception creating temp file
-Traceback (most recent call last):
- File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
-createOpenWithTempFile
-   f.write(s)
-TypeError: must be str, not bytes
-recreating:   newHeadline_LeoTemp_63898064.py
-exception creating temp file
-Traceback (most recent call last):
- File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
-createOpenWithTempFile
-   f.write(s)
-TypeError: must be str, not bytes
-#---#
-</t>
-<t tx="ekr.20100209160132.11773">https://bugs.launchpad.net/leo-editor/+bug/518823
-
-Clone headline modification not propagated after edit
-</t>
 <t tx="ekr.20100209160132.11888">Global entries are in g.app.leoHomeDir/db/global
 
 Per-leo-files entries are in g.app.homeLeoDir/db/&lt;filename&gt;_&lt;hash&gt;
 </t>
-<t tx="ekr.20100211125418.11596"></t>
-<t tx="ekr.20100211125418.11599">This bug was highly annoying: it caused the newly-selected node to have the insert point of a just-deleted node. This bug made it difficult, for example, to delete nodes while examining the nodes created by clone-find-all.
-</t>
-<t tx="ekr.20100211125418.11602"></t>
 <t tx="ekr.20100211125418.11611"></t>
 <t tx="ekr.20100211221936.7098">::
 
     clear-all-caches
     clear-cache
 </t>
-<t tx="ekr.20100223063657.7182">This fixed a Python 3.x compatibility problem.
-</t>
-<t tx="ekr.20100223063657.7192"></t>
-<t tx="ekr.20100223063657.7212">The edit pane lost focus after save commands.
-</t>
-<t tx="ekr.20100223063657.7232">fileKey is needed even if force is True.
-</t>
-<t tx="ekr.20100223063657.7238">https://bugs.launchpad.net/leo-editor/+bug/508108
-</t>
-<t tx="ekr.20100223063657.7245">Default fonts were not being properly restored after being overridden in another language.
-
-For example, after colorizing php, python keywords looked like php keywords.
-</t>
-<t tx="ekr.20100223063657.7246">The bug: Find/change prompts were not fully protected after the user hit the
-&lt;home&gt; key.
-</t>
-<t tx="ekr.20100223063657.7249"></t>
 <t tx="ekr.20100223063657.7262">Leo 4.7 final: February 23, 2010
 
 - Leo now uses the simplest possible internal data model.
@@ -11008,8 +9236,6 @@ For example, after colorizing php, python keywords looked like php keywords.
       reliable in cooperative environments.
 - A new Windows installer.
 </t>
-<t tx="ekr.20100223063657.7263"></t>
-<t tx="ekr.20100223063657.7264"></t>
 <t tx="ekr.20100225102026.7139">Leo 4.7.1 final: February 26, 2010
 
 Leo 4.7.1 fixes a dangerous bug in Leo 4.7. The problem arose because it was too easy to save the .leo file (thus deleting the tnodeList) without forcing the converted external files to be saved. The next time Leo attempted to read the external files, the tnodeList would be missing and data would be lost.
@@ -15369,44 +13595,6 @@ These settings are as follows, with the defaults as shown::
 </t>
 <t tx="ekr.20110602091552.16904">Terminology: the *legacy* (aka tabbed) autocompleter shows completions in Leo's tabbed pane. The *new* (aka qcompleter) autocompleter shows completions in or near the body pane.
 
-Appearance
-==========
-
-There is little change to the legacy completer, except that no text is highlighted in the body pane during completion. This is calmer than before. Furthermore, there is no longer any need for highlighting, because when the user types a backspace the legacy completer now simply deletes a single character instead of the highlighted text.
-
-One minor change: the legacy completer now *does* insert characters that do not match the start of any possible completion. This is an experimental feature, but it might play well with using codewise completions as a fallback to Leo-related completions.
-
-Function and design
-===================
-
-Both the legacy and new completer now work *exactly* the same way, because they both use the AutoCompleterClass to compute the list of completions.
-
-The strict "stateless" requirement means that the "intermediate" completions must be entered into the body pane while completion is active. It works well as a visual cue when using the tabbed completer: indeed, the tabbed completer would be difficult to use without this cue.
-
-The situation is slightly different with the qcompleter. Adding code before the user accepts the completion might be considered an "advanced" feature. However, it does have two important advantages, especially when "chaining" across periods: it indicates the status of the chaining and it limits what must appear in the qcompleter window.
-
-Codewise completions
-====================
-
-The codewise-oriented completions appear to work well. In large part, this is due to adding the global "self." completions to all class-related completions (kind == 'class' in ac.get_codewise_completions). This looks like a really good hack, and it eliminates the need for the ContextSniffer class.
-
-Performance
-===========
-
-Performance of Leo-related completions is *much* better than before. The old code used Python's inspect module and was horribly complex. The new code uses eval and is perfectly straightforward.
-
-The present codewise-related code caches completions for all previously-seen prefixes. This dramatically speeds up backspacing. Global caching is possible because completions depend *only* on the present prefix, *not* on the presently selected node. If ContextSniffer were used, completions would depend on the selected node and caching would likely be impractical. Despite these improvements, the performance of codewise-oriented completions is noticeably slower than Leo-related completions.
-
-Performance notes
-=================
-
-The ac.get_cached_options cuts back the prefix until it finds a cached prefix. ac.compute_completion_list then uses this (perhaps-way-too-long-list) as a starting point, and computes the final completion list by calling g.itemsMatchingPrefixInList.
-
-This may not be absolutely the fastest way, but it is much simpler and more robust than attempting to do "prefix AI" based on comparing old and new prefixes. Furthermore, this scheme is completely independent of the how completions are actually computed. The autocompleter now caches options lists, regardless of whether using eval or codewise.
-
-In most cases the scheme is extremely fast: calls to get_completions replace calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large lists can't be helped in any case for short prefixes.
-
-Happily, the new scheme is still *completely* stateless: the completionDict does *not* define state (it is valid everywhere) and no state variables had to be added. In short, the new caching scheme is much better than before, and it probably is close to optimal in most situations.
 </t>
 <t tx="ekr.20110611055444.16726">- Changed names of commands so they have common prefixes
 
@@ -17432,11 +15620,6 @@ You will get something like the following::
       --window-size=WINDOW_SIZE
                             initial window size (height x width)
 </t>
-<t tx="ekr.20131008041326.16177">This section discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.
-
-..  .. contents::
-    ..  :depth: 2
-</t>
 <t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">.. |---| unicode:: U+02015
    :trim:
@@ -19269,16 +17452,17 @@ Supported by plugins:
 - mod_scripting.py: @button, @command, @script
 - viewrendered.py: @graphics-script, @image, @html, @movie and @svg
 </t>
-<t tx="ekr.20131031101712.16685">- Tab completion now shows all @command &amp; @button nodes.
-- Leo tabs may be detached from the main window.
-- The Open With menu now works.
-- Leo can highlight the pane containing the focus.
-- The bigdash plugin searches across multiple files.
-- Improved abbreviation capabilities.
-- Improved handling of URL's.
-- Improved editing of non-Leo files.
-- Improvements create "weightless" unit testing.
+<t tx="ekr.20131031101712.16685">Leo 4.10 final was released March 29, 2012. It contained a huge number of improvements and bug fixes.
 
+  Tab completion now shows all @command &amp; @button nodes
+  Leo tabs may be detached from the main window
+  The bigdash plugin searches across multiple files
+  Improved abbreviations
+  Improved handling of URL's
+  Improved editing of non-Leo files
+  Improvements create "weightless" unit testing
+  Improved Leo's home page
+  Easier installation on MacOS
 </t>
 <t tx="ekr.20131031101712.17211"></t>
 <t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and `Python's`_ web sites their distinctive appearance and features.
@@ -21440,34 +19624,28 @@ the 4.2 code base are complete:
 
 1. This is the first stable version using the "shared nodes" code base.
 
-Shared nodes dramatically improve the time needed to insert, delete, and move
-nodes. Moreover, the new code base is code compatible with the old. Indeed, much
-of Leo still uses the old code base. See the Scripting Leo for full details of how to
-script Leo with the 4.2 code base.
+Shared nodes dramatically improve the time needed to insert, delete, and
+move nodes. Moreover, the new code base is code compatible with the old.
+Indeed, much of Leo still uses the old code base. See the Scripting Leo for
+full details of how to script Leo with the 4.2 code base.
 
 2. This is the first version to use @file-thin for most external files.
 
 @file-thin makes it possible to use Leo effectively in a cvs environment.  Indeed, cvs now contains only a "dummy" version of LeoPy.leo.  The idea is that:
 
-- LeoPyRef.leo hardly ever changes. Developers will download LeoPyRef.leo once
+LeoPyRef.leo hardly ever changes. Developers will download LeoPyRef.leo once
 from cvs, then rename LeoPyRef.leo to be LeoPy.leo. LeoPy.leo is private to each
-developer.</t>
+developer.
+</t>
 <t tx="ekr.20150301045135.34"></t>
-<t tx="ekr.20150301124500.10"></t>
-<t tx="ekr.20150301124500.11"></t>
-<t tx="ekr.20150301124500.12"></t>
-<t tx="ekr.20150301124500.13"></t>
 <t tx="ekr.20150301124500.4"></t>
 <t tx="ekr.20150301124500.6"></t>
-<t tx="ekr.20150301124500.8"></t>
-<t tx="ekr.20150301124500.9"></t>
 <t tx="ekr.20150301130652.10"></t>
 <t tx="ekr.20150301130652.12"></t>
 <t tx="ekr.20150301130652.13"></t>
 <t tx="ekr.20150301130652.15"></t>
 <t tx="ekr.20150301130652.16"></t>
 <t tx="ekr.20150301130652.17"></t>
-<t tx="ekr.20150301130652.18"></t>
 <t tx="ekr.20150301130652.19"></t>
 <t tx="ekr.20150301130652.20"></t>
 <t tx="ekr.20150301130652.21"></t>
@@ -22097,46 +20275,6 @@ Here is git-difftool.bat::
 </t>
 <t tx="ekr.20150312013449.4"></t>
 <t tx="ekr.20150312013449.5">This documentation should be folded into the users guide.</t>
-<t tx="ekr.20150312025000.2197">Leo 4.10 final: March 29, 2012
-
-* Dozens of new and improved features and commands, including...
-  - Tab completion now shows all @command &amp; @button nodes.
-  - Leo tabs may be detached from the main window.
-  - The Open With menu now works.
-  - The leoInspect module answers questions about Python code.
-  - Leo can highlight the pane containing the focus.
-  - The bigdash plugin searches across multiple files.
-  - Improved abbreviation capabilities.
-  - Improved handling of URL's.
-  - Improved editing of non-Leo files.
-  - Improvements create "weightless" unit testing.
-  - Improved Leo's home page.
-* Easier installation on MacOS.
-* Fixed almost 70 bugs.
-
-The Easter Eggs
----------------
-
-1. Tab completion now shows all @command &amp; @button nodes.
-
-Put all your common scripts in @command nodes in myLeoSettings.leo.
-Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts.
-You can execute the scripts by name without the "@command-" prefix.
-
-2. Improved abbreviation capabilities.
-
-Virtually any kind of abbreviation is possible. For example, ~a to Ā.
-
-3. Improved handling of URL's.
-
-URL's can be used as links to other Leo outlines.
-
-4 Weightless unit testing.
-
-The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
-alt-4,... Several seemingly innocuous changes made this work without
-"friction". The result is a remarkable increase in productivity.
-</t>
 <t tx="ekr.20150312025000.2288">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
 
 For almost 15 years Leo has been written using a limited set of classes.
@@ -22153,15 +20291,10 @@ understandable concept.
 With this introduction, here is a short summary of Leo's new classes. Some
 have not been fully implemented. Getting them all to work is a big part of
 the rewrite of Leo's config, loading and key-handling code.
-
 </t>
-<t tx="ekr.20150312025000.2289">This class handles all the messy details of loading .leo files at startup.
-This class encapsulates almost all the code in runLeo.py, as well as some
-methods in leoGlobals.py that really belong somewhere else.
+<t tx="ekr.20150312025000.2289">This class handles all the messy details of loading .leo files at startup. This class encapsulates almost all the code in runLeo.py, as well as some methods in leoGlobals.py that really belong somewhere else.
 
-Creating a class simplifies the code to a surprising degree: 5 or 6 ivars
-of the class represent command-line options. These ivars are always
-available: there is no need to pass them around as arguments.
+Creating a class simplifies the code to a surprising degree: 5 or 6 ivars of the class represent command-line options. These ivars are always available: there is no need to pass them around as arguments.
 </t>
 <t tx="ekr.20150312025000.2290">The ModeController class represents a collection of modes. The ModeInfo
 class represents a single mode.
@@ -22272,7 +20405,6 @@ Of course, to rexecute the command later, I can use repeat-complex-command
 (Ctrl-P).
 
 Summary
-=======
 
 If you put all your commonly-used scripts in @command nodes, you can use
 &lt;Alt-X&gt;@c&lt;Tab&gt; to remind yourself of their names. That is, Leo's typing
@@ -23046,13 +21178,6 @@ out that hints about what might be done.
 </t>
 <t tx="ekr.20150312080344.27">Leo 5.1 b1: March 20, 2015
 
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
-
-Leo is a PIM, an IDE and an outliner. Video tutorials: http://leoeditor.com/screencasts.html Text tutorials: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 5.1
---------------------------
-
 * @clean trees, one of the most important developments in Leo's history.
 
   @clean create external files without sentinel comments, yet Leo can
@@ -23373,6 +21498,62 @@ The **compare-leo-outlines** command prompts for another (presumably similar) .l
     KeyStroke &amp; ShortcutInfo
     LoadManager
     TestManager
+</t>
+<t tx="ekr.20150312080344.67"></t>
+<t tx="ekr.20150312080344.68">##############
+History of Leo
+##############
+
+This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronical of every little detail.
+
+.. contents::
+    :depth: 3
+</t>
+<t tx="ekr.20150312080344.69"></t>
+<t tx="ekr.20150312080344.70">1. Tab completion now shows all @command &amp; @button nodes.
+
+Put all your common scripts in @command nodes in myLeoSettings.leo. Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts. You can execute the scripts by name without the "@command-" prefix.
+
+2. Improved abbreviation capabilities.
+
+Virtually any kind of abbreviation is possible. For example, ~a to Ā.
+
+3. Improved handling of URL's.
+
+URL's can be used as links to other Leo outlines.
+
+4 Weightless unit testing.
+
+The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit, alt-4,... Several seemingly innocuous changes made this work without "friction". The result is a remarkable increase in productivity.
+</t>
+<t tx="ekr.20150312080344.71">There is little change to the legacy completer, except that no text is highlighted in the body pane during completion. This is calmer than before. Furthermore, there is no longer any need for highlighting, because when the user types a backspace the legacy completer now simply deletes a single character instead of the highlighted text.
+
+One minor change: the legacy completer now *does* insert characters that do not match the start of any possible completion. This is an experimental feature, but it might play well with using codewise completions as a fallback to Leo-related completions.
+
+</t>
+<t tx="ekr.20150312080344.72">Both the legacy and new completer now work *exactly* the same way, because they both use the AutoCompleterClass to compute the list of completions.
+
+The strict "stateless" requirement means that the "intermediate" completions must be entered into the body pane while completion is active. It works well as a visual cue when using the tabbed completer: indeed, the tabbed completer would be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before the user accepts the completion might be considered an "advanced" feature. However, it does have two important advantages, especially when "chaining" across periods: it indicates the status of the chaining and it limits what must appear in the qcompleter window.
+
+</t>
+<t tx="ekr.20150312080344.73">The codewise-oriented completions appear to work well. In large part, this is due to adding the global "self." completions to all class-related completions (kind == 'class' in ac.get_codewise_completions). This looks like a really good hack, and it eliminates the need for the ContextSniffer class.
+
+</t>
+<t tx="ekr.20150312080344.74">Performance of Leo-related completions is *much* better than before. The old code used Python's inspect module and was horribly complex. The new code uses eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all previously-seen prefixes. This dramatically speeds up backspacing. Global caching is possible because completions depend *only* on the present prefix, *not* on the presently selected node. If ContextSniffer were used, completions would depend on the selected node and caching would likely be impractical. Despite these improvements, the performance of codewise-oriented completions is noticeably slower than Leo-related completions.
+
+Notes:
+
+The ac.get_cached_options cuts back the prefix until it finds a cached prefix. ac.compute_completion_list then uses this (perhaps-way-too-long-list) as a starting point, and computes the final completion list by calling g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more robust than attempting to do "prefix AI" based on comparing old and new prefixes. Furthermore, this scheme is completely independent of the how completions are actually computed. The autocompleter now caches options lists, regardless of whether using eval or codewise.
+
+In most cases the scheme is extremely fast: calls to get_completions replace calls to g.itemsMatchingPrefixInList. However, for short prefixes, the list that g.g.itemsMatchingPrefixInList scans can have thousands of items. Scanning large lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict does *not* define state (it is valid everywhere) and no state variables had to be added. In short, the new caching scheme is much better than before, and it probably is close to optimal in most situations.
 </t>
 <t tx="ekr.20150312080344.9">1. The @data abbreviations-subst-env node contains a script defining the environment in which all abbreviations execute. This allows helper functions to be defined. Very handy.
    

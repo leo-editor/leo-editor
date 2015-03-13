@@ -38,6 +38,7 @@ Leo's Documentation Page
    Users Guide <usersguide>
    leoandotherprograms
    intermediatetopics
+   history
    appendices
 
 .. toctree::
