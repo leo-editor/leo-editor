@@ -1114,24 +1114,18 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
-<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
-<v t="ekr.20150227184811.5"><vh>Done</vh></v>
-<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
-<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
-</v>
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>* @clean</vh></v>
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
 <v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
+<v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
 </v>
-<v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
 <v t="ekr.20150313053238.42"><vh>Why @clean is so important</vh>
 <v t="ekr.20150311123850.55"><vh>Steve Zatz: in praise of @clean</vh></v>
 <v t="ekr.20150311123850.56"><vh>EKR: Why @clean is so important</vh></v>
 </v>
+<v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
 <v t="ekr.20150311123850.11"><vh>Bugs fixed</vh>
 <v t="ekr.20150311123850.12"><vh>Fixed bug in g.reportBadChars</vh></v>
 <v t="ekr.20150311123850.13"><vh>Fixed Python3 compatibility bug in g.pause</vh></v>
@@ -1178,7 +1172,6 @@
 </v>
 <v t="ekr.20150311123850.53"><vh>Major features</vh>
 <v t="ekr.20150311123850.54"><vh>\@clean updates outlines automatically</vh></v>
-<v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 </v>
 </v>
@@ -1307,6 +1300,13 @@
 <v t="ekr.20150312080344.14"><vh>Using classes instead of functions</vh></v>
 <v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
 </v>
+</v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
+<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
+<v t="ekr.20150227184811.5"><vh>Done</vh></v>
+<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
+<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -16934,6 +16934,7 @@ x.sentinels.
 ** Ask people to report poor docstrings.
 ** Scan for poor docstrings:  Use a script.
 
+- Test read web page
 - Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
 - Document @auto-rst/md/vo/otl.
@@ -17801,8 +17802,6 @@ The "Upload from your hard drive" button loads a .leo file from you hard drive. 
 Either way, the leoeditor.com server will replace the page by the .leo file as rendered by Ville's leo_to_html.xsl file. The new page will be called something like::
 
     http://leoeditor.com/show-leo-0004.leo
-
-There can be up to 1000 such pages open at once.
 
 **Important**: At present, there must be *some* kind of &lt;?xml-stylesheet&gt; element in the .leo file. Many leo files have the following do-nothing line near the start::
 
