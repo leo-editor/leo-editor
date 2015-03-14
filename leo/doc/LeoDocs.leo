@@ -127,6 +127,7 @@
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
+<v t="ekr.20150313192232.12"><vh>Script: check all command names</vh></v>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
 <v t="ekr.20101111175617.56915"><vh>class controller</vh>
 <v t="ekr.20101112045055.13356"><vh>allowDir</vh></v>
@@ -1291,7 +1292,6 @@
 <v t="ekr.20150314050809.5"><vh>Vim mode commands</vh></v>
 <v t="ekr.20150314050809.12"><vh>Windows/Focus commands</vh></v>
 </v>
-<v t="ekr.20150313192232.12"><vh>Script: check all command names</vh></v>
 <v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
@@ -18192,6 +18192,16 @@ Alt+Key+7 run-selected-unit-tests-externally
 <t tx="ekr.20150313192232.10"></t>
 <t tx="ekr.20150313192232.11"></t>
 <t tx="ekr.20150313192232.12">@language python
+'''
+Print all command names from headlines in Docstrings outline not appearing in
+Commands Reference.
+
+This script assumes the following outline structure::
+    
+    - This script
+        - Docstrings (a tree produced by "Print commands &amp; docstrings" script).
+    - Commands Reference
+'''
 g.cls()
 ref = p.next()
 assert ref.h == 'Commands Reference'
