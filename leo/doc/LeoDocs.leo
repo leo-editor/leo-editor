@@ -651,14 +651,15 @@
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.100"><vh>File commands</vh>
-<v t="EKR.20040524104904.101" a="M"><vh>Loading, Saving and Reverting Files</vh>
-<v t="ekr.20150313150212.11"><vh>open-outline-by-name</vh></v>
-</v>
-<v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
-<v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
-<v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
-<v t="EKR.20040524104904.110"><vh>Quitting Leo</vh></v>
+<v t="ekr.20150312080344.9" a="M"><vh>Abbreviations</vh></v>
+<v t="ekr.20150313150212.13" a="M"><vh>Debug commands</vh>
+<v t="ekr.20090717084250.10889"><vh>pdb</vh></v>
+<v t="ekr.20150313150212.14"><vh>print-</vh></v>
+<v t="ekr.20150313150212.15"><vh>dump-</vh></v>
+<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
+<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
+<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
+<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
 </v>
 <v t="EKR.20040524104904.111" a="M"><vh>Edit commands</vh>
 <v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
@@ -688,13 +689,20 @@
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.118"><vh>Search commands</vh>
-<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
-<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
-<v t="ekr.20141120113801.169"><vh>The clone-find commands</vh></v>
+<v t="EKR.20040524104904.100"><vh>File commands</vh>
+<v t="EKR.20040524104904.101" a="M"><vh>Loading, Saving and Reverting Files</vh>
+<v t="ekr.20150313150212.11"><vh>open-outline-by-name</vh></v>
+</v>
+<v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
+<v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
+<v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
+<v t="EKR.20040524104904.110"><vh>Quitting Leo</vh></v>
+</v>
+<v t="EKR.20040524104904.157" a="M"><vh>Help commands</vh></v>
+<v t="ekr.20150313150212.20" a="M"><vh>Misc commands</vh>
+<v t="ekr.20150312080344.5"><vh>join-leo-irc command</vh></v>
+<v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
+<v t="ekr.20150312080344.26"><vh>The style-reload command changes Leo's appearance instantly</vh></v>
 </v>
 <v t="EKR.20040524104904.143"><vh>Outline commands</vh>
 <v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
@@ -709,6 +717,28 @@
 <v t="ekr.20150312080344.40"><vh>Comparing outlines</vh></v>
 <v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
 </v>
+<v t="ekr.20150313150212.7" a="M"><vh>Parsing commands</vh>
+<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
+<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
+</v>
+<v t="ekr.20150313150212.19" a="M"><vh>Plugin commands</vh>
+<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh>
+<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
+</v>
+<v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
+<v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
+</v>
+<v t="EKR.20040524104904.118"><vh>Search commands</vh>
+<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
+<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
+<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
+<v t="ekr.20141120113801.169"><vh>The clone-find commands</vh></v>
+</v>
+<v t="ekr.20141120113801.176" a="M"><vh>Spell commands</vh></v>
+<v t="ekr.20150313150212.16" a="M"><vh>Unit testing commands</vh></v>
 <v t="EKR.20040524104904.151" a="M"><vh>Window commands</vh>
 <v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
 <v t="ekr.20101124102457.5183"><vh>cascade-windows and minimize-all-windows</vh></v>
@@ -722,36 +752,6 @@
 <v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
 <v t="ekr.20141120113801.168"><vh>Added focus-to-find/spell commands</vh></v>
 </v>
-<v t="EKR.20040524104904.157" a="M"><vh>Help commands</vh></v>
-<v t="ekr.20150313150212.13" a="M"><vh>Debug commands</vh>
-<v t="ekr.20090717084250.10889"><vh>pdb</vh></v>
-<v t="ekr.20150313150212.14"><vh>print-</vh></v>
-<v t="ekr.20150313150212.15"><vh>dump-</vh></v>
-<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
-<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
-<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
-<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
-</v>
-<v t="ekr.20141120113801.176" a="M"><vh>Spell commands</vh></v>
-<v t="ekr.20150313150212.20" a="M"><vh>Misc commands</vh>
-<v t="ekr.20150312080344.5"><vh>join-leo-irc command</vh></v>
-<v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
-<v t="ekr.20150312080344.26"><vh>The style-reload command changes Leo's appearance instantly</vh></v>
-</v>
-<v t="ekr.20150313150212.19" a="M"><vh>Plugin commands</vh>
-<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh>
-<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
-</v>
-<v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
-<v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
-</v>
-<v t="ekr.20150313150212.7" a="M"><vh>Parsing commands</vh>
-<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
-<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
-</v>
-<v t="ekr.20150313150212.16" a="M"><vh>Unit testing commands</vh></v>
-<v t="ekr.20150312080344.9" a="M"><vh>Abbreviations</vh></v>
 </v>
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
@@ -1240,6 +1240,7 @@
 <v t="ekr.20150227184811.5"><vh>Done</vh></v>
 <v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
 <v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
+<v t="ekr.20150314050809.16"><vh>Will not be documented</vh></v>
 </v>
 <v t="ekr.20150312013449.5"><vh>** To be documented (5.0)</vh>
 <v t="ekr.20150312080344.15"><vh>To (new?) scripting Chapter</vh>
@@ -1262,12 +1263,9 @@
 <v t="ekr.20150312080344.21"><vh>Added command history (minibuffer tutorial)</vh></v>
 <v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
 <v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 </v>
-<v t="ekr.20110611055444.16726"><vh>** Changed command names</vh></v>
 <v t="ekr.20150313192232.1619"><vh>Undocumented commands</vh>
-<v t="ekr.20150314050809.9"><vh> Huh??</vh></v>
-<v t="ekr.20150314050809.16"><vh> Will not be documented</vh></v>
-<v t="ekr.20150314044011.6"><vh>@ commands</vh></v>
 <v t="ekr.20150314050809.6"><vh>abbrev commands</vh></v>
 <v t="ekr.20150314050809.21"><vh>Advanced text editing commands</vh></v>
 <v t="ekr.20150314050809.10"><vh>Basic text editing commands</vh></v>
@@ -10929,31 +10927,23 @@ These settings are as follows, with the defaults as shown::
 </t>
 <t tx="ekr.20110601105631.19349">
 </t>
-<t tx="ekr.20110611055444.16726">- Changed names of commands so they have common prefixes
+<t tx="ekr.20110611055444.16726">Many command names have common prefixes::
 
-    Any custom key bindings (none are bound by default) will have to change.
-    
-    The new prefixes are::
-    
-        abbrev-     abbreviation commands
-        buffer-     buffer command
-        directory-  director commands
-        file-       file commands
-        gc-         garbage collection
-        macro-      macro expansion
-        rectangle-  rectangle commands
-        register    register commands
-        
-    The already existing prefixes are::
-    
-        apropos-    help
-        ddabrev-    dynamic abbreviations
-        find-       find commands
-        isearch-    incremental search
-        print-      print information
-        run-        run unit tests
-        toggle-     toggle settings
-        yank-       yank
+    abbrev-     abbreviation commands
+    buffer-     buffer command
+    ddabrev-    dynamic abbreviations
+    directory-  director commands
+    file-       file commands
+    find-       find commands
+    gc-         garbage collection
+    isearch-    incremental search
+    macro-      macro expansion
+    print-      print information
+    rectangle-  rectangle commands
+    register    register commands
+    run-        run unit tests
+    toggle-     toggle settings
+    yank-       yank
 
 </t>
 <t tx="ekr.20110612104631.16414">**New in Leo 4.9**: The following three options allow you to expand noweb section references, much like Leo itself does.
@@ -16469,7 +16459,13 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">Revise 5.1 release notes.
+<t tx="ekr.20150215071358.87">*** Use different formatting for Commands Reference?
+    It might be better to use the rSt definition list style:
+    
+    term
+        definition
+
+Revise 5.1 release notes.
 - Links to other docs?
 - Link to the Mulder/Ream algorithm from the release notes.
     
@@ -18278,33 +18274,6 @@ vr-show
 vr-toggle
 vr-unlock
 vr-update</t>
-<t tx="ekr.20150314044011.6">@button-jedit2py
-@button-replace-g-choose
-@button-write-unit-tests
-@command-align-eq-signs
-@command-c-to-python-clean-docs
-@command-clean-all-blank-lines
-@command-clean-body
-@command-clean-diff
-@command-clean-spellpyx
-@command-count-pages
-@command-create-@auto-nodes
-@command-create-def-list
-@command-do-after
-@command-do-before
-@command-flatten-script
-@command-join-node-above
-@command-join-node-below
-@command-join-selection-to-node-below
-@command-load-all-leo-files
-@command-make-test
-@command-preview-node
-@command-preview-tree
-@command-print-cmd-docstrings
-@command-promote-bodies
-@command-remove-newlines
-@command-split-defs
-</t>
 <t tx="ekr.20150314044011.7">@language python
 # From Script: clean ekr-spellpyx.txt
 p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
@@ -18494,6 +18463,8 @@ gui-tabbar-toggle
 hide-spell-tab
 iconify-frame
 resize-to-screen
+suspend
+    Minimize the present Leo window. 
 unmark-all</t>
 <t tx="ekr.20150314050809.13">advertised-undo</t>
 <t tx="ekr.20150314050809.15">at-file-to-at-auto
@@ -18529,6 +18500,8 @@ read-at-shadow-nodes
 refresh-from-disk
 save-all
 save-buffers-kill-leo
+sort-recent-files
+    Sort the recent files list in the File menu
 write-at-auto-nodes
 write-at-shadow-nodes
 write-dirty-at-auto-nodes
@@ -18536,7 +18509,8 @@ write-dirty-at-shadow-nodes
 write-missing-at-file-nodes
 write-unit-tests
 </t>
-<t tx="ekr.20150314050809.16">digit-argument
+<t tx="ekr.20150314050809.16">.. Obscure, unused, minibuffer-related commands.
+digit-argument
 menu-shortcut
 negative-argument
 number-command
@@ -18552,13 +18526,17 @@ number-command-8
 number-command-9
 self-insert-command
 universal-argument
-
+.. Deprecated tangle/untangle commands
 tangle
 tangle-all
 tangle-marked
 untangle
 untangle-all
-untangle-marked</t>
+untangle-marked
+.. All commands created by @command and @button.
+delete-@button-make-sphinx-button
+delete-@button-remove-dups-button
+</t>
 <t tx="ekr.20150314050809.17">abort-edit-headline
 clone-node-to-last-node
 contract-all-other-nodes
@@ -18604,9 +18582,15 @@ clean-body
 code-to-rst
 enter-quick-command-mode
 exit-named-mode
+flush-lines
+    Delete each line that contains a match for regexp, operating on the text after point.
+    In Transient Mark mode, if the region is active, the command operates on the region instead. 
 join-node-above
 join-node-below
 join-selection-to-node-below
+keep-lines
+    Delete each line that does not contain a match for regexp, operating on the text after point.
+    In Transient Mark mode, if the region is active, the command operates on the region instead. 
 open-url
 open-url-under-cursor
 parse-body
@@ -18660,7 +18644,9 @@ jedit2py
 
 delete-script-button-button
 script-button</t>
-<t tx="ekr.20150314050809.27">eval-expression
+<t tx="ekr.20150314050809.27">escape
+    Enter watch escape mode.
+eval-expression
     Evaluate an expression entered in the minibuffer.
 full-command
 history
@@ -18670,6 +18656,11 @@ repeat-complex-command</t>
 <t tx="ekr.20150314050809.29">clean-persistence
 clean-recent-files
 clean-spellpyx
+
+cm-external-editor
+    Open node in external editor
+    Set LEO_EDITOR/EDITOR environment variable to get the editor you want. 
+
 cls
 join-leo-irc
 style-set-selected
@@ -18776,25 +18767,6 @@ abbrev-read
 abbrev-write
 dabbrev-completion
 dabbrev-expands</t>
-<t tx="ekr.20150314050809.9">delete-@button-jedit2py-button
-delete-@button-replace-g-choose-button
-delete-@button-write-unit-tests-button
-replace-g-choose
-
-
-clean-diff
-cm-external-editor
-create-def-list
-do-after
-do-before
-do-nothing
-escape
-flush-lines
-keep-lines
-sort-recent-files
-split-defs
-suspend
-</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
