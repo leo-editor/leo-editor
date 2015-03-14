@@ -124,6 +124,7 @@
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
+<v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
@@ -1262,7 +1263,34 @@
 <v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 </v>
 <v t="ekr.20110611055444.16726"><vh>** Changed command names</vh></v>
-<v t="ekr.20150313192232.1619"><vh>Undocumented commands</vh></v>
+<v t="ekr.20150313192232.1619"><vh>Undocumented commands</vh>
+<v t="ekr.20150314050809.9"><vh> Huh??</vh></v>
+<v t="ekr.20150314050809.16"><vh> Will not be documented</vh></v>
+<v t="ekr.20150314044011.6"><vh>@ commands</vh></v>
+<v t="ekr.20150314050809.6"><vh>abbrev commands</vh></v>
+<v t="ekr.20150314050809.21"><vh>Advanced text editing commands</vh></v>
+<v t="ekr.20150314050809.10"><vh>Basic text editing commands</vh></v>
+<v t="ekr.20150314050809.11"><vh>Buffer commands</vh></v>
+<v t="ekr.20150314050809.31"><vh>Chapters commands</vh></v>
+<v t="ekr.20150314050809.23"><vh>clear/enable/disable/set/toggle</vh></v>
+<v t="ekr.20150314050809.4"><vh>Cursor movement commands</vh></v>
+<v t="ekr.20150314050809.19"><vh>Debug commands</vh></v>
+<v t="ekr.20150314050809.15"><vh>File commands</vh></v>
+<v t="ekr.20150314050809.18"><vh>Find/Search commands</vh></v>
+<v t="ekr.20150314050809.25"><vh>Help commands</vh></v>
+<v t="ekr.20150314050809.20"><vh>Icons</vh></v>
+<v t="ekr.20150314050809.27"><vh>Minibuffer</vh></v>
+<v t="ekr.20150314050809.29"><vh>Misc</vh></v>
+<v t="ekr.20150314050809.17"><vh>Outline commands</vh></v>
+<v t="ekr.20150314044011.5"><vh>Plugin commands</vh></v>
+<v t="ekr.20150314050809.26"><vh>Scripts &amp; script buttons</vh></v>
+<v t="ekr.20150314050809.22"><vh>Session commands</vh></v>
+<v t="ekr.20150314050809.30"><vh>show/print/preview</vh></v>
+<v t="ekr.20150314050809.28"><vh>Testing</vh></v>
+<v t="ekr.20150314050809.13"><vh>Undo commands</vh></v>
+<v t="ekr.20150314050809.5"><vh>Vim mode commands</vh></v>
+<v t="ekr.20150314050809.12"><vh>Windows/Focus commands</vh></v>
+</v>
 <v t="ekr.20150313192232.12"><vh>Script: check all command names</vh></v>
 <v t="EKR.20040524104904.99"></v>
 </vnodes>
@@ -18189,547 +18217,7 @@ if 1:
     for z in sorted(not_found):
         print(z)
 print('found: %s not found: %s' % (len(found),len(not_found)))</t>
-<t tx="ekr.20150313192232.1619">@nocolor-node
-
-not found: :%s
-not found: :s
-not found: :r
-not found: :e
-not found: :tabnew
-not found: abbrev-add-global
-not found: abbrev-inverse-add-global
-not found: abbrev-kill-all
-not found: abbrev-list
-not found: abbrev-read
-not found: abbrev-write
-not found: dabbrev-completion
-not found: dabbrev-expands
-not found: toggle-abbrev-mode
-not found: check-derived-file
-not found: write-at-auto-nodes
-not found: write-dirty-at-auto-nodes
-not found: auto-complete
-not found: auto-complete-force
-not found: disable-autocompleter
-not found: disable-calltips
-not found: enable-autocompleter
-not found: enable-calltips
-not found: show-calltips
-not found: show-calltips-force
-not found: toggle-autocompleter
-not found: toggle-calltips
-not found: buffer-append-to
-not found: buffer-kill
-not found: buffer-prepend-to
-not found: buffer-switch-to
-not found: buffers-list
-not found: buffers-list-alphabetically
-not found: chapter-convert-node-to
-not found: chapter-create-from-node
-not found: chapter-rename
-not found: clean-recent-files
-not found: clone-node-to-last-node
-not found: contract-all-other-nodes
-not found: contract-parent
-not found: de-hoist
-not found: dump-outline
-not found: edit-headline
-not found: expand-all-subheads
-not found: expand-ancestors-only
-not found: expand-next-level
-not found: expand-or-go-right
-not found: expand-prev-level
-not found: expand-to-level-1
-not found: expand-to-level-2
-not found: expand-to-level-3
-not found: expand-to-level-4
-not found: expand-to-level-5
-not found: expand-to-level-6
-not found: expand-to-level-7
-not found: expand-to-level-8
-not found: expand-to-level-9
-not found: export-headlines
-not found: find-next-clone
-not found: go-back
-not found: go-forward
-not found: goto-first-node
-not found: goto-first-visible-node
-not found: goto-last-node
-not found: goto-last-visible-node
-not found: goto-next-changed
-not found: goto-next-clone
-not found: goto-next-history-node
-not found: goto-next-node
-not found: goto-next-sibling
-not found: goto-next-visible
-not found: goto-parent
-not found: goto-prev-history-node
-not found: goto-prev-node
-not found: goto-prev-sibling
-not found: goto-prev-visible
-not found: hide-invisibles
-not found: insert-child
-not found: open-local-settings
-not found: open-myLeoSettings-leo
-not found: open-python-window
-not found: open-quickstart-leo
-not found: open-scripts-leo
-not found: open-users-guide
-not found: read-at-auto-nodes
-not found: read-at-shadow-nodes
-not found: refresh-from-disk
-not found: save-all
-not found: set-colors
-not found: set-font
-not found: show-invisibles
-not found: sort-children
-not found: sort-recent-files
-not found: sort-siblings
-not found: tangle
-not found: tangle-all
-not found: tangle-marked
-not found: toggle-invisibles
-not found: toggle-sparse-move
-not found: unmark-all
-not found: untangle
-not found: untangle-all
-not found: untangle-marked
-not found: act-on-node
-not found: advertised-undo
-not found: iconify-frame
-not found: print-plugin-handlers
-not found: print-plugins-info
-not found: save-buffers-kill-leo
-not found: set-silent-mode
-not found: shell-command
-not found: shell-command-on-region
-not found: suspend
-not found: gc-collect-garbage
-not found: gc-dump-all-objects
-not found: gc-dump-new-objects
-not found: gc-dump-objects-verbose
-not found: gc-print-summary
-not found: gc-trace-disable
-not found: gc-trace-enable
-not found: pdb
-not found: print-focus
-not found: back-char
-not found: back-char-extend-selection
-not found: back-page
-not found: back-page-extend-selection
-not found: back-paragraph
-not found: back-paragraph-extend-selection
-not found: back-sentence
-not found: back-sentence-extend-selection
-not found: back-to-home
-not found: back-to-home-extend-selection
-not found: back-to-indentation
-not found: back-word-extend-selection
-not found: backward-delete-char
-not found: backward-find-character
-not found: backward-find-character-extend-selection
-not found: backward-kill-paragraph
-not found: beginning-of-buffer
-not found: beginning-of-buffer-extend-selection
-not found: beginning-of-line
-not found: beginning-of-line-extend-selection
-not found: c-to-python
-not found: capitalize-word
-not found: center-line
-not found: center-region
-not found: clear-all-caches
-not found: clear-all-uas
-not found: clear-cache
-not found: clear-extend-mode
-not found: clear-node-uas
-not found: count-region
-not found: ctrl-click-icon
-not found: cycle-focus
-not found: delete-char
-not found: delete-first-icon
-not found: delete-indentation
-not found: delete-last-icon
-not found: delete-node-icons
-not found: delete-spaces
-not found: do-nothing
-not found: downcase-region
-not found: downcase-word
-not found: end-of-buffer
-not found: end-of-buffer-extend-selection
-not found: end-of-line
-not found: end-of-line-extend-selection
-not found: escape
-not found: eval-expression
-not found: exchange-point-mark
-not found: extend-to-line
-not found: extend-to-paragraph
-not found: extend-to-sentence
-not found: extend-to-word
-not found: fill-paragraph
-not found: fill-region
-not found: fill-region-as-paragraph
-not found: find-character
-not found: find-character-extend-selection
-not found: find-word-in-line
-not found: flush-lines
-not found: focus-to-body
-not found: focus-to-log
-not found: focus-to-minibuffer
-not found: focus-to-tree
-not found: forward-char
-not found: forward-char-extend-selection
-not found: forward-end-word
-not found: forward-end-word-extend-selection
-not found: forward-page
-not found: forward-page-extend-selection
-not found: forward-paragraph
-not found: forward-paragraph-extend-selection
-not found: forward-sentence
-not found: forward-sentence-extend-selection
-not found: forward-word-extend-selection
-not found: goto-char
-not found: goto-line
-not found: how-many
-not found: indent-relative
-not found: indent-rigidly
-not found: indent-to-comment-column
-not found: insert-file-name
-not found: insert-hard-tab
-not found: insert-icon
-not found: insert-newline
-not found: insert-parentheses
-not found: insert-soft-tab
-not found: keep-lines
-not found: kill-paragraph
-not found: line-number
-not found: move-lines-down
-not found: move-lines-up
-not found: move-past-close
-not found: move-past-close-extend-selection
-not found: newline-and-indent
-not found: next-line
-not found: next-line-extend-selection
-not found: previous-line
-not found: previous-line-extend-selection
-not found: print-all-uas
-not found: print-node-uas
-not found: remove-blank-lines
-not found: replace-current-character
-not found: reverse-region
-not found: reverse-sort-lines
-not found: reverse-sort-lines-ignoring-case
-not found: scroll-down-half-page
-not found: scroll-down-line
-not found: scroll-down-page
-not found: scroll-outline-left
-not found: scroll-outline-right
-not found: scroll-up-half-page
-not found: scroll-up-line
-not found: scroll-up-page
-not found: select-to-matching-bracket
-not found: self-insert-command
-not found: set-comment-column
-not found: set-extend-mode
-not found: set-fill-column
-not found: set-fill-prefix
-not found: set-ua
-not found: show-colors
-not found: show-fonts
-not found: sort-columns
-not found: sort-fields
-not found: sort-lines
-not found: sort-lines-ignoring-case
-not found: split-line
-not found: tabify
-not found: toggle-case-region
-not found: toggle-extend-mode
-not found: transpose-chars
-not found: transpose-lines
-not found: transpose-words
-not found: typescript-to-py
-not found: untabify
-not found: upcase-region
-not found: upcase-word
-not found: view-lossage
-not found: what-line
-not found: directory-make
-not found: directory-remove
-not found: file-compare-leo-files
-not found: file-delete
-not found: file-diff-files
-not found: file-insert
-not found: file-open-by-name
-not found: file-save
-not found: check-leo-file
-not found: write-at-shadow-nodes
-not found: write-dirty-at-shadow-nodes
-not found: write-missing-at-file-nodes
-not found: print-settings
-not found: digit-argument
-not found: exit-named-mode
-not found: full-command
-not found: keyboard-quit
-not found: mode-help
-not found: negative-argument
-not found: number-command
-not found: number-command-0
-not found: number-command-1
-not found: number-command-2
-not found: number-command-3
-not found: number-command-4
-not found: number-command-5
-not found: number-command-6
-not found: number-command-7
-not found: number-command-8
-not found: number-command-9
-not found: repeat-complex-command
-not found: set-command-state
-not found: set-insert-state
-not found: set-overwrite-state
-not found: toggle-input-state
-not found: universal-argument
-not found: menu-shortcut
-not found: backward-kill-sentence
-not found: backward-kill-word
-not found: clear-kill-ring
-not found: kill-line
-not found: kill-region
-not found: kill-region-save
-not found: kill-sentence
-not found: kill-to-end-of-line
-not found: kill-word
-not found: kill-ws
-not found: yank
-not found: yank-pop
-not found: zap-to-character
-not found: find-clone-all
-not found: find-clone-all-flattened
-not found: find-tab-hide
-not found: find-tab-open
-not found: focus-to-find
-not found: set-replace-string
-not found: set-search-string
-not found: show-find-options
-not found: toggle-find-collapses-nodes
-not found: abort-edit-headline
-not found: cascade-windows
-not found: end-edit-headline
-not found: equal-sized-panes
-not found: minimize-all
-not found: open-offline-tutorial
-not found: resize-to-screen
-not found: toggle-active-pane
-not found: toggle-split-direction
-not found: cycle-log-focus
-not found: macro-call
-not found: macro-call-last
-not found: macro-end-recording
-not found: macro-load-all
-not found: macro-name-last
-not found: macro-print-all
-not found: macro-print-last
-not found: macro-save-all
-not found: macro-start-recording
-not found: rectangle-clear
-not found: rectangle-close
-not found: rectangle-delete
-not found: rectangle-kill
-not found: rectangle-open
-not found: rectangle-string
-not found: rectangle-yank
-not found: register-append-to
-not found: register-copy-rectangle-to
-not found: register-copy-to
-not found: register-increment
-not found: register-insert
-not found: register-jump-to
-not found: register-point-to
-not found: register-prepend-to
-not found: register-view
-not found: code-to-rst
-not found: rst3
-not found: hide-spell-tab
-not found: open-spell-tab
-not found: :!
-not found: :e!
-not found: :gT
-not found: :gt
-not found: :print-dot
-not found: :q
-not found: :q!
-not found: :qa
-not found: :toggle-vim-mode
-not found: :toggle-vim-trace
-not found: :toggle-vim-trainer-mode
-not found: :w
-not found: :wq
-not found: :xa
-not found: cls
-not found: enter-quick-command-mode
-not found: @button-jedit2py
-not found: @button-replace-g-choose
-not found: @button-write-unit-tests
-not found: @command-align-eq-signs
-not found: @command-c-to-python-clean-docs
-not found: @command-clean-all-blank-lines
-not found: @command-clean-body
-not found: @command-clean-diff
-not found: @command-clean-spellpyx
-not found: @command-count-pages
-not found: @command-create-@auto-nodes
-not found: @command-create-def-list
-not found: @command-do-after
-not found: @command-do-before
-not found: @command-flatten-script
-not found: @command-join-node-above
-not found: @command-join-node-below
-not found: @command-join-selection-to-node-below
-not found: @command-load-all-leo-files
-not found: @command-make-test
-not found: @command-preview-node
-not found: @command-preview-tree
-not found: @command-print-cmd-docstrings
-not found: @command-promote-bodies
-not found: @command-remove-newlines
-not found: @command-split-defs
-not found: align-eq-signs
-not found: at-file-to-at-auto
-not found: bookmarks-bookmark
-not found: bookmarks-bookmark-child
-not found: bookmarks-level-decrease
-not found: bookmarks-level-increase
-not found: bookmarks-mark-as-target
-not found: bookmarks-open-bookmark
-not found: bookmarks-open-node
-not found: bookmarks-show
-not found: bookmarks-switch
-not found: bookmarks-use-other-outline
-not found: c-to-python-clean-docs
-not found: cke-text-close
-not found: cke-text-open
-not found: cke-text-switch
-not found: cke-text-toggle-autosave
-not found: clean-all-blank-lines
-not found: clean-body
-not found: clean-diff
-not found: clean-persistence
-not found: clean-spellpyx
-not found: close-others
-not found: cm-external-editor
-not found: context-menu-open
-not found: count-pages
-not found: create-@auto-nodes
-not found: create-def-list
-not found: ctrl-click-at-cursor
-not found: delete-@button-jedit2py-button
-not found: delete-@button-replace-g-choose-button
-not found: delete-@button-write-unit-tests-button
-not found: delete-script-button-button
-not found: detach-editor-toggle
-not found: detach-editor-toggle-max
-not found: do-after
-not found: do-before
-not found: find-quick
-not found: find-quick-changed
-not found: find-quick-selected
-not found: find-quick-test-failures
-not found: find-quick-timeline
-not found: flatten-script
-not found: focus-to-nav
-not found: free-layout-context-menu
-not found: free-layout-load
-not found: free-layout-load-alternate
-not found: free-layout-load-detached-body
-not found: free-layout-load-no-log
-not found: free-layout-load-standard
-not found: free-layout-restore
-not found: free-layout-zoom
-not found: global-search
-not found: gui-all-hide
-not found: gui-all-show
-not found: gui-all-toggle
-not found: gui-iconbar-hide
-not found: gui-iconbar-show
-not found: gui-iconbar-toggle
-not found: gui-menu-hide
-not found: gui-menu-show
-not found: gui-menu-toggle
-not found: gui-minibuffer-hide
-not found: gui-minibuffer-show
-not found: gui-minibuffer-toggle
-not found: gui-statusbar-hide
-not found: gui-statusbar-show
-not found: gui-statusbar-toggle
-not found: gui-tabbar-hide
-not found: gui-tabbar-show
-not found: gui-tabbar-toggle
-not found: history
-not found: import-zim-folder
-not found: jedit2py
-not found: join-leo-irc
-not found: join-node-above
-not found: join-node-below
-not found: join-selection-to-node-below
-not found: load-all-leo-files
-not found: make-test
-not found: open-url
-not found: open-url-under-cursor
-not found: open-with-idle
-not found: open-with-open office
-not found: open-with-scite
-not found: open-with-word
-not found: parse-body
-not found: preview
-not found: preview-node
-not found: preview-tree
-not found: print-cmd-docstrings
-not found: print-expanded-node
-not found: print-expanded-node-body
-not found: print-marked-node-bodies
-not found: print-marked-nodes
-not found: print-preview-expanded-node
-not found: print-preview-expanded-node-body
-not found: print-preview-marked-node-bodies
-not found: print-preview-marked-nodes
-not found: print-preview-selected-node
-not found: print-preview-selected-node-body
-not found: print-preview-selected-node-body-html
-not found: print-selected-node
-not found: print-selected-node-body
-not found: print-selected-node-body-html
-not found: print-style-sheet
-not found: promote-bodies
-not found: remove-newlines
-not found: replace-g-choose
-not found: richtext-close-editor
-not found: richtext-open-editor
-not found: richtext-switch-editor
-not found: richtext-toggle-autosave
-not found: script-button
-not found: session-clear
-not found: session-create
-not found: session-refresh
-not found: session-restore
-not found: session-snapshot-load
-not found: session-snapshot-save
-not found: split-defs
-not found: style-set-selected
-not found: tab-cycle-next
-not found: tab-cycle-previous
-not found: tab-detach
-not found: vr
-not found: vr-contract
-not found: vr-expand
-not found: vr-hide
-not found: vr-lock
-not found: vr-pause-play-movie
-not found: vr-show
-not found: vr-toggle
-not found: vr-unlock
-not found: vr-update
-not found: write-unit-tests
-done
-</t>
+<t tx="ekr.20150313192232.1619"></t>
 <t tx="ekr.20150313192232.7">- contract-body-pane, contract-log-pane, contract-outline-pane, contract-pane.
 - expand-body-pane, expand-log-pane, expand-outline-pane, expand-pane.
 - fully-expand-body-pane, fully-expand-log-pane, fully-expand-outline-pane, fully-expand-pane.
@@ -18742,6 +18230,561 @@ done
   invoke the vim or xemacs plugins if they are enabled.)
 </t>
 <t tx="ekr.20150313192232.9"></t>
+<t tx="ekr.20150314044011.5">act-on-node
+bookmarks-bookmark
+bookmarks-bookmark-child
+bookmarks-level-decrease
+bookmarks-level-increase
+bookmarks-mark-as-target
+bookmarks-open-bookmark
+bookmarks-open-node
+bookmarks-show
+bookmarks-switch
+bookmarks-use-other-outline
+cke-text-close
+cke-text-open
+cke-text-switch
+cke-text-toggle-autosave
+free-layout-context-menu
+free-layout-load
+free-layout-load-alternate
+free-layout-load-detached-body
+free-layout-load-no-log
+free-layout-load-standard
+free-layout-restore
+free-layout-zoom
+richtext-close-editor
+richtext-open-editor
+richtext-switch-editor
+richtext-toggle-autosave
+rst3
+vr
+vr-contract
+vr-expand
+vr-hide
+vr-lock
+vr-pause-play-movie
+vr-show
+vr-toggle
+vr-unlock
+vr-update</t>
+<t tx="ekr.20150314044011.6">@button-jedit2py
+@button-replace-g-choose
+@button-write-unit-tests
+@command-align-eq-signs
+@command-c-to-python-clean-docs
+@command-clean-all-blank-lines
+@command-clean-body
+@command-clean-diff
+@command-clean-spellpyx
+@command-count-pages
+@command-create-@auto-nodes
+@command-create-def-list
+@command-do-after
+@command-do-before
+@command-flatten-script
+@command-join-node-above
+@command-join-node-below
+@command-join-selection-to-node-below
+@command-load-all-leo-files
+@command-make-test
+@command-preview-node
+@command-preview-tree
+@command-print-cmd-docstrings
+@command-promote-bodies
+@command-remove-newlines
+@command-split-defs
+</t>
+<t tx="ekr.20150314044011.7">@language python
+# From Script: clean ekr-spellpyx.txt
+p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
+<t tx="ekr.20150314050809.10">align-eq-signs
+auto-complete
+auto-complete-force
+backward-delete-char
+backward-find-character
+backward-find-character-extend-selection
+backward-kill-paragraph
+backward-kill-sentence
+backward-kill-word
+capitalize-word
+center-line
+center-region
+count-pages
+count-region
+delete-char
+delete-indentation
+delete-spaces
+downcase-region
+downcase-word
+exchange-point-mark
+extend-to-line
+extend-to-paragraph
+extend-to-sentence
+extend-to-word
+fill-paragraph
+fill-region
+fill-region-as-paragraph
+hide-invisibles
+how-many
+indent-relative
+indent-rigidly
+indent-to-comment-column
+insert-child
+insert-file-name
+insert-hard-tab
+insert-newline
+insert-parentheses
+insert-soft-tab
+kill-line
+kill-paragraph
+kill-region
+kill-region-save
+kill-sentence
+kill-to-end-of-line
+kill-word
+kill-ws
+line-number
+macro-call
+macro-call-last
+macro-end-recording
+macro-load-all
+macro-name-last
+macro-print-all
+macro-print-last
+macro-save-all
+macro-start-recording
+move-lines-down
+move-lines-up
+newline-and-indent
+rectangle-clear
+rectangle-close
+rectangle-delete
+rectangle-kill
+rectangle-open
+rectangle-string
+rectangle-yank
+register-append-to
+register-copy-rectangle-to
+register-copy-to
+register-increment
+register-insert
+register-jump-to
+register-point-to
+register-prepend-to
+register-view
+replace-current-character
+    Replace the selected character with the next character typed.
+reverse-region
+reverse-sort-lines
+reverse-sort-lines-ignoring-case
+scroll-down-half-page
+scroll-down-line
+scroll-down-page
+scroll-up-half-page
+scroll-up-line
+scroll-up-page
+select-to-matching-bracket
+shell-command
+shell-command-on-region
+show-invisibles
+sort-columns
+sort-fields
+sort-lines
+sort-lines-ignoring-case
+split-line
+tabify
+transpose-chars
+transpose-lines
+transpose-words
+untabify
+upcase-region
+upcase-word
+view-lossage
+what-line
+yank
+yank-pop
+zap-to-character
+</t>
+<t tx="ekr.20150314050809.11">buffer-append-to
+buffer-kill
+buffer-prepend-to
+buffer-switch-to
+buffers-list
+buffers-list-alphabetically</t>
+<t tx="ekr.20150314050809.12">cascade-windows
+context-menu-open
+ctrl-click-at-cursor
+ctrl-click-icon
+cycle-focus
+cycle-log-focus
+detach-editor-toggle
+detach-editor-toggle-max
+dump-outline
+equal-sized-panes
+expand-all-subheads
+expand-ancestors-only
+expand-next-level
+expand-or-go-right
+expand-prev-level
+expand-to-level-1
+expand-to-level-2
+expand-to-level-3
+expand-to-level-4
+expand-to-level-5
+expand-to-level-6
+expand-to-level-7
+expand-to-level-8
+expand-to-level-9
+find-tab-hide
+find-tab-open
+focus-to-body
+focus-to-find
+focus-to-log
+focus-to-minibuffer
+focus-to-nav
+focus-to-tree
+go-back
+go-forward
+goto-char
+goto-first-node
+goto-first-visible-node
+goto-last-node
+goto-last-visible-node
+goto-line
+goto-next-changed
+goto-next-clone
+goto-next-history-node
+goto-next-node
+goto-next-sibling
+goto-next-visible
+goto-parent
+goto-prev-history-node
+goto-prev-node
+goto-prev-sibling
+goto-prev-visible
+gui-all-hide
+gui-all-show
+gui-all-toggle
+gui-iconbar-hide
+gui-iconbar-show
+gui-iconbar-toggle
+gui-menu-hide
+gui-menu-show
+gui-menu-toggle
+gui-minibuffer-hide
+gui-minibuffer-show
+gui-minibuffer-toggle
+gui-statusbar-hide
+gui-statusbar-show
+gui-statusbar-toggle
+gui-tabbar-hide
+gui-tabbar-show
+gui-tabbar-toggle
+hide-spell-tab
+iconify-frame
+resize-to-screen
+unmark-all</t>
+<t tx="ekr.20150314050809.13">advertised-undo</t>
+<t tx="ekr.20150314050809.15">at-file-to-at-auto
+check-derived-file
+check-leo-file
+close-others
+create-@auto-nodes
+directory-make
+directory-remove
+export-headlines
+file-compare-leo-files
+file-delete
+file-diff-files
+file-insert
+file-open-by-name
+file-save
+import-zim-folder
+load-all-leo-files
+open-local-settings
+open-myLeoSettings-leo
+open-offline-tutorial
+open-python-window
+open-quickstart-leo
+open-scripts-leo
+open-spell-tab
+open-users-guide
+open-with-idle
+open-with-open office
+open-with-scite
+open-with-word
+read-at-auto-nodes
+read-at-shadow-nodes
+refresh-from-disk
+save-all
+save-buffers-kill-leo
+write-at-auto-nodes
+write-at-shadow-nodes
+write-dirty-at-auto-nodes
+write-dirty-at-shadow-nodes
+write-missing-at-file-nodes
+write-unit-tests
+</t>
+<t tx="ekr.20150314050809.16">digit-argument
+menu-shortcut
+negative-argument
+number-command
+number-command-0
+number-command-1
+number-command-2
+number-command-3
+number-command-4
+number-command-5
+number-command-6
+number-command-7
+number-command-8
+number-command-9
+self-insert-command
+universal-argument
+
+tangle
+tangle-all
+tangle-marked
+untangle
+untangle-all
+untangle-marked</t>
+<t tx="ekr.20150314050809.17">abort-edit-headline
+clone-node-to-last-node
+contract-all-other-nodes
+contract-parent
+de-hoist
+edit-headline
+end-edit-headline
+minimize-all
+scroll-outline-left
+scroll-outline-right
+set-ua
+sort-children
+sort-siblings
+tab-cycle-next
+tab-cycle-previous
+tab-detach</t>
+<t tx="ekr.20150314050809.18">find-clone-all
+find-clone-all-flattened
+find-next-clone
+find-quick
+find-quick-changed
+find-quick-selected
+find-quick-test-failures
+find-quick-timeline
+global-search</t>
+<t tx="ekr.20150314050809.19">gc-collect-garbage
+gc-dump-all-objects
+gc-dump-new-objects
+gc-dump-objects-verbose
+gc-print-summary
+gc-trace-disable
+gc-trace-enable
+pdb</t>
+<t tx="ekr.20150314050809.20">insert-icon
+delete-first-icon
+delete-last-icon
+delete-node-icons
+</t>
+<t tx="ekr.20150314050809.21">c-to-python
+c-to-python-clean-docs
+clean-all-blank-lines
+clean-body
+code-to-rst
+enter-quick-command-mode
+exit-named-mode
+join-node-above
+join-node-below
+join-selection-to-node-below
+open-url
+open-url-under-cursor
+parse-body
+promote-bodies
+remove-blank-lines
+remove-newlines
+typescript-to-py
+</t>
+<t tx="ekr.20150314050809.22">session-clear
+session-create
+session-refresh
+session-restore
+session-snapshot-load
+session-snapshot-save</t>
+<t tx="ekr.20150314050809.23">clear-all-caches
+clear-all-uas
+clear-cache
+clear-extend-mode
+clear-kill-ring
+clear-node-uas
+disable-autocompleter
+disable-calltips
+enable-autocompleter
+enable-calltips
+set-colors
+set-command-state
+set-comment-column
+set-extend-mode
+set-fill-column
+set-fill-prefix
+set-font
+set-insert-state
+set-overwrite-state
+set-replace-string
+set-search-string
+set-silent-mode
+toggle-abbrev-mode
+toggle-active-pane
+toggle-autocompleter
+toggle-calltips
+toggle-case-region
+toggle-extend-mode
+toggle-find-collapses-nodes
+toggle-input-state
+toggle-invisibles
+toggle-sparse-move
+toggle-split-direction</t>
+<t tx="ekr.20150314050809.25">mode-help</t>
+<t tx="ekr.20150314050809.26">flatten-script
+jedit2py
+
+delete-script-button-button
+script-button</t>
+<t tx="ekr.20150314050809.27">eval-expression
+    Evaluate an expression entered in the minibuffer.
+full-command
+history
+keyboard-quit
+repeat-complex-command</t>
+<t tx="ekr.20150314050809.28">make-test</t>
+<t tx="ekr.20150314050809.29">clean-persistence
+clean-recent-files
+clean-spellpyx
+cls
+join-leo-irc
+style-set-selected
+</t>
+<t tx="ekr.20150314050809.30">preview
+preview-node
+preview-tree
+print-all-uas
+print-cmd-docstrings
+print-expanded-node
+print-expanded-node-body
+print-focus
+print-marked-node-bodies
+print-marked-nodes
+print-node-uas
+print-plugin-handlers
+print-plugins-info
+print-preview-expanded-node
+print-preview-expanded-node-body
+print-preview-marked-node-bodies
+print-preview-marked-nodes
+print-preview-selected-node
+print-preview-selected-node-body
+print-preview-selected-node-body-html
+print-selected-node
+print-selected-node-body
+print-selected-node-body-html
+print-settings
+print-style-sheet
+show-calltips
+show-calltips-force
+show-colors
+show-find-options
+show-fonts</t>
+<t tx="ekr.20150314050809.31">chapter-convert-node-to
+chapter-create-from-node
+chapter-rename
+</t>
+<t tx="ekr.20150314050809.4">back-char
+back-char-extend-selection
+back-page
+back-page-extend-selection
+back-paragraph
+back-paragraph-extend-selection
+back-sentence
+back-sentence-extend-selection
+back-to-home
+back-to-home-extend-selection
+back-to-indentation
+back-word-extend-selection
+beginning-of-buffer
+beginning-of-buffer-extend-selection
+beginning-of-line
+beginning-of-line-extend-selection
+end-of-buffer
+end-of-buffer-extend-selection
+end-of-line
+end-of-line-extend-selection
+find-character
+find-character-extend-selection
+find-word-in-line
+forward-char
+forward-char-extend-selection
+forward-end-word
+forward-end-word-extend-selection
+forward-page
+forward-page-extend-selection
+forward-paragraph
+forward-paragraph-extend-selection
+forward-sentence
+forward-sentence-extend-selection
+forward-word-extend-selection
+move-past-close
+move-past-close-extend-selection
+next-line
+next-line-extend-selection
+previous-line
+previous-line-extend-selection
+</t>
+<t tx="ekr.20150314050809.5">:!
+:%s
+:e
+:e!
+:gT
+:gt
+:print-dot
+:q
+:q!
+:qa
+:r
+:s
+:tabnew
+:toggle-vim-mode
+:toggle-vim-trace
+:toggle-vim-trainer-mode
+:w
+:wq
+:xa</t>
+<t tx="ekr.20150314050809.6">abbrev-add-global
+abbrev-inverse-add-global
+abbrev-kill-all
+abbrev-list
+abbrev-read
+abbrev-write
+dabbrev-completion
+dabbrev-expands</t>
+<t tx="ekr.20150314050809.9">delete-@button-jedit2py-button
+delete-@button-replace-g-choose-button
+delete-@button-write-unit-tests-button
+replace-g-choose
+
+
+clean-diff
+cm-external-editor
+create-def-list
+do-after
+do-before
+do-nothing
+escape
+flush-lines
+keep-lines
+sort-recent-files
+split-defs
+suspend
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
