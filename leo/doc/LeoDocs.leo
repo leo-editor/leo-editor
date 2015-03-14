@@ -650,28 +650,41 @@
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.100"><vh>File commands</vh>
-<v t="EKR.20040524104904.101"><vh>Loading, Saving and Reverting Files</vh></v>
+<v t="EKR.20040524104904.101" a="M"><vh>Loading, Saving and Reverting Files</vh>
+<v t="ekr.20150313150212.11"><vh>open-outline-by-name</vh></v>
+</v>
 <v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
 <v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
 <v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
 <v t="EKR.20040524104904.110"><vh>Quitting Leo</vh></v>
 </v>
-<v t="EKR.20040524104904.111"><vh>Edit commands</vh>
+<v t="EKR.20040524104904.111" a="M"><vh>Edit commands</vh>
 <v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
 <v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text</vh></v>
 <v t="EKR.20040524104904.114"><vh>Indenting body text</vh></v>
 <v t="ekr.20050313102319"><vh>Adding and deleting comments in body text</vh></v>
 <v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
 <v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
+<v t="EKR.20040524104904.144"><vh>Checking python syntax</vh></v>
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
+<v t="ekr.20150313083748.12117"><vh>Pretty printing Python code</vh></v>
 <v t="ekr.20150313083748.12115"><vh>Toggling angle brackets</vh></v>
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
 <v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
-<v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
-<v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
-<v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
+<v t="ekr.20150313150212.8" a="M"><vh>** NEW **</vh>
+<v t="ekr.20150312025000.2363"><vh>*-smart</vh></v>
+<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
+<v t="ekr.20150312025000.2351"><vh>beautify</vh></v>
+<v t="ekr.20150312025000.2356"><vh>Added select-to-matching-bracket command</vh></v>
+<v t="ekr.20090717084250.10887"><vh>Added smart home (back-to-home) command</vh></v>
+<v t="ekr.20150313083748.11585"><vh>clear-selected-text</vh></v>
+<v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+<v t="ekr.20131105110107.16920"><vh>normalize-whitespace</vh></v>
+<v t="ekr.20141120113801.174"><vh>Added insert-file-name command</vh></v>
+<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
+</v>
 </v>
 <v t="EKR.20040524104904.118"><vh>Search commands</vh>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
@@ -679,22 +692,64 @@
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
 <v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
 <v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
+<v t="ekr.20141120113801.169"><vh>The clone-find commands</vh></v>
 </v>
 <v t="EKR.20040524104904.143"><vh>Outline commands</vh>
 <v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
 <v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes</vh></v>
 <v t="ekr.20120319170934.6097"><vh>Cutting, pasting and deleting nodes</vh></v>
-<v t="ekr.20120319170934.6094"><vh>Navigating through the outline</vh></v>
-<v t="ekr.20120319170934.6098"><vh>Moving &amp; reorganizing nodes</vh></v>
+<v t="ekr.20120319170934.6094" a="M"><vh>Navigating through the outline</vh></v>
+<v t="ekr.20120319170934.6098" a="M"><vh>Moving &amp; reorganizing nodes</vh></v>
 <v t="ekr.20120319170934.6099"><vh>Cloning nodes</vh></v>
-<v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
+<v t="ekr.20120319170934.6100" a="M"><vh>Marking nodes</vh></v>
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
 <v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
-<v t="EKR.20040524104904.144"><vh>Checking python syntax</vh></v>
-<v t="ekr.20150313083748.12117"><vh>Pretty printing Python code</vh></v>
+<v t="ekr.20150312080344.40"><vh>Comparing outlines</vh></v>
+<v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
 </v>
-<v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
-<v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
+<v t="EKR.20040524104904.151" a="M"><vh>Window commands</vh>
+<v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
+<v t="ekr.20101124102457.5183"><vh>cascade-windows and minimize-all-windows</vh></v>
+<v t="ekr.20060214083808"><vh>Activate commands</vh></v>
+<v t="ekr.20150313192232.8"><vh>Click commands</vh></v>
+<v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
+<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
+<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
+<v t="ekr.20150313083748.11697"><vh>show-colors (not implemented in Qt)</vh></v>
+<v t="ekr.20150313083748.11698"><vh>show-fonts</vh></v>
+<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
+<v t="ekr.20141120113801.168"><vh>Added focus-to-find/spell commands</vh></v>
+</v>
+<v t="EKR.20040524104904.157" a="M"><vh>Help commands</vh></v>
+<v t="ekr.20150313150212.13" a="M"><vh>Debug commands</vh>
+<v t="ekr.20090717084250.10889"><vh>pdb</vh></v>
+<v t="ekr.20150313150212.14"><vh>print-</vh></v>
+<v t="ekr.20150313150212.15"><vh>dump-</vh></v>
+<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
+<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
+<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
+<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
+</v>
+<v t="ekr.20141120113801.176" a="M"><vh>Spell commands</vh></v>
+<v t="ekr.20150313150212.20" a="M"><vh>Misc commands</vh>
+<v t="ekr.20150312080344.5"><vh>join-leo-irc command</vh></v>
+<v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
+<v t="ekr.20150312080344.26"><vh>The style-reload command changes Leo's appearance instantly</vh></v>
+</v>
+<v t="ekr.20150313150212.19" a="M"><vh>Plugin commands</vh>
+<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh>
+<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
+</v>
+<v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
+<v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
+</v>
+<v t="ekr.20150313150212.7" a="M"><vh>Parsing commands</vh>
+<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
+<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
+</v>
+<v t="ekr.20150313150212.16" a="M"><vh>Unit testing commands</vh></v>
+<v t="ekr.20150312080344.9" a="M"><vh>Abbreviations</vh></v>
 </v>
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
@@ -1184,103 +1239,29 @@
 <v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
 <v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
 </v>
-<v t="ekr.20150312080344.15"><vh>** For scripting Chapter</vh>
+<v t="ekr.20150312013449.5"><vh>** To be documented (5.0)</vh>
+<v t="ekr.20150312080344.15"><vh>To (new?) scripting Chapter</vh>
 <v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
 <v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
 <v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
 <v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
 </v>
-<v t="ekr.20150312013449.5"><vh>Commands to be documented</vh>
-<v t="ekr.20150312080344.18"><vh>Power features: 5.0</vh>
+<v t="ekr.20150313192232.9"><vh>To settings</vh>
 <v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
-<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
-<v t="ekr.20150312080344.21"><vh>Added command history</vh></v>
 <v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
+</v>
+<v t="ekr.20150313192232.10"><vh>To what's new</vh>
 <v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
 <v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
-<v t="ekr.20150312080344.26"><vh>The style-reload command changes Leo's appearance instantly</vh></v>
 </v>
+<v t="ekr.20150313192232.11"><vh>To what's new &amp; docstrings</vh>
+<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
+</v>
+<v t="ekr.20150312080344.21"><vh>Added command history (minibuffer tutorial)</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
 <v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Changed command names</vh></v>
 </v>
-<v t="ekr.20150313083748.12118"><vh>** Missing in ref</vh>
-<v t="ekr.20150313150212.17"><vh>Abbreviation commands</vh>
-<v t="ekr.20150312080344.9"><vh>Major improvements to abbreviations</vh></v>
-</v>
-<v t="ekr.20150313150212.6"><vh>Cache commands</vh>
-<v t="ekr.20100209160132.11888"><vh>Added clear-cache and clear-all-caches commands</vh></v>
-</v>
-<v t="ekr.20150313150212.13"><vh>Debug commands</vh>
-<v t="ekr.20090717084250.10889"><vh>pdb</vh></v>
-<v t="ekr.20150313150212.14"><vh>print-</vh></v>
-<v t="ekr.20150313150212.15"><vh>dump-</vh></v>
-<v t="ekr.20131105110107.16922"><vh>print-buttons command</vh></v>
-<v t="ekr.20141120113801.173"><vh>Added idle-time commands</vh></v>
-<v t="ekr.20141120113801.175"><vh>Added pylint command</vh></v>
-</v>
-<v t="ekr.20150313150212.8"><vh>Edit commands</vh>
-<v t="ekr.20150312025000.2363"><vh>*-smart</vh></v>
-<v t="ekr.20060421070409.41"><vh>Added new commands</vh></v>
-<v t="ekr.20150312025000.2351"><vh>beautify</vh></v>
-<v t="ekr.20150312025000.2356"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20090717084250.10887"><vh>Added smart home (back-to-home) command</vh></v>
-<v t="ekr.20150313083748.11585"><vh>clear-selected-text</vh></v>
-<v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-<v t="ekr.20131105110107.16920"><vh>normalize-whitespace</vh></v>
-<v t="ekr.20141120113801.174"><vh>Added insert-file-name command</vh></v>
-<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-</v>
-<v t="ekr.20150313150212.18"><vh>File commands</vh>
-<v t="ekr.20150312080344.40"><vh>read-file-into-node &amp; write-file-from-node</vh></v>
-</v>
-<v t="ekr.20150313150212.12"><vh>Help commands</vh>
-<v t="ekr.20131105110107.16915"><vh>help-for-command executes apropos commands</vh></v>
-<v t="ekr.20131105110107.16917"><vh>help-for-regular-expressions command</vh></v>
-<v t="ekr.20141120113801.172"><vh>Added help-for-drag-and-drop command</vh></v>
-</v>
-<v t="ekr.20150313150212.20"><vh>Misc commands</vh>
-<v t="ekr.20150312080344.5"><vh>join-leo-irc command</vh></v>
-<v t="ekr.20131105110107.16924"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
-</v>
-<v t="ekr.20150313150212.9"><vh>Outline commands</vh>
-<v t="ekr.20150312025000.2354"><vh>clone/move/delete-marked-nodes</vh></v>
-<v t="ekr.20150313150212.11"><vh>open-outline-by-name</vh></v>
-<v t="ekr.20051028051444.8"><vh>Added new commands</vh></v>
-<v t="ekr.20131105110107.17032"><vh>insert-node-before</vh></v>
-<v t="ekr.20141120113801.169"><vh>Added clone-find-parents command</vh></v>
-<v t="ekr.20141120113801.170"><vh>Added clone-to-last-node</vh></v>
-<v t="ekr.20141120113801.171"><vh>Added flatten-outline-to-node</vh></v>
-</v>
-<v t="ekr.20150313150212.7"><vh>Parsing commands</vh>
-<v t="ekr.20101104091058.5252"><vh>head-to-prev-node and tail-to-next-node</vh></v>
-<v t="ekr.20150312025000.2352"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20101104091058.5021"><vh>Added code-to-rst command</vh></v>
-<v t="ekr.20131105110107.16921"><vh>parse-body command</vh></v>
-<v t="ekr.20141120113801.176"><vh>Added spell-as-you-type commands</vh></v>
-</v>
-<v t="ekr.20150313150212.19"><vh>Plugin commands</vh>
-<v t="ekr.20131105110107.16908"><vh>All viewrended commands now start with vr</vh>
-<v t="ekr.20131105110107.16925"><vh>vr-expand/contract commands</vh></v>
-</v>
-<v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error command</vh></v>
-<v t="ekr.20131105110107.16913"><vh>go-anywhere command (quicksearch plugin)</vh></v>
-</v>
-<v t="ekr.20150313150212.16"><vh>Unit testing commands</vh>
-<v t="ekr.20150312025000.2355"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
-<v t="ekr.20060328171518.45"><vh>Added run-unit-test command</vh></v>
-</v>
-<v t="ekr.20150313150212.5"><vh>Windows commands</vh>
-<v t="ekr.20101124102457.5183"><vh>cascade-windows and minimize-all-windows</vh></v>
-<v t="ekr.20060214083808"><vh>Mouseless Leo commands</vh></v>
-<v t="ekr.20060328171518.10"><vh>Added scroll outline pane commands</vh></v>
-<v t="ekr.20060116174906.267"><vh>Added scroll-up/down-extend-selection commands</vh></v>
-<v t="ekr.20150313083748.11697"><vh>show-colors (not implemented in Qt)</vh></v>
-<v t="ekr.20150313083748.11698"><vh>show-fonts</vh></v>
-<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
-<v t="ekr.20141120113801.168"><vh>Added focus-to-find/spell commands</vh></v>
-</v>
-</v>
+<v t="ekr.20110611055444.16726"><vh>** Changed command names</vh></v>
 <v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
@@ -1299,10 +1280,12 @@ The ``read-outline-only`` command reads an outline using only the .leo file, not
 </t>
 <t tx="EKR.20040524104904.102">The ``open-with`` command allows you to communicate with external editor. When you select this command Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an @openwith in myLeoSettings.leo. See the documentation in leoSettings.leo.
 </t>
-<t tx="EKR.20040524104904.108">The ``import-file`` command imports a file in various ways depending on the contents of the file. For plain files, the command creates an @file node. If the file looks like an external file written by Leo, the import command will recreate the outline structure based on the sentinels in the file. This command can also read files written in MORE outline format.
+<t tx="EKR.20040524104904.108">The ``import-file`` command imports a file in various ways depending on the contents of the file. For plain files, the command creates an @file node. If the file looks like an external file written by Leo, the import command will recreate the outline structure based on the sentinels in the file. This command can also read files written in MORE outline format. The ``read-file-into-node`` command prompts for a filename, and creates an node whose headline is ``@read-file-into-node &lt;filename&gt;`` and whose body text is the entire contents of the file.
+
+
 
 </t>
-<t tx="EKR.20040524104904.109">The ``outline-to-cweb`` command creates a `CWEB`_ file from the selected outline. The ``outline-to-noweb`` command creates a `noweb`_ file from the selected outline. The ``flatten-outline`` command creates a text file in MORE format from the selected outline. The ``remove-sentinels`` command removes all sentinel lines from a file derived from an @file node. The ``weave`` command formats the selected text and writes it to a file.
+<t tx="EKR.20040524104904.109">The ``outline-to-cweb`` command creates a `CWEB`_ file from the selected outline. The ``outline-to-noweb`` command creates a `noweb`_ file from the selected outline. The ``flatten-outline`` command creates a text file in MORE format from the selected outline. The ``remove-sentinels`` command removes all sentinel lines from a file derived from an @file node. The ``weave`` command formats the selected text and writes it to a file. The ``write-file-from-node`` command writes the body text of the selected node to a file. If the headline of the presently selected node starts with @read-file-into-node the command use the filename that follows in the headline. Otherwise, the command prompts for a filename.
 </t>
 <t tx="EKR.20040524104904.110">The ``exit-leo`` (Ctrl-Q or Alt-F4) command causes Leo to exit. You may also exit Leo by closing the main window. You will be prompted to save any file that has been altered but not saved.
 </t>
@@ -1331,6 +1314,11 @@ shift selected lines in the body text left or right one tab position. These
 commands shift the entire line if any characters in that line are selected.
 If no text is selected, the Tab character insert a hard or soft tab
 depending on the value of the @tabwidth directive in effect.
+
+**Notes**: Leo auto indents unless @nocolor is in effect.  Typing a newline automatically inserts the same leading whitespace present on the previous line.
+
+If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ( [ or { brackets in the previous line.
+
 </t>
 <t tx="EKR.20040524104904.115">The ``extract`` (Ctrl-Shift-D) command creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text. The ``extract-names`` (Ctrl-Shift-Command) command creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
 </t>
@@ -1413,14 +1401,30 @@ The following sections describe the kinds of nodes in @settings trees.
 -   The Open Compare Window command opens a dialog that allows you to compare
     two files, one containing sentinels and one not.
 </t>
-<t tx="EKR.20040524104904.157">-   The About Leo command puts up a dialog box showing the version of Leo.
--   The Online Home Page command opens Leo's home page at http://leoeditor.com.
--   The Open Online Tutorial command opens Joe Orr's excellent ScreenBook tutorial at
-    http://www.evisa.com/e/sbooks/leo/sbframetoc_ie.htm.
--   The Open Offline Tutorial command opens the file sbooks.chm if it exists.
-    Otherwise, you will be asked whether you want to download it from Leo's SourceForge web site.
-    If you say yes, the page http://sourceforge.net/project/showfiles.php?group_id=3458 will open.
-    You may then download sbooks.sbm to the folder containing leo.py.
+<t tx="EKR.20040524104904.157">The ``about-leo`` command puts up a dialog box showing the version of Leo.
+
+The ``open-online-home`` command opens Leo's home page at http://leoeditor.com.
+
+    help
+    help-for-command
+    help-for-abbreviations
+    help-for-autocompletion
+    help-for-bindings
+F11 help-for-command
+    help-for-creating-external-files    
+    help-for-debugging-commands
+    help-for-drag-and-drop
+    help-for-dynamic-abbreviations
+    help-for-find-commands
+    help-for-minibuffer
+F12 help-for-python
+    help-for-regular-expressions
+    help-for-scripting
+
+open-online-toc
+open-online-tutorials
+open-online-videos
+
 </t>
 <t tx="EKR.20040524104904.211"></t>
 <t tx="EKR.20040524104904.224" str_atime="1376412038.0">Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are::
@@ -3391,7 +3395,7 @@ Edward K. Ream, October 25, 2001.  P.S., September, 2005:
 Four years of experience have only added to my admiration for Python. Leo could
 not possibly be what it is today without Python.
 </t>
-<t tx="ekr.20050901101608.2">########################
+<t tx="ekr.20050901101608.2">clone/move/delete-marked-nodes########################
 Leo's Commands Reference
 ########################
 
@@ -3795,10 +3799,6 @@ The scripting plugin (mod_scripting.py) deserves special mention. This plugin le
 </t>
 <t tx="ekr.20050912125735.363">The dyna_menu plugin is a remarkable body of work by 'e'. This plugin creates a dyna_menu menu from which you can execute commands. You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
 </t>
-<t tx="ekr.20051028051444.8">- The contract-and-go-right command moves to the parent node and collapses the parent node.
-
-- The goto-first-sibling and goto-last-sibling commands allow rapid movement through an outline without collapsing nodes.
-</t>
 <t tx="ekr.20051202072010"></t>
 <t tx="ekr.20060105214753">Leo now allows you to specify input modes. You enter mode x with the enter-x-mode command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.
 
@@ -3861,21 +3861,11 @@ B has not been destroyed, but B is gone from @file spam.py! So in this sense del
 <t tx="ekr.20060116174906.267"></t>
 <t tx="ekr.20060214083808">- activate-cmds-menu, activate-edit-menu, activate-file-menu activate-help-menu,
   activate-outline-menu, activate-plugins-menu, activate-window-menu.
-- contract-body-pane, contract-log-pane, contract-outline-pane, contract-pane.
-- expand-body-pane, expand-log-pane, expand-outline-pane, expand-pane.
-- fully-expand-body-pane, fully-expand-log-pane, fully-expand-outline-pane, fully-expand-pane.
-- hide-body-pane, hide-log-pane, hide-outline-pane, hide-pane.
-- click-click-box, click-headline, click-icon-box, double-click-headline,
-  double-click-icon-box, simulate-begin-drag, simulate-end-drag.
-  (These commands trigger event hooks. In particular, double-click-icon-box will
-  invoke the vim or xemacs plugins if they are enabled.)
 </t>
 <t tx="ekr.20060328171518.10">scroll-outline-down-line       
 scroll-outline-down-page       
 scroll-outline-up-line       
 scroll-outline-up-page
-</t>
-<t tx="ekr.20060328171518.45">This is equivalent to the Unit Test script button in unitTest.leo
 </t>
 <t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
 </t>
@@ -8343,14 +8333,6 @@ Important files:
 </t>
 <t tx="ekr.20101104091058.5021">And deprecated code mode.
 </t>
-<t tx="ekr.20101104091058.5252">https://bugs.launchpad.net/leo-editor/+bug/611413
-
-The head-to-prev-node command moves non-empty text preceding a class, method or
-function definition to the end of the previous sibling node.
-
-The tail-to-next-node command moves non-empty text following a class, method or
-function definition to the start of the next sibling node.
-</t>
 <t tx="ekr.20101111175617.14683">def getDocString(self,p):
 
     '''Return the docstring of the @&lt;file&gt; node p.'''
@@ -11697,7 +11679,10 @@ Ignore Case
 Mark Changes
     When checked, the Change command marks all headlines whose headline or
     body text are changed by the command.
-    Alt+Ctrl+C (toggle-find-mark-changes-option) toggles this checkbox.
+    Alt+Ctrl+C (toggle-find-
+clone-marked-nodes
+delete-marked-nodes
+move-marked-nodess-option) toggles this checkbox.
 
 Mark Matches
     When checked, the Find and Change commands mark all headlines in which
@@ -11770,6 +11755,11 @@ The ``clone-find-all`` command searches the outline and creates a new root node 
 <t tx="ekr.20120319170934.6094">Leo has many commands that select nodes in the outline. These commands can be found in the Outline:Go To menu.
 
 As described in the tutorial, you can move about the outline by clicking on the headlines or using Alt+arrow keys.
+
+The ``contract-or-go-left`` (Alt-Left) command moves to the parent node and collapses the parent node. The ``expand-and-go-right`` (Alt-Right) command moves expands a node if unexpanded, otherwise moves to the node's first child.
+
+The ``goto-first-sibling`` and ``goto-last-sibling`` commands allow rapid movement through an outline without collapsing nodes.
+
 </t>
 <t tx="ekr.20120319170934.6095">You can expand or contract a node by clicking in the tree view icon to the left of the headline. The icon in the Qt gui matches the native OS's tree view icon, i.e. for Mac's, a triangle pointing right or down; on Windows, a square containing a plus or minus. Expanding a node shows its immediate children; contracting a node hides all its children.
 
@@ -11777,7 +11767,7 @@ The ``expand-node`` and ``contract-node`` commands also expand and contract node
 
 The ``expand-all`` command expands every node in the outline. ``contract-all`` (Alt-hyphen) contracts every node in the outline. In all but the smallest outlines, ``expand-all`` is rarely used, and it does not have a default key binding.
 </t>
-<t tx="ekr.20120319170934.6096">The ``insert-node`` (Ctrl-I or Insert) command inserts a new node into the outline. When invoked, (from any pane), it inserts a new node below the presently selected node, and at the same level as that node, or at the child level if it has a visible child. The ``delete-node`` command deletes a node and all its children. To retain the children, just promote all the children before you do the delete.
+<t tx="ekr.20120319170934.6096">The ``insert-node`` (Ctrl-I or Insert) command inserts a new node into the outline. When invoked, (from any pane), it inserts a new node below the presently selected node, and at the same level as that node, or at the child level if it has a visible child. The ``insert-node-before`` inserts a node before the presently selected node. The ``delete-node`` command deletes a node and all its children. To retain the children, just promote all the children before you do the delete.
 </t>
 <t tx="ekr.20120319170934.6097">The ``cut-node`` (Ctrl-Shift-X) ``paste-node`` (Ctrl-Shift-V), ``copy-node`` (Ctrl-Shift-C) and ``delete-node`` commands work on nodes rather than text. The ``cut-node`` and ``copy-node`` commands copy a text representation of the outline to the clipboard. This representation is the same as Leo's .leo file format with some information deleted. You may copy this text representation into a body pane (or into any other text editor) using Edit-&gt;Paste in the menus, Ctrl-V, or Alt-X paste-text.
 
@@ -11787,17 +11777,15 @@ The ``paste-retaining-clones`` command is disabled if it would cause a node to b
 </t>
 <t tx="ekr.20120319170934.6098">The ``move-outline-up`` (Ctrl-U or Alt-Shift-Up), ``move-outline-down`` (Ctrl-D or Alt-Shift-Down), ``move-outline-left`` (Ctrl-L or Alt-Shift-Left), and ``move-outline-right`` (Ctrl-R or Alt-Shift-Right) commands move the currently selected node. **Important**: When focus is in the outline pane, you can move nodes without adding the Alt modifier. Shift-Up moves the select node up, etc.
 
-The ``promote`` (Ctrl-[) command makes all the children of a node siblings of the node. The ``demote`` (Ctrl-]) command makes all following siblings of a node children of the node.
-</t>
-<t tx="ekr.20120319170934.6099">A cloned node is a copy of a node that changes when the original changes. One may also think of it as a single node that is hooked into the outline at multiple positions. Because that single node brings along all its descendants, changes are maintained across all the the clones of a node, along with changes to its offspring (children, grandchildren, etc.), i.e., any changes are simultaneously made to the corresponding offspring of all of those clones. A small red arrow in the icon box marks cloned nodes. You can think of the arrow as pointing out that there are other paths to get to this same node. There is no real distinction between the "original" node and any of its clones. Any headline or body update of a clone headed subtree affects all of its clones simultaneously. A cloned node becomes a regular node whenever deletion of its other clones makes it the only one left. Clones are useful for making alternate views of a program. See `Clones`_ for full details.
+The ``promote`` (Ctrl-[) command makes all the children of a node siblings of the node. The ``demote`` (Ctrl-]) command makes all following siblings of a node children of the node. The ``flatten-outline-to-node`` appends the headline and body text of all descendants of the selected node to the body text of the selected node.
 
-The ``clone-node`` (Ctrl-\`) command creates a clone as the immediate sibling of a selected node. You have to place it where you want it by either using move commands, or cutting and paste the clone.
+The ``head-to-prev-node`` command moves non-empty text preceding a class, method or function definition to the end of the previous sibling node. The ``tail-to-next-node`` command moves non-empty text following a class, method or function definition to the start of the next sibling node.
 </t>
-<t tx="ekr.20120319170934.6100">The ``mark`` (Ctrl-M) marks a node if it is unmarked, and unmarks the node if it is already marked. The ``mark-subheads`` command marks all offspring of the presently selected node. The ``mark-changed-items`` command marks all nodes whose headline or body text has been changed since the file was last saved.
+<t tx="ekr.20120319170934.6099">The ``clone-node`` (Ctrl-\`) command creates a clone as the immediate sibling of a selected node. You have to place it where you want it by either using move commands, or cutting and paste the clone.
+The ``clone-to-last-node`` command creates the clone as the last top-level node of the outline.</t>
+<t tx="ekr.20120319170934.6100">The ``mark`` (Ctrl-M) marks a node if it is unmarked, and unmarks the node if it is already marked. The ``mark-subheads`` command marks all offspring of the presently selected node. The ``mark-changed-items`` command marks all nodes whose headline or body text has been changed since the file was last saved. The ``marked-list`` command lists all marked nodes in the Nav pane. The ``clone-marked-nodes`` makes clones of all marked nodes.  The ``delete-marked-nodes`` deletes all marked nodes.  The ``move-marked-nodes`` modes all nodes to be children of the present position. The ``goto-next-marked`` command selects the next marked node.
 
 Leo's find and change commands mark nodes if the "Mark Changes" and "Mark Finds" checkboxes are checked. You can change these checkboxes with the ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option`` commands.
-
-The ``goto-next-marked`` command selects the next marked node.
 </t>
 <t tx="ekr.20120319170934.6101">You may drag a node (including all its descendants) from one place to another in an outline. To start a drag, press the main (left) mouse button while the cursor is over the icon for a node. The cursor will change to a hand icon. If you release the mouse button while the hand cursor is above another node, Leo will move the dragged node after that node. If you release the mouse button when the hand cursor is not over a node, Leo will leave the outline pane as it is. Leo scrolls the outline pane as the result of mouse-moved events, so to continue scrolling you must keep moving the mouse.
 
@@ -11806,10 +11794,6 @@ If the recipient node has children and is expanded, the dropped node will be ins
 Holding down Alt before releasing the node will force insertion as a child of the recipient node, even if the recipient node is not expanded.
 
 Holding down Control before releasing the node will cause a clone to be dropped, leaving the original where it was.
-</t>
-<t tx="ekr.20120319170934.6104">Leo auto indents unless @nocolor is in effect.  Typing a newline automatically inserts the same leading whitespace present on the previous line.
-
-If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ( [ or { brackets in the previous line.
 </t>
 <t tx="ekr.20120319170934.6105">The ``add-editor`` command adds a new editor in the body pane and gives it the body editor focus. The ``delete-editor`` command deletes the editor with body editor focus. The ``cycle-editor-focus`` command cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
@@ -14808,9 +14792,6 @@ Once the hits are shows, you can navigate them by pressing up/down while focus i
 
 This has a very clever hack (even if I say so myself)--spaces in search string are replaced with * wild card. So if you search for, say "file txt", it will search for "file*txt", matching e.g. @file readme.txt
 </t>
-<t tx="ekr.20131105110107.16915">Instead of just printing their docstrings.
-</t>
-<t tx="ekr.20131105110107.16917"></t>
 <t tx="ekr.20131105110107.16919">By Terry Brown
 
 I assume all *nix shell users use the screen shell multiplexer, and
@@ -14892,8 +14873,6 @@ commit log:
   version
   
   rename solarized_dark theme leo_dark_0
-</t>
-<t tx="ekr.20131105110107.17032">Added c.insertHeadlineBefore and unit tests for same.
 </t>
 <t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">@language rest
@@ -16229,22 +16208,8 @@ Imo, this is the safe, if not exactly elegant way.
 
 It would not be a good idea actually to transfer focus.
 </t>
-<t tx="ekr.20141120113801.169">As of rev 1d882d3. Leo supports an undoable clone-find-parents command.
-Select a cloned node, then do:
-
-    &lt;alt-x&gt;clone-find-parents&lt;return&gt;
-
-This works somewhat like the clone-find-all command: it creates a node containing
-clones of all the parents of the selected node.
+<t tx="ekr.20141120113801.169">The ``clone-find-all-flattened`` command prompts for a find, then creates clones of all found nodes in an organizer node. The ``clone-find-all`` command does the same, but does not create duplicate cloned nodes. If a node is a descendant of another found node, no duplicate top-level node (in the organizer) is created. The ``clone-find-parents`` command creates an organizer node containing clones of all the parents of the selected node.
 </t>
-<t tx="ekr.20141120113801.170">This does *not* change the selected node so it's easy to
-clone several nodes.
-
-Added c.cloneToLastNode.  
-</t>
-<t tx="ekr.20141120113801.171">Very useful when summarizing documentation nodes.
-</t>
-<t tx="ekr.20141120113801.172"></t>
 <t tx="ekr.20141120113801.173">Added the following commands:
     
 disable-idle-time-tracing
@@ -16300,7 +16265,15 @@ for pylint-leo.py::
         pylint="python27 pylint-leo.py"
     '''
 </t>
-<t tx="ekr.20141120113801.176">Thanks to Terry Brown for these commands::
+<t tx="ekr.20141120113801.176">  spell-as-you-type-next
+  spell-as-you-type-toggle
+  spell-as-you-type-undo
+  spell-as-you-type-wrap
+  spell-change
+  spell-change-then-find
+  spell-find
+  spell-ignore
+
 
 spell-as-you-type-toggle
   Enable / disable spell as you type mode.  When enabled, word ending
@@ -17404,17 +17377,6 @@ beautify-tree</t>
 takes much of the scut work away from the task of converting C code to
 Python code.
 </t>
-<t tx="ekr.20150312025000.2354">http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
-</t>
-<t tx="ekr.20150312025000.2355">The new command names and default bindings are::
-
-    run-all-unit-tests-externally       = None
-    run-all-unit-tests-locally          = None
-    run-marked-unit-tests-externally    = Alt-4 # The new standard
-    run-marked-unit-tests-locally       = None
-    run-selected-unit-tests-externally  = Alt-5 # The new standard
-    run-selected-unit-tests-locally     = None
-</t>
 <t tx="ekr.20150312025000.2356"></t>
 <t tx="ekr.20150312025000.2363">Many editors allow you to jump over, select and delete words, especially
 those containing or surrounded by special characters, in a smarter way than
@@ -17741,7 +17703,6 @@ This pattern is particularly well suited to Leo, because the various getPublicCo
 rst3 tutorial.
 
 </t>
-<t tx="ekr.20150312080344.18"></t>
 <t tx="ekr.20150312080344.19">How did we ever live without this?
 
 @data nodes, like @data qt-gui-plugin-style-sheet may now be composed of
@@ -17782,11 +17743,7 @@ the .xyzzy extension, that is, importers/test.py and writers/test.py. So,
 for *unique* extensions, there is no need to use a separate @auto name, you
 can just use @auto.
 </t>
-<t tx="ekr.20150312080344.21">After Alt-x puts you in the minibuffer, you can now use UpArrow and
-DownArrow keys to cycle through previous "complex" commands, that is,
-commands entered via Alt-x&lt;command-name&gt;&lt;return&gt;.
-
-For example, Alt-x UpArrow is roughly equivalent to Ctrl-p.
+<t tx="ekr.20150312080344.21">After Alt-x puts you in the minibuffer, you can now use UpArrow and DownArrow keys to cycle through previous "complex" commands, that is, commands entered via Alt-x&lt;command-name&gt;&lt;return&gt;. For example, Alt-x UpArrow is roughly equivalent to Ctrl-p.
 
 This completes one of the top four wishlist items at:
 https://github.com/leo-editor/leo-editor/issues/93
@@ -17933,23 +17890,7 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
     @buttons trees
     A faster colorizer plugin
 </t>
-<t tx="ekr.20150312080344.40">The so-called resolve-cvs-conflict project has resolved itself into small, easily understood commands.
-
-The **read-file-into-node** command prompts for a filename, and creates an node whose headline is @read-file-into-node &lt;filename&gt; and whose body text is the entire contents of the file.
-
-The **write-file-from-node** command writes the body text of the selected not to a file. If the headline of the presently selected node starts with @read-file-into-node the command use the filename that follows in the headline. Otherwise, the command prompts for a filename.
-
-When a cvs conflict occurs, the user will:
-
-- read the file into a node using the read-file-into-node command,
-
-- fix the conflict, as with any other editor, and
-
-- write the file with the write-file-from-node command.
-
-Any file can be fixed in this way, including external files and .leo files. The only complication is that the user must not change sentinel lines. Two new commands check the contents of a node: The **check-derived-file** and **check-leo-file** commands tell whether a trial read of the presently selected node can be done successfully. The check-derived-file command assumes the body text is a external file; the check-leo-file command assumes the body text is an entire .leo file.
-
-The **compare-leo-outlines** command prompts for another (presumably similar) .leo file that will be compared with the presently selected outline file (main window). It then creates clones of all inserted, deleted and changed nodes.
+<t tx="ekr.20150312080344.40">The **compare-leo-outlines** command prompts for another (presumably similar) .leo file that will be compared with the presently selected outline file (main window). It then creates clones of all inserted, deleted and changed nodes.
 </t>
 <t tx="ekr.20150312080344.45">::
 
@@ -18141,8 +18082,8 @@ This chapter discusses the most important milestones in history of Leo and summa
 
 4. Added a new setting: @bool scripting-abbreviations, default False. Scripting abbreviations will be enabled if *either* of the following is True::
 
-        @bool scripting-abbreviations
-        @bool scripting-at-script-nodes
+    @bool scripting-abbreviations
+    @bool scripting-at-script-nodes
     
 This is a safety feature: it allows scripting abbreviations to be enabled *without* enabling the (very dangerous in general) scripting-at-script-nodes setting.
 
@@ -18199,16 +18140,7 @@ Useful, e.g., after a find.</t>
     putOperator:      puts whitespace around operators.
     putNormalToken:   puts whitespace around everything else.
 </t>
-<t tx="ekr.20150313083748.12118">This documentation should be folded into the users guide.
-</t>
 <t tx="ekr.20150313150212.11">open-outline-by-name (filename completion)</t>
-<t tx="ekr.20150313150212.12">help
-
-The help command gives a brief quick start introduction to Leo's Emacs-like features.
-
-help-for-command
-
-</t>
 <t tx="ekr.20150313150212.13"></t>
 <t tx="ekr.20150313150212.14">- The print-bindings and print-commands show what commands exist and what keys are bound to them.
 
@@ -18217,16 +18149,30 @@ help-for-command
 
 - dump-all-objects, ump-new-objects, verbose-dump-objects.
 </t>
-<t tx="ekr.20150313150212.16"></t>
-<t tx="ekr.20150313150212.17"></t>
-<t tx="ekr.20150313150212.18"></t>
+<t tx="ekr.20150313150212.16">Alt+Key+5 run-all-unit-tests-externally
+Alt+Key+6 run-all-unit-tests-locally
+Alt+Key+4 run-marked-unit-tests-externally
+          run-marked-unit-tests-locally
+Alt+Key+7 run-selected-unit-tests-externally
+          run-selected-unit-tests-locally</t>
 <t tx="ekr.20150313150212.19"></t>
 <t tx="ekr.20150313150212.20"></t>
-<t tx="ekr.20150313150212.5"></t>
-<t tx="ekr.20150313150212.6"></t>
 <t tx="ekr.20150313150212.7"></t>
 <t tx="ekr.20150313150212.8"></t>
-<t tx="ekr.20150313150212.9"></t>
+<t tx="ekr.20150313192232.10"></t>
+<t tx="ekr.20150313192232.11"></t>
+<t tx="ekr.20150313192232.7">- contract-body-pane, contract-log-pane, contract-outline-pane, contract-pane.
+- expand-body-pane, expand-log-pane, expand-outline-pane, expand-pane.
+- fully-expand-body-pane, fully-expand-log-pane, fully-expand-outline-pane, fully-expand-pane.
+- hide-body-pane, hide-log-pane, hide-outline-pane, hide-pane.
+
+</t>
+<t tx="ekr.20150313192232.8">- click-click-box, click-headline, click-icon-box, double-click-headline,
+  double-click-icon-box, simulate-begin-drag, simulate-end-drag.
+  (These commands trigger event hooks. In particular, double-click-icon-box will
+  invoke the vim or xemacs plugins if they are enabled.)
+</t>
+<t tx="ekr.20150313192232.9"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
