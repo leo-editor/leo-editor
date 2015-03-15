@@ -157,12 +157,13 @@ class BaseEditCommandsClass:
     #@+node:ekr.20050929161635: *3* Helpers
     #@+node:ekr.20050920084036.249: *4* _chckSel
     def _chckSel (self,event,warning='no selection'):
-
+        '''Return True if there is a selection in the edit widget.'''
         k = self.k
         w = self.editWidget(event)
         val = w and w.hasSelection()
         if warning and not val:
-            k.setLabelGrey(warning)
+            # k.setLabelGrey(warning)
+            g.es(warning,color='red')
         return val
     #@+node:ekr.20050920084036.250: *4* _checkIfRectangle
     def _checkIfRectangle (self,event):
@@ -6896,31 +6897,33 @@ class EditCommandsClass (BaseEditCommandsClass):
 
     def sortLines (self,event,ignoreCase=False,reverse=False):
         '''Sort the selected lines.'''
+        trace = False and not g.unitTesting
         w = self.editWidget(event)
-        if not self._chckSel(event): return
-
+        if not self._chckSel(event):
+            if trace: g.trace('early return')
+            return
         undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
         self.beginCommand(undoType=undoType)
         try:
             s = w.getAllText()
-            sel_1,sel_2 = w.getSelectionRange()
+            sel1,sel2 = w.getSelectionRange()
             ins = w.getInsertPoint()
-            i,junk = g.getLine(s,sel_1)
-            junk,j = g.getLine(s,sel_2)
+            i,junk = g.getLine(s,sel1)
+            junk,j = g.getLine(s,sel2)
             s2 = s[i:j]
             if not s2.endswith('\n'): s2 = s2+'\n'
             aList = g.splitLines(s2)
             def lower(s):
-                if ignoreCase: return s.lower()
-                else: return s
+                return s.lower() if ignoreCase else s
             aList.sort(key=lower)
                 # key is a function that extracts args.
             if reverse:
                 aList.reverse()
             s = g.joinLines(aList)
+            if trace: g.trace(s)
             w.delete(i,j)
             w.insert(i,s)
-            w.setSelectionRange(sel_1,sel_2,insert=ins)
+            w.setSelectionRange(sel1,sel2,insert=ins)
         finally:
             self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20050920084036.119: *4* sortColumns
