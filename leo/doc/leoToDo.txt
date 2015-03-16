@@ -31,6 +31,23 @@ QTreeView::branch:open:has-children{
 }
 
 I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
+.. @+node:ekr.20150315132217.1621: *4* Search g.command for missing docstrings
+.. @+node:ekr.20150315132217.1638: *4* remove open-offline-tutorial
+.. @+node:ekr.20150315132217.2: *4* add help-for-sessions
+@language rest
+@wrap
+
+An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The --session-save and --session-restore command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+
+----- old
+
+A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts.
+
+The typical usage is to start Leo with the --session-save --session-restore command-line options, open several Leo files and exit.
+
+The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+
+Leo stores session state in ~/.leo/leo.session
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
 .. @+node:ekr.20150211104036.4: *4* Fix bugs 135 & 141: DnD & paste-retaing-clones
 https://github.com/leo-editor/leo-editor/issues/135
