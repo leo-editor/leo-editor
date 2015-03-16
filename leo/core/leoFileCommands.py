@@ -2211,11 +2211,8 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.2013: *3* fc.writeMissingAtFileNodes
     def writeMissingAtFileNodes (self,event=None):
-
-        '''Write all missing @file nodes.'''
-
+        '''Write all @file nodes for which the corresponding external file does not exist.'''
         c = self.c
-
         if c.p:
             c.atFileCommands.writeMissing(c.p)
     #@+node:ekr.20031218072017.3050: *3* fc.writeOutlineOnly

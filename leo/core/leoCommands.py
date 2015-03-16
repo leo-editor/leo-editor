@@ -1227,7 +1227,7 @@ class Commands (object):
             return None
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
     def refreshFromDisk(self,event=None):
-        '''Refresh and @<file> node from disk.'''
+        '''Refresh an @<file> node from disk.'''
         c,p,u = self,self.p,self.undoer
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
