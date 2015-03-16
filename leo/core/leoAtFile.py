@@ -1726,7 +1726,7 @@ class AtFile:
             # This is the only place we call v.setVisited in the read logic.
             v.setVisited()
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
+    #@+node:ekr.20130121075058.10246: *8* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
         """
         Find or create a new *vnode* whose parent (also a vnode)

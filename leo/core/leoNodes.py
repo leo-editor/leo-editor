@@ -1749,15 +1749,17 @@ class Position (object):
         child._addLink(n,parent_v,adjust=adjust)
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
     def _linkAsNthChild (self,parent,n,adjust=True):
-
+        '''(low-level position method) Link self as the n'th child of the parent.'''
         p = self
         parent_v = parent.v
-
         # Init the ivars.
         p.stack = parent.stack[:]
         p.stack.append((parent_v,parent._childIndex),)
         p._childIndex = n
-
+        # New in Leo 5.1: ensure that p.gnx is unique in p's ancestors.
+        if 0:
+            for parent_v,junk in p.stack:
+                g.trace(parent_v.gnx,parent_v.h)
         child = p.v
         child._addLink(n,parent_v,adjust=adjust)
 

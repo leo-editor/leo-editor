@@ -1087,13 +1087,14 @@ class FileCommands:
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
             if v: # A clone.
-                if trace: g.trace('**clone',v)
+                if trace: g.trace('**clone',v.gnx,v)
                 v = self.createSaxVnode(sax_child,parent_v,v=v)   
             else:
                 v = self.createSaxVnode(sax_child,parent_v)
                 self.createSaxChildren(sax_child,v)
             children.append(v)
         parent_v.children = children
+        
         for child in children:
             child.parents.append(parent_v)
             if trace: g.trace(
@@ -1104,12 +1105,13 @@ class FileCommands:
     def createSaxVnode (self,sax_node,parent_v,v=None):
         '''Create a vnode, or use an existing vnode.'''
         c,at = self.c,self.c.atFileCommands
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
             # and self.mFileName and sax_node.headString == 'clone-test'
             # and not g.app.openingSettingsFile)
         trace_update,verbose = False,False
         h = sax_node.headString
         b = sax_node.bodyString
+        trace = trace and v and v.gnx == "vitalije.20150316130845.1" ###
         if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
@@ -1130,12 +1132,26 @@ class FileCommands:
             else:
                 gnx = x.getNewIndex(v)
                 g.trace('no txn! allocated new gnx',gnx)
+            trace = trace and gnx == "vitalije.20150316130845.1" ###
             if trace: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
             at.bodySetInited(v)
             v.setHeadString(h)
+            if self.gnxDict.get(gnx):
+                g.trace('can not happen: duplicate gnx',gnx,v)
+                sys.exit(1)
             self.gnxDict [gnx] = v
+        # Check for a duplicate gnx in parent_v.
+        if parent_v.gnx == v.gnx:
+            x = g.app.nodeIndices
+            gnx = x.getNewIndex(v)
+            # @clean stylesheets/main.less
+            g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
+            v = leoNodes.VNode(context=c,gnx=gnx)
+            v.setBodyString(b)
+            at.bodySetInited(v)
+            v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
