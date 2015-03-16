@@ -10237,13 +10237,13 @@ class SpellCommandsClass (BaseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'focus-to-spell':           self.focusToSpell,
-            'open-spell-tab':           self.openSpellTab,
-            'spell-find':               self.find,
+            'focus-to-spell-tab':       self.focusToSpell,
             'spell-change':             self.change,
             'spell-change-then-find':   self.changeThenFind,
+            'spell-find':               self.find,
             'spell-ignore':             self.ignore,
-            'hide-spell-tab':           self.hide,
+            'spell-tab-hide':           self.hide,
+            'spell-tab-open':           self.openSpellTab,
             
             # these are for spell as you type, not the spell tab
             'spell-as-you-type-toggle': self.as_you_type_toggle,
