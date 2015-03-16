@@ -827,101 +827,107 @@ class quickMoveButton:
 
         c = self.c
         p = c.p
-        p2 = c.vnode2position(self.target)
-
+        
+        vnodes = [i.v for i in c.getSelectedPositions()]
+        
         needs_undo = self.type_ != "jump"
-
-        if not c.positionExists(p2):
-            g.error('Target no longer exists: %s' % self.targetHeadString)
-            return
-
-        if self.type_ in ('clone', 'move'):  # all others are always valid?
-            if p.v == p2.v or not self.checkMove(p,p2):
-                g.error('Invalid move: %s' % (self.targetHeadString))
-                return
-
+        
         if needs_undo:
             bunch = c.undoer.beforeMoveNode(p)
-
-        p2.expand()
-        nxt = p.visNext(c) or p.visBack(c)
-        nxt = nxt.v
-        # store a VNode instead of position as positions are too easily lost
-
-        if self.type_ == 'clone':
-            p = p.clone()
-
-        if self.type_ in ('move', 'clone'):
-            if self.which == 'first child':
-                p.moveToFirstChildOf(p2)
-            elif self.which == 'last child':
-                p.moveToLastChildOf(p2)
-            elif self.which in ('next sibling', 'prev sibling'):
-                if not p2.parent():
-                    raise Exception("Not implemented for top-level nodes") #FIXME
-                if self.which == 'next sibling':
-                    p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
-                elif self.which == 'prev sibling':
-                    p.moveToNthChildOf(p2.parent(), p2._childIndex)
-            else:
-                raise Exception("Unknown move type "+self.which)
-
-        elif self.type_ == 'bkmk':
-            unl = self.computeUNL(p)  # before tree changes
-            if self.which == 'first child':
-                nd = p2.insertAsNthChild(0)
-            elif self.which == 'last child':
-                nd = p2.insertAsLastChild()
-            elif self.which == 'next sibling':
-                nd = p2.insertAfter()
-            elif self.which == 'prev sibling':
-                nd = p2.insertBefore()
-            else:
-                raise Exception("Unknown move type "+self.which)
-            h = p.anyAtFileNodeName() or p.h
-            while h and h[0] == '@':
-                h = h[1:]
-            nd.h = h
-            nd.b = unl
-
-        elif self.type_ == 'copy':
-
-            if self.which == 'first child':
-                nd = p2.insertAsNthChild(0)
-                quickMove.copy_recursively(p, nd)
-                # unlike p.copyTreeFromSelfTo, deepcopys p.v.u            
-            elif self.which == 'last child':
-                nd = p2.insertAsLastChild()
-                quickMove.copy_recursively(p, nd)
-            elif self.which == 'next sibling':
-                nd = p2.insertAfter()
-                quickMove.copy_recursively(p, nd)
-            elif self.which == 'prev sibling':
-                nd = p2.insertBefore()
-                quickMove.copy_recursively(p, nd)
-            else:
-                raise Exception("Unknown move type "+self.which)
-
-        elif self.type_ in ('linkTo', 'linkFrom'):
-            blc = getattr(c, 'backlinkController', None)
-            if blc is None:
-                g.es("Linking requires backlink.py plugin")
+        
+        for v in vnodes:
+                
+            p2 = c.vnode2position(self.target)
+            p = c.vnode2position(v)
+        
+            if not c.positionExists(p2):
+                g.error('Target no longer exists: %s' % self.targetHeadString)
                 return
-            if self.type_ == 'linkTo':
-                blc.vlink(p.v, p2.v)
+        
+            if self.type_ in ('clone', 'move'):  # all others are always valid?
+                if p.v == p2.v or not self.checkMove(p,p2):
+                    g.error('Invalid move: %s' % (self.targetHeadString))
+                    return
+        
+            p2.expand()
+            nxt = p.visNext(c) or p.visBack(c)
+            nxt = nxt.v
+            # store a VNode instead of position as positions are too easily lost
+        
+            if self.type_ == 'clone':
+                p = p.clone()
+        
+            if self.type_ in ('move', 'clone'):
+                if self.which == 'first child':
+                    p.moveToFirstChildOf(p2)
+                elif self.which == 'last child':
+                    p.moveToLastChildOf(p2)
+                elif self.which in ('next sibling', 'prev sibling'):
+                    if not p2.parent():
+                        raise Exception("Not implemented for top-level nodes") #FIXME
+                    if self.which == 'next sibling':
+                        p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
+                    elif self.which == 'prev sibling':
+                        p.moveToNthChildOf(p2.parent(), p2._childIndex)
+                else:
+                    raise Exception("Unknown move type "+self.which)
+        
+            elif self.type_ == 'bkmk':
+                unl = self.computeUNL(p)  # before tree changes
+                if self.which == 'first child':
+                    nd = p2.insertAsNthChild(0)
+                elif self.which == 'last child':
+                    nd = p2.insertAsLastChild()
+                elif self.which == 'next sibling':
+                    nd = p2.insertAfter()
+                elif self.which == 'prev sibling':
+                    nd = p2.insertBefore()
+                else:
+                    raise Exception("Unknown move type "+self.which)
+                h = p.anyAtFileNodeName() or p.h
+                while h and h[0] == '@':
+                    h = h[1:]
+                nd.h = h
+                nd.b = unl
+        
+            elif self.type_ == 'copy':
+        
+                if self.which == 'first child':
+                    nd = p2.insertAsNthChild(0)
+                    quickMove.copy_recursively(p, nd)
+                    # unlike p.copyTreeFromSelfTo, deepcopys p.v.u            
+                elif self.which == 'last child':
+                    nd = p2.insertAsLastChild()
+                    quickMove.copy_recursively(p, nd)
+                elif self.which == 'next sibling':
+                    nd = p2.insertAfter()
+                    quickMove.copy_recursively(p, nd)
+                elif self.which == 'prev sibling':
+                    nd = p2.insertBefore()
+                    quickMove.copy_recursively(p, nd)
+                else:
+                    raise Exception("Unknown move type "+self.which)
+        
+            elif self.type_ in ('linkTo', 'linkFrom'):
+                blc = getattr(c, 'backlinkController', None)
+                if blc is None:
+                    g.es("Linking requires backlink.py plugin")
+                    return
+                if self.type_ == 'linkTo':
+                    blc.vlink(p.v, p2.v)
+                else:
+                    blc.vlink(p2.v, p.v)
+        
+            if self.type_ in ('bkmk', 'clone', 'copy', 'move'):
+                nxt = c.vnode2position(nxt)
+            elif self.type_ == 'jump':
+                nxt = c.vnode2position(self.target)
             else:
-                blc.vlink(p2.v, p.v)
-
-        if self.type_ in ('bkmk', 'clone', 'copy', 'move'):
-            nxt = c.vnode2position(nxt)
-        elif self.type_ == 'jump':
-            nxt = c.vnode2position(self.target)
-        else:
-            nxt = None  # linkTo / linkFrom don't move
-
-        if nxt is not None and c.positionExists(nxt):
-            c.selectPosition(nxt)
-
+                nxt = None  # linkTo / linkFrom don't move
+        
+            if nxt is not None and c.positionExists(nxt):
+                c.selectPosition(nxt)
+        
         if needs_undo:
             c.undoer.afterMoveNode(p,'Quick Move', bunch)
             c.setChanged(True)
