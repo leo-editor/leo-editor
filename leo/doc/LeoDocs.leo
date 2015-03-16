@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -369,7 +369,7 @@
 <v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
 <v t="ekr.20131002211347.6456"><vh>Command names</vh></v>
 <v t="ekr.20131002055813.15973"><vh>Leo's main window</vh></v>
-<v t="ekr.20131004191204.16079"><vh>File operations</vh></v>
+<v t="ekr.20131004191204.16079"><vh>File operations &amp; sessions</vh></v>
 <v t="ekr.20150315132217.3"><vh>Switching focus</vh></v>
 <v t="ekr.20131002055813.19835"><vh>Operations on nodes</vh></v>
 <v t="ekr.20131002055813.19036"><vh>Selecting outline nodes</vh></v>
@@ -677,7 +677,7 @@
 <v t="EKR.20040524104904.101"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="EKR.20040524104904.110"><vh>Closing outlines &amp; quitting Leo</vh></v>
 <v t="EKR.20040524104904.109"><vh>Importing &amp; exporting files</vh></v>
-<v t="ekr.20150314050809.22"><vh>Creating &amp; reloading sessions</vh></v>
+<v t="ekr.20150314050809.22"><vh>Using sessions</vh></v>
 <v t="EKR.20040524104904.102"><vh>Communicating with external editors </vh></v>
 <v t="ekr.20150315132217.1623"><vh>Creating &amp; deleting directories &amp; files</vh></v>
 <v t="ekr.20150315132217.1622"><vh>Managing recent files</vh></v>
@@ -2121,8 +2121,8 @@
 <v t="ekr.20150315132217.1618"><vh>zoom-out</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
 <v t="EKR.20040524104904.99"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -12931,30 +12931,26 @@ This plugin provides a "workbook" like way to get data from Leo document to the 
 <t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands.
 **Note**: you can also use the Nav Tab (in the Log pane) to search for text.
 
-``Ctrl-F (start-search)`` shows the Find Tab and puts the focus in the minibuffer.
+``Ctrl-F (start-search)`` shows the Find Tab and puts the focus in the text box labelled ``Find:``.
 
-**Important**: the Find tab just shows you the status of search and replace operations. You control those operations from the minibuffer.
+**Aside**: You can select radio buttons and toggle check boxes in the Find Tab with ``Ctrl-Alt keys``. The capitalized words of the radio buttons or check boxes indicate which key to use.  For example, ``Ctrl-Alt-X (toggle-find-regex-option)`` toggles the ``regeXp`` checkbox.
 
-**Note**: You can select radio buttons and toggle check boxes in the Find Tab with ``Ctrl-Alt keys``. The capitalized words of the radio buttons or check boxes indicate which key to use. 
-
-For example, ``Ctrl-Alt-X (toggle-find-regex-option)`` toggles the ``regeXp`` checkbox.
-
-After typing ``Ctrl-F``, type the search string, say ``def``, in the minibuffer.
+After typing ``Ctrl-F``, type the search string, say ``def``, in the text box.
 
 Start the find command by typing ``&lt;Return&gt;``.
 
 But suppose you want to replace ``def`` with ``foo``, instead of just finding ``def``.
 
-Just type ``&lt;Tab&gt;`` before typing ``&lt;Return&gt;``. The minibuffer prompts for the replacement string. Notice that the status area now shows ``def`` as the find string. Type ``foo``.  
+Just type ``&lt;Tab&gt;`` before typing ``&lt;Return&gt;``. Focus shifts to the text box labelled ``Replace:``.
 
 Finally, type ``&lt;Return&gt;`` to start the find-next command. When Leo finds the next instance of ``def``, it will select it.
 
 You may now type any command.  The following are most useful:
 
-| ``Ctrl-minus (replace-then-find)`` replaces the selected text.
-| ``F3 (find-next)`` continues searching without making a replacement.
-| ``F2 (find-previous)`` continues the search in reverse.
-| ``Ctrl-G (keyboard-quit)`` ends the search.
+- ``Ctrl-minus (replace-then-find)`` replaces the selected text.
+- ``F3 (find-next)`` continues searching without making a replacement.
+- ``F2 (find-previous)`` continues the search in reverse.
+- ``Ctrl-G (keyboard-quit)`` ends the search.
 </t>
 <t tx="ekr.20131001100335.15940">.. index::
     pair: leoSettings.leo; Tutorial
@@ -12974,8 +12970,8 @@ Leo has a flexible (perhaps *too* flexible) configuration system. It's best to u
    
 As a result, settings may vary from one Leo file to another. This can be confusing. These two commands can help:
 
-| ``print-settings`` shows each setting and where it came from.
-| ``print-bindings`` shows each key binding and where it came from.
+- ``print-settings`` shows each setting and where it came from.
+- ``print-bindings`` shows each key binding and where it came from.
 
 .. index::
     pair: @settings tree; Tutorial
@@ -12984,8 +12980,8 @@ As a result, settings may vary from one Leo file to another. This can be confusi
 
 Within ``@settings`` trees, you specify boolean settings with ``@bool`` nodes, string settings with ``@string`` nodes, menus with ``@menus`` and ``@menu`` nodes, etc. For exact details, please do study leoSettings.leo. You can open either leoSettings.leo or myLeoSettings.leo from the Help menu. Within leoSettings.leo:
 
-| The node ``About this file`` explains about settings.
-| The node ``Candidates for settings in myLeoSettings.leo`` highlights the settings you are most likely to want to customize.
+- The node ``About this file`` explains about settings.
+- The node ``Candidates for settings in myLeoSettings.leo`` highlights the settings you are most likely to want to customize.
 </t>
 <t tx="ekr.20131001100335.15942">Give differences between Leo and Emacs, Vim &amp; IPython.</t>
 <t tx="ekr.20131001100335.15943">- Leo has shamelessly stolen all of Emacs's most important features: long
@@ -13044,10 +13040,10 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
 
 **Summary**:
 
-| ``&lt;Return&gt;`` executes the command.
-| ``&lt;Tab&gt;`` shows all valid completions.
-| ``&lt;BackSpace&gt;`` shows more alternatives.
-| ``Ctrl-G`` exits the minibuffer and puts focus in the body pane.
+- ``&lt;Return&gt;`` executes the command.
+- ``&lt;Tab&gt;`` shows all valid completions.
+- ``&lt;BackSpace&gt;`` shows more alternatives.
+- ``Ctrl-G`` exits the minibuffer and puts focus in the body pane.
 </t>
 <t tx="ekr.20131001100335.15947">``F1 (help)``
     Shows a help message appears in the viewrendered pane. Alt-0 (vr-toggle) hides or shows this pane.
@@ -13127,12 +13123,12 @@ Regardless of focus, ``Alt-arrow`` select outline nodes:
 </t>
 <t tx="ekr.20131002055813.19037">When focus is in any of Leo's text panes (body pane, log pane, headlines), Leo works like most text editors:
 
-| ``Plain arrow`` keys move the cursor up, down, left or right.
-| ``Ctrl-LeftArrow`` and ``Ctrl-RightArrow`` move the cursor by words.
-| ``Home`` and ``End`` move the cursor to the beginning or end of a line.
-| ``Ctrl-Home`` moves the cursor to the beginning of the body text.
-| ``Ctrl-End`` moves the cursor to the end of the body text.
-| ``PageDown`` and ``PageUp`` move the cursor up or down one page.
+- ``Plain arrow`` keys move the cursor up, down, left or right.
+- ``Ctrl-LeftArrow`` and ``Ctrl-RightArrow`` move the cursor by words.
+- ``Home`` and ``End`` move the cursor to the beginning or end of a line.
+- ``Ctrl-Home`` moves the cursor to the beginning of the body text.
+- ``Ctrl-End`` moves the cursor to the end of the body text.
+- ``PageDown`` and ``PageUp`` move the cursor up or down one page.
 
 **Note**: As usual, adding the ``Shift`` key modifier to any of the keys above moves the cursor and extends the selected text.
 </t>
@@ -13197,7 +13193,7 @@ Leo reads external files automatically when you open Leo outline, and writes all
     pair: @all; Tutorial
     pair: Outline Order; Tutorial
 
-The **@all** directive tells Leo to write the **@file tree** (the @file node and all its descendants) to the external file in **outline order**, the order in which the nodes appear in the outline pane when all nodes are expanded. Non-programmers will typically use the @all directive; programmers typically use the @others directive, as discussed in the `programming tutorial`_.
+The **@all** directive tells Leo to write the **@file tree** (the @file node and all its descendants) to the external file in **outline order**, the order in which the nodes appear in the outline pane when all nodes are expanded. Non-programmers will typically use the @all directive; programmers typically use the @others directive, as discussed in the `programming tutorial`_. The @all directive may appear anywhere in the body text of the root @file node.
 
 The @all directivive is designed for "catch-all" files, like todo.txt or notes.txt or whatever. Such files are assumed to contain a random collection of nodes, so there is no language in effect and no real comment delimiters.
 
@@ -13354,8 +13350,7 @@ These enable or disable line wrapping in the body pane.
 <t tx="ekr.20131004073415.16044">.. index::
     pair: Clone; Tutorial
     
-| A **clone** is a node that appears in more than one place in a Leo outline.
-| Clones are marked with a small red arrow in its icon box.
+A **clone** is a node that appears in more than one place in a Leo outline. Clones are marked with a small red arrow in its icon box.
 
 .. .. image:: images/box13.GIF
 ..    :scale 200 %
@@ -13368,10 +13363,13 @@ All clones of a node are actually *the same node*:
 
 Clones allow data to be stored in *arbitrarily many* places within an outline.
 
+``Ctrl-` (clone-node)``
+    Clones node A. The shortcut is a grave accent, *not* a single quote.  This is often on the same keyboard key as the tilda ``~`` character.
+
 Please take a few moments to experiment with clones:
 
 - Create a node whose headline is A.
-- ``Ctrl-` (clone-node)`` clones node A.
+- Clone node A with the ``clone-node`` command.
 - Type some text into the body of A.
 - All clones of A now have the same body.
 - Insert a node, say B, as a child of any of the A nodes.
@@ -13390,6 +13388,9 @@ Please take a few moments to experiment with clones:
     Saves the outline.
 ``Ctrl-Q (exit-leo)``
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
+    
+A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
+
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
@@ -19197,7 +19198,7 @@ delete-node-icons
 ``session-snapshot-save``
     Saves a snapshot of the present session to the leo.session file.
 
-**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The --session-save and --session-restore command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
 </t>
 <t tx="ekr.20150314050809.23">clear-all-caches
 clear-all-uas
