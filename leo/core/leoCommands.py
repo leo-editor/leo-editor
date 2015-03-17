@@ -4145,7 +4145,7 @@ class Commands (object):
                     errors += 1
                     junk, value, junk = sys.exc_info()
                     g.error("test failed at position %s\n%s" % (repr(p),value))
-        if errors: #  or (verbose and not unittest):
+        if errors or (verbose and not unittest):
             g.blue('',count,'nodes checked',errors,'errors')
         return errors
     #@+node:ekr.20040313150633: *7* c.removeTnodeList
