@@ -1691,13 +1691,23 @@ class Position (object):
             if child_v:
                 for parent in p.self_and_parents():
                     if child_v == parent.v:
+                        g.app.structure_errors += 1
                         g.error('vnode: %s is its own parent' % child_v)
-                        # Try not to hang!
+                        # Allocating a new vnode would be difficult.
+                        # Just remove child_v from parent.v.children.
+                        parent.v.children = [
+                            v2 for v2 in parent.v.children if not v2 == child_v]
+                        if parent.v in child_v.parents:
+                            child_v.parents.remove(parent.v)
+                        # Try not to hang.
                         p.moveToParent()
                         break
                     elif child_v.fileIndex == parent.v.fileIndex:
+                        g.app.structure_errors += 1
                         g.error('duplicate gnx: %s v: %s parent: %s' % (
                             child_v.fileIndex,child_v,parent.v))
+                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
+                        assert child_v.gnx != parent.v.gnx
                         # Should be ok to continue.
                         p.moveToFirstChild()
                         break

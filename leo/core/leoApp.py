@@ -78,6 +78,7 @@ class LeoApp:
         self.idle_timers = []           # A list of IdleTime instances, so they persist.
         self.positions = 0              # The number of positions generated.
         self.scanErrors = 0             # The number of errors seen by g.scanError.
+        self.structure_errors = 0       # Set by p.safeMoveToThreadNext.
         self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
         self.validate_outline = False   # True: enables c.validate_outline. (slow)
 

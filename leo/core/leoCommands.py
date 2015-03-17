@@ -4158,6 +4158,7 @@ class Commands (object):
         '''Check the consistency of all gnx's.'''
         c = self
         d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
+        g.app.structure_errors = 0
         errors = 0
         for p in c.safe_all_positions():
             gnx = p.v.fileIndex
@@ -4168,6 +4169,7 @@ class Commands (object):
             else:
                 errors += 1
                 print('empty v.fileIndex: %s %r' % (p.v,p.v.gnx))
+        errors += g.app.structure_errors
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:

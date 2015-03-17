@@ -1144,14 +1144,18 @@ class FileCommands:
         # Check for a duplicate gnx in parent_v.
         # This is a limited check: parent_v.parents is [] here.
         if parent_v.gnx == v.gnx:
-            x = g.app.nodeIndices
-            gnx = x.getNewIndex(v)
             # @clean stylesheets/main.less
             g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
-            v = leoNodes.VNode(context=c,gnx=gnx)
-            v.setBodyString(b)
-            at.bodySetInited(v)
-            v.setHeadString(h)
+            if g.app.check_outline:
+                # c.checkOutline should fix this.
+                pass
+            else:
+                x = g.app.nodeIndices
+                gnx = x.getNewIndex(v)
+                v = leoNodes.VNode(context=c,gnx=gnx)
+                v.setBodyString(b)
+                at.bodySetInited(v)
+                v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
