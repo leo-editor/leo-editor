@@ -1080,8 +1080,8 @@ class FileCommands:
     # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20060919110638.5: *4* fc.createSaxChildren & helpers
     def createSaxChildren (self, sax_node, parent_v):
-
-        trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
+        '''Create vnodes for all children in sax_node.children.'''
+        trace = False and not g.unitTesting
         children = []
         for sax_child in sax_node.children:
             tnx = sax_child.tnx
@@ -1094,7 +1094,6 @@ class FileCommands:
                 self.createSaxChildren(sax_child,v)
             children.append(v)
         parent_v.children = children
-        
         for child in children:
             child.parents.append(parent_v)
             if trace: g.trace(
@@ -1143,6 +1142,7 @@ class FileCommands:
                 sys.exit(1)
             self.gnxDict [gnx] = v
         # Check for a duplicate gnx in parent_v.
+        # This is a limited check: parent_v.parents is [] here.
         if parent_v.gnx == v.gnx:
             x = g.app.nodeIndices
             gnx = x.getNewIndex(v)
@@ -1382,16 +1382,13 @@ class FileCommands:
         return sax_node
     #@+node:ekr.20060919110638.3: *4* fc.readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
-
+        '''Read the entire .leo file using the sax parser.'''
         dump = False and not g.unitTesting
         fc = self ; c = fc.c
-
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile,fileName,
             silent=silent,inClipboard=inClipboard,s=s)
-
         if dump: fc.dumpSaxTree(saxRoot,dummy=True)
-
         # Pass two: create the tree of vnodes from the intermediate nodes.
         if saxRoot:
             parent_v = c.hiddenRootNode

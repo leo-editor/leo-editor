@@ -1679,6 +1679,42 @@ class Position (object):
                 return True,None
         else:
             return False,None
+    #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
+    def safeMoveToThreadNext (self):
+        '''
+        Move a position to threadNext position.
+        Issue an error if any vnode is an ancestor of itself.
+        '''
+        p = self
+        if p.v:
+            child_v = p.v.children and p.v.children[0]
+            if child_v:
+                for parent in p.self_and_parents():
+                    if child_v == parent.v:
+                        g.error('vnode: %s is its own parent' % child_v)
+                        # Try not to hang!
+                        p.moveToParent()
+                        break
+                    elif child_v.fileIndex == parent.v.fileIndex:
+                        g.error('duplicate gnx: %s v: %s parent: %s' % (
+                            child_v.fileIndex,child_v,parent.v))
+                        # Should be ok to continue.
+                        p.moveToFirstChild()
+                        break
+                else:
+                    p.moveToFirstChild()
+            elif p.hasNext():
+                p.moveToNext()
+            else:
+                p.moveToParent()
+                while p:
+                    if p.hasNext():
+                        p.moveToNext()
+                        break # found
+                    p.moveToParent()
+                # not found.
+        return p
+    #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.

@@ -4138,9 +4138,14 @@ class Commands (object):
                 if trace: g.trace(p.h)
                 try:
                     count += 1
-                    c.removeTnodeList(p)
+                    v = p.v
+                    if hasattr(v,"tnodeList"):
+                        delattr(v,"tnodeList")
+                        v._p_changed = True
                     if full: # Unit tests usually set this false.
-                        c.fullOutlineCheck(p)
+                        c.checkThreadLinks(p)
+                        c.checkSiblings(p)
+                        c.checkParentAndChildren(p)
                 except AssertionError:
                     errors += 1
                     junk, value, junk = sys.exc_info()
@@ -4148,45 +4153,29 @@ class Commands (object):
         if errors or (verbose and not unittest):
             g.blue('',count,'nodes checked',errors,'errors')
         return errors
-    #@+node:ekr.20040313150633: *7* c.removeTnodeList
-    def removeTnodeList(self,p):
-        '''Delete p's tnodeList attribute if it exists.'''
-        v = p.v
-        if hasattr(v,"tnodeList"):
-            # Empty tnodeLists are not errors.
-            if 0:
-                s = "deleting tnodeList for " + repr(v)
-                g.warning(s)
-            delattr(v,"tnodeList")
-            v._p_changed = True
-    #@+node:ekr.20040323155951: *7* c.fullOutlineCheck
-    def fullOutlineCheck(self,p):
-        '''Do various consistency checks on p.'''
+    #@+node:ekr.20141024211256.22: *7* c.checkGnxs
+    def checkGnxs(self):
+        '''Check the consistency of all gnx's.'''
         c = self
-        c.checkThreadLinks(p)
-        c.checkSiblings(p)
-        c.checkParentAndChildren(p)
-    #@+node:ekr.20040314035615: *8* checkThreadLinks
-    def checkThreadLinks(self,p):
-        '''Check consistency of threadNext & threadBack links.'''
-        threadBack = p.threadBack()
-        threadNext = p.threadNext()
-        if threadBack:
-            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
-        if threadNext:
-            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
-    #@+node:ekr.20040314035615.1: *8* c.checkSiblings
-    def checkSiblings(self,p):
-        '''Check the consistency of next and back links.'''
-        back = p.back()
-        next = p.next()
-        if back:
-            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
-                back,back.next())
-        if next:
-            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
-                next,next.back())
-    #@+node:ekr.20040314035615.2: *8* c.checkParentAndChildren
+        d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
+        errors = 0
+        for p in c.safe_all_positions():
+            gnx = p.v.fileIndex
+            if gnx:
+                aSet = d.get(gnx,set())
+                aSet.add(p.v)
+                d[gnx] = aSet
+            else:
+                errors += 1
+                print('empty v.fileIndex: %s %r' % (p.v,p.v.gnx))
+        for gnx in sorted(d.keys()):
+            aList = sorted(d.get(gnx))
+            if len(aList) != 1:
+                errors += 1
+                print('multiple vnode with same gnx: %s vnodes: [%s]' % (gnx,aList))
+        # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
+        return errors
+    #@+node:ekr.20040314035615.2: *7* c.checkParentAndChildren
     def checkParentAndChildren(self,p):
         '''Check consistency of parent and child data structures.'''
         # Check consistency of parent and child links.
@@ -4205,28 +4194,26 @@ class Commands (object):
         parent_v = p._parentVnode()
         n = p.childIndex()
         assert parent_v.children[n] == p.v,'fail 1'
-    #@+node:ekr.20141024211256.22: *7* c.checkGnxs (revise)
-    def checkGnxs(self):
-        '''Check the consistency of all gnx's.'''
-        c = self
-        d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
-        errors = 0
-        for p in c.all_positions():
-            gnx = p.v.fileIndex
-            if gnx:
-                aSet = d.get(gnx,set())
-                aSet.add(p.v)
-                d[gnx] = aSet
-            else:
-                errors += 1
-                print('empty v.fileIndex',p.v)
-        for gnx in sorted(d.keys()):
-            aList = sorted(d.get(gnx))
-            if len(aList) != 1:
-                errors += 1
-                print('multiple vnode with gnx: %s vnodes: [%s]' % (gnx,aList))
-        # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
-        return errors
+    #@+node:ekr.20040314035615.1: *7* c.checkSiblings
+    def checkSiblings(self,p):
+        '''Check the consistency of next and back links.'''
+        back = p.back()
+        next = p.next()
+        if back:
+            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
+                back,back.next())
+        if next:
+            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
+                next,next.back())
+    #@+node:ekr.20040314035615: *7* c.checkThreadLinks
+    def checkThreadLinks(self,p):
+        '''Check consistency of threadNext & threadBack links.'''
+        threadBack = p.threadBack()
+        threadNext = p.threadNext()
+        if threadBack:
+            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
+        if threadNext:
+            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
@@ -7908,12 +7895,14 @@ class Commands (object):
     #@+node:ekr.20091001141621.6061: *3* c.generators
     #@+node:ekr.20091001141621.6043: *4* c.all_nodes & all_unique_nodes
     def all_nodes(self):
+        '''A generator returning all vnodes in the outline, in outline order.'''
         c = self
         for p in c.all_positions():
             yield p.v
         # raise StopIteration
 
     def all_unique_nodes(self):
+        '''A generator returning each vnode of the outline.'''
         c = self
         for p in c.all_unique_positions():
             yield p.v
@@ -7926,6 +7915,10 @@ class Commands (object):
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6062: *4* c.all_unique_positions
     def all_unique_positions(self):
+        '''
+        A generator return all positions of the outline, in outline order.
+        Returns only the first position for each vnode.
+        '''
         c = self
         p = c.rootPosition() # Make one copy.
         seen = set()
@@ -7943,6 +7936,7 @@ class Commands (object):
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20091001141621.6044: *4* c.all_positions
     def all_positions (self):
+        '''A generator return all positions of the outline, in outline order.'''
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
@@ -7953,6 +7947,18 @@ class Commands (object):
     # Compatibility with old code.
     all_positions_iter = all_positions
     allNodes_iter = all_positions
+    #@+node:ekr.20150316175921.5: *4* c.safe_all_positions
+    def safe_all_positions (self):
+        '''
+        A generator returning all positions of the outline. This generator does
+        *not* assume that vnodes are never their own ancestors.
+        '''
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p
+            p.safeMoveToThreadNext()
+        # raise stopIteration
     #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters
     #@+node:ekr.20060906211747: *4* Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition (changed)
