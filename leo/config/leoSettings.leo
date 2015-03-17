@@ -415,6 +415,63 @@
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
 </v>
+<v t="ekr.20071213060239"><vh>rst3 command</vh>
+<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
+<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
+</v>
+<v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
+<v t="ekr.20131027064821.18683"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
+<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+</v>
+<v t="ekr.20071213060514"><vh>rst3 global options</vh>
+<v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
+<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
+<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
+<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+</v>
+<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
+<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
+<v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
+</v>
+<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
+<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
+</v>
+<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
+<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
+</v>
+<v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
+<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
+<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
+<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
+<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
+<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
+<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
+<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
+<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
+<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
+<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
+<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
+<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
+<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
+</v>
+</v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
@@ -1546,63 +1603,6 @@
 <v t="peckj.20131012154112.5296"><vh>@data rss-body-format</vh></v>
 <v t="peckj.20131012154112.5297"><vh>@string rss-date-format = %Y-%m-%d %I:%M %p</vh></v>
 <v t="peckj.20131012154112.5298"><vh>@bool rss-sort-newest-first = True</vh></v>
-</v>
-<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
-<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
-</v>
-<v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20131027064821.18683"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
-<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
-<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
-<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
-</v>
-<v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
-<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
-<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
-<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
-</v>
-<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
-<v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
-</v>
-<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
-</v>
-<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
-<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
-</v>
-<v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
-<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
-<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
-<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
-<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
-<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
-<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
-<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
-<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
-<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
-<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
-<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
-<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
-<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
-</v>
 </v>
 <v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
