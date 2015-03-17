@@ -4118,7 +4118,7 @@ class Commands (object):
         p = c.setPositionAfterSort(sortChildren)
         c.redraw(p)
     #@+node:ekr.20040711135959.2: *5* Check Outline submenu...
-    #@+node:ekr.20031218072017.2072: *6* c.checkOutline & checkGxns
+    #@+node:ekr.20031218072017.2072: *6* c.checkOutline & helpers
     def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
         """
         Report any possible clone errors in the outline.
@@ -4126,99 +4126,86 @@ class Commands (object):
         Remove any tnodeLists.
         """
         trace = False and not g.unitTesting
-        c = self ; count = 1 ; errors = 0
-        # if full and not unittest:
-            # g.blue("all tests enabled: this may take awhile")
-        iter_ = root.self_and_subtree if root else c.all_positions
-        for p in iter_():
-            if trace: g.trace(p.h)
-            try:
-                count += 1
-                #@+<< remove tnodeList >>
-                #@+node:ekr.20040313150633: *7* << remove tnodeList >>
-                # Empty tnodeLists are not errors.
-                v = p.v
-
-                if hasattr(v,"tnodeList"): # and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
-                    if 0:
-                        s = "deleting tnodeList for " + repr(v)
-                        g.warning(s)
-                    delattr(v,"tnodeList")
-                    v._p_changed = True
-                #@-<< remove tnodeList >>
-                if full: # Unit tests usually set this false.
-                    #@+<< do full tests >>
-                    #@+node:ekr.20040323155951: *7* << do full tests >>
-                    # if not unittest:
-                        # if count % 1000 == 0:
-                            # g.es('','.',newline=False)
-                        # if count % 8000 == 0:
-                            # g.enl()
-
-                    #@+others
-                    #@+node:ekr.20040314035615: *8* assert consistency of threadNext & threadBack links
-                    threadBack = p.threadBack()
-                    threadNext = p.threadNext()
-                    if threadBack:
-                        assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
-                    if threadNext:
-                        assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
-                    #@+node:ekr.20040314035615.1: *8* assert consistency of next and back links
-                    back = p.back()
-                    next = p.next()
-                    if back:
-                        assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
-                            back,back.next())
-                    if next:
-                        assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
-                            next,next.back())
-                    #@+node:ekr.20040314035615.2: *8* assert consistency of parent and child links
-                    if p.hasParent():
-                        n = p.childIndex()
-                        assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
-                    for child in p.children():
-                        assert p == child.parent(), "p!=child.parent"
-                    if p.hasNext():
-                        assert p.next().parent() == p.parent(), "next.parent!=parent"
-                    if p.hasBack():
-                        assert p.back().parent() == p.parent(), "back.parent!=parent"
-                    #@+node:ekr.20080426051658.1: *8* assert consistency of parent and children arrays
-                    #@+at
-                    # Every nodes gets visited, so we only check consistency
-                    # between p and its parent, not between p and its children.
-                    # 
-                    # In other words, this is a strong test.
-                    #@@c
-
-                    parent_v = p._parentVnode()
-                    n = p.childIndex()
-                    assert parent_v.children[n] == p.v,'fail 1'
-                    #@-others
-                    #@-<< do full tests >>
-            except AssertionError:
-                errors += 1
-                #@+<< give test failed message >>
-                #@+node:ekr.20040314044652: *7* << give test failed message >>
-                junk, value, junk = sys.exc_info()
-                g.error("test failed at position %s\n%s" % (repr(p),value))
-                #@-<< give test failed message >>
-                if trace: return errors
+        c = self
+        count,errors = 1,0
+        if g.app.check_outline and not unittest:
+            full,verbose = True,True
+        # Check gnx's first.  Generators will loop if this fails.
         errors += c.checkGnxs()
-        if verbose or not unittest:
-            #@+<< print summary message >>
-            #@+node:ekr.20040314043900: *7* <<print summary message >>
-            if full:
-                g.enl()
-
-            if errors or verbose:
-                if errors:
-                    g.error('',count,'nodes checked',errors,'errors')
-                else:
-                    g.blue('',count,'nodes checked',errors,'errors')
-
-            #@-<< print summary message >>
+        if not errors:
+            iter_ = root.self_and_subtree if root else c.all_positions
+            for p in iter_():
+                if trace: g.trace(p.h)
+                try:
+                    count += 1
+                    c.removeTnodeList(p)
+                    if full: # Unit tests usually set this false.
+                        c.fullOutlineCheck(p)
+                except AssertionError:
+                    errors += 1
+                    junk, value, junk = sys.exc_info()
+                    g.error("test failed at position %s\n%s" % (repr(p),value))
+        if errors: #  or (verbose and not unittest):
+            g.blue('',count,'nodes checked',errors,'errors')
         return errors
-    #@+node:ekr.20141024211256.22: *7* c.checkGnxs
+    #@+node:ekr.20040313150633: *7* c.removeTnodeList
+    def removeTnodeList(self,p):
+        '''Delete p's tnodeList attribute if it exists.'''
+        v = p.v
+        if hasattr(v,"tnodeList"):
+            # Empty tnodeLists are not errors.
+            if 0:
+                s = "deleting tnodeList for " + repr(v)
+                g.warning(s)
+            delattr(v,"tnodeList")
+            v._p_changed = True
+    #@+node:ekr.20040323155951: *7* c.fullOutlineCheck
+    def fullOutlineCheck(self,p):
+        '''Do various consistency checks on p.'''
+        c = self
+        c.checkThreadLinks(p)
+        c.checkSiblings(p)
+        c.checkParentAndChildren(p)
+    #@+node:ekr.20040314035615: *8* checkThreadLinks
+    def checkThreadLinks(self,p):
+        '''Check consistency of threadNext & threadBack links.'''
+        threadBack = p.threadBack()
+        threadNext = p.threadNext()
+        if threadBack:
+            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
+        if threadNext:
+            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
+    #@+node:ekr.20040314035615.1: *8* c.checkSiblings
+    def checkSiblings(self,p):
+        '''Check the consistency of next and back links.'''
+        back = p.back()
+        next = p.next()
+        if back:
+            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
+                back,back.next())
+        if next:
+            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
+                next,next.back())
+    #@+node:ekr.20040314035615.2: *8* c.checkParentAndChildren
+    def checkParentAndChildren(self,p):
+        '''Check consistency of parent and child data structures.'''
+        # Check consistency of parent and child links.
+        if p.hasParent():
+            n = p.childIndex()
+            assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
+        for child in p.children():
+            assert p == child.parent(), "p!=child.parent"
+        if p.hasNext():
+            assert p.next().parent() == p.parent(), "next.parent!=parent"
+        if p.hasBack():
+            assert p.back().parent() == p.parent(), "back.parent!=parent"
+        # Check consistency of parent and children arrays.
+        # Every nodes gets visited, so a strong test need only check consistency
+        # between p and its parent, not between p and its children.
+        parent_v = p._parentVnode()
+        n = p.childIndex()
+        assert parent_v.children[n] == p.v,'fail 1'
+    #@+node:ekr.20141024211256.22: *7* c.checkGnxs (revise)
     def checkGnxs(self):
         '''Check the consistency of all gnx's.'''
         c = self

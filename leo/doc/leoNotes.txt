@@ -14931,5 +14931,18 @@ def has_at_recovery_node(pd,root):
     '''
     p = pd.has_at_data_node(root)
     return p and g.findNodeInTree(pd.c,p,'@recovery')
+.. @+node:ekr.20100119145629.6109: *3* fc.checkOutline
+def checkOutline (self):
+
+    c = self.c
+
+    g.blue('@bool check_outline_before_save = True')
+
+    errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    ok = errors == 0
+    if not ok:
+        g.error('outline not written')
+
+    return ok
 .. @-all
 .. @-leo

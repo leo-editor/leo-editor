@@ -619,7 +619,7 @@ class FileCommands:
             return None
         if trace: g.trace('reassign',reassignIndices,'temp',tempOutline)
         check = not reassignIndices
-        checkAfterRead = False or c.config.getBool('check_outline_after_read')
+        checkAfterRead = g.app.check_outline or c.config.getBool('check_outline_after_read')
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
@@ -688,8 +688,8 @@ class FileCommands:
             g.trace('**** dumping outline...')
             c.dumpOutline()
         if checkAfterRead:
-            g.blue('checking outline after paste')
-            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+            # g.blue('checking outline after paste')
+            c.checkOutline()
         c.selectPosition(p)
         self.initReadIvars() # 2010/02/05
         return p
@@ -747,8 +747,8 @@ class FileCommands:
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-                if c.config.getBool('check_outline_after_read'):
-                    c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+                if g.app.check_outline or c.config.getBool('check_outline_after_read'):
+                    c.checkOutline()
         finally:
             ni.end_holding(c)
                     # Fix bug https://github.com/leo-editor/leo-editor/issues/35
@@ -1987,41 +1987,32 @@ class FileCommands:
         return s
     #@+node:ekr.20031218072017.3046: *3* fc.write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
-
-        c = self.c
-        if self.checkOutlineBeforeSave and not self.checkOutline():
-            return False
+        '''Write the .leo file.'''
+        c,fc = self.c,self
+        checkOutline = g.app.check_outline or fc.checkOutlineBeforeSave
+        if checkOutline:
+            errors = c.checkOutline()
+            if errors:
+                g.error('outline not written')
+                return False
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
-            self.writeAllAtFileNodesHelper() # Ignore any errors.
-        if self.isReadOnly(fileName):
+            fc.writeAllAtFileNodesHelper() # Ignore any errors.
+        if fc.isReadOnly(fileName):
             return False
         try:
-            self.putCount = 0
-            self.toString = toString
+            fc.putCount = 0
+            fc.toString = toString
             if toString:
-                ok = self.writeToStringHelper(fileName)
+                ok = fc.writeToStringHelper(fileName)
             else:
-                ok = self.writeToFileHelper(fileName,toOPML)
+                ok = fc.writeToFileHelper(fileName,toOPML)
         finally:
-            self.outputFile = None
-            self.toString = False
+            fc.outputFile = None
+            fc.toString = False
         return ok
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@+node:ekr.20100119145629.6109: *4* fc.checkOutline
-    def checkOutline (self):
-
-        c = self.c
-
-        g.blue('@bool check_outline_before_save = True')
-
-        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-        ok = errors == 0
-        if not ok:
-            g.error('outline not written')
-
-        return ok
     #@+node:ekr.20040324080359.1: *4* fc.isReadOnly
     def isReadOnly (self,fileName):
 

@@ -1411,37 +1411,30 @@ class Undoer:
         return bunch # Never used.
     #@+node:ekr.20031218072017.2030: *3* redo
     def redo (self,event=None):
-
         '''Redo the operation undone by the last undo.'''
-
         trace = False and not g.unitTesting
         u = self ; c = u.c
         w = c.frame.body.wrapper
-
         if not c.p:
             if trace: g.trace('no current position')
             return
-            
-        # Bug fix: 2013/4/26: End editing *before* getting state.
+        # End editing *before* getting state.
         c.endEditing()
-
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
             return
-
         if not u.getBead(u.bead+1):
             if trace: g.trace('no bead')
             return
-
         if trace: g.trace(u.dumpBead(u.bead))
-
         u.redoing = True 
         u.groupCount = 0
         if u.redoHelper:
             u.redoHelper()
         else:
             g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-
+        if g.app.check_outline:
+            c.checkOutline()   
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
@@ -1451,7 +1444,6 @@ class Undoer:
             c.setCurrentPosition(c.p)
         if u.newChanged is None: u.newChanged = True
         c.setChanged(u.newChanged)
-
         # Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -1769,39 +1761,31 @@ class Undoer:
             w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* undo
     def undo (self,event=None):
-
         """Undo the operation described by the undo parameters."""
-
         trace = False and not g.unitTesting
         u = self ; c = u.c
         w = c.frame.body.wrapper
-
         if not c.p:
             return g.trace('no current position')
-            
-        # Bug fix: 2013/4/26: End editing *before* getting state.
+        # End editing *before* getting state.
         c.endEditing()
-
         if u.per_node_undo: # 2011/05/19
             u.setIvarsFromVnode(c.p)
-
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
-
         if not u.getBead(u.bead):
             if trace: g.trace('no bead')
             return
-
         if trace: g.trace(u.dumpBead(u.bead))
-
         u.undoing = True
         u.groupCount = 0
         if u.undoHelper:
             u.undoHelper()
         else:
             g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-
+        if g.app.check_outline:
+            c.checkOutline()
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
@@ -1811,7 +1795,6 @@ class Undoer:
             c.setCurrentPosition(c.p)
         if u.oldChanged is None: u.oldChanged = True
         c.setChanged(u.oldChanged)
-
         # Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()

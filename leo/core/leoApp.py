@@ -47,7 +47,7 @@ class LeoApp:
 
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
-        self.check_outline = True       # True: check outlines at important points.
+        self.check_outline = False      # True: check outlines at important points.
         self.debug = False              # True: run Leo in debug mode.
         self.diff = False               # True: run Leo in diff mode.
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
