@@ -4133,7 +4133,7 @@ class Commands (object):
         # Check gnx's first.  Generators will loop if this fails.
         errors += c.checkGnxs()
         if not errors:
-            iter_ = root.self_and_subtree if root else c.all_positions
+            iter_ = root.self_and_subtree if root else c.safe_all_positions
             for p in iter_():
                 if trace: g.trace(p.h)
                 try:
