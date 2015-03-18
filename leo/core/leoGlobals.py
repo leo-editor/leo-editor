@@ -5492,12 +5492,14 @@ def getLastTracebackFileAndLineNumber():
             return '<string>',0
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError (*args):
-
+    '''Report a serious interal error in Leo.'''
     callers = g.callers(5).split(',')
     caller = callers[-1]
     g.error('\nInternal Leo error in',caller)
     g.es_print(*args)
     g.es_print('Called from',','.join(callers[:-1]))
+    g.es_print('Please report this error to Leo\'s developers',color='red')
+    
 #@+node:ekr.20150127060254.5: *3* g.log
 def log(s,fn=None):
     '''Write a message to ~/test/leo_log.txt.'''
