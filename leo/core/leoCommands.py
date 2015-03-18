@@ -4180,7 +4180,7 @@ class Commands (object):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:
                 errors += 1
-                print('multiple vnode with same gnx: %s vnodes: [%s]' % (gnx,aList))
+                print('multiple vnode with same gnx: %r vnodes: [%s]' % (gnx,aList))
         # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
         return errors
     #@+node:ekr.20040314035615.2: *7* c.checkParentAndChildren
