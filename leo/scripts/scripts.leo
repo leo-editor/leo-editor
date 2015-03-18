@@ -183,7 +183,6 @@
 <v t="ekr.20141116105945.4"><vh>@gnxs</vh></v>
 </v>
 </v>
-<v t="ekr.20120529083658.11108"><vh>Print commands &amp; docstrings</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -931,54 +930,6 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
-<t tx="ekr.20120529083658.11108">'''print a summary, sorted by class, of commands &amp; their docstrings.'''
-g.cls()
-full = True
-    # True: print entire docstring. False: print summary.
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-# Group commands by class.
-groups = {}
-for command in sorted(d.keys()):
-    f = d.get(command)
-    key = f.__self__.__class__.__name__ if hasattr(f,'__self__') else f.__name__
-    aList = groups.get(key,[])
-    aList.append((command,f),)
-    groups[key] = aList
-
-# Print groups.
-if full:
-    root = p.insertAsLastChild()
-    root.h = 'Docstrings'
-for group in sorted(groups.keys()):
-    if full:
-        parent = root.insertAsLastChild()
-        parent.h = group
-    else:
-        print('GROUP %s...' % (group))
-    aList = groups.get(group)
-    for command,f in sorted(aList):
-        fname = f.__name__ or ''
-        doc = f.__doc__ or ''
-        if full:
-            lines = g.splitLines(doc)
-            if len(lines) == 1:
-                s = "'''%s'''" % doc
-            else:
-                s = ''.join([z.lstrip() for z in g.splitLines(doc)])
-                s = s.rstrip() + '\n'
-                s = "'''\n%s'''" % s
-            s = '%s\n%s' % (fname,s)
-            child = parent.insertAsLastChild()
-            child.h = command
-            child.b = s
-        else:
-            print('%40s:%4s %s' % (command,len(doc),fname))
-if full:
-    c.redraw()
-print('%s commands' % (len(list(d.keys()))))
-</t>
 <t tx="ekr.20121013084734.16370">'''Recursively import all python files in a directory and clean the result.'''
 
 # Latest change: use c.recursiveImport.
