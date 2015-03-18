@@ -1122,10 +1122,9 @@ class TestManager:
         atTest.contract()
         # Don't redraw.
     #@+node:ekr.20051104075904.42: *4* TM.runLeoTest
-    def runLeoTest(self,path,verbose=False,full=False):
-
+    def runLeoTest(self,path):
+        '''Run a unit test that opens a .leo file.'''
         c = self.c
-
         # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
         assert g.app.unitTesting
         try:
@@ -1133,8 +1132,8 @@ class TestManager:
             old_gui = g.app.gui
             c2 = g.openWithFileName(path,old_c=c)
             assert(c2)
-            errors = c2.checkOutline(verbose=verbose,unittest=True,full=full)
-            assert(errors == 0)
+            structure_errors = c2.checkOutline()
+            assert not structure_errors,structure_errors
         finally:
             g.app.gui = old_gui
             if c2 and c2 != c:
