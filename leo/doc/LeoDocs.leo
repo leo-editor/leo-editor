@@ -655,6 +655,7 @@
 <v t="ekr.20150314050809.10"><vh>Basic text editing commands (to do) ***</vh>
 <v t="ekr.20150312025000.2363"><vh>smart-*</vh></v>
 </v>
+<v t="ekr.20150318043636.4"><vh>Operations on marked nodes</vh></v>
 <v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
 <v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text</vh></v>
 <v t="EKR.20040524104904.114"><vh>Indenting body text</vh></v>
@@ -688,7 +689,7 @@
 <v t="ekr.20150315132217.4"><vh>Focus commands</vh></v>
 <v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
 </v>
-<v t="EKR.20040524104904.143" a="M"><vh>Outline commands (almost done)</vh>
+<v t="EKR.20040524104904.143"><vh>Outline commands (almost done)</vh>
 <v t="ekr.20120319170934.6096"><vh>Creating &amp; destroying nodes (reformat)</vh></v>
 <v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes **</vh></v>
 <v t="ekr.20120319170934.6094"><vh>Selecting nodes</vh>
@@ -704,16 +705,15 @@
 <v t="ekr.20120319170934.6100"><vh>Marking nodes (done)</vh></v>
 <v t="ekr.20150312080344.40"><vh>Comparing outlines (done)</vh></v>
 </v>
-<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands (almost done)</vh>
+<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands (done)</vh>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
 <v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
 <v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
-<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
-<v t="ekr.20141120113801.169"><vh>The clone-find commands</vh></v>
-<v t="ekr.20141120113801.176"><vh>Spell commands (done)</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands </vh></v>
+<v t="ekr.20141120113801.176"><vh>Spell commands</vh></v>
 </v>
-<v t="ekr.20150315132217.16"><vh>Settings commands **</vh>
+<v t="ekr.20150315132217.16"><vh>Settings commands (Almost done)</vh>
 <v t="ekr.20150314050809.23"><vh>clear/enable/disable/set/toggle **</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>Window-related commands **</vh>
@@ -12517,81 +12517,99 @@ Note that this reference will persist until the next time you run the execute-sc
 </t>
 <t tx="ekr.20120319065417.8788">The following check boxes options appear in the Find pane:
 
-Ignore Case
-    When checked, the Find and Change commands ignore the case of
-    alphabetic characters when determining matches.
-    Alt+Ctrl+I (toggle-find-ignore-case-option) toggles this checkbox.
+``Ignore Case``
+    When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+    
+    ``Alt+Ctrl+I (toggle-find-ignore-case-option)`` toggles this checkbox.
 
-Mark Changes
-    When checked, the Change command marks all headlines whose headline or
-    body text are changed by the command.
-    Alt+Ctrl+C (toggle-find-mark-changes-option) toggles this checkbox.
+``Mark Changes``
+    When checked, the Change command marks all headlines whose headline or body text are changed by the command.
+    
+    ``Alt+Ctrl+C (toggle-find-mark-changes-option)`` toggles this checkbox.
 
-clone-marked-nodes
-delete-marked-nodes
-move-marked-nodess-option) toggles this checkbox.
-
-Mark Matches
+``Mark Matches``
     When checked, the Find and Change commands mark all headlines in which a match is found with the pattern.
     
-    Alt+Ctrl+F (toggle-find-mark-finds-option) toggles this checkbox.
+    ``Alt+Ctrl+F (toggle-find-mark-finds-option)`` toggles this checkbox.
 
-Pattern Match
+``Pattern Match``
     When checked, the Find and Change commands treat several characters specially in the find pattern.
     
-    Alt+Ctrl+X (toggle-find-regex-option) toggles this checkbox.
+    ``Alt+Ctrl+X (toggle-find-regex-option)`` toggles this checkbox.
+    
+::
 
     '*'  matches any sequence of zero or more characters.
     '.'  matches any single character.
     '^'  matches a newline at the start of a pattern.
     '$'  matches a newline at the end of a pattern.
 
-Examples::
+    Examples::
 
     "^abc$" matches lines that only contain "abc".
     "^a" matches any line starting with "A".
     "a$" matches any line ending with "a".
     "^*$" matches any line at all.
 
-Search Body Text
+``Search Body Text``
     When checked, the Find and Change commands search body text.
-    Alt+Ctrl+B (toggle-find-in-body-option) toggles this checkbox.
-
-Search Headline Text
-    When checked, the Find and Change commands search headline text.
-    Alt+Ctrl+H (toggle-find-in-headline-option) toggles this checkbox.
-
-Whole Word
-    When selected, the find pattern must match an entire word. Words consist
-    of an alphabetic character or underscore, followed by zero or more
-    alphabetic characters, numbers or underscores.
-    Alt+Ctrl+W (toggle-find-word-option) toggles this checkbox.
-
-Wrap Around
-    When checked, the Find and Change commands continues at the top of the
-    file when the command reaches the bottom of the file. For reverse
-    searches, the find or change command continues at the bottom of the
-    file when the command reaches the top of the file.
-    Alt+Ctrl+A (toggle-find-wrap-around-option) toggles this checkbox.
     
+    ``Alt+Ctrl+B (toggle-find-in-body-option)`` toggles this checkbox.
+
+``Search Headline Text``
+    When checked, the Find and Change commands search headline text.
+    
+    ``Alt+Ctrl+H (toggle-find-in-headline-option)`` toggles this checkbox.
+
+``Whole Word``
+    When selected, the find pattern must match an entire word. Words consist of an alphabetic character or underscore, followed by zero or more alphabetic characters, numbers or underscores.
+    
+    ``Alt+Ctrl+W (toggle-find-word-option)`` toggles this checkbox.
+
+``Wrap Around``
+    When checked, the Find and Change commands continues at the top of the file when the command reaches the bottom of the file. For reverse searches, the find or change command continues at the bottom of the file when the command reaches the top of the file.
+    
+    ``Alt+Ctrl+A (toggle-find-wrap-around-option)`` toggles this checkbox.
 </t>
-<t tx="ekr.20120319065417.8790">The ``start-search`` (Ctrl-F) command prompts for a search string. Typing the &lt;Return&gt; key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. Type Tab to enter replacement text.
+<t tx="ekr.20120319065417.8790">Basic searches:
 
-The ``find-next`` (F3) command continues a search started with ``search-with-present-options``. The ``find-previous`` (F2) commands searches backwards using the present search options. The ``replace`` (Ctrl-=) command replaces the selected text with the 'change' text in the Find tab. The ``replace-then-find`` (Ctrl--) command replaces the selected text with the 'change' text in the Find tab, then executes the find command again. These commands can simulate any kind of query-replace command.
+``start-search (Ctrl-F)``
+    Prompts for a search string. Typing the ``Return`` key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. Type ``Tab`` to enter replacement text.
+``find-next (F3)``
+    Continues a search started with ``Ctrl-F``.
+``find-previous (F2)``
+    Searches backwards using the present search options.
+``replace (Ctrl-=)``
+    Replaces the selected text with the 'change' text in the Find tab.
+``replace-then-find (Ctrl--)``
+    Replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
+    
+Batch searches:
 
-The ``find-all`` command prints all matches in the log pane. The ``replace-all`` command changes all occurrences of the 'find' text with the 'change' text.
+``find-all``
+    Prints all matches in the log pane.
+``replace-all``
+    Changes all occurrences of the 'find' text with the 'change' text.
+    
+Searches creating clones:
 
-The ``clone-find-all`` command searches the outline and creates a new root node called Found: *&lt;your search pattern&gt;*. This node contains clones of the found nodes. The ``clone-find-all-flattened`` commands includes all found nodes, even if they are also children of previously found nodes.
+``clone-find-all-flattened``
+    Prompts for a find, then creates clones of all found nodes in an organizer node.
+``clone-find-all``
+    Same as ``clone-find-all-flattened``, but does not create duplicate cloned nodes. If a node is a descendant of another found node, no duplicate top-level node (in the organizer) is created.
+``clone-find-parents``
+    Creates an organizer node containing clones of all the parents of the selected node.
 </t>
-<t tx="ekr.20120319065417.8795">The following commands set an option in the Find tab, then work exactly like the ``start-search`` command.
+<t tx="ekr.20120319065417.8795">The following commands work like ``F3 (start-search)`` with various options set:
 
-- The ``search-backward`` and ``search-forward`` commands set the 'Whole Word' checkbox to False.
-
-- The ``word-search-backward`` and ``word-search-forward`` set the 'Whole Word' checkbox to True.
-
-- The ``re-search-forward`` and ``re-search-backward`` set the 'Regexp' checkbox to True.
+``search-backward``
+    Searches in the reverse direction.
+``word-search-backward`` and ``word-search-forward``
+    Sthe 'Whole Word' checkbox to True.
+``re-search-forward`` and ``re-search-backward``
+    Set the 'Regexp' checkbox to True.
 </t>
-<t tx="ekr.20120319065417.8798">Incremental find commands move through the text as you type individual characters. Typing &lt;BackSpace&gt; backtracks the search. To repeat an incremental search, type the shortcut for that command again. Here are Leo's incremental find commands::
+<t tx="ekr.20120319065417.8798">Incremental find commands move through the text as you type individual characters. Typing ``BackSpace`` backtracks the search. To repeat an incremental search, type the shortcut for that command again. Here are Leo's incremental find commands::
 
     Alt+R isearch-backward
           isearch-backward-regexp
@@ -15793,18 +15811,21 @@ This page links to videos about Leo.  **Important notes**:
 </t>
 <t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
 
-Entire Outline
+``Entire Outline``
     When selected, Find commands search the entire outline.
-    Alt+Ctrl+E (set-find-everywhere) sets this radio button.
-
-Node Only
-    When selected, Find commands search only the selected node.
-    Alt+Ctrl+N (set-find-node-only) sets this radio button
     
-Suboutline Only
+    ``Alt+Ctrl+E (set-find-everywhere)`` sets this radio button.
+
+``Node Only``
+    When selected, Find commands search only the selected node.
+    
+    ``Alt+Ctrl+N (set-find-node-only)`` sets this radio button
+    
+``Suboutline Only``
     When selected, the Find and Change commands search only the currently
     selected headline and its offspring.
-    Alt+Ctrl+S (set-find-suboutline-only) sets this radio button.
+    
+    ``Alt+Ctrl+S (set-find-suboutline-only)`` sets this radio button.
 </t>
 <t tx="ekr.20131122055946.16401">Making screencasts is a lot easier than you probably think. Here are some tips to get you started quickly.
 
@@ -17045,8 +17066,6 @@ The "after" text will be p.b, where p is the *new* position.
 But w.getAllText must be the new p.b! So the selectHelper logic could simply pass an optional s argument to w.setInsertPoint and w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s rather than calling w.getAllText.
 
 Imo, this is the safe, if not exactly elegant way.
-</t>
-<t tx="ekr.20141120113801.169">The ``clone-find-all-flattened`` command prompts for a find, then creates clones of all found nodes in an organizer node. The ``clone-find-all`` command does the same, but does not create duplicate cloned nodes. If a node is a descendant of another found node, no duplicate top-level node (in the organizer) is created. The ``clone-find-parents`` command creates an organizer node containing clones of all the parents of the selected node.
 </t>
 <t tx="ekr.20141120113801.173">disable-idle-time-tracing
 enable-idle-time-tracing
@@ -21792,6 +21811,10 @@ ensuring that the file is compressed.
 '''Sort the children of a node.'''</t>
 <t tx="ekr.20150315132217.999">sortRecentFiles
 '''Sort the recent files list.'''</t>
+<t tx="ekr.20150318043636.4">clone-marked-nodes
+delete-marked-nodes
+move-marked-nodes-option) toggles this checkbox.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
