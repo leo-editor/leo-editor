@@ -9712,13 +9712,13 @@ assert cacher.test()
 # These work well with the qttabs gui.
 #@+node:ekr.20040712101754.3: *3* @test test.leo
 path = g.os_path_join(g.app.loadDir,"..","test","test.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040803090901: *3* @test leoDist.leo
 path = g.os_path_join(g.app.loadDir,"..","dist","leoDist.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20081121164135.1: *3* @test leoGuiPluginsRef.leo
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040712101754.4: *3* @test LeoPyRef.leo
 path = g.os_path_join(g.app.loadDir,"..","core","LeoPyRef.leo")
 c.testManager.runLeoTest(path)
@@ -9730,13 +9730,13 @@ path = g.os_path_join(g.app.loadDir,"..","doc","LeoDocs.leo")
 c.testManager.runLeoTest(path)
 #@+node:ekr.20040730181601: *3* @test minimalLeoFile.leo
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040730181610: *3* @test minimalLeoFile2.leo
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile2.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040831104758: *3* @test minimalLeoFile3.leo
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
-c.testManager.runLeoTest(path,verbose=False,full=True)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20080405085247.1: ** slow tests
 #@+node:ekr.20060208195054: *3* @@test k.inverseCommandsDict is inverse of c.commandsDict
 # c.commandsDict: keys are emacs command names, values are functions f.

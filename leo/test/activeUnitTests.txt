@@ -4492,7 +4492,7 @@ def spam():
 #@+node:ekr.20110510054817.3475: *4* @test c.alert
 c.alert('test of c.alert')
 #@+node:ekr.20050512084850: *4* @test c.checkOutline
-errors = c.checkOutline(verbose=False,unittest=True,full=True) # Run full check.
+errors = c.checkOutline(verbose=False) # Run full check.
 
 assert errors == 0, "Check Outline reported %d errors" % errors
 #@+node:ekr.20040713070526: *5* Scripts
@@ -4889,7 +4889,7 @@ assert 2 == p.numberOfChildren()
 c.selectPosition(p2)
 c.demote() # This should do nothing.
 assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+assert 0 == c.checkOutline(verbose=False), 'fail 2'
 assert 2 == p.numberOfChildren(), 'fail 3'
 # Delete the children, but only if there are no errors.
 while p.hasChildren():

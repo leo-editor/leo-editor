@@ -658,6 +658,14 @@
 </v>
 </v>
 <v t="ekr.20150317093233.11"><vh>@test c.safe_all_positions</vh></v>
+<v t="ekr.20050512084850"><vh>@test c.checkOutline</vh>
+<v t="ekr.20040713070526"><vh>Scripts</vh>
+<v t="ekr.20040713123617"><vh>tempNode</vh></v>
+<v t="ekr.20050726141158"><vh>before</vh></v>
+<v t="ekr.20040713123828.1"><vh>after</vh></v>
+</v>
+</v>
+<v t="ekr.20070611105728"><vh>@test c.demote: illegal clone demote</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -681,11 +689,85 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040713070526">@language python 
+
+dump = False 
+all = False 
+
+tm = c.testManager
+
+if all:
+    c.prettyPrintAllPythonCode(dump=dump)
+else:
+    # Warning: at present the before and after text is unprotected:
+    # Running Pretty Print on these nodes will negate the value of the test.
+    temp = tm.findNodeInTree(p,"tempNode")
+    c.setBodyString(temp,"")
+    before = tm.findNodeInTree(p,"before")
+    after = tm.findNodeInTree(p,"after")
+    temp.scriptSetBodyString(before.b)
+    c.prettyPrintPythonCode(p=temp,dump=dump)
+    assert temp.b == after.b,"Pretty Print Test failed"
+</t>
+<t tx="ekr.20040713123617">@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
+<t tx="ekr.20040713123828.1">@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
+<t tx="ekr.20050512084850">errors = c.checkOutline(verbose=False) # Run full check.
+
+assert errors == 0, "Check Outline reported %d errors" % errors
+</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -921,6 +1003,31 @@ Instead of a dot denoting success, we get an 'F' denoting a failure on the line 
 It also includes a trace back, but for AssertionErrors, it does not seem to offer much added value to me right now. On second thought: when you have multiple asserts in a test, the trace back can tell you which assert function failed. Still, I would choose for only one assert function per test and get rid of this trace back altogether. This would keep the console much cleaner, IMHO.</t>
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
+<t tx="ekr.20050726141158">@ This is    a test of stuff.in doc parts.
+
+         I wonder           what will happen.
+@c
+
+def        spam (self         )  :   
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a==3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
@@ -1073,9 +1180,32 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
+</t>
+<t tx="ekr.20070611105728"># Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
+
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(verbose=False), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
 </t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
