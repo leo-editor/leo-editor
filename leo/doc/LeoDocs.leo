@@ -2113,7 +2113,6 @@
 </v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="EKR.20040524104904.99"></v>
-<v t="ekr.20150318043636.15"><vh>** add Import script section to scripting tutorial</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -21864,8 +21863,16 @@ ensuring that the file is compressed.
     find-quick-test-failures
     find-quick-timeline
     global-search</t>
-<t tx="ekr.20150318043636.14"></t>
-<t tx="ekr.20150318043636.15"></t>
+<t tx="ekr.20150318043636.14">The following script imports files from a given directory and all subdirectories::
+
+    c.recursiveImport(
+        dir_ = 'path to file or directory',
+        kind = '@clean',        # or '@file' or '@auto'
+        one_file = False,       # True: import only one file.
+        safe_at_file = False,   # True: generate @@clean nodes.
+        theTypes = None,        # Same as ['.py']
+    )
+</t>
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
 <t tx="ekr.20150318043636.5">clear-all-caches
