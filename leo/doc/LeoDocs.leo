@@ -439,11 +439,11 @@
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
 <v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
 <v t="ekr.20131016084446.16726"><vh>Further study</vh></v>
-<v t="ekr.20150315132217.6"><vh>Import scripts</vh></v>
 <v t="ekr.20101124083644.5052"><vh>Autocompletion</vh></v>
 <v t="ekr.20131017051340.16815"><vh>Calltips</vh></v>
 <v t="ekr.20050903161843"><vh>Using @button nodes</vh></v>
 <v t="ekr.20131008041326.16058"><vh>Using @test nodes</vh></v>
+<v t="ekr.20150318043636.14"><vh>Import scripts</vh></v>
 <v t="ekr.20131016021541.16893"><vh>Summary</vh></v>
 <v t="ekr.20131017051340.16732"><vh>@rst-ignore-tree scripting examples</vh>
 <v t="ekr.20131017051340.16733"><vh>An example outline</vh></v>
@@ -650,6 +650,15 @@
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20150314050809.4"><vh>Cursor movement commands (TO DO)</vh></v>
+<v t="ekr.20150313150212.13"><vh>Debug commands (To Do)</vh>
+<v t="ekr.20150315132217.1620"><vh>check-*</vh></v>
+<v t="ekr.20150313150212.15"><vh>dump-*</vh></v>
+<v t="ekr.20150315132217.8"><vh>gc-*</vh></v>
+<v t="ekr.20141120113801.173"><vh>idle-time-*</vh></v>
+<v t="ekr.20150315132217.7"><vh>preview-*</vh></v>
+<v t="ekr.20150315132217.6"><vh>print-*</vh></v>
+<v t="ekr.20150314050809.30"><vh>show-*</vh></v>
+</v>
 <v t="EKR.20040524104904.111"><vh>Edit commands (TO DO)</vh>
 <v t="ekr.20150318043636.5"><vh>To do **</vh></v>
 <v t="ekr.20150315132217.1651"><vh>Basic text editing commands (finished)</vh></v>
@@ -702,8 +711,10 @@
 <v t="ekr.20150318043636.7"><vh>Moving, deleting and cloning marked nodes</vh></v>
 <v t="ekr.20150312080344.40"><vh>Comparing outlines</vh></v>
 <v t="ekr.20120319170934.6110"><vh>Using Chapters</vh></v>
+<v t="ekr.20060328171518.10"><vh>Scrolling the outline pane (revise)</vh></v>
 </v>
-<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands</vh>
+<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands (revise)</vh>
+<v t="ekr.20150318043636.13"><vh>aliases (revise)</vh></v>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
 <v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
@@ -713,35 +724,21 @@
 </v>
 <v t="ekr.20150315132217.16"><vh>Settings commands</vh></v>
 <v t="EKR.20040524104904.151"><vh>Window-related commands (TO DO)</vh>
-<v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
-<v t="ekr.20101124102457.5183"><vh>cascade-windows and minimize-all-windows</vh></v>
-<v t="ekr.20060328171518.10"><vh>Scrolling the outline pane</vh></v>
-<v t="ekr.20150313083748.11697"><vh>show-colors (not implemented in Qt)</vh></v>
-<v t="ekr.20150313083748.11698"><vh>show-fonts</vh></v>
-<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands</vh></v>
-<v t="ekr.20150315132217.10"><vh>** new windows commands</vh></v>
+<v t="ekr.20150315132217.10"><vh> new windows commands (TO DO)</vh></v>
+<v t="ekr.20120319170934.6105"><vh>-editor* (reformat)</vh></v>
+<v t="ekr.20150314050809.20"><vh>-icon*</vh></v>
+<v t="ekr.20150318043636.12"><vh>free-layout*</vh></v>
 <v t="ekr.20150314050809.12"><vh>gui-*</vh></v>
-<v t="ekr.20150314050809.20"><vh>*-icon</vh></v>
-<v t="ekr.20150315132217.18"><vh>open-*</vh></v>
+<v t="ekr.20150313083748.11697"><vh>show-* (not implemented in Qt)</vh></v>
+<v t="ekr.20131105110107.16926"><vh>zoom-in/out commands (reformat)</vh></v>
 </v>
 <v t="ekr.20150315132217.1631"><vh>Advanced commands (TO DO)</vh>
 <v t="ekr.20150312080344.9"><vh>Abbreviation commands</vh></v>
-<v t="ekr.20150315132217.1633"><vh>flush-lines &amp; keep-lines</vh></v>
+<v t="ekr.20150318043636.11"><vh>Miscellaneous commands</vh>
 <v t="ekr.20150315132217.1641"><vh>c-to-python</vh></v>
+<v t="ekr.20150315132217.1633"><vh>flush-lines &amp; keep-lines</vh></v>
 <v t="ekr.20150315132217.1649"><vh>typescript-to-py</vh></v>
-<v t="ekr.20150313150212.13"><vh>Debug commands **</vh>
-<v t="ekr.20150315132217.1620"><vh>check-*</vh></v>
-<v t="ekr.20150313150212.15"><vh>dump-*</vh></v>
-<v t="ekr.20150315132217.8"><vh>gc-*</vh></v>
-<v t="ekr.20141120113801.173"><vh>idle-time-*</vh></v>
-<v t="ekr.20150315132217.7"><vh>preview-*</vh></v>
-<v t="ekr.20150315132217.6"></v>
-<v t="ekr.20150314050809.30"><vh>show-*</vh></v>
 </v>
-<v t="ekr.20150315132217.13"><vh>free-layout-*</vh></v>
-<v t="ekr.20150315132217.1652"><vh>join-leo-irc</vh></v>
-<v t="ekr.20150315132217.1644"><vh>modes</vh></v>
-<v t="ekr.20150315132217.1619"><vh>Persistence commands</vh></v>
 <v t="ekr.20150313150212.19"><vh>Plugins commands</vh>
 <v t="ekr.20150315132217.1626"><vh>act-on-node</vh></v>
 <v t="ekr.20150315132217.11"><vh>bookmarks-*</vh></v>
@@ -750,7 +747,6 @@
 <v t="ekr.20150315132217.1624"><vh>richtext-*</vh></v>
 <v t="ekr.20131105110107.16925"><vh>vr-*</vh></v>
 </v>
-<v t="ekr.20150315132217.17"><vh>Script buttons</vh></v>
 <v t="ekr.20150313150212.16"><vh>Unit testing commands (done)</vh></v>
 <v t="ekr.20150314050809.5"><vh>Vim mode commands</vh></v>
 </v>
@@ -2115,6 +2111,7 @@
 </v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="EKR.20040524104904.99"></v>
+<v t="ekr.20150318043636.15"><vh>** add Import script section to scripting tutorial</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2291,15 +2288,7 @@ If Python is the present language, Leo inserts an additional tab if the previous
 
 Leo preprocesses all scripts by simulating the writing of a external file to a string. The ``execute-script`` command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing. Scripts may examine and change app.scriptDict as they please.
 </t>
-<t tx="EKR.20040524104904.118">find-clone-all
-find-clone-all-flattened
-find-next-clone
-find-quick
-find-quick-changed
-find-quick-selected
-find-quick-test-failures
-find-quick-timeline
-global-search</t>
+<t tx="EKR.20040524104904.118"></t>
 <t tx="EKR.20040524104904.134">``goto-global-line (Alt-G)``
     Selects the locations in your outlines corresponding to a line in a external file.
 </t>
@@ -2355,18 +2344,14 @@ The following sections describe the kinds of nodes in @settings trees.
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 
 </t>
-<t tx="EKR.20040524104904.151">open-python-window
-set-ua
-tab-cycle-next
-tab-cycle-previous
-tab-detach
-
-``cascade-windows``
+<t tx="EKR.20040524104904.151">``cascade-windows``
     Cascades all Leo windows.
 ``equal-sized-panes``
     Adjusts the sizes of the outline and body panes so that they are the same height.
 ``minimize-all``
     Minimizes (hides) all Leo windows.
+``suspend``
+    Minimizes the present Leo window.
 ``toggle-split-direction``
     Switches between vertical and horizontal orientations of the Leo window.
     
@@ -4832,13 +4817,15 @@ If (maybe much later), we eliminate B' as a child of A will get::
 
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 </t>
-<t tx="ekr.20060328171518.10">scroll-outline-down-line       
-scroll-outline-down-page       
-scroll-outline-up-line       
-scroll-outline-up-page
-scroll-outline-left
-scroll-outline-right
-Added scroll-up/down-extend-selection commands
+<t tx="ekr.20060328171518.10">::
+
+    scroll-outline-down-line       
+    scroll-outline-down-page       
+    scroll-outline-up-line       
+    scroll-outline-up-page
+    scroll-outline-left
+    scroll-outline-right
+
 </t>
 <t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
 </t>
@@ -11634,7 +11621,6 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     Write a 4.x derived file.
     root is the position of an @&lt;file&gt; node
 </t>
-<t tx="ekr.20101124102457.5183"></t>
 <t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt_` package.
 The `PyEnchant`_ package is optional. 
 
@@ -15716,15 +15702,17 @@ Once the hits are shows, you can navigate them by pressing up/down while focus i
 
 This has a very clever hack (even if I say so myself)--spaces in search string are replaced with * wild card. So if you search for, say "file txt", it will search for "file*txt", matching e.g. @file readme.txt
 </t>
-<t tx="ekr.20131105110107.16925">          vr-contract
-          vr-expand
-          vr-hide
-          vr-lock
-          vr-pause-play-movie
-          vr-show
-Alt+Key+0 vr-toggle
-          vr-unlock
-          vr-update</t>
+<t tx="ekr.20131105110107.16925">::
+
+              vr-contract
+              vr-expand
+              vr-hide
+              vr-lock
+              vr-pause-play-movie
+              vr-show
+    Alt+Key+0 vr-toggle
+              vr-unlock
+              vr-update</t>
 <t tx="ekr.20131105110107.16926">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed two new commands, zoom-in and zoom-out, which increase
@@ -17090,13 +17078,15 @@ But w.getAllText must be the new p.b! So the selectHelper logic could simply pas
 
 Imo, this is the safe, if not exactly elegant way.
 </t>
-<t tx="ekr.20141120113801.173">disable-idle-time-tracing
-enable-idle-time-tracing
-toggle-idle-time-tracing
+<t tx="ekr.20141120113801.173">::
 
-disable-idle-time-events
-enable-idle-time-events
-toggle-idle-time-events
+    disable-idle-time-tracing
+    enable-idle-time-tracing
+    toggle-idle-time-tracing
+    
+    disable-idle-time-events
+    enable-idle-time-events
+    toggle-idle-time-events
 </t>
 <t tx="ekr.20141120113801.176">The following commands refer to spell-as-you-type mode:
 
@@ -18890,14 +18880,16 @@ This chapter discusses the most important milestones in history of Leo and summa
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20150312080344.9">abbrev-add-global
-abbrev-inverse-add-global
-abbrev-kill-all
-abbrev-list
-abbrev-read
-abbrev-write
-dabbrev-completion
-dabbrev-expands
+<t tx="ekr.20150312080344.9">::
+
+    abbrev-add-global
+    abbrev-inverse-add-global
+    abbrev-kill-all
+    abbrev-list
+    abbrev-read
+    abbrev-write
+    dabbrev-completion
+    dabbrev-expands
 
 1. The @data abbreviations-subst-env node contains a script defining the environment in which all abbreviations execute. This allows helper functions to be defined. Very handy.
    
@@ -18951,10 +18943,11 @@ When I study other people's code I do the following:
 
 In short, I have just now realized how badly sentinels interfered with git diffs.
 </t>
-<t tx="ekr.20150313083748.11697">showColors
-'''Open a tab in the log pane showing various color pickers.'''</t>
-<t tx="ekr.20150313083748.11698">showFonts
-'''Open a tab in the log pane showing a font picker.'''</t>
+<t tx="ekr.20150313083748.11697">``show-colors``
+    Opens a tab in the log pane showing various color pickers.
+    (Note implement)
+``show-fonts``
+    Open a tab in the log pane showing a font picker.</t>
 <t tx="ekr.20150313083748.12115">The ``toggle-angle-brackets`` command adds or removes double angle brackets from the headline of the selected node.</t>
 <t tx="ekr.20150313083748.12117">``pretty-print-python-code`` and ``pretty-print-all-python-code``
     Pretty print body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
@@ -19187,24 +19180,26 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     yank-pop
     zap-to-character
 </t>
-<t tx="ekr.20150314050809.12">gui-all-hide
-gui-all-show
-gui-all-toggle
-gui-iconbar-hide
-gui-iconbar-show
-gui-iconbar-toggle
-gui-menu-hide
-gui-menu-show
-gui-menu-toggle
-gui-minibuffer-hide
-gui-minibuffer-show
-gui-minibuffer-toggle
-gui-statusbar-hide
-gui-statusbar-show
-gui-statusbar-toggle
-gui-tabbar-hide
-gui-tabbar-show
-gui-tabbar-toggle
+<t tx="ekr.20150314050809.12">::
+
+    gui-all-hide
+    gui-all-show
+    gui-all-toggle
+    gui-iconbar-hide
+    gui-iconbar-show
+    gui-iconbar-toggle
+    gui-menu-hide
+    gui-menu-show
+    gui-menu-toggle
+    gui-minibuffer-hide
+    gui-minibuffer-show
+    gui-minibuffer-toggle
+    gui-statusbar-hide
+    gui-statusbar-show
+    gui-statusbar-toggle
+    gui-tabbar-hide
+    gui-tabbar-show
+    gui-tabbar-toggle
 </t>
 <t tx="ekr.20150314050809.16">.. Obscure, unused, minibuffer-related commands.
 digit-argument
@@ -19234,10 +19229,12 @@ untangle-marked
 delete-@button-make-sphinx-button
 delete-@button-remove-dups-button
 </t>
-<t tx="ekr.20150314050809.20">insert-icon
-delete-first-icon
-delete-last-icon
-delete-node-icons
+<t tx="ekr.20150314050809.20">::
+
+    insert-icon
+    delete-first-icon
+    delete-last-icon
+    delete-node-icons
 </t>
 <t tx="ekr.20150314050809.22">``session-clear``
     Closes all tabs except the presently selected tab. 
@@ -19265,11 +19262,13 @@ delete-node-icons
     Execute the last command entered from the minibuffer.
 
 </t>
-<t tx="ekr.20150314050809.30">show-calltips
-show-calltips-force
-show-colors
-show-find-options
-show-fonts</t>
+<t tx="ekr.20150314050809.30">::
+
+    show-calltips
+    show-calltips-force
+    show-colors
+    show-find-options
+    show-fonts</t>
 <t tx="ekr.20150314050809.4">To be documented::
 
     back-char
@@ -19317,39 +19316,46 @@ show-fonts</t>
     scroll-up
     scroll-up-extend-selection
 </t>
-<t tx="ekr.20150314050809.5">:!
-:%s
-:e
-:e!
-:gT
-:gt
-:print-dot
-:q
-:q!
-:qa
-:r
-:s
-:tabnew
-:toggle-vim-mode
-:toggle-vim-trace
-:toggle-vim-trainer-mode
-:w
-:wq
-:xa</t>
-<t tx="ekr.20150315132217.10">cascade-windows
-context-menu-open
-ctrl-click-at-cursor
-ctrl-click-icon
-cycle-focus
-cycle-log-focus
-detach-editor-toggle
-detach-editor-toggle-max
-dump-outline
-equal-sized-panes
-iconify-frame
-resize-to-screen
-suspend
-    Minimize the present Leo window. </t>
+<t tx="ekr.20150314050809.5">::
+
+    :!
+    :%s
+    :e
+    :e!
+    :gT
+    :gt
+    :print-dot
+    :q
+    :q!
+    :qa
+    :r
+    :s
+    :tabnew
+    :toggle-vim-mode
+    :toggle-vim-trace
+    :toggle-vim-trainer-mode
+    :w
+    :wq
+    :xa</t>
+<t tx="ekr.20150315132217.10">::
+
+    context-menu-open
+    ctrl-click-at-cursor
+    ctrl-click-icon
+    cycle-focus
+    cycle-log-focus
+    detach-editor-toggle
+    detach-editor-toggle-max
+    dump-outline
+    equal-sized-panes
+    iconify-frame
+    open-python-window
+    resize-to-screen
+    set-ua
+    tab-cycle-next
+    tab-cycle-previous
+    tab-detach
+</t>
 <t tx="ekr.20150315132217.1000">sortSiblings
 '''Sort the siblings of a node.'''</t>
 <t tx="ekr.20150315132217.1001">tangle
@@ -19618,16 +19624,18 @@ Removes trailing whitespace from all lines, preserving newlines.
 '''Delete indentation in the presently line.'''</t>
 <t tx="ekr.20150315132217.1099">deleteLastIcon
 '''Delete the first icon in the selected node's icon list.'''</t>
-<t tx="ekr.20150315132217.11">bookmarks-bookmark
-bookmarks-bookmark-child
-bookmarks-level-decrease
-bookmarks-level-increase
-bookmarks-mark-as-target
-bookmarks-open-bookmark
-bookmarks-open-node
-bookmarks-show
-bookmarks-switch
-bookmarks-use-other-outline</t>
+<t tx="ekr.20150315132217.11">::
+
+    bookmarks-bookmark
+    bookmarks-bookmark-child
+    bookmarks-level-decrease
+    bookmarks-level-increase
+    bookmarks-mark-as-target
+    bookmarks-open-bookmark
+    bookmarks-open-node
+    bookmarks-show
+    bookmarks-switch
+    bookmarks-use-other-outline</t>
 <t tx="ekr.20150315132217.1100">deleteNodeIcons
 '''Delete all of the selected node's icons.'''</t>
 <t tx="ekr.20150315132217.1101">deleteSpaces
@@ -19876,10 +19884,12 @@ This is the default binding for all keys in the body pane.
 '''Set the fill column used by the center-line and center-region commands.'''</t>
 <t tx="ekr.20150315132217.1199">setFillPrefix
 '''Make the selected text the fill prefix.'''</t>
-<t tx="ekr.20150315132217.12">cke-text-close
-cke-text-open
-cke-text-switch
-cke-text-toggle-autosave</t>
+<t tx="ekr.20150315132217.12">::
+
+    cke-text-close
+    cke-text-open
+    cke-text-switch
+    cke-text-toggle-autosave</t>
 <t tx="ekr.20150315132217.1200">setUa
 '''Prompt for the name and value of a uA, then set the uA in the present node.'''</t>
 <t tx="ekr.20150315132217.1201">showColors
@@ -20106,14 +20116,6 @@ yank-pop: insert the next entry of the kill ring.
 <t tx="ekr.20150315132217.1298"></t>
 <t tx="ekr.20150315132217.1299">onQuit
 '''Exit Leo, prompting to save unsaved outlines first.'''</t>
-<t tx="ekr.20150315132217.13">free-layout-context-menu
-free-layout-load
-free-layout-load-alternate
-free-layout-load-detached-body
-free-layout-load-no-log
-free-layout-load-standard
-free-layout-restore
-free-layout-zoom</t>
 <t tx="ekr.20150315132217.1300"></t>
 <t tx="ekr.20150315132217.1301">minibufferCloneFindAll
 '''
@@ -21172,8 +21174,6 @@ requires that @font-size-body is being used in stylesheet
 decrease body font size by one
 requires that @font-size-body is being used in stylesheet
 '''</t>
-<t tx="ekr.20150315132217.1619">at-file-to-at-auto
-clean-persistence</t>
 <t tx="ekr.20150315132217.1620">check-derived-file
 check-leo-file</t>
 <t tx="ekr.20150315132217.1622">``clean-recent-files``
@@ -21190,10 +21190,13 @@ check-leo-file</t>
 ``file-delete``
     Prompts for the name of a file and delete it. 
 </t>
-<t tx="ekr.20150315132217.1624">richtext-close-editor
-richtext-open-editor
-richtext-switch-editor
-richtext-toggle-autosave</t>
+<t tx="ekr.20150315132217.1624">::
+    
+    richtext-close-editor
+    richtext-open-editor
+    richtext-switch-editor
+    richtext-toggle-autosave
+</t>
 <t tx="ekr.20150315132217.1626"></t>
 <t tx="ekr.20150315132217.1630">**There is a separate chapter in the Tutorial**.</t>
 <t tx="ekr.20150315132217.1631"></t>
@@ -21202,17 +21205,16 @@ richtext-toggle-autosave</t>
     Deletes each line that contains a match for regexp, operating on the text after point.
     In Transient Mark mode, if the region is active, the command operates on the region instead.
 ``keep-lines``
-    Deletes each line that does not contain a match for regexp, operating on the text after point.
-    In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
-<t tx="ekr.20150315132217.1641">c-to-python
-c-to-python-clean-docs
+    Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
+<t tx="ekr.20150315132217.1641">::
+
+    c-to-python
+    c-to-python-clean-docs
 
 This command is a rewrapping of the first Python script I ever wrote. It
 takes much of the scut work away from the task of converting C code to
 Python code.
 </t>
-<t tx="ekr.20150315132217.1644">enter-quick-command-mode
-exit-named-mode</t>
 <t tx="ekr.20150315132217.1645"></t>
 <t tx="ekr.20150315132217.1649"></t>
 <t tx="ekr.20150315132217.1651">``clean-lines``
@@ -21223,12 +21225,7 @@ exit-named-mode</t>
     Formats the presently selected node as computer code.
 ``replace-current-character``
      Replace the selected character with the next character typed.</t>
-<t tx="ekr.20150315132217.1652"></t>
 <t tx="ekr.20150315132217.1653"></t>
-<t tx="ekr.20150315132217.17">delete-script-button-button
-script-button
-</t>
-<t tx="ekr.20150315132217.18"></t>
 <t tx="ekr.20150315132217.3">Here's how to switch focus without using the mouse:
 
 ``Alt-0 (vr-toggle)``
@@ -21259,11 +21256,11 @@ script-button
     focus-to-nav
     focus-to-tree
 </t>
-<t tx="ekr.20150315132217.6">print-all-uas
-print-bindings
-
-``print-buttons``
+<t tx="ekr.20150315132217.6">``print-buttons``
     Print all @button and @command commands, their bindings and their source.
+
+print-all-uas
+print-bindings
 print-cmd-docstrings
 print-commands
 print-expanded-node
@@ -21832,6 +21829,41 @@ ensuring that the file is compressed.
 '''Sort the children of a node.'''</t>
 <t tx="ekr.20150315132217.999">sortRecentFiles
 '''Sort the recent files list.'''</t>
+<t tx="ekr.20150318043636.11">::
+
+    at-file-to-at-auto
+    clean-persistence
+    enter-quick-command-mode
+    exit-named-mode
+    join-leo-irc
+    delete-script-button-button
+    script-button
+
+</t>
+<t tx="ekr.20150318043636.12">::
+
+    free-layout-context-menu
+    free-layout-load
+    free-layout-load-alternate
+    free-layout-load-detached-body
+    free-layout-load-no-log
+    free-layout-load-standard
+    free-layout-restore
+    free-layout-zoom
+</t>
+<t tx="ekr.20150318043636.13">::
+
+    find-clone-all
+    find-clone-all-flattened
+    find-next-clone
+    find-quick
+    find-quick-changed
+    find-quick-selected
+    find-quick-test-failures
+    find-quick-timeline
+    global-search</t>
+<t tx="ekr.20150318043636.14"></t>
+<t tx="ekr.20150318043636.15"></t>
 <t tx="ekr.20150318043636.5">clear-all-caches
 clear-all-uas
 clear-cache
@@ -21841,7 +21873,8 @@ set-comment-column
 set-fill-column
 set-fill-prefix
 set-font
-toggle-active-pane</t>
+toggle-active-pane
+</t>
 <t tx="ekr.20150318043636.6">``abort-edit-headline``
     Ends editing of the headline, discarding any changes.
 ``edit-headline``
