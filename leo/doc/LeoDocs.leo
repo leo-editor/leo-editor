@@ -373,7 +373,6 @@
 <v t="ekr.20150315132217.3"><vh>Switching focus</vh></v>
 <v t="ekr.20131002055813.19835"><vh>Operations on nodes</vh></v>
 <v t="ekr.20131002055813.19036"><vh>Selecting outline nodes</vh></v>
-<v t="ekr.20150315132217.4"><vh>Moving outline nodes</vh></v>
 <v t="ekr.20131002055813.19037"><vh>Moving the cursor in text panes</vh></v>
 <v t="ekr.20131001100335.15946"><vh>The minibuffer &amp; completions</vh></v>
 <v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
@@ -686,7 +685,7 @@
 <v t="ekr.20150314050809.27"><vh>Minibuffer commands (done)</vh></v>
 <v t="ekr.20150315132217.1632"><vh>Mouseless Leo commands **</vh>
 <v t="ekr.20150315132217.14"><vh>Event simulation commands</vh></v>
-<v t="ekr.20150315132217.4"></v>
+<v t="ekr.20150315132217.4"><vh>Focus commands</vh></v>
 <v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
 </v>
 <v t="EKR.20040524104904.143" a="M"><vh>Outline commands (almost done)</vh>
@@ -2121,8 +2120,8 @@
 <v t="ekr.20150315132217.1618"><vh>zoom-out</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.99"></v>
 <v t="ekr.20091130111843.6787"></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
