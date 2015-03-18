@@ -122,7 +122,9 @@ class NodeIndices (object):
             return
         if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
         for v in list(self.hold_gnx_set):
-            if v.fileIndex:
+            if not v:
+                g.internalError('hold_gnx_set contains None')
+            elif v.fileIndex:
                 if trace and verbose:
                     g.trace('===== already allocated',v.fileIndex,v.h)
             else:
@@ -152,6 +154,9 @@ class NodeIndices (object):
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         '''
         trace,verbose = False and not g.unitTesting,False
+        if v is None:
+            g.internalError('getNewIndex: v is None')
+            return ''
         if trace:
             fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
         if self.hold_gnx_flag:

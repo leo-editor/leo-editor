@@ -1124,21 +1124,23 @@ class FileCommands:
                 v.setBodyString(b)
                 at.bodySetInited(v)
         else:
-            x = g.app.nodeIndices
-            if sax_node.tnx:
+            # Fix bug 158: Corrupt .leo files cause Leo to hang.
+            # Part 1: must explicitly test against None: tnx could be 0.
+            if sax_node.tnx is not None:
                 # Important: this should retain compatibility with old .leo files.
                 gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
             else:
-                gnx = x.getNewIndex(v)
-                g.trace('no txn! allocated new gnx',gnx)
-            trace = trace and gnx == "vitalije.20150316130845.1" ###
-            if trace: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
+                # Part 2: Do *not* call ni.getNewIndex here: v is None!
+                # Instead, let the VNode ctor below allocate the gnx.
+                gnx = None
+            # trace = trace and gnx == "vitalije.20150316130845.1"
+            # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
             at.bodySetInited(v)
             v.setHeadString(h)
             if self.gnxDict.get(gnx):
-                g.trace('can not happen: duplicate gnx',gnx,v)
+                g.internalError('duplicate gnx: %s in %s' % (gnx,v))
                 sys.exit(1)
             self.gnxDict [gnx] = v
         # Check for a duplicate gnx in parent_v.
@@ -1150,9 +1152,8 @@ class FileCommands:
                 # c.checkOutline should fix this.
                 pass
             else:
-                x = g.app.nodeIndices
-                gnx = x.getNewIndex(v)
-                v = leoNodes.VNode(context=c,gnx=gnx)
+                # Let the VNode ctor allocate a new gnx.
+                v = leoNodes.VNode(context=c)
                 v.setBodyString(b)
                 at.bodySetInited(v)
                 v.setHeadString(h)
