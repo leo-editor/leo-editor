@@ -4752,6 +4752,7 @@ class TabbedFrameFactory:
         # this is actually not tab-specific, move elsewhere?
         @g.command('close-others')
         def close_others(event):
+            '''Close all windows except the present window.'''
             myc = event['c']
             for c in g.app.commanders():
                 if c is not myc:

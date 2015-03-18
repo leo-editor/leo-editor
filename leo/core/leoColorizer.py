@@ -1261,15 +1261,12 @@ class JEditColorizer:
             return 0
     #@+node:ekr.20110605121601.18594: *5* match_at_language
     def match_at_language (self,s,i):
-
+        '''Match Leo's @language directive.'''
         trace = (False or self.trace_leo_matches) and not g.unitTesting
         if trace: g.trace(i,repr(s))
-
         seq = '@language'
-
         # Only matches at start of line.
         if i != 0: return 0
-
         if g.match_word(s,i,seq):
             j = i + len(seq)
             j = g.skip_ws(s,j)
@@ -1366,8 +1363,10 @@ class JEditColorizer:
             return 0
     #@+node:ekr.20110605121601.18602: *5* match_doc_part & restarter
     def match_doc_part (self,s,i):
-
-        # New in Leo 4.5: only matches at start of line.
+        '''
+        Colorize Leo's @ and @ doc constructs.
+        Matches only at the start of the line.
+        '''
         if i != 0:
             return 0
         elif g.match_word(s,i,'@doc'):
@@ -1376,21 +1375,25 @@ class JEditColorizer:
             j = i + 1
         else:
             return 0
-
         self.colorRangeWithTag(s,i,j,'leokeyword')
         self.colorRangeWithTag(s,j,len(s),'docpart')
         self.setRestart(self.restartDocPart)
-
         return len(s)
     #@+node:ekr.20110605121601.18603: *6* restartDocPart
     def restartDocPart (self,s):
-
-        for tag in ('@c','@code'):
+        '''
+        Restarter for @ and @ contructs.
+        Continue until an @c, @code or @language at the start of the line.
+        '''
+        for tag in ('@c','@code','@language'):
             if g.match_word(s,0,tag):
-                j = len(tag)
-                self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
-                self.clearState()
-                return j
+                if tag == '@language':
+                    return self.match_at_language(s,0)
+                else:
+                    j = len(tag)
+                    self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
+                    self.clearState()
+                    return j
         self.setRestart(self.restartDocPart)
         self.colorRangeWithTag(s,0,len(s),'docpart')
         return len(s)

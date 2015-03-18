@@ -46,7 +46,7 @@ class Cacher:
     '''A class that encapsulates all aspects of Leo's file caching.'''
 
     #@+others
-    #@+node:ekr.20100208082353.5919: *3*  Birth (Cacher)
+    #@+node:ekr.20100208082353.5919: *3* cacher.Birth
     #@+node:ekr.20100208062523.5886: *4*  ctor (Cacher)
     def __init__ (self,c=None):
 
@@ -109,10 +109,11 @@ class Cacher:
 
         if changeName or not self.inited:
             self.initFileDB(fn)
-    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (Cacher)
+    #@+node:ekr.20100209160132.5759: *3* cacher.clearCache & clearAllCaches
     def clearCache (self):
+        '''Clear the cache for the open window.'''
         if self.db:
-            # 2011/07/30: Be careful about calling db.clear.
+            # Be careful about calling db.clear.
             try:
                 self.db.clear(verbose=True)
             except TypeError:
@@ -123,68 +124,60 @@ class Cacher:
                 self.db = {}
 
     def clearAllCaches (self):
-
-        # Clear the Cachers *only* for all open windows.
-        # This is much safer than tryting to Kill all db's.
+        '''
+        Clear the Cachers *only* for all open windows. This is much safer than
+        killing all db's.
+        '''
         for frame in g.windows():
             c = frame.c
             if c.cacher:
                 c.cacher.clearCache()
         g.es('done',color='blue')
-    #@+node:ekr.20100208071151.5907: *3* fileKey
-    # was AtFile._contentHashFile
-
+    #@+node:ekr.20100208071151.5907: *3* cacher.fileKey
     def fileKey(self,s,content,requireEncodedString=False):
-
-        '''Compute the hash of s (usually a headline) and content.
-        s may be unicode, content must be bytes (or plain string in Python 2.x'''
-
+        '''
+        Compute the hash of s (usually a headline) and content.
+        s may be unicode, content must be bytes (or plain string in Python 2.x)
+        '''
+        ### Changed for reversion testing.
+        ### This comment will be reverted in git to attempt to recreate the caching problem.
         m = hashlib.md5()
-
         if g.isUnicode(s):
             s = g.toEncodedString(s)
-
         if g.isUnicode(content):
             if requireEncodedString:
                 g.internalError('content arg must be str/bytes')
             content = g.toEncodedString(content)
-
         m.update(s)
         m.update(content)
         return "fcache/" + m.hexdigest()
-    #@+node:ekr.20100208082353.5925: *3* Reading
-    #@+node:ekr.20100208071151.5910: *4* Cacher.createOutlineFromCacheList & helpers
+    #@+node:ekr.20100208082353.5925: *3* cacher.Reading
+    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
-
-        """ Create outline structure from recursive aList
-        built by makeCacheList."""
-
+        """
+        Create outline structure from recursive aList built by makeCacheList.
+        """
         trace = False and not g.unitTesting
-        verbose = False
         c = self.c
         if not c:
             g.internalError('no c')
-
         if top:
-            if trace and verbose: g.trace(fileName)
+            if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
-
         h,b,gnx,children = aList
         if h is not None:
             v = parent_v
             v._headString = h    
             v._bodyString = b
-
         for z in children:
             h,b,gnx,grandChildren = z
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
-
             if isClone:
                 self.reportChangedClone(child_v,b,h,gnx)
             else:
                 self.createOutlineFromCacheList(
                     child_v,z,fileName,top=False)
-    #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild
+    #@+node:ekr.20100208071151.5911: *5* cashe.fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
         '''
@@ -218,29 +211,24 @@ class Cacher:
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
         return is_clone,child_v
-    #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
+    #@+node:ekr.20100705083838.5740: *5* cashe.reportChangedClone
     def reportChangedClone (self,child_v,b,h,gnx):
 
-        trace = False and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         c = self.c
         fileName=c.cacheListFileName
         old,new = child_v.b,b
-
         same = (
             old == new or
             new.endswith('\n') and old == new[:-1] or
             old.endswith('\n') and new == old[:-1])
-
         # if trace and not same:
         if trace and (not same or h == 'writeException'):
             g.trace('same %s old %s new %s %s %s' % (
                 same,len(old),len(new),h,fileName))
-
         # This would make it impossible to clear nodes!
         # if not new: return same
-
         if same: return
-
         c.nodeConflictList.append(g.bunch(
             tag='(cached)',
             fileName=fileName,
@@ -250,14 +238,12 @@ class Cacher:
             b_new=b,
             h_new=h,
         ))
-
         # Always issue the warning.
         g.error("cached read node changed:",child_v.h)
-
         child_v.h,child_v.b = h,b
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
-    #@+node:ekr.20100208082353.5923: *4* getCachedGlobalFileRatios
+    #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
     def getCachedGlobalFileRatios (self):
 
         trace = False and not g.unitTesting
@@ -278,7 +264,7 @@ class Cacher:
             g.trace('key',key,'%1.2f %1.2f' % (ratio,ratio2))
 
         return ratio,ratio2
-    #@+node:ekr.20100208082353.5924: *4* getCachedStringPosition
+    #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
     def getCachedStringPosition(self):
 
         trace = False and not g.unitTesting
@@ -295,7 +281,7 @@ class Cacher:
 
         if trace: g.trace(str_pos,key)
         return str_pos
-    #@+node:ekr.20100208082353.5922: *4* getCachedWindowPositionDict
+    #@+node:ekr.20100208082353.5922: *4* cacher.getCachedWindowPositionDict
     def getCachedWindowPositionDict (self,fn):
         '''Return a dict containing window positions.'''
         trace = False and not g.unitTesting
@@ -315,50 +301,52 @@ class Cacher:
             d = {}
         if trace: g.trace(fn,key,data)
         return d
-    #@+node:ekr.20100208071151.5905: *4* readFile (Cacher)
+    #@+node:ekr.20100208071151.5905: *4* cacher.readFile
     def readFile (self,fileName,root):
-
-        trace = False and not g.unitTesting
-        verbose = True
+        '''
+        Read the file from the cache if possible.
+        Return (s,ok,key)
+        '''
+        trace = (False or g.app.debug) and not g.unitTesting
+        showHits,showLines,verbose = False,False,True
+        sfn = g.shortFileName(fileName)
         if not g.enableDB:
-            if trace: g.trace('g.enableDB is False')
+            if trace and verbose: g.trace('g.enableDB is False',sfn)
             return '',False,None
-        s,e = g.readFileIntoString(fileName,raw=True,silent=True)
+        s = g.readFileIntoEncodedString(fileName,silent=True)
         if s is None:
-            if trace: g.trace('empty file contents',fileName)
+            if trace: g.trace('empty file contents',sfn)
             return s,False,None
         assert not g.isUnicode(s)
-        if trace and verbose:
+        if trace and showLines:
             for i,line in enumerate(g.splitLines(s)):
                 print('%3d %s' % (i,repr(line)))
-
         # There will be a bug if s is not already an encoded string.
         key = self.fileKey(root.h,s,requireEncodedString=True)
         ok = self.db and key in self.db
-        if trace: g.trace('in cache',ok,fileName,key)
         if ok:
+            if trace and showHits: g.trace('cache hit',key[-6:],sfn)
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = self.db.get(key)
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
+        elif trace:
+            g.trace('cache miss',key[-6:],sfn)
         return s,ok,key
-    #@+node:ekr.20100208082353.5927: *3* Writing
-    #@+node:ekr.20100208071151.5901: *4* makeCacheList
+    #@+node:ekr.20100208082353.5927: *3* cacher.Writing
+    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
     def makeCacheList(self,p):
 
         '''Create a recursive list describing a tree
         for use by createOutlineFromCacheList.
         '''
-
-        # This is called after at.copyAllTempBodyStringsToVnodes,
-        # so p.b *is* the body text.
-
+        # This is called after at.readPostPass, so p.b *is* the body text.
         return [
             p.h,p.b,p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]
-    #@+node:ekr.20100208082353.5929: *4* setCachedGlobalsElement
+    #@+node:ekr.20100208082353.5929: *4* cacher.setCachedGlobalsElement
     def setCachedGlobalsElement(self,fn):
 
         trace = False and not g.unitTesting
@@ -383,7 +371,7 @@ class Cacher:
             str(top),str(left),str(height),str(width))
         if trace:
             g.trace('top',top,'left',left,'height',height,'width',width)
-    #@+node:ekr.20100208082353.5928: *4* setCachedStringPosition
+    #@+node:ekr.20100208082353.5928: *4* cacher.setCachedStringPosition
     def setCachedStringPosition(self,str_pos):
 
         trace = False and not g.unitTesting
@@ -399,14 +387,11 @@ class Cacher:
         self.db['current_position_%s' % key] = str_pos
 
         if trace: g.trace(str_pos,key)
-    #@+node:ekr.20100208071151.5903: *4* writeFile (Cacher)
-    # Was AtFile.writeCachedTree
-
+    #@+node:ekr.20100208071151.5903: *4* cacher.writeFile
     def writeFile(self,p,fileKey):
-
-        trace = False and not g.unitTesting
-
-        # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
+        '''Update the cache after reading the file.'''
+        trace = (False or g.app.debug) and not g.unitTesting
+        # Check g.enableDB before giving internal error.
         if not g.enableDB:
             if trace: g.trace('cache disabled')
         elif not fileKey:
@@ -417,7 +402,8 @@ class Cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-    #@+node:ekr.20100208065621.5890: *3* test (Cacher)
+              ### Isn't this the only possible place for errors?
+    #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
 
         if g.app.gui.guiName() == 'nullGui':

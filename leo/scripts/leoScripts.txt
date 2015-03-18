@@ -13363,11 +13363,11 @@ for theType,typeName in (
                             printDoc(x2,s2)
 #@+node:ekr.20120529083658.11108: *3* Print commands & docstrings
 '''print a summary, sorted by class, of commands & their docstrings.'''
-
+g.cls()
+full = True
+    # True: print entire docstring. False: print summary.
 d = c.commandsDict
     # Keys are command names; values are functions
-
-g.cls()
 
 # Group commands by class.
 groups = {}
@@ -13379,15 +13379,35 @@ for command in sorted(d.keys()):
     groups[key] = aList
 
 # Print groups.
+if full:
+    root = p.insertAsLastChild()
+    root.h = 'Docstrings'
 for group in sorted(groups.keys()):
-    print('%s...' % (group))
+    if full:
+        parent = root.insertAsLastChild()
+        parent.h = group
+    else:
+        print('GROUP %s...' % (group))
     aList = groups.get(group)
     for command,f in sorted(aList):
         fname = f.__name__ or ''
         doc = f.__doc__ or ''
-        print('%40s:%4s %s' % (command,len(doc),fname))
-
-
+        if full:
+            lines = g.splitLines(doc)
+            if len(lines) == 1:
+                s = "'''%s'''" % doc
+            else:
+                s = ''.join([z.lstrip() for z in g.splitLines(doc)])
+                s = s.rstrip() + '\n'
+                s = "'''\n%s'''" % s
+            s = '%s\n%s' % (fname,s)
+            child = parent.insertAsLastChild()
+            child.h = command
+            child.b = s
+        else:
+            print('%40s:%4s %s' % (command,len(doc),fname))
+if full:
+    c.redraw()
 print('%s commands' % (len(list(d.keys()))))
 #@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
 '''print all commands that lack docstrings.'''

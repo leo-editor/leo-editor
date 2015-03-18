@@ -65,7 +65,7 @@ if sys.platform != 'cli':
         '''A sax content handler class that reads Leo files.'''
 
         #@+others
-        #@+node:ekr.20060919110638.20: *4*  __init__ & helpers (SaxContentHandler)
+        #@+node:ekr.20060919110638.20: *4*  sax.__init__ & helpers
         def __init__ (self,c,fileName,silent,inClipboard):
             '''Ctor for SaxContentHandler class.'''
             self.c = c
@@ -117,7 +117,7 @@ if sys.platform != 'cli':
             self.nodeStack = []
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
-        #@+node:ekr.20060919110638.29: *4*  Do nothing
+        #@+node:ekr.20060919110638.29: *4*  sax.Do nothing
         def endElementNS(self,unused_name,unused_qname):
             g.trace(unused_name)
 
@@ -135,7 +135,7 @@ if sys.platform != 'cli':
 
         def startDocument(self):
             pass
-        #@+node:ekr.20060919134313: *4*  Utils
+        #@+node:ekr.20060919134313: *4*  sax.Utils
         #@+node:ekr.20060919110638.23: *5* attrsToList
         def attrsToList (self,attrs):
 
@@ -194,74 +194,66 @@ if sys.platform != 'cli':
         def clean(self,s):
 
             return g.toEncodedString(s,"ascii")
-        #@+node:ekr.20060919110638.30: *4* characters
+        #@+node:ekr.20060919110638.30: *4* sax.characters
         def characters(self,content):
-
+            '''Handle the characters element.'''
             if g.isPython3:
                 if content and type(content) != type('a'):
                     g.trace('Non-unicode content',repr(content))
             else:
                 if content and type(content) != types.UnicodeType:
                     g.trace('Non-unicode content',repr(content))
-
             content = content.replace('\r','')
-
-            if not content: return
-
-            elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
-
+            if not content:
+                return
+            elementName = (self.elementStack and self.elementStack[-1].lower() or 
+                '<no element name>')
             # if self.trace: g.trace(elementName,content.strip())
-
             if elementName in ('t','vh'):
                 # if elementName == 'vh': g.trace(elementName,repr(content))
                 self.content.append(content)
-
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
-        #@+node:ekr.20060919110638.31: *4* endElement & helpers
+        #@+node:ekr.20060919110638.31: *4* sax.endElement & helpers
         def endElement(self,name):
-
+            '''Handle the end of any xml element.'''
             name = name.lower()
-
             if name in self.printElements or 'all' in self.printElements:
                 indent = '\t' * (self.level-1) or ''
                 g.pr('%s</%s>' % (indent,self.clean(name).strip()))
-
             data = self.dispatchDict.get(name)
-
             if data is None:
                 if 1: g.trace('unknown end element',name)
             else:
                 junk,func = data
                 if func:
                     func()
-
             name2 = self.elementStack.pop()
             assert name == name2
             # if self.trace: g.trace('** pop',name2)
-        #@+node:ekr.20060919110638.32: *5* endTnode
+        #@+node:ekr.20060919110638.32: *5* sax.endTnode
         def endTnode (self):
-
+            '''Handle the end of a <tnode> element.'''
+            trace = (False or self.trace) and not g.unitTesting
+            # trace = trace and self.fileName.endswith('clone-test.leo')
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
-                # if self.trace: g.trace(repr(sax_node))
-
+                if trace: g.trace(repr(sax_node))
             self.content = []
-        #@+node:ekr.20060919110638.33: *5* endVnode
+        #@+node:ekr.20060919110638.33: *5* sax.endVnode
         def endVnode (self):
-
+            '''Handle the end of a <vnode> element.'''
             self.level -= 1
             self.node = self.nodeStack.pop()
             # if self.trace: g.trace(repr(self.node))
-        #@+node:ekr.20060919110638.34: *5* endVH
+        #@+node:ekr.20060919110638.34: *5* sax.endVH
         def endVH (self):
-
+            '''Handle the end of a <vh> element.'''
             if self.node:
                 self.node.headString = ''.join(self.content)
                 # if self.trace: g.trace(repr(self.node))
-
             self.content = []
-        #@+node:ekr.20060919110638.45: *4* getRootNode
+        #@+node:ekr.20060919110638.45: *4* sax.getRootNode
         def getRootNode (self):
             if self.trace:
                 g.trace()
@@ -269,7 +261,7 @@ if sys.platform != 'cli':
                 for child in self.rootNode.children:
                     child.dump()
             return self.rootNode
-        #@+node:ekr.20061004054323: *4* processingInstruction (stylesheet)
+        #@+node:ekr.20061004054323: *4* sax.processingInstruction (stylesheet)
         def processingInstruction (self,target,data):
 
             if target == 'xml-stylesheet':
@@ -278,7 +270,7 @@ if sys.platform != 'cli':
                     g.warning('','%s: %s' % (target,data))
             else:
                 g.trace(target,data)
-        #@+node:ekr.20060919110638.35: *4* startElement & helpers
+        #@+node:ekr.20060919110638.35: *4* sax.startElement & helpers
         def startElement(self,name,attrs):
 
             name = name.lower()
@@ -297,7 +289,7 @@ if sys.platform != 'cli':
                 func,junk = data
                 if func:
                     func(attrs)
-        #@+node:ekr.20060919110638.36: *5* getWindowPositionAttributes
+        #@+node:ekr.20060919110638.36: *5* sax.getWindowPositionAttributes
         def getWindowPositionAttributes (self,attrs):
 
             trace = False and not g.unitTesting
@@ -333,7 +325,7 @@ if sys.platform != 'cli':
                         g.trace(name,len(val))
             if trace: g.trace(c.mFileName,d)
             return d # Assigned to self.global_window_position
-        #@+node:ekr.20060919110638.37: *5* startGlobals (sax read)
+        #@+node:ekr.20060919110638.37: *5* sax.startGlobals
         def startGlobals (self,attrs):
 
             trace = False and not g.unitTesting
@@ -362,19 +354,19 @@ if sys.platform != 'cli':
                         c.frame.ratio,c.frame.secondary_ratio))
                 except Exception:
                     pass
-        #@+node:ekr.20060919110638.38: *5* startWinPos
+        #@+node:ekr.20060919110638.38: *5* sax.startWinPos
         def startWinPos (self,attrs):
 
             self.global_window_position = self.getWindowPositionAttributes(attrs)
-        #@+node:ekr.20060919110638.39: *5* startLeoHeader
+        #@+node:ekr.20060919110638.39: *5* sax.startLeoHeader
         def startLeoHeader (self,unused_attrs):
 
             self.tnxToListDict = {}
-        #@+node:ekr.20060919110638.40: *5* startVH
+        #@+node:ekr.20060919110638.40: *5* sax.startVH
         def startVH (self,unused_attrs):
 
             self.content = []
-        #@+node:ekr.20060919112118: *5* startVnodes
+        #@+node:ekr.20060919112118: *5* sax.startVnodes
         def startVnodes (self,unused_attrs):
 
             if self.inClipboard:
@@ -406,7 +398,7 @@ if sys.platform != 'cli':
                     c.frame.ratio,c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:",self.fileName)
-        #@+node:ekr.20060919110638.41: *5* startTnode
+        #@+node:ekr.20060919110638.41: *5* sax.startTnode
         def startTnode (self,attrs):
 
             if not self.inElement('tnodes'):
@@ -415,7 +407,7 @@ if sys.platform != 'cli':
             self.content = []
 
             self.tnodeAttributes(attrs)
-        #@+node:ekr.20060919110638.42: *6* tnodeAttributes (SaxContentHandler)
+        #@+node:ekr.20060919110638.42: *6* sax.tnodeAttributes (SaxContentHandler)
         def tnodeAttributes (self,attrs):
 
             # The VNode must have a tx attribute to associate content
@@ -453,7 +445,7 @@ if sys.platform != 'cli':
 
             # if not self.nodeList:
                 # self.error('Bad leo file: no tx attribute for VNode')
-        #@+node:ekr.20060919110638.43: *5* startVnode
+        #@+node:ekr.20060919110638.43: *5* sax.startVnode
         def startVnode (self,attrs):
 
             if not self.inElement('vnodes'):
@@ -472,7 +464,7 @@ if sys.platform != 'cli':
             self.nodeStack.append(parent)
 
             return parent
-        #@+node:ekr.20060919110638.44: *6* vnodeAttributes
+        #@+node:ekr.20060919110638.44: *6* sax.vnodeAttributes
         # The native attributes of <v> elements are a, t, vtag, tnodeList,
         # marks, expanded and descendentTnodeUnknownAttributes.
 
@@ -627,7 +619,7 @@ class FileCommands:
             return None
         if trace: g.trace('reassign',reassignIndices,'temp',tempOutline)
         check = not reassignIndices
-        checkAfterRead = False or c.config.getBool('check_outline_after_read')
+        checkAfterRead = g.app.check_outline or c.config.getBool('check_outline_after_read')
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
@@ -696,8 +688,8 @@ class FileCommands:
             g.trace('**** dumping outline...')
             c.dumpOutline()
         if checkAfterRead:
-            g.blue('checking outline after paste')
-            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+            # g.blue('checking outline after paste')
+            c.checkOutline()
         c.selectPosition(p)
         self.initReadIvars() # 2010/02/05
         return p
@@ -755,8 +747,8 @@ class FileCommands:
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-                if c.config.getBool('check_outline_after_read'):
-                    c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+                if g.app.check_outline or c.config.getBool('check_outline_after_read'):
+                    c.checkOutline()
         finally:
             ni.end_holding(c)
                     # Fix bug https://github.com/leo-editor/leo-editor/issues/35
@@ -821,7 +813,7 @@ class FileCommands:
             b1,h1 = bunch.get('b_old'),bunch.get('h_old')
             b2,h2 = bunch.get('b_new'),bunch.get('h_new')
             child = root.insertAsLastChild()
-            h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
+            h = 'Recovered node "%s" from %s' % (h1,g.shortFileName(fn))
             child.setHeadString(h)
             # child.setBodyString('%s %s' % (tag,gnx))
             line1 = '%s %s\nDiff...\n' % (tag,gnx)
@@ -1088,14 +1080,14 @@ class FileCommands:
     # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20060919110638.5: *4* fc.createSaxChildren & helpers
     def createSaxChildren (self, sax_node, parent_v):
-
-        trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
+        '''Create vnodes for all children in sax_node.children.'''
+        trace = False and not g.unitTesting
         children = []
         for sax_child in sax_node.children:
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
             if v: # A clone.
-                if trace: g.trace('**clone',v)
+                if trace: g.trace('**clone',v.gnx,v)
                 v = self.createSaxVnode(sax_child,parent_v,v=v)   
             else:
                 v = self.createSaxVnode(sax_child,parent_v)
@@ -1110,35 +1102,61 @@ class FileCommands:
         return children
     #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,v=None):
-
-        c = self.c
-        trace = False and not g.unitTesting
-        verbose = False
+        '''Create a vnode, or use an existing vnode.'''
+        c,at = self.c,self.c.atFileCommands
+        trace = True and not g.unitTesting
+            # and self.mFileName and sax_node.headString == 'clone-test'
+            # and not g.app.openingSettingsFile)
+        trace_update,verbose = False,False
         h = sax_node.headString
         b = sax_node.bodyString
+        trace = trace and v and v.gnx == "vitalije.20150316130845.1" ###
         if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
-            # This may be an internal error.
             if v.b == b:
+                # if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
                 if trace and verbose: g.trace(
                     '***no update\nold: %s\nnew: %s' % (v.b,b))
             else:
-                if trace: g.trace(
+                if trace and trace_update: g.trace(
                     '***update\nold: %s\nnew: %s' % (v.b,b))
-                v.b = b 
+                v.setBodyString(b)
+                at.bodySetInited(v)
         else:
-            x = g.app.nodeIndices
-            if sax_node.tnx:
+            # Fix bug 158: Corrupt .leo files cause Leo to hang.
+            # Part 1: must explicitly test against None: tnx could be 0.
+            if sax_node.tnx is not None:
                 # Important: this should retain compatibility with old .leo files.
                 gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
             else:
-                gnx = x.getNewIndex(v)
-                g.trace('no txn! allocated new gnx',gnx)
+                # Part 2: Do *not* call ni.getNewIndex here: v is None!
+                # Instead, let the VNode ctor below allocate the gnx.
+                gnx = None
+            # trace = trace and gnx == "vitalije.20150316130845.1"
+            # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
+            at.bodySetInited(v)
             v.setHeadString(h)
+            if self.gnxDict.get(gnx):
+                g.internalError('duplicate gnx: %s in %s' % (gnx,v))
+                sys.exit(1)
             self.gnxDict [gnx] = v
+        # Check for a duplicate gnx in parent_v.
+        # This is a limited check: parent_v.parents is [] here.
+        if parent_v.gnx == v.gnx:
+            # @clean stylesheets/main.less
+            g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
+            if g.app.check_outline:
+                # c.checkOutline should fix this.
+                pass
+            else:
+                # Let the VNode ctor allocate a new gnx.
+                v = leoNodes.VNode(context=c)
+                v.setBodyString(b)
+                at.bodySetInited(v)
+                v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
@@ -1369,16 +1387,13 @@ class FileCommands:
         return sax_node
     #@+node:ekr.20060919110638.3: *4* fc.readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
-
+        '''Read the entire .leo file using the sax parser.'''
         dump = False and not g.unitTesting
         fc = self ; c = fc.c
-
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile,fileName,
             silent=silent,inClipboard=inClipboard,s=s)
-
         if dump: fc.dumpSaxTree(saxRoot,dummy=True)
-
         # Pass two: create the tree of vnodes from the intermediate nodes.
         if saxRoot:
             parent_v = c.hiddenRootNode
@@ -1777,19 +1792,18 @@ class FileCommands:
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
     #@+node:ekr.20031218072017.1575: *4* fc.putTnodes
     def putTnodes (self):
-
         """Puts all tnodes as required for copy or save commands"""
-
-        c = self.c
-
         self.put("<tnodes>\n")
-        #@+<< write only those tnodes that were referenced >>
-        #@+node:ekr.20031218072017.1576: *5* << write only those tnodes that were referenced >>
+        self.putReferencedTnodes()
+        self.put("</tnodes>\n")
+    #@+node:ekr.20031218072017.1576: *5* fc.putReferencedTnodes
+    def putReferencedTnodes(self):
+        '''Put all referenced tnodes.'''
+        c = self.c
         if self.usingClipboard: # write the current tree.
             theIter = c.p.self_and_subtree()
         else: # write everything
             theIter = c.all_unique_positions()
-
         # Populate tnodes
         tnodes = {}
         for p in theIter:
@@ -1797,21 +1811,19 @@ class FileCommands:
             # pylint: disable=unbalanced-tuple-unpacking
             index = p.v.fileIndex
             tnodes[index] = p.v
-
         # Put all tnodes in index order.
         for index in sorted(tnodes):
             # g.trace(index)
             v = tnodes.get(index)
             if v:
                 # Write only those tnodes whose vnodes were written.
+                # **Note**: @<file> trees are not written unless they contain clones.
                 if v.isWriteBit():
                     self.putTnode(v)
             else:
                 g.trace('can not happen: no VNode for',repr(index))
                 # This prevents the file from being written.
                 raise BadLeoFile('no VNode for %s' % repr(index))
-        #@-<< write only those tnodes that were referenced >>
-        self.put("</tnodes>\n")
     #@+node:ekr.20031218072017.1863: *4* fc.putVnode
     def putVnode (self,p,isIgnore=False):
 
@@ -1977,41 +1989,32 @@ class FileCommands:
         return s
     #@+node:ekr.20031218072017.3046: *3* fc.write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
-
-        c = self.c
-        if self.checkOutlineBeforeSave and not self.checkOutline():
-            return False
+        '''Write the .leo file.'''
+        c,fc = self.c,self
+        checkOutline = g.app.check_outline or fc.checkOutlineBeforeSave
+        if checkOutline:
+            errors = c.checkOutline()
+            if errors:
+                g.error('outline not written')
+                return False
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
-            self.writeAllAtFileNodesHelper() # Ignore any errors.
-        if self.isReadOnly(fileName):
+            fc.writeAllAtFileNodesHelper() # Ignore any errors.
+        if fc.isReadOnly(fileName):
             return False
         try:
-            self.putCount = 0
-            self.toString = toString
+            fc.putCount = 0
+            fc.toString = toString
             if toString:
-                ok = self.writeToStringHelper(fileName)
+                ok = fc.writeToStringHelper(fileName)
             else:
-                ok = self.writeToFileHelper(fileName,toOPML)
+                ok = fc.writeToFileHelper(fileName,toOPML)
         finally:
-            self.outputFile = None
-            self.toString = False
+            fc.outputFile = None
+            fc.toString = False
         return ok
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@+node:ekr.20100119145629.6109: *4* fc.checkOutline
-    def checkOutline (self):
-
-        c = self.c
-
-        g.blue('@bool check_outline_before_save = True')
-
-        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-        ok = errors == 0
-        if not ok:
-            g.error('outline not written')
-
-        return ok
     #@+node:ekr.20040324080359.1: *4* fc.isReadOnly
     def isReadOnly (self,fileName):
 
@@ -2217,11 +2220,8 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.2013: *3* fc.writeMissingAtFileNodes
     def writeMissingAtFileNodes (self,event=None):
-
-        '''Write all missing @file nodes.'''
-
+        '''Write all @file nodes for which the corresponding external file does not exist.'''
         c = self.c
-
         if c.p:
             c.atFileCommands.writeMissing(c.p)
     #@+node:ekr.20031218072017.3050: *3* fc.writeOutlineOnly

@@ -2565,6 +2565,7 @@ class KeyHandlerClass:
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
+        trace_event = True
         verbose = False
         k = self ; c = k.c
         recording = c.macroCommands.recordingMacro
@@ -2573,7 +2574,6 @@ class KeyHandlerClass:
         c.check_event(event)
         ch = char = event and event.char or ''
         stroke = event and event.stroke or None
-        if trace and verbose: g.trace(g.callers())
         if trace:
             g.trace('recording',recording,'state',state,char)
         if recording:
@@ -2582,6 +2582,8 @@ class KeyHandlerClass:
             k.setLossage(char,stroke)
         if state == 0:
             k.mb_event = event # Save the full event for later.
+            if trace and trace_event:
+                g.trace(k.mb_event.w,'hasSelection',k.mb_event.w.hasSelection())
             k.setState('full-command',1,handler=k.fullCommand)
             prompt = helpPrompt if help else k.altX_prompt
             k.setLabelBlue(prompt)
@@ -2603,7 +2605,16 @@ class KeyHandlerClass:
                 k.setLabel(k.mb_prefix + commandName)
         elif char in ('\n','Return'):
             if trace and verbose: g.trace('***Return')
-            c.frame.log.deleteTab('Completion')
+            if trace and trace_event:
+                g.trace('hasSelection %r' % (
+                    k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
+            # Fix bug 157: save and restore the selection.
+            w = k.mb_event and k.mb_event.w
+            if w and hasattr(w,'hasSelection') and w.hasSelection():
+                sel1,sel2 = w.getSelectionRange()
+                ins = w.getInsertPoint()
+                c.frame.log.deleteTab('Completion')
+                w.setSelectionRange(sel1,sel2,insert=ins)
             if k.mb_help:
                 s = k.getLabel()
                 commandName = s[len(helpPrompt):].strip()
@@ -2670,7 +2681,8 @@ class KeyHandlerClass:
                 event.w = event.widget = c.frame.body.wrapper.widget
                 func(event)
             else:
-                c.widgetWantsFocusNow(event and event.widget) # Important, so cut-text works, e.g.
+                c.widgetWantsFocusNow(event and event.widget)
+                    # Important, so cut-text works, e.g.
                 func(event)
             k.endCommand(commandName)
             return True

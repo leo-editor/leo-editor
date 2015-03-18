@@ -877,16 +877,14 @@ class LeoFrame(object):
     #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (LeoFrame)
     #@+node:ekr.20070130115927.5: *5* copyText (LeoFrame)
     def copyText (self,event=None):
-
         '''Copy the selected text from the widget to the clipboard.'''
-
         trace = False and not g.unitTesting
         f = self ; c = f.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
         if trace: g.trace(g.isTextWrapper(w),wname,w)
-        if not w or not g.isTextWrapper(w): return
-
+        if not w or not g.isTextWrapper(w):
+            return
         # Set the clipboard text.
         i,j = w.getSelectionRange()
         if i != j:

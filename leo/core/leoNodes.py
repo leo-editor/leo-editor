@@ -122,7 +122,9 @@ class NodeIndices (object):
             return
         if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
         for v in list(self.hold_gnx_set):
-            if v.fileIndex:
+            if not v:
+                g.internalError('hold_gnx_set contains None')
+            elif v.fileIndex:
                 if trace and verbose:
                     g.trace('===== already allocated',v.fileIndex,v.h)
             else:
@@ -152,6 +154,9 @@ class NodeIndices (object):
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         '''
         trace,verbose = False and not g.unitTesting,False
+        if v is None:
+            g.internalError('getNewIndex: v is None')
+            return ''
         if trace:
             fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
         if self.hold_gnx_flag:
@@ -1679,6 +1684,52 @@ class Position (object):
                 return True,None
         else:
             return False,None
+    #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
+    def safeMoveToThreadNext (self):
+        '''
+        Move a position to threadNext position.
+        Issue an error if any vnode is an ancestor of itself.
+        '''
+        p = self
+        if p.v:
+            child_v = p.v.children and p.v.children[0]
+            if child_v:
+                for parent in p.self_and_parents():
+                    if child_v == parent.v:
+                        g.app.structure_errors += 1
+                        g.error('vnode: %s is its own parent' % child_v)
+                        # Allocating a new vnode would be difficult.
+                        # Just remove child_v from parent.v.children.
+                        parent.v.children = [
+                            v2 for v2 in parent.v.children if not v2 == child_v]
+                        if parent.v in child_v.parents:
+                            child_v.parents.remove(parent.v)
+                        # Try not to hang.
+                        p.moveToParent()
+                        break
+                    elif child_v.fileIndex == parent.v.fileIndex:
+                        g.app.structure_errors += 1
+                        g.error('duplicate gnx: %s v: %s parent: %s' % (
+                            child_v.fileIndex,child_v,parent.v))
+                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
+                        assert child_v.gnx != parent.v.gnx
+                        # Should be ok to continue.
+                        p.moveToFirstChild()
+                        break
+                else:
+                    p.moveToFirstChild()
+            elif p.hasNext():
+                p.moveToNext()
+            else:
+                p.moveToParent()
+                while p:
+                    if p.hasNext():
+                        p.moveToNext()
+                        break # found
+                    p.moveToParent()
+                # not found.
+        return p
+    #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
@@ -1749,15 +1800,17 @@ class Position (object):
         child._addLink(n,parent_v,adjust=adjust)
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
     def _linkAsNthChild (self,parent,n,adjust=True):
-
+        '''(low-level position method) Link self as the n'th child of the parent.'''
         p = self
         parent_v = parent.v
-
         # Init the ivars.
         p.stack = parent.stack[:]
         p.stack.append((parent_v,parent._childIndex),)
         p._childIndex = n
-
+        # New in Leo 5.1: ensure that p.gnx is unique in p's ancestors.
+        if 0:
+            for parent_v,junk in p.stack:
+                g.trace(parent_v.gnx,parent_v.h)
         child = p.v
         child._addLink(n,parent_v,adjust=adjust)
 
@@ -2152,6 +2205,7 @@ class VNodeBase (object):
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
+        # Deprecated, but here for compatibility.
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild (self):
@@ -2398,9 +2452,10 @@ class VNodeBase (object):
         self.statusBits |= self.markedBit
     #@+node:ekr.20031218072017.3399: *5* v.setOrphan
     def setOrphan (self):
-
-        # if self.h.startswith('@file'): g.trace(self.h,g.callers())
-
+        '''Set the vnode's orphan bit.'''
+        trace = (False or g.app.debug) and not g.unitTesting
+        if trace and self.h.startswith('@file'):
+            g.trace(self.h,g.callers())
         self.statusBits |= self.orphanBit
     #@+node:ekr.20031218072017.3400: *5* v.setSelected
     # This only sets the selected bit.
@@ -2449,7 +2504,7 @@ class VNodeBase (object):
         if traceTime: t1 = time.time()
         if hasattr(body.wrapper,'setInsertPoint'):
             if trace and ins: g.trace('ins',ins,'spot',spot)
-            w.setInsertPoint(ins) ##### ,s=v._bodyString)
+            w.setInsertPoint(ins)
         if traceTime: 
             delta_t = time.time()-t1
             if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))

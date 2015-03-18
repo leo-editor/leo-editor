@@ -134,7 +134,7 @@ def session_clear_command(event):
 #@+node:ekr.20120420054855.14385: *3* session-create
 @g.command('session-create')
 def session_create_command(event):
-    '''Create a new session node.'''
+    '''Create a new @session node.'''
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
@@ -146,7 +146,7 @@ def session_create_command(event):
 #@+node:ekr.20120420054855.14387: *3* session-refresh
 @g.command('session-refresh')
 def session_refresh_command(event):
-    '''Refresh the current session node.'''
+    '''Refresh the current @session node.'''
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
@@ -156,7 +156,7 @@ def session_refresh_command(event):
 #@+node:ekr.20120420054855.14386: *3* session-restore
 @g.command('session-restore')
 def session_restore_command(event):
-    '''Open a tab for each item in UNLs & select the indicated node in each.'''
+    '''Open a tab for each item in the @session node & select the indicated node in each.'''
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:

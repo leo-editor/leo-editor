@@ -115,7 +115,7 @@ class ParamClass:
         self.addMenu() # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* parameterize
     def parameterize (self,event=None):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # EKR: always search for parms.

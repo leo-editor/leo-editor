@@ -11,73 +11,56 @@
 * Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150304232409.4: *3* Docs
+.. @+node:ekr.20150304232409.5: *4* document --diff
+Search for added --diff
+.. @+node:ekr.20150307034303.6: *4* Document nodes-dark icons & stylesheet
+https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
+By Andrea Nuvola
+
+To set the collapsed/expanded node images, one can add the following sections
+to a theme settings tree (in my case, I put them in the body of the 
+"Non-color styles (fonts etc.)/tree" node of the "leo_dark_0" theme):
+
+QTreeView::branch:closed:has-children{
+   image: url("<home directory>/.leo/icons/nodes-dark/closed.png");
+}
+
+QTreeView::branch:open:has-children{
+   image: url("<home directory>/.leo/icons/nodes-dark/open.png");
+}
+
+I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
+.. @+node:ekr.20150315132217.1621: *4* Search g.command for missing docstrings
+.. @+node:ekr.20150315132217.1638: *4* remove open-offline-tutorial
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150211104036.471: *4* Fix bug 142: bibtex plugin overwrites body text of @bibtex nodes
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/142
-
-https://groups.google.com/d/msg/leo-editor/kKsbDSUc5dE/F7xHg3KBQGkJ
-
-The problem appears in both Python 2 and Python 3:
-
-The body text of any of the article, journal, etc. nodes is written as body text of the @bibtex node. It overwrites each time the previous body text of the @bibtex node. The body text of the single bibliography nodes remain empty.
-.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
+.. @+node:ekr.20150211104036.4: *4* Fix bugs 135 & 141: DnD & paste-retaing-clones
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
 
 This may also affect paste-retaining-clones.
+https://github.com/leo-editor/leo-editor/issues/141
 
 4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
-commit 4f848037424544e127166dbb0375f90c6826aa21
-Author: Edward K. Ream <edreamleo@gmail.com>
+Author: Me
 Date:   Fri Sep 13 16:44:33 2013 -0500
+Tag: Bug-135
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation.
+@nocolor-node
 
-See 
-.. @+node:ekr.20150211104036.473: *4* Fix bug 145: The already open dialog can cause Leo to hang
-https://github.com/leo-editor/leo-editor/issues/145
+- Detect changes in root node, if possible.
+- Detect changes in headlines, if possible.
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150312080344.4: *4* Improve speed of spelling
+@language rest
 
-It just happened again:
-- use e.bat when ekr.leo is already open.
-- Choose No.
-- Hard Python crash.
+Why is spell-checking so slow?
 
-Not easily reproducible, which makes the bug more serious, not less.
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-https://github.com/leo-editor/leo-editor/issues/143
+Trick: Spell-check just desired clone (at bottom of file).
 
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150302140653.4: *3* Bugs for b2
-.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Bracket matching should take into account the language in effect.
-
-For example, JavaScript regular expressions are not handled properly.
-
-Furthermore, there should be a command to select the region between
-matching brackets.
+Substitute for the lack of an "outline-only" button in the spell tab.
+.. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
 
@@ -173,15 +156,1189 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150304232409.4: *3* Docs
-.. @+node:ekr.20150304232409.5: *4* document --diff
-Search for added --diff
-.. @+node:ekr.20150205181818.7: *4* document idle-time properly in docstrings
+.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150211104036.7: *4* Fix bug 127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Bracket matching should take into account the language in effect.
+
+For example, JavaScript regular expressions are not handled properly.
+
+Furthermore, there should be a command to select the region between
+matching brackets.
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs?
+# Maybe the directory of c.fileName.
+.. @+node:ekr.20110605121601.18487: *5* LeoQtGui.Dialogs & panels
+.. @+node:ekr.20110605121601.18488: *6* LeoQtGui.alert
+def alert (self,c,message):
+
+    if g.unitTesting: return
+
+    b = QtWidgets.QMessageBox
+    d = b(None)
+    d.setWindowTitle('Alert')
+    d.setText(message)
+    d.setIcon(b.Warning)
+    d.addButton('Ok',b.YesRole)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+.. @+node:ekr.20110605121601.18489: *6* LeoQtGui.makeFilter
+def makeFilter (self,filetypes):
+
+    '''Return the Qt-style dialog filter from filetypes list.'''
+
+    filters = ['%s (%s)' % (z) for z in filetypes]
+
+    return ';;'.join(filters)
+.. @+node:ekr.20110605121601.18492: *6* LeoQtGui.panels
+def createComparePanel(self,c):
+    """Create a qt color picker panel."""
+    return None # This window is optional.
+
+def createFindTab (self,c,parentFrame):
+    """Create a qt find tab in the indicated frame."""
+    pass # Now done in dw.createFindTab.
+
+def createLeoFrame(self,c,title):
+    """Create a new Leo frame."""
+    gui = self
+    return qt_frame.LeoQtFrame(c,title,gui)
+
+def createSpellTab(self,c,spellHandler,tabName):
+    return qt_frame.LeoQtSpellTab(c,spellHandler,tabName)
+.. @+node:ekr.20110605121601.18493: *6* LeoQtGui.runAboutLeoDialog
+def runAboutLeoDialog(self,c,version,theCopyright,url,email):
+
+    """Create and run a qt About Leo dialog."""
+
+    if g.unitTesting: return None
+
+    b = QtWidgets.QMessageBox
+    d = b(c.frame.top)
+
+    d.setText('%s\n%s\n%s\n%s' % (
+        version,theCopyright,url,email))
+    d.setIcon(b.Information)
+    yes = d.addButton('Ok',b.YesRole)
+    d.setDefaultButton(yes)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+.. @+node:ekr.20110605121601.18496: *6* LeoQtGui.runAskDateTimeDialog
+def runAskDateTimeDialog(self, c, title, 
+    message='Select Date/Time', init=None, step_min={}):
+    """Create and run a qt date/time selection dialog.
+
+    init - a datetime, default now
+    step_min - a dict, keys are QtWidgets.QDateTimeEdit Sections, like
+      QtWidgets.QDateTimeEdit.MinuteSection, and values are integers,
+      the minimum amount that section of the date/time changes
+      when you roll the mouse wheel.
+
+    E.g. (5 minute increments in minute field):
+
+        print g.app.gui.runAskDateTimeDialog(c, 'When?',
+          message="When is it?",
+          step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
+
+    """
+
+    class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
+        """QDateTimeEdit which allows you to set minimum steps on fields, e.g.
+          DateTimeEditStepped(parent, {QtWidgets.QDateTimeEdit.MinuteSection: 5})
+        for a minimum 5 minute increment on the minute field.
+        """
+        def __init__(self, parent=None, init=None, step_min={}):
+
+            self.step_min = step_min
+            if init:
+                QtWidgets.QDateTimeEdit.__init__(self, init, parent)
+            else:
+                QtWidgets.QDateTimeEdit.__init__(self, parent)
+
+        def stepBy(self, step):
+            cs = self.currentSection()
+            if cs in self.step_min and abs(step) < self.step_min[cs]:
+                step = self.step_min[cs] if step > 0 else -self.step_min[cs]
+            QtWidgets.QDateTimeEdit.stepBy(self, step)
+
+    class Calendar(QtWidgets.QDialog):
+        def __init__(self, parent=None, message='Select Date/Time',
+            init=None, step_min={}):
+            QtWidgets.QDialog.__init__(self, parent)
+
+            layout = QtWidgets.QVBoxLayout()
+            self.setLayout(layout)
+
+            layout.addWidget(QtWidgets.QLabel(message))
+
+            self.dt = DateTimeEditStepped(init=init, step_min=step_min)
+            self.dt.setCalendarPopup(True)
+            layout.addWidget(self.dt)
+
+            buttonBox = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.Ok
+                | QtWidgets.QDialogButtonBox.Cancel)
+            layout.addWidget(buttonBox)
+
+            buttonBox.accepted.connect(self.accept)
+            buttonBox.rejected.connect(self.reject)
+
+    if g.unitTesting: return None
+
+    b = Calendar
+    if not init:
+        init = datetime.datetime.now()
+    d = b(c.frame.top, message=message, init=init, step_min=step_min)
+
+    d.setWindowTitle(title)
+
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+
+    if val != d.Accepted:
+        return None
+    else:
+        return d.dt.dateTime().toPyDateTime()
+.. @+node:ekr.20110605121601.18494: *6* LeoQtGui.runAskLeoIDDialog
+def runAskLeoIDDialog(self):
+
+    """Create and run a dialog to get g.app.LeoID."""
+
+    if g.unitTesting: return None
+
+    message = (
+        "leoID.txt not found\n\n" +
+        "Please enter an id that identifies you uniquely.\n" +
+        "Your cvs/bzr login name is a good choice.\n\n" +
+        "Leo uses this id to uniquely identify nodes.\n\n" +
+        "Your id must contain only letters and numbers\n" +
+        "and must be at least 3 characters in length.")
+    parent = None
+    title = 'Enter Leo id'
+    s,ok = QtWidgets.QInputDialog.getText(parent,title,message)
+    return g.u(s)
+.. @+node:ekr.20110605121601.18491: *6* LeoQtGui.runAskOkCancelNumberDialog
+def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+
+    """Create and run askOkCancelNumber dialog ."""
+
+    if g.unitTesting: return None
+
+    # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
+    d = QtWidgets.QInputDialog()
+    d.setWindowTitle(title)
+    d.setLabelText(message)
+    if cancelButtonText:
+        d.setCancelButtonText(cancelButtonText)
+    if okButtonText:
+        d.setOkButtonText(okButtonText)
+    self.attachLeoIcon(d)
+    ok = d.exec_()
+    n = d.textValue()
+    try:
+        n = float(n)
+    except ValueError:
+        n = None
+    return n if ok else None
+.. @+node:ekr.20110605121601.18490: *6* LeoQtGui.runAskOkCancelStringDialog
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
+
+    """Create and run askOkCancelString dialog ."""
+
+    if g.unitTesting: return None
+
+    d = QtWidgets.QInputDialog()
+    d.setWindowTitle(title)
+    d.setLabelText(message)
+    d.setTextValue(default)
+    if cancelButtonText:
+        d.setCancelButtonText(cancelButtonText)
+    if okButtonText:
+        d.setOkButtonText(okButtonText)
+    self.attachLeoIcon(d)
+    ok = d.exec_()
+    return str(d.textValue()) if ok else None
+.. @+node:ekr.20110605121601.18495: *6* LeoQtGui.runAskOkDialog
+def runAskOkDialog(self,c,title,message=None,text="Ok"):
+
+    """Create and run a qt askOK dialog ."""
+
+    if g.unitTesting: return None
+    b = QtWidgets.QMessageBox
+    d = b(c.frame.top)
+    d.setWindowTitle(title)
+    if message: d.setText(message)
+    d.setIcon(b.Information)
+    d.addButton(text,b.YesRole)
+    c.in_qt_dialog = True
+    d.exec_()
+    c.in_qt_dialog = False
+.. @+node:ekr.20110605121601.18497: *6* LeoQtGui.runAskYesNoCancelDialog
+def runAskYesNoCancelDialog(self,c,title,
+    message=None,
+    yesMessage="&Yes",
+    noMessage="&No",
+    yesToAllMessage=None,
+    defaultButton="Yes"
+):
+
+    """Create and run an askYesNo dialog."""
+
+    if g.unitTesting:
+        return None
+    b = QtWidgets.QMessageBox
+    d = b(c.frame.top)
+    if message: d.setText(message)
+    d.setIcon(b.Warning)
+    d.setWindowTitle(title)
+    yes      = d.addButton(yesMessage,b.YesRole)
+    no       = d.addButton(noMessage,b.NoRole)
+    yesToAll = d.addButton(yesToAllMessage,b.YesRole) if yesToAllMessage else None
+    cancel = d.addButton(b.Cancel)
+    if   defaultButton == "Yes": d.setDefaultButton(yes)
+    elif defaultButton == "No": d.setDefaultButton(no)
+    else: d.setDefaultButton(cancel)
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+    if   val == 0: val = 'yes'
+    elif val == 1: val = 'no'
+    elif yesToAll and val == 2: val = 'yes-to-all'
+    else: val = 'cancel'
+    return val
+.. @+node:ekr.20110605121601.18498: *6* LeoQtGui.runAskYesNoDialog
+def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
+    """
+    Create and run an askYesNo dialog.
+    Return one of ('yes','yes-all','no','no-all')
+
+    :Parameters:
+    - `c`: commander
+    - `title`: dialog title
+    - `message`: dialog message
+    - `yes_all`: bool - show YesToAll button
+    - `no_all`: bool - show NoToAll button
+    """
+    if g.unitTesting: return None
+    b = QtWidgets.QMessageBox
+    buttons = b.Yes | b.No
+    if yes_all:
+        buttons |= b.YesToAll
+    if no_all:
+        buttons |= b.NoToAll
+    d = b(c.frame.top)
+    d.setStandardButtons(buttons)
+    d.setWindowTitle(title)
+    if message: d.setText(message)
+    d.setIcon(b.Information)
+    d.setDefaultButton(b.Yes)
+    c.in_qt_dialog = True
+    val = d.exec_()
+    c.in_qt_dialog = False
+    return {
+        b.Yes: 'yes',
+        b.No: 'no',
+        b.YesToAll: 'yes-all',
+        b.NoToAll: 'no-all'
+    }.get(val, 'no')
+.. @+node:ekr.20110605121601.18499: *6* LeoQtGui.runOpenDirectoryDialog
+def runOpenDirectoryDialog(self,title,startdir):
+
+    """Create and run an Qt open directory dialog ."""
+
+    parent = None
+    d = QtWidgets.QFileDialog()
+    self.attachLeoIcon(d)
+    s = d.getExistingDirectory (parent,title,startdir)
+    return g.u(s)
+.. @+node:ekr.20110605121601.18500: *6* LeoQtGui.runOpenFileDialog
+def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
+
+    """Create and run an Qt open file dialog ."""
+
+    if g.unitTesting:
+        return ''
+    else:
+        if startpath is None:
+            startpath = os.curdir
+
+        parent = None
+        filter = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        if multiple:
+            lst = d.getOpenFileNames(parent,title,startpath,filter)
+            if isQt5:  # this is a *Py*Qt change rather than a Qt change
+                lst, selected_filter = lst
+            return [g.u(s) for s in lst]
+        else:
+            s = d.getOpenFileName(parent,title,startpath,filter)
+            if isQt5:
+                s, selected_filter = s
+            return g.u(s)
+.. @+node:ekr.20110605121601.18501: *6* LeoQtGui.runPropertiesDialog
+def runPropertiesDialog(self,
+    title='Properties',data={}, callback=None, buttons=None):
+
+    """Dispay a modal TkPropertiesDialog"""
+
+    # g.trace(data)
+    g.warning('Properties menu not supported for Qt gui')
+    result = 'Cancel'
+    return result,data
+.. @+node:ekr.20110605121601.18502: *6* LeoQtGui.runSaveFileDialog
+def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
+
+    """Create and run an Qt save file dialog ."""
+
+    if g.unitTesting:
+        return ''
+    else:
+        parent = None
+        filter_ = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        obj = d.getSaveFileName(parent,title,os.curdir,filter_)
+        # Very bizarre: PyQt5 version can return a tuple!
+        s = obj[0] if isinstance(obj,(list,tuple)) else obj
+        return g.u(s)
+.. @+node:ekr.20110605121601.18503: *6* LeoQtGui.runScrolledMessageDialog
+def runScrolledMessageDialog (self,
+    short_title= '',
+    title='Message',
+    label= '',
+    msg='',
+    c=None,**kw
+):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage',
+            short_title=short_title,title=title,
+            label=label, msg=msg,c=c, **kw)
+
+    if not c or not c.exists:
+        << no c error>>
+    else:        
+        retval = send()
+        if retval: return retval
+        << load viewrendered plugin >>
+        retval = send()
+        if retval: return retval
+        << no dialog error >>
+    << emergency fallback >>
+.. @+node:ekr.20110605121601.18504: *7* << no c error>>
+g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+.. @+node:ekr.20110605121601.18505: *7* << load viewrendered plugin >>
+pc = g.app.pluginsController
+# 2011/10/20: load viewrendered (and call vr.onCreate)
+# *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered2.py'):
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        g.blue('viewrendered plugin loaded.')
+        vr.onCreate('tag',{'c':c})
+.. @+node:ekr.20110605121601.18506: *7* << no dialog error >>
+g.es_print_error(
+    'No handler for the "scrolledMessage" hook.\n\t%s' % (
+        g.callers()))
+.. @+node:ekr.20110605121601.18507: *7* << emergency fallback >>
+b = QtWidgets.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog)
+    # That is, not a fixed size dialog.
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+d.addButton('Ok',b.YesRole)
+c.in_qt_dialog = True
+d.exec_()
+c.in_qt_dialog = False
+.. @+node:ekr.20110605121601.18502: *5* LeoQtGui.runSaveFileDialog
+def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
+
+    """Create and run an Qt save file dialog ."""
+
+    if g.unitTesting:
+        return ''
+    else:
+        parent = None
+        filter_ = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        obj = d.getSaveFileName(parent,title,os.curdir,filter_)
+        # Very bizarre: PyQt5 version can return a tuple!
+        s = obj[0] if isinstance(obj,(list,tuple)) else obj
+        return g.u(s)
+.. @+node:ekr.20110605121601.18500: *5* LeoQtGui.runOpenFileDialog
+def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
+
+    """Create and run an Qt open file dialog ."""
+
+    if g.unitTesting:
+        return ''
+    else:
+        if startpath is None:
+            startpath = os.curdir
+
+        parent = None
+        filter = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        if multiple:
+            lst = d.getOpenFileNames(parent,title,startpath,filter)
+            if isQt5:  # this is a *Py*Qt change rather than a Qt change
+                lst, selected_filter = lst
+            return [g.u(s) for s in lst]
+        else:
+            s = d.getOpenFileName(parent,title,startpath,filter)
+            if isQt5:
+                s, selected_filter = s
+            return g.u(s)
+.. @+node:ekr.20150316141655.12: *5* Found: (flattened) runOpenFileDialog
+.. @+node:ekr.20150316141655.13: *6* defs
+.. @+node:ekr.20031218072017.3744: *7* dialogs (NullGui)
+def runAboutLeoDialog(self,c,version,theCopyright,url,email):
+    return self.simulateDialog("aboutLeoDialog")
+
+def runAskLeoIDDialog(self):
+    return self.simulateDialog("leoIDDialog")
+
+def runAskOkDialog(self,c,title,message=None,text="Ok"):
+    return self.simulateDialog("okDialog","Ok")
+
+def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+    return self.simulateDialog("numberDialog",-1)
+
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
+    return self.simulateDialog("stringDialog",'')
+
+def runCompareDialog(self,c):
+    return self.simulateDialog("compareDialog",'')
+
+def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
+    return self.simulateDialog("openFileDialog")
+
+def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+    return self.simulateDialog("saveFileDialog")
+
+def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
+    return self.simulateDialog("yesNoDialog","no")
+
+def runAskYesNoCancelDialog(self,c,title,
+    message=None,yesMessage="Yes",noMessage="No",yesToAllMessage=None,defaultButton="Yes"):
+    return self.simulateDialog("yesNoCancelDialog","cancel")
+.. @+node:ekr.20031218072017.3731: *7* app.gui file dialogs
+def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
+
+    """Create and run an open file dialog ."""
+
+    self.oops()
+
+def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+
+    """Create and run a save file dialog ."""
+
+    self.oops()
+.. @+node:ekr.20110605121601.18500: *7* LeoQtGui.runOpenFileDialog
+def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
+
+    """Create and run an Qt open file dialog ."""
+
+    if g.unitTesting:
+        return ''
+    else:
+        if startpath is None:
+            startpath = os.curdir
+
+        parent = None
+        filter = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        self.attachLeoIcon(d)
+        if multiple:
+            lst = d.getOpenFileNames(parent,title,startpath,filter)
+            if isQt5:  # this is a *Py*Qt change rather than a Qt change
+                lst, selected_filter = lst
+            return [g.u(s) for s in lst]
+        else:
+            s = d.getOpenFileName(parent,title,startpath,filter)
+            if isQt5:
+                s, selected_filter = s
+            return g.u(s)
+.. @+node:ekr.20050920084036.166: *6* getReadableTextFile
+def getReadableTextFile (self):
+
+    fn = g.app.gui.runOpenFileDialog(
+        title = 'Open Text File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    return fn
+.. @+node:ekr.20071114081313.1: *6* insertIcon
+def insertIcon (self,event=None):
+
+    '''Prompt for an icon, and insert it into the node's icon list.'''
+
+    c = self.c ; p = c.p
+    iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
+    os.chdir(iconDir)
+    paths = g.app.gui.runOpenFileDialog(
+        title='Get Icons',
+        filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
+        defaultextension=None,
+        multiple=True)
+    if not paths: return
+    aList = [] ; xoffset = 2
+    for path in paths:
+        xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
+    aList2 = self.getIconList(p)
+    aList2.extend(aList)
+    self.setIconList(p, aList2)
+    c.setChanged(True)
+    c.redraw_after_icons_changed()
+.. @+node:ekr.20070915134101: *6* c.readFileIntoNode
+def readFileIntoNode (self,event=None):
+
+    '''Read a file into a single node.'''
+
+    c = self ; undoType = 'Read File Into Node'
+    c.endEditing()
+
+    filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+    if not fileName:return
+    s,e = g.readFileIntoString(fileName)
+    if s is None: return
+
+    g.chdir(fileName)
+    s = '@nocolor\n' + s
+    w = c.frame.body.wrapper
+    p = c.insertHeadline(op_name=undoType)
+    p.setHeadString('@read-file-into-node ' + fileName)
+    p.setBodyString(s)
+    w.setAllText(s)
+    c.redraw(p)
+.. @+node:ekr.20110530124245.18245: *6* c.importAnyFile & helper
+def importAnyFile (self,event=None):
+
+    '''Import one or more files.'''
+
+    c = self ; ic = c.importCommands
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+    names = g.app.gui.runOpenFileDialog(
+        title="Import File",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+    if names:
+        g.chdir(names[0])
+    else:
+        names = []
+    if not names:
+        if g.unitTesting:
+            # a kludge for unit testing.
+            c.init_error_dialogs()
+            c.raise_error_dialogs(kind='read')
+        return
+    # New in Leo 4.9: choose the type of import based on the extension.
+    c.init_error_dialogs()
+    derived = [z for z in names if c.looksLikeDerivedFile(z)]
+    others = [ z for z in names if not z in derived]
+    if derived:
+        ic.importDerivedFiles(parent=c.p,paths=derived)
+    for fn in others:
+        junk,ext = g.os_path_splitext(fn)
+        if ext.startswith('.'): ext = ext[1:]
+        if ext in ('cw','cweb'):
+            ic.importWebCommand([fn],"cweb")
+        elif ext in ('nw','noweb'):
+            ic.importWebCommand([fn],"noweb")
+        elif ext == 'txt':
+            ic.importFlattenedOutline([fn])
+        else:
+            ic.importFilesCommand([fn],'@clean') # "@nosent",)
+        # No longer supported.
+        # c.importCommands.importFilesCommand (names,"@root")
+    c.raise_error_dialogs(kind='read')
+
+# Compatibility
+importAtFile = importAnyFile
+importAtRoot = importAnyFile
+importCWEBFiles = importAnyFile
+importDerivedFile = importAnyFile
+importFlattenedOutline = importAnyFile
+importNowebFiles = importAnyFile
+.. @+node:ekr.20110530124245.18248: *7* c.looksLikeDerivedFile
+def looksLikeDerivedFile (self,fn):
+
+    '''Return True if fn names a file that looks like an
+    external file written by Leo.'''
+
+    # c = self    
+    try:
+        f = open(fn,'r')
+    except IOError:
+        return False
+
+    s = f.read()
+    f.close()
+    val = s.find('@+leo-ver=') > -1
+    return val
+.. @+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
+def readOutlineOnly (self,event=None):
+
+    '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+
+    c = self
+    c.endEditing()
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read Outline Only",
+        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        defaultextension=".leo")
+
+    if not fileName:
+        return
+
+    try:
+        theFile = open(fileName,'r')
+        g.chdir(fileName)
+        c = g.app.newCommander(fileName)
+        frame = c.frame
+        frame.deiconify()
+        frame.lift()
+        c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
+    except:
+        g.es("can not open:",fileName)
+.. @+node:ekr.20050920084036.20: *6* readAbbreviations & helper
+def readAbbreviations (self,event=None):
+
+    '''Read abbreviations from a file.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title = 'Open Abbreviation File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if fileName:
+        self.readAbbreviationsFromFile(fileName)
+.. @+node:ekr.20100901080826.6156: *7* readAbbreviationsFromFile
+def readAbbreviationsFromFile(self,fileName):
+
+    k = self.c.k
+
+    try:
+        f = open(fileName)
+        for s in f:
+            self.addAbbrevHelper(s,'file')
+        f.close()
+        k.abbrevOn = True
+        g.es("Abbreviations on")
+        # self.listAbbrevs()
+    except IOError:
+        g.es('can not open',fileName)
+.. @+node:ekr.20031218072017.2859: *6* c.removeSentinels
+def removeSentinels (self,event=None):
+
+    '''Import one or more files, removing any sentinels.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Remove Sentinels",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.removeSentinelsCommand (names)
+.. @+node:ekr.20070920104110: *6* compareAnyTwoFiles & helpers
+def compareAnyTwoFiles (self,event):
+    '''Compare two files.'''
+    trace = False and not g.unitTesting
+    c = c1 = self.c
+    w = c.frame.body.wrapper
+    commanders = g.app.commanders()
+    if g.app.diff:
+        if len(commanders) == 2:
+            c1,c2 = commanders
+            fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
+            fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+            g.es('--diff auto compare',color='red')
+            g.es(fn1)
+            g.es(fn2)
+        else:
+            g.es('expecting two .leo files')
+            return
+    else:
+        # Prompt for the file to be compared with the present outline.
+        filetypes = [("Leo files", "*.leo"),("All files", "*"),]
+        fileName = g.app.gui.runOpenFileDialog(
+            title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
+        if not fileName: return
+        # Read the file into the hidden commander.
+        c2 = self.createHiddenCommander(fileName)
+        if not c2: return
+    # Compute the inserted, deleted and changed dicts.
+    d1 = self.createFileDict(c1)
+    d2 = self.createFileDict(c2)  
+    inserted, deleted, changed = self.computeChangeDicts(d1,d2)
+    if trace: self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
+    # Create clones of all inserted, deleted and changed dicts.
+    self.createAllCompareClones(c1,c2,inserted,deleted,changed)
+    # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
+    if not g.app.diff:
+        g.app.forgetOpenFile(fn=c2.fileName(),force=True)
+        c2.frame.destroySelf()
+        g.app.gui.set_focus(c,w)
+.. @+node:ekr.20070921072608: *7* computeChangeDicts
+def computeChangeDicts (self,d1,d2):
+
+    '''Compute inserted, deleted, changed dictionaries.
+    
+    New in Leo 4.11: show the nodes in the *invisible* file, d2, if possible.'''
+
+    inserted = {}
+    for key in d2:
+        if not d1.get(key):
+            inserted[key] = d2.get(key)
+    deleted = {}
+    for key in d1:
+        if not d2.get(key):
+            deleted[key] = d1.get(key)
+    changed = {}
+    for key in d1:
+        if d2.get(key):
+            p1 = d1.get(key)
+            p2 = d2.get(key)
+            if p1.h != p2.h or p1.b != p2.b:
+                changed[key] = p2 # Show the node in the *other* file.
+    return inserted, deleted, changed
+.. @+node:ekr.20070921072910: *7* createAllCompareClones & helper
+def createAllCompareClones(self,c1,c2,inserted,deleted,changed):
+    '''Create the comparison trees.'''
+    c = self.c # Always use the visible commander
+    assert c == c1
+    # Create parent node at the start of the outline.
+    u,undoType = c.undoer,'Compare Two Files'
+    u.beforeChangeGroup(c.p,undoType)
+    undoData = u.beforeInsertNode(c.p)
+    parent = c.p.insertAfter()
+    parent.setHeadString(undoType)
+    u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+    # Use the wrapped file name if possible.
+    fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
+    fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+    for d,kind in (
+        (deleted,'not in %s' % fn2),
+        (inserted,'not in %s' % fn1),
+        (changed,'changed: as in %s' % fn2),
+    ):
+        self.createCompareClones(d,kind,parent)
+    c.selectPosition(parent)
+    u.afterChangeGroup(parent,undoType,reportFlag=True) 
+    c.redraw()
+.. @+node:ekr.20070921074410: *8* createCompareClones
+def createCompareClones (self,d,kind,parent):
+
+    if d:
+        c = self.c # Use the visible commander.
+        parent = parent.insertAsLastChild()
+        parent.setHeadString(kind)
+        for key in d:
+            p = d.get(key)
+            if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                # Don't make clones of @<file> nodes for wrapped files.
+                pass
+            elif p.v.context == c:
+                clone = p.clone()
+                clone.moveToLastChildOf(parent)
+            else:
+                # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
+                copy = p.copyTreeAfter()
+                copy.moveToLastChildOf(parent)
+                for p2 in copy.self_and_subtree():
+                    p2.v.context = c
+.. @+node:ekr.20070921070101: *7* createHiddenCommander (EditFileCommandsClass)
+def createHiddenCommander(self,fn):
+    '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
+    import leo.core.leoCommands as leoCommands
+    lm = g.app.loadManager
+    c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
+    theFile = lm.openLeoOrZipFile(fn)
+    if theFile:
+        c2.fileCommands.openLeoFile(theFile,fn,
+            readAtFileNodesFlag=True,silent=True)
+        return c2
+    else:
+        return None
+.. @+node:ekr.20070921070101.1: *7* createFileDict
+def createFileDict (self,c):
+    '''Create a dictionary of all relevant positions in commander c.'''
+    d = {}
+    for p in c.all_positions():
+        d[p.v.fileIndex] = p.copy()
+    return d
+.. @+node:ekr.20070921072608.1: *7* dumpCompareNodes
+def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):
+
+    for d,kind in (
+        (inserted,'inserted (only in %s)' % (fileName1)),
+        (deleted, 'deleted  (only in %s)' % (fileName2)),
+        (changed, 'changed'),
+    ):
+        g.pr('\n',kind)
+        for key in d:
+            p = d.get(key)
+            if g.isPython3:
+                g.pr('%-32s %s' % (key,p.h))
+            else:
+                g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
+.. @+node:ekr.20031218072017.2821: *6* c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [
+        # 2010/10/09: Fix an interface blunder. Show all files by default.
+        ("All files","*"),
+        ("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+
+    c.init_error_dialogs()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if c2 and closeFlag:
+                g.app.destroyWindow(c.frame)
+        elif c.looksLikeDerivedFile(fileName):
+            # 2011/10/09: A smart open makes Leo lighter:
+            # Create an @file node for files containing Leo sentinels.
+            ok = c.importCommands.importDerivedFiles(parent=c.p,
+                paths=[fileName],command='Open')
+        else:
+            # otherwise, create an @edit node.
+            ok = c.createNodeFromExternalFile(fileName)
+
+    c.raise_error_dialogs(kind='write')
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        c.initialFocusHelper()
+.. @+node:ekr.20031218072017.2822: *7* << Set closeFlag if the only open window is empty >>
+@
+If this is the only open window was opened when the app started, and
+the window has never been written to or saved, then we will
+automatically close that window if this open command completes
+successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
+.. @+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.wrapper
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+.. @+node:ekr.20150305084546.4: *3* Can't/won't fix
+.. @+node:ekr.20150306075700.4: *4* Fix bug 89: Spontaneous clones when using sections
+https://github.com/leo-editor/leo-editor/issues/89
+.. @+node:ekr.20150305053156.5: *4* Fix bug 147: Python 3 clipboard encoding
 @language rest
+@wrap
+https://github.com/leo-editor/leo-editor/issues/147
 
-Both in the IdleTime class and g.IdleTime.
+Text: ÷ Σ
 
-https://groups.google.com/forum/#!searchin/leo-editor/IdleTime/leo-editor/vRIY_u6vPc0/1ld5jdEYMOkJ
+In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
+
+This appears to be a serious bug in older version of pyqt...
+
+@language python
+.. @+node:ekr.20110605121601.18485: *5* LeoQtGui.Clipboard
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        s = g.toUnicode(s)
+        QtWidgets.QApplication.processEvents()
+        cb.setText(s)
+        QtWidgets.QApplication.processEvents()
+        if trace: g.trace(len(s),type(s),s[:25])
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        QtWidgets.QApplication.processEvents()
+        s = cb.text()
+        if trace: g.trace (len(s),type(s),s[:25])
+        # Fix bug 147: Python 3 clipboard encoding
+        s = g.u(s)
+            # Don't call g.toUnicode here!
+            # s is a QString, which isn't exactly a unicode string!
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+.. @+node:ekr.20091206161352.6232: *5* g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return s if g.isUnicode(s) else str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+.. @+node:ekr.20110605121601.18081: *5* qtew.getAllText
+def getAllText(self):
+    '''QTextEditWrapper.'''
+    w = self.widget
+    s = g.u(w.toPlainText())
+    return s
+.. @+node:ekr.20070130115927.4: *5* Cut/Copy/Paste (LeoFrame)
+.. @+node:ekr.20070130115927.5: *6* copyText (LeoFrame)
+def copyText (self,event=None):
+    '''Copy the selected text from the widget to the clipboard.'''
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    if trace: g.trace(g.isTextWrapper(w),wname,w)
+    if not w or not g.isTextWrapper(w):
+        return
+    # Set the clipboard text.
+    i,j = w.getSelectionRange()
+    if i != j:
+        s = w.get(i,j)
+        g.app.gui.replaceClipboardWith(s)
+
+OnCopyFromMenu = copyText
+.. @+node:ekr.20070130115927.6: *6* LeoFrame.cutText
+def cutText (self,event=None):
+
+    '''Invoked from the mini-buffer and from shortcuts.'''
+
+    f = self ; c = f.c ; w = event and event.widget
+    if not w or not g.isTextWrapper(w): return
+
+    name = c.widget_name(w)
+    oldSel = w.getSelectionRange()
+    oldText = w.getAllText()
+    i,j = w.getSelectionRange()
+
+    # Update the widget and set the clipboard text.
+    s = w.get(i,j)
+    if i != j:
+        w.delete(i,j)
+        g.app.gui.replaceClipboardWith(s)
+
+    if name.startswith('body'):
+        c.frame.body.forceFullRecolor()
+        c.frame.body.onBodyChanged('Cut',oldSel=oldSel,oldText=oldText)
+    elif name.startswith('head'):
+        # The headline is not officially changed yet.
+        # p.initHeadString(s)
+        s = w.getAllText()
+        # 2011/11/14: Not used at present.
+        # width = f.tree.headWidth(p=None,s=s)
+        # w.setWidth(width)
+    else: pass
+
+OnCutFromMenu = cutText
+.. @+node:ekr.20070130115927.7: *6* LeoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+    '''
+    Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.
+    '''
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    # if trace: g.trace(g.isTextWrapper(w),w)
+    if not w or not g.isTextWrapper(w):
+        if trace: g.trace('not a text widget',w)
+        return
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = g.app.gui.getTextFromClipboard()
+    s = g.toUnicode(s)
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+    # Save the horizontal scroll position.
+    if hasattr(w,'getXScrollPosition'):
+        x_pos = w.getXScrollPosition()
+    # Update the widget.
+    if i != j:
+        w.delete(i,j)
+    w.insert(i,s)
+    w.see(i+len(s) + 2)
+    if wname.startswith('body'):
+        c.frame.body.forceFullRecolor()
+        c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+    elif singleLine:
+        s = w.getAllText()
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+        # 2011/11/14: headline width methods do nothing at present.
+        # if wname.startswith('head'):
+            # The headline is not officially changed yet.
+            # p.initHeadString(s)
+            # width = f.tree.headWidth(p=None,s=s)
+            # w.setWidth(width)
+    else:
+        pass
+    # Never scroll horizontally.
+    if hasattr(w,'getXScrollPosition'):
+        w.setXScrollPosition(x_pos)
+
+OnPasteFromMenu = pasteText
+.. @+node:ekr.20061016071937: *6* OnPaste (To support middle-button paste)
+def OnPaste (self,event=None):
+
+    return self.pasteText(event=event,middleButton=True)
+.. @+node:ekr.20110605121601.18092: *5* qtew.setAllText
+def setAllText(self,s):
+    '''Set the text of body pane.'''
+    trace = False and not g.unitTesting
+    traceTime = False and not g.unitTesting
+    c,w = self.c,self.widget
+    if trace: g.trace(len(s),c.p and c.p.h)
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    # Be careful: Scintilla doesn't have a colorer.
+    colorer = highlighter and highlighter.colorer
+    if colorer: colorer.initFlag = True
+    try:
+        if traceTime:
+            t1 = time.time()
+        self.changingText = True # Disable onTextChanged.
+        colorizer.changingText = True # Disable colorizer.
+        # g.trace('read/write text')
+        w.setReadOnly(False)
+        w.setPlainText(s)
+        # w.update()
+            # 2014/08/30: w.update does not ensure that all text is loaded
+            # before the user starts editing it!
+        if traceTime:
+            delta_t = time.time()-t1
+            if False or delta_t > 0.1:
+                g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
+    finally:
+        self.changingText = False
+        colorizer.changingText = False
 .. @+node:ekr.20150211104036.474: ** First improvements
 .. @+node:ekr.20150227040245.10: *3* Jump to [node of selected text]
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ

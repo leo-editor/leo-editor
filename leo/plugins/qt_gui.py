@@ -107,8 +107,10 @@ class LeoQtGui(leoGui.LeoGui):
             QtWidgets.QApplication.processEvents()
             s = cb.text()
             if trace: g.trace (len(s),type(s),s[:25])
-            s = g.app.gui.toUnicode(s)
-                # Same as g.u(s), but with error handling.
+            # Fix bug 147: Python 3 clipboard encoding
+            s = g.u(s)
+                # Don't call g.toUnicode here!
+                # s is a QString, which isn't exactly a unicode string!
             return s
         else:
             g.trace('no clipboard!')

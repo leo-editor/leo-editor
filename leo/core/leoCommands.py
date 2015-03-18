@@ -1227,7 +1227,7 @@ class Commands (object):
             return None
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
     def refreshFromDisk(self,event=None):
-        '''Refresh and @<file> node from disk.'''
+        '''Refresh an @<file> node from disk.'''
         c,p,u = self,self.p,self.undoer
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
@@ -1246,7 +1246,11 @@ class Commands (object):
                 p.deleteAllChildren()
                 at.read(p,force=True)
             elif word in ('@clean','@nosent'):
-                at.readOneAtNosentNode(p)
+                # Wishlist 148: use @auto parser if the node is empty.
+                if p.b.strip() or p.hasChildren():
+                    at.readOneAtNosentNode(p)
+                else:
+                    at.readOneAtAutoNode(fn,p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
                 at.read(p,force=True,atShadow=True)
@@ -1760,12 +1764,11 @@ class Commands (object):
             c.importCommands.exportHeadlines(fileName)
     #@+node:ekr.20031218072017.2851: *6* c.flattenOutline
     def flattenOutline (self,event=None):
-
-        '''Export the selected outline to an external file.
-        The outline is represented in MORE format.'''
-
+        '''
+        Export the selected outline to an external file.
+        The outline is represented in MORE format.
+        '''
         c = self
-
         filetypes = [("Text files", "*.txt"),("All files", "*")]
 
         fileName = g.app.gui.runSaveFileDialog(
@@ -2130,15 +2133,29 @@ class Commands (object):
     class GoToLineNumber:
 
         '''A class implementing goto-global-line.'''
+        
+        class Found(Exception):
+            '''An exception thrown when the target line is found.'''
+            def __init__(self,i,p):
+                self.i = i
+                self.p = p
+            def __str__(self):
+                return "Found line at %s in %s" % (self.i,self.p.h)
 
         #@+others
         #@+node:ekr.20100216141722.5621: *7*  __init__ (gotoLineNumber)
         def __init__ (self,c):
-
+            '''Ctor for GoToLineNumber class.'''
             # g.trace('(c.gotoLineNumber)')
             self.c = c
+            self.n = 0
+                # The number of effective lines seen so far.
             self.p = c.p.copy()
             self.isAtAuto = False
+            self.target = 0
+                # The target line number.
+            self.trace = False
+                # set in countLines.
         #@+node:ekr.20100216141722.5622: *7* go
         def go (self,n,p=None,scriptData=None):
 
@@ -2177,133 +2194,106 @@ class Commands (object):
             '''
             Scan through root's outline, looking for line n (one based).
             Return (p,i,found)
-                p:      the found node.
-                i:      the offset of the line within the node.
-                found:  True if the line was found.
+                p: the found node.
+                i: the zero-based offset of the line within the node.
+                found: True if the line n was found.
             '''
-            trace = False and not g.unitTesting
-            # c = self.c
-            # Start the recursion.
-            n = max(0,n-1)# Convert to zero based internally.
-            if trace: g.trace('%s %s (zero-based) %s' % ('*' * 20,n,root.h))
-            p,i,junk,found = self.countLinesHelper(root,n,trace)
-            return p,i,found # The index is zero-based.
-        #@+node:ekr.20100216141722.5624: *8* countLinesHelper
-        def countLinesHelper (self,p,n,trace):
+            self.trace = False and not g.unitTesting
+            self.target = max(0,n-1)
+                # Invariant: the target never changes!
+            self.n = 0
+                # The number of "effective" lines seen in the outline.
+            if self.trace: g.trace('n (zero-based):',n,root.h)
+            try:
+                self.countBodyLines(root)
+                p,i,found = None,-1,False
+            except self.Found as e:
+                p,i,found = e.p,e.i,True
+            return p,i,found
+        #@+node:ekr.20100216141722.5624: *8* countBodyLines
+        def countBodyLines (self,p):
             '''
-            Scan p's body text, looking for line n (zero-based).
-            ao is the index of the line containing @others or None.
-
-            Return (p,i,n,effective_lines,found)
-            found: True if the line was found.
-            if found::
-                p:              The found node.
-                i:              The offset of the line within the node.
-                effective_lines:-1 (not used)
-
-            if not found::
-                p:              The original node.
-                i:              -1 (not used)
-                effective_lines:The number of lines in this node and all descendant nodes.
+            Scan p.b, incrementing self.n, looking for self.target.
+            
+            raise Found(i,p) if the target line is found.
             '''
-            if trace: g.trace('='*10,n,p.h)
-            # c = self.c
-            ao = None
-            lines = g.splitLines(p.b)
-            i = 0
-                # The index of the line being scanning in this node.
-            effective_lines = 0
-                # The number of "counted" lines including the present line i.
-            # Invariant 1: n never changes in this method(!)
-            # Invariant 2: n is alway the target line.
-            while i < len(lines):
-                progress = i
-                line = lines[i]
-                if trace: g.trace('i %3s effective %3s %s' % (
-                    i,effective_lines,line.rstrip()))
+            if not p: return
+            if self.trace: g.trace('='*10,self.n,p.h)
+            ao = False # True: @others has been seen in this node.
+            for i,line in enumerate(g.splitLines(p.b)):
+                if self.trace: g.trace('i %3s n %3s %s' % (i,self.n,line.rstrip()))
+                ref = self.findDefinition(line,p)
                 if line.strip().startswith('@'):
-                    if line.strip().startswith('@others'):
-                        if ao is None and p.hasChildren():
-                            ao = i
-                            # Count lines in inner nodes.
-                            # Pass n-effective_lines as the targe line number.
-                            new_n = n-effective_lines
-                            p2,i2,effective_lines2,found = \
-                                self.countLinesInChildren(new_n,p,trace)
-                            if found:
-                                return p2,i2,-1,True # effective_lines doesn't matter.
-                            else:
-                                # Assert that the line has not been found.
-                                if effective_lines2 > new_n:
-                                    if trace: g.trace(
-                                        '***oops! effective_lines2: %s, new_n: %s' % (
-                                        effective_lines2,new_n))
-                                    if g.unitTesting: assert False
-                                effective_lines += effective_lines2
-                                # Do *not* change i: it will be bumped below.
-                                # Invariant: n never changes!
-                        else:
-                            pass # silently ignore erroneous @others.
-                    else:
-                        s = line.strip()
-                        k = g.skip_id(s,1)
-                        word = s[1:k]
-                        # g.trace('word',repr(word))
-                        # Fix bug 138: goto-global-line doesn't work properly in @nosent files
-                        # Treat a bare '@' as a Leo directive.
-                        if not word or word in g.globalDirectiveList:
-                            pass # A regular directive: don't change n or i here.
-                        else:
-                            # Fix bug 1182864: goto-global-line cmd bug.
-                            # Do count everything (like decorators) that is not a Leo directive.
-                            if effective_lines == n:
-                                if trace: g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
-                                return p,i,-1,True # effective_lines doesn't matter.
-                            else:
-                                effective_lines += 1
+                    ao = self.countDirectiveLines(ao,i,line,p)
+                elif ref:
+                    self.countBodyLines(ref)
+                elif self.n == self.target:
+                    if self.trace: g.trace('Found! n: %s i: %s in: %s' % (self.n,i,p.h))
+                    raise self.Found(i,p)
                 else:
-                    # Bug fix 2011/01/21: use effective_lines, not i, in this comparison.
-                    # The line is now known to be effective.
-                    if effective_lines == n:
-                        if trace: g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
-                        return p,i,-1,True # effective_lines doesn't matter.
-                    else:
-                        effective_lines += 1
-                # This is the one and only place we update i in this loop.
-                i += 1
-                assert i > progress
-            if trace:
-                g.trace('Not found. n: %s effective_lines: %s %s' % (
-                    n,effective_lines,p.h))
-            return p,-1,effective_lines,False # i doesn't matter.
-        #@+node:ekr.20100216141722.5625: *8* countLinesInChildren
-        def countLinesInChildren(self,n,p,trace):
-
-            if trace: g.trace('-'*10,n,p.h)
-            effective_lines = 0
+                    self.n += 1
+            if not ao:
+                self.countChildLines(p)
+        #@+node:ekr.20100216141722.5625: *8* countChildLines
+        def countChildLines(self,p):
+            '''
+            Scan p's children, incrementing self.n, looking for self.target.
+            Skip section defintion nodes.
+            
+            raise Found(i,p) if the target line is found.
+            '''
+            if self.trace:
+                g.trace('-'*10,self.n,p.h)
             for child in p.children():
-                if trace:g.trace('child %s' % child.h)
-                # Recursively scan the children.
-                # Pass n-effective_lines as the targe line number for each child.
-                new_n = n-effective_lines
-                p2,i2,effective_lines2,found = \
-                    self.countLinesHelper(child,new_n,trace)
-                if found:
-                    if trace: g.trace('Found! i2: %s %s' % (i2,child.h))
-                    return p2,i2,-1,True # effective_lines doesn't matter.
+                if self.trace:g.trace('child: %s' % child.h)
+                if self.sectionName(child.h):
+                    pass # Assume the node will be expanded via a section reference.
                 else:
-                    # Assert that the line has not been found.
-                    if effective_lines2 > new_n:
-                        if trace: g.trace(
-                            '*** oops! effective_lines2: %s, new_n: %s n: %s %s' % (
-                                effective_lines2,new_n,n,p.h))
-                        if g.unitTesting: assert False
-                    # i2 is not used
-                    effective_lines += effective_lines2
-
-            if trace: g.trace('Not found. effective_lines: %s %s' % (
-                effective_lines,p.h))
-            return p,-1,effective_lines,False # i does not matter.
+                    self.countBodyLines(child)
+        #@+node:ekr.20150306083738.11: *8* countDirectiveLines
+        def countDirectiveLines(self,ao,i,line,p):
+            '''Handle a possible Leo directive, including @others.'''
+            if line.strip().startswith('@others'):
+                if not ao and p.hasChildren():
+                    ao = True # We have seen @others in p.
+                    self.countChildLines(p)
+                else:
+                    pass # silently ignore erroneous @others.
+            else:
+                s = line.strip()
+                k = g.skip_id(s,1)
+                word = s[1:k]
+                # Fix bug 138: Treat a bare '@' as a Leo directive.
+                if not word or word in g.globalDirectiveList:
+                    pass # A regular directive: don't change effective_n.
+                else:
+                    # Fix bug 1182864: goto-global-line cmd bug.
+                    # Count everything (like decorators) that is not a Leo directive.
+                    if self.n == self.target:
+                        if self.trace:
+                            g.trace('Found in @others! n: %s i: %s %s\n%s' % (
+                                self.n,i,line,p.h))
+                        raise self.Found(i,p)
+                    else:
+                        self.n += 1
+            return ao
+        #@+node:ekr.20150306124034.6: *8* findDefinition
+        def findDefinition(self,line,p):
+            '''
+            Return the section definition node corresponding to the section
+            reference in the given line of p.b.
+            '''
+            name = self.sectionName(line)
+            ref = name and g.findReference(self.c,name,p)
+            if name and not ref:
+                g.error('section reference not found: %s' % (g.angleBrackets(name)))
+            return ref
+        #@+node:ekr.20150306124034.7: *8* sectionName
+        def sectionName(self,line):
+            '''Return the first section reference in line.'''
+            i = line.find('<<')
+            j = line.find('>>')
+            return line[i:j+2] if -1 < i < j else None
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
             '''
@@ -2638,8 +2628,11 @@ class Commands (object):
                 ins = g.convertRowColToPythonIndex(s,n2-1,0)
             else:
                 ins = len(s)
-                if len(lines) < n and not g.unitTesting:
-                    g.warning('only',len(lines),'lines')
+                if not g.unitTesting:
+                    if len(lines) < n:
+                        g.warning('only',len(lines),'lines')
+                    else:
+                        g.warning('line',n,'not found')
 
             if trace:
                 i,j = g.getLine(s,ins)
@@ -4125,7 +4118,7 @@ class Commands (object):
         p = c.setPositionAfterSort(sortChildren)
         c.redraw(p)
     #@+node:ekr.20040711135959.2: *5* Check Outline submenu...
-    #@+node:ekr.20031218072017.2072: *6* c.checkOutline & checkGxns
+    #@+node:ekr.20031218072017.2072: *6* c.checkOutline & helpers
     def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
         """
         Report any possible clone errors in the outline.
@@ -4133,105 +4126,41 @@ class Commands (object):
         Remove any tnodeLists.
         """
         trace = False and not g.unitTesting
-        c = self ; count = 1 ; errors = 0
-        # if full and not unittest:
-            # g.blue("all tests enabled: this may take awhile")
-        iter_ = root.self_and_subtree if root else c.all_positions
-        for p in iter_():
-            if trace: g.trace(p.h)
-            try:
-                count += 1
-                #@+<< remove tnodeList >>
-                #@+node:ekr.20040313150633: *7* << remove tnodeList >>
-                # Empty tnodeLists are not errors.
-                v = p.v
-
-                if hasattr(v,"tnodeList"): # and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
-                    if 0:
-                        s = "deleting tnodeList for " + repr(v)
-                        g.warning(s)
-                    delattr(v,"tnodeList")
-                    v._p_changed = True
-                #@-<< remove tnodeList >>
-                if full: # Unit tests usually set this false.
-                    #@+<< do full tests >>
-                    #@+node:ekr.20040323155951: *7* << do full tests >>
-                    # if not unittest:
-                        # if count % 1000 == 0:
-                            # g.es('','.',newline=False)
-                        # if count % 8000 == 0:
-                            # g.enl()
-
-                    #@+others
-                    #@+node:ekr.20040314035615: *8* assert consistency of threadNext & threadBack links
-                    threadBack = p.threadBack()
-                    threadNext = p.threadNext()
-                    if threadBack:
-                        assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
-                    if threadNext:
-                        assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
-                    #@+node:ekr.20040314035615.1: *8* assert consistency of next and back links
-                    back = p.back()
-                    next = p.next()
-                    if back:
-                        assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
-                            back,back.next())
-                    if next:
-                        assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
-                            next,next.back())
-                    #@+node:ekr.20040314035615.2: *8* assert consistency of parent and child links
-                    if p.hasParent():
-                        n = p.childIndex()
-                        assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
-                    for child in p.children():
-                        assert p == child.parent(), "p!=child.parent"
-                    if p.hasNext():
-                        assert p.next().parent() == p.parent(), "next.parent!=parent"
-                    if p.hasBack():
-                        assert p.back().parent() == p.parent(), "back.parent!=parent"
-                    #@+node:ekr.20080426051658.1: *8* assert consistency of parent and children arrays
-                    #@+at
-                    # Every nodes gets visited, so we only check consistency
-                    # between p and its parent, not between p and its children.
-                    # 
-                    # In other words, this is a strong test.
-                    #@@c
-
-                    parent_v = p._parentVnode()
-                    n = p.childIndex()
-                    assert parent_v.children[n] == p.v,'fail 1'
-                    #@-others
-                    #@-<< do full tests >>
-            except AssertionError:
-                errors += 1
-                #@+<< give test failed message >>
-                #@+node:ekr.20040314044652: *7* << give test failed message >>
-                junk, value, junk = sys.exc_info()
-                g.error("test failed at position %s\n%s" % (repr(p),value))
-                #@-<< give test failed message >>
-                if trace: return errors
+        c = self
+        count,errors = 1,0
+        if g.app.check_outline and not unittest:
+            full,verbose = True,True
+        # Check gnx's first.  Generators will loop if this fails.
         errors += c.checkGnxs()
-        if verbose or not unittest:
-            #@+<< print summary message >>
-            #@+node:ekr.20040314043900: *7* <<print summary message >>
-            if full:
-                g.enl()
-
-            if errors or verbose:
-                if errors:
-                    g.error('',count,'nodes checked',errors,'errors')
-                else:
-                    g.blue('',count,'nodes checked',errors,'errors')
-
-            #@-<< print summary message >>
+        if not errors:
+            iter_ = root.self_and_subtree if root else c.safe_all_positions
+            for p in iter_():
+                if trace: g.trace(p.h)
+                try:
+                    count += 1
+                    v = p.v
+                    if hasattr(v,"tnodeList"):
+                        delattr(v,"tnodeList")
+                        v._p_changed = True
+                    if full: # Unit tests usually set this false.
+                        c.checkThreadLinks(p)
+                        c.checkSiblings(p)
+                        c.checkParentAndChildren(p)
+                except AssertionError:
+                    errors += 1
+                    junk, value, junk = sys.exc_info()
+                    g.error("test failed at position %s\n%s" % (repr(p),value))
+        if errors or (verbose and not unittest):
+            g.blue('',count,'nodes checked',errors,'errors')
         return errors
     #@+node:ekr.20141024211256.22: *7* c.checkGnxs
     def checkGnxs(self):
         '''Check the consistency of all gnx's.'''
         c = self
         d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
+        g.app.structure_errors = 0
         errors = 0
-        for p in c.all_positions():
+        for p in c.safe_all_positions():
             gnx = p.v.fileIndex
             if gnx:
                 aSet = d.get(gnx,set())
@@ -4239,14 +4168,54 @@ class Commands (object):
                 d[gnx] = aSet
             else:
                 errors += 1
-                print('empty v.fileIndex',p.v)
+                print('empty v.fileIndex: %s %r' % (p.v,p.v.gnx))
+        errors += g.app.structure_errors
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:
                 errors += 1
-                print('multiple vnode with gnx: %s vnodes: [%s]' % (gnx,aList))
+                print('multiple vnode with same gnx: %s vnodes: [%s]' % (gnx,aList))
         # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
         return errors
+    #@+node:ekr.20040314035615.2: *7* c.checkParentAndChildren
+    def checkParentAndChildren(self,p):
+        '''Check consistency of parent and child data structures.'''
+        # Check consistency of parent and child links.
+        if p.hasParent():
+            n = p.childIndex()
+            assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
+        for child in p.children():
+            assert p == child.parent(), "p!=child.parent"
+        if p.hasNext():
+            assert p.next().parent() == p.parent(), "next.parent!=parent"
+        if p.hasBack():
+            assert p.back().parent() == p.parent(), "back.parent!=parent"
+        # Check consistency of parent and children arrays.
+        # Every nodes gets visited, so a strong test need only check consistency
+        # between p and its parent, not between p and its children.
+        parent_v = p._parentVnode()
+        n = p.childIndex()
+        assert parent_v.children[n] == p.v,'fail 1'
+    #@+node:ekr.20040314035615.1: *7* c.checkSiblings
+    def checkSiblings(self,p):
+        '''Check the consistency of next and back links.'''
+        back = p.back()
+        next = p.next()
+        if back:
+            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
+                back,back.next())
+        if next:
+            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
+                next,next.back())
+    #@+node:ekr.20040314035615: *7* c.checkThreadLinks
+    def checkThreadLinks(self,p):
+        '''Check consistency of threadNext & threadBack links.'''
+        threadBack = p.threadBack()
+        threadNext = p.threadNext()
+        if threadBack:
+            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
+        if threadNext:
+            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
@@ -6728,13 +6697,89 @@ class Commands (object):
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
     def deletePositionsInList (self,aList,callback=None):
         '''
-        Delete all vnodes corresponding to the positions in aList.
-        If a callback is given, the callback is called for every node in the list.
+        Delete all vnodes corresponding to the positions in aList. If a
+        callback is given, the callback is called for every node in the list.
         
-        The callback takes one explicit argument, p. As usual, the callback can bind
-        values using keyword arguments.
+        The callback takes one explicit argument, p. As usual, the callback can
+        bind values using keyword arguments.
+        
+        This is *very* tricky code. The theory of operation section explains why.
         '''
-        trace = False and not g.unitTesting
+        #@+<< theory of operation >>
+        #@+node:ekr.20150312080344.8: *4* << theory of operation >> (deletePositionsInList)
+        #@+at
+        #@@language rest
+        #@@wrap
+        # The Aha: the positions passed to p.deletePositionsInList only *specify* the desired changes; the only way to *make* those changes is to operate on vnodes!
+        # 
+        # Consider this outline, containing no clones::
+        # 
+        #     + ROOT
+        #       - A
+        #       - B
+        # 
+        # The fundamental problem is this. If we delete node A, the index of node B in ROOT.children will change. This problem has (almost) nothing to do with clones or positions.
+        # 
+        # To make this concrete, let's look at the *vnodes* that represent this tree. It is the vnodes, and *not* the positions, that represent all of Leo's data. Let ROOT, A and B be the vnodes corresponding to the nodes ROOT, A and B. ROOT.children will look like this at first::
+        # 
+        #     ROOT.children = [A,B]
+        # 
+        # That is, the children array contains references (links) to both A and B. After deleting A, we will have::
+        # 
+        #     ROOT.children = [B]
+        # 
+        # As you can see, the reference to B is at index 1 of ROOT.children before deleting A, and at index 0 of ROOT.children after deleting A. Thus, *any* position referring to B will become invalid after deleting A.
+        # 
+        # Several people, including myself, have proposed an unsound solution--just delete positions in reverse order, so that B will be deleted before A. This idea has appeal, but it is wrong. Here is an outline that shows that there is *no* correct order for deleting positions. All A' nodes are clones of each other::
+        # 
+        #     + ROOT
+        #       + A'
+        #         - B # at position p1
+        #       + A'
+        #         - B # at position p2
+        # 
+        # **Important**: B is *not* a clone. Also note that there is only *one* node called A and *one* node called B. The children arrays will look like::
+        # 
+        #     ROOT.children = [A,A]
+        #     A.children = [B]
+        #     B.children = []
+        # 
+        # It surely must be reasonable to pass either *or both* positions p1 and p2 to p.deletePositionsInList. But after deleting the B corresponding to p1, the children arrays will look like:
+        # 
+        #     ROOT.children = [A,A]
+        #     A.children = []
+        #     B.children = [] # B is no longer referenced anywhere!
+        # 
+        # So if p.deletePositionsInList attempts to delete position p2 (from A), B will no longer appear in A.children!
+        # 
+        # There are many other cases that we could discuss, but the conclusion in all cases is that we must use the positions passed to p.deletePositionsInList only as *hints* about what to do.
+        # 
+        # Happily, there is a simple strategy that sidesteps all the difficulties:
+        # 
+        # Step 1. Verify, *before* making any changes to the outline, that all the positions passed to p.deletePositionsInList *initially* make sense.
+        # 
+        # Step 2. Treat each position as a "request" to delete *some* vnode from the children array in the *position's* parent vnode.
+        # 
+        # This is just a bit subtle. Let me explain it in detail.
+        # 
+        # First, recall that vnodes do not have unique parent vnodes. Because of clones, a vnode may may have *many* parents. Happily, every position *does* specify a unique parent (vnode) at that position.
+        # 
+        # Second, as shown above, there is no way to order positions such that all later positions remain valid. As the example above shows, deleting (the vnode corresponding to) a position P may cause *all* later positions referring to P.v to refer to *already deleted* vnodes.
+        # 
+        # In other words, we simply *must* ignore the child indices in positions. Given a position P, P.parent is well defined. So Step 2 above will simply delete the *first* element in P.parent.children containing P.v.
+        # 
+        # As we have seen, there may not even *be* any such element of P.parent.children: a previous delete may have already deleted the last item of P.parent.children equal to P.v. That should *not* be considered an error--Step 1 has ensured that all positions *originally* did make sense.
+        # 
+        # Summary
+        # 
+        # Positions passed to p.deletePositionsInList specify *vnodes* to be deleted from specific parents, but they do *not* specify at what index in the parent.children array (if any!) those vnodes are to be found. The algorithm will delete the *first* item in the children array that references the vnode to be deleted.
+        # 
+        # This will almost always be good enough. In the unlikely event that more control is desired, p.deletePositionsInList can not possibly be used.
+        # 
+        # The new emphasis on vnodes at last puts the problem an a completely solid foundation. Moreover, the new algorithm should be considerably faster than the old: there is no need to sort positions.
+        #@-<< theory of operation >>
+
+        trace = (False or g.app.debug) and not g.unitTesting
         c = self
         # Verify all positions *before* altering the tree.
         aList2 = []
@@ -6746,7 +6791,10 @@ class Commands (object):
         # Delete p.v for all positions p in reversed(sorted(aList2)).
         if callback:
             for p in reversed(sorted(aList2)):
-                callback(p)
+                if c.positionExists(p):
+                    callback(p)
+                elif trace:
+                    g.trace('position does not exist',p and p.h)
         else:
             for p in reversed(sorted(aList2)):
                 if c.positionExists(p):
@@ -6758,8 +6806,8 @@ class Commands (object):
                         v._cutLink(childIndex,parent_v)
                     else:
                         if trace: g.trace('already deleted',parent_v,v)
-                else:
-                    if trace: g.trace('can not happen',p and p.h)
+                elif trace:
+                    g.trace('position does not exist',p and p.h)
         # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
@@ -7849,12 +7897,14 @@ class Commands (object):
     #@+node:ekr.20091001141621.6061: *3* c.generators
     #@+node:ekr.20091001141621.6043: *4* c.all_nodes & all_unique_nodes
     def all_nodes(self):
+        '''A generator returning all vnodes in the outline, in outline order.'''
         c = self
         for p in c.all_positions():
             yield p.v
         # raise StopIteration
 
     def all_unique_nodes(self):
+        '''A generator returning each vnode of the outline.'''
         c = self
         for p in c.all_unique_positions():
             yield p.v
@@ -7867,6 +7917,10 @@ class Commands (object):
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6062: *4* c.all_unique_positions
     def all_unique_positions(self):
+        '''
+        A generator return all positions of the outline, in outline order.
+        Returns only the first position for each vnode.
+        '''
         c = self
         p = c.rootPosition() # Make one copy.
         seen = set()
@@ -7884,6 +7938,7 @@ class Commands (object):
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20091001141621.6044: *4* c.all_positions
     def all_positions (self):
+        '''A generator return all positions of the outline, in outline order.'''
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
@@ -7894,6 +7949,18 @@ class Commands (object):
     # Compatibility with old code.
     all_positions_iter = all_positions
     allNodes_iter = all_positions
+    #@+node:ekr.20150316175921.5: *4* c.safe_all_positions
+    def safe_all_positions (self):
+        '''
+        A generator returning all positions of the outline. This generator does
+        *not* assume that vnodes are never their own ancestors.
+        '''
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p
+            p.safeMoveToThreadNext()
+        # raise stopIteration
     #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters
     #@+node:ekr.20060906211747: *4* Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition (changed)
