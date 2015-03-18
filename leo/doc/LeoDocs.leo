@@ -653,25 +653,24 @@
 <v t="EKR.20040524104904.111"><vh>Edit commands (TO DO)</vh>
 <v t="ekr.20150318043636.5"><vh>To do **</vh></v>
 <v t="ekr.20150315132217.1651"><vh>Basic text editing commands (finished)</vh></v>
-<v t="ekr.20150314050809.10"><vh>Basic text editing commands (to do) ***</vh>
+<v t="ekr.20150314050809.10"><vh>Basic text editing commands (TO DO)</vh>
 <v t="ekr.20150312025000.2363"><vh>smart-*</vh></v>
 </v>
-<v t="ekr.20150318043636.4"><vh>Operations on marked nodes</vh></v>
-<v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
-<v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text</vh></v>
-<v t="EKR.20040524104904.114"><vh>Indenting body text</vh></v>
-<v t="ekr.20050313102319"><vh>Adding and deleting comments in body text</vh></v>
-<v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
-<v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
-<v t="EKR.20040524104904.144"><vh>Checking python syntax</vh></v>
-<v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
-<v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
+<v t="EKR.20040524104904.112"><vh>Undoing changes (reformat)</vh></v>
+<v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text (reformat)</vh></v>
+<v t="EKR.20040524104904.114"><vh>Indenting body text (reformat)</vh></v>
+<v t="ekr.20050313102319"><vh>Adding and deleting comments in body text (reformat)</vh></v>
+<v t="EKR.20040524104904.115"><vh>Creating nodes from body text (done)</vh></v>
+<v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text (reformat)</vh></v>
+<v t="EKR.20040524104904.144"><vh>Checking python syntax (done)</vh></v>
+<v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text (reformat)</vh></v>
+<v t="EKR.20040524104904.134"><vh>goto-global-line (done)</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
 <v t="ekr.20150313083748.12117"><vh>Pretty printing Python code</vh></v>
 <v t="ekr.20150313083748.12115"><vh>Toggling angle brackets</vh></v>
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
 <v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
-<v t="ekr.20150315132217.1645"><vh>Massaging body text</vh></v>
+<v t="ekr.20150315132217.1645"><vh>Massaging body text (remove)</vh></v>
 <v t="ekr.20150315132217.1630"><vh>rst3 **</vh></v>
 </v>
 <v t="EKR.20040524104904.100"><vh>File commands</vh>
@@ -697,10 +696,12 @@
 <v t="ekr.20120319170934.6094"><vh>Selecting nodes</vh></v>
 <v t="ekr.20120319170934.6097"><vh>Cutting, pasting &amp; deleting nodes</vh></v>
 <v t="ekr.20120319170934.6098"><vh>Moving &amp; reorganizing nodes</vh></v>
+<v t="ekr.20150318043636.9"><vh>Converting between outlines and text</vh></v>
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
 <v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
 <v t="ekr.20150318043636.7"><vh>Moving, deleting and cloning marked nodes</vh></v>
 <v t="ekr.20150312080344.40"><vh>Comparing outlines</vh></v>
+<v t="ekr.20120319170934.6110"><vh>Using Chapters</vh></v>
 </v>
 <v t="EKR.20040524104904.118"><vh>Search &amp; spell commands</vh>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
@@ -725,12 +726,9 @@
 </v>
 <v t="ekr.20150315132217.1631"><vh>Advanced commands (TO DO)</vh>
 <v t="ekr.20150312080344.9"><vh>Abbreviation commands</vh></v>
-<v t="ekr.20150315132217.1635"><vh>Advanced editing commands</vh>
 <v t="ekr.20150315132217.1633"><vh>flush-lines &amp; keep-lines</vh></v>
 <v t="ekr.20150315132217.1641"><vh>c-to-python</vh></v>
 <v t="ekr.20150315132217.1649"><vh>typescript-to-py</vh></v>
-</v>
-<v t="ekr.20120319170934.6110"><vh>Chapters commands</vh></v>
 <v t="ekr.20150313150212.13"><vh>Debug commands **</vh>
 <v t="ekr.20150315132217.1620"><vh>check-*</vh></v>
 <v t="ekr.20150313150212.15"><vh>dump-*</vh></v>
@@ -2276,7 +2274,10 @@ depending on the value of the @tabwidth directive in effect.
 If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ( [ or { brackets in the previous line.
 
 </t>
-<t tx="EKR.20040524104904.115">The ``extract`` (Ctrl-Shift-D) command creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text. The ``extract-names`` (Ctrl-Shift-Command) command creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
+<t tx="EKR.20040524104904.115">``extract (Ctrl-Shift-D)``
+    Creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text.
+``extract-names (Ctrl-Shift-Command)``
+    Creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
 </t>
 <t tx="EKR.20040524104904.116">The ``convert-tabs`` command converts leading tabs to blanks in a single node. The ``convert-blanks`` command converts blanks to tabs in a single node. The ``convert-all-tabs`` command converts leading tabs to blanks throughout the selected tree. The ``convert-all-blanks`` command converts leading blanks to tabs throughout the selected tree. All these commands convert between tabs and blanks using the @tabwidth setting presently in effect.
 </t>
@@ -2299,13 +2300,16 @@ find-quick-selected
 find-quick-test-failures
 find-quick-timeline
 global-search</t>
-<t tx="EKR.20040524104904.134">The ``goto-global-line`` (Alt-G) command selects the locations in your outlines corresponding to a line in a external file.
+<t tx="EKR.20040524104904.134">``goto-global-line (Alt-G)``
+    Selects the locations in your outlines corresponding to a line in a external file.
 </t>
-<t tx="EKR.20040524104904.136">The ``insert-body-time`` and ``insert-headline-time`` commands insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
+<t tx="EKR.20040524104904.136">T``insert-body-time`` and ``insert-headline-time``
+    Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
 
     1/30/2003 8:31:55
 </t>
-<t tx="EKR.20040524104904.137">The ``reformat-paragraph`` (Ctrl-Shift-P) command rearranges the words in a text paragraph to fill each line as full as possible, up to the @pagewidth setting. A paragraph is delimited by blank lines, Leo directives, and (of course) start and end of text in a node. The width of the line used by the reformatting operation is governed by @pagewidth and the indentation that would be applied to the node when Leo writes the file.
+<t tx="EKR.20040524104904.137">``reformat-paragraph (Ctrl-Shift-P)``
+    Rearranges the words in a text paragraph to fill each line as full as possible, up to the @pagewidth setting. A paragraph is delimited by blank lines, Leo directives, and (of course) start and end of text in a node. The width of the line used by the reformatting operation is governed by @pagewidth and the indentation that would be applied to the node when Leo writes the file.
 
 The command operates on the paragraph containing the insert cursor. If the insert cursor is on a blank line or directive, nothing happens. If the cursor is on a line containing text, then the paragraph containing that text line is reformatted and the insert cursor is moved to the next paragraph.
 
@@ -2317,13 +2321,15 @@ The command operates on the paragraph containing the insert cursor. If the inser
   2. This is the second paragraph,
      and it too has a hanging indentation.
      
-The ``unformat-paragraph`` (Ctrl-Shift-P) command removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
+``unformat-paragraph (Ctrl-Shift-U)``
+    Removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
 </t>
-<t tx="EKR.20040524104904.139">The ``match-brackets`` command is enabled if the cursor is next to one of the following characters in the body pane:
+<t tx="EKR.20040524104904.139">``match-brackets``
+    Enabled if the cursor is next to one of the following characters in the body pane:
 
     ( ) [ ] { } &lt; &gt;
 
-This command looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
+    Looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
 </t>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
 
@@ -2345,7 +2351,8 @@ There are four kinds of settings files:
 The following sections describe the kinds of nodes in @settings trees.
 </t>
 <t tx="EKR.20040524104904.143"></t>
-<t tx="EKR.20040524104904.144">The ``check-outline`` command checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
+<t tx="EKR.20040524104904.144">``check-outline``
+    Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 
 </t>
 <t tx="EKR.20040524104904.151">open-python-window
@@ -12707,9 +12714,7 @@ These commands expand all descendants of the selected nodes::
 
 **Outline representation**: When cutting or copying an outine to the clipboard, Leo writes the outline in the same xml (text) format used in .leo files. You may copy this text representation into a body pane (or into any other text editor) using ``Ctrl-V``.
 </t>
-<t tx="ekr.20120319170934.6098">**Basic move commands**
-
-``move-outline-down (Ctrl-D or Shift-Down or Alt-Shift-Down)``
+<t tx="ekr.20120319170934.6098">``move-outline-down (Ctrl-D or Shift-Down or Alt-Shift-Down)``
     Move the selected node down, if possible.
 ``move-outline-left (Ctrl-L or Shift-Left or Alt-Shift-Left)``
     Move the selected node left, if possible.
@@ -12720,32 +12725,20 @@ These commands expand all descendants of the selected nodes::
 
 **Alt Modifiers not needed in the outline pane**: When focus is in the outline pane, you can move nodes without adding the Alt modifier. Shift-Up moves the select node up, etc.
 
-**Commands that reorganize groups of nodes**
+**Important**: The following commands reorganize groups of nodes:
 
+``de-hoist``
+    Undoes the effect of the previous ``hoist`` command.
 ``demote (Ctrl-])``
     Makes all following siblings of a node children of the node.
+``hoist``
+    Redraws the screen so presently selected tree becomes the only visible part of the outline. You may hoist an outline as many times as you wish.
 ``promote (Ctrl-[)``
     Makes all the children of a node siblings of the node.
 ``sort-children``
     Sort all children of the children of the present node by their headlines.
 ``sort-siblings (Alt-A)``
     Sort the present node and all its siblings by their headlines.
- 
-**Commands that show and hide groups of nodes**
-    
-``hoist``
-    Redraws the screen so presently selected tree becomes the only visible part of the outline. You may hoist an outline as many times as you wish.
-``de-hoist``
-    Undoes the effect of the previous ``hoist`` command.
-
-**Commands that change outlines to text, or vice versa**
-
-``flatten-outline-to-node``
-    Appends the headline and body text of all descendants of the selected node to the body text of the selected node.
-``head-to-prev-node``
-    Moves non-empty text preceding a class, method or function definition to the end of the previous sibling node.
-``tail-to-next-node``
-    Moves non-empty text following a class, method or function definition to the start of the next sibling node.
 </t>
 <t tx="ekr.20120319170934.6100">``goto-next-marked``
     Selects the next marked node.
@@ -12784,25 +12777,33 @@ URL's in Leo should contain no spaces: use %20 to indicate spaces.
 
 You may use any type of URL that your browser supports: http, mailto, ftp, file, etc.
 </t>
-<t tx="ekr.20120319170934.6110">chapter-convert-node-to
-chapter-create-from-node
-chapter-rename
+<t tx="ekr.20120319170934.6110">Chapters are sub-outlines rooted in an @chapter node. @chapter nodes should be children of an @chapters node. Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter is much like a de-hoist command.
 
-Chapters are regions of a Leo outline whose root is an ``@chapter`` node. They are available in an outline if the ``@bool usechapters`` option is True. ``@chapter`` nodes may appear anywhere in an outline, but the ``create-chapter`` command (see below) creates ``@chapter`` nodes as children of the first ``@chapters`` (note the ``s``) node in the outline.
+``chapter-clone-node-to``
+    Moves a clone of the selected node to another chapter.
+``chapter-convert-node-to``
+    Makes the selected node into a new chapter, 'in place'. That is, it creates the new @chapter node as the next sibling of the node, then moves the node as the first child of the new @chapter node. 
+``chapter-copy-node-to``
+    Moves a copy of the selected node to another chapter.
+``chapter-create``
+    Creates an @chapter node and populates it with a single node.
+``chapter-create-from-node``
+    Creates an @chapter node from a node and its descendants.
+``chapter-move-node-to``
+    Moves the selected node to another chapter.
+``chapter-remove``
+    Deletes the currently selected chapter.
+``chapter-rename``
+    Renames the present chapter.
+``chapter-select``
+    Prompts for a chapter name selects that chapter, hiding all other nodes.
 
-One selects a chapter with the ``select-chapter`` command, after which Leo shows only the nodes in the selected chapter; in this respect, chapters are like hoists. The ``main`` chapter represents the entire outline and can not be deleted by name. When chapters are in effect, Leo creates an ``@chapters`` node for the use of ``create-chapter``.
+Associated settings::
 
-Associated settings:
-
-- The ``@bool use_chapters`` setting determines whether chapters are enabled.
-- The ``@bool use_chapter_tabs`` setting determines whether the chapters pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
-
-When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapter commands:
-
-- The ``chapter-create`` command creates an @chapter node and populates it with a single node.
-- The ``chapter-remove`` command deletes the currently selected chapter.
-- The ``chapter-select`` command prompts for a chapter name and makes only the nodes of the selected chapter visible.
-- The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
+``@bool use_chapters``
+    True: chapters are enabled.
+``@bool use_chapter_tabs``
+    True: chapters pop-up menu appears in the icon area.
 </t>
 <t tx="ekr.20120320153011.6055">
 </t>
@@ -18955,7 +18956,8 @@ In short, I have just now realized how badly sentinels interfered with git diffs
 <t tx="ekr.20150313083748.11698">showFonts
 '''Open a tab in the log pane showing a font picker.'''</t>
 <t tx="ekr.20150313083748.12115">The ``toggle-angle-brackets`` command adds or removes double angle brackets from the headline of the selected node.</t>
-<t tx="ekr.20150313083748.12117">The ``pretty-print-python-code`` and ``pretty-print-all-python-code`` pretty print body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
+<t tx="ekr.20150313083748.12117">``pretty-print-python-code`` and ``pretty-print-all-python-code``
+    Pretty print body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
 
     putOperator:      puts whitespace around operators.
     putNormalToken:   puts whitespace around everything else.
@@ -19050,138 +19052,140 @@ print('found: %s not found: %s' % (len(found),len(not_found)))</t>
 <t tx="ekr.20150314044011.7">@language python
 # From Script: clean ekr-spellpyx.txt
 p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
-<t tx="ekr.20150314050809.10">add-space-to-lines,
-add-tab-to-lines
-align-eq-signs
-auto-complete
-auto-complete-force
-backward-delete-char
-backward-find-character
-backward-find-character-extend-selection
-backward-kill-paragraph
-backward-kill-sentence
-backward-kill-word
-beautify
-beautify-all
-beautify-c
-beautify-tree
-buffer-append-to
-buffer-kill
-buffer-prepend-to
-buffer-switch-to
-buffers-list
-buffers-list-alphabetically
-capitalize-word
-center-line
-center-region
-clean-all-blank-lines
-clean-body
-clean-lines
-cls
-count-pages
-count-region
-delete-char
-delete-indentation
-delete-spaces
-downcase-region
-downcase-word
-exchange-point-mark
-extend-to-line
-extend-to-paragraph
-extend-to-sentence
-extend-to-word
-fill-paragraph
-fill-region
-fill-region-as-paragraph
-hide-invisibles
-how-many
-indent-relative
-indent-rigidly
-indent-to-comment-column
-insert-child
-insert-file-name
-insert-file-name
-insert-hard-tab
-insert-newline
-insert-parentheses
-insert-soft-tab
-join-node-above
-join-node-below
-join-selection-to-node-below
-kill-line
-kill-paragraph
-kill-region
-kill-region-save
-kill-sentence
-kill-to-end-of-line
-kill-word
-kill-ws
-line-number
-macro-call
-macro-call-last
-macro-end-recording
-macro-load-all
-macro-name-last
-macro-print-all
-macro-print-last
-macro-save-all
-macro-start-recording
-move-lines-down
-move-lines-up
-newline-and-indent
-open-url
-open-url-under-cursor
-rectangle-clear
-rectangle-close
-rectangle-delete
-rectangle-kill
-rectangle-open
-rectangle-string
-rectangle-yank
-register-append-to
-register-copy-rectangle-to
-register-copy-to
-register-increment
-register-insert
-register-jump-to
-register-point-to
-register-prepend-to
-register-view
-remove-blank-lines
-remove-newlines
-remove-space-from-lines
-remove-tab-from-lines
-reverse-region
-reverse-sort-lines
-reverse-sort-lines-ignoring-case
-scroll-down-half-page
-scroll-down-line
-scroll-down-page
-scroll-up-half-page
-scroll-up-line
-scroll-up-page
-select-to-matching-bracket
-select-to-matching-bracket
-shell-command
-shell-command-on-region
-show-invisibles
-sort-columns
-sort-fields
-sort-lines
-sort-lines-ignoring-case
-split-line
-tabify
-transpose-chars
-transpose-lines
-transpose-words
-untabify
-upcase-region
-upcase-word
-view-lossage
-what-line
-yank
-yank-pop
-zap-to-character
+<t tx="ekr.20150314050809.10">::
+
+    add-space-to-lines,
+    add-tab-to-lines
+    align-eq-signs
+    auto-complete
+    auto-complete-force
+    backward-delete-char
+    backward-find-character
+    backward-find-character-extend-selection
+    backward-kill-paragraph
+    backward-kill-sentence
+    backward-kill-word
+    beautify
+    beautify-all
+    beautify-c
+    beautify-tree
+    buffer-append-to
+    buffer-kill
+    buffer-prepend-to
+    buffer-switch-to
+    buffers-list
+    buffers-list-alphabetically
+    capitalize-word
+    center-line
+    center-region
+    clean-all-blank-lines
+    clean-body
+    clean-lines
+    cls
+    count-pages
+    count-region
+    delete-char
+    delete-indentation
+    delete-spaces
+    downcase-region
+    downcase-word
+    exchange-point-mark
+    extend-to-line
+    extend-to-paragraph
+    extend-to-sentence
+    extend-to-word
+    fill-paragraph
+    fill-region
+    fill-region-as-paragraph
+    hide-invisibles
+    how-many
+    indent-relative
+    indent-rigidly
+    indent-to-comment-column
+    insert-child
+    insert-file-name
+    insert-file-name
+    insert-hard-tab
+    insert-newline
+    insert-parentheses
+    insert-soft-tab
+    join-node-above
+    join-node-below
+    join-selection-to-node-below
+    kill-line
+    kill-paragraph
+    kill-region
+    kill-region-save
+    kill-sentence
+    kill-to-end-of-line
+    kill-word
+    kill-ws
+    line-number
+    macro-call
+    macro-call-last
+    macro-end-recording
+    macro-load-all
+    macro-name-last
+    macro-print-all
+    macro-print-last
+    macro-save-all
+    macro-start-recording
+    move-lines-down
+    move-lines-up
+    newline-and-indent
+    open-url
+    open-url-under-cursor
+    rectangle-clear
+    rectangle-close
+    rectangle-delete
+    rectangle-kill
+    rectangle-open
+    rectangle-string
+    rectangle-yank
+    register-append-to
+    register-copy-rectangle-to
+    register-copy-to
+    register-increment
+    register-insert
+    register-jump-to
+    register-point-to
+    register-prepend-to
+    register-view
+    remove-blank-lines
+    remove-newlines
+    remove-space-from-lines
+    remove-tab-from-lines
+    reverse-region
+    reverse-sort-lines
+    reverse-sort-lines-ignoring-case
+    scroll-down-half-page
+    scroll-down-line
+    scroll-down-page
+    scroll-up-half-page
+    scroll-up-line
+    scroll-up-page
+    select-to-matching-bracket
+    select-to-matching-bracket
+    shell-command
+    shell-command-on-region
+    show-invisibles
+    sort-columns
+    sort-fields
+    sort-lines
+    sort-lines-ignoring-case
+    split-line
+    tabify
+    transpose-chars
+    transpose-lines
+    transpose-words
+    untabify
+    upcase-region
+    upcase-word
+    view-lossage
+    what-line
+    yank
+    yank-pop
+    zap-to-character
 </t>
 <t tx="ekr.20150314050809.12">gui-all-hide
 gui-all-show
@@ -21200,7 +21204,6 @@ richtext-toggle-autosave</t>
 ``keep-lines``
     Deletes each line that does not contain a match for regexp, operating on the text after point.
     In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
-<t tx="ekr.20150315132217.1635"></t>
 <t tx="ekr.20150315132217.1641">c-to-python
 c-to-python-clean-docs
 
@@ -21210,10 +21213,7 @@ Python code.
 </t>
 <t tx="ekr.20150315132217.1644">enter-quick-command-mode
 exit-named-mode</t>
-<t tx="ekr.20150315132217.1645">code-to-rst
-flatten-script
-parse-body
-promote-bodies</t>
+<t tx="ekr.20150315132217.1645"></t>
 <t tx="ekr.20150315132217.1649"></t>
 <t tx="ekr.20150315132217.1651">``clean-lines``
     Removes trailing whitespace from all lines, preserving newlines. 
@@ -21832,10 +21832,6 @@ ensuring that the file is compressed.
 '''Sort the children of a node.'''</t>
 <t tx="ekr.20150315132217.999">sortRecentFiles
 '''Sort the recent files list.'''</t>
-<t tx="ekr.20150318043636.4">clone-marked-nodes
-delete-marked-nodes
-move-marked-nodes-option) toggles this checkbox.
-</t>
 <t tx="ekr.20150318043636.5">clear-all-caches
 clear-all-uas
 clear-cache
@@ -21859,6 +21855,18 @@ toggle-active-pane</t>
     Deletes all marked nodes.
 ``move-marked-nodes``
     Moves all nodes to be children of the present position.
+</t>
+<t tx="ekr.20150318043636.9">``code-to-rst``
+    Format the presently selected node as computer code.
+``flatten-outline-to-node``
+    Appends the headline and body text of all descendants of the selected node to the body text of the selected node.
+``head-to-prev-node``
+    Moves non-empty text preceding a class, method or function definition to the end of the previous sibling node.
+``parse-body``
+    Parse p.b as source code, creating a tree of descendant nodes.
+    This is essentially an import of p.b.
+``tail-to-next-node``
+    Moves non-empty text following a class, method or function definition to the start of the next sibling node.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
