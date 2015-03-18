@@ -650,8 +650,6 @@
 </v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
-<v t="ekr.20150318110552.6"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20150318110552.7"><vh>@rst-ignore undocumented commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh>
 <v t="ekr.20150318110552.9"><vh>smart-*</vh></v>
 </v>
@@ -20598,6 +20596,7 @@ ensuring that the file is compressed.
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
 <t tx="ekr.20150318110552.10">.. revise
+
 ``check-outline``
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 ``clear-cache``
@@ -20901,8 +20900,8 @@ If Python is the present language, Leo inserts an additional tab if the previous
 ``pretty-print-python-code`` and ``pretty-print-all-python-code``
     Pretty prints body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
 
-    putOperator:      puts whitespace around operators.
-    putNormalToken:   puts whitespace around everything else.
+        putOperator:      puts whitespace around operators.
+        putNormalToken:   puts whitespace around everything else.
     
 .. revise
 
@@ -20959,7 +20958,8 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``insert-body-time`` and ``insert-headline-time``
     Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
 
-    1/30/2003 8:31:55
+        1/30/2003 8:31:55
+
 ``match-brackets``
     Enabled if the cursor is next to one of the following characters in the body pane:
 
@@ -21038,7 +21038,10 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``exit-leo (Ctrl-Q or Alt-F4)``
     Exits Leo, prompting you to save any changed outline. Closing the last outline tab also exits Leo.
 </t>
-<t tx="ekr.20150318110552.32">``export-headlines``
+<t tx="ekr.20150318110552.32">.. _CWEB:   http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+.. _noweb:  http://www.eecs.harvard.edu/~nr/noweb/
+
+``export-headlines``
     Exports all headlines to an external file.
 ``file-insert``
     Prompts for the name of a file and put the selected text into it.
@@ -21090,11 +21093,12 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 
 **About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
 </t>
-<t tx="ekr.20150318110552.34">``cm-external-editor``
-    Open the selected node in the external editor specified by the ``LEO_EDITOR/EDITOR`` environment variable.
-.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
+<t tx="ekr.20150318110552.34">.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
 .. _`Open Office`: https://www.openoffice.org/
 .. _`SciTe`: http://www.scintilla.org/SciTE.html
+
+``cm-external-editor``
+    Open the selected node in the external editor specified by the ``LEO_EDITOR/EDITOR`` environment variable.
 ``open-with-idle``
     Open the selected node in `Idle`_.
 ``open-with-open office``
@@ -21418,7 +21422,7 @@ Holding down Alt before releasing the node will force insertion as a child of th
 ``chapter-select``
     Prompts for a chapter name selects that chapter, hiding all other nodes.
 
-Associated settings::
+Associated settings:
 
 ``@bool use_chapters``
     True: chapters are enabled.
@@ -21475,16 +21479,6 @@ Searches creating clones:
     Same as ``clone-find-all-flattened``, but does not create duplicate cloned nodes. If a node is a descendant of another found node, no duplicate top-level node (in the organizer) is created.
 ``clone-find-parents``
     Creates an organizer node containing clones of all the parents of the selected node.
-</t>
-<t tx="ekr.20150318110552.6">.. External links...
-.. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
-
-.. Relative links...
-.. _`Writing Programs in Leo`:          directives.html
-.. _`Customizing Leo`:                  customizing.html
-.. _`Clones`:                           tutorial-pim.html#clones
-.. _`A Tutorial Introduction to Leo`:   tutorial.html
 </t>
 <t tx="ekr.20150318110552.60">Incremental find commands move through the text as you type individual characters. Typing ``BackSpace`` backtracks the search. To repeat an incremental search, type the shortcut for that command again. Here are Leo's incremental find commands::
 
@@ -21693,14 +21687,6 @@ The following commands enable, disable or toggle various settings::
     free-layout-restore
     free-layout-zoom
 </t>
-<t tx="ekr.20150318110552.7">.. revise
-
-::
-
-    clear-node-uas
-    set-font
-    
-</t>
 <t tx="ekr.20150318110552.70">::
 
     gui-all-hide
@@ -21785,7 +21771,11 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 5. Added a new example node: @@data abbreviations examples.  This contains
    several extremely useful scripts.
 </t>
-<t tx="ekr.20150318110552.75">::
+<t tx="ekr.20150318110552.75">.. Undocumented
+..  clear-node-uas
+..  set-font
+
+::
 
     at-file-to-at-auto
     clean-persistence
@@ -21941,10 +21931,7 @@ This has a very clever hack (even if I say so myself)--spaces in search string a
 <t tx="ekr.20150318110552.9">.. revise
 
 ``back-to-home``
-    Many editors allow you to jump over, select and delete words, especially
-those containing or surrounded by special characters, in a smarter way than
-just "going to the beginning of the word before" (back-word) or "going to
-the end of the next word" (forward-word).
+    Many editors allow you to jump over, select and delete words, especially those containing or surrounded by special characters, in a smarter way than just "going to the beginning of the word before" (back-word) or "going to the end of the next word" (forward-word).
 
 Patches add "-smart" equivalents of the jump, select and delete commands.
 Users wanting to use these commands can set in their myLeoSettings.leo::
