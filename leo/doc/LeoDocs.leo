@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
+<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -13,6 +13,8 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
+<v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
 <v t="ekr.20141117065749.3"><vh>@bool wikiview-active = False</vh></v>
 <v t="ekr.20111108052738.5507"><vh>@shortcuts</vh></v>
 <v t="ekr.20130816100419.17299"><vh>@string target_language = rest</vh></v>
@@ -21864,6 +21866,8 @@ ensuring that the file is compressed.
     global-search</t>
 <t tx="ekr.20150318043636.14"></t>
 <t tx="ekr.20150318043636.15"></t>
+<t tx="ekr.20150318043636.16"></t>
+<t tx="ekr.20150318043636.17"></t>
 <t tx="ekr.20150318043636.5">clear-all-caches
 clear-all-uas
 clear-cache
