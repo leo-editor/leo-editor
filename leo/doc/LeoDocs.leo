@@ -690,21 +690,17 @@
 <v t="ekr.20150315132217.4"><vh>Focus commands</vh></v>
 <v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
 </v>
-<v t="EKR.20040524104904.143"><vh>Outline commands (almost done)</vh>
-<v t="ekr.20120319170934.6096"><vh>Creating &amp; destroying nodes (reformat)</vh></v>
-<v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes **</vh></v>
-<v t="ekr.20120319170934.6094"><vh>Selecting nodes</vh>
-<v t="ekr.20131105110107.16919"><vh>leoscreen-jump-to-error</vh></v>
-</v>
-<v t="ekr.20120319170934.6097"><vh>Cutting, pasting &amp; deleting nodes (reformat)</vh></v>
-<v t="ekr.20120319170934.6098"><vh>Moving &amp; reorganizing nodes (reformat)</vh>
+<v t="EKR.20040524104904.143"><vh>Outline commands</vh>
+<v t="ekr.20120319170934.6096"><vh>Creating, cloning &amp; destroying nodes</vh></v>
+<v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes</vh></v>
+<v t="ekr.20150318043636.6"><vh>Editing headlines</vh></v>
+<v t="ekr.20120319170934.6094"><vh>Selecting nodes</vh></v>
+<v t="ekr.20120319170934.6097"><vh>Cutting, pasting &amp; deleting nodes</vh></v>
+<v t="ekr.20120319170934.6098"><vh>Moving &amp; reorganizing nodes</vh></v>
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
-<v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
-<v t="ekr.20150315132217.1634"><vh>Sorting nodes</vh></v>
-</v>
-<v t="ekr.20120319170934.6099"><vh>Cloning nodes (done)</vh></v>
-<v t="ekr.20120319170934.6100"><vh>Marking nodes (done)</vh></v>
-<v t="ekr.20150312080344.40"><vh>Comparing outlines (done)</vh></v>
+<v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
+<v t="ekr.20150318043636.7"><vh>Moving, deleting and cloning marked nodes</vh></v>
+<v t="ekr.20150312080344.40"><vh>Comparing outlines</vh></v>
 </v>
 <v t="EKR.20040524104904.118"><vh>Search &amp; spell commands</vh>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
@@ -2351,8 +2347,6 @@ The following sections describe the kinds of nodes in @settings trees.
 <t tx="EKR.20040524104904.143"></t>
 <t tx="EKR.20040524104904.144">The ``check-outline`` command checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 
-</t>
-<t tx="EKR.20040524104904.148">The ``hoist`` command redraws the screen so presently selected tree becomes the only visible part of the outline. You may hoist an outline as many times as you wish. The ``de-hoist`` command undoes the effect of the previous ``hoist`` command.
 </t>
 <t tx="EKR.20040524104904.151">open-python-window
 set-ua
@@ -12616,80 +12610,142 @@ Searches creating clones:
           isearch-forward-regexp
           isearch-with-present-options
 </t>
-<t tx="ekr.20120319170934.6094">go-back
-go-forward
-goto-char
-goto-first-node
-goto-first-visible-node
-goto-last-node
-goto-last-visible-node
-goto-line
-goto-next-changed
-goto-next-clone
-goto-next-history-node
-goto-next-node
-goto-next-sibling
-goto-next-visible
-goto-parent
-goto-prev-history-node
-goto-prev-node
-goto-prev-sibling
-goto-prev-visible
+<t tx="ekr.20120319170934.6094">**Arrow keys**: When focus is in the outline pane, ou can move about the outline using *plain* arrow keys. Regardless of focus, Alt-Arrow keys select nodes in the outline pane.
 
+``goto-first-sibling``
+    Select the first sibling of the selected node.
+``goto-last-sibling``
+    Select the last sibling of the selected node.
 
-As described in the tutorial, you can move about the outline by clicking on the headlines or using Alt+arrow keys.
+Similarly, these commands select various nodes in the outline::
 
-The ``contract-or-go-left`` (Alt-Left) command moves to the parent node and collapses the parent node. The ``expand-and-go-right`` (Alt-Right) command moves expands a node if unexpanded, otherwise moves to the node's first child.
+    go-back
+    go-forward
+    goto-char
+    goto-first-node
+    goto-first-visible-node
+    goto-last-node
+    goto-last-visible-node
+    goto-line
+    goto-next-changed
+    goto-next-clone
+    goto-next-history-node
+    goto-next-node
+    goto-next-sibling
+    goto-next-visible
+    goto-parent
+    goto-prev-history-node
+    goto-prev-node
+    goto-prev-sibling
+    goto-prev-visible
+    
+``leoscreen-jump-to-error`` (Unix only)
+    Jumps to the python error reported in the shell window, if the
+    file's loaded in the current Leo session. Just looks for a line::
 
-The ``goto-first-sibling`` and ``goto-last-sibling`` commands allow rapid movement through an outline without collapsing nodes.
+        File "somefile.py", line NNN, in xxx
 
+    and looks for a node starting with "@" and ending with "somefile.py",
+    then jumps to line NNN in that file.
 </t>
-<t tx="ekr.20120319170934.6095">contract-all-other-nodes
-contract-parent
-expand-all-subheads
-expand-ancestors-only
-expand-next-level
-expand-or-go-right
-expand-prev-level
-expand-to-level-1
-expand-to-level-2
-expand-to-level-3
-expand-to-level-4
-expand-to-level-5
-expand-to-level-6
-expand-to-level-7
-expand-to-level-8
-expand-to-level-9
+<t tx="ekr.20120319170934.6095">``contract-all (Alt-hyphen)``
+    Contracts every node in the outline.
+``contract-all-other-nodes``
+    Contract all nodes except the parents of the selected node.
+``contract-node``
+    Contracts a node.
+``contract-or-go-left (Alt-Left)``
+    Contract the node if it is expanded.  Otherwise, select the node's parent.
+``contract-parent``
+    Select the parent of the selected node and contract it.
+``expand-all``
+    Expands every node in the outline.
+``expand-node``
+    Expands a node.
+``expand-and-go-right (Alt-Right)``
+    Expands a node if not expanded.  Otherwise, selects the first child if there is one.
+``expand-all-subheads``
+    Expand all the direct children of the selected node.
+``expand-ancestors-only``
+    Expand all the ancestors of the selected node.
 
-You can expand or contract a node by clicking in the tree view icon to the left of the headline. The icon in the Qt gui matches the native OS's tree view icon, i.e. for Mac's, a triangle pointing right or down; on Windows, a square containing a plus or minus. Expanding a node shows its immediate children; contracting a node hides all its children.
+These commands expand all descendants of the selected nodes::
 
-The ``expand-node`` and ``contract-node`` commands also expand and contract nodes. For more convenient navigation, there are ``expand-and-go-right`` (Alt-Right) and ``contract-or-go-up`` (Alt-Left) commands.
-
-The ``expand-all`` command expands every node in the outline. ``contract-all`` (Alt-hyphen) contracts every node in the outline. In all but the smallest outlines, ``expand-all`` is rarely used, and it does not have a default key binding.
+    expand-next-level
+    expand-prev-level (reverses expand-next-level)
+    expand-to-level-1
+    expand-to-level-2
+    expand-to-level-3
+    expand-to-level-4
+    expand-to-level-5
+    expand-to-level-6
+    expand-to-level-7
+    expand-to-level-8
+    expand-to-level-9
 </t>
-<t tx="ekr.20120319170934.6096">The ``insert-node`` (Ctrl-I or Insert) command inserts a new node into the outline. When invoked, (from any pane), it inserts a new node below the presently selected node, and at the same level as that node, or at the child level if it has a visible child. The ``insert-node-before`` inserts a node before the presently selected node. The ``delete-node`` command deletes a node and all its children. To retain the children, just promote all the children before you do the delete.
-
-abort-edit-headline
-edit-headline
-end-edit-headline
-
-</t>
-<t tx="ekr.20120319170934.6097">The ``cut-node`` (Ctrl-Shift-X) ``paste-node`` (Ctrl-Shift-V), ``copy-node`` (Ctrl-Shift-C) and ``delete-node`` commands work on nodes rather than text. The ``cut-node`` and ``copy-node`` commands copy a text representation of the outline to the clipboard. This representation is the same as Leo's .leo file format with some information deleted. You may copy this text representation into a body pane (or into any other text editor) using Edit-&gt;Paste in the menus, Ctrl-V, or Alt-X paste-text.
-
-**Warning**: If you want to preserve the "cloned" attribute of a node, or want to paste the node as a clone of the node you cut or copied, use the ``past-retaining-clones`` command, which in the Outline menu is called "Paste Node as Clone". The ``paste-node`` command instead creates a new, distinct version of the node you previously cut or copied, though if there were descendant nodes which were clones of each other, the new version will have parallel, distinct nodes that are also clones of each other (just not of the originals). You may paste a node between .leo files, but there can be no clone relationship across files.
-
-The ``paste-retaining-clones`` command is disabled if it would cause a node to become a parent of itself. The Leo outline is thus mathematically a *directed acyclic graph*: clones make it more flexible than a tree, but not a generalized graph.
-</t>
-<t tx="ekr.20120319170934.6098">The ``move-outline-up`` (Ctrl-U or Alt-Shift-Up), ``move-outline-down`` (Ctrl-D or Alt-Shift-Down), ``move-outline-left`` (Ctrl-L or Alt-Shift-Left), and ``move-outline-right`` (Ctrl-R or Alt-Shift-Right) commands move the currently selected node. **Important**: When focus is in the outline pane, you can move nodes without adding the Alt modifier. Shift-Up moves the select node up, etc.
-
-The ``promote`` (Ctrl-[) command makes all the children of a node siblings of the node. The ``demote`` (Ctrl-]) command makes all following siblings of a node children of the node. The ``flatten-outline-to-node`` appends the headline and body text of all descendants of the selected node to the body text of the selected node.
-
-The ``head-to-prev-node`` command moves non-empty text preceding a class, method or function definition to the end of the previous sibling node. The ``tail-to-next-node`` command moves non-empty text following a class, method or function definition to the start of the next sibling node.
-</t>
-<t tx="ekr.20120319170934.6099">``clone-node`` (Ctrl-\`)
+<t tx="ekr.20120319170934.6096">``clone-node (Ctrl-\`)`` (Grave accent, not a single quote)
     Creates a clone as the immediate sibling of a selected node.
 ``clone-node-to-last-node``
     Creates a clone as the last top-level node of the outline.
+``insert-node (Ctrl-I or Insert)``
+    Inserts a new node into the outline.  The new node becomes the first child of the present node if the present node is expanded.  Otherwise, the new node becomes the next sibling of the present node.
+``insert-node-before``
+    Inserts a node before the presently selected node.
+``delete-node``
+    Deletes a node and all its descendants.
+</t>
+<t tx="ekr.20120319170934.6097">``copy-node (Ctrl-Shift-C)``
+    Copies a node and all its descendants to the clipboard
+``cut-node (Ctrl-Shift-X)``
+    Copies a node and all its descendants to the clipboard and then delete them.
+``delete-node``
+    Deletes a node and all its descendants.
+``paste-node (Ctrl-Shift-V)``
+    Pastes a node and its descendants from the outline. This commands creates *copies* of nodes, not clones.
+``past-retaining-clones``
+    Pastes a node and its descendants from the outline.  This command preserves the identify (gnx's) of the pasted nodes, thereby preserving any clone links. This command ensures that no newly-pasted node is an ancestor of itself.
+
+**Outline representation**: When cutting or copying an outine to the clipboard, Leo writes the outline in the same xml (text) format used in .leo files. You may copy this text representation into a body pane (or into any other text editor) using ``Ctrl-V``.
+</t>
+<t tx="ekr.20120319170934.6098">**Basic move commands**
+
+``move-outline-down (Ctrl-D or Shift-Down or Alt-Shift-Down)``
+    Move the selected node down, if possible.
+``move-outline-left (Ctrl-L or Shift-Left or Alt-Shift-Left)``
+    Move the selected node left, if possible.
+``move-outline-right (Ctrl-R or Shift-Right or Alt-Shift-Right)`` 
+    Move the selected node right, if possible.
+``move-outline-up (Ctrl-U or Shift-Up Alt-Shift-Up)``
+    Move the selected node up, if possible.
+
+**Alt Modifiers not needed in the outline pane**: When focus is in the outline pane, you can move nodes without adding the Alt modifier. Shift-Up moves the select node up, etc.
+
+**Commands that reorganize groups of nodes**
+
+``demote (Ctrl-])``
+    Makes all following siblings of a node children of the node.
+``promote (Ctrl-[)``
+    Makes all the children of a node siblings of the node.
+``sort-children``
+    Sort all children of the children of the present node by their headlines.
+``sort-siblings (Alt-A)``
+    Sort the present node and all its siblings by their headlines.
+ 
+**Commands that show and hide groups of nodes**
+    
+``hoist``
+    Redraws the screen so presently selected tree becomes the only visible part of the outline. You may hoist an outline as many times as you wish.
+``de-hoist``
+    Undoes the effect of the previous ``hoist`` command.
+
+**Commands that change outlines to text, or vice versa**
+
+``flatten-outline-to-node``
+    Appends the headline and body text of all descendants of the selected node to the body text of the selected node.
+``head-to-prev-node``
+    Moves non-empty text preceding a class, method or function definition to the end of the previous sibling node.
+``tail-to-next-node``
+    Moves non-empty text following a class, method or function definition to the start of the next sibling node.
 </t>
 <t tx="ekr.20120319170934.6100">``goto-next-marked``
     Selects the next marked node.
@@ -12704,14 +12760,6 @@ The ``head-to-prev-node`` command moves non-empty text preceding a class, method
 ``unmark-all``
     Unmarks all marked nodes in the outline.
 
-Operations on groups of marked nodes:
-
-``clone-marked-nodes``
-    Makes clones of all marked nodes and moves them to be children of the present position.
-``delete-marked-nodes``
-    Deletes all marked nodes.
-``move-marked-nodes``
-    Moves all nodes to be children of the present position.
 
 **Marking groups of nodes**: Leo's find and change commands mark nodes if the "Mark Changes" and "Mark Finds" checkboxes are checked. You can change these checkboxes with the ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option`` commands.
 </t>
@@ -12719,9 +12767,7 @@ Operations on groups of marked nodes:
 
 If the recipient node has children and is expanded, the dropped node will be inserted as the first child of the recipient node, otherwise the dropped node will be inserted after the recipient node.
 
-Holding down Alt before releasing the node will force insertion as a child of the recipient node, even if the recipient node is not expanded.
-
-Holding down Control before releasing the node will cause a clone to be dropped, leaving the original where it was.
+Holding down Alt before releasing the node will force insertion as a child of the recipient node, even if the recipient node is not expanded. Holding down Control before releasing the node will cause a clone to be dropped, leaving the original where it was.
 </t>
 <t tx="ekr.20120319170934.6105">The ``add-editor`` command adds a new editor in the body pane and gives it the body editor focus. The ``delete-editor`` command deletes the editor with body editor focus. The ``cycle-editor-focus`` command cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
@@ -15669,28 +15715,6 @@ After installing docutils or sphinx, you must restart Leo so that the new instal
 Once the hits are shows, you can navigate them by pressing up/down while focus is still in line editor &amp; you can keep on typing (sort of like sublime text).
 
 This has a very clever hack (even if I say so myself)--spaces in search string are replaced with * wild card. So if you search for, say "file txt", it will search for "file*txt", matching e.g. @file readme.txt
-</t>
-<t tx="ekr.20131105110107.16919">By Terry Brown
-
-I assume all *nix shell users use the screen shell multiplexer, and
-hopefully *nix shell users who use Leo know about the leoscreen plugin
-which passes text back and forth between Leo and the shell (provided you're
-running screen), which is very handy for build scripts and SQL hacking etc.
-etc.
-
-Anyway, if you're in that sliver on the Venn diagram :-) there's a new
-command leoscreen-jump-to-error which scans the output in the shell for the
-offending line in the last python traceback, handy if you're coding python
-in Leo and running/debugging in the shell.
-
-``leoscreen-jump-to-error``
-    Jump to the python error reported in the shell window, if the
-    file's loaded in the current Leo session. Just looks for a line:
-
-        File "somefile.py", line NNN, in xxx
-
-    and looks for a node starting with "@" and ending with "somefile.py",
-    then jumps to line NNN in that file.
 </t>
 <t tx="ekr.20131105110107.16925">          vr-contract
           vr-expand
@@ -21167,10 +21191,6 @@ richtext-toggle-autosave</t>
 ``keep-lines``
     Deletes each line that does not contain a match for regexp, operating on the text after point.
     In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
-<t tx="ekr.20150315132217.1634">sort-children
-sort-siblings
-
-</t>
 <t tx="ekr.20150315132217.1635"></t>
 <t tx="ekr.20150315132217.1641">c-to-python
 c-to-python-clean-docs
@@ -21817,6 +21837,20 @@ set-fill-column
 set-fill-prefix
 set-font
 toggle-active-pane</t>
+<t tx="ekr.20150318043636.6">``abort-edit-headline``
+    Ends editing of the headline, discarding any changes.
+``edit-headline``
+    Begins editing of the headline of the presently-selected node.
+``end-edit-headline``
+    Ends editing of the headline.
+</t>
+<t tx="ekr.20150318043636.7">``clone-marked-nodes``
+    Makes clones of all marked nodes and moves them to be children of the present position.
+``delete-marked-nodes``
+    Deletes all marked nodes.
+``move-marked-nodes``
+    Moves all nodes to be children of the present position.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
