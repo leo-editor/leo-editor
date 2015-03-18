@@ -649,8 +649,9 @@
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20150314050809.4"><vh>Cursor movement commands **</vh></v>
-<v t="EKR.20040524104904.111"><vh>Edit commands **</vh>
+<v t="ekr.20150314050809.4"><vh>Cursor movement commands (TO DO)</vh></v>
+<v t="EKR.20040524104904.111"><vh>Edit commands (TO DO)</vh>
+<v t="ekr.20150318043636.5"><vh>To do **</vh></v>
 <v t="ekr.20150315132217.1651"><vh>Basic text editing commands (finished)</vh></v>
 <v t="ekr.20150314050809.10"><vh>Basic text editing commands (to do) ***</vh>
 <v t="ekr.20150312025000.2363"><vh>smart-*</vh></v>
@@ -671,9 +672,9 @@
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
 <v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
 <v t="ekr.20150315132217.1645"><vh>Massaging body text</vh></v>
-<v t="ekr.20150315132217.1630"><vh>rst3</vh></v>
+<v t="ekr.20150315132217.1630"><vh>rst3 **</vh></v>
 </v>
-<v t="EKR.20040524104904.100"><vh>File commands (done)</vh>
+<v t="EKR.20040524104904.100"><vh>File commands</vh>
 <v t="EKR.20040524104904.101"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="EKR.20040524104904.110"><vh>Closing outlines &amp; quitting Leo</vh></v>
 <v t="EKR.20040524104904.109"><vh>Importing &amp; exporting files</vh></v>
@@ -682,9 +683,9 @@
 <v t="ekr.20150315132217.1623"><vh>Creating &amp; deleting directories &amp; files</vh></v>
 <v t="ekr.20150315132217.1622"><vh>Managing recent files</vh></v>
 </v>
-<v t="EKR.20040524104904.157"><vh>Help commands (done)</vh></v>
-<v t="ekr.20150314050809.27"><vh>Minibuffer commands (done)</vh></v>
-<v t="ekr.20150315132217.1632"><vh>Mouseless Leo commands **</vh>
+<v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
+<v t="ekr.20150314050809.27"><vh>Minibuffer commands</vh></v>
+<v t="ekr.20150315132217.1632"><vh>Mouseless Leo commands (TO DO)</vh>
 <v t="ekr.20150315132217.14"><vh>Event simulation commands</vh></v>
 <v t="ekr.20150315132217.4"><vh>Focus commands</vh></v>
 <v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
@@ -705,7 +706,7 @@
 <v t="ekr.20120319170934.6100"><vh>Marking nodes (done)</vh></v>
 <v t="ekr.20150312080344.40"><vh>Comparing outlines (done)</vh></v>
 </v>
-<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands (done)</vh>
+<v t="EKR.20040524104904.118"><vh>Search &amp; spell commands</vh>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
 <v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
@@ -713,10 +714,8 @@
 <v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands </vh></v>
 <v t="ekr.20141120113801.176"><vh>Spell commands</vh></v>
 </v>
-<v t="ekr.20150315132217.16"><vh>Settings commands (Almost done)</vh>
-<v t="ekr.20150314050809.23"><vh>clear/enable/disable/set/toggle **</vh></v>
-</v>
-<v t="EKR.20040524104904.151"><vh>Window-related commands **</vh>
+<v t="ekr.20150315132217.16"><vh>Settings commands</vh></v>
+<v t="EKR.20040524104904.151"><vh>Window-related commands (TO DO)</vh>
 <v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
 <v t="ekr.20101124102457.5183"><vh>cascade-windows and minimize-all-windows</vh></v>
 <v t="ekr.20060328171518.10"><vh>Scrolling the outline pane</vh></v>
@@ -728,7 +727,7 @@
 <v t="ekr.20150314050809.20"><vh>*-icon</vh></v>
 <v t="ekr.20150315132217.18"><vh>open-*</vh></v>
 </v>
-<v t="ekr.20150315132217.1631"><vh>Advanced commands **</vh>
+<v t="ekr.20150315132217.1631"><vh>Advanced commands (TO DO)</vh>
 <v t="ekr.20150312080344.9"><vh>Abbreviation commands</vh></v>
 <v t="ekr.20150315132217.1635"><vh>Advanced editing commands</vh>
 <v t="ekr.20150315132217.1633"><vh>flush-lines &amp; keep-lines</vh></v>
@@ -19218,39 +19217,6 @@ delete-node-icons
 
 **About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
 </t>
-<t tx="ekr.20150314050809.23">clear-all-caches
-clear-all-uas
-clear-cache
-clear-extend-mode
-clear-kill-ring
-clear-node-uas
-disable-autocompleter
-disable-calltips
-enable-autocompleter
-enable-calltips
-set-colors
-set-command-state
-set-comment-column
-set-extend-mode
-set-fill-column
-set-fill-prefix
-set-font
-set-insert-state
-set-overwrite-state
-set-replace-string
-set-search-string
-set-silent-mode
-toggle-abbrev-mode
-toggle-active-pane
-toggle-autocompleter
-toggle-calltips
-toggle-case-region
-toggle-extend-mode
-toggle-find-collapses-nodes
-toggle-input-state
-toggle-invisibles
-toggle-sparse-move
-toggle-split-direction</t>
 <t tx="ekr.20150314050809.27">
 ``eval-expression``
     Evaluate an expression entered in the minibuffer.
@@ -21088,10 +21054,36 @@ This replaces execution of the `stylesheet &amp; source` node in settings files.
     Open myLeoSettings.leo in a new window.
 ``style-reload``
     Reloads all visual setting, but not themes.
-    **Example**: Change the @string font-size setting, then do ``style-reload`` and see what happens.
+    
+    **Example**: Change the ``@string font-size`` setting, then do ``style-reload`` and see what happens.
 ``style-set-selected``
     Set the global stylesheet to c.p.b.
+    
+The following commands enable, disable or toggle various settings::
 
+    clear-extend-mode
+    disable-autocompleter
+    disable-calltips
+    enable-autocompleter
+    enable-calltips
+    set-colors
+    set-command-state
+    set-extend-mode
+    set-insert-state
+    set-overwrite-state
+    set-replace-string
+    set-search-string
+    set-silent-mode
+    toggle-abbrev-mode
+    toggle-autocompleter
+    toggle-calltips
+    toggle-case-region
+    toggle-extend-mode
+    toggle-find-collapses-nodes
+    toggle-input-state
+    toggle-invisibles
+    toggle-sparse-move
+    toggle-split-direction
 </t>
 <t tx="ekr.20150315132217.1600">minibufferCallback
 ''' Cycle to next tab '''</t>
@@ -21166,7 +21158,7 @@ richtext-open-editor
 richtext-switch-editor
 richtext-toggle-autosave</t>
 <t tx="ekr.20150315132217.1626"></t>
-<t tx="ekr.20150315132217.1630"></t>
+<t tx="ekr.20150315132217.1630">**There is a separate chapter in the Tutorial**.</t>
 <t tx="ekr.20150315132217.1631"></t>
 <t tx="ekr.20150315132217.1632"></t>
 <t tx="ekr.20150315132217.1633">``flush-lines``
@@ -21815,6 +21807,16 @@ ensuring that the file is compressed.
 delete-marked-nodes
 move-marked-nodes-option) toggles this checkbox.
 </t>
+<t tx="ekr.20150318043636.5">clear-all-caches
+clear-all-uas
+clear-cache
+clear-kill-ring
+clear-node-uas
+set-comment-column
+set-fill-column
+set-fill-prefix
+set-font
+toggle-active-pane</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
