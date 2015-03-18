@@ -4159,16 +4159,22 @@ class Commands (object):
         c = self
         d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
         g.app.structure_errors = 0
+        ni = g.app.nodeIndices
         errors = 0
         for p in c.safe_all_positions():
-            gnx = p.v.fileIndex
+            v = p.v
+            gnx = v.fileIndex
             if gnx:
                 aSet = d.get(gnx,set())
-                aSet.add(p.v)
+                aSet.add(v)
                 d[gnx] = aSet
             else:
                 errors += 1
-                print('empty v.fileIndex: %s %r' % (p.v,p.v.gnx))
+                if g.app.nodeIndices.hold_gnx_flag:
+                    g.internalError('ni.hold_gnx_flag True in check-outline')
+                else:
+                    v.fileIndex = ni.getNewIndex(v)
+                print('empty v.fileIndex: %s new: %r' % (v,p.v.gnx))
         errors += g.app.structure_errors
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))

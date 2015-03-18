@@ -1709,10 +1709,14 @@ class Position (object):
                         break
                     elif child_v.fileIndex == parent.v.fileIndex:
                         g.app.structure_errors += 1
-                        g.error('duplicate gnx: %s v: %s parent: %s' % (
+                        g.error('duplicate gnx: %r v: %s parent: %s' % (
                             child_v.fileIndex,child_v,parent.v))
-                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
-                        assert child_v.gnx != parent.v.gnx
+                        if g.app.nodeIndices.hold_gnx_flag:
+                            g.internalError('ni.hold_gnx_flag True in check-outline')
+                        else:
+                            # g.trace('ni.hold_gnx_flag',ni.hold_gnx_flag,g.callers())
+                            child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
+                            assert child_v.gnx != parent.v.gnx
                         # Should be ok to continue.
                         p.moveToFirstChild()
                         break

@@ -747,11 +747,12 @@ class FileCommands:
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-                if g.app.check_outline or c.config.getBool('check_outline_after_read'):
-                    c.checkOutline()
         finally:
             ni.end_holding(c)
                     # Fix bug https://github.com/leo-editor/leo-editor/issues/35
+            # This must be called *after* ni.end_holding.
+            if g.app.check_outline or c.config.getBool('check_outline_after_read'):
+                c.checkOutline()
             c.loading = False # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
