@@ -685,7 +685,7 @@
 </v>
 <v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
 <v t="ekr.20150314050809.27"><vh>Minibuffer commands</vh></v>
-<v t="ekr.20150315132217.1632"><vh>Mouseless Leo commands (TO DO)</vh>
+<v t="ekr.20150315132217.1632"><vh>Mouseless Leo commands</vh>
 <v t="ekr.20150315132217.14"><vh>Event simulation commands</vh></v>
 <v t="ekr.20150315132217.4"><vh>Focus commands</vh></v>
 <v t="ekr.20150313192232.7"><vh>Pane commands</vh></v>
@@ -12760,7 +12760,6 @@ These commands expand all descendants of the selected nodes::
 ``unmark-all``
     Unmarks all marked nodes in the outline.
 
-
 **Marking groups of nodes**: Leo's find and change commands mark nodes if the "Mark Changes" and "Mark Finds" checkboxes are checked. You can change these checkboxes with the ``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option`` commands.
 </t>
 <t tx="ekr.20120319170934.6101">You may drag a node (including all its descendants) from one place to another in an outline. To start a drag, press the main (left) mouse button while the cursor is over the icon for a node. The cursor will change to a hand icon. If you release the mouse button while the hand cursor is above another node, Leo will move the dragged node after that node. If you release the mouse button when the hand cursor is not over a node, Leo will leave the outline pane as it is. Leo scrolls the outline pane as the result of mouse-moved events, so to continue scrolling you must keep moving the mouse.
@@ -19028,14 +19027,24 @@ if 1:
     for z in sorted(not_found):
         print(z)
 print('found: %s not found: %s' % (len(found),len(not_found)))</t>
-<t tx="ekr.20150313192232.7">contract-body-pane, contract-log-pane, contract-outline-pane, contract-pane.
+<t tx="ekr.20150313192232.7">::
 
-expand-body-pane, expand-log-pane, expand-outline-pane, expand-pane.
-
-fully-expand-body-pane, fully-expand-log-pane, fully-expand-outline-pane, fully-expand-pane.
-
-hide-body-pane, hide-log-pane, hide-outline-pane, hide-pane.
-
+    contract-body-pane
+    contract-log-pane
+    contract-outline-pane
+    contract-pane
+    expand-body-pane
+    expand-log-pane
+    expand-outline-pane
+    expand-pane
+    fully-expand-body-pane
+    fully-expand-log-pane
+    fully-expand-outline-pane
+    fully-expand-pane
+    hide-body-pane
+    hide-log-pane
+    hide-outline-pane
+    hide-pane
 </t>
 <t tx="ekr.20150313192232.9"></t>
 <t tx="ekr.20150314044011.7">@language python
@@ -20377,13 +20386,13 @@ text to the register's contents.
 '''Prompt for a register name and increment its value if it has a numeric value.'''</t>
 <t tx="ekr.20150315132217.14">The following commands trigger event hooks::
 
-click-click-box
-click-headline
-click-icon-box
-double-click-headline
-double-click-icon-box
-    Invoke vim or xemacs plugin if enabled.
-simulate-begin-drag, simulate-end-drag
+    click-click-box
+    click-headline
+    click-icon-box
+    double-click-headline
+    double-click-icon-box # Invokes vim or xemacs plugin if enabled.
+    simulate-begin-drag
+    simulate-end-drag
 </t>
 <t tx="ekr.20150315132217.1400">insertRegister
 '''Prompt for a register name and and insert the value of another register into its contents.'''</t>
@@ -21231,24 +21240,24 @@ script-button
 ``Ctrl-Tab (tab-cycle-next)``
     Switches between outline tabs. You may open multiple Leo outlines in different tabs within the same main window.
     </t>
-<t tx="ekr.20150315132217.4">activate-cmds-menu
-activate-edit-menu
-activate-file-menu
-activate-help-menu
-activate-outline-menu
-activate-plugins-menu
-activate-window-menu
-
-focus-to-body
-focus-to-find
-focus-to-log
-focus-to-minibuffer
-focus-to-nav
-focus-to-tree
-
-
-``toggle-active-pane``
+<t tx="ekr.20150315132217.4">``toggle-active-pane``
     Switches focus between the outline and body panes.
+
+::
+
+    activate-cmds-menu
+    activate-edit-menu
+    activate-file-menu
+    activate-help-menu
+    activate-outline-menu
+    activate-plugins-menu
+    activate-window-menu
+    focus-to-body
+    focus-to-find
+    focus-to-log
+    focus-to-minibuffer
+    focus-to-nav
+    focus-to-tree
 </t>
 <t tx="ekr.20150315132217.6">print-all-uas
 print-bindings
