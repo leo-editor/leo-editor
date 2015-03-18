@@ -651,7 +651,7 @@
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20150318110552.6"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20150318110552.7"><vh>@ignore undocumented commands</vh></v>
+<v t="ekr.20150318110552.7"><vh>@rst-ignore undocumented commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh>
 <v t="ekr.20150318110552.9"><vh>smart-*</vh></v>
 </v>
@@ -20597,7 +20597,7 @@ ensuring that the file is compressed.
 </t>
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
-<t tx="ekr.20150318110552.10">..revise
+<t tx="ekr.20150318110552.10">.. revise
 ``check-outline``
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 ``clear-cache``
@@ -20611,20 +20611,20 @@ ensuring that the file is compressed.
 ``pylint``
     Runs pylint on the Python source files in the selected tree. You can check a file by selecting any (possibly cloned) node of the file.  This command is also available from the popup menus created by the contextmenu plugin.
 </t>
-<t tx="ekr.20150318110552.11">..revise
+<t tx="ekr.20150318110552.11">.. revise
 
 ::
 
     clear-all-caches
     clear-all-uas
     clear-cache</t>
-<t tx="ekr.20150318110552.12">..revise
+<t tx="ekr.20150318110552.12">.. revise
 
 ::
 
     check-derived-file
     check-leo-file</t>
-<t tx="ekr.20150318110552.13">..revise
+<t tx="ekr.20150318110552.13">.. revise
 
 ::
     
@@ -20632,7 +20632,7 @@ ensuring that the file is compressed.
     dump-new-objects
     verbose-dump-objects.
 </t>
-<t tx="ekr.20150318110552.14">..revise
+<t tx="ekr.20150318110552.14">.. revise
 
 ::
 
@@ -20644,7 +20644,7 @@ ensuring that the file is compressed.
     gc-trace-disable
     gc-trace-enable
 </t>
-<t tx="ekr.20150318110552.15">..revise
+<t tx="ekr.20150318110552.15">.. revise
 
 ::
 
@@ -20658,31 +20658,33 @@ ensuring that the file is compressed.
 </t>
 <t tx="ekr.20150318110552.16">``print-buttons``
     Print all @button and @command commands, their bindings and their source.
+    
+::
 
-print-all-uas
-print-bindings
-print-cmd-docstrings
-print-commands
-print-expanded-node
-print-expanded-node-body
-print-focus
-print-marked-node-bodies
-print-marked-nodes
-print-node-uas
-print-plugin-handlers
-print-plugins-info
-print-preview-expanded-node
-print-preview-expanded-node-body
-print-preview-marked-node-bodies
-print-preview-marked-nodes
-print-preview-selected-node
-print-preview-selected-node-body
-print-preview-selected-node-body-html
-print-selected-node
-print-selected-node-body
-print-selected-node-body-html
-print-settings
-print-style-sheet</t>
+    print-all-uas
+    print-bindings
+    print-cmd-docstrings
+    print-commands
+    print-expanded-node
+    print-expanded-node-body
+    print-focus
+    print-marked-node-bodies
+    print-marked-nodes
+    print-node-uas
+    print-plugin-handlers
+    print-plugins-info
+    print-preview-expanded-node
+    print-preview-expanded-node-body
+    print-preview-marked-node-bodies
+    print-preview-marked-nodes
+    print-preview-selected-node
+    print-preview-selected-node-body
+    print-preview-selected-node-body-html
+    print-selected-node
+    print-selected-node-body
+    print-selected-node-body-html
+    print-settings
+    print-style-sheet</t>
 <t tx="ekr.20150318110552.17">::
 
     show-calltips
@@ -20690,9 +20692,9 @@ print-style-sheet</t>
     show-colors
     show-find-options
     show-fonts</t>
-<t tx="ekr.20150318110552.18">..revise
+<t tx="ekr.20150318110552.18">.. revise
 </t>
-<t tx="ekr.20150318110552.19">..revise
+<t tx="ekr.20150318110552.19">.. revise
 
 ``select-all(Ctrl-A)``
     Select all text in the text pane.
@@ -20835,7 +20837,7 @@ print-style-sheet</t>
     yank-pop
     zap-to-character
 </t>
-<t tx="ekr.20150318110552.20">..revise
+<t tx="ekr.20150318110552.20">.. revise
 
 ``advertised-undo``
 
@@ -20843,16 +20845,16 @@ Leo supports unlimited undo and redo with the ``undo`` (Ctrl-Z) and ``redo`` (Ct
 
 The @string undo_granularity setting controls the granularity of undo. There are four possible values:
 
-node
+``node``
     Starts a new undo unit when typing moves to a new node.
 
-line (default)
+``line (default)``
     Starts a new undo unit when typing moves to new line.
 
-word
+``word``
     Starts a new undo unit when typing starts a new word.
 
-char (not recommended)
+``char`` (not recommended)
     Starts a new undo unit for each character typed.
     This wastes lots of computer memory.
 </t>
@@ -20902,7 +20904,7 @@ If Python is the present language, Leo inserts an additional tab if the previous
     putOperator:      puts whitespace around operators.
     putNormalToken:   puts whitespace around everything else.
     
-..revise
+.. revise
 
 ::
 
@@ -20931,7 +20933,7 @@ The command operates on the paragraph containing the insert cursor. If the inser
 ``extract-names (Ctrl-Shift-Command)``
     Creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
 </t>
-<t tx="ekr.20150318110552.26">..revise
+<t tx="ekr.20150318110552.26">.. revise
 
 The ``execute-script`` (Ctrl-B) command executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected. The Execute Script command pre-defines the values c, g and p as follows:
 
@@ -21691,7 +21693,7 @@ The following commands enable, disable or toggle various settings::
     free-layout-restore
     free-layout-zoom
 </t>
-<t tx="ekr.20150318110552.7">..revise
+<t tx="ekr.20150318110552.7">.. revise
 
 ::
 
@@ -21810,7 +21812,7 @@ Python code.
     Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
 <t tx="ekr.20150318110552.78"></t>
 <t tx="ekr.20150318110552.79"></t>
-<t tx="ekr.20150318110552.8">..revise
+<t tx="ekr.20150318110552.8">.. revise
 
 ::
 
