@@ -703,10 +703,10 @@
 <v t="ekr.20150318110552.53"><vh>Moving, deleting and cloning marked nodes</vh></v>
 <v t="ekr.20150318110552.54"><vh>Comparing outlines</vh></v>
 <v t="ekr.20150318110552.55"><vh>Using Chapters</vh></v>
-<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane (revise)</vh></v>
+<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 </v>
-<v t="ekr.20150318110552.57"><vh>Search &amp; spell commands (revise)</vh>
-<v t="ekr.20150318110552.58"><vh>aliases (revise)</vh></v>
+<v t="ekr.20150318110552.57"><vh>Search &amp; spell commands</vh>
+<v t="ekr.20150318110552.58"><vh>aliases</vh></v>
 <v t="ekr.20150318110552.59"><vh>Basic searches</vh></v>
 <v t="ekr.20150318110552.60"><vh>Incremental find commands</vh></v>
 <v t="ekr.20150318110552.61"><vh>Word search and regex search commands</vh></v>
@@ -715,15 +715,15 @@
 <v t="ekr.20150318110552.64"><vh>Spell commands</vh></v>
 </v>
 <v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
-<v t="ekr.20150318110552.66"><vh>Window-related commands (revise)</vh>
+<v t="ekr.20150318110552.66"><vh>Window-related commands</vh>
 <v t="ekr.20150318110552.67"><vh> new windows commands</vh></v>
 <v t="ekr.20150318110552.68"><vh>-icon*</vh></v>
 <v t="ekr.20150318110552.69"><vh>free-layout*</vh></v>
 <v t="ekr.20150318110552.70"><vh>gui-*</vh></v>
-<v t="ekr.20150318110552.71"><vh>show-* (not implemented in Qt)</vh></v>
-<v t="ekr.20150318110552.72"><vh>zoom-in/out commands (reformat)</vh></v>
+<v t="ekr.20150318110552.71"><vh>show-*</vh></v>
+<v t="ekr.20150318110552.72"><vh>zoom-in/out commands</vh></v>
 </v>
-<v t="ekr.20150318110552.73"><vh>Advanced commands (revise)</vh>
+<v t="ekr.20150318110552.73"><vh>Advanced commands</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
 <v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh>
 <v t="ekr.20150318110552.76"><vh>c-to-python</vh></v>
@@ -738,7 +738,7 @@
 <v t="ekr.20150318110552.84"><vh>richtext-*</vh></v>
 <v t="ekr.20150318110552.85"><vh>vr-*</vh></v>
 </v>
-<v t="ekr.20150318110552.86"><vh>Unit testing commands (done)</vh></v>
+<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
 </v>
 </v>
@@ -4082,7 +4082,7 @@ Leo's Commands Reference
 This chapter discusses the basics of using Leo, including all of Leo's commands. It starts with a discussion of the Emacs-like minibuffer, then continues with a discussion of commands in each of Leo's menus.
 
 .. contents::
-    :depth: 3
+    :depth: 2
 
 </t>
 <t tx="ekr.20050901101608.4">################
@@ -20597,6 +20597,10 @@ ensuring that the file is compressed.
 <t tx="ekr.20150318043636.17"></t>
 <t tx="ekr.20150318110552.10">.. revise
 
+.. contents::
+    :local:
+    :depth: 2
+
 ``check-outline``
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 ``clear-cache``
@@ -20692,7 +20696,10 @@ ensuring that the file is compressed.
     show-find-options
     show-fonts</t>
 <t tx="ekr.20150318110552.18">.. revise
-</t>
+
+.. contents::
+    :local:
+    :depth: 2</t>
 <t tx="ekr.20150318110552.19">.. revise
 
 ``select-all(Ctrl-A)``
@@ -20961,16 +20968,14 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
         1/30/2003 8:31:55
 
 ``match-brackets``
-    Enabled if the cursor is next to one of the following characters in the body pane:
-
-    ( ) [ ] { } &lt; &gt;
-
-    Looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
+    Enabled if the cursor is next to one of these characters in the body pane: ``( ) [ ] { } &lt; &gt;`` The command looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
 ``replace-current-character``
      Replace the selected character with the next character typed.
 ``toggle-angle-brackets``
     Adds or removes double angle brackets from the headline of the selected node.</t>
-<t tx="ekr.20150318110552.29"></t>
+<t tx="ekr.20150318110552.29">.. contents::
+    :local:
+    :depth: 2</t>
 <t tx="ekr.20150318110552.30">``file-open-by-name``
     Gets the name of a Leo outline from the minibuffer and opens it. File name completion is supported.
 ``new (Ctrl-N)``
@@ -21165,8 +21170,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 
 
 </t>
-<t tx="ekr.20150318110552.38">
-``eval-expression``
+<t tx="ekr.20150318110552.38">``eval-expression``
     Evaluate an expression entered in the minibuffer.
 ``full-command (Alt-X)``
     Execute a command by name. Tab completion is supported.
@@ -21176,7 +21180,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Execute the last command entered from the minibuffer.
 
 </t>
-<t tx="ekr.20150318110552.39"></t>
+<t tx="ekr.20150318110552.39">.. contents::
+    :local:
+    :depth: 2</t>
 <t tx="ekr.20150318110552.40">The following commands trigger event hooks::
 
     click-click-box
@@ -21225,7 +21231,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     hide-outline-pane
     hide-pane
 </t>
-<t tx="ekr.20150318110552.43"></t>
+<t tx="ekr.20150318110552.43">.. contents::
+    :local:
+    :depth: 2</t>
 <t tx="ekr.20150318110552.44">``clone-node (Ctrl-\`)`` (Grave accent, not a single quote)
     Creates a clone as the immediate sibling of a selected node.
 ``clone-node-to-last-node``
@@ -21429,7 +21437,9 @@ Associated settings:
 ``@bool use_chapter_tabs``
     True: chapters pop-up menu appears in the icon area.
 </t>
-<t tx="ekr.20150318110552.56">::
+<t tx="ekr.20150318110552.56">.. revise
+
+::
 
     scroll-outline-down-line       
     scroll-outline-down-page       
@@ -21439,8 +21449,14 @@ Associated settings:
     scroll-outline-right
 
 </t>
-<t tx="ekr.20150318110552.57"></t>
-<t tx="ekr.20150318110552.58">::
+<t tx="ekr.20150318110552.57">.. revise
+
+.. contents::
+    :local:
+    :depth: 2</t>
+<t tx="ekr.20150318110552.58">.. revise
+
+::
 
     find-clone-all
     find-clone-all-flattened
@@ -21636,7 +21652,13 @@ The following commands enable, disable or toggle various settings::
     toggle-sparse-move
     toggle-split-direction
 </t>
-<t tx="ekr.20150318110552.66">``cascade-windows``
+<t tx="ekr.20150318110552.66">.. revise
+
+.. contents::
+    :local:
+    :depth: 2
+
+``cascade-windows``
     Cascades all Leo windows.
 ``equal-sized-panes``
     Adjusts the sizes of the outline and body panes so that they are the same height.
@@ -21710,10 +21732,12 @@ The following commands enable, disable or toggle various settings::
 </t>
 <t tx="ekr.20150318110552.71">``show-colors``
     Opens a tab in the log pane showing various color pickers.
-    (Note implement)
+    (Not implemented in Qt)
 ``show-fonts``
     Open a tab in the log pane showing a font picker.</t>
-<t tx="ekr.20150318110552.72">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20150318110552.72">.. revise
+
+From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed two new commands, zoom-in and zoom-out, which increase
 or decrease the body text font size by one point size.  They probably
@@ -21743,8 +21767,14 @@ commit log:
   
   rename solarized_dark theme leo_dark_0
 </t>
-<t tx="ekr.20150318110552.73"></t>
-<t tx="ekr.20150318110552.74">::
+<t tx="ekr.20150318110552.73">.. revise
+
+.. contents::
+    :local:
+    :depth: 2</t>
+<t tx="ekr.20150318110552.74">.. revise
+
+::
 
     abbrev-add-global
     abbrev-inverse-add-global
@@ -21771,7 +21801,9 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 5. Added a new example node: @@data abbreviations examples.  This contains
    several extremely useful scripts.
 </t>
-<t tx="ekr.20150318110552.75">.. Undocumented
+<t tx="ekr.20150318110552.75">.. revise
+
+.. Undocumented
 ..  clear-node-uas
 ..  set-font
 
@@ -21801,8 +21833,12 @@ Python code.
 ``keep-lines``
     Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
 <t tx="ekr.20150318110552.78"></t>
-<t tx="ekr.20150318110552.79"></t>
+<t tx="ekr.20150318110552.79">.. revise</t>
 <t tx="ekr.20150318110552.8">.. revise
+
+.. contents::
+    :local:
+    :depth: 2
 
 ::
 
@@ -21907,7 +21943,9 @@ This has a very clever hack (even if I say so myself)--spaces in search string a
 ``run-selected-unit-tests-locally``
     Run all unit tests in the selected tree in this outline.
 </t>
-<t tx="ekr.20150318110552.87">::
+<t tx="ekr.20150318110552.87">.. revise
+
+::
 
     :!
     :%s
