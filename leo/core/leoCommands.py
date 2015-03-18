@@ -4179,9 +4179,9 @@ class Commands (object):
         ok = not gnx_errors and not g.app.structure_errors
         if not ok:
             g.es_print('check-outline ERROR! %s nodes: %s gnx errors: %s structure errors: %s' % (
-                c.shortFileName(),count,gnx_errors,g.app.structure_errors),color = 'red')
+                c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
         elif verbose:
-            g.es_print('check-outline OK! %s nodes: %s' % (c.shortFileName(),count))
+            g.es_print('check-outline OK! %s nodes: %s' % (c.shortFileName(),count),color='blue')
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
     def checkLinks(self):
