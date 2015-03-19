@@ -28,7 +28,6 @@
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
-<v t="ekr.20101009114830.4725"><vh>Plugins options</vh>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -37,6 +36,7 @@
 <v t="ekr.20050812123002"><vh>@page rst3 options</vh>
 <v t="ekr.20131009050634.17658"><vh>@bool rst3_call_docutils = False</vh></v>
 <v t="ekr.20131009050634.17625"><vh>@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20150319142303.4"><vh>@bool rst3_debug = True</vh></v>
 <v t="ekr.20050812123002.7"><vh>@bool rst3_format_headlines = True</vh></v>
 <v t="ekr.20131009050634.17627"><vh>@bool rst3_generate_rst = True</vh></v>
 <v t="ekr.20131009050634.17610"><vh>@bool rst3_http_server_support = False</vh></v>
@@ -54,7 +54,6 @@
 <v t="ekr.20050812123002.3"><vh>@string rst3_http_attributename = 'rst_http_attribute'</vh></v>
 <v t="ekr.20050812123002.4"><vh>@bool rst3_http_server_support = False</vh></v>
 <v t="ekr.20050812123002.5"><vh>@string rst3_node_begin_marker = 'http-node-marker-'</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -8050,7 +8049,6 @@ False:
     be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101009114830.4724"></t>
-<t tx="ekr.20101009114830.4725"></t>
 <t tx="ekr.20101025080245.5791">##################
 What's New in Leo
 ##################
@@ -18878,6 +18876,7 @@ tangle-marked
 untangle
 untangle-all
 untangle-marked</t>
+<t tx="ekr.20150319142303.4"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
