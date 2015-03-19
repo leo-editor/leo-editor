@@ -1697,47 +1697,64 @@ class Commands (object):
     #@+node:ekr.20031218072017.2841: *5* Tangle submenu
     #@+node:ekr.20031218072017.2842: *6* tangleAll
     def tangleAll (self,event=None):
-
-        '''Tangle all @root nodes in the entire outline.'''
-
+        '''
+        Tangle all @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangleAll()
     #@+node:ekr.20031218072017.2843: *6* tangleMarked
     def tangleMarked (self,event=None):
-
-        '''Tangle all marked @root nodes in the entire outline.'''
-
+        '''
+        Tangle all marked @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangleMarked()
     #@+node:ekr.20031218072017.2844: *6* tangle
     def tangle (self,event=None):
-
-        '''Tangle all @root nodes in the selected outline.'''
-
+        '''
+        Tangle all @root nodes in the selected outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangle()
     #@+node:ekr.20031218072017.2845: *5* Untangle submenu
     #@+node:ekr.20031218072017.2846: *6* untangleAll
     def untangleAll (self,event=None):
-
-        '''Untangle all @root nodes in the entire outline.'''
-
+        '''
+        Untangle all @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangleAll()
         c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2847: *6* untangleMarked
     def untangleMarked (self,event=None):
-
-        '''Untangle all marked @root nodes in the entire outline.'''
-
+        '''
+        Untangle all marked @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangleMarked()
         c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2848: *6* untangle
     def untangle (self,event=None):
-
-        '''Untangle all @root nodes in the selected outline.'''
-
+        '''Untangle all @root nodes in the selected outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangle()
         c.undoer.clearUndoState()
