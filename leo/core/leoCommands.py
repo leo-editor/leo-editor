@@ -4119,7 +4119,7 @@ class Commands (object):
         c.redraw(p)
     #@+node:ekr.20040711135959.2: *5* Check Outline submenu...
     #@+node:ekr.20031218072017.2072: *6* c.checkOutline & helpers
-    def checkOutline (self,event=None,check_links=False):
+    def checkOutline(self,event=None,check_links=False):
         """
         Check for errors in the outline.
         Return the count of serious structure errors.
@@ -4130,6 +4130,10 @@ class Commands (object):
         if check_links and not structure_errors:
             structure_errors += c.checkLinks()
         return structure_errors
+        
+    def fullCheckOutline (self,event=None):
+        '''Check the outline, including links.'''
+        return self.checkOutline(check_links=True)
     #@+node:ekr.20141024211256.22: *7* c.checkGnxs
     def checkGnxs(self):
         '''
@@ -4140,6 +4144,7 @@ class Commands (object):
         c = self
         d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
         ni = g.app.nodeIndices
+        t1 = time.time()
 
         def new_gnx(v):
             '''Set v.fileIndex.'''
@@ -4177,18 +4182,22 @@ class Commands (object):
             c.config.getBool('check_outline_after_read') or
             c.config.getBool('check_outline_before_write'))
         ok = not gnx_errors and not g.app.structure_errors
+        t2 = time.time()
         if not ok:
-            g.es_print('check-outline ERROR! %s nodes: %s gnx errors: %s structure errors: %s' % (
+            g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
         elif verbose:
-            g.es_print('check-outline OK! %s nodes: %s' % (c.shortFileName(),count),color='blue')
+            print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
+            g.es('check-outline OK',color='blue')
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
     def checkLinks(self):
         '''Check the consistency of all links in the outline.'''
         c = self
-        errors = 0
+        t1 = time.time()
+        count,errors = 0,0
         for p in c.safe_all_positions():
+            count += 1
             try:
                 c.checkThreadLinks(p)
                 c.checkSiblings(p)
@@ -4197,6 +4206,9 @@ class Commands (object):
                 errors += 1
                 junk, value, junk = sys.exc_info()
                 g.error("test failed at position %s\n%s" % (repr(p),value))
+        t2 = time.time()
+        g.es_print('check-links: %4.2f sec. %s %s nodes' % (
+            t2-t1,c.shortFileName(),count),color='blue')
         return errors
     #@+node:ekr.20040314035615.2: *8* c.checkParentAndChildren
     def checkParentAndChildren(self,p):

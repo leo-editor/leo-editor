@@ -9090,7 +9090,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
             # 'check-all-python-code':      c.checkAllPythonCode,
             'check-derived-file':           c.atFileCommands.checkDerivedFile,
             'check-leo-file':               c.fileCommands.checkLeoFile,
-            'check-outline':                c.checkOutline,
+            'check-outline':                c.fullCheckOutline,
             # 'check-python-code':          c.checkPythonCode,
             'clean-recent-files':           c.cleanRecentFiles,
             'clear-recent-files':           c.clearRecentFiles,
