@@ -1342,7 +1342,10 @@ class LeoImportCommands:
         return language
     #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
     def parse_body(self,p):
-        '''The parse-body command.'''
+        '''
+        Parse p.b as source code, creating a tree of descendant nodes.
+        This is essentially an import of p.b.
+        '''
         if not p: return
         c,ic = self.c,self
         language = g.scanForAtLanguage(c,p)

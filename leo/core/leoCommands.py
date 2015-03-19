@@ -4119,65 +4119,98 @@ class Commands (object):
         c.redraw(p)
     #@+node:ekr.20040711135959.2: *5* Check Outline submenu...
     #@+node:ekr.20031218072017.2072: *6* c.checkOutline & helpers
-    def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
+    def checkOutline(self,event=None,check_links=False):
         """
-        Report any possible clone errors in the outline.
-
-        Remove any tnodeLists.
+        Check for errors in the outline.
+        Return the count of serious structure errors.
         """
-        trace = False and not g.unitTesting
         c = self
-        count,errors = 1,0
-        if g.app.check_outline and not unittest:
-            full,verbose = True,True
-        # Check gnx's first.  Generators will loop if this fails.
-        errors += c.checkGnxs()
-        if not errors:
-            iter_ = root.self_and_subtree if root else c.safe_all_positions
-            for p in iter_():
-                if trace: g.trace(p.h)
-                try:
-                    count += 1
-                    v = p.v
-                    if hasattr(v,"tnodeList"):
-                        delattr(v,"tnodeList")
-                        v._p_changed = True
-                    if full: # Unit tests usually set this false.
-                        c.checkThreadLinks(p)
-                        c.checkSiblings(p)
-                        c.checkParentAndChildren(p)
-                except AssertionError:
-                    errors += 1
-                    junk, value, junk = sys.exc_info()
-                    g.error("test failed at position %s\n%s" % (repr(p),value))
-        if errors or (verbose and not unittest):
-            g.blue('',count,'nodes checked',errors,'errors')
-        return errors
+        g.app.structure_errors = 0
+        structure_errors = c.checkGnxs()
+        if check_links and not structure_errors:
+            structure_errors += c.checkLinks()
+        return structure_errors
+        
+    def fullCheckOutline (self,event=None):
+        '''Check the outline, including links.'''
+        return self.checkOutline(check_links=True)
     #@+node:ekr.20141024211256.22: *7* c.checkGnxs
     def checkGnxs(self):
-        '''Check the consistency of all gnx's.'''
+        '''
+        Check the consistency of all gnx's and remove any tnodeLists.
+        Reallocate gnx's for duplicates or empty gnx's.
+        Return the number of structure_errors found.
+        '''
         c = self
         d = {} # Keys are gnx's; values are lists of vnodes with that gnx.
-        g.app.structure_errors = 0
-        errors = 0
+        ni = g.app.nodeIndices
+        t1 = time.time()
+
+        def new_gnx(v):
+            '''Set v.fileIndex.'''
+            if ni.hold_gnx_flag:
+                g.internalError('ni.hold_gnx_flag True in check-outline')
+            else:
+                v.fileIndex = ni.getNewIndex(v)
+
+        count,gnx_errors = 0,0
         for p in c.safe_all_positions():
-            gnx = p.v.fileIndex
+            count += 1
+            v = p.v
+            if hasattr(v,"tnodeList"):
+                delattr(v,"tnodeList")
+                v._p_changed = True
+            gnx = v.fileIndex
             if gnx:
                 aSet = d.get(gnx,set())
-                aSet.add(p.v)
+                aSet.add(v)
                 d[gnx] = aSet
             else:
-                errors += 1
-                print('empty v.fileIndex: %s %r' % (p.v,p.v.gnx))
-        errors += g.app.structure_errors
+                gnx_errors += 1
+                new_gnx(v)
+                g.es_print('empty v.fileIndex: %s new: %r' % (v,p.v.gnx),color='red')
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:
+                g.es_print('multiple vnodes with gnx: %r' % (gnx),color='red')
+                for v in aList:
+                    gnx_errors += 1
+                    g.es_print('new gnx: %s %s' % (v.fileIndex,v),color='red')
+                    new_gnx(v)
+        verbose = (
+            g.app.check_outline or
+            c.config.getBool('check_outline_after_read') or
+            c.config.getBool('check_outline_before_write'))
+        ok = not gnx_errors and not g.app.structure_errors
+        t2 = time.time()
+        if not ok:
+            g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
+                c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
+        elif verbose:
+            print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
+            g.es('check-outline OK',color='blue')
+        return g.app.structure_errors
+    #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
+    def checkLinks(self):
+        '''Check the consistency of all links in the outline.'''
+        c = self
+        t1 = time.time()
+        count,errors = 0,0
+        for p in c.safe_all_positions():
+            count += 1
+            try:
+                c.checkThreadLinks(p)
+                c.checkSiblings(p)
+                c.checkParentAndChildren(p)
+            except AssertionError:
                 errors += 1
-                print('multiple vnode with same gnx: %s vnodes: [%s]' % (gnx,aList))
-        # g.trace('\n'+'\n'.join(['%30s %s' % (gnx,list(d.get(gnx))) for gnx in sorted(d.keys())]))
+                junk, value, junk = sys.exc_info()
+                g.error("test failed at position %s\n%s" % (repr(p),value))
+        t2 = time.time()
+        g.es_print('check-links: %4.2f sec. %s %s nodes' % (
+            t2-t1,c.shortFileName(),count),color='blue')
         return errors
-    #@+node:ekr.20040314035615.2: *7* c.checkParentAndChildren
+    #@+node:ekr.20040314035615.2: *8* c.checkParentAndChildren
     def checkParentAndChildren(self,p):
         '''Check consistency of parent and child data structures.'''
         # Check consistency of parent and child links.
@@ -4196,7 +4229,7 @@ class Commands (object):
         parent_v = p._parentVnode()
         n = p.childIndex()
         assert parent_v.children[n] == p.v,'fail 1'
-    #@+node:ekr.20040314035615.1: *7* c.checkSiblings
+    #@+node:ekr.20040314035615.1: *8* c.checkSiblings
     def checkSiblings(self,p):
         '''Check the consistency of next and back links.'''
         back = p.back()
@@ -4207,7 +4240,7 @@ class Commands (object):
         if next:
             assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
                 next,next.back())
-    #@+node:ekr.20040314035615: *7* c.checkThreadLinks
+    #@+node:ekr.20040314035615: *8* c.checkThreadLinks
     def checkThreadLinks(self,p):
         '''Check consistency of threadNext & threadBack links.'''
         threadBack = p.threadBack()

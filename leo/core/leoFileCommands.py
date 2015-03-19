@@ -747,11 +747,12 @@ class FileCommands:
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-                if g.app.check_outline or c.config.getBool('check_outline_after_read'):
-                    c.checkOutline()
         finally:
             ni.end_holding(c)
                     # Fix bug https://github.com/leo-editor/leo-editor/issues/35
+            # This must be called *after* ni.end_holding.
+            if g.app.check_outline or c.config.getBool('check_outline_after_read'):
+                c.checkOutline()
             c.loading = False # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
@@ -1991,11 +1992,11 @@ class FileCommands:
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
         '''Write the .leo file.'''
         c,fc = self.c,self
-        checkOutline = g.app.check_outline or fc.checkOutlineBeforeSave
-        if checkOutline:
-            errors = c.checkOutline()
-            if errors:
-                g.error('outline not written')
+        checkFlag = g.app.check_outline or fc.checkOutlineBeforeSave
+        if checkFlag:
+            structure_errors = c.checkOutline()
+            if structure_errors:
+                g.error('Major structural errors! outline not written')
                 return False
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)

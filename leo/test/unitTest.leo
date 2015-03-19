@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
+<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.57" body_secondary_ratio="0.69">
@@ -14,6 +14,8 @@
 <v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20150318142212.11"><vh>@bool check_outline_after_read = False</vh></v>
+<v t="ekr.20150318142212.12"><vh>@bool check_outline_before_save = False</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
 <v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
@@ -657,7 +659,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150317093233.11"><vh>@test c.safe_all_positions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2993,10 +2994,7 @@ node 2 line 2
 </t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
-<t tx="ekr.20150317093233.11">aList1 = list(c.all_positions())
-aList2 = list(c.safe_all_positions())
-n1,n2 = len(aList1),len(aList2)
-assert n1 == n2,(n1,n2)
-</t>
+<t tx="ekr.20150318142212.11"></t>
+<t tx="ekr.20150318142212.12"></t>
 </tnodes>
 </leo_file>
