@@ -4168,14 +4168,14 @@ class Commands (object):
             else:
                 gnx_errors += 1
                 new_gnx(v)
-                g.es_print('empty v.fileIndex: %s new: %r' % (v,p.v.gnx))
+                g.es_print('empty v.fileIndex: %s new: %r' % (v,p.v.gnx),color='red')
         for gnx in sorted(d.keys()):
             aList = sorted(d.get(gnx))
             if len(aList) != 1:
-                g.es_print('multiple vnode with gnx: %r' % (gnx))
+                g.es_print('multiple vnodes with gnx: %r' % (gnx),color='red')
                 for v in aList:
                     gnx_errors += 1
-                    g.es_print('new gnx: %s %s' % (v.fileIndex,v))
+                    g.es_print('new gnx: %s %s' % (v.fileIndex,v),color='red')
                     new_gnx(v)
         verbose = (
             g.app.check_outline or
