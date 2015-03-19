@@ -314,13 +314,10 @@ class ParserBaseClass:
             self.valueError(p,kind,name,val)
     #@+node:ekr.20041120094940.4: *4* doFont
     def doFont (self,p,kind,name,val):
-
-        trace = False
-
+        '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
+        trace = False and not g.unitTesting
         if trace: g.trace(p and p.h,kind,name,self.c.mFileName)
-
         d = self.parseFont(p)
-
         # Set individual settings.
         for key in ('family','size','slant','weight'):
             data = d.get(key)

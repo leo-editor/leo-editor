@@ -4826,19 +4826,21 @@ Commands:
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
 <t tx="ekr.20111003104518.15499"></t>
-<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
-
-To set fonts in Leo's widgets, change Leo's master sytle sheet::
+<t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
     
-    @data qt-gui-plugin-style-sheet 
-
-Valid values for the body of @font nodes::
+    To set fonts in Leo's widgets, change Leo's master style sheet::
+        
+        @data qt-gui-plugin-style-sheet 
     
-    weight: bold, normal, None
-    slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the
-show-fonts command to the values here.
+    Valid values for the body of @font nodes::
+        
+        family: a font family name
+        size:   an integer
+        weight: bold, normal, None
+        slant: roman, italic, None
+    
+    Use the show-fonts command to pick fonts, then copy the values shown by the
+    show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
