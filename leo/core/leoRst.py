@@ -1844,7 +1844,7 @@ class RstCommands:
             openDirectory,rel_stylesheet_path)
         stylesheet_name = self.getOption(p,'stylesheet_name')
         assert stylesheet_name
-        g.trace('stylesheet_name',stylesheet_name)
+        if trace: g.trace('stylesheet_name',stylesheet_name)
         path = g.os_path_finalize_join(stylesheet_path,stylesheet_name)
         if self.getOption(p,'stylesheet_embed') == False:
             rel_path = g.os_path_join(
