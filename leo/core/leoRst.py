@@ -3,7 +3,6 @@
 #@+node:ekr.20090502071837.3: * @file leoRst.py
 #@@first
 
-new_settings = True
 #@+<< docstring >>
 #@+node:ekr.20090502071837.4: ** << docstring >>
 '''Support for restructured text (rST), adapted from rst3 plugin.
@@ -155,11 +154,6 @@ class RstCommands:
             # Values are dicts of settings defined in that vnode *only*.
         self.d0 = self.createD0()
             # Keys are vnodes, values are optionsDict's.
-        if new_settings:
-            pass # getOption now searches dicts.
-        else:
-            # The options dictionary.
-            self.optionsDict = {}
         self.scriptSettingsDict = {}
             # For format-code command.
         self.singleNodeOptions = [
@@ -204,11 +198,8 @@ class RstCommands:
         self.trialWrite = False
             # True if doing a trialWrite.
         # Complete the init.
-        if new_settings:
-            self.updateD0FromSettings()
-        else:
-            self.initOptionsFromSettings() # Still needed.
-        self.initHeadlineCommands() # Only needs to be done once.
+        self.updateD0FromSettings()
+        self.initHeadlineCommands()
 
     #@+node:ekr.20090502071837.42: *4* rst.createD0
     def createD0(self):
@@ -345,20 +336,7 @@ class RstCommands:
         else: p = c.p
         self.topNode = p.copy()
         self.topLevel = p.level()
-        if new_settings:
-            self.initSettings(p,script_d=scriptSettingsDict)
-        else:    
-            # Capture the settings, munging all settings.
-            self.scriptSettingsDict = {}
-            d = scriptSettingsDict
-            if d:
-                for key in d.keys():
-                    self.scriptSettingsDict[self.munge(key)] = d.get(key)
-            # Init options...
-            self.preprocessTree(p)
-            self.init_write(p) # sets self.path and self.encoding.
-            self.scanAllOptions(p) # Settings for p are valid after this call.
-        
+        self.initSettings(p,script_d=scriptSettingsDict)
         callDocutils = self.getOption(p,'call_docutils')
         writeIntermediateFile = self.getOption(p,'write_intermediate_file')
         fn = self.getOption(p,'output-file-name') or 'code_to_rst.html'
@@ -505,10 +483,6 @@ class RstCommands:
         Side effect: advance p
         '''
         h = p.h.strip()
-        if new_settings:
-            pass
-        else:
-            self.scanAllOptions(p)
         if self.getOption(p,'ignore_this_tree'):
             p.moveToNodeAfterTree()
         elif self.getOption(p,'ignore_this_node'):
@@ -523,16 +497,12 @@ class RstCommands:
     #@+node:ekr.20100812082517.5939: *5* rst.write_code_tree
     def write_code_tree (self,p,fn):
         '''Write p's tree as code to self.outputFile.'''
-        if new_settings:
-            pass
-        else:
-            self.scanAllOptions(p) # So we can get the next option.
         if self.getOption(p,'generate_rst_header_comment'):
             self.write('.. rst3: filename: %s\n\n' % fn)
-
+            
         # We can't use an iterator because we may skip parts of the tree.
-        p = p.copy() # Only one copy is needed for traversal.
-        self.topNode = p.copy() # Indicate the top of this tree.
+        p = p.copy()
+        self.topNode = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
             self.write_code_node(p) # Side effect: advances p.
@@ -541,11 +511,8 @@ class RstCommands:
         '''Write all @rst nodes.'''
         t1 = time.time()
         self.rst_nodes = []
-        if new_settings:
-            self.initSettings(self.c.p)
+        self.initSettings(self.c.p)
         self.processTopTree(self.c.p)
-        # Time taken to generate all Leo's docs, in silent mode:
-        # old code: 1.6 sec. new code: 0.9 sec.
         t2 = time.time()
         g.es_print('rst3: %s files in %4.2f sec.' % (self.n_written,t2-t1))
         return self.rst_nodes # A list of positions.
@@ -572,10 +539,6 @@ class RstCommands:
         '''
         trace = False and not g.unitTesting
         if trace: g.trace(p.h)
-        if new_settings:
-            pass
-        else:
-            self.preprocessTree(p)
         found = False
         self.stringOutput = ''
         p = p.copy()
@@ -589,11 +552,6 @@ class RstCommands:
                     if trace: g.trace('found: %s',p.h)
                     found = True
                     self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
-                    if new_settings:
-                        pass
-                    else:
-                        self.scanAllOptions(p)
-                            # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     p.moveToNodeAfterTree()
@@ -627,10 +585,6 @@ class RstCommands:
         ext = ext.lower()
         if not ext.startswith('.'): ext = '.' + ext
         self.init_write(p) # sets self.path and self.encoding.
-        if new_settings:
-            pass
-        else:
-            self.scanAllOptions(p) # Settings for p are valid after this call.
         callDocutils = self.getOption(p,'call_docutils')
         writeIntermediateFile = self.getOption(p,'write_intermediate_file')
         # Write the rst sources to self.source.
@@ -657,10 +611,6 @@ class RstCommands:
         n = 1
         for child in p.children():
             self.init_write(p) # sets self.path and self.encoding.
-            if new_settings:
-                pass
-            else:
-                self.scanAllOptions(child) # Settings for child are valid after this call.
             # Compute the slide's file name.
             fn2,ext = g.os_path_splitext(fn)
             fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
@@ -1114,11 +1064,6 @@ class RstCommands:
     def writeNode (self,p):
         '''Format a node according to the options presently in effect.'''
         self.initCodeBlockString(p)
-        if new_settings:
-            pass
-        else:
-            self.scanAllOptions(p)
-        # g.trace('%24s code_mode %s' % (p.h,self.getOption(p,'code_mode')))
         h = p.h.strip()
         if self.getOption(p,'preformat_this_node'):
             self.http_addNodeMarker(p)
@@ -1161,10 +1106,6 @@ class RstCommands:
     #@+node:ekr.20090502071837.87: *6* rst.writeTree
     def writeTree(self,p,fn):
         '''Write p's tree to self.outputFile.'''
-        if new_settings:
-            pass
-        else:
-            self.scanAllOptions(p)
         if (
             self.getOption(p,'generate_rst') and
             self.getOption(p,'generate_rst_header_comment')
@@ -1190,8 +1131,7 @@ class RstCommands:
         '''
         c = self.c
         current = p or c.p
-        if new_settings:
-            self.initSettings(current)
+        self.initSettings(current)
         for p in current.self_and_parents():
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
@@ -1202,8 +1142,7 @@ class RstCommands:
         Write an @auto tree containing imported rST code.
         The caller will close the output file.
         '''
-        if new_settings:
-            self.initSettings(p)
+        self.initSettings(p)
         try:
             self.trialWrite = trialWrite
             self.atAutoWrite = True
@@ -1221,21 +1160,11 @@ class RstCommands:
         return ok
     #@+node:ekr.20090513073632.5733: *5* rst.initAtAutoWrite
     def initAtAutoWrite(self,p,fileName,outputFile):
-
-        # Set up for a standard write.
-        if new_settings:
-            pass # Done in caller.
-        else:
-            self.createD0()
-            self.dd = {}
-            self.scanAllOptions(p)
-            self.init_write(p)
-            self.preprocessTree(p) # Allow @ @rst-options, for example.
+        '''Init for an @auto write.'''
         # Do the overrides.
         self.outputFile = outputFile
         # Set underlining characters.
-        # It makes no sense to use user-defined
-        # underlining characters in @auto-rst.
+        # User-defined underlining characters make no sense in @auto-rst.
         d = p.v.u.get('rst-import',{})
         underlines2 = d.get('underlines2','')
             # Do *not* set a default for overlining characters.
@@ -1279,48 +1208,34 @@ class RstCommands:
         trace = False and not g.unitTesting
         assert p,g.callers()
             # We may as well fail here.
-        if new_settings:
 
-            def dump(kind,p,val):
-                if trace:
-                    g.pr('getOption: %7s %30s %-15r %s' % (kind,name,val,p.h))
+        def dump(kind,p,val):
+            if trace:
+                g.pr('getOption: %7s %30s %-15r %s' % (kind,name,val,p.h))
 
-            # 1. Search scriptSettingsDict.
-            d = self.scriptSettingsDict
+        # 1. Search scriptSettingsDict.
+        d = self.scriptSettingsDict
+        val = d.get(name)
+        if val is not None:
+            dump('script',p,val)
+            return val
+        # 2. Handle single-node options
+        if name in self.singleNodeOptions:
+            d = self.dd.get(p.v,{})
+            val = d.get(name)
+            dump('single',p,val)
+            return val
+        # 3. Search all parents, using self.dd.
+        for p2 in p.self_and_parents():
+            d = self.dd.get(p2.v,{})
             val = d.get(name)
             if val is not None:
-                dump('script',p,val)
+                dump('node',p2,val)
                 return val
-            # 2. Handle single-node options
-            if name in self.singleNodeOptions:
-                d = self.dd.get(p.v,{})
-                val = d.get(name)
-                dump('single',p,val)
-                return val
-            # 3. Search all parents, using self.dd.
-            for p2 in p.self_and_parents():
-                d = self.dd.get(p2.v,{})
-                val = d.get(name)
-                if val is not None:
-                    dump('node',p2,val)
-                    return val
-            # 4. Search self.d0
-            val = self.d0.get(name)
-            dump('default',p,val)
-            return val # May be None.
-        else:
-            # Munging names here is safe because setOption munges.
-            val = self.optionsDict.get(name)
-            if trace: g.trace(name,repr(val))
-            return val
-    #@+node:ekr.20150319210537.1: *4* rst.setOption (to be removed)
-    def setOption (self,name,val,tag=''):
-        '''Put an option into self.optionsDict.'''
-        assert not new_settings,g.callers()
-        c = self.c
-        if self.debug:
-            g.trace('%-10s %40s %r' % (tag,name,val))
-        self.optionsDict [self.munge(name)] = val
+        # 4. Search self.d0
+        val = self.d0.get(name)
+        dump('default',p,val)
+        return val # May be None.
     #@+node:ekr.20090502071837.45: *4* rst.initCodeBlockString
     def initCodeBlockString(self,p):
         '''Init the string used to write code-block directives.'''
@@ -1345,12 +1260,9 @@ class RstCommands:
         Init all settings for a command rooted in p.
         There is no need to create self.d0 again.
         '''
-        assert new_settings
         self.n_written = 0
         self.scriptSettingsDict = script_d or {}
         self.init_write(p)
-            # sets self.path and self.encoding.
-            # This does *not* conflict with any settings dict.
         self.preprocessTree(p)
     #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
     def preprocessTree (self,root):
@@ -1517,76 +1429,6 @@ class RstCommands:
             return name,val
         else:
             return name,'True'
-    #@+node:ekr.20090502071837.54: *4* rst.scanAllOptions & helpers (to be deleted)
-    def scanAllOptions(self,p):
-        '''
-        Scan position p and p's ancestors looking for options,
-        setting corresponding ivars.
-        
-        Once an option is seen, no other related options in ancestor nodes have any effect.
-        '''
-        assert not new_settings,g.callers()
-        c = self.c
-        if self.debug: g.trace('=====',p.h)
-        self.initOptionsFromSettings() # Must be done on every node.
-        self.handleSingleNodeOptions(p)
-        seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
-        for p in p.self_and_parents():
-            d = self.dd.get(p.v,{})
-            for key in d.keys():
-                ivar = self.munge(key)
-                if not ivar in seen:
-                    seen.append(ivar)
-                    val = d.get(key)
-                    self.setOption(key,val,p.h)
-        if self.rst3_all:
-            self.setOption("generate_rst", True, "rst3_all")
-            self.setOption("generate_rst_header_comment",True, "rst3_all")
-            self.setOption("http_server_support", True, "rst3_all")
-            self.setOption("write_intermediate_file", True, "rst3_all")
-    #@+node:ekr.20090502071837.55: *5* rst.initOptionsFromSettings
-    def initOptionsFromSettings (self):
-        '''Init options from settings.'''
-        c = self.c
-        d = self.d0
-        for key in sorted(d):
-            for getter,kind in (
-                (c.config.getBool,'@bool'),
-                (c.config.getString,'@string'),
-                (d.get,'default'),
-            ):
-                # Major bug fix: prefix 'rst3_' to c.config names!
-                if kind == 'default':
-                    val = getter(key)
-                else:
-                    val = getter('rst3_'+key)
-                if kind == 'default' or val is not None:
-                    self.setOption(key,val,'settings')
-                    break
-        # Script settings override everything else.
-        d2 = self.scriptSettingsDict or {}
-        for key in d2.keys():
-            val = d2.get(key)
-            # g.trace(key,val)
-            self.setOption(key,val,'script')
-        # Special case.
-        if not mod_http:
-            if c.config.getBool('http_server_support'):
-                g.error('No http_server_support: can not import mod_http plugin')
-                self.setOption('http_server_support',False)
-    #@+node:ekr.20090502071837.56: *5* rst.handleSingleNodeOptions
-    def handleSingleNodeOptions (self,p):
-        '''
-        Init the settings of single-node options from the nodeOptionsDict.
-
-        All such options default to False.
-        '''
-        d = self.dd.get(p.v, {} )
-        for ivar in self.singleNodeOptions:
-            val = d.get(ivar,False)
-            #g.trace('%24s %8s %s' % (ivar,val,p.h))
-            self.setOption(ivar,val,tag=p.h)
-
     #@+node:ekr.20090502071837.59: *3* rst.Shared write code
     #@+node:ekr.20090502071837.96: *4* rst.http_addNodeMarker
     def http_addNodeMarker (self,p):
@@ -1690,12 +1532,6 @@ class RstCommands:
     #@+node:ekr.20090502071837.60: *4* rst.init_write
     def init_write (self,p):
         '''Init self.encoding and self.path ivars.'''
-        if new_settings:
-            pass
-        else:
-            self.initOptionsFromSettings() # Still needed.
-        # Set the encoding from any parent @encoding directive.
-        # This can be overridden by @rst-option encoding=whatever.
         c = self.c
         d = c.scanAllDirectives(p)
         self.encoding = d.get('encoding') or 'utf-8'

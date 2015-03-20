@@ -280,7 +280,7 @@ def report (self,expected,got):
 def run(self):
     '''run an rst test.'''
     import sys
-    import leo.core.leoRst as leoRst
+    # import leo.core.leoRst as leoRst
     if not sys.platform.startswith('win') and g.isPython3: return
     try:
         import docutils
@@ -296,8 +296,7 @@ def run(self):
     rc = c.rstCommands
     expected,got,source = self.setup()
     root = source.firstChild()
-    if leoRst.new_settings:
-        rc.preprocessTree(root)
+    rc.preprocessTree(root)
     rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
     rst = clean(rc.source)
     html = clean(rc.stringOutput)

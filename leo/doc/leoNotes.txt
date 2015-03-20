@@ -14944,5 +14944,84 @@ def checkOutline (self):
         g.error('outline not written')
 
     return ok
+.. @+node:ekr.20150320160729.4: *3* from leoRst.py
+.. @+node:ekr.20150319210537.1: *4* rst.setOption
+def setOption (self,name,val,tag=''):
+    '''Put an option into self.optionsDict.'''
+    assert not new_settings,g.callers()
+    c = self.c
+    if self.debug:
+        g.trace('%-10s %40s %r' % (tag,name,val))
+    self.optionsDict [self.munge(name)] = val
+.. @+node:ekr.20090502071837.54: *4* rst.scanAllOptions & helpers
+def scanAllOptions(self,p):
+    '''
+    Scan position p and p's ancestors looking for options,
+    setting corresponding ivars.
+    
+    Once an option is seen, no other related options in ancestor nodes have any effect.
+    '''
+    assert not new_settings,g.callers()
+    c = self.c
+    if self.debug: g.trace('=====',p.h)
+    self.initOptionsFromSettings() # Must be done on every node.
+    self.handleSingleNodeOptions(p)
+    seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
+    for p in p.self_and_parents():
+        d = self.dd.get(p.v,{})
+        for key in d.keys():
+            ivar = self.munge(key)
+            if not ivar in seen:
+                seen.append(ivar)
+                val = d.get(key)
+                self.setOption(key,val,p.h)
+    if self.rst3_all:
+        self.setOption("generate_rst", True, "rst3_all")
+        self.setOption("generate_rst_header_comment",True, "rst3_all")
+        self.setOption("http_server_support", True, "rst3_all")
+        self.setOption("write_intermediate_file", True, "rst3_all")
+.. @+node:ekr.20090502071837.55: *5* rst.initOptionsFromSettings
+def initOptionsFromSettings (self):
+    '''Init options from settings.'''
+    c = self.c
+    d = self.d0
+    for key in sorted(d):
+        for getter,kind in (
+            (c.config.getBool,'@bool'),
+            (c.config.getString,'@string'),
+            (d.get,'default'),
+        ):
+            # Major bug fix: prefix 'rst3_' to c.config names!
+            if kind == 'default':
+                val = getter(key)
+            else:
+                val = getter('rst3_'+key)
+            if kind == 'default' or val is not None:
+                self.setOption(key,val,'settings')
+                break
+    # Script settings override everything else.
+    d2 = self.scriptSettingsDict or {}
+    for key in d2.keys():
+        val = d2.get(key)
+        # g.trace(key,val)
+        self.setOption(key,val,'script')
+    # Special case.
+    if not mod_http:
+        if c.config.getBool('http_server_support'):
+            g.error('No http_server_support: can not import mod_http plugin')
+            self.setOption('http_server_support',False)
+.. @+node:ekr.20090502071837.56: *5* rst.handleSingleNodeOptions
+def handleSingleNodeOptions (self,p):
+    '''
+    Init the settings of single-node options from the nodeOptionsDict.
+
+    All such options default to False.
+    '''
+    d = self.dd.get(p.v, {} )
+    for ivar in self.singleNodeOptions:
+        val = d.get(ivar,False)
+        #g.trace('%24s %8s %s' % (ivar,val,p.h))
+        self.setOption(ivar,val,tag=p.h)
+
 .. @-all
 .. @-leo
