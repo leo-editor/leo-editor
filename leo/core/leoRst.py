@@ -145,12 +145,23 @@ class RstCommands:
         # Warnings flags.
         self.silverCityWarningGiven = False
         self.httpWarningGiven = False
-        # The options dictionary.
-        self.nodeOptionDict = {}
+        # Settings.
+        self.dd = {}
+            # A dict of dict. Keys are vnodes.
+            # Values are dicts of settings defined in that vnode *only*.
+        self.d0 = self.createDefaultOptionsDict()
             # Keys are vnodes, values are optionsDict's.
-        self.optionsDict = {}
+        if new_settings:
+            pass # getOption now searches dicts.
+        else:
+            # The options dictionary.
+            self.optionsDict = {}
         self.scriptSettingsDict = {}
             # For format-code command.
+        self.singleNodeOptions = [
+            'ignore_this_headline','ignore_this_node','ignore_this_tree',
+            'preformat_this_node','show_this_headline',
+        ]
         # Formatting...
         self.code_block_string = ''
         self.node_counter = 0
@@ -190,10 +201,12 @@ class RstCommands:
             # True if doing a trialWrite.
         # Complete the init.
         self.debug = c.config.getBool('rst3_debug',default=False)
-        self.createDefaultOptionsDict()
-        self.initOptionsFromSettings() # Still needed.
+        if new_settings:
+            pass
+        else:
+            self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
-        self.initSingleNodeOptions()
+
     #@+node:ekr.20090511055302.5792: *4* rst.getPublicCommands
     def getPublicCommands(self):
         '''Add the names of commands defined in this file to c.commandsDict'''
@@ -203,9 +216,7 @@ class RstCommands:
         })
     #@+node:ekr.20090502071837.38: *4* rst.initHeadlineCommands
     def initHeadlineCommands (self):
-
         '''Init the list of headline commands used by writeHeadline.'''
-
         self.headlineCommands = [
             '@rst',
             '@rst-code',
@@ -218,16 +229,6 @@ class RstCommands:
             '@rst-no-headlines',
             '@rst-option',
             '@rst-options',
-        ]
-    #@+node:ekr.20090502071837.39: *4* rst.initSingleNodeOptions
-    def initSingleNodeOptions (self):
-
-        self.singleNodeOptions = [
-            'ignore_this_headline',
-            'ignore_this_node',
-            'ignore_this_tree',
-            'preformat_this_node',
-            'show_this_headline',
         ]
     #@+node:ekr.20090502071837.40: *4* rst.munge
     def munge (self,name):
@@ -464,8 +465,7 @@ class RstCommands:
         self.rst_nodes = []
         if new_settings:
             self.initSettings(self.c.p)
-        else:
-            self.processTopTree(self.c.p)
+        self.processTopTree(self.c.p)
         return self.rst_nodes # A list of positions.
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -492,9 +492,14 @@ class RstCommands:
         '''
         trace = False and not g.unitTesting
         if trace: g.trace(p.h)
-        self.preprocessTree(p)
-        found = False ; self.stringOutput = ''
-        p = p.copy() ; after= p.nodeAfterTree()
+        if new_settings:
+            pass
+        else:
+            self.preprocessTree(p)
+        found = False
+        self.stringOutput = ''
+        p = p.copy()
+        after= p.nodeAfterTree()
         while p and p != after:
             h = p.h.strip()
             if g.match_word(h,0,"@rst"):
@@ -540,11 +545,10 @@ class RstCommands:
             junk,ext = g.os_path_splitext(fn)
         ext = ext.lower()
         if not ext.startswith('.'): ext = '.' + ext
+        self.init_write(p) # sets self.path and self.encoding.
         if new_settings:
-            self.init_write(p) # sets self.path and self.encoding.
+            pass
         else:
-            # Init options...
-            self.init_write(p) # Sets self.path and self.encoding.
             self.scanAllOptions(p) # Settings for p are valid after this call.
         callDocutils = self.getOption(p,'call_docutils')
         writeIntermediateFile = self.getOption(p,'write_intermediate_file')
@@ -959,7 +963,6 @@ class RstCommands:
                 # Handle any other doc part, including @rst-markup.
                 n, lines2 = self.getDocPart(lines,n)
                 if lines2: result.extend(lines2)
-        ### if not result: result = []
         if showHeadlines:
             if result or showThisHeadline or showOrganizers or p == self.topNode:
                 self.writeHeadlineHelper(p)
@@ -1145,7 +1148,7 @@ class RstCommands:
             pass # Done in caller.
         else:
             self.createDefaultOptionsDict()
-            self.nodeOptionDict = {}
+            self.dd = {}
             self.scanAllOptions(p)
             self.init_write(p)
             self.preprocessTree(p) # Allow @ @rst-options, for example.
@@ -1192,9 +1195,9 @@ class RstCommands:
     #@+node:ekr.20090502071837.41: *3* rst.Options
     #@+node:ekr.20090502071837.42: *4* rst.createDefaultOptionsDict
     def createDefaultOptionsDict(self):
-        '''Create the defaultOptionsDict.'''
+        '''Create the default options dict.'''
         # Important: the dictionary keys must be munged names.
-        self.defaultOptionsDict = {
+        d = {
             # Http options...
             'clear_http_attributes': False,
             'http_server_support': False,
@@ -1244,6 +1247,7 @@ class RstCommands:
             'show_markup_doc_parts': False,
             'show_options_doc_parts': False,
         }
+        return d
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict & dumpSettings
     def dumpDict(self,d,tag):
         '''Dump the given settings dict.'''
@@ -1257,17 +1261,50 @@ class RstCommands:
         g.trace('present settings...')
         for key in sorted(d):
             g.pr('%20s %s' % (key,d.get(key)))
-    #@+node:ekr.20090502071837.44: *4* rst.getOption & setOption
+    #@+node:ekr.20090502071837.44: *4* rst.getOption
     def getOption (self,p,name):
+        '''Return the value of the named option at node p.'''
+        trace = False and not g.unitTesting
+        if new_settings:
+            assert p,g.callers()
+                # We may as well fail here.
+            # Do not munge names.
+            def dump(kind,p,val):
+                if trace: g.pr('getOption: %7s %30s %-15r %s' % (kind,name,val,p.h))
 
-        # 2010/08/12: munging names here is safe because setOption munges.
-        # g.trace(name,self.optionsDict.get(self.munge(name)))
-        return self.optionsDict.get(self.munge(name))
-
+            # 1. Search scriptSettingsDict.
+            d = self.scriptSettingsDict
+            val = d.get(name)
+            if val is not None:
+                dump('script',p,val)
+                return val
+            # 2. Handle single-node options
+            if name in self.singleNodeOptions:
+                d = self.dd.get(p.v,{})
+                val = d.get(name)
+                dump('single',p,val)
+                return val
+            # 3. Search all parents, using self.dd.
+            for p2 in p.self_and_parents():
+                d = self.dd.get(p2.v,{})
+                val = d.get(name)
+                if val is not None:
+                    dump('node',p2,val)
+                    return val
+            # 4. Search self.d0
+            val = self.d0.get(name)
+            dump('default',p,val)
+            return val # May be None.
+        else:
+            # Munging names here is safe because setOption munges.
+            # g.trace(name,self.optionsDict.get(self.munge(name)))
+            return self.optionsDict.get(self.munge(name))
+    #@+node:ekr.20150319210537.1: *4* rst.setOption (to be removed)
     def setOption (self,name,val,tag=''):
         '''Put an option into self.optionsDict.'''
+        assert not new_settings,g.callers()
         c = self.c
-        if self.debug: # c.config.getBool('rst3_debug'):
+        if self.debug:
             g.trace('%-10s %40s %r' % (tag,name,val))
         self.optionsDict [self.munge(name)] = val
     #@+node:ekr.20090502071837.45: *4* rst.initCodeBlockString
@@ -1290,12 +1327,26 @@ class RstCommands:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
     #@+node:ekr.20150319125851.8: *4* rst.initSettings
     def initSettings(self,p,script_d=None):
-        '''Init all settings for a command rooted in p.'''
+        '''
+        Init all settings for a command rooted in p.
+        There is no need to create self.d0 again.
+        '''
         assert new_settings
+        self.scriptSettingsDict = script_d or {}
+        self.preprocessTree(p)
+
+        if 0: ### To be handled somewhere
+            if not mod_http and not self.httpWarningGiven:
+                c = self.c
+                if c.config.getBool('http_server_support'):
+                    self.httpWarningGiven = True
+                    g.error('No http_server_support: can not import mod_http plugin')
+                    self.setOption('http_server_support',False)
     #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
     def preprocessTree (self,root):
         '''Init settings in root, its subtree and all pareents.'''
-        self.nodeOptionDict = {}
+        # g.trace('=======',root.h)
+        self.dd = {}
         # Bug fix 12/4/05: must preprocess parents too.
         for p in root.parents():
             self.preprocessNode(p)
@@ -1303,68 +1354,35 @@ class RstCommands:
             self.preprocessNode(p)
         if 0:
             g.trace(root.h)
-            for key in self.nodeOptionDict.keys():
+            for key in self.dd.keys():
                 g.trace(key)
-                g.printDict(self.nodeOptionDict.get(key))
-    #@+node:ekr.20090502071837.47: *5* rst.preprocessNode
+                g.printDict(self.dd.get(key))
+    #@+node:ekr.20090502071837.47: *5* rst.preprocessNode & helper
     def preprocessNode (self,p):
-
-        d = self.nodeOptionDict.get(p.v)
+        '''Set self.dd for p.v.'''
+        d = self.dd.get(p.v)
         if d is None:
             d = self.scanNodeForOptions(p)
-            self.nodeOptionDict [p.v] = d
-    #@+node:ekr.20090502071837.48: *5* rst.parseOptionLine
-    def parseOptionLine (self,s):
-
-        '''Parse a line containing name=val and return (name,value) or None.
-
-        If no value is found, default to True.'''
-
-        s = s.strip()
-        if s.endswith(','): s = s[:-1]
-        # Get name.  Names may contain '-' and '_'.
-        i = g.skip_id(s,0,chars='-_')
-        name = s [:i]
-        if not name:
-            # Bug fix: 2014/03/26: return 2-tuple.
-            return None,False
-        j = g.skip_ws(s,i)
-        if g.match(s,j,'='):
-            val = s [j+1:].strip()
-            # g.trace(val)
-            return name,val
-        else:
-            # g.trace('*True')
-            return name,'True'
-    #@+node:ekr.20090502071837.49: *5* rst.scanForOptionDocParts
-    def scanForOptionDocParts (self,p,s):
+            self.dd [p.v] = d
+    #@+node:ekr.20090502071837.51: *6* rst.scanNodeForOptions & helpers
+    def scanNodeForOptions (self,p):
         '''
-        Return a dictionary containing all options from @rst-options doc parts in p.
-        Multiple @rst-options doc parts are allowed: this code aggregates all options.
+        Return a dictionary containing all the option-name:value entries in p.
+
+        Such entries may arise from @rst-option or @rst-options in the headline,
+        or from @ @rst-options doc parts.
         '''
-        d = {} ; n = 0 ; lines = g.splitLines(s)
-        while n < len(lines):
-            line = lines[n] ; n += 1
-            if line.startswith('@'):
-                i = g.skip_ws(line,1)
-                for kind in ('@rst-options','@rst-option'):
-                    if g.match_word(line,i,kind):
-                        # Allow options on the same line.
-                        line = line[i+len(kind):]
-                        d.update(self.scanOption(p,line))
-                        # Add options until the end of the doc part.
-                        while n < len(lines):
-                            line = lines[n] ; n += 1 ; found = False
-                            for stop in ('@c','@code', '@'):
-                                if g.match_word(line,0,stop):
-                                    found = True ; break
-                            if found:
-                                break
-                            else:
-                                d.update(self.scanOption(p,line))
-                        break
+        trace = (False or self.debug) and not g.unitTesting
+        # A fine point: body options over-ride headline options.
+        d = self.scanHeadlineForOptions(p)
+        if trace and d:
+            self.dumpDict(d,'headline options: %s' % (p.h))
+        d2 = self.scanForOptionDocParts(p,p.b)
+        if trace and d2:
+            self.dumpDict(d2,'option doc parts: %s' % (p.h))
+        d.update(d2)
         return d
-    #@+node:ekr.20090502071837.50: *5* rst.scanHeadlineForOptions
+    #@+node:ekr.20090502071837.50: *7* rst.scanHeadlineForOptions
     def scanHeadlineForOptions (self,p):
         '''Return a dictionary containing the options implied by p's headline.'''
         h = p.h.strip()
@@ -1407,39 +1425,60 @@ class RstCommands:
             if h.startswith('@rst'):
                 g.trace('unknown kind of @rst headline',p.h,g.callers(4))
             return {}
-    #@+node:ekr.20090502071837.51: *5* rst.scanNodeForOptions
-    def scanNodeForOptions (self,p):
+    #@+node:ekr.20090502071837.49: *7* rst.scanForOptionDocParts
+    def scanForOptionDocParts (self,p,s):
         '''
-        Return a dictionary containing all the option-name:value entries in p.
-
-        Such entries may arise from @rst-option or @rst-options in the headline,
-        or from @ @rst-options doc parts.
+        Return a dictionary containing all options from @rst-options doc parts in p.
+        Multiple @rst-options doc parts are allowed: this code aggregates all options.
         '''
-        # A fine point: body options over-ride headline options.
-        d = self.scanHeadlineForOptions(p)
-        if self.debug and d:
-            self.dumpDict(d,'headline options: %s' % (p.h))
-        d2 = self.scanForOptionDocParts(p,p.b)
-        if self.debug and d2:
-            self.dumpDict(d2,'option doc parts: %s' % (p.h))
-        d.update(d2)
+        d,n = {},0
+        lines = g.splitLines(s)
+        while n < len(lines):
+            line = lines[n] ; n += 1
+            if line.startswith('@'):
+                i = g.skip_ws(line,1)
+                for kind in ('@rst-options','@rst-option'):
+                    if g.match_word(line,i,kind):
+                        # Allow options on the same line.
+                        line = line[i+len(kind):]
+                        d.update(self.scanOption(p,line))
+                        # Add options until the end of the doc part.
+                        while n < len(lines):
+                            line = lines[n] ; n += 1 ; found = False
+                            for stop in ('@c','@code', '@'):
+                                if g.match_word(line,0,stop):
+                                    found = True ; break
+                            if found:
+                                break
+                            else:
+                                d.update(self.scanOption(p,line))
+                        break
         return d
-    #@+node:ekr.20090502071837.52: *5* rst.scanOption
+    #@+node:ekr.20090502071837.53: *5* rst.scanOptions & helper
+    def scanOptions (self,p,s):
+        '''Return a dictionary containing all the options in s.'''
+        d = {}
+        for line in g.splitLines(s):
+            d2 = self.scanOption(p,line)
+            if d2: d.update(d2)
+        return d
+    #@+node:ekr.20090502071837.52: *6* rst.scanOption & helper
     def scanOption (self,p,s):
-
-        '''Return { name:val } if s is a line of the form name=val.
-        Otherwise return {}'''
-
-        if not s.strip() or s.strip().startswith('..'): return {}
-
+        '''
+        Return { name:val } if s is a line of the form name=val.
+        Otherwise return {}
+        '''
+        trace = False and not g.unitTesting
+        if not s.strip() or s.strip().startswith('..'):
+            if trace: g.trace('rst comment: {}')
+            return {}
         data = self.parseOptionLine(s)
-
         if data:
             name,val = data
-            if self.munge(name) in list(self.defaultOptionsDict.keys()):
+            if self.munge(name) in list(self.d0.keys()):
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
-                # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
+                if trace: g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
                 g.error('ignoring unknown option:',name)
@@ -1448,19 +1487,26 @@ class RstCommands:
             g.trace(repr(s))
             g.error('bad rst3 option',s,'in',p.h)
             return {}
-    #@+node:ekr.20090502071837.53: *5* rst.scanOptions
-    def scanOptions (self,p,s):
-
-        '''Return a dictionary containing all the options in s.'''
-
-        d = {}
-
-        for line in g.splitLines(s):
-            d2 = self.scanOption(p,line)
-            if d2: d.update(d2)
-
-        return d
-    #@+node:ekr.20090502071837.54: *4* rst.scanAllOptions & helpers
+    #@+node:ekr.20090502071837.48: *7* rst.parseOptionLine
+    def parseOptionLine (self,s):
+        '''
+        Parse a line containing name=val and return (name,value) or None.
+        If no value is found, default to True.
+        '''
+        s = s.strip()
+        if s.endswith(','): s = s[:-1]
+        # Get name.  Names may contain '-' and '_'.
+        i = g.skip_id(s,0,chars='-_')
+        name = s [:i]
+        if not name:
+            return None,False
+        j = g.skip_ws(s,i)
+        if g.match(s,j,'='):
+            val = s [j+1:].strip()
+            return name,val
+        else:
+            return name,'True'
+    #@+node:ekr.20090502071837.54: *4* rst.scanAllOptions & helpers (to be deleted)
     def scanAllOptions(self,p):
         '''
         Scan position p and p's ancestors looking for options,
@@ -1468,13 +1514,14 @@ class RstCommands:
         
         Once an option is seen, no other related options in ancestor nodes have any effect.
         '''
+        assert not new_settings,g.callers()
         c = self.c
         if self.debug: g.trace('=====',p.h)
         self.initOptionsFromSettings() # Must be done on every node.
         self.handleSingleNodeOptions(p)
         seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
         for p in p.self_and_parents():
-            d = self.nodeOptionDict.get(p.v,{})
+            d = self.dd.get(p.v,{})
             for key in d.keys():
                 ivar = self.munge(key)
                 if not ivar in seen:
@@ -1490,9 +1537,8 @@ class RstCommands:
     def initOptionsFromSettings (self):
         '''Init options from settings.'''
         c = self.c
-        d = self.defaultOptionsDict
-        keys = sorted(d)
-        for key in keys:
+        d = self.d0
+        for key in sorted(d):
             for getter,kind in (
                 (c.config.getBool,'@bool'),
                 (c.config.getString,'@string'),
@@ -1513,9 +1559,8 @@ class RstCommands:
             # g.trace(key,val)
             self.setOption(key,val,'script')
         # Special case.
-        ### if self.getOption(p,'http_server_support') and not mod_http:
         if not mod_http and not self.httpWarningGiven:
-            if not c.config.getBool('http_server_support'):
+            if c.config.getBool('http_server_support'):
                 self.httpWarningGiven = True
                 g.error('No http_server_support: can not import mod_http plugin')
                 self.setOption('http_server_support',False)
@@ -1526,7 +1571,7 @@ class RstCommands:
 
         All such options default to False.
         '''
-        d = self.nodeOptionDict.get(p.v, {} )
+        d = self.dd.get(p.v, {} )
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
             #g.trace('%24s %8s %s' % (ivar,val,p.h))
@@ -1690,7 +1735,7 @@ class RstCommands:
                 f = open(fn,'wb') # Bug fix: use 'wb'
                 f.write(s)
                 f.close()
-                self.report(fn)
+                self.report(fn,p)
                 # self.http_endTree(fn,p,justOneFile=justOneFile)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self,s):
@@ -1746,7 +1791,7 @@ class RstCommands:
             s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
         f.write(s)
         f.close()
-        self.report(fn)
+        self.report(fn,p)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils (sets argv) & helper
     def writeToDocutils (self,p,s,ext):
         '''Send s to docutils using the writer implied by ext and return the result.'''
@@ -1757,7 +1802,7 @@ class RstCommands:
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
         # Compute the args list if the stylesheet path does not exist.
-        styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+        styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
         if ext == '.pdf':
             module = g.importFromPath(
                 moduleName = 'leo_pdf',
@@ -1839,12 +1884,11 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs (self,s=None):
+    def handleMissingStyleSheetArgs (self,p,s=None):
         '''
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
         '''
-        p = self.rootNode
         force = False
         if force:
             # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
@@ -1920,9 +1964,8 @@ class RstCommands:
         '''return s converted to an encoded string.'''
         return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
     #@+node:ekr.20090502071837.91: *4* rst.report
-    def report (self,name):
+    def report (self,name,p):
         '''Issue a report to the log pane.'''
-        p = self.rootNode
         if self.getOption(p,'verbose'):
             name = self.c.os_path_finalize(name)
             g.blue('wrote: %s' % (name))

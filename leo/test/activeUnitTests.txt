@@ -280,6 +280,7 @@ def report (self,expected,got):
 def run(self):
     '''run an rst test.'''
     import sys
+    import leo.core.leoRst as leoRst
     if not sys.platform.startswith('win') and g.isPython3: return
     try:
         import docutils
@@ -294,7 +295,10 @@ def run(self):
     c,p = self.c,self.p
     rc = c.rstCommands
     expected,got,source = self.setup()
-    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
+    root = source.firstChild()
+    if leoRst.new_settings:
+        rc.preprocessTree(root)
+    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
     rst = clean(rc.source)
     html = clean(rc.stringOutput)
     assert rst,'rst'
@@ -16079,23 +16083,19 @@ it has two lines.
 #@+node:ekr.20100813100841.5829: *5* @test code_mode: show_options_doc_parts
 #@+node:ekr.20091219121039.5065: *4* @test c.rstCommands.handleMissingStyleSheetArgs
 x = c.rstCommands
-
-result = x.handleMissingStyleSheetArgs(s=None)
+result = x.handleMissingStyleSheetArgs(p,s=None)
 assert result == {},'expected {}, got %s' % result
-
 expected = {
     'documentoptions':'[english,12pt,lettersize]',
     'language':'ca',
     'use-latex-toc':'1',
 }
-
 for s in (
     '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
     '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
     '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
 ):
-
-    result = x.handleMissingStyleSheetArgs(s=s)
+    result = x.handleMissingStyleSheetArgs(p,s=s)
     assert result == expected,'expected %s\ngot %s' % (expected,result)
 #@+node:ekr.20111103213154.3823: *4* @test c.rstCommands.writeToDocutils: pdf
 @first # -*- coding: utf-8 -*-
@@ -17607,8 +17607,9 @@ This is test.html
 section
 *******
 
-This is a doc part
+@ This is a doc part
 it has two lines.
+This is the body of the section.
 
 #@+node:ekr.20100827182529.6848: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
@@ -17868,8 +17869,9 @@ hr { /* EKR */
 <p>This is test.html</p>
 <div class="section" id="section">
 <h1>section</h1>
-<p>This is a doc part
-it has two lines.</p>
+<p>&#64; This is a doc part
+it has two lines.
+This is the body of the section.</p>
 </div>
 </div>
 </body>
@@ -18189,8 +18191,9 @@ This is test.html
 section
 +++++++
 
-This is a doc part
+@ This is a doc part
 it has two lines.
+This is the body of the section.
 
 #@+node:ekr.20100827182529.6851: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
@@ -18450,8 +18453,9 @@ hr { /* EKR */
 <p>This is test.html</p>
 <div class="section" id="section">
 <h1>section</h1>
-<p>This is a doc part
-it has two lines.</p>
+<p>&#64; This is a doc part
+it has two lines.
+This is the body of the section.</p>
 </div>
 </div>
 </body>
