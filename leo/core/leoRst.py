@@ -70,6 +70,7 @@ else:
     StringIO = StringIO.StringIO
 # import sys
 # import tempfile
+import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20090502071837.12: ** code_block
@@ -137,11 +138,13 @@ class RstCommands:
 
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
-    #@+node:ekr.20090502071837.35: *4* rst.ctor
+    #@+node:ekr.20090502071837.35: *4*  rst.ctor
     def __init__ (self,c):
         '''Ctor for the RstCommand class.'''
         global SilverCity
         self.c = c
+        # Debugging and statistics.
+        self.debug = c.config.getBool('rst3_debug',default=False)
         # Warnings flags.
         self.silverCityWarningGiven = False
         self.httpWarningGiven = False
@@ -149,7 +152,7 @@ class RstCommands:
         self.dd = {}
             # A dict of dict. Keys are vnodes.
             # Values are dicts of settings defined in that vnode *only*.
-        self.d0 = self.createDefaultOptionsDict()
+        self.d0 = self.createD0()
             # Keys are vnodes, values are optionsDict's.
         if new_settings:
             pass # getOption now searches dicts.
@@ -200,13 +203,70 @@ class RstCommands:
         self.trialWrite = False
             # True if doing a trialWrite.
         # Complete the init.
-        self.debug = c.config.getBool('rst3_debug',default=False)
         if new_settings:
-            pass
+            self.updateD0FromSettings()
         else:
             self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
 
+    #@+node:ekr.20090502071837.42: *4* rst.createD0
+    def createD0(self):
+        '''Create the default options dict.'''
+        d = {
+            # Reporting options...
+            'debug': False,  # True: enables debug output.
+            'silent': False, # True: suppresses report()
+            'verbose':True,  # True: rst.report() sends to log.
+            # Http options...
+            'clear_http_attributes': False,
+            'http_server_support': False,
+            'http_attributename': 'rst_http_attribute',
+            'node_begin_marker': 'http-node-marker-',
+            # Path options...
+            'default_path': None,
+                # Must be None, not ''.
+                # computeOutputFileName() uses it instead of self.path.
+            'stylesheet_name': 'default.css',
+            'stylesheet_path': None, # Must be None, not ''.
+            'stylesheet_embed': True,
+            'publish_argv_for_missing_stylesheets': None,
+            # Code generation options...
+            'call_docutils': True,
+            'code_block_string': '',
+            'number_code_lines': True,
+            'underline_characters': '''#=+*^~"'`-:><_''',
+            'write_intermediate_file': False,
+                # Used only if generate_rst is True.
+            'write_intermediate_extension': '.txt',
+            # Mode options...
+            'code_mode': False,
+                # True: generate rst markup from @code and @doc parts.
+            'doc_only_mode': False,
+                # True: generate only from @doc parts.
+            'generate_rst': True,
+                # True: generate rst markup. False: generate plain text.
+            'generate_rst_header_comment': True,
+                # True generate header comment (requires generate_rst option)
+            # Formatting options that apply to both code and rst modes....
+            'expand_noweb_references': False,
+            'ignore_noweb_definitions': False,
+            'expand_noweb_recursively': True,
+            'show_headlines': True,  # Can be set by @rst-no-head headlines.
+            'show_organizer_nodes': True,
+            'show_options_nodes': False,
+            'show_sections': True,
+            'strip_at_file_prefixes': True,
+            'show_doc_parts_in_rst_mode': True,
+            # Formatting options that apply only to code mode.
+            'show_doc_parts_as_paragraphs': False,
+            'show_leo_directives': True,
+            'show_markup_doc_parts': False,
+            'show_options_doc_parts': False,
+        }
+        # Check that all dictionary keys are already munged.
+        for key in sorted(d.keys()):
+            assert key == self.munge(key),key
+        return d
     #@+node:ekr.20090511055302.5792: *4* rst.getPublicCommands
     def getPublicCommands(self):
         '''Add the names of commands defined in this file to c.commandsDict'''
@@ -232,21 +292,34 @@ class RstCommands:
         ]
     #@+node:ekr.20090502071837.40: *4* rst.munge
     def munge (self,name):
-
         '''Convert an option name to the equivalent ivar name.'''
-
         i = 3 if name.startswith('rst') else 0
-
         while i < len(name) and name[i].isdigit():
             i += 1
-
         if i < len(name) and name[i] == '_':
             i += 1
-
         s = name[i:].lower()
         s = s.replace('-','_')
-
         return s
+    #@+node:ekr.20150320033317.10: *4* rst.updateD0FromSettings
+    def updateD0FromSettings(self):
+        '''Update entries in self.d0 from user seettings.'''
+        trace = False and not g.unitTesting
+        c,d = self.c,self.d0
+        table = (
+            ('@bool',c.config.getBool),
+            ('@string',c.config.getString),
+        )
+        for key in sorted(d):
+            for kind,f in table:
+                val = f('rst3_'+key)
+                if val is not None:
+                    old = d.get(key)
+                    if val != old:
+                        if trace: g.trace('%-7s %30s old: %20s new: %s' % (
+                            kind,key,old,val))
+                        d[key] = val
+                    break
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
     def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
@@ -462,16 +535,20 @@ class RstCommands:
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     def rst3 (self,event=None):
         '''Write all @rst nodes.'''
+        t1 = time.time()
         self.rst_nodes = []
         if new_settings:
             self.initSettings(self.c.p)
         self.processTopTree(self.c.p)
+        # Time taken to generate all Leo's docs, in silent mode:
+        # old code: 1.6 sec. new code: 0.9 sec.
+        t2 = time.time()
+        g.es_print('rst3: %4.2f sec.' % (t2-t1))
         return self.rst_nodes # A list of positions.
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree (self,p,justOneFile=False):
 
         current = p.copy()
-
         # This strange looking code looks up and down the tree for @rst nodes.
         for p in current.self_and_parents():
             h = p.h
@@ -483,7 +560,6 @@ class RstCommands:
                 break
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
-        g.blue('done')
     #@+node:ekr.20090502071837.63: *5* rst.processTree
     def processTree(self,p,ext=None,toString=False,justOneFile=False):
         '''
@@ -1032,10 +1108,10 @@ class RstCommands:
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
     def writeNode (self,p):
         '''Format a node according to the options presently in effect.'''
+        self.initCodeBlockString(p)
         if new_settings:
             pass
         else:
-            self.initCodeBlockString(p)
             self.scanAllOptions(p)
         if 0:
             g.trace('%24s code_mode %s' % (p.h,self.getOption(p,'code_mode')))
@@ -1147,7 +1223,7 @@ class RstCommands:
         if new_settings:
             pass # Done in caller.
         else:
-            self.createDefaultOptionsDict()
+            self.createD0()
             self.dd = {}
             self.scanAllOptions(p)
             self.init_write(p)
@@ -1193,61 +1269,6 @@ class RstCommands:
                 return False
         return True
     #@+node:ekr.20090502071837.41: *3* rst.Options
-    #@+node:ekr.20090502071837.42: *4* rst.createDefaultOptionsDict
-    def createDefaultOptionsDict(self):
-        '''Create the default options dict.'''
-        # Important: the dictionary keys must be munged names.
-        d = {
-            # Http options...
-            'clear_http_attributes': False,
-            'http_server_support': False,
-            'http_attributename': 'rst_http_attribute',
-            'node_begin_marker': 'http-node-marker-',
-            # Path options...
-            'default_path': None,
-                # Must be None, not ''.
-                # computeOutputFileName() uses it instead of self.path.
-            'stylesheet_name': 'default.css',
-            'stylesheet_path': None, # Must be None, not ''.
-            'stylesheet_embed': True,
-            'publish_argv_for_missing_stylesheets': None,
-            # Global options...
-            'call_docutils': True,
-            'debug': False,
-                # True: enables debug output.
-            'code_block_string': '',
-            'number_code_lines': True,
-            'underline_characters': '''#=+*^~"'`-:><_''',
-            'verbose':True, # True: enables rst.report()
-            'write_intermediate_file': False,
-                # Used only if generate_rst is True.
-            'write_intermediate_extension': '.txt',
-            # Mode options...
-            'code_mode': False,
-                # True: generate rst markup from @code and @doc parts.
-            'doc_only_mode': False,
-                # True: generate only from @doc parts.
-            'generate_rst': True,
-                # True: generate rst markup. False: generate plain text.
-            'generate_rst_header_comment': True,
-                # True generate header comment (requires generate_rst option)
-            # Formatting options that apply to both code and rst modes....
-            'expand_noweb_references': False,
-            'ignore_noweb_definitions': False,
-            'expand_noweb_recursively': True,
-            'show_headlines': True,  # Can be set by @rst-no-head headlines.
-            'show_organizer_nodes': True,
-            'show_options_nodes': False,
-            'show_sections': True,
-            'strip_at_file_prefixes': True,
-            'show_doc_parts_in_rst_mode': True,
-            # Formatting options that apply only to code mode.
-            'show_doc_parts_as_paragraphs': False,
-            'show_leo_directives': True,
-            'show_markup_doc_parts': False,
-            'show_options_doc_parts': False,
-        }
-        return d
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict & dumpSettings
     def dumpDict(self,d,tag):
         '''Dump the given settings dict.'''
@@ -1264,13 +1285,15 @@ class RstCommands:
     #@+node:ekr.20090502071837.44: *4* rst.getOption
     def getOption (self,p,name):
         '''Return the value of the named option at node p.'''
+        name = self.munge(name)
         trace = False and not g.unitTesting
+        assert p,g.callers()
+            # We may as well fail here.
         if new_settings:
-            assert p,g.callers()
-                # We may as well fail here.
-            # Do not munge names.
+
             def dump(kind,p,val):
-                if trace: g.pr('getOption: %7s %30s %-15r %s' % (kind,name,val,p.h))
+                if trace:
+                    g.pr('getOption: %7s %30s %-15r %s' % (kind,name,val,p.h))
 
             # 1. Search scriptSettingsDict.
             d = self.scriptSettingsDict
@@ -1297,8 +1320,9 @@ class RstCommands:
             return val # May be None.
         else:
             # Munging names here is safe because setOption munges.
-            # g.trace(name,self.optionsDict.get(self.munge(name)))
-            return self.optionsDict.get(self.munge(name))
+            val = self.optionsDict.get(name)
+            if trace: g.trace(name,repr(val))
+            return val
     #@+node:ekr.20150319210537.1: *4* rst.setOption (to be removed)
     def setOption (self,name,val,tag=''):
         '''Put an option into self.optionsDict.'''
@@ -1966,9 +1990,11 @@ class RstCommands:
     #@+node:ekr.20090502071837.91: *4* rst.report
     def report (self,name,p):
         '''Issue a report to the log pane.'''
-        if self.getOption(p,'verbose'):
-            name = self.c.os_path_finalize(name)
-            g.blue('wrote: %s' % (name))
+        if self.getOption(p,'silent'):
+            return
+        name = self.c.os_path_finalize(name)
+        f = g.blue if self.getOption(p,'verbose') else g.pr
+        f('wrote: %s' % (name))
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment (self,s):
 

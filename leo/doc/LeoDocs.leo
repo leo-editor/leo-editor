@@ -44,16 +44,17 @@
 <v t="ekr.20131009050634.17630"><vh>@bool rst3_show_headlines = True</vh></v>
 <v t="ekr.20131009052848.6456"><vh>@bool rst3_show_leo_directives = True</vh></v>
 <v t="ekr.20131009050634.17631"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20131009050634.17622"><vh>@bool rst3_verbose = True</vh></v>
+<v t="ekr.20150320085538.4"><vh>@bool rst3_silent = True</vh></v>
+<v t="ekr.20131009050634.17622"><vh>@bool rst3_verbose = False</vh></v>
 <v t="ekr.20131009050634.17623"><vh>@bool rst3_write_intermediate_file = True</vh></v>
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 <v t="ekr.20131009050634.17616"><vh>@string rst3_stylesheet_path = ..\doc</vh></v>
 <v t="ekr.20131027064821.18685"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
 <v t="ekr.20050812123002.1"><vh>Http options...</vh>
 <v t="ekr.20050812123002.2"><vh>@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20050812123002.3"><vh>@string rst3_http_attributename = 'rst_http_attribute'</vh></v>
+<v t="ekr.20050812123002.3"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
 <v t="ekr.20050812123002.4"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20050812123002.5"><vh>@string rst3_node_begin_marker = 'http-node-marker-'</vh></v>
+<v t="ekr.20050812123002.5"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
 </v>
 </v>
 </v>
@@ -160,7 +161,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150319142303.4"></v>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -12595,7 +12595,7 @@ Appendices
 </t>
 <t tx="ekr.20131009050634.17610"></t>
 <t tx="ekr.20131009050634.17616"></t>
-<t tx="ekr.20131009050634.17622"></t>
+<t tx="ekr.20131009050634.17622"># True: rst.report() sends output to log pane and the console pane.</t>
 <t tx="ekr.20131009050634.17623"># Used only if generate_rst is True.</t>
 <t tx="ekr.20131009050634.17625"># True: generate rst markup from @code and @doc parts.</t>
 <t tx="ekr.20131009050634.17627"># True: generate rst markup. False: generate plain text.</t>
@@ -18878,6 +18878,7 @@ untangle
 untangle-all
 untangle-marked</t>
 <t tx="ekr.20150319142303.4"></t>
+<t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
