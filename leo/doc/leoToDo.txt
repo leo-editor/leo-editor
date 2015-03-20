@@ -7,7 +7,6 @@
 @language rest
 @wrap
 
-.. @+node:ekr.20150319125851.4: *3* Better debugging for rst command
 .. @+node:ekr.20150319055953.12: *3* Should updating an @clean node mark it dirty?
 Changed 3.
 .. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>

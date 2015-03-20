@@ -175,12 +175,14 @@ class RstCommands:
             # Forced underlines for writeAtAutoFile.
         self.leoDirectivesList = g.globalDirectiveList
         self.encoding = 'utf-8'
+            # The encoding from any @encoding directive. Set by init_write.
         self.rst_nodes = []
             # The list of positions for all @rst nodes.
         self.outputFile = None
             # The open file being written.
         self.path = ''
-            # The path from any @path directive.
+            # The path from any @path directive. Set by init_write.
+            # May be overridden (in computeOutputFileName() by rst3_default_path option.
         self.rootNode = None
         self.source = None
             # The written source as a string.
@@ -265,6 +267,7 @@ class RstCommands:
         self.topNode = p.copy()
         self.topLevel = p.level()
         if new_settings:
+            self.init_write(p) # sets self.path and self.encoding.
             self.initSettings(p,script_d=scriptSettingsDict)
         else:    
             # Capture the settings, munging all settings.
@@ -275,7 +278,7 @@ class RstCommands:
                     self.scriptSettingsDict[self.munge(key)] = d.get(key)
             # Init options...
             self.preprocessTree(p)
-            self.init_write(p) # scanAllDirectives sets self.path and self.encoding.
+            self.init_write(p) # sets self.path and self.encoding.
             self.scanAllOptions(p) # Settings for p are valid after this call.
         
         callDocutils = self.getOption(p,'call_docutils')
@@ -483,11 +486,10 @@ class RstCommands:
         g.blue('done')
     #@+node:ekr.20090502071837.63: *5* rst.processTree
     def processTree(self,p,ext=None,toString=False,justOneFile=False):
-
-        '''Process all @rst nodes in a tree.
+        '''
+        Process all @rst nodes in a tree.
         ext is the docutils extention: it's useful for scripts and unit tests.
         '''
-
         trace = False and not g.unitTesting
         if trace: g.trace(p.h)
         self.preprocessTree(p)
@@ -502,7 +504,11 @@ class RstCommands:
                     if trace: g.trace('found: %s',p.h)
                     found = True
                     self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
-                    self.scanAllOptions(p) # Restore the top-level verbose setting.
+                    if new_settings:
+                        pass
+                    else:
+                        self.scanAllOptions(p)
+                            # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     p.moveToNodeAfterTree()
@@ -535,10 +541,10 @@ class RstCommands:
         ext = ext.lower()
         if not ext.startswith('.'): ext = '.' + ext
         if new_settings:
-            pass
+            self.init_write(p) # sets self.path and self.encoding.
         else:
             # Init options...
-            self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+            self.init_write(p) # Sets self.path and self.encoding.
             self.scanAllOptions(p) # Settings for p are valid after this call.
         callDocutils = self.getOption(p,'call_docutils')
         writeIntermediateFile = self.getOption(p,'write_intermediate_file')
@@ -565,7 +571,7 @@ class RstCommands:
         n_tot = p.numberOfChildren()
         n = 1
         for child in p.children():
-            self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+            self.init_write(p) # sets self.path and self.encoding.
             if new_settings:
                 pass
             else:
@@ -586,15 +592,11 @@ class RstCommands:
                 writeIntermediateFile=self.getOption(p,'write_intermediate_file'))
     #@+node:ekr.20100822174725.5836: *6* rst.writeSlideTitle
     def writeSlideTitle (self,title,n,n_tot):
-
         '''Write the title, underlined with the '#' character.'''
-
         if n != 1:
             title = '%s (%s of %s)' % (title,n,n_tot)
-
         width = max(4,len(g.toEncodedString(title,
             encoding=self.encoding,reportErrors=False)))
-
         self.write('%s\n%s \n\n' % (title,('#'*width)))
     #@+node:ekr.20090502071837.58: *5* rst.write methods
     #@+node:ekr.20090502071837.68: *6* rst.getDocPart
@@ -1118,6 +1120,7 @@ class RstCommands:
         The caller will close the output file.
         '''
         if new_settings:
+            self.init_write(p) # sets self.path and self.encoding.
             self.initSettings(p)
         try:
             self.trialWrite = trialWrite
@@ -1138,11 +1141,14 @@ class RstCommands:
     def initAtAutoWrite(self,p,fileName,outputFile):
 
         # Set up for a standard write.
-        self.createDefaultOptionsDict()
-        self.nodeOptionDict = {}
-        self.scanAllOptions(p)
-        self.init_write(p)
-        self.preprocessTree(p) # Allow @ @rst-options, for example.
+        if new_settings:
+            pass # Done in caller.
+        else:
+            self.createDefaultOptionsDict()
+            self.nodeOptionDict = {}
+            self.scanAllOptions(p)
+            self.init_write(p)
+            self.preprocessTree(p) # Allow @ @rst-options, for example.
         # Do the overrides.
         self.outputFile = outputFile
         # Set underlining characters.
@@ -1163,7 +1169,7 @@ class RstCommands:
                     underlines1 = underlines1 + ch
         else:
             underlines1 = default_underlines
-        self.atAutoWriteUnderlines   = underlines2 + underlines1
+        self.atAutoWriteUnderlines = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
     #@+node:ekr.20091228080620.6499: *5* rst.isSafeWrite
@@ -1186,33 +1192,40 @@ class RstCommands:
     #@+node:ekr.20090502071837.41: *3* rst.Options
     #@+node:ekr.20090502071837.42: *4* rst.createDefaultOptionsDict
     def createDefaultOptionsDict(self):
-
-        # Important: these must be munged names.
+        '''Create the defaultOptionsDict.'''
+        # Important: the dictionary keys must be munged names.
         self.defaultOptionsDict = {
             # Http options...
-            'clear_http_attributes':   False,
-            'http_server_support':     False,
-            'http_attributename':      'rst_http_attribute',
-            'node_begin_marker':       'http-node-marker-',
+            'clear_http_attributes': False,
+            'http_server_support': False,
+            'http_attributename': 'rst_http_attribute',
+            'node_begin_marker': 'http-node-marker-',
             # Path options...
-            'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+            'default_path': None,
+                # Must be None, not ''.
+                # computeOutputFileName() uses it instead of self.path.
             'stylesheet_name': 'default.css',
-            'stylesheet_path': None, # Bug fix: must be None, not ''.
+            'stylesheet_path': None, # Must be None, not ''.
             'stylesheet_embed': True,
             'publish_argv_for_missing_stylesheets': None,
             # Global options...
-            'call_docutils': True, # 2010/08/05
-            'debug': False, # True: enables debug output.
+            'call_docutils': True,
+            'debug': False,
+                # True: enables debug output.
             'code_block_string': '',
             'number_code_lines': True,
             'underline_characters': '''#=+*^~"'`-:><_''',
             'verbose':True, # True: enables rst.report()
-            'write_intermediate_file': False, # Used only if generate_rst is True.
+            'write_intermediate_file': False,
+                # Used only if generate_rst is True.
             'write_intermediate_extension': '.txt',
             # Mode options...
-            'code_mode': False, # True: generate rst markup from @code and @doc parts.
-            'doc_only_mode': False, # True: generate only from @doc parts.
-            'generate_rst': True, # True: generate rst markup.  False: generate plain text.
+            'code_mode': False,
+                # True: generate rst markup from @code and @doc parts.
+            'doc_only_mode': False,
+                # True: generate only from @doc parts.
+            'generate_rst': True,
+                # True: generate rst markup. False: generate plain text.
             'generate_rst_header_comment': True,
                 # True generate header comment (requires generate_rst option)
             # Formatting options that apply to both code and rst modes....
@@ -1508,13 +1521,12 @@ class RstCommands:
                 self.setOption('http_server_support',False)
     #@+node:ekr.20090502071837.56: *5* rst.handleSingleNodeOptions
     def handleSingleNodeOptions (self,p):
+        '''
+        Init the settings of single-node options from the nodeOptionsDict.
 
-        '''Init the settings of single-node options from the tnodeOptionsDict.
-
-        All such options default to False.'''
-
+        All such options default to False.
+        '''
         d = self.nodeOptionDict.get(p.v, {} )
-
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
             #g.trace('%24s %8s %s' % (ivar,val,p.h))
@@ -1622,8 +1634,18 @@ class RstCommands:
                 yield (p1.copy(),attr)
     #@+node:ekr.20090502071837.60: *4* rst.init_write
     def init_write (self,p):
-        '''Init options for a write operation.'''
-        self.initOptionsFromSettings() # Still needed.
+        '''
+        Init options self.encoding and self.path ivars.
+        
+        **Note**: init_write() and init_settings() may be called in any order.
+        Order doesn't matter because:
+        1. computeOutputFileName() "overrides" self.path with an rst3 option.
+        2. Nothing overides the self.encoding setting.
+        '''
+        if new_settings:
+            pass
+        else:
+            self.initOptionsFromSettings() # Still needed.
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
         c = self.c
@@ -1895,9 +1917,7 @@ class RstCommands:
         return path
     #@+node:ekr.20090502071837.90: *4* rst.encode
     def encode (self,s):
-
-        # g.trace(self.encoding)
-
+        '''return s converted to an encoded string.'''
         return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
     #@+node:ekr.20090502071837.91: *4* rst.report
     def report (self,name):

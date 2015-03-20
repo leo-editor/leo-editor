@@ -431,7 +431,6 @@
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
 <v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
-<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
 <v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
 <v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
@@ -4421,7 +4420,6 @@ lcd2c" "
 </t>
 <t tx="ekr.20080811105020.2">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
-<t tx="ekr.20080916092417.1"></t>
 <t tx="ekr.20080916094157.1"></t>
 <t tx="ekr.20080921060401.3"></t>
 <t tx="ekr.20080930072519.3"></t>
