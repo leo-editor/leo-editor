@@ -341,7 +341,6 @@ class RstCommands:
         self.topNode = p.copy()
         self.topLevel = p.level()
         if new_settings:
-            self.init_write(p) # sets self.path and self.encoding.
             self.initSettings(p,script_d=scriptSettingsDict)
         else:    
             # Capture the settings, munging all settings.
@@ -1199,7 +1198,6 @@ class RstCommands:
         The caller will close the output file.
         '''
         if new_settings:
-            self.init_write(p) # sets self.path and self.encoding.
             self.initSettings(p)
         try:
             self.trialWrite = trialWrite
@@ -1357,6 +1355,9 @@ class RstCommands:
         '''
         assert new_settings
         self.scriptSettingsDict = script_d or {}
+        self.init_write(p)
+            # sets self.path and self.encoding.
+            # This does *not* conflict with any settings dict.
         self.preprocessTree(p)
 
         if 0: ### To be handled somewhere
@@ -1703,14 +1704,7 @@ class RstCommands:
                 yield (p1.copy(),attr)
     #@+node:ekr.20090502071837.60: *4* rst.init_write
     def init_write (self,p):
-        '''
-        Init options self.encoding and self.path ivars.
-        
-        **Note**: init_write() and init_settings() may be called in any order.
-        Order doesn't matter because:
-        1. computeOutputFileName() "overrides" self.path with an rst3 option.
-        2. Nothing overides the self.encoding setting.
-        '''
+        '''Init self.encoding and self.path ivars.'''
         if new_settings:
             pass
         else:
