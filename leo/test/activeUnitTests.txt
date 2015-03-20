@@ -16121,7 +16121,7 @@ if docutils:
 
     assert module
     s = '''This is a test.'''
-    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    result = c.rstCommands.writeToDocutils(p,s,'.pdf')
     # print(result)
     assert result,result
 elif 0:
