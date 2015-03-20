@@ -147,7 +147,6 @@ class RstCommands:
         self.debug = c.config.getBool('rst3_debug',default=False)
         # Warnings flags.
         self.silverCityWarningGiven = False
-        self.httpWarningGiven = False
         # Settings.
         self.dd = {}
             # A dict of dict. Keys are vnodes.
@@ -320,6 +319,10 @@ class RstCommands:
                             kind,key,old,val))
                         d[key] = val
                     break
+        # Special warning for mod_http plugin.
+        if not mod_http and c.config.getBool('http_server_support'):
+            g.error('No http_server_support: can not import mod_http plugin')
+            d['http_server_support'] = False
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
     def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
@@ -1359,14 +1362,6 @@ class RstCommands:
             # sets self.path and self.encoding.
             # This does *not* conflict with any settings dict.
         self.preprocessTree(p)
-
-        if 0: ### To be handled somewhere
-            if not mod_http and not self.httpWarningGiven:
-                c = self.c
-                if c.config.getBool('http_server_support'):
-                    self.httpWarningGiven = True
-                    g.error('No http_server_support: can not import mod_http plugin')
-                    self.setOption('http_server_support',False)
     #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
     def preprocessTree (self,root):
         '''Init settings in root, its subtree and all pareents.'''
