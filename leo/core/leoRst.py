@@ -14,8 +14,9 @@ To generate documents from rST files, Python's docutils_ module must be
 installed. The code will use the SilverCity_ syntax coloring package if is is
 available.'''
 #@-<< docstring >>
-if 0:
-    bwm_file = open("bwm_file", "w")
+
+# A debugging file.  No longer used.
+# bwm_file = open("bwm_file", "w")
 
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
@@ -115,20 +116,24 @@ if docutils:
 else:
     code_block.options = {}
 #@+node:ekr.20090502071837.33: ** class RstCommands
-#@+at This plugin optionally stores information for the http plugin. Each node can
-# have one additional attribute, with the name rst_http_attributename, which is a
-# list. The first three elements are stack of tags, the rest is html code::
-# 
-#     [<tag n start>, <tag n end>, <other stack elements>, <html line 1>, <html line 2>, ...]
-# 
-# <other stack elements has the same structure::
-# 
-#     [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
-#@@c
-
 class RstCommands:
+    '''
+    A class to write rst markup in Leo outlines.
+    
+    This class optionally stores information for the http plugin.
+    Each node may have an rst_http_attributename attribute, a list.
+    The first three elements are a stack of tags, the rest is html code::
 
-    '''A class to write rst markup in Leo outlines.'''
+        [
+            <tag n start>, <tag n end>, <other stack elements>,
+            <html line 1>, <html line 2>, ...
+        ]
+
+    <other stack elements> has the same structure::
+
+        [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
+
+    '''
 
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
@@ -1397,13 +1402,12 @@ class RstCommands:
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.
         '''
-        trace = True and not g.unitTesting
         # A fine point: body options over-ride headline options.
         d = self.scanHeadlineForOptions(p)
-        if trace and d:
+        if self.debug and d:
             self.dumpDict(d,'headline options: %s' % (p.h))
         d2 = self.scanForOptionDocParts(p,p.b)
-        if trace and d2:
+        if self.debug and d2:
             self.dumpDict(d2,'option doc parts: %s' % (p.h))
         d.update(d2)
         return d
@@ -1873,10 +1877,9 @@ class RstCommands:
     #@+node:ekr.20090502071837.89: *4* rst.computeOutputFileName
     def computeOutputFileName (self,fn):
         '''Return the full path to the output file.'''
-        p = self.rootNode
-        assert p
-        openDirectory = self.c.frame.openDirectory
-        default_path = self.getOption(p,'default_path')
+        c = self.c
+        openDirectory = c.frame.openDirectory
+        default_path = self.getOption(c.p,'default_path')
         if default_path:
             path = g.os_path_finalize_join(self.path,default_path,fn)
         elif self.path:
@@ -1885,8 +1888,10 @@ class RstCommands:
             path = g.os_path_finalize_join(self.path,openDirectory,fn)
         else:
             path = g.os_path_finalize_join(fn)
-        # g.trace('openDirectory %r\ndefault_path %r\npath %r' % (
-            # openDirectory,default_path,path))
+        if self.debug and not g.unitTesting:
+            g.trace('openDirectory:',repr(openDirectory))
+            g.trace('default_path: ',repr(default_path))
+            g.trace('path:         ',repr(path))
         return path
     #@+node:ekr.20090502071837.90: *4* rst.encode
     def encode (self,s):
@@ -2104,10 +2109,10 @@ class HtmlParserClass (LinkAnchorParserClass):
         if is_node_marker and not self.clear_http_attributes:
             self.last_position = self.rst.http_map[is_node_marker]
             if is_node_marker != self.last_marker:
-                if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
+                # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
                 mod_http.set_http_attribute(self.rst.http_map[is_node_marker], self.stack)
                 self.last_marker = is_node_marker
-                #bwm: last_marker is not needed?
+                # bwm: last_marker is not needed?
         self.stack = self.stack[2]
     #@+node:ekr.20120219194520.10455: *4* feed
     def feed(self, line):
@@ -2151,14 +2156,14 @@ class AnchorHtmlParserClass (LinkAnchorParserClass):
             self.anchor_map[self.current_file] = (self.current_file, self.p)
             simple_name = g.os_path_split(self.current_file)[1]
             self.anchor_map[simple_name] = self.anchor_map[self.current_file]
-            if bwm_file: print >> bwm_file, "anchor(1): current_file:", self.current_file, "position:", self.p, "Simple name:", simple_name
+            # if bwm_file: print >> bwm_file, "anchor(1): current_file:", self.current_file, "position:", self.p, "Simple name:", simple_name
             # Not sure what to do here, exactly. Do I need to manipulate
             # the pathname?
 
         for name, value in attrs:
             if name == 'name' or tag == 'span' and name == 'id':
                 if not value.startswith(self.node_begin_marker):
-                    if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
+                    # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
                     self.anchor_map[value] = (self.current_file, self.p.copy())
     #@-others
 #@+node:ekr.20120219194520.10459: *3* class LinkHtmlParserClass (LinkAnchorParserClass)
@@ -2187,7 +2192,7 @@ class LinkHtmlparserClass (LinkAnchorParserClass):
              anchor -> p
             Update the list of replacements for the document.
         '''
-        if bwm_file: print >> bwm_file, "Is link?", tag, attrs
+        # if bwm_file: print >> bwm_file, "Is link?", tag, attrs
         if not self.is_link(tag, attrs):
             return
 
@@ -2200,13 +2205,13 @@ class LinkHtmlparserClass (LinkAnchorParserClass):
                     href_a = href_parts[0]
                 else:
                     href_a = href_parts[1]
-                if bwm_file: print >> bwm_file, "link(1):", name, value, href_a
+                # if bwm_file: print >> bwm_file, "link(1):", name, value, href_a
                 if not href_a.startswith(marker):
                     if href_a in self.anchor_map:
                         href_file, href_node = self.anchor_map[href_a]
                         http_node_ref = mod_http.node_reference(href_node)
                         line, column = self.getpos()
-                        if bwm_file: print >> bwm_file, "link(2):", line, column, href, href_file, http_node_ref
+                        # if bwm_file: print >> bwm_file, "link(2):", line, column, href, href_file, http_node_ref
                         self.replacements.append((line, column, href, href_file, http_node_ref))
     #@+node:ekr.20120219194520.10462: *4* get_replacements
     def get_replacements(self):

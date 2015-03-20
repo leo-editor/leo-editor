@@ -36,7 +36,7 @@
 <v t="ekr.20050812123002"><vh>@page rst3 options</vh>
 <v t="ekr.20131009050634.17658"><vh>@bool rst3_call_docutils = False</vh></v>
 <v t="ekr.20131009050634.17625"><vh>@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20150319142303.4"><vh>@bool rst3_debug = True</vh></v>
+<v t="ekr.20150319142303.4"><vh>@bool rst3_debug = False</vh></v>
 <v t="ekr.20050812123002.7"><vh>@bool rst3_format_headlines = True</vh></v>
 <v t="ekr.20131009050634.17627"><vh>@bool rst3_generate_rst = True</vh></v>
 <v t="ekr.20131009050634.17610"><vh>@bool rst3_http_server_support = False</vh></v>
@@ -160,6 +160,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20150319142303.4"></v>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
