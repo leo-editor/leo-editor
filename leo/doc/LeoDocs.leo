@@ -161,6 +161,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20050812123002"></v>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -1260,6 +1261,11 @@
 <v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20150320110310.5"><vh>Tests @rst-option/s nodes are pretty feeble</vh>
+<v t="ekr.20150320095805.4"><vh>@rst-option call_docutils = True</vh></v>
+<v t="ekr.20150320095016.4"><vh>@rst-option stylesheet_name = mycss.css</vh></v>
+<v t="ekr.20150320110310.4"><vh>@rst-options</vh></v>
+</v>
 <v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
@@ -18879,6 +18885,11 @@ untangle-all
 untangle-marked</t>
 <t tx="ekr.20150319142303.4"></t>
 <t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
+<t tx="ekr.20150320095016.4"></t>
+<t tx="ekr.20150320095805.4"></t>
+<t tx="ekr.20150320110310.4">call_docutils = True
+stylesheet_name = mycss.css</t>
+<t tx="ekr.20150320110310.5"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

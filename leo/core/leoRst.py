@@ -1115,8 +1115,7 @@ class RstCommands:
             pass
         else:
             self.scanAllOptions(p)
-        if 0:
-            g.trace('%24s code_mode %s' % (p.h,self.getOption(p,'code_mode')))
+        # g.trace('%24s code_mode %s' % (p.h,self.getOption(p,'code_mode')))
         h = p.h.strip()
         if self.getOption(p,'preformat_this_node'):
             self.http_addNodeMarker(p)
@@ -1270,19 +1269,6 @@ class RstCommands:
                 return False
         return True
     #@+node:ekr.20090502071837.41: *3* rst.Options
-    #@+node:ekr.20090502071837.43: *4* rst.dumpDict & dumpSettings
-    def dumpDict(self,d,tag):
-        '''Dump the given settings dict.'''
-        g.trace(tag+'...')
-        for key in sorted(d):
-            g.pr('%20s %s' % (key,d.get(key)))
-
-    def dumpSettings (self):
-        '''Dump all settings in self.optionsDict.'''
-        d = self.optionsDict
-        g.trace('present settings...')
-        for key in sorted(d):
-            g.pr('%20s %s' % (key,d.get(key)))
     #@+node:ekr.20090502071837.44: *4* rst.getOption
     def getOption (self,p,name):
         '''Return the value of the named option at node p.'''
@@ -1405,14 +1391,19 @@ class RstCommands:
     #@+node:ekr.20090502071837.50: *7* rst.scanHeadlineForOptions
     def scanHeadlineForOptions (self,p):
         '''Return a dictionary containing the options implied by p's headline.'''
+        trace = False and not g.unitTesting
         h = p.h.strip()
         if p == self.topNode:
             return {} # Don't mess with the root node.
         elif g.match_word(h,0,'@rst-option'):
             s = h [len('@rst-option'):]
-            return self.scanOption(p,s)
+            d = self.scanOption(p,s)
+            if trace: self.dumpDict(d,'@rst-option')
+            return d
         elif g.match_word(h,0,'@rst-options'):
-            return self.scanOptions(p,p.b)
+            d = self.scanOptions(p,p.b)
+            if trace: self.dumpDict(d,'@rst-options')
+            return d
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
             i = g.skip_id(h,0,chars='@-')
@@ -1440,7 +1431,8 @@ class RstCommands:
                     # Special case: Treat a bare @rst like @rst-no-head
                     if h == '@rst':
                         d ['ignore_this_headline'] = True
-                    # g.trace(repr(h),d)
+                    if trace and option != '@rst':
+                        self.dumpDict(d,p.h)
                     return d
             if h.startswith('@rst'):
                 g.trace('unknown kind of @rst headline',p.h,g.callers(4))
@@ -1498,8 +1490,9 @@ class RstCommands:
             if self.munge(name) in list(self.d0.keys()):
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
-                if trace: g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
-                return { self.munge(name): val }
+                d = { self.munge(name): val }
+                if trace: g.trace('found',p.h)
+                return d
             else:
                 g.error('ignoring unknown option:',name)
                 return {}
@@ -1579,9 +1572,8 @@ class RstCommands:
             # g.trace(key,val)
             self.setOption(key,val,'script')
         # Special case.
-        if not mod_http and not self.httpWarningGiven:
+        if not mod_http:
             if c.config.getBool('http_server_support'):
-                self.httpWarningGiven = True
                 g.error('No http_server_support: can not import mod_http plugin')
                 self.setOption('http_server_support',False)
     #@+node:ekr.20090502071837.56: *5* rst.handleSingleNodeOptions
@@ -1850,8 +1842,10 @@ class RstCommands:
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
         stylesheet_path = g.os_path_finalize_join(
             openDirectory,rel_stylesheet_path)
-        path = g.os_path_finalize_join(
-            stylesheet_path,self.getOption(p,'stylesheet_name'))
+        stylesheet_name = self.getOption(p,'stylesheet_name')
+        assert stylesheet_name
+        g.trace('stylesheet_name',stylesheet_name)
+        path = g.os_path_finalize_join(stylesheet_path,stylesheet_name)
         if self.getOption(p,'stylesheet_embed') == False:
             rel_path = g.os_path_join(
                 rel_stylesheet_path,self.getOption(p,'stylesheet_name'))
@@ -1972,6 +1966,12 @@ class RstCommands:
             g.trace('default_path: ',repr(default_path))
             g.trace('path:         ',repr(path))
         return path
+    #@+node:ekr.20090502071837.43: *4* rst.dumpDict
+    def dumpDict(self,d,tag):
+        '''Dump the given settings dict.'''
+        g.pr(tag+'...')
+        for key in sorted(d):
+            g.pr('  %20s %s' % (key,d.get(key)))
     #@+node:ekr.20090502071837.90: *4* rst.encode
     def encode (self,s):
         '''return s converted to an encoded string.'''
