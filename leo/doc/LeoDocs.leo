@@ -501,7 +501,7 @@
 <v t="ekr.20100809122216.4286"><vh>General options</vh></v>
 <v t="ekr.20050818163826.7"><vh>Headline commands</vh></v>
 <v t="ekr.20050818163826.8"><vh>Option doc parts</vh></v>
-<v t="ekr.20050818163826.9"><vh>Defaults for options</vh></v>
+<v t="ekr.20050818163826.9"><vh>Settings give defaults for options</vh></v>
 <v t="ekr.20050818163826.5"><vh>Http plugin options</vh></v>
 <v t="ekr.20110612104631.16414"><vh>Section expansion options</vh></v>
 </v>
@@ -511,8 +511,8 @@
 <v t="ekr.20060527103630"><vh>Controlling the rst3 command from scripts</vh></v>
 </v>
 <v t="ekr.20050818163826.13"><vh>Further study</vh></v>
-<v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
 <v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
+<v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
 </v>
 </v>
 <v t="ekr.20050912125144"><vh>Plugins</vh>
@@ -1267,7 +1267,6 @@
 <v t="ekr.20150320110310.4"><vh>@rst-options</vh></v>
 </v>
 <v t="EKR.20040524104904.99"></v>
-<v t="ekr.20150320111422.4"><vh>** rewrite rst3 theory of operations</vh></v>
 <v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
@@ -2270,7 +2269,7 @@ Please read the `rst3 tutorial`_ before reading this chapter.
 
 This chapter covers advanced settings and features of the rst3 command. It is for power users only.
 
-Are you sure you want to read this chapter? The tutorial covers everything most people need to know about the rst3 command. Leo's own documentation uses none of the features discussed here.
+*Are you sure you want to read this chapter?* The tutorial covers everything most people need to know about the rst3 command. Leo's own documentation uses none of the features discussed here.
 
 .. contents::
     :depth: 4
@@ -2318,52 +2317,19 @@ The source for ListManagerDocs.html is `wxListManager.leo`_. **Important**: wxLi
 
 This documentation was created using the rst3 command. The source code for this documentation is in LeoDocs.leo. The source code for the rst3 command is in leoRst.py in leoPy.leo.
 </t>
-<t tx="ekr.20050818163826.14">The code for the rst3 command is more complex than usual. Fortunately, the overall organization is straightforward.
+<t tx="ekr.20050818163826.14">Leo 5.1 substantially simplifies the code in leoRst.py. The only rules:
 
-defaultOptionsDict
-    This dictionary represents each rst3 option.
-    To add another option, just add another entry to this dictionary.
-    Keys are the option name, including the `rst3_` prefix.
-    Values are the default value of the option.
-    The hard-coded values in the dictionary may be changed as the result of @settings entries.
+- All top-level commands must call rst.initSettings, which calls rst.preprocessTree.
+- Code that writes body text must call rst.init_write.
 
-processTree
-    processTree is the top-level code that handles one rst root node.
-    It calls preprocessTree to create the **vnodeOptionDict** ivar.
-    processTree then calls either writeNormalTree or writeSpecialTree
-    depending on whether text will be sent to docutils for further processing.
-    These two methods handle mundane details of opening and closing files.
-    Both writeNormalTree and writeSpecialTree call **writeTree** to do the actual work.
+``rst.d0``
+    This dictionary contains the defaults for each option. Keys are the option name, *not* including the ``rst3_`` prefix. Settings in @settings trees update its entries.
+    
+``rst.dd``
+    A dictionary of dictionaries. Keys are vnodes. Values are a dictionary of settings set in that *particular* vnode.
 
-vnodeOptionDict
-    The entries in this dictionary represent the options that are set in one particular node.
-    The keys of vnodeOptionDict are vnodes, the values are anonymous dictionaries.
-    These anonymous inner dictionaries contain the options that are explicitly set at each vnode
-    (and thus each position).
-    Preprocessing the tree this way ensures that each node (headline and body text) is parsed exactly once.
-
-writeTree
-    writeTree first calls **scanAllOptions**, which has the effect of
-    initializing all options. writeTree then calls **writeNode** for each node
-    that will be processed by the rst3 command. Options may cause the rst3 command to
-    skip a node or an entire subtree.
-
-writeNode
-    writeNode first calls **scanAllOptions** to compute the options that are in
-    effect for that *single* node. Once options have been computed, processing the
-    node is straightforward. writeNode calls writeBody and writeHeadline
-    to do the real work. These methods generate or skip text based on various
-    options.
-
-scanAllOptions
-    scanAllOptions recreates the optionsDict ivar to represent *all* the options
-    in effect for *for the particular node being processed by writeNode*. Client
-    code gets these options by calling the getOption method.
-
-    scanAllOptions first inits all options from settings,
-    then updates those options using the anonymous
-    dictionaries contained in the vnodeOptionsDict.
-    scanAllOptions works like g.scanAllDirectives, but the code is much simpler.
+``rst.getOption(p,name)``
+    Searches the ``rst.dd`` and ``rst.d0`` dicts, starting at ``p``, looking for an entry for ``name``. This greatly simplifies the code that creates ``rst.dd``. Surprisingly, this search makes the code about 50% faster.
 </t>
 <t tx="ekr.20050818163826.16">Josef Dalcolmo wrote the initial rst plugin. Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and Steve Zatz made contributions to the rst and rst2 plugins.
 </t>
@@ -2398,36 +2364,20 @@ Here are the rst3 options that support the http plugin:
 
 .. glossary::
 
-http_server_support (default: False)
+``http_server_support (default: False)``
+    A master switch: none of the following options have any effect unless this option is True. If True, the rst3 command does the following:
 
-    A master switch: none of the following options have any effect unless this
-    option is True. If True, the rst3 command does the following:
+- Writes **node markers** in the rst output for use by the http plugin. Node markers are rst named hyperlink targets. By default they look like: ``.. _http-node-marker-N``, where N is a unique node number.
 
-    1. Writes **node markers** in the rst output for use by the http plugin.
-       Node markers are rst named hyperlink targets. By default they look like::
+- Adds additional information to all nodes of the tree being formatted using Leo's unknownAttributes mechanism.
 
-            .. _http-node-marker-N
+``http_attributename (default: rst_http_attribute)``
+    The name of the attribute name written to the ``unknownAttributes`` attribute of each outline node in the rst root tree. The default is ``rst_http_attribute``. It should match this setting: ``@string rst_http_attributename = rst_http_attribute``.
 
-       where N is a unique node number.
+``clear_http_attributes (default: False)``
+    **True**: the rst3 command initially clears the fields specified by `http_attributename`.  
 
-    2. Adds additional information to all nodes of the tree being formatted using
-       Leo's unknownAttributes mechanism.
-
-http_attributename (default: 'rst_http_attribute')
-
-    The name of the attribute name written to the unknownAttributes attribute of
-    each outline node in the rst root tree. The default is
-    'rst_http_attribute'; it should match the following setting of the http
-    plugin::
-
-        @string rst_http_attributename = 'rst_http_attribute'
-
-clear_http_attributes (default: False)
-
-    If True the rst3 command initially clears the fields specified by `http_attributename`.  
-
-node_begin_marker (default: 'http-node-marker-')
-
+``node_begin_marker (default: http-node-marker-)``
     The string used for node markers.
 </t>
 <t tx="ekr.20050818163826.6">.. EKR: This kind of "flexibility" is a really bad idea.
@@ -2468,57 +2418,39 @@ value for each setting.
     :sorted:
 
 ..  @rst-code &lt;section&gt; 
+..      Enter code mode. (Code mode is covered in the advanced topics sections)
+..      Create a section if the show_headlines option is True.
 
-    ..  Enter code mode. (Code mode is covered in the advanced topics sections)
-    ..  Create a section if the show_headlines option is True.
-
-@rst-ignore &lt;ignored-text&gt;
-
+``@rst-ignore &lt;ignored-text&gt;``
     Ignore the node and its descendants.
 
-@rst-ignore-node &lt;ignored-text&gt;
-
+``@rst-ignore-node &lt;ignored-text&gt;``
     Ignore the node, but *not* its descendants.
 
-@rst-ignore-tree &lt;ignored-text&gt;
+``@rst-ignore-tree &lt;ignored-text&gt;``
+    Same as @rst-ignore. Ignore the node and its descendants.
 
-    Same as @rst-ignore.  Ignore the node and its descendants.
+``@rst-no-head &lt;ignored-text&gt;``
+    Ignore the headline but not the body text of this node. *This option has no effect on descendant nodes*.
 
-@rst-no-head &lt;ignored-text&gt;
+``@rst-no-headlines &lt;ignored-text&gt;``
+    Ignore the headline of this node and descendant nodes.
 
-    Ignore the headline but not the body text of this node.
-    This has no effect on descendant nodes.
-
-@rst-no-headlines &lt;ignored-text&gt;
-
-    Ignore all headlines. (Set show_headlines=False)
-
-@rst-option &lt;option&gt; = &lt;value&gt;
-
+``@rst-option &lt;option&gt; = &lt;value&gt;``
     Set a single option to the given value. The default value is True.
 
-@rst-options &lt;ignored-text&gt;
-
+``@rst-options &lt;ignored-text&gt;``
     Set options from body text. The body text should contain nothing but
-    lines of the form::
+    lines of the form ``&lt;option&gt;=&lt;value&gt;``
 
-        &lt;option&gt;=&lt;value&gt;
-
-@rst-preformat &lt;ignored-text&gt;
-
-    Format the body text of the node as computer source code. In effect, this
-    option adds a line containing '::' at the start of the body text. The option
-    then indents all following lines.
-
-    This option has no effect on descendant nodes.
+``@rst-preformat &lt;ignored-text&gt;``
+    Format the body text of the node as computer source code. In effect, this option adds a line containing '::' at the start of the body text. The option then indents all following lines. *This option has no effect on descendant nodes*.
 
 ..  @rst-rst
-
-    ..  Enter rst mode. (Rst mode is the mode of operation discussed in the tutorial.)
-    ..  Create a section if the show_headlines option is True.
-
+..      Enter rst mode. (Rst mode is the mode of operation discussed in the tutorial.)
+..      Create a section if the show_headlines option is True.
 </t>
-<t tx="ekr.20050818163826.8">**Option doc parts** set rst3 options. Option doc parts start with @ @rst-options followed by lines of the form name=value. (Comment lines starting with '..' are allowed.) For example::
+<t tx="ekr.20050818163826.8">**Option doc parts** set rst3 options. Option doc parts start with ``@ @rst-options`` followed by lines of the form ``name=value``. Comment lines starting with ``..`` are allowed. For example::
 
     @ @rst-options
     .. This comment line is ignored.
@@ -2527,14 +2459,14 @@ value for each setting.
     verbose=True
     @c
 
-This is a real Leo doc part. Like all other doc parts an option doc part starts with the @ directive and continues until the end of body text or until the next @c directive.
+This is a real Leo doc part. Like all other doc parts an option doc part starts with ``@`` and continues until the end of body text or until the next ``@c``.
 </t>
 <t tx="ekr.20050818163826.9">Settings in leoSettings.leo or myLeoSettings.leo specify the defaults to be used for all rst3 options.  The form of these settings is::
 
     @bool rst3_&lt;option name&gt; = True/False
     @string rst3_&lt;option name&gt; = aString
 
-That is, to create a default value for an rst3 setting, you must prefix the option name with 'rst3\_'.  For example::
+That is, to create a default value for an rst3 setting, you must prefix the option name with ``rst3_``.  For example::
 
     @bool rst3_write_intermediate_file = True
 </t>
@@ -4160,7 +4092,7 @@ x.py also contains **x.attributesDictDict**. Keys are ruleset names, values are 
 
     c.rstCommands.writeNodeToString(p)
 
-writeNodeToString scans p's tree (p defaults to presently selected node) looking for @rst nodes. When the first @rst node is found, writeNodeToString processes the node as usual, with the following changes:
+``writeNodeToString`` scans p's tree (p defaults to presently selected node) looking for @rst nodes. When the first @rst node is found, writeNodeToString processes the node as usual, with the following changes:
 
 - @rst need not be followed by a filename; any filename and its extension are *ignored*.
 
@@ -7720,44 +7652,23 @@ Nevertheless, these sentinels can be useful in special situations.
 .. glossary::
     :sorted:
 
-call_docutils (default: True):
-
+``call_docutils (default: True)``
     Call docutils to process the intermediate file.
 
-default_path (default: '')
-
+``default_path (default: '')``
     The path to be prepended to filenames given in root nodes.
 
-default_encoding (default: utf-8)
-
+``default_encoding (default: utf-8)``
     The default encoding to be used for non-ascii (unicode characters).
 
-encoding (default: the default_encoding setting)
+``generate_rst (default: True)``
+    A master switch. **True**: generate rST markup for rST sections and rST code-blocks. **False**: generate plain text and ignore ``@ @rst-markup`` doc parts.
 
-    The encoding to be used for non-ascii (unicode) characters.
-    **Important**: this option has effect only in @rst-options doc parts
-    in root @rst nodes.
+``generate_rst_header_comment (default: True)``
+    **True**: Leo writes a comment line of the form ``.. rst3: filename: &lt;filename&gt;`` at the start of intermediate files. This option has effect only if the ``generate_rst`` and ``write_intermediate_file`` options are both True.
 
-generate_rst (default: True)
-
-    A master switch.
-    True: generate rST markup for rST sections and rST code-blocks.
-    False: generate plain text and ignore @ @rst-markup doc parts.
-
-generate_rst_header_comment (default: True)
-
-    True: Leo writes a comment line of the form::
-
-        .. rst3: filename: &lt;filename&gt;
-
-    at the start of intermediate files. This option has effect only if the
-    generate_rst and write_intermediate_file options are both True.
-
-publish-argv-for-missing-stylesheets (Default: '')
-
-    The arguments to be passed to docutils.core.Publisher().publish() when no
-    stylesheet is in effect. This is a string that represents a comma-separated
-    list of strings: For example, the option::
+``publish-argv-for-missing-stylesheets (Default: '')``
+    The arguments to be passed to ``docutils.core.Publisher().publish()`` when no stylesheet is in effect. This is a string that represents a comma-separated list of strings: For example, the option::
 
         publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
 
@@ -7765,70 +7676,44 @@ publish-argv-for-missing-stylesheets (Default: '')
 
         publish(['--language=de','--documentclass=report','--use-latex-toc'])
 
-show_headlines (default: True)
+``show_headlines (default: True)``
+    **True**: automatically generate rST sections from headlines. **False**: ignore headlines.
+    
+    **Note**: The level of the node in the outline determines the level of the section underlining in the rST markup. Higher-level headlines in the outline correspond to higher-level section headings; lower-level headlines in the outline correspond to lower-level section headings.
 
-    True: automatically generate rST sections from headlines.
-    False: ignore headlines.
+``show_organizer_nodes (default: True)``
+    **True**: generate rST sections for nodes that do not contain body text. *This option has no effect unless the rST section would otherwise be written*.
 
-    **Note**: The level of the node in the outline determines the level of the
-    section underlining in the rST markup. Higher-level headlines in the outline
-    correspond to higher-level section headings; lower-level headlines in the
-    outline correspond to lower-level section headings.
+``show_sections (default: True)``
+    **True**: generate rST sections corresponding to headlines. **False**: Generate lines of the form ``headline`` instead of sections.
+    
+``silent (default: False)``
+    Write only the number of files written and the time taken to the log and console.
 
-show_organizer_nodes (default: True)
+``strip_at_file_prefixes (default: True)``
+    **True**: remove ``@auto``, ``@file``, ``@clean``, and ``@thin`` from the start of headlines.
 
-    True: generate rST sections for nodes that do not contain body text.
-
-    **Note**: This option has no effect unless the rST section would otherwise be written.
-
-show_sections (default: True)
-
-    True: generate rST sections corresponding to headlines.
-    False: don't generate sections.  Instead, generate lines of the form::
-
-        **headline**
-
-strip_at_file_prefixes (default: True)
-
-    True: remove @auto, @file, @clean, and @thin from the start of headlines.
-
-stylesheet_name (default: 'default.css')
-
+``stylesheet_name (default: 'default.css')``
     The name of the stylesheet passed to docutils.
 
-stylesheet_path (default: '')
-
+``stylesheet_path (default: '')``
     The directory containing the stylesheet passed to docutils.
+    
+    **Note**: If the ``stylesheet_embed`` option is True, specify a path relative to the location of the Leo file. If the ``stylesheet_embed`` option is False, specify a path relative to the location of the HTML file.
 
-    **Note**: If the stylesheet_embed option is True, specify a path relative to
-    the location of the Leo file. If the stylesheet_embed option is False,
-    specify a path relative to the location of the HTML file.
+``stylesheet_embed (default: True)``
+    **True**: The content of the stylesheet file will be embedded in the HTML file. **False**: The HTML file will link to an external stylesheet file.
 
-stylesheet_embed (default: True)
+``underline_characters (default: #=+*^~"'\`-:&gt;\_)``
+    The underlining characters to be used to specify rST sections. The first character is reserved so you can specify the top-level section explicitly.
 
-    True: The content of the stylesheet file will be embedded in the HTML file.
-    False: The HTML file will link to an external stylesheet file.
+``verbose (default: True)``
+    **True**: write informational messages to the log as well as the console.
 
-underline_characters (default: #=+*^~"'\`-:&gt;\_)
-
-    The underlining characters to be used to specify rST sections.
-    The first character is reserved so you can specify the top-level section explicitly.
-
-verbose (default: True)
-
-    True: write informational messages.
-
-write_intermediate_file (default: False)
-
-    **Important**: the rst3 command *always* creates an intermediate file.
-    This option controls whether that file is an internal Python object
-    or an actual file on the external file system.
-
-    True: writes the intermediate file to the external file system. The name of
-    the intermediate file has the name of the output file with .txt appended.
-    This option has effect only if the generate_rst option is True.
-
-    False: writes the intermediate file to an internal Python object.
+``write_intermediate_file (default: False)``
+    Tells whether to write an intermediate file.
+    
+    **True**: writes the intermediate file to the external file system. The name of the intermediate file has the name of the output file with ``.txt`` appended. This option has effect only if the ``generate_rst option`` is True.
 </t>
 <t tx="ekr.20100810091118.4298">**Markup doc parts** have the following form::
 
@@ -10602,27 +10487,18 @@ These settings are as follows, with the defaults as shown::
     yank-       yank
 
 </t>
-<t tx="ekr.20110612104631.16414">**New in Leo 4.9**: The following three options allow you to expand noweb section references, much like Leo itself does.
+<t tx="ekr.20110612104631.16414">The following options allow you to expand noweb section references, much like Leo itself does. The rst3 command ensures that unbounded expansions can not happen. While expanding any section, the rst3 will not expand again any sections that have already occurred in the expansion.
 
-**expand_noweb_references**
+``expand_noweb_references``
+   True: Replace references by definitions. Definitions must be descendants of the referencing node.
 
-   True: Replace references by definitions.
-   Definitions must be descendants of the referencing node.
-
-**ignore_noweb_definitions**
-
+``ignore_noweb_definitions``
     True: ignore section definition nodes.
 
-**expand_noweb_recursively**
-
-    True: recursively expand definitions by expanding any
-    references found in definitions.
+``expand_noweb_recursively``
+    True: recursively expand definitions by expanding any references found in definitions.
         
-Notes:
-
-- This is an experimental feature: all aspects might changed. The defaults for all these options ensure that the rst3 command works as it has always.
-
-- The rst3 command ensures that unbounded expansions can not happen. While expanding any section, the rst3 will not expand again any sections that have already occurred in the expansion.
+**Note**: This is an experimental feature: all aspects might changed. The defaults for all these options ensure that the rst3 command works as it has always.
 </t>
 <t tx="ekr.20111017085134.16158"></t>
 <t tx="ekr.20111017085134.16159">'''
@@ -15735,6 +15611,8 @@ x.sentinels.
 <t tx="ekr.20150215071358.87">*** Use different formatting for Commands Reference
 *** Create key reference.
 
+* Rewrite rst3 theory of operations.
+
 Revise 5.1 release notes.
 - Links to other docs?
 - Link to the Mulder/Ream algorithm from the release notes.
@@ -18869,7 +18747,6 @@ untangle-marked</t>
 <t tx="ekr.20150320110310.4">call_docutils = True
 stylesheet_name = mycss.css</t>
 <t tx="ekr.20150320110310.5"></t>
-<t tx="ekr.20150320111422.4"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
