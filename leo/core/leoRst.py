@@ -145,6 +145,8 @@ class RstCommands:
         self.c = c
         # Debugging and statistics.
         self.debug = c.config.getBool('rst3_debug',default=False)
+        self.n_written = 0
+            # Number of files written.
         # Warnings flags.
         self.silverCityWarningGiven = False
         # Settings.
@@ -545,7 +547,7 @@ class RstCommands:
         # Time taken to generate all Leo's docs, in silent mode:
         # old code: 1.6 sec. new code: 0.9 sec.
         t2 = time.time()
-        g.es_print('rst3: %4.2f sec.' % (t2-t1))
+        g.es_print('rst3: %s files in %4.2f sec.' % (self.n_written,t2-t1))
         return self.rst_nodes # A list of positions.
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -615,6 +617,7 @@ class RstCommands:
             self.source contains rst sources
             self.stringOutput contains docutils output if docutils called.
         '''
+        self.n_written += 1
         self.topNode = p.copy()
         self.topLevel = p.level()
         if toString:
@@ -1343,6 +1346,7 @@ class RstCommands:
         There is no need to create self.d0 again.
         '''
         assert new_settings
+        self.n_written = 0
         self.scriptSettingsDict = script_d or {}
         self.init_write(p)
             # sets self.path and self.encoding.
@@ -1351,18 +1355,12 @@ class RstCommands:
     #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
     def preprocessTree (self,root):
         '''Init settings in root, its subtree and all pareents.'''
-        # g.trace('=======',root.h)
         self.dd = {}
         # Bug fix 12/4/05: must preprocess parents too.
         for p in root.parents():
             self.preprocessNode(p)
         for p in root.self_and_subtree():
             self.preprocessNode(p)
-        if 0:
-            g.trace(root.h)
-            for key in self.dd.keys():
-                g.trace(key)
-                g.printDict(self.dd.get(key))
     #@+node:ekr.20090502071837.47: *5* rst.preprocessNode & helper
     def preprocessNode (self,p):
         '''Set self.dd for p.v.'''

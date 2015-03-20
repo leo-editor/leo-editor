@@ -1267,6 +1267,8 @@
 <v t="ekr.20150320110310.4"><vh>@rst-options</vh></v>
 </v>
 <v t="EKR.20040524104904.99"></v>
+<v t="ekr.20150320111422.4"><vh>** rewrite rst3 theory of operations</vh></v>
+<v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -2266,12 +2268,9 @@ rst3 Command Reference
 
 Please read the `rst3 tutorial`_ before reading this chapter.
 
-This chapter covers advanced settings and features of the rst3
-command. It is for power users only.
+This chapter covers advanced settings and features of the rst3 command. It is for power users only.
 
-Are you sure you want to read this chapter? The tutorial covers
-everything most people need to know about the rst3 command. Leo's own
-documentation uses none of the features discussed here.
+Are you sure you want to read this chapter? The tutorial covers everything most people need to know about the rst3 command. Leo's own documentation uses none of the features discussed here.
 
 .. contents::
     :depth: 4
@@ -7881,14 +7880,7 @@ show_options_nodes (default: False)
 
 show_doc_parts_in_rst_mode [True,False or class names] (default: True)
 
-    This option is most useful for rst documents which are not
-    computer code. It allows you to use doc parts to make comments on
-    the draft document which are either excluded from the output or
-    formatted in a way that highlights their nature as comments rather
-    than content. For example, you're writing a book, and you want to
-    use a doc part at the top of a section to remind yourself "need to
-    explain how Ted got to Sally's". Note: you may need to add CSS to
-    have them formatted differently.
+    This option is most useful for rst documents which are not computer code. It allows you to use doc parts to make comments on the draft document which are either excluded from the output or formatted in a way that highlights their nature as comments rather than content. For example, you're writing a book, and you want to use a doc part at the top of a section to remind yourself "need to explain how Ted got to Sally's". Note: you may need to add CSS to have them formatted differently.
 
     The option can be `True`, `False`, or one or more class names.
 
@@ -7897,33 +7889,20 @@ show_doc_parts_in_rst_mode [True,False or class names] (default: True)
 
     **False**: Remove the doc part.
 
-    **class names**: Process the contents of the doc part as it if were in an rst
-    `container` directive. For example::
+    **class names**: Process the contents of the doc part as it if were in an rst `container` directive. For example::
 
          @ @rst-options
          show_doc_parts_in_rst_mode = notes literal
          @c
 
-    would wrap the doc part contents in the output in a div with
-    classes "container notes literal". Furthermore, if one of the
-    class names is `literal`, then the doc part content will be output
-    as a literal block wrapped in a container as described above. This
-    allows you to use text which is not valid rst as rough notes for
-    annotating a draft document.
+    would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is `literal`, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
 </t>
 <t tx="ekr.20100810203016.4296"></t>
-<t tx="ekr.20100810203016.4298">By default, the rst3 command operates in **rst mode**. In rst mode,
-the rst3 command treats body text as rST (or Sphinx) markup. This is
-the mode of operation discussed in the Tutorial.
+<t tx="ekr.20100810203016.4298">By default, the rst3 command operates in **rst mode**. In rst mode, the rst3 command treats body text as rST (or Sphinx) markup. This is the mode of operation discussed in the Tutorial.
 
-In **code mode** the rst3 command treats body text as computer source
-code. **Note**: both rST and Sphinx have markup designed to represent
-computer programs. The rst3 command generates that markup
-automatically in code mode.
+In **code mode** the rst3 command treats body text as computer source code. **Note**: both rST and Sphinx have markup designed to represent computer programs. The rst3 command generates that markup automatically in code mode.
 
-Code mode is inherently complex. As we shall see, there are *many*
-possible options in code mode. This can hardly be helped--this is
-truly an advanced topic!
+Code mode is inherently complex. As we shall see, there are *many* possible options in code mode. This can hardly be helped--this is truly an advanced topic!
 
 In **doc_only_mode**, rst3 command outputs only regular doc parts and @ @rst-markup doc parts. Headlines create section in doc_only mode only if:
 
@@ -18890,6 +18869,7 @@ untangle-marked</t>
 <t tx="ekr.20150320110310.4">call_docutils = True
 stylesheet_name = mycss.css</t>
 <t tx="ekr.20150320110310.5"></t>
+<t tx="ekr.20150320111422.4"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
