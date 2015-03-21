@@ -685,8 +685,6 @@ class FileCommands:
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
-        ### if checkAfterRead:
-        c.checkOutline()
         c.selectPosition(p)
         self.initReadIvars()
         return p
