@@ -21,6 +21,7 @@ Set default for @string stylesheet so it generates::
 
      @bool check_outline_after_read
      @bool check_outline_before_save
+
 - Add:
     
     @bool verbose_check_outline = False
