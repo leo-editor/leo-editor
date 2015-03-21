@@ -488,8 +488,6 @@
 <v t="ekr.20050831184021.1"><vh>Creating documents with the rst3 Command</vh>
 <v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20100810203016.4296"><vh>@rst-ignore</vh>
-<v t="ekr.20131027064821.18709"><vh>unused links</vh></v>
-<v t="ekr.20050818163826.6"><vh>Options that set command names</vh></v>
 <v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
 <v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
 <v t="ekr.20100810091118.4301"><vh>Code mode options</vh></v>
@@ -1268,6 +1266,7 @@
 </v>
 <v t="EKR.20040524104904.99"></v>
 <v t="ekr.20050818163826"></v>
+<v t="ekr.20150320233042.8"><vh>** remove @rst-ignore links nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -2379,38 +2378,6 @@ Here are the rst3 options that support the http plugin:
 
 ``node_begin_marker (default: http-node-marker-)``
     The string used for node markers.
-</t>
-<t tx="ekr.20050818163826.6">.. EKR: This kind of "flexibility" is a really bad idea.
-
-The following options specify the 'spelling' of headline commands. The
-option_prefix and option_prefixes command also define the spelling of
-special doc parts.
-
-You can change these to make them shorter or to avoid conflicts with
-headlines in your Leo files. The list below merely gives the default
-value for each setting.
-
-`code_prefix`: '@rst-code'
-
-`ignore_headline_prefix`: '@rst-no-head'
-
-`ignore_headlines_prefix`: '@rst-no-headlines'
-
-`ignore_prefix_tree`: '@rst-ignore'
-
-`ignore_node_prefix`: '@rst-ignore-node'
-
-`ignore_tree_prefix`: '@rst-ignore-tree'
-
-`option_prefix`: '@rst-option'
-
-`options_prefix`: '@rst-options'
-
-`preformat_prefix`: '@rst-preformat'
-
-`rst_prefix`: '@rst'
-
-`show_headline_prefix`: '@rst-head'
 </t>
 <t tx="ekr.20050818163826.7">Any headline that starts with @rst- controls the rst3 command.
 
@@ -13930,10 +13897,6 @@ the name of intermediate file will be::
 
 myDocument.html.txt is the **input** file for sphinx.
 </t>
-<t tx="ekr.20131027064821.18709">.. _`docutils`:         http://docutils.sourceforge.net
-.. _LaTeX:              http://www.latex-project.org/
-.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
-.. _`Sphinx`:           http://sphinx.pocoo.org/</t>
 <t tx="ekr.20131028213522.17137">Samples of use (Maybe):
 
     Sample on how to import bookmarks from Internet browser (I have that
@@ -14064,15 +14027,15 @@ Then run::
 </t>
 <t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.0.
+into a folder in your home directory, say ~/leo-5.1.
 
 You now have several choices.
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.0 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.1 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.0
+    cd ~/leo-5.1
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -14340,7 +14303,7 @@ One final word of advice. When editing your video, settle for "good enough". Per
 .. index::
     pair: @clean; Tutorial
 
-Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
+Leo (5.1 and above) creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
 
     @clean spam.py
     @clean ../foo.c
@@ -18747,6 +18710,8 @@ untangle-marked</t>
 <t tx="ekr.20150320110310.4">call_docutils = True
 stylesheet_name = mycss.css</t>
 <t tx="ekr.20150320110310.5"></t>
+<t tx="ekr.20150320233042.8">- Eliminate unused links.
+- Move used links to the nodes to which they apply.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

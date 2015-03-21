@@ -455,21 +455,6 @@
 <v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
-<v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
-<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
-<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
-<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
-<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
-<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
-<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
-<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
-<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
-<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
-<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
-<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
-<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
-<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
-</v>
 </v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
@@ -3835,18 +3820,6 @@ True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071213060514"></t>
 <t tx="ekr.20071213060514.1"></t>
 <t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
-<t tx="ekr.20071213060607">rst3_code_prefix =             @rst-code     # Enter code mode.
-rst3_doc_only_prefix =         @rst-doc-only # Enter doc-only mode.
-rst3_rst_prefix =              @rst          # Enter rst mode.
-rst3_ignore_headline_prefix =  @rst-no-head
-rst3_ignore_headlines_prefix = @rst-no-headlines
-rst3_ignore_node_prefix =      @rst-ignore-node
-rst3_ignore_prefix =           @rst-ignore
-rst3_ignore_tree_prefix =      @rst-ignore-tree
-rst3_option_prefix =           @rst-option
-rst3_options_prefix =          @rst-options
-rst3_preformat_prefix =        @rst-preformat
-rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061454"></t>
 <t tx="ekr.20071213061454.1"></t>
 <t tx="ekr.20071213061454.2"></t>
@@ -3869,20 +3842,8 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061930.4"></t>
 <t tx="ekr.20071213062019"></t>
 <t tx="ekr.20071213062019.1"></t>
-<t tx="ekr.20071213062019.10"></t>
-<t tx="ekr.20071213062019.11"></t>
-<t tx="ekr.20071213062019.12"></t>
-<t tx="ekr.20071213062019.13"></t>
-<t tx="ekr.20071213062019.14"></t>
-<t tx="ekr.20071213062019.15"></t>
 <t tx="ekr.20071213062019.2"></t>
 <t tx="ekr.20071213062019.3"></t>
-<t tx="ekr.20071213062019.4"># Enter code mode.</t>
-<t tx="ekr.20071213062019.5"># Enter doc-only mode.</t>
-<t tx="ekr.20071213062019.6"># Enter rst mode.</t>
-<t tx="ekr.20071213062019.7"></t>
-<t tx="ekr.20071213062019.8"></t>
-<t tx="ekr.20071213062019.9"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line.
 
 New in Leo 4.12: Lines starting with '#' are *included* in the data.
@@ -4420,7 +4381,6 @@ lcd2c" "
 </t>
 <t tx="ekr.20080811105020.2">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
-<t tx="ekr.20080916094157.1"></t>
 <t tx="ekr.20080921060401.3"></t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
