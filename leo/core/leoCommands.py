@@ -4203,7 +4203,7 @@ class Commands (object):
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
         elif c.verbose_check_outline:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
-            g.es('check-outline OK',color='blue')
+            # g.es('check-outline OK',color='blue')
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
     def checkLinks(self):

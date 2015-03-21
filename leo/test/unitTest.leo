@@ -11,10 +11,8 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
-<v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20150321154358.11"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
 <v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
@@ -46,6 +44,8 @@
 <v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
 </v>
 </v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
 <v t="ekr.20100123172713.5114"><vh>Scripts</vh>
@@ -1185,7 +1185,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -6946,6 +6946,6 @@ node 2 line 2
 </t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
-<t tx="ekr.20150321154358.11"></t>
+<t tx="ekr.20150321155210.11"></t>
 </tnodes>
 </leo_file>
