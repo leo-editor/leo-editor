@@ -47,7 +47,6 @@ class LeoApp:
 
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
-        self.check_outline = False      # True: check outlines at important points.
         self.debug = False              # True: run Leo in debug mode.
         self.diff = False               # True: run Leo in diff mode.
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
@@ -135,7 +134,7 @@ class LeoApp:
         self.quitting = False           # True: quitting.  Locks out some events.
         self.reverting = False          # True: executing the revert command.
 
-        #### To be moved to the LogManager.
+        # To be moved to the LogManager.
 
         # The global log...
         self.log = None                 # The LeoFrame containing the present log.
@@ -153,7 +152,7 @@ class LeoApp:
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
 
-        #### To be moved to OpenWithManager.
+        # To be moved to OpenWithManager.
 
         # Open with data...
         self.hasOpenWithMenu = False    # True: open with plugin has been loaded.
@@ -161,7 +160,7 @@ class LeoApp:
         self.openWithFileNum = 0        # Number of Open-With temp file names.
         self.openWithTable = None       # Passed to createOpenWithMenuFromTable.
 
-        #### To be moved to to the pluginsController.
+        # To be moved to to the pluginsController.
 
         # Plugins and event handlers...
         self.hookError = False      # True: suppress further calls to hooks.
@@ -2143,8 +2142,6 @@ class LoadManager:
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
-        add('--check-outline', action='store_true',
-            help = 'check outline periodically')
         add('--debug', action='store_true',
             help = 'enable debug mode')
         add('--diff',       action='store_true',dest='diff',
@@ -2196,10 +2193,6 @@ class LoadManager:
             g.trace('options',options)
 
         # Handle the args...
-        # --check-outline
-        if options.check_outline:
-            g.app.check_outline = options.check_outline
-        if trace: g.trace('check_outline',g.app.check_outline)
         # --debug
         g.app.debug = options.debug
         # if g.app.debug: g.trace_startup = True

@@ -553,11 +553,10 @@
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
-<v t="ekr.20150317104903.1"><vh>@bool check_outline_before_save = False</vh></v>
-<v t="ekr.20150317104903.2"><vh>@bool check_outline_after_read = False</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
@@ -9678,8 +9677,9 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20150216135059.1"></t>
 <t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
 </t>
-<t tx="ekr.20150317104903.1"></t>
-<t tx="ekr.20150317104903.2"></t>
+<t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.
+
+Note: check-outline always writes error messages to both log and console.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

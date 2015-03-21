@@ -535,8 +535,7 @@ class FileCommands:
             'expanded','marks','t','tnodeList',
             # 'vtag',
         )
-        self.checkOutlineBeforeSave = c.config.getBool(
-            'check_outline_before_save',default=False)
+        ### self.checkOutlineBeforeSave = c.config.getBool('check_outline_before_save',default=False)
         self.initIvars()
     #@+node:ekr.20090218115025.5: *3* fc.initIvars
     def initIvars(self):
@@ -619,7 +618,6 @@ class FileCommands:
             return None
         if trace: g.trace('reassign',reassignIndices,'temp',tempOutline)
         check = not reassignIndices
-        checkAfterRead = g.app.check_outline or c.config.getBool('check_outline_after_read')
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
@@ -687,11 +685,10 @@ class FileCommands:
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
-        if checkAfterRead:
-            # g.blue('checking outline after paste')
-            c.checkOutline()
+        ### if checkAfterRead:
+        c.checkOutline()
         c.selectPosition(p)
-        self.initReadIvars() # 2010/02/05
+        self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
@@ -750,10 +747,10 @@ class FileCommands:
         finally:
             ni.end_holding(c)
                     # Fix bug https://github.com/leo-editor/leo-editor/issues/35
-            # This must be called *after* ni.end_holding.
-            if g.app.check_outline or c.config.getBool('check_outline_after_read'):
-                c.checkOutline()
-            c.loading = False # reenable c.changed
+            c.checkOutline()
+                # Must be called *after* ni.end_holding.
+            c.loading = False
+                # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
@@ -1111,7 +1108,7 @@ class FileCommands:
         trace_update,verbose = False,False
         h = sax_node.headString
         b = sax_node.bodyString
-        trace = trace and v and v.gnx == "vitalije.20150316130845.1" ###
+        # trace = trace and v and v.gnx == "vitalije.20150316130845.1"
         if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
@@ -1140,24 +1137,28 @@ class FileCommands:
             v.setBodyString(b)
             at.bodySetInited(v)
             v.setHeadString(h)
-            if self.gnxDict.get(gnx):
-                g.internalError('duplicate gnx: %s in %s' % (gnx,v))
-                sys.exit(1)
-            self.gnxDict [gnx] = v
+            if gnx is None:
+                pass # Fix bug #163: Internal Leo error in createSaxVnode 
+            else:
+                if self.gnxDict.get(gnx):
+                    g.internalError('duplicate gnx: %s in %s' % (gnx,v))
+                self.gnxDict [gnx] = v
+        ### 
         # Check for a duplicate gnx in parent_v.
         # This is a limited check: parent_v.parents is [] here.
-        if parent_v.gnx == v.gnx:
+        # if parent_v.gnx == v.gnx:
             # @clean stylesheets/main.less
-            g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
-            if g.app.check_outline:
-                # c.checkOutline should fix this.
-                pass
-            else:
-                # Let the VNode ctor allocate a new gnx.
-                v = leoNodes.VNode(context=c)
-                v.setBodyString(b)
-                at.bodySetInited(v)
-                v.setHeadString(h)
+           
+            # g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
+            # if g.app.check_outline:
+                # # c.checkOutline should fix this.
+                # pass
+            # else:
+                # # Let the VNode ctor allocate a new gnx.
+                # v = leoNodes.VNode(context=c)
+                # v.setBodyString(b)
+                # at.bodySetInited(v)
+                # v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
@@ -1992,12 +1993,10 @@ class FileCommands:
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
         '''Write the .leo file.'''
         c,fc = self.c,self
-        checkFlag = g.app.check_outline or fc.checkOutlineBeforeSave
-        if checkFlag:
-            structure_errors = c.checkOutline()
-            if structure_errors:
-                g.error('Major structural errors! outline not written')
-                return False
+        structure_errors = c.checkOutline()
+        if structure_errors:
+            g.error('Major structural errors! outline not written')
+            return False
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.

@@ -1433,8 +1433,7 @@ class Undoer:
             u.redoHelper()
         else:
             g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-        if g.app.check_outline:
-            c.checkOutline()   
+        c.checkOutline()   
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
@@ -1784,8 +1783,7 @@ class Undoer:
             u.undoHelper()
         else:
             g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-        if g.app.check_outline:
-            c.checkOutline()
+        c.checkOutline()
         # Redraw and recolor.
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.

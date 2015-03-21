@@ -483,6 +483,7 @@ class Commands (object):
         c.tab_width                 = getInt('tab_width') or -4
         c.use_body_focus_border     = getBool('use_body_focus_border',default=True)
         c.use_focus_border          = getBool('use_focus_border',default=True)
+        c.verbose_check_outline     = getBool('verbose_check_outline',default=False)
         c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
@@ -3735,6 +3736,7 @@ class Commands (object):
             undoData = c.undoer.beforeInsertNode(c.p,
                 pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
         c.validateOutline()
+        c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)
@@ -4194,16 +4196,12 @@ class Commands (object):
                     gnx_errors += 1
                     g.es_print('new gnx: %s %s' % (v.fileIndex,v),color='red')
                     new_gnx(v)
-        verbose = (
-            g.app.check_outline or
-            c.config.getBool('check_outline_after_read') or
-            c.config.getBool('check_outline_before_write'))
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
         if not ok:
             g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
-        elif verbose:
+        elif c.verbose_check_outline:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
             g.es('check-outline OK',color='blue')
         return g.app.structure_errors
