@@ -487,14 +487,6 @@
 </v>
 <v t="ekr.20050831184021.1"><vh>Creating documents with the rst3 Command</vh>
 <v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
-<v t="ekr.20100810203016.4296"><vh>@rst-ignore</vh>
-<v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
-<v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
-<v t="ekr.20100810091118.4301"><vh>Code mode options</vh></v>
-<v t="ekr.20100810091118.4306"><vh>Rst mode options</vh></v>
-<v t="ekr.20050818163826.10"><vh>The code-block directive</vh></v>
-</v>
-</v>
 <v t="ekr.20100813075851.4296"><vh>Options</vh>
 <v t="ekr.20100809122216.4286"><vh>General options</vh></v>
 <v t="ekr.20050818163826.7"><vh>Headline commands</vh></v>
@@ -510,6 +502,12 @@
 </v>
 <v t="ekr.20050818163826.13"><vh>Further study</vh></v>
 <v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
+<v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
+<v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
+<v t="ekr.20100810091118.4301"><vh>Code mode options</vh></v>
+<v t="ekr.20100810091118.4306"><vh>Rst mode options</vh></v>
+<v t="ekr.20050818163826.10"><vh>The code-block directive</vh></v>
+</v>
 <v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
 </v>
 </v>
@@ -1258,14 +1256,6 @@
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 <v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20150320110310.5"><vh>Tests @rst-option/s nodes are pretty feeble</vh>
-<v t="ekr.20150320095805.4"><vh>@rst-option call_docutils = True</vh></v>
-<v t="ekr.20150320095016.4"><vh>@rst-option stylesheet_name = mycss.css</vh></v>
-<v t="ekr.20150320110310.4"><vh>@rst-options</vh></v>
-</v>
-<v t="EKR.20040524104904.99"></v>
-<v t="ekr.20050818163826"></v>
 <v t="ekr.20150320233042.8"><vh>** remove @rst-ignore links nodes</vh></v>
 </vnodes>
 <tnodes>
@@ -2275,11 +2265,7 @@ This chapter covers advanced settings and features of the rst3 command. It is fo
 </t>
 <t tx="ekr.20050818163826.10">The rst3 command defines a code-block rST directive. The primary purpose of this directive is to show formatted source code.
 
-In rst mode you can insert the code-block directive like any other rST markup.
-
-The rst3 command generates code-block directives automatically in code mode.
-
-This directive takes one argument, a language name.  Like this::
+In rst mode you can insert the code-block directive like any other rST markup. The rst3 command generates code-block directives automatically in code mode. This directive takes one argument, a language name.  Like this::
 
     .. code-block:: Python
 
@@ -2332,20 +2318,12 @@ This documentation was created using the rst3 command. The source code for this 
 </t>
 <t tx="ekr.20050818163826.16">Josef Dalcolmo wrote the initial rst plugin. Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and Steve Zatz made contributions to the rst and rst2 plugins.
 </t>
-<t tx="ekr.20050818163826.4">The material covered so far in this chapter suffices to create most
-books and documentation, including Leo's own documentation.
+<t tx="ekr.20050818163826.4">The section covers complex options arising from two equivalent problems:
 
-The rest of this chapter covers advanced topics. These can seem bewilderingly
-complex. Alas, they are complex! However, they all arose from a single problem::
+- How to generate documentation from computer source code in a Leo outline.
+- How to embed documentation in computer source code in a Leo outline.
 
-    How to generate documentation from computer source code in a Leo outline.
-
-or equivalently::
-
-    How to embed documentation in computer source code in a Leo outline.
-
-This is an interesting problem, but it has little general interest.
-Please stop reading now if this problem doesn't interest you!
+*Please stop reading now if these problems don't interest you!*
 </t>
 <t tx="ekr.20050818163826.5">The following options are for the use of Bernhard Mulder's http plugin. The http plugin creates an http server running on a local port, typically 8080. When the http plugin is running you will see a purple message in the log window that looks something like this::
 
@@ -7695,50 +7673,38 @@ Markup doc parts inserts the markup directly into the output. Markup doc parts a
 .. glossary::
     :sorted:
 
-number_code_lines (default: True)
+``number_code_lines (default: True)``
+    Controls whether to number code lines in code mode. *This option has no effect in rst mode*.
 
-    Controls whether to number code lines in code mode.
-    This option has no effect in rst mode.
+``show_leo_directives (default: True)``
+    True: include Leo directives False: ignore Leo directives.
 
-show_leo_directives (default: True)
+``show_markup_doc_parts (default: False)``
+    True: include markup doc parts. False: ignore markup doc parts.
 
-    True: include Leo directives
-    False: ignore Leo directives.
+``show_options_doc_parts (default: False)``
+    True: include options doc parts. False: ignore options doc parts.
 
-show_markup_doc_parts (default: False)
+``show_doc_parts_as_paragraphs (default: False)``
+    True: Move doc parts outside of the code-block directive. False: Show doc parts in the code-block directive.
+    
+    **Cool**: Any rST markup in doc parts included as the result of this option will be rendered properly.
 
-    True: include markup doc parts.
-    False: ignore markup doc parts.
-
-show_options_doc_parts (default: False)
-
-    True: include options doc parts.
-    False: ignore options doc parts.
-
-show_doc_parts_as_paragraphs (default: False)
-
-    True: Move doc parts outside of the code-block directive. False: Show doc
-    parts in the code-block directive. **Cool**: Any rST markup in doc parts
-    included as the result of this option will be rendered properly.
-
-show_options_nodes (default: False)
-
-    True: show @rst-options nodes.
-    False: Ignore @
+``show_options_nodes (default: False)``
+    True: show @rst-options nodes. False: Ignore @
 </t>
 <t tx="ekr.20100810091118.4306">The following option has effect only in rst mode.
 
 .. glossary::
 
-show_doc_parts_in_rst_mode [True,False or class names] (default: True)
-
+``show_doc_parts_in_rst_mode [True,False or class names] (default: True)``
     This option is most useful for rst documents which are not computer code. It allows you to use doc parts to make comments on the draft document which are either excluded from the output or formatted in a way that highlights their nature as comments rather than content. For example, you're writing a book, and you want to use a doc part at the top of a section to remind yourself "need to explain how Ted got to Sally's". Note: you may need to add CSS to have them formatted differently.
 
     The option can be `True`, `False`, or one or more class names.
-
+    
     **True**: Treat the entire doc part from the opening '@' to the closing '@c
     as normal markup.
-
+    
     **False**: Remove the doc part.
 
     **class names**: Process the contents of the doc part as it if were in an rst `container` directive. For example::
@@ -7747,16 +7713,18 @@ show_doc_parts_in_rst_mode [True,False or class names] (default: True)
          show_doc_parts_in_rst_mode = notes literal
          @c
 
-    would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is `literal`, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
+Ths would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is ``literal``, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
 </t>
-<t tx="ekr.20100810203016.4296"></t>
-<t tx="ekr.20100810203016.4298">By default, the rst3 command operates in **rst mode**. In rst mode, the rst3 command treats body text as rST (or Sphinx) markup. This is the mode of operation discussed in the Tutorial.
+<t tx="ekr.20100810203016.4298">The rst3 command supports three different modes.
 
-In **code mode** the rst3 command treats body text as computer source code. **Note**: both rST and Sphinx have markup designed to represent computer programs. The rst3 command generates that markup automatically in code mode.
-
-Code mode is inherently complex. As we shall see, there are *many* possible options in code mode. This can hardly be helped--this is truly an advanced topic!
-
-In **doc_only_mode**, rst3 command outputs only regular doc parts and @ @rst-markup doc parts. Headlines create section in doc_only mode only if:
+``rst mode``
+    The default mode, as discussed in the Tutorial. The rst3 command treats body text as rST (or Sphinx) markup.
+    
+``code mode``
+    The rst3 command treats body text as computer source code, generating the appropriate rST or Sphinx markup. Code mode is inherently complex. It supports *many* options.
+    
+``doc-only mode``
+    The rst3 command outputs only regular doc parts and @ @rst-markup doc parts. Headlines create section in doc_only mode only if:
 
 1. The node contains a doc part or
 
@@ -7764,14 +7732,14 @@ In **doc_only_mode**, rst3 command outputs only regular doc parts and @ @rst-mar
 
 The code_mode and doc_only_mode options determine the mode as follows:
 
-- By default (code_mode=False; doc_only_mode=False), the rst3 command is in rst mode.
+``code_mode=False; doc_only_mode=False (the default)``
+    Enters rst mode.
+    
+``code_mode=False; doc_only_mode=True``
+    Enters doc_only mode.
 
-- Setting code_mode=True causes the rst3 command to enter code mode.
-
-- Setting code_mode=False cause the rst3 command to enter rst mode.
-
-- Setting doc_only_mode=True causes the rst3 command to enter doc_only mode.
-
+``code_mode=True; (doc_only_mode ignored)``
+    Enters code mode.
 </t>
 <t tx="ekr.20100813075851.4296">This section discusses options--what they are, how to set them and how to set their defaults.
 </t>
@@ -18705,13 +18673,11 @@ untangle-all
 untangle-marked</t>
 <t tx="ekr.20150319142303.4"></t>
 <t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
-<t tx="ekr.20150320095016.4"></t>
-<t tx="ekr.20150320095805.4"></t>
-<t tx="ekr.20150320110310.4">call_docutils = True
-stylesheet_name = mycss.css</t>
-<t tx="ekr.20150320110310.5"></t>
-<t tx="ekr.20150320233042.8">- Eliminate unused links.
-- Move used links to the nodes to which they apply.</t>
+<t tx="ekr.20150320233042.8">- Search for @rst-no-head links
+- Eliminate unused links.
+- Move used links to the nodes to which they apply.
+
+Many links in FAQ: Let's leave them :-)</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
