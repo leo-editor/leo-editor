@@ -1129,7 +1129,6 @@ class FileCommands:
                 # Part 2: Do *not* call ni.getNewIndex here: v is None!
                 # Instead, let the VNode ctor below allocate the gnx.
                 gnx = None
-            # trace = trace and gnx == "vitalije.20150316130845.1"
             # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
@@ -1141,22 +1140,6 @@ class FileCommands:
                 if self.gnxDict.get(gnx):
                     g.internalError('duplicate gnx: %s in %s' % (gnx,v))
                 self.gnxDict [gnx] = v
-        ### 
-        # Check for a duplicate gnx in parent_v.
-        # This is a limited check: parent_v.parents is [] here.
-        # if parent_v.gnx == v.gnx:
-            # @clean stylesheets/main.less
-           
-            # g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
-            # if g.app.check_outline:
-                # # c.checkOutline should fix this.
-                # pass
-            # else:
-                # # Let the VNode ctor allocate a new gnx.
-                # v = leoNodes.VNode(context=c)
-                # v.setBodyString(b)
-                # at.bodySetInited(v)
-                # v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
