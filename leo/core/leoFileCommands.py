@@ -627,20 +627,17 @@ class FileCommands:
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
         else:
-            # Make sure all pasted nodes are entered into the gnxDict.
-            ###### All pasted nodes should already have unique gnx's.
-            if g.no_cache:
-                ni = g.app.nodeIndices
-                for v in c.all_unique_nodes():
-                    ni.check_gnx(c,v.fileIndex,v)
-                    ### gnxString = v.fileIndex
-                    ### self.gnxDict[gnxString] = v
-            else:
-                for v in c.all_unique_nodes():
-                    ### Should check for duplicates here.
-                    gnxString = v.fileIndex
-                    self.gnxDict[gnxString] = v
-                    if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+            # All pasted nodes should already have unique gnx's.
+            ### if g.no_cache:
+            ni = g.app.nodeIndices
+            for v in c.all_unique_nodes():
+                ni.check_gnx(c,v.fileIndex,v)
+            # else:
+                # for v in c.all_unique_nodes():
+                    # ### Should check for duplicates here.
+                    # gnxString = v.fileIndex
+                    # self.gnxDict[gnxString] = v
+                    # if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
@@ -680,18 +677,18 @@ class FileCommands:
                 v = p2.v
                 index = ni.getNewIndex(v)
                 ###
-                if g.no_cache:
-                    assert index
-                else:
-                    if index:
-                        v.setFileIndex(index)
-                        if index in self.gnxDict:
-                            g.trace('can not happen: index clash',index,v)
-                        else:
-                            if trace: g.trace(index,v)
-                            self.gnxDict[index] = v
-                    else:
-                        g.trace('can not happen: no index',v)
+                # if g.no_cache:
+                    # assert index
+                # else:
+                    # if index:
+                        # v.setFileIndex(index)
+                        # if index in self.gnxDict:
+                            # g.trace('can not happen: index clash',index,v)
+                        # else:
+                            # if trace: g.trace(index,v)
+                            # self.gnxDict[index] = v
+                    # else:
+                        # g.trace('can not happen: no index',v)
                 if g.trace_gnxDict: g.trace(c.shortFileName(),'**restoring**',index,v)
         if trace and verbose:
             g.trace('**** dumping outline...')
@@ -1146,15 +1143,15 @@ class FileCommands:
             at.bodySetInited(v)
             v.setHeadString(h)
             ###
-            if g.no_cache:
-                pass
-            else:
-                if gnx is None:
-                    pass # Fix bug #163: Internal Leo error in createSaxVnode 
-                else:
-                    if self.gnxDict.get(gnx):
-                        g.internalError('duplicate gnx: %s in %s' % (gnx,v))
-                    self.gnxDict [gnx] = v
+            # if g.no_cache:
+                # pass
+            # else:
+                # if gnx is None:
+                    # pass # Fix bug #163: Internal Leo error in createSaxVnode 
+                # else:
+                    # if self.gnxDict.get(gnx):
+                        # g.internalError('duplicate gnx: %s in %s' % (gnx,v))
+                    # self.gnxDict [gnx] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),

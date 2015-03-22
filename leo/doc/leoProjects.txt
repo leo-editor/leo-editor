@@ -3,7 +3,7 @@
 .. @+all
 .. @+node:ekr.20141203092457.6: ** Leo 5.1
 .. @+node:ekr.20150313082245.5: *3* Added LeoReleaseNotes.leo
-.. @+node:ekr.20150314050809.14: *3* Fixed bug 157: sort-lines problem 
+.. @+node:ekr.20150314050809.14: *3* Fixed bug 157: sort-lines problem
 https://github.com/leo-editor/leo-editor/issues/157
 
 k.fullCommand now saves/restore the selection range when calling c.frame.log.deleteTab.
