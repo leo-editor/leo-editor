@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20141109053526.9: * @file watchfiles.py
+#@+node:ekr.20141109072314.1: * @file watchfiles.py
 #@@first
 #@+<< watchfiles.py docstring >>
 #@+node:ekr.20141109143634.5: ** << watchfiles.py docstring >>
