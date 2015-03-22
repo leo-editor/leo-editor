@@ -332,6 +332,8 @@ class BridgeController:
         if self.isOpen():
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
+            g.app.nodeIndices.compute_last_index(c)
+                # New in Leo 5.1. An alternate fix for bug #130.
             if useLog:
                 g.app.gui.log = log = c.frame.log
                 log.isNull = False
