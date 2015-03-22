@@ -630,9 +630,12 @@ class FileCommands:
             # Make sure all pasted nodes are entered into the gnxDict.
             ###### All pasted nodes should already have unique gnx's.
             if g.no_cache:
-                pass
+                ni = g.app.nodeIndices
+                for v in c.all_unique_nodes():
+                    ni.check_gnx(c,v.fileIndex,v)
+                    ### gnxString = v.fileIndex
+                    ### self.gnxDict[gnxString] = v
             else:
-                x = g.app.nodeIndices
                 for v in c.all_unique_nodes():
                     ### Should check for duplicates here.
                     gnxString = v.fileIndex
@@ -1143,15 +1146,18 @@ class FileCommands:
             at.bodySetInited(v)
             v.setHeadString(h)
             ###
-            if g.new_gnx_dict:
+            if g.no_cache:
                 pass
             else:
-                if gnx is None:
-                    pass # Fix bug #163: Internal Leo error in createSaxVnode 
+                if g.new_gnx_dict:
+                    pass
                 else:
-                    if self.gnxDict.get(gnx):
-                        g.internalError('duplicate gnx: %s in %s' % (gnx,v))
-                    self.gnxDict [gnx] = v
+                    if gnx is None:
+                        pass # Fix bug #163: Internal Leo error in createSaxVnode 
+                    else:
+                        if self.gnxDict.get(gnx):
+                            g.internalError('duplicate gnx: %s in %s' % (gnx,v))
+                        self.gnxDict [gnx] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),

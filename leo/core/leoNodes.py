@@ -78,7 +78,6 @@ class NodeIndices (object):
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self,c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        ### assert not g.no_cache
         ### This might be called from the bridge.
         trace = True and not g.unitTesting
         verbose = False # Report only if lastIndex was changed.
@@ -173,12 +172,12 @@ class NodeIndices (object):
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         '''
-        trace,verbose = False and not g.unitTesting,False
+        trace = False and not g.unitTesting
+        trace_hold = False
         if v is None:
             g.internalError('getNewIndex: v is None')
             return ''
         if g.no_cache:
-            # trace = True
             c = v.context
             fc = c.fileCommands 
             t_s = self.update()
@@ -195,7 +194,7 @@ class NodeIndices (object):
             if trace:
                 fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
             if self.hold_gnx_flag:
-                if trace and verbose: g.trace('holding',fn,v.h)
+                if trace and trace_hold: g.trace('holding',fn,v.h)
                 self.hold_gnx_set.add(v)
                 return ''
             else:
@@ -2045,30 +2044,49 @@ class VNodeBase (object):
         v.unknownAttributes or any mutable VNode object changes.
         '''
         # The primary data: headline and body text.
-        self.context = context # The context containing context.hiddenRootNode.
-            # Required so we can compute top-level siblings.
-            # It is named .context rather than .c to emphasize its limited usage.
         self._headString = g.u('newHeadline')
         self._bodyString = g.u('')
         # Structure data...
-        self.children = [] # Ordered list of all children of this node.
-        self.parents = [] # Unordered list of all parents of this node.
+        self.children = []
+            # Ordered list of all children of this node.
+        self.parents = []
+            # Unordered list of all parents of this node.
         # Other essential data...
+        self.fileIndex = None
+            # The immutable fileIndex (gnx) for this node. Set below.
+        self.iconVal = 0
+            # The present value of the node's icon.
+        self.statusBits = 0
+            # status bits
+        # Information that is never written to any file...
+        self.context = context # The context containing context.hiddenRootNode.
+            # Required so we can compute top-level siblings.
+            # It is named .context rather than .c to emphasize its limited usage.
+        self.expandedPositions = []
+            # Positions that should be expanded.
+        self.insertSpot = None
+            # Location of previous insert point.
+        self.scrollBarSpot = None
+            # Previous value of scrollbar position.
+        self.selectionLength = 0
+            # The length of the selected body text.
+        self.selectionStart = 0
+            # The start of the selected body text.
+        # Complete the init.
+        ni = g.app.nodeIndices
+        
+        # If we ever wanted to make VNode's independent of Leo's core,
+        # Leo's core could do the following in, say, c.create_vnode.
         if gnx:
             self.fileIndex = gnx
-                # New in Leo 5.0: The caller allocates the gnx.
+            if g.no_cache:
+                c,fc,v = context,context.fileCommands,self
+                # trace = gnx.startswith('ekr.20040915105758')
+                # if trace: g.trace(id(self),gnx,g.callers(3))
+                ni.check_gnx(c,gnx,v)
+                fc.gnxDict[gnx] = self
         else:
-            self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
-                # The immutable file index for this VNode.
-                # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-        self.iconVal = 0 # The present value of the node's icon.
-        self.statusBits = 0 # status bits
-        # Information that is never written to any file...
-        self.expandedPositions = [] # Positions that should be expanded.
-        self.insertSpot = None # Location of previous insert point.
-        self.scrollBarSpot = None # Previous value of scrollbar position.
-        self.selectionLength = 0 # The length of the selected body text.
-        self.selectionStart = 0 # The start of the selected body text.
+            self.fileIndex = ni.getNewIndex(v=self)
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
