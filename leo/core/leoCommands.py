@@ -4201,7 +4201,7 @@ class Commands (object):
         if not ok:
             g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
-        elif c.verbose_check_outline:
+        elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
             # g.es('check-outline OK',color='blue')
         return g.app.structure_errors

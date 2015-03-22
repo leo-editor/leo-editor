@@ -56,15 +56,32 @@ class NodeIndices (object):
     #@+node:ekr.20141022143218.18354: *3* ni.begin_holding
     def begin_holding(self,c):
         '''Begin queuing vnodes that may need new gnx's.'''
-        trace = False and not g.unitTesting
-        self.stack.append(c)
-        self.hold_gnx_flag = True
-        if trace:
-            g.trace('==========',[z.shortFileName() for z in self.stack])
+        if g.no_cache:
+            pass
+        else:
+            trace = False and not g.unitTesting
+            self.stack.append(c)
+            self.hold_gnx_flag = True
+            if trace:
+                g.trace('==========',[z.shortFileName() for z in self.stack])
+    #@+node:ekr.20150321161305.8: *3* ni.check_gnx
+    def check_gnx(self,c,gnx,v):
+        '''Check that no vnode exists with the given gnx in fc.gnxDict.'''
+        fc = c.fileCommands
+        if fc is None:
+            g.internalError('getNewIndex: fc is None! c:' % c)
+        else:
+            v2 = fc.gnxDict.get(gnx)
+            if v2 and v2 != v:
+                g.internalError(
+                    'getNewIndex: gnx clash %s: v: %s v2: %s' % (gnx,v,v2))
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self,c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        trace,verbose = False and not g.unitTesting,False
+        ### assert not g.no_cache
+        ### This might be called from the bridge.
+        trace = True and not g.unitTesting
+        verbose = False # Report only if lastIndex was changed.
         if trace: t1 = time.time()
         ni = self
         old_lastIndex = self.lastIndex
@@ -95,48 +112,51 @@ class NodeIndices (object):
         Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
         It's not an error for v.fileIndex to exist.
         '''
-        trace,verbose = False and not g.unitTesting,False
-        fc = c.fileCommands
-        if not c:
-            g.trace('can not happen: no c.fileCommands')
-            return
-        fn = c.shortFileName()
-        if not self.stack:
-            g.trace('can not happen: stack underflow',c)
-            return
-        c2 = self.stack.pop()
-        if c != c:
-            g.trace('can not happen',c.shortFileName(),c2.shortFileName())
-        self.hold_gnx_flag = bool(self.stack)
-        if self.hold_gnx_flag:
-            if trace and verbose:
-                g.trace('********** still holding',c2.shortFileName())
-            return
-        self.compute_last_index(c)
-            # This *must* be done even if the hold_gnx_set is empty!
-            # Failure to do this might cause gnx collisions later.
-            # Fix bug #130: bug in fix to Issue #35
-        if not self.hold_gnx_set:
-            if trace and verbose:
-                g.trace('********** nothing to do',c2.shortFileName())
-            return
-        if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
-        for v in list(self.hold_gnx_set):
-            if not v:
-                g.internalError('hold_gnx_set contains None')
-            elif v.fileIndex:
+        if g.no_cache:
+            pass
+        else:
+            trace,verbose = False and not g.unitTesting,False
+            fc = c.fileCommands
+            if not c:
+                g.trace('can not happen: no c.fileCommands')
+                return
+            fn = c.shortFileName()
+            if not self.stack:
+                g.trace('can not happen: stack underflow',c)
+                return
+            c2 = self.stack.pop()
+            if c != c:
+                g.trace('can not happen',c.shortFileName(),c2.shortFileName())
+            self.hold_gnx_flag = bool(self.stack)
+            if self.hold_gnx_flag:
                 if trace and verbose:
-                    g.trace('===== already allocated',v.fileIndex,v.h)
-            else:
-                # This case can happen when @auto finds a node that
-                # has been created outside of Leo.
-                v.fileIndex = index = self.getNewIndex(v,cached=True)
-                if index:
-                    if trace: g.trace('new gnx',index,v.h)
-                    fc.gnxDict[index] = v
+                    g.trace('********** still holding',c2.shortFileName())
+                return
+            self.compute_last_index(c)
+                # This *must* be done even if the hold_gnx_set is empty!
+                # Failure to do this might cause gnx collisions later.
+                # Fix bug #130: bug in fix to Issue #35
+            if not self.hold_gnx_set:
+                if trace and verbose:
+                    g.trace('********** nothing to do',c2.shortFileName())
+                return
+            if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
+            for v in list(self.hold_gnx_set):
+                if not v:
+                    g.internalError('hold_gnx_set contains None')
+                elif v.fileIndex:
+                    if trace and verbose:
+                        g.trace('===== already allocated',v.fileIndex,v.h)
                 else:
-                    g.trace('can not happen: no v.fileIndex',v)
-        self.hold_set = set()
+                    # This case can happen when @auto finds a node that
+                    # has been created outside of Leo.
+                    v.fileIndex = index = self.getNewIndex(v,cached=True)
+                    if index:
+                        if trace: g.trace('new gnx',index,v.h)
+                        fc.gnxDict[index] = v
+                    else:
+                        g.trace('can not happen: no v.fileIndex',v)
+            self.hold_set = set()
     #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
@@ -157,19 +177,34 @@ class NodeIndices (object):
         if v is None:
             g.internalError('getNewIndex: v is None')
             return ''
-        if trace:
-            fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
-        if self.hold_gnx_flag:
-            if trace and verbose: g.trace('holding',fn,v.h)
-            self.hold_gnx_set.add(v)
-            return ''
+        if g.no_cache:
+            # trace = True
+            c = v.context
+            fc = c.fileCommands 
+            t_s = self.update()
+                # Updates self.lastTime and self.lastIndex.
+            gnx = g.toUnicode("%s.%s.%d" % (self.userId,t_s,self.lastIndex))
+            if trace:
+                if g.unitTesting: g.pr('')
+                g.trace('%s v: %x gnx: %s ' % (c.shortFileName(),id(v),gnx))
+            v.fileIndex = gnx
+            self.check_gnx(c,gnx,v)
+            fc.gnxDict[gnx] = v
+            return gnx
         else:
-            self.lastIndex += 1
-            s = g.toUnicode("%s.%s.%d" % (
-                self.userId,self.timeString,self.lastIndex))
-            if trace and not cached:
-                g.trace('allocating %s %s %s' % (fn,s,v.h))
-            return s
+            if trace:
+                fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
+            if self.hold_gnx_flag:
+                if trace and verbose: g.trace('holding',fn,v.h)
+                self.hold_gnx_set.add(v)
+                return ''
+            else:
+                self.lastIndex += 1
+                s = g.toUnicode("%s.%s.%d" % (
+                    self.userId,self.timeString,self.lastIndex))
+                if trace and not cached:
+                    g.trace('allocating %s %s %s' % (fn,s,v.h))
+                return s
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation."""
@@ -189,9 +224,7 @@ class NodeIndices (object):
         return theId,t,n
     #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp (self):
-
         """Set the timestamp string to be used by getNewIndex until further notice"""
-
         self.timeString = time.strftime(
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
@@ -213,10 +246,21 @@ class NodeIndices (object):
         else:
             s = "%s.%s.%s" % (theId,t,n)
         return g.toUnicode(s)
+    #@+node:ekr.20150321161305.13: *3* ni.update
+    def update(self):
+        '''Update self.timeString and self.lastIndex'''
+        t_s = time.strftime("%Y%m%d%H%M%S",time.localtime())
+        if self.timeString == t_s:
+            self.lastIndex += 1
+        else:
+            self.lastIndex = 1
+            self.timeString = t_s
+        return t_s
     #@+node:ekr.20141023110422.4: *3* ni.updateLastIndex
     def updateLastIndex(self,gnx):
         '''Update ni.lastIndex if the gnx affects it.'''
         trace = False and not g.unitTesting
+        ### Called from v.setFileIndex
         id_,t,n = self.scanGnx(gnx)
         if trace: g.trace('lastIndex',self.lastIndex,gnx)
         if not id_ or (n is not 0 and not n):
@@ -2001,6 +2045,9 @@ class VNodeBase (object):
         v.unknownAttributes or any mutable VNode object changes.
         '''
         # The primary data: headline and body text.
+        self.context = context # The context containing context.hiddenRootNode.
+            # Required so we can compute top-level siblings.
+            # It is named .context rather than .c to emphasize its limited usage.
         self._headString = g.u('newHeadline')
         self._bodyString = g.u('')
         # Structure data...
@@ -2014,13 +2061,9 @@ class VNodeBase (object):
             self.fileIndex = g.app.nodeIndices.getNewIndex(v=self)
                 # The immutable file index for this VNode.
                 # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-                # New in Leo 5.0: This may be '': it will be allocated later.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
         # Information that is never written to any file...
-        self.context = context # The context containing context.hiddenRootNode.
-            # Required so we can compute top-level siblings.
-            # It is named .context rather than .c to emphasize its limited usage.
         self.expandedPositions = [] # Positions that should be expanded.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
@@ -2556,9 +2599,15 @@ class VNodeBase (object):
     initHeadString = setHeadString
     setHeadText = setHeadString
     setTnodeText = setBodyString
-    #@+node:ekr.20080429053831.13: *4* v.setFileIndex
+    #@+node:ekr.20080429053831.13: *4* v.setFileIndex (to be deleted)
     def setFileIndex (self, index):
         '''Set v.fileIndex and update g.app.nodeIndices.lastIndex.'''
+        
+        ### called from getLeoOutlineFromClipboard.
+        ### Called from pd.restore_gnx.
+
+        if g.no_cache: assert False,g.callers()
+
         v = self
         if g.isString(index):
             v.fileIndex = index
