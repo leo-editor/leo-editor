@@ -447,6 +447,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         self.leo_wrapper = wrapper
         self.htmlFlag = True
         QtWidgets.QTextBrowser.__init__(self,parent)
+        self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
         # Connect event handlers...
         if 0: # Not a good idea: it will complicate delayed loading of body text.
             self.textChanged.connect(self.onTextChanged)

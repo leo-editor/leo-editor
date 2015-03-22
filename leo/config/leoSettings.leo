@@ -1626,6 +1626,7 @@
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
+<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
@@ -9680,6 +9681,7 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.
 
 Note: check-outline always writes error messages to both log and console.</t>
+<t tx="ekr.20150322061147.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
