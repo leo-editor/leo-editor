@@ -632,6 +632,7 @@ class FileCommands:
             ni = g.app.nodeIndices
             for v in c.all_unique_nodes():
                 ni.check_gnx(c,v.fileIndex,v)
+                ###
             # else:
                 # for v in c.all_unique_nodes():
                     # ### Should check for duplicates here.
@@ -728,8 +729,8 @@ class FileCommands:
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
-        ni = g.app.nodeIndices
-        ni.begin_holding(c)
+        ### ni = g.app.nodeIndices
+        ### ni.begin_holding(c)
         try:
             c.loading = True # disable c.changed
             ok = True if silent else g.app.checkForOpenFile(c,fileName)
@@ -751,8 +752,8 @@ class FileCommands:
                     c.redraw()
                     fc.readExternalFiles(fileName)
         finally:
-            ni.end_holding(c)
-                    # Fix bug https://github.com/leo-editor/leo-editor/issues/35
+            ### ni.end_holding(c)
+            ### # Fix bug https://github.com/leo-editor/leo-editor/issues/35
             c.checkOutline()
                 # Must be called *after* ni.end_holding.
             c.loading = False
