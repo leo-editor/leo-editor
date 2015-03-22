@@ -15,7 +15,7 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-no_cache = True
+no_cache = False
 if no_cache:
     print('\n===== no_cache ====')
 in_bridge = False
