@@ -606,7 +606,7 @@ class FileCommands:
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
-    #@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers (Culprit)
+    #@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard (self,s,reassignIndices=True,tempOutline=False):
         '''Read a Leo outline from string s in clipboard format.'''
         trace = False and not g.unitTesting

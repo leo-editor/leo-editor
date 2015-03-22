@@ -204,6 +204,20 @@ class NodeIndices (object):
                 if trace and not cached:
                     g.trace('allocating %s %s %s' % (fn,s,v.h))
                 return s
+    #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
+    def new_vnode_helper(self,c,gnx,v):
+        '''Handle all gnx-related tasks for VNode.__init__.'''
+        ni = self
+        if gnx:
+            v.fileIndex = gnx
+            if g.no_cache:
+                ### c,fc,v = context,context.fileCommands,self
+                # trace = gnx.startswith('ekr.20040915105758')
+                # if trace: g.trace(id(v),gnx,g.callers(3))
+                ni.check_gnx(c,gnx,v)
+                c.fileCommands.gnxDict[gnx] = v
+        else:
+            v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation."""
@@ -259,7 +273,6 @@ class NodeIndices (object):
     def updateLastIndex(self,gnx):
         '''Update ni.lastIndex if the gnx affects it.'''
         trace = False and not g.unitTesting
-        ### Called from v.setFileIndex
         id_,t,n = self.scanGnx(gnx)
         if trace: g.trace('lastIndex',self.lastIndex,gnx)
         if not id_ or (n is not 0 and not n):
@@ -2072,21 +2085,17 @@ class VNodeBase (object):
             # The length of the selected body text.
         self.selectionStart = 0
             # The start of the selected body text.
-        # Complete the init.
-        ni = g.app.nodeIndices
         
-        # If we ever wanted to make VNode's independent of Leo's core,
-        # Leo's core could do the following in, say, c.create_vnode.
-        if gnx:
-            self.fileIndex = gnx
-            if g.no_cache:
-                c,fc,v = context,context.fileCommands,self
-                # trace = gnx.startswith('ekr.20040915105758')
-                # if trace: g.trace(id(self),gnx,g.callers(3))
-                ni.check_gnx(c,gnx,v)
-                fc.gnxDict[gnx] = self
-        else:
-            self.fileIndex = ni.getNewIndex(v=self)
+        # To make VNode's independent of Leo's core,
+        # wrap all calls to the VNode ctor::
+        #
+        #   def allocate_vnode(c,gnx):
+        #       v = VNode(c)
+        #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
+        
+        g.app.nodeIndices.new_vnode_helper(context,gnx,self)
+        if g.no_cache:
+            assert self.fileIndex,g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
