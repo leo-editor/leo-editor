@@ -15148,7 +15148,7 @@ def end_holding(self,c):
                 else:
                     g.trace('can not happen: no v.fileIndex',v)
         self.hold_set = set()
-.. @+node:ekr.20080429053831.13: *4* v.setFileIndex (to be deleted)
+.. @+node:ekr.20080429053831.13: *4* v.setFileIndex
 def setFileIndex (self, index):
     '''Set v.fileIndex and update g.app.nodeIndices.lastIndex.'''
     
