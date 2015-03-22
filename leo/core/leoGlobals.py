@@ -15,12 +15,9 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-no_cache = False
+no_cache = True
 if no_cache:
     print('\n===== no_cache ====')
-new_gnx_dict = False
-if new_gnx_dict:
-    print('\n===== new_gnx_dict ====')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.

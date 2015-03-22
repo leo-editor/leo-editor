@@ -1149,15 +1149,12 @@ class FileCommands:
             if g.no_cache:
                 pass
             else:
-                if g.new_gnx_dict:
-                    pass
+                if gnx is None:
+                    pass # Fix bug #163: Internal Leo error in createSaxVnode 
                 else:
-                    if gnx is None:
-                        pass # Fix bug #163: Internal Leo error in createSaxVnode 
-                    else:
-                        if self.gnxDict.get(gnx):
-                            g.internalError('duplicate gnx: %s in %s' % (gnx,v))
-                        self.gnxDict [gnx] = v
+                    if self.gnxDict.get(gnx):
+                        g.internalError('duplicate gnx: %s in %s' % (gnx,v))
+                    self.gnxDict [gnx] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
