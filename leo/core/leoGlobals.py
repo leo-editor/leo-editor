@@ -15,9 +15,6 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-# no_cache = True
-# if no_cache:
-    # print('\n===== no_cache ====')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
@@ -853,10 +850,6 @@ class SherlockTracer:
         '''Format arg, the value returned by a "return" statement.'''
         try:
             if isinstance(arg,types.GeneratorType):
-                # Important: tee destroys the original generator, so it can't be used here.
-                # import itertools
-                # arg,arg2 = itertools.tee(arg)
-                # return ' -> generator:%s' % [z for z in arg2] ### '<*generator*>'
                 ret = '<generator>'
             elif isinstance(arg,(tuple,list)):
                 ret = '[%s]' % ','.join([self.show(z) for z in arg])

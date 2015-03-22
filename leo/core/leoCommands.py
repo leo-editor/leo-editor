@@ -260,9 +260,6 @@ class Commands (object):
         c = self
         if trace: g.es_debug(c.shortFileName(),g.app.gui)
         gnx = 'hidden-root-vnode-gnx'
-        ### if g.no_cache:
-        # Allocate the hidden root vnode safely.
-        # This special case prevents special case in the VNode ctor.
         assert not hasattr(c,'fileCommands'),c.fileCommands
         
         class DummyFileCommands:
@@ -272,10 +269,6 @@ class Commands (object):
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c,gnx=gnx)
         c.fileCommands = None
-        ###
-        # else:
-            # self.hiddenRootNode = leoNodes.VNode(context=c,gnx=gnx)
-            # self.hiddenRootNode.setHeadString('<hidden root VNode>')
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:

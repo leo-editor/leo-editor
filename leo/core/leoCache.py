@@ -201,11 +201,6 @@ class Cacher:
             if gnxString:
                 assert g.isUnicode(gnxString)
                 v = leoNodes.VNode(context=c,gnx=gnxString)
-                ###
-                # if g.no_cache:
-                    # pass # Done in vnode ctor.
-                # else:
-                    # gnxDict[gnxString] = v
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:
                 v = leoNodes.VNode(context=c)

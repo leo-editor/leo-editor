@@ -67,8 +67,7 @@ class NodeIndices (object):
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self,c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        ### This might be called from the bridge.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False # Report only if lastIndex was changed.
         if trace: t1 = time.time()
         ni = self
@@ -115,7 +114,6 @@ class NodeIndices (object):
         if v is None:
             g.internalError('getNewIndex: v is None')
             return ''
-        ###if g.no_cache:
         c = v.context
         fc = c.fileCommands 
         t_s = self.update()
@@ -128,30 +126,12 @@ class NodeIndices (object):
         self.check_gnx(c,gnx,v)
         fc.gnxDict[gnx] = v
         return gnx
-        ###
-        # else:
-            # if trace:
-                # fn = self.stack[-1].shortFileName() if self.stack else '<no c>'
-            # if self.hold_gnx_flag:
-                # if trace and trace_hold: g.trace('holding',fn,v.h)
-                # self.hold_gnx_set.add(v)
-                # return ''
-            # else:
-                # self.lastIndex += 1
-                # s = g.toUnicode("%s.%s.%d" % (
-                    # self.userId,self.timeString,self.lastIndex))
-                # if trace and not cached:
-                    # g.trace('allocating %s %s %s' % (fn,s,v.h))
-                # return s
     #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
     def new_vnode_helper(self,c,gnx,v):
         '''Handle all gnx-related tasks for VNode.__init__.'''
         ni = self
         if gnx:
             v.fileIndex = gnx
-            ###if g.no_cache:
-            # trace = gnx.startswith('ekr.20040915105758')
-            # if trace: g.trace(id(v),gnx,g.callers(3))
             ni.check_gnx(c,gnx,v)
             c.fileCommands.gnxDict[gnx] = v
         else:
@@ -2032,7 +2012,6 @@ class VNodeBase (object):
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
         
         g.app.nodeIndices.new_vnode_helper(context,gnx,self)
-        ### if g.no_cache:
         assert self.fileIndex,g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
