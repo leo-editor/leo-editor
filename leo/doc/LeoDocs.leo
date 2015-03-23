@@ -7120,7 +7120,8 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
     @wrap may appear in either headlines or body text.
 </t>
 <t tx="ekr.20100805171546.4412">This section contains files used to generate Leo's web site,
-including Leo's home page.</t>
+including Leo's home page.
+</t>
 <t tx="ekr.20100806170836.4392">.. index::
     pair: @&lt;file&gt;; Reference
 
@@ -16396,7 +16397,7 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
 History of Leo
 ##############
 
-This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronical of every change made to Leo.
+This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronicle of every change made to Leo.
 
 .. contents::
     :depth: 3
