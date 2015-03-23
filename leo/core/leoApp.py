@@ -2137,7 +2137,8 @@ class LoadManager:
         lm.old_argv = sys.argv[:]
 
         # Note: this automatically implements the --help option.
-        parser = optparse.OptionParser()
+        usage = "usage: launchLeo.py [options] file1, file2, ..."
+        parser = optparse.OptionParser(usage=usage)
         add = parser.add_option
         add('--debug', action='store_true',
             help = 'enable debug mode')
