@@ -2038,7 +2038,9 @@ class EditCommandsClass (BaseEditCommandsClass):
             'reverse-region':                       self.reverseRegion,
             'reverse-sort-lines':                   self.reverseSortLines,
             'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
-            'scroll-down-half-page':                self.scrollDownHalfPage,                
+            'scroll-down-half-page':                self.scrollDownHalfPage,
+            'right-click-icon':                     self.rightClickIconBox,
+            'right-click-headline':                 self.rightClickHeadline,
             'scroll-down-line':                     self.scrollDownLine,
             'scroll-down-page':                     self.scrollDownPage,
             'scroll-outline-down-line':             self.scrollOutlineDownLine,
@@ -3888,8 +3890,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Simulate a double click in headline of the presently selected node.'''
         c = self.c
         return c.frame.tree.onDoubleClickHeadline(event,c.p)
-
-    # This is not used in Leo at present.
 
     def rightClickHeadline (self,event=None):
         '''Simulate a right click in the headline of the presently selected node.'''

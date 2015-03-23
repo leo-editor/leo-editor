@@ -1257,6 +1257,7 @@
 <v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 <v t="ekr.20150320233042.8"><vh>** remove @rst-ignore links nodes</vh></v>
+<v t="ekr.20150323020057.1"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3334,12 +3335,12 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'hyperenter2'                          after  entering hyperlink           c,p,v,event
 'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
 'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
-'iconclick1'                   yes     before single click in icon box     c,p,v,event
-'iconclick2'                           after  single click in icon box     c,p,v,event
-'iconrclick1'                  yes     before right click in icon box      c,p,v,event
-'iconrclick2'                          after  right click in icon box      c,p,v,event
-'icondclick1'                  yes     before double click in icon box     c,p,v,event
-'icondclick2'                          after  double click in icon box     c,p,v,event
+'iconclick1'                   yes     before single click in icon box     c,p,v,event (note 15)
+'iconclick2'                           after  single click in icon box     c,p,v,event (note 15)
+'iconrclick1'                  yes     before right click in icon box      c,p,v,event (note 15)
+'iconrclick2'                          after  right click in icon box      c,p,v,event (note 15)
+'icondclick1'                  yes     before double click in icon box     c,p,v,event (note 15)
+'icondclick2'                          after  double click in icon box     c,p,v,event (note 15)
 'idle'                                 periodically (at idle time)         c
 'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
 'menu1'                        yes     before creating menus               c,p,v (note 3)
@@ -3436,9 +3437,18 @@ Event name (tag argument)     Stop?    When called                         Keys 
 
 13. p is the new node (position) containing '@auto filename.ext'
 
-14. New in Leo 4.10: the d argument to the open-with event handlers is a python
+14. The d argument to the open-with event handlers is a python
     dictionary whose keys are all the tags specified by the user in the body of the
     @openwith node.
+
+15. The only way to trigger these events is with minibuffer commands::
+
+                click-icon-box
+                ctrl-click-icon
+                double-click-headline
+        Ctrl+F3 double-click-icon-box
+                right-click-headline
+                right-click-icon
 </t>
 <t tx="ekr.20050903161843">.. index::
     pair: Script Button; Tutorial
@@ -4143,7 +4153,7 @@ Writing plugins is like writing any other Leo script.  See
 The rest of this chapters discusses topics related specifically to plugins.
 
 .. contents::
-    :depth: 2
+    :depth: 3
 </t>
 <t tx="ekr.20060612103824">.. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -18676,6 +18686,8 @@ untangle-marked</t>
 - Move used links to the nodes to which they apply.
 
 Many links in FAQ: Let's leave them :-)</t>
+<t tx="ekr.20150323020057.1">TL;DR: delete all the iconclick* entries from the table at:
+http://leoeditor.com/scripting.html#event-handlers</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
