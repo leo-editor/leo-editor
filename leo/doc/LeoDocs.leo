@@ -7157,7 +7157,7 @@ The following table compares the various ways of creating external files.
 .. _`markdown`:            http://en.wikipedia.org/wiki/Markdown
 .. _`reStructuredText`:    http://docutils.sourceforge.net/rst.html
 .. _`vim outline`:         http://www.vim.org/scripts/script.php?script_id=3515
-.. _`vim documenation`:    http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
+.. _`vim documentation`:   http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
 
 **Note**:
 
@@ -7165,7 +7165,7 @@ The following table compares the various ways of creating external files.
 
 2. ``@auto-org (aka @auto-org-mode`` parses `Emacs org-mode`_ files. See Leo's `Emacs documentation`_ for more details.
 
-3. ``@auot-otl (aka @auto-vim-outline)`` parses `vim outline`_ files. See Leo's `vim documenation`_ for more details.
+3. ``@auto-otl (aka @auto-vim-outline)`` parses `vim outline`_ files. See Leo's `vim documentation`_ for more details.
 
 4. ``@auto-rst`` parses `reStructuredText`_ files.
 
@@ -7612,7 +7612,7 @@ Markup doc parts inserts the markup directly into the output. Markup doc parts a
          show_doc_parts_in_rst_mode = notes literal
          @c
 
-Ths would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is ``literal``, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
+This would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is ``literal``, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
 </t>
 <t tx="ekr.20100810203016.4298">The rst3 command supports three different modes.
 
@@ -11706,7 +11706,7 @@ All clones of a node are actually *the same node*:
 Clones allow data to be stored in *arbitrarily many* places within an outline.
 
 ``Ctrl-` (clone-node)``
-    Clones node A. The shortcut is a grave accent, *not* a single quote.  This is often on the same keyboard key as the tilda ``~`` character.
+    Clones node A. The shortcut is a grave accent, *not* a single quote.  This is often on the same keyboard key as the tilde ``~`` character.
 
 Please take a few moments to experiment with clones:
 
@@ -16780,7 +16780,7 @@ If Python is the present language, Leo inserts an additional tab if the previous
 ``convert-tabs``
     Converts leading tabs to blanks in a single node.
 ``convert-blanks``
-    Cconverts blanks to tabs in a single node.
+    Converts blanks to tabs in a single node.
 ``convert-all-tabs``
     Converts leading tabs to blanks throughout the selected tree.
 ``convert-all-blanks``
@@ -17171,7 +17171,7 @@ These commands expand all descendants of the selected nodes::
 ``end-edit-headline``
     Ends editing of the headline.
 </t>
-<t tx="ekr.20150318110552.47">**Arrow keys**: When focus is in the outline pane, ou can move about the outline using *plain* arrow keys. Regardless of focus, Alt-Arrow keys select nodes in the outline pane.
+<t tx="ekr.20150318110552.47">**Arrow keys**: When focus is in the outline pane, you can move about the outline using *plain* arrow keys. Regardless of focus, Alt-Arrow keys select nodes in the outline pane.
 
 ``goto-first-sibling``
     Select the first sibling of the selected node.
@@ -17220,7 +17220,7 @@ Similarly, these commands select various nodes in the outline::
 ``past-retaining-clones``
     Pastes a node and its descendants from the outline.  This command preserves the identify (gnx's) of the pasted nodes, thereby preserving any clone links. This command ensures that no newly-pasted node is an ancestor of itself.
 
-**Outline representation**: When cutting or copying an outine to the clipboard, Leo writes the outline in the same xml (text) format used in .leo files. You may copy this text representation into a body pane (or into any other text editor) using ``Ctrl-V``.
+**Outline representation**: When cutting or copying an outline to the clipboard, Leo writes the outline in the same xml (text) format used in .leo files. You may copy this text representation into a body pane (or into any other text editor) using ``Ctrl-V``.
 </t>
 <t tx="ekr.20150318110552.49">``move-outline-down (Ctrl-D or Shift-Down or Alt-Shift-Down)``
     Move the selected node down, if possible.
@@ -17393,7 +17393,7 @@ Searches creating clones:
 ``search-backward``
     Searches in the reverse direction.
 ``word-search-backward`` and ``word-search-forward``
-    Sthe 'Whole Word' checkbox to True.
+    Sets 'Whole Word' checkbox to True.
 ``re-search-forward`` and ``re-search-backward``
     Set the 'Regexp' checkbox to True.
 </t>
