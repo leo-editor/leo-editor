@@ -1223,13 +1223,15 @@
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
 </v>
+<v t="ekr.20060620094033"></v>
+<v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
 <v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20150312080344.33"></v>
+<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20131008041326.16140"></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20131008041326.16203"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11270,7 +11272,7 @@ This plugin provides a "workbook" like way to get data from Leo document to the 
 <t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands.
 **Note**: you can also use the Nav Tab (in the Log pane) to search for text.
 
-``Ctrl-F (start-search)`` shows the Find Tab and puts the focus in the text box labelled ``Find:``.
+``Ctrl-F (start-search)`` shows the Find Tab and puts the focus in the text box labeled ``Find:``.
 
 **Aside**: You can select radio buttons and toggle check boxes in the Find Tab with ``Ctrl-Alt keys``. The capitalized words of the radio buttons or check boxes indicate which key to use.  For example, ``Ctrl-Alt-X (toggle-find-regex-option)`` toggles the ``regeXp`` checkbox.
 
@@ -11280,7 +11282,7 @@ Start the find command by typing ``&lt;Return&gt;``.
 
 But suppose you want to replace ``def`` with ``foo``, instead of just finding ``def``.
 
-Just type ``&lt;Tab&gt;`` before typing ``&lt;Return&gt;``. Focus shifts to the text box labelled ``Replace:``.
+Just type ``&lt;Tab&gt;`` before typing ``&lt;Return&gt;``. Focus shifts to the text box labeled ``Replace:``.
 
 Finally, type ``&lt;Return&gt;`` to start the find-next command. When Leo finds the next instance of ``def``, it will select it.
 
@@ -11376,6 +11378,11 @@ You will see ``print-`` in the minibuffer. This is the longest common prefix of 
 Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
 
 Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
+
+**Opening files using filename completion**
+
+``file-open-by-name``
+    Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
     
 **Command history**:
 
@@ -11739,7 +11746,6 @@ Please take a few moments to experiment with clones:
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
 A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
-
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
@@ -12137,8 +12143,7 @@ files with python.exe *not* pythonw.exe.
 
 Leo puts several files in your HOME/.leo directory: .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 </t>
-<t tx="ekr.20131008041326.16156">Leo supports the following command-line options. As usual, you can see the
-list by typing the following in a console window::
+<t tx="ekr.20131008041326.16156">Leo supports the following command-line options. As usual, you can see the list by typing the following in a console window::
 
     leo -h
 
@@ -12148,7 +12153,7 @@ or::
 
 You will get something like the following::
 
-    Usage: launchLeo.py [options]
+    Usage: launchLeo.py [options] file1, file2, ...
     
     Options:
       -h, --help            show this help message and exit
@@ -12162,7 +12167,6 @@ You will get something like the following::
       --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --old-nosent          disable new @clean update logic
       --screen-shot=SCREENSHOT_FN
                             take a screen shot and then exit
       --script=SCRIPT       execute a script and then exit
@@ -16168,10 +16172,6 @@ can just use @auto.
 Leo now stores "ephemeral" or position-related data **in vnodes*. This is a
 completely new idea in Leo's history!
 </t>
-<t tx="ekr.20150312080344.24">The :r, :tabnew, insert-file-name and  file-open-by-name commands now have file-name completion
-
-I bind Ctrl-O to file-open-by-name to bypass the Windows open file dialog.
-</t>
 <t tx="ekr.20150312080344.25">Leo now uses an all-Python replacement for the QSyntaxHighlighter class.
 
 This fixes git bug 28: https://github.com/leo-editor/leo-editor/issues/28
@@ -16240,16 +16240,14 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
 </t>
 <t tx="ekr.20150312080344.33">::
 
-    Leo 5.1 b1 released March 20, 2015
+    Leo 5.1 b1 released March 27, 2015
     @clean files
     Leo regularly checks the integrity of the outline
     Up/Down arrows in the minibuffer cycle though command history
     http://leoeditor.com/load-leo.html displays .leo files in the browser
     Leo now honors @language inside @doc parts
-    @data nodes can now be composed from a tree of nodes
     Added @int qt-cursor-width setting
     Added g.IdleTime &amp; LeoQtGui.IdleTime
-    
 </t>
 <t tx="ekr.20150312080344.34">::
 
@@ -18064,7 +18062,7 @@ The following commands emulate `Emacs register commands`_::
     register-prepend-to
     register-view
 </t>
-<t tx="ekr.20150323105959.1"></t>
+<t tx="ekr.20150323105959.1">.. These were added in Leo 5.0, but never documented.</t>
 <t tx="ekr.20150323110029.1"></t>
 <t tx="ekr.20150323110109.1"></t>
 <t tx="ekr.20150323110230.1"></t>
