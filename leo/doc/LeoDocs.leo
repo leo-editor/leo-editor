@@ -907,14 +907,13 @@
 <v t="ekr.20131011050613.16871"><vh>Finding redraw and refocus code</vh></v>
 <v t="ekr.20131011050613.16862"><vh>Debugging with g.trace, g.callers &amp; g.pdb</vh></v>
 </v>
-<v t="ekr.20131012060912.16769"><vh>Special topics</vh>
 <v t="ekr.20131011050613.16860"><vh>The design of Leo's classes</vh></v>
 <v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
 <v t="ekr.20131011050613.16866"><vh>Read long comments with caution</vh></v>
 <v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
 <v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
-</v>
+<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
 </v>
 </v>
 <v t="ekr.20140810085801.18216"><vh>Vim Mode Theory of Operation</vh>
@@ -1206,16 +1205,6 @@
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 </v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150223040723.2"><vh>Importing files</vh></v>
-<v t="ekr.20150227040245.6"><vh>Fix doc bug re open directory</vh></v>
-<v t="ekr.20150227184811.5"><vh>Done</vh></v>
-<v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
-<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
-<v t="ekr.20150314050809.16"><vh>Will not be documented</vh></v>
-<v t="ekr.20150319055953.6"><vh>Deprecated commands</vh></v>
-<v t="ekr.20150319055953.5"><vh>Document rectangle commands</vh></v>
-</v>
 <v t="ekr.20150312013449.5"><vh>** To be documented (from 5.0)</vh>
 <v t="ekr.20150312080344.15"><vh>To (new?) scripting Chapter</vh>
 <v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
@@ -1242,6 +1231,13 @@
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 <v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
+<v t="ekr.20150314050809.16"><vh>Will not be documented</vh></v>
+<v t="ekr.20150319055953.6"><vh>Deprecated commands</vh></v>
+<v t="ekr.20150319055953.5"><vh>Document rectangle commands</vh></v>
+</v>
+<v t="ekr.20131009065148.31760"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12114,13 +12110,9 @@ files with python.exe *not* pythonw.exe.
 .. For full instructions about how
 .. to do this, see `Associating Leo with .leo Files`_.
 </t>
-<t tx="ekr.20131008041326.16155">Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
+<t tx="ekr.20131008041326.16155">Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
 
-Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
-
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+Leo puts several files in your HOME/.leo directory: .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 </t>
 <t tx="ekr.20131008041326.16156">Leo supports the following command-line options. As usual, you can see the
 list by typing the following in a console window::
@@ -12507,7 +12499,15 @@ Programmers have contributed dozens of plugins, including:
 
 - Ctors init settings "early", before calling the ctors for subsidiary objects. This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
-<t tx="ekr.20131011050613.16860">In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo's overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed.
+<t tx="ekr.20131011050613.16860">Leo uses a model/view/controller architecture.
+
+- Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.
+
+- Model (data): The VNode and Position classes in leoNodes.py.
+
+- View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
+
+In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo's overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed.
 
 The distinction between gui-dependent and gui-independent is important. Almost all gui-dependent code resides in the plugins folder. Leo's core code is almost completely gui independent.
 
@@ -12605,9 +12605,6 @@ sort-lines. You will find::
     'sort-lines':    self.sortLines,
     
 Now search for "def sortLines" and you have arrived.</t>
-<t tx="ekr.20131012060912.16769">The following sections discuss topics that may not be apparent from reading
-the sources.
-</t>
 <t tx="ekr.20131012060912.16770">Leo's key handling is complex because it does inherently complex things:
 
 - Code in various places translate user key bindings to dictionaries.
@@ -14186,7 +14183,7 @@ A single Leo outline may contain many @clean nodes. Leo outlines are like projec
     pair: Import Script; Tutorial
     pair: import-file command; Tutorial
 
-Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is more convenient to use a **import script**. Leo's `Scripting Tutorial &lt;tutorial-scripting.html&gt;`_ discusses such scripts.
+Leo's import-file command creates a single @clean tree using the same importers that @auto uses. When importing several files it is more convenient to use a **import script**. Leo's `Scripting Tutorial &lt;tutorial-scripting.html&gt;`_ discusses such scripts.
 </t>
 <t tx="ekr.20140216125129.16666"></t>
 <t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
@@ -15754,29 +15751,6 @@ Notes:
 - If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="ekr.20150223040723.2">Leo's import-file command creates a single @clean tree using the same imports that @auto uses. When importing several files it is much more convenient to use a </t>
-<t tx="ekr.20150227040245.6">https://groups.google.com/d/msg/leo-editor/1oj9Oznn1as/O5ftHfFLAkMJ
-
-some of the text at http://leoeditor.com/running.html#the-leo-directory is a bit ambiguous (it's using "HOME" to refer to both Leo the program's home folder AND the user's home folder) and went to clean it up a bit, and then realized I had to research how.
-
------
-
-The first sentence is referring to Leo's home, "Python’s HOME environment
-variable specifies Leo’s HOME directory. See
-http://docs.python.org/lib/os-procinfo.html for details.".
-
-I think it rare for Python HOME to expand to C:\users\jane. :)
-</t>
-<t tx="ekr.20150227184811.5">- Added entries for gnx and uA to glossary, with links.
-- Reviewed docs for uA's and gnx's.
-  http://leoeditor.com/tutorial-programming.html#using-persistence
-  http://leoeditor.com/appendices.html#format-of-external-files
-- Made sure @clean is completely documented.
-  http://leoeditor.com/tutorial-programming.html#using-clean
-  http://leoeditor.com/tutorial-programming.html#summary-clean-vs-file
-- Explained the overall idea of the @shadow algorithm.
-  http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-- Deprecated @shadow in all docs.</t>
 <t tx="ekr.20150301140303.15">Leo 5.1 b1                          March 9, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
@@ -15999,26 +15973,15 @@ print(rope)
 </t>
 <t tx="ekr.20150311123850.36"></t>
 <t tx="ekr.20150311123850.37"></t>
-<t tx="ekr.20150311123850.39">Sentinels are necessary for clones, but sentinels would
-still be necessary if clones did not exist.
+<t tx="ekr.20150311123850.39">Sentinels are necessary for clones, but sentinels would still be necessary if clones did not exist.
 
-Sentinels create **identity**, the notion that a particular
-nodes starts at *this* place in the external file and
-extends to *this other* place. Identity is a persistent,
-invariant attribute of a file: Leo recreates all the nodes
-of the external files when re-reading the file.
+Sentinels create **identity**, the notion that a particular nodes starts at *this* place in the external file and extends to *this other* place. Identity is a persistent, invariant attribute of a file: Leo recreates all the nodes of the external files when re-reading the file.
 
 It's really that simple, but here are some consequences:
 
-1. Identity remains even when the contents of a node
-   changes. Thus, there is *no way* to use content-related
-   mechanisms to recreate identity. This means, for example,
-   that git can never help recover identity.
+1. Identity remains even when the contents of a node changes. Thus, there is *no way* to use content-related mechanisms to recreate identity. Git can never help recover identity.
 
-2. Leo's sentinels mark an *arbitrary* range of text within
-   the external file. Thus, @auto files can never be as
-   flexible as @file nodes.
-
+2. Leo's sentinels mark an *arbitrary* range of text within the external file. @auto files can never be as flexible as @file nodes.
 </t>
 <t tx="ekr.20150311123850.40"></t>
 <t tx="ekr.20150311123850.41"></t>
