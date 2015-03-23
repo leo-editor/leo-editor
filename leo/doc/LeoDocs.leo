@@ -1145,6 +1145,40 @@
 </v>
 </v>
 </v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
+<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
+<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+</v>
+<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
+<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
+</v>
+<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
+<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
+<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
+</v>
+<v t="ekr.20150323110109.1"><vh>What's new</vh>
+<v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
+<v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
+<v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
+<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
+<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
+</v>
+<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
+<v t="ekr.20150313192232.9"><vh>To settings</vh>
+<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
+<v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
+</v>
+</v>
+<v t="ekr.20150323105920.1"><vh>To do: Release notes</vh>
+<v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
+<v t="ekr.20150323112726.3"><vh>Fixed bug 157: sort-lines problem</vh></v>
+<v t="ekr.20150323112726.4"><vh>Leo calls check-outline regularly</vh></v>
+</v>
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
@@ -1204,36 +1238,6 @@
 <v t="ekr.20150311123850.53"><vh>Major features</vh>
 <v t="ekr.20150311123850.54"><vh>\@clean updates outlines automatically</vh></v>
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
-</v>
-</v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323105920.1"><vh>Release notes</vh></v>
-<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
-<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
-<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
-<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
-<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
-</v>
-<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
-<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-</v>
-<v t="ekr.20150323110109.1"><vh>What's new</vh>
-<v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
-<v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
-<v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
-<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
-</v>
-<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
-<v t="ekr.20150313192232.9"><vh>To settings</vh>
-<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
-<v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
 </v>
 </v>
 </vnodes>
@@ -18362,7 +18366,7 @@ The following commands emulate `Emacs register commands`_::
 </t>
 <t tx="ekr.20150323105920.1">- Links to other docs?
 - Link to the Mulder/Ream algorithm from the release notes.
-
+- Added @int qt-cursor-width
 </t>
 <t tx="ekr.20150323105959.1"></t>
 <t tx="ekr.20150323110029.1"></t>
@@ -18374,6 +18378,27 @@ Just `clone-find-all-flattened`_.  This is my workhorse command when fixing comp
 <t tx="ekr.20150323111332.1"></t>
 <t tx="ekr.20150323111337.1">Bug: @auto-org is not @auto-otl.</t>
 <t tx="ekr.20150323111418.1">Mention Aha's, scripts, etc.</t>
+<t tx="ekr.20150323112726.2"></t>
+<t tx="ekr.20150323112726.3">https://github.com/leo-editor/leo-editor/issues/157
+
+k.fullCommand now saves/restore the selection range when calling c.frame.log.deleteTab.
+</t>
+<t tx="ekr.20150323112726.4">Before writes and after reads, pastes, undo, redo.
+
+- Remove --check-outline.
+- Remove:
+
+     @bool check_outline_after_read
+     @bool check_outline_before_save
+
+- Add:
+    
+    @bool verbose_check_outline = False
+    
+        True: check-outline will produce the same messages as it does now.
+        False: check-outline will produce only error messages.
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
