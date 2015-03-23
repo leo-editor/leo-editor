@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''Leo's fundamental data classes.'''
 use_zodb = False
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
@@ -2710,4 +2708,7 @@ else:
 
 vnode = VNode # compatibility.
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

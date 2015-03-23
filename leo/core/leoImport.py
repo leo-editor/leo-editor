@@ -2,11 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3206: * @file leoImport.py
 #@@first
-    # Required so non-ascii characters will be valid in unit tests.
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-#@@encoding utf-8
 #@+<< imports >>
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
@@ -2281,4 +2276,8 @@ def tailToNextNode(event=None):
         u.afterChangeGroup(p,undoType)
         c.selectPosition(p2)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+#@@encoding utf-8
 #@-leo

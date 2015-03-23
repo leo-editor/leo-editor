@@ -3,13 +3,11 @@
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
 #@@first
 '''All colorizing code for Leo.'''
+
 python_qsh = True
     # True use PythonQSyntaxHighlighter
     # False use QSyntaxHighlighter
-# if python_qsh: print('===== python_qsh ===== ')
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 80
+
 #@+<< imports >>
 #@+node:ekr.20140827092102.18575: ** << imports >>
 import leo.core.leoGlobals as g
@@ -300,6 +298,7 @@ class PythonQSyntaxHighlighter:
         self.reformat_blocks_helper()
     #@-others
 #@-<< class PythonQSyntaxHighlighter >>
+
 #@+others
 #@+node:ekr.20140906081909.18690: ** class ColorizerMixin
 class ColorizerMixin:
@@ -3011,4 +3010,7 @@ if Qsci:
             font = QtGui.QFont("DejaVu Sans Mono",14)
             lexer.setFont(font)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

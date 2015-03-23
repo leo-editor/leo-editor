@@ -5,10 +5,6 @@
 
 '''Leo's vim emulator.'''
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 import leo.core.leoGlobals as g
 import os
 import string
@@ -2542,4 +2538,7 @@ class VimCommands:
         return vc.c.widget_name(w)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

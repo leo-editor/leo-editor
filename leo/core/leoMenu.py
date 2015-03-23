@@ -2,13 +2,7 @@
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 import leo.core.leoGlobals as g
-
-# import string
 import sys
 
 #@+others
@@ -1583,4 +1577,7 @@ class NullMenu(LeoMenu):
         pass
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

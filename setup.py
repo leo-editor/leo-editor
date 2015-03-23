@@ -12,6 +12,7 @@ else:
     import os
     import sys
 if trace: print('packages:...\n%s' % packages)
+
 #@+others
 #@+node:maphew.20130503222911.1635: ** get_long_description
 def get_long_description():
@@ -114,6 +115,10 @@ if not simple:
     ]
 #print(data_files)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+
 long_description = get_long_description()
 setup(
     name = 'leo',
@@ -166,6 +171,4 @@ setup(
         'gui_scripts' : ['leo = leo.core.runLeo:run'],
     }
 )
-#@@language python
-#@@tabwidth -4
 #@-leo

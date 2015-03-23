@@ -1515,5 +1515,5 @@ class StyleSheetManager:
 #@-others
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 #@-leo

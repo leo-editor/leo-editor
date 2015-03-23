@@ -25,6 +25,7 @@ free-layout-zoom
 """
 #@-<< docstring >>
 # Written by Terry Brown.
+
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
@@ -34,6 +35,7 @@ from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json
 #@-<< imports >>
+
 #@+others
 #@+node:tbrown.20110203111907.5521: ** init (free_layout.py)
 def init():
@@ -511,4 +513,7 @@ def free_layout_zoom(kwargs):
     c = kwargs['c']
     c.free_layout.get_top_splitter().zoom_toggle()
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

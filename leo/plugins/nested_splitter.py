@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
-#@@language python
-#@@tabwidth -4
+'''Nested splitter classes.'''
+
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
 try:
@@ -14,7 +14,9 @@ from leo.core.leoQt import Qt,QtCore,QtConst,QtGui,QtWidgets
 import sys
 # from inspect import isclass
 #@-<< imports >>
+
 # pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
 def init():
@@ -1233,6 +1235,10 @@ def main():
     holder.show()
     app.exec_()
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+
 if __name__ == "__main__":
     main()
 #@-leo

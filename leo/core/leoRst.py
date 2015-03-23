@@ -71,6 +71,7 @@ else:
 # import tempfile
 import time
 #@-<< imports >>
+
 #@+others
 #@+node:ekr.20090502071837.12: ** code_block
 def code_block (name,arguments,options,
@@ -2131,4 +2132,7 @@ class LinkHtmlparserClass (LinkAnchorParserClass):
         return self.replacements
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

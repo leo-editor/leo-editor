@@ -16,6 +16,7 @@ imp.reload(rope.base.project)
 imp.reload(rope.base.simplify)
 imp.reload(rope.refactor)
 #@-<< leoRope imports >>
+
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController
 class RopeController:
@@ -64,7 +65,6 @@ def test(c):
     RopeController(c).run()
     print('done: %s sec.' % g.timeSince(t1))
 #@-others
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

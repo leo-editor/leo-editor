@@ -3,6 +3,8 @@
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
 #@@first
 
+'''Support for @shadow, especially the Mulder/Ream update algorithm used by @clean.'''
+
 #@+<< docstring >>
 #@+node:ekr.20080708094444.78: ** << docstring >>
 '''
@@ -40,10 +42,6 @@ import os
 import pprint
 import unittest
 #@-<< imports >>
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
@@ -802,4 +800,7 @@ class ShadowController:
 
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

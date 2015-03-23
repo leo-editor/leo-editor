@@ -27,9 +27,6 @@ Notes:
 '''
 #@-<< docstring>>
 
-#@@language python
-#@@tabwidth -4
-
 # As in leo.py we must be very careful about imports.
 g = None # set by init: do *not* import it here!
 inited = False
@@ -156,4 +153,7 @@ def run_script(c,script,p=None):
     # g.trace('script returns: ',repr(g.app.scriptResult))
     return g.app.scriptResult
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

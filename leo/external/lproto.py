@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ville.20091010232339.6117: * @file ../external/lproto.py
-#@@language python
-
 #@+<< docstring >>
 #@+node:ville.20091010205847.1364: ** << docstring >>
 """ lproto - simple local socket protocol dispatcher (reactor) for PyQt 
@@ -29,7 +27,6 @@ import struct
 #@-<< imports >>
 
 # EKR: use this by default.
-
 if hasattr(socket,'AF_UNIX'):
     standard_leo_socket_name = os.path.expanduser('~/.leo/leoserv_sockname')
 else:
@@ -231,4 +228,7 @@ class LProtoClient:
 
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

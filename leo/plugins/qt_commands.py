@@ -123,4 +123,7 @@ def style_set_selected(kwargs):
     if c:
         c.styleSheetManager.set_selected_style_sheet()
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

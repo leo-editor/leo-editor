@@ -3,9 +3,6 @@
 #@+node:ekr.20110310091639.14254: * @file ../external/codewise.py
 #@@first
 
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:ekr.20110310091639.14291: ** << docstring >>
 r""" CodeWise - global code intelligence database
@@ -902,6 +899,9 @@ class ContextSniffer:
 
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 
 if __name__ == "__main__":
     main()

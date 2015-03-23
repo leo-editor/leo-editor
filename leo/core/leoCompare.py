@@ -1,15 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3630: * @file leoCompare.py
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 """Leo's base compare class."""
 
 import leo.core.leoGlobals as g
 import filecmp
 import os
-# import string
 
 #@+others
 #@+node:ekr.20031218072017.3631: ** choose
@@ -499,4 +494,7 @@ class LeoCompare (BaseLeoCompare):
     """A class containing Leo's compare code."""
     pass
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

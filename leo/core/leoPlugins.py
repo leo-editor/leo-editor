@@ -1,13 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
-'''define the LeoPluginsController class.'''
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''Classes relating to Leo's plugin architecture.'''
 
 import leo.core.leoGlobals as g
-# import bisect
 import sys
 
 #@+others
@@ -700,4 +695,7 @@ class LeoPluginsController:
         self.handlers[tag] = bunches
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

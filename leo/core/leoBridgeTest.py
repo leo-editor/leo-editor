@@ -14,6 +14,7 @@ import leo.core.leoBridge as leoBridge
 import optparse
 import sys
 # Do not define g here.  Use the g returned by the bridge.
+
 #@+others
 #@+node:ekr.20080730161153.3: ** main & helpers
 def main ():
@@ -74,6 +75,9 @@ def scanOptions():
         options.gui = None
     return options
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 if __name__ == '__main__':
     print ('leoBridgeTest.py: argv: %s' % repr(sys.argv))
     main()

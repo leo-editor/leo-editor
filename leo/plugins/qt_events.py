@@ -3,6 +3,7 @@
 #@+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
 #@@first
 '''Leo's Qt event handling code.'''
+
 #@+<< about internal bindings >>
 #@+node:ekr.20110605121601.18538: ** << about internal bindings >>
 #@@nocolor-node
@@ -36,11 +37,13 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
+
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import string
 import sys
+
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
@@ -635,8 +638,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 g.trace('%20s %s' % (t,w.__class__))
     #@-others
 #@-others
-
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 #@-leo

@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''Configuration classes for Leo.'''
+
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
@@ -2281,4 +2280,7 @@ class SettingsTreeParser (ParserBaseClass):
         return None
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -1,10 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3603: * @file leoUndo.py
-'''Undo manager.'''
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''Leo's undo/redo manager.'''
 
 #@+<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
@@ -2201,4 +2197,7 @@ class Undoer:
             w.setYScrollPosition(u.yview)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

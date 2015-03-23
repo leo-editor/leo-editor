@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo.""" 
+
 # pylint: disable=eval-used
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
@@ -138,6 +137,7 @@ import time
 # (7) enter-x-command
 # (8) Keys are command names, values are lists of ShortcutInfo objects.
 #@-<< about key dicts >>
+
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
 class AutoCompleterClass:
@@ -4994,4 +4994,7 @@ class ModeInfo:
     #@-others
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120519121124.9919: * @file ../external/leosax.py
 #@@language python
-#@@tabwidth -4
+
 #@+others
 #@+node:ekr.20120519121124.9920: ** leosax declarations
 """Read .leo files into a simple python data structure with
@@ -188,6 +188,10 @@ def get_leo_data(source):
     return parser.root
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+
 if __name__ == '__main__':
     import sys
     import os

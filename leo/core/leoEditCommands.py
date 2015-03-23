@@ -7,7 +7,9 @@ Basic editor commands for Leo.
 
 Modelled after Emacs and Vim commands.
 '''
+
 # pylint: disable=eval-used
+
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
@@ -200,6 +202,7 @@ class BaseEditCommandsClass:
         return self.k.keyboardQuit()
     #@-others
 #@-<< define class BaseEditCommandsClass >>
+
 #@+others
 #@+node:ekr.20120315062642.9746: **  Commands defined by @g.command
 #@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
@@ -4078,6 +4081,8 @@ class EditCommandsClass (BaseEditCommandsClass):
                 k.setLabelGrey('Invalid Expression: %s' % e)
     #@+node:ekr.20050920084036.66: *3* fill column and centering
     #@+at
+    #@@language rest
+    # 
     # These methods are currently just used in tandem to center the line or region within the fill column.
     # for example, dependent upon the fill column, this text:
     # 
@@ -4094,9 +4099,6 @@ class EditCommandsClass (BaseEditCommandsClass):
     #                              zaaaaaaaaap
     # 
     # after an center-region command via Alt-x.
-    #@@c
-
-    #@+others
     #@+node:ekr.20050920084036.67: *4* centerLine
     def centerLine (self,event):
 
@@ -4201,7 +4203,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         ntxt = map(lambda a: self.fillPrefix+a,ntxt)
         ntxt = '.'.join(ntxt)
         return ntxt
-    #@-others
     #@+node:ekr.20060417194232: *3* find (quick)
     #@+node:ekr.20060925151926: *4* backward/findCharacter & helper
     def backwardFindCharacter (self,event):
@@ -6385,7 +6386,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20050920084036.95: *3* paragraph...
-    #@+others
+
     #@+node:ekr.20050920084036.99: *4* backwardKillParagraph
     def backwardKillParagraph (self,event):
 
@@ -6501,9 +6502,8 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         j = max(start,j-1)
         w.setSelectionRange(i1,j,insert=j)
-    #@-others
     #@+node:ekr.20050920084036.105: *3* region...
-    #@+others
+
     #@+node:ekr.20050920084036.108: *4* tabIndentRegion (indent-rigidly)
     def tabIndentRegion (self,event):
 
@@ -6691,7 +6691,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             w.setAllText(s2)
             w.setSelectionRange(i,j,insert=ins)
         self.endCommand(changed=changed,setLabel=True)
-    #@-others
     #@+node:ekr.20060309060654: *3* scrolling...
     #@+node:ekr.20050920084036.116: *4* scrollUp/Down & helper
     def scrollDownHalfPage (self,event):
@@ -10218,7 +10217,7 @@ class SearchCommandsClass (BaseEditCommandsClass):
         }
     #@-others
 #@+node:ekr.20051025071455: ** Spell classes (leoEditCommands)
-#@+others
+
 #@+node:ekr.20051025071455.1: *3* class SpellCommandsClass
 class SpellCommandsClass (BaseEditCommandsClass):
 
@@ -10760,5 +10759,7 @@ class EnchantClass:
             return d.suggest(word)
     #@-others
 #@-others
-#@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

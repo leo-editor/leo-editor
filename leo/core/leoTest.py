@@ -2,10 +2,8 @@
 #@+node:ekr.20051104075904: * @file leoTest.py
 '''Classes for Leo's unit testing. 
 
-Run the unit tests in test.leo using the Execute Script command.'''
-
-#@@language python
-#@@tabwidth -4
+Run the unit tests in test.leo using the Execute Script command.
+'''
 
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
@@ -1841,4 +1839,7 @@ class TestManager:
         return s
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

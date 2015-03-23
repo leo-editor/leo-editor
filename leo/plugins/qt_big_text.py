@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140919181357.24956: * @file ../plugins/qt_big_text.py
 """Leo aware Qt Dialog for delaying loading of big text"""
+
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets
 import leo.plugins.qt_text as qt_text
@@ -196,4 +197,7 @@ class BigTextController:
         return g.adjustTripleString(s,c.tab_width)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

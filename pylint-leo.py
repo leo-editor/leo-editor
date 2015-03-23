@@ -22,6 +22,7 @@ import os
 import sys
 import time
 rc_warning_given = False
+
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -436,6 +437,10 @@ def scanOptions():
     elif options.v: return 'version'
     else:           return 'all'
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+
 g_option_fn = None
 scope = scanOptions()
 coreList            = getCoreList()

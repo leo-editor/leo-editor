@@ -2,10 +2,6 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 import leo.core.leoGlobals as g
 
 # To do later or never: Make body editors persistent. Create @body-editor node?
@@ -1029,4 +1025,7 @@ class Chapter:
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

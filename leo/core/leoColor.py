@@ -31,9 +31,6 @@ If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
 #@-<< docstring >>
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 
 import leo.core.leoGlobals as g
 # import re
@@ -781,4 +778,7 @@ def getColorCairo(name, default=None):
 getCairo = getColorCairo
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -59,6 +59,7 @@ import sys
 # findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
 #@-<< Theory of operation of find/change >>
+
 #@+others
 #@+node:ekr.20070105092022.1: ** class SearchWidget
 class SearchWidget:

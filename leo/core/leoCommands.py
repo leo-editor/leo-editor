@@ -2,11 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2810: * @file leoCommands.py
 #@@first
-    # Needed because of unicode characters in tests.
-
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
@@ -8955,4 +8950,7 @@ class NodeHistory:
         if trace: g.trace(len(self.beadList),self.beadPointer,p and p.h,g.callers())
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

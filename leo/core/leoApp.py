@@ -3,9 +3,6 @@
 #@+node:ekr.20031218072017.2608: * @file leoApp.py
 #@@first
 
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 60
 # py--lint: disable=bad-continuation
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
@@ -3250,4 +3247,7 @@ class RecentFilesManager:
         return bool(theFile)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

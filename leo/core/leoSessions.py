@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120420054855.14241: * @file leoSessions.py
-#@@language python
-#@@tabwidth -4
+'''Support for sessions in Leo.'''
 
 #@+<< imports >>
 #@+node:ekr.20120420054855.14344: ** <<imports>> (leoSessions.py)
@@ -183,4 +182,7 @@ def session_snapshot_save_command(event):
     if c and m:
         m.save_snapshot(c=c)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

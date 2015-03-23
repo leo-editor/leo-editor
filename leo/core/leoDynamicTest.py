@@ -100,6 +100,9 @@ def scanOptions():
         options.gui = 'nullGui'
     return options
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 
 if __name__ == '__main__':
     if trace and trace_time:

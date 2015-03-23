@@ -8,9 +8,6 @@ Global constants, variables and utility functions used throughout Leo.
 Important: This module imports no other Leo module.
 '''
 # pylint: disable=eval-used
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
@@ -1601,7 +1598,6 @@ lastObjectsDict = {}
 lastTypesDict = {}
 lastFunctionsDict = {}
 
-#@+others
 #@+node:ekr.20031218072017.1589: *4* g.clearAllIvars
 def clearAllIvars (o):
 
@@ -1842,7 +1838,6 @@ def printGcVerbose(tag=''):
     g.pr('dicts: %d, sequences: %d' % (dicts,seqs))
     g.pr("%s: %d new, %d total objects" % (tag,len(newObjects),len(objects)))
     g.pr('-' * 40)
-#@-others
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clear_stats
 def clear_stats():
@@ -7023,4 +7018,7 @@ def openUrlOnClick(event):
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')
 assert g,sorted(sys.modules.keys())
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

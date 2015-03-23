@@ -1,10 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3446: * @file leoTangle.py
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+'''
+Support for @root and Leo's tangle and untangle commands.
 
-# Tangle and Untangle.
+Everything in this file is deprecated, but will remain "forever".
+'''
+
 import leo.core.leoGlobals as g
 import os
 
@@ -3431,4 +3432,7 @@ class TangleCommands (BaseTangleCommands):
     """A class that implements Leo' tangle and untangle commands."""
     pass
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

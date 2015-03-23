@@ -3,7 +3,9 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 #@@first
 '''Leo's qt frame classes.'''
+
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
+
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
 import leo.core.leoGlobals as g
@@ -34,6 +36,7 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
+
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
@@ -4860,5 +4863,5 @@ class TabbedFrameFactory:
 #@-others
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 #@-leo

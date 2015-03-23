@@ -79,9 +79,6 @@ Debugger commands
     # Fix bug: invalid syntax on print statement
     # https://bugs.launchpad.net/leo-editor/+bug/1184605
 
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports >>
 #@+node:ekr.20110914171443.7241: ** << imports >>
 from __future__ import print_function
@@ -1820,6 +1817,9 @@ def main():
 
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 
 # When invoked as main program, invoke the debugger on a script
 if __name__ == '__main__':

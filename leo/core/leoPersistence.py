@@ -3,8 +3,6 @@
 #@+node:ekr.20140821055201.18331: * @file leoPersistence.py
 #@@first
 '''Support for persistent clones, gnx's and uA's using @persistence trees.'''
-#@@language python
-#@@tabwidth -4
 from __future__ import print_function
 import leo.core.leoGlobals as g
 import binascii
@@ -759,4 +757,7 @@ class PersistenceDataController:
         return unl.split('-->')[:-1][0]
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -5470,6 +5470,9 @@ def transform(indent, lineno, node):
 
 
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@+<< operator precedence >>
 #@+node:ekr.20141010141310.19061: ** << operator precedence >>
 # The abstract syntax tree returns the nodes of arithmetic and logical

@@ -5,9 +5,6 @@
 
 """Entry point for Leo in Python."""
 
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports and inits >>
 #@+node:ekr.20080921091311.1: ** << imports and inits >> (runLeo.py)
 # import pdb ; pdb = pdb.set_trace
@@ -80,6 +77,9 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName,pymacs)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 
 if __name__ == "__main__":
     run()

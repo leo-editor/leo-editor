@@ -5,10 +5,10 @@ The base classes for all Leo Windows, their body, log and tree panes, key bindin
 
 These classes should be overridden to create frames for a particular gui.
 '''
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-big_text_buttons = True # Show buttons instead of immediately loading big text.
+
+big_text_buttons = True
+    # True: show buttons instead of immediately loading big text.
+
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import leo.core.leoGlobals as g
@@ -48,6 +48,7 @@ import time
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
+
 #@+others
 #@+node:ekr.20140907201613.18660: ** API classes
 # These classes are for documentation and unit testing.
@@ -1387,7 +1388,7 @@ class LeoTree(object):
 
         #@+<< define callbacks to be injected in the position class >>
         #@+node:ekr.20040803072955.22: *5* << define callbacks to be injected in the position class >>
-        # N.B. These VNode methods are entitled to know about details of the leoTkinterTree class.
+        # **Important:: These VNode methods are entitled to know about gui-level code.
 
         #@+others
         #@+node:ekr.20040803072955.23: *6* OnHyperLinkControlClick
@@ -2371,4 +2372,7 @@ class StringTextWrapper:
         return i,row,col
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -203,6 +203,5 @@ class LeoNameSpace(object):
 #@-others
 #@@language python
 #@@tabwidth -4
-
-
+#@@pagewidth 70
 #@-leo

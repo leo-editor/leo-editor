@@ -3,10 +3,12 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 '''Text classes for the Qt version of Leo'''
+
 import leo.core.leoGlobals as g
 import time
 from leo.core.leoQt import isQt5,QtCore,QtGui,Qsci,QtWidgets
 from leo.core.leoQt import Qsci
+
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
@@ -1673,4 +1675,7 @@ def zoom_out(event=None):
     """
     zoom_in(event=event,delta=-1)
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo
