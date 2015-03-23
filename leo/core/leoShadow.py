@@ -3,8 +3,6 @@
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
 #@@first
 
-'''Support for @shadow, especially the Mulder/Ream update algorithm used by @clean.'''
-
 #@+<< docstring >>
 #@+node:ekr.20080708094444.78: ** << docstring >>
 '''
