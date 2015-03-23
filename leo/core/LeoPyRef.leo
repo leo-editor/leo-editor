@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet type="text/xsl" href="/leo_to_html.xsl"?>
+<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -24,19 +24,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150227182423.4"><vh>@gnxs</vh></v>
+<v t="ekr.20150322112631.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150227182423.5"><vh>@gnxs</vh></v>
+<v t="ekr.20150322112631.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150227182423.6"><vh>@gnxs</vh></v>
+<v t="ekr.20150322112631.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150227182423.7"><vh>@gnxs</vh></v>
+<v t="ekr.20150322112631.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150227182423.8"><vh>@gnxs</vh></v>
+<v t="ekr.20150322112631.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -56,15 +56,14 @@
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20140902032918.18591"><vh> About this file</vh>
-<v t="ekr.20140831085423.18639"><vh>&lt;&lt; about widgets and wrappers &gt;&gt;</vh></v>
-<v t="ekr.20140831085423.18630"><vh>&lt;&lt; terminology &gt;&gt;</vh></v>
-<v t="ekr.20140831085423.18631"><vh>&lt;&lt; official ivars &gt;&gt;</vh></v>
+<v t="ekr.20150323032722.1"><vh> About this file</vh>
+<v t="ekr.20150323032722.2"><vh>About widgets and wrappers</vh></v>
+<v t="ekr.20150323032722.3"><vh>Terminology</vh></v>
+<v t="ekr.20150323032722.4"><vh>Official ivars</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
-<v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
@@ -297,86 +296,6 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 </t>
 <t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
-<t tx="ekr.20140831085423.18630">@language rest
-
-This outline contains all of Leo's core source code.
-
-Leo's code uses the following conventions throughout:
-
-c:  a commander.
-ch: a character.
-d:  a dialog or a dict.
-f:  an open file.
-fn: a file name.
-g:  the leoGlobals module.
-i, j, k: indices into a string.
-p:  a Position.
-s:  a string.
-t:  a text widget.
-u:  an undoer.
-w:  a gui widget.
-v:  a Vnode
-z:  a local temp.
-
-In more limited contexts, the following conventions apply:
-    
-si:     a g.ShortcutInfo object.
-ks:     a g.KeyStroke object
-stroke: a KeyStroke object.
-
-btw:    leoFrame.BaseTextWrapper
-stw:    leoFrame.StringTextWrapper
-
-bqtw:   qt_text.BaseQTextWrapper
-lqtb:   qt_text.LeoQTextBrowser
-qhlw:   qt_text.QHeadlineWrapper
-qmbw:   qt_text.QMinibufferWrapper
-qlew:   qt_text.QLineEditWrapper
-qsciw:  qt_text.QScintiallaWrapper
-qtew:   qt_text.QTextEditWrapper</t>
-<t tx="ekr.20140831085423.18631">@language rest
-
-The following are 'official' ivars that will always exist:
-
-c.frame                 The frame containing the log,body,tree, etc.
-c.frame.body            The body pane.
-c.frame.body.widget     The gui widget for the body pane.
-c.frame.body.wrapper    The high level interface for the body widget.
-c.frame.iconBar         The icon bar.
-c.frame.log             The log pane.
-c.frame.log.widget      The gui widget for the log pane.
-c.frame.log.wrapper     The high-level inteface for the log pane.
-c.frame.tree            The tree pane.
-
-The following ivars no longer exist:
-
-c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
-c.frame.log.logCtrl     Use c.frame.log.wrapper instead.</t>
-<t tx="ekr.20140831085423.18639">@language rest
-
-Here is what you *must know* to understand Leo's core:
-
-1. A **widget** is an actual Qt widget.
-
-Leo's core seldom accesses widgets directly.  Instead...
-
-2. A **wrapper class** defines a standard api that hides the details
-   of the underlying gui **text** widgets.
-
-Leo's core uses this api almost exclusively. That is, Leo's core code
-treats wrappers *as if* they were only text widgets there are!
-
-There is, however, a back door for (hopefully rare!) special cases.
-All wrapper classes define an official "widget" ivar, so core or
-plugin code can gain access to the real Qt widget using
-wrapper.widget. Searching for wrapper.widget will (or soon will) find
-all gui-dependent snippets of code in Leo's core.
-</t>
-<t tx="ekr.20140902032918.18591">@
-&lt;&lt; about widgets and wrappers &gt;&gt;
-&lt;&lt; terminology &gt;&gt;
-&lt;&lt; official ivars &gt;&gt;
-</t>
 <t tx="ekr.20140902155015.18674"></t>
 <t tx="ekr.20140905060158.18560">'''
 A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
@@ -440,30 +359,8 @@ print('\n'.join(aList))
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140923085942.17943"></t>
-<t tx="ekr.20150227182423.4">gnx: ekr.20140225224703.8169
-unl: qtui_generate declarations
-</t>
-<t tx="ekr.20150227182423.5">gnx: ekr.20140225224703.8170
-unl: qt_main declarations
-gnx: ekr.20140225224703.8171
-unl: class Ui_MainWindow
-gnx: ekr.20140902074657.9511
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20140225224703.8173
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
-<t tx="ekr.20150227182423.6"></t>
-<t tx="ekr.20150227182423.7">gnx: ekr.20140225224703.8174
-unl: qt_quicksearch declarations
-gnx: ekr.20140225224703.8175
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20140225224703.8176
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20140225224703.8177
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
-</t>
-<t tx="ekr.20150227182423.8"></t>
-<t tx="ekr.20150304125314.4">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<t tx="ekr.20150304125314.4">@tabwidth -2
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 
@@ -511,10 +408,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 &lt;xsl:template match='v'&gt;
   &lt;div class="node"&gt;
     &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
-    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-    &lt;xsl:if test ='./v' &gt;
-      &lt;xsl:apply-templates select = 'v'/&gt;
-    &lt;/xsl:if&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test ='./v' &gt;
+        &lt;xsl:attribute name="has-children"&gt;1&lt;/xsl:attribute&gt;
+        &lt;h1&gt;+ &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+        &lt;xsl:apply-templates select = 'v'/&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
   &lt;/div&gt;
 &lt;/xsl:template&gt;
 
@@ -592,12 +495,26 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
         left: 20px;
         background:Khaki;
     }
+    div.node[has-children] &gt; h1 {
+        &lt;!-- works --&gt;
+        &lt;!-- background: red; --&gt;
+    }
 &lt;/style&gt;
 </t>
 <t tx="ekr.20150304130753.6">&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script&gt;
 @language javascript
   $(document).ready(function(){
+    if (true) {
+        // Toggle all but top-level nodes.
+        // This requires an indication
+        $(".node").toggle()
+        $(".outlinepane").children(".node").toggle()
+    } else {
+        // Toggle all second-level nodes.
+        // Safer, until we can see which nodes have children.
+        $(".outlinepane").children(".node").children(".node").toggle()
+    }
     $("h1").click(function(){
       $(this).parent().children("div.node").toggle();
       // The parent div's id is v.x.
@@ -622,6 +539,111 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
   });
 @language html
 &lt;/script&gt;
+</t>
+<t tx="ekr.20150322112631.1">gnx: ekr.20140225224703.8169
+unl: qtui_generate declarations
+</t>
+<t tx="ekr.20150322112631.2">gnx: ekr.20140225224703.8170
+unl: qt_main declarations
+gnx: ekr.20140225224703.8171
+unl: class Ui_MainWindow
+gnx: ekr.20140902074657.9511
+unl: class Ui_MainWindow--&gt;setupUi
+gnx: ekr.20140225224703.8173
+unl: class Ui_MainWindow--&gt;retranslateUi
+</t>
+<t tx="ekr.20150322112631.3"></t>
+<t tx="ekr.20150322112631.4">gnx: ekr.20140225224703.8174
+unl: qt_quicksearch declarations
+gnx: ekr.20140225224703.8175
+unl: class Ui_LeoQuickSearchWidget
+gnx: ekr.20140225224703.8176
+unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
+gnx: ekr.20140225224703.8177
+unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+</t>
+<t tx="ekr.20150322112631.5"></t>
+<t tx="ekr.20150323032722.1">@
+@language rest
+@wrap
+
+Leo uses a model/view/controller architecture.
+
+- Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.
+
+- Model: The VNode and Position classes in leoNodes.py.
+
+- View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
+
+**Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's 1.5+ million lines of code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
+@c
+</t>
+<t tx="ekr.20150323032722.2">Here is what you *must know* to understand Leo's core:
+
+1. A **widget** is an actual Qt widget.
+
+Leo's core seldom accesses widgets directly.  Instead...
+
+2. A **wrapper class** defines a standard api that hides the details
+   of the underlying gui **text** widgets.
+
+Leo's core uses this api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
+
+There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
+</t>
+<t tx="ekr.20150323032722.3">@language rest
+
+This outline contains all of Leo's core source code.
+
+Leo's code uses the following conventions throughout:
+
+c:  a commander.
+ch: a character.
+d:  a dialog or a dict.
+f:  an open file.
+fn: a file name.
+g:  the leoGlobals module.
+i, j, k: indices into a string.
+p:  a Position.
+s:  a string.
+t:  a text widget.
+u:  an undoer.
+w:  a gui widget.
+v:  a Vnode
+z:  a local temp.
+
+In more limited contexts, the following conventions apply:
+    
+si:     a g.ShortcutInfo object.
+ks:     a g.KeyStroke object
+stroke: a KeyStroke object.
+
+btw:    leoFrame.BaseTextWrapper
+stw:    leoFrame.StringTextWrapper
+
+bqtw:   qt_text.BaseQTextWrapper
+lqtb:   qt_text.LeoQTextBrowser
+qhlw:   qt_text.QHeadlineWrapper
+qmbw:   qt_text.QMinibufferWrapper
+qlew:   qt_text.QLineEditWrapper
+qsciw:  qt_text.QScintiallaWrapper
+qtew:   qt_text.QTextEditWrapper</t>
+<t tx="ekr.20150323032722.4">The following are 'official' ivars that will always exist:
+
+c.frame                 The frame containing the log,body,tree, etc.
+c.frame.body            The body pane.
+c.frame.body.widget     The gui widget for the body pane.
+c.frame.body.wrapper    The high level interface for the body widget.
+c.frame.iconBar         The icon bar.
+c.frame.log             The log pane.
+c.frame.log.widget      The gui widget for the log pane.
+c.frame.log.wrapper     The high-level inteface for the log pane.
+c.frame.tree            The tree pane.
+
+The following ivars no longer exist:
+
+c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
+c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 </t>
 </tnodes>
 </leo_file>
