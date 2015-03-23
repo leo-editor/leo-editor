@@ -13,21 +13,6 @@ Changed 3.
 Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150319055953.10: *3* Always run check-outline
-@nocolor-node
-
-- Remove --check-outline.
-- Remove:
-
-     @bool check_outline_after_read
-     @bool check_outline_before_save
-
-- Add:
-    
-    @bool verbose_check_outline = False
-    
-        True: check-outline will produce the same messages as it does now.
-        False: check-outline will produce only error messages.
 .. @+node:ekr.20150319055953.4: *3* Relocate remove-sentinels
 It is an import command, not an export command.
 .. @+node:ekr.20150304232409.4: *3* Docs
