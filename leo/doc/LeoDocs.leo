@@ -1151,6 +1151,7 @@
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>\@clean creates external files without sentinels</vh></v>
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
+<v t="ekr.20150323141745.1"><vh>Added command history to Leo's minibuffer</vh></v>
 <v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 <v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
 <v t="ekr.20150323123524.1"><vh>Added @int qt-cursor-width setting</vh></v>
@@ -1214,12 +1215,6 @@
 <v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 </v>
-<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
-<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
 <v t="ekr.20150323110109.1"><vh>What's new</vh>
 <v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
 <v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
@@ -1228,6 +1223,13 @@
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
 </v>
+<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+</v>
+<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20150312080344.33"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11373,7 +11375,16 @@ You will see ``print-`` in the minibuffer. This is the longest common prefix of 
 
 Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
 
-Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane. 
+Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
+    
+**Command history**:
+
+``Ctrl-P (repeat-complex-command``
+    Repeats the last command entered by name in the minibuffer.
+``UpArrow`` (in the minibuffer)
+    Moves backward through command history. The first ``UpArrow`` is the same as ``Ctrl-P``.
+``DownArrow`` (in the minibuffer)
+    Moves forward through command history.
 
 **Summary**:
 
@@ -11381,6 +11392,7 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
 - ``&lt;Tab&gt;`` shows all valid completions.
 - ``&lt;BackSpace&gt;`` shows more alternatives.
 - ``Ctrl-G`` exits the minibuffer and puts focus in the body pane.
+- ``UpArrow`` and ``DownArrow`` in the minibuffer cycle through command history.
 </t>
 <t tx="ekr.20131001100335.15947">``F1 (help)``
     Shows a help message appears in the viewrendered pane. Alt-0 (vr-toggle) hides or shows this pane.
@@ -15667,6 +15679,8 @@ The highlights of Leo 5.1
   
 * A new web page, http://leoeditor.com/load-leo.html, displays .leo files
   in the browser.
+  
+* Added command history to Leo's minibuffer.
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
@@ -16149,11 +16163,6 @@ the .xyzzy extension, that is, importers/test.py and writers/test.py. So,
 for *unique* extensions, there is no need to use a separate @auto name, you
 can just use @auto.
 </t>
-<t tx="ekr.20150312080344.21">After Alt-x puts you in the minibuffer, you can now use UpArrow and DownArrow keys to cycle through previous "complex" commands, that is, commands entered via Alt-x&lt;command-name&gt;&lt;return&gt;. For example, Alt-x UpArrow is roughly equivalent to Ctrl-p.
-
-This completes one of the top four wishlist items at:
-https://github.com/leo-editor/leo-editor/issues/93
-</t>
 <t tx="ekr.20150312080344.23">https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
 Leo now stores "ephemeral" or position-related data **in vnodes*. This is a
@@ -16233,9 +16242,14 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
 
     Leo 5.1 b1 released March 20, 2015
     @clean files
+    Leo regularly checks the integrity of the outline
+    Up/Down arrows in the minibuffer cycle though command history
     http://leoeditor.com/load-leo.html displays .leo files in the browser
-    The IdleTime class simplifies idle-time handling
     Leo now honors @language inside @doc parts
+    @data nodes can now be composed from a tree of nodes
+    Added @int qt-cursor-width setting
+    Added g.IdleTime &amp; LeoQtGui.IdleTime
+    
 </t>
 <t tx="ekr.20150312080344.34">::
 
@@ -18073,6 +18087,8 @@ Controls how Leo reports successful checks:
 
 </t>
 <t tx="ekr.20150323123524.1">@int qt-cursor-width = 5 increase the width of the cursor, making it *much* easier to spot on the page.  This reduces eye strain dramatically for me.</t>
+<t tx="ekr.20150323141745.1">You can now use the ``UpArrow`` and ``DownArrow`` keys in Leo's minibuffer to cycle through previous "complex" commands, that is, commands entered via ``Alt-x&lt;command-name&gt;&lt;return&gt;``. As a result, ``Alt-x UpArrow`` is roughly equivalent to ``Ctrl-P (repeat-complex-command)``.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
