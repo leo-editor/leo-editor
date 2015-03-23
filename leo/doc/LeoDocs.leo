@@ -1145,46 +1145,15 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
-<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
-<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
-<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
-<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
-</v>
-<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
-<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-</v>
-<v t="ekr.20150323110109.1"><vh>What's new</vh>
-<v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
-<v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
-<v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
-<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
-</v>
-<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
-<v t="ekr.20150313192232.9"><vh>To settings</vh>
-<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
-<v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
-</v>
-</v>
-<v t="ekr.20150323105920.1"><vh>To do: Release notes</vh>
-<v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
-<v t="ekr.20150323112726.3"><vh>Fixed bug 157: sort-lines problem</vh></v>
-<v t="ekr.20150323112726.4"><vh>Leo calls check-outline regularly</vh></v>
-</v>
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
-<v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
+<v t="ekr.20150217105817.4"><vh>\@clean creates external files without sentinels</vh></v>
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
 <v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 <v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
+<v t="ekr.20150323123524.1"><vh>Added @int qt-cursor-width setting</vh></v>
+<v t="ekr.20150323112726.4"><vh>Leo regularly checks the integrity of the outline</vh></v>
+<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
 </v>
 <v t="ekr.20150313053238.42"><vh>Why @clean is so important</vh>
 <v t="ekr.20150311123850.55"><vh>Steve Zatz: in praise of @clean</vh></v>
@@ -1214,6 +1183,7 @@
 <v t="ekr.20150311123850.31"><vh>Fixed bug 149: Clones can revert changes made by git discard...</vh></v>
 <v t="ekr.20150311164212.5"><vh>Fixed a unicode-related problem in the flatten-outline command</vh></v>
 <v t="ekr.20150311164212.7"><vh>Fixed bug 151: parse-body creates "None declarations"</vh></v>
+<v t="ekr.20150323112726.3"><vh>Fixed bug 157: sort-lines problem</vh></v>
 </v>
 <v t="ekr.20150311123850.32"><vh>Code level</vh>
 <v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
@@ -1223,6 +1193,7 @@
 <v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
 </v>
 <v t="ekr.20150311123850.41"><vh>Features</vh>
+<v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 <v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
 <v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable.</vh></v>
 <v t="ekr.20150311123850.44"><vh>import-file command create @nosent nodes</vh></v>
@@ -1234,11 +1205,33 @@
 <v t="ekr.20150311123850.50"><vh>Added @bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
 <v t="ekr.20150311123850.52"><vh>colorizer for @ &amp; @doc now honors @language</vh></v>
+<v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
-<v t="ekr.20150311123850.53"><vh>Major features</vh>
-<v t="ekr.20150311123850.54"><vh>\@clean updates outlines automatically</vh></v>
-<v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 </v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
+<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
+<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+</v>
+<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
+<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
+</v>
+<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
+<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
+<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
+</v>
+<v t="ekr.20150323110109.1"><vh>What's new</vh>
+<v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
+<v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
+<v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
+<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
+<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
+</v>
+<v t="ekr.20150312080344.12"><vh>Theory? Regularized .wrapper and .widget ivars</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -15646,25 +15639,22 @@ The highlights of Leo 5.1
 
 * @clean trees, one of the most important developments in Leo's history.
 
-  @clean create external files without sentinel comments, yet Leo can
-  update @trees from changes made to the corresponding external files,
-  something long thought impossible. @clean trees preserve clone links and
-  user attributes (uA's). Reading @clean trees is faster than reading @auto
-  or @shadow trees.
+    @clean create external files without sentinel comments, yet Leo can update @trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
     
-  The Mulder/Ream algorithm updates @clean trees from changes made from the
-  corresponding external files. This is a completely rewritten and much
-  simpler version of Bernhard Mulder's original @shadow update algorithm.
+    The Mulder/Ream algorithm updates @clean trees from changes made from the corresponding external files. This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm. http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
-  @shadow is now deprecated. @clean is superior to @shadow in all respects.
-  Leo will support all flavors of @auto indefinitely.
+  @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
   
 * A new web page, http://leoeditor.com/load-leo.html, displays .leo files
   in the browser.
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
-* Leo now honors @language inside @doc parts, a major convenience.
+* Leo now honors @language inside @doc parts
+
+* @data nodes can be composed of their descendant nodes.
+
+* @int qt-cursor-width = 5 is great for geriatric eyes.
 
 Links:
 ------
@@ -16095,17 +16085,6 @@ Example 2:
     # resume python code.
     
 </t>
-<t tx="ekr.20150311123850.53"></t>
-<t tx="ekr.20150311123850.54">Rev 7a851eb enables automatic updating of @nosent files. When loading a .leo file, Leo will automatically update @nosent trees if the corresponding external file has been changed outside Leo! This is one of the most important advances in Leo's history.
-
-As discussed yesterday, using @nosent files is about twice as fast as using @shadow trees. No shadow directories or shadow files are needed: it's trivial to recreate the "shadow" data from the @nosent tree!
-
-Why, of why, did we never see this before? It could have been done at any time since Leo supported @shadow.
-
-Finally, Leo reports all changes using the "recovered nodes" mechanism. No new code was required: the core @shadow code was not changed in any way.
-
-at.readOneAtNosentNode and two simple helpers handle all the details. readOneAtNosentNode uses the @shadow algorithm to compute the updated lines of the @nosent tree, exactly as described yesterday. If the new lines match the old, nothing more need be done: we can use the existing @nosent tree as is. Otherwise, the new lines are passed to at.readOpenFile to delete the old tree and create the @nosent tree. This part of the code is similar to the code in at.read, but it is much simpler because caching is not involved. In essence, everything "just worked" from the get go.
-</t>
 <t tx="ekr.20150311123850.55">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in leo, particularly if it was based on code I developed in the past using leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use leo at all. I missed many of the features of leo but just couldn't get over the sentinel issue.
 
 @clean really seems to solve all the issues that I had. In particular--and somehow this point doesn't seem to me to have been emphasized enough--it seems to fully support organizer nodes. They are one of the great things about leo--it's happy to guess initially at what the structure of your program is but it's completely up to you to determine the structure and the ability to do things like break up long methods, group like methods, group menu actions in GUI code, etc etc is one of the very cool things about leo. My limited but growing experience with @clean's handling of external changes has been mainly with incremental (as opposed to more sweeping) code changes, and the assignment of new lines is reasonable and you can always fix them it quickly if you don't like how external changes have been handled.
@@ -16164,39 +16143,7 @@ Speed will soon add the above line even if there is no stylesheet element.
 
 I am working on leo_to_html.xsl so that nodes can be expanded and contracted.
 </t>
-<t tx="ekr.20150311123850.58">@language rest
-@wrap
-
-Leo performs a diff automatically after load when --diff is in effect and exactly two files are given.
-
-===== How to configure git diff:
-
-An excellent reference:
-http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
-
-The essential idea: what you refer to in the config file is actually a shell (/bin/sh) script, not a DOS script.
-
-Here is git-editor.bat::
-@language shell
-
-    #!/bin/sh
-    # Wrapper for git editor
-    "C:/Program Files (x86)/wscite/scite.exe" "$*"
-
-Here is git-difftool.bat::
-    
-    #!/bin/sh
-    
-    # sh wrapper for external git diff
-    # sourceTree now calls this wrapper for external diffs.
-    
-    # http://stackoverflow.com/questions/255202/how-do-i-view-git-diff-output-with-a-visual-diff-program
-    
-    # diff is called by git with 7 parameters:
-    #  path old-file old-hex old-mode new-file new-hex new-mode
-    #  "&lt;path_to_diff_executable&gt;" "$2" "$5" | cat
-    
-    C:/python27/python.exe C:/leo.repo/leo-editor/launchLeo.py --diff "$2" "$5" | cat
+<t tx="ekr.20150311123850.58">Leo performs a diff automatically after load when --diff is in effect and exactly two files are given.
 </t>
 <t tx="ekr.20150311164212.5">Fixed in rev fc3ea68.
 </t>
@@ -16418,31 +16365,17 @@ This pattern is particularly well suited to Leo, because the various getPublicCo
 </t>
 <t tx="ekr.20150312080344.19">How did we ever live without this?
 
-@data nodes, like @data qt-gui-plugin-style-sheet may now be composed of
-the body text of the @data node itself, concatenated to the body text of
-all its descendants, in outline order.
+@data nodes, like @data qt-gui-plugin-style-sheet may now be composed of the body text of the @data node itself, concatenated to the body text of all its descendants, in outline order.
 
-For example, @data qt-gui-plugin-style-sheet node consists of some general
-comments, with descendant nodes for the body pane, tree pane, etc. etc.
-There is no limit of nesting: the Plugins node has a child for each plugin
-that uses style sheets.
+For example, @data qt-gui-plugin-style-sheet node consists of some general comments, with descendant nodes for the body pane, tree pane, etc. etc. There is no limit of nesting: the Plugins node has a child for each plugin that uses style sheets.
 
-Not only does this new arrangement make it far easier to find the style
-sheet of interest, it makes debugging style sheets easier. Typically, an
-error in any part of the style sheet invalidates the whole style sheet.
-With the new organization, one can swap nodes into or out of the @data node
-to find the invalid node or nodes.
+Not only does this new arrangement make it far easier to find the style sheet of interest, it makes debugging style sheets easier. Typically, an error in any part of the style sheet invalidates the whole style sheet. With the new organization, one can swap nodes into or out of the @data node to find the invalid node or nodes.
 
 Two fine points about the concatenation of data:
 
-1. Descendant nodes whose headlines start with '@' do not become part of
-   the data. At present, no @data nodes have descendants, but this
-   convention does something reasonable if nodes like @int or @string were
-   descendants of an @data node.
+1. Descendant nodes whose headlines start with '@' do not become part of the data. At present, no @data nodes have descendants, but this convention does something reasonable if nodes like @int or @string were descendants of an @data node.
 
-2. The @data parser adds a newline to every "fragment" if necessary. This
-   doesn't seem to matter for style sheets, but it could matter for other
-   kinds of @data data.
+2. The @data parser adds a newline to every "fragment" if necessary. This doesn't seem to matter for style sheets, but it could matter for other kinds of @data data.
 </t>
 <t tx="ekr.20150312080344.20">The leo/plugins/importers folders now contains importer plugins.
 
@@ -16460,12 +16393,6 @@ can just use @auto.
 
 This completes one of the top four wishlist items at:
 https://github.com/leo-editor/leo-editor/issues/93
-</t>
-<t tx="ekr.20150312080344.22">The user can lose text if they start typing before the body text completely loads!
-
-- Added c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars')
-
-- The "dummy" body text now contains a warning to wait until the text fully loads.
 </t>
 <t tx="ekr.20150312080344.23">https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
@@ -16840,7 +16767,6 @@ if 1:
     for z in sorted(not_found):
         print(z)
 print('found: %s not found: %s' % (len(found),len(not_found)))</t>
-<t tx="ekr.20150313192232.9"></t>
 <t tx="ekr.20150314044011.7">@language python
 # From Script: clean ekr-spellpyx.txt
 p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
@@ -18364,10 +18290,6 @@ The following commands emulate `Emacs register commands`_::
     register-prepend-to
     register-view
 </t>
-<t tx="ekr.20150323105920.1">- Links to other docs?
-- Link to the Mulder/Ream algorithm from the release notes.
-- Added @int qt-cursor-width
-</t>
 <t tx="ekr.20150323105959.1"></t>
 <t tx="ekr.20150323110029.1"></t>
 <t tx="ekr.20150323110109.1"></t>
@@ -18378,27 +18300,22 @@ Just `clone-find-all-flattened`_.  This is my workhorse command when fixing comp
 <t tx="ekr.20150323111332.1"></t>
 <t tx="ekr.20150323111337.1">Bug: @auto-org is not @auto-otl.</t>
 <t tx="ekr.20150323111418.1">Mention Aha's, scripts, etc.</t>
-<t tx="ekr.20150323112726.2"></t>
+<t tx="ekr.20150323112726.2">This contains all of Leo's old release notes. As of Leo 5.1, LeoDocs.leo contains only the release notes for the current release.  This makes searching through LeoDocs.leo more convenient.</t>
 <t tx="ekr.20150323112726.3">https://github.com/leo-editor/leo-editor/issues/157
 
 k.fullCommand now saves/restore the selection range when calling c.frame.log.deleteTab.
 </t>
-<t tx="ekr.20150323112726.4">Before writes and after reads, pastes, undo, redo.
-
-- Remove --check-outline.
-- Remove:
-
-     @bool check_outline_after_read
-     @bool check_outline_before_save
-
-- Add:
+<t tx="ekr.20150323112726.4">Leo runs these checks before writes and after reads, pastes, undo, redo.  A new setting::
     
     @bool verbose_check_outline = False
     
-        True: check-outline will produce the same messages as it does now.
-        False: check-outline will produce only error messages.
+Controls how Leo reports successful checks:
+    
+    True: check-outline reports number of nodes and time elapsed to the log pane.
+    False: check-outline will produce only error messages.
 
 </t>
+<t tx="ekr.20150323123524.1">@int qt-cursor-width = 5 increase the width of the cursor, making it *much* easier to spot on the page.  This reduces eye strain dramatically for me.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

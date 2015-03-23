@@ -2026,6 +2026,7 @@ Notes:
 - Please set this field empty when uploading to CVS.
 - Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
 <t tx="ekr.20041119035137">@language rest
+@wrap
 @pagewidth 80
 
 This is Leo's main settings file.  It specifies settings used to customize Leo.
@@ -3844,15 +3845,19 @@ True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071213062019.1"></t>
 <t tx="ekr.20071213062019.2"></t>
 <t tx="ekr.20071213062019.3"></t>
-<t tx="ekr.20071217093419">The body text should contain the data, one string per line.
+<t tx="ekr.20071217093419">The body text should contain the data, one string per line. Lines starting with '#' are *included* in the data.
 
-New in Leo 4.12: Lines starting with '#' are *included* in the data.
+@data nodes may be split: the data consists of the body text of the @data node itself and the body text of all descendant nodes, in outline order. Two fine points about the concatenation of data:
 
-New in Leo 4.12: @data nodes may be split: the data consists of the body text of
-the @data node itself and the body text of all descendant nodes, in outline
-order.
+1. Descendant nodes whose headlines start with '@' do not become part of the data. At present, no @data nodes have descendants, but this convention does something reasonable if nodes like @int or @string were descendants of an @data node.
 
-However, descendant nodes whose headlines start with '@' do not become part of the data.
+2. The @data parser adds a newline to every "fragment" if necessary. This doesn't seem to matter for style sheets, but it could matter for other kinds of @data data.
+
+**Example**
+
+The @data qt-gui-plugin-style-sheet node consists of some general comments, with descendant nodes for the body pane, tree pane, etc. etc. There is no limit of nesting: the Plugins node has a child for each plugin that uses style sheets.
+
+This makes debugging style sheets easier. Typically, an error in any part of the style sheet invalidates the whole style sheet. With the new organization, one can swap nodes into or out of the @data node to find the invalid node or nodes.
 </t>
 <t tx="ekr.20080204124255"># For testing only.
 
