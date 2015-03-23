@@ -7,10 +7,14 @@
 @language rest
 @wrap
 
-* Should updating an @clean node mark it dirty??
-* Set default for @string stylesheet so it generates::
+.. @+node:ekr.20150319055953.12: *3* Should updating an @clean node mark it dirty?
+Changed 3.
+.. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
+Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150319055953.4: *3* Relocate remove-sentinels
+It is an import command, not an export command.
 .. @+node:ekr.20150304232409.4: *3* Docs
 .. @+node:ekr.20150304232409.5: *4* document --diff
 Search for added --diff

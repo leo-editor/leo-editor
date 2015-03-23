@@ -431,7 +431,6 @@
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
 <v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
-<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
 <v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
 <v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
@@ -455,21 +454,6 @@
 <v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
 <v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
-</v>
-<v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
-<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
-<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
-<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
-<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
-<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
-<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
-<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
-<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
-<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
-<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
-<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
-<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
-<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
@@ -569,11 +553,10 @@
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
-<v t="ekr.20150317104903.1"><vh>@bool check_outline_before_save = False</vh></v>
-<v t="ekr.20150317104903.2"><vh>@bool check_outline_after_read = False</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
@@ -1643,6 +1626,7 @@
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
+<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
@@ -1827,7 +1811,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20140917051508.19548"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3837,18 +3820,6 @@ True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071213060514"></t>
 <t tx="ekr.20071213060514.1"></t>
 <t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
-<t tx="ekr.20071213060607">rst3_code_prefix =             @rst-code     # Enter code mode.
-rst3_doc_only_prefix =         @rst-doc-only # Enter doc-only mode.
-rst3_rst_prefix =              @rst          # Enter rst mode.
-rst3_ignore_headline_prefix =  @rst-no-head
-rst3_ignore_headlines_prefix = @rst-no-headlines
-rst3_ignore_node_prefix =      @rst-ignore-node
-rst3_ignore_prefix =           @rst-ignore
-rst3_ignore_tree_prefix =      @rst-ignore-tree
-rst3_option_prefix =           @rst-option
-rst3_options_prefix =          @rst-options
-rst3_preformat_prefix =        @rst-preformat
-rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061454"></t>
 <t tx="ekr.20071213061454.1"></t>
 <t tx="ekr.20071213061454.2"></t>
@@ -3871,20 +3842,8 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061930.4"></t>
 <t tx="ekr.20071213062019"></t>
 <t tx="ekr.20071213062019.1"></t>
-<t tx="ekr.20071213062019.10"></t>
-<t tx="ekr.20071213062019.11"></t>
-<t tx="ekr.20071213062019.12"></t>
-<t tx="ekr.20071213062019.13"></t>
-<t tx="ekr.20071213062019.14"></t>
-<t tx="ekr.20071213062019.15"></t>
 <t tx="ekr.20071213062019.2"></t>
 <t tx="ekr.20071213062019.3"></t>
-<t tx="ekr.20071213062019.4"># Enter code mode.</t>
-<t tx="ekr.20071213062019.5"># Enter doc-only mode.</t>
-<t tx="ekr.20071213062019.6"># Enter rst mode.</t>
-<t tx="ekr.20071213062019.7"></t>
-<t tx="ekr.20071213062019.8"></t>
-<t tx="ekr.20071213062019.9"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line.
 
 New in Leo 4.12: Lines starting with '#' are *included* in the data.
@@ -4422,8 +4381,6 @@ lcd2c" "
 </t>
 <t tx="ekr.20080811105020.2">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
-<t tx="ekr.20080916092417.1"></t>
-<t tx="ekr.20080916094157.1"></t>
 <t tx="ekr.20080921060401.3"></t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
@@ -4827,19 +4784,21 @@ Commands:
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
 <t tx="ekr.20111003104518.15499"></t>
-<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
-
-To set fonts in Leo's widgets, change Leo's master sytle sheet::
+<t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
     
-    @data qt-gui-plugin-style-sheet 
-
-Valid values for the body of @font nodes::
+    To set fonts in Leo's widgets, change Leo's master style sheet::
+        
+        @data qt-gui-plugin-style-sheet 
     
-    weight: bold, normal, None
-    slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the
-show-fonts command to the values here.
+    Valid values for the body of @font nodes::
+        
+        family: a font family name
+        size:   an integer
+        weight: bold, normal, None
+        slant: roman, italic, None
+    
+    Use the show-fonts command to pick fonts, then copy the values shown by the
+    show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
@@ -9719,8 +9678,10 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20150216135059.1"></t>
 <t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
 </t>
-<t tx="ekr.20150317104903.1"></t>
-<t tx="ekr.20150317104903.2"></t>
+<t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.
+
+Note: check-outline always writes error messages to both log and console.</t>
+<t tx="ekr.20150322061147.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -535,8 +535,7 @@ class FileCommands:
             'expanded','marks','t','tnodeList',
             # 'vtag',
         )
-        self.checkOutlineBeforeSave = c.config.getBool(
-            'check_outline_before_save',default=False)
+        ### self.checkOutlineBeforeSave = c.config.getBool('check_outline_before_save',default=False)
         self.initIvars()
     #@+node:ekr.20090218115025.5: *3* fc.initIvars
     def initIvars(self):
@@ -619,24 +618,19 @@ class FileCommands:
             return None
         if trace: g.trace('reassign',reassignIndices,'temp',tempOutline)
         check = not reassignIndices
-        checkAfterRead = g.app.check_outline or c.config.getBool('check_outline_after_read')
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
-        # 2011/12/10: never recreate the gnxDict.
-            # self.gnxDict = {}
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
         if reassignIndices or tempOutline:
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
         else:
-            # Make sure all pasted nodes are entered into the gnxDict.
-            x = g.app.nodeIndices
+            # All pasted nodes should already have unique gnx's.
+            ni = g.app.nodeIndices
             for v in c.all_unique_nodes():
-                gnxString = v.fileIndex
-                self.gnxDict[gnxString] = v
-                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+                ni.check_gnx(c,v.fileIndex,v)
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
@@ -659,6 +653,7 @@ class FileCommands:
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
+            ### What does checkPaste do ???
             if check and not self.checkPaste(current,p):
                 return None
             p._linkAsNthChild(current,0,adjust=False)
@@ -674,24 +669,12 @@ class FileCommands:
             for p2 in p.self_and_subtree():
                 v = p2.v
                 index = ni.getNewIndex(v)
-                if index:
-                    v.setFileIndex(index)
-                    if index in self.gnxDict:
-                        g.trace('can not happen: index clash',index,v)
-                    else:
-                        if trace: g.trace(index,v)
-                        self.gnxDict[index] = v
-                else:
-                    g.trace('can not happen: no index',v)
                 if g.trace_gnxDict: g.trace(c.shortFileName(),'**restoring**',index,v)
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
-        if checkAfterRead:
-            # g.blue('checking outline after paste')
-            c.checkOutline()
         c.selectPosition(p)
-        self.initReadIvars() # 2010/02/05
+        self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
@@ -725,8 +708,6 @@ class FileCommands:
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
-        ni = g.app.nodeIndices
-        ni.begin_holding(c)
         try:
             c.loading = True # disable c.changed
             ok = True if silent else g.app.checkForOpenFile(c,fileName)
@@ -748,12 +729,10 @@ class FileCommands:
                     c.redraw()
                     fc.readExternalFiles(fileName)
         finally:
-            ni.end_holding(c)
-                    # Fix bug https://github.com/leo-editor/leo-editor/issues/35
-            # This must be called *after* ni.end_holding.
-            if g.app.check_outline or c.config.getBool('check_outline_after_read'):
-                c.checkOutline()
-            c.loading = False # reenable c.changed
+            c.checkOutline()
+                # Must be called *after* ni.end_holding.
+            c.loading = False
+                # reenable c.changed
             theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
@@ -1088,7 +1067,7 @@ class FileCommands:
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
             if v: # A clone.
-                if trace: g.trace('**clone',v.gnx,v)
+                if trace: g.trace('**clone',tnx,v.gnx,v)
                 v = self.createSaxVnode(sax_child,parent_v,v=v)   
             else:
                 v = self.createSaxVnode(sax_child,parent_v)
@@ -1111,7 +1090,7 @@ class FileCommands:
         trace_update,verbose = False,False
         h = sax_node.headString
         b = sax_node.bodyString
-        trace = trace and v and v.gnx == "vitalije.20150316130845.1" ###
+        # trace = trace and v and v.gnx == "vitalije.20150316130845.1"
         if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
@@ -1134,30 +1113,11 @@ class FileCommands:
                 # Part 2: Do *not* call ni.getNewIndex here: v is None!
                 # Instead, let the VNode ctor below allocate the gnx.
                 gnx = None
-            # trace = trace and gnx == "vitalije.20150316130845.1"
             # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
             v = leoNodes.VNode(context=c,gnx=gnx)
             v.setBodyString(b)
             at.bodySetInited(v)
             v.setHeadString(h)
-            if self.gnxDict.get(gnx):
-                g.internalError('duplicate gnx: %s in %s' % (gnx,v))
-                sys.exit(1)
-            self.gnxDict [gnx] = v
-        # Check for a duplicate gnx in parent_v.
-        # This is a limited check: parent_v.parents is [] here.
-        if parent_v.gnx == v.gnx:
-            # @clean stylesheets/main.less
-            g.es_print('createSaxVnode: duplicate parent gnx',v.gnx,'\n',v,color='red')
-            if g.app.check_outline:
-                # c.checkOutline should fix this.
-                pass
-            else:
-                # Let the VNode ctor allocate a new gnx.
-                v = leoNodes.VNode(context=c)
-                v.setBodyString(b)
-                at.bodySetInited(v)
-                v.setHeadString(h)
         if g.trace_gnxDict: g.trace(c.shortFileName(),gnx,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (gnx),'v',id(v),
@@ -1992,12 +1952,10 @@ class FileCommands:
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
         '''Write the .leo file.'''
         c,fc = self.c,self
-        checkFlag = g.app.check_outline or fc.checkOutlineBeforeSave
-        if checkFlag:
-            structure_errors = c.checkOutline()
-            if structure_errors:
-                g.error('Major structural errors! outline not written')
-                return False
+        structure_errors = c.checkOutline()
+        if structure_errors:
+            g.error('Major structural errors! outline not written')
+            return False
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.

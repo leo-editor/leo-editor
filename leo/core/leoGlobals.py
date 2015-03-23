@@ -850,10 +850,6 @@ class SherlockTracer:
         '''Format arg, the value returned by a "return" statement.'''
         try:
             if isinstance(arg,types.GeneratorType):
-                # Important: tee destroys the original generator, so it can't be used here.
-                # import itertools
-                # arg,arg2 = itertools.tee(arg)
-                # return ' -> generator:%s' % [z for z in arg2] ### '<*generator*>'
                 ret = '<generator>'
             elif isinstance(arg,(tuple,list)):
                 ret = '[%s]' % ','.join([self.show(z) for z in arg])

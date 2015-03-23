@@ -260,8 +260,15 @@ class Commands (object):
         c = self
         if trace: g.es_debug(c.shortFileName(),g.app.gui)
         gnx = 'hidden-root-vnode-gnx'
+        assert not hasattr(c,'fileCommands'),c.fileCommands
+        
+        class DummyFileCommands:
+            def __init__(self):
+                self.gnxDict = {}
+
+        c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c,gnx=gnx)
-        self.hiddenRootNode.setHeadString('<hidden root VNode>')
+        c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:
@@ -483,6 +490,7 @@ class Commands (object):
         c.tab_width                 = getInt('tab_width') or -4
         c.use_body_focus_border     = getBool('use_body_focus_border',default=True)
         c.use_focus_border          = getBool('use_focus_border',default=True)
+        c.verbose_check_outline     = getBool('verbose_check_outline',default=False)
         c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
@@ -1697,47 +1705,64 @@ class Commands (object):
     #@+node:ekr.20031218072017.2841: *5* Tangle submenu
     #@+node:ekr.20031218072017.2842: *6* tangleAll
     def tangleAll (self,event=None):
-
-        '''Tangle all @root nodes in the entire outline.'''
-
+        '''
+        Tangle all @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangleAll()
     #@+node:ekr.20031218072017.2843: *6* tangleMarked
     def tangleMarked (self,event=None):
-
-        '''Tangle all marked @root nodes in the entire outline.'''
-
+        '''
+        Tangle all marked @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangleMarked()
     #@+node:ekr.20031218072017.2844: *6* tangle
     def tangle (self,event=None):
-
-        '''Tangle all @root nodes in the selected outline.'''
-
+        '''
+        Tangle all @root nodes in the selected outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.tangle()
     #@+node:ekr.20031218072017.2845: *5* Untangle submenu
     #@+node:ekr.20031218072017.2846: *6* untangleAll
     def untangleAll (self,event=None):
-
-        '''Untangle all @root nodes in the entire outline.'''
-
+        '''
+        Untangle all @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangleAll()
         c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2847: *6* untangleMarked
     def untangleMarked (self,event=None):
-
-        '''Untangle all marked @root nodes in the entire outline.'''
-
+        '''
+        Untangle all marked @root nodes in the entire outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangleMarked()
         c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2848: *6* untangle
     def untangle (self,event=None):
-
-        '''Untangle all @root nodes in the selected outline.'''
-
+        '''Untangle all @root nodes in the selected outline.
+        
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
         c = self
         c.tangleCommands.untangle()
         c.undoer.clearUndoState()
@@ -3718,6 +3743,7 @@ class Commands (object):
             undoData = c.undoer.beforeInsertNode(c.p,
                 pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
         c.validateOutline()
+        c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)
@@ -4148,10 +4174,7 @@ class Commands (object):
 
         def new_gnx(v):
             '''Set v.fileIndex.'''
-            if ni.hold_gnx_flag:
-                g.internalError('ni.hold_gnx_flag True in check-outline')
-            else:
-                v.fileIndex = ni.getNewIndex(v)
+            v.fileIndex = ni.getNewIndex(v)
 
         count,gnx_errors = 0,0
         for p in c.safe_all_positions():
@@ -4177,18 +4200,13 @@ class Commands (object):
                     gnx_errors += 1
                     g.es_print('new gnx: %s %s' % (v.fileIndex,v),color='red')
                     new_gnx(v)
-        verbose = (
-            g.app.check_outline or
-            c.config.getBool('check_outline_after_read') or
-            c.config.getBool('check_outline_before_write'))
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
         if not ok:
             g.es_print('check-outline ERROR! %s %s nodes, %s gnx errors, %s structure errors' % (
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
-        elif verbose:
+        elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
-            g.es('check-outline OK',color='blue')
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
     def checkLinks(self):

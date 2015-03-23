@@ -253,8 +253,10 @@ def test_children(p):
 @first # -*- coding: utf-8 -*-
 
 class rst3Test:
-
+    '''A class to run rst-related unit tests.'''
+    
     def __init__ (self,c,p):
+        '''Ctor for rst3Test class.'''
         self.c = c
         self.p = p.copy()
         self.run()
@@ -262,11 +264,10 @@ class rst3Test:
     @others
 #@+node:ekr.20100827194549.5963: *5* report
 def report (self,expected,got):
-
+    '''Report errors in an rst test.'''
     verbose = True
     expected_lines = g.splitLines(expected.b)
     got_lines = g.splitLines(got.b)
-
     for i in range(min(len(expected_lines),len(got_lines))):
         match = expected_lines[i]==got_lines[i]
         if verbose or not match:
@@ -277,15 +278,15 @@ def report (self,expected,got):
             break
 #@+node:ekr.20100827183358.5957: *5* run
 def run(self):
+    '''run an rst test.'''
     import sys
-
+    # import leo.core.leoRst as leoRst
     if not sys.platform.startswith('win') and g.isPython3: return
-        
     try:
         import docutils
     except ImportError:
         return
-        
+
     def clean(s):
         s = s.replace('\r','')
         s = g.toUnicode(s,'utf-8')
@@ -294,7 +295,9 @@ def run(self):
     c,p = self.c,self.p
     rc = c.rstCommands
     expected,got,source = self.setup()
-    rc.processTree(p=source.firstChild(),ext='.html',toString=True,justOneFile=True)
+    root = source.firstChild()
+    rc.preprocessTree(root)
+    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
     rst = clean(rc.source)
     html = clean(rc.stringOutput)
     assert rst,'rst'
@@ -332,22 +335,18 @@ def run(self):
         child.h,child.b = ' html',html
 #@+node:ekr.20100827183358.5958: *5* setup
 def setup (self):
-
+    
     c,p = self.c, self.p
-
     expected = g.findNodeInTree(c,p,'expected')
     got = g.findNodeInTree(c,p,'got')
     source = g.findNodeInTree(c,p,'source')
-
     assert source,'source'
     assert expected,'expected'
-
     return expected,got,source
 #@+node:ekr.20100827183358.5959: *5* set_got
 def set_got (self,expected,got):
 
     c,p = self.c, self.p
-
     if got:
         got_rst = g.findNodeInTree(c,got,'rst')
         got_html = g.findNodeInTree(c,got,'html')
@@ -360,7 +359,6 @@ def set_got (self,expected,got):
         got_rst.h = 'rst'
         got_html = got.insertAsNthChild(1)
         got_html.h = 'html'
-
     return got_html,got_rst
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
 tm = c.testManager
@@ -16084,23 +16082,19 @@ it has two lines.
 #@+node:ekr.20100813100841.5829: *5* @test code_mode: show_options_doc_parts
 #@+node:ekr.20091219121039.5065: *4* @test c.rstCommands.handleMissingStyleSheetArgs
 x = c.rstCommands
-
-result = x.handleMissingStyleSheetArgs(s=None)
+result = x.handleMissingStyleSheetArgs(p,s=None)
 assert result == {},'expected {}, got %s' % result
-
 expected = {
     'documentoptions':'[english,12pt,lettersize]',
     'language':'ca',
     'use-latex-toc':'1',
 }
-
 for s in (
     '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
     '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
     '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
 ):
-
-    result = x.handleMissingStyleSheetArgs(s=s)
+    result = x.handleMissingStyleSheetArgs(p,s=s)
     assert result == expected,'expected %s\ngot %s' % (expected,result)
 #@+node:ekr.20111103213154.3823: *4* @test c.rstCommands.writeToDocutils: pdf
 @first # -*- coding: utf-8 -*-
@@ -16126,7 +16120,7 @@ if docutils:
 
     assert module
     s = '''This is a test.'''
-    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    result = c.rstCommands.writeToDocutils(p,s,'.pdf')
     # print(result)
     assert result,result
 elif 0:
@@ -17612,8 +17606,9 @@ This is test.html
 section
 *******
 
-This is a doc part
+@ This is a doc part
 it has two lines.
+This is the body of the section.
 
 #@+node:ekr.20100827182529.6848: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
@@ -17873,8 +17868,9 @@ hr { /* EKR */
 <p>This is test.html</p>
 <div class="section" id="section">
 <h1>section</h1>
-<p>This is a doc part
-it has two lines.</p>
+<p>&#64; This is a doc part
+it has two lines.
+This is the body of the section.</p>
 </div>
 </div>
 </body>
@@ -18194,8 +18190,9 @@ This is test.html
 section
 +++++++
 
-This is a doc part
+@ This is a doc part
 it has two lines.
+This is the body of the section.
 
 #@+node:ekr.20100827182529.6851: *6* html
 <?xml version="1.0" encoding="utf-8" ?>
@@ -18455,8 +18452,9 @@ hr { /* EKR */
 <p>This is test.html</p>
 <div class="section" id="section">
 <h1>section</h1>
-<p>This is a doc part
-it has two lines.</p>
+<p>&#64; This is a doc part
+it has two lines.
+This is the body of the section.</p>
 </div>
 </div>
 </body>
