@@ -1216,19 +1216,15 @@
 <v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 </v>
-<v t="ekr.20150323110109.1"><vh>What's new</vh>
+</v>
+<v t="ekr.20150323110109.1"><vh>To do: What's new</vh>
 <v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
 <v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
 <v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
-</v>
-<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
 <v t="ekr.20060620094033"></v>
-<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11468,9 +11464,9 @@ Leo stores all data in **nodes**. Nodes have **headlines**, shown in the outline
 Regardless of focus, ``Alt-arrow`` select outline nodes:
 
 ``Alt-Home (goto-first-visible-node)``
-    Selects the first outline node.
+    Selects the first outline node and collapses all nodes.
 ``Alt-End (goto-last-visible-node)``
-    Selects the last *visible* outline node.
+    Selects the last *visible* outline node and collapses all nodes except the node and its ancestors.
 ``Alt-arrow keys``
     Select the outline pane, and then act just like the plain arrow keys when the outline pane has focus.
 </t>
@@ -13994,7 +13990,6 @@ Leo 4.11.1 final was released December 20, 2013.
 
 After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
-<t tx="ekr.20131105110107.16910"></t>
 <t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">@language rest
 
@@ -18057,7 +18052,6 @@ The following commands emulate `Emacs register commands`_::
     register-prepend-to
     register-view
 </t>
-<t tx="ekr.20150323105959.1">.. These were added in Leo 5.0, but never documented.</t>
 <t tx="ekr.20150323110029.1"></t>
 <t tx="ekr.20150323110109.1"></t>
 <t tx="ekr.20150323110230.1"></t>
