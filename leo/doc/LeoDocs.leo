@@ -647,6 +647,11 @@
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20150323102918.1"><vh>@rst-ignore not documented</vh></v>
+<v t="ekr.20150323161357.1"><vh>Key Reference</vh>
+<v t="ekr.20150323161357.2"><vh>Selecting outline nodes</vh></v>
+<v t="ekr.20150323161357.3"><vh>Moving outline nodes</vh></v>
+</v>
+<v t="ekr.20150323161357.4"><vh>Moving the cursor</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150318110552.10"><vh>Debug commands</vh>
@@ -1214,8 +1219,6 @@
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
 </v>
-<v t="ekr.20150323110029.1"><vh>To do: Command Reference</vh></v>
-<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16034,7 +16037,7 @@ Either way, the leoeditor.com server will replace the page by the .leo file as r
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
     
-Leo now stores "ephemeral" or position-related data **in vnodes*. This was a completely new idea in Leo's history!
+Leo now stores "ephemeral" or position-related data *in vnodes*. This was a completely new idea in Leo's history!
 </t>
 <t tx="ekr.20150312080344.12">Wrapper and widget classes are at the heart of Leo's design. A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.
 
@@ -17988,7 +17991,6 @@ The following commands emulate `Emacs register commands`_::
     register-prepend-to
     register-view
 </t>
-<t tx="ekr.20150323110029.1">*** Create key reference.</t>
 <t tx="ekr.20150323111053.1">.. _`clone-find-all-flattened`: file:///C:/leo.repo/leo-editor/leo/doc/html/_build/html/commands.html#basic-searches
 
 Just `clone-find-all-flattened`_.  This is my workhorse command when fixing complex bugs.</t>
@@ -18011,6 +18013,56 @@ Controls how Leo reports successful checks:
 <t tx="ekr.20150323141745.1">You can now use the ``UpArrow`` and ``DownArrow`` keys in Leo's minibuffer to cycle through previous "complex" commands, that is, commands entered via ``Alt-x&lt;command-name&gt;&lt;return&gt;``. As a result, ``Alt-x UpArrow`` is roughly equivalent to ``Ctrl-P (repeat-complex-command)``.
 </t>
 <t tx="ekr.20150323154836.1">If you give no file arguments on the command line Leo will open ``~/.leo/workbook.leo``.  Initially, this file contains Leo's cheat sheet and an example from the rst3 tutorial.
+</t>
+<t tx="ekr.20150323161357.1">The following is only a summary.  ``print-bindings`` prints a complete list of the bindings in effect.
+</t>
+<t tx="ekr.20150323161357.2">When focus is in the outline pane::
+
+    Right-arrow (expand-and-go-right)
+    Left-arrow (contract-or-go-left)
+    Up-arrow (goto-prev-visible) 
+    Down-arrow (goto-next-visible)
+    
+Regardless of focus::
+
+    Alt-Home (goto-first-visible-node) 
+    Alt-End (goto-last-visible-node)
+    Alt-Right-arrow (expand-and-go-right)
+    Alt-Left-arrow (contract-or-go-left)
+    Alt-Up-arrow (goto-prev-visible) 
+    Alt-Down-arrow (goto-next-visible)
+</t>
+<t tx="ekr.20150323161357.3">When focus is in the outline::
+
+    Shift-Down-arrow (move-outline-down) 
+    Shift-Left-arrow (move-outline-left) 
+    Shift-Right-arrow (move-outline-right) 
+    Shift-Up-arrow (move-outline-up)
+
+Regardless of focus::
+
+    Alt-Shift-Down-arrow (move-outline-down) 
+    Alt-Shift-Left-arrow (move-outline-left) 
+    Alt-Shift-Right-arrow (move-outline-right) 
+    Alt-Shift-Up-arrow (move-outline-up)
+    Ctrl-D (move-outline-down)
+    Ctrl-L (move-outline-left) 
+    Ctrl-R (move-outline-right)
+    Ctrl-U (move-outline-up)
+</t>
+<t tx="ekr.20150323161357.4">When focus is in any of Leo's text panes (body pane, log pane, headlines)::
+
+    Arrows            move one character
+    Ctrl-LeftArrow    back one word
+    Ctrl-RightArrow   forward one word
+    Home              beginning of line
+    End               end of line
+    Ctrl-Home         beginning of the body
+    Ctrl-End          end of body
+    PageDown          down one page
+    PageUp            up one page
+
+**Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
