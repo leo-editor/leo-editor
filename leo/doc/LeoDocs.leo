@@ -15539,17 +15539,15 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">*** Use different formatting for Commands Reference
-*** Create key reference.
+<t tx="ekr.20150215071358.87">*** Create key reference.
 
-* Rewrite rst3 theory of operations.
+- Document clone-find-all in theory chapter.
 
 Revise 5.1 release notes.
 - Links to other docs?
 - Link to the Mulder/Ream algorithm from the release notes.
     
 Next:
-- Test read web page
 - Review all mentions of @auto in docs.
 - Document importing files in tutorial (See child)
 - Document @auto-rst/md/vo/otl.

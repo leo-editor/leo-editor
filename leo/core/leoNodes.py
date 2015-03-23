@@ -41,10 +41,6 @@ class NodeIndices (object):
     def __init__ (self,id_):
         '''Ctor for NodeIndices class.'''
         self.defaultId = id_
-        self.hold_gnx_flag = False
-            # True: allocate gnxs later.
-        self.hold_gnx_set = set()
-            # Set of all held vnodes.
         self.lastIndex = 0
         self.stack = []
             # A stack of open commanders.
@@ -1685,12 +1681,8 @@ class Position (object):
                         g.app.structure_errors += 1
                         g.error('duplicate gnx: %r v: %s parent: %s' % (
                             child_v.fileIndex,child_v,parent.v))
-                        if g.app.nodeIndices.hold_gnx_flag:
-                            g.internalError('ni.hold_gnx_flag True in check-outline')
-                        else:
-                            # g.trace('ni.hold_gnx_flag',ni.hold_gnx_flag,g.callers())
-                            child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
-                            assert child_v.gnx != parent.v.gnx
+                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
+                        assert child_v.gnx != parent.v.gnx
                         # Should be ok to continue.
                         p.moveToFirstChild()
                         break

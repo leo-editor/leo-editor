@@ -4174,10 +4174,7 @@ class Commands (object):
 
         def new_gnx(v):
             '''Set v.fileIndex.'''
-            if ni.hold_gnx_flag:
-                g.internalError('ni.hold_gnx_flag True in check-outline')
-            else:
-                v.fileIndex = ni.getNewIndex(v)
+            v.fileIndex = ni.getNewIndex(v)
 
         count,gnx_errors = 0,0
         for p in c.safe_all_positions():
@@ -4210,7 +4207,6 @@ class Commands (object):
                 c.shortFileName(),count,gnx_errors,g.app.structure_errors),color='red')
         elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2-t1,c.shortFileName(),count))
-            # g.es('check-outline OK',color='blue')
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *7* c.checkLinks & helpers
     def checkLinks(self):
