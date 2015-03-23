@@ -1210,12 +1210,15 @@
 </v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
-<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
-</v>
 <v t="ekr.20150323110029.1"><vh>Command Reference</vh>
 <v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
+</v>
+<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
+<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 <v t="ekr.20150323110109.1"><vh>What's new</vh>
 <v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
@@ -1224,12 +1227,6 @@
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
-</v>
-<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
-<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -6028,7 +6025,7 @@ Nevertheless, you can steal a peek at the doc here:
 
 http://vvtools.googlecode.com/files/Leodocumentation.pdf 
 </t>
-<t tx="ekr.20090706042206.14718">Most people will find using @clean trees to be most useful. Use @auto-rst, @auto-vimoutline or @auto-otl when using rST, vimoutline or Emacs org mode files.
+<t tx="ekr.20090706042206.14718">Most people will find using @clean trees to be most useful. Use @auto-rst, @auto-vimoutline or @auto-org when using rST, vimoutline or Emacs org mode files.
 </t>
 <t tx="ekr.20090711120622.10447">################
 Leo screen shots
@@ -7140,26 +7137,51 @@ This section discusses the @&lt;file&gt; directives. These directives create or 
 
 The following table compares the various ways of creating external files.
 
-+---------+------------+------------------+-----------------+
-|         | Sentinels  | Sections and     | File data stored|
-| Kind    | in external| @others expanded | in .leo file?   |
-|         | file?      | on write?        |                 |
-+---------+------------+------------------+-----------------+
-| @asis   | no         | no               | yes             |
-+---------+------------+------------------+-----------------+
-| @auto   | no         | yes              | no              |
-+---------+------------+------------------+-----------------+
-| @clean  | no         | yes              | yes             |
-+---------+------------+------------------+-----------------+
-| @edit   | no         | no               | no              |
-+---------+------------+------------------+-----------------+
-| @file   | yes        | yes              | no              |
-+---------+------------+------------------+-----------------+
++-----------+------------+------------------+-----------------+-------+
+|           | Sentinels  | Sections and     | File data stored| Notes |
+| Kind      | in external| @others expanded | in .leo file?   |       |
+|           | file?      | on write?        |                 |       |
++-----------+------------+------------------+-----------------+-------+
+| @asis     | no         | no               | yes             |       |
++-----------+------------+------------------+-----------------+-------+
+| @auto     | no         | yes              | no              |       |
++-----------+------------+------------------+-----------------+-------+
+| @auto-md  | no         | yes              | no              | 1     |
++-----------+------------+------------------+-----------------+-------+
+| @auto-org | no         | yes              | no              | 2     |
++-----------+------------+------------------+-----------------+-------+
+| @auto-otl | no         | yes              | no              | 3     |
++-----------+------------+------------------+-----------------+-------+
+| @auto-rst | no         | yes              | no              | 4     |
++-----------+------------+------------------+-----------------+-------+
+| @clean    | no         | yes              | yes             |       |
++-----------+------------+------------------+-----------------+-------+
+| @edit     | no         | no               | no              |       |
++-----------+------------+------------------+-----------------+-------+
+| @file     | yes        | yes              | no              |       |
++-----------+------------+------------------+-----------------+-------+
 
-Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following symbols known: c, g, p, os and sys.  For example::
+.. _`Emacs org-mode`:      http://en.wikipedia.org/wiki/Org-mode
+.. _`Emacs documentation`: emacs.html#using-org-mode-org-files-in-leo
+.. _`markdown`:            http://en.wikipedia.org/wiki/Markdown
+.. _`reStructuredText`:    http://docutils.sourceforge.net/rst.html
+.. _`vim outline`:         http://www.vim.org/scripts/script.php?script_id=3515
+.. _`vim documenation`:    http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
+
+**Note**:
+
+1. ``@auto-md`` parses `markdown`_.
+
+2. ``@auto-org (aka @auto-org-mode`` parses `Emacs org-mode`_ files. See Leo's `Emacs documentation`_ for more details.
+
+3. ``@auot-otl (aka @auto-vim-outline)`` parses `vim outline`_ files. See Leo's `vim documenation`_ for more details.
+
+4. ``@auto-rst`` parses `reStructuredText`_ files.
+
+**Path expressions**: Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
-
+    
 refers to the file abc.py in (absolute path of) the current directory.
 </t>
 <t tx="ekr.20100806170836.4393">.. index::
@@ -18035,8 +18057,6 @@ The following commands emulate `Emacs register commands`_::
 <t tx="ekr.20150323111053.1">.. _`clone-find-all-flattened`: file:///C:/leo.repo/leo-editor/leo/doc/html/_build/html/commands.html#basic-searches
 
 Just `clone-find-all-flattened`_.  This is my workhorse command when fixing complex bugs.</t>
-<t tx="ekr.20150323111332.1"></t>
-<t tx="ekr.20150323111337.1">Bug: @auto-org is not @auto-otl.</t>
 <t tx="ekr.20150323112726.2">This contains all of Leo's old release notes. As of Leo 5.1, LeoDocs.leo contains only the release notes for the current release.  This makes searching through LeoDocs.leo more convenient.</t>
 <t tx="ekr.20150323112726.3">https://github.com/leo-editor/leo-editor/issues/157
 
