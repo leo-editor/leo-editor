@@ -1147,7 +1147,7 @@
 </v>
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
-<v t="ekr.20150217105817.4"><vh>* @clean</vh></v>
+<v t="ekr.20150217105817.4"><vh>\@clean</vh></v>
 <v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
 <v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 <v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
@@ -7207,16 +7207,12 @@ The @auto directive imports an external file into a tree of nodes.
 
 **Important**: As of Leo 5.1, @clean is recommended instead of @auto.
 
-@auto trees allow people to use Leo in collaborative environments without using
-sentinels in external files. Even without sentinels, @auto trees can change
-when the corresponding external file changes outside of Leo.
+@auto trees allow people to use Leo in collaborative environments without using sentinels in external files. Even without sentinels, @auto trees can change when the corresponding external file changes outside of Leo.
 
 .. index::
     pair: Importer; Reference
 
-When reading @auto nodes, Leo creates the @auto tree using **importers**,
-parsers that create an outline with nodes for each class, method and function in
-the external file. Some importers create other kinds of nodes as well.
+When reading @auto nodes, Leo creates the @auto tree using **importers**, parsers that create an outline with nodes for each class, method and function in the external file. Some importers create other kinds of nodes as well.
 
 Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. Leo determines the language using the file's extension. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
 
@@ -15350,31 +15346,18 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">- Review all mentions of @auto in docs.
-</t>
+<t tx="ekr.20150215071358.87"></t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
     pair: uA; Tutorial
 
-With @clean and @file, Leo can store **persistent data** in nodes. This
-information consists of the node's **gnx** (Global Node Index) and the
-node's **uA**, (User Attributes). The gnx gives each node a unique,
-immutable identity. Gnx's make clones possible. The uA allows scripts and
-plugins to associate arbitrarily much additional data with each node.
+With @clean and @file, Leo can store **persistent data** in nodes. This information consists of the node's **gnx** (Global Node Index) and the node's **uA**, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx's make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.
 
 .. To do: links to further discussion of gnx and uA.
 
-By default, Leo's importers preserve neither gnx's nor uA's. This makes
-imported @auto trees second class citizens. To remedy this, if an outline
-contains an @persistence node, Leo will save data in the @persistence tree
-that allows Leo to recover gnx's and uA's when re-reading @auto files
-later. This allows clone links and uA's to persist.
+By default, Leo's importers preserve neither gnx's nor uA's. This makes imported @auto trees second class citizens. To remedy this, if an outline contains an @persistence node, Leo will save data in the @persistence tree that allows Leo to recover gnx's and uA's when re-reading @auto files later. This allows clone links and uA's to persist.
 
-@persistence is an optional feature. The stored data is akin to bookmarks.
-The data can "break" (become inaccessible) if the structure (including
-class/method/function names) changes. However, the data will typically
-break infrequently. To disable this feature, just delete an existing
-@persistence node or change @persistence to @@persistence.</t>
+@persistence is an optional feature. The stored data is akin to bookmarks. The data can "break" (become inaccessible) if the structure (including class/method/function names) changes. However, the data will typically break infrequently. To disable this feature, just delete an existing @persistence node or change @persistence to @@persistence.</t>
 <t tx="ekr.20150217105817.4">Leo updates @clean trees from changes made to external files without sentinel comments, something long thought impossible. As a result, Leo can now be used in any environment, including work groups where no one else uses Leo.
 
 @clean is significantly better than @auto for most purposes. Most users will want convert from @auto trees to @clean:
