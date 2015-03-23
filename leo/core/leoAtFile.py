@@ -842,7 +842,6 @@ class AtFile:
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
-            ### elif g.app.new_nosent:
             else:
                 if p.isAtAsisFileNode():
                     nRead += 1
@@ -855,15 +854,9 @@ class AtFile:
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
-            ###
-            # else:
-                # if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                    # nRead += 1
-                    # at.rememberReadPath(at.fullPath(p),p)
-                # p.moveToThreadNext()
-        # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
-        #for v in c.all_unique_nodes():
-        #    v.clearOrphan()
+        # Preserve the orphan bits: the dirty bits will be cleared!
+            # for v in c.all_unique_nodes():
+            #    v.clearOrphan()
         if nRead:
             t2 = time.time()
             g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
@@ -1230,16 +1223,9 @@ class AtFile:
             if trace: g.trace(repr(out[k]))
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):
-
         '''Return True if we should delete all children before a read.'''
 
         # Delete all children except for old-style @file nodes
-
-        ###
-        # if not g.app.new_nosent and root.isAtNoSentFileNode():
-            # return False
-        # el
-
         if root.isAtFileNode() and not thinFile:
             return False
         else:
