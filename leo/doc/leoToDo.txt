@@ -6,8 +6,6 @@
 .. @+node:ekr.20150227040245.4: ** To do: Leo 5.1 b1
 @language rest
 @wrap
-.. @+node:ekr.20150319055953.12: *3* Should updating an @clean node mark it dirty?
-Changed 3.
 .. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
 Set default for @string stylesheet so it generates::
 

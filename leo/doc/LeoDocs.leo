@@ -161,7 +161,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050812123002"></v>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -458,7 +457,6 @@
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
-<v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
 <v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
@@ -513,7 +511,6 @@
 </v>
 <v t="ekr.20050912125144"><vh>Plugins</vh>
 <v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
-<v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20101113063552.9398"><vh>Summary</vh></v>
 <v t="ekr.20101113063552.9528"><vh>Gui-independent plugins</vh>
@@ -742,7 +739,6 @@
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
@@ -762,7 +758,6 @@
 <v t="ekr.20131008041326.16100"><vh>@rst html/leoandotherprograms.html</vh></v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
-<v t="ekr.20061025065357.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
@@ -791,7 +786,6 @@
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
 <v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
-<v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Overview</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Starting ILeo</vh></v>
 <v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
@@ -803,14 +797,12 @@
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
-<v t="ekr.20070317033759.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
 <v t="ekr.20060913164304"><vh>Leo and ZODB</vh>
 <v t="ekr.20060913164304.1"><vh>@rst html\zodb.html</vh>
-<v t="ekr.20060913164311"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060913170145"><vh>Configuring Leo to use zodb</vh></v>
 <v t="ekr.20060913170403"><vh>Initing zodb</vh></v>
 <v t="ekr.20060913170403.1"><vh>Writing data to zodb</vh></v>
@@ -828,7 +820,6 @@
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
-<v t="ekr.20060430222753"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
 <v t="ekr.20060430220749"><vh>Files</vh></v>
 <v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
@@ -857,7 +848,6 @@
 </v>
 <v t="ekr.20060612102055"><vh>Writing Plugins</vh>
 <v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
 <v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
 <v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
@@ -870,7 +860,6 @@
 </v>
 <v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
 <v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
-<v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
 <v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
 <v t="ekr.20120229094652.15125"><vh>Using @mark-for-unit-tests</vh></v>
@@ -881,7 +870,6 @@
 </v>
 <v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
 <v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
-<v t="ekr.20060527105804"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
 <v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
 <v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
@@ -979,7 +967,6 @@
 </v>
 <v t="ekr.20150312080344.67"><vh>History of Leo</vh>
 <v t="ekr.20150312080344.68"><vh>@rst html/history.html</vh>
-<v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>1995: Beginnings</vh></v>
 <v t="ekr.20050902105852.1"><vh>1996: Breakthroughs</vh></v>
 <v t="ekr.20050902105852.2"><vh>1996-1998: Apple and YellowBox</vh></v>
@@ -1032,7 +1019,6 @@
 </v>
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
-<v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
@@ -1256,7 +1242,6 @@
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 <v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
-<v t="ekr.20150320233042.8"><vh>** remove @rst-ignore links nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -1453,7 +1438,9 @@ The g.u function should be used *only* to convert from the Qt string type (a wra
 
 4. The @encoding directive specifies the encoding used in a external file. You can't mix encodings in a single external file.
 </t>
-<t tx="EKR.20040524104904.357">Here are the XML elements that may appear in Leo files:
+<t tx="EKR.20040524104904.357">.. _`Writing plugins`:   writingPlugins.html
+
+Here are the XML elements that may appear in Leo files:
 
 &lt;?xml&gt;
     Leo files start with the following line::
@@ -2415,18 +2402,6 @@ That is, to create a default value for an rst3 setting, you must prefix the opti
 
     @bool rst3_write_intermediate_file = True
 </t>
-<t tx="ekr.20050828160132">.. _front:                      index.html
-.. _`Leo's tutorial`:           tutorial.html
-.. _`Leo and reStructuredText`: rstplugin3.html
-.. _`History of Leo`:           appendices.html#history-of-leo
-.. was history.html
-.. _`Using Chapters`:           outlines.html#using-chapters
-
-.. For reasons unknown, images must appear in the _images folder on the web site.
-.. .. |leoAtFileMainNode| image:: screen-shots/leo-qt-at-file-main-node.JPG
-.. .. |leoAtFileFirstChild| image:: screen-shots/leo-qt-at-file-first-child.JPG
-.. .. |leoAtFileNamedChild| image:: screen-shots/leo-qt-at-file-named-child.JPG
-</t>
 <t tx="ekr.20050830074815.1">"I am using Leo since a few weeks and I brim over with enthusiasm for it. I think it is the most amazing software since the invention of the spreadsheet."---Anon.
 
 "We who use Leo know that it is a breakthrough tool and a whole new way of writing code."---Joe Orr
@@ -2672,7 +2647,7 @@ This is Leo's Frequently Asked Questions document.
 
 Now you should have a New:Leo File option in Explorer. This creates a duplicate of the file you saved. This can be useful because you could make a template Leo file containing some standard nodes_ that you always have and then save this.
 </t>
-<t tx="ekr.20050830115714.115" str_atime="1376412852.0">For the most part, docutils_ does a good job of reporting errors. docutils_ prints a message to the console and inserts an unmistakable error message in the generated .html file. **Important**: On Windows it is helpful to `run Leo in a console window`_.
+<t tx="ekr.20050830115714.115" str_atime="1376412852.0">For the most part, docutils_ does a good job of reporting errors. docutils_ prints a message to the console and inserts an unmistakable error message in the generated .html file. **Important**: On Windows it is helpful to `run Leo in a console`_.
 
 However, in some cases, docutils_ crashes instead of properly reporting the problem. There are several workarounds:
 
@@ -2701,7 +2676,7 @@ However, in some cases, docutils_ crashes instead of properly reporting the prob
         print 'EKR: added traceback'
         import traceback ; traceback.print_exc()
 
-This will cause a traceback whenever docutils_ crashes. I have found that such tracebacks are generally enough to locate the general area of the problem. **Note**: These tracebacks go to the console window, so you should `run Leo in a console window`_.
+This will cause a traceback whenever docutils_ crashes. I have found that such tracebacks are generally enough to locate the general area of the problem. **Note**: These tracebacks go to the console window, so you should `run Leo in a console`_.
 
 3.  As a last resort, you can isolate syntax errors by reducing your input files until they work again, then adding sections until you get a crash. This is easy enough to do (when using the rst3 plugin) by change a headline 'x' to @rst-ignore-tree x.
 </t>
@@ -2795,7 +2770,7 @@ or::
     @delims /* */
     @last ?&gt;
 </t>
-<t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just want to use Leo as an outliner_. If you intend to use Leo for programming, read the `tutorial about programming`_, then look at Leo's source code in the file LeoPy.leo. Spend 5 or 10 minutes browsing through the outline. Don't worry about details; just look for the following common usage patterns:
+<t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just want to use Leo as an outliner_. If you intend to use Leo for programming, read the `programming tutorial`_, then look at Leo's source code in the file LeoPy.leo. Spend 5 or 10 minutes browsing through the outline. Don't worry about details; just look for the following common usage patterns:
 
 - The (Projects) tree shows how to use clones to represent tasks.
 
@@ -2904,7 +2879,7 @@ In short, I create sections when convenient, and convert them to functions or me
 This will import all .py files from aDirectory, which should be a full path to a particular directory. You could use ".c" to import all .c files, etc.
 </t>
 <t tx="ekr.20050830115714.76" str_atime="1376412985.0"></t>
-<t tx="ekr.20050830115714.77">Just `run Leo in a console window`_. At the point you want to drop into the debugger, execute this line::
+<t tx="ekr.20050830115714.77">Just `run Leo in a console`_. At the point you want to drop into the debugger, execute this line::
 
     g.pdb()
 
@@ -2942,43 +2917,13 @@ new_leo_file_encoding
 </t>
 <t tx="ekr.20050830120007">.. Links used in this document...
 
-.. ----- External links.
+.. External links
 
-.. _decorator:          http://www.python.org/peps/pep-0318.html
-.. _docutils:           http://docutils.sourceforge.net/
-.. _unicode:            http://www.unicode.org/
+.. _docutils:               http://docutils.sourceforge.net/
 .. _`git repository`:   https://github.com/leo-editor/leo-editor
+.. _unicode:                http://www.unicode.org/
 
-.. ----- Relative links into Leo's documentation.
-
-.. _`Associating Leo with .leo Files`:  installing.html#creating-windows-file-associations
-.. _`How to install Leo on Windows`:    installing.html#installing-leo-on-windows
-
-.. _`Clones`:       tutorial-pim.html#clones
-.. _`Views`:        tutorial-pim.html#views
-.. _`CWEB mode`:    directives.html#cweb-mode
-.. _command:        commands.html
-.. _commands:       commands.html
-.. _`tutorial about programming`:               tutorial-programming.html
-.. _tutorial:                                   tutorial.html
-.. _`Leo 4.0: Eliminating error 'recovery'`:    appendices.html#leo-4-0-eliminating-error-recovery
-.. was: history.html#leo-4-0-eliminating-error-recovery
-.. _`History of Leo`:                           appendices.html#history-of-leo
-.. was: history.html
-.. _`run Leo in a console window`:              running.html#running-leo-from-a-console-window
-.. _`console window`:                           running.html#running-leo-from-a-console-window
-
-.. ----- References to the glossary: the glossary now contains references to the tutorial.
-.. _`@asis`:                glossary.html#asis-trees
-.. _`@auto`:                glossary.html#auto-trees
-.. _`@clean`:               glossary.html#clean
-.. _`@file`:                glossary.html#file-trees
-.. _`@others directive`:    glossary.html#others
-.. _`@shadow`:              glossary.html#shadow-trees
-.. _`@thin`:                glossary.html#thin-trees
-.. _`@unit`:                glossary.html#unit
-.. _`body text`:            glossary.html#body-text
-.. _cweb:                   glossary.html#cweb
+.. Glossary
 .. _directive:              glossary.html#directive
 .. _directives:             glossary.html#directives
 .. _`external file`:        glossary.html#external-file
@@ -2996,6 +2941,22 @@ new_leo_file_encoding
 .. _`sentinel lines`:       glossary.html#sentinel
 .. _setting:                glossary.html#setting
 .. _settings:               glossary.html#settings
+
+.. FAQ
+.. _`How to install Leo on Windows`:    installing.html#installing-leo-on-windows
+.. _`run Leo in a console`:             running.html#running-leo-from-a-console-window
+
+.. Tutorial
+.. _`programming tutorial`: tutorial-programming.html
+.. _tutorial:               tutorial.html
+.. _`Clones`:               tutorial-pim.html#clones
+.. _`Views`:                tutorial-pim.html#views
+
+.. Other local references
+.. _command:                commands.html
+.. _`History of Leo`:       appendices.html#history-of-leo
+.. _`Leo 4.0: Eliminating error 'recovery'`: appendices.html#leo-4-0-eliminating-error-recovery
+
 </t>
 <t tx="ekr.20050830120844" str_atime="1376412842.0">c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu. For example, the following script will add a new item at the end of the 'File' menu::
 
@@ -3065,12 +3026,6 @@ http://leoeditor.com/tutorial.html
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor
 </t>
-<t tx="ekr.20050831232205">.. Relative links.
-.. _`Writing plugins`:   writingPlugins.html
-
-.. References to the glossary.
-.. _`sentinel lines`:   glossary.html#sentinel-lines
-</t>
 <t tx="ekr.20050901084134">I wrote this soon after discovering Python in 2001. The conclusions are still valid today.
     
 I've known for a while that Python was interesting; I attended a Python conference last year and added Python support to Leo. But last week I got that Python is something truly remarkable. I wanted to convert Leo from wxWindows to wxPython, so I began work on c2py, a Python script that would help convert from C++ syntax to Python. While doing so, I had an Aha experience. Python is more than an incremental improvement over Smalltalk or C++ or objective-C; it is "something completely different". The rest of this post tries to explain this difference.
@@ -3134,30 +3089,6 @@ This chapter discusses how to customize Leo using the plugins and other means. S
 
 .. contents::
     :depth: 3
-</t>
-<t tx="ekr.20050901102055">.. _`Scripting Leo with Python`:    tutorial-scripting.html
-.. _`History of Leo`:               appendices.html#history-of-leo
-.. was: history.html
-.. _`rst3 plugin`:                  glossary.html#rst3-plugin
-.. _`Specifying settings`:          commands.html#specifying-settings
-</t>
-<t tx="ekr.20050901102147">.. Relative links...
-.. _`Scripting Leo with Python`:        tutorial-scripting.html
-.. _`Customizing Leo`:                  customizing.html
-.. _`Theory of Operation`:              theory.html
-.. _`Controlling Syntax Coloring`:      coloring.html
-.. _`Debugging with Leo`:               debuggers.html
-.. _`Using ZODB with Leo`:              zodb.html
-.. _`Leo and Emacs`:                    emacs.html
-.. _`Embedding Leo with the leoBridge Module`: leoBridge.html
-.. _`Unit testing with Leo`:            unitTesting.html
-.. _`ILeo - the IPython bridge`:        IPythonBridge.html
-.. _`the IPython bridge`:               IPythonBridge.html
-.. _`Using @shadow`:                    atShadow.html
-.. _`What's New`:                       what-is-new.html
-
-.. Absolute links..
-.. _OPML:   http://en.wikipedia.org/wiki/OPML
 </t>
 <t tx="ekr.20050902105852">Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured documentation." I had known of literate programming since the mid 1980's, but I never understood how to make it work for me. In November 1995 I started thinking about programming in earnest. Over the holidays I mused about making programs more understandable. </t>
 <t tx="ekr.20050902105852.1">In January 1996 the fog of confusion suddenly cleared. I summarized my thinking with the phrase, **web are outlines in disguise**. I suspected that outline views were the key to programming, but many details remained obscure.
@@ -3506,17 +3437,6 @@ The scripting plugin (mod_scripting.py) deserves special mention. This plugin le
 .. contents::
     :depth: 5
 </t>
-<t tx="ekr.20050912125735">.. External links...
-.. _docutils:             http://docutils.sourceforge.net
-.. _LaTeX:                http://www.latex-project.org/
-.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. .. _SilverCity:           http://silvercity.sourceforge.net
-
-.. Relative links...
-.. _`Specifying settings`:      customizing.html#specifying-settings
-.. _`Customizing Leo`:          customizing.html
-.. .. _`Writing Plugins`:          writingPlugins.html
-</t>
 <t tx="ekr.20050912125735.363">The dyna_menu plugin is a remarkable body of work by 'e'. This plugin creates a dyna_menu menu from which you can execute commands. You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
 </t>
 <t tx="ekr.20051202072010"></t>
@@ -3578,9 +3498,12 @@ If (maybe much later), we eliminate B' as a child of A will get::
 
 B has not been destroyed, but B is gone from @file spam.py! So in this sense deleting a clone node can also be called dangerous.
 </t>
-<t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
+<t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
 </t>
-<t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+<t tx="ekr.20060430220749">.. _jEdit: http://www.jedit.org/
+.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
+
+The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
 These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
 
@@ -3609,14 +3532,6 @@ This chapter discusses the settings to control Leo's syntax colorer. This chapte
 
 .. contents::
     :depth: 3
-</t>
-<t tx="ekr.20060430222753">.. External links...
-.. _jEdit:                      http://www.jedit.org/
-.. _`jEdit's documentation`:    http://www.jedit.org/42docs/users-guide/writing-modes-part.html
-
-.. Relative links...
-.. _`Ruleset name`:      `Ruleset names`_
-.. _`Customizing Leo`:           customizing.html
 </t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
@@ -3934,7 +3849,9 @@ match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start,
 
 If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
 </t>
-<t tx="ekr.20060503064515">All rule methods take three required arguments and zero or more optional keyword arguments.
+<t tx="ekr.20060503064515">.. _`Ruleset name`: `Ruleset names`_
+
+All rule methods take three required arguments and zero or more optional keyword arguments.
 
 Here is a list of the required arguments and their meaning:
 
@@ -4081,20 +3998,6 @@ general scripts do not.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20060527105804">.. External links...
-.. _Idle:                       http://www.python.org/idle/
-.. _pdb:                        http://docs.python.org/lib/module-pdb.html
-.. _winpdb:                     http://www.digitalpeers.com/pythondebugger/
-.. _`the FAQ`:                  http://leoeditor.com/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
-.. _`embedded winpdb`:          http://www.digitalpeers.com/pythondebugger/embedded.htm
-.. _`Leo's forums`:             http://sourceforge.net/forum/?group_id=3458
-.. _`work flow`:                http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-
-.. .. _`running Leo in a console`: http://leoeditor.com/FAQ.html#how-can-i-run-leo-from-a-console-window
-.. _`running Leo from a console window`:    installing.html#running-leo-from-a-console-window
-.. _`run Leo in a console window`:          installing.html#running-leo-from-a-console-window
-.. _`console window`:                       installing.html#running-leo-from-a-console-window
-</t>
 <t tx="ekr.20060527112801">The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter::
 
     @string debugger_kind = winpdb
@@ -4133,6 +4036,8 @@ There are several workaround, as shown in LeoPy.leo:
 Writing Plugins
 ###############
 
+.. _`Scripting Leo with Python`: tutorial-scripting.html
+
 Plugins modify how Leo works. With plugins you can give Leo new commands,
 modify how existing commands work, or change any other aspect of Leo's look
 and feel.
@@ -4153,15 +4058,6 @@ The rest of this chapters discusses topics related specifically to plugins.
 
 .. contents::
     :depth: 3
-</t>
-<t tx="ekr.20060612103824">.. External links...
-.. _docutils:             http://docutils.sourceforge.net
-.. _LaTeX:                http://www.latex-project.org/
-.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-
-.. Relative links...
-.. _`Scripting Leo with Python`:    tutorial-scripting.html
-.. _`Customizing Leo`:              customizing.html
 </t>
 <t tx="ekr.20060620094033"></t>
 <t tx="ekr.20060620094033.1"></t>
@@ -4356,7 +4252,9 @@ Development on long-delayed projects accelerated after 4.4 final went out the do
     Added the shadow files plugin, a precursor to @shadow
     Added support for multiple editors in the body pane
 </t>
-<t tx="ekr.20060830142929">This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
+<t tx="ekr.20060830142929">.. _`Customizing Leo`: customizing.html
+
+This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
 
 Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer and qtGui plugins) now support @color and @font settings for colorizing options. The settings for the old colorizer are::
 
@@ -4406,14 +4304,12 @@ You can specify per-language settings by preceding the settings names by a prefi
 Using ZODB with Leo
 ###################
 
-This chapter discusses how to write Leo scripts that store and retrieve data using ZODB_.
+.. _`ZODB`: http://www.zope.org/Wikis/ZODB/guide/zodb.html
+
+This chapter discusses how to write Leo scripts that store and retrieve data using `ZODB`_.
 
 .. contents::
     :depth: 2
-</t>
-<t tx="ekr.20060913164311">.. External links...
-.. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
-.. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
 </t>
 <t tx="ekr.20060913165542.1"></t>
 <t tx="ekr.20060913165542.2">This function inits the zodb. pathToZodbStorage is the full path to the zodb storage file. You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.
@@ -4423,7 +4319,9 @@ This chapter discusses how to write Leo scripts that store and retrieve data usi
     v2 = v.detach()
     v2.fileIndex = v.fileIndex
 </t>
-<t tx="ekr.20060913170145">To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py. You must also install ZODB itself.  See `Installing ZODB`_ for details.
+<t tx="ekr.20060913170145">.. _`Installing ZODB`: http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
+
+To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py. You must also install ZODB itself.  See `Installing ZODB`_ for details.
 
 When ZODB is installed and use_zodb is True, Leo's vnode class becomes a subclass of ZODB.Persistence.Persistent. This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.
 
@@ -4553,7 +4451,9 @@ which is certainly *not* what the script writer intended! Rather than defining s
     u = u'a-\\u0233-\\u8ce2-z'
     u = 'a-\\u0233-\\u8ce2-z'
 </t>
-<t tx="ekr.20060921064744.1">This section describe the format of external files. Leo's `sentinel lines`_ are comments, and this section describes those comments.
+<t tx="ekr.20060921064744.1">.. _`sentinel lines`: glossary.html#sentinel-lines
+
+This section describe the format of external files. Leo's `sentinel lines`_ are comments, and this section describes those comments.
 
 .. index:: gnx
 
@@ -4759,14 +4659,6 @@ This chapter several topics relating to the Emacs editor.
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20061025065357.2">.. Links
-.. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp
-.. _Emacs:              http://www.xemacs.org/
-.. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
-.. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
-.. _pymacs:             http://pymacs.progiciels-bpi.ca/index.html
-.. _`Customizing Leo`:  customizing.html
-</t>
 <t tx="ekr.20061025070825.1">The leoPymacs module is intended to be called from Emacs using pymacs.  It contains the following top-level functions:
 
 - get_app()
@@ -4802,7 +4694,11 @@ This chapter several topics relating to the Emacs editor.
   In the executed script, p is set to c.p if no p argument is specified.
   Returns g.app.scriptResult, where g.app is the hidden app.
 </t>
-<t tx="ekr.20061025081359">Leo's leoPymacs module is a simple 'server' for the pymacs_ package. Using pymacs and leoPymacs, elisp_ scripts in Emacs_ can open .leo files and execute *Python* scripts as if they were executed inside Leo. In particular, such scripts can use Leo's predefined c, g and p variables. Thus, *Python* scripts running in Emacs can:
+<t tx="ekr.20061025081359">.. _`pymacs`:   http://pymacs.progiciels-bpi.ca/index.html
+.. _`elisp`:    http://en.wikipedia.org/wiki/Emacs_Lisp
+.. _`Emacs`:    http://www.xemacs.org/
+
+Leo's leoPymacs module is a simple 'server' for the `pymacs`_ package. Using pymacs and leoPymacs, `elisp`_ scripts in `Emacs`_ can open .leo files and execute *Python* scripts as if they were executed inside Leo. In particular, such scripts can use Leo's predefined c, g and p variables. Thus, *Python* scripts running in Emacs can:
 
 - Open any .leo file. 
 - Access any part of the outline. 
@@ -4936,7 +4832,10 @@ Putting this all together, we get::
 
 For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
 </t>
-<t tx="ekr.20070115172724">The following three section discuss three ways of debugging scripts with winpdb_. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.
+<t tx="ekr.20070115172724">.. _`embedded winpdb`: http://www.digitalpeers.com/pythondebugger/embedded.htm
+.. _`winpdb`: http://www.digitalpeers.com/pythondebugger/
+
+The following three section discuss three ways of debugging scripts with `winpdb`_. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.
 
 winpdb_ and its documentation have been improved recently. For more details, see the `embedded winpdb`_ docs. The discussion of embedded debugging may have been written specifically with Leo in mind.
 </t>
@@ -4961,11 +4860,16 @@ winpdb_ and its documentation have been improved recently. For more details, see
 
 4. Use winpdb's File:Attach command to attach winpdb to Leo. Specify the password as 'go' and you will see the scriptFile.py containing your entire script. You can now execute or single-step through the script. To repeat, c, g and p are defined, so you can debug any script this way.
 </t>
-<t tx="ekr.20070116062405">Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must `run Leo in a console window`_ to use g.trace.
+<t tx="ekr.20070116062405">.. _`FAQ`: http://leoeditor.com/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
+.. _`pdb`: https://docs.python.org/3/library/pdb.html
+.. _`run Leo in a console`: installing.html#running-leo-from-a-console-window
+.. _`work flow`: http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must `run Leo in a console`_ to use g.trace.
 
 Inserting and deleting g.trace statements is fast, provided that your `work flow`_ makes it easy to restart the program under test. As a result, using g.trace statements is similar to setting tracepoints in a debugger, with the advantage that (disabled) tracepoints remain in the source code for future use. You will find many examples of using g.trace throughout Leo's source code.
 
-My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb uses the console for all interaction, so you must `run Leo in a console window`_. See `the FAQ`_ for a discussion of both g.trace and g.pdb.
+My second choice is using g.pdb to set breakpoints for the `pdb`_ debugger. Pdb uses the console for all interaction, so you must `run Leo in a console`_. See the `FAQ`_ for a discussion of both g.trace and g.pdb.
 </t>
 <t tx="ekr.20070120075236">.. index::
     pair: Predefined Symbols; Tutorial
@@ -5035,8 +4939,6 @@ Python programs running independently of Leo. Let us call such a program a
 .. contents::
     :depth: 2
 
-</t>
-<t tx="ekr.20070317033759.2">.. Links
 </t>
 <t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows::
 
@@ -5284,6 +5186,8 @@ It also contains other information of little interest to most Leo users.</t>
 Unit testing with Leo
 #####################
 
+.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
+
 This chapter describes how you can execute Python unit test from within Leo
 outlines.
 
@@ -5301,10 +5205,6 @@ test/unitTest.leo contains many examples of using @test and @suite nodes.
 
 .. contents::
     :depth: 2
-</t>
-<t tx="ekr.20070628083442.2">.. Links
-
-.. _`run Leo in a console window`:      installing.html#running-leo-from-a-console-window
 </t>
 <t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test commands convert the body text of @test nodes into a unit test automatically. That is, Leo's unit test commands automatically create a unittest.TestCase instances which run the body text of the @test node. For example, let us consider one of Leo's actual unit tests. The headline is::
 
@@ -5436,7 +5336,9 @@ The **Great Graph Aha**: Leo outlines can represent arbitrary directed graphs. T
     Added 'clear-all-marks' hook
     Added graphed.py plugin
 </t>
-<t tx="ekr.20070814104719" str_atime="1376412994.0">You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded). See `Specifying settings`_ for full details of settings files.
+<t tx="ekr.20070814104719" str_atime="1376412994.0">.. _`Specifying settings`: customizing.html#specifying-settings
+
+You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded). See `Specifying settings`_ for full details of settings files.
 
 The body text of the @enabled-plugins node contains a list of enabled plugins. Notes:
 
@@ -5621,19 +5523,6 @@ ILeo: Leo's IPython Bridge
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20080203101507.2">.. Links
-
-.. _ipython:                http://ipython.scipy.org/
-.. _IPython:                http://ipython.scipy.org/
-.. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
-.. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
-.. _`The Ipython Extension API`: extensionAPI_
-.. _`Scripting Leo with Python`:    tutorial-scripting.html
-
-.. _`run Leo in a console window`:  installing.html#running-leo-from-a-console-window
-.. _`console window`:               installing.html#running-leo-from-a-console-window
-
-</t>
 <t tx="ekr.20080218154129">Leo 4.4.7 final was released February 18, 2008.  This release added ipython plugin, the result of an excellent collaboration between EKR and Ville M. Vainio.
 </t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
@@ -5778,7 +5667,7 @@ remaining sections of this document discuss code-level details.
 
 The sax parser complains that these characters are not valid in .xml files. Remove these invalid characters as follows:
 
-1. `run Leo in a console window`_, and load the .leo file. Near the bottom of the error message you will see a line like::
+1. `run Leo in a console`_, and load the .leo file. Near the bottom of the error message you will see a line like::
 
     SAXParseException: &lt;unknown&gt;:123:25: not well-formed (invalid token)
 
@@ -7001,7 +6890,9 @@ View node
     descendant nodes comprise most of the data of the view. Other non-cloned
     nodes may add additional information to the view.
 </t>
-<t tx="ekr.20100804133903.7262">This section is a reference guide for all other Leo directives, organized alphabetically.
+<t tx="ekr.20100804133903.7262">.. _`Using Chapters`: outlines.html#using-chapters
+
+This section is a reference guide for all other Leo directives, organized alphabetically.
 
 Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.
 
@@ -7404,7 +7295,9 @@ These directives typically affect the node in which they appear and all descenda
     directive overrides the @color and @nocolor directives within the same
     node.
 </t>
-<t tx="ekr.20100806170836.4399">.. index::
+<t tx="ekr.20100806170836.4399">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+
+.. index::
     pair: @clean; Reference
 
 The @clean &lt;filename&gt; creates an external file without sentinel lines.
@@ -7414,7 +7307,6 @@ accessing external files for most people.
 When writing an @clean tree, Leo expands section references, @all and
 @others directives, but Leo writes no sentinels to the external file.
 
-.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
 When reading an @clean tree, Leo propagates changes from the external file
 to the @clean tree using the `Mulder/Ream update algorithm`_.
@@ -11311,7 +11203,9 @@ I was using FreeMind as mind mapping software, and so I had an immediate use cas
 
 The goal of close cooperation between Leo and IPython went from vague dream to completed reality over the span of about 10 days. The IPython bridge has continued to evolve since then.
 </t>
-<t tx="ekr.20131001045038.18979">The IPython bridge turns Leo into another kind of `IPython Notebook`_. IPython users typically use %edit to produce non-trivial functions/classes instead of entering them directly on the interactive prompt. But this is a bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
+<t tx="ekr.20131001045038.18979">.. _`IPython Notebook`: http://projects.scipy.org/ipython/ipython/wiki/NoteBook
+
+The IPython bridge turns Leo into another kind of `IPython Notebook`_. IPython users typically use %edit to produce non-trivial functions/classes instead of entering them directly on the interactive prompt. But this is a bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
 
 - You can execute any Leo node in IPython with &lt;Alt-I&gt; (ipython-exec)
 - Saving your Leo outline saves all your IPython scripts.
@@ -17137,7 +17031,7 @@ This chapter discusses the most important milestones in history of Leo and summa
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console window`_. because as a last resort Leo prints error messages to the console.
+<t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
 
 
 </t>
@@ -18680,11 +18574,6 @@ untangle-all
 untangle-marked</t>
 <t tx="ekr.20150319142303.4"></t>
 <t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
-<t tx="ekr.20150320233042.8">- Search for @rst-no-head links
-- Eliminate unused links.
-- Move used links to the nodes to which they apply.
-
-Many links in FAQ: Let's leave them :-)</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
@@ -18770,16 +18659,13 @@ os.system('make all-pdf')
 
 The level of integration is much deeper than conventional integration in IDEs. Most notably, you are able to store and manipulate *data* in Leo nodes, in addition to mere program code--essentially making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data. The possibilities of this are endless, and the approach can be applied in wide range of problem domains with very little actual coding.
 </t>
-<t tx="vivainio.20080302174639.2">To run Leo's IPython bridge:
+<t tx="vivainio.20080302174639.2">.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
+
+To run Leo's IPython bridge:
 
 1. Install IPython 0.8.3 or above.
 
-2. `run Leo in a console window`_ with the ``--ipython`` command-line option
-   enabled. This option starts an instance of the IPython shell in the
-   console. Leo and IPython run simultaneously and independently. Their
-   separate event loops do not interfere with each other.
-
-   The ipython-new command launches new terminals connected to the same
-   IPython kernel.</t>
+2. `run Leo in a console window`_ with the ``--ipython`` command-line option enabled. This option starts an instance of the IPython shell in the console. Leo and IPython run simultaneously and independently. Their separate event loops do not interfere with each other. The ipython-new command launches new terminals connected to the same IPython kernel.
+</t>
 </tnodes>
 </leo_file>
