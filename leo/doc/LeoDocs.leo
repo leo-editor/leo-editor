@@ -440,6 +440,7 @@
 <v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
 <v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
+<v t="ekr.20150312080344.12"><vh>wrappers vs. widgets</vh></v>
 <v t="ekr.20131016084446.16726"><vh>Further study</vh></v>
 <v t="ekr.20101124083644.5052"><vh>Autocompletion</vh></v>
 <v t="ekr.20131017051340.16815"><vh>Calltips</vh></v>
@@ -1201,7 +1202,6 @@
 <v t="ekr.20150311123850.46"><vh>The presence of @persistence enables @auto persistence</vh></v>
 <v t="ekr.20150311123850.47"><vh>Support @clean as the preferred form of @nosent</vh></v>
 <v t="ekr.20150311123850.48"><vh>Added unformat-paragraph command</vh></v>
-<v t="ekr.20150311123850.49"><vh>To be documented: xslt</vh></v>
 <v t="ekr.20150311123850.50"><vh>Added @bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
 <v t="ekr.20150311123850.52"><vh>colorizer for @ &amp; @doc now honors @language</vh></v>
@@ -1209,7 +1209,6 @@
 </v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
 <v t="ekr.20150323105959.1"><vh>Tutorials</vh>
 <v t="ekr.20150312080344.21"><vh>Command history</vh></v>
 <v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
@@ -1231,7 +1230,6 @@
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
-<v t="ekr.20150312080344.12"><vh>Theory? Regularized .wrapper and .widget ivars</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -15628,7 +15626,7 @@ Notes:
 - If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="ekr.20150301140303.15">Leo 5.1 b1                          March 9, 2015
+<t tx="ekr.20150301140303.15">Leo 5.1 b1: March 27, 2015
 
 Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
@@ -15878,109 +15876,6 @@ Extraneous whitespace causes problems with rST text--various kinds of rST markup
 
 unformat-paragraph makes all these problems disappear.  Furthermore, the appearance of the text in LeoDocs.leo improves provided that @wrap is in effect.
 </t>
-<t tx="ekr.20150311123850.49">@language rest
-
-I have been wondering whether it would be possible to use xslt to render
-.leo files from web pages. This would build on Ville's work. First, a demo:
-
-1. Copy the two attached files to the same folder on your hard drive.
-
-Note: recent revs have added these two files to the top-level leo folder,
-so you could also use those files instead. Both demo files are now in the
-top-level leo-editor in the git repo *and* on leoeditor.com.
-
-2. Open xslt-test.leo in your browser.  You should see something like this:
-
-    test.leo
-
-    This is a test
-
-        node 1
-
-        Node 1 text.
-
-        node 2
-
-        Node 2 text.
-
-That is, browsers (tested with IE and Mozilla) can render .leo files on
-your file system as html.
-
-Alas, there are problems rending .leo files from urls instead of files. But
-when we succeed we will have a read-only version of Leo as a web app!
-
-===== About leo_to_html.xsl
-
-Ville created leo_to_html.xsl, but I didn't understand its significance
-until early this morning. This xslt file tells a web browser (or other xslt
-processor) how to render a .leo file as html.
-
-I made several changes this morning to leo_to_html.xsl so that it works
-with the "tryit" editor for xslt at w3schools:
-http://www.w3schools.com/xsl/tryxslt.asp?xmlfile=cdcatalog&amp;xsltfile=cdcatalog_ex1
-
-This editor is a good way to discover problems either in .xsl files
-themselves or references to .xsl files from .xml files.
-
-===== Problems
-
-It does not seem possible to use leo_to_html.xsl directly:
-
-1. Visiting http://leoeditor.com/xslt-test.leo does not work.
-
-The browser renders xslt-test.leo xml, not html. That is, the browser does
-not perform the xslt transformations.
-
-2. Visiting
-   https://github.com/leo-editor/leo-editor/blob/master/xslt-test.leo shows
-   the "raw" xml, without the xslt transformations being applied.
-
-The reason is clear enough. The url is a *representation* of the .leo file,
-not the .leo file itself.
-
-3. xslt-test.leo contains the following line::
-
-    &lt;?xml-stylesheet type="text/xsl" href="leo_to_html.xsl"?&gt;
-
-This line is supposed to be set by the following setting::
-
-    @string stylesheet = ekr_test
-
-This default is useless, and setting it to::
-
-    @string stylesheet = type="text/xsl" href="leo_to_html.xsl"
-
-does not appear to work. I'll look into this, but cutting and pasting the
-desired &lt;?xml-stylesheet &gt; element into .leo files should work well enough
-for testing.
-
-4. By default, Mozilla refuses to render xslt-test.leo containing the
-   following stylesheet element::
-
-    &lt;?xml-stylesheet type="text/xsl" href="leoeditor.com/leo_to_html.xsl"?&gt;
-
-In other words, Mozilla refuses to execute "remote" .xsl files. A cryptic
-message is shown instead. Googling that message gives:
-http://stackoverflow.com/questions/3420513/firefox-and-remote-xsl-stylesheets
-
-Apparently Mozilla enforces "same origin" policy. But it's no good relaxing
-that policy: browsers on smart phones are probably even more restrictive.
-
-===== Conclusions
-
-The tryit editor shows that it is possible to apply arbitrary xslt style
-sheets to arbitrary xml files. We should be able to create a page, say on
-leoeditor.com, that would render .leo files properly using leo_to_html.xsl.
-The question is, how exactly to do this?
-
-This is exciting, despite the problem listed above, and probably others.
-The xslt approach is almost infinitely easier than alternative approaches.
-
-Once we can properly render, say, a link to a .leo file on GitHub, we can
-start improving leo_to_html.xsl. The obvious thing to do is to change the
-xsl so that it generates html similar to that generated by Bernhard
-Mulder's mod_http plugin.
-</t>
 <t tx="ekr.20150311123850.5">@language rest
 @wrap
 
@@ -16127,21 +16022,7 @@ The "Upload from your hard drive" button loads a .leo file from you hard drive. 
 
     https://github.com/leo-editor/leo-editor/blob/master/leo/test/test.leo
 
-Either way, the leoeditor.com server will replace the page by the .leo file as rendered by Ville's leo_to_html.xsl file. The new page will be called something like::
-
-    http://leoeditor.com/show-leo-0004.leo
-
-**Important**: At present, there must be *some* kind of &lt;?xml-stylesheet&gt; element in the .leo file. Many leo files have the following do-nothing line near the start::
-
-    &lt;?xml-stylesheet ekr_test?&gt;
-
-That's fine. If there is *any* such line, Speed's server-side stuff will replace it with::
-
-    &lt;?xml-stylesheet type="text/xsl" href="leo_to_html.xsl"?&gt;
-
-Speed will soon add the above line even if there is no stylesheet element.
-
-I am working on leo_to_html.xsl so that nodes can be expanded and contracted.
+Either way, the leoeditor.com server will replace the page by the .leo file as rendered by leo_to_html.xsl.
 </t>
 <t tx="ekr.20150311123850.58">Leo performs a diff automatically after load when --diff is in effect and exactly two files are given.
 </t>
@@ -16162,154 +16043,13 @@ I am working on leo_to_html.xsl so that nodes can be expanded and contracted.
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
 </t>
-<t tx="ekr.20150312080344.12">@language rest
-.. @language python below
+<t tx="ekr.20150312080344.12">Wrapper and widget classes are at the heart of Leo's design. A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.
 
-This post will summarize what has already been done and what will be done in the next few days.  Let's start with the basics...
+A **wrapper** is an object whose api hides the details of the underlying gui **text** widgets. Leo's core uses this api almost exclusively. That is, Leo's core treats wrappers *as if* they were only text widgets there are!
 
-===== About wrappers and widgets
-
-Wrapper and widget classes are at the heart of Leo's design. Clarifying the relationships between wrappers and widgets started the present avalanche.
-
-Here is what you *must know* to understand Leo's core:
-
-1. A **widget** is an actual Qt widget.
-
-Leo's core seldom accesses widgets directly. Instead...
-
-2. A **wrapper class** defines a standard api that hides the details of the underlying gui **text** widgets.
-
-Leo's core uses this api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
-
-There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official "widget" ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget should find all gui-dependent snippets of code in Leo's core.
+There is a back door for rare special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using ``wrapper.widget``. Searching for ``wrapper.widget`` should find all gui-dependent snippets of code in Leo's core.
 
 Wrappers are crucial, even if Leo *always* uses the Qt gui. Wrappers allow users to choose different Qt widgets for the body pane, without changing *any* of Leo's core code, except the startup code that actually allocates widgets. Wrappers allow Leo's text-handling code to remain unchanged regardless of whether the body or log panes are a QTextBrowser or a QsciScintilla widget. Without wrappers, all of Leo's text-editing commands would have to know the details of the api of the actual Qt text widget!
-
-==== Summary of the avalanche
-
-Here is what is happening now in Leo's code base, and in my thinking!
-
-1. A collapse in the complexity of relationships between Leo's most important classes and between the files containing those classes.
-
-qt_text.py was supposedly a minor reorg. Wrong! It has become the road map to the reorganization of all of Leo's fundamental classes:
-
-- qt_text.py is *self contained*: it doesn't depend on any other classes!
-
-- qt_text.py defines a QTextMixin class. This is a new kind of class for me. As its name suggest, it is not so much a base class as a helper class. It provides helper code for all of Leo's Qt wrapper widgets.
-
-- All the classes that use QTextMixin implement the HighLevelInterface class in leoFrame.py.
-
-The HighLevelInterface class will soon morph into the WrapperInterface class. Th WrapperInterface class will contain only the definition of methods and their docstrings. Unlike the HighLevelInterface class, the WrapperInterface will contain *no* redirection code!
-
-- If we were (heaven forbid) going to change Leo's gui, we would simply use a copy of qt_text.py, say new_gui.text.py, as a starting point.
-
-2. All "redirection" code will soon be gone.
-
-Ville, Terry and I will be much happier. Eliminating this cruft makes Leo's code both lighter and thicker, to use the go terminology. It's lighter because there is far less blah, blah, blah. It's thicker because there is less to check and to fail.
-
-It's easy to eliminate redirection. For example, the LeoBody methods that just call the corresponding wrapper methods will soon be gone. We'll change::
-
-    c.frame.body.wrapperMethod
-
-to::
-
-    c.frame.body.wrapper.wrapperMethod
-
-Doh! This should have been done years ago. Yes, it's more verbose, but it's also more explicit. Furthermore, few such calls actually exist!
-
-3. widget.widget and other type-checking horrors will soon be a thing of the past.
-
-New coding conventions will remove all confusion between wrappers and widgets. Wrappers will *always* be called wrappers, never widgets.
-
-There has always been something both fundamentally wrong and confusing about widget.widget. The first widget must have a different type than the second, but there is *no* indication of this fundamental fact. The reorg changes widget.widget to wrapper.widget everywhere.
-
-4. I have a new approach toward type checking.
-
-It is obvious now, in retrospect, that clarity of design is something much more important than type checking! Leo's code will soon make the types of objects *explicit* and this far more important in practice than even "perfect" static type checking. This is a revolution in my thinking.
-
-pylint, while supremely important for day-to-day programming, is *totally inadequate* to have produced the design changes I have been discussing.
-
-Now that widgets are always clearly distinct from wrappers, we could imaging type-checking assertions to verify their apparent types. Imo, such assertions are seldom pythonic, but in this case assertions might be good documentation, if nothing else. The assertions would be based on the following functions:
-
-- g.isWrapper(obj): calls g.app.gui.isWrapper(obj)
-- g.isWidget(obj): calls g.app.gui.isWidget(obj)
-
-5. A dead-easy script shows how to enforce the relationships between types that really matter.
-
-This is a big Aha. The script merely compares dir(o1) with dir(o2), where o1 is the "template" HighLevelInterface class in leoFrame.py and o2 is one of QTextEditWrapper or QScintillaWrapper. You could call this the "back door" approach to type checking. It's sooo easy! No more messing with ast's!
-
-As a result of running this script, (given in the P.P.S.) I was able to removed cruft from both the HighLevelInterface class, and other parts of Leo's code.
-
-===== Summary
-
-None of these massive changes adds anything directly to Leo :-)
-
-However, they make understanding and changing Leo's code far easier and more pleasant. Leo's code is now more beautiful.
-
-Imo, these changes are long overdue. They fundamentally improve Leo's code base.
-
-Edward
-
-P.S. git and easier access to pylint contributed to the present avalanche of energy and ideas.
-
-Git has allowed me to revise Leo's source code radically, with complete safety. I would never have done what I have done lately with bzr.
-
-Leo's new pylint command allows me to run pylint *easily* on one or more "recent" files, *without* having to change any list. As a result, I run pylint much more often.
-
-P.P.S. Here is the script that checks that all text wrapper classes implement all required methods. This is, to the first approximation, the only type checking that Leo really needs. It will probably become a unit test.
-
-@language python
-
-    import leo.core.leoFrame as leoFrame
-    import leo.plugins.qt_text as qt_text
-    from leo.core.leoQt import Qsci,QtWidgets
-    
-    h = leoFrame.HighLevelInterface(c)
-    w = Qsci.QsciScintilla()
-    tw = QtWidgets.QTextBrowser()
-    q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
-    t = qt_text.QTextEditWrapper(widget=tw,name='test2')
-    
-    h_list = [z for z in sorted(dir(h)) if not z.startswith('__')]
-    t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
-    q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
-    ignore = [
-        'set_focus', # synonym for setFocus
-        'mutable_methods', # To be removed.
-    ]
-    for z in h_list:
-        if z not in t_list and z not in ignore:
-            print('QTextEditWrapper: not in HighLevelInterface: %s' % z)
-    for z in h_list:
-        if z not in q_list and z not in ignore:
-            print('QScintillaWrapper: not in HighLevelInterface: %s' % z)
-    print('done')
-
-@language rest
-
-=====
-
-This project appears to be a complete success. No further work is planned. I have encountered no problems at all during this reorg, and don't expect any, but we shall see...
-
-Here are the highlights:
-
-1. *All* of the odious redirection code in Leo is gone.
- 
-The redirection code appeared in various places, especially in the HighLevelInterface class.
-
-2. The HighLevelInterface class is gone: the LeoBody and LeoLog classes are now subclasses of object.
-
-3. The logCtrl property is gone: the LeoLog class now defines a .logCtrl ivar.
-
-This ivar is inherently tricky: depending on which log *tab* is selected, LeoLog.logCtrl may be either a wrapper or a widget!
-
-Because LeoLog no longer contains redirection code a hack was needed. k.masterKeyHandler redirects text-related events originally sent to the c.frame.log to c.frame.log.logWidget, which, confusingly enough, is actually a text wrapper.
-
-4. leoFrame.py contains several new API classes: ColorizerAPI, IconBarAPI, StatusLineAPI and WrapperAPI.
-
-No class is a subclass of these classes: they are for unit testing only.
-
-The new unit test, "@test interfaces using API classes", checks that classes implement all the methods in the corresponding API class. This is not a perfect solution and it is no substitute for pylint. Nevertheless, these API classes are good documentation, and they did result in a few new methods being added to each tested "Null" class.
 </t>
 <t tx="ekr.20150312080344.14">@language rest
 .. @language python below
@@ -18299,7 +18039,6 @@ The following commands emulate `Emacs register commands`_::
 Just `clone-find-all-flattened`_.  This is my workhorse command when fixing complex bugs.</t>
 <t tx="ekr.20150323111332.1"></t>
 <t tx="ekr.20150323111337.1">Bug: @auto-org is not @auto-otl.</t>
-<t tx="ekr.20150323111418.1">Mention Aha's, scripts, etc.</t>
 <t tx="ekr.20150323112726.2">This contains all of Leo's old release notes. As of Leo 5.1, LeoDocs.leo contains only the release notes for the current release.  This makes searching through LeoDocs.leo more convenient.</t>
 <t tx="ekr.20150323112726.3">https://github.com/leo-editor/leo-editor/issues/157
 
