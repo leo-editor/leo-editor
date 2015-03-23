@@ -1219,6 +1219,10 @@
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
 </v>
+<v t="ekr.20150323164016.1"><vh>** To do</vh>
+<v t="ekr.20150323164016.2"><vh>document --diff</vh></v>
+<v t="ekr.20150323164016.3"><vh>Document nodes-dark icons &amp; stylesheet</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18063,6 +18067,25 @@ Regardless of focus::
     PageUp            up one page
 
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
+</t>
+<t tx="ekr.20150323164016.1"></t>
+<t tx="ekr.20150323164016.2"></t>
+<t tx="ekr.20150323164016.3">https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
+By Andrea Nuvola
+
+To set the collapsed/expanded node images, one can add the following sections
+to a theme settings tree (in my case, I put them in the body of the 
+"Non-color styles (fonts etc.)/tree" node of the "leo_dark_0" theme):
+
+QTreeView::branch:closed:has-children{
+   image: url("&lt;home directory&gt;/.leo/icons/nodes-dark/closed.png");
+}
+
+QTreeView::branch:open:has-children{
+   image: url("&lt;home directory&gt;/.leo/icons/nodes-dark/open.png");
+}
+
+I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
