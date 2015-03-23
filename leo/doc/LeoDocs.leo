@@ -256,6 +256,7 @@
 <v t="ekr.20131008041326.16155"><vh>The .leo directory</vh></v>
 </v>
 <v t="ekr.20131008041326.16156"><vh>Leo's command-line options</vh></v>
+<v t="ekr.20150323154836.1"><vh>Leo's workbook file</vh></v>
 <v t="ekr.20141124094250.2"><vh>Using sessions</vh></v>
 </v>
 </v>
@@ -1223,15 +1224,11 @@
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20060620094033"></v>
-<v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
 <v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
-<v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20131008041326.16140"></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20131008041326.16203"></v>
+<v t="ekr.20060620094033"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16139,8 +16136,6 @@ This pattern is particularly well suited to Leo, because the various getPublicCo
     ':r':       vc.LoadFileAtCursor(vc),
     ':tabnew':  vc.Tabnew(vc),
 </t>
-<t tx="ekr.20150312080344.16">The default workbook contains both the cheat sheet and an example from the rst3 tutorial.
-</t>
 <t tx="ekr.20150312080344.19">How did we ever live without this?
 
 @data nodes, like @data qt-gui-plugin-style-sheet may now be composed of the body text of the @data node itself, concatenated to the body text of all its descendants, in outline order.
@@ -18086,6 +18081,8 @@ Controls how Leo reports successful checks:
 </t>
 <t tx="ekr.20150323123524.1">@int qt-cursor-width = 5 increase the width of the cursor, making it *much* easier to spot on the page.  This reduces eye strain dramatically for me.</t>
 <t tx="ekr.20150323141745.1">You can now use the ``UpArrow`` and ``DownArrow`` keys in Leo's minibuffer to cycle through previous "complex" commands, that is, commands entered via ``Alt-x&lt;command-name&gt;&lt;return&gt;``. As a result, ``Alt-x UpArrow`` is roughly equivalent to ``Ctrl-P (repeat-complex-command)``.
+</t>
+<t tx="ekr.20150323154836.1">If you give no file arguments on the command line Leo will open ``~/.leo/workbook.leo``.  Initially, this file contains Leo's cheat sheet and an example from the rst3 tutorial.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
