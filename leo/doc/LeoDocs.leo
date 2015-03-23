@@ -1061,7 +1061,9 @@
 <v t="ekr.20141105050314.25"><vh>What's new in Leo 5.0</vh>
 <v t="ekr.20150312080344.31"><vh>Highlights</vh></v>
 <v t="ekr.20141105052052.2"><vh>Commands</vh></v>
-<v t="ekr.20141105050314.163"><vh>Features</vh></v>
+<v t="ekr.20141105050314.163"><vh>Features</vh>
+<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
+</v>
 <v t="ekr.20141105050314.181"><vh>Plugins</vh></v>
 <v t="ekr.20141105050314.197"><vh>Settings</vh></v>
 </v>
@@ -1211,18 +1213,9 @@
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
+<v t="ekr.20150323110029.1"><vh>To do: Command Reference</vh>
 <v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-</v>
-</v>
-<v t="ekr.20150323110109.1"><vh>To do: What's new</vh>
-<v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
-<v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
-<v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
-<v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-<v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
 <v t="ekr.20060620094033"></v>
 </vnodes>
@@ -14609,7 +14602,8 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
     Added settings that control PythonTidy-based beautify command:
 
-        @bool tidy_add_blank_lines_around_comments =True
+        @bool use_python_tidy = True
+        @bool tidy_add_blank_lines_around_comments = True
         @bool tidy_double_quoted_strings = False
         @bool tidy_keep_blank_lines = True
         @bool tidy_left_adjust_docstrings = False
@@ -15220,37 +15214,6 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141120113801.179">This is a major upgrade to the beautify command.
-
-PythonTidy (tidy for short) does a full parse of the Python sources:
-https://pypi.python.org/pypi/PythonTidy/
-
-What I did today.  See the &lt; &lt; version info &gt; &gt; section for all the details::
-
-1. Leonized tidy's sources: @file ../external/PythonTidy.py in in LeoPyRef.leo.
-
-- Removed all pylint complaints and made other minor mods.
- 
-2. Suppressed features not appropriate for Leo:
-
-- Adds shebang and encoding lines only for @&lt;file&gt; nodes.
-- Suppress extra spacing between classes &amp; functions.
-
-3. Added settings to leoSettings.leo that control tidy operation:
-
-    @bool tidy_add_blank_lines_around_comments =True
-    @bool tidy_double_quoted_strings = False
-    @bool tidy_keep_blank_lines = True
-    @bool tidy_left_adjust_docstrings = False
-    @int  tidy_lines_before_split_lit = 2
-    @int  tidy_seps_before_split_line = 8
-
-3. Fixed several important bugs:
-
-- The original code deleted all comments because of a botch in Comments__init__.
-- Tidy now properly handles the tidy_add_blank_lines_around_comments and
-  tidy_double_quoted_strings settings.
-</t>
 <t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
 automatically when Leo first starts.
 
@@ -15371,7 +15334,6 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87"></t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
     pair: uA; Tutorial
@@ -16074,6 +16036,8 @@ Either way, the leoeditor.com server will replace the page by the .leo file as r
     Cloned nodes expand and contract independently
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
+    
+Leo now stores "ephemeral" or position-related data **in vnodes*. This was a completely new idea in Leo's history!
 </t>
 <t tx="ekr.20150312080344.12">Wrapper and widget classes are at the heart of Leo's design. A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.
 
@@ -16151,33 +16115,7 @@ The leo/plugins/writers folders now contain writer plugins.
 
 Both importer and writer plugins can defined new kinds of @auto nodes.
 
-Importers and writers can register either @auto-names or file extensions.
-For example, @auto x.xyzzy will use both the importer and the writer for
-the .xyzzy extension, that is, importers/test.py and writers/test.py. So,
-for *unique* extensions, there is no need to use a separate @auto name, you
-can just use @auto.
-</t>
-<t tx="ekr.20150312080344.23">https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
-
-Leo now stores "ephemeral" or position-related data **in vnodes*. This is a
-completely new idea in Leo's history!
-</t>
-<t tx="ekr.20150312080344.25">Leo now uses an all-Python replacement for the QSyntaxHighlighter class.
-
-This fixes git bug 28: https://github.com/leo-editor/leo-editor/issues/28
-Leo hangs when a node with too large body is selected
-
-To see the effect of the new code:
-
-1  Create a node with *lots* of colored text.
-2. Move the cursor to the last line of the text.
-3. Select another node, and then move back to the "big" node.
-
-You should see the end of the text all in black at first, and then become
-colored later.
-
-In the meantime, Leo is responsive to all commands, mouse clicks, etc.
-</t>
+Importers and writers can register either @auto-names or file extensions. For example, @auto x.xyzzy will use both the importer and the writer for the .xyzzy extension, that is, importers/test.py and writers/test.py. So, for *unique* extensions, there is no need to use a separate @auto name, you can just use @auto.</t>
 <t tx="ekr.20150312080344.28">In February 2015 I realized that the @shadow algorithm could be used to update @clean (aka @nosent) files. This inspired me to simplify the @shadow update algorithm. The Mulder/Ream algorithm emerged several days later.
 
 Thinking of using Leo as a diff program may have been the line of thought that lead to @clean. It turned my attention to the @shadow algorithm, and that may have been enough to see that the algorithm could get sentinels from the .leo file instead of hidden shadow files.
@@ -16207,7 +16145,9 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
         @data nodes can be composed from descendant nodes
         Leo's main style sheet can be customized with @color and @font settings
         @persistence nodes save data in @auto trees
-        A pluggable architecture for @auto nodes
+        Leo now uses pluggable architecture for @auto nodes
+        &lt;Alt-X&gt;&lt;tab&gt; shows all commands
+        Leo's beautify commands now uses PythonTidy by default
 
     New plugins for tagging, display and node evaluation
     
@@ -16532,7 +16472,6 @@ print('found: %s not found: %s' % (len(found),len(not_found)))</t>
 <t tx="ekr.20150314044011.7">@language python
 # From Script: clean ekr-spellpyx.txt
 p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
-<t tx="ekr.20150315132217.1653"></t>
 <t tx="ekr.20150315132217.3">Here's how to switch focus without using the mouse:
 
 ``Alt-0 (vr-toggle)``
@@ -18053,7 +17992,6 @@ The following commands emulate `Emacs register commands`_::
     register-view
 </t>
 <t tx="ekr.20150323110029.1"></t>
-<t tx="ekr.20150323110109.1"></t>
 <t tx="ekr.20150323110230.1"></t>
 <t tx="ekr.20150323111053.1">.. _`clone-find-all-flattened`: file:///C:/leo.repo/leo-editor/leo/doc/html/_build/html/commands.html#basic-searches
 
