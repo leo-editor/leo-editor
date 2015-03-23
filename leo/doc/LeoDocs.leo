@@ -933,6 +933,7 @@
 <v t="ekr.20140810085801.18228"><vh>Dispatchers</vh></v>
 <v t="ekr.20140810085801.18218"><vh>About key handlers</vh></v>
 <v t="ekr.20140810085801.18219"><vh>Ivars for key handlers</vh></v>
+<v t="ekr.20150312080344.14"><vh>Handling tabs</vh></v>
 <v t="ekr.20140810085801.18220"><vh>API's for key handlers</vh></v>
 <v t="ekr.20140810085801.18229"><vh>vc.return_value and internal error checking</vh></v>
 </v>
@@ -1209,13 +1210,6 @@
 </v>
 </v>
 <v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
-<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
 <v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
 <v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
 </v>
@@ -1230,6 +1224,12 @@
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
+</v>
+<v t="ekr.20150323105959.1"><vh>To do: Tutorials</vh>
+<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -16054,43 +16054,41 @@ Wrappers are crucial, even if Leo *always* uses the Qt gui. Wrappers allow users
 <t tx="ekr.20150312080344.14">@language rest
 .. @language python below
 
-It's easy to replace methods with classes.  Just add a __call__ method. Yes, several of Leo's commands are implemented this way. But read on...
-
-Various vim commands advertise, by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim's tab handler no longer knows *anything* about colon commands, or what any command intends to do with the tab! If the command handler has a tab_callback attribute, vim's tab handler just calls it!
+Various vim commands advertise, just by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim's tab handler no longer knows *anything* about colon commands, or what any command intends to do with the tab. If the command handler has a tab_callback attribute, vim's tab handler just calls it.
 
 Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial::
 
 @language python
-
-class Tabnew:
-    '''
-    A class to handle Vim's :tabnew command.
-    This class supports the do_tab callback.
-    '''
-    def __init__(self,vc):
-        '''Ctor for VimCommands.tabnew class.'''
-        self.vc = vc
-    __name__ = ':tabnew'
-        # Required.
-
-    def __call__(self,event=None):
-        '''Prompt for a file name, the open a new Leo tab.'''
-        self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
-       
-    def tab_callback(self):
-        '''Called when the user types :tabnew&lt;tab&gt;'''
-        self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
-       
-    def open_file_by_name(self,fn):
-        c = self.vc.c
-        if fn and not g.os_path_isdir(fn):
-            c2 = g.openWithFileName(fn,old_c=c)
-            try:
-                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-            except Exception:
-                pass
-        else:
-            c.new()
+    
+    class Tabnew:
+        '''
+        A class to handle Vim's :tabnew command.
+        This class supports the do_tab callback.
+        '''
+        def __init__(self,vc):
+            '''Ctor for VimCommands.tabnew class.'''
+            self.vc = vc
+        __name__ = ':tabnew'
+            # Required.
+    
+        def __call__(self,event=None):
+            '''Prompt for a file name, the open a new Leo tab.'''
+            self.vc.c.k.getFileName(event,callback=self.open_file_by_name)
+           
+        def tab_callback(self):
+            '''Called when the user types :tabnew&lt;tab&gt;'''
+            self.vc.c.k.getFileName(event=None,callback=self.open_file_by_name)
+           
+        def open_file_by_name(self,fn):
+            c = self.vc.c
+            if fn and not g.os_path_isdir(fn):
+                c2 = g.openWithFileName(fn,old_c=c)
+                try:
+                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+                except Exception:
+                    pass
+            else:
+                c.new()
             
 @language rest
 
