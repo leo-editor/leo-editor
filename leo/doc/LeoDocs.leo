@@ -644,9 +644,8 @@
 </v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
-<v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh>
-<v t="ekr.20150318110552.9"><vh>smart-*</vh></v>
-</v>
+<v t="ekr.20150323102918.1"><vh>@rst-ignore not documented</vh></v>
+<v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150318110552.10"><vh>Debug commands</vh>
 <v t="ekr.20150318110552.11"><vh>cache-*</vh></v>
 <v t="ekr.20150318110552.12"><vh>check-*</vh></v>
@@ -666,6 +665,9 @@
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
 <v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
+<v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
+<v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
+<v t="ekr.20150323103142.1"><vh>Register commands</vh></v>
 <v t="ekr.20150318110552.28"><vh>Miscellaneous text editing commands</vh></v>
 </v>
 <v t="ekr.20150318110552.29"><vh>File commands</vh>
@@ -679,6 +681,11 @@
 </v>
 <v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
+<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh>
+<v t="ekr.20150318110552.76"><vh>c-to-python</vh></v>
+<v t="ekr.20150318110552.77"><vh>flush-lines &amp; keep-lines</vh></v>
+<v t="ekr.20150318110552.78"><vh>typescript-to-py</vh></v>
+</v>
 <v t="ekr.20150318110552.39"><vh>Mouseless Leo commands</vh>
 <v t="ekr.20150318110552.40"><vh>Event simulation commands</vh></v>
 <v t="ekr.20150318110552.41"><vh>Focus commands</vh></v>
@@ -699,6 +706,14 @@
 <v t="ekr.20150318110552.55"><vh>Using Chapters</vh></v>
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 </v>
+<v t="ekr.20150318110552.79"><vh>Plugins commands</vh>
+<v t="ekr.20150318110552.80"><vh>act-on-node</vh></v>
+<v t="ekr.20150318110552.81"><vh>bookmarks-*</vh></v>
+<v t="ekr.20150318110552.82"><vh>cke-*</vh></v>
+<v t="ekr.20150318110552.83"><vh>go-anywhere (quicksearch plugin)</vh></v>
+<v t="ekr.20150318110552.84"><vh>richtext-*</vh></v>
+<v t="ekr.20150318110552.85"><vh>vr-*</vh></v>
+</v>
 <v t="ekr.20150318110552.57"><vh>Search &amp; spell commands</vh>
 <v t="ekr.20150318110552.58"><vh>aliases</vh></v>
 <v t="ekr.20150318110552.59"><vh>Basic searches</vh></v>
@@ -709,6 +724,7 @@
 <v t="ekr.20150318110552.64"><vh>Spell commands</vh></v>
 </v>
 <v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
+<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh>
 <v t="ekr.20150318110552.67"><vh> new windows commands</vh></v>
 <v t="ekr.20150318110552.68"><vh>-icon*</vh></v>
@@ -717,24 +733,7 @@
 <v t="ekr.20150318110552.71"><vh>show-*</vh></v>
 <v t="ekr.20150318110552.72"><vh>zoom-in/out commands</vh></v>
 </v>
-<v t="ekr.20150318110552.73"><vh>Advanced commands</vh>
-<v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
-<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh>
-<v t="ekr.20150318110552.76"><vh>c-to-python</vh></v>
-<v t="ekr.20150318110552.77"><vh>flush-lines &amp; keep-lines</vh></v>
-<v t="ekr.20150318110552.78"><vh>typescript-to-py</vh></v>
-</v>
-<v t="ekr.20150318110552.79"><vh>Plugins commands</vh>
-<v t="ekr.20150318110552.80"><vh>act-on-node</vh></v>
-<v t="ekr.20150318110552.81"><vh>bookmarks-*</vh></v>
-<v t="ekr.20150318110552.82"><vh>cke-*</vh></v>
-<v t="ekr.20150318110552.83"><vh>go-anywhere (quicksearch plugin)</vh></v>
-<v t="ekr.20150318110552.84"><vh>richtext-*</vh></v>
-<v t="ekr.20150318110552.85"><vh>vr-*</vh></v>
-</v>
-<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
@@ -894,6 +893,7 @@
 <v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
@@ -905,6 +905,7 @@
 <v t="ekr.20131012060912.16768"><vh>Finding commands</vh></v>
 <v t="ekr.20131011050613.16870"><vh>Finding key-handling code</vh></v>
 <v t="ekr.20131011050613.16871"><vh>Finding redraw and refocus code</vh></v>
+<v t="ekr.20150323111053.1"><vh>Finding all uses of a symbol</vh></v>
 <v t="ekr.20131011050613.16862"><vh>Debugging with g.trace, g.callers &amp; g.pdb</vh></v>
 </v>
 <v t="ekr.20131011050613.16860"><vh>The design of Leo's classes</vh></v>
@@ -1205,39 +1206,36 @@
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 </v>
 </v>
-<v t="ekr.20150312013449.5"><vh>** To be documented (from 5.0)</vh>
-<v t="ekr.20150312080344.15"><vh>To (new?) scripting Chapter</vh>
-<v t="ekr.20150312080344.13"><vh>Added the IdleTime class</vh></v>
-<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
+<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
+<v t="ekr.20150323105920.1"><vh>Release notes</vh></v>
+<v t="ekr.20150323111418.1"><vh>Cheat sheet &amp; scripting miscellany</vh></v>
+<v t="ekr.20150323105959.1"><vh>Tutorials</vh>
+<v t="ekr.20150312080344.21"><vh>Command history</vh></v>
+<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
 <v t="ekr.20150312080344.14"><vh>Using classes instead of methods</vh></v>
-<v t="ekr.20141120113801.164"><vh>Wanted: w.getTextLength and p/v.get_b_length</vh></v>
+<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
+<v t="ekr.20131105110107.16910"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
-<v t="ekr.20150313192232.9"><vh>To settings</vh>
-<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
-<v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
+<v t="ekr.20150323111332.1"><vh>Directives Reference</vh>
+<v t="ekr.20150323111337.1"><vh>Document @auto-rst/md/vo/otl</vh></v>
 </v>
-<v t="ekr.20150313192232.10"><vh>To what's new</vh>
+<v t="ekr.20150323110029.1"><vh>Command Reference</vh>
+<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
+<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
+</v>
+<v t="ekr.20150323110109.1"><vh>What's new</vh>
 <v t="ekr.20150312080344.23"><vh>Clones expand and contract independently</vh></v>
 <v t="ekr.20150315132217.1653"><vh>&lt;Alt-X&gt;&lt;tab&gt; shows all commands.</vh></v>
 <v t="ekr.20150312080344.25"><vh>Leo now colors text at idle time</vh></v>
 <v t="ekr.20141120113801.179"><vh>(Optional) beautify command now uses PythonTidy</vh></v>
-</v>
-<v t="ekr.20150313192232.11"><vh>To what's new &amp; docstrings</vh>
 <v t="ekr.20150312080344.20"><vh>A plugable architecture for @auto nodes</vh></v>
 </v>
-<v t="ekr.20150312080344.21"><vh>Added command history (minibuffer tutorial)</vh></v>
-<v t="ekr.20150312080344.24"><vh>File name completion</vh></v>
-<v t="ekr.20150312080344.16"><vh>Leo's default workbook contains Leo's quickstart guide</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-<v t="ekr.20131105110107.16910"><vh>For tutorial: Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+<v t="ekr.20150312080344.12"><vh>Regularized .wrapper and .widget ivars</vh></v>
+<v t="ekr.20150313192232.9"><vh>To settings</vh>
+<v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
+<v t="ekr.20150312080344.22"><vh>Better support for nodes containing large text</vh></v>
 </v>
-<v t="ekr.20150215071358.87"><vh>** To do (docs)</vh>
-<v t="ekr.20150311123850.40"><vh>Document g.IdleTime and LeoQtGui.IdleTime in scripting chapter</vh></v>
-<v t="ekr.20150314050809.16"><vh>Will not be documented</vh></v>
-<v t="ekr.20150319055953.6"><vh>Deprecated commands</vh></v>
-<v t="ekr.20150319055953.5"><vh>Document rectangle commands</vh></v>
 </v>
-<v t="ekr.20131009065148.31760"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15201,93 +15199,6 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141120113801.164">@language rest
-.. @language python below
-A head-slapping moment: the so-called high-level interfaced throughout Leo's core to interact with Leo's text panes lacks a way of getting the length of text *without* making a copy of the text.
-
-This is more than a slight oversight: I imagine there are several place were the code does s = w.getAllText() merely so it can use len(s)! This is a huge strain on the GC for large p.b.
-
-Worse, the absence of w.getTextLength() has lead to the most unfortunate LeoQTextEditWidget.lengthHelper, which calculated the length of the text using QTextCursor methods! This is catastrophically slow for large text. This method was doubling node load times for large nodes. In other words, w.getTextLength() is an essential part of fixing git bug 28: https://github.com/leo-editor/leo-editor/issues/28
-
-But nooooooo... w.getTextLength() is far from easy to do. There is no QTextEdit or QTextDocument method that delivers the length of the text! This is a *huge* hole in the QTextEdit and QTextDocument api's, but there is nothing we can do about that.
-
-The simplest thing that could possibly work would be::
-
-@language python
-
-    def getTextLength(self):
-        w = self.widget
-        return len(w.getAllText())
-        
-@language rest
-
-But this would be a step backwards because it hides the fact that it is expensive.
-
-It might be possible to cache the value of w.getAllText in an "text changed" event handler in LeoQTextBrowser:(QTextBrowser). But I would like to avoid this approach--any bug would lead to data loss or corruption. I may play around with this, but for now it's not likely to happen. See below for a workaround.
-
-By analogy with w.getTextLength(), we can imagine a p.b_length method that would simply return len(p.v._bodyString). This, at least, is worth doing.
-
-===== Summary
-
-w.getTextLength() isn't trivial.
-
-Caching the value returned by w.getAllText() seems too dangerous.
-
-As a work-around, the crucial node-selection logic will attempt to minimize calls to w.getAllText. There, and *only* there, it should be possible to create a *single* copy of the text and pass that copy around to all code that needs it. It would be a complication, but a completely safe one.
-
-Otoh, p/v.b_length are trivial and useful. They will be added asap.
-
--------------
-
-Two parts to this reply:
-
-===== Part 1: defining w.getTextLength
-
-&gt; w.getTextLength() isn't trivial...Caching the value returned by w.getAllText() seems too dangerous.
-
-Actually, defining w.getTextLength using a textChanged event handler in LeoQTextBrowser is straightforward::
-
-@language python
-
-    def onTextChanged(self):
-        '''The textChanged event handler.  Cached the text in self.leo_s.'''
-        self.leo_s = s = g.u(self.toPlainText())
-
-    def getTextLength(self):
-        '''Return the length of all the text.'''
-        if 1: # safe.
-            s = g.u(self.toPlainText())
-            if s != self.leo_s:
-                g.trace('can not happen: text mismatch.')
-                self.leo_s = s
-            return len(self.leo_s)
-        else: # fast
-            return len(self.leo_s)
-            
-@language rest
-
-We can use the "safe" version of getTextLength until we are *sure* the can not happen message never happens ;-)
-
-Otoh, we must be careful: onTextChanged will be called in the middle of the node-switching logic.
-
-===== Part 2: doing without w.getTextLength
-
-The simplest thing that could possibly work is to avoid the extra call to w.getAllText in the node switching logic in selectHelper.
-
-Here are the relevant parts of selectHelper. (w is a LeoQTextEditWidget).
-
-1. setBodyTextAfterSelect *already* calls w.getAllText() to get the "before" text. This is unavoidable.
-
-The "after" text will be p.b, where p is the *new* position.
-
-2. restoreCursorAndScroll calls w.setInsertPoint, which just calls w.setSelectionRangeHelper.
-
-3. w.setSelectionRangeHelper is the problem It used to call the horribly slow lengthHelper. Now it calls w.getAllText()
-
-But w.getAllText must be the new p.b! So the selectHelper logic could simply pass an optional s argument to w.setInsertPoint and w.setSelectionRangeHelper. If present, setSelectionRangeHelper will use s rather than calling w.getAllText.
-
-Imo, this is the safe, if not exactly elegant way.
-</t>
 <t tx="ekr.20141120113801.179">This is a major upgrade to the beautify command.
 
 PythonTidy (tidy for short) does a full parse of the Python sources:
@@ -15439,21 +15350,7 @@ len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
 x.sentinels.
 </t>
 <t tx="ekr.20150212182032.4"></t>
-<t tx="ekr.20150215071358.87">*** Create key reference.
-
-- Document clone-find-all in theory chapter.
-
-Revise 5.1 release notes.
-- Links to other docs?
-- Link to the Mulder/Ream algorithm from the release notes.
-    
-Next:
-- Review all mentions of @auto in docs.
-- Document importing files in tutorial (See child)
-- Document @auto-rst/md/vo/otl.
-    - Bug: @auto-org is not @auto-otl.
-- Improve scripting chapter, cheat sheet.
-    - Mention Aha's, scripts, etc.
+<t tx="ekr.20150215071358.87">- Review all mentions of @auto in docs.
 </t>
 <t tx="ekr.20150216034509.1">.. index::
     pair: gnx; Tutorial
@@ -15983,7 +15880,6 @@ It's really that simple, but here are some consequences:
 
 2. Leo's sentinels mark an *arbitrary* range of text within the external file. @auto files can never be as flexible as @file nodes.
 </t>
-<t tx="ekr.20150311123850.40"></t>
 <t tx="ekr.20150311123850.41"></t>
 <t tx="ekr.20150311123850.42">- Fixed bug in ic.importFilesCommand that caused imported nodes to be placed incorrectly.
 - Contract all imported nodes.
@@ -16332,8 +16228,6 @@ Here is git-difftool.bat::
     Added a pluggable architecture for @auto nodes
     Leo's default workbook files contains Leo's quickstart guide
 </t>
-<t tx="ekr.20150312013449.5">
-</t>
 <t tx="ekr.20150312080344.12">@language rest
 .. @language python below
 
@@ -16483,110 +16377,6 @@ No class is a subclass of these classes: they are for unit testing only.
 
 The new unit test, "@test interfaces using API classes", checks that classes implement all the methods in the corresponding API class. This is not a perfect solution and it is no substitute for pylint. Nevertheless, these API classes are good documentation, and they did result in a few new methods being added to each tested "Null" class.
 </t>
-<t tx="ekr.20150312080344.13">@language rest
-.. @language python below
-
-Rev 060c33a contains a spectacular collapse in complexity in idle-time
-handling.
-
-Instantly, registering idle-time event handlers can be considered
-deprecated, though I have no plans to remove the horrendous older code.
-
-The new pattern allows multiple, independent (or cooperating) idle-time
-handlers, created at will as needed.
-
-The new code is based on the IdleTime class in qtGui.py. Rather than access
-this directly, code should use the g.IdleTime proxy::
-
-@language python
-
-    def IdleTime(c,handler,delay=500):
-        '''A proxy for the g.app.gui.IdleTime class.'''
-        if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
-            return g.app.gui.idleTimeClass(c,handler,delay)
-        else:
-            return None
-            
-@language rest
-
-g.IdleTime ensures that all is well when using gui's that don't have an IdleTime class.
-
-Here is how to use the new code::
-
-@language python
-
-    def handler(it):
-        '''The IdleTime handler: called at idle time.'''
-        delta_t = it.time-it.starting_time
-        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
-        if it.count &gt;= 5:
-            g.trace('done')
-            it.stop()
-
-    it = g.IdleTime(c,handler,delay=500)
-    if it: it.start()
-    
-@language rest
-
-The code creates an instance of the IdleTime class that calls the given
-handler at idle time, and no more than once every 500 msec. Here is the
-output::
-
-    handler 1 ekr.leo 0.5100
-    handler 2 ekr.leo 1.0300
-    handler 3 ekr.leo 1.5400
-    handler 4 ekr.leo 2.0500
-    handler 5 ekr.leo 2.5610
-    handler done
-
-Timer instances are completely independent.  For example:
-
-@language python
-
-    def handler1(it):
-        '''The IdleTime handler: called at idle time.'''
-        delta_t = it.time-it.starting_time
-        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-        if it.count &gt;= 5:
-            g.trace('done')
-            it.stop()
-
-    def handler2(it):
-        '''The IdleTime handler: called at idle time.'''
-        delta_t = it.time-it.starting_time
-        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-        if it.count &gt;= 10:
-            g.trace('done')
-            it.stop()
-
-    it1 = g.IdleTime(c,handler1,delay=500)
-    it2 = g.IdleTime(c,handler2,delay=1000)
-    if it1 and it2:
-        it1.start()
-        it2.start()
-        
-@language rest
-
-Here is the output::
-
-    handler1  1 ekr.leo 0.5200
-    handler2  1 ekr.leo 1.0100
-    handler1  2 ekr.leo 1.0300
-    handler1  3 ekr.leo 1.5400
-    handler2  2 ekr.leo 2.0300
-    handler1  4 ekr.leo 2.0600
-    handler1  5 ekr.leo 2.5600
-    handler1 done
-    handler2  3 ekr.leo 3.0400
-    handler2  4 ekr.leo 4.0600
-    handler2  5 ekr.leo 5.0700
-    handler2  6 ekr.leo 6.0800
-    handler2  7 ekr.leo 7.1000
-    handler2  8 ekr.leo 8.1100
-    handler2  9 ekr.leo 9.1300
-    handler2 10 ekr.leo 10.1400
-    handler2 done
-</t>
 <t tx="ekr.20150312080344.14">@language rest
 .. @language python below
 
@@ -16637,10 +16427,7 @@ This pattern is particularly well suited to Leo, because the various getPublicCo
     ':r':       vc.LoadFileAtCursor(vc),
     ':tabnew':  vc.Tabnew(vc),
 </t>
-<t tx="ekr.20150312080344.15"></t>
-<t tx="ekr.20150312080344.16">The default workbook contains both the cheat sheet and an example from the
-rst3 tutorial.
-
+<t tx="ekr.20150312080344.16">The default workbook contains both the cheat sheet and an example from the rst3 tutorial.
 </t>
 <t tx="ekr.20150312080344.19">How did we ever live without this?
 
@@ -17030,8 +16817,6 @@ When I study other people's code I do the following:
 
 In short, I have just now realized how badly sentinels interfered with git diffs.
 </t>
-<t tx="ekr.20150313192232.10"></t>
-<t tx="ekr.20150313192232.11"></t>
 <t tx="ekr.20150313192232.12">@language python
 '''
 Print all command names from headlines in Docstrings outline not appearing in
@@ -17072,27 +16857,6 @@ print('found: %s not found: %s' % (len(found),len(not_found)))</t>
 <t tx="ekr.20150314044011.7">@language python
 # From Script: clean ekr-spellpyx.txt
 p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
-<t tx="ekr.20150314050809.16">.. Obscure, unused, minibuffer-related commands.
-digit-argument
-menu-shortcut
-negative-argument
-number-command
-number-command-0
-number-command-1
-number-command-2
-number-command-3
-number-command-4
-number-command-5
-number-command-6
-number-command-7
-number-command-8
-number-command-9
-self-insert-command
-universal-argument
-.. All commands created by @command and @button.
-delete-@button-make-sphinx-button
-delete-@button-remove-dups-button
-</t>
 <t tx="ekr.20150315132217.1653"></t>
 <t tx="ekr.20150315132217.3">Here's how to switch focus without using the mouse:
 
@@ -17311,22 +17075,6 @@ delete-@button-remove-dups-button
     newline-and-indent
     open-url
     open-url-under-cursor
-    rectangle-clear
-    rectangle-close
-    rectangle-delete
-    rectangle-kill
-    rectangle-open
-    rectangle-string
-    rectangle-yank
-    register-append-to
-    register-copy-rectangle-to
-    register-copy-to
-    register-increment
-    register-insert
-    register-jump-to
-    register-point-to
-    register-prepend-to
-    register-view
     remove-blank-lines
     remove-newlines
     remove-space-from-lines
@@ -18289,14 +18037,7 @@ commit log:
   
   rename solarized_dark theme leo_dark_0
 </t>
-<t tx="ekr.20150318110552.73">.. revise
-
-.. contents::
-    :local:
-    :depth: 2</t>
-<t tx="ekr.20150318110552.74">.. revise
-
-::
+<t tx="ekr.20150318110552.74">The following commands expand abbreviations::
 
     abbrev-add-global
     abbrev-inverse-add-global
@@ -18356,13 +18097,18 @@ Python code.
     Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
 <t tx="ekr.20150318110552.78"></t>
 <t tx="ekr.20150318110552.79">.. revise</t>
-<t tx="ekr.20150318110552.8">.. revise
+<t tx="ekr.20150318110552.8">.. _`Emacs cursor commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point
 
-.. contents::
-    :local:
-    :depth: 2
+**Smart cursor moves**: Many editors allow you to jump over, select and delete words, especially those containing or surrounded by special characters, in a smarter way than just "going to the beginning of the word before" (back-word) or "going to the end of the next word" (forward-word)::
 
-::
+    back-word-smart
+    back-word-smart-extend-selection
+    forward-word-smart
+    forward-word-smart-extend-selection
+    delete-word-smart
+    backward-delete-word-smart
+
+The following commands work much like the `Emacs cursor commands`_::
 
     back-char
     back-char-extend-selection
@@ -18488,24 +18234,120 @@ This has a very clever hack (even if I say so myself)--spaces in search string a
     :w
     :wq
     :xa</t>
-<t tx="ekr.20150318110552.9">.. revise
+<t tx="ekr.20150319142303.4"></t>
+<t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
+<t tx="ekr.20150323102036.1">@language rest
 
-``back-to-home``
-    Many editors allow you to jump over, select and delete words, especially those containing or surrounded by special characters, in a smarter way than just "going to the beginning of the word before" (back-word) or "going to the end of the next word" (forward-word).
+g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
 
-Patches add "-smart" equivalents of the jump, select and delete commands.
-Users wanting to use these commands can set in their myLeoSettings.leo::
+@language python
+    
+    def handler(it):
+        """IdleTime handler.  it is an IdleTime instance."""
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count &gt;= 5:
+            g.trace('done')
+            it.stop()
 
-  back-word-smart                  = Ctrl-LtArrow
-  back-word-smart-extend-selection = Ctrl-Shift-LtArrow
+    # Execute handler every 500 msec. at idle time.
+    it = g.IdleTime(c,handler,delay=500)
+    if it: it.start()
 
-  forward-word-smart                  = Ctrl-RtArrow
-  forward-word-smart-extend-selection = Ctrl-Shift-RtArrow
+@language rest
 
-  delete-word-smart          = Ctrl-Delete
-  backward-delete-word-smart = Ctrl-BackSpace
+The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+    
+Timer instances are completely independent::
+
+@language python
+
+    def handler1(it):
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count &gt;= 5:
+            g.trace('done')
+            it.stop()
+
+    def handler2(it):
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count &gt;= 10:
+            g.trace('done')
+            it.stop()
+
+    it1 = g.IdleTime(c,handler1,delay=500)
+    it2 = g.IdleTime(c,handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+        
+@language rest
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
 </t>
-<t tx="ekr.20150319055953.5">From Terry
+<t tx="ekr.20150323102918.1">.. Deprecated tangle/untangle commands
+..  tangle
+..  tangle-all
+..  tangle-marked
+..  untangle
+..  untangle-all
+..  untangle-marked
+
+.. Obscure, unused, minibuffer-related commands.
+..  digit-argument
+..  menu-shortcut
+..  negative-argument
+..  number-command
+..  number-command-0
+..  number-command-1
+..  number-command-2
+..  number-command-3
+..  number-command-4
+..  number-command-5
+..  number-command-6
+..  number-command-7
+..  number-command-8
+..  number-command-9
+..  self-insert-command
+..  universal-argument
+</t>
+<t tx="ekr.20150323103115.1">.. _`Emacs rectangle commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html
+
+The following commands emulate the `Emacs rectangle commands`_::
+
+    rectangle-clear
+    rectangle-close
+    rectangle-delete
+    rectangle-kill
+    rectangle-open
+    rectangle-string
+    rectangle-yank
 
 Given::
 
@@ -18514,29 +18356,41 @@ Given::
     because I don't even know what they're supposed to accomplish. A few
     examples:
 
-Placing the cursor immediately before the first "I", holding shift and
-moving it to immediately before the word "examples" selects a zero
-width rectangle from the beginning to the end of the selection (zero
-width because the selection starts and ends in the same column.  Then
-running rectangle-string "[largo]&lt;space&gt;&lt;enter&gt;" yields:
+Placing the cursor immediately before the first "I", holding shift and moving it to immediately before the word "examples" selects a zero width rectangle from the beginning to the end of the selection (zero width because the selection starts and ends in the same column.  Then running rectangle-string "[largo]&lt;space&gt;&lt;enter&gt;" yields::
 
-  &gt; [largo] I'm really glad the docs are being updated. I know that's a
-  &gt; [largo] monumental task. I only use a fraction of Leo's commands, mostly
-  &gt; [largo] because I don't even know what they're supposed to accomplish. A few
-  &gt; [largo] examples:
+  [largo] I'm really glad the docs are being updated. I know that's a
+  [largo] monumental task. I only use a fraction of Leo's commands, mostly
+  [largo] because I don't even know what they're supposed to accomplish. A few
+  [largo] examples:
+</t>
+<t tx="ekr.20150323103142.1">.. _`Emacs register commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html#Registers
 
-i.e. the insertion of a rectangle of text.  Basically emulates the
-Emacs commands:
-http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html</t>
-<t tx="ekr.20150319055953.6">.. Deprecated tangle/untangle commands
-tangle
-tangle-all
-tangle-marked
-untangle
-untangle-all
-untangle-marked</t>
-<t tx="ekr.20150319142303.4"></t>
-<t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
+The following commands emulate `Emacs register commands`_::
+
+    register-append-to
+    register-copy-rectangle-to
+    register-copy-to
+    register-increment
+    register-insert
+    register-jump-to
+    register-point-to
+    register-prepend-to
+    register-view
+</t>
+<t tx="ekr.20150323105920.1">- Links to other docs?
+- Link to the Mulder/Ream algorithm from the release notes.
+
+</t>
+<t tx="ekr.20150323105959.1"></t>
+<t tx="ekr.20150323110029.1"></t>
+<t tx="ekr.20150323110109.1"></t>
+<t tx="ekr.20150323110230.1"></t>
+<t tx="ekr.20150323111053.1">.. _`clone-find-all-flattened`: file:///C:/leo.repo/leo-editor/leo/doc/html/_build/html/commands.html#basic-searches
+
+Just `clone-find-all-flattened`_.  This is my workhorse command when fixing complex bugs.</t>
+<t tx="ekr.20150323111332.1"></t>
+<t tx="ekr.20150323111337.1">Bug: @auto-org is not @auto-otl.</t>
+<t tx="ekr.20150323111418.1">Mention Aha's, scripts, etc.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
