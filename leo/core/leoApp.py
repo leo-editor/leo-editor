@@ -2160,8 +2160,6 @@ class LoadManager:
             help = 'disable all plugins')
         add('--no-splash', action='store_true', dest='no_splash_screen',
             help = 'disable the splash screen')
-        add('--old-nosent', action='store_true', dest='old_nosent',
-            help = 'disable new @clean update logic')
         add('--screen-shot', dest='screenshot_fn',
             help = 'take a screen shot and then exit')
         add('--script', dest='script',
@@ -2238,9 +2236,6 @@ class LoadManager:
         g.app.use_splash_screen = (
             not options.no_splash_screen and
             not options.minimized)
-        # --old-nosent
-        g.app.new_nosent = not options.old_nosent
-        # g.trace('g.app.new_nosent',g.app.new_nosent)
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
         if screenshot_fn:
