@@ -334,6 +334,11 @@ class BridgeController:
             c = self.createFrame(fileName)
             g.app.nodeIndices.compute_last_index(c)
                 # New in Leo 5.1. An alternate fix for bug #130.
+
+                # When using a bridge Leo might open a file, modify it,
+                # close it, reopen it and change it all within one second.
+                # In that case, this code must properly compute the next
+                # available gnx by scanning the entire outline.
             if useLog:
                 g.app.gui.log = log = c.frame.log
                 log.isNull = False
