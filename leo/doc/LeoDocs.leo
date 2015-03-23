@@ -647,6 +647,7 @@
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20150323102918.1"><vh>@rst-ignore not documented</vh></v>
+<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150318110552.10"><vh>Debug commands</vh>
 <v t="ekr.20150318110552.11"><vh>cache-*</vh></v>
@@ -1213,11 +1214,8 @@
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
 </v>
-<v t="ekr.20150323110029.1"><vh>To do: Command Reference</vh>
-<v t="ekr.20150323110230.1"><vh>Create key reference</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-</v>
-<v t="ekr.20060620094033"></v>
+<v t="ekr.20150323110029.1"><vh>To do: Command Reference</vh></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -10301,7 +10299,7 @@ These settings are as follows, with the defaults as shown::
 </t>
 <t tx="ekr.20110601105631.19349">
 </t>
-<t tx="ekr.20110611055444.16726">Many command names have common prefixes::
+<t tx="ekr.20110611055444.16726">Many command names have common prefixes. This aids command-completion in the minibuffer::
 
     abbrev-     abbreviation commands
     buffer-     buffer command
@@ -10318,7 +10316,6 @@ These settings are as follows, with the defaults as shown::
     run-        run unit tests
     toggle-     toggle settings
     yank-       yank
-
 </t>
 <t tx="ekr.20110612104631.16414">The following options allow you to expand noweb section references, much like Leo itself does. The rst3 command ensures that unbounded expansions can not happen. While expanding any section, the rst3 will not expand again any sections that have already occurred in the expansion.
 
@@ -17991,8 +17988,7 @@ The following commands emulate `Emacs register commands`_::
     register-prepend-to
     register-view
 </t>
-<t tx="ekr.20150323110029.1"></t>
-<t tx="ekr.20150323110230.1"></t>
+<t tx="ekr.20150323110029.1">*** Create key reference.</t>
 <t tx="ekr.20150323111053.1">.. _`clone-find-all-flattened`: file:///C:/leo.repo/leo-editor/leo/doc/html/_build/html/commands.html#basic-searches
 
 Just `clone-find-all-flattened`_.  This is my workhorse command when fixing complex bugs.</t>
