@@ -842,7 +842,8 @@ class AtFile:
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
-            elif g.app.new_nosent:
+            ### elif g.app.new_nosent:
+            else:
                 if p.isAtAsisFileNode():
                     nRead += 1
                     at.rememberReadPath(at.fullPath(p),p)
@@ -854,11 +855,12 @@ class AtFile:
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
-            else:
-                if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                    nRead += 1
-                    at.rememberReadPath(at.fullPath(p),p)
-                p.moveToThreadNext()
+            ###
+            # else:
+                # if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                    # nRead += 1
+                    # at.rememberReadPath(at.fullPath(p),p)
+                # p.moveToThreadNext()
         # 2010/10/22: Preserve the orphan bits: the dirty bits will be cleared!
         #for v in c.all_unique_nodes():
         #    v.clearOrphan()
@@ -1233,9 +1235,12 @@ class AtFile:
 
         # Delete all children except for old-style @file nodes
 
-        if not g.app.new_nosent and root.isAtNoSentFileNode():
-            return False
-        elif root.isAtFileNode() and not thinFile:
+        ###
+        # if not g.app.new_nosent and root.isAtNoSentFileNode():
+            # return False
+        # el
+
+        if root.isAtFileNode() and not thinFile:
             return False
         else:
             return True

@@ -50,7 +50,7 @@ class LeoApp:
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
         self.ipython_inited = False     # True if leoIpython.py imports succeeded.
-        self.new_nosent = True          # True: enable @clean update logic.
+        ### self.new_nosent = True          # True: enable @clean update logic.
         self.qt_use_tabs = False        # True: allow tabbed main window.
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.
