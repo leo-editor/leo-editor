@@ -1558,23 +1558,21 @@ class ControlCommandsClass (BaseEditCommandsClass):
         k.keyboardQuit()
     #@+node:ville.20090222184600.2: *3* actOnNode
     def actOnNode(self, event):
-        """ Execute node-specific action (typically defined by plugins)
-
-        Actual behaviour is to be defined by plugins.
-
-        Here's how to define actions for nodes in your plugins::
+        '''
+        Executes node-specific action, typically defined in a plugins as
+        follows::
 
             import leo.core.leoPlugins
+
             def act_print_upcase(c,p,event):
                 if not p.h.startswith('@up'):
                     raise leo.core.leoPlugins.TryNext
                 p.h = p.h.upper()
 
-            g.act_on_node.add(act_print_upcase)        
+            g.act_on_node.add(act_print_upcase)
 
-        This will upcase the headline when it starts with @up.            
-
-        """
+        This will upcase the headline when it starts with @up.
+        '''
         g.act_on_node(self.c,self.c.p,event)
     #@+node:ekr.20050920084036.155: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
     def shutdown (self,event):
