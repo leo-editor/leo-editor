@@ -659,11 +659,11 @@
 <v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
 <v t="ekr.20150318110552.23"><vh>Adding and deleting comments in body text</vh></v>
 <v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
+<v t="ekr.20150323200607.1"><vh>Moving the cursor</vh></v>
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
 <v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
 <v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
-<v t="ekr.20150318110552.28"><vh>Miscellaneous text editing commands</vh></v>
 </v>
 <v t="ekr.20150323185514.1"><vh>Emacs emulation</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
@@ -686,6 +686,7 @@
 <v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
 </v>
 <v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
+<v t="ekr.20150323200950.1"><vh>Language conversion commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
 <v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh></v>
 <v t="ekr.20150318110552.39"><vh>Mouseless Leo commands</vh>
@@ -3039,7 +3040,6 @@ This chapter discusses the basics of using Leo, including all of Leo's commands.
 
 .. contents::
     :depth: 2
-
 </t>
 <t tx="ekr.20050901101608.4">################
 Customizing Leo
@@ -16482,13 +16482,20 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 <t tx="ekr.20150318110552.10">.. contents::
     :local:
     :depth: 2
+    
+.. revise
 
+::
+
+    check-derived-file
+    check-leo-file
+    
 ``check-outline``
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
-``clear-cache``
-    Clear the outline's file cache.
 ``clear-all-caches``
     Clear all file caches in g.app.leoHomeDir/db
+``clear-cache``
+    Clear the outline's file cache.
 ``escape``
     Enter watch escape mode.
 ``pdb``
@@ -16498,17 +16505,7 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 ``pylint``
     Runs pylint on the Python source files in the selected tree. You can check a file by selecting any (possibly cloned) node of the file.  This command is also available from the popup menus created by the contextmenu plugin.
 
-More debug commands::
-
 ::
-
-    # Caches.
-    clear-all-caches
-    clear-cache
-
-    # Checking files.
-    check-derived-file
-    check-leo-file
 
     # Dumping Leo's internal data.
     dump-all-objects
@@ -16516,7 +16513,7 @@ More debug commands::
     dump-outline
     verbose-dump-objects
 
-    # Dumping Python's garbage collection.
+    # Python's garbage collector.
     gc-collect-garbage
     gc-dump-all-objects
     gc-dump-new-objects
@@ -16525,15 +16522,15 @@ More debug commands::
     gc-trace-disable
     gc-trace-enable
 
-    # Leo's idle-time handing.
-    disable-idle-time-tracing
-    enable-idle-time-tracing
-    toggle-idle-time-tracing
+    # Idle time.
     disable-idle-time-events
+    disable-idle-time-tracing
     enable-idle-time-events
+    enable-idle-time-tracing
     toggle-idle-time-events
+    toggle-idle-time-tracing
 
-    # Printing various things.
+    # Print &amp; preview.
     preview
     preview-node
     preview-tree
@@ -16563,13 +16560,7 @@ More debug commands::
     show-calltips-force
     show-colors
     show-find-options
-    
-    # uA's.
-    clear-all-uas
-    clear-node-uas
-    print-all-uas
-    print-node-uas
-    set-ua</t>
+</t>
 <t tx="ekr.20150318110552.18">.. contents::
     :local:
     :depth: 2</t>
@@ -16630,11 +16621,11 @@ These commands work with either headline or body text.</t>
     beautify-tree
     clean-all-blank-lines
     clean-body
-    set-font
-    show-fonts
 
 ``clean-lines``
-    Removes trailing whitespace from all lines, preserving newlines. 
+    Removes trailing whitespace from all lines, preserving newlines.
+``clear-selected-text``
+    Delete the selected text.
 ``convert-tabs``
     Converts leading tabs to blanks in a single node.
 ``convert-blanks``
@@ -16649,6 +16640,11 @@ These commands work with either headline or body text.</t>
 ``flush-lines``
     Deletes each line that contains a match for regexp, operating on the text after point.
     In Transient Mark mode, if the region is active, the command operates on the region instead.
+``insert-body-time`` and ``insert-headline-time``
+    Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
+
+        1/30/2003 8:31:55
+
 ``keep-lines``
     Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. 
 
@@ -16671,9 +16667,12 @@ The command operates on the paragraph containing the insert cursor. If the inser
   2. This is the second paragraph,
      and it too has a hanging indentation.
      
+``replace-current-character``
+     Replace the selected character with the next character typed.
+``toggle-angle-brackets``
+    Adds or removes double angle brackets from the headline of the selected node.
 ``unformat-paragraph (Ctrl-Shift-U)``
     Removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
-
 </t>
 <t tx="ekr.20150318110552.25">``extract (Ctrl-Shift-D)``
     Creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text.
@@ -16698,21 +16697,6 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``cycle-editor-focus``
     Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
-<t tx="ekr.20150318110552.28">``clear-selected-text``
-    Delete the selected text.
-``goto-global-line (Alt-G)``
-    Selects the locations in your outlines corresponding to a line in a external file.
-``insert-body-time`` and ``insert-headline-time``
-    Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
-
-        1/30/2003 8:31:55
-
-``match-brackets``
-    Enabled if the cursor is next to one of these characters in the body pane: ``( ) [ ] { } &lt; &gt;`` The command looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
-``replace-current-character``
-     Replace the selected character with the next character typed.
-``toggle-angle-brackets``
-    Adds or removes double angle brackets from the headline of the selected node.</t>
 <t tx="ekr.20150318110552.29">.. contents::
     :local:
     :depth: 2</t>
@@ -16983,6 +16967,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     contract-log-pane
     contract-outline-pane
     contract-pane
+    delete-script-button-button
     detach-editor-toggle
     detach-editor-toggle-max
     equal-sized-panes
@@ -16998,7 +16983,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     hide-log-pane
     hide-outline-pane
     hide-pane
-    iconify-frame
+    iconify-frame 
     resize-to-screen
     tab-detach
 </t>
@@ -17472,31 +17457,19 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 5. Added a new example node: @@data abbreviations examples.  This contains
    several extremely useful scripts.
 </t>
-<t tx="ekr.20150318110552.75">.. revise
-
-::
-
-    c-to-python
-    c-to-python-clean-docs
-    typescript-to-py
-
-This command is a rewrapping of the first Python script I ever wrote. It
-takes much of the scut work away from the task of converting C code to
-Python code.
-
-::
+<t tx="ekr.20150318110552.75">::
 
     act-on-node
     at-file-to-at-auto
     clean-persistence
     cls
-    context-menu-open
-    delete-script-button-button
-    enter-quick-command-mode
-    exit-named-mode
     join-leo-irc
-    open-python-window    
+    open-python-window  
     script-button
+    
+    # Fonts.
+    set-font
+    show-fonts
     
     # Icons.
     insert-icon
@@ -17513,6 +17486,17 @@ Python code.
     free-layout-load-standard
     free-layout-restore
     free-layout-zoom
+    
+    # Modes.
+    enter-quick-command-mode
+    exit-named-mode
+    
+    # uA's.
+    clear-all-uas
+    clear-node-uas
+    print-all-uas
+    print-node-uas
+    set-ua
 </t>
 <t tx="ekr.20150318110552.79">Plugins create the following commands::
     
@@ -17752,6 +17736,7 @@ untangle-marked
 
 .. Obscure, unused, minibuffer-related commands.
 advertised-undo
+context-menu-open
 digit-argument
 menu-shortcut
 negative-argument
@@ -17881,8 +17866,9 @@ Regardless of focus::
     PageUp            up one page
 
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
+
 </t>
-<t tx="ekr.20150323164016.1"></t>
+<t tx="ekr.20150323164016.1">Search for .. revise</t>
 <t tx="ekr.20150323164016.2"></t>
 <t tx="ekr.20150323164016.3">https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
 By Andrea Nuvola
@@ -17901,9 +17887,9 @@ QTreeView::branch:open:has-children{
 
 I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
 </t>
-<t tx="ekr.20150323185151.1">.. revise
+<t tx="ekr.20150323185151.1">.. _`Emacs macro commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macros.html#Keyboard-Macros
 
-::
+The following commands emulate the `Emacs macro commands`_::
 
     macro-call
     macro-call-last
@@ -18022,6 +18008,24 @@ I attach the images I use for my solarized dark theme, both small triangles and 
     upcase-word
     view-lossage
     what-line
+</t>
+<t tx="ekr.20150323200607.1">``goto-global-line (Alt-G)``
+    Selects the locations in your outlines corresponding to a line in a external file.
+``match-brackets``
+    Enabled if the cursor is next to one of these characters in the body pane: ``( ) [ ] { } &lt; &gt;`` The command looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
+</t>
+<t tx="ekr.20150323200950.1">.. revise
+
+::
+
+    c-to-python
+    c-to-python-clean-docs
+    typescript-to-py
+
+This command is a rewrapping of the first Python script I ever wrote. It
+takes much of the scut work away from the task of converting C code to
+Python code.
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
