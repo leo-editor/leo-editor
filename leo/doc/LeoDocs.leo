@@ -16837,7 +16837,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``open-with-word``
     Open the selected node in Word.
 
-**Notes about open-with**:
+**About open-with**:
 
 1. Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an @openwith node in myLeoSettings.leo. See the documentation there.
 
@@ -17430,7 +17430,9 @@ The following commands enable, disable or toggle various settings::
 ``zoom-out``.
     Decrease text size by 1 pt.
 </t>
-<t tx="ekr.20150318110552.74">The following commands expand abbreviations::
+<t tx="ekr.20150318110552.74">.. revise
+
+The following commands expand abbreviations::
 
     abbrev-add-global
     abbrev-inverse-add-global
@@ -17773,7 +17775,7 @@ Given::
     because I don't even know what they're supposed to accomplish. A few
     examples:
 
-Placing the cursor immediately before the first "I", holding shift and moving it to immediately before the word "examples" selects a zero width rectangle from the beginning to the end of the selection (zero width because the selection starts and ends in the same column.  Then running rectangle-string "[largo]&lt;space&gt;&lt;enter&gt;" yields::
+Placing the cursor immediately before the first "I", holding shift and moving it to immediately before the word``examples`` selects a zero width rectangle from the beginning to the end of the selection (zero width because the selection starts and ends in the same column.  Then running ``rectangle-string [largo]&lt;space&gt;&lt;enter&gt;`` yields::
 
   [largo] I'm really glad the docs are being updated. I know that's a
   [largo] monumental task. I only use a fraction of Leo's commands, mostly
@@ -17901,7 +17903,9 @@ The following commands emulate the `Emacs macro commands`_::
     macro-save-all
     macro-start-recording
 </t>
-<t tx="ekr.20150323185456.1">::
+<t tx="ekr.20150323185456.1">.. revise
+
+::
 
     buffer-append-to
     buffer-kill
@@ -17911,7 +17915,9 @@ The following commands emulate the `Emacs macro commands`_::
     buffers-list-alphabetically
 </t>
 <t tx="ekr.20150323185514.1"></t>
-<t tx="ekr.20150323185611.1">::
+<t tx="ekr.20150323185611.1">.. revise
+
+::
 
     backward-delete-char
     backward-find-character
@@ -17931,7 +17937,7 @@ The following commands emulate the `Emacs macro commands`_::
     yank-pop
     zap-to-character
 </t>
-<t tx="ekr.20150323185921.1">..revise
+<t tx="ekr.20150323185921.1">.. revise
 
 ::
 
