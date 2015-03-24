@@ -16580,30 +16580,13 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     toggle-idle-time-events
     toggle-idle-time-tracing
 
-    # Print &amp; preview.
-    preview
-    preview-node
-    preview-tree
+    # Print &amp; show.
     print-bindings
     print-cmd-docstrings
     print-commands
-    print-expanded-node
-    print-expanded-node-body
     print-focus
-    print-marked-node-bodies
-    print-marked-nodes
     print-plugin-handlers
     print-plugins-info
-    print-preview-expanded-node
-    print-preview-expanded-node-body
-    print-preview-marked-node-bodies
-    print-preview-marked-nodes
-    print-preview-selected-node
-    print-preview-selected-node-body
-    print-preview-selected-node-body-html
-    print-selected-node
-    print-selected-node-body
-    print-selected-node-body-html
     print-settings
     print-style-sheet
     show-calltips
@@ -17579,6 +17562,25 @@ Plugins create the following commands::
     bookmarks-show
     bookmarks-switch
     bookmarks-use-other-outline
+    
+    # printing.py
+    preview
+    preview-node
+    preview-tree
+    print-expanded-node
+    print-expanded-node-body
+    print-marked-node-bodies
+    print-marked-nodes
+    print-preview-expanded-node
+    print-preview-expanded-node-body
+    print-preview-marked-node-bodies
+    print-preview-marked-nodes
+    print-preview-selected-node
+    print-preview-selected-node-body
+    print-preview-selected-node-body-html
+    print-selected-node
+    print-selected-node-body
+    print-selected-node-body-html
     
     # quicksearch.py
     find-quick
