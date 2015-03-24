@@ -546,7 +546,11 @@ class RstCommands:
         after= p.nodeAfterTree()
         while p and p != after:
             h = p.h.strip()
-            if g.match_word(h,0,"@rst"):
+            if g.match_word(h,0,'@rst-ignore'):
+                p.moveToThreadNext()
+            elif g.match_word(h,0,'@rst-ignore-tree'):
+                p.moveToNodeAfterTree()
+            elif g.match_word(h,0,"@rst"):
                 self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
