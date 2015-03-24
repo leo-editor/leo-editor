@@ -653,19 +653,8 @@
 </v>
 <v t="ekr.20150323161357.4"><vh>Moving the cursor</vh></v>
 <v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
-<v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
-<v t="ekr.20150318110552.10"><vh>Debug commands</vh>
-<v t="ekr.20150318110552.11"><vh>cache-*</vh></v>
-<v t="ekr.20150318110552.12"><vh>check-*</vh></v>
-<v t="ekr.20150318110552.13"><vh>dump-*</vh></v>
-<v t="ekr.20150318110552.14"><vh>gc-*</vh></v>
-<v t="ekr.20150318110552.15"><vh>idle-time-*</vh></v>
-<v t="ekr.20150318110552.16"><vh>print-*</vh></v>
-<v t="ekr.20150318110552.17"><vh>show-*</vh></v>
-</v>
+<v t="ekr.20150318110552.10"><vh>Debug commands</vh></v>
 <v t="ekr.20150318110552.18"><vh>Edit commands</vh>
-<v t="ekr.20150318110552.19"><vh>Basic text editing commands</vh></v>
-<v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
 <v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
 <v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
 <v t="ekr.20150318110552.23"><vh>Adding and deleting comments in body text</vh></v>
@@ -673,10 +662,19 @@
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
 <v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
+<v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
+<v t="ekr.20150318110552.28"><vh>Miscellaneous text editing commands</vh></v>
+</v>
+<v t="ekr.20150323185514.1"><vh>Emacs emulation</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
+<v t="ekr.20150323185456.1"><vh>Buffer commands</vh></v>
+<v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
+<v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
+<v t="ekr.20150323185151.1"><vh>Macro commands</vh></v>
 <v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
 <v t="ekr.20150323103142.1"><vh>Register commands</vh></v>
-<v t="ekr.20150318110552.28"><vh>Miscellaneous text editing commands</vh></v>
+<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
+<v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
 </v>
 <v t="ekr.20150318110552.29"><vh>File commands</vh>
 <v t="ekr.20150318110552.30"><vh>Loading, saving &amp; reverting files</vh></v>
@@ -689,11 +687,7 @@
 </v>
 <v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
-<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh>
-<v t="ekr.20150318110552.76"><vh>c-to-python</vh></v>
-<v t="ekr.20150318110552.77"><vh>flush-lines &amp; keep-lines</vh></v>
-<v t="ekr.20150318110552.78"><vh>typescript-to-py</vh></v>
-</v>
+<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh></v>
 <v t="ekr.20150318110552.39"><vh>Mouseless Leo commands</vh>
 <v t="ekr.20150318110552.40"><vh>Event simulation commands</vh></v>
 <v t="ekr.20150318110552.41"><vh>Focus commands</vh></v>
@@ -712,18 +706,9 @@
 <v t="ekr.20150318110552.53"><vh>Moving, deleting and cloning marked nodes</vh></v>
 <v t="ekr.20150318110552.54"><vh>Comparing outlines</vh></v>
 <v t="ekr.20150318110552.55"><vh>Using Chapters</vh></v>
-<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 </v>
-<v t="ekr.20150318110552.79"><vh>Plugins commands</vh>
-<v t="ekr.20150318110552.80"><vh>act-on-node</vh></v>
-<v t="ekr.20150318110552.81"><vh>bookmarks-*</vh></v>
-<v t="ekr.20150318110552.82"><vh>cke-*</vh></v>
-<v t="ekr.20150318110552.83"><vh>go-anywhere (quicksearch plugin)</vh></v>
-<v t="ekr.20150318110552.84"><vh>richtext-*</vh></v>
-<v t="ekr.20150318110552.85"><vh>vr-*</vh></v>
-</v>
+<v t="ekr.20150318110552.79"><vh>Plugins commands</vh></v>
 <v t="ekr.20150318110552.57"><vh>Search &amp; spell commands</vh>
-<v t="ekr.20150318110552.58"><vh>aliases</vh></v>
 <v t="ekr.20150318110552.59"><vh>Basic searches</vh></v>
 <v t="ekr.20150318110552.60"><vh>Incremental find commands</vh></v>
 <v t="ekr.20150318110552.61"><vh>Word search and regex search commands</vh></v>
@@ -733,14 +718,7 @@
 </v>
 <v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
 <v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
-<v t="ekr.20150318110552.66"><vh>Window-related commands</vh>
-<v t="ekr.20150318110552.67"><vh> new windows commands</vh></v>
-<v t="ekr.20150318110552.68"><vh>-icon*</vh></v>
-<v t="ekr.20150318110552.69"><vh>free-layout*</vh></v>
-<v t="ekr.20150318110552.70"><vh>gui-*</vh></v>
-<v t="ekr.20150318110552.71"><vh>show-*</vh></v>
-<v t="ekr.20150318110552.72"><vh>zoom-in/out commands</vh></v>
-</v>
+<v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
 </v>
 </v>
@@ -1223,6 +1201,7 @@
 <v t="ekr.20150323164016.2"><vh>document --diff</vh></v>
 <v t="ekr.20150323164016.3"><vh>Document nodes-dark icons &amp; stylesheet</vh></v>
 </v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16500,9 +16479,7 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 </t>
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
-<t tx="ekr.20150318110552.10">.. revise
-
-.. contents::
+<t tx="ekr.20150318110552.10">.. contents::
     :local:
     :depth: 2
 
@@ -16516,34 +16493,30 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     Enter watch escape mode.
 ``pdb``
     Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
+``print-buttons``
+    Print all @button and @command commands, their bindings and their source.
 ``pylint``
     Runs pylint on the Python source files in the selected tree. You can check a file by selecting any (possibly cloned) node of the file.  This command is also available from the popup menus created by the contextmenu plugin.
-</t>
-<t tx="ekr.20150318110552.11">.. revise
+
+More debug commands::
 
 ::
 
+    # Caches.
     clear-all-caches
-    clear-all-uas
-    clear-cache</t>
-<t tx="ekr.20150318110552.12">.. revise
+    clear-cache
 
-::
-
+    # Checking files.
     check-derived-file
-    check-leo-file</t>
-<t tx="ekr.20150318110552.13">.. revise
+    check-leo-file
 
-::
-    
+    # Dumping Leo's internal data.
     dump-all-objects
     dump-new-objects
-    verbose-dump-objects.
-</t>
-<t tx="ekr.20150318110552.14">.. revise
+    dump-outline
+    verbose-dump-objects
 
-::
-
+    # Dumping Python's garbage collection.
     gc-collect-garbage
     gc-dump-all-objects
     gc-dump-new-objects
@@ -16551,25 +16524,19 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     gc-print-summary
     gc-trace-disable
     gc-trace-enable
-</t>
-<t tx="ekr.20150318110552.15">.. revise
 
-::
-
+    # Leo's idle-time handing.
     disable-idle-time-tracing
     enable-idle-time-tracing
     toggle-idle-time-tracing
-    
     disable-idle-time-events
     enable-idle-time-events
     toggle-idle-time-events
-</t>
-<t tx="ekr.20150318110552.16">``print-buttons``
-    Print all @button and @command commands, their bindings and their source.
-    
-::
 
-    print-all-uas
+    # Printing various things.
+    preview
+    preview-node
+    preview-tree
     print-bindings
     print-cmd-docstrings
     print-commands
@@ -16578,7 +16545,6 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     print-focus
     print-marked-node-bodies
     print-marked-nodes
-    print-node-uas
     print-plugin-handlers
     print-plugins-info
     print-preview-expanded-node
@@ -16592,151 +16558,22 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     print-selected-node-body
     print-selected-node-body-html
     print-settings
-    print-style-sheet</t>
-<t tx="ekr.20150318110552.17">::
-
+    print-style-sheet
     show-calltips
     show-calltips-force
     show-colors
     show-find-options
-    show-fonts</t>
-<t tx="ekr.20150318110552.18">.. revise
-
-.. contents::
+    
+    # uA's.
+    clear-all-uas
+    clear-node-uas
+    print-all-uas
+    print-node-uas
+    set-ua</t>
+<t tx="ekr.20150318110552.18">.. contents::
     :local:
     :depth: 2</t>
-<t tx="ekr.20150318110552.19">.. revise
-
-``select-all(Ctrl-A)``
-    Select all text in the text pane.
-
-::
-
-    add-space-to-lines,
-    add-tab-to-lines
-    align-eq-signs
-    auto-complete
-    auto-complete-force
-    backward-delete-char
-    backward-find-character
-    backward-find-character-extend-selection
-    backward-kill-paragraph
-    backward-kill-sentence
-    backward-kill-word
-    beautify
-    beautify-all
-    beautify-c
-    beautify-tree
-    buffer-append-to
-    buffer-kill
-    buffer-prepend-to
-    buffer-switch-to
-    buffers-list
-    buffers-list-alphabetically
-    capitalize-word
-    center-line
-    center-region
-    clean-all-blank-lines
-    clean-body
-    clean-lines
-    clear-kill-ring
-    cls
-    count-pages
-    count-region
-    delete-char
-    delete-indentation
-    delete-spaces
-    downcase-region
-    downcase-word
-    exchange-point-mark
-    extend-to-line
-    extend-to-paragraph
-    extend-to-sentence
-    extend-to-word
-    fill-paragraph
-    fill-region
-    fill-region-as-paragraph
-    hide-invisibles
-    how-many
-    indent-relative
-    indent-rigidly
-    indent-to-comment-column
-    insert-child
-    insert-file-name
-    insert-file-name
-    insert-hard-tab
-    insert-newline
-    insert-parentheses
-    insert-soft-tab
-    join-node-above
-    join-node-below
-    join-selection-to-node-below
-    kill-line
-    kill-paragraph
-    kill-region
-    kill-region-save
-    kill-sentence
-    kill-to-end-of-line
-    kill-word
-    kill-ws
-    line-number
-    macro-call
-    macro-call-last
-    macro-end-recording
-    macro-load-all
-    macro-name-last
-    macro-print-all
-    macro-print-last
-    macro-save-all
-    macro-start-recording
-    move-lines-down
-    move-lines-up
-    newline-and-indent
-    open-url
-    open-url-under-cursor
-    remove-blank-lines
-    remove-newlines
-    remove-space-from-lines
-    remove-tab-from-lines
-    reverse-region
-    reverse-sort-lines
-    reverse-sort-lines-ignoring-case
-    scroll-down-half-page
-    scroll-down-line
-    scroll-down-page
-    scroll-up-half-page
-    scroll-up-line
-    scroll-up-page
-    select-to-matching-bracket
-    set-fill-column
-    set-fill-prefix
-    shell-command
-    shell-command-on-region
-    show-invisibles
-    set-comment-column
-    sort-columns
-    sort-fields
-    sort-lines
-    sort-lines-ignoring-case
-    split-line
-    tabify
-    transpose-chars
-    transpose-lines
-    transpose-words
-    untabify
-    upcase-region
-    upcase-word
-    view-lossage
-    what-line
-    yank
-    yank-pop
-    zap-to-character
-</t>
-<t tx="ekr.20150318110552.20">.. revise
-
-``advertised-undo``
-
-Leo supports unlimited undo and redo with the ``undo`` (Ctrl-Z) and ``redo`` (Ctrl-Shift-Z) commands. Think of actions that may be undone or redone as a string of beads. A "bead pointer" points to the present bead. Performing an operation creates a new bead after the present bead and removes all following beads. Undoing an operation moves the bead pointer backwards; redoing an operation moves the bead pointer forwards. The ``undo`` command is disabled when the bead pointer moves in front of the first bead; the ``redo`` command is disabled when the bead pointer points to the last bead.
+<t tx="ekr.20150318110552.20">Leo supports unlimited undo and redo with the ``undo`` (Ctrl-Z) and ``redo`` (Ctrl-Shift-Z) commands. Think of actions that may be undone or redone as a string of beads. A "bead pointer" points to the present bead. Performing an operation creates a new bead after the present bead and removes all following beads. Undoing an operation moves the bead pointer backwards; redoing an operation moves the bead pointer forwards. The ``undo`` command is disabled when the bead pointer moves in front of the first bead; the ``redo`` command is disabled when the bead pointer points to the last bead.
 
 The @string undo_granularity setting controls the granularity of undo. There are four possible values:
 
@@ -16759,28 +16596,44 @@ The @string undo_granularity setting controls the granularity of undo. There are
     Copy the selected text to the clipboard.
 ``paste-text (Ctrl-V)``
     Paste test from the clipboard.
+``select-all(Ctrl-A)``
+    Select all text in the text pane.
 
-These commands work with either headline or body text.
-</t>
-<t tx="ekr.20150318110552.22">.. revise
+These commands work with either headline or body text.</t>
+<t tx="ekr.20150318110552.22">``indent-region (Tab)`` 
+    Shift selected lines right one tab position. Inserts one unit of indentation if no text is selected.
+``unindent-region (Shift-Tab)``
+    Shifts selected lines left one tab position. Deletes one unit of indentation if no text is selected.
+    
+**Notes**:
 
-The ``indent-region`` (Tab) and ``unindent-region`` (Shift-Tab) commands
-shift selected lines in the body text left or right one tab position. These
-commands shift the entire line if any characters in that line are selected.
-If no text is selected, the Tab character insert a hard or soft tab
-depending on the value of the @tabwidth directive in effect.
+- These commands shift the entire line if any characters in that line are selected. If no text is selected.
 
-**Notes**: Leo auto indents unless @nocolor is in effect.  Typing a newline automatically inserts the same leading whitespace present on the previous line.
+- The @tabwidth directive determines which characters these commands insert or delete.
 
-If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ( [ or { brackets in the previous line.
+- Leo auto indents unless @nocolor is in effect.  Typing a newline automatically inserts the same leading whitespace present on the previous line.
 
+- If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the ``smart_auto_indent setting`` is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ``( [{`` brackets in the previous line.
 </t>
 <t tx="ekr.20150318110552.23">``add-comments (Ctrl-))``
     Adds comments to the selected lines, using single-line comments if possible.
 ``delete-comments (Ctrl-()``
     Deletes comments in the selected lines.
 </t>
-<t tx="ekr.20150318110552.24">``clean-lines``
+<t tx="ekr.20150318110552.24">.. revise
+
+::
+
+    beautify
+    beautify-all
+    beautify-c
+    beautify-tree
+    clean-all-blank-lines
+    clean-body
+    set-font
+    show-fonts
+
+``clean-lines``
     Removes trailing whitespace from all lines, preserving newlines. 
 ``convert-tabs``
     Converts leading tabs to blanks in a single node.
@@ -16793,19 +16646,17 @@ If Python is the present language, Leo inserts an additional tab if the previous
     
 **@tabwidth**: The ``convert-*`` commands convert between tabs and blanks using the @tabwidth setting presently in effect.
 
+``flush-lines``
+    Deletes each line that contains a match for regexp, operating on the text after point.
+    In Transient Mark mode, if the region is active, the command operates on the region instead.
+``keep-lines``
+    Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. 
+
 ``pretty-print-python-code`` and ``pretty-print-all-python-code``
     Pretty prints body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
 
         putOperator:      puts whitespace around operators.
         putNormalToken:   puts whitespace around everything else.
-    
-.. revise
-
-::
-
-    preview
-    preview-node
-    preview-tree
 
 ``reformat-paragraph (Ctrl-Shift-P)``
     Rearranges the words in a text paragraph to fill each line as full as possible, up to the @pagewidth setting. A paragraph is delimited by blank lines, Leo directives, and (of course) start and end of text in a node. The width of the line used by the reformatting operation is governed by @pagewidth and the indentation that would be applied to the node when Leo writes the file.
@@ -16822,15 +16673,15 @@ The command operates on the paragraph containing the insert cursor. If the inser
      
 ``unformat-paragraph (Ctrl-Shift-U)``
     Removes all extra whitespace from a paragraph, including leading whitespace.  This command is useful when @wrap is in effect.
+
 </t>
 <t tx="ekr.20150318110552.25">``extract (Ctrl-Shift-D)``
     Creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text.
 ``extract-names (Ctrl-Shift-N)``
     Creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
 </t>
-<t tx="ekr.20150318110552.26">.. revise
-
-The ``execute-script`` (Ctrl-B) command executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected. The Execute Script command pre-defines the values c, g and p as follows:
+<t tx="ekr.20150318110552.26">``execute-script (Ctrl-B)``
+    Executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected. The Execute Script command pre-defines the values c, g and p as follows:
 
 - c is the commander of the outline containing the script.
 - g is the leoGlobals modules.
@@ -17077,6 +16928,8 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     click-click-box
     click-headline
     click-icon-box
+    ctrl-click-at-cursor
+    ctrl-click-icon    
     double-click-headline
     double-click-icon-box # Invokes vim or xemacs plugin if enabled.
     simulate-begin-drag
@@ -17094,12 +16947,35 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     activate-outline-menu
     activate-plugins-menu
     activate-window-menu
+    cycle-focus
+    cycle-log-focus
     focus-to-body
     focus-to-find
     focus-to-log
     focus-to-minibuffer
     focus-to-nav
     focus-to-tree
+    gui-all-hide
+    gui-all-show
+    gui-all-toggle
+    gui-iconbar-hide
+    gui-iconbar-show
+    gui-iconbar-toggle
+    gui-menu-hide
+    gui-menu-show
+    gui-menu-toggle
+    gui-minibuffer-hide
+    gui-minibuffer-show
+    gui-minibuffer-toggle
+    gui-statusbar-hide
+    gui-statusbar-show
+    gui-statusbar-toggle
+    gui-tabbar-hide
+    gui-tabbar-show
+    gui-tabbar-toggle
+    tab-cycle-next
+    tab-cycle-previous
+    toggle-active-pane
 </t>
 <t tx="ekr.20150318110552.42">::
 
@@ -17107,6 +16983,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     contract-log-pane
     contract-outline-pane
     contract-pane
+    detach-editor-toggle
+    detach-editor-toggle-max
+    equal-sized-panes
     expand-body-pane
     expand-log-pane
     expand-outline-pane
@@ -17119,6 +16998,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     hide-log-pane
     hide-outline-pane
     hide-pane
+    iconify-frame
+    resize-to-screen
+    tab-detach
 </t>
 <t tx="ekr.20150318110552.43">.. contents::
     :local:
@@ -17326,9 +17208,19 @@ Associated settings:
 ``@bool use_chapter_tabs``
     True: chapters pop-up menu appears in the icon area.
 </t>
-<t tx="ekr.20150318110552.56">.. revise
+<t tx="ekr.20150318110552.56">::
 
-::
+    scroll-down
+    scroll-down-extend-selection
+    scroll-up
+    scroll-up-extend-selection
+
+    scroll-down-half-page
+    scroll-down-line
+    scroll-down-page
+    scroll-up-half-page
+    scroll-up-line
+    scroll-up-page
 
     scroll-outline-down-line       
     scroll-outline-down-page       
@@ -17338,24 +17230,9 @@ Associated settings:
     scroll-outline-right
 
 </t>
-<t tx="ekr.20150318110552.57">.. revise
-
-.. contents::
+<t tx="ekr.20150318110552.57">.. contents::
     :local:
     :depth: 2</t>
-<t tx="ekr.20150318110552.58">.. revise
-
-::
-
-    find-clone-all
-    find-clone-all-flattened
-    find-next-clone
-    find-quick
-    find-quick-changed
-    find-quick-selected
-    find-quick-test-failures
-    find-quick-timeline
-    global-search</t>
 <t tx="ekr.20150318110552.59">Basic searches:
 
 ``start-search (Ctrl-F)``
@@ -17541,9 +17418,7 @@ The following commands enable, disable or toggle various settings::
     toggle-sparse-move
     toggle-split-direction
 </t>
-<t tx="ekr.20150318110552.66">.. revise
-
-.. contents::
+<t tx="ekr.20150318110552.66">.. contents::
     :local:
     :depth: 2
 
@@ -17553,108 +17428,22 @@ The following commands enable, disable or toggle various settings::
     Adjusts the sizes of the outline and body panes so that they are the same height.
 ``minimize-all``
     Minimizes (hides) all Leo windows.
+``show-colors``
+    Opens a tab in the log pane showing various color pickers.
+    (Not implemented in Qt)
+``show-fonts``
+    Open a tab in the log pane showing a font picker.
 ``suspend``
     Minimizes the present Leo window.
 ``toggle-split-direction``
     Switches between vertical and horizontal orientations of the Leo window.
     
     In the vertical orientation, the body pane appears below the pane containing the outline and log panes. In the horizontal orientation, the body pane appears to the left the pane containing the outline and log panes. By default, the ratio of pane outline pane to the body pane is 0.5 in the vertical orientation and 0.3 in the horizontal orientation. These two ratios may be changed using settings.
-</t>
-<t tx="ekr.20150318110552.67">::
 
-    context-menu-open
-    ctrl-click-at-cursor
-    ctrl-click-icon
-    cycle-focus
-    cycle-log-focus
-    detach-editor-toggle
-    detach-editor-toggle-max
-    dump-outline
-    equal-sized-panes
-    iconify-frame
-    open-python-window
-    resize-to-screen
-    set-ua
-    tab-cycle-next
-    tab-cycle-previous
-    tab-detach
-    toggle-active-pane
-</t>
-<t tx="ekr.20150318110552.68">::
-
-    insert-icon
-    delete-first-icon
-    delete-last-icon
-    delete-node-icons
-</t>
-<t tx="ekr.20150318110552.69">::
-
-    free-layout-context-menu
-    free-layout-load
-    free-layout-load-alternate
-    free-layout-load-detached-body
-    free-layout-load-no-log
-    free-layout-load-standard
-    free-layout-restore
-    free-layout-zoom
-</t>
-<t tx="ekr.20150318110552.70">::
-
-    gui-all-hide
-    gui-all-show
-    gui-all-toggle
-    gui-iconbar-hide
-    gui-iconbar-show
-    gui-iconbar-toggle
-    gui-menu-hide
-    gui-menu-show
-    gui-menu-toggle
-    gui-minibuffer-hide
-    gui-minibuffer-show
-    gui-minibuffer-toggle
-    gui-statusbar-hide
-    gui-statusbar-show
-    gui-statusbar-toggle
-    gui-tabbar-hide
-    gui-tabbar-show
-    gui-tabbar-toggle
-</t>
-<t tx="ekr.20150318110552.71">``show-colors``
-    Opens a tab in the log pane showing various color pickers.
-    (Not implemented in Qt)
-``show-fonts``
-    Open a tab in the log pane showing a font picker.</t>
-<t tx="ekr.20150318110552.72">.. revise
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-I just pushed two new commands, zoom-in and zoom-out, which increase
-or decrease the body text font size by one point size.  They probably
-deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
-
-They leverage the new theme "engine" by manipulating a constant
-"@font-size-body".  I've set it up in the default theme, anyone using
-the new dark theme will need to add
-
-   @font-size-body = 18px
-
-in the config node for that theme, 
-
-@settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;config
-
-and replace the literal "18px" with "@font-size-body" in the node
-
-@settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;Non-color styles (fonts etc.)--&gt;body editor
-
-commit log:
-
-  zoom-in / zoom-out commands
-  ctrl-mouse wheel scrolling for same
-  
-  replace old focused pane border highlight with pure stylesheet
-  version
-  
-  rename solarized_dark theme leo_dark_0
+``zoom-in``
+    Increases text size by 1 pt.
+``zoom-out``.
+    Decrease text size by 1 pt.
 </t>
 <t tx="ekr.20150318110552.74">The following commands expand abbreviations::
 
@@ -17685,37 +17474,91 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 </t>
 <t tx="ekr.20150318110552.75">.. revise
 
-.. Undocumented
-..  clear-node-uas
-..  set-font
-
 ::
-
-    at-file-to-at-auto
-    clean-persistence
-    enter-quick-command-mode
-    exit-named-mode
-    join-leo-irc
-    delete-script-button-button
-    script-button
-
-</t>
-<t tx="ekr.20150318110552.76">::
 
     c-to-python
     c-to-python-clean-docs
+    typescript-to-py
 
 This command is a rewrapping of the first Python script I ever wrote. It
 takes much of the scut work away from the task of converting C code to
 Python code.
+
+::
+
+    act-on-node
+    at-file-to-at-auto
+    clean-persistence
+    cls
+    context-menu-open
+    delete-script-button-button
+    enter-quick-command-mode
+    exit-named-mode
+    join-leo-irc
+    open-python-window    
+    script-button
+    
+    # Icons.
+    insert-icon
+    delete-first-icon
+    delete-last-icon
+    delete-node-icons
+    
+    # Layout.
+    free-layout-context-menu
+    free-layout-load
+    free-layout-load-alternate
+    free-layout-load-detached-body
+    free-layout-load-no-log
+    free-layout-load-standard
+    free-layout-restore
+    free-layout-zoom
 </t>
-<t tx="ekr.20150318110552.77">``flush-lines``
-    Deletes each line that contains a match for regexp, operating on the text after point.
-    In Transient Mark mode, if the region is active, the command operates on the region instead.
-``keep-lines``
-    Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. </t>
-<t tx="ekr.20150318110552.78"></t>
-<t tx="ekr.20150318110552.79">.. revise</t>
+<t tx="ekr.20150318110552.79">Plugins create the following commands::
+    
+    # bookmarks.py
+    bookmarks-bookmark
+    bookmarks-bookmark-child
+    bookmarks-level-decrease
+    bookmarks-level-increase
+    bookmarks-mark-as-target
+    bookmarks-open-bookmark
+    bookmarks-open-node
+    bookmarks-show
+    bookmarks-switch
+    bookmarks-use-other-outline
+    
+    # quicksearch.py
+    find-quick
+    find-quick-changed
+    find-quick-selected
+    find-quick-test-failures
+    find-quick-timeline
+    focus-to-nav
+    go-anywhere
+    history
+    marked-list
+    
+    # richtext.py
+    cke-text-close
+    cke-text-open
+    cke-text-switch
+    cke-text-toggle-autosave
+    richtext-close-editor
+    richtext-open-editor
+    richtext-switch-editor
+    richtext-toggle-autosave
+
+    # viewrendered.py
+    vr-contract
+    vr-expand
+    vr-hide
+    vr-lock
+    vr-pause-play-movie
+    vr-show
+    vr-toggle (Alt-0)
+    vr-unlock
+    vr-update</t>
 <t tx="ekr.20150318110552.8">.. _`Emacs cursor commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point
 
 **Smart cursor moves**: Many editors allow you to jump over, select and delete words, especially those containing or surrounded by special characters, in a smarter way than just "going to the beginning of the word before" (back-word) or "going to the end of the next word" (forward-word)::
@@ -17741,6 +17584,12 @@ The following commands work much like the `Emacs cursor commands`_::
     back-to-home-extend-selection
     back-to-indentation
     back-word-extend-selection
+    backward-delete-char
+    backward-find-character
+    backward-find-character-extend-selection
+    backward-kill-paragraph
+    backward-kill-sentence
+    backward-kill-word
     beginning-of-buffer
     beginning-of-buffer-extend-selection
     beginning-of-line
@@ -17769,54 +17618,7 @@ The following commands work much like the `Emacs cursor commands`_::
     next-line-extend-selection
     previous-line
     previous-line-extend-selection
-    scroll-down
-    scroll-down-extend-selection
-    scroll-up
-    scroll-up-extend-selection
 </t>
-<t tx="ekr.20150318110552.80"></t>
-<t tx="ekr.20150318110552.81">::
-
-    bookmarks-bookmark
-    bookmarks-bookmark-child
-    bookmarks-level-decrease
-    bookmarks-level-increase
-    bookmarks-mark-as-target
-    bookmarks-open-bookmark
-    bookmarks-open-node
-    bookmarks-show
-    bookmarks-switch
-    bookmarks-use-other-outline</t>
-<t tx="ekr.20150318110552.82">::
-
-    cke-text-close
-    cke-text-open
-    cke-text-switch
-    cke-text-toggle-autosave</t>
-<t tx="ekr.20150318110552.83">The quicksearch plugin now supports the go-anywhere command. It works "sort of" like Nav bar. Also Nav bar now does live search on headline (you have to press enter to force search of bodies as well)
-
-Once the hits are shows, you can navigate them by pressing up/down while focus is still in line editor &amp; you can keep on typing (sort of like sublime text).
-
-This has a very clever hack (even if I say so myself)--spaces in search string are replaced with * wild card. So if you search for, say "file txt", it will search for "file*txt", matching e.g. @file readme.txt
-</t>
-<t tx="ekr.20150318110552.84">::
-    
-    richtext-close-editor
-    richtext-open-editor
-    richtext-switch-editor
-    richtext-toggle-autosave
-</t>
-<t tx="ekr.20150318110552.85">::
-
-              vr-contract
-              vr-expand
-              vr-hide
-              vr-lock
-              vr-pause-play-movie
-              vr-show
-    Alt+Key+0 vr-toggle
-              vr-unlock
-              vr-update</t>
 <t tx="ekr.20150318110552.86">``run-all-unit-tests-externally``
     Run all unit tests in a separate process.
 ``run-all-unit-tests-locally``
@@ -17830,9 +17632,7 @@ This has a very clever hack (even if I say so myself)--spaces in search string a
 ``run-selected-unit-tests-locally``
     Run all unit tests in the selected tree in this outline.
 </t>
-<t tx="ekr.20150318110552.87">.. revise
-
-::
+<t tx="ekr.20150318110552.87">::
 
     :!
     :%s
@@ -17852,7 +17652,8 @@ This has a very clever hack (even if I say so myself)--spaces in search string a
     :toggle-vim-trainer-mode
     :w
     :wq
-    :xa</t>
+    :xa
+</t>
 <t tx="ekr.20150319142303.4"></t>
 <t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
 <t tx="ekr.20150323102036.1">@language rest
@@ -17930,31 +17731,43 @@ Here is the output::
     handler2 10 ekr.leo 10.1400
     handler2 done
 </t>
-<t tx="ekr.20150323102918.1">.. Deprecated tangle/untangle commands
-..  tangle
-..  tangle-all
-..  tangle-marked
-..  untangle
-..  untangle-all
-..  untangle-marked
+<t tx="ekr.20150323102918.1">.. Aliases.
+find-clone-all
+find-clone-all-flattened
+find-next-clone
+find-quick
+find-quick-changed
+find-quick-selected
+find-quick-test-failures
+find-quick-timeline
+global-search
+
+.. Deprecated tangle/untangle commands.
+tangle
+tangle-all
+tangle-marked
+untangle
+untangle-all
+untangle-marked
 
 .. Obscure, unused, minibuffer-related commands.
-..  digit-argument
-..  menu-shortcut
-..  negative-argument
-..  number-command
-..  number-command-0
-..  number-command-1
-..  number-command-2
-..  number-command-3
-..  number-command-4
-..  number-command-5
-..  number-command-6
-..  number-command-7
-..  number-command-8
-..  number-command-9
-..  self-insert-command
-..  universal-argument
+advertised-undo
+digit-argument
+menu-shortcut
+negative-argument
+number-command
+number-command-0
+number-command-1
+number-command-2
+number-command-3
+number-command-4
+number-command-5
+number-command-6
+number-command-7
+number-command-8
+number-command-9
+self-insert-command
+universal-argument
 </t>
 <t tx="ekr.20150323103115.1">.. _`Emacs rectangle commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html
 
@@ -18087,6 +17900,128 @@ QTreeView::branch:open:has-children{
 }
 
 I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
+</t>
+<t tx="ekr.20150323185151.1">.. revise
+
+::
+
+    macro-call
+    macro-call-last
+    macro-end-recording
+    macro-load-all
+    macro-name-last
+    macro-print-all
+    macro-print-last
+    macro-save-all
+    macro-start-recording
+</t>
+<t tx="ekr.20150323185456.1">::
+
+    buffer-append-to
+    buffer-kill
+    buffer-prepend-to
+    buffer-switch-to
+    buffers-list
+    buffers-list-alphabetically
+</t>
+<t tx="ekr.20150323185514.1"></t>
+<t tx="ekr.20150323185611.1">::
+
+    backward-delete-char
+    backward-find-character
+    backward-find-character-extend-selection
+    backward-kill-paragraph
+    backward-kill-sentence
+    backward-kill-word
+    kill-line
+    kill-paragraph
+    kill-region
+    kill-region-save
+    kill-sentence
+    kill-to-end-of-line
+    kill-word
+    kill-ws
+    yank
+    yank-pop
+    zap-to-character
+</t>
+<t tx="ekr.20150323185921.1">..revise
+
+::
+
+    add-space-to-lines,
+    add-tab-to-lines
+    align-eq-signs
+    auto-complete
+    auto-complete-force
+    capitalize-word
+    center-line
+    center-region
+    clear-kill-ring
+    count-pages
+    count-region
+    delete-char
+    delete-indentation
+    delete-spaces
+    downcase-region
+    downcase-word
+    exchange-point-mark
+    extend-to-line
+    extend-to-paragraph
+    extend-to-sentence
+    extend-to-word
+    fill-paragraph
+    fill-region
+    fill-region-as-paragraph
+    hide-invisibles
+    how-many
+    indent-relative
+    indent-rigidly
+    indent-to-comment-column
+    insert-child
+    insert-file-name
+    insert-file-name
+    insert-hard-tab
+    insert-newline
+    insert-parentheses
+    insert-soft-tab
+    join-node-above
+    join-node-below
+    join-selection-to-node-below
+    line-number
+    move-lines-down
+    move-lines-up
+    newline-and-indent
+    open-url
+    open-url-under-cursor
+    remove-blank-lines
+    remove-newlines
+    remove-space-from-lines
+    remove-tab-from-lines
+    reverse-region
+    reverse-sort-lines
+    reverse-sort-lines-ignoring-case
+    select-to-matching-bracket
+    set-fill-column
+    set-fill-prefix
+    shell-command
+    shell-command-on-region
+    show-invisibles
+    set-comment-column
+    sort-columns
+    sort-fields
+    sort-lines
+    sort-lines-ignoring-case
+    split-line
+    tabify
+    transpose-chars
+    transpose-lines
+    transpose-words
+    untabify
+    upcase-region
+    upcase-word
+    view-lossage
+    what-line
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
