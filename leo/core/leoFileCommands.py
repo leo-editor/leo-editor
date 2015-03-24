@@ -1929,22 +1929,18 @@ class FileCommands:
             g.app.prolog_postfix_string))
     #@+node:ekr.20031218072017.1573: *3* fc.putLeoOutline (to clipboard)
     def putLeoOutline (self):
-
-        '''Return a string, *not unicode*, encoded with self.leo_file_encoding,
-        suitable for pasting to the clipboard.'''
-
-        trace = False and not g.unitTesting
+        '''
+        Return a string, *not unicode*, encoded with self.leo_file_encoding,
+        suitable for pasting to the clipboard.
+        '''
         self.outputFile = g.FileLikeObject()
         self.usingClipboard = True
-
         self.putProlog()
         self.putClipboardHeader()
         self.putVnodes()
         self.putTnodes()
         self.putPostlog()
-
         s = self.outputFile.getvalue()
-        if trace: g.trace(s)
         self.outputFile = None
         self.usingClipboard = False
         return s

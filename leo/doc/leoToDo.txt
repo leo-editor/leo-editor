@@ -6,41 +6,20 @@
 .. @+node:ekr.20150227040245.4: ** To do: Leo 5.1 b1
 @language rest
 @wrap
-.. @+node:ekr.20150323164045.1: *3* Search g.command for missing docstrings
-.. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
-Set default for @string stylesheet so it generates::
-
-    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150319055953.4: *3* Relocate remove-sentinels
-It is an import command, not an export command.
 .. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150211104036.4: *4* Fix bugs 135 & 141: DnD & paste-retaing-clones
+.. @+node:ekr.20150211104036.4: *4* Fix bug 135: drag and drop between trees broken
 https://github.com/leo-editor/leo-editor/issues/135
 drag and drop between trees broken
 
-This may also affect paste-retaining-clones.
-https://github.com/leo-editor/leo-editor/issues/141
 
 4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
 Author: Me
 Date:   Fri Sep 13 16:44:33 2013 -0500
 Tag: Bug-135
-.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation.
-@nocolor-node
-
-- Detect changes in root node, if possible.
-- Detect changes in headlines, if possible.
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150312080344.4: *4* Improve speed of spelling
-@language rest
-
-Why is spell-checking so slow?
-
-Trick: Spell-check just desired clone (at bottom of file).
-
-Substitute for the lack of an "outline-only" button in the spell tab.
-.. @+node:ekr.20150302140653.4: *3* Bugs for b1/b2
+.. @+node:ekr.20150323164045.1: *4* Search g.command for missing docstrings
+.. @+node:ekr.20150319055953.4: *4* Relocate remove-sentinels
+It is an import command, not an export command.
+.. @+node:ekr.20150302140653.4: *3* Bugs for b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
 
@@ -1110,6 +1089,21 @@ def createNodeFromExternalFile(self,fn):
     if w: w.setInsertPoint(0)
     c.redraw()
     c.recolor()
+.. @+node:ekr.20150312080344.4: *4* Improve speed of spelling (low priority)
+@language rest
+
+Workaround: Spell-check just desired clone (at bottom of file).
+.. @+node:ekr.20150319055953.11: *4* Improve <?xml-stylesheet> (low priority)
+Set default for @string stylesheet so it generates::
+
+    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation.
+@nocolor-node
+
+- Detect changes in root node, if possible.
+- Detect changes in headlines, if possible.
 .. @+node:ekr.20150305084546.4: *3* Can't/won't fix
 .. @+node:ekr.20150306075700.4: *4* Fix bug 89: Spontaneous clones when using sections
 https://github.com/leo-editor/leo-editor/issues/89

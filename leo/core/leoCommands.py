@@ -3692,13 +3692,12 @@ class Commands (object):
             c.recolor()
     #@+node:ekr.20031218072017.1550: *7* c.copyOutline
     def copyOutline (self,event=None):
-
         '''Copy the selected outline to the clipboard.'''
-
         # Copying an outline has no undo consequences.
         c = self
         c.endEditing()
         s = c.fileCommands.putLeoOutline()
+        g.app.paste_c = c
         g.app.gui.replaceClipboardWith(s)
     #@+node:ekr.20031218072017.1551: *7* c.pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
@@ -3718,6 +3717,10 @@ class Commands (object):
         if s is None:
             s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
+        if pasteAsClone and g.app.paste_c != c:
+            g.es('illegal paste-retaining-clones',color='red')
+            g.es('only valid in same outline.')
+            return
         undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.endEditing()
         if not s or not c.canPasteOutline(s):

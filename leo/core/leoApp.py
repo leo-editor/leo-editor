@@ -98,6 +98,7 @@ class LeoApp:
         self.globalRegisters = {}       # The global register list.
         self.leoID = None               # The id part of gnx's.
         self.lossage = []               # List of last 100 keystrokes.
+        self.paste_c = None             # The commander that pasted the last outline.
         self.spellDict = None           # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows=0  # Number of opened untitled windows.
         self.windowList = []            # Global list of all frames.
