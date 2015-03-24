@@ -646,13 +646,11 @@
 </v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
-<v t="ekr.20150323102918.1"><vh>@rst-ignore not documented</vh></v>
 <v t="ekr.20150323161357.1"><vh>Key Reference</vh>
 <v t="ekr.20150323161357.2"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20150323161357.3"><vh>Moving outline nodes</vh></v>
-</v>
 <v t="ekr.20150323161357.4"><vh>Moving the cursor</vh></v>
-<v t="ekr.20110611055444.16726"><vh>Prefixes for command names</vh></v>
+</v>
 <v t="ekr.20150318110552.10"><vh>Debug commands</vh></v>
 <v t="ekr.20150318110552.18"><vh>Edit commands</vh>
 <v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
@@ -665,7 +663,7 @@
 <v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
 <v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
 </v>
-<v t="ekr.20150323185514.1"><vh>Emacs emulation</vh>
+<v t="ekr.20150323185514.1"><vh>Emacs-like commands</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
 <v t="ekr.20150323185456.1"><vh>Buffer commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
@@ -704,7 +702,7 @@
 <v t="ekr.20150318110552.50"><vh>Converting between outlines and text</vh></v>
 <v t="ekr.20150318110552.51"><vh>Dragging nodes</vh></v>
 <v t="ekr.20150318110552.52"><vh>Marking nodes</vh></v>
-<v t="ekr.20150318110552.53"><vh>Moving, deleting and cloning marked nodes</vh></v>
+<v t="ekr.20150318110552.53"><vh>Operations on marked nodes</vh></v>
 <v t="ekr.20150318110552.54"><vh>Comparing outlines</vh></v>
 <v t="ekr.20150318110552.55"><vh>Using Chapters</vh></v>
 </v>
@@ -721,6 +719,7 @@
 <v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
+<v t="ekr.20150323102918.1"><vh>@rst-ignore Not documented</vh></v>
 </v>
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
@@ -3037,6 +3036,26 @@ Leo's Commands Reference
 ########################
 
 This chapter discusses the basics of using Leo, including all of Leo's commands. It starts with a discussion of the Emacs-like minibuffer, then continues with a discussion of commands in each of Leo's menus.
+
+**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use. It *is* good to know the following prefixes for tab completion in the minibuffer:: 
+
+    file-       file commands
+    find-       find commands
+    isearch-    incremental search commands
+    print-      print commands
+    rectangle-  rectangle commands
+    toggle-     toggle settings commands
+    
+.. Less important prefixes:
+..  abbrev-     abbreviation commands
+..  buffer-     buffer commands
+..  ddabrev-    dynamic abbreviations
+..  directory-  directory commands
+..  gc-         garbage collection commands
+..  macro-      macro expansion commands
+..  register-   register commands
+..  run-        run unit tests commands
+..  yank-       yank commands
 
 .. contents::
     :depth: 2
@@ -10286,24 +10305,6 @@ These settings are as follows, with the defaults as shown::
 </t>
 <t tx="ekr.20110601105631.19349">
 </t>
-<t tx="ekr.20110611055444.16726">Many command names have common prefixes. This aids command-completion in the minibuffer::
-
-    abbrev-     abbreviation commands
-    buffer-     buffer command
-    ddabrev-    dynamic abbreviations
-    directory-  director commands
-    file-       file commands
-    find-       find commands
-    gc-         garbage collection
-    isearch-    incremental search
-    macro-      macro expansion
-    print-      print information
-    rectangle-  rectangle commands
-    register    register commands
-    run-        run unit tests
-    toggle-     toggle settings
-    yank-       yank
-</t>
 <t tx="ekr.20110612104631.16414">The following options allow you to expand noweb section references, much like Leo itself does. The rst3 command ensures that unbounded expansions can not happen. While expanding any section, the rst3 will not expand again any sections that have already occurred in the expansion.
 
 ``expand_noweb_references``
@@ -11348,6 +11349,8 @@ You will see ``print-`` in the minibuffer. This is the longest common prefix of 
 Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
 
 Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
+
+**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use.
 
 **Opening files using filename completion**
 
@@ -16483,13 +16486,10 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     :local:
     :depth: 2
     
-.. revise
-
-::
-
-    check-derived-file
-    check-leo-file
-    
+``check-derived-file``
+    Makes sure an external file written by Leo can be read properly. 
+``check-leo-file``
+    Performs a full check of the consistency of a .leo file.  As of Leo 5.1, Leo performs checks of gnx's and outline structure before writes and after reads, pastes and undo/redo.
 ``check-outline``
     Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
 ``clear-all-caches``
@@ -16611,16 +16611,16 @@ These commands work with either headline or body text.</t>
 ``delete-comments (Ctrl-()``
     Deletes comments in the selected lines.
 </t>
-<t tx="ekr.20150318110552.24">.. revise
+<t tx="ekr.20150318110552.24">.. _`Python's time module`: http://www.python.org/doc/current/lib/module-time.html
 
-::
+``beautify`` and ``beautify-tree``
+    Beautifies all the Python code in the selected tree.
+``beautify-all``
+    Beautifies all Python code in the entire outline.
+``beautify-c``
+    Reformats all C code in the selected tree.
 
-    beautify
-    beautify-all
-    beautify-c
-    beautify-tree
-    clean-all-blank-lines
-    clean-body
+**PythonTidy**: By default, Leo's beautify commands use PythonTidy. See ``Beautify command settings`` in leoSettings.leo for settings that apply.
 
 ``clean-lines``
     Removes trailing whitespace from all lines, preserving newlines.
@@ -16640,10 +16640,11 @@ These commands work with either headline or body text.</t>
 ``flush-lines``
     Deletes each line that contains a match for regexp, operating on the text after point.
     In Transient Mark mode, if the region is active, the command operates on the region instead.
-``insert-body-time`` and ``insert-headline-time``
-    Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime. For a complete list of the format options see http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date format like::
 
-        1/30/2003 8:31:55
+``insert-body-time`` and ``insert-headline-time``
+    Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime.
+    
+**Time format**: For format options see `Python's time module`_. By default, the commands use ``%m/%d/%Y %H:%M:%S``, giving timestamps like ``1/30/2003 8:31:55``.
 
 ``keep-lines``
     Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. 
@@ -16919,10 +16920,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     simulate-begin-drag
     simulate-end-drag
 </t>
-<t tx="ekr.20150318110552.41">``toggle-active-pane``
-    Switches focus between the outline and body panes.
-
-::
+<t tx="ekr.20150318110552.41">::
 
     activate-cmds-menu
     activate-edit-menu
@@ -17430,18 +17428,9 @@ The following commands enable, disable or toggle various settings::
 ``zoom-out``.
     Decrease text size by 1 pt.
 </t>
-<t tx="ekr.20150318110552.74">.. revise
+<t tx="ekr.20150318110552.74">**Important**: The following describes Leo's new abbreviation scheme.  Such abbreviations *fire immediately* whenever they are completed. You do *not* have to execute a command!  By convention, abbreviations end with ``;;``, something you are not likely to type by accident, but you can pick any abbreviation you like.
 
-The following commands expand abbreviations::
-
-    abbrev-add-global
-    abbrev-inverse-add-global
-    abbrev-kill-all
-    abbrev-list
-    abbrev-read
-    abbrev-write
-    dabbrev-completion
-    dabbrev-expands
+**Note**:
 
 1. The @data abbreviations-subst-env node contains a script defining the environment in which all abbreviations execute. This allows helper functions to be defined. Very handy.
    
@@ -17458,10 +17447,23 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
 
 5. Added a new example node: @@data abbreviations examples.  This contains
    several extremely useful scripts.
+   
+.. _`Emacs-like abbreviation commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html#Abbrevs
+
+Leo also supports `Emacs-like abbreviation commands`_, but they are seldom used::
+
+    abbrev-add-global
+    abbrev-inverse-add-global
+    abbrev-kill-all
+    abbrev-list
+    abbrev-read
+    abbrev-write
+    dabbrev-completion
+    dabbrev-expands
+
 </t>
 <t tx="ekr.20150318110552.75">::
 
-    act-on-node
     at-file-to-at-auto
     clean-persistence
     cls
@@ -17500,7 +17502,21 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
     print-node-uas
     set-ua
 </t>
-<t tx="ekr.20150318110552.79">Plugins create the following commands::
+<t tx="ekr.20150318110552.79">``act-on-node``
+    Executes node-specific action, typically defined in a plugins as follows::
+
+        import leo.core.leoPlugins
+
+        def act_print_upcase(c,p,event):
+            if not p.h.startswith('@up'):
+                raise leo.core.leoPlugins.TryNext
+            p.h = p.h.upper()
+
+        g.act_on_node.add(act_print_upcase)
+
+    This will upcase the headline when it starts with @up.
+
+Plugins create the following commands::
     
     # bookmarks.py
     bookmarks-bookmark
@@ -17555,7 +17571,7 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
     forward-word-smart-extend-selection
     delete-word-smart
     backward-delete-word-smart
-
+    
 The following commands work much like the `Emacs cursor commands`_::
 
     back-char
@@ -17820,6 +17836,11 @@ Controls how Leo reports successful checks:
 <t tx="ekr.20150323154836.1">If you give no file arguments on the command line Leo will open ``~/.leo/workbook.leo``.  Initially, this file contains Leo's cheat sheet and an example from the rst3 tutorial.
 </t>
 <t tx="ekr.20150323161357.1">The following is only a summary.  ``print-bindings`` prints a complete list of the bindings in effect.
+
+.. contents::
+    :local:
+    :depth: 2
+
 </t>
 <t tx="ekr.20150323161357.2">When focus is in the outline pane::
 
@@ -17870,7 +17891,7 @@ Regardless of focus::
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 
 </t>
-<t tx="ekr.20150323164016.1">Search for .. revise</t>
+<t tx="ekr.20150323164016.1"></t>
 <t tx="ekr.20150323164016.2"></t>
 <t tx="ekr.20150323164016.3">https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
 By Andrea Nuvola
@@ -17903,9 +17924,9 @@ The following commands emulate the `Emacs macro commands`_::
     macro-save-all
     macro-start-recording
 </t>
-<t tx="ekr.20150323185456.1">.. revise
+<t tx="ekr.20150323185456.1">.. _`Emacs buffer commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html#Buffers
 
-::
+The following work like some of the many `Emacs buffer commands`_.  A **buffer** in Leo is simply a Leo node::
 
     buffer-append-to
     buffer-kill
@@ -17914,10 +17935,11 @@ The following commands emulate the `Emacs macro commands`_::
     buffers-list
     buffers-list-alphabetically
 </t>
-<t tx="ekr.20150323185514.1"></t>
-<t tx="ekr.20150323185611.1">.. revise
-
-::
+<t tx="ekr.20150323185514.1">.. contents::
+    :local:
+    :depth: 2
+</t>
+<t tx="ekr.20150323185611.1">The following commands typically work like the corresponding Emacs command. For details about any command use ``F11 (help-for-command)``::
 
     backward-delete-char
     backward-find-character
@@ -17937,11 +17959,9 @@ The following commands emulate the `Emacs macro commands`_::
     yank-pop
     zap-to-character
 </t>
-<t tx="ekr.20150323185921.1">.. revise
+<t tx="ekr.20150323185921.1">The following commands typically work like the corresponding Emacs command. For details about any command use ``F11 (help-for-command)``::
 
-::
-
-    add-space-to-lines,
+    add-space-to-lines
     add-tab-to-lines
     align-eq-signs
     auto-complete
@@ -18020,18 +18040,11 @@ The following commands emulate the `Emacs macro commands`_::
 ``match-brackets``
     Enabled if the cursor is next to one of these characters in the body pane: ``( ) [ ] { } &lt; &gt;`` The command looks for the matching character, searching backwards through the body text if the cursor is next to ``)`` ``]`` ``}`` or ``&gt;`` and searching forward through the text otherwise. If the cursor is between two brackets the search is made for the bracket matching the leftmost bracket. If a match is found, the entire range of characters delimited by the brackets is highlighted and the cursor is placed just to the left of the matching characters. Thus, executing this command twice highlights the range of matched characters without changing the cursor.
 </t>
-<t tx="ekr.20150323200950.1">.. revise
+<t tx="ekr.20150323200950.1">``c-to-python``
+    Converts c or c++ text to python text. The conversion is not perfect, but it eliminates a lot of tedious text manipulation.  This command is a rewrapping of the first Python script I ever wrote.
 
-::
-
-    c-to-python
-    c-to-python-clean-docs
-    typescript-to-py
-
-This command is a rewrapping of the first Python script I ever wrote. It
-takes much of the scut work away from the task of converting C code to
-Python code.
-
+``typescript-to-py``
+    Converts typescript text to python text. The conversion is not perfect, but it eliminates a lot of tedious text manipulation.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
