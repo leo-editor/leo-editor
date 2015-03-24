@@ -1183,9 +1183,10 @@
 <v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
 </v>
 <v t="ekr.20150311123850.41"><vh>Features</vh>
+<v t="ekr.20150323164016.3"><vh>Added nodes-dark icons &amp; stylesheet</vh></v>
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 <v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
-<v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable.</vh></v>
+<v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable</vh></v>
 <v t="ekr.20150311123850.44"><vh>import-file command create @nosent nodes</vh></v>
 <v t="ekr.20150311123850.45"><vh>Added --old-nosent command-line option</vh></v>
 <v t="ekr.20150311123850.46"><vh>The presence of @persistence enables @auto persistence</vh></v>
@@ -1197,11 +1198,6 @@
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 </v>
 </v>
-<v t="ekr.20150323164016.1"><vh>** To do</vh>
-<v t="ekr.20150323164016.2"><vh>document --diff</vh></v>
-<v t="ekr.20150323164016.3"><vh>Document nodes-dark icons &amp; stylesheet</vh></v>
-</v>
-<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -17891,25 +17887,22 @@ Regardless of focus::
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 
 </t>
-<t tx="ekr.20150323164016.1"></t>
-<t tx="ekr.20150323164016.2"></t>
 <t tx="ekr.20150323164016.3">https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ
 By Andrea Nuvola
 
-To set the collapsed/expanded node images, one can add the following sections
-to a theme settings tree (in my case, I put them in the body of the 
-"Non-color styles (fonts etc.)/tree" node of the "leo_dark_0" theme):
+The leo/Icons/node-dark folder now contains small triangles and plus/minus signs that look good with the solarized dark them.
 
-QTreeView::branch:closed:has-children{
-   image: url("&lt;home directory&gt;/.leo/icons/nodes-dark/closed.png");
-}
+To set the collapsed/expanded node images, add the following sections to a theme settings tree::
 
-QTreeView::branch:open:has-children{
-   image: url("&lt;home directory&gt;/.leo/icons/nodes-dark/open.png");
-}
-
-I attach the images I use for my solarized dark theme, both small triangles and plus/minus signs, in case they can be useful.
-</t>
+    QTreeView::branch:closed:has-children{
+       image: url("&lt;home directory&gt;/.leo/Icons/nodes-dark/closed.png");
+    }
+    
+    QTreeView::branch:open:has-children{
+       image: url("&lt;home directory&gt;/.leo/Icons/nodes-dark/open.png");
+    }
+    
+For example, put them in the body of the "Non-color styles (fonts etc.)/tree" node of the "leo_dark_0" theme.</t>
 <t tx="ekr.20150323185151.1">.. _`Emacs macro commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macros.html#Keyboard-Macros
 
 The following commands emulate the `Emacs macro commands`_::
