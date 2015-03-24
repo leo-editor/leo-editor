@@ -1559,19 +1559,20 @@ class ControlCommandsClass (BaseEditCommandsClass):
     #@+node:ville.20090222184600.2: *3* actOnNode
     def actOnNode(self, event):
         '''
+
         Executes node-specific action, typically defined in a plugins as
         follows::
-
+        
             import leo.core.leoPlugins
-
+        
             def act_print_upcase(c,p,event):
                 if not p.h.startswith('@up'):
                     raise leo.core.leoPlugins.TryNext
                 p.h = p.h.upper()
-
+        
             g.act_on_node.add(act_print_upcase)
-
-        This will upcase the headline when it starts with @up.
+        
+        This will upcase the headline when it starts with ``@up``.
         '''
         g.act_on_node(self.c,self.c.p,event)
     #@+node:ekr.20050920084036.155: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
@@ -7886,12 +7887,14 @@ class HelpCommandsClass (BaseEditCommandsClass):
                 # Create the title.
                 s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
                 underline = '+' * len(s2)
-                # title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
                 title = '%s\n%s\n\n' % (s2,underline)
-                # Fixes bug 618570:
-                s = title + ''.join([
-                    line.lstrip() if line.strip() else '\n'
-                        for line in g.splitLines(s)])
+                if 1: # 2015/03/24
+                    s = title + g.adjustTripleString(s,c.tab_width)
+                else:
+                    # Fixes bug 618570:
+                    s = title + ''.join([
+                        line.lstrip() if line.strip() else '\n'
+                            for line in g.splitLines(s)])
             else:
                 #@+<< set s to about help-for-command >>
                 #@+node:ekr.20120521114035.9872: *5* << set s to about help-for-command >>
