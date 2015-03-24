@@ -4153,7 +4153,12 @@ class Commands (object):
         return structure_errors
         
     def fullCheckOutline (self,event=None):
-        '''Check the outline, including links.'''
+        '''
+        Performs a full check of the consistency of a .leo file.
+        
+        As of Leo 5.1, Leo performs checks of gnx's and outline structure
+        before writes and after reads, pastes and undo/redo.
+        '''
         return self.checkOutline(check_links=True)
     #@+node:ekr.20141024211256.22: *7* c.checkGnxs
     def checkGnxs(self):

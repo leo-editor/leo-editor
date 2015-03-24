@@ -3659,18 +3659,22 @@ class EditCommandsClass (BaseEditCommandsClass):
 
     def cToPy (self,event):
 
-        ''' The c-to-python command converts c or c++ text to python text.
+        '''
+        The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
-        text manipulation.'''
+        text manipulation.
+        '''
 
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
 
     def tsToPy (self,event):
 
-        ''' The typescript-to-python command converts typescript text to python
+        '''
+        The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
-        text manipulation.'''
+        text manipulation.
+        '''
 
         # Compiler stats: 35 files, 1489 nodes, 100 to 120 sec.
         self.TS_To_Python(self.c).go()
