@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090314215508.4: * @file quicksearch.py
 #@+<< docstring >>
-#@+node:ville.20090314215508.5: ** << docstring >>
+#@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
 ''' Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
@@ -44,6 +44,17 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-changed:
   Lists all nodes that are changed (aka "dirty") since last save.  Handy when
   you want to see why a file's marked as changed.
+  
+- go-anywhere
+  Nav bar does live search on headline. Press enter to force search of bodies.
+
+  Once the hits are shown, you can navigate them by pressing up/down while
+  focus is still in line editor & you can keep on typing (sort of like
+  sublime text).
+
+  **Clever**: paces in search string are replaced with * wild card. So if
+  you search for, say "file txt", it will search for "file*txt", matching
+  e.g. @file readme.txt.
 
 - history:
   Lists nodes from c.nodeHistory.
