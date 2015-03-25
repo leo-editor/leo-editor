@@ -253,6 +253,7 @@ def onCreate (tag, keys):
 #@+node:ekr.20120922041923.10609: *3* @g.command('screencast-start')
 @g.command('screencast-start')
 def screencast_start(event):
+    '''Start a screencast (screencast.py)'''
     c = event.get('c')
     # g.trace(c, c and c.p.h)
     if c:

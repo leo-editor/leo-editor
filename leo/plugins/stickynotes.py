@@ -520,12 +520,10 @@ def tabula_f(event):
 #@+node:ville.20100704010850.5588: *3* @g.command('tabula-show')
 @g.command('tabula-show')
 def tabula_show_f(event):
+    '''Show the`Tabula` sticky note dock window, without adding the current node.'''
     c= event['c']
 
     tabula_show(c)
-
-
-
 #@+node:ville.20100704125228.5592: *3* @g.command('tabula-marked')
 @g.command('tabula-marked')
 def tabula_marked_f(event):

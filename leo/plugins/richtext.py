@@ -288,6 +288,7 @@ def at_rich_check(tag, key):
 #@+node:tbrown.20130813134319.5692: ** @g.command('cke-text-open')
 @g.command('cke-text-open')
 def cmd_OpenEditor(kwargs, at_rich=False):
+    '''Open the rich text editor, hide the regular editor.'''
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -303,6 +304,7 @@ def cmd_OpenEditor(kwargs, at_rich=False):
 #@+node:tbrown.20130813134319.5693: ** @g.command('cke-text-close')
 @g.command('cke-text-close')
 def cmd_CloseEditor(kwargs, at_rich=False):
+    '''Close the rich text editor, unhide the regular editor.'''
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
     if not splitter:
@@ -322,6 +324,7 @@ def cmd_CloseEditor(kwargs, at_rich=False):
 #@+node:tbrown.20130813134319.7233: ** @g.command('cke-text-switch')
 @g.command('cke-text-switch')
 def cmd_SwitchEditor(kwargs):
+    '''Switch between regular and rich text editor.'''
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -332,6 +335,13 @@ def cmd_SwitchEditor(kwargs):
 #@+node:tbrown.20130813134319.7231: ** @g.command('cke-text-toggle-autosave')
 @g.command('cke-text-toggle-autosave')
 def cmd_ToggleAutosave(kwargs):
+    '''
+    Toggle autosaving of changes when you leave a node.
+
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+    '''
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " + 
