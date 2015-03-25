@@ -7,22 +7,32 @@
 @language rest
 @wrap
 .. @+node:ekr.20150302140653.4: *3* Bugs for b2
+@language rest
+@wrap
+.. @+node:ekr.20150325052036.1: *4* Create x-@button or x-@command
+@language rest
+
+The name should indicate that it came from @button or @command.
+At present, @button x creates two names: x and @button-x.
+x should be x-@button.
+
+
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
+@wrap
 
 https://github.com/leo-editor/leo-editor/issues/122
 
-When one generates a node (call it Placeholder) without
-any contents, then the resulting rst file is written like:
+==== Make sure file doesn't continually get larger.
+
+When one generates a node (call it Placeholder) without any contents, then the resulting rst file is written like:
 
 Placeholder
 ***********
 Summary
 *******
 
-That is, there is no space between the two headings. Then if I do Refresh
-from disk, @auto-rst yields an error. This should not happen if @auto-rst
-automatically writes an empty line after each heading.
+That is, there is no space between the two headings. Then if I do Refresh from disk, @auto-rst yields an error. This would not happen if @auto-rst automatically writes an empty line after each heading.
 .. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
@@ -136,6 +146,56 @@ For example, JavaScript regular expressions are not handled properly.
 
 Furthermore, there should be a command to select the region between
 matching brackets.
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
+
+vim-open-file, if called while in a node associated with an external file, would open the file for editing.
+
+Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
+
+Upon returning to Leo, a 'Refresh from disk' would also be required.
+
+=== EKR
+
+Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
+
+=== Kent
+
+For @auto trees, Leo would do an @auto refresh.
+
+Ideally, cursor position would be maintained in both directions.
+
+Leo can indicate cursor position by adding the current cursor position to command line::
+
+    vim myfile +10
+
+opens myfile with the cursor at line 10
+
+Returning to Leo is a bit convoluted, but seems doable
+http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+
+vim is editing <extfile>, the session data will be saved in /tmp/vim_leo.bridge::
+
+    $ vim <extfile> -c "set viminfo='1,n/tmp" -i vim_leo.bridge
+    
+where:
+
+    '1   =  save 1 mark
+    n/tmp  =  in directory /tmp
+    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
+
+in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
+
+    # File marks:
+    '0  114  0  /tmp/brc
+    
+    # Jumplist (newest first):
+    -'  114  0  /tmp/brc
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
 .. @+node:ekr.20150325014616.1: *4* Low priority
