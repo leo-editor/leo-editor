@@ -2666,10 +2666,15 @@ class Commands (object):
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
     def findMatchingBracket (self,event=None):
         '''Select the text between matching brackets.'''
-        c = self
+        c,p = self,self.p
         w = c.frame.body.wrapper
         if g.app.batchMode:
             c.notValidInBatchMode("Match Brackets")
+            return
+        # A partial fix for bug 127: Bracket matching is buggy.
+        language = g.getLanguageAtPosition(c,p)
+        if language in ('javascript','perl'):
+            g.es('match-brackets not supported for',language)
             return
         brackets = "()[]{}<>"
         s = w.getAllText()
@@ -2685,7 +2690,6 @@ class Commands (object):
             ch = ch2 ; index = ins
         else:
             return
-
         index2 = self.findMatchingBracketHelper(s,ch,index)
         # g.trace('index,index2',index,index2)
         if index2 is not None:

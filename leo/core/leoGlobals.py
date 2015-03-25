@@ -2116,24 +2116,35 @@ def get_directives_dict_list(p):
         # n = len(p1.h) + len(p1.b)
         # g.trace('%4d %s' % (n,g.timeSince(time1)))
     return result
-#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (New)
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p):
-
-    '''Return the language in effect as determined
+    '''
+    Return the language in effect as determined
     by the file extension of the nearest enclosing @<file> node.
     '''
-
     for p in p.self_and_parents():
         if p.isAnyAtFileNode():
             name = p.anyAtFileNodeName()
             junk,ext = g.os_path_splitext(name)
             ext = ext[1:] # strip the leading .
             language = g.app.extension_dict.get(ext)
-
             # g.trace('found extension',p.h,ext,language)
             return language
-
     return None
+#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (new)
+def getLanguageAtPosition(c,p):
+    '''
+    Return the language in effect at position p.
+    This is always a lowercase language name, never None.
+    '''
+    aList = g.get_directives_dict_list(p)
+    d = g.scanAtCommentAndAtLanguageDirectives(aList)
+    language = d and d.get('language')
+    if not d:
+        language = g.getLanguageFromAncestorAtFileNode(p)
+    if not language:
+        language = c.config.getString('target_language') or 'python'
+    return language.lower()
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
@@ -2171,34 +2182,26 @@ def isDirective(s):
         return False
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
+    '''
+    Scan aList for @comment and @language directives.
 
-    '''Scan aList for @comment and @language directives.
-
-    @comment should follow @language if both appear in the same node.'''
-
+    @comment should follow @language if both appear in the same node.
+    '''
     trace = False and not g.unitTesting
     lang = None
-
     for d in aList:
-
         comment = d.get('comment')
         language = d.get('language')
-
         # Important: assume @comment follows @language.
         if language:
-            # if g.unitTesting: g.trace('language',language)
             lang,delim1,delim2,delim3 = g.set_language(language,0)
-
         if comment:
-            # if g.unitTesting: g.trace('comment',comment)
             delim1,delim2,delim3 = g.set_delims_from_string(comment)
-
         if comment or language:
             delims = delim1,delim2,delim3
             d = {'language':lang,'comment':comment,'delims':delims}
             if trace: g.trace(d)
             return d
-
     if trace: g.trace(repr(None))
     return None
 #@+node:ekr.20080827175609.32: *3* g.scanAtEncodingDirectives

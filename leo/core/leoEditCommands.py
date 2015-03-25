@@ -2114,9 +2114,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20110916215321.6709: *3* brackets (leoEditCommands)
     #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket (leoEditCommands)
     def selectToMatchingBracket (self,event):
-
         '''Select text that matches the bracket near the cursor.'''
-
         c = self.c
         w = self.editWidget(event)
         if not w: return
@@ -5150,40 +5148,37 @@ class EditCommandsClass (BaseEditCommandsClass):
             k.showStateAndMode()
     #@+node:ekr.20051125080855: *4* selfInsertCommand, helpers
     def selfInsertCommand(self,event,action='insert'):
+        '''
+        Insert a character in the body pane.
 
-        '''Insert a character in the body pane.
-        This is the default binding for all keys in the body pane.'''
-
+        This is the default binding for all keys in the body pane.
+        It handles undo, bodykey events, tabs, back-spaces and bracket matching.
+        '''
         trace = False and not g.unitTesting
-        c,k = self.c,self.k
+        c,k,p = self.c,self.k,self.c.p
         verbose = True
         w = self.editWidget(event)
-        if not w: return # (for Tk) 'break'
+        if not w:
+            return
         #@+<< set local vars >>
-        #@+node:ekr.20061103114242: *5* << set local vars >>
-        p = c.p
-
+        #@+node:ekr.20061103114242: *5* << set local vars >> (selfInsertCommand)
         stroke = event and event.stroke or None
         ch = event and event.char or ''
-
         if ch == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
         if ch == 'Tab':
             ch = '\t'
-
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
         oldText = name.startswith('body') and p.b or ''
         undoType = 'Typing'
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.toUnicode(ch) in brackets
-        # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@-<< set local vars >>
         assert g.isStrokeOrNone(stroke)
-
         if trace: g.trace('ch',repr(ch),'stroke',stroke)
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
-            return # (for Tk) "break" # The hook claims to have handled the event.
+            return
         if ch == '\t':
             self.updateTab(p,w)
         elif ch == '\b':
@@ -5201,32 +5196,27 @@ class EditCommandsClass (BaseEditCommandsClass):
             # Use raw insert/delete to retain the coloring.
             if i != j:                  w.delete(i,j)
             elif action == 'overwrite': w.delete(i)
-            if isPlain: # 2013/10/07: call insertKeyEvent for non-plain characters.
+            if isPlain:
                 w.insert(i,ch)
                 w.setInsertPoint(i+1)
             else:
                 g.app.gui.insertKeyEvent(event,i)
             if inBrackets and self.flashMatchingBrackets:
-                self.flashMatchingBracketsHelper(w,i,ch)               
+                self.flashMatchingBracketsHelper(c,ch,i,p,w)               
         else:
-            return # (for Tk) 'break' # This method *always* returns 'break'
-
+            return
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
         c.editCommands.setMoveCol(w,spot)
-
         # Update the text and handle undo.
         newText = w.getAllText()
         changed = newText != oldText
         if trace and verbose:
             g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
         if changed:
-            # g.trace('ins',w.getInsertPoint())
             c.frame.body.onBodyChanged(undoType=undoType,
                 oldSel=oldSel,oldText=oldText,oldYview=None)
-
         g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
-        return # (for Tk) 'break'
     #@+node:ekr.20090213065933.14: *5* doPlainTab
     def doPlainTab(self,s,i,tab_width,w):
 
@@ -5247,16 +5237,15 @@ class EditCommandsClass (BaseEditCommandsClass):
         w.setSelectionRange(ins,ins,insert=ins)
     #@+node:ekr.20060627091557: *5* flashCharacter (leoEditCommands)
     def flashCharacter(self,w,i):
-
+        '''Flash the character at position i of widget w.'''
         bg      = self.bracketsFlashBg or 'DodgerBlue1'
         fg      = self.bracketsFlashFg or 'white'
         flashes = self.bracketsFlashCount or 3
         delay   = self.bracketsFlashDelay or 75
-
         w.flashCharacter(i,bg,fg,flashes,delay)
     #@+node:ekr.20060627083506: *5* flashMatchingBracketsHelper
-    def flashMatchingBracketsHelper (self,w,i,ch):
-
+    def flashMatchingBracketsHelper (self,c,ch,i,p,w):
+        '''Flash matching brackets at char ch at position i at widget w.'''
         d = {}
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
@@ -5266,22 +5255,22 @@ class EditCommandsClass (BaseEditCommandsClass):
             for z in range(len(self.openBracketsList)):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
-
         delim2 = d.get(ch)
-
         s = w.getAllText()
+        # A partial fix for bug 127: Bracket matching is buggy.
+        language = g.getLanguageAtPosition(c,p)
+        if language in ('javascript','perl'):
+            return
         j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
         if j != -1:
             self.flashCharacter(w,j)
     #@+node:ekr.20060804095512: *5* initBracketMatcher
     def initBracketMatcher (self,c):
-
+        '''Init the bracket matching code in selfInsertCommand.'''
         if len(self.openBracketsList) != len(self.closeBracketsList):
-
             g.es_print('bad open/close_flash_brackets setting: using defaults')
             self.openBracketsList  = '([{'
             self.closeBracketsList = ')]}'
-
         # g.trace('self.openBrackets',openBrackets)
         # g.trace('self.closeBrackets',closeBrackets)
     #@+node:ekr.20051026171121: *5* insertNewlineHelper
