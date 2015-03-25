@@ -87,9 +87,6 @@ class RstScanner (basescanner.BaseScanner):
         body2 = s[self.sigEnd+1:codeEnd]
         body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
         body = body1 + body2
-        # Fix bug 122: @auto-rst` should add an empty line after a heading.
-        if False and not body.strip():
-            body = '\n\n'
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body1,body2

@@ -34,6 +34,8 @@ class RstWriter(basewriter.BaseWriter):
             # Put the underlined headline
             self.put(p.h)
             self.put(ch*len(p.h))
+            # Fix bug 122: @auto-rst` should add an empty line after a heading.
+            self.put('\n')
             # Put the body.
             for s in p.b.splitlines(False):
                 self.put(s)
