@@ -3745,9 +3745,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20111022222228.16980: *3* Event handlers (LeoQTreeWidget)
     #@+node:ekr.20110605121601.18364: *4* dragEnterEvent & helper
     def dragEnterEvent(self,ev):
-
         '''Export c.p's tree as a Leo mime-data.'''
-
         trace = False and not g.unitTesting
         c = self.c
         if not ev:
@@ -3758,13 +3756,17 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             g.trace('No mimeData!')
             return
         c.endEditing()
-        # if g.app.dragging:
-            # if trace: g.trace('** already dragging')
-        # g.app.dragging = True
-        g.app.drag_source = c, c.p
-        # if trace: g.trace('set g.app.dragging')
-        self.setText(md)
-        if trace: self.dump(ev,c.p,'enter')
+        # Fix bug 135: cross-file drag and drop is broken.
+        # This handler may be called several times for the same drag.
+        # Only the first should should set g.app.drag_source.
+        if g.app.dragging:
+            if trace: g.trace('** already dragging')
+        else:
+            g.app.dragging = True
+            g.app.drag_source = c, c.p
+            if trace: g.trace('g.app.drag_source: %r %r' % g.app.drag_source)
+            self.setText(md)
+            if trace: self.dump(ev,c.p,'enter')
         # Always accept the drag, even if we are already dragging.
         ev.accept()
     #@+node:ekr.20110605121601.18384: *5* setText
@@ -3807,13 +3809,15 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         ev.accept()
         hookres = g.doHook("outlinedrop",c=c,p=p,dropevent=ev,formats=formats)
         if hookres:
-            # True => plugins handled the drop already
-            return
-        if trace and trace_dump: self.dump(ev,p,'drop ')
-        if md.hasUrls():
-            self.urlDrop(md,p)
+            # A plugin handled the drop.
+            if trace: g.trace('hookres is True')
         else:
-            self.nodeDrop(md,p)
+            if trace and trace_dump: self.dump(ev,p,'drop ')
+            if md.hasUrls():
+                self.urlDrop(md,p)
+            else:
+                self.nodeDrop(md,p)
+        g.app.dragging = False
     #@+node:ekr.20110605121601.18366: *5* nodeDrop & helpers
     def nodeDrop (self,md,p):
         '''
@@ -3824,6 +3828,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         trace = False and not g.unitTesting
         c = self.c
         fn,s = self.parseText(md)
+        if trace: g.trace('fn',fn,'self.fileName()',self.fileName())
         if not s or not fn:
             if trace: g.trace('no fn or no s',fn,len(s or ''))
         elif fn == self.fileName():
@@ -3845,7 +3850,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u = c.undoer
         undoType = 'Drag Outline'
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
-        if not isLeo: return
+        if not isLeo:
+            if trace: g.trace('no isLeo')
+            return
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
@@ -3874,7 +3881,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
-        pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+        pasted.setAllAncestorAtFileNodesDirty()
+            # 2011/02/27: Fix bug 690467.
         c.setChanged(True)
         back = pasted.back()
         if back and back.isExpanded():
@@ -3886,6 +3894,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18368: *6* intraFileDrop
     def intraFileDrop (self,fn,p1,p2):
         '''Move p1 after (or as the first child of) p2.'''
+        trace = False and not g.unitTesting
         as_child = self.was_alt_drag
         cloneDrag = self.was_control_drag
         c = self.c ; u = c.undoer
@@ -3912,7 +3921,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             # 2011/10/03: Major bug fix.
             c.checkDrag(p1,p2) and
             c.checkMoveWithParentWithWarning(p1,p2,True))
-        # g.trace(ok,cloneDrag)
+        if trace: g.trace('ok',ok,'cloneDrag',cloneDrag)
         if ok:
             undoData = u.beforeMoveNode(p1)
             dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
@@ -3926,8 +3935,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c.setChanged(True)
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
-        elif not g.unitTesting:
-            g.trace('** move failed')
+        # elif trace: g.trace('** move failed')
     #@+node:ekr.20110605121601.18383: *6* parseText
     def parseText (self,md):
         '''Parse md.text() into (fn,s)'''
@@ -3947,9 +3955,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
     def urlDrop (self,md,p):
         '''Handle a drop when md.urls().'''
-        c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
+        trace = False and not g.unitTesting
+        c,u,undoType = self.c,self.c.undoer,'Drag Urls'
         urls = md.urls()
         if not urls:
+            if trace: g.trace('no urs')
             return
         c.undoer.beforeChangeGroup(c.p,undoType)
         changed = False
@@ -3961,6 +3971,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             elif scheme in ('http',): # 'ftp','mailto',
                 changed |= self.doHttpUrl(p,url)
             # else: g.trace(url.scheme(),url)
+        if trace: g.trace('changed',changed)
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
