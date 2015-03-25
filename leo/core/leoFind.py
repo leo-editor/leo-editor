@@ -8,8 +8,8 @@ import sys
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
-#@@nocolor-node
 #@+at
+#@@language rest
 # 
 # LeoFind.py contains the gui-independant part of all of Leo's
 # find/change code. Such code is tricky, which is why it should be
@@ -121,10 +121,12 @@ class LeoFind:
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
     #@+node:ekr.20031218072017.3053: *4* find.__init__ & helpers
     def __init__ (self,c):
+        '''Ctor for LeoFind class.'''
         # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
         self.errors = 0
-        self.expert_mode = False # set in finishCreate.
+        self.expert_mode = False
+            # Set in finishCreate.
         self.ftm = None
             # Created by dw.createFindTab.
         self.frame = None
@@ -143,34 +145,43 @@ class LeoFind:
         self.reverse = None
         self.wrap = None
         self.whole_word = None
-        # For isearch commands.
+        # For isearch commands...
         self.stack = [] # Entries are (p,sel)
         self.isearch_ignore_case = None
         self.isearch_forward = None
         self.isearch_regexp = None
         self.findTextList = []
         self.changeTextList = []
-        # Widget ivars.
+        # Widget ivars...
         self.change_ctrl = None
-        self.s_ctrl = SearchWidget() # For searches.
+        self.s_ctrl = SearchWidget()
+            # A helper widget for searches.
         self.find_text = ""
         self.change_text = ""
-        self.radioButtonsChanged = False # Set by ftm.radio_button_callback
+        self.radioButtonsChanged = False
+            # Set by ftm.radio_button_callback
         # Ivars containing internal state...
         self.buttonFlag = False
         self.changeAllFlag = False
         self.findAllFlag = False
-        self.in_headline = False # True: searching headline text.
-        self.p = None # The position being searched.  Never saved between searches!
+        self.in_headline = False
+            # True: searching headline text.
+        self.p = None
+            # The position being searched.
+            # Never saved between searches!
         self.was_in_headline = None
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-        # For suboutline-only
-        self.onlyPosition = None # The starting node for suboutline-only searches.
-        # For wrapped searches.
-        self.wrapping = False # True: wrapping is enabled.
+        self.onlyPosition = None
+            # The starting node for suboutline-only searches.
+        self.wrapping = False
+            # True: wrapping is enabled.
             # This must be different from self.wrap, which is set by the checkbox.
-        self.wrapPosition = None # The start of wrapped searches: persists between calls.
-        self.wrapPos = None # The starting position of the wrapped search: persists between calls.
+        self.wrapPosition = None
+            # The start of wrapped searches.
+            # Persists between calls.
+        self.wrapPos = None
+            # The starting position of the wrapped search.
+            # Persists between calls.
     #@+node:ekr.20131117164142.17022: *4* LeoFind.finishCreate
     def finishCreate(self):
         
@@ -1257,6 +1268,11 @@ class LeoFind:
                 g.es("end of wrapped search")
             else:
                 g.es("not found","'%s'" % (self.find_text))
+                # Warn if not searching everything.
+                if not self.search_headline:
+                    g.es('body only',color='blue')
+                elif not self.search_body:
+                    g.es('headline only',color='blue')
             self.restore(data)
             return False # for vim-mode find commands.
         else:
@@ -1270,10 +1286,10 @@ class LeoFind:
         set_first_batch_search.
         '''
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         c = self.c ; p = self.p
         if trace:
-            g.trace('*** entry','p',p,'\n',
+            g.trace('*** entry','p',p.h,'\n',
                 'search_headline',self.search_headline,
                 'search_body',self.search_body)
             for parent in p.parents():
