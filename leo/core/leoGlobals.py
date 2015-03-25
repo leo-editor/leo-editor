@@ -6983,7 +6983,11 @@ def isValidUrl(url):
         return False
 #@+node:ekr.20120315062642.9744: *3* g.openUrl
 def openUrl(p):
-
+    '''
+    Open the url of node p.
+    Use the headline if it contains a valid url.
+    Otherwise, look *only* at the first line of the body.
+    '''
     if p:
         url = g.getUrlFromNode(p)
         if url:

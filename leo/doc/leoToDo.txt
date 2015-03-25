@@ -6,10 +6,6 @@
 .. @+node:ekr.20150227040245.4: ** To do: Leo 5.1 b1
 @language rest
 @wrap
-.. @+node:ekr.20150227040245.5: *3* Bugs for b1
-.. @+node:ekr.20150323164045.1: *4* Search g.command for missing docstrings
-.. @+node:ekr.20150319055953.4: *4* Relocate remove-sentinels
-It is an import command, not an export command.
 .. @+node:ekr.20150302140653.4: *3* Bugs for b2
 .. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
 @language rest
@@ -140,10 +136,13 @@ For example, JavaScript regular expressions are not handled properly.
 
 Furthermore, there should be a command to select the region between
 matching brackets.
-.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs?
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150325014616.1: *4* Low priority
+.. @+node:ekr.20150316141655.14: *5* Better default for open/save file dialogs?
 # Maybe the directory of c.fileName.
-.. @+node:ekr.20110605121601.18487: *5* LeoQtGui.Dialogs & panels
-.. @+node:ekr.20110605121601.18488: *6* LeoQtGui.alert
+.. @+node:ekr.20110605121601.18487: *6* LeoQtGui.Dialogs & panels
+.. @+node:ekr.20110605121601.18488: *7* LeoQtGui.alert
 def alert (self,c,message):
 
     if g.unitTesting: return
@@ -157,7 +156,7 @@ def alert (self,c,message):
     c.in_qt_dialog = True
     d.exec_()
     c.in_qt_dialog = False
-.. @+node:ekr.20110605121601.18489: *6* LeoQtGui.makeFilter
+.. @+node:ekr.20110605121601.18489: *7* LeoQtGui.makeFilter
 def makeFilter (self,filetypes):
 
     '''Return the Qt-style dialog filter from filetypes list.'''
@@ -165,7 +164,7 @@ def makeFilter (self,filetypes):
     filters = ['%s (%s)' % (z) for z in filetypes]
 
     return ';;'.join(filters)
-.. @+node:ekr.20110605121601.18492: *6* LeoQtGui.panels
+.. @+node:ekr.20110605121601.18492: *7* LeoQtGui.panels
 def createComparePanel(self,c):
     """Create a qt color picker panel."""
     return None # This window is optional.
@@ -181,7 +180,7 @@ def createLeoFrame(self,c,title):
 
 def createSpellTab(self,c,spellHandler,tabName):
     return qt_frame.LeoQtSpellTab(c,spellHandler,tabName)
-.. @+node:ekr.20110605121601.18493: *6* LeoQtGui.runAboutLeoDialog
+.. @+node:ekr.20110605121601.18493: *7* LeoQtGui.runAboutLeoDialog
 def runAboutLeoDialog(self,c,version,theCopyright,url,email):
 
     """Create and run a qt About Leo dialog."""
@@ -199,7 +198,7 @@ def runAboutLeoDialog(self,c,version,theCopyright,url,email):
     c.in_qt_dialog = True
     d.exec_()
     c.in_qt_dialog = False
-.. @+node:ekr.20110605121601.18496: *6* LeoQtGui.runAskDateTimeDialog
+.. @+node:ekr.20110605121601.18496: *7* LeoQtGui.runAskDateTimeDialog
 def runAskDateTimeDialog(self, c, title, 
     message='Select Date/Time', init=None, step_min={}):
     """Create and run a qt date/time selection dialog.
@@ -276,7 +275,7 @@ def runAskDateTimeDialog(self, c, title,
         return None
     else:
         return d.dt.dateTime().toPyDateTime()
-.. @+node:ekr.20110605121601.18494: *6* LeoQtGui.runAskLeoIDDialog
+.. @+node:ekr.20110605121601.18494: *7* LeoQtGui.runAskLeoIDDialog
 def runAskLeoIDDialog(self):
 
     """Create and run a dialog to get g.app.LeoID."""
@@ -294,7 +293,7 @@ def runAskLeoIDDialog(self):
     title = 'Enter Leo id'
     s,ok = QtWidgets.QInputDialog.getText(parent,title,message)
     return g.u(s)
-.. @+node:ekr.20110605121601.18491: *6* LeoQtGui.runAskOkCancelNumberDialog
+.. @+node:ekr.20110605121601.18491: *7* LeoQtGui.runAskOkCancelNumberDialog
 def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
 
     """Create and run askOkCancelNumber dialog ."""
@@ -317,7 +316,7 @@ def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButt
     except ValueError:
         n = None
     return n if ok else None
-.. @+node:ekr.20110605121601.18490: *6* LeoQtGui.runAskOkCancelStringDialog
+.. @+node:ekr.20110605121601.18490: *7* LeoQtGui.runAskOkCancelStringDialog
 def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
                                okButtonText=None,default=""):
 
@@ -336,7 +335,7 @@ def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
     self.attachLeoIcon(d)
     ok = d.exec_()
     return str(d.textValue()) if ok else None
-.. @+node:ekr.20110605121601.18495: *6* LeoQtGui.runAskOkDialog
+.. @+node:ekr.20110605121601.18495: *7* LeoQtGui.runAskOkDialog
 def runAskOkDialog(self,c,title,message=None,text="Ok"):
 
     """Create and run a qt askOK dialog ."""
@@ -351,7 +350,7 @@ def runAskOkDialog(self,c,title,message=None,text="Ok"):
     c.in_qt_dialog = True
     d.exec_()
     c.in_qt_dialog = False
-.. @+node:ekr.20110605121601.18497: *6* LeoQtGui.runAskYesNoCancelDialog
+.. @+node:ekr.20110605121601.18497: *7* LeoQtGui.runAskYesNoCancelDialog
 def runAskYesNoCancelDialog(self,c,title,
     message=None,
     yesMessage="&Yes",
@@ -384,7 +383,7 @@ def runAskYesNoCancelDialog(self,c,title,
     elif yesToAll and val == 2: val = 'yes-to-all'
     else: val = 'cancel'
     return val
-.. @+node:ekr.20110605121601.18498: *6* LeoQtGui.runAskYesNoDialog
+.. @+node:ekr.20110605121601.18498: *7* LeoQtGui.runAskYesNoDialog
 def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
     """
     Create and run an askYesNo dialog.
@@ -419,7 +418,7 @@ def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
         b.YesToAll: 'yes-all',
         b.NoToAll: 'no-all'
     }.get(val, 'no')
-.. @+node:ekr.20110605121601.18499: *6* LeoQtGui.runOpenDirectoryDialog
+.. @+node:ekr.20110605121601.18499: *7* LeoQtGui.runOpenDirectoryDialog
 def runOpenDirectoryDialog(self,title,startdir):
 
     """Create and run an Qt open directory dialog ."""
@@ -429,7 +428,7 @@ def runOpenDirectoryDialog(self,title,startdir):
     self.attachLeoIcon(d)
     s = d.getExistingDirectory (parent,title,startdir)
     return g.u(s)
-.. @+node:ekr.20110605121601.18500: *6* LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20110605121601.18500: *7* LeoQtGui.runOpenFileDialog
 def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
     """Create and run an Qt open file dialog ."""
@@ -454,7 +453,7 @@ def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,st
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
-.. @+node:ekr.20110605121601.18501: *6* LeoQtGui.runPropertiesDialog
+.. @+node:ekr.20110605121601.18501: *7* LeoQtGui.runPropertiesDialog
 def runPropertiesDialog(self,
     title='Properties',data={}, callback=None, buttons=None):
 
@@ -464,7 +463,7 @@ def runPropertiesDialog(self,
     g.warning('Properties menu not supported for Qt gui')
     result = 'Cancel'
     return result,data
-.. @+node:ekr.20110605121601.18502: *6* LeoQtGui.runSaveFileDialog
+.. @+node:ekr.20110605121601.18502: *7* LeoQtGui.runSaveFileDialog
 def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
     """Create and run an Qt save file dialog ."""
@@ -480,7 +479,7 @@ def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultexten
         # Very bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj,(list,tuple)) else obj
         return g.u(s)
-.. @+node:ekr.20110605121601.18503: *6* LeoQtGui.runScrolledMessageDialog
+.. @+node:ekr.20110605121601.18503: *7* LeoQtGui.runScrolledMessageDialog
 def runScrolledMessageDialog (self,
     short_title= '',
     title='Message',
@@ -506,13 +505,13 @@ def runScrolledMessageDialog (self,
         if retval: return retval
         << no dialog error >>
     << emergency fallback >>
-.. @+node:ekr.20110605121601.18504: *7* << no c error>>
+.. @+node:ekr.20110605121601.18504: *8* << no c error>>
 g.es_print_error('%s\n%s\n\t%s' % (
     "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
     "as a keyword argument",
     g.callers()
 ))
-.. @+node:ekr.20110605121601.18505: *7* << load viewrendered plugin >>
+.. @+node:ekr.20110605121601.18505: *8* << load viewrendered plugin >>
 pc = g.app.pluginsController
 # 2011/10/20: load viewrendered (and call vr.onCreate)
 # *only* if not already loaded.
@@ -521,11 +520,11 @@ if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered2.py'):
     if vr:
         g.blue('viewrendered plugin loaded.')
         vr.onCreate('tag',{'c':c})
-.. @+node:ekr.20110605121601.18506: *7* << no dialog error >>
+.. @+node:ekr.20110605121601.18506: *8* << no dialog error >>
 g.es_print_error(
     'No handler for the "scrolledMessage" hook.\n\t%s' % (
         g.callers()))
-.. @+node:ekr.20110605121601.18507: *7* << emergency fallback >>
+.. @+node:ekr.20110605121601.18507: *8* << emergency fallback >>
 b = QtWidgets.QMessageBox
 d = b(None) # c.frame.top)
 d.setWindowFlags(QtCore.Qt.Dialog)
@@ -537,7 +536,7 @@ d.addButton('Ok',b.YesRole)
 c.in_qt_dialog = True
 d.exec_()
 c.in_qt_dialog = False
-.. @+node:ekr.20110605121601.18502: *5* LeoQtGui.runSaveFileDialog
+.. @+node:ekr.20110605121601.18502: *6* LeoQtGui.runSaveFileDialog
 def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
     """Create and run an Qt save file dialog ."""
@@ -553,7 +552,7 @@ def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultexten
         # Very bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj,(list,tuple)) else obj
         return g.u(s)
-.. @+node:ekr.20110605121601.18500: *5* LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20110605121601.18500: *6* LeoQtGui.runOpenFileDialog
 def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
     """Create and run an Qt open file dialog ."""
@@ -578,9 +577,9 @@ def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,st
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
-.. @+node:ekr.20150316141655.12: *5* Found: (flattened) runOpenFileDialog
-.. @+node:ekr.20150316141655.13: *6* defs
-.. @+node:ekr.20031218072017.3744: *7* dialogs (NullGui)
+.. @+node:ekr.20150316141655.12: *6* Found: (flattened) runOpenFileDialog
+.. @+node:ekr.20150316141655.13: *7* defs
+.. @+node:ekr.20031218072017.3744: *8* dialogs (NullGui)
 def runAboutLeoDialog(self,c,version,theCopyright,url,email):
     return self.simulateDialog("aboutLeoDialog")
 
@@ -612,7 +611,7 @@ def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
 def runAskYesNoCancelDialog(self,c,title,
     message=None,yesMessage="Yes",noMessage="No",yesToAllMessage=None,defaultButton="Yes"):
     return self.simulateDialog("yesNoCancelDialog","cancel")
-.. @+node:ekr.20031218072017.3731: *7* app.gui file dialogs
+.. @+node:ekr.20031218072017.3731: *8* app.gui file dialogs
 def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
 
     """Create and run an open file dialog ."""
@@ -624,7 +623,7 @@ def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
     """Create and run a save file dialog ."""
 
     self.oops()
-.. @+node:ekr.20110605121601.18500: *7* LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20110605121601.18500: *8* LeoQtGui.runOpenFileDialog
 def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
     """Create and run an Qt open file dialog ."""
@@ -649,7 +648,7 @@ def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,st
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
-.. @+node:ekr.20050920084036.166: *6* getReadableTextFile
+.. @+node:ekr.20050920084036.166: *7* getReadableTextFile
 def getReadableTextFile (self):
 
     fn = g.app.gui.runOpenFileDialog(
@@ -658,7 +657,7 @@ def getReadableTextFile (self):
         defaultextension = ".txt")
 
     return fn
-.. @+node:ekr.20071114081313.1: *6* insertIcon
+.. @+node:ekr.20071114081313.1: *7* insertIcon
 def insertIcon (self,event=None):
 
     '''Prompt for an icon, and insert it into the node's icon list.'''
@@ -680,7 +679,7 @@ def insertIcon (self,event=None):
     self.setIconList(p, aList2)
     c.setChanged(True)
     c.redraw_after_icons_changed()
-.. @+node:ekr.20070915134101: *6* c.readFileIntoNode
+.. @+node:ekr.20070915134101: *7* c.readFileIntoNode
 def readFileIntoNode (self,event=None):
 
     '''Read a file into a single node.'''
@@ -703,7 +702,7 @@ def readFileIntoNode (self,event=None):
     p.setBodyString(s)
     w.setAllText(s)
     c.redraw(p)
-.. @+node:ekr.20110530124245.18245: *6* c.importAnyFile & helper
+.. @+node:ekr.20110530124245.18245: *7* c.importAnyFile & helper
 def importAnyFile (self,event=None):
 
     '''Import one or more files.'''
@@ -763,7 +762,7 @@ importCWEBFiles = importAnyFile
 importDerivedFile = importAnyFile
 importFlattenedOutline = importAnyFile
 importNowebFiles = importAnyFile
-.. @+node:ekr.20110530124245.18248: *7* c.looksLikeDerivedFile
+.. @+node:ekr.20110530124245.18248: *8* c.looksLikeDerivedFile
 def looksLikeDerivedFile (self,fn):
 
     '''Return True if fn names a file that looks like an
@@ -779,7 +778,7 @@ def looksLikeDerivedFile (self,fn):
     f.close()
     val = s.find('@+leo-ver=') > -1
     return val
-.. @+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
+.. @+node:ekr.20031218072017.2839: *7* c.readOutlineOnly
 def readOutlineOnly (self,event=None):
 
     '''Open a Leo outline from a .leo file, but do not read any derived files.'''
@@ -805,7 +804,7 @@ def readOutlineOnly (self,event=None):
         c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
     except:
         g.es("can not open:",fileName)
-.. @+node:ekr.20050920084036.20: *6* readAbbreviations & helper
+.. @+node:ekr.20050920084036.20: *7* readAbbreviations & helper
 def readAbbreviations (self,event=None):
 
     '''Read abbreviations from a file.'''
@@ -817,7 +816,7 @@ def readAbbreviations (self,event=None):
 
     if fileName:
         self.readAbbreviationsFromFile(fileName)
-.. @+node:ekr.20100901080826.6156: *7* readAbbreviationsFromFile
+.. @+node:ekr.20100901080826.6156: *8* readAbbreviationsFromFile
 def readAbbreviationsFromFile(self,fileName):
 
     k = self.c.k
@@ -832,7 +831,7 @@ def readAbbreviationsFromFile(self,fileName):
         # self.listAbbrevs()
     except IOError:
         g.es('can not open',fileName)
-.. @+node:ekr.20031218072017.2859: *6* c.removeSentinels
+.. @+node:ekr.20031218072017.2859: *7* c.removeSentinels
 def removeSentinels (self,event=None):
 
     '''Import one or more files, removing any sentinels.'''
@@ -860,7 +859,7 @@ def removeSentinels (self,event=None):
     if names:
         g.chdir(names[0])
         c.importCommands.removeSentinelsCommand (names)
-.. @+node:ekr.20070920104110: *6* compareAnyTwoFiles & helpers
+.. @+node:ekr.20070920104110: *7* compareAnyTwoFiles & helpers
 def compareAnyTwoFiles (self,event):
     '''Compare two files.'''
     trace = False and not g.unitTesting
@@ -899,7 +898,7 @@ def compareAnyTwoFiles (self,event):
         g.app.forgetOpenFile(fn=c2.fileName(),force=True)
         c2.frame.destroySelf()
         g.app.gui.set_focus(c,w)
-.. @+node:ekr.20070921072608: *7* computeChangeDicts
+.. @+node:ekr.20070921072608: *8* computeChangeDicts
 def computeChangeDicts (self,d1,d2):
 
     '''Compute inserted, deleted, changed dictionaries.
@@ -922,7 +921,7 @@ def computeChangeDicts (self,d1,d2):
             if p1.h != p2.h or p1.b != p2.b:
                 changed[key] = p2 # Show the node in the *other* file.
     return inserted, deleted, changed
-.. @+node:ekr.20070921072910: *7* createAllCompareClones & helper
+.. @+node:ekr.20070921072910: *8* createAllCompareClones & helper
 def createAllCompareClones(self,c1,c2,inserted,deleted,changed):
     '''Create the comparison trees.'''
     c = self.c # Always use the visible commander
@@ -946,7 +945,7 @@ def createAllCompareClones(self,c1,c2,inserted,deleted,changed):
     c.selectPosition(parent)
     u.afterChangeGroup(parent,undoType,reportFlag=True) 
     c.redraw()
-.. @+node:ekr.20070921074410: *8* createCompareClones
+.. @+node:ekr.20070921074410: *9* createCompareClones
 def createCompareClones (self,d,kind,parent):
 
     if d:
@@ -967,7 +966,7 @@ def createCompareClones (self,d,kind,parent):
                 copy.moveToLastChildOf(parent)
                 for p2 in copy.self_and_subtree():
                     p2.v.context = c
-.. @+node:ekr.20070921070101: *7* createHiddenCommander (EditFileCommandsClass)
+.. @+node:ekr.20070921070101: *8* createHiddenCommander (EditFileCommandsClass)
 def createHiddenCommander(self,fn):
     '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
     import leo.core.leoCommands as leoCommands
@@ -980,14 +979,14 @@ def createHiddenCommander(self,fn):
         return c2
     else:
         return None
-.. @+node:ekr.20070921070101.1: *7* createFileDict
+.. @+node:ekr.20070921070101.1: *8* createFileDict
 def createFileDict (self,c):
     '''Create a dictionary of all relevant positions in commander c.'''
     d = {}
     for p in c.all_positions():
         d[p.v.fileIndex] = p.copy()
     return d
-.. @+node:ekr.20070921072608.1: *7* dumpCompareNodes
+.. @+node:ekr.20070921072608.1: *8* dumpCompareNodes
 def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):
 
     for d,kind in (
@@ -1002,7 +1001,7 @@ def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):
                 g.pr('%-32s %s' % (key,p.h))
             else:
                 g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
-.. @+node:ekr.20031218072017.2821: *6* c.open & helper
+.. @+node:ekr.20031218072017.2821: *7* c.open & helper
 def open (self,event=None):
 
     '''Open a Leo window containing the contents of a .leo file.'''
@@ -1044,7 +1043,7 @@ def open (self,event=None):
     # openWithFileName sets focus if ok.
     if not ok:
         c.initialFocusHelper()
-.. @+node:ekr.20031218072017.2822: *7* << Set closeFlag if the only open window is empty >>
+.. @+node:ekr.20031218072017.2822: *8* << Set closeFlag if the only open window is empty >>
 @
 If this is the only open window was opened when the app started, and
 the window has never been written to or saved, then we will
@@ -1056,7 +1055,7 @@ closeFlag = (
     c.frame.startupWindow and # The window was open on startup
     not c.changed and not c.frame.saved and # The window has never been changed
     g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
-.. @+node:ekr.20090212054250.9: *7* c.createNodeFromExternalFile
+.. @+node:ekr.20090212054250.9: *8* c.createNodeFromExternalFile
 def createNodeFromExternalFile(self,fn):
 
     '''Read the file into a node.
@@ -1080,17 +1079,15 @@ def createNodeFromExternalFile(self,fn):
     if w: w.setInsertPoint(0)
     c.redraw()
     c.recolor()
-.. @+node:ekr.20150312080344.4: *4* Improve speed of spelling (low priority)
+.. @+node:ekr.20150312080344.4: *5* Improve speed of spelling (low priority)
 @language rest
 
 Workaround: Spell-check just desired clone (at bottom of file).
-.. @+node:ekr.20150319055953.11: *4* Improve <?xml-stylesheet> (low priority)
+.. @+node:ekr.20150319055953.11: *5* Improve <?xml-stylesheet> (low priority)
 Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation.
+.. @+node:ekr.20150311051910.4: *5* Improve recovered nodes operation.
 @nocolor-node
 
 - Detect changes in root node, if possible.

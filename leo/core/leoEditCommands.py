@@ -208,20 +208,24 @@ class BaseEditCommandsClass:
 #@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event):
+    '''Simulate a control-click at the cursor.'''
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
 #@+node:ekr.20140701101218.16740: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):
+    '''Disable default idle-time event handling.'''
     g.disableIdleTimeHook()
     
 @g.command('enable-idle-time-events')
 def enable_idle_time_events(event):
+    '''Enable default idle-time event handling.'''
     g.enableIdleTimeHook()
     
 @g.command('toggle-idle-time-events')
 def toggle_idle_time_events(event):
+    '''Toggle default idle-time event handling.'''
     if g.app.idleTimeHook:
         g.disableIdleTimeHook()
     else:
@@ -229,36 +233,50 @@ def toggle_idle_time_events(event):
 #@+node:ekr.20140701093157.16738: *3* enable/disable/toggle-idle-time-tracing
 @g.command('disable-idle-time-tracing')
 def disable_idle_time_tracing(event):
+    '''Disable tracing of default idle-time events.'''
     g.app.trace_idle_time = False
     
 @g.command('enable-idle-time-tracing')
 def enable_idle_time_tracing(event):
+    '''Enable tracing of default idle-time events.'''
     g.app.trace_idle_time = True
     
 @g.command('toggle-idle-time-tracing')
 def toggle_idle_time_tracing(event):
+    '''Toggle tracing of default idle-time events.'''
     g.app.trace_idle_time = not g.app.trace_idle_time
 #@+node:ekr.20131120115900.16323: *3* join-leo-irc
 @g.command('join-leo-irc')
 def join_leo_irc(event=None):
+    '''Open the web page to Leo's irc channel on freenode.net.'''
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 #@+node:ekr.20120315062642.9742: *3* open-url
 @g.command('open-url')
 def openUrl(event=None):
+    '''
+    Open the url in the headline or body text of the selected node.
+    
+    Use the headline if it contains a valid url.
+    Otherwise, look *only* at the first line of the body.
+    '''
     c = event.get('c')
     if c:
         g.openUrl(c.p)
-
 #@+node:ekr.20131120115900.16324: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
 def openUrlUnderCursor(event=None):
+    '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
 #@+node:ekr.20140718105559.17735: *3* pylint command
 @g.command('pylint')
 def pylint_command(event):
-    #@+<< class PylintCommand >>
-    #@+node:ekr.20140718105559.17736: *4* << class PylintCommand >>
+    '''
+    Run pylint on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    #@+others
+    #@+node:ekr.20140718105559.17736: *4* class PylintCommand
     class PylintCommand:
         '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
         def __init__(self,c):
@@ -362,7 +380,8 @@ def pylint_command(event):
                 command = '&' + command
             g.execute_shell_commands(command)   
         #@-others
-    #@-<< class PylintCommand >>
+    #@-others
+        # define class PylintCommand.
     c = event.get('c')
     if c:
         PylintCommand(c).run()
