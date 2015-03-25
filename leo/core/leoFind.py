@@ -216,18 +216,41 @@ class LeoFind:
         '''Handle Find All button.'''
         self.setup_button()
         self.findAll()
-    #@+node:ekr.20031218072017.3059: *4* find.findButton
+    #@+node:ekr.20031218072017.3059: *4* find.findButton (headline hack)
     def findButton(self,event=None):
         '''Handle pressing the "Find" button in the find panel.'''
+        c,p = self.c,self.c.p
+        p0 = p.copy()
         self.setup_button()
-        self.findNext()
-    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton
+        # A hack: move forward if we are only searching headlines.
+        head_only = not self.search_body and self.in_headline and self.search_headline
+        if head_only:
+            p.moveToThreadNext()
+            c.selectPosition(p)
+            self.p = p.copy()
+        if not self.findNext() and head_only:
+            p0.contract()
+            c.selectPosition(p0)
+            c.redraw()
+    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton (headline hack)
     def findPreviousButton(self,event=None):
         '''Handle the Find Previous button.'''
+        c,p = self.c,self.c.p
+        p0 = p.copy()
         self.setup_button()
+        # A hack: move backward if we are only searching headlines.
+        head_only = not self.search_body and self.in_headline and self.search_headline
+        if head_only:
+            c,p = self.c,self.c.p
+            p.moveToThreadBack()
+            c.selectPosition(p)
+            self.p = p.copy()
         self.reverse = not self.reverse
         try:
-            self.findNext()
+            if not self.findNext() and head_only:
+                p0.contract()
+                c.selectPosition(p0)
+                c.redraw()
         finally:
             self.reverse = not self.reverse
     #@+node:ekr.20031218072017.3065: *4* find.setup_button
@@ -1287,13 +1310,14 @@ class LeoFind:
         '''
         trace = False and not g.unitTesting
         verbose = False
-        c = self.c ; p = self.p
+        c,p = self.c,self.p
         if trace:
-            g.trace('*** entry','p',p.h,'\n',
-                'search_headline',self.search_headline,
-                'search_body',self.search_body)
-            for parent in p.parents():
-                print(parent)
+            g.trace('***** entry: search_headline: %s search_body: %s %s' % (
+                self.search_headline,self.search_body,p.h))
+            if verbose:
+                print('parents...')
+                for parent in p.parents():
+                    print('  %s' % parent.h)
         if not self.search_headline and not self.search_body:
             if trace: g.trace('nothing to search')
             return None, None
@@ -1311,7 +1335,7 @@ class LeoFind:
                 g.trace('find errors')
                 break # Abort the search.
             if trace and verbose:
-                g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
+                g.trace('in head: %s %s' % (self.in_headline,p.h))
             if pos is not None:
                 # Success.
                 if self.mark_finds:
@@ -1510,7 +1534,6 @@ class LeoFind:
         stopindex = 0 if self.reverse else len(s)
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
         if trace: g.trace('pos,newpos',pos,newpos)
-        # Bug fix: 2013/11/23.
         if self.in_headline and not self.search_headline:
             if trace: g.trace('not searching headlines')
             return None,None
@@ -1526,6 +1549,17 @@ class LeoFind:
                 g.trace("** %swrap done",kind,pos,newpos)
             self.wrapPosition = None # Reset.
             return None,None
+        if 0:
+            # This doesn't work because index is always zero.
+            # Make *sure* we move past the headline.
+            g.trace('CHECK: index: %r in_head: %s search_head: %s' % (
+                index,self.in_headline,self.search_headline))
+            if (
+                self.in_headline and self.search_headline and
+                index is not None and index in (pos,newpos)
+            ):
+                if trace: g.trace('===== stuck in headline')
+                return None,None
         ins = min(pos,newpos) if self.reverse else max(pos,newpos)
         w.setSelectionRange(pos,newpos,insert=ins)
         if trace: g.trace('** returns',pos,newpos)

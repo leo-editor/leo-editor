@@ -18,15 +18,6 @@ At present, @button x creates two names: x and @button-x.
 x should be x-@button.
 
 
-.. @+node:ekr.20150325082023.1: *4* Fix bug 164: Find Previous will not continue if target word in headline
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/164
-
-This only happens when clicking the 'Find Previous: F2' button.
-
-If using F2 key, the search proceeds to the next hit.
 .. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
 https://github.com/leo-editor/leo-editor/issues/143
 
