@@ -17,22 +17,6 @@ At present, @button x creates two names: x and @button-x.
 x should be x-@button.
 
 
-.. @+node:ekr.20141223150820.4: *4* Fix bug 122: @auto-rst should add an empty line after a heading
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/122
-
-==== Make sure file doesn't continually get larger.
-
-When one generates a node (call it Placeholder) without any contents, then the resulting rst file is written like:
-
-Placeholder
-***********
-Summary
-*******
-
-That is, there is no space between the two headings. Then if I do Refresh from disk, @auto-rst yields an error. This would not happen if @auto-rst automatically writes an empty line after each heading.
 .. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
