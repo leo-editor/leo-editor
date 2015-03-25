@@ -8614,7 +8614,7 @@ class Commands (object):
     #@+node:ekr.20031218072017.2991: *4* c.redrawAndEdit
     def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
         '''Redraw the screen and edit p's headline.'''
-        c = self ; k = c.k
+        c,k = self,self.k
         c.redraw(p) # This *must* be done now.
         if p:
             # This should request focus.

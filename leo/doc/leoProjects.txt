@@ -33,11 +33,27 @@ That's good enough for now.
 @language rest
 @wrap
 
+Find Previous will not continue if target word in headline
 https://github.com/leo-editor/leo-editor/issues/164
 
-I am finding that both the F2 and F3 button cycles.
+The differences between button searches and key searches:
 
-Presumably, the problem is that clicking the button destroys the focus in the headline.
+- Pressing the button changes focus, so...
+- initInteractiveCommands, gets None for w, so ins is None, so...
+- All headline searches start at the same place, so...
+- Headline searches can stall.
+
+The fixes:
+
+1. findButton and findPreviousButton:
+    - These methods now move out of the selected node if was_in_headline is True.
+    - The only way to do this is to set was_in_headline = False and the select the new node.
+    - If the search fails, the methods must select the original node.
+
+2. restore (the failure handler):
+    - Previously, this method toggled was_in_headline. Now it sets it to False.
+3. showSuccess:
+    - Sets was_in_headline to True if the success happened in the headline.
 .. @+node:ekr.20150325080757.1: *3* Features
 .. @+node:ekr.20150325020046.1: *4* Improved messages when find commands fail
 When find commands fail, they tell if only searching headlines or body text.

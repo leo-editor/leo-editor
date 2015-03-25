@@ -222,13 +222,21 @@ class LeoFind:
         c,p = self.c,self.c.p
         p0 = p.copy()
         self.setup_button()
-        # A hack: move forward if we are only searching headlines.
-        head_only = not self.search_body and self.in_headline and self.search_headline
-        if head_only:
-            p.moveToThreadNext()
-            c.selectPosition(p)
+
+        ### old code
+        ###    self.findNext()
+
+        # Move forward one node if we found a match in a headline:
+        #   Pressing the button destorys c.edit_widget(p), so
+        #   initInteractiveCommands does not compute ins properly.
+        if self.was_in_headline:
+            self.was_in_headline = False
+            if p.hasThreadNext():
+                p.moveToThreadNext()
+                c.selectPosition(p)
             self.p = p.copy()
-        if not self.findNext() and head_only:
+        if not self.findNext() and p0 != c.p:
+            # Undo the effect of selecting the next node.
             p0.contract()
             c.selectPosition(p0)
             c.redraw()
@@ -238,16 +246,26 @@ class LeoFind:
         c,p = self.c,self.c.p
         p0 = p.copy()
         self.setup_button()
-        # A hack: move backward if we are only searching headlines.
-        head_only = not self.search_body and self.in_headline and self.search_headline
-        if head_only:
-            c,p = self.c,self.c.p
-            p.moveToThreadBack()
-            c.selectPosition(p)
+        
+        ### old code
+        # try:
+            # self.findNext()
+        # finally:
+            # self.reverse = not self.reverse
+
+        # Move back one node if we found a match in a headline:
+        #   Pressing the button destorys c.edit_widget(p), so
+        #   initInteractiveCommands does not compute ins properly.
+        if self.was_in_headline:
+            self.was_in_headline = False
+            if p.hasThreadBack():
+                p.moveToThreadBack()
+                c.selectPosition(p)
             self.p = p.copy()
         self.reverse = not self.reverse
         try:
-            if not self.findNext() and head_only:
+            if not self.findNext() and p0 != c.p:
+                # Undo the effect of selecting the previous node.
                 p0.contract()
                 c.selectPosition(p0)
                 c.redraw()
@@ -1818,21 +1836,28 @@ class LeoFind:
         This is called only at the start of each search.
         This must not alter the current insertion point or selection range.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         p = self.p or c.p.copy()
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
         if self.search_headline and self.search_body:
             # We have no choice: we *must* search the present widget!
             self.in_headline = self.focusInTree()
+        ###
+        # elif self.buttonFlag:
+            # if trace: g.trace('was in headline',repr(self.was_in_headline),p and p.h)
+            # self.in_headline = self.search_headline
         else:
             self.in_headline = self.search_headline
-        # g.trace(self.in_headline,p and p.h)
+            if trace: g.trace(self.in_headline,p and p.h)
     #@+node:ekr.20131126085250.16651: *5* find.focusInTree
     def focusInTree(self):
-        '''Return True is the focus widget w is anywhere in the tree pane.
+        '''
+        Return True is the focus widget w is anywhere in the tree pane.
         
         Note: the focus may be in the find pane.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         ftm = self.ftm
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
@@ -1849,7 +1874,7 @@ class LeoFind:
             val = True
         else:
             val = w_name.startswith('head')
-        # g.trace(self.was_in_headline,val,c.p.h)
+        if trace: g.trace(self.was_in_headline,w_name,val,c.p.h)
         return val
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
@@ -1871,7 +1896,7 @@ class LeoFind:
         # We only use the insert point, *never* the selection range.
         # None is a signal to self.initNextText()
         ins = w.getInsertPoint() if w else None
-        # g.trace('inHead',self.in_headline,ins,w)
+        if trace: g.trace('inHead',self.in_headline,'ins',ins,'w',w)
         self.errors = 0
         self.initNextText(ins=ins)
         if w: c.widgetWantsFocus(w)
@@ -1910,12 +1935,14 @@ class LeoFind:
         self.wrapping = False
         self.wrapPosition = None
         self.wrapPos = None
-    #@+node:ekr.20031218072017.3089: *4* find.restore
+    #@+node:ekr.20031218072017.3089: *4* find.restore (headline hack)
     def restore (self,data):
         '''Restore the screen and clear state after a search fails.'''
+        trace = False and not g.unitTesting
         c = self.c
         in_headline,editing,p,w,insert,start,end = data
-        self.was_in_headline = not self.was_in_headline
+        self.was_in_headline = False # 2015/03/25
+        if trace: g.trace('was_in_headline',self.was_in_headline)
         if 0: # Don't do this here.
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
@@ -1959,7 +1986,7 @@ class LeoFind:
                 start,end = None,None
         editing = e is not None
         return self.in_headline,editing,p.copy(),w,insert,start,end
-    #@+node:ekr.20031218072017.3091: *4* find.showSuccess
+    #@+node:ekr.20031218072017.3091: *4* find.showSuccess (headline hack)
     def showSuccess(self,pos,newpos,showState=True):
         '''Display the result of a successful find operation.'''
         trace = False and not g.unitTesting
@@ -1980,6 +2007,7 @@ class LeoFind:
                 selection=selection,
                 keepMinibuffer=True)
             w = c.edit_widget(p)
+            self.was_in_headline = True # 2015/03/25
         else:
             w = c.frame.body.wrapper
             # *Always* do the full selection logic.
