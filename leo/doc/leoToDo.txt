@@ -18,6 +18,90 @@ At present, @button x creates two names: x and @button-x.
 x should be x-@button.
 
 
+.. @+node:ekr.20150325082023.1: *4* Fix bug 164: Find Previous will not continue if target word in headline
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/164
+
+This only happens when clicking the 'Find Previous: F2' button.
+
+If using F2 key, the search proceeds to the next hit.
+.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
+
+vim-open-file, if called while in a node associated with an external file, would open the file for editing.
+
+Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
+
+Upon returning to Leo, a 'Refresh from disk' would also be required.
+
+=== EKR
+
+Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
+
+=== Kent
+
+For @auto trees, Leo would do an @auto refresh.
+
+Ideally, cursor position would be maintained in both directions.
+
+Leo can indicate cursor position by adding the current cursor position to command line::
+
+    vim myfile +10
+
+opens myfile with the cursor at line 10
+
+Returning to Leo is a bit convoluted, but seems doable
+http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+
+vim is editing <extfile>, the session data will be saved in /tmp/vim_leo.bridge::
+
+    $ vim <extfile> -c "set viminfo='1,n/tmp" -i vim_leo.bridge
+    
+where:
+
+    '1   =  save 1 mark
+    n/tmp  =  in directory /tmp
+    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
+
+in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
+
+    # File marks:
+    '0  114  0  /tmp/brc
+    
+    # Jumplist (newest first):
+    -'  114  0  /tmp/brc
 .. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
@@ -97,81 +181,6 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
-
-vim-open-file, if called while in a node associated with an external file, would open the file for editing.
-
-Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
-
-Upon returning to Leo, a 'Refresh from disk' would also be required.
-
-=== EKR
-
-Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
-
-=== Kent
-
-For @auto trees, Leo would do an @auto refresh.
-
-Ideally, cursor position would be maintained in both directions.
-
-Leo can indicate cursor position by adding the current cursor position to command line::
-
-    vim myfile +10
-
-opens myfile with the cursor at line 10
-
-Returning to Leo is a bit convoluted, but seems doable
-http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-
-vim is editing <extfile>, the session data will be saved in /tmp/vim_leo.bridge::
-
-    $ vim <extfile> -c "set viminfo='1,n/tmp" -i vim_leo.bridge
-    
-where:
-
-    '1   =  save 1 mark
-    n/tmp  =  in directory /tmp
-    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
-
-in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
-
-    # File marks:
-    '0  114  0  /tmp/brc
-    
-    # Jumplist (newest first):
-    -'  114  0  /tmp/brc
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
 .. @+node:ekr.20150325014616.1: *4* Low priority
