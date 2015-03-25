@@ -43,102 +43,177 @@ class LeoApp:
         # leoGlobals.py contains global switches to be set by hand.
 
         # Command-line arguments...
-        self.batchMode = False          # True: run in batch mode.
-        self.debug = False              # True: run Leo in debug mode.
-        self.diff = False               # True: run Leo in diff mode.
-        self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
-        self.gui = None                 # The gui class.
-        self.guiArgName = None          # The gui name given in --gui option.
-        self.ipython_inited = False     # True if leoIpython.py imports succeeded.
-        self.qt_use_tabs = False        # True: allow tabbed main window.
-        self.restore_session = False    # True: restore session on startup.
-        self.save_session = False       # True: save session on close.
-        self.silentMode = False         # True: no signon.
-        self.start_fullscreen = False   # For qt_frame plugin.
-        self.start_maximized = False    # For qt_frame plugin.
-        self.start_minimized = False    # For qt_frame plugin.
-        self.trace_plugins = False      # True: trace imports of plugins.
-        self.translateToUpperCase = False # Never set to True.
-        self.useIpython = False         # True: add support for IPython.
-        self.use_psyco = False          # True: use psyco optimization.
-        self.use_splash_screen = True   # True: put up a splash screen.
+        self.batchMode = False
+            # True: run in batch mode.
+        self.debug = False
+            # True: run Leo in debug mode.
+        self.diff = False
+            # True: run Leo in diff mode.
+        self.enablePlugins = True
+            # True: run start1 hook to load plugins. --no-plugins
+        self.gui = None
+            # The gui class.
+        self.guiArgName = None
+            # The gui name given in --gui option.
+        self.ipython_inited = False
+            # True if leoIpython.py imports succeeded.
+        self.qt_use_tabs = False
+            # True: allow tabbed main window.
+        self.restore_session = False
+            # True: restore session on startup.
+        self.save_session = False
+            # True: save session on close.
+        self.silentMode = False		# True: no signon.
+        self.start_fullscreen = False
+            # For qt_frame plugin.
+        self.start_maximized = False
+            # For qt_frame plugin.
+        self.start_minimized = False
+            # For qt_frame plugin.
+        self.trace_plugins = False
+            # True: trace imports of plugins.
+        self.translateToUpperCase = False
+            # Never set to True.
+        self.useIpython = False
+            # True: add support for IPython.
+        self.use_psyco = False
+            # True: use psyco optimization.
+        self.use_splash_screen = True
+            # True: put up a splash screen.
 
         # Debugging & statistics...
-        self.count = 0                  # General purpose debugging count.
-        self.debug_app = False          # True: Enable debugging (of widgets)
-        self.debug_widgets = False      # True: enable verbose tracing of widgets.
-        self.debugSwitch = 0            # For g.es_exception: 0: Brief; 1: Full.
-        self.disable_redraw = False     # True: disable all redraws.
-        self.disableSave = False        # May be set by plugins.
-        self.idle_timers = []           # A list of IdleTime instances, so they persist.
-        self.positions = 0              # The number of positions generated.
-        self.scanErrors = 0             # The number of errors seen by g.scanError.
-        self.structure_errors = 0       # Set by p.safeMoveToThreadNext.
-        self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
-        self.validate_outline = False   # True: enables c.validate_outline. (slow)
+        self.count = 0
+            # General purpose debugging count.
+        self.debug_app = False
+            # True: Enable debugging (of widgets)
+        self.debug_widgets = False
+            # True: enable verbose tracing of widgets.
+        self.debugSwitch = 0
+            # For g.es_exception: 0: Brief; 1: Full.
+        self.disable_redraw = False
+            # True: disable all redraws.
+        self.disableSave = False
+            # May be set by plugins.
+        self.idle_timers = []
+            # A list of IdleTime instances, so they persist.
+        self.positions = 0
+            # The number of positions generated.
+        self.scanErrors = 0
+            # The number of errors seen by g.scanError.
+        self.structure_errors = 0
+            # Set by p.safeMoveToThreadNext.
+        self.statsDict = {}
+            # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.validate_outline = False
+            # True: enables c.validate_outline. (slow)
 
         # Error messages...
-        self.atPathInBodyWarning = None # Set by get_directives_dict.
-        self.menuWarningsGiven = False  # True: supress warnings in menu code.
-        self.unicodeErrorGiven = True   # True: suppres unicode tracebacks.
+        self.atPathInBodyWarning = None
+            # Set by get_directives_dict.
+        self.menuWarningsGiven = False
+            # True: supress warnings in menu code.
+        self.unicodeErrorGiven = True
+            # True: suppres unicode tracebacks.
 
         # Global directories...
-        self.extensionsDir = None   # The leo/extensions directory
-        self.globalConfigDir = None # leo/config directory
-        self.globalOpenDir = None   # The directory last used to open a file.
-        self.homeDir = None         # The user's home directory.
-        self.homeLeoDir = None      # The user's home/.leo directory.
-        self.loadDir = None         # The leo/core directory.
-        self.machineDir = None      # The machine-specific directory.
+        self.extensionsDir = None
+            # The leo/extensions directory
+        self.globalConfigDir = None
+            # leo/config directory
+        self.globalOpenDir = None
+            # The directory last used to open a file.
+        self.homeDir = None
+            # The user's home directory.
+        self.homeLeoDir = None
+            # The user's home/.leo directory.
+        self.loadDir = None
+            # The leo/core directory.
+        self.machineDir = None
+            # The machine-specific directory.
 
         # Global data...
-        self.atAutoNames = set()        # The set of all @auto spellings.
-        self.atFileNames = set()        # The set of all built-in @<file> spellings.
-        self.globalKillBuffer = []      # The global kill buffer.
-        self.globalRegisters = {}       # The global register list.
-        self.leoID = None               # The id part of gnx's.
-        self.lossage = []               # List of last 100 keystrokes.
-        self.paste_c = None             # The commander that pasted the last outline.
-        self.spellDict = None           # The singleton PyEnchant spell dict.
-        self.numberOfUntitledWindows=0  # Number of opened untitled windows.
-        self.windowList = []            # Global list of all frames.
-        self.realMenuNameDict = {}      # Translations of menu names.
+        self.atAutoNames = set()
+            # The set of all @auto spellings.
+        self.atFileNames = set()
+            # The set of all built-in @<file> spellings.
+        self.globalKillBuffer = []
+            # The global kill buffer.
+        self.globalRegisters = {}
+            # The global register list.
+        self.leoID = None
+            # The id part of gnx's.
+        self.lossage = []
+            # List of last 100 keystrokes.
+        self.paste_c = None
+            # The commander that pasted the last outline.
+        self.spellDict = None
+            # The singleton PyEnchant spell dict.
+        self.numberOfUntitledWindows=0
+            # Number of opened untitled windows.
+        self.windowList = []
+            # Global list of all frames.
+        self.realMenuNameDict = {}
+            # Translations of menu names.
 
         # Global controller/manager objects...
-        self.config = None              # The singleton leoConfig instance.
-        self.db = None                  # The singleton leoCacher instance.
-        self.loadManager = None         # The singleton LoadManager instance.
-        # self.logManager = None        # The singleton LogManager instance.
-        # self.openWithManager = None   # The singleton OpenWithManager instance.
-        self.nodeIndices = None         # The singleton nodeIndices instance.
-        self.pluginsController = None   # The singleton PluginsManager instance.
-        self.sessionManager = None      # The singleton SessionManager instance.
-
-        # Global status vars...
-        self.openingSettingsFile = False # True, opening a settings file.
+        self.config = None
+            # The singleton leoConfig instance.
+        self.db = None
+            # The singleton leoCacher instance.
+        self.loadManager = None
+            # The singleton LoadManager instance.
+        # self.logManager = None
+            # The singleton LogManager instance.
+        # self.openWithManager = None
+            # The singleton OpenWithManager instance.
+        self.nodeIndices = None
+            # The singleton nodeIndices instance.
+        self.pluginsController = None
+            # The singleton PluginsManager instance.
+        self.sessionManager = None
+            # The singleton SessionManager instance.
 
         # The Commands class...
-        self.commandName = None         # The name of the command being executed.
-        self.commandInterruptFlag=False # True: command within a command.
-
-        # self.dragging = False         # True: dragging.
-        self.allow_delayed_see = False  # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
-        self.inBridge = False           # True: running from leoBridge module.
-        self.inScript = False           # True: executing a script.
-        self.initing  = True            # True: we are initiing the app.
-        self.killed   = False           # True: we are about to destroy the root window.
-        self.preReadFlag = False        # True: we are pre-reading a settings file.
-        self.quitting = False           # True: quitting.  Locks out some events.
-        self.reverting = False          # True: executing the revert command.
+        self.commandName = None
+            # The name of the command being executed.
+        self.commandInterruptFlag=False
+            # True: command within a command.
+        
+        # Global status vars...
+        self.dragging = False
+            # True: dragging.
+        self.allow_delayed_see = False
+            # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
+        self.inBridge = False
+            # True: running from leoBridge module.
+        self.inScript = False
+            # True: executing a script.
+        self.initing  = True
+            # True: we are initiing the app.
+        self.killed   = False
+            # True: we are about to destroy the root window.
+        self.openingSettingsFile = False
+            # True, opening a settings file.
+        self.preReadFlag = False
+            # True: we are pre-reading a settings file.
+        self.quitting = False
+            # True: quitting.  Locks out some events.
+        self.reverting = False
+            # True: executing the revert command.
 
         # To be moved to the LogManager.
 
         # The global log...
-        self.log = None                 # The LeoFrame containing the present log.
-        self.logInited = False          # False: all log message go to logWaiting list.
-        self.logIsLocked = False        # True: no changes to log are allowed.
-        self.logWaiting = []            # List of messages waiting to go to a log.
-        self.printWaiting = []          # Queue of messages to be sent to the printer.
+        self.log = None
+            # The LeoFrame containing the present log.
+        self.logInited = False
+            # False: all log message go to logWaiting list.
+        self.logIsLocked = False
+            # True: no changes to log are allowed.
+        self.logWaiting = []
+            # List of messages waiting to go to a log.
+        self.printWaiting = []
+            # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon2 = ''
         self.signon_printed = False
@@ -152,34 +227,54 @@ class LeoApp:
         # To be moved to OpenWithManager.
 
         # Open with data...
-        self.hasOpenWithMenu = False    # True: open with plugin has been loaded.
-        self.openWithFiles = []         # List of data used by Open With command.
-        self.openWithFileNum = 0        # Number of Open-With temp file names.
-        self.openWithTable = None       # Passed to createOpenWithMenuFromTable.
+        self.hasOpenWithMenu = False
+            # True: open with plugin has been loaded.
+        self.openWithFiles = []
+            # List of data used by Open With command.
+        self.openWithFileNum = 0
+            # Number of Open-With temp file names.
+        self.openWithTable = None
+            # Passed to createOpenWithMenuFromTable.
 
         # To be moved to to the pluginsController.
 
         # Plugins and event handlers...
-        self.hookError = False      # True: suppress further calls to hooks.
-        self.hookFunction = None    # Application wide hook function.
-        self.idle_imported = False  # True: we have done an import idle
-        self.idleTimeDelay = 500    # Delay in msec between calls to "idle time" hook.
-        self.idleTimeHook = None    # The global idle time event handler.
-        self.trace_idle_time = False # True: enable a trace in g.idleTimeHookHandler
+        self.hookError = False
+            # True: suppress further calls to hooks.
+        self.hookFunction = None
+            # Application wide hook function.
+        self.idle_imported = False
+            # True: we have done an import idle
+        self.idleTimeDelay = 500
+            # Delay in msec between calls to "idle time" hook.
+        self.idleTimeHook = None
+            # The global idle time event handler.
+        self.trace_idle_time = False
+            # True: enable a trace in g.idleTimeHookHandler
 
         # Support for scripting...
-        self.searchDict = {}          # For communication between find/change scripts.
-        self.scriptDict = {}          # For use by scripts. Cleared before running each script.
-        self.scriptResult = None      # For use by leoPymacs.
-        self.permanentScriptDict = {} # For use by scrips. Never cleared automatically.
+        self.searchDict = {}
+            # For communication between find/change scripts.
+        self.scriptDict = {}
+            # For use by scripts. Cleared before running each script.
+        self.scriptResult = None
+            # For use by leoPymacs.
+        self.permanentScriptDict = {}
+            # For use by scrips. Never cleared automatically.
 
         # Unit testing...
-        self.isExternalUnitTest = False     # True: we are running a unit test externally.
-        self.runningAllUnitTests = False    # True: we are running all unit tests (Only for local tests).
-        self.suppressImportChecks = False   # True: suppress importCommands.check
-        self.unitTestDict = {}          # For communication between unit tests and code.
-        self.UnitTestGui = None         # A way to override the gui in external unit tests.
-        self.unitTesting = False        # True if unit testing.
+        self.isExternalUnitTest = False
+            # True: we are running a unit test externally.
+        self.runningAllUnitTests = False
+            # True: we are running all unit tests (Only for local tests).
+        self.suppressImportChecks = False
+            # True: suppress importCommands.check
+        self.unitTestDict = {}
+            # For communication between unit tests and code.
+        self.UnitTestGui = None
+            # A way to override the gui in external unit tests.
+        self.unitTesting = False
+            # True if unit testing.
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
@@ -194,7 +289,8 @@ class LeoApp:
         self.define_delegate_language_dict()
         self.global_commands_dict = {}
 
-        self.ipk = None   # python kernel instance
+        self.ipk = None
+            # python kernel instance
     #@+node:ekr.20140729162415.18086: *4* app.init_at_auto_names
     def init_at_auto_names(self):
         '''Init the app.atAutoNames set.'''
