@@ -192,6 +192,9 @@ class FocusingPlaintextEdit(TextEditSearch):
         self.focusout()
 #@+node:ville.20091023181249.5264: ** class SimpleRichText
 class SimpleRichText(QTextEdit):
+    
+    # pylint: disable=method-hidden
+
     def __init__(self, focusin, focusout):
         QTextEdit.__init__(self)        
         self.focusin = focusin

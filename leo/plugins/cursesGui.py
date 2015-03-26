@@ -114,7 +114,7 @@ class textGui(leoGui.LeoGui):
     def oops(self):
         g.pr("textGui oops", g.callers(), "should be implemented")
     #@+node:ekr.20150107090324.69: *3* runAskYesNoDialog
-    def runAskYesNoDialog(self,c,title,message,yes_all=True,no_all=True):
+    def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
         return 'yes'
     #@+node:ekr.20150107090324.15: *3* runMainLoop
     def runMainLoop(self):
