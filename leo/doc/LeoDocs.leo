@@ -10,6 +10,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -161,7 +162,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
