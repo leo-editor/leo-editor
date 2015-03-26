@@ -210,6 +210,7 @@
 <v t="ekr.20050830074815.8"><vh>Leo is a superb documentation tool</vh></v>
 <v t="ekr.20050830074815.9"><vh>Leo simplifies the understanding of complex systems</vh></v>
 <v t="ekr.20050830074815.10"><vh>Leo is stable, well designed and well supported</vh></v>
+<v t="ekr.20150326140024.1"><vh>Steve Zatz explains why @clean changes everything</vh></v>
 <v t="ekr.20131023151757.17124"><vh>Quotes from Leo's developers</vh></v>
 <v t="ekr.20050830074815.11"><vh>Longer quotes...</vh>
 <v t="ekr.20050830074815.12"><vh> Speed Ream's slashdot article</vh></v>
@@ -1202,6 +1203,7 @@
 <v t="ekr.20150326053547.9"><vh>Improved messages when find commands fail</vh></v>
 </v>
 </v>
+<v t="ekr.20050831184021.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15627,61 +15629,10 @@ corresponding external files. This is a completely rewritten and much
 simpler version of Bernhard Mulder's original @shadow update algorithm.
 http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
-Here is what one of Leo's users has to say about @clean:
+Steve Zatz explains why @clean changes everything:
+http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything
 
-I just want to provide my own thoughts about the importance of @clean. I
-look at the posts in this group a fair amount because I find the discussion
-interesting but I had abandoned leo as a day-to-day tool principally
-because of the sentinels in @file nodes. Even for solo projects, I just
-found them visually unappealing and beyond that occasionally confusing when
-I went to edit files with external editors. I would sometimes start a
-project in leo, particularly if it was based on code I developed in the
-past using leo, and then would use the old @nosent to save a version of the
-code without sentinels and then use my external editor of choice and not
-use leo at all. I missed many of the features of leo but just couldn't get
-over the sentinel issue.
-
-@clean really seems to solve all the issues that I had. In particular--and
-somehow this point doesn't seem to me to have been emphasized enough--it
-seems to fully support organizer nodes. They are one of the great things
-about leo--it's happy to guess initially at what the structure of your
-program is but it's completely up to you to determine the structure and the
-ability to do things like break up long methods, group like methods, group
-menu actions in GUI code, etc etc is one of the very cool things about leo.
-My limited but growing experience with @clean's handling of external
-changes has been mainly with incremental (as opposed to more sweeping) code
-changes, and the assignment of new lines is reasonable and you can always
-fix them it quickly if you don't like how external changes have been
-handled.
-
-There have been some posts about the recovered nodes, comparing the old and
-new nodes where there were external changes. I think it's genius. As
-opposed to hoping that leo has correctly incorporated external changes,
-it's all there in case you want to take a closer look. Without this, I
-would just not have the confidence that external changes were being applied
-correctly and while you can always do a git diff, I am not looking to do
-that every time I change a file externally especially if I am not at the
-point where I am about to do a commit.
-
-There has been some discussion of @auto v. @clean. Preference is obviously
-a matter of taste. I will say that for me the fact that node headlines are
-unaffected by external file changes is a feature not a problem since I
-place notes in the headlines that I want preserved when I edit files
-externally. Yes, if the node headlines are the method names then they won't
-be updated if an external edit changes a method name but this was true of
-@file as well.
-
-The ability to work on projects with people who don't have leo is obvious;
-one perhaps slightly less obvious benefit of no sentinels is that I suspect
-that the likelihood that someone will clone a git repository is reduced
-when that repository's code is riddled with leo sentinels (unless the
-potential cloner is a leo loyalist). The one downside to no
-sentinels--there is no evidence that leo is being used but I think that
-raises the broader question of marketing leo, which I certainly believe
-will be aided significantly by being able to take advantage of leo without
-sentinels in external files.--- Steve Zatz
-
-And a few more features:
+Some more highlights:
  
 * A new web page, http://leoeditor.com/load-leo.html, displays .leo files
   in the browser.
@@ -18126,6 +18077,17 @@ The fixes:
     - Sets was_in_headline to True if the success happened in the headline.
 </t>
 <t tx="ekr.20150326053547.9">Failing find command remind the user is only searching headlines or body text.
+</t>
+<t tx="ekr.20150326140024.1">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned Leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in Leo, particularly if it was based on code I developed in the past using Leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use Leo at all. I missed many of the features of Leo but just couldn't get over the sentinel issue.
+
+@clean really seems to solve all the issues that I had. In particular--and
+somehow this point doesn't seem to me to have been emphasized enough--it seems to fully support organizer nodes. They are one of the great things about Leo--it's happy to guess initially at what the structure of your program is but it's completely up to you to determine the structure and the ability to do things like break up long methods, group like methods, group menu actions in GUI code, etc etc is one of the very cool things about Leo. My limited but growing experience with @clean's handling of external changes has been mainly with incremental (as opposed to more sweeping) code changes, and the assignment of new lines is reasonable and you can always fix them it quickly if you don't like how external changes have been handled.
+
+There have been some posts about the recovered nodes, comparing the old and new nodes where there were external changes. I think it's genius. As opposed to hoping that Leo has correctly incorporated external changes, it's all there in case you want to take a closer look. Without this, I would just not have the confidence that external changes were being applied correctly and while you can always do a git diff, I am not looking to do that every time I change a file externally especially if I am not at the point where I am about to do a commit.
+
+There has been some discussion of @auto v. @clean. Preference is obviously a matter of taste. I will say that for me the fact that node headlines are unaffected by external file changes is a feature not a problem since I place notes in the headlines that I want preserved when I edit files externally. Yes, if the node headlines are the method names then they won't be updated if an external edit changes a method name but this was true of @file as well.
+
+The ability to work on projects with people who don't have Leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with Leo sentinels (unless the potential cloner is a Leo loyalist). The one downside to no sentinels--there is no evidence that Leo is being used but I think that raises the broader question of marketing Leo, which I certainly believe will be aided significantly by being able to take advantage of Leo without sentinels in external files.--- Steve Zatz
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
