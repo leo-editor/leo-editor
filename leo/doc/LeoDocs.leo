@@ -1137,13 +1137,13 @@
 <v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>\@clean creates external files without sentinels</vh></v>
-<v t="ekr.20150220115528.5"><vh>\@shadow is deprecated</vh></v>
-<v t="ekr.20150323141745.1"><vh>Added command history to Leo's minibuffer</vh></v>
-<v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
-<v t="ekr.20150311123850.57"><vh>A web page that displays .leo files</vh></v>
-<v t="ekr.20150323123524.1"><vh>Added @int qt-cursor-width setting</vh></v>
 <v t="ekr.20150323112726.4"><vh>Leo regularly checks the integrity of the outline</vh></v>
+<v t="ekr.20150323141745.1"><vh>Up/Down arrows in the minibuffer cycle though command history</vh></v>
+<v t="ekr.20150311123850.57"><vh>leoeditor.com/load-leo.html displays .leo files</vh></v>
+<v t="ekr.20150311123850.52"><vh>Leo now honors @language inside @doc parts</vh></v>
 <v t="ekr.20150312080344.19"><vh>@data nodes can now be composed from a tree of nodes</vh></v>
+<v t="ekr.20150323123524.1"><vh>Added @int qt-cursor-width setting</vh></v>
+<v t="ekr.20150311123850.5"><vh>Added g.IdleTime &amp; LeoQtGui.IdleTime</vh></v>
 </v>
 <v t="ekr.20150311123850.56"><vh>EKR: Why @clean is so important</vh></v>
 <v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
@@ -1171,6 +1171,12 @@
 <v t="ekr.20150311164212.5"><vh>Fixed a unicode-related problem in the flatten-outline command</vh></v>
 <v t="ekr.20150311164212.7"><vh>Fixed bug 151: parse-body creates "None declarations"</vh></v>
 <v t="ekr.20150323112726.3"><vh>Fixed bug 157: sort-lines problem</vh></v>
+<v t="ekr.20150326053547.3"><vh>Fixed bug 141: Leo should prohibit cross-file paste-retaining-clone</vh></v>
+<v t="ekr.20150326053547.4"><vh>Fixed bug 135: drag and drop between trees broken</vh></v>
+<v t="ekr.20150326053547.5"><vh>Fixed bug 122: @auto-rst should add an empty line after a heading</vh></v>
+<v t="ekr.20150326053547.6"><vh>Partially fixed bug 127: Bracket matching is buggy</vh></v>
+<v t="ekr.20150326053547.7"><vh>Fixed bug 164: Find Previous will not continue if target word in headline</vh></v>
+<v t="ekr.20150326053547.10"><vh>Added docstrings for @g.command commands</vh></v>
 </v>
 <v t="ekr.20150311123850.32"><vh>Code level</vh>
 <v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
@@ -1178,6 +1184,7 @@
 <v t="ekr.20150311123850.35"><vh>Added g.app.openingSettingsFile</vh></v>
 <v t="ekr.20150311123850.36"><vh>Removed allow_cloned_sibs switch</vh></v>
 <v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
+<v t="ekr.20150326053547.11"><vh>Added g.getLanguageAtPosition</vh></v>
 </v>
 <v t="ekr.20150311123850.41"><vh>Features</vh>
 <v t="ekr.20150323164016.3"><vh>Added nodes-dark icons &amp; stylesheet</vh></v>
@@ -1191,8 +1198,8 @@
 <v t="ekr.20150311123850.48"><vh>Added unformat-paragraph command</vh></v>
 <v t="ekr.20150311123850.50"><vh>Added @bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
-<v t="ekr.20150311123850.52"><vh>colorizer for @ &amp; @doc now honors @language</vh></v>
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
+<v t="ekr.20150326053547.9"><vh>Improved messages when find commands fail</vh></v>
 </v>
 </v>
 </vnodes>
@@ -15333,13 +15340,10 @@ By default, Leo's importers preserve neither gnx's nor uA's. This makes imported
 
 - @clean trees preserve outline structure, clone links and uA's without the need for @persistence trees.
 
-However, Leo will continue to support all forms of @auto for the foreseeable future, especially @auto-rst, @auto-vimoutline and @auto-otl.
-</t>
+@shadow is deprecated. Leo will continue to support all forms of @auto.</t>
 <t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
 
 http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-</t>
-<t tx="ekr.20150220115528.5">\@shadow is now officially deprecated. @clean is faster and easier to use than @shadow.
 </t>
 <t tx="ekr.20150220145456.4">For simplicity, this discussion will assume that we are updating an
 external file, x, created with @clean x. The update algorithm works
@@ -16135,6 +16139,8 @@ This pattern is particularly well suited to Leo, because the various getPublicCo
 </t>
 <t tx="ekr.20150312080344.19">How did we ever live without this?
 
+**Note**: This feature first appeared in Leo 5.0, but was not documented.
+
 @data nodes, like @data qt-gui-plugin-style-sheet may now be composed of the body text of the @data node itself, concatenated to the body text of all its descendants, in outline order.
 
 For example, @data qt-gui-plugin-style-sheet node consists of some general comments, with descendant nodes for the body pane, tree pane, etc. etc. There is no limit of nesting: the Plugins node has a child for each plugin that uses style sheets.
@@ -16214,6 +16220,8 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
     Up/Down arrows in the minibuffer cycle though command history
     http://leoeditor.com/load-leo.html displays .leo files in the browser
     Leo now honors @language inside @doc parts
+    @data nodes can now be composed from a tree of nodes
+        This feature appeared in Leo 5.0, but was not documented.
     Added @int qt-cursor-width setting
     Added g.IdleTime &amp; LeoQtGui.IdleTime
 </t>
@@ -18094,6 +18102,62 @@ The following work like some of the many `Emacs buffer commands`_.  A **buffer**
 
 ``typescript-to-py``
     Converts typescript text to python text. The conversion is not perfect, but it eliminates a lot of tedious text manipulation.
+</t>
+<t tx="ekr.20150326053547.10"></t>
+<t tx="ekr.20150326053547.11">This should have been done long ago.
+</t>
+<t tx="ekr.20150326053547.3">https://github.com/leo-editor/leo-editor/issues/141
+</t>
+<t tx="ekr.20150326053547.4">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/135
+drag and drop between trees broken
+
+The fix was to add g.app.dragging and related code.
+
+Tag: Bug-135
+
+4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
+Author: Me
+Date:   Fri Sep 13 16:44:33 2013 -0500
+</t>
+<t tx="ekr.20150326053547.5">https://github.com/leo-editor/leo-editor/issues/122
+</t>
+<t tx="ekr.20150326053547.6">@language rest
+
+https://github.com/leo-editor/leo-editor/issues/127
+
+Bracket matching and match-brackets do nothing for perl and javascript.
+
+That's good enough for now.
+</t>
+<t tx="ekr.20150326053547.7">@language rest
+@wrap
+
+Find Previous will not continue if target word in headline
+https://github.com/leo-editor/leo-editor/issues/164
+
+The differences between button searches and key searches:
+
+- Pressing the button changes focus, so...
+- initInteractiveCommands, gets None for w, so ins is None, so...
+- All headline searches start at the same place, so...
+- Headline searches can stall.
+
+The fixes:
+
+1. findButton and findPreviousButton:
+    - These methods now move out of the selected node if was_in_headline is True.
+    - The only way to do this is to set was_in_headline = False and the select the new node.
+    - If the search fails, the methods must select the original node.
+
+2. restore (the failure handler):
+    - Previously, this method toggled was_in_headline. Now it sets it to False.
+3. showSuccess:
+    - Sets was_in_headline to True if the success happened in the headline.
+</t>
+<t tx="ekr.20150326053547.9">Failing find command remind the user is only searching headlines or body text.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
