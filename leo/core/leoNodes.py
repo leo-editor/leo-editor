@@ -2074,6 +2074,8 @@ class VNodeBase (object):
         names = ("@clean","@nosent", "@file-nosent",)
         return self.findAtFileName(names)
 
+    atCleanNodeName = atNoSentinelsFileNodeName
+
     def atShadowFileNodeName (self):
         names = ("@shadow",)
         return self.findAtFileName(names)
@@ -2108,28 +2110,31 @@ class VNodeBase (object):
         return h and h[0] == '@' and self.anyAtFileNodeName()
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode (self):
-        return True if self.atAutoNodeName() else False
+        return bool(self.atAutoNodeName())
 
     def isAtAutoRstNode (self):
-        return True if self.atAutoRstNodeName() else False
+        return bool(self.atAutoRstNodeName())
+        
+    def isAtCleanNode(self):
+        return bool(self.atCleanNodeName())
 
     def isAtEditNode (self):
-        return True if self.atEditNodeName() else False
+        return bool(self.atEditNodeName() )
 
     def isAtFileNode (self):
-        return True if self.atFileNodeName() else False
+        return bool(self.atFileNodeName())
 
     def isAtNoSentinelsFileNode (self):
-        return True if self.atNoSentinelsFileNodeName() else False
+        return bool(self.atNoSentinelsFileNodeName())
 
     def isAtSilentFileNode (self): # @file-asis
-        return True if self.atSilentFileNodeName() else False
+        return bool(self.atSilentFileNodeName())
 
     def isAtShadowFileNode (self):
-        return True if self.atShadowFileNodeName() else False
+        return bool(self.atShadowFileNodeName())
 
     def isAtThinFileNode (self):
-        return True if self.atThinFileNodeName() else False
+        return bool(self.atThinFileNodeName())
 
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
