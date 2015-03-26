@@ -6,13 +6,13 @@ r'''Synchronizes \@path nodes with folders.
 
 If a node is named '\@path *<path_to_folder>*', the content (file and folder names)
 of the folder and the children of that node will synchronized whenever you double-click
-the node's status-iconbox.
+the node.
 
 For files not previously seen in a folder a new node will appear on top of the
 children list (with a mark).
 
-Folders appear in the list as /foldername/. If you double click on the icon-box
-of the folder node, it will have children added to it based on the contents of
+Folders appear in the list as /foldername/. If you double click on the 
+folder node, it will have children added to it based on the contents of
 the folder on disk. These folders have the '@path' directive as the first line
 of their body text.
 
@@ -26,10 +26,10 @@ name cannot contain with '/'.
 
 Files and folders can be created by entering a node with the required name as
 its headline (must start and/or end with "/" for a folder) and then double
-clicking on the node's status-iconbox.
+clicking on the node.
 
 \@auto nodes can be set up for existing files can be loaded by
-double clicking on the node's status-iconbox. If you prefer
+double clicking on the node. If you prefer
 \@shadow or something else use the "active_path_attype" setting,
 without the "@".
 
@@ -42,8 +42,8 @@ There are commands on the Plugins active_path submenu:
   file systems
 - pick dir - select a folder interactively to make a new top level @path node
 
-If you want to use an input other than double clicking a node's status-iconbox
-set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
+If you want to use an input other than double clicking a node
+set active_path_event to a value like 'hypercclick1' or 'headrclick1'.
 
 There are @settings for ignoring directory entries and automatically loading files.  ``re.search`` is used, rather than ``re.match``, so patterns need only match part of the filename, not the whole filename.
 
@@ -200,7 +200,7 @@ def subDir(d, p):
     return os.path.join(d,p)
 #@+node:tbrown.20080613095157.4: ** onSelect
 def onSelect (tag,keywords):
-    """Determine if a file or directory status-iconbox was clicked, and the path"""
+    """Determine if a file or directory node was clicked, and the path"""
     c = keywords.get('c') or keywords.get('new_c')
     if not c: return
     p = keywords.get("p")
