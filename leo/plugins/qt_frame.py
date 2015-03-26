@@ -3086,7 +3086,7 @@ class LeoQtLog (leoFrame.LeoLog):
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.currentChanged.connect(self.onCurrentChanged)
-        self.wrap = True if c.config.getBool('log_pane_wraps') else False
+        self.wrap = bool(c.config.getBool('log_pane_wraps'))
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
             theFilter = qt_events.LeoQtEventFilter(c,w=tw,tag='tabWidget')
