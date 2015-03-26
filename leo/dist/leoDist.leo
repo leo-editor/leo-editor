@@ -46,6 +46,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
+<v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
@@ -106,21 +107,14 @@
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
-
-1. Search for ##version
-
-2. Search for copyright
-
-    Latest copyright date: 2014.
-
-    Note: install.txt file embeds a copyright message in the nsi installer.</t>
+</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
 License. The gist of the license is that Leo is absolutely free, even
 for commercial use (including resale). There is no GNU-like "copyleft"
 restriction. The Open Source Initiative board has voted to certify the
 MIT license as Open Source. This license is compatible with the GPL.
 
-Copyright (c) 1997-2014 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2015 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -240,8 +234,7 @@ potential cloner is a leo loyalist). The one downside to no
 sentinels--there is no evidence that leo is being used but I think that
 raises the broader question of marketing leo, which I certainly believe
 will be aided significantly by being able to take advantage of leo without
-sentinels in external files.
---- Steve Zatz
+sentinels in external files.--- Steve Zatz
 
 And a few more features:
  
@@ -521,48 +514,60 @@ import time</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 Pre-testing:
-    - Make sure Leo looks good without myLeoSettings.leo.
-    - Run the "check-bindings" button in leoSettings.leo.
-    - Run all unit tests.
-    - Run pylint -a.
+- Make sure Leo looks good without myLeoSettings.leo.
+- Run the "check-bindings" button in leoSettings.leo.
+- Run all unit tests.
+- Run pylint -a.
+
 Release notes and web documentation:
-    - Update the release notes.
-    - Remove @language rest where possible in new notes.
-    - Create new "what's new" section.
-    - Copy release notes to leoDist.leo.
-    - Update version number and modification date on Leo's home page.
-    - (The sphinx date is updated automatically.)
-    - Regenerate all .html files.
-    - Copy files to web.
+- Update the release notes.
+- Remove @language rest where possible in new notes.
+- Create new "what's new" section.
+- Copy release notes to leoDist.leo.
+- Update version number and modification date on Leo's home page.
+- (The sphinx date is updated automatically.)
+- Regenerate all .html files.
+- Copy files to web.
+
 leoVersion.py
-    - Update version constant.
+- Update version constant.
+
 LeoDocs.leo:
-    - Update version numbers in html/conf.py
-    - Remove top-level clones.
-    - Select the readme node.
-LeoPluginsRef.leo:
-    - Remove top-level clones.
+- Update version numbers in html/conf.py
+- Remove top-level clones.
+- Spell check entire file.
+- Select the readme node.
+
+LeoPyRef.leo and LeoPluginsRef.leo:
+- Regenerate from corresponding local file.
+- Remove top-level clones.
+
 Post-testing:
-    - Run all unit tests.
+- Run all unit tests.
+
 LeoDist.leo:
-    - Make sure copyright dates are correct.
-        - leoDist.leo and leoDocs.leo.
-    - Update version numbers: search leoDist.leo for ##version.
-    - Update readme.txt.
-    - Check readme.txt spelling.
-    - Check 'PKG-INFO.TXT'
+- Make sure copyright dates are correct.
+    - leoDist.leo and leoDocs.leo.
+- Update version numbers: search leoDist.leo for ##version.
+- Update readme.txt.
+- Check readme.txt spelling.
+- Check 'PKG-INFO.TXT'
+
 Run make-leo.
-    ***** Commit all files before running make-leo.
-    - Run make-leo button in leoDist.leo.
-    - Commit any changed files.
+***** Commit all files before running make-leo.
+- Run make-leo button in leoDist.leo.
+- Commit any changed files.
+
 Create the executable installer:
-    - Double-click leo.nsi.
+- Double-click leo.nsi.
+
 Test files in installed folder.
-    - Run all unit tests in the installed folder, with the installed Leo.
-    - Make sure the following open without errors:
-        - leoPlugins.leo
-        - leoPy.leo
-        - LeoDocs.leo
+- Run all unit tests in the installed folder, with the installed Leo.
+- Make sure the following open without errors:
+    - leoPlugins.leo
+    - leoPy.leo
+    - LeoDocs.leo
+
 Create a git tag **last**.
 
 ===== Scan all folders &amp; files before uploading.
@@ -624,7 +629,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.0-final' ##version
+version = '5.1-b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -933,7 +938,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo5.0-final/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo5.1-b1/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1635,8 +1640,7 @@ potential cloner is a leo loyalist). The one downside to no
 sentinels--there is no evidence that leo is being used but I think that
 raises the broader question of marketing leo, which I certainly believe
 will be aided significantly by being able to take advantage of leo without
-sentinels in external files.
---- Steve Zatz
+sentinels in external files.--- Steve Zatz
 
 And a few more features:
  
@@ -1668,5 +1672,14 @@ Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 Viewer:    http://leoeditor.com/load-leo.html
 </t>
+<t tx="ekr.20150326055410.1">@language rest
+
+1. Search for ##version
+
+2. Search for copyright
+
+    Latest copyright date: 2015.
+
+    Note: install.txt file embeds a copyright message in the nsi installer.</t>
 </tnodes>
 </leo_file>

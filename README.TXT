@@ -75,8 +75,7 @@ potential cloner is a leo loyalist). The one downside to no
 sentinels--there is no evidence that leo is being used but I think that
 raises the broader question of marketing leo, which I certainly believe
 will be aided significantly by being able to take advantage of leo without
-sentinels in external files.
---- Steve Zatz
+sentinels in external files.--- Steve Zatz
 
 And a few more features:
  

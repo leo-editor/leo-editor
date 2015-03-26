@@ -15679,8 +15679,7 @@ potential cloner is a leo loyalist). The one downside to no
 sentinels--there is no evidence that leo is being used but I think that
 raises the broader question of marketing leo, which I certainly believe
 will be aided significantly by being able to take advantage of leo without
-sentinels in external files.
---- Steve Zatz
+sentinels in external files.--- Steve Zatz
 
 And a few more features:
  
@@ -15723,20 +15722,14 @@ In Python 3 there is no 'unicode' function.
 
 </t>
 <t tx="ekr.20150311123850.13"></t>
-<t tx="ekr.20150311123850.14">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/108
+<t tx="ekr.20150311123850.14">https://github.com/leo-editor/leo-editor/issues/108
 
 The plugin tries to create a new file inside the install path, and doesn't
 have the permission.
 
 Is there a way to configure the path of this spellpyx.txt to, say, $HOME/.leo?
-
-@language python
 </t>
-<t tx="ekr.20150311123850.15">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/78
+<t tx="ekr.20150311123850.15">https://github.com/leo-editor/leo-editor/issues/78
 
 The problem was in the PythonQSyntaxHighlighter class: it does not work
 *exactly* like QSyntaxHighlighter. The fix was to call w.seeInsertPoint()
@@ -15751,8 +15744,6 @@ Here is how to demonstrate the bug:
 - search for print (whole word)
 - The first match shows properly (it doesn't scroll).
 - The second match does *not* scroll properly.
-
-@language python
 </t>
 <t tx="ekr.20150311123850.16">https://github.com/leo-editor/leo-editor/issues/117
 
@@ -15814,9 +15805,7 @@ positions cursor on line 39.
 
 https://groups.google.com/group/leo-editor/attach/63f325cf79f6b2e9/nosent-goto-line-bug.leo?part=0.1
 </t>
-<t tx="ekr.20150311123850.24">@language rest
-
-bug in fix to Issue #35
+<t tx="ekr.20150311123850.24">bug in fix to Issue #35
 https://github.com/leo-editor/leo-editor/issues/130
 
 leoBridge sometimes assigns the same GNX to two distinct vnodes
@@ -15830,10 +15819,7 @@ c.initObjects sets c.hiddenRootNode.fileIndex to 'hidden-root-vnode-gnx'
 ni.end_holding now calls ni.compute_last_index.
 This *must* be done every time Leo reads a .leo file!
 </t>
-<t tx="ekr.20150311123850.25">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/140
+<t tx="ekr.20150311123850.25">https://github.com/leo-editor/leo-editor/issues/140
 
 There were two bugs:
 
@@ -15852,10 +15838,7 @@ TypeError: unorderable types: QPoint() &lt; int()
 
 It appears that fixing bug 140 fixed all the import problems!
 </t>
-<t tx="ekr.20150311123850.28">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/142
+<t tx="ekr.20150311123850.28">https://github.com/leo-editor/leo-editor/issues/142
 
 - Rewrote &amp; simplified readBibTexFileIntoTree &amp; writeTreeAsBibTex.
 - Fixed the actual bug in onHeadKey.  Inserting a new node put the template in the root node rather than the newly-inserted node.
@@ -18108,34 +18091,19 @@ The following work like some of the many `Emacs buffer commands`_.  A **buffer**
 </t>
 <t tx="ekr.20150326053547.3">https://github.com/leo-editor/leo-editor/issues/141
 </t>
-<t tx="ekr.20150326053547.4">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/135
-drag and drop between trees broken
+<t tx="ekr.20150326053547.4">https://github.com/leo-editor/leo-editor/issues/135
 
 The fix was to add g.app.dragging and related code.
-
-Tag: Bug-135
-
-4f848037424544e127166dbb0375f90c6826aa21 is the first bad commit
-Author: Me
-Date:   Fri Sep 13 16:44:33 2013 -0500
 </t>
 <t tx="ekr.20150326053547.5">https://github.com/leo-editor/leo-editor/issues/122
 </t>
-<t tx="ekr.20150326053547.6">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/127
+<t tx="ekr.20150326053547.6">https://github.com/leo-editor/leo-editor/issues/127
 
 Bracket matching and match-brackets do nothing for perl and javascript.
 
 That's good enough for now.
 </t>
-<t tx="ekr.20150326053547.7">@language rest
-@wrap
-
-Find Previous will not continue if target word in headline
+<t tx="ekr.20150326053547.7">Find Previous will not continue if target word in headline
 https://github.com/leo-editor/leo-editor/issues/164
 
 The differences between button searches and key searches:
