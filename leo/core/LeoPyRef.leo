@@ -55,6 +55,13 @@
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
+<v t="ekr.20150302140653.4"><vh>To do: Leo 5.1 b2</vh>
+<v t="ekr.20150325052301.1"><vh>Fix bug 165: vim-open-file command</vh></v>
+<v t="ekr.20150319055953.11"><vh>Improve &lt;?xml-stylesheet&gt;</vh></v>
+<v t="ekr.20150227040245.11"><vh>Fix bug 143: dabbrev-expand broken</vh></v>
+<v t="ekr.20150326092537.1"><vh>Fix bug 166: Fix icon hooks in plugins, etc.</vh></v>
+<v t="ekr.20150311123850.7"><vh>Improve --diff</vh></v>
+</v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
 <v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
@@ -124,14 +131,29 @@
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
 <v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
 </v>
-<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
+<v t="ekr.20150326145530.1"><vh>@clean ../modes/forth.py</vh>
+<v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt;</vh></v>
+<v t="ekr.20150326145530.3"><vh>&lt;&lt; define mode data &gt;&gt;</vh></v>
+<v t="ekr.20150326145530.4"><vh>&lt;&lt; define extendForth class &gt;&gt;</vh>
+<v t="ekr.20150326145530.5"><vh>ctor</vh></v>
+<v t="ekr.20150326145530.6"><vh>init &amp; helper</vh>
+<v t="ekr.20150326145530.7"><vh>splitList</vh></v>
+</v>
+<v t="ekr.20150326145530.8"><vh>createBracketRules &amp; helper</vh></v>
+<v t="ekr.20150326145530.9"><vh>createDefiningWordRules &amp; helper</vh></v>
+<v t="ekr.20150326145530.10"><vh>createKeywords</vh></v>
+<v t="ekr.20150326145530.11"><vh>createStringRule</vh></v>
+<v t="ekr.20150326145530.12"><vh>extendRulesDict</vh></v>
+</v>
+</v>
+<v t="ekr.20141027093638.6"><vh>@file ../../setup.py</vh></v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20141010141310.18627"><vh>@file ../external/PythonTidy.py</vh></v>
-<v t="ekr.20141027093638.6"><vh>@file ../../setup.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
+<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
@@ -438,6 +460,34 @@ print('\n'.join(aList))
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140923085942.17943"></t>
+<t tx="ekr.20150227040245.11">https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 &lt;wzy3721@gmail.com&gt; wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+</t>
+<t tx="ekr.20150302140653.4">@language rest
+@wrap
+</t>
 <t tx="ekr.20150304125314.4">@tabwidth -2
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -619,6 +669,62 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 @language html
 &lt;/script&gt;
 </t>
+<t tx="ekr.20150311123850.7">The --diff option is not very useful as a git diff.
+</t>
+<t tx="ekr.20150319055953.11">Set default for @string stylesheet so it generates::
+
+    &lt;?xml-stylesheet type="text/xsl" href="ekr_test"?&gt;
+</t>
+<t tx="ekr.20150325052301.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
+
+vim-open-file, if called while in a node associated with an external file, would open the file for editing.
+
+Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
+
+Upon returning to Leo, a 'Refresh from disk' would also be required.
+
+=== EKR
+
+Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
+
+=== Kent
+
+For @auto trees, Leo would do an @auto refresh.
+
+Ideally, cursor position would be maintained in both directions.
+
+Leo can indicate cursor position by adding the current cursor position to command line::
+
+    vim myfile +10
+
+opens myfile with the cursor at line 10
+
+Returning to Leo is a bit convoluted, but seems doable
+http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+
+vim is editing &lt;extfile&gt;, the session data will be saved in /tmp/vim_leo.bridge::
+
+    $ vim &lt;extfile&gt; -c "set viminfo='1,n/tmp" -i vim_leo.bridge
+    
+where:
+
+    '1   =  save 1 mark
+    n/tmp  =  in directory /tmp
+    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
+
+in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
+
+    # File marks:
+    '0  114  0  /tmp/brc
+    
+    # Jumplist (newest first):
+    -'  114  0  /tmp/brc
+</t>
 <t tx="ekr.20150325082623.1">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
@@ -642,5 +748,440 @@ gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
 <t tx="ekr.20150325082624.2"></t>
+<t tx="ekr.20150326092537.1">https://github.com/leo-editor/leo-editor/issues/166
+
+clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
+
+  FileActions.py
+  active_path.py
+  at_view.py
+  expfolder.py
+  mime.py
+  mnplugins.py
+  nodeActions.py
+  run_nodes.py
+  startfile.py
+  textnode.py
+  xemacs.py
+
+​Presumably something should be done about most, if not all of them. Moreover:
+
+- leo_to_rtf.py throws a bunch of errors.
+- leo_pdf.py won't load.
+</t>
+<t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
+# This file is in the public domain.
+
+import leo.core.leoGlobals as g
+
+&lt;&lt; define mode rules &gt;&gt;
+&lt;&lt; define mode data &gt;&gt;
+&lt;&lt; define extendForth class &gt;&gt;
+
+e = extendForth()
+
+def pre_init_mode(c):
+    # g.trace('modes/forth.py',c)
+    e.c = c
+    e.init()
+    e.createKeywords()
+    e.createBracketRules()
+    e.createDefiningWordRules()
+</t>
+<t tx="ekr.20150326145530.10">def createKeywords (self):
+
+    '''Create the mode keyword table and
+    entries in the rulesDict for the forth_keyword_rule'''
+
+    # global forth_main_keywords_dict
+    # global forth_keyword_rule
+
+    table = (
+        (self.keywords,         'keyword1'),
+      # (self.definingwords,    'keyword2'), # Done in createDefiningWordRules.
+        (self.boldwords,        'keyword3'),
+        (self.bolditalicwords,  'keyword4'),
+        (self.italicwords,      'keyword5'),
+        (self.stringwords,      'string'),
+    )
+
+    d = forth_main_keywords_dict
+    for keywordList,kind in table:
+        for z in keywordList:
+            # Create the entry in the keyword table.
+            if kind == 'string':
+                func = self.createStringRule(d,z)
+            else:
+                func = forth_keyword_rule
+
+            # Always make the entry.
+            d [z] = kind
+            self.extendRulesDict(ch=z[0],func=func)
+</t>
+<t tx="ekr.20150326145530.11">def createStringRule (self,d,pair):
+
+    '''Create an entry in d for a string keyword.'''
+
+    aList = pair.split(' ')
+    if len(aList) != 2:
+        g.trace('can not happen: expecting pair of forth strings:',pair)
+        return
+
+    begin,end = aList
+
+    def forth_string_word_rule(colorer, s, i):
+        return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
+            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False) # Don't require ending word.
+
+    return forth_string_word_rule
+</t>
+<t tx="ekr.20150326145530.12">def extendRulesDict (self,ch,func):
+
+    global rulesDict
+
+    # Extend the rulesDict entry for the first character of z.
+    aList = rulesDict.get(ch,[])
+    if func not in aList:
+        aList.append(func)
+        rulesDict[ch] = aList
+
+    # g.trace(z,kind)
+</t>
+<t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
+
+def forth_block_comment_rule(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+        delegate="",exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
+
+def forth_comment_rule(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
+        delegate="", exclude_match=False)
+
+def forth_keyword_rule(colorer, s, i):
+    return colorer.match_keywords(s, i)
+
+def forth_string_rule(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
+        delegate="",exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
+
+# ==========================
+if 0:
+
+    def forth_rule0(colorer, s, i):
+        return colorer.match_eol_span(s, i, kind="comment1", seq="#",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="", exclude_match=False)
+
+    def forth_rule1(colorer, s, i):
+        return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+    def forth_rule2(colorer, s, i):
+        return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+    def forth_rule3(colorer, s, i):
+        return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+    def forth_rule4(colorer, s, i):
+        return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+    def forth_rule5(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="=",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule6(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="!",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule7(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="&gt;=",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule8(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="&lt;=",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule9(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="+",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule10(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="-",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule11(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="/",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule12(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="*",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule13(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="&gt;",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule14(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="&lt;",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule15(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="%",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule16(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="&amp;",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule17(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="|",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule18(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="^",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule19(colorer, s, i):
+        return colorer.match_seq(s, i, kind="operator", seq="~",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def forth_rule20(colorer, s, i):
+        return colorer.match_mark_previous(s, i, kind="function", pattern="(",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+
+    def forth_rule21(colorer, s, i):
+        return colorer.match_keywords(s, i)
+</t>
+<t tx="ekr.20150326145530.3"># Properties for forth mode.
+properties = {
+	# "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
+	"lineComment": "\\",
+}
+
+# Attributes dict for forth_main ruleset.
+forth_main_attributes_dict = {
+	"default": "null",
+	"digit_re": "",
+	# "escape": "\\",
+	"highlight_digits": "false",
+	"ignore_case": "false",
+	"no_word_sep": "",
+}
+
+# Dictionary of attributes dictionaries for forth mode.
+attributesDictDict = {
+	"forth_main": forth_main_attributes_dict,
+}
+
+# Keywords dict for forth_main ruleset.
+forth_main_keywords_dict = {} # Created by extendForth class.
+
+# Dictionary of keywords dictionaries for forth mode.
+keywordsDictDict = {
+	"forth_main": forth_main_keywords_dict,
+}
+
+# Rules dict for forth_main ruleset.
+# This is extended by extendForth.
+rulesDict = {
+    '(':    [forth_block_comment_rule],
+    '\\':   [forth_comment_rule],
+    '"':    [forth_string_rule],
+}
+
+# x.rulesDictDict for forth mode.
+rulesDictDict = {
+    "forth_main": rulesDict,
+}
+
+# Import dict for forth mode.
+importDict = {}
+
+</t>
+<t tx="ekr.20150326145530.4">class extendForth:
+
+    '''A helper class to extend the mode tables from @data forth-x settings.'''
+
+    @others
+</t>
+<t tx="ekr.20150326145530.5">def __init__ (self):
+
+    self.c = None # set by pre_init_mode function.
+
+    # g.trace('modes/forth.py:extendForth')
+
+    # Default forth keywords: extended by @data forth-words
+
+    # Forth words to be rendered in boldface: extended by @data forth-bold-words
+    self.boldwords = [ ]
+
+    # Forth bold-italics words: extended by @data forth-bold-italic-words
+    # Note: on some boxen, bold italics may show in plain bold.
+    self.bolditalicwords = [ ]
+
+    # Forth words that define brackets: extended by @data forth-delimiter-pairs
+    self.brackets = []  # Helper: a list of tuples.
+    self.brackets1 = []
+    self.brackets2 = []
+
+    # Words which define other words: extended by forth-defwords
+    self.definingwords = []
+
+    # Forth words to be rendered in italics: extended by forth-italic-words
+    self.italicwords = []
+
+    # Default keywords: extended by @data forth-keywords
+    self.keywords = []
+        # "variable", "constant", "code", "end-code",
+        # "dup", "2dup", "swap", "2swap", "drop", "2drop",
+        # "r&gt;", "&gt;r", "2r&gt;", "2&gt;r",
+        # "if", "else", "then",
+        # "begin", "again", "until", "while", "repeat",
+        # "v-for", "v-next", "exit",
+        # "meta", "host", "target", "picasm", "macro",
+        # "needs", "include",
+        # "'", "[']",
+        # # ":", # Now a defining word.
+        # ";",
+        # "@", "!", ",", "1+", "+", "-",
+        # "&lt;", "&lt;=", "=", "&gt;=", "&gt;",
+        # "invert", "and", "or",
+
+    # Forth words which start strings: extended by @data forth-string-word-pairs
+    self.stringwords = []
+    self.stringwords1 = []
+    self.stringwords2 = []
+
+    self.verbose = False # True: tell when extending forth words.
+    # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
+</t>
+<t tx="ekr.20150326145530.6">def init (self):
+
+    '''Set our ivars from settings.'''
+
+    c = self.c
+    assert(c)
+
+    table = (
+        (self.definingwords, "forth-defwords"),
+        (self.brackets, "forth-delimiter-pairs"),
+        (self.keywords, "forth-words"),
+        (self.stringwords, "forth-string-word-pairs"),
+        (self.boldwords, "forth-bold-words"),
+        (self.bolditalicwords, "forth-bold-italic-words"),
+        (self.italicwords, "forth-italic-words"),
+    )
+
+    # Add entries from @data nodes (if they exist) to the corresponding lists.
+    for (ivarList, setting) in table:
+        extras = []
+        aList = c.config.getData(setting)
+        if aList:
+            for s in aList:
+                s = s.strip()
+                if s and s[0] != '\\':
+                    # g.trace(setting,s)
+                    extras.append(s)
+            if extras:
+                if self.verbose:
+                    if not g.app.unitTesting and not g.app.batchMode:
+                        g.pr("Found extra forth: %s" % " ".join(extras))
+                ivarList.extend(extras)
+
+    # Create brackets1/2 and stringwords1/2 lists.
+    table2 = (
+        ("brackets",    "@data forth-delimiter-pairs"),
+        ("stringwords", "@data forth-string-word-pairs"),
+    )
+    for (ivar, setting) in table2:
+        self.splitList (ivar,setting)
+
+    # g.trace('keywords',self.keywords)
+</t>
+<t tx="ekr.20150326145530.7">def splitList (self,ivar,setting):
+
+    '''Process lines containing pairs of entries 
+    in a list whose *name* is ivar.
+    Put the results in ivars whose names are ivar1 and ivar2.'''
+
+    result1 = [] ; result2 = []
+    aList = getattr(self,ivar)
+
+    # Look for pairs.  Comments have already been removed.
+    for s in aList:
+        pair = s.split(' ')
+        if len(pair) == 2 and pair[0].strip() and pair[1].strip():
+            result1.append(pair[0].strip())
+            result2.append(pair[1].strip())
+        else:
+            g.es_print('%s: ignoring line: %s' % (setting,s))
+
+    # Set the ivars.
+    name1 = '%s1' % ivar
+    name2 = '%s2' % ivar
+    setattr(self,name1, result1)
+    setattr(self,name2, result2)
+
+    if 0:
+        g.trace(name1,getattr(self,name1))
+        g.trace(name2,getattr(self,name2))
+</t>
+<t tx="ekr.20150326145530.8">def createBracketRules (self):
+
+    for z in self.brackets1:
+        func = self.createBracketRule(z)
+        self.extendRulesDict(ch=z[0],func=func)
+
+def createBracketRule (self,begin):
+
+    i = self.brackets1.index(begin)
+    end = self.brackets2[i]
+
+    def forth_bracket_rule(colorer, s, i):
+        return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
+            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=True) # Require word.
+
+    return forth_bracket_rule
+</t>
+<t tx="ekr.20150326145530.9">def createDefiningWordRules (self):
+
+    for z in self.definingwords:
+        func = self.createDefiningWordRule(z)
+        self.extendRulesDict(ch=z[0],func=func)
+
+def createDefiningWordRule (self,word):
+
+    def forth_defining_word_rule(colorer, s, i):
+        pattern=''
+        return colorer.match_word_and_regexp(s, i,
+            kind1="keyword2", # defining word
+            word=word,
+            kind2="keyword3", # bold
+            pattern=r'(\s)*(\S)+',
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            exclude_match=False)
+
+    return forth_defining_word_rule
+</t>
 </tnodes>
 </leo_file>
