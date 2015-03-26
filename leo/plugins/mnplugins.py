@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040205071616: * @file mnplugins.py
 #@+<< docstring >>
-#@+node:ekr.20050101090717: ** << docstring >>
+#@+node:ekr.20050101090717: ** << docstring >> (mnplugins.py)
 """
 mnplugins.py
 
@@ -32,7 +32,7 @@ __version__ = "0.2"
     # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
-#@+node:ekr.20100128091412.5381: ** init
+#@+node:ekr.20100128091412.5381: ** init (mnplugins.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("start1", onStart)

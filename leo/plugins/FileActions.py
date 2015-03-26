@@ -85,7 +85,7 @@ file_directives = [
 #@-<< define the directives that are handled by this plugin >>
 
 #@+others
-#@+node:ekr.20060108162524: ** init
+#@+node:ekr.20060108162524: ** init (FileActions.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Dangerous for unit testing.

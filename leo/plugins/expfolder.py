@@ -43,7 +43,7 @@ __version__ = "1.0"
 textexts = []
 
 #@+others
-#@+node:ajones.20070122154835: ** init
+#@+node:ajones.20070122154835: ** init (expfolder.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     g.plugin_signon(__name__)

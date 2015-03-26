@@ -76,7 +76,7 @@ else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
 
 #@+others
-#@+node:ekr.20050218023308: ** init
+#@+node:ekr.20050218023308: ** init (xemacs.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting

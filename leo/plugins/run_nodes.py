@@ -104,7 +104,7 @@ OwnIdleHook = False
 #@-<< globals >>
 
 #@+others
-#@+node:ekr.20060108160737: ** init
+#@+node:ekr.20060108160737: ** init (run_nodes.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("bodykey2",OnBodyKey)

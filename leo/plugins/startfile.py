@@ -29,7 +29,7 @@ import os
 # this should probably be changed to @path or so.
 #@-<< notes >>
 #@+others
-#@+node:ekr.20100128073941.5379: ** init
+#@+node:ekr.20100128073941.5379: ** init (startfile.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = hasattr(os,"startfile")

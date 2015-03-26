@@ -31,7 +31,7 @@ def init():
         s = 'at_view plugin not loaded: win32Clipboard not present.'
         g.es_print(s)
     return ok
-#@+node:ktenney.20041211072654.6: ** onCreate
+#@+node:ktenney.20041211072654.6: ** onCreate (at_view.py)
 def onCreate(tag, keywords):
 
     c = keywords.get("c")
@@ -53,7 +53,7 @@ class View:
 
         self.c = c
         # g.trace('View')
-    #@+node:ktenney.20041211072654.9: *3* icondclick2
+    #@+node:ktenney.20041211072654.9: *3* icondclick2 (at_view.py)
     def icondclick2 (self, tag, keywords):
 
         self.current = self.c.p

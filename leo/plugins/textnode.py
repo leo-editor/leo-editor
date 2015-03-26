@@ -25,7 +25,7 @@ __version__ = "1.1"
     # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
 
 #@+others
-#@+node:ajones.20070122160142.2: ** init
+#@+node:ajones.20070122160142.2: ** init (textnode.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler(('new','open2'), on_open)

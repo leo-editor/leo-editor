@@ -243,7 +243,7 @@ def onIconDoubleClickNA(tag, keywords):
         return None #No action taken - Let other double-click handlers run
 
 
-#@+node:TL.20080507213950.7: ** init
+#@+node:TL.20080507213950.7: ** init (nodeActions.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     g.blue("nodeActions: Init")

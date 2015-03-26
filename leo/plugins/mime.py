@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:dan.20090217132953.1: * @file mime.py
 #@+<< docstring >>
-#@+node:dan.20090203174248.27: ** << docstring >>
+#@+node:dan.20090203174248.27: ** << docstring >> (mime.py)
 r''' Opens files with their default platform program.
 
 Double-clicking @mime nodes will attempt to open the named file as if opened
@@ -70,7 +70,7 @@ def exec_string_cmd(cmd):
         return subprocess.Popen(s, shell=True)
 
     return f
-#@+node:dan.20090203174248.30: ** init
+#@+node:dan.20090203174248.30: ** init (mime.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting
