@@ -1320,7 +1320,7 @@
 <v t="ekr.20131213135427.22259"><vh>@item shell-command-on-region</vh></v>
 </v>
 <v t="ekr.20131213135427.22260"><vh>@menu Spell C&amp;heck</vh>
-<v t="ekr.20131213135427.22261"><vh>@item &amp;open-spell-tab</vh></v>
+<v t="ekr.20131213135427.22261"><vh>@item &amp;spell-tab-open</vh></v>
 <v t="ekr.20131213135427.22262"><vh>@item spell-&amp;change</vh></v>
 <v t="ekr.20131213135427.22263"><vh>@item spell-change-&amp;then-find</vh></v>
 <v t="ekr.20131213135427.22264"><vh>@item spell-&amp;find</vh></v>
@@ -2750,7 +2750,7 @@ F3 find-next (Find Files)
 F4 None (Address bar in Windows Explorer)
 F5 None (Refresh, Reload in Windows Explorer)
 F6 None (Should cycle from window to window)
-F7 open-spell-tab (Spell in Word)
+F7 spell-tab-open (Spell in Word)
 Shift-F7 None (Thesaurus in Word)
 F8 None (Safe mode)
 F9 None
@@ -2944,8 +2944,8 @@ focus-to-body
 focus-to-find
 focus-to-log
 focus-to-minibuffer
-focus-to-spell
 focus-to-tree
+spell-tab-open
 
 Menus
 
@@ -3006,7 +3006,7 @@ hide-body-pane
 hide-log-pane
 hide-pane
 hide-outline-pane
-hide-spell-tab
+spell-tab-hide
 
 Furthermore, the find commands are a good tool for using Leo without a mouse
 (More commands are coming)
@@ -5409,7 +5409,7 @@ help            = F1
 do-nothing      = F4
 do-nothing      = F5
 do-nothing      = F6
-open-spell-tab  = F7
+spell-tab-open  = F7
 do-nothing      = F8
 do-nothing      = F9
 do-nothing      = F10
@@ -6208,7 +6208,6 @@ focus-to-body                       = None
 focus-to-find                       = None
 focus-to-log                        = None
 focus-to-minibuffer                 = None
-focus-to-spell                      = None
 focus-to-tree                       = None
 forward-char                        = Ctrl-f
 forward-char-extend-selection       = None
@@ -6241,7 +6240,7 @@ goto-prev-node                      = Alt-Shift-UpArrow
 goto-prev-sibling                   = Alt-Shift-R
 goto-prev-visible                   = None         # Alt-UpArrow conflicts with beginning-of-line.
 help-for-minibuffer                 = None
-hide-spell-tab                      = None
+spell-tab-hide                      = None
 hoist                               = None
 how-many                            = None
 iconify-frame                       = Ctrl-z
@@ -6317,7 +6316,7 @@ open-online-home                = None
 # open-online-tutorial            = None
 open-outline                    = None         # Ctrl-O conflicts with insert-newline
 open-python-window              = None         # Removed Alt-P: not useful enough.
-open-spell-tab                  = None
+spell-tab-open                  = None
 open-with                       = None
 outline-to-cweb                 = None
 outline-to-noweb                = None
@@ -6671,7 +6670,6 @@ focus-to-body                       = None
 focus-to-log                        = None
 focus-to-find                       = None
 focus-to-minibuffer                 = None
-focus-to-spell                      = None
 focus-to-tree                       = None
 forward-char                        = None
 forward-char-extend-selection       = None
@@ -6738,7 +6736,7 @@ hide-body-pane                      = None
 hide-log-pane                       = None
 hide-pane                           = None
 hide-outline-pane                   = None
-hide-spell-tab                      = None
+spell-tab-hide                      = None
 hoist                               = None
 how-many                            = None
 iconify-frame                       = None
@@ -6826,7 +6824,7 @@ open-online-home                    = None
 # open-online-tutorial              = None
 open-outline                        = None
 open-python-window                  = None
-open-spell-tab                      = None
+spell-tab-open                      = None
 open-with                           = None
 outline-to-cweb                     = None
 outline-to-noweb                    = None
