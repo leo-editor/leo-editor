@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file mod_http.py
+#@@first
+
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
 ''' A minimal http plugin for LEO, based on AsyncHttpServer.py.
