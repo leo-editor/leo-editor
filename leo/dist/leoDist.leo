@@ -1049,8 +1049,10 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20110603171959.1506">def clean_spellpyx (self):
-    
-    fn = g.os_path_finalize_join(pluginsDir,'spellpyx.txt')
+    '''Clean ekr-spellpyx.txt.'''
+    fn = g.os_path_finalize_join(pluginsDir,'ekr-spellpyx.txt')
+    if not g.os_path_exists(fn):
+        return
     f = self.openFile(fn,mode='rb')
     s = f.read()
     f.close()

@@ -9,6 +9,7 @@ File "MANIFEST.in"
 File "Makefile"
 File "PKG-INFO.TXT"
 File "README.TXT"
+File "ekr-spellpyx.txt"
 File "launchLeo.py"
 File "leo-install.py"
 File "leo.nsi"
@@ -20,6 +21,7 @@ File "profileLeo.py"
 File "pylint-leo.py"
 File "setup.cfg"
 File "setup.py"
+File "xslt-test.leo"
 
 SetOutPath $INSTDIR\leo
 File "C:\leo.repo\leo-editor\leo\__init__.py"
@@ -94,6 +96,7 @@ File "C:\leo.repo\leo-editor\leo\doc\CheatSheet.leo"
 File "C:\leo.repo\leo-editor\leo\doc\FAQ.txt"
 File "C:\leo.repo\leo-editor\leo\doc\IpythonBridge.txt"
 File "C:\leo.repo\leo-editor\leo\doc\LeoDocs.leo"
+File "C:\leo.repo\leo-editor\leo\doc\LeoReleaseNotes.leo"
 File "C:\leo.repo\leo-editor\leo\doc\appendices.txt"
 File "C:\leo.repo\leo-editor\leo\doc\atShadow.txt"
 File "C:\leo.repo\leo-editor\leo\doc\cheatsheet.txt"
@@ -229,8 +232,10 @@ SetOutPath $INSTDIR\leo\external\ckeditor
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\CHANGES.md"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\LICENSE.md"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\README.md"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\bower.json"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\build-config.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\ckeditor.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\composer.json"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\config.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\contents.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\styles.js"
@@ -299,6 +304,7 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\sr.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\sv.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\th.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\tr.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\tt.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\ug.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\uk.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\lang\vi.js"
@@ -314,6 +320,7 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\a11y
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\_translationstatus.txt"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\af.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ar.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\bg.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ca.js"
@@ -322,6 +329,7 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\da.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\de.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\el.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\en-gb.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\en.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\eo.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\es.js"
@@ -340,6 +348,7 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\it.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ja.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\km.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ko.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ku.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\lt.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\lv.js"
@@ -362,10 +371,12 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sv.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\th.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\tr.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\tt.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ug.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\uk.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\vi.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\zh-cn.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\zh.js"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\about\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\about\dialogs\about.js"
@@ -385,9 +396,6 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\dialog\dialogDefiniti
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\div\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\div\dialogs\div.js"
-
-SetOutPath $INSTDIR\leo\external\ckeditor\plugins\fakeobjects\images
-File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\fakeobjects\images\spacer.gif"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\find\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\find\dialogs\find.js"
@@ -437,9 +445,11 @@ SetOutPath $INSTDIR\leo\external\ckeditor\plugins\liststyle\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\liststyle\dialogs\liststyle.js"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\magicline\images
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\magicline\images\icon-rtl.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\magicline\images\icon.png"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\magicline\images\hidpi
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\magicline\images\hidpi\icon-rtl.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\magicline\images\hidpi\icon.png"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\pagebreak\images
@@ -477,41 +487,65 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\dialogs\smiley
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\smiley\images
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\angel_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\angel_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\angry_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\angry_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\broken_heart.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\broken_heart.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\confused_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\confused_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\cry_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\cry_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\devil_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\devil_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\embaressed_smile.gif"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\embarrassed_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\embarrassed_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\envelope.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\envelope.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\heart.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\heart.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\kiss.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\kiss.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\lightbulb.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\lightbulb.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\omg_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\omg_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\regular_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\regular_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\sad_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\sad_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\shades_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\shades_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\teeth_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\teeth_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\thumbs_down.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\thumbs_down.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\thumbs_up.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\thumbs_up.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\tongue_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\tongue_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\tounge_smile.gif"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\whatchutalkingabout_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\whatchutalkingabout_smile.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\wink_smile.gif"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\smiley\images\wink_smile.png"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\specialchar\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\specialchar.js"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\specialchar\dialogs\lang
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\_translationstatus.txt"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\af.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ar.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\bg.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ca.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\cs.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\cy.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\da.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\de.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\el.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\en-gb.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\en.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\eo.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\es.js"
@@ -527,7 +561,9 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\l
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\id.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\it.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ja.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\km.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ku.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\lt.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\lv.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\nb.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\nl.js"
@@ -543,10 +579,12 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\l
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\sv.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\th.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\tr.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\tt.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ug.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\uk.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\vi.js"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\zh-cn.js"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\specialchar\dialogs\lang\zh.js"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\table\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\table\dialogs\table.js"
@@ -572,7 +610,6 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\README.md"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\plugins\wsc\dialogs
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\dialogs\ciframe.html"
-File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\dialogs\tmp.html"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\dialogs\tmpFrameset.html"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\dialogs\wsc.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\plugins\wsc\dialogs\wsc.js"
@@ -602,7 +639,6 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\samples\xhtmlstyle.html"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\samples\assets\posteddata.php"
-File "C:\leo.repo\leo-editor\leo\external\ckeditor\samples\assets\sample.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\samples\assets\sample.jpg"
 
 SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets\inlineall
@@ -647,7 +683,6 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\dialog_ie.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\dialog_ie7.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\dialog_ie8.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\dialog_iequirks.css"
-File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\dialog_opera.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\editor.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\editor_gecko.css"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\editor_ie.css"
@@ -671,6 +706,36 @@ File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\images\hidpi\lock
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\images\hidpi\lock.png"
 File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono\images\hidpi\refresh.png"
 
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono-dark
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\dialog.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\dialog_ie.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\dialog_ie7.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\dialog_ie8.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\dialog_iequirks.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor_gecko.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor_ie.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor_ie7.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor_ie8.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\editor_iequirks.css"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\icons.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\icons_hidpi.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\readme.md"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\skin.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono-dark\images
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\arrow.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\close.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\lock-open.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\lock.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\refresh.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono-dark\images\hidpi
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\hidpi\close.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\hidpi\lock-open.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\hidpi\lock.png"
+File "C:\leo.repo\leo-editor\leo\external\ckeditor\skins\moono-dark\images\hidpi\refresh.png"
+
 SetOutPath $INSTDIR\leo\external\concurrent
 File "C:\leo.repo\leo-editor\leo\external\concurrent\__init__.py"
 
@@ -683,6 +748,151 @@ File "C:\leo.repo\leo-editor\leo\external\concurrent\futures\thread.py"
 
 SetOutPath $INSTDIR\leo\external\obsolete
 File "C:\leo.repo\leo-editor\leo\external\obsolete\ipy_leo.py"
+
+SetOutPath $INSTDIR\leo\external\rope
+File "C:\leo.repo\leo-editor\leo\external\rope\.gitignore"
+File "C:\leo.repo\leo-editor\leo\external\rope\.travis.yml"
+File "C:\leo.repo\leo-editor\leo\external\rope\CONTRIBUTORS"
+File "C:\leo.repo\leo-editor\leo\external\rope\COPYING"
+File "C:\leo.repo\leo-editor\leo\external\rope\MANIFEST.in"
+File "C:\leo.repo\leo-editor\leo\external\rope\README.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\setup.py"
+
+SetOutPath $INSTDIR\leo\external\rope\docs
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\contributing.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\done.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\library.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\overview.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\rope.rst"
+
+SetOutPath $INSTDIR\leo\external\rope\docs\dev
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\dev\issues.rst"
+File "C:\leo.repo\leo-editor\leo\external\rope\docs\dev\todo.rst"
+
+SetOutPath $INSTDIR\leo\external\rope\rope
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\__init__.py"
+
+SetOutPath $INSTDIR\leo\external\rope\rope\base
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\arguments.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\ast.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\astutils.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\builtins.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\change.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\codeanalyze.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\default_config.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\evaluate.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\exceptions.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\fscommands.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\history.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\libutils.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\prefs.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\project.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pycore.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pynames.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pynamesdef.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pyobjects.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pyobjectsdef.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\pyscopes.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\resourceobserver.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\resources.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\simplify.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\stdmods.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\taskhandle.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\utils.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\worder.py"
+
+SetOutPath $INSTDIR\leo\external\rope\rope\base\oi
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\doa.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\memorydb.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\objectdb.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\objectinfo.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\runmod.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\soa.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\soi.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\base\oi\transform.py"
+
+SetOutPath $INSTDIR\leo\external\rope\rope\contrib
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\autoimport.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\changestack.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\codeassist.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\finderrors.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\findit.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\fixmodnames.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\fixsyntax.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\contrib\generate.py"
+
+SetOutPath $INSTDIR\leo\external\rope\rope\refactor
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\change_signature.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\encapsulate_field.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\extract.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\functionutils.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\inline.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\introduce_factory.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\introduce_parameter.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\localtofield.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\method_object.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\move.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\multiproject.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\occurrences.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\patchedast.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\rename.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\restructure.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\similarfinder.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\sourceutils.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\suites.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\topackage.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\usefunction.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\wildcards.py"
+
+SetOutPath $INSTDIR\leo\external\rope\rope\refactor\importutils
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\importutils\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\importutils\actions.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\importutils\importinfo.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\rope\refactor\importutils\module_imports.py"
+
+SetOutPath $INSTDIR\leo\external\rope\ropetest
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\advanced_oi_test.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\builtinstest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\codeanalyzetest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\historytest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\objectdbtest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\objectinfertest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\projecttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\pycoretest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\pyscopestest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\runmodtest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\simplifytest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\testutils.py"
+
+SetOutPath $INSTDIR\leo\external\rope\ropetest\contrib
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\autoimporttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\changestacktest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\codeassisttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\finderrorstest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\findittest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\fixmodnamestest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\contrib\generatetest.py"
+
+SetOutPath $INSTDIR\leo\external\rope\ropetest\refactor
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\__init__.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\change_signature_test.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\extracttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\importutilstest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\inlinetest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\movetest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\multiprojecttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\patchedasttest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\renametest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\restructuretest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\similarfindertest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\suitestest.py"
+File "C:\leo.repo\leo-editor\leo\external\rope\ropetest\refactor\usefunctiontest.py"
 
 SetOutPath $INSTDIR\leo\Icons
 File "C:\leo.repo\leo-editor\leo\Icons\LeoApp.ico"
@@ -815,6 +1025,14 @@ File "C:\leo.repo\leo-editor\leo\Icons\cleo\small\pri9.png"
 File "C:\leo.repo\leo-editor\leo\Icons\cleo\small\qryblk.png"
 File "C:\leo.repo\leo-editor\leo\Icons\cleo\small\xblk.png"
 File "C:\leo.repo\leo-editor\leo\Icons\cleo\small\xgry.png"
+
+SetOutPath $INSTDIR\leo\Icons\nodes-dark\plusminus
+File "C:\leo.repo\leo-editor\leo\Icons\nodes-dark\plusminus\closed.png"
+File "C:\leo.repo\leo-editor\leo\Icons\nodes-dark\plusminus\open.png"
+
+SetOutPath $INSTDIR\leo\Icons\nodes-dark\triangles
+File "C:\leo.repo\leo-editor\leo\Icons\nodes-dark\triangles\closed.png"
+File "C:\leo.repo\leo-editor\leo\Icons\nodes-dark\triangles\open.png"
 
 SetOutPath $INSTDIR\leo\Icons\recorder
 File "C:\leo.repo\leo-editor\leo\Icons\recorder\pointer.png"
@@ -2142,6 +2360,8 @@ File "C:\leo.repo\leo-editor\leo\scripts\untangle_done.py"
 SetOutPath $INSTDIR\leo\test
 File "C:\leo.repo\leo-editor\leo\test\activeUnitTests.txt"
 File "C:\leo.repo\leo-editor\leo\test\at-auto-unit-test.py"
+File "C:\leo.repo\leo-editor\leo\test\clone-test.leo"
+File "C:\leo.repo\leo-editor\leo\test\clone-test.txt"
 File "C:\leo.repo\leo-editor\leo\test\default.css"
 File "C:\leo.repo\leo-editor\leo\test\goto-line-number-test.py"
 File "C:\leo.repo\leo-editor\leo\test\inactiveTests.txt"
@@ -2206,6 +2426,24 @@ SetOutPath $INSTDIR\leo\test\unittest\perfectImport
 File "C:\leo.repo\leo-editor\leo\test\unittest\perfectImport\SimpleHTTPServer.py"
 File "C:\leo.repo\leo-editor\leo\test\unittest\perfectImport\formatter.py"
 File "C:\leo.repo\leo-editor\leo\test\unittest\perfectImport\unitTestFile.py"
+
+SetOutPath $INSTDIR\leo\themes\generic\Icons
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box00.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box01.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box02.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box03.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box04.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box05.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box06.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box07.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box08.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box09.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box10.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box11.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box12.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box13.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box14.png"
+File "C:\leo.repo\leo-editor\leo\themes\generic\Icons\box15.png"
 
 SetOutPath $INSTDIR\leo\themes\leo_dark_0\Icons
 File "C:\leo.repo\leo-editor\leo\themes\leo_dark_0\Icons\box00.png"
