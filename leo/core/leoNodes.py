@@ -472,6 +472,7 @@ class Position (object):
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
+    def isAtCleanNode           (self): return self.v.isAtCleanNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
