@@ -15111,83 +15111,64 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,tag=p.h)
 
-.. @+node:ekr.20150322160806.1: *3* gnx caching
-.. @+node:ekr.20141022143218.18354: *4* ni.begin_holding
-def begin_holding(self,c):
-    '''Begin queuing vnodes that may need new gnx's.'''
-    if g.no_cache:
-        pass
-    else:
-        trace = False and not g.unitTesting
-        self.stack.append(c)
-        self.hold_gnx_flag = True
-        if trace:
-            g.trace('==========',[z.shortFileName() for z in self.stack])
-.. @+node:ekr.20141022133457.12621: *4* ni.end_holding
-def end_holding(self,c):
-    '''
-    Allocate gnx's (v.fileIndex) for vnodes in the hold_set.
-    It's not an error for v.fileIndex to exist.
-    '''
-    if g.no_cache:
-        pass
-    else:
-        trace,verbose = False and not g.unitTesting,False
-        fc = c.fileCommands
-        if not c:
-            g.trace('can not happen: no c.fileCommands')
-            return
-        fn = c.shortFileName()
-        if not self.stack:
-            g.trace('can not happen: stack underflow',c)
-            return
-        c2 = self.stack.pop()
-        if c != c:
-            g.trace('can not happen',c.shortFileName(),c2.shortFileName())
-        self.hold_gnx_flag = bool(self.stack)
-        if self.hold_gnx_flag:
-            if trace and verbose:
-                g.trace('********** still holding',c2.shortFileName())
-            return
-        self.compute_last_index(c)
-            # This *must* be done even if the hold_gnx_set is empty!
-            # Failure to do this might cause gnx collisions later.
-            # Fix bug #130: bug in fix to Issue #35
-        if not self.hold_gnx_set:
-            if trace and verbose:
-                g.trace('********** nothing to do',c2.shortFileName())
-            return
-        if trace: g.trace('==========',self.lastIndex,self.timeString,fn)
-        for v in list(self.hold_gnx_set):
-            if not v:
-                g.internalError('hold_gnx_set contains None')
-            elif v.fileIndex:
-                if trace and verbose:
-                    g.trace('===== already allocated',v.fileIndex,v.h)
-            else:
-                # This case can happen when @auto finds a node that
-                # has been created outside of Leo.
-                v.fileIndex = index = self.getNewIndex(v,cached=True)
-                if index:
-                    if trace: g.trace('new gnx',index,v.h)
-                    fc.gnxDict[index] = v
-                else:
-                    g.trace('can not happen: no v.fileIndex',v)
-        self.hold_set = set()
-.. @+node:ekr.20080429053831.13: *4* v.setFileIndex
-def setFileIndex (self, index):
-    '''Set v.fileIndex and update g.app.nodeIndices.lastIndex.'''
-    
-    ### called from getLeoOutlineFromClipboard.
-    ### Called from pd.restore_gnx.
+.. @+node:ekr.20150327104647.1: *3* LeoQtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+timer = None
+timer_last_delay = 0
 
-    if g.no_cache: assert False,g.callers()
-
-    v = self
-    if g.isString(index):
-        v.fileIndex = index
-        g.app.nodeIndices.updateLastIndex(index)
+def setIdleTimeHook(self):
+    '''
+    Define a timer and its callback so that:
+    a) g.app.idleTimeHook() actually gets called at idle-time,
+    b) avoids busy waiting and,
+    c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
+    '''
+    if 1:
+        def handler(timer):
+            '''Handler for IdleTime class.'''
+            # Disabling idle-time sets g.app.idleTimeHook = None.
+            if g.app.idleTimeHook:
+                g.app.idleTimeHook()
+            
+        self.timer = g.IdleTime(handler,delay=g.app.idleTimeDelay)
+        if self.timer:
+            self.timer.start()
     else:
-        g.trace('can not happen',repr(index))
+        << define timerCallBack >>
+        if not self.timer:
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(timerCallBack)
+        # Fire a single-shot at idle time.
+        self.timer_last_delay = 0
+        self.timer.start(0)
+
+setIdleTimeHookAfterDelay = setIdleTimeHook
+.. @+node:ekr.20150327104647.2: *4* << define timerCallBack >>
+def timerCallBack():
+    '''
+    This is the idle time callback. It calls g.app.gui.idleTimeHook not
+    more than once every g.app.idleTimeDelay msec.
+    '''
+    trace = False and g.app.trace_idle_time
+    if g.app.idleTimeHook and g.app.idleTimeDelay > 0:
+        # Idle-time processing is enabled.
+        if self.timer_last_delay == 0:
+            # We are actually at idle time.
+            if trace: g.trace(g.app.idleTimeDelay,'calling:',g.app.idleTimeHook.__name__)
+            g.app.idleTimeHook() # usually g.idleTimeHookHanlder.
+            # Now wait at for at least g.app.idleTimeDelay msec.
+            self.timer_last_delay = g.app.idleTimeDelay
+            self.timer.stop()
+            self.timer.start(g.app.idleTimeDelay)
+        else:
+            # We have waited at least g.app.idleTimeDelay msec.
+            # Now wait for idle time.
+            if trace: g.trace('waiting for idle time')
+            self.timer_last_delay = 0
+            self.timer.stop()
+            self.timer.start(0)
+    elif self.timer:
+        # Idle-time processing is disabled.  Stop the timer.
+        if trace: g.trace('Null g.app.idleTimeHook: stopping timer.')
+        self.timer.stop()
 .. @-all
 .. @-leo
