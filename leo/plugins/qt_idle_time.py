@@ -15,39 +15,39 @@ class IdleTime:
     A class that executes a handler with a given delay at idle time. The
     handler takes a single argument, the IdleTime instance::
         
-        def handler(it):
-            """IdleTime handler.  it is an IdleTime instance."""
-            delta_t = it.time-it.starting_time
-            g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
-            if it.count >= 5:
+        def handler(timer):
+            """IdleTime handler.  timer is an IdleTime instance."""
+            delta_t = timer.time-timer.starting_time
+            g.trace(timer.count,timer.c.shortFileName(),'%2.4f' % (delta_t))
+            if timer.count >= 5:
                 g.trace('done')
-                it.stop()
+                timer.stop()
     
         # Execute handler every 500 msec. at idle time.
-        it = g.IdleTime(c,handler,delay=500)
-        if it: it.start()
+        timer = g.IdleTime(c,handler,delay=500)
+        if timer: timer.start()
         
     Timer instances are completely independent::
 
-        def handler1(it):
-            delta_t = it.time-it.starting_time
-            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-            if it.count >= 5:
+        def handler1(timer):
+            delta_t = timer.time-timer.starting_time
+            g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
+            if timer.count >= 5:
                 g.trace('done')
-                it.stop()
+                timer.stop()
     
-        def handler2(it):
-            delta_t = it.time-it.starting_time
-            g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-            if it.count >= 10:
+        def handler2(timer):
+            delta_t = timer.time-timer.starting_time
+            g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
+            if timer.count >= 10:
                 g.trace('done')
-                it.stop()
+                timer.stop()
     
-        it1 = g.IdleTime(c,handler1,delay=500)
-        it2 = g.IdleTime(c,handler2,delay=1000)
-        if it1 and it2:
-            it1.start()
-            it2.start()
+        timer1 = g.IdleTime(c,handler1,delay=500)
+        timer2 = g.IdleTime(c,handler2,delay=1000)
+        if timer1 and timer2:
+            timer1.start()
+            timer2.start()
     '''
     #@+others
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
