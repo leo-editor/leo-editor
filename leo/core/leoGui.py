@@ -202,11 +202,6 @@ class LeoGui:
 
         # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
         self.oops()
-    #@+node:ekr.20031218072017.3739: *5* Idle time
-    def setIdleTimeHook (self):
-        pass
-        
-    setIdleTimeHookAfterDelay = setIdleTimeHook
     #@+node:ekr.20070212070820: *5* makeScriptButton
     def makeScriptButton (self,c,
         args=None,

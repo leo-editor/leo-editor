@@ -163,7 +163,7 @@ def OnIconDoubleClick(tag,keywords):
 
             ExitCode = None
             OwnIdleHook = True
-            g.enableIdleTimeHook(idleTimeDelay=100)
+            ### g.enableIdleTimeHook()
             #@-<< handle double click in @run icon >>
     elif g.match_word(h,0,"@in"):
         if RunNode:

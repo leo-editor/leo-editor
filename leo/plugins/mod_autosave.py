@@ -58,7 +58,7 @@ def onCreate(tag, keywords):
         g.es("auto save enabled every %s sec." % (
             interval),color="orange")
         g.registerHandler('idle',onIdle)
-        g.enableIdleTimeHook()
+        ### g.enableIdleTimeHook()
     else:
         g.es("@bool mod_autosave_active=False",color='orange')
 #@+node:ekr.20100904062957.10654: ** onIdle

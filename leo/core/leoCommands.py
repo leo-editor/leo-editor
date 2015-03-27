@@ -954,7 +954,6 @@ class Commands (object):
                 ext = c.getOpenWithExt(p,ext)
                 fn = c.openWithHelper(body,p,ext)
                 if fn:
-                    g.enableIdleTimeHook(idleTimeDelay=500)
                     c.openTempFileInExternalEditor(d,fn)
             g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
         except Exception:

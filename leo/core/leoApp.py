@@ -224,8 +224,6 @@ class LeoApp:
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
 
-        # To be moved to OpenWithManager.
-
         # Open with data...
         self.hasOpenWithMenu = False
             # True: open with plugin has been loaded.
@@ -245,12 +243,12 @@ class LeoApp:
             # Application wide hook function.
         self.idle_imported = False
             # True: we have done an import idle
+        self.idle_timer_enabled = False
+            # True: idle-time handling is enabled.
+        self.idle_timer = None
+            # An IdleTime instance.
         self.idleTimeDelay = 500
             # Delay in msec between calls to "idle time" hook.
-        self.idleTimeHook = None
-            # The global idle time event handler.
-        self.trace_idle_time = False
-            # True: enable a trace in g.idleTimeHookHandler
 
         # Support for scripting...
         self.searchDict = {}
@@ -1063,7 +1061,6 @@ class LeoApp:
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
             # even after the following code.
-        g.app.idleTimeHook = None
         if g.app.gui:
             g.app.gui.destroySelf()
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown

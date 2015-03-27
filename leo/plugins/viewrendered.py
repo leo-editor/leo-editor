@@ -576,9 +576,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         pc.active = True
         g.registerHandler('select2',pc.update)
         g.registerHandler('idle',pc.update)
-        # Enable the idle-time hook if it has not already been enabled.
-        if not g.app.idleTimeHook:
-            g.enableIdleTimeHook(idleTimeDelay=1000)
     #@+node:ekr.20110317080650.14382: *3* deactivate (viewrendered.py)
     def deactivate (self):
         '''Deactivate the vr window.'''

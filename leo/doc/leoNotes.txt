@@ -15111,7 +15111,9 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,tag=p.h)
 
-.. @+node:ekr.20150327104647.1: *3* LeoQtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+.. @+node:ekr.20150327145854.1: *3* new idle-time code
+.. @+node:ekr.20110605121601.18519: *4* LeoQtGui.Idle Time
+.. @+node:ekr.20110605121601.18520: *5* LeoQtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
 timer = None
 timer_last_delay = 0
 
@@ -15122,53 +15124,37 @@ def setIdleTimeHook(self):
     b) avoids busy waiting and,
     c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
     '''
-    if 1:
-        def handler(timer):
-            '''Handler for IdleTime class.'''
-            # Disabling idle-time sets g.app.idleTimeHook = None.
-            if g.app.idleTimeHook:
-                g.app.idleTimeHook()
-            
-        self.timer = g.IdleTime(handler,delay=g.app.idleTimeDelay)
-        if self.timer:
-            self.timer.start()
-    else:
-        << define timerCallBack >>
-        if not self.timer:
-            self.timer = QtCore.QTimer()
-            self.timer.timeout.connect(timerCallBack)
-        # Fire a single-shot at idle time.
-        self.timer_last_delay = 0
-        self.timer.start(0)
+
+    def handler(timer):
+        '''Handler for IdleTime class.'''
+        # Disabling idle-time sets g.app.idleTimeHook = None.
+        if g.app.idleTimeHook:
+            g.app.idleTimeHook()
+        
+    self.timer = g.IdleTime(handler,delay=g.app.idleTimeDelay)
+    if self.timer:
+        self.timer.start()
 
 setIdleTimeHookAfterDelay = setIdleTimeHook
-.. @+node:ekr.20150327104647.2: *4* << define timerCallBack >>
-def timerCallBack():
-    '''
-    This is the idle time callback. It calls g.app.gui.idleTimeHook not
-    more than once every g.app.idleTimeDelay msec.
-    '''
-    trace = False and g.app.trace_idle_time
-    if g.app.idleTimeHook and g.app.idleTimeDelay > 0:
-        # Idle-time processing is enabled.
-        if self.timer_last_delay == 0:
-            # We are actually at idle time.
-            if trace: g.trace(g.app.idleTimeDelay,'calling:',g.app.idleTimeHook.__name__)
-            g.app.idleTimeHook() # usually g.idleTimeHookHanlder.
-            # Now wait at for at least g.app.idleTimeDelay msec.
-            self.timer_last_delay = g.app.idleTimeDelay
-            self.timer.stop()
-            self.timer.start(g.app.idleTimeDelay)
-        else:
-            # We have waited at least g.app.idleTimeDelay msec.
-            # Now wait for idle time.
-            if trace: g.trace('waiting for idle time')
-            self.timer_last_delay = 0
-            self.timer.stop()
-            self.timer.start(0)
-    elif self.timer:
-        # Idle-time processing is disabled.  Stop the timer.
-        if trace: g.trace('Null g.app.idleTimeHook: stopping timer.')
-        self.timer.stop()
+.. @+node:ekr.20140701093157.16738: *4* enable/disable/toggle-idle-time-tracing
+@g.command('disable-idle-time-tracing')
+def disable_idle_time_tracing(event):
+    '''Disable tracing of default idle-time events.'''
+    g.app.trace_idle_time = False
+    
+@g.command('enable-idle-time-tracing')
+def enable_idle_time_tracing(event):
+    '''Enable tracing of default idle-time events.'''
+    g.app.trace_idle_time = True
+    
+@g.command('toggle-idle-time-tracing')
+def toggle_idle_time_tracing(event):
+    '''Toggle tracing of default idle-time events.'''
+    g.app.trace_idle_time = not g.app.trace_idle_time
+.. @+node:ekr.20031218072017.3739: *4* Idle time (LeoGui)
+def setIdleTimeHook (self):
+    pass
+    
+# setIdleTimeHookAfterDelay = setIdleTimeHook
 .. @-all
 .. @-leo

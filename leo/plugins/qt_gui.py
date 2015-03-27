@@ -787,34 +787,6 @@ class LeoQtGui(leoGui.LeoGui):
             return image,image.height()
         else:
             return None,None
-    #@+node:ekr.20110605121601.18519: *3* LeoQtGui.Idle Time
-    #@+node:ekr.20110605121601.18520: *4* LeoQtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
-    timer = None
-    timer_last_delay = 0
-
-    def setIdleTimeHook(self):
-        '''
-        Define a timer and its callback so that:
-        a) g.app.idleTimeHook() actually gets called at idle-time,
-        b) avoids busy waiting and,
-        c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
-        '''
-
-        def handler(timer):
-            '''Handler for IdleTime class.'''
-            # Disabling idle-time sets g.app.idleTimeHook = None.
-            if g.app.idleTimeHook:
-                g.app.idleTimeHook()
-            
-        self.timer = g.IdleTime(handler,delay=g.app.idleTimeDelay)
-        if self.timer:
-            self.timer.start()
-
-    setIdleTimeHookAfterDelay = setIdleTimeHook
-    #@+node:ekr.20110605121601.18521: *4* LeoQtGui.runAtIdle
-    def runAtIdle (self,aFunc):
-        '''This can not be called in some contexts.'''
-        QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131007055150.17608: *3* LeoQtGui.insertKeyEvent
     def insertKeyEvent (self,event,i):
         '''Insert the key given by event in location i of widget event.w.'''
@@ -901,6 +873,10 @@ class LeoQtGui(leoGui.LeoGui):
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-<< create press-buttonText-button command >>
+    #@+node:ekr.20110605121601.18521: *3* LeoQtGui.runAtIdle
+    def runAtIdle (self,aFunc):
+        '''This can not be called in some contexts.'''
+        QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20110605121601.18483: *3* LeoQtGui.runMainLoop & runWithIpythonKernel
     #@+node:ekr.20130930062914.16000: *4* LeoQtGui.runMainLoop
     def runMainLoop(self):

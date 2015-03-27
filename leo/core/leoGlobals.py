@@ -3949,28 +3949,26 @@ def skip_ws_and_nl(s,i):
 #@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 def disableIdleTimeHook():
     '''Disable the global idle-time hook.'''
-    trace = g.app.trace_idle_time and not g.unitTesting
-    if trace: g.trace()
-    g.app.idleTimeHook = False
+    g.app.idle_timer_enabled = False
+    if g.app.idle_timer:
+        g.app.idle_timer.stop()
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
-def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
+def enableIdleTimeHook(*args,**keys): # All args ignored.
     '''
     Enable idle-time processing.
-    
-    Leo will call the *global* "idle" hook about every g.idleTimeDelay
-    milliseconds.
-    '''
-    trace = g.app.trace_idle_time and not g.unitTesting
-    if not idleTimeHandler:
-        idleTimeHandler = g.idleTimeHookHandler
-    # Set the global ivars.
-    g.app.idleTimeHook = idleTimeHandler
-    g.app.idleTimeDelay = idleTimeDelay # Delay in msec.
 
-    # Init the underlying timer and callback.
-    if trace: g.trace('start handler: %s: delay: %d msec.' % (
-        idleTimeHandler.__name__,idleTimeDelay))
-    g.app.gui.setIdleTimeHook()
+    Leo calls g.idleTimeHookHandler every g.app.idleTimeDelay msec.
+    '''
+    if g.app.idle_timer:
+        g.app.idle_timer.start()
+    else:
+        timer = g.IdleTime(g.idleTimeHookHandler,g.app.idleTimeDelay)
+        if timer:
+            g.app.idle_timer = timer
+            timer.start()
+    
+    g.app.idle_timer_enabled = True
+
 #@+node:ekr.20140825042850.18410: *4* g.IdleTime
 def IdleTime(handler,delay=500,tag=None):
     '''
@@ -4013,25 +4011,33 @@ def IdleTime(handler,delay=500,tag=None):
             timer1.start()
             timer2.start()
     '''
-    if g.app and g.app.gui and hasattr(g.app.gui,'idleTimeClass'):
+    try:
         return g.app.gui.idleTimeClass(handler,delay,tag)
-    else:
+    except Exception:
         return None
+    # if (
+        # g.app and g.app.gui and
+        # hasattr(g.app.gui,'idleTimeClass') and g.app.gui.idleTimeClass
+    # ):
+        # return g.app.gui.idleTimeClass(handler,delay,tag)
+    # else:
+        # return None
 #@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
 trace_count = 0
 
-def idleTimeHookHandler(*args,**keys):
+def idleTimeHookHandler(timer):
     '''
-    The default **global** idle-time event handler.
+    The one and only idle-time event handler.
     
-    This function is *essential*: it calls c.doHook('idle') for each
-    commander.
+    Calls c.doHook('idle') for each commander.
     '''
     global trace_count
     trace_count += 1
-    trace = g.app.trace_idle_time and not g.unitTesting
-    # New for Python 2.3: may be called during shutdown.
-    if g.app.killed: return
+    trace = False and not g.unitTesting
+    if g.app.killed:
+        return
+    if not g.app.idle_timer_enabled:
+        return
     for frame in g.app.windowList:
         c = frame.c
         # Do NOT compute c.currentPosition.
@@ -4039,7 +4045,7 @@ def idleTimeHookHandler(*args,**keys):
         if trace: g.pr('%3s calling g.doHook(c=%s)' % (
             trace_count,c.shortFileName()))
         g.doHook("idle",c=c)
-    # qt_gui.setIdleTimeHook now manages the idle-time timer
+
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c,p,event):
     pass
@@ -4089,8 +4095,8 @@ def doHook(tag,*args,**keywords):
     except Exception:
         g.es_exception()
         g.app.hookError = True # Supress this function.
-        g.app.idleTimeHook = False # Supress idle-time hook
-        return None # No return value
+        g.app.idle_timer_enabled = False
+        return None
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
 childrenModifiedSet = set()
 contentModifiedSet = set()

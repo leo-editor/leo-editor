@@ -1622,20 +1622,14 @@ class ViewRenderedController(QtWidgets.QWidget):
             splitter.setSizes(sizes)
     #@+node:ekr.20140226074510.4216: *3* activate (creates idle-time hook) (viewrendered2.py)
     def activate (self):
-        
+        '''Activate the vr2 pane.'''
         pc = self
-        
-        if pc.active: return
-        
+        if pc.active:
+            return
         pc.inited = True
         pc.active = True
-        
         g.registerHandler('select2',pc.update)
         g.registerHandler('idle',pc.update)
-        
-        # Enable the idle-time hook if it has not already been enabled.
-        if not g.app.idleTimeHook:
-            g.enableIdleTimeHook(idleTimeDelay=1000)
     #@+node:ekr.20140226074510.4217: *3* deactivate (viewrendered2.py)
     def deactivate (self):
         
