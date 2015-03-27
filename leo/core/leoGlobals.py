@@ -4015,13 +4015,6 @@ def IdleTime(handler,delay=500,tag=None):
         return g.app.gui.idleTimeClass(handler,delay,tag)
     except Exception:
         return None
-    # if (
-        # g.app and g.app.gui and
-        # hasattr(g.app.gui,'idleTimeClass') and g.app.gui.idleTimeClass
-    # ):
-        # return g.app.gui.idleTimeClass(handler,delay,tag)
-    # else:
-        # return None
 #@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
 trace_count = 0
 
