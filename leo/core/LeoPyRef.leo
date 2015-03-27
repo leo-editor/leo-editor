@@ -55,13 +55,6 @@
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
-<v t="ekr.20150302140653.4"><vh>To do: Leo 5.1 b2</vh>
-<v t="ekr.20150325052301.1"><vh>Fix bug 165: vim-open-file command</vh></v>
-<v t="ekr.20150319055953.11"><vh>Improve &lt;?xml-stylesheet&gt;</vh></v>
-<v t="ekr.20150227040245.11"><vh>Fix bug 143: dabbrev-expand broken</vh></v>
-<v t="ekr.20150326092537.1"><vh>Fix bug 166: Fix icon hooks in plugins, etc.</vh></v>
-<v t="ekr.20150311123850.7"><vh>Improve --diff</vh></v>
-</v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
 <v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
@@ -70,8 +63,9 @@
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
-<v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
+<v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
+<v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
@@ -460,34 +454,6 @@ print('\n'.join(aList))
 <t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140923085942.17943"></t>
-<t tx="ekr.20150227040245.11">https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 &lt;wzy3721@gmail.com&gt; wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-</t>
-<t tx="ekr.20150302140653.4">@language rest
-@wrap
-</t>
 <t tx="ekr.20150304125314.4">@tabwidth -2
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -669,62 +635,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 @language html
 &lt;/script&gt;
 </t>
-<t tx="ekr.20150311123850.7">The --diff option is not very useful as a git diff.
-</t>
-<t tx="ekr.20150319055953.11">Set default for @string stylesheet so it generates::
-
-    &lt;?xml-stylesheet type="text/xsl" href="ekr_test"?&gt;
-</t>
-<t tx="ekr.20150325052301.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
-
-vim-open-file, if called while in a node associated with an external file, would open the file for editing.
-
-Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
-
-Upon returning to Leo, a 'Refresh from disk' would also be required.
-
-=== EKR
-
-Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
-
-=== Kent
-
-For @auto trees, Leo would do an @auto refresh.
-
-Ideally, cursor position would be maintained in both directions.
-
-Leo can indicate cursor position by adding the current cursor position to command line::
-
-    vim myfile +10
-
-opens myfile with the cursor at line 10
-
-Returning to Leo is a bit convoluted, but seems doable
-http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-
-vim is editing &lt;extfile&gt;, the session data will be saved in /tmp/vim_leo.bridge::
-
-    $ vim &lt;extfile&gt; -c "set viminfo='1,n/tmp" -i vim_leo.bridge
-    
-where:
-
-    '1   =  save 1 mark
-    n/tmp  =  in directory /tmp
-    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
-
-in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
-
-    # File marks:
-    '0  114  0  /tmp/brc
-    
-    # Jumplist (newest first):
-    -'  114  0  /tmp/brc
-</t>
 <t tx="ekr.20150325082623.1">gnx: ekr.20140225224703.8169
 unl: qtui_generate declarations
 </t>
@@ -748,27 +658,6 @@ gnx: ekr.20140225224703.8177
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
 <t tx="ekr.20150325082624.2"></t>
-<t tx="ekr.20150326092537.1">https://github.com/leo-editor/leo-editor/issues/166
-
-clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
-
-  FileActions.py
-  active_path.py
-  at_view.py
-  expfolder.py
-  mime.py
-  mnplugins.py
-  nodeActions.py
-  run_nodes.py
-  startfile.py
-  textnode.py
-  xemacs.py
-
-​Presumably something should be done about most, if not all of them. Moreover:
-
-- leo_to_rtf.py throws a bunch of errors.
-- leo_pdf.py won't load.
-</t>
 <t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
 
