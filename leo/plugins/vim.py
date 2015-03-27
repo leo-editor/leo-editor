@@ -3,6 +3,8 @@
 #@+<< docstring >>
 #@+node:ekr.20050226184411: ** << docstring >>
 '''
+#@@language rest
+
 Enables two-way communication with gVim (recommended) or Vim.
 
 Commands
@@ -100,21 +102,17 @@ Settings
 # 
 # os.spawnv needs the command it is calling as the first argument in the args list in addition, so the command actually shows twice in the total args to os.spawnv.  For example::
 # 
-#@@language python
 # 
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["gvim.exe", "--servername", "LEO", "--remote", "foo.txt"])
 #         
-#@@language rest
 # 
 # If the call is made without the command-name as the first item in the list of args, like so::
 # 
-#@@language python
 # 
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["--servername", "LEO", "--remote", "foo.txt"])
 #         
-#@@language rest
 # 
 # an error message pops up::
 # 
@@ -122,13 +120,9 @@ Settings
 # 
 # This message means that gVim is not looking for a server named "LEO", which presumably the user has already opened with the command "gvim --servername LEO". Instead it is looking for a server named "GVIM", and not finding it, opens the files "foo.txt" and "LEO" (notice that it didn't catch the "--servername" argument and thinks that "LEO" is the name of a new file to create) in two buffers in a local copy of gVim. Now, if the command is::
 # 
-#@@language python
-# 
 #     os.spawnv(
 #         os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["gvim.exe", "--servername", "LEO", "--remote", "foo.txt"])
-# 
-#@@language rest
 # 
 # Everything works great, as long as the user doesn't close the gVim window. If the user has closed the gVim window, then tries to open a node in Vim, they will see this error message::
 # 
