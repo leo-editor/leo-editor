@@ -1612,6 +1612,7 @@
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
+<v t="ekr.20150327002834.1"><vh>@bool vim_plugin_trace = False</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
 </v>
 <v t="tbrown.20141101105337.1"><vh>wikiview plugin</vh>
@@ -9685,6 +9686,7 @@ False: Never scroll the find tab automatically.</t>
 
 Note: check-outline always writes error messages to both log and console.</t>
 <t tx="ekr.20150322061147.1"></t>
+<t tx="ekr.20150327002834.1">True: enable detailed traces inside vim.py.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
