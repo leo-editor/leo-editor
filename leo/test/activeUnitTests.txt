@@ -4867,7 +4867,7 @@ static exit_values_ty indent_main_loop(void)
     }                           /* end of main infinite loop */
 }
 #@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
-c.createOpenWithTempFile(p,'.py')
+c.createOpenWithTempFile(p.b,p,'.py')
 #@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
 # Remove any previous children.
 while p.hasChildren():
