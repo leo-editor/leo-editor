@@ -566,7 +566,7 @@ class ViewRenderedController(QtWidgets.QWidget):
                 else:
                     sizes[j] = max(0,sizes[j]-int(delta/(n-1)))
             splitter.setSizes(sizes)
-    #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook)
+    #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook) (viewrendered.py)
     def activate (self):
         '''Activate the vr-window.'''
         pc = self
@@ -579,7 +579,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         # Enable the idle-time hook if it has not already been enabled.
         if not g.app.idleTimeHook:
             g.enableIdleTimeHook(idleTimeDelay=1000)
-    #@+node:ekr.20110317080650.14382: *3* deactivate
+    #@+node:ekr.20110317080650.14382: *3* deactivate (viewrendered.py)
     def deactivate (self):
         '''Deactivate the vr window.'''
         pc = self

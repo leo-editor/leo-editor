@@ -40,7 +40,7 @@ class LiveCodeDisplay:
     CodeBlock = namedtuple('CodeBlock', 'code, result')
 
     #@+others
-    #@+node:tbrown.20140806084727.30188: *3* __init__
+    #@+node:tbrown.20140806084727.30188: *3* __init__ (livecode.py)
     def __init__(self, c):
         
         self.c = c

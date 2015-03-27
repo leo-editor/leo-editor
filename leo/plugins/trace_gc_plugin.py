@@ -13,7 +13,7 @@ g.debugGC = True # Force debugging on.
 gcCount = 0
 
 #@+others
-#@+node:ekr.20100128091412.5386: ** init
+#@+node:ekr.20100128091412.5386: ** init (trace_gc_plugin)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit testing.
@@ -30,7 +30,7 @@ def init():
 def printIdleRefs(tag,keywords):
 
     g.printGcRefs(tag)
-#@+node:ekr.20050111084900.1: ** printIdleGC
+#@+node:ekr.20050111084900.1: ** printIdleGC (trace_gc_plugin)
 def printIdleGC(tag,keywords):
 
     # Calling printGc is too expensive to do on every idle call.

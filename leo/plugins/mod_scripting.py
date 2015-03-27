@@ -539,7 +539,7 @@ class ScriptingController:
             #@-<< set debugging if debugger is active >>
             if debugging:
                 #@+<< create leoScriptModule >>
-                #@+node:ekr.20060524073716: *6* << create leoScriptModule >>
+                #@+node:ekr.20060524073716: *6* << create leoScriptModule >> (mod_scripting.py)
                 target = g.os_path_join(g.app.loadDir,'leoScriptModule.py')
                 f = None
                 try:

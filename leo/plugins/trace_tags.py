@@ -14,7 +14,7 @@ def init ():
         g.registerHandler("all",trace_tags)
         g.plugin_signon(__name__)
     return ok
-#@+node:edream.110203113231.739: ** trace_tags
+#@+node:edream.110203113231.739: ** trace_tags (trace_tags.py)
 def trace_tags (tag,keywords):
 
     global tagCount ; brief = True

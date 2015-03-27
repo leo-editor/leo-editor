@@ -30,7 +30,7 @@ def init ():
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon( __name__ )
     return ok
-#@+node:edream.110203113231.726: ** onCreate
+#@+node:edream.110203113231.726: ** onCreate (mod_autosave.py)
 def onCreate(tag, keywords):
 
     """Handle the per-Leo-file settings."""

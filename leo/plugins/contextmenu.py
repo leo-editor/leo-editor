@@ -68,7 +68,7 @@ def init ():
         inited = True
         install_handlers()        
     return True
-#@+node:ville.20090630210947.10189: *3* install_handlers
+#@+node:ville.20090630210947.10189: *3* install_handlers (contextmenu.py)
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
     hnd = [
@@ -98,7 +98,6 @@ def install_handlers():
 
 
     #@-<< Add commands >>
-
 
 #@+node:ekr.20140724211116.19257: ** Commands
 #@+node:tbrown.20121123075838.19937: *3* context_menu_open
@@ -351,11 +350,13 @@ def guess_file_type(fname):
         
             
 #@+node:ville.20090701142447.5473: *3* editnode_on_idle
-# frame.OnOpenWith creates the dict with the following entries:
-# "body", "c", "encoding", "f", "path", "time" and "p".
-
 def editnode_on_idle (tag,keywords):
-    '''The idle-time handler for contextmenu.py.'''
+    '''
+    The idle-time handler for contextmenu.py.
+    
+    c.openWith creates the dict with the following keys:
+        "body", "c", "encoding", "f", "path", "time" and "p".
+    '''
     a = g.app
     if a.killed: return
     # g.trace('open with plugin')

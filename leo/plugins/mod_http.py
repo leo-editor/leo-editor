@@ -146,7 +146,7 @@ from xml.sax.saxutils import quoteattr
 #@-<< version history >>
 sockets_to_close = []
 #@+others
-#@+node:ekr.20060830091349: ** init & helpers
+#@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     if 0:
@@ -203,7 +203,7 @@ def plugin_wrapper(tag,keywords):
     first = True
     while loop(config.http_timeout):
         pass
-#@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used)
+#@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
 def onFileOpen(tag, keywords):
 
     c = keywords.get("new_c")

@@ -1620,7 +1620,7 @@ class ViewRenderedController(QtWidgets.QWidget):
                 else:
                     sizes[j] = max(0,sizes[j]-int(delta/(n-1)))
             splitter.setSizes(sizes)
-    #@+node:ekr.20140226074510.4216: *3* activate (creates idle-time hook)
+    #@+node:ekr.20140226074510.4216: *3* activate (creates idle-time hook) (viewrendered2.py)
     def activate (self):
         
         pc = self
@@ -1636,7 +1636,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         # Enable the idle-time hook if it has not already been enabled.
         if not g.app.idleTimeHook:
             g.enableIdleTimeHook(idleTimeDelay=1000)
-    #@+node:ekr.20140226074510.4217: *3* deactivate
+    #@+node:ekr.20140226074510.4217: *3* deactivate (viewrendered2.py)
     def deactivate (self):
         
         pc = self

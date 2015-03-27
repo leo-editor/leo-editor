@@ -927,24 +927,32 @@ class Commands (object):
         c.recolor()
     #@+node:ekr.20031218072017.2823: *6* c.openWith and helpers
     def openWith(self,event=None,d=None):
-
-        '''This routine handles the items in the Open With... menu.
+        '''
+        This routine handles the items in the Open With... menu.
 
         The "d" arg is a Python dictionary whose keys and values
         are set from the body text of @openwith nodes.
+        
+        d.keys():
 
-        d.get('ext'):   The temp file's extension.
-        d.get('kind'):  The method used to open the file.
-        One of: ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
-        d.get('args'):  A list of arguments specified by the arg tag.
+          'args'    A list of arguments specified by the arg tag.
+          'ext'     The temp file's extension. May be None.
+          'kind'    The method used to open the file.  One of:
+                    ('os.startfile','exec','os.spawnl','os.spawnv','subprocess.Popen')
+
+        New in Leo 5.1: two new keys:
+
+          'p':      A position.  defaults to c.p.
+          'p.b'     The body text of the file.  Defaults to c.p.b
         '''
-
-        c = self ; p = c.p
+        c = self
         try:
             ext = d.get('ext')
+            p = d.get('p') or c.p
+            body = d.get('p.b') if d.has_key('p.b') else c.p.b
             if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
                 ext = c.getOpenWithExt(p,ext)
-                fn = c.openWithHelper(p,ext)
+                fn = c.openWithHelper(body,p,ext)
                 if fn:
                     g.enableIdleTimeHook(idleTimeDelay=500)
                     c.openTempFileInExternalEditor(d,fn)
@@ -954,16 +962,13 @@ class Commands (object):
             g.es_exception()
     #@+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
     def getOpenWithExt (self,p,ext):
-
+        '''Return the file extension to be used in the temp file.'''
         trace = False and not g.app.unitTesting
         if trace: g.trace(ext)
-
         c = self
-
         if ext:
             for ch in ("'",'"'):
                 if ext.startswith(ch): ext = ext.strip(ch)
-
         if not ext:
             # if node is part of @<file> tree, get ext from file name
             for p2 in p.self_and_parents():
@@ -972,30 +977,24 @@ class Commands (object):
                     ext = g.os_path_splitext(fn)[1]
                     if trace: g.trace('found node:',ext,p2.h)
                     break
-
         if not ext:
             theDict = c.scanAllDirectives()
             language = theDict.get('language')
             ext = g.app.language_extension_dict.get(language)
             if trace: g.trace('found directive',language,ext)
-
         if not ext:
             ext = '.txt'
             if trace: g.trace('use default (.txt)')
-
         if ext[0] != '.':
             ext = '.'+ext
-
         if trace: g.trace(ext)
-
         return ext
     #@+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
     def openTempFileInExternalEditor(self,d,fn,testing=False):
-
-        '''Open the closed mkstemp file fn in an external editor.
+        '''
+        Open the closed mkstemp file fn in an external editor.
         The arg and openType args come from the data arg to c.openWith.
         '''
-
         trace = False and not g.unitTesting
         testing = testing or g.unitTesting
 
@@ -1068,28 +1067,23 @@ class Commands (object):
             return 'oops: %s' % command
     #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
     def openWithTempFilePath (self,p,ext):
-
-        '''Return the path to the temp file corresponding to p and ext.
+        '''
+        Return the path to the temp file corresponding to p and ext.
 
         This is overridden in mod_tempfname plugin
         '''
-
-        fn = '%s_LeoTemp_%s%s' % (
-            g.sanitize_filename(p.h),
-            str(id(p.v)),ext)
-        if g.isPython3: # 2010/02/07
+        fn = '%s_LeoTemp_%s%s' % (g.sanitize_filename(p.h),str(id(p.v)),ext)
+        if g.isPython3:
             fn = g.toUnicode(fn)
         td = g.os_path_finalize(tempfile.gettempdir())
         path = g.os_path_join(td,fn)
-
         return path
     #@+node:ekr.20100203050306.5797: *7* c.openWithHelper & helpers
-    def openWithHelper (self,p,ext):
-
-        '''create or reopen a temp file for p,
+    def openWithHelper (self,body,p,ext):
+        '''
+        Create or reopen a temp file for p,
         testing for conflicting changes.
         '''
-
         c = self
 
         # May be over-ridden by mod_tempfname plugin.
@@ -1103,14 +1097,13 @@ class Commands (object):
         if g.os_path_exists(searchPath):
             for d in g.app.openWithFiles:
                 if p.v == d.get('v') and searchPath == d.get('path'):
-                    path = searchPath ; break
-
+                    path = searchPath
+                    break
         if path:
             assert d.get('path') == searchPath
-            fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+            fn = c.createOrRecreateTempFileAsNeeded(body,p,d,ext)
         else:
-            fn = c.createOpenWithTempFile(p,ext)
-
+            fn = c.createOpenWithTempFile(body,p,ext)
         return fn # fn may be None.
     #@+node:ekr.20031218072017.2827: *8* c.createOrRecreateTempFileAsNeeded
     conflict_message = '''
@@ -1121,9 +1114,9 @@ class Commands (object):
     Cancel or Escape or Return: do nothing.
     '''
 
-    def createOrRecreateTempFileAsNeeded (self,p,d,ext):
-
-        '''test for changes in both p and the temp file:
+    def createOrRecreateTempFileAsNeeded (self,body,p,d,ext):
+        '''
+        Test for changes in both p and the temp file:
 
         - If only p's body text has changed, we recreate the temp file.
         - If only the temp file has changed, do nothing here.
@@ -1137,7 +1130,8 @@ class Commands (object):
         # Get the old & new body text and modification times.
         encoding = d.get('encoding')
         old_body = d.get('body')
-        new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+        ### new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+        new_body = g.toEncodedString(body,encoding,reportErrors=True)
         old_time = d.get('time')
         try:
             new_time = g.os_path_getmtime(fn)
@@ -1145,7 +1139,6 @@ class Commands (object):
             new_time = None
         body_changed = old_body != new_body
         time_changed = old_time != new_time
-
         if body_changed and time_changed:
             g.error('Conflict in temp file for',p.h)
             result = g.app.gui.runAskYesNoCancelDialog(c,
@@ -1158,17 +1151,15 @@ class Commands (object):
             rewrite = result.lower() == 'yes'
         else:
             rewrite = body_changed
-
         if rewrite:
             # May be overridden by the mod_tempfname plugin.
-            fn = c.createOpenWithTempFile(p,ext)
+            fn = c.createOpenWithTempFile(body,p,ext)
         else:
             g.blue('reopening:',g.shortFileName(fn))
-
         return fn
     #@+node:ekr.20100203050306.5937: *8* c.createOpenWithTempFile
-    def createOpenWithTempFile (self,p,ext):
-
+    def createOpenWithTempFile (self,body,p,ext):
+        '''Actually create the temp file used by open-with.'''
         trace = False and not g.unitTesting
         c = self
 
@@ -1187,10 +1178,12 @@ class Commands (object):
             encoding = d.get('encoding',None)
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
-            if g.isPython3: # 2010/02/09
-                s = p.b
+            if g.isPython3:
+                ### s = p.b
+                s = body
             else:
-                s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+                ### s = g.toEncodedString(p.b,encoding,reportErrors=True)
+                s = g.toEncodedString(body,encoding,reportErrors=True)
             f.write(s)
             f.flush()
             f.close()
@@ -1206,7 +1199,6 @@ class Commands (object):
                 if p.v == d.get('v'):
                     if trace: g.trace('removing',d.get('path'))
                     g.app.openWithFiles.remove(d)
-
             d = {
                 # Used by app.destroyOpenWithFilesForFrame.
                 'c':c,
