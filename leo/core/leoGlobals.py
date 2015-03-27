@@ -4053,29 +4053,29 @@ def dummy_act_on_node(c,p,event):
 # Plugins can change this.
 act_on_node = dummy_act_on_node
 #@+node:ekr.20031218072017.1596: *3* g.doHook
-#@+at This global function calls a hook routine.  Hooks are identified by the tag param.
-# Returns the value returned by the hook routine, or None if the there is an exception.
-# 
-# We look for a hook routine in three places:
-# 1. c.hookFunction
-# 2. app.hookFunction
-# 3. leoPlugins.doPlugins()
-# We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
-#@@c
-
 def doHook(tag,*args,**keywords):
+    '''
+    This global function calls a hook routine. Hooks are identified by the
+    tag param.
+    
+    Returns the value returned by the hook routine, or None if the there is
+    an exception.
 
+    We look for a hook routine in three places:
+    1. c.hookFunction
+    2. app.hookFunction
+    3. leoPlugins.doPlugins()
+    
+    Set app.hookError on all exceptions.
+    Scripts may reset app.hookError to try again.
+    '''
     trace = False ; verbose = False
-
     if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
         return None
-
     if args:
         # A minor error in Leo's core.
         g.pr("***ignoring args param.  tag = %s" % tag)
-
     if not g.app.config.use_plugins:
-
         if tag in ('open0','start1'):
             g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
         return None
@@ -4083,13 +4083,10 @@ def doHook(tag,*args,**keywords):
     # Get the hook handler function.  Usually this is doPlugins.
     c = keywords.get("c")
     f = (c and c.hookFunction) or g.app.hookFunction
-
     if trace and (verbose or tag != 'idle'):
         g.trace('tag',tag,'f',f and f.__name__)
-
     if not f:
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
-
     try:
         # Pass the hook to the hook handler.
         # g.pr('doHook',f.__name__,keywords.get('c'))
