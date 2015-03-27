@@ -3948,23 +3948,17 @@ def skip_ws_and_nl(s,i):
 #@+node:ekr.20031218072017.1315: *3* g.idle time functions
 #@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 def disableIdleTimeHook():
-    '''
-    (Deprecated) Disable the global idle-time hook.
-    
-    Recommended: use g.idleTime instead.
-    '''
+    '''Disable the global idle-time hook.'''
     trace = g.app.trace_idle_time and not g.unitTesting
     if trace: g.trace()
     g.app.idleTimeHook = False
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
 def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     '''
-    (Deprecated) Enable idle-time processing.
+    Enable idle-time processing.
     
     Leo will call the *global* "idle" hook about every g.idleTimeDelay
     milliseconds.
-    
-    Recommended: use g.idleTime instead.
     '''
     trace = g.app.trace_idle_time and not g.unitTesting
     if not idleTimeHandler:
@@ -3972,6 +3966,7 @@ def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     # Set the global ivars.
     g.app.idleTimeHook = idleTimeHandler
     g.app.idleTimeDelay = idleTimeDelay # Delay in msec.
+
     # Init the underlying timer and callback.
     if trace: g.trace('start handler: %s: delay: %d msec.' % (
         idleTimeHandler.__name__,idleTimeDelay))
@@ -4027,10 +4022,10 @@ trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
     '''
-    (Deprecated) The default **global** idle-time event handler.
-    It calls c.doHook('idle') for each commander.
+    The default **global** idle-time event handler.
     
-    Recommended: use g.idleTime instead.
+    This function is *essential*: it calls c.doHook('idle') for each
+    commander.
     '''
     global trace_count
     trace_count += 1
