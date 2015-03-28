@@ -61,7 +61,7 @@ To make a button to toggle the editor on and off, use::
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import isQt5,QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
 # from collections import OrderedDict
 import time
 if g.isPython3:
