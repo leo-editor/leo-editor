@@ -381,8 +381,10 @@ class GlobalSearch:
         self.bd.w.show()
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
-class LeoConnector(QtCore.QObject):
-    pass
+if not g.in_bridge:
+    
+    class LeoConnector(QtCore.QObject):
+        pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
 class LeoFts:    
     #@+others
