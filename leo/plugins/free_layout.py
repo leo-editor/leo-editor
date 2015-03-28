@@ -27,12 +27,16 @@ free-layout-zoom
 # Written by Terry Brown.
 
 #@+<< imports >>
-#@+node:tbrown.20110203111907.5520: ** << imports >>
+#@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import QtWidgets
-from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
-
+if g.in_bridge:
+    # This plugin won't actually be used.
+    pass
+else:
+    from leo.core.leoQt import QtWidgets
+    from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
+    
 import json
 #@-<< imports >>
 

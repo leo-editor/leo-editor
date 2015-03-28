@@ -9,7 +9,7 @@ python_qsh = True
     # False use QSyntaxHighlighter
 
 #@+<< imports >>
-#@+node:ekr.20140827092102.18575: ** << imports >>
+#@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import leo.core.leoGlobals as g
 
 from leo.core.leoQt import isQt5,Qsci,QtCore,QtGui,QtWidgets
@@ -2703,10 +2703,13 @@ class LeoQtColorizer:
 #@+node:ekr.20110605121601.18565: ** class LeoQtSyntaxHighlighter
 # This is c.frame.body.colorizer.highlighter
 
+# Careful: we may be running from the bridge.
 if python_qsh:
     base_highlighter = PythonQSyntaxHighlighter 
-else:
+elif QtGui:
     base_highlighter = QtGui.QSyntaxHighlighter
+else:
+    base_highlighter = object
 
 class LeoQtSyntaxHighlighter(base_highlighter):
 
@@ -2844,7 +2847,8 @@ if Qsci:
             '''Configure the QScintilla lexer.'''
             c = self.leo_c
             lexer = self
-            ### To do: use c.config setting.
+            # To do: use c.config setting.
+            # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono",14)
             lexer.setFont(font)
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(ColorizerMixin)
@@ -2975,6 +2979,7 @@ class QScintillaColorizer(ColorizerMixin):
 #@+node:ekr.20140906143232.18697: ** class PythonLexer (does not work)
 # Stuck: regardless of class: there seems to be no way to force a recolor.
 if Qsci:
+
     class PythonLexer(Qsci.QsciLexerCustom):
         '''A subclass of the Python lexer that colorizers section references.'''
         
@@ -3004,9 +3009,9 @@ if Qsci:
     
         def configure_lexer(self):
             '''Configure the QScintilla lexer.'''
-            c = self.leo_c
             lexer = self
-            ### To do: use c.config setting.
+            # To do: use c.config setting.
+            # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono",14)
             lexer.setFont(font)
 #@-others
