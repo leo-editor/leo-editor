@@ -30,12 +30,11 @@ free-layout-zoom
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import leo.core.leoGlobals as g
 
-if g.in_bridge:
-    # This plugin won't actually be used.
-    pass
-else:
-    from leo.core.leoQt import QtWidgets
-    from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
+from leo.core.leoQt import QtWidgets
+
+if QtWidgets:
+    from leo.plugins.nested_splitter import NestedSplitter
+        # NestedSplitterChoice
     
 import json
 #@-<< imports >>
