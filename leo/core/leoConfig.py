@@ -297,12 +297,12 @@ class ParserBaseClass:
             if i > -1: s = s[:i]+'\n' # 2011/09/29: must add newline back in.
             if s.strip(): aList.append(s.lstrip())
         s = ''.join(aList)
-        # g.trace('\n%s' % s)
-
 
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
         g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
+
+        # g.trace('\n%s' % (s),g.app.config.enabledPluginsFileName)
     #@+node:ekr.20041120094940.6: *4* doFloat
     def doFloat (self,p,kind,name,val):
 
