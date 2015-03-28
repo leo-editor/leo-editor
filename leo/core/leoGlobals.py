@@ -2941,29 +2941,32 @@ def readlineForceUnixNewline(f,fileName=None):
     return s
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s):
+    """
+    Prepares string s to be a valid file name:
 
-    """Prepares string s to be a valid file name:
-
-    - substitute '_' whitespace and characters used special path characters.
+    - substitute '_' for whitespace and special path characters.
     - eliminate all other non-alphabetic characters.
+    - convert double quotes to single quotes.
     - strip leading and trailing whitespace.
-    - return at most 128 characters."""
-
-    result = ""
-    for ch in s.strip():
+    - return at most 128 characters.
+    """
+    result = []
+    for ch in s:
         if ch in string.ascii_letters:
-            result += ch
-        elif ch in string.whitespace: # Translate whitespace.
-            result += '_'
-        elif ch in ('.','\\','/',':'): # Translate special path characters.
-            result += '_'
-    while 1:
-        n = len(result)
-        result = result.replace('__','_')
-        if len(result) == n:
+            result.append(ch)
+        elif ch == '\t':
+            result.append(' ')
+        elif ch == '"':
+            result.append("'")
+        elif ch in '\\/:|<>*:._':
+            result.append('_')
+    s = ''.join(result).strip()
+    while len(s) > 1:
+        n = len(s)
+        s = s.replace('__','_')
+        if len(s) == n:
             break
-    result = result.strip()
-    return result [:128]
+    return s [:128]
 #@+node:ekr.20060328150113: *3* g.setGlobalOpenDir
 def setGlobalOpenDir (fileName):
 
