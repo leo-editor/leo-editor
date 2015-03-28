@@ -381,7 +381,7 @@ class GlobalSearch:
         self.bd.w.show()
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
-if not g.in_bridge:
+if QtCore:
     
     class LeoConnector(QtCore.QObject):
         pass

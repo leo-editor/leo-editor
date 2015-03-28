@@ -61,21 +61,14 @@ To make a button to toggle the editor on and off, use::
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
 
-if g.in_bridge:
-    pass
+from leo.core.leoQt import isQt5,QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+# from collections import OrderedDict
+import time
+if g.isPython3:
+    # pylint: disable=no-name-in-module
+    from urllib.parse import unquote
 else:
-    from leo.core.leoQt import isQt5,QtCore,QtWidgets,QtWebKitWidgets
-    if isQt5:
-        from PyQt5 import QtWebKit
-    else:
-        from PyQt4 import QtWebKit
-    # from collections import OrderedDict
-    import time
-    if g.isPython3:
-        # pylint: disable=no-name-in-module
-        from urllib.parse import unquote
-    else:
-        from urllib import unquote
+    from urllib import unquote
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init
@@ -91,7 +84,7 @@ def init():
         print('richtext.py plugin not loading because gui is not Qt')
     return ok
 #@+node:tbrown.20130813134319.5691: ** class CKEEditor
-if not g.in_bridge:
+if QtWidgets:
     
     class CKEEditor(QtWidgets.QWidget):
         #@+others

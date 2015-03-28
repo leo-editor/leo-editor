@@ -196,42 +196,40 @@ trace = False
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
 import leo.core.leoGlobals as g
-if g.in_bridge:
-    QtWidgets = QtSvg = None
-else:
-    import leo.plugins.qt_text as qt_text
-    from leo.core.leoQt import QtCore,QtGui,QtWidgets
-    from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets
-    # docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+
+import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import QtCore,QtGui,QtWidgets
+from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets
+# docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+try:
+    import docutils
+    import docutils.core
+except ImportError:
+    docutils = None
+if docutils:
     try:
-        import docutils
-        import docutils.core
+        from docutils.core import publish_string
+        from docutils.utils import SystemMessage
+        got_docutils = True
     except ImportError:
-        docutils = None
-    if docutils:
-        try:
-            from docutils.core import publish_string
-            from docutils.utils import SystemMessage
-            got_docutils = True
-        except ImportError:
-            got_docutils = False
-            g.es_exception()
-        except SyntaxError:
-            got_docutils = False
-            g.es_exception()
-    else:
         got_docutils = False
-    if trace:
-        print('===== viewrendered.py: got_docutils: %s' % got_docutils)
-    ## markdown support, non-vital
-    try:
-        from markdown import markdown
-        got_markdown = True
-    except ImportError:
-        got_markdown = False
-    import os
-    if trace:
-        print('===== viewrendered.py: got_markdown: %s' % got_markdown)
+        g.es_exception()
+    except SyntaxError:
+        got_docutils = False
+        g.es_exception()
+else:
+    got_docutils = False
+if trace:
+    print('===== viewrendered.py: got_docutils: %s' % got_docutils)
+## markdown support, non-vital
+try:
+    from markdown import markdown
+    got_markdown = True
+except ImportError:
+    got_markdown = False
+import os
+if trace:
+    print('===== viewrendered.py: got_markdown: %s' % got_markdown)
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
@@ -485,7 +483,7 @@ class ViewRenderedProvider:
             return vr
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-if not g.in_bridge:
+if QtWidgets:
 
     class ViewRenderedController(QtWidgets.QWidget):
         
