@@ -1204,6 +1204,7 @@
 </v>
 </v>
 <v t="ekr.20050903074833"></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16516,11 +16517,8 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 
     # Idle time.
     disable-idle-time-events
-    disable-idle-time-tracing
     enable-idle-time-events
-    enable-idle-time-tracing
     toggle-idle-time-events
-    toggle-idle-time-tracing
 
     # Print &amp; show.
     print-bindings
@@ -17737,6 +17735,11 @@ find-quick-selected
 find-quick-test-failures
 find-quick-timeline
 global-search
+
+.. No longer used.
+disable-idle-time-tracing
+enable-idle-time-tracing
+toggle-idle-time-tracing
 
 .. Deprecated tangle/untangle commands.
 tangle
