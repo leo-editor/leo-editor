@@ -3129,16 +3129,16 @@ class KeyHandlerClass:
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
-        pane='all',verbose=False, wrap=True):
-
-        '''Make the function available as a minibuffer command,
+        pane='all',verbose=False, wrap=True
+    ):
+        '''
+        Make the function available as a minibuffer command,
         and optionally attempt to bind a shortcut.
 
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
 
         If wrap is True then func will be wrapped with c.universalCallback.
-
         '''
         trace = False and not g.unitTesting and commandName.startswith(':')
         verbose = False
@@ -3184,6 +3184,7 @@ class KeyHandlerClass:
                     g.print_dict(d)
         elif trace and verbose and not g.app.silentMode:
             g.blue('','@command: %s' % (commandName))
+
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()

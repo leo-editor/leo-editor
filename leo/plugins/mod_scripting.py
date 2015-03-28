@@ -255,7 +255,7 @@ class AtButtonCallback(object):
 
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__
-    def __init__(self,controller,b,c,buttonText,gnx):
+    def __init__(self,controller,b,c,buttonText,docstring,gnx):
         '''
         Ctor for AtButtonCallback class.
         controller is a ScriptingController class.
@@ -268,10 +268,9 @@ class AtButtonCallback(object):
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo
         junk_c,p,junk_script = self.controller.find_gnx(gnx)
         self.script = None # Set only if the script is found in a closed settings file.
-        # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
-        # Minibuffer commands created by mod_scripting.py have no docstrings.
-        self.__doc__ = self.docstring()
+        self.__doc__ = docstring
         self.__name__ = 'AtButtonCallback: %s' % (p and p.h or '<no p>')
+        # g.trace('(AtButtonCallback)',gnx,'__name__',self.__name__,'__doc__',len(self.__doc__))
     #@+node:ekr.20141031053508.10: *3* __call__
     def __call__(self, event=None):
         '''Execute the script associated with this button.'''
@@ -309,10 +308,17 @@ class AtButtonCallback(object):
         else:
             return 'AtButtonCallback %s %s' % (self.c.shortFileName(),self.gnx)
     #@+node:ekr.20141031053508.12: *3* docstring
-    def docstring(self):
-        '''Add support for docstrings.'''
-        c,p,script = self.controller.find_gnx(self.gnx)
-        return g.getDocString(p.b) if p else ''
+    if 0:
+        # No longer used. The ctor sets __doc__.
+        
+        def docstring(self):
+            '''Add support for docstrings.'''
+            c,p,script = self.controller.find_gnx(self.gnx)
+            
+            # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+            # Minibuffer commands created by mod_scripting.py have no docstrings.
+            ### self.__doc__ = self.docstring()
+            return g.getDocString(p.b) if p else ''
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController:
@@ -463,7 +469,11 @@ class ScriptingController:
         args = self.getArgs(p)
         buttonText = self.cleanButtonText(p.h)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
-        cb = AtButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
+        docstring = g.getDocString(p.b)
+        if not docstring.strip():
+            g.trace('no docstring for global',p.h)
+        cb = AtButtonCallback(controller=self,b=b,c=c,
+            buttonText=buttonText,docstring=docstring,gnx=p.gnx)
         self.iconBar.setCommandForButton(b,cb)
         if rclicks:
             self.iconBar.add_rclick_menu(b.button,rclicks,self,from_settings=True)
@@ -504,6 +514,8 @@ class ScriptingController:
                 args = self.getArgs(p)
                 def commonCommandCallback (event=None,script=script):
                     c.executeScript(args=args,script=script,silent=True)
+                commonCommandCallback.__doc__ = g.getDocString(script)
+                    # Bug fix: 2015/03/28.
                 self.registerAllCommands(p.h,func=commonCommandCallback,
                     pane='all',tag='global @command')
     #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script' & callback
@@ -670,15 +682,16 @@ class ScriptingController:
         return None,None
     #@+node:ekr.20060328125248.12: *4* sc.handleAtButtonNode @button
     def handleAtButtonNode (self,p):
-
-        '''Create a button in the icon area for an @button node.
+        '''
+        Create a button in the icon area for an @button node.
 
         An optional @key=shortcut defines a shortcut that is bound to the button's script.
         The @key=shortcut does not appear in the button's name, but
         it *does* appear in the statutus line shown when the mouse moves over the button.
         
         An optional @color=colorname defines a color for the button's background.  It does
-        not appear in the status line nor the button name.'''
+        not appear in the status line nor the button name.
+        '''
 
         trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c ; h = p.h
@@ -692,7 +705,7 @@ class ScriptingController:
         # g.trace(c.config,p.h)
 
         # This helper is also called by the script-button callback.
-        if trace: g.trace('local @command',h)
+        if trace: g.trace('local @button',h)
         b = self.createAtButtonHelper(p,h,statusLine,verbose=False)
     #@+node:ekr.20060328125248.10: *4* sc.handleAtCommandNode @command
     def handleAtCommandNode (self,p):
@@ -825,7 +838,9 @@ class ScriptingController:
             return None
         # Now that b is defined we can define the callback.
         # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        cb = AtButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
+        docstring = g.getDocString(p.b)
+        cb = AtButtonCallback(controller=self,b=b,c=c,
+            buttonText=buttonText,docstring=docstring,gnx=p.gnx)
         self.iconBar.setCommandForButton(b,cb)
         # At last we can define the command and use the shortcut.
         self.registerAllCommands(h,func=cb,pane='button',tag='local @button')
@@ -1003,7 +1018,7 @@ class ScriptingController:
                 if tag.startswith('@button'):
                     def atButtonCallback2(event=None,func=func):
                         func()
-                    # g.trace(h,func.__doc__)
+                    # g.trace(h,func,func.__doc__)
                     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                     # Minibuffer commands created by mod_scripting.py have no docstrings.
                     atButtonCallback2.__doc__ = func.__doc__
@@ -1011,7 +1026,7 @@ class ScriptingController:
                 else:
                     def atCommandCallBack2(event=None,func=func):
                         func()
-                    # g.trace(h,func.__doc__)
+                    # g.trace(h,func,func.__doc__)
                     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                     # Minibuffer commands created by mod_scripting.py have no docstrings.
                     atCommandCallBack2.__doc__ = func.__doc__

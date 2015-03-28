@@ -6438,6 +6438,8 @@ def getDocString(s):
 #@+node:ekr.20111017211256.15905: *3* g.getDocStringForFunction
 def getDocStringForFunction (func):
     '''Return the docstring for a function that creates a Leo command.'''
+    
+    trace = False and not g.unitTesting
 
     def name(func):
         return func.__name__ if hasattr(func,'__name__') else '<no __name__>'
@@ -6448,25 +6450,29 @@ def getDocStringForFunction (func):
         
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
-    if hasattr(func,'__doc__') and func.__doc__:
-        # Note: AtButtonCallback objects now also have __doc__ attributes.
-        s = func.__doc__
-    elif name(func) == 'minibufferCallback':
+
+    # Do special cases first.
+    s = ''
+    if name(func) == 'minibufferCallback':
         func = get_defaults(func,0)
-        if hasattr(func,'__doc__') and func.__doc__:
+        if hasattr(func,'func.__doc__') and func.__doc__.strip():
             s = func.__doc__
-        elif name(func) == 'commonCommandCallback':
-            script = get_defaults(func,1)
-            s = g.getDocString(script)
-                # Do a text scan for the function.
-        elif hasattr(func,'docstring'): # atButtonCallback object.
-            s = func.docstring()
-        else:
-            print('**oops',func)
-            s = ''
-    else:
-        s = func.__doc__ or ''
-        # s = None
+            if trace: g.trace('minibufferCallback.__doc__',repr(s))
+    if not s and name(func) == 'commonCommandCallback':
+        script = get_defaults(func,1)
+        s = g.getDocString(script)
+            # Do a text scan for the function.
+        if trace: g.trace('commonCallback.__doc__',repr(s))
+            
+    # Now the general cases.  Prefer __doc__ to docstring()
+    if not s and hasattr(func,'docstring'):
+        s = func.docstring()
+        if trace: g.trace('func.docstring()',name(func),repr(s))
+    if not s and hasattr(func,'__doc__'):
+        s = func.__doc__
+        if trace: g.trace('__doc__',name(func),repr(s))
+    if not s:
+        if trace: g.trace('fail')
     return s
 #@+node:ekr.20111115155710.9814: *3* g.python_tokenize
 def python_tokenize (s,line_numbers=True):
