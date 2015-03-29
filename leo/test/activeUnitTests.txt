@@ -11270,6 +11270,19 @@ table = (
 for arg,val in table:
     result = g.removeTrailing(s,arg)
     assert result == val, 'expected %s, got %s' % (val,result)
+#@+node:ekr.20150328120706.1: *4* @test g.sanitize_filename
+table = (
+    ('A25&()','A'),         # Non-alpha characters.
+    ('B\tc','B c'),         # Tabs.
+    ('"AB"',"'AB'"),        # Double quotes.
+    ('\\/:|<>*:.','_'),     # Special characters.
+    ('_____________','_'),  # Combining underscores.
+    ('A' * 200,'A' * 128),  # Maximum length.
+    ('abc.','abc_'),        # Trailing dots.
+)
+for s,expected in table:
+    got = g.sanitize_filename(s)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
 #@+node:ekr.20080917151620.13: *4* @test g.scanAtHeaderDirectives header
 @header
 

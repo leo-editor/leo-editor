@@ -3,88 +3,33 @@
 .. @@language rest # override the default .txt coloring.
 .. @@wrap
 .. @+all
-.. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/106
-
-https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-
-http://brew.sh/
-
-https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
-
-Do this after creating each official release.
-
-@language ruby
-@tabwidth -2
-.. @+node:ekr.20141210123805.4: *3* brew install (original)
-require 'formula'
-
-class Leo < Formula
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
-  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
-  head 'https://code.launchpad.net/leo-editor', :using => :bzr
-  devel do
-    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
-    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
-  end
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
-.. @+node:ekr.20141210123805.5: *3* brew install (new)
-require 'formula'
-
-class Leo < Formula
-
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
-  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
-  
-  head https://github.com/leo-editor/leo-editor, :using => :git
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2
 @language rest
 @wrap
+.. @+node:ekr.20150328095634.1: *3* ** EKR to do
+@language rest
+@wrap
+.. @+node:ekr.20150328195911.1: *4* Posts
+- rectangle commands don't work if you use the mouse
+- tell about cfa abbreviation
+- cfa is the master key
+- say that python.leo is fixed
+- separation of concerns make Leo work
+- mod_tempfname will be moved into Leo's core
+- OMG: All the Ctrl-number keys are available
+
+Quiz: how many keystroke does it take to delete all 99 children of a node?
+    Ctrl-I,Ctrl-],Ctrl-Shift-X
+.. @+node:ekr.20150328184843.1: *4* support pylint -h & --help
+.. @+node:ekr.20150328143312.1: *4* step through unitTest.leo to find where it fails in the bridge
+.. @+node:ekr.20150327175032.1: *4* clean up openWith: make it a class
+.. @+node:ekr.20150327175112.1: *4* clean up event handling
+@language rest
+
+- Test arguments to g.registerHandler.
+    - g.app.valid_event_names.  Does it already exist?
+    
+- Remove unused events from table of events.
 .. @+node:ekr.20150325052301.1: *3* Fix bug 165: vim-open-file command
 @language rest
 @wrap
@@ -187,6 +132,85 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 - leo_pdf.py won't load.
 .. @+node:ekr.20150311123850.7: *3* Improve --diff
 The --diff option is not very useful as a git diff.
+.. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo (after 5.1 final)
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/106
+
+https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
+
+http://brew.sh/
+
+https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
+
+Do this after creating each official release.
+
+@language ruby
+@tabwidth -2
+.. @+node:ekr.20141210123805.4: *3* brew install (original)
+require 'formula'
+
+class Leo < Formula
+  homepage 'http://leoeditor.com/'
+  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
+  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
+  head 'https://code.launchpad.net/leo-editor', :using => :bzr
+  devel do
+    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
+    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
+  end
+
+  depends_on 'pyqt'
+  depends_on 'enchant' => :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install 'leo'
+    bin.install ['launchLeo.py', 'profileLeo.py']
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    if system "python -c 'import leo'" then
+      onoe 'Leo FAILED'
+    else
+      ohai 'Leo OK'
+    end
+  end
+end
+.. @+node:ekr.20141210123805.5: *3* brew install (new)
+require 'formula'
+
+class Leo < Formula
+
+  homepage 'http://leoeditor.com/'
+  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
+  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
+  
+  head https://github.com/leo-editor/leo-editor, :using => :git
+
+  depends_on 'pyqt'
+  depends_on 'enchant' => :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install 'leo'
+    bin.install ['launchLeo.py', 'profileLeo.py']
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    if system "python -c 'import leo'" then
+      onoe 'Leo FAILED'
+    else
+      ohai 'Leo OK'
+    end
+  end
+end
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 .. @+node:ekr.20150316141655.14: *3* Better default for open/save file dialogs
 # Maybe the directory of c.fileName.
@@ -478,27 +502,28 @@ def runOpenDirectoryDialog(self,title,startdir):
     s = d.getExistingDirectory (parent,title,startdir)
     return g.u(s)
 .. @+node:ekr.20110605121601.18500: *5* LeoQtGui.runOpenFileDialog
-def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
-
+def runOpenFileDialog(self,c,title,filetypes,defaultextension='',multiple=False,startpath=None):
     """Create and run an Qt open file dialog ."""
-
     if g.unitTesting:
         return ''
     else:
         if startpath is None:
             startpath = os.curdir
-
         parent = None
         filter = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
         if multiple:
+            c.in_qt_dialog = True
             lst = d.getOpenFileNames(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:  # this is a *Py*Qt change rather than a Qt change
                 lst, selected_filter = lst
             return [g.u(s) for s in lst]
         else:
+            c.in_qt_dialog = True
             s = d.getOpenFileName(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
@@ -513,10 +538,8 @@ def runPropertiesDialog(self,
     result = 'Cancel'
     return result,data
 .. @+node:ekr.20110605121601.18502: *5* LeoQtGui.runSaveFileDialog
-def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
-
+def runSaveFileDialog(self,c,initialfile='',title='Save',filetypes=[],defaultextension=''):
     """Create and run an Qt save file dialog ."""
-
     if g.unitTesting:
         return ''
     else:
@@ -524,7 +547,9 @@ def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultexten
         filter_ = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
+        c.in_qt_dialog = True
         obj = d.getSaveFileName(parent,title,os.curdir,filter_)
+        c.in_qt_dialog = False
         # Very bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj,(list,tuple)) else obj
         return g.u(s)
@@ -586,10 +611,8 @@ c.in_qt_dialog = True
 d.exec_()
 c.in_qt_dialog = False
 .. @+node:ekr.20110605121601.18502: *4* LeoQtGui.runSaveFileDialog
-def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
-
+def runSaveFileDialog(self,c,initialfile='',title='Save',filetypes=[],defaultextension=''):
     """Create and run an Qt save file dialog ."""
-
     if g.unitTesting:
         return ''
     else:
@@ -597,32 +620,35 @@ def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultexten
         filter_ = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
+        c.in_qt_dialog = True
         obj = d.getSaveFileName(parent,title,os.curdir,filter_)
+        c.in_qt_dialog = False
         # Very bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj,(list,tuple)) else obj
         return g.u(s)
 .. @+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog
-def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
-
+def runOpenFileDialog(self,c,title,filetypes,defaultextension='',multiple=False,startpath=None):
     """Create and run an Qt open file dialog ."""
-
     if g.unitTesting:
         return ''
     else:
         if startpath is None:
             startpath = os.curdir
-
         parent = None
         filter = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
         if multiple:
+            c.in_qt_dialog = True
             lst = d.getOpenFileNames(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:  # this is a *Py*Qt change rather than a Qt change
                 lst, selected_filter = lst
             return [g.u(s) for s in lst]
         else:
+            c.in_qt_dialog = True
             s = d.getOpenFileName(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
@@ -648,10 +674,10 @@ def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
 def runCompareDialog(self,c):
     return self.simulateDialog("compareDialog",'')
 
-def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
+def runOpenFileDialog(self,c,title,filetypes,defaultextension,multiple=False,startpath=None):
     return self.simulateDialog("openFileDialog")
 
-def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+def runSaveFileDialog(self,c,initialfile,title,filetypes,defaultextension):
     return self.simulateDialog("saveFileDialog")
 
 def runAskYesNoDialog(self,c,title,message=None,yes_all=False,no_all=False):
@@ -661,60 +687,55 @@ def runAskYesNoCancelDialog(self,c,title,
     message=None,yesMessage="Yes",noMessage="No",yesToAllMessage=None,defaultButton="Yes"):
     return self.simulateDialog("yesNoCancelDialog","cancel")
 .. @+node:ekr.20031218072017.3731: *6* app.gui file dialogs
-def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
-
+def runOpenFileDialog(self,c,title,filetypes,defaultextension,multiple=False,startpath=None):
     """Create and run an open file dialog ."""
-
     self.oops()
 
-def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
-
+def runSaveFileDialog(self,c,initialfile,title,filetypes,defaultextension):
     """Create and run a save file dialog ."""
-
     self.oops()
 .. @+node:ekr.20110605121601.18500: *6* LeoQtGui.runOpenFileDialog
-def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
-
+def runOpenFileDialog(self,c,title,filetypes,defaultextension='',multiple=False,startpath=None):
     """Create and run an Qt open file dialog ."""
-
     if g.unitTesting:
         return ''
     else:
         if startpath is None:
             startpath = os.curdir
-
         parent = None
         filter = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
         if multiple:
+            c.in_qt_dialog = True
             lst = d.getOpenFileNames(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:  # this is a *Py*Qt change rather than a Qt change
                 lst, selected_filter = lst
             return [g.u(s) for s in lst]
         else:
+            c.in_qt_dialog = True
             s = d.getOpenFileName(parent,title,startpath,filter)
+            c.in_qt_dialog = False
             if isQt5:
                 s, selected_filter = s
             return g.u(s)
-.. @+node:ekr.20050920084036.166: *5* getReadableTextFile
+.. @+node:ekr.20050920084036.166: *5* getReadableTextFile (EditFileCommandsClass)
 def getReadableTextFile (self):
-
-    fn = g.app.gui.runOpenFileDialog(
+    '''Prompt for a text file.'''
+    c = self.c
+    fn = g.app.gui.runOpenFileDialog(c,
         title = 'Open Text File',
         filetypes = [("Text","*.txt"), ("All files","*")],
         defaultextension = ".txt")
-
     return fn
 .. @+node:ekr.20071114081313.1: *5* insertIcon
 def insertIcon (self,event=None):
-
     '''Prompt for an icon, and insert it into the node's icon list.'''
-
-    c = self.c ; p = c.p
+    c,p = self.c,self.c.p
     iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
     os.chdir(iconDir)
-    paths = g.app.gui.runOpenFileDialog(
+    paths = g.app.gui.runOpenFileDialog(c,
         title='Get Icons',
         filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
         defaultextension=None,
@@ -730,19 +751,19 @@ def insertIcon (self,event=None):
     c.redraw_after_icons_changed()
 .. @+node:ekr.20070915134101: *5* c.readFileIntoNode
 def readFileIntoNode (self,event=None):
-
     '''Read a file into a single node.'''
-
-    c = self ; undoType = 'Read File Into Node'
+    c = self
+    undoType = 'Read File Into Node'
     c.endEditing()
-
     filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-    fileName = g.app.gui.runOpenFileDialog(
-        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+    fileName = g.app.gui.runOpenFileDialog(c,
+        title="Read File Into Node",
+        filetypes=filetypes,
+        defaultextension=None)
     if not fileName:return
     s,e = g.readFileIntoString(fileName)
-    if s is None: return
-
+    if s is None:
+        return
     g.chdir(fileName)
     s = '@nocolor\n' + s
     w = c.frame.body.wrapper
@@ -753,10 +774,9 @@ def readFileIntoNode (self,event=None):
     c.redraw(p)
 .. @+node:ekr.20110530124245.18245: *5* c.importAnyFile & helper
 def importAnyFile (self,event=None):
-
     '''Import one or more files.'''
-
-    c = self ; ic = c.importCommands
+    c = self
+    ic = c.importCommands
     types = [
         ("All files","*"),
         ("C/C++ files","*.c"),
@@ -767,7 +787,7 @@ def importAnyFile (self,event=None):
         ("Lua files", "*.lua"),
         ("Pascal files","*.pas"),
         ("Python files","*.py") ]
-    names = g.app.gui.runOpenFileDialog(
+    names = g.app.gui.runOpenFileDialog(c,
         title="Import File",
         filetypes=types,
         defaultextension=".py",
@@ -829,20 +849,15 @@ def looksLikeDerivedFile (self,fn):
     return val
 .. @+node:ekr.20031218072017.2839: *5* c.readOutlineOnly
 def readOutlineOnly (self,event=None):
-
     '''Open a Leo outline from a .leo file, but do not read any derived files.'''
-
     c = self
     c.endEditing()
-
-    fileName = g.app.gui.runOpenFileDialog(
+    fileName = g.app.gui.runOpenFileDialog(c,
         title="Read Outline Only",
         filetypes=[("Leo files", "*.leo"), ("All files", "*")],
         defaultextension=".leo")
-
     if not fileName:
         return
-
     try:
         theFile = open(fileName,'r')
         g.chdir(fileName)
@@ -855,14 +870,12 @@ def readOutlineOnly (self,event=None):
         g.es("can not open:",fileName)
 .. @+node:ekr.20050920084036.20: *5* readAbbreviations & helper
 def readAbbreviations (self,event=None):
-
     '''Read abbreviations from a file.'''
-
-    fileName = g.app.gui.runOpenFileDialog(
+    c = self.c
+    fileName = g.app.gui.runOpenFileDialog(c,
         title = 'Open Abbreviation File',
         filetypes = [("Text","*.txt"), ("All files","*")],
         defaultextension = ".txt")
-
     if fileName:
         self.readAbbreviationsFromFile(fileName)
 .. @+node:ekr.20100901080826.6156: *6* readAbbreviationsFromFile
@@ -882,11 +895,8 @@ def readAbbreviationsFromFile(self,fileName):
         g.es('can not open',fileName)
 .. @+node:ekr.20031218072017.2859: *5* c.removeSentinels
 def removeSentinels (self,event=None):
-
     '''Import one or more files, removing any sentinels.'''
-
     c = self
-
     types = [
         ("All files","*"),
         ("C/C++ files","*.c"),
@@ -897,14 +907,12 @@ def removeSentinels (self,event=None):
         ("Lua files", "*.lua"),
         ("Pascal files","*.pas"),
         ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
+    names = g.app.gui.runOpenFileDialog(c,
         title="Remove Sentinels",
         filetypes=types,
         defaultextension=".py",
         multiple=True)
     c.bringToFront()
-
     if names:
         g.chdir(names[0])
         c.importCommands.removeSentinelsCommand (names)
@@ -929,7 +937,7 @@ def compareAnyTwoFiles (self,event):
     else:
         # Prompt for the file to be compared with the present outline.
         filetypes = [("Leo files", "*.leo"),("All files", "*"),]
-        fileName = g.app.gui.runOpenFileDialog(
+        fileName = g.app.gui.runOpenFileDialog(c,
             title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
         if not fileName: return
         # Read the file into the hidden commander.
@@ -1023,8 +1031,7 @@ def createHiddenCommander(self,fn):
     c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
     theFile = lm.openLeoOrZipFile(fn)
     if theFile:
-        c2.fileCommands.openLeoFile(theFile,fn,
-            readAtFileNodesFlag=True,silent=True)
+        c2.fileCommands.openLeoFile(theFile,fn,readAtFileNodesFlag=True,silent=True)
         return c2
     else:
         return None
@@ -1052,9 +1059,7 @@ def dumpCompareNodes (self,fileName1,fileName2,inserted,deleted,changed):
                 g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
 .. @+node:ekr.20031218072017.2821: *5* c.open & helper
 def open (self,event=None):
-
     '''Open a Leo window containing the contents of a .leo file.'''
-
     c = self
     << Set closeFlag if the only open window is empty >>
     table = [
@@ -1063,12 +1068,14 @@ def open (self,event=None):
         ("Leo files","*.leo"),
         ("Python files","*.py"),]
 
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",filetypes = table,defaultextension = ".leo")
+    fileName = ''.join(c.k.givenArgs)
+    if not fileName:
+        fileName = g.app.gui.runOpenFileDialog(c,
+            title = "Open",
+            filetypes = table,
+            defaultextension = ".leo")
     c.bringToFront()
-
     c.init_error_dialogs()
-
     ok = False
     if fileName:
         if fileName.endswith('.leo'):
@@ -1079,16 +1086,13 @@ def open (self,event=None):
             if c2 and closeFlag:
                 g.app.destroyWindow(c.frame)
         elif c.looksLikeDerivedFile(fileName):
-            # 2011/10/09: A smart open makes Leo lighter:
             # Create an @file node for files containing Leo sentinels.
             ok = c.importCommands.importDerivedFiles(parent=c.p,
                 paths=[fileName],command='Open')
         else:
             # otherwise, create an @edit node.
             ok = c.createNodeFromExternalFile(fileName)
-
     c.raise_error_dialogs(kind='write')
-
     # openWithFileName sets focus if ok.
     if not ok:
         c.initialFocusHelper()

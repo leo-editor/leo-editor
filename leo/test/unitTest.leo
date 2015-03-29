@@ -168,7 +168,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20150328120706.1"><vh>@test g.sanitize_filename</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -584,7 +583,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1258,17 +1257,5 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
-<t tx="ekr.20150328120706.1">table = (
-    ('A25&amp;()','A'),         # Non-alpha characters.
-    ('B\tc','B c'),         # Tabs.
-    ('"AB"',"'AB'"),        # Double quotes.
-    ('\\/:|&lt;&gt;*:.','_'),     # Special characters.
-    ('_____________','_'),  # Combining underscores.
-    ('A' * 200,'A' * 128),  # Maximum length.
-    ('abc.','abc_'),        # Trailing dots.
-)
-for s,expected in table:
-    got = g.sanitize_filename(s)
-    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)</t>
 </tnodes>
 </leo_file>
