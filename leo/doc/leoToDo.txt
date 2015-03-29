@@ -10,16 +10,20 @@
 @language rest
 @wrap
 .. @+node:ekr.20150328195911.1: *4* Posts
-- rectangle commands don't work if you use the mouse
-- tell about cfa abbreviation
-- cfa is the master key
-- say that python.leo is fixed
-- separation of concerns make Leo work
-- mod_tempfname will be moved into Leo's core
-- OMG: All the Ctrl-number keys are available
+- Breakthrough: local cfa abbreviations.
 
 Quiz: how many keystroke does it take to delete all 99 children of a node?
     Ctrl-I,Ctrl-],Ctrl-Shift-X
+
+Later:
+- separation of concerns make Leo work.
+  David Parnas
+  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
+  
+  Glenford Myers
+  http://en.wikipedia.org/wiki/Glenford_Myers
+  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
+  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
 .. @+node:ekr.20150328184843.1: *4* support pylint -h & --help
 .. @+node:ekr.20150328143312.1: *4* step through unitTest.leo to find where it fails in the bridge
 .. @+node:ekr.20150327175032.1: *4* clean up openWith: make it a class

@@ -11730,6 +11730,10 @@ A **session** specifies a list of tabs (.leo files) that Leo opens automatically
 - You may execute any command by name from the minibuffer.
 - Many commands are bound to keystrokes.
 - You may bind multiple keystrokes to a single command and change bindings to your taste.
+
+    **Note**: All Ctrl-&lt;number&gt; keys and most Ctrl-Shift-&lt;number&gt; keys are |br|
+    unbound by default. You may bind them to whatever commands you like.
+
 - Leo has commands to create, change and reorganize outlines.
 - Within the body pane, Leo uses standard key bindings to move the cursor.
 - Ctrl-F starts the find command. Use the minibuffer to complete the command.
@@ -11758,7 +11762,8 @@ A **session** specifies a list of tabs (.leo files) that Leo opens automatically
 
 - The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
 
-- CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo's help menu.
+- CheatSheet.leo contains an expanded version of the example used in this tutorial. |br|
+  You can open CheatSheet.leo from Leo's help menu.
   
 - The rst3 command provides *many* other capabilities. For details, see `the rst3 chapter &lt;rstplugin3.html&gt;`_.
   </t>
@@ -12161,6 +12166,10 @@ You will get something like the following::
 <t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">.. |---| unicode:: U+02015
    :trim:
+   
+.. |br| raw:: html
+
+   &lt;br /&gt;
 
 ##################
 The Basics of Leo
@@ -12199,6 +12208,10 @@ This chapter tells how you can use Leo as a Personal Information Manager. It int
 </t>
 <t tx="ekr.20131008041326.16241">.. |---| unicode:: U+02015 .. for quotes
    :trim:
+   
+.. |br| raw:: html
+
+   &lt;br /&gt;
 
 ########################################
 Creating Documents with the rst3 Command
@@ -12407,7 +12420,9 @@ When using sphinx, run sphinx's "make" utility after running the rst3 command to
    
 - LeoDocs.leo has an @button make-sphinx script that calls sphinx automatically.
 
-- Create your own @rst nodes. Run the rst3 command on them and see what happens. If you get stuck, please `ask for help &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_.
+- Create your own @rst nodes. Run the rst3 command on them and see what happens.
+
+- If you get stuck, please ask for help at https://groups.google.com/forum/#!forum/leo-editor.
 </t>
 <t tx="ekr.20131009100732.16754">Put the rst3_call_docutils setting in the @settings tree in the .leo file containing the @rst node. This setting determines whether to use plain rST markup or full sphinx markup. To use plain reStructuredText markup::
 
@@ -13712,6 +13727,12 @@ To have the rst3 command ignore a node and all its descendants, type this in the
        :trim:
 
 Now ``---`` inserts ---, the unicode "quotation dash" used to indicate the author of quotations. Note that rST automatically turns ``--`` into a dash: --.
+
+The rST ``|`` markup breaks text into specific lines, but there are times when it can't be used.  The following inserts a line break into text::
+
+    .. |br| raw:: html
+    
+       &lt;br /&gt;
 </t>
 <t tx="ekr.20131027064821.17131">Leo's read code parses text into true Python objects: Leo's positions and vnodes.
 

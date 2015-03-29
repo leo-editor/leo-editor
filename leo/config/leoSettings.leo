@@ -2519,12 +2519,9 @@ Notes:
 
 1. The case of plain letters is significant:  a is not A.
 
-2. The Shift- (or Shift+) prefix can be applied *only* to letters or
-multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to
-other single letters, e.g., Ctrl-Shift-(
+2. The Shift- (or Shift+) prefix can be applied *only* to letters or multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to other single letters, e.g., Ctrl-Shift-(
 
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-significant.
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not* significant.
 
 The following table illustrates these rules.  In each row, the first entry is the key (for k.bindingsDict) and the other entries are equivalents that the user may specify in leoSettings.leo:
 
@@ -3097,7 +3094,7 @@ commands to enable or disable autocompletion at any time.
 Note: The 'initially' prefix is needed to distinguish this setting from
 enable-calltips command. Otherwised they would get 'munged' to the same
 configuration value.</t>
-<t tx="ekr.20060603215208"># These bindings are a mixture of emacs bindings, windows bindings and vim bindings.</t>
+<t tx="ekr.20060603215208">These bindings are a mixture of emacs bindings, windows bindings and vim bindings.</t>
 <t tx="ekr.20060603215208.19"># Quick finds
 backward-find-character                     = Alt-Q
 backward-find-character-extend-selection    = Alt-Shift-Q
