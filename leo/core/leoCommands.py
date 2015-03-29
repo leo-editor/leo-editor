@@ -155,15 +155,12 @@ class Commands (object):
         
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self):
-
+        '''Init ivars relating to gui events.'''
         self.configInited = False
         self.doubleClickFlag = False
         self.exists = True
             # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
-        self.hasFocusWidget = None
-        self.idle_callback = None
-            # For c.idle_focus_helper.
         self.in_qt_dialog = False
             # True: in a qt dialog.
         self.loading = False
@@ -416,34 +413,28 @@ class Commands (object):
     idle_focus_count = 0
 
     def idle_focus_helper (self,tag,keys):
-
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-
-        trace = False and not g.unitTesting
-        verbose = False # False: only print surprises.
-        active = False # True: actually change the focus.
+        trace = True and not g.unitTesting
+        trace_focus = False # True: (almost always annoying) always tell where the focus is.
+        active = True # True: actually change the focus.
         c = self
         assert tag == 'idle'
         if g.app.unitTesting or keys.get('c') != c:
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
-            if trace and verbose: g.trace('in_qt_dialog')
-            return
-        if c.idle_callback:
-            if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
-            c.idle_callback()
-            c.idle_callback = None
+            if trace and trace_focus: g.trace('in_qt_dialog')
             return
         w = g.app.gui.get_focus()
-        if w:
-            if trace:
-                g.trace(self.idle_focus_count,w)
-        elif g.app.gui.active:
-            if trace:
+        if g.app.gui.active:
+            if w and trace and trace_focus:
+                g.trace('%s focus: %s' % (self.idle_focus_count,w))
+            if not w and trace:
                 g.trace('%s no focus -> body' % (self.idle_focus_count))
-            if active:
+            if not w and active:
                 c.bodyWantsFocusNow()
+        elif trace and trace_focus:
+            g.trace('%s focus: %s' % (self.idle_focus_count,w))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
 
@@ -742,10 +733,9 @@ class Commands (object):
         g.app.closeLeoWindow(self.frame,new_c=new_c)
     #@+node:ekr.20110530124245.18245: *6* c.importAnyFile & helper
     def importAnyFile (self,event=None):
-
         '''Import one or more files.'''
-
-        c = self ; ic = c.importCommands
+        c = self
+        ic = c.importCommands
         types = [
             ("All files","*"),
             ("C/C++ files","*.c"),
@@ -756,7 +746,7 @@ class Commands (object):
             ("Lua files", "*.lua"),
             ("Pascal files","*.pas"),
             ("Python files","*.py") ]
-        names = g.app.gui.runOpenFileDialog(
+        names = g.app.gui.runOpenFileDialog(c,
             title="Import File",
             filetypes=types,
             defaultextension=".py",
@@ -848,9 +838,7 @@ class Commands (object):
         return c # For unit tests and scripts.
     #@+node:ekr.20031218072017.2821: *6* c.open & helper
     def open (self,event=None):
-
         '''Open a Leo window containing the contents of a .leo file.'''
-
         c = self
         #@+<< Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2822: *7* << Set closeFlag if the only open window is empty >>
@@ -872,12 +860,14 @@ class Commands (object):
             ("Leo files","*.leo"),
             ("Python files","*.py"),]
 
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-            title = "Open",filetypes = table,defaultextension = ".leo")
+        fileName = ''.join(c.k.givenArgs)
+        if not fileName:
+            fileName = g.app.gui.runOpenFileDialog(c,
+                title = "Open",
+                filetypes = table,
+                defaultextension = ".leo")
         c.bringToFront()
-
         c.init_error_dialogs()
-
         ok = False
         if fileName:
             if fileName.endswith('.leo'):
@@ -888,16 +878,13 @@ class Commands (object):
                 if c2 and closeFlag:
                     g.app.destroyWindow(c.frame)
             elif c.looksLikeDerivedFile(fileName):
-                # 2011/10/09: A smart open makes Leo lighter:
                 # Create an @file node for files containing Leo sentinels.
                 ok = c.importCommands.importDerivedFiles(parent=c.p,
                     paths=[fileName],command='Open')
             else:
                 # otherwise, create an @edit node.
                 ok = c.createNodeFromExternalFile(fileName)
-
         c.raise_error_dialogs(kind='write')
-
         # openWithFileName sets focus if ok.
         if not ok:
             c.initialFocusHelper()
@@ -1309,11 +1296,13 @@ class Commands (object):
                         toString=False,force=True)
                 c.setChanged(False)
             else:
-                fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                    initialfile = c.mFileName,
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
+                fileName = ''.join(c.k.givenArgs)
+                if not fileName:
+                    fileName = g.app.gui.runSaveFileDialog(c,
+                        initialfile = c.mFileName,
+                        title="Save",
+                        filetypes=[("Leo files", "*.leo")],
+                        defaultextension=".leo")
             c.bringToFront()
             if fileName:
                 # Don't change mFileName until the dialog has suceeded.
@@ -1373,7 +1362,9 @@ class Commands (object):
         if not c.mFileName:
             c.frame.title = ""
         if not fileName:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs)
+        if not fileName:
+            fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile = c.mFileName,
                 title="Save As",
                 filetypes=[("Leo files", "*.leo")],
@@ -1408,9 +1399,7 @@ class Commands (object):
             c.treeWantsFocus()
     #@+node:ekr.20031218072017.2836: *6* c.saveTo
     def saveTo (self,event=None,fileName=None):
-
         '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
-
         c = self ; p = c.p
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
@@ -1428,10 +1417,12 @@ class Commands (object):
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
-        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
+        # Add fileName keyword arg for leoBridge scripts.
         if not fileName:
             # set local fileName, _not_ c.mFileName
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs)
+        if not fileName:
+            fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile = c.mFileName,
                 title="Save To",
                 filetypes=[("Leo files", "*.leo")],
@@ -1598,19 +1589,19 @@ class Commands (object):
         c.raise_error_dialogs(kind='read')
     #@+node:ekr.20070915134101: *6* c.readFileIntoNode
     def readFileIntoNode (self,event=None):
-
         '''Read a file into a single node.'''
-
-        c = self ; undoType = 'Read File Into Node'
+        c = self
+        undoType = 'Read File Into Node'
         c.endEditing()
-
         filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-        fileName = g.app.gui.runOpenFileDialog(
-            title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+        fileName = g.app.gui.runOpenFileDialog(c,
+            title="Read File Into Node",
+            filetypes=filetypes,
+            defaultextension=None)
         if not fileName:return
         s,e = g.readFileIntoString(fileName)
-        if s is None: return
-
+        if s is None:
+            return
         g.chdir(fileName)
         s = '@nocolor\n' + s
         w = c.frame.body.wrapper
@@ -1621,20 +1612,15 @@ class Commands (object):
         c.redraw(p)
     #@+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
     def readOutlineOnly (self,event=None):
-
         '''Open a Leo outline from a .leo file, but do not read any derived files.'''
-
         c = self
         c.endEditing()
-
-        fileName = g.app.gui.runOpenFileDialog(
+        fileName = g.app.gui.runOpenFileDialog(c,
             title="Read Outline Only",
             filetypes=[("Leo files", "*.leo"), ("All files", "*")],
             defaultextension=".leo")
-
         if not fileName:
             return
-
         try:
             theFile = open(fileName,'r')
             g.chdir(fileName)
@@ -1651,22 +1637,18 @@ class Commands (object):
         '''If node starts with @read-file-into-node, use the full path name in the headline.
         Otherwise, prompt for a file name.
         '''
-
         c = self ; p = c.p
         c.endEditing()
-
         h = p.h.rstrip()
         s = p.b
         tag = '@read-file-into-node'
-
         if h.startswith(tag):
             fileName = h[len(tag):].strip()
         else:
             fileName = None
-
         if not fileName:
             filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile=None,
                 title='Write File From Node',
                 filetypes=filetypes,
@@ -1755,21 +1737,16 @@ class Commands (object):
     #@+node:ekr.20031218072017.2849: *5* Export submenu
     #@+node:ekr.20031218072017.2850: *6* c.exportHeadlines
     def exportHeadlines (self,event=None):
-
         '''Export all headlines to an external file.'''
-
         c = self
-
         filetypes = [("Text files", "*.txt"),("All files", "*")]
-
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile="headlines.txt",
             title="Export Headlines",
             filetypes=filetypes,
             defaultextension=".txt")
         c.bringToFront()
-
-        if fileName and len(fileName) > 0:
+        if fileName:
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.exportHeadlines(fileName)
@@ -1781,15 +1758,13 @@ class Commands (object):
         '''
         c = self
         filetypes = [("Text files", "*.txt"),("All files", "*")]
-
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile="flat.txt",
             title="Flatten Selected Outline",
             filetypes=filetypes,
             defaultextension=".txt")
         c.bringToFront()
-
-        if fileName and len(fileName) > 0:
+        if fileName:
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.flattenOutline(fileName)
@@ -1813,60 +1788,52 @@ class Commands (object):
         u.afterChangeNodeContents(root,'flatten-outline-to-node',bunch)
     #@+node:ekr.20031218072017.2857: *6* c.outlineToCWEB
     def outlineToCWEB (self,event=None):
-
-        '''Export the selected outline to an external file.
-        The outline is represented in CWEB format.'''
-
+        '''
+        Export the selected outline to an external file.
+        The outline is represented in CWEB format.
+        '''
         c = self
-
         filetypes=[
             ("CWEB files", "*.w"),
             ("Text files", "*.txt"),
             ("All files", "*")]
-
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile="cweb.w",
             title="Outline To CWEB",
             filetypes=filetypes,
             defaultextension=".w")
         c.bringToFront()
-
-        if fileName and len(fileName) > 0:
+        if fileName:
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"cweb")
     #@+node:ekr.20031218072017.2858: *6* c.outlineToNoweb
     def outlineToNoweb (self,event=None):
-
-        '''Export the selected outline to an external file.
-        The outline is represented in noweb format.'''
-
+        '''
+        Export the selected outline to an external file.
+        The outline is represented in noweb format.
+        '''
         c = self
-
         filetypes=[
             ("Noweb files", "*.nw"),
             ("Text files", "*.txt"),
             ("All files", "*")]
 
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile=self.outlineToNowebDefaultFileName,
             title="Outline To Noweb",
             filetypes=filetypes,
             defaultextension=".nw")
         c.bringToFront()
-
-        if fileName and len(fileName) > 0:
+        if fileName:
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"noweb")
             c.outlineToNowebDefaultFileName = fileName
     #@+node:ekr.20031218072017.2859: *6* c.removeSentinels
     def removeSentinels (self,event=None):
-
         '''Import one or more files, removing any sentinels.'''
-
         c = self
-
         types = [
             ("All files","*"),
             ("C/C++ files","*.c"),
@@ -1877,14 +1844,12 @@ class Commands (object):
             ("Lua files", "*.lua"),
             ("Pascal files","*.pas"),
             ("Python files","*.py") ]
-
-        names = g.app.gui.runOpenFileDialog(
+        names = g.app.gui.runOpenFileDialog(c,
             title="Remove Sentinels",
             filetypes=types,
             defaultextension=".py",
             multiple=True)
         c.bringToFront()
-
         if names:
             g.chdir(names[0])
             c.importCommands.removeSentinelsCommand (names)
@@ -1892,19 +1857,15 @@ class Commands (object):
     def weave (self,event=None):
 
         '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
-
         c = self
-
         filetypes = [("Text files", "*.txt"),("All files", "*")]
-
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile="weave.txt",
             title="Weave",
             filetypes=filetypes,
             defaultextension=".txt")
         c.bringToFront()
-
-        if fileName and len(fileName) > 0:
+        if fileName:
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.weave(fileName)

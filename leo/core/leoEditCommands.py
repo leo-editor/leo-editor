@@ -1083,14 +1083,12 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             g.es('No present abbreviations')
     #@+node:ekr.20050920084036.20: *4* readAbbreviations & helper
     def readAbbreviations (self,event=None):
-
         '''Read abbreviations from a file.'''
-
-        fileName = g.app.gui.runOpenFileDialog(
+        c = self.c
+        fileName = g.app.gui.runOpenFileDialog(c,
             title = 'Open Abbreviation File',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
-
         if fileName:
             self.readAbbreviationsFromFile(fileName)
     #@+node:ekr.20100901080826.6156: *5* readAbbreviationsFromFile
@@ -1121,7 +1119,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
         '''Write abbreviations to a file.'''
-        fileName = g.app.gui.runSaveFileDialog(
+        c = self.c
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile = None,
             title='Write Abbreviations',
             filetypes = [("Text","*.txt"), ("All files","*")],
@@ -1776,17 +1775,16 @@ class DebugCommandsClass (BaseEditCommandsClass):
 
         g.pdb()
     #@+node:ekr.20060210100432: *3* printFocus
-    # Doesn't work if the focus isn't in a pane with bindings!
-
     def printFocus (self,event=None):
+        '''
+        Print information about the requested focus.
 
-        '''Print information about the requested focus (for debugging).'''
-
+        Doesn't work if the focus isn't in a pane with bindings!
+        '''
         c = self.c
-
-        g.es_print('      hasFocusWidget:',c.widget_name(c.hasFocusWidget))
-        g.es_print('requestedFocusWidget:',c.widget_name(c.requestedFocusWidget))
-        g.es_print('           get_focus:',c.widget_name(c.get_focus()))
+        w = g.app.gui.get_focus()
+        g.es_print('c.requestedFocusWidget:',c.widget_name(c.requestedFocusWidget))
+        g.es_print('           c.get_focus:',c.widget_name(c.get_focus()))
     #@+node:ekr.20060205043324.3: *3* printGcSummary
     def printGcSummary (self,event=None):
 
@@ -4541,13 +4539,11 @@ class EditCommandsClass (BaseEditCommandsClass):
             c.redraw_after_icons_changed()
     #@+node:ekr.20071114081313.1: *4* insertIcon
     def insertIcon (self,event=None):
-
         '''Prompt for an icon, and insert it into the node's icon list.'''
-
-        c = self.c ; p = c.p
+        c,p = self.c,self.c.p
         iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
-        paths = g.app.gui.runOpenFileDialog(
+        paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',
             filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
             defaultextension=None,
@@ -7234,7 +7230,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         else:
             # Prompt for the file to be compared with the present outline.
             filetypes = [("Leo files", "*.leo"),("All files", "*"),]
-            fileName = g.app.gui.runOpenFileDialog(
+            fileName = g.app.gui.runOpenFileDialog(c,
                 title="Compare .leo Files",filetypes=filetypes,defaultextension='.leo')
             if not fileName: return
             # Read the file into the hidden commander.
@@ -7328,8 +7324,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
         theFile = lm.openLeoOrZipFile(fn)
         if theFile:
-            c2.fileCommands.openLeoFile(theFile,fn,
-                readAtFileNodesFlag=True,silent=True)
+            c2.fileCommands.openLeoFile(theFile,fn,readAtFileNodesFlag=True,silent=True)
             return c2
         else:
             return None
@@ -7397,14 +7392,14 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             idata.append(z)
         w.delete(0,'end')
         w.insert(0,''.join(idata))
-    #@+node:ekr.20050920084036.166: *3* getReadableTextFile
+    #@+node:ekr.20050920084036.166: *3* getReadableTextFile (EditFileCommandsClass)
     def getReadableTextFile (self):
-
-        fn = g.app.gui.runOpenFileDialog(
+        '''Prompt for a text file.'''
+        c = self.c
+        fn = g.app.gui.runOpenFileDialog(c,
             title = 'Open Text File',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
-
         return fn
     #@+node:ekr.20050920084036.167: *3* insertFile
     def insertFile (self,event):
@@ -7485,29 +7480,26 @@ class EditFileCommandsClass (BaseEditCommandsClass):
                 k.setStatusLabel('Not Removed: %s' % k.arg)
     #@+node:ekr.20050920084036.170: *3* saveFile (changed)
     def saveFile (self,event):
-
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
-
+        c = self.c
         w = self.editWidget(event)
-        if not w: return
-
-        fileName = g.app.gui.runSaveFileDialog(
+        if not w:
+            return
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile = None,
             title='save-file',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
-
-        if not fileName: return
-
-        try:
-            f = open(fileName,'w')
-            s = w.getAllText()
-            if not g.isPython3: # 2010/08/27
-                s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
-            f.write(s)
-            f.close()
-        except IOError:
-            g.es('can not create',fileName)
+        if fileName:
+            try:
+                f = open(fileName,'w')
+                s = w.getAllText()
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s,encoding='utf-8',reportErrors=True)
+                f.write(s)
+                f.close()
+            except IOError:
+                g.es('can not create',fileName)
     #@-others
 #@+node:ekr.20060205164707: ** HelpCommandsClass
 class HelpCommandsClass (BaseEditCommandsClass):

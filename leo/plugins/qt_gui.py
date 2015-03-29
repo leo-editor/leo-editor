@@ -46,9 +46,9 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18477: *3*  LeoQtGui.__init__
     def __init__ (self):
         '''Ctor for LeoQtGui class.'''
-        # Initialize the base class.
-        leoGui.LeoGui.__init__(self,'qt')
         # g.trace('(LeoQtGui)',g.callers())
+        leoGui.LeoGui.__init__(self,'qt')
+             # Initialize the base class.
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.bigTextControllerClass = qt_big_text.BigTextController
         self.bodyTextWidget = qt_text.QTextMixin
@@ -61,8 +61,8 @@ class LeoQtGui(leoGui.LeoGui):
         self.mGuiName = 'qt'
         self.appIcon = self.getIconImage('leoapp32.png')
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
-        # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
+            # For c.idle_focus_helper and activate/deactivate events.
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -403,27 +403,28 @@ class LeoQtGui(leoGui.LeoGui):
         s = d.getExistingDirectory (parent,title,startdir)
         return g.u(s)
     #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog
-    def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
-
+    def runOpenFileDialog(self,c,title,filetypes,defaultextension='',multiple=False,startpath=None):
         """Create and run an Qt open file dialog ."""
-
         if g.unitTesting:
             return ''
         else:
             if startpath is None:
                 startpath = os.curdir
-
             parent = None
             filter = self.makeFilter(filetypes)
             d = QtWidgets.QFileDialog()
             self.attachLeoIcon(d)
             if multiple:
+                c.in_qt_dialog = True
                 lst = d.getOpenFileNames(parent,title,startpath,filter)
+                c.in_qt_dialog = False
                 if isQt5:  # this is a *Py*Qt change rather than a Qt change
                     lst, selected_filter = lst
                 return [g.u(s) for s in lst]
             else:
+                c.in_qt_dialog = True
                 s = d.getOpenFileName(parent,title,startpath,filter)
+                c.in_qt_dialog = False
                 if isQt5:
                     s, selected_filter = s
                 return g.u(s)
@@ -438,10 +439,8 @@ class LeoQtGui(leoGui.LeoGui):
         result = 'Cancel'
         return result,data
     #@+node:ekr.20110605121601.18502: *4* LeoQtGui.runSaveFileDialog
-    def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
-
+    def runSaveFileDialog(self,c,initialfile='',title='Save',filetypes=[],defaultextension=''):
         """Create and run an Qt save file dialog ."""
-
         if g.unitTesting:
             return ''
         else:
@@ -449,7 +448,9 @@ class LeoQtGui(leoGui.LeoGui):
             filter_ = self.makeFilter(filetypes)
             d = QtWidgets.QFileDialog()
             self.attachLeoIcon(d)
+            c.in_qt_dialog = True
             obj = d.getSaveFileName(parent,title,os.curdir,filter_)
+            c.in_qt_dialog = False
             # Very bizarre: PyQt5 version can return a tuple!
             s = obj[0] if isinstance(obj,(list,tuple)) else obj
             return g.u(s)
@@ -519,10 +520,15 @@ class LeoQtGui(leoGui.LeoGui):
     deactivated_name = ''
 
     def onDeactivateEvent (self,event,c,obj,tag):
-        '''Gracefully deactivate the Leo window.'''
-        if 0:
+        '''
+        Gracefully deactivate the Leo window.
+        Called several times for each window activation.
+        '''
+        self.active = False
+            # Used only by c.idle_focus_helper.
+
+        if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
-            # This is called several times for each window activation.
             if c.exists and not self.deactivated_name:
                 self.deactivated_name = self.widget_name(self.get_focus())
                 self.active = False
@@ -534,9 +540,14 @@ class LeoQtGui(leoGui.LeoGui):
     # Called from eventFilter
 
     def onActivateEvent (self,event,c,obj,tag):
-        '''Restore the focus when the Leo window is activated.'''
-        # This is called several times for each window activation.
-        if 0:
+        '''
+        Restore the focus when the Leo window is activated.
+        Called several times for each window activation.
+        '''
+        self.active = True
+            # Used only by c.idle_focus_helper.
+
+        if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:
                 self.active = True

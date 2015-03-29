@@ -6,10 +6,34 @@
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2
 @language rest
 @wrap
-.. @+node:ekr.20150328095634.1: *3* ** EKR to do
+.. @+node:ekr.20150328184843.1: *3* support pylint -h & --help
+.. @+node:ekr.20150329055227.1: *3* Add c.cloneFindAllFlattenedAtNode
+.. @+node:ekr.20150327175032.1: *3* clean up openWith: make it a class
+.. @+node:ekr.20150329112620.1: *3* Update bug #167 (problem posting)
 @language rest
 @wrap
-.. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
+
+You're welcome.  It was an interesting puzzle.
+
+**Update**: at present, running unitTest.leo from the leoBridge only works when PyQt is **not** installed.
+
+**Update 2**: Disabling a single unit test allows all tests to run to completion from the bridge when PyQt **is** installed.
+
+Enabling traces for the GeneralTestCase class in leoTest.py revealed that the crash was in the test: ``@test interfaces using API classes``.  It starts with the following code, which has no chance of working in the bridge:
+
+```python
+    import leo.core.leoFrame as leoFrame
+    import leo.plugins.qt_text as qt_text
+    from leo.core.leoQt import Qsci,QtWidgets
+```
+.. @+node:ekr.20150327175112.1: *3* clean up event handling
+@language rest
+
+- Test arguments to g.registerHandler.
+    - g.app.valid_event_names.  Does it already exist?
+    
+- Remove unused events from table of events.
+.. @+node:ekr.20150328195911.1: *3* Post: Parnas & Myers
 - separation of concerns make Leo work.
   David Parnas
   https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
@@ -18,17 +42,7 @@
   http://en.wikipedia.org/wiki/Glenford_Myers
   Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
   http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
-.. @+node:ekr.20150329055227.1: *4* Add c.cloneFindAllFlattenedAtNode
-.. @+node:ekr.20150328184843.1: *4* support pylint -h & --help
-.. @+node:ekr.20150328143312.1: *4* step through unitTest.leo to find where it fails in the bridge
-.. @+node:ekr.20150327175032.1: *4* clean up openWith: make it a class
-.. @+node:ekr.20150327175112.1: *4* clean up event handling
-@language rest
-
-- Test arguments to g.registerHandler.
-    - g.app.valid_event_names.  Does it already exist?
-    
-- Remove unused events from table of events.
+.. @+node:ekr.20150329102805.1: *3* Document all in to-be-documented mailbox
 .. @+node:ekr.20150325052301.1: *3* Fix bug 165: vim-open-file command
 @language rest
 @wrap
