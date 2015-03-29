@@ -683,7 +683,8 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
-    #@+node:ekr.20140828080010.18532: *3* c.cloneFindParents
+    #@+node:ekr.20150329162703.1: *3* c.cloneFind...
+    #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
     def cloneFindParents(self,event=None):
         '''Create a "Found: parents of p.h for all parents of p or c.p.'''
         c,u = self,self.undoer
@@ -721,7 +722,44 @@ class Commands (object):
         c.selectPosition(found)
         c.setChanged(True)
         c.redraw()
-       
+    #@+node:ekr.20150329055227.1: *4* c.cloneFindAllAtNode
+    def cloneFindAllAtNode(self,h,top_level):
+        '''
+        Find and select a node with headline h,
+        then execute clone-find-all.
+        '''
+        c = self
+        if top_level:
+            p = g.findTopLevelNode(c,h)
+        else:
+            p = g.findNodeAnywhere(c,h)
+        if p:
+            # The next two statements are required.
+            c.selectPosition(p,enableRedrawFlag=True)
+            c.bodyWantsFocusNow()
+            # c.k.simulateCommand('clone-find-all')
+            c.findCommands.minibufferCloneFindAllFlattened()
+        else:
+            g.es_print('not found: Code')
+    #@+node:ekr.20150329162736.1: *4* c.cloneFindAllFlattenedAtNode
+    def cloneFindAllFlattenedAtNode(self,h,top_level):
+        '''
+        Find and select a node with headline h,
+        then execute clone-find-all-flattened.
+        '''
+        c = self
+        if top_level:
+            p = g.findTopLevelNode(c,h)
+        else:
+            p = g.findNodeAnywhere(c,h)
+        if p:
+            # The next two statements are required.
+            c.selectPosition(p,enableRedrawFlag=True)
+            c.bodyWantsFocusNow()
+            # c.k.simulateCommand('clone-find-all-flattened')
+            c.findCommands.minibufferCloneFindAllFlattened()
+        else:
+            g.es_print('not found: h' % (h))
     #@+node:ekr.20031218072017.2818: *3* c.Command handlers...
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20031218072017.2820: *5* top level (file menu)
