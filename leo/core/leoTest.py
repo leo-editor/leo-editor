@@ -379,8 +379,9 @@ class GeneralTestCase(unittest.TestCase):
         self.c.selectPosition(self.p.copy()) # 2010/02/03
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest (self,define_g = True):
-
+        '''Run a Leo GeneralTestCase test.'''
         trace = False
+        trace_script = False
         tm = self
         c = tm.c
         p = tm.p.copy()
@@ -398,8 +399,12 @@ class GeneralTestCase(unittest.TestCase):
         else:
             d = {'self':tm,}
         script = script + '\n'
-        if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
-            p and p.h,c.shortFileName(),c.write_script_file,script))
+        if trace:
+            if trace_script:
+                g.trace('p: %s c: %s write script: %s script:\n%s' % (
+                p and p.h,c.shortFileName(),c.write_script_file,script))
+            else:
+                g.trace(p and p.h)
 
         # Execute the script. Let the unit test handle any errors!
         # 2011/11/02: pass the script sources to exec or execfile.
