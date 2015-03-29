@@ -7650,8 +7650,8 @@ The code_mode and doc_only_mode options determine the mode as follows:
 <t tx="ekr.20100813075851.4296">This section discusses options--what they are, how to set them and how to set their defaults.
 </t>
 <t tx="ekr.20100813075851.4297"></t>
-<t tx="ekr.20100817101952.4303">.. links
-
+<t tx="ekr.20100817101952.4303">.. _`git`: http://git-scm.com/
+.. _`GitHub`: https://github.com/leo-editor
 .. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.11%20final/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`: http://www.greygreen.org/leo/
@@ -10191,14 +10191,22 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     Write a 4.x derived file.
     root is the position of an @&lt;file&gt; node
 </t>
-<t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt_` package.
-The `PyEnchant`_ package is optional. 
+<t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt`_ packages. The `PyEnchant`_ package is optional. 
 
 **Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary package from: http://www.riverbankcomputing.co.uk/software/pyqt/download The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the binary PyQt installer.
+**PyQt**: `PyQt`_ provides Leo's widgets.
 
-**PyEnchant**: You must install the PyEnchant package if you want to use Leo's Spell tab. Download and install the PyEnchant package from http://pythonhosted.org/pyenchant/download.html There is an executable installer for Windows users.
+* Download PyQt4 from http://www.riverbankcomputing.com/software/pyqt/download.
+* Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
+
+**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later.
+
+**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
+
+* Download the PyEnchant package from: http://pythonhosted.org/pyenchant/download.html.
+
+There is an executable installer for Windows users.
 </t>
 <t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another outline. This is a frequently requested feature. For example::
 
@@ -11125,19 +11133,16 @@ And put this leo.bat in %PATH%::
     
 You may omit the /b option if you want to create a separate console window for Leo.
 </t>
-<t tx="ekr.20130807203905.16602">Leo has a binary installer for Windows, available at
-http://sourceforge.net/projects/leo/files/Leo/ The binary installer
-installs Leo and sets Windows file associations. Now see `Running Leo`_ for
-how to run Leo after installing it.
-</t>
-<t tx="ekr.20130807203905.16603">You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unpack them
-into a temp folder. You may place the sources anywhere you like, including
-Python's \*site-packages* folder, for example,
-C:\\Python26\\Lib\\site-packages.
+<t tx="ekr.20130807203905.16602">.. _`SourceForge download page`: http://sourceforge.net/projects/leo/files/Leo/
+.. _`Running Leo`: running.html
 
-Next, you will find it convenient to create Windows files associations for
-.leo files, as described in the next section.
+Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
+</t>
+<t tx="ekr.20130807203905.16603">.. _`Leo's download page`: http://leoeditor.com/download.html
+
+You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python26\\Lib\\site-packages.
+
+Next, you will find it convenient to create Windows files associations for .leo files, as described in the next section.
 </t>
 <t tx="ekr.20130815102041.15618">This plugin supports printing using the Qt GUI.
 Written by Jacob M. Peck.
@@ -11978,19 +11983,9 @@ This is Leo's Users Guide. It covers additional material not covered in the
 Installing Leo
 ##############
 
-.. Links used in this document...
-
-.. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-.. _`Leo's help forum`:     http://groups.google.com/group/leo-editor
-.. _`PyEnchant`:            https://sourceforge.net/projects/pyenchant/
-.. _`PyQt`:                 http://www.riverbankcomputing.com/software/pyqt/intro
-.. _`Python`:               http://www.python.org
-.. _`Running Leo`:          running.html
-.. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
-.. _`git`:                  http://git-scm.com/
-.. _`GitHub`: https://github.com/leo-editor
-
 .. index:: Installing Leo
+
+.. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
 This chapter tells how to install and run Leo on Windows or Linux. Leo can be installed on MacOS, but the process is difficult and not recommended.
 
@@ -14658,22 +14653,28 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
         insert-file-name
         pylint
         style-reload</t>
-<t tx="ekr.20141105052052.4">Leo's minimal dependencies are:
+<t tx="ekr.20141105052052.4">.. _`Docutils`:   http://docutils.sourceforge.net
+.. _`feedparser`: https://pypi.python.org/pypi/feedparser
+.. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
+.. _`Python`:     https://www.python.org/
+.. _`PyEnchant`:  http://pythonhosted.org/pyenchant/download.html
+.. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
+.. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
+.. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
+.. _`Sphinx`:     http://sphinx.pocoo.org/
 
-* Python 2.6 or later, including all Python 3.x versions.
-* PyQt4 or PyQt5.
+Leo's minimal dependencies are:
 
-The following packages are optional:
+* `Python`_ 2.6 or later, including all Python 3.x versions.
+* `PyQt`_. You may download `PyQt4`_ or `PyQt5`_.
 
-* Docutils
-* Sphinx
-* PyEnchant: http://pythonhosted.org/pyenchant/download.html
+The following packages are optional, but recommended:
 
-The viewrendered and viewrendered2 plugins use docutils.
+* `Docutils`_: required for the rs3 command and the viewrendered plugins.
+* `Sphinx`_: required to regenerate Leo's documentation.
+* `PyEnchant`_: required for spell checking.
 
-PyEnchant is required to do spell checking.
-
-Plugins may require other packages.  For example, viewrendered requires 'markdown' if one wishes to use markdown rendering, but it is optional. rss.py will not function without 'feedparser'. Etc.
+Plugins may require other packages.  For example, viewrendered requires `Markdown`_ if one wishes to use markdown rendering, but it is optional. rss.py will not function without `feedparser`_. Etc.
 </t>
 <t tx="ekr.20141105055521.5">The livecode-show commands shows the live code evaluation pane. Hover on the buttons for helpful tool-tips.
 
