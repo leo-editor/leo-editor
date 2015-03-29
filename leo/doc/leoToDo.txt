@@ -6,97 +6,16 @@
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2
 @language rest
 @wrap
-.. @+node:ekr.20150328184843.1: *3* support pylint -h & --help
-.. @+node:ekr.20150329055227.1: *3* Add c.cloneFindAllFlattenedAtNode
-.. @+node:ekr.20150327175032.1: *3* clean up openWith: make it a class
-.. @+node:ekr.20150329112620.1: *3* Update bug #167 (problem posting)
-@language rest
-@wrap
-
-You're welcome.  It was an interesting puzzle.
-
-**Update**: at present, running unitTest.leo from the leoBridge only works when PyQt is **not** installed.
-
-**Update 2**: Disabling a single unit test allows all tests to run to completion from the bridge when PyQt **is** installed.
-
-Enabling traces for the GeneralTestCase class in leoTest.py revealed that the crash was in the test: ``@test interfaces using API classes``.  It starts with the following code, which has no chance of working in the bridge:
-
-```python
-    import leo.core.leoFrame as leoFrame
-    import leo.plugins.qt_text as qt_text
-    from leo.core.leoQt import Qsci,QtWidgets
-```
-.. @+node:ekr.20150327175112.1: *3* clean up event handling
-@language rest
-
-- Test arguments to g.registerHandler.
-    - g.app.valid_event_names.  Does it already exist?
-    
-- Remove unused events from table of events.
-.. @+node:ekr.20150328195911.1: *3* Post: Parnas & Myers
-- separation of concerns make Leo work.
-  David Parnas
-  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
-  
-  Glenford Myers
-  http://en.wikipedia.org/wiki/Glenford_Myers
-  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
-  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
-.. @+node:ekr.20150329102805.1: *3* Document all in to-be-documented mailbox
 .. @+node:ekr.20150325052301.1: *3* Fix bug 165: vim-open-file command
 @language rest
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/165
 
-The vim.py plugin offers the command 'vim-open-node' which allows editing the current node contents in Vim.
+- clean up openWith: make it a class.
+- Fold mod_tempfname into code and test.
 
-vim-open-file, if called while in a node associated with an external file, would open the file for editing.
-
-Leo would want to track cursor position, matching current line upon Vim startup, and again in Leo when Vim saves and exits.
-
-Upon returning to Leo, a 'Refresh from disk' would also be required.
-
-=== EKR
-
-Leo can use the @clean update algorithm to merge changes made in (say) vim back into the Leo outline. 
-
-=== Kent
-
-For @auto trees, Leo would do an @auto refresh.
-
-Ideally, cursor position would be maintained in both directions.
-
-Leo can indicate cursor position by adding the current cursor position to command line::
-
-    vim myfile +10
-
-opens myfile with the cursor at line 10
-
-Returning to Leo is a bit convoluted, but seems doable
-http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-
-vim is editing <extfile>, the session data will be saved in /tmp/vim_leo.bridge::
-
-    $ vim <extfile> -c "set viminfo='1,n/tmp" -i vim_leo.bridge
-    
-where:
-
-    '1   =  save 1 mark
-    n/tmp  =  in directory /tmp
-    -i vim_leo.bridge  =  name the viminfo file vim_leo.bridge
-
-in the file /tmp/vim_leo.bridge we see the following, saying the cursor was on line 114 when vim exited::
-
-    # File marks:
-    '0  114  0  /tmp/brc
-    
-    # Jumplist (newest first):
-    -'  114  0  /tmp/brc
-.. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
-Set default for @string stylesheet so it generates::
-
-    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+Later: preserve cursor positions.
 .. @+node:ekr.20150227040245.11: *3* Fix bug 143: dabbrev-expand broken
 https://github.com/leo-editor/leo-editor/issues/143
 
@@ -122,7 +41,29 @@ On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
            
             main
             m
-.. @+node:ekr.20150326092537.1: *3* Fix bug 166: Fix icon hooks in plugins, etc.
+.. @+node:ekr.20150329164756.1: *3* Later
+.. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
+- separation of concerns make Leo work.
+  David Parnas
+  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
+  
+  Glenford Myers
+  http://en.wikipedia.org/wiki/Glenford_Myers
+  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
+  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
+.. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
+.. @+node:ekr.20150327175112.1: *4* clean up event handling
+@language rest
+
+- Test arguments to g.registerHandler.
+    - g.app.valid_event_names.  Does it already exist?
+    
+- Remove unused events from table of events.
+.. @+node:ekr.20150319055953.11: *4* Improve <?xml-stylesheet>
+Set default for @string stylesheet so it generates::
+
+    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150326092537.1: *4* Fix bug 166: Fix icon hooks in plugins, etc.
 https://github.com/leo-editor/leo-editor/issues/166
 
 clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
@@ -143,7 +84,7 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 
 - leo_to_rtf.py throws a bunch of errors.
 - leo_pdf.py won't load.
-.. @+node:ekr.20150311123850.7: *3* Improve --diff
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
 .. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo (after 5.1 final)
 @language rest
