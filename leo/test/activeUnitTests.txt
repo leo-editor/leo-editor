@@ -605,7 +605,7 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20140904060337.4476: *3* @test interfaces using API classes
-if g.app.isExternalUnitTest:
+if g.in_bridge or g.app.isExternalUnitTest:
     pass # Can not be run externally.
 else:
     import leo.core.leoFrame as leoFrame
