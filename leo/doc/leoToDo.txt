@@ -6,6 +6,22 @@
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2/final
 @language rest
 @wrap
+.. @+node:ekr.20150331043000.1: *3* Fix documentation for abbreviations
+@language rest
+
+In the 'Leo as PIM' documentation, section 'Using abbreviation', 2nd paragraph: "but leoSettings.leo contains example abbreviations in the node @@data abbreviations examples" - I don't see any examples in @data abbreviations.
+
+I entered the 'time' example from abbrev-subst-env.  As tested, the result is the value unchanged "{|{import time;x=time.asctime()}|}" instead of executing and typing the time stamp.
+
+I entered the def example from the PIM doc.  As tested, it does not do the 'ask' - no popup.  I had the outline set up exactly as show in Terry's video.  
+The double comma seems to do nothing rather than take me to the next replacement.
+
+I have all the bool values set as instructed, but I am wondering if there are other settings needed for the full functionality.  
+The simple w;;=while example works fine, except for the double-comma.
+
+A nit: a double backslash in the PIM/Using abbrev, 4th paragraph: "Abbreviations can span multiple lines. Continued lines start with \\:, like this".  The same additional backslashes are in the 5th paragraph, in the field name example, and in the sentence introducing abbreviation scripts: "delimited by {\|{ and }\|}:"
+
+I'm using the latest git commit on a Windows 7 Pro machine, executing from console.
 .. @+node:ekr.20150330020649.1: *3* Enhancement 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 
@@ -76,6 +92,9 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150331041105.1: *3* Fix glitch in mod_scripting
+Some @button/command nodes don't show key binding.
+Maybe common ones do, others don't.
 .. @+node:ekr.20150329164756.1: *3* Later
 .. @+node:ekr.20150327175112.1: *4* clean up event handling
 @language rest
@@ -84,7 +103,20 @@ Set default for @string stylesheet so it generates::
 - g.app.valid_event_names.  Does it already exist?
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150330125434.1: *4* Don't loop with @button/command
+Do something intelligent wnen the @button name is the name of a command.
 .. @+node:ekr.20150330080509.1: *3* Docs
+.. @+node:ekr.20150330084832.1: *4* Recommend git
+@language rest
+
+- New page: why you should use git to get Leo.
+
+Terry re branching:
+
+The difference between the proposed "stable master" above and just pulling
+"(current) master from two weeks ago", is that "two weeks ago" says nothing
+about issues or their absence, where the consciously synced develop->master
+would be a statement "here's a recent point on trunk with no known issues".
 .. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
 .. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
 - separation of concerns make Leo work.
