@@ -7,6 +7,8 @@
 @language rest
 @wrap
 .. @+node:ekr.20150331050129.1: *3* Improve history list
+@language rest
+
 Soon: big improvements to command history!
 https://groups.google.com/d/msg/leo-editor/IHUVyGZdZqY/-tZ7sZUJNp8J
 
@@ -140,6 +142,8 @@ The difference between the proposed "stable master" above and just pulling
 about issues or their absence, where the consciously synced develop->master
 would be a statement "here's a recent point on trunk with no known issues".
 .. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
+.. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
+Put them in Leo's core or in scripts.leo.
 .. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
 - separation of concerns make Leo work.
   David Parnas
@@ -2536,6 +2540,13 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
+.. @+node:ekr.20150331053736.1: ** Waiting for answers
+- Waiting for answer re: ubuntu splashscreen
+    http://qt-project.org/forums/viewthread/30837/
+    createSplashScreen
+    
+- Waiting for answer to solarized question:
+    http://qt-project.org/forums/viewthread/30838/
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 The big picture:
 
