@@ -6,30 +6,33 @@
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2/final
 @language rest
 @wrap
-.. @+node:ekr.20150331050129.1: *3* Improve history list
-@language rest
+.. @+node:ekr.20150401061843.1: *3* Fix bug 172: repeat-command-in-history, with tab completion
+https://github.com/leo-editor/leo-editor/issues/172
 
-Soon: big improvements to command history!
-https://groups.google.com/d/msg/leo-editor/IHUVyGZdZqY/-tZ7sZUJNp8J
+``repeat-command-in-history``
+    Enters the minibuffer and prompts for a command from command history.
+    
+    This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
 
-1. @button/@command nodes will add their commands to the history list.
+There are questions about the order in which commands are entered into the history list.
+.. @+node:ekr.20150401061613.1: *3* Fix bug 171: Improve handling of @command and @button nodes
+https://github.com/leo-editor/leo-editor/issues/171
 
-A *empty* @button or @command node whose headline is an existing command should also add that command to the history list.
+There are several issues, none serious, but all should be fixed by b2/final.
 
-2. Add repeat-command-in-history.
+1. Leo must not open myLeoSettings.leo, however briefly, when executing a common script node. g.app.commonScriptDict will define common scripts. Keys to be determined; values will be the script itself, or a callback function that will execute the common script.
 
-- Show entire list in a tab in the log pane.
-- Support tab completion.
+2. <Alt-x>@<tab> is a handy way of seeing all the commands created by script nodes, including any keys bound to that command.
 
-===== Scripting history.
+    This listing should show the source of the script, that is, the .leo file in which the script is defined. Scripts can only come from two sources, the local .leo file and myLeoSettings.leo.
 
-The execute-script command could maintain a list of the headlines of executed scripts. Choosing an item from the list would execute the node's script on the *selected* node. In effect, scripting history would dynamically define @command buttons.
+3. Common script nodes should create entries in the history list of all commanders.
 
-repeat-script-in-history
-    Prompts the user for a script name and executes it on the selected node.
+    This will require new code when Leo opens each commander.
 
-repeat-ipython-script-in-history
-    Prompts the user for a script name and executes it in IPython.
+4. Empty script nodes should be allowed, provided that their headline contains the name of a command defined in Leo's core or (maybe) in a common script node.
+
+    Such nodes will add the appropriate command to the command history of the commander of the local .leo file. Empty common script nodes will add the appropriate command to the command history of all commanders, as in point 3 above.
 .. @+node:ekr.20150331043000.1: *3* Fix documentation for abbreviations
 @language rest
 
@@ -46,7 +49,7 @@ The simple w;;=while example works fine, except for the double-comma.
 A nit: a double backslash in the PIM/Using abbrev, 4th paragraph: "Abbreviations can span multiple lines. Continued lines start with \\:, like this".  The same additional backslashes are in the 5th paragraph, in the field name example, and in the sentence introducing abbreviation scripts: "delimited by {\|{ and }\|}:"
 
 I'm using the latest git commit on a Windows 7 Pro machine, executing from console.
-.. @+node:ekr.20150330020649.1: *3* Enhancement 170: detect changes in external files
+.. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 
 Add an @settings switch that causes Leo to track externally files for changes since the last leo-initiated save.
@@ -120,6 +123,8 @@ Set default for @string stylesheet so it generates::
 Some @button/command nodes don't show key binding.
 Maybe common ones do, others don't.
 .. @+node:ekr.20150329164756.1: *3* Later
+.. @+node:ekr.20150401062437.1: *4* Fix bug 173: script history and related commands
+https://github.com/leo-editor/leo-editor/issues/173
 .. @+node:ekr.20150327175112.1: *4* clean up event handling
 @language rest
 
