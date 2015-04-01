@@ -1205,7 +1205,7 @@
 </v>
 </v>
 <v t="ekr.20050903074833"></v>
-<v t="ekr.20070317033759.1"></v>
+<v t="ekr.20131008041326.16222"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12445,13 +12445,17 @@ The rst3 command adds the body text of this node to the previous section:
 
 Leo optionally expands abbreviations as you type. Abbreviations typically end with something like ``;;`` so they won't trigger by accident.
 
-You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but leoSettings.leo contains example abbreviations in the node ``@@data abbreviations examples``
+To use abbreviations, you must enable them in myLeoSettings.leo::
+
+    @bool enable-abbreviations = True
+
+You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but ``leo/config/examplesSettings.leo`` contains example abbreviations in the node ``@data abbreviations examples``
 
 Abbreviations can simply be shortcuts::
 
     ncn;;=@nocolor
     
-Abbreviations can span multiple lines. Continued lines start with ``\\:``, like this::
+Abbreviations can span multiple lines. Continued lines start with ``\:``, like this::
 
     form;;=&lt;form action="main_submit" method="get" accept-charset="utf-8"&gt;
     \:&lt;p&gt;&lt;input type="submit" value="Continue &amp;rarr;"&gt;&lt;/p&gt;
@@ -12470,7 +12474,11 @@ Abbreviations can execute **abbreviation scripts**, delimited by ``{\|{ and }\|}
     date;;={|{import time ; x=time.asctime()}|}
     ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
     
-For example, typing ``ts;;`` gives::
+To use abbreviations scripts, enable them in myLeoSettings.leo as follows::
+
+    @bool scripting-abbreviations = True
+
+With abbreviation scripts enabled, typing ``ts;;`` gives::
 
     20131009171117
     

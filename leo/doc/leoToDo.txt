@@ -33,22 +33,6 @@ There are several issues, none serious, but all should be fixed by b2/final.
 4. Empty script nodes should be allowed, provided that their headline contains the name of a command defined in Leo's core or (maybe) in a common script node.
 
     Such nodes will add the appropriate command to the command history of the commander of the local .leo file. Empty common script nodes will add the appropriate command to the command history of all commanders, as in point 3 above.
-.. @+node:ekr.20150331043000.1: *3* Fix documentation for abbreviations
-@language rest
-
-In the 'Leo as PIM' documentation, section 'Using abbreviation', 2nd paragraph: "but leoSettings.leo contains example abbreviations in the node @@data abbreviations examples" - I don't see any examples in @data abbreviations.
-
-I entered the 'time' example from abbrev-subst-env.  As tested, the result is the value unchanged "{|{import time;x=time.asctime()}|}" instead of executing and typing the time stamp.
-
-I entered the def example from the PIM doc.  As tested, it does not do the 'ask' - no popup.  I had the outline set up exactly as show in Terry's video.  
-The double comma seems to do nothing rather than take me to the next replacement.
-
-I have all the bool values set as instructed, but I am wondering if there are other settings needed for the full functionality.  
-The simple w;;=while example works fine, except for the double-comma.
-
-A nit: a double backslash in the PIM/Using abbrev, 4th paragraph: "Abbreviations can span multiple lines. Continued lines start with \\:, like this".  The same additional backslashes are in the 5th paragraph, in the field name example, and in the sentence introducing abbreviation scripts: "delimited by {\|{ and }\|}:"
-
-I'm using the latest git commit on a Windows 7 Pro machine, executing from console.
 .. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 
