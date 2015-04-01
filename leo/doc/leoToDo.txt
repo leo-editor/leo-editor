@@ -9,24 +9,25 @@
 .. @+node:ekr.20150401061843.1: *3* Fix bug 172: repeat-command-in-history, with tab completion
 https://github.com/leo-editor/leo-editor/issues/172
 
+- [ ] Add repeat-command-in-history.
+- [ ] Improve the order in which commands in the history.
+
 ``repeat-command-in-history``
     Enters the minibuffer and prompts for a command from command history.
     
     This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
-
-There are questions about the order in which commands are entered into the history list.
 .. @+node:ekr.20150401061613.1: *3* Fix bug 171: Improve handling of @command and @button nodes
-https://github.com/leo-editor/leo-editor/issues/171
+@language rest
+@wrap
 
-Checklist for this bug:
+https://github.com/leo-editor/leo-editor/issues/171
 
 - [ ] Store common scripts in ``g.app.commonScriptDict``.
 - [ ] Never open myLeoSettings.leo to find a common script.
 - [ ] ``<Alt-x>@<tab>`` shows source file of common scripts.
 - [ ] Common scripts create entries in command history.
 - [ ] Empty script nodes put their headline command in command history.
-- [ ] **New**: Make sure all ``@button`` & ``@commands`` nodes show ``@key`` bindings.
-
+- [ ] Make sure all ``@button`` & ``@commands`` nodes show ``@key`` bindings.
 .. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 
