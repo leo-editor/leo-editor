@@ -254,7 +254,7 @@ class AtButtonCallback(object):
     '''
 
     #@+others
-    #@+node:ekr.20141031053508.9: *3* __init__
+    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self,controller,b,c,buttonText,docstring,gnx):
         '''
         Ctor for AtButtonCallback class.
@@ -271,7 +271,7 @@ class AtButtonCallback(object):
         self.__doc__ = docstring
         self.__name__ = 'AtButtonCallback: %s' % (p and p.h or '<no p>')
         # g.trace('(AtButtonCallback)',gnx,'__name__',self.__name__,'__doc__',len(self.__doc__))
-    #@+node:ekr.20141031053508.10: *3* __call__
+    #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event=None):
         '''Execute the script associated with this button.'''
         # g.trace('AtButtonCallback',self.gnx)
@@ -299,7 +299,7 @@ class AtButtonCallback(object):
                 self.c.outerUpdate()
         else:
             g.trace('can not find script for gnx:',gnx)
-    #@+node:ekr.20141031053508.13: *3* __repr__
+    #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
     def __repr__(self):
         '''__repr__ for AtButtonCallback class.'''
         c,p,script = self.controller.find_gnx(self.gnx)
@@ -307,7 +307,7 @@ class AtButtonCallback(object):
             return 'AtButtonCallback %s %s' % (c.shortFileName(),p.h)
         else:
             return 'AtButtonCallback %s %s' % (self.c.shortFileName(),self.gnx)
-    #@+node:ekr.20141031053508.12: *3* docstring
+    #@+node:ekr.20141031053508.12: *3* docstring (AtButtonCallback)
     if 0:
         # No longer used. The ctor sets __doc__.
         
@@ -367,7 +367,7 @@ class ScriptingController:
         self.seen = set()
             # Fix bug 74: problems with @button if defined in myLeoSettings.leo
             # Set of gnx's (not vnodes!) that created buttons or commands.
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons & helpers
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
     def createAllButtons (self):
         '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
         c = self.c
@@ -406,7 +406,7 @@ class ScriptingController:
                         func(p)
                         break
                 p.moveToThreadNext()
-    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons & helper
+    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons (self):
         '''Handle all global @button nodes.'''
         trace = False and not g.app.unitTesting and not g.app.batchMode
@@ -504,7 +504,7 @@ class ScriptingController:
                     # Bug fix: 2015/03/28.
                 self.registerAllCommands(p.h,func=commonCommandCallback,
                     pane='all',tag='global @command')
-    #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script' & callback
+    #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script'
     def createDebugIconButton (self):
         '''Create the 'debug-script' button and the debug-script command.'''
         self.createIconButton(
@@ -570,7 +570,7 @@ class ScriptingController:
             else:
                 g.error('No debugger active')
         c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.20: *4* sc.createRunScriptIconButton 'run-script' & callback
+    #@+node:ekr.20060328125248.20: *4* sc.createRunScriptIconButton 'run-script'
     def createRunScriptIconButton (self):
         '''Create the 'run-script' button and the run-script command.'''
         self.createIconButton(
@@ -607,7 +607,7 @@ class ScriptingController:
             statusLine = statusLine + " @key=" + shortcut
         b = self.createAtButtonHelper(p,h,statusLine,kind='script-button',verbose=True)
         c.bodyWantsFocus()
-    #@+node:ekr.20130912061655.11294: *4* sc.find_gnx & helper
+    #@+node:ekr.20130912061655.11294: *4* sc.find_gnx & helper (to be deleted)
     def find_gnx(self,gnx,findFlag=False,openFlag=False):
         '''
         Find the node with the given gnx in all open commanders.
@@ -770,6 +770,463 @@ class ScriptingController:
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.24: *3* sc.createAtButtonHelper
+    def createAtButtonHelper (self,p,h,statusLine,kind='at-button',verbose=True):
+
+        '''Create a button from an @button node.
+
+        - Calls createIconButton to do all standard button creation tasks.
+        - Binds button presses to a callback that executes the script in the node
+          whose gnx is p.gnx.
+        '''
+        c = self.c
+        buttonText = self.cleanButtonText(h,minimal=True)
+        # We must define the callback *after* defining b,
+        # so set both command and shortcut to None here.
+        bg = self.getColor(h)
+        b = self.createIconButton(text=h,command=None,statusLine=statusLine,kind=kind,bg=bg)
+        if not b:
+            return None
+        # Now that b is defined we can define the callback.
+        # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
+        docstring = g.getDocString(p.b)
+        cb = AtButtonCallback(controller=self,b=b,c=c,
+            buttonText=buttonText,docstring=docstring,gnx=p.gnx)
+        self.iconBar.setCommandForButton(b,cb)
+        # At last we can define the command and use the shortcut.
+        self.registerAllCommands(h,func=cb,pane='button',tag='local @button')
+        return b
+    #@+node:ekr.20080312071248.1: *3* sc.createCommonButtons
+    def createCommonButtons (self):
+        '''Handle all global @button nodes.'''
+        trace = False and not g.app.unitTesting and not g.app.batchMode
+        c = self.c
+        if trace: g.trace(c.shortFileName())
+        buttons = c.config.getButtons() or []
+        for z in buttons:
+            p,script = z
+            gnx = p.v.gnx
+            if gnx not in self.seen:
+                self.seen.add(gnx)
+                if trace: g.trace('global @button',p.h)
+                self.handleAtButtonSetting(p,script,rclicks=getattr(p,'rclicks'))
+    #@+node:ekr.20070926084600: *4* sc.handleAtButtonSetting & helper
+    def handleAtButtonSetting (self,p,script,rclicks=None):
+        '''
+        Create a button in the icon area for a common @button node in an
+        @setting tree.
+
+        An optional @key=shortcut defines a shortcut that is bound to the
+        button's script. The @key=shortcut does not appear in the button's
+        name, but it *does* appear in the status line shown when the mouse
+        moves over the button.
+        '''
+        shortcut = self.getShortcut(p.h)
+        statusLine = 'Global script button'
+        if shortcut:
+            statusLine = '%s = %s' % (statusLine,shortcut)
+        b = self.createAtButtonFromSettingHelper(p,script,statusLine,rclicks=rclicks)
+    #@+node:ekr.20070926085149: *5* sc.createAtButtonFromSettingHelper & callback
+    def createAtButtonFromSettingHelper (self,p,script,statusLine,rclicks=None,kind='at-button'):
+        '''
+        Create a button from an @button node.
+
+        - Calls createIconButton to do all standard button creation tasks.
+        - Binds button presses to a callback that executes the script.
+        '''
+        c = self.c
+        # We must define the callback *after* defining b,
+        # so set both command and shortcut to None here.
+        b = self.createIconButton(text=p.h,
+            command=None,statusLine=statusLine,kind=kind)
+        if not b: return None
+        # Now that b is defined we can define the callback.
+        # Yes, the callback *does* use b (to delete b if requested by the script).
+        args = self.getArgs(p)
+        buttonText = self.cleanButtonText(p.h)
+        # Fix bug #74: problems with @button if defined in myLeoSettings.leo
+        docstring = g.getDocString(p.b)
+        if not docstring.strip():
+            g.trace('no docstring for global',p.h)
+        cb = AtButtonCallback(controller=self,b=b,c=c,
+            buttonText=buttonText,docstring=docstring,gnx=p.gnx)
+        self.iconBar.setCommandForButton(b,cb)
+        if rclicks:
+            self.iconBar.add_rclick_menu(b.button,rclicks,self,from_settings=True)
+        # At last we can define the command.
+        self.registerAllCommands(p.h,func=cb,pane='button',tag='@button')
+        return b
+    #@+node:ekr.20070926085149.1: *6* sc.executeScriptFromSettingButton
+    def executeScriptFromSettingButton (self,args,b,script,buttonText):
+
+        '''Called from callbacks to execute the script in node p.'''
+
+        c = self.c
+
+        if c.disableCommandsMessage:
+            g.blue(c.disableCommandsMessage)
+        else:
+            g.app.scriptDict = {}
+            c.executeScript(args=args,script=script,silent=True)
+            # Remove the button if the script asks to be removed.
+            if g.app.scriptDict.get('removeMe'):
+                g.es("Removing '%s' button at its request" % buttonText)
+                self.deleteButton(b)
+
+        if 0: # Do *not* set focus here: the script may have changed the focus.
+            c.bodyWantsFocus()
+    #@+node:ekr.20080312071248.2: *3* sc.createCommonCommands
+    def createCommonCommands (self):
+        '''Handle all global @command nodes.'''
+        c = self.c
+        # trace = True and not g.app.unitTesting # and not g.app.batchMode
+        aList = c.config.getCommands() or []
+        for z in aList:
+            # pylint: disable=cell-var-from-loop
+            p,script = z
+            gnx = p.v.gnx
+            if gnx not in self.seen:
+                self.seen.add(gnx)
+                args = self.getArgs(p)
+                def commonCommandCallback (event=None,script=script):
+                    c.executeScript(args=args,script=script,silent=True)
+                commonCommandCallback.__doc__ = g.getDocString(script)
+                    # Bug fix: 2015/03/28.
+                self.registerAllCommands(p.h,func=commonCommandCallback,
+                    pane='all',tag='global @command')
+    #@+node:ekr.20060522105937: *3* sc.createDebugIconButton 'debug-script'
+    def createDebugIconButton (self):
+        '''Create the 'debug-script' button and the debug-script command.'''
+        self.createIconButton(
+            text='debug-script',
+            command=self.runDebugScriptCommand,
+            statusLine='Debug script in selected node',
+            kind='debug-script')
+    #@+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
+    def runDebugScriptCommand (self,event=None):
+        '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
+        c = self.c ; p = c.p
+        script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+        if script:
+            #@+<< set debugging if debugger is active >>
+            #@+node:ekr.20060523084441: *5* << set debugging if debugger is active >>
+            g.trace(self.debuggerKind)
+
+            if self.debuggerKind == 'winpdb':
+                try:
+                    import rpdb2
+                    debugging = rpdb2.g_debugger is not None
+                except ImportError:
+                    debugging = False
+            elif self.debuggerKind == 'idle':
+                # import idlelib.Debugger.py as Debugger
+                # debugging = Debugger.interacting
+                debugging = True
+            else:
+                debugging = False
+            #@-<< set debugging if debugger is active >>
+            if debugging:
+                #@+<< create leoScriptModule >>
+                #@+node:ekr.20060524073716: *5* << create leoScriptModule >> (mod_scripting.py)
+                target = g.os_path_join(g.app.loadDir,'leoScriptModule.py')
+                f = None
+                try:
+                    f = file(target,'w')
+                    f.write('# A module holding the script to be debugged.\n')
+                    if self.debuggerKind == 'idle':
+                        # This works, but uses the lame pdb debugger.
+                        f.write('import pdb\n')
+                        f.write('pdb.set_trace() # Hard breakpoint.\n')
+                    elif self.debuggerKind == 'winpdb':
+                        f.write('import rpdb2\n')
+                        f.write('if rpdb2.g_debugger is not None: # don\'t hang if the debugger isn\'t running.\n')
+                        f.write('  rpdb2.start_embedded_debugger(pwd="",fAllowUnencrypted=True) # Hard breakpoint.\n')
+                    # f.write('# Remove all previous variables.\n')
+                    f.write('# Predefine c, g and p.\n')
+                    f.write('import leo.core.leoGlobals as g\n')
+                    f.write('c = g.app.scriptDict.get("c")\n')
+                    f.write('p = c.p\n')
+                    f.write('# Actual script starts here.\n')
+                    f.write(script + '\n')
+                finally:
+                    if f: f.close()
+                #@-<< create leoScriptModule >>
+                # pylint: disable=E0611
+                # E0611:runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+                g.app.scriptDict ['c'] = c
+                if 'leoScriptModule' in sys.modules.keys():
+                    del sys.modules ['leoScriptModule'] # Essential.
+                import leo.core.leoScriptModule as leoScriptModule      
+            else:
+                g.error('No debugger active')
+        c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.20: *3* sc.createRunScriptIconButton 'run-script'
+    def createRunScriptIconButton (self):
+        '''Create the 'run-script' button and the run-script command.'''
+        self.createIconButton(
+            text='run-script',
+            command = self.runScriptCommand,
+            statusLine='Run script in selected node',
+            kind='run-script',
+        )
+    #@+node:ekr.20060328125248.21: *4* sc.runScriptCommand
+    def runScriptCommand (self,event=None):
+        '''Called when user presses the 'run-script' button or executes the run-script command.'''
+        c,p = self.c,self.c.p
+        args = self.getArgs(p)
+        c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
+        if 0:
+            # Do not assume the script will want to remain in this commander.
+            c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.22: *3* sc.createScriptButtonIconButton 'script-button' & callback
+    def createScriptButtonIconButton (self):
+        '''Create the 'script-button' button and the script-button command.'''
+        self.createIconButton(
+            text='script-button',
+            command = self.addScriptButtonCommand,
+            statusLine='Make script button from selected node',
+            kind="script-button-button")
+    #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
+    def addScriptButtonCommand (self,event=None):
+        '''Called when the user presses the 'script-button' button or executes the script-button command.'''
+        c = self.c ; p = c.p; h = p.h
+        buttonText = self.getButtonText(h)
+        shortcut = self.getShortcut(h)
+        statusLine = "Run Script: %s" % buttonText
+        if shortcut:
+            statusLine = statusLine + " @key=" + shortcut
+        b = self.createAtButtonHelper(p,h,statusLine,kind='script-button',verbose=True)
+        c.bodyWantsFocus()
+    #@+node:ekr.20130912061655.11294: *3* sc.find_gnx & helper (to be deleted)
+    def find_gnx(self,gnx,findFlag=False,openFlag=False):
+        '''
+        Find the node with the given gnx in all open commanders.
+        If openFlag is True, open settings files as needed to find the gnx.
+        '''
+        trace = False and not g.unitTesting
+        c = self.c
+        # Look at the open commanders only if we aren't looking in unopened settings files.
+        if not findFlag:
+            # First, look in selected commander.
+            for p in c.all_positions():
+                if p.gnx == gnx:
+                    if trace: g.trace('found',p.h,'in',c.shortFileName())
+                    return c,p,p.b
+            # Next look in all other open commanders.
+            for c2 in g.app.commanders():
+                if c2 != c:
+                    for p in c2.all_positions():
+                        if p.gnx == gnx:
+                            if trace: g.trace('found',p.h,'in',c2.shortFileName())
+                            return c2,p,p.b
+        # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
+        c0 = g.app.log and g.app.log.c if g.app.qt_use_tabs else None
+        c2,p2,script = None,None,None
+        if findFlag or openFlag:
+            for f in (c.openMyLeoSettings,c.openLeoSettings):
+                c2 = f() # Open the settings file.
+                if c2:
+                    p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
+                    if p2 or script:
+                        break
+        # Fix bug 92: restore the previously selected tab.
+        if c0:
+            c0.frame.top.leo_master.select(c0)
+                # c0.frame.top.leo_master is a LeoTabbedTopLevel.
+        if trace: g.trace('gnx',gnx,'findFlag',findFlag,'openFlag',openFlag,
+            'len(script)',script and len(script) or 0,
+            c2 and c2.shortFileName(),p2 and p2.h)
+        return c2,p2,script
+    #@+node:ekr.20141101052758.8: *4* sc.find_gnx_helper
+    def find_gnx_helper(self,c,gnx,openFlag,trace):
+        '''
+        c is the commander of a just-opened settings file.
+        Perform the search, and close the file unless openFlag is True.
+        '''
+        for p in c.all_positions():
+            if p.gnx == gnx:
+                if trace: g.trace('found',p.h,'in',c.shortFileName())
+                if openFlag:
+                    script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                    return p,script
+                else:
+                    script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                    c.close()
+                    return None,script
+        # Not found: always close the commander.
+        c.close()
+        return None,None
+    #@+node:ekr.20060328125248.12: *3* sc.handleAtButtonNode @button
+    def handleAtButtonNode (self,p):
+        '''
+        Create a button in the icon area for an @button node.
+
+        An optional @key=shortcut defines a shortcut that is bound to the button's script.
+        The @key=shortcut does not appear in the button's name, but
+        it *does* appear in the statutus line shown when the mouse moves over the button.
+        
+        An optional @color=colorname defines a color for the button's background.  It does
+        not appear in the status line nor the button name.
+        '''
+
+        trace = False and not g.app.unitTesting and not g.app.batchMode
+        c = self.c ; h = p.h
+        shortcut = self.getShortcut(h)
+        docstring = g.getDocString(p.b)
+        statusLine = docstring if docstring else 'Local script button'
+        if shortcut:
+            statusLine = '%s = %s' % (statusLine,shortcut)
+            
+        g.app.config.atLocalButtonsList.append(p.copy())
+        # g.trace(c.config,p.h)
+
+        # This helper is also called by the script-button callback.
+        if trace: g.trace('local @button',h)
+        b = self.createAtButtonHelper(p,h,statusLine,verbose=False)
+    #@+node:ekr.20060328125248.10: *3* sc.handleAtCommandNode @command
+    def handleAtCommandNode (self,p):
+        '''Handle @command name [@key[=]shortcut].'''
+        c = self.c
+        if not p.h.strip(): return
+        args = self.getArgs(p)
+
+        def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
+            c.executeScript(args=args,p=p,silent=True)
+            
+        # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+        # Minibuffer commands created by mod_scripting.py have no docstrings
+        atCommandCallback.__doc__ = g.getDocString(p.b)
+
+        self.registerAllCommands(p.h,func=atCommandCallback,
+            pane='all',tag='local @command')
+        g.app.config.atLocalCommandsList.append(p.copy())
+    #@+node:ekr.20060328125248.13: *3* sc.handleAtPluginNode @plugin
+    def handleAtPluginNode (self,p):
+
+        '''Handle @plugin nodes.'''
+
+        c = self.c
+        tag = "@plugin"
+        h = p.h
+        assert(g.match(h,0,tag))
+
+        # Get the name of the module.
+        theFile = h[len(tag):].strip()
+        
+        # The following two lines break g.loadOnePlugin
+        #if theFile[-3:] == ".py":
+        #    theFile = theFile[:-3]
+        
+        # in fact, I believe the opposite behavior is intended: add .py if it doesn't exist
+        if theFile[-3:] != ".py":
+            theFile = theFile + ".py"
+        
+        theFile = g.toUnicode(theFile)
+
+        if not self.atPluginNodes:
+            g.warning("disabled @plugin: %s" % (theFile))
+        # elif theFile in g.app.loadedPlugins:
+        elif g.pluginIsLoaded(theFile):
+            g.warning("plugin already loaded: %s" % (theFile))
+        else:
+            theModule = g.loadOnePlugin(theFile)
+
+    #@+node:peckj.20131113130420.6851: *3* sc.handleAtRclickNode @rclick
+    def handleAtRclickNode (self,p):
+        '''Handle @rclick name [@key[=]shortcut].'''
+        c = self.c
+        if not p.h.strip(): return
+        args = self.getArgs(p)
+
+        def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
+            c.executeScript(args=args,p=p,silent=True)
+            
+        self.registerAllCommands(p.h,func=atCommandCallback,
+            pane='all',tag='local @rclick')
+        g.app.config.atLocalCommandsList.append(p.copy())
+    #@+node:ekr.20060328125248.14: *3* sc.handleAtScriptNode @script
+    def handleAtScriptNode (self,p):
+        '''Handle @script nodes.'''
+        c = self.c
+        tag = "@script"
+        assert(g.match(p.h,0,tag))
+        name = p.h[len(tag):].strip()
+        args = self.getArgs(p)
+        if self.atScriptNodes:
+            g.blue("executing script %s" % (name))
+            c.executeScript(args=args,p=p,useSelectedText=False,silent=True)
+        else:
+            g.warning("disabled @script: %s" % (name))
+        if 0:
+            # Do not assume the script will want to remain in this commander.
+            c.bodyWantsFocus()
+    #@+node:ekr.20060522105937.1: *3* sc.runDebugScriptCommand
+    def runDebugScriptCommand (self,event=None):
+        '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
+        c = self.c ; p = c.p
+        script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+        if script:
+            #@+<< set debugging if debugger is active >>
+            #@+node:ekr.20060523084441: *4* << set debugging if debugger is active >>
+            g.trace(self.debuggerKind)
+
+            if self.debuggerKind == 'winpdb':
+                try:
+                    import rpdb2
+                    debugging = rpdb2.g_debugger is not None
+                except ImportError:
+                    debugging = False
+            elif self.debuggerKind == 'idle':
+                # import idlelib.Debugger.py as Debugger
+                # debugging = Debugger.interacting
+                debugging = True
+            else:
+                debugging = False
+            #@-<< set debugging if debugger is active >>
+            if debugging:
+                #@+<< create leoScriptModule >>
+                #@+node:ekr.20060524073716: *4* << create leoScriptModule >> (mod_scripting.py)
+                target = g.os_path_join(g.app.loadDir,'leoScriptModule.py')
+                f = None
+                try:
+                    f = file(target,'w')
+                    f.write('# A module holding the script to be debugged.\n')
+                    if self.debuggerKind == 'idle':
+                        # This works, but uses the lame pdb debugger.
+                        f.write('import pdb\n')
+                        f.write('pdb.set_trace() # Hard breakpoint.\n')
+                    elif self.debuggerKind == 'winpdb':
+                        f.write('import rpdb2\n')
+                        f.write('if rpdb2.g_debugger is not None: # don\'t hang if the debugger isn\'t running.\n')
+                        f.write('  rpdb2.start_embedded_debugger(pwd="",fAllowUnencrypted=True) # Hard breakpoint.\n')
+                    # f.write('# Remove all previous variables.\n')
+                    f.write('# Predefine c, g and p.\n')
+                    f.write('import leo.core.leoGlobals as g\n')
+                    f.write('c = g.app.scriptDict.get("c")\n')
+                    f.write('p = c.p\n')
+                    f.write('# Actual script starts here.\n')
+                    f.write(script + '\n')
+                finally:
+                    if f: f.close()
+                #@-<< create leoScriptModule >>
+                # pylint: disable=E0611
+                # E0611:runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+                g.app.scriptDict ['c'] = c
+                if 'leoScriptModule' in sys.modules.keys():
+                    del sys.modules ['leoScriptModule'] # Essential.
+                import leo.core.leoScriptModule as leoScriptModule      
+            else:
+                g.error('No debugger active')
+        c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.21: *3* sc.runScriptCommand
+    def runScriptCommand (self,event=None):
+        '''Called when user presses the 'run-script' button or executes the run-script command.'''
+        c,p = self.c,self.c.p
+        args = self.getArgs(p)
+        c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
+        if 0:
+            # Do not assume the script will want to remain in this commander.
+            c.bodyWantsFocus()
     #@+node:ekr.20061014075212: *3* sc.Utils
     #@+node:ekr.20060929135558: *4* sc.cleanButtonText
     def cleanButtonText (self,s,minimal=False):
@@ -805,32 +1262,6 @@ class ScriptingController:
         while s.endswith('-'):
             s = s[:-1]
         return s.lower()
-    #@+node:ekr.20060328125248.24: *4* sc.createAtButtonHelper & callback
-    def createAtButtonHelper (self,p,h,statusLine,kind='at-button',verbose=True):
-
-        '''Create a button from an @button node.
-
-        - Calls createIconButton to do all standard button creation tasks.
-        - Binds button presses to a callback that executes the script in the node
-          whose gnx is p.gnx.
-        '''
-        c = self.c
-        buttonText = self.cleanButtonText(h,minimal=True)
-        # We must define the callback *after* defining b,
-        # so set both command and shortcut to None here.
-        bg = self.getColor(h)
-        b = self.createIconButton(text=h,command=None,statusLine=statusLine,kind=kind,bg=bg)
-        if not b:
-            return None
-        # Now that b is defined we can define the callback.
-        # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        docstring = g.getDocString(p.b)
-        cb = AtButtonCallback(controller=self,b=b,c=c,
-            buttonText=buttonText,docstring=docstring,gnx=p.gnx)
-        self.iconBar.setCommandForButton(b,cb)
-        # At last we can define the command and use the shortcut.
-        self.registerAllCommands(h,func=cb,pane='button',tag='local @button')
-        return b
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon (self,w,label):
 
@@ -904,6 +1335,29 @@ class ScriptingController:
             del self.buttonsDict[w]
             self.iconBar.deleteButton(w)
             self.c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.28: *4* sc.executeScriptFromButton
+    def executeScriptFromButton (self,b,buttonText,p,script):
+        '''
+        Called in various contexts to execute an @button script.
+        1. If p is given, use the script in p.b.
+        2. If script is given, use that.
+        3. Finally, search for the node whose gnx is given.
+        qt_frame.py call this method, so it must be a method of this class.
+        '''
+        c = self.c
+        if c.disableCommandsMessage:
+            g.blue(c.disableCommandsMessage)
+            return None
+        g.app.scriptDict = {}
+        args = self.getArgs(p)
+        # Note: use c.p, not p!
+        c.executeScript(args=args,p=p,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+        # Do *not* set focus here: the script may have changed the focus.
+            # c.bodyWantsFocus()
     #@+node:ekr.20080813064908.4: *4* sc.getArgs
     def getArgs (self,p):
         '''Return the list of @args field of p.h.'''
@@ -1020,29 +1474,24 @@ class ScriptingController:
                 if trace: g.trace('second',command)
                 k.registerCommand(command,func=cb,
                     pane=pane,shortcut=None,verbose=trace)
-    #@+node:ekr.20060328125248.28: *4* sc.executeScriptFromButton
-    def executeScriptFromButton (self,b,buttonText,p,script):
-        '''
-        Called in various contexts to execute an @button script.
-        1. If p is given, use the script in p.b.
-        2. If script is given, use that.
-        3. Finally, search for the node whose gnx is given.
-        qt_frame.py call this method, so it must be a method of this class.
-        '''
-        c = self.c
-        if c.disableCommandsMessage:
-            g.blue(c.disableCommandsMessage)
-            return None
-        g.app.scriptDict = {}
-        args = self.getArgs(p)
-        # Note: use c.p, not p!
-        c.executeScript(args=args,p=p,script=script,silent=True)
-        # Remove the button if the script asks to be removed.
-        if g.app.scriptDict.get('removeMe'):
-            g.es("Removing '%s' button at its request" % buttonText)
-            self.deleteButton(b)
-        # Do *not* set focus here: the script may have changed the focus.
-            # c.bodyWantsFocus()
+    #@+node:ekr.20061015125212: *4* sc.truncateButtonText
+    def truncateButtonText (self,s):
+        
+        # 2011/10/16: Remove @button here only.
+        i = 0
+        while g.match(s,i,'@'):
+            i += 1
+        if g.match_word(s,i,'button'):
+            i += 6
+        s = s[i:]
+
+        if self.maxButtonSize > 10:
+            s = s[:self.maxButtonSize]
+            if s.endswith('-'):
+                s = s[:-1]
+            
+        s = s.strip('-')
+        return s.strip()
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText
     def truncateButtonText (self,s):
         
