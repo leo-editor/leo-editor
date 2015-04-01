@@ -369,13 +369,10 @@ class ScriptingController:
             # Set of gnx's (not vnodes!) that created buttons or commands.
     #@+node:ekr.20060328125248.8: *3* sc.createAllButtons & helpers
     def createAllButtons (self):
-
-        '''Scans the outline looking for @button, @rclick, @command, @plugin and @script nodes.'''
-        
-        def match(p,s):
-            return g.match_word(p.h,0,s)
+        '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
         c = self.c
-        if self.scanned: return # Not really needed, but can't hurt.
+        if self.scanned:
+            return # Defensive.
         self.scanned = True
         # First, create standard buttons.
         if self.createRunScriptButton:
@@ -388,37 +385,26 @@ class ScriptingController:
         self.createCommonButtons()
         self.createCommonCommands()
         # Last, scan for user-defined nodes.
+        table = (
+            ('@button',  self.handleAtButtonNode),
+            ('@command', self.handleAtCommandNode),
+            ('@plugin',  self.handleAtPluginNode),
+            ('@rclick',  self.handleAtRclickNode), # Jake Peck.
+            ('@script',  self.handleAtScriptNode),
+        ) 
         p = c.rootPosition()
         while p:
             gnx = p.v.gnx
-            # Honor @ignore here.
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
                 p.moveToThreadNext()
             else:
-                if self.atButtonNodes and match(p,'@button'):
-                    if gnx not in self.seen:
-                        self.seen.add(gnx)
-                        self.handleAtButtonNode(p)
-                # 2013/11/13 Jake Peck:
-                # @rclick nodes create minibuffer commands.
-                elif self.atRclickNodes and match(p,'@rclick'):
-                    if gnx not in self.seen:
-                        self.seen.add(gnx)
-                        self.handleAtRclickNode(p)
-                elif self.atCommandsNodes and match(p,'@command'):
-                    if gnx not in self.seen:
-                        self.seen.add(gnx)
-                        self.handleAtCommandNode(p)
-                elif self.atPluginNodes and match(p,'@plugin'):
-                    if gnx not in self.seen:
-                        self.seen.add(gnx)
-                        self.handleAtPluginNode(p)
-                elif self.atScriptNodes and match(p,'@script'):
-                    if gnx not in self.seen:
-                        self.seen.add(gnx)
-                        self.handleAtScriptNode(p)
+                self.seen.add(gnx)
+                for kind,func in table:
+                    if g.match_word(p.h,0,kind):
+                        func(p)
+                        break
                 p.moveToThreadNext()
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons & helper
     def createCommonButtons (self):
