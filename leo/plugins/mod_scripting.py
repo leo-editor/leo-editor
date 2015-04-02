@@ -462,16 +462,20 @@ class ScriptingController:
                         func(p)
                         break
                 p.moveToThreadNext()
+        c.k.sortCommandHistory()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper (self,p,h,statusLine,kind='at-button',verbose=True):
         '''Create a button for a local @button node.'''
         c = self.c
         buttonText = self.cleanButtonText(h,minimal=True)
+        args = self.getArgs(p)
 
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
         bg = self.getColor(h)
-        b = self.createIconButton(text=h,
+        b = self.createIconButton(
+            args=args,
+            text=h,
             command=None,
             statusLine=statusLine,
             kind=kind,
@@ -505,14 +509,16 @@ class ScriptingController:
 
         # At last we can define the command and use the shortcut.
         # registerAllCommands recomputes the shortcut.
-        self.registerAllCommands(h,
+        self.registerAllCommands(
+            args=self.getArgs(p),
             func=cb,
+            h=h,
             pane='button',
             source_c=p.v.context,
             tag='local @button')
         return b
     #@+node:ekr.20060328125248.17: *3* sc.createIconButton (creates all buttons)
-    def createIconButton (self,text,command,statusLine,bg=None,kind=None):
+    def createIconButton (self,args,text,command,statusLine,bg=None,kind=None):
         '''
         Create one icon button.
         This method creates all scripting icon buttons.
@@ -540,8 +546,10 @@ class ScriptingController:
         if statusLine:
             self.createBalloon(b,statusLine)
         if command:
-            self.registerAllCommands(text,
+            self.registerAllCommands(
+                args=args,
                 func=command,
+                h=text,
                 pane='button',
                 source_c=c,
                 tag='icon button')
@@ -622,11 +630,10 @@ class ScriptingController:
         c = self.c
         # g.trace('global @button',c.shortFileName(),p.h)
         gnx = p.gnx
+        args = self.getArgs(p)
 
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
         docstring = g.getDocString(p.b)
-        if not docstring:
-            g.trace('no docstring for global @button',p.h)
         statusLine = docstring or 'Global script button'
         shortcut = self.getShortcut(p.h)
             # Get the shortcut from the @key field in the headline.
@@ -635,7 +642,9 @@ class ScriptingController:
 
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
-        b = self.createIconButton(text=p.h,
+        b = self.createIconButton(
+            args=args,
+            text=p.h,
             command=None,
             statusLine=statusLine,
             kind='at-button',
@@ -645,7 +654,7 @@ class ScriptingController:
 
         # Now that b is defined we can define the callback.
         # Yes, the callback *does* use b (to delete b if requested by the script).
-        args = self.getArgs(p)
+        
         buttonText = self.cleanButtonText(p.h)
             
         cb = AtButtonCallback(
@@ -658,6 +667,7 @@ class ScriptingController:
             script=script,
         )
 
+        # Now patch the button.
         self.iconBar.setCommandForButton(
             button=b,
             command=cb, # This encapsulates the script.
@@ -671,8 +681,10 @@ class ScriptingController:
             self.iconBar.add_rclick_menu(b.button,rclicks,self,from_settings=True)
 
         # At last we can define the command.
-        self.registerAllCommands(p.h,
+        self.registerAllCommands(
+            args=args,
             func=cb,
+            h=p.h,
             pane='button',
             source_c = p.v.context,
             tag='@button')
@@ -700,8 +712,10 @@ class ScriptingController:
         commonCommandCallback.__doc__ = g.getDocString(script)
             # Bug fix: 2015/03/28.
 
-        self.registerAllCommands(p.h,
+        self.registerAllCommands(
+            args=args,
             func=commonCommandCallback,
+            h=p.h,
             pane='all',
             source_c=p.v.context,
             tag='global @command')
@@ -747,8 +761,10 @@ class ScriptingController:
         # Minibuffer commands created by mod_scripting.py have no docstrings
         atCommandCallback.__doc__ = g.getDocString(p.b)
 
-        self.registerAllCommands(p.h,
+        self.registerAllCommands(
+            args=args,
             func=atCommandCallback,
+            h=p.h,
             pane='all',
             source_c=p.v.context,
             tag='local @command')
@@ -795,8 +811,10 @@ class ScriptingController:
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
             c.executeScript(args=args,p=p,silent=True)
             
-        self.registerAllCommands(p.h,
+        self.registerAllCommands(
+            args=args,
             func=atCommandCallback,
+            h=p.h,
             pane='all',
             source_c=p.v.context,
             tag='local @rclick')
@@ -823,6 +841,7 @@ class ScriptingController:
     def createDebugIconButton (self):
         '''Create the 'debug-script' button and the debug-script command.'''
         self.createIconButton(
+            args=None,
             text='debug-script',
             command=self.runDebugScriptCommand,
             statusLine='Debug script in selected node',
@@ -831,6 +850,7 @@ class ScriptingController:
     def createRunScriptIconButton (self):
         '''Create the 'run-script' button and the run-script command.'''
         self.createIconButton(
+            args=None,
             text='run-script',
             command = self.runScriptCommand,
             statusLine='Run script in selected node',
@@ -840,6 +860,7 @@ class ScriptingController:
     def createScriptButtonIconButton (self):
         '''Create the 'script-button' button and the script-button command.'''
         self.createIconButton(
+            args=None,
             text='script-button',
             command = self.addScriptButtonCommand,
             statusLine='Make script button from selected node',
@@ -920,6 +941,7 @@ class ScriptingController:
                 s = h[j:k].strip()
             args = s.split(',')
             args = [z.strip() for z in args]
+        # if args: g.trace(args)
         return args
     #@+node:ekr.20060328125248.15: *4* sc.getButtonText
     def getButtonText(self,h):
@@ -985,10 +1007,10 @@ class ScriptingController:
                 useSentinels=True,
             ))
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
-    def registerAllCommands(self,h,func,pane,source_c=None,tag=None):
+    def registerAllCommands(self,args,func,h,pane,source_c=None,tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
         trace = False and not g.unitTesting
-        k = self.c.k
+        c,k = self.c,self.c.k
         shortcut = self.getShortcut(h)
         s = self.cleanButtonText(h)
         if trace:
@@ -997,6 +1019,7 @@ class ScriptingController:
             else:
                 g.trace(func)
 
+        # Register the original function.
         k.registerCommand(s,func=func,
             pane=pane,shortcut=shortcut,source_c=source_c,verbose=trace)
 
@@ -1005,31 +1028,24 @@ class ScriptingController:
         for tag in ('@button-','@command-','@rclick-'):
             if s.startswith(tag):
                 command = s[len(tag):].strip()
+                if args and 'add' in [z.lower() for z in args]:
+                    k.addToCommandHistory(command)
+
                 # Create a *second* func, to avoid collision in c.commandsDict.
-                if tag.startswith('@button'):
+                def registerAllCommandsCallback(event=None,func=func):
+                    func()
                     
-                    def atButtonCallback2(event=None,func=func):
-                        func()
-
-                    # g.trace(h,func,func.__doc__)
-                    # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
-                    # Minibuffer commands created by mod_scripting.py have no docstrings.
-                    atButtonCallback2.__doc__ = func.__doc__
-                    cb = atButtonCallback2
-                else:
-                    
-                    def atCommandCallBack2(event=None,func=func):
-                        func()
-
-                    # g.trace(h,func,func.__doc__)
-                    # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
-                    # Minibuffer commands created by mod_scripting.py have no docstrings.
-                    atCommandCallBack2.__doc__ = func.__doc__
-                    cb = atCommandCallBack2
-                if trace: g.trace('second',command)
+                # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
+                # Minibuffer commands created by mod_scripting.py have no docstrings.
+                registerAllCommandsCallback.__doc__ = func.__doc__
                 
-                k.registerCommand(command,func=cb,
-                    pane=pane,shortcut=None,verbose=trace)
+                # Make sure we never redefine an existing command.
+                if command in c.commandsDict:
+                    # A warning here would probably be annoying.
+                    pass
+                else:
+                    k.registerCommand(command,func=registerAllCommandsCallback,
+                        pane=pane,shortcut=None,verbose=trace)
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self,b,bg):
         '''Set the background color of Qt button b to bg.'''

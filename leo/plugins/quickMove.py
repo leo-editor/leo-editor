@@ -317,17 +317,13 @@ class quickMove(object):
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove)
     def addButton (self, which, type_="move", v=None, parent=None):
-
         '''Add a button that creates a target for future moves.'''
-
         c = self.c
         p = c.p
         if v is None:
             v = p.v
         sc = scriptingController(c)
-
         mb = quickMoveButton(self,v,which,type_=type_)
-
         txt=self.txts[type_]
 
         if parent:  # find parent button
@@ -356,7 +352,8 @@ class quickMove(object):
                 pb.setText(pb.text()+t)
         else:
             b = sc.createIconButton(
-                text,
+                args=None,
+                text=text,
                 command = mb.moveCurrentNodeToTarget,
                 statusLine = '%s current node to %s child of %s' % (
                     type_.title(), which, v.h),

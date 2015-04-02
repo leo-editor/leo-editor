@@ -18,6 +18,21 @@ https://github.com/leo-editor/leo-editor/issues/172
     Enters the minibuffer and prompts for a command from command history.
     
     This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
+    
+Desired behavior, from https://groups.google.com/forum/#!msg/leo-editor/IHUVyGZdZqY/4KaePm9o3X8J
+
+- list starts off empty []
+- enter command 'aaaa': command executed, list contains ['aaaa']
+- enter command 'bbbb': command executed, list contains ['aaaa', 'bbbb']
+- enter command 'cccc': command executed, list contains ['aaaa', 'bbbb', 'cccc']
+- press up arrow: I am shown the last (most recent) in the list 'cccc'
+- press 'enter'. 'cccc' is executed, but not appended to the list: ['aaaa', 'bbbb', 'cccc']
+- press up arrow: I am (again) shown 'cccc'
+- press up arrow again: I am shown 'bbbb'
+- press up arrow again: I am shown 'aaaa'
+- press down arrow: I am shown 'bbbb'
+- I edit 'bbbb' to 'BBBB'. The command is executed, and the list contains ['aaaa', 'bbbb', 'cccc', 'BBBB']
+- I press the down arrow: I am shown nothing (after each command is executed my 'position' is at the end of the list)
 .. @+node:ekr.20150401061613.1: *3* Fix bug 171: Improve handling of @command and @button nodes
 @language rest
 

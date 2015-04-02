@@ -323,6 +323,7 @@ class InteractController:
         mb = InteractButton(c,class_=first)
         if mb.available():
             b = sc.createIconButton(
+                args=None,
                 text = mb.interactor.buttonText(),
                 command = mb.run,
                 statusLine = mb.interactor.statusText(),

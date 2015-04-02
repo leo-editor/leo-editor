@@ -1745,9 +1745,10 @@ class GetArg:
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
 class KeyHandlerClass:
-
-    '''A class to support emacs-style commands.'''
-
+    '''
+    A class to support emacs-style commands.
+    c.k is an instance of this class.
+    '''
     #@+others
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4* k.__init__& helpers
@@ -2596,6 +2597,23 @@ class KeyHandlerClass:
             if w not in aList:
                 aList.append(w)
                 k.masterGuiBindingsDict [stroke] = aList
+    #@+node:ekr.20150402111403.1: *3* k.Command history
+    #@+node:ekr.20150402111413.1: *4* k.addToCommandHistory
+    def addToCommandHistory(self,commandName):
+        '''Add a name to the command history.'''
+        k = self
+        # g.trace(commandName)
+        h,i = k.commandHistory,k.commandIndex
+        if commandName in h:
+            h.remove(commandName)
+            k.commandIndex = max(0,i-1)
+        h.append(commandName)
+    #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
+    def sortCommandHistory(self):
+        '''Sort the command history.'''
+        k = self
+        k.commandHistory.sort()
+        k.commandIndex = 0
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
@@ -2662,12 +2680,7 @@ class KeyHandlerClass:
                 commandName = s.strip()
                 ok = k.callAltXFunction(k.mb_event)
                 if ok:
-                    # Update command history if the command exists.
-                    h,i = k.commandHistory,k.commandIndex
-                    if commandName in h:
-                        h.remove(commandName)
-                        k.commandIndex = max(0,i-1)
-                    h.append(commandName)
+                    k.addToCommandHistory(commandName)
         elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(list(c.commandsDict.keys()))
