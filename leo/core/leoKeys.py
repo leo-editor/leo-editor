@@ -2606,14 +2606,42 @@ class KeyHandlerClass:
         h,i = k.commandHistory,k.commandIndex
         if commandName in h:
             h.remove(commandName)
-            k.commandIndex = max(0,i-1)
         h.append(commandName)
+        k.commandIndex = len(h)-1
+    #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
+    def commandHistoryDown(self):
+        '''
+        Return the first entry if we are at the bottom
+        Otherwise, deccrement the index and return that element.
+        '''
+        k = self
+        h,i = k.commandHistory,k.commandIndex
+        if h:
+            if i > 0:
+                i -= 1
+            k.commandIndex = i
+            commandName = h[i]
+            k.setLabel(k.mb_prefix + commandName)
+    #@+node:ekr.20150402171131.1: *4* k.commandHistoryUp
+    def commandHistoryUp(self):
+        '''
+        Return the last entry if we are at the top.
+        Otherwise, increment the index and return that element.
+        '''
+        k = self
+        h,i = k.commandHistory,k.commandIndex
+        if h:
+            if i+1 < len(h):
+                i += 1
+            k.commandIndex = i
+            commandName = h[i]
+            k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self):
         '''Sort the command history.'''
         k = self
         k.commandHistory.sort()
-        k.commandIndex = 0
+        k.commandIndex = len(k.commandHistory)-1
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
@@ -2648,15 +2676,10 @@ class KeyHandlerClass:
             pass
         elif char == 'Escape':
             k.keyboardQuit()
-        elif char in ('Down','Up'):
-            # Do command history.
-            h,i = k.commandHistory,k.commandIndex
-            if h:
-                i = min(i+1,len(h)-1) if char == 'Up' else max(0,i-1)
-                commandName = h[i]
-                k.commandIndex = i
-                # g.trace(char,i,h,h[i])
-                k.setLabel(k.mb_prefix + commandName)
+        elif char == 'Down':
+            k.commandHistoryDown()
+        elif char == 'Up':
+            k.commandHistoryUp()
         elif char in ('\n','Return'):
             if trace and verbose: g.trace('***Return')
             if trace and trace_event:
