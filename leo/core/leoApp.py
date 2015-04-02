@@ -136,6 +136,8 @@ class LeoApp:
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
+        self.check_files_timer = None
+            # The IdleTime instance that calls g.app.checkForChangedFiles().
         self.globalKillBuffer = []
             # The global kill buffer.
         self.globalRegisters = {}
@@ -869,6 +871,12 @@ class LeoApp:
         elif finish_quit and not g.app.unitTesting:
             g.app.finishQuit()
         return True # The window has been closed.
+    #@+node:ekr.20150330033306.1: *3* app.checkForChangedFiles
+    def checkForChangedFiles(self,timer):
+        '''Check for changed files in all commanders.'''
+        if g.app and not g.app.killed:
+            for c in g.app.commanders():
+                c.checkForChangedFiles()
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -2057,6 +2065,9 @@ class LoadManager:
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
+        timer = g.IdleTime(g.app.checkForChangedFiles,delay=1000)
+        g.app.check_files_timer = timer
+        if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
         if ok and g.app.diff:

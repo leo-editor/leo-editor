@@ -683,6 +683,17 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
+    #@+node:ekr.20150330034516.1: *3* c.checkForChangedFiles
+    def checkForChangedFiles(self):
+        '''
+        Check whether any @<file> nodes has been changed outside of Leo.
+        Prompt the user to update the file if so.
+        '''
+        trace = False and not g.unitTesting
+        c = self
+        if trace: g.trace(c)
+        ### Use same technique as write warning.
+
     #@+node:ekr.20150329162703.1: *3* c.cloneFind...
     #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
     def cloneFindParents(self,event=None):
@@ -1193,9 +1204,9 @@ class Commands (object):
             f = None
             if not g.unitTesting:
                 if g.os_path_exists(fn):
-                    g.red('recreating:  ',g.shortFileName(fn))
+                    g.red('recreating:  ',fn) # g.shortFileName(fn))
                 else:
-                    g.blue('creating:  ',g.shortFileName(fn))
+                    g.blue('creating:  ',fn) # g.shortFileName(fn))
             f = open(fn,'w')
             # Convert s to whatever encoding is in effect.
             d = c.scanAllDirectives(p)
