@@ -315,7 +315,7 @@ class quickMove(object):
 
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
-    #@+node:ekr.20070117113133.2: *3* addButton
+    #@+node:ekr.20070117113133.2: *3* addButton (quickMove)
     def addButton (self, which, type_="move", v=None, parent=None):
 
         '''Add a button that creates a target for future moves.'''
@@ -345,18 +345,15 @@ class quickMove(object):
         # createButton truncates text.  
 
         if parent and g.app.gui.guiName() == "qt":
-            # see setCommandForButton
             pb = parent.button
             rc = QtGui.QAction(text, pb)
             rc.connect(rc, QtCore.SIGNAL("triggered()"), mb.moveCurrentNodeToTarget)
             pb.insertAction(pb.actions()[0], rc)  # insert at top
             b = None
             mb.has_parent = True
-
             t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
             if not unicode(pb.text()).endswith(unicode(t)):
                 pb.setText(pb.text()+t)
-
         else:
             b = sc.createIconButton(
                 text,
@@ -365,7 +362,6 @@ class quickMove(object):
                     type_.title(), which, v.h),
                 kind = "quick-move"
             )
-
             if g.app.gui.guiName() == "qt":
 
                 def cb_goto_target(event=None, c=c, v=v):
@@ -387,11 +383,12 @@ class quickMove(object):
                     (cb_permanent, 'Make permanent'),
                     # (cb_clear, 'Clear permanent'),
                     (cb_set_parent, 'Set parent'), 
-                    ]:
+                ]:
                     but = b.button
                     rc = QtGui.QAction(txt, but)
                     rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
-                    but.insertAction(but.actions()[-1], rc)  # insert rc before Remove Button
+                    but.insertAction(but.actions()[-1], rc)
+                        # insert rc before Remove Button
 
         self.buttons.append((mb,b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton
