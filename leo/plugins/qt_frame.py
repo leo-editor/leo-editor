@@ -2250,21 +2250,18 @@ class LeoQtFrame (leoFrame.LeoFrame):
         #@+others
         #@+node:ekr.20110605121601.18263: *4*  ctor (QtIconBarClass)
         def __init__ (self,c,parentFrame):
-
-            # g.trace('(QtIconBarClass)')
-
+            '''Ctor for QtIconBarClass.'''
+            # Copy ivars
             self.c = c
-            self.chapterController = None
             self.parentFrame = parentFrame
+            # Status ivars.
+            self.actions = []
+            self.buttonColor = c.config.getString('qt-button-color')
+            self.chapterController = None
             self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
 
-            self.actions = []
-
-            # Options
-            self.buttonColor = c.config.getString('qt-button-color')
-
-            # g.app.iconWidgetCount = 0
+           
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
 
@@ -2374,64 +2371,57 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20141031053508.14: *4* goto_command
-        def goto_command(self,command):
+        #@+node:ekr.20141031053508.14: *4* goto_command (QtIconBarClass)
+        def goto_command(self,controller,gnx):
             '''
-            Select the node corresponding to command.gnx.
-            
-            command is an AtButtonCallback instance, defined in mod_scripting.py.
-            command.controller is a ScriptingController instance.
+            Select the node corresponding to the given gnx.
+            controller is a ScriptingController instance.
             '''
             # Fix bug 74: command_p may be in another outline.
-            c2,p,script = command.controller.find_gnx(command.gnx,openFlag=True)
+            c = self.c
+            c2,p = controller.open_gnx(c,gnx)
             if p:
                 g.app.selectLeoWindow(c2)
                 c2.selectPosition(p)
                 c2.redraw()
             else:
-                g.trace('not found',command.gnx)
+                g.trace('not found',gnx)
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
-        def setCommandForButton(self,button,command):
+        def setCommandForButton(self,button,command,command_p,controller,gnx,script):
             '''
             Set the "Goto Script" rlick item of an @button button.
+            Called from mod_scripting plugin.
             
             button is a leoIconBarButton.
-            command is an AtButtonCallback instance, defined in mod_scripting.py.
-            command.controller is a ScriptingController instance.
+            command is a callback, defined in mod_scripting.py.
+            command_p exists only if the @button node exists in the local .leo file.
+            gnx is the gnx of the @button node.
+            script is a static script for common @button nodes.
             '''
-            trace = False and not g.unitTesting
             if not command:
                 return
-            if trace: g.trace('%20s %s' % (button.text,command))
-            # Fix bug 74: command is now always an AtButtonCallback instance.
-            #             This code always adds a Goto Script button.
+            # g.trace('%10s %20s %s' % (gnx,button.text,command))
+
+            # Fix bug 74: use the controller and gnx arguments.
             b = button.button
-            controller = command.controller
-            button.button.clicked.connect(command)
-            # Fix bug 1193819: Script buttons cant "go to script" after outline changes.
-            command_c,command_p,script = command.controller.find_gnx(command.gnx)
-            
-            def goto_callback(checked,command=command):
-                self.goto_command(command)
-                
-            if command_p:
-                docstring = g.getDocString(command_p.b)
-                if docstring:
-                    b.setToolTip(docstring)
-            b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
+            b.clicked.connect(command)
+               
+            def goto_callback(checked,controller=controller,gnx=gnx):
+                self.goto_command(controller,gnx)
+
+            b.goto_script = gts = QtWidgets.QAction('Goto Script',b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
             rclicks = build_rclick_tree(command_p,top_level=True)
-            self.add_rclick_menu(b,rclicks,command.controller)
+            self.add_rclick_menu(b,rclicks,controller,script=script)
         #@+node:ekr.20141031053508.15: *5* add_rclick_menu
         def add_rclick_menu(self, action_container, rclicks, controller,
-                            top_level=True,button=None,from_settings=False):
-
-            if from_settings:
-                top_offset = -1  # insert before the remove button item
-            else:
-                top_offset = -2  # insert before the remove button and goto script items
-
+            top_level=True,
+            button=None,
+            script=None
+        ): 
+            c = controller.c
+            top_offset = -2  # insert before the remove button and goto script items
             if top_level:
                 button = action_container
 
@@ -2442,35 +2432,23 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 if '---' in headline and headline.strip().strip('-') == '':
                     act.setSeparator(True)
                 elif rc.position.b.strip():
-                    if from_settings:
-                        def cb(checked, script=rc.position.b, button=button,
-                               controller=controller, buttonText=rc.position.h[8:].strip()):
-                            controller.executeScriptFromSettingButton(
-                                [],  # args,
-                                button,
-                                script,
-                                buttonText
-                            )
-                    else:
-                        def cb(checked, p=rc.position, button=button,
-                               controller=controller):
-                            script = None
-                            controller.executeScriptFromButton(
-                                button,
-                                p.h[8:].strip(),
-                                p,
-                                script,
-                            )
-                            if controller.c.exists:
-                                controller.c.outerUpdate()
+
+                    def cb(checked,p=rc.position,button=button,controller=controller):
+                        controller.executeScriptFromButton(
+                            b=button,
+                            buttonText=p.h[8:].strip(),
+                            p=p,
+                            script=script,
+                        )
+                        if c.exists:
+                            c.outerUpdate()
+
                     act.triggered.connect(cb)
-                    
                 else:  # recurse submenu
                     sub_menu = QtWidgets.QMenu(action_container)
                     act.setMenu(sub_menu)
                     self.add_rclick_menu(sub_menu, rc.children, controller,
-                                         top_level=False, button=button,
-                                         from_settings=from_settings)
+                        top_level=False, button=button)
                                          
                 if top_level:
                     # insert act before Remove Button
@@ -2486,8 +2464,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     action_container.actions()[top_offset], act)
                 action_container.setText(
                     g.u(action_container.text()) + 
-                    (controller.c.config.getString(
-                        'mod_scripting_subtext') or '')
+                    (c.config.getString('mod_scripting_subtext') or '')
                 )
         #@-others
     #@+node:ekr.20110605121601.18274: *3* Configuration (qtFrame)

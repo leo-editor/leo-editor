@@ -15156,5 +15156,112 @@ def setIdleTimeHook (self):
     pass
     
 # setIdleTimeHookAfterDelay = setIdleTimeHook
+.. @+node:ekr.20150401210147.1: *3* from mod_scripting.py
+.. @+node:ekr.20150401210156.2: *4* OLD sc.find_gnx & helper
+def find_gnx(self,gnx,findFlag=False,openFlag=False):
+    '''
+    Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
+    If found, open the tab/outline and select the specified node.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    # Look at the open commanders only if we aren't looking in unopened settings files.
+    if not findFlag:
+        # First, look in selected commander.
+        for p in c.all_positions():
+            if p.gnx == gnx:
+                if trace: g.trace('found',p.h,'in',c.shortFileName())
+                return c,p,p.b
+        # Next look in all other open commanders.
+        for c2 in g.app.commanders():
+            if c2 != c:
+                for p in c2.all_positions():
+                    if p.gnx == gnx:
+                        if trace: g.trace('found',p.h,'in',c2.shortFileName())
+                        return c2,p,p.b
+    # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
+    c0 = g.app.log and g.app.log.c if g.app.qt_use_tabs else None
+    c2,p2,script = None,None,None
+    if findFlag or openFlag:
+        for f in (c.openMyLeoSettings,c.openLeoSettings):
+            c2 = f() # Open the settings file.
+            if c2:
+                p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
+                if p2 or script:
+                    break
+    # Fix bug 92: restore the previously selected tab.
+    if c0:
+        c0.frame.top.leo_master.select(c0)
+            # c0.frame.top.leo_master is a LeoTabbedTopLevel.
+    if trace: g.trace('gnx',gnx,'findFlag',findFlag,'openFlag',openFlag,
+        'len(script)',script and len(script) or 0,
+        c2 and c2.shortFileName(),p2 and p2.h)
+    return c2,p2,script
+.. @+node:ekr.20150401210156.3: *5* sc.find_gnx_helper
+def find_gnx_helper(self,c,gnx,openFlag,trace):
+    '''
+    c is the commander of a just-opened settings file.
+    Perform the search, and close the file unless openFlag is True.
+    '''
+    for p in c.all_positions():
+        if p.gnx == gnx:
+            if trace: g.trace('found',p.h,'in',c.shortFileName())
+            if openFlag:
+                script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                return p,script
+            else:
+                script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
+                c.close()
+                return None,script
+    # Not found: always close the commander.
+    c.close()
+    return None,None
+.. @+node:ekr.20150401210156.4: *4* __call__ (AtButtonCallback)
+def __call__(self, event=None):
+    '''Execute the script associated with this button.'''
+    # g.trace('AtButtonCallback',self.gnx)
+    gnx = self.gnx
+    if self.script:
+        # # We have already failed to find the script in any open commander.
+        # # Use the cached script.
+        p,script = None,self.script
+    else:
+        # First: try to find the script in open commanders:
+        c2,p2,script = self.controller.find_gnx(gnx,findFlag=False)
+        if p2: # 2014/11/04: test p2, not script.
+            # Found: do *not set self.script: this enables dynamically changing scripts.
+            # The script *must* be cleared here.
+            p = p2
+            script = None
+        else:
+            # Set script if it is found in any settings file.
+            junk_c,junk_p,script = self.controller.find_gnx(gnx,findFlag=True)
+            p = None
+            self.script = script
+    if p or script:
+        self.controller.executeScriptFromButton(self.b,self.buttonText,p,script)
+        if self.c.exists:
+            self.c.outerUpdate()
+    else:
+        g.trace('can not find script for gnx:',gnx)
+.. @+node:ekr.20150401210156.5: *4* sc.executeScriptFromSettingButton (deleted)
+def executeScriptFromSettingButton (self,args,b,script,buttonText):
+    '''
+    # Execute the script in node p.
+    
+    **Note**: qt_frame.py calls this method, so it must be a method of this class.
+    '''
+    c = self.c
+    if c.disableCommandsMessage:
+        g.blue(c.disableCommandsMessage)
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.bodyWantsFocus()
 .. @-all
 .. @-leo
