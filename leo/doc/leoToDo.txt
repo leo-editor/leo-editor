@@ -20,16 +20,14 @@ https://github.com/leo-editor/leo-editor/issues/172
     This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
 .. @+node:ekr.20150401061613.1: *3* Fix bug 171: Improve handling of @command and @button nodes
 @language rest
-@wrap
 
 https://github.com/leo-editor/leo-editor/issues/171
 
-- [ ] Store common scripts in ``g.app.commonScriptDict``.
-- [ ] Never open myLeoSettings.leo to find a common script.
-- [ ] ``<Alt-x>@<tab>`` shows source file of common scripts.
+- [x] Never open myLeoSettings.leo to find a common script.
+- [x] ``<Alt-x>@<tab>`` shows source file of common scripts.
 - [ ] Common scripts create entries in command history.
 - [ ] Empty script nodes put their headline command in command history.
-- [ ] Make sure all ``@button`` & ``@commands`` nodes show ``@key`` bindings.
+- [x] Make sure all ``@button`` & ``@commands`` nodes show ``@key`` bindings.
 .. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 

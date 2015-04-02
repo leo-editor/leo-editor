@@ -2433,7 +2433,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     act.setSeparator(True)
                 elif rc.position.b.strip():
 
-                    def cb(checked,p=rc.position,button=button,controller=controller):
+                    def cb(checked,p=rc.position,button=button):
                         controller.executeScriptFromButton(
                             b=button,
                             buttonText=p.h[8:].strip(),
