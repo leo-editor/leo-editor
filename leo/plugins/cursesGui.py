@@ -120,7 +120,8 @@ class textGui(leoGui.LeoGui):
     def runMainLoop(self):
         self.text_run()
     #@+node:ekr.20150107090324.16: *3* runOpenFileDialog
-    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
+
+    def runOpenFileDialog(self,c,title,filetypes,defaultextension,multiple=False,startpath=None):
 
         initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
         ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
