@@ -8,31 +8,6 @@
 @wrap
 .. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
 http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
-.. @+node:ekr.20150401061843.1: *3* Fix bug 172: repeat-command-in-history, with tab completion
-https://github.com/leo-editor/leo-editor/issues/172
-
-- [ ] Add repeat-command-in-history.
-- [ ] Improve the order in which commands in the history.
-
-``repeat-command-in-history``
-    Enters the minibuffer and prompts for a command from command history.
-    
-    This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
-    
-Desired behavior, from https://groups.google.com/forum/#!msg/leo-editor/IHUVyGZdZqY/4KaePm9o3X8J
-
-- list starts off empty []
-- enter command 'aaaa': command executed, list contains ['aaaa']
-- enter command 'bbbb': command executed, list contains ['aaaa', 'bbbb']
-- enter command 'cccc': command executed, list contains ['aaaa', 'bbbb', 'cccc']
-- press up arrow: I am shown the last (most recent) in the list 'cccc'
-- press 'enter'. 'cccc' is executed, but not appended to the list: ['aaaa', 'bbbb', 'cccc']
-- press up arrow: I am (again) shown 'cccc'
-- press up arrow again: I am shown 'bbbb'
-- press up arrow again: I am shown 'aaaa'
-- press down arrow: I am shown 'bbbb'
-- I edit 'bbbb' to 'BBBB'. The command is executed, and the list contains ['aaaa', 'bbbb', 'cccc', 'BBBB']
-- I press the down arrow: I am shown nothing (after each command is executed my 'position' is at the end of the list)
 .. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
 https://github.com/leo-editor/leo-editor/issues/170
 
@@ -74,12 +49,12 @@ On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
            
             main
             m
-.. @+node:ekr.20150326092537.1: *3* Fix bug 166: Fix icon hooks in plugins, etc.
+.. @+node:ekr.20150326092537.1: *3* Fix bug 166: (minor) Fix icon hooks in plugins, etc.
 https://github.com/leo-editor/leo-editor/issues/166
 
-    
-- Remove unused events from table of events.
+This is a minor issue, affecting mostly documentation.
 
+- Remove unused events from table of events.
 
 clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
 
@@ -103,18 +78,6 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 Set default for @string stylesheet so it generates::
 
     <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150329164756.1: *3* Later
-.. @+node:ekr.20150401062437.1: *4* Fix bug 173: script history and related commands
-https://github.com/leo-editor/leo-editor/issues/173
-.. @+node:ekr.20150327175112.1: *4* clean up event handling
-@language rest
-
-- Test arguments to g.registerHandler.
-- g.app.valid_event_names.  Does it already exist?
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150330125434.1: *4* Don't loop with @button/command
-Do something intelligent wnen the @button name is the name of a command.
 .. @+node:ekr.20150330080509.1: *3* Docs
 .. @+node:ekr.20150330084832.1: *4* Recommend git
 @language rest
@@ -1219,6 +1182,8 @@ to organizer node whose headline is Imports.
 
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
+.. @+node:ekr.20150311123850.7: *3* Improve --diff
+The --diff option is not very useful as a git diff.
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
