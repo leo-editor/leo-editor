@@ -13054,6 +13054,7 @@ Downloading, Installing &amp; Running Leo
 Use @edit instead of @clean to place the entire contents of an external file into a single outline node. Leo writes no sentinel when writing @edit files.
 </t>
 <t tx="ekr.20131016083406.16724">@language python
+'''Run sphinx make clean ; make html.'''
 import os
 trace = True
 g.cls()
