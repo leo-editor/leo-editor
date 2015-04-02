@@ -156,7 +156,7 @@ class IconBarAPI:
     def createChaptersIcon(self): pass
     def deleteButton (self,w): pass
     def getNewFrame (self): pass
-    def setCommandForButton(self,button,command): pass
+    def setCommandForButton(self,button,command,command_p,controller,gnx,script): pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
 class LeoBody(object):
     '''The base class for the body pane in Leo windows.'''
@@ -2017,8 +2017,8 @@ class NullIconBarClass(object):
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
     #@+node:ekr.20140904043623.18575: *3* NullIconBarClass.setCommandForButton
-    def setCommandForButton(self,b,command):
-        b.command = command
+    def setCommandForButton(self,button,command,command_p,controller,gnx,script):
+        button.command = command
     #@-others
 #@+node:ekr.20031218072017.2232: ** class NullLog (LeoLog)
 class NullLog (LeoLog):
