@@ -292,16 +292,19 @@ class LeoQtGui(leoGui.LeoGui):
         return n if ok else None
     #@+node:ekr.20110605121601.18490: *4* LeoQtGui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
-                                   okButtonText=None,default=""):
-
-        """Create and run askOkCancelString dialog ."""
-
+                                   okButtonText=None,default="", wide=False):
+        """Create and run askOkCancelString dialog.
+        
+        wide - edit a long string
+        """
         if g.unitTesting: return None
 
         d = QtWidgets.QInputDialog()
         d.setWindowTitle(title)
         d.setLabelText(message)
         d.setTextValue(default)
+        if wide:
+            d.resize(int(g.windows()[0].get_window_info()[0]*.9),100)
         if cancelButtonText:
             d.setCancelButtonText(cancelButtonText)
         if okButtonText:
