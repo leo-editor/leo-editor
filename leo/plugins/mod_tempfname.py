@@ -48,7 +48,7 @@ def init():
 #@+node:EKR.20040517075715.2: ** onStart
 def onStart (tag,keywords):
     '''Monkey patch c.openWithTempFilePath.'''
-    g.trace("mod_tempfName: replacing c.openWithTempFilePath")
+    # g.trace("mod_tempfName: replacing c.openWithTempFilePath")
     g.funcToMethod(openWithTempFilePath,leoCommands.Commands,"openWithTempFilePath")
 #@+node:EKR.20040517075715.3: ** openWithTempFilePath
 def openWithTempFilePath (self,v,ext):
