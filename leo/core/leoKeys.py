@@ -1687,25 +1687,48 @@ class GetArg:
                 if not ch.isalnum() and ch not in '_-':
                     return False
             return True
-    #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list
+    #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
     def show_tab_list (ga,tabList):
         '''Show the tab list in the log tab.'''
         k = ga.k
         ga.log.clearTab(ga.tabName)
         d = k.computeInverseBindingDict()
-        data,n = [],0
+        data,legend,n = [],False,0
         for commandName in tabList:
             dataList = d.get(commandName,[('',''),])
             for z in dataList:
                 pane,key = z
-                s1a = '%s ' % (pane) if pane != 'all:' else ''
+                s1a = '' if pane in ('all:','button:') else '%s ' % (pane)
                 s1b = k.prettyPrintKey(key)
                 s1 = s1a + s1b
-                s2 = commandName
-                data.append((s1,s2),)
+                s2 = ga.command_source(commandName)
+                if s2 != ' ': legend = True
+                s3 = commandName
+                data.append((s1,s2,s3),)
                 n = max(n,len(s1))
-        aList = ['%*s %s' % (-n,s1,s2) for s1,s2 in data]
+        aList = ['%*s %s %s' % (-n,s1,s2,s3) for s1,s2,s3 in data]
+        if legend:
+            aList.extend([
+                '',
+                'legend:',
+                'G leoSettings.leo',
+                'M myLeoSettings.leo',
+                'L local .leo File',
+            ])
         g.es('','\n'.join(aList),tabName=ga.tabName)
+    #@+node:ekr.20150402034643.1: *4* ga.command_source
+    def command_source(ga,commandName):
+        '''
+        Return the source legend of an @button/@command node.
+        'G' leoSettings.leo
+        'M' myLeoSettings.leo
+        'L' local .leo File
+        ' ' not an @command or @button node
+        '''
+        if commandName.startswith('@'):
+            return 'M'
+        else:
+            return ' '
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
 class KeyHandlerClass:
@@ -2893,9 +2916,7 @@ class KeyHandlerClass:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
     def printButtons (self,event=None):
-
         '''Print all @button and @command commands, their bindings and their source.'''
-
         k = self ; c = k.c
         tabName = '@buttons && @commands'
         c.frame.log.clearTab(tabName)
@@ -2916,17 +2937,14 @@ class KeyHandlerClass:
                 data.append((p.h,'L'),)
 
         result = ['%s %s' % (z[1],z[0]) for z in sorted(data)]
+        result.extend([
+            '',
+            'legend:',
+            'G leoSettings.leo',
+            'L local .leo File',
+            'M myLeoSettings.leo',
+        ])
         put('\n'.join(result))
-
-        legend = '''\
-
-    legend:
-    G leoSettings.leo
-    L local .leo File
-    M myLeoSettings.leo
-    '''
-        legend = g.adjustTripleString(legend,c.tab_width)
-        put(''.join(legend))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
     def printCommands (self,event=None):
 
