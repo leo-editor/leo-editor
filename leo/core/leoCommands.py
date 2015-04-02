@@ -8838,7 +8838,7 @@ class Commands (object):
         # g.trace('%20s' % (timeStamp),fn)
 
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
-    def universalCallback(self, function):
+    def universalCallback(self,source_c,function):
 
         """Create a universal command callback.
 
@@ -8883,10 +8883,14 @@ class Commands (object):
                     #   ensure mb_retval from last command is wiped
                     cm.mb_keywords = None
                     cm.mb_retval = retval
+
         minibufferCallback.__doc__ = function.__doc__
+            # For g.getDocStringForFunction
+        minibufferCallback.source_c = source_c
+            # For GetArgs.command_source
         return minibufferCallback
 
-    #fix bobjacks spelling error
+    #fix bobjack's spelling error
     universallCallback = universalCallback
     #@-others
 #@+node:ekr.20070615131604: ** class NodeHistory

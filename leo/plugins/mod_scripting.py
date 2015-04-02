@@ -268,6 +268,8 @@ class AtButtonCallback(object):
             # Set if the script is defined in the local .leo file.
         self.script = script
             # Set if the script is found defined in myLeoSettings.leo or leoSettings.leo
+        self.source_c = c
+            # For GetArgs.command_source.
         self.__doc__ = docstring
             # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
@@ -503,7 +505,11 @@ class ScriptingController:
 
         # At last we can define the command and use the shortcut.
         # registerAllCommands recomputes the shortcut.
-        self.registerAllCommands(h,func=cb,pane='button',tag='local @button')
+        self.registerAllCommands(h,
+            func=cb,
+            pane='button',
+            source_c=p.v.context,
+            tag='local @button')
         return b
     #@+node:ekr.20060328125248.17: *3* sc.createIconButton (creates all buttons)
     def createIconButton (self,text,command,statusLine,bg=None,kind=None):
@@ -534,8 +540,11 @@ class ScriptingController:
         if statusLine:
             self.createBalloon(b,statusLine)
         if command:
-            self.registerAllCommands(text,func=command,
-                pane='button',tag='icon button')
+            self.registerAllCommands(text,
+                func=command,
+                pane='button',
+                source_c=c,
+                tag='icon button')
 
         def deleteButtonCallback(event=None,self=self,b=b):
             self.deleteButton(b, event=event)
@@ -662,7 +671,11 @@ class ScriptingController:
             self.iconBar.add_rclick_menu(b.button,rclicks,self,from_settings=True)
 
         # At last we can define the command.
-        self.registerAllCommands(p.h,func=cb,pane='button',tag='@button')
+        self.registerAllCommands(p.h,
+            func=cb,
+            pane='button',
+            source_c = p.v.context,
+            tag='@button')
     #@+node:ekr.20080312071248.2: *4* sc.createCommonCommands
     def createCommonCommands (self):
         '''Handle all global @command nodes.'''
@@ -687,8 +700,11 @@ class ScriptingController:
         commonCommandCallback.__doc__ = g.getDocString(script)
             # Bug fix: 2015/03/28.
 
-        self.registerAllCommands(p.h,func=commonCommandCallback,
-            pane='all',tag='global @command')
+        self.registerAllCommands(p.h,
+            func=commonCommandCallback,
+            pane='all',
+            source_c=p.v.context,
+            tag='global @command')
     #@+node:ekr.20150401130313.1: *3* sc.Scripts, individual
     #@+node:ekr.20060328125248.12: *4* sc.handleAtButtonNode @button
     def handleAtButtonNode (self,p):
@@ -731,8 +747,12 @@ class ScriptingController:
         # Minibuffer commands created by mod_scripting.py have no docstrings
         atCommandCallback.__doc__ = g.getDocString(p.b)
 
-        self.registerAllCommands(p.h,func=atCommandCallback,
-            pane='all',tag='local @command')
+        self.registerAllCommands(p.h,
+            func=atCommandCallback,
+            pane='all',
+            source_c=p.v.context,
+            tag='local @command')
+
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:ekr.20060328125248.13: *4* sc.handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
@@ -775,8 +795,12 @@ class ScriptingController:
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
             c.executeScript(args=args,p=p,silent=True)
             
-        self.registerAllCommands(p.h,func=atCommandCallback,
-            pane='all',tag='local @rclick')
+        self.registerAllCommands(p.h,
+            func=atCommandCallback,
+            pane='all',
+            source_c=p.v.context,
+            tag='local @rclick')
+
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode (self,p):
@@ -961,7 +985,7 @@ class ScriptingController:
                 useSentinels=True,
             ))
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
-    def registerAllCommands(self,h,func,pane,tag):
+    def registerAllCommands(self,h,func,pane,source_c=None,tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
         trace = False and not g.unitTesting
         k = self.c.k
@@ -972,8 +996,10 @@ class ScriptingController:
                 g.trace(func.__name__,func.__doc__)
             else:
                 g.trace(func)
+
         k.registerCommand(s,func=func,
-            pane=pane,shortcut=shortcut,verbose=trace)
+            pane=pane,shortcut=shortcut,source_c=source_c,verbose=trace)
+
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags    
         for tag in ('@button-','@command-','@rclick-'):
@@ -981,22 +1007,27 @@ class ScriptingController:
                 command = s[len(tag):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
                 if tag.startswith('@button'):
+                    
                     def atButtonCallback2(event=None,func=func):
                         func()
+
                     # g.trace(h,func,func.__doc__)
                     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                     # Minibuffer commands created by mod_scripting.py have no docstrings.
                     atButtonCallback2.__doc__ = func.__doc__
                     cb = atButtonCallback2
                 else:
+                    
                     def atCommandCallBack2(event=None,func=func):
                         func()
+
                     # g.trace(h,func,func.__doc__)
                     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                     # Minibuffer commands created by mod_scripting.py have no docstrings.
                     atCommandCallBack2.__doc__ = func.__doc__
                     cb = atCommandCallBack2
                 if trace: g.trace('second',command)
+                
                 k.registerCommand(command,func=cb,
                     pane=pane,shortcut=None,verbose=trace)
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor

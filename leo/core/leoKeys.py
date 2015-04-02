@@ -1725,8 +1725,21 @@ class GetArg:
         'L' local .leo File
         ' ' not an @command or @button node
         '''
+        c = ga.c    
         if commandName.startswith('@'):
-            return 'M'
+            d = c.commandsDict
+            func = d.get(commandName)
+            if hasattr(func,'source_c'):
+                c2 = func.source_c
+                fn2 = c2.shortFileName().lower()
+                if fn2.endswith('myleosettings.leo'):
+                    return 'M'
+                elif fn2.endswith('leosettings.leo'):
+                    return 'G'
+                else:
+                    return 'L'
+            else:
+                return '?'
         else:
             return ' '
     #@-others
@@ -3147,7 +3160,7 @@ class KeyHandlerClass:
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
-        pane='all',verbose=False, wrap=True
+        pane='all',source_c=None,verbose=False, wrap=True
     ):
         '''
         Make the function available as a minibuffer command,
@@ -3157,13 +3170,15 @@ class KeyHandlerClass:
         restriction to functions is not significant.
 
         If wrap is True then func will be wrapped with c.universalCallback.
+        source_c is the commander in which an @command or @button node is defined.
         '''
         trace = False and not g.unitTesting and commandName.startswith(':')
         verbose = False
-        k = self ; c = k.c
+        c,k = self.c,self
         if trace: g.trace(commandName,shortcut)
         if wrap:
-            func = c.universalCallback(func)
+            source_c = source_c or c
+            func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != 'dummyCallback' and trace and verbose:
             g.error('redefining',commandName)
