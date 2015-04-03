@@ -14,7 +14,10 @@ Callers are expected to use the *PyQt5* spellings of modules:
     # Warning: importing leoGlobals can crash pylint!
 
 # pylint: disable=unused-import
-# Define isQt,Qt,QtConst,QtCore,QtDeclarative,QtGui,QtWidgets,QUrl
+
+# Define...
+# Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
+# QtDeclarative, Qsci, QtSvg, QtWebKit, QtWebKitWidgets
 
 import leo.core.leoGlobals as g
 
