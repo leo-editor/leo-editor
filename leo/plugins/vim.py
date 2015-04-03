@@ -268,7 +268,11 @@ class VimCommander:
         return None
     #@+node:ekr.20150326173301.1: *3* vim.forget_path
     def forget_path(self,path):
-        '''Remove the old file and the entry in g.app.openWithFiles.'''
+        '''
+        Stop handling the path:
+        - Remove the path from g.app.openWithFiles.
+        - Send a command to vim telling it to close the path.
+        '''
         assert path
         os.remove(path)
         g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
@@ -295,7 +299,7 @@ class VimCommander:
             contextmenu_message_given = True
             self.error('can not load contextmenu.py')
         return contextMenu
-    #@+node:ekr.20150326180928.1: *3* vim.open_file
+    #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
     def open_file(self,root):
         '''Open the the file in vim using c.openWith.'''
         c = self.c
