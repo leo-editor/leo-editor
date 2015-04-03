@@ -496,7 +496,7 @@ class AtFile:
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
         '''
-        at = self
+        at,c = self,self.c
         if fromString:
             if at.atShadow:
                 return at.error(
@@ -505,7 +505,7 @@ class AtFile:
             at.initReadLine(fromString) # 2014/10/07
             fn = None
         else:
-            fn = at.fullPath(at.root)
+            fn = g.fullPath(c,at.root)
                 # Returns full path, including file name.
             at.setPathUa(at.root,fn)
                 # Remember the full path to this node.
@@ -559,14 +559,14 @@ class AtFile:
         """Read an @thin or @file tree."""
         trace = (False or g.app.debug) and not g.unitTesting
         # if trace: g.trace(root.h)
-        at = self ; c = at.c
+        at,c = self,self.c
         fileName = at.initFileName(fromString,importFileName,root)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(at.fullPath(root),root)
+        at.rememberReadPath(g.fullPath(c,root),root)
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
             g.es("reading:",root.h)
@@ -836,7 +836,7 @@ class AtFile:
                     p.setOrphan() # but the dirty bit gets cleared.
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                at.rememberReadPath(at.fullPath(p),p)
+                at.rememberReadPath(g.fullPath(c,p),p)
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
                 nRead += 1
@@ -961,7 +961,7 @@ class AtFile:
         '''Update the @clean/@nosent node at root.'''
         trace = False and not g.unitTesting
         at,c,x = self,self.c,self.c.shadowController
-        fileName = at.fullPath(root)
+        fileName = g.fullPath(c,root)
         if not g.os_path_exists(fileName):
             g.es('not found: %s' % (fileName),color='red')
             return
@@ -3289,7 +3289,7 @@ class AtFile:
             pathChanged = False
         else:
             oldPath = g.os_path_normcase(at.getPathUa(p))
-            newPath = g.os_path_normcase(at.fullPath(p))
+            newPath = g.os_path_normcase(g.fullPath(c,p))
             pathChanged = oldPath and oldPath != newPath
             # 2010/01/27: suppress this message during save-as and save-to commands.
             if pathChanged and not c.ignoreChangedPaths:
@@ -3554,13 +3554,12 @@ class AtFile:
         return found
     #@+node:ekr.20080711093251.5: *5* at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
-
-        '''Write p, an @shadow node.
-
-        File indices *must* have already been assigned.'''
-
+        '''
+        Write p, an @shadow node.
+        File indices *must* have already been assigned.
+        '''
         trace = False and not g.unitTesting
-        at = self ; c = at.c ; x = c.shadowController
+        at,c,x = self,self.c,self.c.shadowController
         root = p.copy() 
         fn = p.atShadowFileNodeName()
         if trace: g.trace(p.h,fn)
@@ -3569,7 +3568,7 @@ class AtFile:
             return False
         # A hack to support unknown extensions.
         self.adjustTargetLanguage(fn) # May set c.target_language.
-        fn = at.fullPath(p)
+        fn = g.fullPath(c,p)
         at.default_directory = g.os_path_dirname(fn)
         # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
@@ -5301,30 +5300,6 @@ class AtFile:
 
         # Do _not_ call self.error here.
         return g.utils_stat(fileName)
-    #@+node:ekr.20090530055015.6050: *3* at.fullPath
-    def fullPath (self,p,simulate=False):
-        '''
-        Return the full path (including fileName) in effect at p.
-
-        Neither the path nor the fileName will be created if it does not exist.
-        '''
-        at = self ; c = at.c
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if simulate: # for unit tests.
-            fn = p.h
-        else:
-            fn = p.anyAtFileNodeName()
-        if fn:
-            # Fix bug 102: call commander method, not the global function.
-            path = c.os_path_finalize_join(path,fn)
-        else:
-            g.trace('can not happen: not an @<file> node',g.callers())
-            for p2 in p.self_and_parents():
-                g.trace('  %s' % p2.h)
-            path = ''
-        # g.trace(p.h,repr(path))
-        return path
     #@+node:ekr.20090530055015.6023: *3* at.get/setPathUa
     def getPathUa (self,p):
 

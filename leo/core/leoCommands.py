@@ -184,6 +184,8 @@ class Commands (object):
         '''Init file-related ivars of the commander.'''
         self.changed = False
             # True: the ouline has changed since the last save.
+        self.external_files_dict = {}
+            # Keys are full paths, values are inner dicts.
         self.ignored_at_file_nodes = []
             # List of nodes for error dialog.
         self.import_error_nodes = []
@@ -197,7 +199,6 @@ class Commands (object):
         self.wrappedFileName = None
             # The name of the wrapped file, for wrapper commanders.
             # Set by LM.initWrapperLeoFile
-        
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self):
         '''Init Commander ivars corresponding to user options.'''
@@ -745,10 +746,13 @@ class Commands (object):
     def externalFileHasChanged(self,p):
         '''Return True if p's external file has changed outside of Leo.'''
         c = self
-        d = {} ### d should be an entry in g.app.openWithFiles
-        fn = d.get('path')
-        if not fn:
-            return False
+        d = self.external_files_dict
+            # Keys are full paths; values are inner dicts.
+        path = g.fullPath(p)
+        
+        # fn = d.get('path'
+        # if not fn:
+            # return False
 
         # encoding = d.get('encoding')
         # old_body = d.get('body')
