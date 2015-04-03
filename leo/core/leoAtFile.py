@@ -836,11 +836,7 @@ class AtFile:
                 ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
-                    # However, the dirty bit gets cleared.
-                    # p.setDirty() # 2011/06/17: won't be preserved anyway.
-                        # Expensive, but it can't be helped.
-                    p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
-                    # c.setChanged(True) # 2011/06/17
+                    p.setOrphan() # but the dirty bit gets cleared.
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode():
                 nRead += 1
@@ -853,22 +849,6 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-            ###
-            # # # else:
-                # # # if p.isAtAsisFileNode():
-                    # # # nRead += 1
-                    # # # at.rememberReadPath(at.fullPath(p),p)
-                    # # # p.moveToNodeAfterTree()
-                # # # elif p.isAtNoSentFileNode():
-                    # # # nRead += 1
-                    # # # anyRead = True
-                    # # # at.readOneAtNosentNode(p)
-                    # # # p.moveToNodeAfterTree()
-                # # # else:
-                    # # # p.moveToThreadNext()
-        # Preserve the orphan bits: the dirty bits will be cleared!
-            # for v in c.all_unique_nodes():
-            #    v.clearOrphan()
         if nRead:
             t2 = time.time()
             g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
