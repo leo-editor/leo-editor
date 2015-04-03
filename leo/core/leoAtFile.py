@@ -838,14 +838,14 @@ class AtFile:
                     # Remind the user to fix the problem.
                     p.setOrphan() # but the dirty bit gets cleared.
                 p.moveToNodeAfterTree()
-            elif p.isAtAsisFileNode():
-                nRead += 1
+            elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                ### nRead += 1
                 at.rememberReadPath(at.fullPath(p),p)
                 p.moveToNodeAfterTree()
-            elif p.isAtNoSentFileNode():
+            elif p.isAtCleanNode():
                 nRead += 1
                 anyRead = True
-                at.readOneAtClearNode(p)
+                at.readOneAtCleanNode(p)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -960,8 +960,8 @@ class AtFile:
         p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
-    #@+node:ekr.20150204165040.5: *4* at.readOneAtClearNode & helpers
-    def readOneAtClearNode(self,root):
+    #@+node:ekr.20150204165040.5: *4* at.readOneAtCleanNode & helpers
+    def readOneAtCleanNode(self,root):
         '''Update the @clean/@nosent node at root.'''
         trace = False and not g.unitTesting
         at,c,x = self,self.c,self.c.shadowController
@@ -975,8 +975,8 @@ class AtFile:
             # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(root)
             # Sets at.startSentinelComment/endSentinelComment.
-        new_public_lines = at.read_at_clear_lines(fileName)
-        old_private_lines = self.write_at_clear_sentinels(root)
+        new_public_lines = at.read_at_clean_lines(fileName)
+        old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines,fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines,marker)
         if old_public_lines:
@@ -1024,8 +1024,8 @@ class AtFile:
         for s in lines:
             print(s.rstrip())
 
-    #@+node:ekr.20150204165040.8: *5* at.read_at_clear_lines
-    def read_at_clear_lines(self,fn):
+    #@+node:ekr.20150204165040.8: *5* at.read_at_clean_lines
+    def read_at_clean_lines(self,fn):
         '''Return all lines of the @clean/@nosent file at fn.'''
         at = self
         s = at.openFileHelper(fn)
@@ -1035,11 +1035,11 @@ class AtFile:
         s = s.replace('\r\n','\n')
             # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
-    #@+node:ekr.20150204165040.9: *5* at.write_at_clear_sentinels
-    def write_at_clear_sentinels(self,root):
+    #@+node:ekr.20150204165040.9: *5* at.write_at_clean_sentinels
+    def write_at_clean_sentinels(self,root):
         '''
-        Return all lines of the @clean/@nosent tree as if the tree were written
-        as an @file node.
+        Return all lines of the @clean tree as if it were
+        written as an @file node.
         '''
         at = self.c.atFileCommands
         at.write(root,
