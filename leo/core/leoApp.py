@@ -230,7 +230,7 @@ class LeoApp:
         self.hasOpenWithMenu = False
             # True: open with plugin has been loaded.
         self.openWithFiles = []
-            # List of data used by Open With command.
+            # List of dictionaries created by c.openWith & helpers.
         self.openWithFileNum = 0
             # Number of Open-With temp file names.
         self.openWithTable = None
@@ -874,9 +874,17 @@ class LeoApp:
     #@+node:ekr.20150330033306.1: *3* app.checkForChangedFiles
     def checkForChangedFiles(self,timer):
         '''Check for changed files in all commanders.'''
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t1 = time.time()
         if g.app and not g.app.killed:
             for c in g.app.commanders():
                 c.checkForChangedFiles()
+        if trace:
+            t2 = time.time()
+            n = len(list(g.app.commanders()))
+            g.trace('%s files %4.2f sec.' % (n,t2-t1))
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1009,27 +1017,24 @@ class LeoApp:
         g.app.openWithFiles = []
     #@+node:ekr.20031218072017.2613: *3* app.destroyOpenWithFilesForFrame
     def destroyOpenWithFilesForFrame (self,frame):
-
-        """Close all "Open With" files associated with frame
+        """
+        Close all "Open With" files associated with frame
 
         Called by app.destroyWindow.
         """
 
         # Make a copy of the list: it may change in the loop.
         openWithFiles = g.app.openWithFiles
-
-        for theDict in openWithFiles[:]: # 6/30/03
+        for theDict in openWithFiles[:]:
             c = theDict.get("c")
             if c.frame == frame:
                 g.app.destroyOpenWithFileWithDict(theDict)
     #@+node:ekr.20031218072017.2614: *3* app.destroyOpenWithFileWithDict
     def destroyOpenWithFileWithDict (self,theDict):
-
         '''
         A helper for app.destroyAllOpenWithFiles and
         app.destroyOpenWithFilesForFrame.
         '''
-
         path = theDict.get("path")
         if path and g.os_path_exists(path):
             try:
@@ -2065,7 +2070,7 @@ class LoadManager:
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-        timer = g.IdleTime(g.app.checkForChangedFiles,delay=1000)
+        timer = g.IdleTime(g.app.checkForChangedFiles,delay=2000)
         g.app.check_files_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
