@@ -414,27 +414,63 @@ class Commands (object):
 
     def idle_focus_helper (self,tag,keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = True and not g.unitTesting
-        trace_focus = False # True: (almost always annoying) always tell where the focus is.
-        active = True # True: actually change the focus.
+        active = False # True: force focus to the body.
+        trace = False and not g.unitTesting
+        trace_inactive_focus = False
+        trace_in_dialog = False
         c = self
         assert tag == 'idle'
         if g.app.unitTesting or keys.get('c') != c:
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
-            if trace and trace_focus: g.trace('in_qt_dialog')
+            if trace and trace_in_dialog: g.trace('in_qt_dialog')
             return
         w = g.app.gui.get_focus()
         if g.app.gui.active:
-            if w and trace and trace_focus:
-                g.trace('%s focus: %s' % (self.idle_focus_count,w))
-            if not w and trace:
-                g.trace('%s no focus -> body' % (self.idle_focus_count))
+            if trace:
+                self.trace_idle_focus(active,w)
             if not w and active:
                 c.bodyWantsFocusNow()
-        elif trace and trace_focus:
-            g.trace('%s focus: %s' % (self.idle_focus_count,w))
+        elif trace and trace_inactive_focus:
+            count = c.idle_focus_count
+            w_class = w and w.__class__.__name__
+            g.trace('%s inactive focus: %s' % (count,w_class))
+    #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
+    last_unusual_focus = None
+    last_no_focus = False
+
+    def trace_idle_focus(self,active,w):
+        '''Trace the focus for w, minimizing chatter.'''
+        from leo.core.leoQt import QtWidgets
+        import leo.plugins.qt_frame as qt_frame
+        c = self
+        table1 = ( # Specific.
+            QtWidgets.QTextEdit,
+            QtWidgets.QLineEdit,
+            qt_frame.LeoQTreeWidget,
+        )
+        table2 = ( # Inclusive, safe.
+            QtWidgets.QWidget,
+            qt_frame.LeoQTreeWidget,
+        )
+        count = c.idle_focus_count
+        w_class = w and w.__class__.__name__
+        if w:
+            c.last_no_focus = False
+            if not isinstance(w,table1):
+                if w_class != c.last_unusual_focus:
+                    c.last_unusual_focus = w_class
+                    g.trace('%s unusual focus: %s' % (count,w_class))
+            else:
+                c.last_unusual_focus = None
+                if not isinstance(w,table2):
+                    g.trace('%s unknown focus: %s' % (count,w_class))
+        elif active:
+            g.trace('%s no focus -> body' % (count))
+        elif not c.last_no_focus:
+            c.last_no_focus = True
+            g.trace('%s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad (self):
 
@@ -453,6 +489,7 @@ class Commands (object):
         getInt = c.config.getInt
         c.allow_at_in_paragraphs    = getBool('allow-at-in-paragraphs',default=False)
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
+        c.check_external_files      = getBool('check_for_changed_external_files',default=False)
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow      = getBool('collapse_on_lt_arrow',default=True)
         c.contractVisitedNodes      = getBool('contractVisitedNodes')
@@ -683,7 +720,7 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
-    #@+node:ekr.20150330034516.1: *3* c.checkForChangedFiles
+    #@+node:ekr.20150330034516.1: *3* c.checkForChangedFiles & helpers
     def checkForChangedFiles(self):
         '''
         Check whether any @<file> nodes has been changed outside of Leo.
@@ -691,9 +728,59 @@ class Commands (object):
         '''
         trace = False and not g.unitTesting
         c = self
-        if trace: g.trace(c)
-        ### Use same technique as write warning.
+        if c.check_external_files:
+            # g.trace('checking',c.shortFileName())
+            p = c.rootPosition()
+            seen = set()
+            while p:
+                if p.v in seen:
+                    p.moveToNodeAfterTree()
+                elif p.isAnyAtFileNode():
+                    seen.add(p.v)
+                    c.updateOutlineIfChanged(p)
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+    #@+node:ekr.20150403045207.1: *4* c.externalFileHasChanged (to do)
+    def externalFileHasChanged(self,p):
+        '''Return True if p's external file has changed outside of Leo.'''
+        c = self
+        d = {} ### d should be an entry in g.app.openWithFiles
+        fn = d.get('path')
+        if not fn:
+            return False
 
+        # encoding = d.get('encoding')
+        # old_body = d.get('body')
+        # new_body = g.toEncodedString(body,encoding,reportErrors=True)
+
+        new_time = g.os_path_getmtime(fn)
+        old_time = d.get('time')
+        if old_time is None:
+            d['time'] = g.os_path_getmtime(fn)
+            return False
+        else:
+            return old_time != new_time
+    #@+node:ekr.20150403050646.1: *4* c.updateOutlineFromExternalFile
+    def updateOutlineFromExternalFile(self,p):
+        '''Update p's outline from the corresponding external file.'''
+        g.trace(p.h)
+    #@+node:ekr.20150403044823.1: *4* c.updateOutlineIfChanged
+    def updateOutlineIfChanged(self,p):
+        '''
+        Ask user whether to update an @<file> tree if the corresponding
+        external file has been changed outside of Leo.
+        '''
+        c = self
+        message = '\n'.join([
+            '%s has changed outside Leo.' % (p.h),
+            'Update the outline from the external file?'
+        ])
+        if c.externalFileHasChanged(p):
+            result = g.app.gui.runAskYesNoCancelDialog(c,
+                'Update outline?', message)
+            if result.lower() == 'yes':
+                c.updateOutlineFromExternalFile(p)
     #@+node:ekr.20150329162703.1: *3* c.cloneFind...
     #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
     def cloneFindParents(self,event=None):
@@ -1100,7 +1187,7 @@ class Commands (object):
             g.es('exception executing open-with command:',command)
             g.es_exception()
             return 'oops: %s' % command
-    #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
+    #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (to be replaced)
     def openWithTempFilePath (self,p,ext):
         '''
         Return the path to the temp file corresponding to p and ext.
@@ -1116,8 +1203,8 @@ class Commands (object):
     #@+node:ekr.20100203050306.5797: *7* c.openWithHelper & helpers
     def openWithHelper (self,body,p,ext):
         '''
-        Create or reopen a temp file for p,
-        testing for conflicting changes.
+        Reopen a temp file for p if it exists in g.app.openWithFiles.
+        Otherwise, open a new temp file.
         '''
         c = self
 
@@ -1136,11 +1223,12 @@ class Commands (object):
                     break
         if path:
             assert d.get('path') == searchPath
-            fn = c.createOrRecreateTempFileAsNeeded(body,p,d,ext)
+            fn = c.createOrRecreateTempFile(body,p,d,ext)
+                # Compares temp file to Leo outline.
         else:
             fn = c.createOpenWithTempFile(body,p,ext)
         return fn # fn may be None.
-    #@+node:ekr.20031218072017.2827: *8* c.createOrRecreateTempFileAsNeeded
+    #@+node:ekr.20031218072017.2827: *8* c.createOrRecreateTempFile (reports changed text)
     conflict_message = '''
     Conflicting changes in outline and temp file.
     Do you want to use the data in the outline?
@@ -1149,7 +1237,7 @@ class Commands (object):
     Cancel or Escape or Return: do nothing.
     '''
 
-    def createOrRecreateTempFileAsNeeded (self,body,p,d,ext):
+    def createOrRecreateTempFile (self,body,p,d,ext):
         '''
         Test for changes in both p and the temp file:
 
@@ -1165,7 +1253,6 @@ class Commands (object):
         # Get the old & new body text and modification times.
         encoding = d.get('encoding')
         old_body = d.get('body')
-        ### new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
         new_body = g.toEncodedString(body,encoding,reportErrors=True)
         old_time = d.get('time')
         try:
@@ -1194,7 +1281,10 @@ class Commands (object):
         return fn
     #@+node:ekr.20100203050306.5937: *8* c.createOpenWithTempFile
     def createOpenWithTempFile (self,body,p,ext):
-        '''Actually create the temp file used by open-with.'''
+        '''
+        Actually create the temp file used by open-with.
+        Append a dict to g.app.openWithFiles.
+        '''
         trace = False and not g.unitTesting
         c = self
 
@@ -1214,10 +1304,8 @@ class Commands (object):
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
             if g.isPython3:
-                ### s = p.b
                 s = body
             else:
-                ### s = g.toEncodedString(p.b,encoding,reportErrors=True)
                 s = g.toEncodedString(body,encoding,reportErrors=True)
             f.write(s)
             f.flush()
