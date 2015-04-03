@@ -1363,10 +1363,10 @@ class Commands (object):
             elif word in ('@thin','@file'):
                 p.deleteAllChildren()
                 at.read(p,force=True)
-            elif word in ('@clean','@nosent'):
+            elif word in ('@clean',):
                 # Wishlist 148: use @auto parser if the node is empty.
                 if p.b.strip() or p.hasChildren():
-                    at.readOneAtNosentNode(p)
+                    at.readOneAtCleanNode(p)
                 else:
                     at.readOneAtAutoNode(fn,p)
             elif word == '@shadow ':
