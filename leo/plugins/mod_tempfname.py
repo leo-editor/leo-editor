@@ -50,7 +50,7 @@ def onStart (tag,keywords):
     '''Monkey patch c.openWithTempFilePath.'''
     # g.trace("mod_tempfName: replacing c.openWithTempFilePath")
     g.funcToMethod(openWithTempFilePath,leoCommands.Commands,"openWithTempFilePath")
-#@+node:EKR.20040517075715.3: ** openWithTempFilePath
+#@+node:EKR.20040517075715.3: ** openWithTempFilePath (mod_tempfname)
 def openWithTempFilePath (self,v,ext):
     """
     Return the path to the temp file corresponding to v and ext.
