@@ -742,33 +742,34 @@ class Commands (object):
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
-    #@+node:ekr.20150403045207.1: *4* c.externalFileHasChanged (to do)
+    #@+node:ekr.20150403045207.1: *4* c.externalFileHasChanged
     def externalFileHasChanged(self,p):
         '''Return True if p's external file has changed outside of Leo.'''
+        trace = False and not g.unitTesting
+        if g.unitTesting:
+            return False
         c = self
         d = self.external_files_dict
             # Keys are full paths; values are inner dicts.
-        path = g.fullPath(p)
-        
-        # fn = d.get('path'
-        # if not fn:
-            # return False
-
-        # encoding = d.get('encoding')
-        # old_body = d.get('body')
-        # new_body = g.toEncodedString(body,encoding,reportErrors=True)
-
-        new_time = g.os_path_getmtime(fn)
-        old_time = d.get('time')
-        if old_time is None:
-            d['time'] = g.os_path_getmtime(fn)
-            return False
+        path = g.fullPath(c,p)
+        fn = g.shortFileName(path)
+        d2 = d.get(path,{})
+        new_time = g.os_path_getmtime(path)
+        if d2:
+            old_time = d2.get('time')
+            if old_time == new_time:
+                return False
+            else:
+                if trace: g.trace('changed',old_time,new_time,fn)
+                assert old_time,p.h
+                d2['time'] = new_time 
+                d[path] = d2
+                return True
         else:
-            return old_time != new_time
-    #@+node:ekr.20150403050646.1: *4* c.updateOutlineFromExternalFile
-    def updateOutlineFromExternalFile(self,p):
-        '''Update p's outline from the corresponding external file.'''
-        g.trace(p.h)
+            if trace: g.trace('init',fn)
+            d2['time'] = new_time 
+            d[path] = d2
+            return False
     #@+node:ekr.20150403044823.1: *4* c.updateOutlineIfChanged
     def updateOutlineIfChanged(self,p):
         '''
@@ -784,7 +785,9 @@ class Commands (object):
             result = g.app.gui.runAskYesNoCancelDialog(c,
                 'Update outline?', message)
             if result.lower() == 'yes':
-                c.updateOutlineFromExternalFile(p)
+                c.redraw_now(p=p)
+                c.refreshFromDisk(p)
+
     #@+node:ekr.20150329162703.1: *3* c.cloneFind...
     #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
     def cloneFindParents(self,event=None):
