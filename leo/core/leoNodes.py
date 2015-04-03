@@ -2062,6 +2062,10 @@ class VNodeBase (object):
     def atAutoRstNodeName (self,h=None):
         names = ("@auto-rst",)
         return self.findAtFileName(names,h=h)
+        
+    def atCleanNodeName(self):
+        names = ("@clean",)
+        return self.findAtFileName(names)
 
     def atEditNodeName (self):
         names = ("@edit",)
@@ -2072,10 +2076,9 @@ class VNodeBase (object):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        names = ("@clean","@nosent", "@file-nosent",)
+        ### names = ("@clean","@nosent", "@file-nosent",)
+        names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
-
-    atCleanNodeName = atNoSentinelsFileNodeName
 
     def atShadowFileNodeName (self):
         names = ("@shadow",)
