@@ -2414,7 +2414,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             gts.triggered.connect(goto_callback)
             rclicks = build_rclick_tree(command_p,top_level=True)
             self.add_rclick_menu(b,rclicks,controller,script=script)
-        #@+node:ekr.20141031053508.15: *5* add_rclick_menu
+        #@+node:ekr.20141031053508.15: *5* add_rclick_menu (QtIconBarClass)
         def add_rclick_menu(self, action_container, rclicks, controller,
             top_level=True,
             button=None,
