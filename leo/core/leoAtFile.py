@@ -842,18 +842,30 @@ class AtFile:
                     p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
                     # c.setChanged(True) # 2011/06/17
                 p.moveToNodeAfterTree()
+            elif p.isAtAsisFileNode():
+                nRead += 1
+                at.rememberReadPath(at.fullPath(p),p)
+                p.moveToNodeAfterTree()
+            elif p.isAtNoSentFileNode():
+                nRead += 1
+                anyRead = True
+                at.readOneAtNosentNode(p)
+                p.moveToNodeAfterTree()
             else:
-                if p.isAtAsisFileNode():
-                    nRead += 1
-                    at.rememberReadPath(at.fullPath(p),p)
-                    p.moveToNodeAfterTree()
-                elif p.isAtNoSentFileNode():
-                    nRead += 1
-                    anyRead = True
-                    at.readOneAtNosentNode(p)
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
+                p.moveToThreadNext()
+            ###
+            # # # else:
+                # # # if p.isAtAsisFileNode():
+                    # # # nRead += 1
+                    # # # at.rememberReadPath(at.fullPath(p),p)
+                    # # # p.moveToNodeAfterTree()
+                # # # elif p.isAtNoSentFileNode():
+                    # # # nRead += 1
+                    # # # anyRead = True
+                    # # # at.readOneAtNosentNode(p)
+                    # # # p.moveToNodeAfterTree()
+                # # # else:
+                    # # # p.moveToThreadNext()
         # Preserve the orphan bits: the dirty bits will be cleared!
             # for v in c.all_unique_nodes():
             #    v.clearOrphan()
