@@ -2076,7 +2076,6 @@ class VNodeBase (object):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        ### names = ("@clean","@nosent", "@file-nosent",)
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
 
