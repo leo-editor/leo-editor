@@ -790,7 +790,6 @@ class AtFile:
             # we aren't doing the initial read.
             c.endEditing()
         t1 = time.time()
-        anyRead = False
         nRead = 0
         p = root.copy()
         scanned_tnodes = set()
@@ -810,7 +809,6 @@ class AtFile:
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
-                anyRead = True
                 nRead += 1
                 at.read(p,force=force)
                 p.moveToNodeAfterTree()
@@ -831,7 +829,6 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
                 nRead += 1
-                anyRead = True
                 wasOrphan = p.isOrphan()
                 ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
@@ -839,23 +836,22 @@ class AtFile:
                     p.setOrphan() # but the dirty bit gets cleared.
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                ### nRead += 1
                 at.rememberReadPath(at.fullPath(p),p)
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
                 nRead += 1
-                anyRead = True
                 at.readOneAtCleanNode(p)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        if nRead:
-            t2 = time.time()
-            g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
-        if partialFlag and not anyRead and not g.unitTesting:
-            g.es("no @<file> nodes in the selected tree")
+        if not g.unitTesting:
+            if nRead:
+                t2 = time.time()
+                g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
+            elif partialFlag:
+                g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
-        c.raise_error_dialogs()  # 2011/12/17
+        c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):
 
