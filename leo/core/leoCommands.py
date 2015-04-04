@@ -184,8 +184,6 @@ class Commands (object):
         '''Init file-related ivars of the commander.'''
         self.changed = False
             # True: the ouline has changed since the last save.
-        self.external_files_dict = {}
-            # Keys are full paths, values are inner dicts.
         self.ignored_at_file_nodes = []
             # List of nodes for error dialog.
         self.import_error_nodes = []
@@ -490,7 +488,6 @@ class Commands (object):
         getInt = c.config.getInt
         c.allow_at_in_paragraphs    = getBool('allow-at-in-paragraphs',default=False)
         c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
-        c.check_external_files      = getBool('check_for_changed_external_files',default=False)
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow      = getBool('collapse_on_lt_arrow',default=True)
         c.contractVisitedNodes      = getBool('contractVisitedNodes')
@@ -727,67 +724,82 @@ class Commands (object):
         Check whether any @<file> nodes has been changed outside of Leo.
         Prompt the user to update the file if so.
         '''
-        trace = False and not g.unitTesting
-        c = self
-        if c.check_external_files:
-            # g.trace('checking',c.shortFileName())
-            p = c.rootPosition()
-            seen = set()
-            while p:
-                if p.v in seen:
-                    p.moveToNodeAfterTree()
-                elif p.isAnyAtFileNode():
-                    seen.add(p.v)
-                    c.updateOutlineIfChanged(p)
-                    p.moveToNodeAfterTree()
+        class CheckForChangedFiles:
+            '''A class implementing c.checkForChangedFiles.'''
+            #@+others
+            #@+node:ekr.20150404050446.1: *4* ccf.birth
+            def __init__(self,c):
+                self.c = c
+                self.d = {}
+                    # Keys are full paths, values are inner dicts.
+                self.enabled = c.config.getBool(
+                    'check_for_changed_external_files',default=False)
+            #@+node:ekr.20150404045115.1: *4* ccf.check
+            def check(self):
+                '''Check for changed files in self.c'''
+                c = self.c
+                if not self.enabled or g.unitTesting:
+                    return
+                # g.trace('checking',c.shortFileName())
+                p = c.rootPosition()
+                seen = set()
+                while p:
+                    if p.v in seen:
+                        p.moveToNodeAfterTree()
+                    elif p.isAnyAtFileNode():
+                        seen.add(p.v)
+                        if self.changed(p):
+                            self.ask_and_update(p)
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
+            #@+node:ekr.20150403045207.1: *4* ccf.changed
+            def changed(self,p):
+                '''Return True if p's external file has changed outside of Leo.'''
+                trace = True and not g.unitTesting
+                tag = 'checkForChangedFiles'
+                c = self.c
+                d = self.d
+                    # Keys are full paths; values are inner dicts.
+                path = g.fullPath(c,p)
+                fn = g.shortFileName(path)
+                d2 = d.get(path,{})
+                new_time = g.os_path_getmtime(path)
+                if d2:
+                    old_time = d2.get('time')
+                    if old_time == new_time:
+                        return False
+                    else:
+                        if trace: print('%s:changed %s %s %s' % (tag,old_time,new_time,fn))
+                        assert old_time,p.h
+                        d2['time'] = new_time 
+                        d[path] = d2
+                        return True
                 else:
-                    p.moveToThreadNext()
-    #@+node:ekr.20150403045207.1: *4* c.externalFileHasChanged
-    def externalFileHasChanged(self,p):
-        '''Return True if p's external file has changed outside of Leo.'''
-        trace = False and not g.unitTesting
-        if g.unitTesting:
-            return False
+                    if trace: print('%s:init %s' % (tag,fn))
+                    d2['time'] = new_time 
+                    d[path] = d2
+                    return False
+            #@+node:ekr.20150403044823.1: *4* ccf.ask_and_update
+            def ask_and_update(self,p):
+                '''
+                Ask user whether to update an @<file> tree.
+                Update the file if the user agrees.
+                '''
+                c = self.c
+                s = '\n'.join([
+                    '%s has changed outside Leo.' % (p.h),
+                    'Update the outline from the external file?'
+                ])
+                result = g.app.gui.runAskYesNoCancelDialog(c,'Update Outline?',s)
+                if result.lower() == 'yes':
+                    c.redraw_now(p=p)
+                    c.refreshFromDisk(p)
+            #@-others
         c = self
-        d = self.external_files_dict
-            # Keys are full paths; values are inner dicts.
-        path = g.fullPath(c,p)
-        fn = g.shortFileName(path)
-        d2 = d.get(path,{})
-        new_time = g.os_path_getmtime(path)
-        if d2:
-            old_time = d2.get('time')
-            if old_time == new_time:
-                return False
-            else:
-                if trace: g.trace('changed',old_time,new_time,fn)
-                assert old_time,p.h
-                d2['time'] = new_time 
-                d[path] = d2
-                return True
-        else:
-            if trace: g.trace('init',fn)
-            d2['time'] = new_time 
-            d[path] = d2
-            return False
-    #@+node:ekr.20150403044823.1: *4* c.updateOutlineIfChanged
-    def updateOutlineIfChanged(self,p):
-        '''
-        Ask user whether to update an @<file> tree if the corresponding
-        external file has been changed outside of Leo.
-        '''
-        c = self
-        message = '\n'.join([
-            '%s has changed outside Leo.' % (p.h),
-            'Update the outline from the external file?'
-        ])
-        if c.externalFileHasChanged(p):
-            result = g.app.gui.runAskYesNoCancelDialog(c,
-                'Update outline?', message)
-            if result.lower() == 'yes':
-                c.redraw_now(p=p)
-                c.refreshFromDisk(p)
-
+        if not hasattr(c,'checkForChangedFilesInstance'):
+            c.checkForChangedFilesInstance = CheckForChangedFiles(c)
+        c.checkForChangedFilesInstance.check()
     #@+node:ekr.20150329162703.1: *3* c.cloneFind...
     #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
     def cloneFindParents(self,event=None):
