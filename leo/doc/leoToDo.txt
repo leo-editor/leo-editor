@@ -6,6 +6,7 @@
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1
 @language rest
 @wrap
+@tabwidth -4
 .. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
 http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
 .. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
@@ -205,7 +206,7 @@ would be a statement "here's a recent point on trunk with no known issues".
 .. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
 .. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
 Put them in Leo's core or in scripts.leo.
-.. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
+.. @+node:ekr.20150328195911.1: *4* Document Parnas & Myers
 - separation of concerns make Leo work.
   David Parnas
   https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
@@ -214,6 +215,9 @@ Put them in Leo's core or in scripts.leo.
   http://en.wikipedia.org/wiki/Glenford_Myers
   Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
   http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
+
+ David Parnas:
+On the Criteria to be use in Decomposing Systems into Modules
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 .. @+node:ekr.20150316141655.14: *3* Better default for open/save file dialogs
 # Maybe the directory of c.fileName.
