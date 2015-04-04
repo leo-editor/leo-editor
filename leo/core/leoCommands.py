@@ -718,68 +718,25 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
-    #@+node:ekr.20150330034516.1: *3* c.checkForChangedFiles & helpers
+    #@+node:ekr.20150330034516.1: *3* c.checkForChangedFiles
     def checkForChangedFiles(self):
         '''
-        Check whether any @<file> nodes has been changed outside of Leo.
-        Prompt the user to update the file if so.
+        For each @<file> node that has been changed outside Leo,
+        prompt the user whether to update the file.
         '''
         class CheckForChangedFiles:
             '''A class implementing c.checkForChangedFiles.'''
             #@+others
-            #@+node:ekr.20150404050446.1: *4* ccf.birth
+            #@+node:ekr.20150404050446.1: *4*  ccf.ctor
             def __init__(self,c):
+                '''Ctor for CheckForChaangedFiles class.'''
                 self.c = c
-                self.d = {}
-                    # Keys are full paths, values are inner dicts.
+                self.checksum_d = {}
+                    # Keys are full paths, values are file checksums.
                 self.enabled = c.config.getBool(
                     'check_for_changed_external_files',default=False)
-            #@+node:ekr.20150404045115.1: *4* ccf.check
-            def check(self):
-                '''Check for changed files in self.c'''
-                c = self.c
-                if not self.enabled or g.unitTesting:
-                    return
-                # g.trace('checking',c.shortFileName())
-                p = c.rootPosition()
-                seen = set()
-                while p:
-                    if p.v in seen:
-                        p.moveToNodeAfterTree()
-                    elif p.isAnyAtFileNode():
-                        seen.add(p.v)
-                        if self.changed(p):
-                            self.ask_and_update(p)
-                        p.moveToNodeAfterTree()
-                    else:
-                        p.moveToThreadNext()
-            #@+node:ekr.20150403045207.1: *4* ccf.changed
-            def changed(self,p):
-                '''Return True if p's external file has changed outside of Leo.'''
-                trace = True and not g.unitTesting
-                tag = 'checkForChangedFiles'
-                c = self.c
-                d = self.d
-                    # Keys are full paths; values are inner dicts.
-                path = g.fullPath(c,p)
-                fn = g.shortFileName(path)
-                d2 = d.get(path,{})
-                new_time = g.os_path_getmtime(path)
-                if d2:
-                    old_time = d2.get('time')
-                    if old_time == new_time:
-                        return False
-                    else:
-                        if trace: print('%s:changed %s %s %s' % (tag,old_time,new_time,fn))
-                        assert old_time,p.h
-                        d2['time'] = new_time 
-                        d[path] = d2
-                        return True
-                else:
-                    if trace: print('%s:init %s' % (tag,fn))
-                    d2['time'] = new_time 
-                    d[path] = d2
-                    return False
+                self.time_d = {}
+                    # Keys are full paths, values are modification times.
             #@+node:ekr.20150403044823.1: *4* ccf.ask_and_update
             def ask_and_update(self,p):
                 '''
@@ -795,6 +752,69 @@ class Commands (object):
                 if result.lower() == 'yes':
                     c.redraw_now(p=p)
                     c.refreshFromDisk(p)
+            #@+node:ekr.20150404045115.1: *4* ccf.check
+            def check(self):
+                '''Check for changed files in self.c'''
+                c = self.c
+                if not self.enabled or g.unitTesting:
+                    return
+                # g.trace('checking',c.shortFileName())
+                p = c.rootPosition()
+                seen = set()
+                while p:
+                    if p.v in seen:
+                        p.moveToNodeAfterTree()
+                    elif p.isAnyAtFileNode():
+                        seen.add(p.v)
+                        if self.has_changed(p):
+                            self.ask_and_update(p)
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
+            #@+node:ekr.20150404052819.1: *4* ccf.checksum
+            def checksum(self,path):
+                '''Return the checksum of the file at the given path.'''
+                import hashlib
+                return hashlib.md5(open(path,'rb').read()).hexdigest()
+            #@+node:ekr.20150403045207.1: *4* ccf.has_changed
+            def has_changed(self,p):
+                '''Return True if p's external file has changed outside of Leo.'''
+                trace = False and not g.unitTesting
+                tag = 'checkForChangedFiles'
+                c = self.c
+                path = g.fullPath(c,p)
+                if not g.os_path_exists(path):
+                    if trace: g.trace('does not exist',path)
+                    return
+                fn = g.shortFileName(path)
+                # First, check the modification times.
+                old_time = self.time_d.get(path)
+                new_time = g.os_path_getmtime(path)
+                if not old_time:
+                    # Initialize.
+                    self.time_d[path] = new_time
+                    self.checksum_d[path] = checksum = self.checksum(path)
+                    if trace: print('%s:init %s %s' % (tag,checksum,fn))
+                    return False
+                if old_time == new_time:
+                    return False
+                # Check the checksums *only* if the mod times don't match.
+                old_sum = self.checksum_d.get(path)
+                new_sum = self.checksum(path)
+                if new_sum == old_sum:
+                    # The modtime changed, but it's contents didn't.
+                    # Update the time, so we don't keep checking the checksums.
+                    # Return False so we don't prompt the user for an update.
+                    if trace: print('%s:unchanged %s %s' % (tag,old_time,new_time))
+                    self.time_d[path] = new_time
+                    return False
+                else:
+                    # The file has really changed.
+                    if trace: print('%s:changed %s %s %s' % (tag,old_sum,new_sum,fn))
+                    assert old_time,p.h
+                    self.time_d[path] = new_time
+                    self.checksum_d[path] = new_sum
+                    return True
             #@-others
         c = self
         if not hasattr(c,'checkForChangedFilesInstance'):
