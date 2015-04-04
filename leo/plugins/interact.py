@@ -315,7 +315,7 @@ class InteractController:
     #@+node:tbrown.20090603104805.4964: *3* addToLastChildButton
     def addToLastChildButton (self,event=None):
         self.addButton(first=False)
-    #@+node:tbrown.20090603104805.4965: *3* addButton
+    #@+node:tbrown.20090603104805.4965: *3* addButton (interact.py)
     def addButton(self,first):
         '''Add a button for an interact class.'''
         c = self.c ; p = c.p
@@ -323,6 +323,7 @@ class InteractController:
         mb = InteractButton(c,class_=first)
         if mb.available():
             b = sc.createIconButton(
+                args=None,
                 text = mb.interactor.buttonText(),
                 command = mb.run,
                 statusLine = mb.interactor.statusText(),

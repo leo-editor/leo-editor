@@ -496,7 +496,7 @@ class AtFile:
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
         '''
-        at = self
+        at,c = self,self.c
         if fromString:
             if at.atShadow:
                 return at.error(
@@ -505,7 +505,7 @@ class AtFile:
             at.initReadLine(fromString) # 2014/10/07
             fn = None
         else:
-            fn = at.fullPath(at.root)
+            fn = g.fullPath(c,at.root)
                 # Returns full path, including file name.
             at.setPathUa(at.root,fn)
                 # Remember the full path to this node.
@@ -559,14 +559,14 @@ class AtFile:
         """Read an @thin or @file tree."""
         trace = (False or g.app.debug) and not g.unitTesting
         # if trace: g.trace(root.h)
-        at = self ; c = at.c
+        at,c = self,self.c
         fileName = at.initFileName(fromString,importFileName,root)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(at.fullPath(root),root)
+        at.rememberReadPath(g.fullPath(c,root),root)
         # Bug fix 2011/05/23: Restore orphan trees from the outline.
         if root.isOrphan():
             g.es("reading:",root.h)
@@ -790,7 +790,6 @@ class AtFile:
             # we aren't doing the initial read.
             c.endEditing()
         t1 = time.time()
-        anyRead = False
         nRead = 0
         p = root.copy()
         scanned_tnodes = set()
@@ -810,7 +809,6 @@ class AtFile:
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
-                anyRead = True
                 nRead += 1
                 at.read(p,force=force)
                 p.moveToNodeAfterTree()
@@ -831,39 +829,29 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
                 nRead += 1
-                anyRead = True
                 wasOrphan = p.isOrphan()
                 ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
-                    # However, the dirty bit gets cleared.
-                    # p.setDirty() # 2011/06/17: won't be preserved anyway.
-                        # Expensive, but it can't be helped.
-                    p.setOrphan() # 2010/10/22: the dirty bit gets cleared.
-                    # c.setChanged(True) # 2011/06/17
+                    p.setOrphan() # but the dirty bit gets cleared.
+                p.moveToNodeAfterTree()
+            elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                at.rememberReadPath(g.fullPath(c,p),p)
+                p.moveToNodeAfterTree()
+            elif p.isAtCleanNode():
+                nRead += 1
+                at.readOneAtCleanNode(p)
                 p.moveToNodeAfterTree()
             else:
-                if p.isAtAsisFileNode():
-                    nRead += 1
-                    at.rememberReadPath(at.fullPath(p),p)
-                    p.moveToNodeAfterTree()
-                elif p.isAtNoSentFileNode():
-                    nRead += 1
-                    anyRead = True
-                    at.readOneAtNosentNode(p)
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-        # Preserve the orphan bits: the dirty bits will be cleared!
-            # for v in c.all_unique_nodes():
-            #    v.clearOrphan()
-        if nRead:
-            t2 = time.time()
-            g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
-        if partialFlag and not anyRead and not g.unitTesting:
-            g.es("no @<file> nodes in the selected tree")
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if nRead:
+                t2 = time.time()
+                g.es('read %s files in %2.2f seconds' % (nRead,t2-t1))
+            elif partialFlag:
+                g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
-        c.raise_error_dialogs()  # 2011/12/17
+        c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):
 
@@ -968,12 +956,12 @@ class AtFile:
         p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
-    #@+node:ekr.20150204165040.5: *4* at.readOneAtNosentNode & helpers
-    def readOneAtNosentNode(self,root):
+    #@+node:ekr.20150204165040.5: *4* at.readOneAtCleanNode & helpers
+    def readOneAtCleanNode(self,root):
         '''Update the @clean/@nosent node at root.'''
         trace = False and not g.unitTesting
         at,c,x = self,self.c,self.c.shadowController
-        fileName = at.fullPath(root)
+        fileName = g.fullPath(c,root)
         if not g.os_path_exists(fileName):
             g.es('not found: %s' % (fileName),color='red')
             return
@@ -983,8 +971,8 @@ class AtFile:
             # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(root)
             # Sets at.startSentinelComment/endSentinelComment.
-        new_public_lines = at.read_at_nosent_lines(fileName)
-        old_private_lines = self.write_nosent_sentinels(root)
+        new_public_lines = at.read_at_clean_lines(fileName)
+        old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines,fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines,marker)
         if old_public_lines:
@@ -1032,8 +1020,8 @@ class AtFile:
         for s in lines:
             print(s.rstrip())
 
-    #@+node:ekr.20150204165040.8: *5* at.read_at_nosent_lines
-    def read_at_nosent_lines(self,fn):
+    #@+node:ekr.20150204165040.8: *5* at.read_at_clean_lines
+    def read_at_clean_lines(self,fn):
         '''Return all lines of the @clean/@nosent file at fn.'''
         at = self
         s = at.openFileHelper(fn)
@@ -1043,11 +1031,11 @@ class AtFile:
         s = s.replace('\r\n','\n')
             # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
-    #@+node:ekr.20150204165040.9: *5* at.write_nosent_sentinels
-    def write_nosent_sentinels(self,root):
+    #@+node:ekr.20150204165040.9: *5* at.write_at_clean_sentinels
+    def write_at_clean_sentinels(self,root):
         '''
-        Return all lines of the @clean/@nosent tree as if the tree were written
-        as an @file node.
+        Return all lines of the @clean tree as if it were
+        written as an @file node.
         '''
         at = self.c.atFileCommands
         at.write(root,
@@ -3301,7 +3289,7 @@ class AtFile:
             pathChanged = False
         else:
             oldPath = g.os_path_normcase(at.getPathUa(p))
-            newPath = g.os_path_normcase(at.fullPath(p))
+            newPath = g.os_path_normcase(g.fullPath(c,p))
             pathChanged = oldPath and oldPath != newPath
             # 2010/01/27: suppress this message during save-as and save-to commands.
             if pathChanged and not c.ignoreChangedPaths:
@@ -3566,13 +3554,12 @@ class AtFile:
         return found
     #@+node:ekr.20080711093251.5: *5* at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
-
-        '''Write p, an @shadow node.
-
-        File indices *must* have already been assigned.'''
-
+        '''
+        Write p, an @shadow node.
+        File indices *must* have already been assigned.
+        '''
         trace = False and not g.unitTesting
-        at = self ; c = at.c ; x = c.shadowController
+        at,c,x = self,self.c,self.c.shadowController
         root = p.copy() 
         fn = p.atShadowFileNodeName()
         if trace: g.trace(p.h,fn)
@@ -3581,7 +3568,7 @@ class AtFile:
             return False
         # A hack to support unknown extensions.
         self.adjustTargetLanguage(fn) # May set c.target_language.
-        fn = at.fullPath(p)
+        fn = g.fullPath(c,p)
         at.default_directory = g.os_path_dirname(fn)
         # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
@@ -5313,30 +5300,6 @@ class AtFile:
 
         # Do _not_ call self.error here.
         return g.utils_stat(fileName)
-    #@+node:ekr.20090530055015.6050: *3* at.fullPath
-    def fullPath (self,p,simulate=False):
-        '''
-        Return the full path (including fileName) in effect at p.
-
-        Neither the path nor the fileName will be created if it does not exist.
-        '''
-        at = self ; c = at.c
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if simulate: # for unit tests.
-            fn = p.h
-        else:
-            fn = p.anyAtFileNodeName()
-        if fn:
-            # Fix bug 102: call commander method, not the global function.
-            path = c.os_path_finalize_join(path,fn)
-        else:
-            g.trace('can not happen: not an @<file> node',g.callers())
-            for p2 in p.self_and_parents():
-                g.trace('  %s' % p2.h)
-            path = ''
-        # g.trace(p.h,repr(path))
-        return path
     #@+node:ekr.20090530055015.6023: *3* at.get/setPathUa
     def getPathUa (self,p):
 

@@ -639,12 +639,15 @@ class ShadowController:
                 # Init the base class.
             self.c = c
             self.p = p.copy()
-            self.shadowController=shadowController
+            self.shadowController = x = shadowController
             self.trace = trace
             # Hard value for now.
             if delims is None:
                 delims = '#','',''
-            self.marker = shadowController.Marker(delims)
+            self.marker = x.marker = shadowController.Marker(delims)
+                # 2015/04/03: tricky: set *both* ivars.
+                # This bug became apparent because unitTest.leo no longer
+                # pre-loads any @shadow files.
             # For teardown...
             self.ok = True
         #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)

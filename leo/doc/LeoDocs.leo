@@ -1205,7 +1205,8 @@
 </v>
 </v>
 <v t="ekr.20050903074833"></v>
-<v t="ekr.20131008041326.16222"></v>
+<v t="ekr.20150403145058.2"><vh>** Document using Ctrl-G</vh></v>
+<v t="ekr.20150403145058.3"><vh>** revise @nosent docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18165,6 +18166,21 @@ The ability to work on projects with people who don't have Leo is obvious; one p
     
     if __name__ == '__main__':
         main()</t>
+<t tx="ekr.20150403145058.2">@language rest
+@wrap
+
+Executive summary: Ctrl-G will usually put focus in the body pane even if it does not appear that any Leo widget has focus.  This is more effective than hitting Alt-Tab twice.
+
+This morning I solved a mystery that has tormented me for years.  Every so often, Leo seems to lose focus, and hitting Alt-Tab twice may not appear to  restore focus. What is going on?
+
+It turns out that hitting a "bare" Alt key (on Windows) puts focus in the menu bar.  There is a tiny indication that this is so: the file menu is highlighted, but it does not drop down.
+
+ Previously, I had tried to force focus by hitting Alt-Tab twice.  The first Alt-Tab selects another app.  The second Alt-Tab reselects Leo.  Sometimes this puts focus in the body pane.  Sometimes not.
+
+Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought of using Ctrl-G because focus must indeed be somewhere in Leo for Ctrl-G to work.  But that's usually true even if the focus is not apparent.
+
+Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
+<t tx="ekr.20150403145058.3"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

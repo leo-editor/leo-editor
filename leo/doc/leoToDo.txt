@@ -3,37 +3,12 @@
 .. @@language rest # override the default .txt coloring.
 .. @@wrap
 .. @+all
-.. @+node:ekr.20150302140653.4: ** To do: Leo 5.1 b2/final
+.. @+node:ekr.20150302140653.4: ** To do: Leo 5.1
 @language rest
 @wrap
+@tabwidth -4
 .. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
 http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
-.. @+node:ekr.20150401061843.1: *3* Fix bug 172: repeat-command-in-history, with tab completion
-https://github.com/leo-editor/leo-editor/issues/172
-
-- [ ] Add repeat-command-in-history.
-- [ ] Improve the order in which commands in the history.
-
-``repeat-command-in-history``
-    Enters the minibuffer and prompts for a command from command history.
-    
-    This command will support tab completion: A tab in the log pane will show the commands in the history list. Tab completion will be limited to only those commands.
-.. @+node:ekr.20150401061613.1: *3* Fix bug 171: Improve handling of @command and @button nodes
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/171
-
-- [x] Never open myLeoSettings.leo to find a common script.
-- [x] ``<Alt-x>@<tab>`` shows source file of common scripts.
-- [ ] Common scripts create entries in command history.
-- [ ] Empty script nodes put their headline command in command history.
-- [x] Make sure all ``@button`` & ``@commands`` nodes show ``@key`` bindings.
-.. @+node:ekr.20150330020649.1: *3* Fix bug 170: detect changes in external files
-https://github.com/leo-editor/leo-editor/issues/170
-
-Add an @settings switch that causes Leo to track externally files for changes since the last leo-initiated save.
-
-If so, raise an alert allowing the user either to reload the file or ignore the external changes.
 .. @+node:ekr.20150325052301.1: *3* Fix bug 165: vim-open-file command
 @language rest
 @wrap
@@ -44,7 +19,16 @@ https://github.com/leo-editor/leo-editor/issues/165
 - Fold mod_tempfname into code and test.
 
 Later: preserve cursor positions.
+.. @+node:ekr.20150403035403.1: *3* Fix bug 156: ILeo errors not piped to Log, etc.
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/156
+Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
 .. @+node:ekr.20150227040245.11: *3* Fix bug 143: dabbrev-expand broken
+@language rest
+@wrap
+
 https://github.com/leo-editor/leo-editor/issues/143
 
 https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
@@ -70,11 +54,14 @@ On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
             main
             m
 .. @+node:ekr.20150326092537.1: *3* Fix bug 166: Fix icon hooks in plugins, etc.
+@language rest
+@wrap
+
 https://github.com/leo-editor/leo-editor/issues/166
 
-    
-- Remove unused events from table of events.
+This is a minor issue, affecting mostly documentation.
 
+- Remove unused events from table of events.
 
 clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
 
@@ -94,47 +81,19 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 
 - leo_to_rtf.py throws a bunch of errors.
 - leo_pdf.py won't load.
-.. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
-Set default for @string stylesheet so it generates::
-
-    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
-.. @+node:ekr.20150329164756.1: *3* Later
-.. @+node:ekr.20150401062437.1: *4* Fix bug 173: script history and related commands
-https://github.com/leo-editor/leo-editor/issues/173
-.. @+node:ekr.20150327175112.1: *4* clean up event handling
+.. @+node:ekr.20150403035558.1: *3* Fix bug 169: import-file does not preserve gnx of root @file node
 @language rest
+@wrap
 
-- Test arguments to g.registerHandler.
-- g.app.valid_event_names.  Does it already exist?
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150330125434.1: *4* Don't loop with @button/command
-Do something intelligent wnen the @button name is the name of a command.
-.. @+node:ekr.20150330080509.1: *3* Docs
-.. @+node:ekr.20150330084832.1: *4* Recommend git
-@language rest
+https://github.com/leo-editor/leo-editor/issues/169
+import-file does not preserve gnx of root @file node
 
-- New page: why you should use git to get Leo.
+Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
 
-Terry re branching:
+No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
 
-The difference between the proposed "stable master" above and just pulling
-"(current) master from two weeks ago", is that "two weeks ago" says nothing
-about issues or their absence, where the consciously synced develop->master
-would be a statement "here's a recent point on trunk with no known issues".
-.. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
-.. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
-Put them in Leo's core or in scripts.leo.
-.. @+node:ekr.20150328195911.1: *4* Post: Parnas & Myers
-- separation of concerns make Leo work.
-  David Parnas
-  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
-  
-  Glenford Myers
-  http://en.wikipedia.org/wiki/Glenford_Myers
-  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
-  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
-.. @+node:ekr.20130806072439.20650: ** Fix bug 106: brew install leo (after 5.1 final)
+My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
+.. @+node:ekr.20130806072439.20650: *3* Fix bug 106: brew install leo (after 5.1 final)
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/106
@@ -149,7 +108,7 @@ Do this after creating each official release.
 
 @language ruby
 @tabwidth -2
-.. @+node:ekr.20141210123805.4: *3* brew install (original)
+.. @+node:ekr.20141210123805.4: *4* brew install (original)
 require 'formula'
 
 class Leo < Formula
@@ -182,7 +141,7 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20141210123805.5: *3* brew install (new)
+.. @+node:ekr.20141210123805.5: *4* brew install (new)
 require 'formula'
 
 class Leo < Formula
@@ -213,6 +172,43 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20150319055953.11: *3* Improve <?xml-stylesheet>
+@language rest
+@wrap
+
+Set default for @string stylesheet so it generates::
+
+    <?xml-stylesheet type="text/xsl" href="ekr_test"?>
+.. @+node:ekr.20150330080509.1: *3* Docs
+@language rest
+@wrap
+.. @+node:ekr.20150330084832.1: *4* Recommend git
+@language rest
+@wrap
+
+- New page: why you should use git to get Leo.
+
+Terry re branching:
+
+The difference between the proposed "stable master" above and just pulling
+"(current) master from two weeks ago", is that "two weeks ago" says nothing
+about issues or their absence, where the consciously synced develop->master
+would be a statement "here's a recent point on trunk with no known issues".
+.. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
+.. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
+Put them in Leo's core or in scripts.leo.
+.. @+node:ekr.20150328195911.1: *4* Document Parnas & Myers
+- separation of concerns make Leo work.
+  David Parnas
+  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
+  
+  Glenford Myers
+  http://en.wikipedia.org/wiki/Glenford_Myers
+  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
+  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
+
+ David Parnas:
+On the Criteria to be use in Decomposing Systems into Modules
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 .. @+node:ekr.20150316141655.14: *3* Better default for open/save file dialogs
 # Maybe the directory of c.fileName.
@@ -1214,6 +1210,8 @@ to organizer node whose headline is Imports.
 
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
+.. @+node:ekr.20150311123850.7: *3* Improve --diff
+The --diff option is not very useful as a git diff.
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry

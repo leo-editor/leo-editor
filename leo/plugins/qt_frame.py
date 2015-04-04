@@ -1367,7 +1367,9 @@ class LeoQtBody (leoFrame.LeoBody):
         option,qt = QtGui.QTextOption,QtCore.Qt
         w.setHorizontalScrollBarPolicy(
             qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
-        w.setWordWrapMode(option.WordWrap if wrap else option.NoWrap)
+        wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
+            # was option WordWrap
+        w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName (self):
 
@@ -2414,7 +2416,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             gts.triggered.connect(goto_callback)
             rclicks = build_rclick_tree(command_p,top_level=True)
             self.add_rclick_menu(b,rclicks,controller,script=script)
-        #@+node:ekr.20141031053508.15: *5* add_rclick_menu
+        #@+node:ekr.20141031053508.15: *5* add_rclick_menu (QtIconBarClass)
         def add_rclick_menu(self, action_container, rclicks, controller,
             top_level=True,
             button=None,

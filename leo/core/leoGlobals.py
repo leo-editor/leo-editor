@@ -2654,6 +2654,25 @@ def ensure_extension (name, ext):
         return name
     else:
         return name + ext
+#@+node:ekr.20150403150655.1: *3* g.fullPath
+def fullPath(c,p,simulate=False):
+    '''
+    Return the full path (including fileName) in effect at p.
+    Neither the path nor the fileName will be created if it does not exist.
+    '''
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    fn = p.h if simulate else p.anyAtFileNodeName()
+        # Use p.h for unit tests.
+    if fn:
+        # Fix bug 102: call commander method, not the global function.
+        path = c.os_path_finalize_join(path,fn)
+    else:
+        g.trace('can not happen: not an @<file> node',g.callers())
+        for p2 in p.self_and_parents():
+            g.trace('  %s' % p2.h)
+        path = ''
+    return path
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 

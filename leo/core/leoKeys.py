@@ -1725,16 +1725,30 @@ class GetArg:
         'L' local .leo File
         ' ' not an @command or @button node
         '''
+        c = ga.c    
         if commandName.startswith('@'):
-            return 'M'
+            d = c.commandsDict
+            func = d.get(commandName)
+            if hasattr(func,'source_c'):
+                c2 = func.source_c
+                fn2 = c2.shortFileName().lower()
+                if fn2.endswith('myleosettings.leo'):
+                    return 'M'
+                elif fn2.endswith('leosettings.leo'):
+                    return 'G'
+                else:
+                    return 'L'
+            else:
+                return '?'
         else:
             return ' '
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
 class KeyHandlerClass:
-
-    '''A class to support emacs-style commands.'''
-
+    '''
+    A class to support emacs-style commands.
+    c.k is an instance of this class.
+    '''
     #@+others
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4* k.__init__& helpers
@@ -2583,6 +2597,51 @@ class KeyHandlerClass:
             if w not in aList:
                 aList.append(w)
                 k.masterGuiBindingsDict [stroke] = aList
+    #@+node:ekr.20150402111403.1: *3* k.Command history
+    #@+node:ekr.20150402111413.1: *4* k.addToCommandHistory
+    def addToCommandHistory(self,commandName):
+        '''Add a name to the command history.'''
+        k = self
+        # g.trace(commandName)
+        h,i = k.commandHistory,k.commandIndex
+        if commandName in h:
+            h.remove(commandName)
+        h.append(commandName)
+        k.commandIndex = len(h)-1
+    #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
+    def commandHistoryDown(self):
+        '''
+        Return the first entry if we are at the bottom
+        Otherwise, deccrement the index and return that element.
+        '''
+        k = self
+        h,i = k.commandHistory,k.commandIndex
+        if h:
+            if i > 0:
+                i -= 1
+            k.commandIndex = i
+            commandName = h[i]
+            k.setLabel(k.mb_prefix + commandName)
+    #@+node:ekr.20150402171131.1: *4* k.commandHistoryUp
+    def commandHistoryUp(self):
+        '''
+        Return the last entry if we are at the top.
+        Otherwise, increment the index and return that element.
+        '''
+        k = self
+        h,i = k.commandHistory,k.commandIndex
+        if h:
+            if i+1 < len(h):
+                i += 1
+            k.commandIndex = i
+            commandName = h[i]
+            k.setLabel(k.mb_prefix + commandName)
+    #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
+    def sortCommandHistory(self):
+        '''Sort the command history.'''
+        k = self
+        k.commandHistory.sort()
+        k.commandIndex = len(k.commandHistory)-1
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
@@ -2617,15 +2676,10 @@ class KeyHandlerClass:
             pass
         elif char == 'Escape':
             k.keyboardQuit()
-        elif char in ('Down','Up'):
-            # Do command history.
-            h,i = k.commandHistory,k.commandIndex
-            if h:
-                i = min(i+1,len(h)-1) if char == 'Up' else max(0,i-1)
-                commandName = h[i]
-                k.commandIndex = i
-                # g.trace(char,i,h,h[i])
-                k.setLabel(k.mb_prefix + commandName)
+        elif char == 'Down':
+            k.commandHistoryDown()
+        elif char == 'Up':
+            k.commandHistoryUp()
         elif char in ('\n','Return'):
             if trace and verbose: g.trace('***Return')
             if trace and trace_event:
@@ -2649,12 +2703,7 @@ class KeyHandlerClass:
                 commandName = s.strip()
                 ok = k.callAltXFunction(k.mb_event)
                 if ok:
-                    # Update command history if the command exists.
-                    h,i = k.commandHistory,k.commandIndex
-                    if commandName in h:
-                        h.remove(commandName)
-                        k.commandIndex = max(0,i-1)
-                    h.append(commandName)
+                    k.addToCommandHistory(commandName)
         elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(list(c.commandsDict.keys()))
@@ -3147,7 +3196,7 @@ class KeyHandlerClass:
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
-        pane='all',verbose=False, wrap=True
+        pane='all',source_c=None,verbose=False, wrap=True
     ):
         '''
         Make the function available as a minibuffer command,
@@ -3157,13 +3206,15 @@ class KeyHandlerClass:
         restriction to functions is not significant.
 
         If wrap is True then func will be wrapped with c.universalCallback.
+        source_c is the commander in which an @command or @button node is defined.
         '''
         trace = False and not g.unitTesting and commandName.startswith(':')
         verbose = False
-        k = self ; c = k.c
+        c,k = self.c,self
         if trace: g.trace(commandName,shortcut)
         if wrap:
-            func = c.universalCallback(func)
+            source_c = source_c or c
+            func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != 'dummyCallback' and trace and verbose:
             g.error('redefining',commandName)

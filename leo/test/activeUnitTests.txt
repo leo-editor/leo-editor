@@ -1870,15 +1870,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoAtFile tests')
 #@+node:ekr.20101021205258.6011: *4* at.Directives & directories
-#@+node:ekr.20100131180007.5455: *5* @test at.fullDirectoryPath
-at = c.atFileCommands
-
-p2 = p.firstChild().firstChild()
-path = at.fullPath(p2,simulate=True)
-end = g.os_path_normpath('abc/xyz')
-assert path.endswith(end),repr(path)
-#@+node:ekr.20100131180007.5456: *6* @path abc
-#@+node:ekr.20100131180007.5457: *7* xyz
 #@+node:ekr.20100131180007.5454: *5* @test at.get/setPathUa
 at = c.atFileCommands
 
@@ -11066,6 +11057,13 @@ table = (
 for s,word,i,expected in table:
     actual = g.find_word(s,word,i)
     assert actual == expected
+#@+node:ekr.20100131180007.5455: *4* @test g.fullPath
+p2 = p.firstChild().firstChild()
+path = g.fullPath(c,p2,simulate=True)
+end = g.os_path_normpath('abc/xyz')
+assert path.endswith(end),repr(path)
+#@+node:ekr.20100131180007.5456: *5* @path abc
+#@+node:ekr.20100131180007.5457: *6* xyz
 #@+node:ekr.20071113090055.5: *4* @test g.get_directives_dict
 # This will work regardless of where this method is.
 @language python
