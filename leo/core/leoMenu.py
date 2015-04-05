@@ -40,7 +40,7 @@ class LeoMenu:
 
             # File menu...
                 # 'revert':         True, # Revert is always enabled.               
-            'open-with':            g.app.hasOpenWithMenu,
+                # 'open-with':      True, # Open-With is always enabled.
 
             # Edit menu...
             'undo':                 c.undoer.canUndo,

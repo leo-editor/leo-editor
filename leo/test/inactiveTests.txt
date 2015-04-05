@@ -3275,9 +3275,9 @@ test(
 test(
     "os.startfile("+arg+shortPath+")",
     "os.startfile(%s)" % (arg+shortPath))
-test(
-    "exec("+arg+shortPath+")",
-    "exec(%s)" % (arg+shortPath))
+# test(
+    # "exec("+arg+shortPath+")",
+    # "exec(%s)" % (arg+shortPath))
 test(
     "os.spawnl("+arg+","+filename+','+ shortPath+")",
     "os.spawnl(%s,%s,%s)" % (arg,filename,shortPath))

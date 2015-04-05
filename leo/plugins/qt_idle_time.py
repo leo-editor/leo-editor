@@ -117,7 +117,7 @@ class IdleTime:
         except Exception:
             g.es_exception()
             self.stop()
-    #@+node:ekr.20140825080012.18529: *3* IdleTime.destory_self
+    #@+node:ekr.20140825080012.18529: *3* IdleTime.destroy_self
     def destroy_self(self):
         '''Remove the instance from g.app.idle_timers.'''
         if not g.app.killed and self in g.app.idle_timers:

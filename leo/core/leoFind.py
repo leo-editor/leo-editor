@@ -227,7 +227,7 @@ class LeoFind:
         ###    self.findNext()
 
         # Move forward one node if we found a match in a headline:
-        #   Pressing the button destorys c.edit_widget(p), so
+        #   Pressing the button destroys c.edit_widget(p), so
         #   initInteractiveCommands does not compute ins properly.
         if self.was_in_headline:
             self.was_in_headline = False
@@ -246,15 +246,9 @@ class LeoFind:
         c,p = self.c,self.c.p
         p0 = p.copy()
         self.setup_button()
-        
-        ### old code
-        # try:
-            # self.findNext()
-        # finally:
-            # self.reverse = not self.reverse
 
         # Move back one node if we found a match in a headline:
-        #   Pressing the button destorys c.edit_widget(p), so
+        #   Pressing the button destroys c.edit_widget(p), so
         #   initInteractiveCommands does not compute ins properly.
         if self.was_in_headline:
             self.was_in_headline = False

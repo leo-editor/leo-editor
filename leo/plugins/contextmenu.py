@@ -77,7 +77,7 @@ def install_handlers():
         configuredcommands_rclick, deletenodes_rclick,
         openurl_rclick,pylint_rclick]
     g.tree_popup_handlers.extend(hnd)
-    g.registerHandler("idle", editnode_on_idle)
+    ### g.registerHandler("idle", editnode_on_idle)
     # just for kicks, the @commands
     #@+<< Add commands >>
     #@+node:ville.20090701224704.9805: *4* << Add commands >>

@@ -783,41 +783,36 @@ assert hasattr(g.app,'homeDir') # May well be None.
 
 ivars = (
     # Global managers.
-    'config','loadManager','pluginsController','recentFilesManager',
-    # These are non-official and might be removed...
-    'batchMode',
-    # 'debug',
-    'debugSwitch','disableSave',
-    'gui','hasOpenWithMenu','hookError',
-    'hookFunction',
-    'idle_imported',
-    'idleTimeDelay', # 'idleTimeHook',
-    'initing','killed',
+    'config','externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
     'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices','numberOfUntitledWindows',
-    'quitting','realMenuNameDict','searchDict','scriptDict',
-    # trace_ switches are now defined in leoGlobals.py.
-    'unitTestDict','unitTesting','use_psyco','windowList',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    'debugSwitch','disableSave',
+    'hookError','hookFunction',
+    'idle_imported','idleTimeDelay',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
 )
 
 if g.app.isExternalUnitTest:
-    mayBeNone = ('hookFunction','idleTimeHook','log')
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
 else:
-    mayBeNone = ('hookFunction',)
+    mayBeNone = ('hookFunction','openWithInstance')
 
 for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
     if ivar not in mayBeNone:
         val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s'% ivar
-
-# These do not have to be initied.
-for ivar in (
-    'commandName',
-    'openWithFiles','openWithFileNum','openWithTable',
-    # 'root',
-):
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20040712101813: *3* @@test c.checkAllPythonCode
 result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
@@ -4858,8 +4853,12 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
-c.createOpenWithTempFile(p.b,p,'.py')
+#@+node:ekr.20100209155559.5386: *4* @test efc.create_temp_file
+efc = g.app.externalFilesController
+fn = efc.create_temp_file(p.b,c,p,'.py')
+assert g.os_path_exists(fn),fn
+efc.shut_down()
+assert not g.os_path_exists(fn),fn
 #@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
 # Remove any previous children.
 while p.hasChildren():
@@ -4885,8 +4884,10 @@ while p.hasChildren():
     p.firstChild().doDelete()
 #@+node:ekr.20150318142212.13: *5* newHeadline
 #@+node:ekr.20150318142212.13: *5* newHeadline
-#@+node:ekr.20100203103015.5355: *4* @test c.getOpenWithExt
+#@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
 @language python
+
+efc = g.app.externalFilesController
 
 table = (
     # (None,'.py'),
@@ -4896,7 +4897,7 @@ table = (
 )
 
 for ext,result in table:
-    result2 = c.getOpenWithExt(p,ext)
+    result2 = efc.get_ext(c,p,ext)
     assert result==result2,'ext: %s, expected %s, got %s' % (
         repr(ext),repr(result),repr(result2))
 #@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
@@ -5007,9 +5008,11 @@ if not ok: raise
 pass
 #@+node:ekr.20050512084850.2: *5* child 2
 pass
-#@+node:ekr.20100203103015.5354: *4* @test c.openWithTempFilePath
-s = c.openWithTempFilePath(p,'.py')
+#@+node:ekr.20100203103015.5354: *4* @test efc.temp_file_path
+efc = g.app.externalFilesController
+s = efc.temp_file_path(p,'.py')
 assert s.find('LeoTemp') > -1
+    # This might change.
 assert s.endswith('.py')
 #@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
 c.selectPosition(p)
@@ -5132,13 +5135,13 @@ for obj,val in table:
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
 #@+node:ekr.20100203103015.5353: *4* @test open-with conflict dialog
-# A copy of the code from c.createOrRecreateTempFileAsNeeded.
 # Not a perfect test, but stil significant.
+efc = g.app.externalFilesController
 
-assert c.conflict_message,'fail 1'
+assert efc.conflict_message,'fail 1'
 
 result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", c.conflict_message,
+    "Conflict!", efc.conflict_message,
     yesMessage = "Outline",
     noMessage = "File",
     defaultButton = "Cancel")
