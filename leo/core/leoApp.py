@@ -3,7 +3,6 @@
 #@+node:ekr.20031218072017.2608: * @file leoApp.py
 #@@first
 
-# py--lint: disable=bad-continuation
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
@@ -45,6 +44,8 @@ class ExternalFilesController:
             # Values are cached check_for_changed_external_file settings.
         self.files = []
             # List of dictionaries created by this class.
+        self.has_changed_d = {}
+            # Keys are commanders. Values are bools.
         self.openWithTable = None
             # Passed to createOpenWithMenuFromTable.
         self.time_d = {}
@@ -128,9 +129,6 @@ class ExternalFilesController:
             import time
             t1 = time.time()
         if g.app and not g.app.killed:
-            ### 
-            # # # if g.app.openWithInstance:
-                # # # g.app.openWithInstance.on_idle()
             for c in g.app.commanders():
                 self.check_commander(c)
         if trace:
@@ -196,6 +194,10 @@ class ExternalFilesController:
         else:
             fn = self.create_temp_file(body,c,p,ext)
         return fn # fn may be None.
+    #@+node:ekr.20150405122428.1: *4* efc.set_time
+    def set_time(self,c,path,timestamp):
+        '''Update the timestamp for path.'''
+        self.time_d[path] = timestamp
     #@+node:ekr.20150405110219.1: *3* efc.utilities
     #@+node:ekr.20150403044823.1: *4* efc.ask_and_update
     def ask_and_update(self,c,p):
@@ -211,6 +213,10 @@ class ExternalFilesController:
         if result.lower() == 'yes':
             c.redraw_now(p=p)
             c.refreshFromDisk(p)
+        # Always update the path & time to prevent future warnings.
+        path = g.fullPath(c,p)
+        self.time_d[path] = g.os_path_getmtime(path)
+        self.checksum_d[path] = self.checksum(path)
     #@+node:ekr.20150404045115.1: *4* efc.check_commander
     def check_commander(self,c):
         '''Check all external files corresponding to @<file> nodes in c.'''
@@ -366,8 +372,16 @@ class ExternalFilesController:
         if not old_time:
             # Initialize.
             self.time_d[path] = new_time
+            c.timeStampDict[path] = new_time
+                ### A temp hack.
             self.checksum_d[path] = checksum = self.checksum(path)
-            if trace: print('%s:init %s %s' % (tag,checksum,fn))
+            if trace:
+                # Only print one message per commander.
+                d = self.has_changed_d
+                val = d.get(c)
+                if not val:
+                    d[c] = True
+                    print('%s:init %s' % (tag,c.shortFileName()))
             return False
         if old_time == new_time:
             return False
@@ -380,12 +394,16 @@ class ExternalFilesController:
             # Return False so we don't prompt the user for an update.
             if trace: print('%s:unchanged %s %s' % (tag,old_time,new_time))
             self.time_d[path] = new_time
+            c.timeStampDict[path] = new_time
+                ### A temp hack.
             return False
         else:
             # The file has really changed.
             if trace: print('%s:changed %s %s %s' % (tag,old_sum,new_sum,fn))
             assert old_time,p.h
             self.time_d[path] = new_time
+            c.timeStampDict[path] = new_time
+                ### A temp hack.
             self.checksum_d[path] = new_sum
             return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
@@ -538,6 +556,8 @@ class ExternalFilesController:
                 yesMessage = 'Outline',
                 noMessage = 'File',
                 defaultButton = 'Cancel')
+            d['time'] = new_time
+            d['body'] = new_body
             if result is None or result.lower() == 'cancel':
                 return False
             rewrite = result.lower() == 'yes'

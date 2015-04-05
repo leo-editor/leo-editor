@@ -8568,14 +8568,11 @@ class Commands (object):
         return ok == 'yes'
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp (self,fn):
-
+        '''Update the timestamp in c.timeStampDict.'''
         c = self
-
         timeStamp = os.path.getmtime(fn)
         c.timeStampDict[fn] = timeStamp
-
-        # g.trace('%20s' % (timeStamp),fn)
-
+        return timeStamp
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self,source_c,function):
 
