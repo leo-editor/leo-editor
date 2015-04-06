@@ -139,7 +139,10 @@ class ExternalFilesController:
         return fn # fn may be None.
     #@+node:ekr.20150405122428.1: *4* efc.set_time
     def set_time(self,path):
-        '''Update the timestamp for path.'''
+        '''
+        Implements c.setTimeStamp.
+        Update the timestamp for path.
+        '''
         self.time_d[path] = g.os_path_getmtime(path)
     #@+node:ekr.20150405110219.1: *3* efc.utilities
     #@+node:ekr.20150405223300.1: *4* efc.ask_open_with_conflict
