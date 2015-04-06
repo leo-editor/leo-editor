@@ -10928,27 +10928,46 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
-.. @+node:ekr.20040123102724: *3* zz Can't or won't do
+.. @+node:ekr.20150305084546.4: ** Can't/won't fix
+.. @+node:ekr.20150305053156.5: *3* Fix bug 147: Python 3 clipboard encoding
 @language rest
-.. @+node:ekr.20140824043305.18296: *4* Can't do
+@wrap
+https://github.com/leo-editor/leo-editor/issues/147
+
+Text: ÷ Σ
+
+In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
+
+This appears to be a serious bug in older version of pyqt...
+
+@language python
+.. @+node:ekr.20141026191037.6: *3* Fix bug 83: Bracket completion doesn't work
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/83
+
+This appears to be a Windows 8 issue.
+.. @+node:ekr.20150306075700.4: *3* Fix bug 89: Spontaneous clones when using sections
+https://github.com/leo-editor/leo-editor/issues/89
+.. @+node:ekr.20140824043305.18296: *3* Can't fix
 These are known bugs that probably can't be fixed.
-.. @+node:ekr.20111011062533.15693: *5* Make headline widgets scrollable
+.. @+node:ekr.20111011062533.15693: *4* Make headline widgets scrollable
 # It doesn't seem easy.
 
 Related nodes:
 editLabelHelper (leoQtTree)
-.. @+node:ekr.20031218072017.670: *5* Possible webbrowser bug
+.. @+node:ekr.20031218072017.670: *4* Possible webbrowser bug
 (In Linux) The home page and online tutorial options in the menu only work
 properly if Mozilla window is already open. If not, a Mozilla window opens, but
 with empty page and url field.
-.. @+node:ekr.20050202073944: *5* Mac bugs
-.. @+node:ekr.20050201175325.2: *6* Can't delete script buttons
-.. @+node:ekr.20050201175325.1: *6* Icon buttons are not colored, nor do they have square borders, etc.
-.. @+node:ekr.20110111100539.12257: *6* Fix end-of-line problem (MacOS)
+.. @+node:ekr.20050202073944: *4* Mac bugs
+.. @+node:ekr.20050201175325.2: *5* Can't delete script buttons
+.. @+node:ekr.20050201175325.1: *5* Icon buttons are not colored, nor do they have square borders, etc.
+.. @+node:ekr.20110111100539.12257: *5* Fix end-of-line problem (MacOS)
 Apparently, ctrl-e is not passed to Leo at all.
 
 This probably can't be fixed.
-.. @+node:ekr.20110111100539.12258: *7* Report
+.. @+node:ekr.20110111100539.12258: *6* Report
 http://mail.google.com/mail/#inbox/12c5646c646a90d2
 
 I expect C-e to go to end-of-line, but C-e works as the next line.
@@ -10971,324 +10990,11 @@ cursor the first of the next line, which is the end of last line + 1.
 If the line is the final one, C-e moves the cursor to the end of line
 as there's no next line.
 
-.. @+node:ekr.20031218072017.673: *5* Tk bugs
-The following bugs can not be fixed because they are Tk bugs.
-
-These bugs are becoming moot: Tk will soon be deprecated.
-.. @+node:ekr.20081208102356.1: *6* Threading colorizer doesn't handle multiple body editors
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-.. @+node:ekr.20041201071145: *6* Tk Freezes on debean when libtk is compiled with thread support
-http://sourceforge.net/forum/message.php?msg_id=2876797
-By: skal
-
-By: Grossé Pascal - skal
-RE: Leo freezing up  
-2004-12-01 06:15
-
-The freezing problem on debian sid (which is also my current OS) is caused by a bug in Tkinter: Tkinter does not work when libtk is compiled with thread support, which is the case on debian sid for tk8.4 
-I compiled my own non-threaded libtk with the corresponding python/tkinter, and the freeze magically vanished.  
-
-This is a known bug in debian bugtrack: 
-
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=171353 
-
-Skal
-.. @+node:EKR.20040523192553: *6* (Crash when pasting large text into headlines)
-.. @+node:EKR.20040606104355: *7* Report
-@nocolor
-
-From: <eltronic@juno.com>
-To: <edreamleo@charter.net>
-Sent: Sunday, May 23, 2004 9:36 AM
-Subject: fatal bug in Leo headline handling
-
-
-> found a fatal bug in Leo headline handling.
-> not sure if anyone reported before,
-> an oversize string can crash python 2.3.3
-> 
-> 
-> the text was about 4500 bytes. nothing but text.
-> opened the  leo again, copy a large page of text,
-> insert headline, paste, fatal error in python.
-> 
-> I have by mistake pasted whatever node xml was in 
-> the copy buffer into a headline w/o problem.
-> but that was just dumb luck. just verified,
-> had the node been large enough it crashes.
-> 
-> Leo 4.1 final, py2.3.3 win98
-> PYTHON caused an invalid page fault in
-> module TK84.DLL at 0167:1022b74f.
-> 
-> Leo 4.1 final, py2.2 win98
-> paste a 15k node copy into headline. no problem.
-> 
-> this is the first repeatable hard crash I've stumbled on
-> and thought it best to report it privately.
-> I can think of no advantage to allowing a headline 
-> of this size anyway. think of the tooltip that would create!
-> 
-> there are latent bugs in the selectall and delete from 
-> the edit menu related to headline as well on the todo list.
-> reported many times. 
-> covert destruction of the selected body text.
-> use of virtual events, with out proper focus to headline.
-> 
-> without myself being able to supply a patch, I'll guess,
-> the virtual event paste called can as well point 
-> to a function that checks the size before pasting.
-> or simply sets the headline directly with 
-> g.app.gui.getTextFromClipboard()[:1024]
-> 
-> 
-> e
-.. @+node:ekr.20031218072017.674: *6* Caps lock affects keyboard shortcuts on Windows
-Using leo under Windows, the keyboard shortcuts seem to use the "Caps Lock" state in determining the shift state when executing a shortcut.   For example, if the caps-lock key is on, then Ctrl-X is interpreted as Shift-Ctrl-X and cuts a node rather than selected text, and Shift-Ctrl-X is interpreted as Ctrl-X and cuts text.
-.. @+node:ekr.20031218072017.675: *6* Tree problems
-1. The border of the tree control is gray, and it is overwritten with large headlines.  This may be a Tk or Tkinter bug.
-
-2. Adding trailing whitespace to a line in body text does not set the file-dirty mark.  This can never cause a derived file to become "out-of-synch" because the read code does not compare body text.
-
-Apparently there is no way to fix this glitch because of holes in Tk's event mechanism.  Specifically, tree.idle_body_key has no way to tell directly what keystroke caused it to be entered.
-.. @+node:ekr.20031218072017.676: *6* Control-T can't be overridden in canvas text.
-.. @+node:ekr.20031218072017.677: *6* (Alt-ctrl = Alt)
-@nocolor
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1765069
-By: dalcolmo
-
-I use the bindings that come with Leo:
-
-[keyboard shortcuts]
-pastenode = Shift+Ctrl+V
-gonextvisible = Alt+DnArrow
-importtofile = Shift+Ctrl+F
-writefilenodes = Shift+Ctrl+W
-editheadline = Ctrl+H
-markchangeditems = Alt+C
-replace = Ctrl+=
-goprevvisible = Alt+UpArrow
-gotonextmarked = Alt+M
-readoutlineonly = Shift+Ctrl+R
-extractnames = Shift+Ctrl+N
-gonext = Alt+Shift+DnArrow
-findpanel = Ctrl+F
-close = Ctrl+W
-demote = Ctrl+}
-tangle = Shift+Ctrl+T
-extract = Shift+Ctrl+D
-openpythonwindow = Alt+P
-marksubheads = Alt+S
-saveas = Shift+Ctrl+S
-cut = Ctrl+X
-preferences = Ctrl+Y
-equalsizedpanes = Ctrl+E
-cantundo = Ctrl+Z
-open = Ctrl+O
-promote = Ctrl+{
-sortsiblings = Alt-A
-unmarkall = Alt+U
-mark = Ctrl+M
-showinvisibles = Alt+V
-exit = Ctrl-Q
-insertnode = Ctrl+I
-findprevious = F4
-converttabs = Shift+Ctrl+J
-save = Ctrl+S
-tanglemarked = Shift+Ctrl+M
-moveup = Ctrl+U
-copynode = Shift+Ctrl+C
-contractparent = Alt+0
-selectall = Ctrl+A
-setfont = Alt+Shift+T
-aborteditheadline = Shift+Esc
-goback = Alt+Shift+UpArrow
-toggleactivepane = Ctrl+T
-findnext = F3
-tangleall = Shift+Ctrl+A
-endeditheadline = Esc
-deletenode = Shift+Ctrl+BkSp
-cantredo = Shift+Ctrl+Z
-new = Ctrl+N
-contractall = Alt+1
-moveleft = Ctrl+L
-copy = Ctrl+C
-paste = Ctrl+V
-convertblanks = Shift+Ctrl+B
-expandall = Alt+9
-markchangedroots = Alt+R
-cutnode = Shift+Ctrl+X
-indent = Ctrl+]
-gotonextchanged = Alt+D
-expandnextlevel = Alt+=
-setcolors = Alt+Shift+S
-matchbrackets = Ctrl+K
-movedown = Ctrl+D
-clonenode = Ctrl+`
-untangle = Shift+Ctrl+U
-expandtolevel7 = Alt+7
-expandtolevel6 = Alt+6
-expandtolevel5 = Alt+5
-expandtolevel4 = Alt+4
-expandtolevel3 = Alt+3
-expandtolevel2 = Alt+2
-moveright = Ctrl+R
-unindent = Ctrl+[
-replacethenfind = Ctrl+-
-extractsection = Shift+Ctrl+E
-expandtolevel8 = Alt+8
-
-
-However, I use a utility called AllChars (Free as in beer :-(  ) to be able
-to type all kinds of chars on my US keyboard, and "Handything" to place the
-windows on the screen (Win2000). Perhaps this makes a difference, although disabling
-them did not seem to make it go away. Still, on pressing alt+ctrl+uparrow I
-end up at the next upper node etc...
-
-- Josef
-
-.. @+node:ekr.20031218072017.718: *6* (tab bug)
-.. @+node:ekr.20040117092727: *7* This is definitely a Tk bug
-By: dthein ( Dave Hein ) 
- RE: BUG: Non-leading tabs not working properl   
-2004-01-17 14:40  
-
- This seems to be a TK bug. I've reproduced the problem directly in Tk.
-
-It's been around for a long time :-(
-
-More details on this page, along with a patch for an earlier version.
-
-http://www.qs.co.nz/Tcl/TkTabs.html
-
-The Tk folks fixed a bug I reported with Ctrl-V behavior, but it took about a year for them to get to it. I don't have high expectations with this problem either, but I'll probably put together a patch for some of the recent version of Tk and submit the patches and bug report.  
-.. @+node:ekr.20040118090055: *7* Patch and bug report
-https://sourceforge.net/forum/message.php?msg_id=2380238
-By: dthein
-
-I've submitted a patch and bug report to the Tk project.
-
-The patch, #879073, for those that want to fix this problem on their systems,
-is at:
-
-http://sourceforge.net/tracker/?func=detail&aid=879073&group_id=12997&atid=31299
-7
-
-And the bug report, #879077, is at:
-
-http://sourceforge.net/tracker/?func=detail&aid=879077&group_id=12997&atid=11299
-7
-
-The patch is for 8.4.2.  If you have a different version, you can probably figure
-out the changes needed by looking at the patch file.  If not, let me know your
-version and I may be able to produce a patch for it.
-
-Note: If you use tabs for anything other than leading whitespace, you will find
-this patch really helpful.  I make lots of little tables when I'm documenting
-or note-taking ... this fix really helped my sanity when making those tables
-inside Leo.
-
-Dave Hein
-.. @+node:ekr.20031218072017.719: *7* Report
-@nocolor
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1906790
-By: dspeed
-Open Discussion
-
--- Tabs are not expanded correctly in .c files, when language in preferences is set to c, and when the tabs occur in the middle of a line. The tabs are expanded as spaces until the next tab location is reached, then the tabs are expanded correctly. 
-.. @+node:ekr.20040105070023.5: *7* Report 2
-Leo 4.1 rc3, build 1.62 , December 19, 2003
-Python 2.3.0, Tk 8.4.2
-Linux 2.4.22-21mdkenterprise
-
-1. Any tab typed before the first tab stop behaves correctly (the cursor is moved to the tab stop). Good.
-
-2. Any tab typed after a non-tab character (even a space) _and_ after the first tab stop position doesn't behave like a tab and doesn't move the cursor to the next tab stop. Bad.
-
-3. Any tab typed after a tab character will behave properly no matter what position on the line. Okay.
-
-To reproduce this, set your global tab prefernence to 4. Show invisibles. And then create a node containing:
-
-[BEGIN BODY TEXT]
-@language plain
-@tabwidth 8
-[END BODY TEXT]
-
-Create a child node to that one, containing:
-
-[BEGIN BODY TEXT]
-@root-code somefilename
-\t\tThis works
-bbb\tAnd This works
-So\tdoes this
-
-But, this \tdoes not.
-Here is the two-tab \t\t behavior.
-[END BODY TEXT]
-
-I hope this is a Leo bug and not a Tk bug. 
-
-Dave Hein 
-.. @+node:ekr.20031218072017.720: *7* Minimal test
-This is a test line.
-.. @+node:ekr.20031218072017.721: *7* Test File for Non Expanding Tabs
-This is a test line.
-put the text insertion point in the space between 'a' and 'test' above. Enter 3 tabs in a row and watch it not work.
-
-If your expansion works correctly, then maybe something with leoconfig?  But wait, Im using the leoconfig from the beta download.
-
-The contents of my Log Windows when opening this file:
-
-Leo Log Window...
-Pyton 2.2.2, Tk 8.3.2
-reading d:\test.leo
-
-
-.. @+node:ekr.20031218072017.672: *6* Control-V doesn't work on Linux
-This has been and continues to be a known issue with Tk. Has been logged as a
-bug; no response from the Tk folks.
-
-Here is a link to the Tk bug report: 
-
-http://sourceforge.net/tracker/?func=detail&aid=605277&group_id=12997&atid=112997 
-
-Note the work-around/patch in the followup post at the bottom of that page. Commenting out some statements in text.tcl removes the problem. 
-.. @+node:ekr.20040220110030: *6* Change cursor when caps lock is down
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=2431552
-By: nobody
-
-From: Rich
-
- I just got nipped twice by the following effect: the Caps-Lock key is ON, but
-because the LED is on the Caps-Lock key, it is hidden behind my hand. I hit
-Ctrl-x, expecting to cut my selection, but the entire node is cut.
-
-   I know there's a problem with tk and the shift key status, so I'm wondering
-if it would be possible to change the shape of the cursor when the Caps-Lock
-is ON (preferrably a big red flashing blot 8-), or otherwise show that Caps-Lock
-is active ( "CAPS" on a status line, for instance).
-
-  Another way: I don't know if this goes against an "anti-modalism rule," but
-only allowing Ctrl-Shift-x|c|v in the outline pane would also be acceptable
-to me.
-.. @+node:ekr.20040115165036: *5* bug in xml doc parts (hard to fix?)
+.. @+node:ekr.20040115165036: *4* bug in xml doc parts (hard to fix?)
 @language html
 @ignore
 @color
-.. @+node:ekr.20040115165036.1: *6* Demo XML comment bug
+.. @+node:ekr.20040115165036.1: *5* Demo XML comment bug
 @ 
 This document demonstrates what appears to be a bug in Leo 4.1 rc3, build 1.62 of December 19, 2003.
 
@@ -11296,7 +11002,7 @@ It has manifested when Leo is executed under Python 2.3.3, Tk 8.4.3 under Window
 
 In brief, derived XML files are not well-formed with respect to comments under some conditions.  Comments can wind up nested, which looks okay to humans but not to XML parsers.
 @c
-.. @+node:ekr.20040115165036.3: *6* @file xmlcommentbug.xml
+.. @+node:ekr.20040115165036.3: *5* @@file xmlcommentbug.xml
 @first
 @language HTML
 <HiMom>
@@ -11315,7 +11021,7 @@ This comment is well-formed, seemingly because its content does not begin on the
 same line as the at-sign.
 @c
 </HiMom>
-.. @+node:ekr.20040115165036.4: *6* xmlcommentbug.xml
+.. @+node:ekr.20040115165036.4: *5* xmlcommentbug.xml
 <?xml version='1.0'?>
 <!--@+leo-ver=4-->
 <!--@+node:@file xmlcommentbug.xml-->
@@ -11347,12 +11053,12 @@ the same line as the at-sign.
 <!--@nonl-->
 <!--@-node:@file xmlcommentbug.xml-->
 <!--@-leo-->
-.. @+node:ekr.20110619173515.14896: *5* Wrong modality level on autocompleter
+.. @+node:ekr.20110619173515.14896: *4* Wrong modality level on autocompleter
 Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
-.. @+node:ekr.20140824043305.18295: *4* Won't do
+.. @+node:ekr.20140824043305.18295: *3* Won't fix
 These items will not be done.  Most are bad ideas, imo.
-.. @+node:ekr.20130919120947.12506: *5* * Why Leo won't be a web app
+.. @+node:ekr.20130919120947.12506: *4* * Why Leo won't be a web app
 here are two reasons why Leo is unlikely ever to be a web app.
 
 1. There are somewhere around a million lines of Python code in Leo's core
@@ -11365,7 +11071,7 @@ here are two reasons why Leo is unlikely ever to be a web app.
 
 These seem like the most important obstacles. There may be others, but these
 suffice
-.. @+node:ekr.20040216054459: *5* @h @f @endh and @endf directives
+.. @+node:ekr.20040216054459: *4* @h @f @endh and @endf directives
 @nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=2424151
@@ -11448,7 +11154,7 @@ By: ksejlod ( Peter Barrel )
  The tree i tried to draw in ascii did not came out the way i did it,
 sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
 node just above them . -- k
-.. @+node:ekr.20101119030344.5838: *5* Bad idea: script to turn all commands into @g.command nodes
+.. @+node:ekr.20101119030344.5838: *4* Bad idea: script to turn all commands into @g.command nodes
 @language python
 @color
 
@@ -11494,7 +11200,7 @@ if 0:
         # name is the minibuffer command name, f_name is the function name.
         i,p = find(c,command,f_name)
         adjust(c,f_name,i,p)
-.. @+node:ekr.20101119030344.5841: *6* find_all_defs
+.. @+node:ekr.20101119030344.5841: *5* find_all_defs
 def find_all_defs (c):
 
     '''Return a dict containing all function defs.
@@ -11527,7 +11233,7 @@ def find_all_defs (c):
             i = j
             assert progress < i
     return d
-.. @+node:ekr.20101119030344.5839: *6* find
+.. @+node:ekr.20101119030344.5839: *5* find
 def find (c,command,f_name):
 
     g.trace('%30s %s' % (command,f_name))
@@ -11535,10 +11241,10 @@ def find (c,command,f_name):
     for p in c.all_unique_nodes():
         s = p.b
         i = s.find('def %s' % f_name)
-.. @+node:ekr.20101119030344.5840: *6* adjust
+.. @+node:ekr.20101119030344.5840: *5* adjust
 def adjust(f,i,p):
     pass
-.. @+node:ekr.20130803125244.17077: *5* bug: web site for Leo google group is out of date
+.. @+node:ekr.20130803125244.17077: *4* bug: web site for Leo google group is out of date
 @nocolor
 
 From: ne1uno <eltronis@gmail.com>
@@ -11549,7 +11255,7 @@ still has the old home page webpages.charter.net
 though it also has leoeditor.com/ for discussions.
 
 The google docs state that it is not possible to change the web site for a google group.
-.. @+node:ekr.20080815174457.5: *5* Consider deleting private shadow files
+.. @+node:ekr.20080815174457.5: *4* Consider deleting private shadow files
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/e86796831635311b
@@ -11563,7 +11269,7 @@ Answer:
 My second thought is that this is too dangerous--shadow files might
 turn out to be useful emergency backups.  I would prefer to have Leo
 mess with the file system as little as possible.
-.. @+node:ekr.20131019061259.16697: *5* Fix broken links on Leo's web site
+.. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
 found 27 broken links.
 
 http://leoeditor.com/images/edit_note.html
@@ -11593,7 +11299,7 @@ http://leoeditor.com/slides/leo-basics-step-by-step/index.html
 http://leoeditor.com/slides/clones-and-views/index.html
 http://leoeditor.com/images/mail_item.html
 http://leoeditor.com/images/page_setup.html
-.. @+node:ekr.20100830120622.5829: *5* Fix python import problems
+.. @+node:ekr.20100830120622.5829: *4* Fix python import problems
 > > Hmm, I guess that would be more clear, although I think I'd like an option
 to include it in the following def to avoid
 
@@ -11630,13 +11336,13 @@ I'd also like
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
-.. @+node:ekr.20131121050226.16327: *5* Reload command
+.. @+node:ekr.20131121050226.16327: *4* Reload command
 - Don't reload any files!
 - Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
 - Change LoadManager to handle a reload flag.
-.. @+node:ekr.20111019104425.15863: *5* Use pygments for syntax coloring
+.. @+node:ekr.20111019104425.15863: *4* Use pygments for syntax coloring
 This has essentially no chance of improving Leo
-.. @+node:ekr.20150215102218.4: *5* Create @ns-rst/vo/otl commands
+.. @+node:ekr.20150215102218.4: *4* Create @ns-rst/vo/otl commands
 @language rest
 
 ===== @ns-* write logic
@@ -11669,220 +11375,5 @@ Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
 vimoutline or otl sentinels should *never* be left as plain text in an
 existing node. The "raw" sentinels would corrupt the vim or Emacs outline
 if the node were later moved. An unpleasant time bomb.
-.. @+node:ekr.20150305084546.4: ** Can't/won't fix
-.. @+node:ekr.20150305053156.5: *3* Fix bug 147: Python 3 clipboard encoding
-@language rest
-@wrap
-https://github.com/leo-editor/leo-editor/issues/147
-
-Text: ÷ Σ
-
-In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
-
-This appears to be a serious bug in older version of pyqt...
-
-@language python
-.. @+node:ekr.20110605121601.18485: *4* LeoQtGui.Clipboard
-def replaceClipboardWith (self,s):
-
-    '''Replace the clipboard with the string s.'''
-
-    trace = False and not g.unitTesting
-    cb = self.qtApp.clipboard()
-    if cb:
-        # cb.clear()  # unnecessary, breaks on some Qt versions
-        s = g.toUnicode(s)
-        QtWidgets.QApplication.processEvents()
-        cb.setText(s)
-        QtWidgets.QApplication.processEvents()
-        if trace: g.trace(len(s),type(s),s[:25])
-    else:
-        g.trace('no clipboard!')
-
-def getTextFromClipboard (self):
-
-    '''Get a unicode string from the clipboard.'''
-
-    trace = False and not g.unitTesting
-    cb = self.qtApp.clipboard()
-    if cb:
-        QtWidgets.QApplication.processEvents()
-        s = cb.text()
-        if trace: g.trace (len(s),type(s),s[:25])
-        # Fix bug 147: Python 3 clipboard encoding
-        s = g.u(s)
-            # Don't call g.toUnicode here!
-            # s is a QString, which isn't exactly a unicode string!
-        return s
-    else:
-        g.trace('no clipboard!')
-        return ''
-.. @+node:ekr.20091206161352.6232: *4* g.u & g.ue
-if isPython3: # g.not defined yet.
-    def u(s):
-        return s
-    def ue(s,encoding):
-        return s if g.isUnicode(s) else str(s,encoding)
-else:
-    def u(s):
-        return unicode(s)
-    def ue(s,encoding):
-        return unicode(s,encoding)
-.. @+node:ekr.20110605121601.18081: *4* qtew.getAllText
-def getAllText(self):
-    '''QTextEditWrapper.'''
-    w = self.widget
-    s = g.u(w.toPlainText())
-    return s
-.. @+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (LeoFrame)
-.. @+node:ekr.20070130115927.5: *5* copyText (LeoFrame)
-def copyText (self,event=None):
-    '''Copy the selected text from the widget to the clipboard.'''
-    trace = False and not g.unitTesting
-    f = self ; c = f.c
-    w = event and event.widget
-    wname = (w and c.widget_name(w)) or '<no widget>'
-    if trace: g.trace(g.isTextWrapper(w),wname,w)
-    if not w or not g.isTextWrapper(w):
-        return
-    # Set the clipboard text.
-    i,j = w.getSelectionRange()
-    if i != j:
-        s = w.get(i,j)
-        g.app.gui.replaceClipboardWith(s)
-
-OnCopyFromMenu = copyText
-.. @+node:ekr.20070130115927.6: *5* LeoFrame.cutText
-def cutText (self,event=None):
-
-    '''Invoked from the mini-buffer and from shortcuts.'''
-
-    f = self ; c = f.c ; w = event and event.widget
-    if not w or not g.isTextWrapper(w): return
-
-    name = c.widget_name(w)
-    oldSel = w.getSelectionRange()
-    oldText = w.getAllText()
-    i,j = w.getSelectionRange()
-
-    # Update the widget and set the clipboard text.
-    s = w.get(i,j)
-    if i != j:
-        w.delete(i,j)
-        g.app.gui.replaceClipboardWith(s)
-
-    if name.startswith('body'):
-        c.frame.body.forceFullRecolor()
-        c.frame.body.onBodyChanged('Cut',oldSel=oldSel,oldText=oldText)
-    elif name.startswith('head'):
-        # The headline is not officially changed yet.
-        # p.initHeadString(s)
-        s = w.getAllText()
-        # 2011/11/14: Not used at present.
-        # width = f.tree.headWidth(p=None,s=s)
-        # w.setWidth(width)
-    else: pass
-
-OnCutFromMenu = cutText
-.. @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
-def pasteText (self,event=None,middleButton=False):
-    '''
-    Paste the clipboard into a widget.
-    If middleButton is True, support x-windows middle-mouse-button easter-egg.
-    '''
-    trace = False and not g.unitTesting
-    f = self ; c = f.c
-    w = event and event.widget
-    wname = (w and c.widget_name(w)) or '<no widget>'
-    # if trace: g.trace(g.isTextWrapper(w),w)
-    if not w or not g.isTextWrapper(w):
-        if trace: g.trace('not a text widget',w)
-        return
-    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
-    oldText = w.getAllText()
-    if middleButton and c.k.previousSelection is not None:
-        start,end = c.k.previousSelection
-        s = w.getAllText()
-        s = s[start:end]
-        c.k.previousSelection = None
-    else:
-        s = g.app.gui.getTextFromClipboard()
-    s = g.toUnicode(s)
-    # g.trace('pasteText','wname',wname,'s',s,g.callers())
-    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-    if singleLine:
-        # Strip trailing newlines so the truncation doesn't cause confusion.
-        while s and s [ -1] in ('\n','\r'):
-            s = s [: -1]
-    # Save the horizontal scroll position.
-    if hasattr(w,'getXScrollPosition'):
-        x_pos = w.getXScrollPosition()
-    # Update the widget.
-    if i != j:
-        w.delete(i,j)
-    w.insert(i,s)
-    w.see(i+len(s) + 2)
-    if wname.startswith('body'):
-        c.frame.body.forceFullRecolor()
-        c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
-    elif singleLine:
-        s = w.getAllText()
-        while s and s [ -1] in ('\n','\r'):
-            s = s [: -1]
-        # 2011/11/14: headline width methods do nothing at present.
-        # if wname.startswith('head'):
-            # The headline is not officially changed yet.
-            # p.initHeadString(s)
-            # width = f.tree.headWidth(p=None,s=s)
-            # w.setWidth(width)
-    else:
-        pass
-    # Never scroll horizontally.
-    if hasattr(w,'getXScrollPosition'):
-        w.setXScrollPosition(x_pos)
-
-OnPasteFromMenu = pasteText
-.. @+node:ekr.20061016071937: *5* OnPaste (To support middle-button paste)
-def OnPaste (self,event=None):
-
-    return self.pasteText(event=event,middleButton=True)
-.. @+node:ekr.20110605121601.18092: *4* qtew.setAllText
-def setAllText(self,s):
-    '''Set the text of body pane.'''
-    trace = False and not g.unitTesting
-    traceTime = False and not g.unitTesting
-    c,w = self.c,self.widget
-    if trace: g.trace(len(s),c.p and c.p.h)
-    colorizer = c.frame.body.colorizer
-    highlighter = colorizer.highlighter
-    # Be careful: Scintilla doesn't have a colorer.
-    colorer = highlighter and highlighter.colorer
-    if colorer: colorer.initFlag = True
-    try:
-        if traceTime:
-            t1 = time.time()
-        self.changingText = True # Disable onTextChanged.
-        colorizer.changingText = True # Disable colorizer.
-        # g.trace('read/write text')
-        w.setReadOnly(False)
-        w.setPlainText(s)
-        # w.update()
-            # 2014/08/30: w.update does not ensure that all text is loaded
-            # before the user starts editing it!
-        if traceTime:
-            delta_t = time.time()-t1
-            if False or delta_t > 0.1:
-                g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
-    finally:
-        self.changingText = False
-        colorizer.changingText = False
-.. @+node:ekr.20141026191037.6: *3* Fix bug 83: Bracket completion doesn't work
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/83
-
-This appears to be a Windows 8 issue.
-.. @+node:ekr.20150306075700.4: *3* Fix bug 89: Spontaneous clones when using sections
-https://github.com/leo-editor/leo-editor/issues/89
 .. @-all
 .. @-leo

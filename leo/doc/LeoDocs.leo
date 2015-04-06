@@ -1207,6 +1207,7 @@
 <v t="ekr.20050903074833"></v>
 <v t="ekr.20150403145058.2"><vh>** Document using Ctrl-G</vh></v>
 <v t="ekr.20150403145058.3"><vh>** revise @nosent docs</vh></v>
+<v t="ekr.20150406113745.1"><vh>** undocument mod_tempfname plugin </vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18181,6 +18182,7 @@ Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought
 
 Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
 <t tx="ekr.20150403145058.3"></t>
+<t tx="ekr.20150406113745.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
