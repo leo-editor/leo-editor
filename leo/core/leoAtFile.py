@@ -5091,9 +5091,7 @@ class AtFile:
                 s = at.outputContents
                 ok = at.create(at.targetFileName,s)
                 if ok:
-                    timestamp = c.setFileTimeStamp(at.targetFileName)
-                    g.app.externalFilesController.set_time(
-                        c,at.targetFileName,timestamp)
+                    c.setFileTimeStamp(at.targetFileName)
                     if not g.unitTesting:
                         g.es('wrote:',at.shortFileName)
                 else:

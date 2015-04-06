@@ -51,6 +51,18 @@ class ExternalFilesController:
         self.time_d = {}
             # Keys are full paths, values are modification times.
     #@+node:ekr.20150405105938.1: *3* efc.entries
+    #@+node:ekr.20150405194745.1: *4* efc.check_overwrite
+    def check_overwrite(self,c,path):
+        '''
+        Implements c.checkTimeStamp.
+
+        Return True if the file given by fn has not been changed
+        since Leo read it or if the user agrees to overwrite it.
+        '''
+        if self.has_changed(c,path):
+            return self.ask_overwrite(c,path)
+        else:
+            return True
     #@+node:ekr.20150404100106.1: *4* efc.editnode_on_idle (fold into code)
     def editnode_on_idle (self):
         '''The idle-time handler.'''
@@ -195,33 +207,50 @@ class ExternalFilesController:
             fn = self.create_temp_file(body,c,p,ext)
         return fn # fn may be None.
     #@+node:ekr.20150405122428.1: *4* efc.set_time
-    def set_time(self,c,path,timestamp):
+    def set_time(self,path):
         '''Update the timestamp for path.'''
-        self.time_d[path] = timestamp
+        self.time_d[path] = g.os_path_getmtime(path)
     #@+node:ekr.20150405110219.1: *3* efc.utilities
-    #@+node:ekr.20150403044823.1: *4* efc.ask_and_update
-    def ask_and_update(self,c,p):
+    #@+node:ekr.20150405200212.1: *4* efc.ask_overwrite
+    def ask_overwrite(self,c,path):
+        '''
+        Ask user whether to overwrite an @<file> tree.
+        Return True if the user agrees.
+        '''
+        s = '\n'.join([
+            '%s has modified outside Leo.' % (path),
+            'Overwrite this file?'
+        ])
+        result = g.app.gui.runAskYesNoCancelDialog(c,'Overwrite modified file?',s)
+        return result.lower() == 'yes'
+    #@+node:ekr.20150405200752.1: *4* efc.ask_update
+    def ask_update(self,c,path):
         '''
         Ask user whether to update an @<file> tree.
         Update the file if the user agrees.
+        Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has changed outside Leo.' % (p.h),
+            '%s has changed outside Leo.' % (path),
             'Update the outline from the external file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c,'Update Outline?',s)
-        if result.lower() == 'yes':
-            c.redraw_now(p=p)
-            c.refreshFromDisk(p)
-        # Always update the path & time to prevent future warnings.
+        return result.lower() == 'yes'
+    #@+node:ekr.20150403044823.1: *4* efc.check_node
+    def check_node(self,c,p):
+        '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c,p)
-        self.time_d[path] = g.os_path_getmtime(path)
-        self.checksum_d[path] = self.checksum(path)
+        if self.has_changed(c,path):
+            ok = self.ask_update(c,path)
+            if ok:
+                c.redraw_now(p=p)
+                c.refreshFromDisk(p)
+            # Always update the path & time to prevent future warnings.
+            self.time_d[path] = g.os_path_getmtime(path)
+            self.checksum_d[path] = self.checksum(path)
     #@+node:ekr.20150404045115.1: *4* efc.check_commander
     def check_commander(self,c):
         '''Check all external files corresponding to @<file> nodes in c.'''
-        ### was c.checkForChangedFiles.
-
         if not self.is_enabled(c) or g.unitTesting:
             return
         # g.trace('checking',c.shortFileName())
@@ -232,8 +261,7 @@ class ExternalFilesController:
                 p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
                 seen.add(p.v)
-                if self.has_changed(c,p):
-                    self.ask_and_update(c,p)
+                self.check_node(c,p)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -357,14 +385,13 @@ class ExternalFilesController:
         if trace: g.trace(ext)
         return ext
     #@+node:ekr.20150403045207.1: *4* efc.has_changed
-    def has_changed(self,c,p):
+    def has_changed(self,c,path):
         '''Return True if p's external file has changed outside of Leo.'''
         trace = True and not g.unitTesting
         tag = 'efc.has_changed'
-        path = g.fullPath(c,p)
         if not g.os_path_exists(path):
             if trace: g.trace('does not exist',path)
-            return
+            return False
         fn = g.shortFileName(path)
         # First, check the modification times.
         old_time = self.time_d.get(path)
@@ -372,7 +399,7 @@ class ExternalFilesController:
         if not old_time:
             # Initialize.
             self.time_d[path] = new_time
-            c.timeStampDict[path] = new_time
+            ### c.timeStampDict[path] = new_time
                 ### A temp hack.
             self.checksum_d[path] = checksum = self.checksum(path)
             if trace:
@@ -394,15 +421,15 @@ class ExternalFilesController:
             # Return False so we don't prompt the user for an update.
             if trace: print('%s:unchanged %s %s' % (tag,old_time,new_time))
             self.time_d[path] = new_time
-            c.timeStampDict[path] = new_time
+            ### c.timeStampDict[path] = new_time
                 ### A temp hack.
             return False
         else:
             # The file has really changed.
             if trace: print('%s:changed %s %s %s' % (tag,old_sum,new_sum,fn))
-            assert old_time,p.h
+            assert old_time,path
             self.time_d[path] = new_time
-            c.timeStampDict[path] = new_time
+            ### c.timeStampDict[path] = new_time
                 ### A temp hack.
             self.checksum_d[path] = new_sum
             return True
@@ -632,7 +659,7 @@ class LeoApp:
     #@+others
     #@+node:ekr.20031218072017.1416: *3* app.__init__ (helpers contain langauge dicts)
     def __init__(self):
-
+        '''Ctor for LeoApp class.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(leoApp)')
 
@@ -760,6 +787,7 @@ class LeoApp:
             # The singleton leoConfig instance.
         self.db = None
             # The singleton leoCacher instance.
+        self.externalFilesController = ExternalFilesController()
         self.loadManager = None
             # The singleton LoadManager instance.
         # self.logManager = None
@@ -2618,7 +2646,6 @@ class LoadManager:
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-        g.app.externalFilesController = ExternalFilesController()
         handler = g.app.externalFilesController.on_idle
         timer = g.IdleTime(handler,delay=2000)
         g.app.check_files_timer = timer

@@ -135,9 +135,7 @@ class Commands (object):
         self.trace_focus_count = 0
     #@+node:ekr.20120217070122.10471: *5* c.initDocumentIvars
     def initDocumentIvars(self):
-
         '''Init per-document ivars.'''
-
         self.expansionLevel = 0
             # The expansion level of this outline.
         self.expansionNode = None
@@ -146,11 +144,10 @@ class Commands (object):
             # List of nodes with conflicting read-time data.
         self.nodeConflictFileName = None
             # The fileName for c.nodeConflictList.
-        self.timeStampDict = {}
+        ### self.timeStampDict = {}
             # Keys are file names, values are time stamps.
         self.user_dict = {}
             # Non-persistent dictionary for free use by scripts and plugins.
-        
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self):
         '''Init ivars relating to gui events.'''
@@ -8527,52 +8524,48 @@ class Commands (object):
     #@+node:ekr.20090103070824.12: *3* c.Time stamps
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp (self,fn):
-
         '''
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         '''
-
-        trace = False and not g.unitTesting
         c = self
-
-        # Don't assume the file still exists.
-        if not g.os_path_exists(fn):
-            if trace: g.trace('file no longer exists',fn)
-            return True
-
-        timeStamp = c.timeStampDict.get(fn)
-        if not timeStamp:
-            if trace: g.trace('no time stamp',fn)
-            return True
-
-        timeStamp2 = os.path.getmtime(fn)
-        if timeStamp == timeStamp2:
-            if trace: g.trace('time stamps match',fn,timeStamp)
-            return True
-
-        if g.app.unitTesting:
-            return False
-
-        if trace:
-            g.trace('mismatch',timeStamp,timeStamp2)
-
-        message = '%s\n%s\n%s' % (
-            fn,
-            g.tr('has been modified outside of Leo.'),
-            g.tr('Overwrite this file?'))
-        ok = g.app.gui.runAskYesNoCancelDialog(c,
-            title = 'Overwrite modified file?',
-            message = message)
-
-        return ok == 'yes'
+        return g.app.externalFilesController.check_overwrite(c,fn)
+        
+        #### Old code
+        # # # trace = False and not g.unitTesting
+        # # # # Don't assume the file still exists.
+        # # # if not g.os_path_exists(fn):
+            # # # if trace: g.trace('file no longer exists',fn)
+            # # # return True
+        # # # timeStamp = c.timeStampDict.get(fn)
+        # # # if not timeStamp:
+            # # # if trace: g.trace('no time stamp',fn)
+            # # # return True
+        # # # timeStamp2 = os.path.getmtime(fn)
+        # # # if timeStamp == timeStamp2:
+            # # # if trace: g.trace('time stamps match',fn,timeStamp)
+            # # # return True
+        # # # if g.app.unitTesting:
+            # # # return False
+        # # # if trace:
+            # # # g.trace('mismatch',timeStamp,timeStamp2)
+        # # # message = '%s\n%s\n%s' % (
+            # # # fn,
+            # # # g.tr('has been modified outside of Leo.'),
+            # # # g.tr('Overwrite this file?'))
+        # # # ok = g.app.gui.runAskYesNoCancelDialog(c,
+            # # # title = 'Overwrite modified file?',
+            # # # message = message)
+        # # # return ok == 'yes'
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp (self,fn):
-        '''Update the timestamp in c.timeStampDict.'''
+        '''Update the timestamp for fn..'''
         c = self
-        timeStamp = os.path.getmtime(fn)
-        c.timeStampDict[fn] = timeStamp
-        return timeStamp
+        g.app.externalFilesController.set_time(fn)
+        ### Old code
+        # # # timeStamp = os.path.getmtime(fn)
+        # # # c.timeStampDict[fn] = timeStamp
+        # # # return timeStamp
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self,source_c,function):
 
