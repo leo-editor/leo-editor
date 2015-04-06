@@ -548,7 +548,6 @@
 </v>
 <v t="ekr.20101113063552.9439"><vh>External programs</vh>
 <v t="ekr.20101113063552.9440"><vh>ipython.py</vh></v>
-<v t="ekr.20101113063552.9441"><vh>mod_tempfname.py</vh></v>
 <v t="ekr.20101113063552.9442"><vh>open_shell.py</vh></v>
 <v t="ekr.20101113063552.9443"><vh>tomboy_import.py</vh></v>
 <v t="ekr.20101113063552.9444"><vh>vim.py</vh></v>
@@ -1207,7 +1206,6 @@
 <v t="ekr.20050903074833"></v>
 <v t="ekr.20150403145058.2"><vh>** Document using Ctrl-G</vh></v>
 <v t="ekr.20150403145058.3"><vh>** revise @nosent docs</vh></v>
-<v t="ekr.20150406113745.1"><vh>** undocument mod_tempfname plugin </vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8116,9 +8114,6 @@ controller(c).run()
     directories into headlines and puts the list of file names into bodies.
 ``mod_scripting.py``
     Creates script buttons and @button, @command, @plugin and @script nodes.
-``mod_tempfname.py``
-    Replaces c.openWithTempFilePath to create alternate temporary
-    directory paths.
 ``mod_timestamp.py``
     Timestamps all save operations to show when they occur.
 ``multifile.py``
@@ -8751,11 +8746,6 @@ Pudb is a full-screen Python debugger: http://pypi.python.org/pypi/pudb
 Using this bridge, scripts running in Leo can affect IPython, and vice versa. In particular, scripts running in IPython can alter Leo outlines!
 
 For full details, see Leo Users Guide: http://leoeditor.com/IPythonBridge.html
-</t>
-<t tx="ekr.20101113063552.9441">Replaces c.openWithTempFilePath to create alternate temporary directory paths.
-
-Two alternates are supported. The default method creates temporary files with a filename that begins with the headline text, and located in a "username_Leo" subdirectory of the temporary directory. The "LeoTemp" prefix is omitted. If 'open_with_clean_filenames' is set to true then subdirectories mirror the node's hierarchy in Leo. Either method makes it easier to see which temporary file is related to which outline node.
-
 </t>
 <t tx="ekr.20101113063552.9442">Creates an 'Extensions' menu containing two commands: Open Console Window and Open Explorer.
 
@@ -18182,7 +18172,6 @@ Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought
 
 Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
 <t tx="ekr.20150403145058.3"></t>
-<t tx="ekr.20150406113745.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
