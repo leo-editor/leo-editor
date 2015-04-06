@@ -135,7 +135,6 @@ class ExternalFilesController:
     #@+node:ekr.20150330033306.1: *4* efc.on_idle
     def on_idle(self,timer):
         '''Check for changed files in all commanders.'''
-        ### was app.checkForChangedFiles)
         trace = False and not g.unitTesting
         if trace:
             import time
@@ -399,8 +398,6 @@ class ExternalFilesController:
         if not old_time:
             # Initialize.
             self.time_d[path] = new_time
-            ### c.timeStampDict[path] = new_time
-                ### A temp hack.
             self.checksum_d[path] = checksum = self.checksum(path)
             if trace:
                 # Only print one message per commander.
@@ -421,16 +418,12 @@ class ExternalFilesController:
             # Return False so we don't prompt the user for an update.
             if trace: print('%s:unchanged %s %s' % (tag,old_time,new_time))
             self.time_d[path] = new_time
-            ### c.timeStampDict[path] = new_time
-                ### A temp hack.
             return False
         else:
             # The file has really changed.
             if trace: print('%s:changed %s %s %s' % (tag,old_sum,new_sum,fn))
             assert old_time,path
             self.time_d[path] = new_time
-            ### c.timeStampDict[path] = new_time
-                ### A temp hack.
             self.checksum_d[path] = new_sum
             return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
@@ -851,10 +844,6 @@ class LeoApp:
         import leo.core.leoGui as leoGui
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
-        
-        ###
-        ### self.openWithInstance = None
-            # open-with controller.
 
         # To be moved to to the pluginsController.
 
@@ -1607,25 +1596,15 @@ class LeoApp:
             print('wxGui created in %s' % fileName)
     #@+node:ekr.20031218072017.2612: *3* app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
-
         '''Remove temp files created with the Open With command.'''
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
-        ###
-        # if g.app.openWithInstance:
-            # g.app.openWithInstance.shut_down()
-            # g.app.openWithInstance = None
-                # # Recycle the open-with controller.
     #@+node:ekr.20031218072017.2615: *3* app.destroyWindow
     def destroyWindow (self,frame):
-        
+        '''Destroy all ivars in a Leo frame.'''
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
-
-        ###
-        # if g.app.openWithInstance:
-            # g.app.openWithInstance.destroy_frame(frame)
 
         if frame in g.app.windowList:
             # g.trace(g.app.windowList)
@@ -3318,7 +3297,7 @@ class LoadManager:
         g.doHook("open1",old_c=None,c=c,new_c=c,fileName=fn)
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
-            ### The log is not set properly here. ###
+            ### The log is not set properly here.
             ok = lm.readOpenedLeoFile(c,gui,fn,readAtFileNodesFlag,theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
             if not ok: return None

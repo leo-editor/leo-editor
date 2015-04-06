@@ -144,8 +144,6 @@ class Commands (object):
             # List of nodes with conflicting read-time data.
         self.nodeConflictFileName = None
             # The fileName for c.nodeConflictList.
-        ### self.timeStampDict = {}
-            # Keys are file names, values are time stamps.
         self.user_dict = {}
             # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
@@ -8530,42 +8528,11 @@ class Commands (object):
         '''
         c = self
         return g.app.externalFilesController.check_overwrite(c,fn)
-        
-        #### Old code
-        # # # trace = False and not g.unitTesting
-        # # # # Don't assume the file still exists.
-        # # # if not g.os_path_exists(fn):
-            # # # if trace: g.trace('file no longer exists',fn)
-            # # # return True
-        # # # timeStamp = c.timeStampDict.get(fn)
-        # # # if not timeStamp:
-            # # # if trace: g.trace('no time stamp',fn)
-            # # # return True
-        # # # timeStamp2 = os.path.getmtime(fn)
-        # # # if timeStamp == timeStamp2:
-            # # # if trace: g.trace('time stamps match',fn,timeStamp)
-            # # # return True
-        # # # if g.app.unitTesting:
-            # # # return False
-        # # # if trace:
-            # # # g.trace('mismatch',timeStamp,timeStamp2)
-        # # # message = '%s\n%s\n%s' % (
-            # # # fn,
-            # # # g.tr('has been modified outside of Leo.'),
-            # # # g.tr('Overwrite this file?'))
-        # # # ok = g.app.gui.runAskYesNoCancelDialog(c,
-            # # # title = 'Overwrite modified file?',
-            # # # message = message)
-        # # # return ok == 'yes'
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp (self,fn):
         '''Update the timestamp for fn..'''
         c = self
         g.app.externalFilesController.set_time(fn)
-        ### Old code
-        # # # timeStamp = os.path.getmtime(fn)
-        # # # c.timeStampDict[fn] = timeStamp
-        # # # return timeStamp
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self,source_c,function):
 

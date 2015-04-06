@@ -2746,7 +2746,7 @@ class KeyHandlerClass:
             w = event and event.widget
             if hasattr(w,'permanent') and not w.permanent:
                 # In a headline that is being edited.
-                ### g.es('Can not execute commands from headlines')
+                # g.es('Can not execute commands from headlines')
                 c.endEditing()
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.

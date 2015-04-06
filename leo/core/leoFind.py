@@ -223,9 +223,6 @@ class LeoFind:
         p0 = p.copy()
         self.setup_button()
 
-        ### old code
-        ###    self.findNext()
-
         # Move forward one node if we found a match in a headline:
         #   Pressing the button destroys c.edit_widget(p), so
         #   initInteractiveCommands does not compute ins properly.
@@ -1837,10 +1834,6 @@ class LeoFind:
         if self.search_headline and self.search_body:
             # We have no choice: we *must* search the present widget!
             self.in_headline = self.focusInTree()
-        ###
-        # elif self.buttonFlag:
-            # if trace: g.trace('was in headline',repr(self.was_in_headline),p and p.h)
-            # self.in_headline = self.search_headline
         else:
             self.in_headline = self.search_headline
             if trace: g.trace(self.in_headline,p and p.h)
