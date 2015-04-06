@@ -1297,16 +1297,17 @@ class LeoMenu:
             return None
     #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helpers (LeoMenu)
     def createOpenWithMenuFromTable (self,table):
+        '''
+        table is a lists of dicts d, used by the kind handler,
+        ExternalFilesController.open_temp_file.
 
-        '''table is a lists of dicts:
-
-        - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
-        - d.get('shortcut'): the stroke (??)
-        - d.get('name'):     the menu label.
-
-        Leo executes command(arg+path) where path is the full path to the temp file.
-        If ext is not None, the temp file has the given extension.
-        Otherwise, Leo computes an extension based on the @language directive in effect.
+        - 'args':     command-line args.
+        - 'ext':      The default file extension to be used. May be overridden.
+        - 'kind':     The method used to open the external file.  One of:
+                      ("os.startfile","os.spawnl","os.spawnv","subprocess.Popen")
+                      This argument may also be a callable.
+        - 'shortcut': the keystroke that created the command.
+        - 'name':     the menu label, for example, Idle, Scite, etc.
     '''
 
         # trace = False and not g.unitTesting

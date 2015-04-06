@@ -46,8 +46,6 @@ class ExternalFilesController:
             # List of dictionaries created by efc.open_with.
         self.has_changed_d = {}
             # Keys are commanders. Values are bools.
-        self.openWithTable = None
-            # Passed to createOpenWithMenuFromTable.
         self.time_d = {}
             # Keys are full paths, values are modification times.
     #@+node:ekr.20150405105938.1: *3* efc.entries
@@ -81,22 +79,8 @@ class ExternalFilesController:
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helper
     def open_with(self,c,d):
         '''
-            This routine handles the items in the Open With... menu.
-
-        The "d" arg is a Python dictionary whose keys and values
-        are set from the body text of @openwith nodes.
-        
-        d.keys():
-
-          'args'    A list of arguments specified by the arg tag.
-          'ext'     The temp file's extension. May be None.
-          'kind'    The method used to open the file.  One of:
-                    ('os.startfile','exec','os.spawnl','os.spawnv','subprocess.Popen')
-
-        New in Leo 5.1: two new keys:
-
-          'p':      A position.  defaults to c.p.
-          'p.b'     The body text of the file.  Defaults to c.p.b
+        This routine handles the items in the Open With... menu.
+        See open_temp_file for documentation for d.
         '''
         try:
             ext = d.get('ext')
@@ -407,41 +391,50 @@ class ExternalFilesController:
     def open_temp_file(self,c,d,fn,testing=False):
         '''
         Open the closed mkstemp file fn in an external editor.
-        The arg and openType args come from the data arg to c.openWith.
+        
+        d is typically created by LeoMenu.createOpenWithMenuFromTable.
+        It has the following keys:
+
+        - 'args':     command-line args.
+        - 'ext':      The default file extension to be used. May be overridden.
+        - 'kind':     The method used to open the external file.  One of:
+                      ("os.startfile","os.spawnl","os.spawnv","subprocess.Popen")
+                      This argument may also be a callable.
+        - 'shortcut': the keystroke that created the command.
+        - 'name':     the menu label, for example, Idle, Scite, etc.
+        
+        New in Leo 5.1: two new may be added when passing an entire file
+        to the external editor:
+
+          'p':        A position.  defaults to c.p.
+          'p.b'       The body text of the file.  Defaults to c.p.b
         '''
         trace = False and not g.unitTesting
         testing = testing or g.unitTesting
-
-        if trace:
-            print()
-            g.trace(fn)
-            for key in sorted(list(d.keys())):
-                print('%15s %s' % (key,d.get(key)))
-
+        if trace: g.print_dict(d,tag='efc.open_temp_file',verbose=True,indent='')
         arg_tuple = d.get('args',[])
         arg = ' '.join(arg_tuple)
-        openType = d.get('kind')
-
+        kind = d.get('kind')
         try:
             command = '<no command>'
-            if openType == 'os.startfile':
+            if kind == 'os.startfile':
                 command = 'os.startfile(%s)' % self.join(arg,fn)
                 if trace: g.trace(command)
                 # pylint: disable=no-member
                 # trust the user not to use this option on Linux.
                 if not testing: os.startfile(self.join(arg,fn))
-            elif openType == 'exec':
+            elif kind == 'exec':
                 g.es_print('open-with exec no longer valid.')
                 # command = 'exec(%s)' % self.join(arg,fn)
                 # if trace: g.trace(command)
                 # if not testing:
                     # exec(self.join(arg,fn),{},{})
-            elif openType == 'os.spawnl':
+            elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
                 if trace: g.trace(command)
                 if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
-            elif openType == 'os.spawnv':
+            elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0]) 
                 vtuple = arg_tuple[1:]
                 vtuple.insert(0, filename)
@@ -452,7 +445,7 @@ class ExternalFilesController:
                 if trace: g.trace(command)
                 if not testing:
                     os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
-            elif openType == 'subprocess.Popen':
+            elif kind == 'subprocess.Popen':
                 use_shell = True
                 c_arg = self.join(arg,fn)
                 command = 'subprocess.Popen(%s)' % c_arg
@@ -463,15 +456,15 @@ class ExternalFilesController:
                     except OSError:
                         g.es_print('c_arg',repr(c_arg))
                         g.es_exception()
-            elif g.isCallable(openType):
+            elif g.isCallable(kind):
                 # Invoke openWith like this:
                 # c.openWith(data=[f,None,None])
                 # f will be called with one arg, the filename
-                if trace: g.trace('%s(%s)' % (openType,fn))
-                command = '%s(%s)' % (openType,fn)
-                if not testing: openType(fn)
+                if trace: g.trace('%s(%s)' % (kind,fn))
+                command = '%s(%s)' % (kind,fn)
+                if not testing: kind(fn)
             else:
-                command='bad command:'+str(openType)
+                command='bad command:'+str(kind)
                 if not testing: g.trace(command)
             return command # for unit testing.
         except Exception:

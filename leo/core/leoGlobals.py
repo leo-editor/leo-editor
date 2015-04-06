@@ -5612,40 +5612,37 @@ def prettyPrintType (obj):
             return theType
 #@+node:ekr.20041224080039: *3* g.print_dict & dictToString
 def print_dict(d,tag='',verbose=True,indent=''):
-
-    if not d:
-        if tag: g.pr('%s...{}' % tag)
-        else:   g.pr('{}')
-        return
-
-    n = 6
-    for key in sorted(d):
-        if type(key) == type(''):
-            n = max(n,len(key))
-    if tag: g.es('%s...{\n' % tag)
-    else:   g.es('{\n')
-    for key in sorted(d):
-        g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
-    g.pr('}')
+    '''Pretty print a Python dict using g.pr.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if type(key) == type(''):
+                n = max(n,len(key))
+        g.pr('%s...{' % (tag) if tag else '{')
+        for key in sorted(d):
+            g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
+        g.pr('}')
+    else:
+        g.pr('%s...{}' % (tag) if tag else '{}')
 
 printDict = print_dict
 
 def dictToString(d,tag=None,verbose=True,indent=''):
-
-    if not d:
-        if tag: return '%s...{}' % tag
-        else:   return '{}'
-    n = 6
-    for key in sorted(d):
-        if g.isString(key):
-            n = max(n,len(key))
-    lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
-        for key in sorted(d)]
-    s = '\n'.join(lines)
-    if tag:
-        return '%s...{\n%s}\n' % (tag,s)
+    '''Pretty print a Python dict to a string.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n,len(key))
+        lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
+            for key in sorted(d)]
+        s = '\n'.join(lines)
+        if tag:
+            return '%s...{\n%s}\n' % (tag,s)
+        else:
+            return '{\n%s}\n' % (s)
     else:
-        return '{\n%s}\n' % s
+        return '%s...{}' % (tag) if tag else '{}'
 #@+node:ekr.20041126060136: *3* g.print_list & listToString
 def print_list(aList,tag=None,sort=False,indent=''):
 
