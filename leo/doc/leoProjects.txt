@@ -84,6 +84,31 @@ https://github.com/leo-editor/leo-editor/issues/170
 Enabled with @bool check_for_changed_external_files, default False.
 
 When enabled, Leo track chnges to externally files and raises an alert. The user can choose to reload the file or ignore the external changes.
+.. @+node:ekr.20150319055953.11: *3* Improved <?xml-stylesheet>
+@language rest
+@wrap
+
+Leo now writes xml-stylesheet elements of the form::
+    
+    <?xml-stylesheet x ?>
+    
+where x comes from *either*:
+    
+Source 1:
+    
+    The value of the ``@string stylesheet`` setting in effect for the .leo file
+    when Leo *read* the file. If you change the ``@string stylesheet`` setting,
+    it will take effect the *next* time you invoke Leo.
+
+Source 2:
+    
+    If the the stylesheet setting is *empty*, Leo uses the ``xml-stylesheet``
+    element contained in the .leo file when Leo *read* the .leo file.
+
+**Note**:
+    
+    Leo does *not* use Source 2 the for leoSettings.leo or myLeoSetting.leo
+    files themselves. This is a workaround for an apparent sax parsing bug.
 .. @-all
 .. @@pagewidth 60
 .. @@wrap
