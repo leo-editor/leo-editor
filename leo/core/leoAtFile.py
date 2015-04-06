@@ -3011,9 +3011,7 @@ class AtFile:
         return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *5* at.openFileForWritingHelper & helper
     def openFileForWritingHelper (self,fileName):
-
         '''Open the file and return True if all went well.'''
-
         at = self ; c = at.c
         try:
             at.shortFileName = g.shortFileName(fileName)
@@ -3168,7 +3166,9 @@ class AtFile:
         if toString:
             at.targetFileName = "<string-file>"
         elif nosentinels:
-            at.targetFileName = root.atNoSentFileNodeName()
+            at.targetFileName = (
+                root.atNoSentFileNodeName() or
+                root.atCleanNodeName()) # 2015/04/06
         elif thinFile:
             at.targetFileName = root.atThinFileNodeName()
             if not at.targetFileName:
@@ -3322,6 +3322,9 @@ class AtFile:
                 at.writeOneAtAutoNode(p,toString=toString,force=force)
                 writtenFiles.append(p.v)
                 # Do *not* clear the dirty bits the entries in @persistence tree here!
+            elif p.isAtCleanNode():
+                at.write(p,kind='@clean',nosentinels=True,toString=toString)
+                writtenFiles.append(p.v)
             elif p.isAtEditNode():
                 at.writeOneAtEditNode(p,toString=toString)
                 writtenFiles.append(p.v)
@@ -3726,16 +3729,14 @@ class AtFile:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20090225080846.5: *4* at.writeOneAtEditNode
     def writeOneAtEditNode(self,p,toString,force=False):
-
         '''Write one @edit node.'''
-
         at = self ; c = at.c
         root = p.copy()
         c.endEditing()
         c.init_error_dialogs()
         fn = p.atEditNodeName()
-        if not fn and not toString: return False
-
+        if not fn and not toString:
+            return False
         if p.hasChildren():
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto or @thin')
@@ -5342,7 +5343,8 @@ class AtFile:
             return 0,s
     #@+node:ekr.20090712050729.6017: *3* at.promptForDangerousWrite
     def promptForDangerousWrite(self,fileName,kind,message=None):
-
+        '''Raise a dialog asking the user whether to overwrite an existing file.'''
+        trace = True and not g.unitTesting
         at,c,root = self,self.c,self.root
         if g.app.unitTesting:
             val = g.app.unitTestDict.get('promptForDangerousWrite')
@@ -5370,6 +5372,7 @@ class AtFile:
                 kind, fileName,
                 g.tr('already exists.'),
                 g.tr('Overwrite this file?'))
+        if trace: g.trace(c.shortFileName(),fileName,g.callers())
         result = g.app.gui.runAskYesNoCancelDialog(c,
                 title = 'Overwrite existing file?',
                 yesToAllMessage="Yes To &All",
@@ -5387,6 +5390,7 @@ class AtFile:
         Remember the files that have been read *and*
         the full headline (@<file> type) that caused the read.
         '''
+        # g.trace(p.h,id(p.v),fn,g.callers())
         v = p.v
         # Fix bug #50: body text lost switching @file to @auto-rst
         if not hasattr(v,'at_read'):
@@ -5572,12 +5576,14 @@ class AtFile:
         Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
+        trace = False and not g.unitTesting
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             return False
         elif hasattr(p.v,'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
+            if trace: g.trace(fn,p.h,'\n d:',d,'\n',g.callers())
             aSet = d.get(fn,set())
             return p.h not in aSet
         else:

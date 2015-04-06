@@ -332,9 +332,10 @@ class ExternalFilesController:
     def has_changed(self,c,path):
         '''Return True if p's external file has changed outside of Leo.'''
         trace = True and not g.unitTesting
+        verbose_init = True
         tag = 'efc.has_changed'
         if not g.os_path_exists(path):
-            if trace: g.trace('does not exist',path)
+            if trace: print('%s:does not exist %s' % (tag,path))
             return False
         fn = g.shortFileName(path)
         # First, check the modification times.
@@ -344,7 +345,9 @@ class ExternalFilesController:
             # Initialize.
             self.time_d[path] = new_time
             self.checksum_d[path] = checksum = self.checksum(path)
-            if trace:
+            if trace and verbose_init:
+                print('%s:init %s %s %s' % (tag,checksum,c.shortFileName(),path))
+            elif trace:
                 # Only print one message per commander.
                 d = self.has_changed_d
                 val = d.get(c)
@@ -353,6 +356,7 @@ class ExternalFilesController:
                     print('%s:init %s' % (tag,c.shortFileName()))
             return False
         if old_time == new_time:
+            # print('%s:times match %s %s' % (tag,c.shortFileName(),path))
             return False
         # Check the checksums *only* if the mod times don't match.
         old_sum = self.checksum_d.get(path)

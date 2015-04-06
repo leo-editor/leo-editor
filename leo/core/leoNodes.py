@@ -456,6 +456,7 @@ class Position (object):
     #@+node:ekr.20040306211032: *5* p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
+    def atCleanNodeName           (self): return self.v.atCleanNodeName()
     def atEditNodeName            (self): return self.v.atEditNodeName()
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
