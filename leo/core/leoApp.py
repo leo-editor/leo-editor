@@ -42,8 +42,8 @@ class ExternalFilesController:
         self.enabled_d = {}
             # Keys are commanders.
             # Values are cached check_for_changed_external_file settings.
-        self.files = []
-            # List of dictionaries created by this class.
+        self.open_with_files = []
+            # List of dictionaries created by efc.open_with.
         self.has_changed_d = {}
             # Keys are commanders. Values are bools.
         self.openWithTable = None
@@ -63,75 +63,6 @@ class ExternalFilesController:
             return self.ask_overwrite(c,path)
         else:
             return True
-    #@+node:ekr.20150404100106.1: *4* efc.editnode_on_idle (fold into code)
-    def editnode_on_idle (self):
-        '''The idle-time handler.'''
-        # g.trace(len(self.files))
-        for d in self.files:
-            path = d.get("path")
-            c = d.get("c")
-            encoding = d.get("encoding",None)
-            p = d.get("p")
-            old_body = d.get("body")
-            if path and os.path.exists(path):
-                try:
-                    time = os.path.getmtime(path)
-                    # g.trace(path,time,d.get('time'))
-                    if time and time != d.get("time"):
-                        d["time"] = time # inhibit endless dialog loop.
-                        # The file has changed.
-                        #@+<< set s to the file text >>
-                        #@+node:ekr.20150404100106.2: *5* << set s to the file text >>
-                        try:
-                            # Update v from the changed temp file.
-                            f=open(path)
-                            s=f.read()
-                            f.close()
-                        except:
-                            g.es("can not open " + g.shortFileName(path))
-                            break
-                        #@-<< set s to the file text >>
-                        #@+<< update p's body text >>
-                        #@+node:ekr.20150404100106.3: *5* << update p's body text >> (contextmenu.py)
-                        # Convert body and s to whatever encoding is in effect.
-                        body = p.b
-                        body = g.toEncodedString(body,encoding,reportErrors=True)
-                        s = g.toEncodedString(s,encoding,reportErrors=True)
-
-                        conflict = body != old_body and body != s
-
-                        # Set update if we should update the outline from the file.
-                        if conflict:
-                            # 2012/02/04: Don't raise dialog for files opened with vim.py, xemacs.py, etc.
-                            paths = [z.get('path') for z in g.app.openWithFiles]
-                            if path in paths:
-                                update = True
-                            else:
-                                # See how the user wants to resolve the conflict.
-                                g.error("conflict in " + g.shortFileName(path))
-                                message = "Replace changed outline with external changes?"
-                                result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
-                                update = result.lower() == "yes"
-                        else:
-                            update = s != body
-
-                        if update:
-                            g.blue("updated from: " + g.shortFileName(path))
-                            s = g.toUnicode(s,encoding=encoding)
-                            c.setBodyString(p,s)
-                            #TL - 7/2/08 Converted to configurable 'goto node...'
-                            if c.config.getBool('open_with_goto_node_on_update'):
-                                c.selectPosition(p)
-                            d["body"] = s
-                            # A patch by Terry Brown.
-                            if c.config.getBool('open_with_save_on_update'):
-                                c.save()
-                        elif conflict:
-                            g.blue("not updated from: " + g.shortFileName(path))
-                        #@-<< update p's body text >>
-                except Exception:
-                    # g.es_exception()
-                    pass
     #@+node:ekr.20150330033306.1: *4* efc.on_idle
     def on_idle(self,timer):
         '''Check for changed files in all commanders.'''
@@ -140,6 +71,7 @@ class ExternalFilesController:
             import time
             t1 = time.time()
         if g.app and not g.app.killed:
+            self.check_open_with_files()
             for c in g.app.commanders():
                 self.check_commander(c)
         if trace:
@@ -182,7 +114,7 @@ class ExternalFilesController:
     #@+node:ekr.20100203050306.5797: *5* efc.open_with_helper
     def open_with_helper (self,body,c,p,ext):
         '''
-        Reopen a temp file for p if it exists in self.files.
+        Reopen a temp file for p if it exists in self.open_with_files.
         Otherwise, open a new temp file.
         '''
         # May be over-ridden by mod_tempfname plugin.
@@ -194,13 +126,13 @@ class ExternalFilesController:
         # Set d and path if a temp file already refers to p.v
         path = None
         if g.os_path_exists(searchPath):
-            for d in self.files:
+            for d in self.open_with_files:
                 if p.v == d.get('v') and searchPath == d.get('path'):
                     path = searchPath
                     break
         if path:
             assert d.get('path') == searchPath
-            fn = self.update(body,c,p,d,ext)
+            fn = self.update_open_with_node(body,c,p,d,ext)
                 # Compares temp file to Leo outline.
         else:
             fn = self.create_temp_file(body,c,p,ext)
@@ -210,6 +142,22 @@ class ExternalFilesController:
         '''Update the timestamp for path.'''
         self.time_d[path] = g.os_path_getmtime(path)
     #@+node:ekr.20150405110219.1: *3* efc.utilities
+    #@+node:ekr.20150405223300.1: *4* efc.ask_open_with_conflict
+    def ask_open_with_conflict(self,c,path):
+        '''Ask the user how to resolve an open-with update conflict.'''
+        s = '\n'.join([
+            'Conflicting changes in outline and temp file.',
+            'Do you want to use the data in the outline?',
+            'Yes: use the data in the outline.',
+            'No: use the data in the temp file.',
+            'Cancel or Escape or Return: do nothing.',
+        ])
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            "Conflict!",s,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        return result and result.lower()
     #@+node:ekr.20150405200212.1: *4* efc.ask_overwrite
     def ask_overwrite(self,c,path):
         '''
@@ -217,7 +165,7 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has modified outside Leo.' % (path),
+            '%s has been modified outside Leo.' % (path),
             'Overwrite this file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c,'Overwrite modified file?',s)
@@ -264,6 +212,18 @@ class ExternalFilesController:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20150405224610.1: *4* efc.check_open_with_files
+    def check_open_with_files(self):
+        '''Check all open-with files for changes.'''
+        for d in self.open_with_files:
+            c = d.get("c")
+            p = d.get('p')
+            ext = d.get('ext')
+            ext = self.get_ext(c,p,ext)
+            body = d.get('p.b') if d.has_key('p.b') else p.b
+            path = d.get("path")
+            if c and path and self.has_changed(c,path):
+                self.update_open_with_node(body,c,p,d,ext)
     #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self,path):
         '''Return the checksum of the file at the given path.'''
@@ -273,7 +233,7 @@ class ExternalFilesController:
     def create_temp_file (self,body,c,p,ext):
         '''
         Actually create the temp file used by open-with.
-        Append a dict to self.files.
+        Append a dict to self.open_with_files.
         '''
         trace = False and not g.unitTesting
 
@@ -306,11 +266,11 @@ class ExternalFilesController:
             except:
                 t1 = None
 
-            # Remove previous entry from self.files if it exists.
-            for d in self.files[:]:
+            # Remove previous entry from self.open_with_files if it exists.
+            for d in self.open_with_files[:]:
                 if p.v == d.get('v'):
                     if trace: g.trace('removing',d.get('path'))
-                    self.files.remove(d)
+                    self.open_with_files.remove(d)
             d = {
                 'c':c,
                 'path':fn,
@@ -323,7 +283,7 @@ class ExternalFilesController:
                 # Used by self.open_with_helper, and below.
                 'v':p.v,
             }
-            self.files.append(d)
+            self.open_with_files.append(d)
             return fn
         except:
             if f: f.close()
@@ -337,7 +297,7 @@ class ExternalFilesController:
         Called by app.destroyWindow.
         """
         # Copy the list: it may change in the loop.
-        for d in self.files[:]:
+        for d in self.open_with_files[:]:
             c = d.get("c")
             if c.frame == frame:
                 self.destroy_using_dict(d)
@@ -353,8 +313,8 @@ class ExternalFilesController:
             except:
                 g.pr("can not delete temp file: %s" % path)
 
-        if d in self.files:
-            self.files.remove(d)
+        if d in self.open_with_files:
+            self.open_with_files.remove(d)
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext (self,c,p,ext):
         '''Return the file extension to be used in the temp file.'''
@@ -523,9 +483,9 @@ class ExternalFilesController:
         Called by g.app.finishQuit.
         '''
         # Dont call g.es! The log stream no longer exists.
-        for d in self.files[:]:
+        for d in self.open_with_files[:]:
             self.destroy_using_dict(d)
-        self.files = []
+        self.open_with_files = []
     #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path (mod_tempfname)
     def temp_file_path (self,p,ext):
         '''Return the path to the temp file for p and ext.'''
@@ -536,18 +496,8 @@ class ExternalFilesController:
         td = g.os_path_finalize(tempfile.gettempdir())
         path = g.os_path_join(td,fn)
         return path
-    #@+node:ekr.20031218072017.2827: *4* efc.update (reports changed text)
-    # A unit test references this message.
-    # I have no idea why :-)
-    conflict_message = '''
-    Conflicting changes in outline and temp file.
-    Do you want to use the data in the outline?
-    Yes: use the data in the outline.
-    No: use the data in the temp file.
-    Cancel or Escape or Return: do nothing.
-    '''
-
-    def update (self,body,c,p,d,ext):
+    #@+node:ekr.20031218072017.2827: *4* efc.update_open_with_node
+    def update_open_with_node (self,body,c,p,d,ext):
         '''
         Test for changes in both p and the temp file:
 
@@ -571,11 +521,7 @@ class ExternalFilesController:
         time_changed = old_time != new_time
         if body_changed and time_changed:
             g.error('Conflict in temp file for',p.h)
-            result = g.app.gui.runAskYesNoCancelDialog(c,
-                'Conflict!', c.conflict_message,
-                yesMessage = 'Outline',
-                noMessage = 'File',
-                defaultButton = 'Cancel')
+            result = self.ask_open_with_conflict(c,p.h)
             d['time'] = new_time
             d['body'] = new_body
             if result is None or result.lower() == 'cancel':

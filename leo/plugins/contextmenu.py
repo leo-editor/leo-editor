@@ -77,7 +77,6 @@ def install_handlers():
         configuredcommands_rclick, deletenodes_rclick,
         openurl_rclick,pylint_rclick]
     g.tree_popup_handlers.extend(hnd)
-    ### g.registerHandler("idle", editnode_on_idle)
     # just for kicks, the @commands
     #@+<< Add commands >>
     #@+node:ville.20090701224704.9805: *4* << Add commands >>
@@ -349,81 +348,5 @@ def guess_file_type(fname):
     return "@auto"
         
             
-#@+node:ville.20090701142447.5473: *3* editnode_on_idle
-def editnode_on_idle (tag,keywords):
-    '''
-    The idle-time handler for contextmenu.py.
-    
-    c.openWith creates the dict with the following keys:
-        "body", "c", "encoding", "f", "path", "time" and "p".
-    '''
-    a = g.app
-    if a.killed: return
-    # g.trace('open with plugin')
-    for d in a.openWithFiles:
-        path = d.get("path")
-        c = d.get("c")
-        encoding = d.get("encoding",None)
-        p = d.get("p")
-        old_body = d.get("body")
-        if path and os.path.exists(path):
-            try:
-                time = os.path.getmtime(path)
-                # g.trace(path,time,d.get('time'))
-                if time and time != d.get("time"):
-                    d["time"] = time # inhibit endless dialog loop.
-                    # The file has changed.
-                    #@+<< set s to the file text >>
-                    #@+node:ville.20090701142447.5474: *4* << set s to the file text >>
-                    try:
-                        # Update v from the changed temp file.
-                        f=open(path)
-                        s=f.read()
-                        f.close()
-                    except:
-                        g.es("can not open " + g.shortFileName(path))
-                        break
-                    #@-<< set s to the file text >>
-                    #@+<< update p's body text >>
-                    #@+node:ville.20090701142447.5475: *4* << update p's body text >> (contextmenu.py)
-                    # Convert body and s to whatever encoding is in effect.
-                    body = p.b
-                    body = g.toEncodedString(body,encoding,reportErrors=True)
-                    s = g.toEncodedString(s,encoding,reportErrors=True)
-
-                    conflict = body != old_body and body != s
-
-                    # Set update if we should update the outline from the file.
-                    if conflict:
-                        # 2012/02/04: Don't raise dialog for files opened with vim.py, xemacs.py, etc.
-                        paths = [z.get('path') for z in g.app.openWithFiles]
-                        if path in paths:
-                            update = True
-                        else:
-                            # See how the user wants to resolve the conflict.
-                            g.error("conflict in " + g.shortFileName(path))
-                            message = "Replace changed outline with external changes?"
-                            result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
-                            update = result.lower() == "yes"
-                    else:
-                        update = s != body
-
-                    if update:
-                        g.blue("updated from: " + g.shortFileName(path))
-                        s = g.toUnicode(s,encoding=encoding)
-                        c.setBodyString(p,s)
-                        #TL - 7/2/08 Converted to configurable 'goto node...'
-                        if c.config.getBool('open_with_goto_node_on_update'):
-                            c.selectPosition(p)
-                        d["body"] = s
-                        # A patch by Terry Brown.
-                        if c.config.getBool('open_with_save_on_update'):
-                            c.save()
-                    elif conflict:
-                        g.blue("not updated from: " + g.shortFileName(path))
-                    #@-<< update p's body text >>
-            except Exception:
-                # g.es_exception()
-                pass
 #@-others
 #@-leo

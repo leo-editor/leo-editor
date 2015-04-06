@@ -169,11 +169,11 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150404091412.1"><vh>Failing open-with tests</vh>
+<v t="ekr.20100203103015.5353"><vh>@test efc.ask_open_with_conflict</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@test efc.create_temp_file</vh></v>
 <v t="ekr.20100203103015.5355"><vh>@test efc.get_ext</vh></v>
 <v t="ekr.20100203103015.5354"><vh>@test efc.temp_file_path</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20100203103015.5353"><vh>@test open-with conflict dialog</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -899,15 +899,7 @@ for ivar in ivars:
 </t>
 <t tx="ekr.20100203103015.5353"># Not a perfect test, but stil significant.
 efc = g.app.externalFilesController
-
-assert efc.conflict_message,'fail 1'
-
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", efc.conflict_message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
-
+result = efc.ask_open_with_conflict(c,p.h)
 assert result in (None,'cancel'),'fail 2: %s' % result
 </t>
 <t tx="ekr.20100203103015.5354">efc = g.app.externalFilesController
