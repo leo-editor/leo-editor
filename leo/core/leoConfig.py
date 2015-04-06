@@ -271,6 +271,7 @@ class ParserBaseClass:
             s = g.toUnicode(s,encoding='utf-8')
         except Exception:
             g.es_exception()
+            s = None
         finally:
             if old_p: c.selectPosition(old_p)
         return s

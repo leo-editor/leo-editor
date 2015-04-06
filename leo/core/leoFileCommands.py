@@ -263,11 +263,21 @@ if sys.platform != 'cli':
             return self.rootNode
         #@+node:ekr.20061004054323: *4* sax.processingInstruction (stylesheet)
         def processingInstruction (self,target,data):
-
+            '''
+            sax: handle and xml processing instruction.
+            We expect the target to be 'xml-stylesheet'.
+            '''
+            trace = False and not g.unitTesting
             if target == 'xml-stylesheet':
-                self.c.frame.stylesheet = data
-                if False and not self.silent:
-                    g.warning('','%s: %s' % (target,data))
+                # A strange hack.  Don't set this for settings files.
+                # This looks like a strange sax interaction.
+                sfn = (self.c.shortFileName() or '').strip().lower()
+                if sfn.endswith('leosettings.leo') or sfn.endswith('myleosettings.leo'):
+                    pass
+                else:
+                    self.c.frame.stylesheet = data
+                    if trace: g.trace(self.c.shortFileName(),repr(data))
+                # g.warning('','%s: %s' % (target,data))
             else:
                 g.trace(target,data)
         #@+node:ekr.20060919110638.35: *4* sax.startElement & helpers
@@ -1727,21 +1737,34 @@ class FileCommands:
         # Put "created by Leo" line.
         self.put('<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->')
         self.put_nl()
-        if c.config.stylesheet or c.frame.stylesheet:
-            self.putStyleSheetLine()
+        self.putStyleSheetLine()
         # Put the namespace
         self.put('<leo_file xmlns:leo="%s" >' % tag)
         self.put_nl()
     #@+node:ekr.20031218072017.1248: *4* fc.putStyleSheetLine
     def putStyleSheetLine (self):
-
+        '''
+        Put the xml stylesheet line.
+        
+        Old: The xml stylesheet element in the .leo file took precedence over
+             the @string stylesheet setting. This made it impossible to change
+             the stylesheet!
+             
+        New: The @string stylesheet x setting takes precedence.
+        '''
+        trace = False and not g.unitTesting
         c = self.c
-
-        # The stylesheet in the .leo file takes precedence over the default stylesheet.
-        self.put("<?xml-stylesheet ")
-        self.put(c.frame.stylesheet or c.config.stylesheet)
-        self.put("?>")
-        self.put_nl()
+        sheet1 = (c.config.getString('stylesheet') or '').strip()
+        sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
+        if trace:
+            g.trace(c.shortFileName(),'sheet1',repr(sheet1))
+            g.trace(c.shortFileName(),'sheet2',repr(sheet2))
+        sheet = sheet1 or sheet2
+        if sheet:
+            s = '<?xml-stylesheet %s ?>' % sheet
+            if trace: g.trace(c.shortFileName(),s)
+            self.put(s)
+            self.put_nl()
     #@+node:ekr.20031218072017.1577: *4* fc.putTnode
     def putTnode (self,v):
 

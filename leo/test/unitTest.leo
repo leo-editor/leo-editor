@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.57" body_secondary_ratio="0.69">
@@ -168,7 +168,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20150404091412.1"><vh>Failing open-with tests</vh>
+<v t="ekr.20150404091412.1"><vh>Previously failing open-with tests</vh>
 <v t="ekr.20100203103015.5353"><vh>@test efc.ask_open_with_conflict</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@test efc.create_temp_file</vh></v>
 <v t="ekr.20100203103015.5355"><vh>@test efc.get_ext</vh></v>
@@ -590,7 +590,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>

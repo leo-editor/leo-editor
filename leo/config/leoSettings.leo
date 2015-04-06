@@ -569,7 +569,7 @@
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
 <v t="ekr.20101009103953.8642"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
-<v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
+<v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
 </v>
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
@@ -2015,18 +2015,20 @@ Notes:
 2. Use \n to separate lines.
 3. This must be empty for compatibility with older versions of Leo.
 4. Please use an empty comment when updating to CVS!</t>
-<t tx="ekr.20041119034357.9">A string, s.  If present, .leo files will contain an xml-stylesheet line following
-the opening xml line. 
-For example:
-  &lt;?xml ....?&gt; 
-  &lt;?xml-stylesheet ekr_stylesheet?&gt;
-  
-Notes:
-- The string s should contain any needed XML escapes.
-- Leo writes the line &lt;?xml-stylesheet s ?&gt;
-  where s is the value of this setting.
-- Please set this field empty when uploading to CVS.
-- Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
+<t tx="ekr.20041119034357.9">@language rest
+
+If present, say::
+    
+    @string stylesheet = x
+    
+The .leo file will contain the following line::
+
+  &lt;?xml-stylesheet x ?&gt;
+
+**Note**: x should contain any needed XML escapes.
+
+**Note**: if x is empty, Leo will retain any xml-stylesheet line in the .leo file.
+</t>
 <t tx="ekr.20041119035137">@language rest
 @wrap
 @pagewidth 80
