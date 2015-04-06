@@ -5010,9 +5010,7 @@ pass
 pass
 #@+node:ekr.20100203103015.5354: *4* @test efc.temp_file_path
 efc = g.app.externalFilesController
-s = efc.temp_file_path(p,'.py')
-assert s.find('LeoTemp') > -1
-    # This might change.
+s = efc.temp_file_path(c,p,'.py')
 assert s.endswith('.py')
 #@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
 c.selectPosition(p)

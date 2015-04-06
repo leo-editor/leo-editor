@@ -102,7 +102,7 @@ class ExternalFilesController:
         Otherwise, open a new temp file.
         '''
         # May be over-ridden by mod_tempfname plugin.
-        searchPath = self.temp_file_path(p,ext)
+        searchPath = self.temp_file_path(c,p,ext)
         if not searchPath:
             # Check the mod_tempfname plugin.
             return g.error('c.temp_file_path failed')
@@ -223,9 +223,7 @@ class ExternalFilesController:
         Append a dict to self.open_with_files.
         '''
         trace = False and not g.unitTesting
-
-        ### Previously over-ridden by mod_tempfname plugin.
-        fn = self.temp_file_path(p,ext)
+        fn = self.temp_file_path(c,p,ext)
         try:
             f = None
             if not g.unitTesting:
@@ -482,15 +480,71 @@ class ExternalFilesController:
         for d in self.open_with_files[:]:
             self.destroy_using_dict(d)
         self.open_with_files = []
-    #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path (mod_tempfname)
-    def temp_file_path (self,p,ext):
+    #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path
+    def temp_file_path (self,c,p,ext):
         '''Return the path to the temp file for p and ext.'''
-        # Previously overridden by mod_tempfname.
-        fn = '%s_LeoTemp_%s%s' % (g.sanitize_filename(p.h),str(id(p.v)),ext)
-        if g.isPython3:
-            fn = g.toUnicode(fn)
-        td = g.os_path_finalize(tempfile.gettempdir())
-        path = g.os_path_join(td,fn)
+        if c.config.getBool('open_with_clean_filenames'):
+            path = self.clean_file_name(c,p,ext)
+        else:
+            path = self.legacy_file_name(c,p,ext)
+        return path
+        ###
+        # # # # Previously overridden by mod_tempfname.
+        # # # fn = '%s_LeoTemp_%s%s' % (g.sanitize_filename(p.h),str(id(p.v)),ext)
+        # # # if g.isPython3:
+            # # # fn = g.toUnicode(fn)
+        # # # td = g.os_path_finalize(tempfile.gettempdir())
+        # # # path = g.os_path_join(td,fn)
+        # # # return path
+    #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
+    def clean_file_name(self,c,p,ext):
+        '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
+        trace = False and not g.unitTesting
+        use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
+        ancestors,found = [],False
+        for p in p.self_and_parents():
+            h = p.anyAtFileNodeName()
+            if not h:
+                h = p.h  # Not an @file node: use the entire header
+            elif use_extentions and not found:
+                # Found the nearest ancestor @<file> node.
+                found = True
+                base,ext2 = g.os_path_splitext(h)
+                if p == c.p: h = base
+                if ext2: ext = ext2
+            ancestors.append(g.sanitize_filename(h))
+
+        # The base directory is <tempdir>/Leo<id(v)>.
+        ancestors.append("Leo" + str(id(p.v)))
+
+        # Build temporary directories.
+        td = os.path.abspath(tempfile.gettempdir())
+        while len(ancestors) > 1:
+            td = os.path.join(td, ancestors.pop())
+            if not os.path.exists(td):
+                # if trace: g.trace('creating',td)
+                os.mkdir(td)
+
+        # Compute the full path.
+        name = ancestors.pop() + ext
+        path = os.path.join(td,name)
+        if trace: g.trace('returns',path,g.callers())
+        return path
+    #@+node:ekr.20150406055221.3: *5* efc.legacy_file_name
+    def legacy_file_name(self,c,p,ext):
+        '''Compute a legacy file name for unsupported operating systems.'''
+        try:
+            leoTempDir = getpass.getuser() + "_" + "Leo"
+        except Exception:
+            leoTempDir = "LeoTemp"
+            g.es("Could not retrieve your user name.")
+            g.es("Temporary files will be stored in: %s" % leoTempDir)
+
+        td = os.path.join(os.path.abspath(tempfile.gettempdir()),leoTempDir)
+        if not os.path.exists(td):
+            os.mkdir(td)
+        name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
+        path = os.path.join(td,name)
         return path
     #@+node:ekr.20031218072017.2827: *4* efc.update_open_with_node
     def update_open_with_node (self,body,c,p,d,ext):
@@ -531,58 +585,6 @@ class ExternalFilesController:
         else:
             g.blue('reopening:',g.shortFileName(fn))
         return fn
-    #@+node:ekr.20150403042536.2: *4* mod_tempfname.cleanFileName
-    def cleanFileName(self,c,v,ext):
-        '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
-        trace = False and not g.unitTesting
-        g.trace(g.callers())
-        p = c.p
-        use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
-        ancestors,found = [],False
-        for p in p.self_and_parents():
-            h = p.anyAtFileNodeName()
-            if not h:
-                h = p.h  # Not an @file node: use the entire header
-            elif use_extentions and not found:
-                # Found the nearest ancestor @<file> node.
-                found = True
-                base,ext2 = g.os_path_splitext(h)
-                if p == c.p: h = base
-                if ext2: ext = ext2
-            ancestors.append(g.sanitize_filename(h))
-
-        # The base directory is <tempdir>/Leo<id(v)>.
-        ancestors.append("Leo" + str(id(v)))
-
-        # Build temporary directories.
-        td = os.path.abspath(tempfile.gettempdir())
-        while len(ancestors) > 1:
-            td = os.path.join(td, ancestors.pop())
-            if not os.path.exists(td):
-                # if trace: g.trace('creating',td)
-                os.mkdir(td)
-
-        # Compute the full path.
-        name = ancestors.pop() + ext
-        path = os.path.join(td,name)
-        if trace: g.trace('returns',path,g.callers())
-        return path
-    #@+node:ekr.20150403042536.3: *4* mod_tempfname.legacyFileName
-    def legacyFileName(self,c,v,ext):
-        '''Compute a legacy file name for unsupported operating systems.'''
-        try:
-            leoTempDir = getpass.getuser() + "_" + "Leo"
-        except Exception:
-            leoTempDir = "LeoTemp"
-            g.es("Could not retrieve your user name.")
-            g.es("Temporary files will be stored in: %s" % leoTempDir)
-
-        td = os.path.join(os.path.abspath(tempfile.gettempdir()),leoTempDir)
-        if not os.path.exists(td):
-            os.mkdir(td)
-        name = g.sanitize_filename(v.h) + '_' + str(id(v)) + ext
-        path = os.path.join(td,name)
-        return path
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp:

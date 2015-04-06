@@ -903,9 +903,7 @@ result = efc.ask_open_with_conflict(c,p.h)
 assert result in (None,'cancel'),'fail 2: %s' % result
 </t>
 <t tx="ekr.20100203103015.5354">efc = g.app.externalFilesController
-s = efc.temp_file_path(p,'.py')
-assert s.find('LeoTemp') &gt; -1
-    # This might change.
+s = efc.temp_file_path(c,p,'.py')
 assert s.endswith('.py')
 </t>
 <t tx="ekr.20100203103015.5355">@language python
