@@ -389,7 +389,7 @@ class ExternalFilesController:
     def join(self,s1,s2):
         '''Return s1 + ' ' + s2'''
         return '%s %s' % (s1,s2)
-    #@+node:ekr.20031218072017.2829: *4* efc.open_temp_file
+    #@+node:ekr.20031218072017.2829: *4* efc.open_temp_file (documents d)
     def open_temp_file(self,c,d,fn,testing=False):
         '''
         Open the closed mkstemp file fn in an external editor.
