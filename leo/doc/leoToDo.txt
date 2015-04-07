@@ -12,8 +12,28 @@
 @language rest
 @wrap
 
+See http://ipython.org/ipython-doc/stable/development/execution.html
+
 https://github.com/leo-editor/leo-editor/issues/156
 Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
+
+This one is pretty straight forward. If I run this command via Ctrl + B:
+
+for ind in range(5):
+    print("index:" + ind)
+
+Without ILeo I get:
+
+TypeError: cannot concatenate 'str' and 'int' objects
+--------------------
+  line 12: for ind in range(5):
+* line 13:     print("index:" + ind)
+  line 14: #@-leo
+  line 15: 
+
+But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
+
+@language python
 .. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
 @language rest
 @wrap
