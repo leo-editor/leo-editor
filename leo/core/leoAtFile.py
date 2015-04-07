@@ -5344,7 +5344,7 @@ class AtFile:
     #@+node:ekr.20090712050729.6017: *3* at.promptForDangerousWrite
     def promptForDangerousWrite(self,fileName,kind,message=None):
         '''Raise a dialog asking the user whether to overwrite an existing file.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at,c,root = self,self.c,self.root
         if g.app.unitTesting:
             val = g.app.unitTestDict.get('promptForDangerousWrite')
