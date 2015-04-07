@@ -5450,22 +5450,19 @@ def es_print(*args,**keys):
         g.es(*args,**keys)
 #@+node:ekr.20111107181638.9741: *3* g.es_print_exception
 def es_print_exception (full=True,c=None,color="red"):
-
+    '''Print exception info about the last exception.'''
     typ,val,tb = sys.exc_info()
-
-    # val is the second argument to the raise statement.
-
+        # val is the second argument to the raise statement.
     if full or g.app.debugSwitch > 0:
         lines = traceback.format_exception(typ,val,tb)
     else:
         lines = traceback.format_exception_only(typ,val)
-
-    for line in lines:
-        print(line)
-
-    fileName,n = g.getLastTracebackFileAndLineNumber()
-
-    return fileName,n
+    print(''.join(lines))
+    try:
+        fileName,n = g.getLastTracebackFileAndLineNumber()
+        return fileName,n
+    except Exception:
+        return "<no file>",0
 #@+node:ekr.20050707065530: *3* g.es_trace
 def es_trace(*args,**keys):
 
