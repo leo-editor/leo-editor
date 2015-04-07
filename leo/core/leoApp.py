@@ -115,8 +115,7 @@ class ExternalFilesController:
                     path = searchPath
                     break
         if path:
-            assert d.get('path') == searchPath
-            fn = self.update_open_with_node(body,c,p,d,ext)
+            fn = self.update_open_with_node(c,d)
                 # Compares temp file to Leo outline.
         else:
             fn = self.create_temp_file(body,c,p,ext)
@@ -204,34 +203,30 @@ class ExternalFilesController:
         '''Check all open-with files for changes.'''
         for d in self.open_with_files:
             c = d.get("c")
-            p = d.get('p')
-            ext = d.get('ext')
-            ext = self.get_ext(c,p,ext)
-            body = d.get('p.b') if d.has_key('p.b') else p.b
             path = d.get("path")
             if c and path and self.has_changed(c,path):
-                self.update_open_with_node(body,c,p,d,ext)
+                self.update_open_with_node(c,d)
     #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self,path):
         '''Return the checksum of the file at the given path.'''
         import hashlib
         return hashlib.md5(open(path,'rb').read()).hexdigest()
-    #@+node:ekr.20100203050306.5937: *4* efc.create_temp_file
+    #@+node:ekr.20100203050306.5937: *4* efc.create_temp_file (creates d)
     def create_temp_file (self,body,c,p,ext):
         '''
         Actually create the temp file used by open-with.
         Append a dict to self.open_with_files.
         '''
         trace = False and not g.unitTesting
-        fn = self.temp_file_path(c,p,ext)
+        path = self.temp_file_path(c,p,ext)
         try:
             f = None
             if not g.unitTesting:
-                if g.os_path_exists(fn):
-                    g.red('recreating:  ',fn) # g.shortFileName(fn))
+                if g.os_path_exists(path):
+                    g.red('recreating:  ',path) # g.shortFileName(path))
                 else:
-                    g.blue('creating:  ',fn) # g.shortFileName(fn))
-            f = open(fn,'w')
+                    g.blue('creating:  ',path) # g.shortFileName(path))
+            f = open(path,'w')
             # Convert s to whatever encoding is in effect.
             d = c.scanAllDirectives(p)
             encoding = d.get('encoding',None)
@@ -245,20 +240,18 @@ class ExternalFilesController:
             f.flush()
             f.close()
             try:
-                t1 = g.os_path_getmtime(fn)
+                t1 = g.os_path_getmtime(path)
                 if t1 and not g.unitTesting:
                     g.es('time: ',t1)
             except:
                 t1 = None
 
-            # Remove previous entry from self.open_with_files if it exists.
-            for d in self.open_with_files[:]:
-                if p.v == d.get('v'):
-                    if trace: g.trace('removing',d.get('path'))
-                    self.open_with_files.remove(d)
+            # Remove the dict for path from open_with_files.
+            self.forget_path(path)
+
             d = {
                 'c':c,
-                'path':fn,
+                'path':path,
                 # Used by c.testForConflicts.
                 'body':s,
                 'encoding':encoding,
@@ -269,7 +262,7 @@ class ExternalFilesController:
                 'v':p.v,
             }
             self.open_with_files.append(d)
-            return fn
+            return path
         except:
             if f: f.close()
             g.error('exception creating temp file')
@@ -300,6 +293,23 @@ class ExternalFilesController:
 
         if d in self.open_with_files:
             self.open_with_files.remove(d)
+    #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node
+    def find_path_for_node(self,p):
+        '''Find the path corresponding to node p.'''
+        path,v = '',p.v
+        for d in g.app.openWithFiles:
+            p2 = d.get('p')
+            if p2 and p2.v == v:
+                path = d.get('path') or ''
+                break
+        return path
+
+    #@+node:ekr.20150407141601.1: *4* efc.forget_path
+    def forget_path(self,path):
+        '''Remove path from the open_with_files list.'''
+        self.open_with_files = [
+            d for d in self.open_with_files
+                if d.get('path') != path]
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext (self,c,p,ext):
         '''Return the file extension to be used in the temp file.'''
@@ -550,8 +560,8 @@ class ExternalFilesController:
         name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
         path = os.path.join(td,name)
         return path
-    #@+node:ekr.20031218072017.2827: *4* efc.update_open_with_node
-    def update_open_with_node (self,body,c,p,d,ext):
+    #@+node:ekr.20031218072017.2827: *4* efc.update_open_with_node (rewrite)
+    def update_open_with_node (self,c,d):
         '''
         Test for changes in both p and the temp file:
 
@@ -561,14 +571,18 @@ class ExternalFilesController:
 
         Return the file name.
         '''
-        fn = d.get('path')
+        p = d.get('p')
+        ext = d.get('ext')
+        ext = self.get_ext(c,p,ext)
+        path = d.get('path')
         # Get the old & new body text and modification times.
         encoding = d.get('encoding')
         old_body = d.get('body')
-        new_body = g.toEncodedString(body,encoding,reportErrors=True)
+        old_body = g.toEncodedString(old_body,encoding,reportErrors=True)
+        new_body = d.get('p.b') if d.has_key('p.b') else p.b
         old_time = d.get('time')
         try:
-            new_time = g.os_path_getmtime(fn)
+            new_time = g.os_path_getmtime(path)
         except Exception:
             new_time = None
         body_changed = old_body != new_body
@@ -585,10 +599,10 @@ class ExternalFilesController:
             rewrite = body_changed
         if rewrite:
             # May be overridden by the mod_tempfname plugin.
-            fn = self.create_temp_file(body,c,p,ext)
+            path = self.create_temp_file(new_body,c,p,ext)
         else:
-            g.blue('reopening:',g.shortFileName(fn))
-        return fn
+            g.blue('reopening:',g.shortFileName(path))
+        return path
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp:

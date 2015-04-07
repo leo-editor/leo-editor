@@ -257,25 +257,31 @@ class VimCommander:
                 p.moveToParent()
         self.error('no parent @clean or @auto node: %s' % p0.h)
         return None
-    #@+node:ekr.20150326180515.1: *3* vim.find_path
-    def find_path(self,p):
-        '''Search g.app.openWithFiles for a file corresponding to p.'''
-        v = p.v
-        for d in g.app.openWithFiles:
-            if d.get('v') == id(v):
-                path = d.get('path')
-                return path
-        return None
+    #@+node:ekr.20150326180515.1: *3* vim.find_path_for_node
+    def find_path_for_node(self,p):
+        '''Search the open-files list for a file corresponding to p.'''
+        efc = g.app.externalFilesController
+        path = efc.find_path_for_node(p) if efc else ''
+        return path
+        
+        ###
+        # # # v = p.v
+        # # # for d in g.app.openWithFiles:
+            # # # if d.get('v') == id(v):
+                # # # path = d.get('path')
+                # # # return path
+        # # # return None
     #@+node:ekr.20150326173301.1: *3* vim.forget_path
     def forget_path(self,path):
         '''
         Stop handling the path:
-        - Remove the path from g.app.openWithFiles.
+        - Remove the path from the list of open-with files.
         - Send a command to vim telling it to close the path.
         '''
         assert path
         os.remove(path)
-        g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
+        efc = g.app.externalFilesController
+        if efc: efc.forget_path(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
         if self.trace: g.trace('os.system(%s)' % cmd)
         os.system(cmd)
@@ -328,7 +334,7 @@ class VimCommander:
         root = self.find_root(p) if self.entire_file else p
         if not root:
             return
-        path = self.find_path(root)
+        path = self.find_path_for_node(root)
         if path and self.should_open_old_file(path,root):
             cmd = self.vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'"
             if self.trace: g.trace('os.system(%s)' % cmd)
