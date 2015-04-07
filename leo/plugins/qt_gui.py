@@ -949,11 +949,12 @@ class LeoQtGui(leoGui.LeoGui):
         shell = ipkernel.shell # ZMQInteractiveShell
         
         if 0:
-            old_showtrceback = shell.showtraceback
+            g.trace('*******',shell.showtraceback)
+            old_showtraceback = shell.showtraceback
             
             def new_showtraceback(*args,**keys):
-                g.trace('new_showtraceback',args,keys)
                 old_showtraceback(*args,**keys)
+                print('================ new_showtraceback',args,keys)
                 
             shell.showtraceback = new_showtraceback
 
