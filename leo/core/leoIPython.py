@@ -71,7 +71,8 @@ class InternalIPKernel(object):
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self,gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
-        log_debug,pdb,trace = False,False,False
+        log_debug = False
+            # Produces a verbose IPython message log.
         tag = 'leoIPython.py:pylab_kernel'
         kernel = IPKernelApp.instance()
             # IPKernalApp is a singleton class.
@@ -83,7 +84,7 @@ class InternalIPKernel(object):
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
             try:
-                if pdb: g.pdb()
+                # g.pdb()
                 kernel.initialize(args)
                 # kernel objects: (Leo --ipython arg)
                     # kernel.session: zmq.session.Session

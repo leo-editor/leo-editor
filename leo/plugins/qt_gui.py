@@ -909,7 +909,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # This can be alarming when using Python's -i option.                           
             sys.exit(self.qtApp.exec_())
-    #@+node:ekr.20130930062914.16001: *4* LeoQtGui.runWithIpythonKernel & helper
+    #@+node:ekr.20130930062914.16001: *4* LeoQtGui.runWithIpythonKernel (commands) & helper
     def runWithIpythonKernel(self):
         '''Init Leo to run in an IPython shell.'''
         try:
@@ -937,28 +937,32 @@ class LeoQtGui(leoGui.LeoGui):
         ipk.ipkernel.start()
     #@+node:ekr.20130930062914.16010: *5* LeoQtGui.exec_helper
     def exec_helper(self,event):
-        '''This helper is required because an unqualified "exec"
-        may not appear in a nested function.
-        
         '''
+        This helper is required because an unqualified "exec"
+        may not appear in a nested function.
+        '''
+        # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
         c = event and event.get('c')
         ipk = g.app.ipk
         ns = ipk.namespace # The actual IPython namespace.
         ipkernel = ipk.ipkernel # IPKernelApp
         shell = ipkernel.shell # ZMQInteractiveShell
+        
+        if 0:
+            old_showtrceback = shell.showtraceback
+            
+            def new_showtraceback(*args,**keys):
+                g.trace('new_showtraceback',args,keys)
+                old_showtraceback(*args,**keys)
+                
+            shell.showtraceback = new_showtraceback
+
         if c and ns is not None:
-            try:
-                script = g.getScript(c,c.p)
-                if 1:
-                    code = compile(script,c.p.h,'exec')
-                    shell.run_code(code) # Run using IPython.
-                else:
-                    exec(script,ns) # Run in Leo in the IPython namespace.
-            except Exception:
-                g.es_exception()
-            finally:
-                sys.stdout.flush()
-                # sys.stderr.flush()
+            script = g.getScript(c,c.p,useSentinels=False)
+            code = compile(script,c.p.h,'exec')
+                # c.p.h becomes the file name.
+            shell.run_code(code)
+                # Run using IPython.
     #@+node:ekr.20111215193352.10220: *3* LeoQtGui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
     def createSplashScreen (self):
