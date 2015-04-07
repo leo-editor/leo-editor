@@ -8527,12 +8527,14 @@ class Commands (object):
         since Leo read it or if the user agrees to overwrite it.
         '''
         c = self
-        return g.app.externalFilesController.check_overwrite(c,fn)
+        if g.app.externalFilesController:
+            return g.app.externalFilesController.check_overwrite(c,fn)
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp (self,fn):
         '''Update the timestamp for fn..'''
         c = self
-        g.app.externalFilesController.set_time(fn)
+        if g.app.externalFilesController:
+            g.app.externalFilesController.set_time(fn)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self,source_c,function):
 
