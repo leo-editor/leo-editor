@@ -113,6 +113,28 @@ Source 2:
 This plugin never did anything significant. 
 
 ExternalFilesController.on_idle watches for changed files.
+.. @+node:ekr.20150408082502.1: *3* Fixed crash in LeoQtLog.selectHelper
+
+I insert an empty pane and then press action and put the find pane in
+there. If I then use the focus-to-find command I get this error:
+
+https://groups.google.com/d/msg/leo-editor/EhMKCl_zY10/g0Iois9GGzIJ
+
+Traceback (most recent call last):
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\core\leoCommands.py", line 550, in doCommand
+    val = command(event)
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\core\leoFind.py", line 326, in focusToFind
+    self.c.frame.log.selectTab('Find')
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\plugins\qt_frame.py", line 3403, in selectTab
+    self.selectHelper(tabName)
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\plugins\qt_frame.py", line 3424, in selectHelper
+    widget.ensureWidgetVisible(findbox)
+
+AttributeError: 'LeoQTextBrowser' object has no attribute 'ensureWidgetVisible'
 .. @-all
 .. @@pagewidth 60
 .. @@wrap
