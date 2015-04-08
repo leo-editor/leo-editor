@@ -3385,7 +3385,10 @@ class LeoQtLog (leoFrame.LeoLog):
                     if c.config.getBool('auto-scroll-find-tab',default=True):
                         # This is the cause of unwanted scrolling.
                         findbox = c.findCommands.ftm.find_findbox
-                        widget.ensureWidgetVisible(findbox)
+                        if hasattr(widget,'ensureWidgetVisible'):
+                            widget.ensureWidgetVisible(findbox)
+                        else:
+                            findbox.setFocus()
                 elif tabName == 'Spell':
                     # the base class uses this as a flag to see if
                     # the spell system needs initing
