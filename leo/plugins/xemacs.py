@@ -109,21 +109,23 @@ def open_in_emacs_helper(c,p):
 
     # Search the open-files list for a file corresponding to v.
     efc = g.app.externalFilesController
-    path = efc and efc.find_path_for_node(p) or ''
+    path = efc and efc.find_path_for_node(p)
 
     # g.trace('config',c.config.getString('xemacs_exe'))
-    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd # 2010/01/18: found by pylint.
+    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
+        # 2010/01/18: found by pylint.
 
     if (
+        not path or
         not g.os_path_exists(path) or
         not hasattr(v,'OpenWithOldBody') or
         v.b != v.OpenWithOldBody
     ):
         # Open a new temp file.
         if path:
-            # Remove the old file and the path from the open-files list.
-            efc = g.app.externalFilesController
-            if efc: efc.forget_path(path)
+            ### Don't do this: it prevents efc from reopening paths.
+            ### efc = g.app.externalFilesController
+            ### if efc: efc.forget_path(path)
             os.remove(path)
             os.system(emacs_cmd)
         v.OpenWithOldBody=v.b # Remember the old contents

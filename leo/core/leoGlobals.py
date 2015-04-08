@@ -6248,12 +6248,12 @@ def os_path_finalize_join (*args,**keys):
         g.os_path_join(*args,**keys))) # Handles expanduser
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
-
     """Return the modification time of path."""
-
     path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
+    try:
+        return os.path.getmtime(path)
+    except Exception:
+        return 0
 #@+node:ekr.20080729142651.2: *3* g.os_path_getsize
 def os_path_getsize (path):
 

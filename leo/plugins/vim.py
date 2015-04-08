@@ -215,7 +215,7 @@ class VimCommander:
         getBool,getString = c.config.getBool,c.config.getString
         self.open_url_nodes  = getBool('vim_plugin_opens_url_nodes')
         self.position_cursor = getBool('vim_plugin_positions_cursor')
-        self.trace           = getBool('vim_plugin_trace') or True
+        self.trace           = getBool('vim_plugin_trace')
         self.uses_tab        = getBool('vim_plugin_uses_tab_feature')
         self.vim_cmd         = getString('vim_cmd') or _vim_cmd
         self.vim_exe         = getString('vim_exe') or _vim_exe
@@ -261,16 +261,8 @@ class VimCommander:
     def find_path_for_node(self,p):
         '''Search the open-files list for a file corresponding to p.'''
         efc = g.app.externalFilesController
-        path = efc.find_path_for_node(p) if efc else ''
+        path = efc.find_path_for_node(p)
         return path
-        
-        ###
-        # # # v = p.v
-        # # # for d in g.app.openWithFiles:
-            # # # if d.get('v') == id(v):
-                # # # path = d.get('path')
-                # # # return path
-        # # # return None
     #@+node:ekr.20150326173301.1: *3* vim.forget_path
     def forget_path(self,path):
         '''
@@ -279,9 +271,10 @@ class VimCommander:
         - Send a command to vim telling it to close the path.
         '''
         assert path
+        ### Don't do this: it prevents efc from reopening paths.
+        ### efc = g.app.externalFilesController
+        ### if efc: efc.forget_path(path)
         os.remove(path)
-        efc = g.app.externalFilesController
-        if efc: efc.forget_path(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
         if self.trace: g.trace('os.system(%s)' % cmd)
         os.system(cmd)
@@ -341,8 +334,7 @@ class VimCommander:
             os.system(cmd)
         else:
             # Open a new temp file.
-            if path:
-                self.forget_path(path)
+            if path: self.forget_path(path)
             self.open_file(root)
     #@+node:ekr.20150326173000.1: *3* vim.should_open_old_file
     def should_open_old_file(self,path,root):
