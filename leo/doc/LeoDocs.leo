@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -1135,7 +1135,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150301140303.15"><vh>Leo 5.1 b1 release notes</vh>
+<v t="ekr.20150301140303.15"><vh>Leo 5.1 b2 release notes</vh>
 <v t="ekr.20150301140303.16"><vh>Highlights</vh>
 <v t="ekr.20150217105817.4"><vh>\@clean creates external files without sentinels</vh></v>
 <v t="ekr.20150323112726.4"><vh>Leo regularly checks the integrity of the outline</vh></v>
@@ -1148,7 +1148,8 @@
 </v>
 <v t="ekr.20150311123850.56"><vh>EKR: Why @clean is so important</vh></v>
 <v t="ekr.20150220115528.4"><vh>The Mulder/Ream update algorithm</vh></v>
-<v t="ekr.20150311123850.11"><vh>Bugs fixed</vh>
+<v t="ekr.20150409155921.1"><vh>Bugs fixed</vh>
+<v t="ekr.20150311123850.11"><vh>Bugs fixed in b1</vh>
 <v t="ekr.20150311123850.12"><vh>Fixed bug in g.reportBadChars</vh></v>
 <v t="ekr.20150311123850.13"><vh>Fixed Python3 compatibility bug in g.pause</vh></v>
 <v t="ekr.20150311123850.14"><vh>Fixed bug 108: can't write spellpyx.txt</vh></v>
@@ -1179,7 +1180,16 @@
 <v t="ekr.20150326053547.7"><vh>Fixed bug 164: Find Previous will not continue if target word in headline</vh></v>
 <v t="ekr.20150326053547.10"><vh>Added docstrings for @g.command commands</vh></v>
 </v>
-<v t="ekr.20150311123850.32"><vh>Code level</vh>
+<v t="ekr.20150409155620.1"><vh>Bugs fixed in b2</vh>
+<v t="ekr.20150409155519.5"><vh>Fixed bug 171: Improve handling of @command and @button nodes</vh></v>
+<v t="ekr.20150409155519.6"><vh>Fixed bug 172: improve operation of command history</vh></v>
+<v t="ekr.20150409155519.7"><vh>Fixed bug 170: detect changes in external files</vh></v>
+<v t="ekr.20150409155519.10"><vh>Fixed crash in LeoQtLog.selectHelper</vh></v>
+<v t="ekr.20150409155519.4"><vh>Fixed documentation for abbreviations</vh></v>
+</v>
+</v>
+<v t="ekr.20150409155957.1"><vh>Code level</vh>
+<v t="ekr.20150311123850.32"><vh>Code level b1</vh>
 <v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
 <v t="ekr.20150311123850.34"><vh>Added external/rope folder</vh></v>
 <v t="ekr.20150311123850.35"><vh>Added g.app.openingSettingsFile</vh></v>
@@ -1187,7 +1197,13 @@
 <v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
 <v t="ekr.20150326053547.11"><vh>Added g.getLanguageAtPosition</vh></v>
 </v>
-<v t="ekr.20150311123850.41"><vh>Features</vh>
+<v t="ekr.20150409155937.1"><vh>Code level b2</vh>
+<v t="ekr.20150409155519.2"><vh>simplified LeoQtGui.setIdleTimeHook</vh></v>
+<v t="ekr.20150409155519.3"><vh>created c.createCloneFindAll/FlattenedAtNode</vh></v>
+</v>
+</v>
+<v t="ekr.20150409155930.1"><vh>Features</vh>
+<v t="ekr.20150311123850.41"><vh>Features in b1</vh>
 <v t="ekr.20150323164016.3"><vh>Added nodes-dark icons &amp; stylesheet</vh></v>
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 <v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
@@ -1201,9 +1217,13 @@
 <v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
 <v t="ekr.20150323112726.2"><vh>Added LeoReleaseNotes.leo</vh></v>
 <v t="ekr.20150326053547.9"><vh>Improved messages when find commands fail</vh></v>
+<v t="ekr.20150409155519.9"><vh>Retired the watchfiles plugin</vh></v>
+</v>
+<v t="ekr.20150409155807.1"><vh>Features in b2</vh>
+<v t="ekr.20150409155519.8"><vh>Improved &lt;?xml-stylesheet&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050903074833"></v>
+</v>
 <v t="ekr.20150403145058.2"><vh>** Document using Ctrl-G</vh></v>
 <v t="ekr.20150403145058.3"><vh>** revise @nosent docs</vh></v>
 </vnodes>
@@ -15629,9 +15649,9 @@ Notes:
 - If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="ekr.20150301140303.15">Leo 5.1 b1: March 27, 2015
+<t tx="ekr.20150301140303.15">Leo 5.1 b2: April 10, 2015
 
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
 This release features @clean trees, one of the most important developments
 in Leo's history.
@@ -15882,7 +15902,6 @@ Extraneous whitespace causes problems with rST text--various kinds of rST markup
 unformat-paragraph makes all these problems disappear.  Furthermore, the appearance of the text in LeoDocs.leo improves provided that @wrap is in effect.
 </t>
 <t tx="ekr.20150311123850.5">@language rest
-@wrap
 
 Leo 5.1 adds the LeoQtGui.IdleTime class. Creating multiple instances of this class allows multiple, independent (or cooperating) idle-time handlers. g.IdleTime is a thin wrapper that returns None if g.app.gui doesn't an IdleTime class. 
 
@@ -15983,7 +16002,7 @@ Example 2:
     @c
     @language python
     # resume python code.
-    
+
 </t>
 <t tx="ekr.20150311123850.56">@clean is a long-sought breakthrough. For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
 
@@ -18172,6 +18191,130 @@ Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought
 
 Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
 <t tx="ekr.20150403145058.3"></t>
+<t tx="ekr.20150409155519.10">I insert an empty pane and then press action and put the find pane in
+there. If I then use the focus-to-find command I get this error:
+
+https://groups.google.com/d/msg/leo-editor/EhMKCl_zY10/g0Iois9GGzIJ
+
+Traceback (most recent call last):
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\core\leoCommands.py", line 550, in doCommand
+    val = command(event)
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\core\leoFind.py", line 326, in focusToFind
+    self.c.frame.log.selectTab('Find')
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\plugins\qt_frame.py", line 3403, in selectTab
+    self.selectHelper(tabName)
+
+  File "C:\MyPrograms\Leo5.1-b1\leo\plugins\qt_frame.py", line 3424, in selectHelper
+    widget.ensureWidgetVisible(findbox)
+
+AttributeError: 'LeoQTextBrowser' object has no attribute 'ensureWidgetVisible'
+</t>
+<t tx="ekr.20150409155519.2"></t>
+<t tx="ekr.20150409155519.3"></t>
+<t tx="ekr.20150409155519.4">http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates
+
+https://groups.google.com/d/msg/leo-editor/F3dUWxbNkAU/F6hV-n4iGm4J
+</t>
+<t tx="ekr.20150409155519.5">The highlights of the changes:
+
+1. All @button and @command nodes (**script** nodes) now have the best possible balloon comments, regardless of their sources. All @buttons nodes show a "Goto Script" menu item when right-clicked.
+
+2. Script nodes defined in myLeoSettings.leo or leoSettings.leo (**common** script nodes) now define static scripts.  Leo never opens other files in order to execute common scripts.  This corrects a major design blunder.
+
+Leo will open a settings file when the user selects the ``Goto Script`` item in an @button node's popup menu. If the settings file is open in another copy of Leo, Leo will, as usual, ask you whether you want to open it again.  This should not be a problem.
+
+3. Script nodes add their commands to Leo's command history only if they contain @args add in their headline::
+
+    @button command-name @key = Alt-5 @args add
+    @command command-name @args add   
+
+Users will not want most @button and @command nodes to predefine entries in command history.  To see why...
+
+4. ``&lt;Alt-x&gt;@&lt;tab&gt;`` now shows the sources of all @button and @command nodes. An actual example:
+
+               L @button-clean-text
+               L @button-join-path
+    Ctrl+Key+6 M @button-run-pylint
+               L @button-split-path
+    Ctrl+Key+9 L @button-vim-node
+               M @command-align-eq-signs
+    Alt+Key+9  L @command-beautify-tests
+               M @command-c-to-python-clean-docs
+               L @command-cfa
+               M @command-clean-all-blank-lines
+               M @command-clean-body
+               M @command-clean-diff
+               M @command-clean-spellpyx
+               M @command-count-pages
+               M @command-create-def-list
+               M @command-flatten-script
+               M @command-join-node-above
+               M @command-join-node-below
+               M @command-join-selection-to-node-below
+               M @command-print-cmd-docstrings
+               M @command-promote-bodies
+               M @command-remove-newlines
+               M @command-split-defs
+   
+    legend:
+    G leoSettings.leo
+    M myLeoSettings.leo
+    L local .leo File
+
+Too many entries! 
+
+This is an important new feature, even though the print-buttons command does pretty much the same thing. Leo prints the legend only if the tab completion shows @button or @command nodes.
+
+5. The mod_scripting plugin now handles gracefully nodes such as::
+
+    @button pylint
+    c.k.simulateCommand('pylint')
+
+Previously, executing this script would create an unbounded recursion.  Now, the plugin creates a fully functional button for this node, but the plugin silently refuses to redefine the existing pylint command.  End of recursion.
+
+``&lt;alt-x&gt;pylint&lt;return&gt;`` executes the old command, not the @button script. Everything works smoothly. This is important, though few will likely notice the difference.
+</t>
+<t tx="ekr.20150409155519.6">https://github.com/leo-editor/leo-editor/issues/172
+</t>
+<t tx="ekr.20150409155519.7">https://github.com/leo-editor/leo-editor/issues/170
+
+Enabled with @bool check_for_changed_external_files, default False.
+
+When enabled, Leo track chnges to externally files and raises an alert. The user can choose to reload the file or ignore the external changes.
+</t>
+<t tx="ekr.20150409155519.8">Leo now writes xml-stylesheet elements of the form::
+    
+    &lt;?xml-stylesheet x ?&gt;
+    
+where x comes from *either*:
+    
+Source 1:
+    
+    The value of the ``@string stylesheet`` setting in effect for the .leo file
+    when Leo *read* the file. If you change the ``@string stylesheet`` setting,
+    it will take effect the *next* time you invoke Leo.
+
+Source 2:
+    
+    If the the stylesheet setting is *empty*, Leo uses the ``xml-stylesheet``
+    element contained in the .leo file when Leo *read* the .leo file.
+
+**Note**:
+    
+    Leo does *not* use Source 2 the for leoSettings.leo or myLeoSetting.leo
+    files themselves. This is a workaround for an apparent sax parsing bug.
+</t>
+<t tx="ekr.20150409155519.9">Leo's core now does what the plugin did.
+</t>
+<t tx="ekr.20150409155620.1"></t>
+<t tx="ekr.20150409155807.1"></t>
+<t tx="ekr.20150409155921.1"></t>
+<t tx="ekr.20150409155930.1"></t>
+<t tx="ekr.20150409155937.1"></t>
+<t tx="ekr.20150409155957.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
