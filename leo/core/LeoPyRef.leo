@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -18,25 +17,26 @@
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
+<v t="ekr.20150407140807.1"><vh>@button cfa-code @args add</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150325082623.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150408001221.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150325082623.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150408001221.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150325082623.3"><vh>@gnxs</vh></v>
+<v t="ekr.20150408001221.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150325082624.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150408001221.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150325082624.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150408001221.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -245,32 +245,8 @@ that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
 <t tx="ekr.20051031040240"></t>
-<t tx="ekr.20080412053100.5">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@language python</t>
+<t tx="ekr.20080412053100.5">@language rest
+</t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
@@ -285,7 +261,9 @@ run-selected-unit-tests-locally = Alt-4
 do-nothing = Alt-5
 run-marked-unit-tests-locally = Alt-6
 </t>
-<t tx="ekr.20131121084830.16362"># Toggle the settings.
+<t tx="ekr.20131121084830.16362">@language python
+
+# Toggle the settings.
 g.app.debug_app = not g.app.debug_app
 g.app.debug_widgets = not g.app.debug_widgets
 # Report the new settings.
@@ -635,29 +613,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 @language html
 &lt;/script&gt;
 </t>
-<t tx="ekr.20150325082623.1">gnx: ekr.20140225224703.8169
-unl: qtui_generate declarations
-</t>
-<t tx="ekr.20150325082623.2">gnx: ekr.20140225224703.8170
-unl: qt_main declarations
-gnx: ekr.20140225224703.8171
-unl: class Ui_MainWindow
-gnx: ekr.20140902074657.9511
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20140225224703.8173
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
-<t tx="ekr.20150325082623.3"></t>
-<t tx="ekr.20150325082624.1">gnx: ekr.20140225224703.8174
-unl: qt_quicksearch declarations
-gnx: ekr.20140225224703.8175
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20140225224703.8176
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20140225224703.8177
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
-</t>
-<t tx="ekr.20150325082624.2"></t>
 <t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
 
@@ -1072,5 +1027,32 @@ def createDefiningWordRule (self,word):
 
     return forth_defining_word_rule
 </t>
+<t tx="ekr.20150407140807.1">@language python
+
+c.cloneFindAllFlattenedAtNode('Code',top_level=True)
+</t>
+<t tx="ekr.20150408001221.1">gnx: ekr.20150407124229.1
+unl: qtui_generate declarations
+</t>
+<t tx="ekr.20150408001221.2">gnx: ekr.20150407124230.1
+unl: qt_main declarations
+gnx: ekr.20150407124230.2
+unl: class Ui_MainWindow
+gnx: ekr.20150407124230.3
+unl: class Ui_MainWindow--&gt;setupUi
+gnx: ekr.20150407124230.4
+unl: class Ui_MainWindow--&gt;retranslateUi
+</t>
+<t tx="ekr.20150408001221.3"></t>
+<t tx="ekr.20150408001221.4">gnx: ekr.20150407124230.5
+unl: qt_quicksearch declarations
+gnx: ekr.20150407124230.6
+unl: class Ui_LeoQuickSearchWidget
+gnx: ekr.20150407124230.7
+unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
+gnx: ekr.20150407124230.8
+unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+</t>
+<t tx="ekr.20150408001221.5"></t>
 </tnodes>
 </leo_file>

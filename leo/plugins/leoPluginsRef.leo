@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -12,6 +11,7 @@
 <vnodes>
 <v t="ekr.20041211035618"><vh>Startup</vh>
 <v t="ekr.20050217093214"><vh>@settings</vh>
+<v t="ekr.20150407140848.1"><vh>@button cfa-plugins @args add</vh></v>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
 <v t="ekr.20050328101812.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101812.2"><vh>@int  port = 8080</vh></v>
@@ -123,7 +123,6 @@
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
 <v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
-<v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 <v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
@@ -153,7 +152,6 @@
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
-<v t="ekr.20141109072314.1"><vh>@file watchfiles.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
@@ -359,7 +357,8 @@ that@others may be nested, as shown in class myClass.
 </t>
 <t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
-<t tx="ekr.20050217093214">@nocolor</t>
+<t tx="ekr.20050217093214">@language rest
+</t>
 <t tx="ekr.20050303051035">@nocolor-node
 
 The following nodes show recommended style when writing plugins.</t>
@@ -538,6 +537,10 @@ else:
 # Each plugin must define a top-level importer_dict dictionary describing the plugin.</t>
 <t tx="ekr.20140726091031.18071"># These plugins now contain the write code for all kinds special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.</t>
+<t tx="ekr.20150407140848.1">@language python
+
+c.cloneFindAllFlattenedAtNode('Plugins',top_level=True)
+</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
