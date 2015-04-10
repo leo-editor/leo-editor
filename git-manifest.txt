@@ -1980,7 +1980,6 @@ leo/plugins/mod_leo2ascd.txt
 leo/plugins/mod_read_dir_outline.py
 leo/plugins/mod_scripting.py
 leo/plugins/mod_speedups.py
-leo/plugins/mod_tempfname.py
 leo/plugins/mod_timestamp.py
 leo/plugins/multifile.py
 leo/plugins/nav_qt.py
@@ -2074,7 +2073,6 @@ leo/plugins/valuespace.py
 leo/plugins/viewrendered.py
 leo/plugins/viewrendered2.py
 leo/plugins/vim.py
-leo/plugins/watchfiles.py
 leo/plugins/wikiview.py
 leo/plugins/word_count.py
 leo/plugins/word_export.ini
