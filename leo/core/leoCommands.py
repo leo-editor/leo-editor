@@ -1884,7 +1884,7 @@ class Commands (object):
                 # c.config.getString('script_file_path'))
             path = None
         return path
-    #@+node:ekr.20100216141722.5620: *6* class GoToLineNumber and helpers (commands)
+    #@+node:ekr.20100216141722.5620: *6* class c.GoToLineNumber & helpers
     class GoToLineNumber:
 
         '''A class implementing goto-global-line.'''
@@ -2376,6 +2376,11 @@ class Commands (object):
             c = self.c
             w = c.frame.body.wrapper
             # Select p and make it visible.
+            if found:
+                if c.p.isOutsideAnyAtFileTree():
+                    p = c.findNodeOutsideAnyAtFileTree(p)
+            else:
+                p = c.p
             c.redraw(p)
             # Put the cursor on line n2 of the body text.
             s = w.getAllText()
@@ -8513,6 +8518,23 @@ class Commands (object):
         """
         c = self
         return c.frame.tree.getSelectedPositions()
+    #@+node:ekr.20150410095543.1: *3* c.findNodeOutsideAnyAtFileTree
+    def findNodeOutsideAnyAtFileTree(self,target):
+        '''Select the first clone of target that is outside any @file node.'''
+        trace = False and not g.unitTesting
+        c = self
+        if target.isCloned():
+            v = target.v
+            for p in c.all_positions():
+                if p.v == v:
+                    for parent in p.self_and_parents():
+                        if parent.isAnyAtFileNode():
+                            break
+                    else:
+                        if trace: g.trace('found',p.h)
+                        return p
+        if trace: g.trace('not found',target.h)
+        return target
     #@+node:ekr.20031218072017.2999: *3* c.Syntax coloring interface
     #@+at These routines provide a convenient interface to the syntax colorer.
     #@+node:ekr.20031218072017.3000: *4* updateSyntaxColorer
