@@ -17,7 +17,18 @@ import json
 # Leo 5.0 final: November 24, 2014
 # Leo 5.1 b2: April 10, 2015
 #@-<< version dates >>
-
+#@+<< about install hooks >>
+#@+node:ekr.20150409201910.1: ** << about install hooks >>
+#@@nocolor-node
+#@+at
+# 
+# Developers should copy commit-msg & pre-commit from leo/extentions/hooks to
+# leo-editor/.git/hooks.
+# 
+# These hooks caise got to update commit_timestamp.json automatically.
+# 
+# The install_hooks.py script copies these two files to leo-editor/.git/hooks.
+#@-<< about install hooks >>
 # get info from leo/core/commit_timestamp.json
 leo_core_path = os.path.dirname(os.path.realpath(__file__))
     # leoVersion.py is in leo/core
