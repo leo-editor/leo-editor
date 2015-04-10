@@ -1,6 +1,6 @@
-Leo 5.1 b1: March 27, 2015
+Leo 5.1 b2: April 10, 2015
 
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
 This release features @clean trees, one of the most important developments
 in Leo's history.

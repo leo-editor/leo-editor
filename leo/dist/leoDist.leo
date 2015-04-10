@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -34,7 +34,8 @@
 <v t="ekr.20131105110107.16636"><vh>Leo 4.11 final</vh></v>
 <v t="ekr.20141105082156.2"><vh>Leo 5.0 final</vh></v>
 <v t="ekr.20150324084634.1"><vh>Leo 5.1 b1</vh></v>
-<v t="ekr.20150327141937.1"><vh>Leo 5.1 b1 (markdown)</vh></v>
+<v t="ekr.20150409190512.1"><vh>Leo 5.1 b2</vh></v>
+<v t="ekr.20150409190528.1"><vh>Leo 5.1 b2 (markdown)</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -136,7 +137,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.1-b1
+Version: 5.1-b2
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -158,9 +159,9 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.1 b1: March 27, 2015
+<t tx="EKR.20040519090846.9">Leo 5.1 b2: April 10, 2015
 
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
 This release features @clean trees, one of the most important developments
 in Leo's history.
@@ -268,8 +269,9 @@ Quotes:    http://leoeditor.com/testimonials.html
 Viewer:    http://leoeditor.com/load-leo.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
-
 @language rest
+@wrap
+
 </t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
 4.4.4       setup: 856  zip: 539  2007-11-02
@@ -521,6 +523,8 @@ Pre-testing:
 - Run pylint -a.
 
 Release notes and web documentation:
+- Make sure copyright dates are correct.
+- Update version numbers in html/conf.py
 - Update the release notes.
 - Remove @language rest where possible in new notes.
 - Create new "what's new" section.
@@ -534,7 +538,6 @@ leoVersion.py
 - Update version constant.
 
 LeoDocs.leo:
-- Update version numbers in html/conf.py
 - Remove top-level clones.
 - Spell check entire file.
 - Select the readme node.
@@ -548,7 +551,6 @@ Post-testing:
 
 LeoDist.leo:
 - Make sure copyright dates are correct.
-    - leoDist.leo and leoDocs.leo.
 - Update version numbers: search leoDist.leo for ##version.
 - Update readme.txt.
 - Check readme.txt spelling.
@@ -631,7 +633,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.1-b1' ##version
+version = '5.1-b2' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -940,7 +942,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo5.1-b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo5.1-b2/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1685,14 +1687,16 @@ Viewer:    http://leoeditor.com/load-leo.html
     Latest copyright date: 2015.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
-<t tx="ekr.20150327141937.1">[Leo](http://leoeditor.com/) 5.1 b1 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/)
+<t tx="ekr.20150409190512.1">Leo 5.1 b2: April 10, 2015
+
+Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 
 This release features @clean trees, one of the most important developments
 in Leo's history.
 
 Leo is a PIM, an IDE and an outliner.
-[Video tutorials](http://leoeditor.com/screencasts.html)
-[Text tutorials](http://leoeditor.com/tutorial.html)
+Video tutorials: http://leoeditor.com/screencasts.html
+Text tutorials: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 5.1
 --------------------------
@@ -1703,16 +1707,17 @@ something long thought impossible. @clean trees preserve clone links and
 user attributes (uA's). Reading @clean trees is faster than reading @auto
 or @shadow trees.
     
-The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the
+The Mulder/Ream algorithm updates @clean trees from changes made in the
 corresponding external files. This is a completely rewritten and much
 simpler version of Bernhard Mulder's original @shadow update algorithm.
+http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
 
-
-Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
+Steve Zatz explains why @clean changes everything:
+http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything
 
 Some more highlights:
  
-* A new [web page](http://leoeditor.com/load-leo.html) displays .leo files
+* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
   in the browser.
   
 * Added command history to Leo's minibuffer.
@@ -1727,6 +1732,52 @@ Some more highlights:
 
 * @shadow is now deprecated. @clean is superior to @shadow in all respects.
 Leo will support all flavors of @auto indefinitely.
+
+Links:
+------
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Videos:    http://leoeditor.com/screencasts.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Github:    https://github.com/leo-editor/leo-editor
+Quotes:    http://leoeditor.com/testimonials.html
+Viewer:    http://leoeditor.com/load-leo.html
+</t>
+<t tx="ekr.20150409190528.1">[Leo](http://leoeditor.com/) 5.1 b2 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/)
+
+This release features @clean trees, one of the most important developments in Leo's history.
+
+Leo is a PIM, an IDE and an outliner.
+[Video tutorials](http://leoeditor.com/screencasts.html)
+[Text tutorials](http://leoeditor.com/tutorial.html)
+
+The highlights of Leo 5.1
+--------------------------
+
+@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
+    
+The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+
+
+Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
+
+Some more highlights:
+ 
+* A new [web page](http://leoeditor.com/load-leo.html) displays .leo files in the browser.
+  
+* Added command history to Leo's minibuffer.
+
+* A new IdleTime class greatly simplifies idle-time handling.
+
+* Leo now honors @language inside @doc parts
+
+* @data nodes can be composed of their descendant nodes.
+
+* @int qt-cursor-width = 5 is great for geriatric eyes.
+
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
 
 Links:
 ------

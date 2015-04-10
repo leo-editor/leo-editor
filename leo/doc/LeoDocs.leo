@@ -418,7 +418,7 @@
 </v>
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131215083347.16903"><vh>Using @clean</vh>
-<v t="ekr.20131003040744.18222" a="O"><vh>Example</vh></v>
+<v t="ekr.20131003040744.18222"><vh>Example</vh></v>
 <v t="ekr.20150221052529.4"><vh>Markup</vh></v>
 <v t="ekr.20150221052529.5"><vh>Updating @clean trees</vh></v>
 </v>
@@ -1224,8 +1224,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150403145058.2"><vh>** Document using Ctrl-G</vh></v>
-<v t="ekr.20150403145058.3"><vh>** revise @nosent docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16192,16 +16190,16 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
 </t>
 <t tx="ekr.20150312080344.33">::
 
-    Leo 5.1 b1 released March 27, 2015
-    @clean files
-    Leo regularly checks the integrity of the outline
-    Up/Down arrows in the minibuffer cycle though command history
-    http://leoeditor.com/load-leo.html displays .leo files in the browser
-    Leo now honors @language inside @doc parts
-    @data nodes can now be composed from a tree of nodes
+    Leo 5.1 b2 released April 10, 2015.
+    @clean files.
+    Leo regularly checks the integrity of the outline.
+    Up/Down arrows in the minibuffer cycle though command history.
+    http://leoeditor.com/load-leo.html displays .leo files in the browser.
+    Leo now honors @language inside @doc parts.
+    @data nodes can now be composed from a tree of nodes.
         This feature appeared in Leo 5.0, but was not documented.
-    Added @int qt-cursor-width setting
-    Added g.IdleTime &amp; LeoQtGui.IdleTime
+    Added @int qt-cursor-width setting.
+    Added g.IdleTime &amp; LeoQtGui.IdleTime.
 </t>
 <t tx="ekr.20150312080344.34">::
 
@@ -18176,21 +18174,6 @@ The ability to work on projects with people who don't have Leo is obvious; one p
     
     if __name__ == '__main__':
         main()</t>
-<t tx="ekr.20150403145058.2">@language rest
-@wrap
-
-Executive summary: Ctrl-G will usually put focus in the body pane even if it does not appear that any Leo widget has focus.  This is more effective than hitting Alt-Tab twice.
-
-This morning I solved a mystery that has tormented me for years.  Every so often, Leo seems to lose focus, and hitting Alt-Tab twice may not appear to  restore focus. What is going on?
-
-It turns out that hitting a "bare" Alt key (on Windows) puts focus in the menu bar.  There is a tiny indication that this is so: the file menu is highlighted, but it does not drop down.
-
- Previously, I had tried to force focus by hitting Alt-Tab twice.  The first Alt-Tab selects another app.  The second Alt-Tab reselects Leo.  Sometimes this puts focus in the body pane.  Sometimes not.
-
-Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought of using Ctrl-G because focus must indeed be somewhere in Leo for Ctrl-G to work.  But that's usually true even if the focus is not apparent.
-
-Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
-<t tx="ekr.20150403145058.3"></t>
 <t tx="ekr.20150409155519.10">I insert an empty pane and then press action and put the find pane in
 there. If I then use the focus-to-find command I get this error:
 
@@ -18283,7 +18266,7 @@ Previously, executing this script would create an unbounded recursion.  Now, the
 
 Enabled with @bool check_for_changed_external_files, default False.
 
-When enabled, Leo track chnges to externally files and raises an alert. The user can choose to reload the file or ignore the external changes.
+When enabled, Leo track changes to externally files and raises an alert. The user can choose to reload the file or ignore the external changes.
 </t>
 <t tx="ekr.20150409155519.8">Leo now writes xml-stylesheet elements of the form::
     
@@ -18304,7 +18287,7 @@ Source 2:
 
 **Note**:
     
-    Leo does *not* use Source 2 the for leoSettings.leo or myLeoSetting.leo
+    Leo does *not* use Source 2 the for leoSettings.leo or myLeoSettings.leo
     files themselves. This is a workaround for an apparent sax parsing bug.
 </t>
 <t tx="ekr.20150409155519.9">Leo's core now does what the plugin did.
