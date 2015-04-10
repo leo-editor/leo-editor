@@ -467,6 +467,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.event = None
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.last_hit = None # Distinguish between text and tree abbreviations.
+        self.save_ins = None # Saved insert point.
+        self.save_sel = None # Saved selection range.
         self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
         self.tree_abbrevs_d = {} # Keys are names, values are (tree,tag).
         self.w = None
@@ -702,6 +704,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if tag == 'tree':
             self.last_hit = c.p.copy()
             self.expand_tree(w,i,j,val,word)
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
         else:
             # Never expand a search for text matches.
             place_holder = '__NEXT_PLACEHOLDER' in val
@@ -712,14 +716,19 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 expand_search = False
             if trace: g.trace('expand_search',expand_search,'last_hit',self.last_hit)
             self.expand_text(w,i,j,val,word,expand_search)
-        c.frame.body.forceFullRecolor()
-        c.bodyWantsFocusNow()
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
+            # Restore the selection range.
+            if self.save_ins:
+                if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
+                ins = self.save_ins
+                sel1,sel2 = self.save_sel
+                w.setSelectionRange(sel1,sel2,insert=ins)
         return True
     #@+node:ekr.20131113150347.17257: *4* expand_text
     def expand_text(self,w,i,j,val,word,expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
         c = self.c
-        # g.trace(i,j,word,g.callers())
         val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
         # Search to the end.  We may have been called via a tree abbrev.
@@ -798,6 +807,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if c.abbrev_subst_start not in val:
             return val,False
         # Perform all scripting substitutions.
+        self.save_ins = None 
+        self.save_sel = None 
         while c.abbrev_subst_start in val:
             prefix,rest = val.split(c.abbrev_subst_start,1)
             content = rest.split(c.abbrev_subst_end,1)
@@ -806,7 +817,12 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             content,rest = content
             if trace: g.trace('**content',content)
             exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
-            val = "%s%s%s" % (prefix,c.abbrev_subst_env['x'],rest)
+            val = "%s%s%s" % (prefix,c.abbrev_subst_env.get('x'),rest)
+            # Save the selection range.
+            w = c.frame.body.wrapper
+            self.save_ins = w.getInsertPoint()
+            self.save_sel = w.getSelectionRange()
+            if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
         if val == "__NEXT_PLACEHOLDER":
             # user explicitly called for next placeholder in an abbrev.
             # inserted previously
@@ -817,7 +833,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             # Huh?
             oldSel = i,j
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-        if trace: g.trace(do_placeholder,val)
+        if trace:
+            g.trace(do_placeholder,val)
         return val,do_placeholder
     #@+node:tbrown.20130326094709.25669: *4* next_place
     def next_place(self,s,offset=0):
@@ -864,12 +881,23 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     def replace_abbrev_name(self,w,i,j,s):
         '''Replace the abbreviation name by s.'''
         c = self.c
-        if i != j:
+        if i == j:
+            abbrev = ''
+        else:
+            abbrev = w.get(i,j)
             w.delete(i,j)
         if s is not None:
             w.insert(i,s)
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+        # Adjust self.save_sel & self.save_ins
+        if s is not None and self.save_sel is not None:
+            i,j = self.save_sel
+            ins = self.save_ins
+            delta = len(s) - len(abbrev)
+            # g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
+            self.save_sel = i+delta,j+delta
+            self.save_ins = ins+delta
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):

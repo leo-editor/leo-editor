@@ -9825,7 +9825,9 @@ See also abbreviations-subst-env.
 <t tx="tbrown.20120820202856.25329">See abbreviations-subst-start.  This setting,
 abbreviations-subst-end, has no effect if
 abbreviations-subst-start is not set.</t>
-<t tx="tbrown.20120820202856.25330"># Modified by EKR 2013/09/25: revised docstring and improved get_user().
+<t tx="tbrown.20120820202856.25330">@language python
+
+# Modified by EKR 2013/09/25: revised docstring and improved get_user().
 
 """
 
@@ -9921,7 +9923,7 @@ def param_doc(k=None):
         indent = '        '
     if k in _values and _values[k]:
         return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
-            ["%s- `%s`: &lt;|describe %s|&gt;" % (
+            ["%s- `%s`: describe %s" % (
                 indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
              ) for i in _values[k].split(',')]))
     return ""
