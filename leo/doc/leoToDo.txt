@@ -7,62 +7,9 @@
 @language rest
 @wrap
 @tabwidth -4
-.. @+node:ekr.20150406163514.1: *3* 5.1 b2
-.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
-@language rest
-@wrap
-
-See http://ipython.org/ipython-doc/stable/development/execution.html
-
-https://github.com/leo-editor/leo-editor/issues/156
-Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
-
-This one is pretty straight forward. If I run this command via Ctrl + B:
-
-for ind in range(5):
-    print("index:" + ind)
-
-Without ILeo I get:
-
-TypeError: cannot concatenate 'str' and 'int' objects
---------------------
-  line 12: for ind in range(5):
-* line 13:     print("index:" + ind)
-  line 14: #@-leo
-  line 15: 
-
-But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
-
-@language python
-.. @+node:ekr.20150227040245.11: *4* Fix bug 143: dabbrev-expand broken
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/143
-
-https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
-
-On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
-
-    *
-    editor panel text
-
-    main
-    m
-     
-    *  press  alt + /
-
-    minibuffer show :
-
-    dabbrev-expand: main
-
-    * press enter
-
-            editor panel text
-           
-            main
-            m
-.. @+node:ekr.20150326092537.1: *4* Fix bug 166: Fix icon hooks in plugins, etc.
+.. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
+http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
+.. @+node:ekr.20150326092537.1: *3* Fix bug 166: Fix icon hooks in plugins, etc.
 @language rest
 @wrap
 
@@ -90,12 +37,64 @@ clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugin
 
 - leo_to_rtf.py throws a bunch of errors.
 - leo_pdf.py won't load.
-.. @+node:ekr.20150401082502.1: *4* Link github with sourceForge
-http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
-.. @+node:ekr.20150330080509.1: *4* Docs
+.. @+node:ekr.20150227040245.11: *3* Fix bug 143: dabbrev-expand broken
 @language rest
 @wrap
-.. @+node:ekr.20150330084832.1: *5* Recommend git
+
+https://github.com/leo-editor/leo-editor/issues/143
+
+https://groups.google.com/d/msg/leo-editor/5yVJzLzeOtA/atuE-qhJll8J
+
+On Tue, Dec 30, 2014 at 8:33 PM, 翅膀 <wzy3721@gmail.com> wrote:
+
+    *
+    editor panel text
+
+    main
+    m
+     
+    *  press  alt + /
+
+    minibuffer show :
+
+    dabbrev-expand: main
+
+    * press enter
+
+            editor panel text
+           
+            main
+            m
+.. @+node:ekr.20150403035403.1: *3* Fix bug 156: ILeo errors not piped to Log, etc.
+@language rest
+@wrap
+
+See http://ipython.org/ipython-doc/stable/development/execution.html
+
+https://github.com/leo-editor/leo-editor/issues/156
+Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
+
+This one is pretty straight forward. If I run this command via Ctrl + B:
+
+for ind in range(5):
+    print("index:" + ind)
+
+Without ILeo I get:
+
+TypeError: cannot concatenate 'str' and 'int' objects
+--------------------
+  line 12: for ind in range(5):
+* line 13:     print("index:" + ind)
+  line 14: #@-leo
+  line 15: 
+
+But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
+
+@language python
+.. @+node:ekr.20150330080509.1: *3* Docs
+@language rest
+@wrap
+.. @+node:ekr.20150330084832.1: *4* Recommend git
 @language rest
 @wrap
 
@@ -107,10 +106,10 @@ The difference between the proposed "stable master" above and just pulling
 "(current) master from two weeks ago", is that "two weeks ago" says nothing
 about issues or their absence, where the consciously synced develop->master
 would be a statement "here's a recent point on trunk with no known issues".
-.. @+node:ekr.20150329102805.1: *5* Document all in to-be-documented mailbox
-.. @+node:ekr.20150331111423.1: *5* Document all personal @command/@button nodes
+.. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
+.. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
 Put them in Leo's core or in scripts.leo.
-.. @+node:ekr.20150328195911.1: *5* Document Parnas & Myers
+.. @+node:ekr.20150328195911.1: *4* Document Parnas & Myers
 - separation of concerns make Leo work.
   David Parnas
   https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
@@ -122,30 +121,7 @@ Put them in Leo's core or in scripts.leo.
 
  David Parnas:
 On the Criteria to be use in Decomposing Systems into Modules
-.. @+node:ekr.20150406163526.1: *3* 5.1 final
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-- clean up openWith: make it a class.
-- Fold mod_tempfname into code and test.
-
-Later: preserve cursor positions.
-.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/169
-import-file does not preserve gnx of root @file node
-
-Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
-
-No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
-
-My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
-.. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo (after 5.1 final)
+.. @+node:ekr.20130806072439.20650: *3* Fix bug 106: brew install leo (after 5.1 final)
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/106
@@ -160,7 +136,7 @@ Do this after creating each official release.
 
 @language ruby
 @tabwidth -2
-.. @+node:ekr.20141210123805.4: *5* brew install (original)
+.. @+node:ekr.20141210123805.4: *4* brew install (original)
 require 'formula'
 
 class Leo < Formula
@@ -193,7 +169,7 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20141210123805.5: *5* brew install (new)
+.. @+node:ekr.20141210123805.5: *4* brew install (new)
 require 'formula'
 
 class Leo < Formula
@@ -225,7 +201,38 @@ class Leo < Formula
   end
 end
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
-.. @+node:ekr.20150316141655.14: *3* Better default for open/save file dialogs
+.. @+node:ekr.20150410043718.1: *3* First
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+- clean up openWith: make it a class.
+- Fold mod_tempfname into code and test.
+
+Later: preserve cursor positions.
+.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/169
+import-file does not preserve gnx of root @file node
+
+Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
+
+No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
+
+My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
+.. @+node:ekr.20150409154959.1: *4* Translate abbreviations into commands!
+h;; ==> Ctrl-Home = beginning-of-buffer
+e;; ==> Ctrl-End = end-of-buffer.
+
+Has anyone noticed that we can already do this??
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150410043728.1: *3* Later
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
 # Maybe the directory of c.fileName.
 
 Search for:
@@ -233,7 +240,7 @@ Search for:
 LeoQtGui.Dialogs & panels
 LeoQtGui.runSaveFileDialog
 LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20150227040245.10: *3* Jump to [node of selected text]
+.. @+node:ekr.20150227040245.10: *4* Jump to [node of selected text]
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
 Terry: Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
@@ -249,15 +256,15 @@ Consider the following code:
         md5(p)
 
 Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20150211104036.477: *3* Smart paste & yank
+.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
 @language rest
-.. @+node:ekr.20150325105434.1: *4* Fix problems with yank indentation
+.. @+node:ekr.20150325105434.1: *5* Fix problems with yank indentation
 @language rest
 
 And perhaps other problems with yank.
 
 Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *4* Terry's post
+.. @+node:ekr.20150211104036.478: *5* Terry's post
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
 
 I don't think you need to view source or copy text that looks like HTML.
@@ -284,7 +291,7 @@ receiving end of the pipeline - not sure of the details, but remember
 clipboards can paste images and other things that aren't plain text.
 
 Cheers -Terry 
-.. @+node:ekr.20150211104036.479: *4* Matt's links
+.. @+node:ekr.20150211104036.479: *5* Matt's links
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
 
 > Is it possible to have Leo analyse what type of text is being pasted and thus
@@ -293,9 +300,10 @@ define automatically the type of node (rich/plain)?
 It looks possible, `win32clipboard.EnumClipboardFormat`, "enumerate the
 data formats that are currently available on the clipboard. " --
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20150211131925.4: *3* auto-close quotes
+.. @+node:ekr.20150211131925.4: *4* auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
-.. @+node:ekr.20150120155724.4: *3* improve python importer
+.. @+node:ekr.20150410043749.1: *3* Maybe
+.. @+node:ekr.20150120155724.4: *4* improve python importer
 @language rest
 
 - Handle properties.
@@ -306,15 +314,13 @@ https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
     # Imports
     #-----------------------------------------------------------------------------
 to organizer node whose headline is Imports.
-.. @+node:ekr.20141210123805.9: *3* Support rope
-.. @+node:ekr.20130806211959.17377: *3* Add coffeescript importer
-.. @+node:ekr.20150311051910.4: *3* Improve recovered nodes operation
+.. @+node:ekr.20141210123805.9: *4* Support rope
+.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 @nocolor-node
 
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
-.. @+node:ekr.20150311123850.7: *3* Improve --diff
-The --diff option is not very useful as a git diff.
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
@@ -1622,13 +1628,6 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
-.. @+node:ekr.20150331053736.1: ** Waiting for answers
-- Waiting for answer re: ubuntu splashscreen
-    http://qt-project.org/forums/viewthread/30837/
-    createSplashScreen
-    
-- Waiting for answer to solarized question:
-    http://qt-project.org/forums/viewthread/30838/
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 The big picture:
 
@@ -11390,5 +11389,12 @@ Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
 vimoutline or otl sentinels should *never* be left as plain text in an
 existing node. The "raw" sentinels would corrupt the vim or Emacs outline
 if the node were later moved. An unpleasant time bomb.
+.. @+node:ekr.20150331053736.1: ** Waiting for answers
+- Waiting for answer re: ubuntu splashscreen
+    http://qt-project.org/forums/viewthread/30837/
+    createSplashScreen
+    
+- Waiting for answer to solarized question:
+    http://qt-project.org/forums/viewthread/30838/
 .. @-all
 .. @-leo
