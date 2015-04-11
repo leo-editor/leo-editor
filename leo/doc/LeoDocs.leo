@@ -1001,7 +1001,7 @@
 <v t="ekr.20150220200101.2"><vh>2015: 5.1 @clean</vh>
 <v t="ekr.20150313053238.44"><vh>Steve Zatz: in praise of @clean</vh></v>
 <v t="ekr.20150313053238.45"><vh>EKR: Why @clean is so important</vh></v>
-<v t="ekr.20150312080344.28"><vh>Genisis of @clean</vh></v>
+<v t="ekr.20150312080344.28"><vh>Genesis of @clean</vh></v>
 </v>
 </v>
 </v>
@@ -1208,7 +1208,7 @@
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 <v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
 <v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable</vh></v>
-<v t="ekr.20150311123850.44"><vh>import-file command create @nosent nodes</vh></v>
+<v t="ekr.20150311123850.44"><vh>import-file command creates @nosent nodes</vh></v>
 <v t="ekr.20150311123850.45"><vh>Added --old-nosent command-line option</vh></v>
 <v t="ekr.20150311123850.46"><vh>The presence of @persistence enables @auto persistence</vh></v>
 <v t="ekr.20150311123850.47"><vh>Support @clean as the preferred form of @nosent</vh></v>
@@ -1224,8 +1224,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150409204935.2"><vh>** Document using Ctrl-G</vh></v>
-<v t="ekr.20150409204935.3"><vh>** revise @nosent docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -6439,7 +6437,8 @@ or download Leo's sources directly.
 
 \@nosent
 
-    A deprecated spelling of \@clean.
+    Creates external files without sentinels. Unlike @clean, @nosent trees
+    are never updated from from external files.
 
 .. index::
     pair: @nowrap; Glossary
@@ -15649,40 +15648,21 @@ Notes:
 - If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="ekr.20150301140303.15">Leo 5.1 b2: April 10, 2015
+<t tx="ekr.20150301140303.15">[Leo](http://leoeditor.com/) 5.1 b2 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
-Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+b2 restores the proper operation of @nosent.  It is recommended for anyone using Leo 5.1 b1.
 
-This release features @clean trees, one of the most important developments
-in Leo's history.
+**The highlights of Leo 5.1**
 
-Leo is a PIM, an IDE and an outliner.
-Video tutorials: http://leoeditor.com/screencasts.html
-Text tutorials: http://leoeditor.com/tutorial.html
+This release features **@clean** trees, one of the most important developments in Leo's history.
 
-The highlights of Leo 5.1
---------------------------
+@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees. Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
 
-@clean nodes create external files without sentinel comments, yet Leo can
-update @clean trees from changes made to the corresponding external files,
-something long thought impossible. @clean trees preserve clone links and
-user attributes (uA's). Reading @clean trees is faster than reading @auto
-or @shadow trees.
-    
-The Mulder/Ream algorithm updates @clean trees from changes made in the
-corresponding external files. This is a completely rewritten and much
-simpler version of Bernhard Mulder's original @shadow update algorithm.
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-
-Steve Zatz explains why @clean changes everything:
-http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything
-
-Some more highlights:
+**More highlights**
  
-* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
-  in the browser.
+* A new [web page](http://leoeditor.com/load-leo.html) displays .leo files in the browser.
   
-* Added command history to Leo's minibuffer.
+* Added **command history** to Leo's minibuffer.
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
@@ -15690,23 +15670,22 @@ Some more highlights:
 
 * @data nodes can be composed of their descendant nodes.
 
-* @int qt-cursor-width = 5 is great for geriatric eyes.
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. 
 
-* @shadow is now deprecated. @clean is superior to @shadow in all respects.
-Leo will support all flavors of @auto indefinitely.
+**Links**
 
-Links:
-------
-Leo's home page: http://leoeditor.com
-Documentation: http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Video tutorials: http://leoeditor.com/screencasts.html
-Forum: http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Github: https://github.com/leo-editor/leo-editor
-What people are saying about Leo: http://leoeditor.com/testimonials.html
-A web page that displays .leo files: http://leoeditor.com/load-leo.html
-More links: http://leoeditor.com/leoLinks.html
+The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. 
+
+[Leo's home page](http://leoeditor.com)
+[Documentation](http://leoeditor.com/leo_toc.html)
+[Tutorials](http://leoeditor.com/tutorial.html)
+[Video tutorials](http://leoeditor.com/screencasts.html)
+[Forum](http://groups.google.com/group/leo-editor)
+[Download](http://sourceforge.net/projects/leo/files/)
+[Leo on Github](https://github.com/leo-editor/leo-editor)
+[What people are saying about Leo](http://leoeditor.com/testimonials.html)
+[A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+[More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="ekr.20150301140303.16"></t>
 <t tx="ekr.20150311123850.11"></t>
@@ -15783,7 +15762,7 @@ Traceback (most recent call last):
 ValueError: list.remove(x): x not in list
 </t>
 <t tx="ekr.20150311123850.22">The fix was to x.separate_sentinels.
-I no longer adds @verbatim sentinels to the returned list of sentinels.
+It no longer adds @verbatim sentinels to the returned list of sentinels.
 </t>
 <t tx="ekr.20150311123850.23">@nocolor-node
 
@@ -16506,7 +16485,8 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     Toggles focus between the outline and body panes.
 ``Ctrl-Tab (tab-cycle-next)``
     Switches between outline tabs. You may open multiple Leo outlines in different tabs within the same main window.
-    </t>
+``Ctrl-G (keyboard-quit)``
+    Puts focus in the body pane. More effective than hitting Alt-Tab twice.</t>
 <t tx="ekr.20150318043636.14">The following script imports files from a given directory and all subdirectories::
 
     c.recursiveImport(
@@ -18301,21 +18281,6 @@ Source 2:
 <t tx="ekr.20150409155930.1"></t>
 <t tx="ekr.20150409155937.1"></t>
 <t tx="ekr.20150409155957.1"></t>
-<t tx="ekr.20150409204935.2">@language rest
-@wrap
-
-Executive summary: Ctrl-G will usually put focus in the body pane even if it does not appear that any Leo widget has focus.  This is more effective than hitting Alt-Tab twice.
-
-This morning I solved a mystery that has tormented me for years.  Every so often, Leo seems to lose focus, and hitting Alt-Tab twice may not appear to  restore focus. What is going on?
-
-It turns out that hitting a "bare" Alt key (on Windows) puts focus in the menu bar.  There is a tiny indication that this is so: the file menu is highlighted, but it does not drop down.
-
- Previously, I had tried to force focus by hitting Alt-Tab twice.  The first Alt-Tab selects another app.  The second Alt-Tab reselects Leo.  Sometimes this puts focus in the body pane.  Sometimes not.
-
-Happily, Ctrl-G almost always does put focus in the body pane.  I hadn't thought of using Ctrl-G because focus must indeed be somewhere in Leo for Ctrl-G to work.  But that's usually true even if the focus is not apparent.
-
-Mystery solved.  New recommendation for all users discovered.  I'll probably put this in the first tutorial.</t>
-<t tx="ekr.20150409204935.3"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
