@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -72,6 +71,11 @@
 </v>
 <v t="ekr.20111017085134.16114"><vh>@@button outlineToClipboard</vh></v>
 </v>
+<v t="ekr.20141116105945.2"><vh>@persistence</vh>
+<v t="ekr.20141116105945.3"><vh>@data:@auto create-leobat.bat</vh>
+<v t="ekr.20141116105945.4"><vh>@gnxs</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005506302e352e313371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@thin leoScripts.txt</vh></v>
@@ -117,7 +121,7 @@
 <v t="ekr.20141105055521.18"><vh>Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
-<v t="ekr.20150302053516.4"><vh>Script: clean ekr-spellpyx.txt</vh></v>
+<v t="ekr.20150302053516.4"><vh>Clean ekr-spellpyx.txt</vh></v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
 <v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
 <v t="ekr.20121220111212.13259"><vh>class TestWriter</vh>
@@ -176,11 +180,6 @@
 <v t="ekr.20140704052551.17941"><vh>Script: Add Windows handler for .leo files</vh></v>
 <v t="ekr.20140704052551.17946"><vh>Script: Set icon for .leo files</vh></v>
 <v t="ekr.20141105055521.13"><vh>Script: Dictionary to Leo outline</vh></v>
-</v>
-</v>
-<v t="ekr.20141116105945.2"><vh>@persistence</vh>
-<v t="ekr.20141116105945.3"><vh>@data:@auto create-leobat.bat</vh>
-<v t="ekr.20141116105945.4"><vh>@gnxs</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2830,15 +2829,17 @@ c.redraw()
 </t>
 <t tx="ekr.20141116105945.4"></t>
 <t tx="ekr.20150302053516.3"></t>
-<t tx="ekr.20150302053516.4">if 1:
-    fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-spellpyx.txt')
-    with open(fn) as f:
-        s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
-    g.trace(len(s))
-    with open(fn,'w') as f:
-        f.write(s)
-else:
-    p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
+<t tx="ekr.20150302053516.4">'''
+Regularize newlines in ekr-spellpyx.txt.
+
+Replaces sorts the file, removes duplicate lines and ensuring a trailing newline.
+'''
+fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-spellpyx.txt')
+with open(fn) as f:
+    s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
+with open(fn,'w') as f:
+    f.write(s)
+</t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 <t tx="tbrown.20141110113251.1">@g.command('x')
 def add_note(args):
