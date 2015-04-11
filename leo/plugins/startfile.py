@@ -1,6 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040828103325: * @file startfile.py
-""" Launches (starts) a file given by a headline when double-clicking the icon.
+#@+<< docstring >>
+#@+node:ekr.20150411162810.1: ** << docstring >> (startfile.py)
+"""
+Launches (starts) a file given by a headline when executing the
+double-click-icon-box
 
 This plugin ignores headlines starting with an '@'. Uses the @folder path if the
 headline is under an @folder headline. Otherwise the path is relative to the Leo
@@ -9,7 +13,7 @@ file.
 This does not work on Linux, because os.startfile does not exist.
 
 """
-
+#@-<< docstring >>
 # By Josef Dalcolmo: contributed under the same license as Leo.py itself.
 
 import leo.core.leoGlobals as g

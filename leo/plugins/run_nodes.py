@@ -1,17 +1,17 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040910070811.1: * @file run_nodes.py
 #@+<< docstring >>
-#@+node:ekr.20050912181956: ** << docstring >>
+#@+node:ekr.20050912181956: ** << docstring >> (run_nodes.py)
 r''' Runs a program and interface Leo through its input/output/error streams.
 
-Double clicking the icon box whose headlines are @run 'cmd args' will execute
+The double-click-icon-box command on a node whose headlines is @run 'cmd args' will execute
 the command. There are several other features, including @arg and @input nodes.
 
 The run_nodes.py plugin introduce two new nodes that transform leo into a
 terminal. It was mostly intended to run compilers and debuggers while having the
 possibility to send messages to the program.
 
-Double clicking on the icon of an node whose headline is @run <command> <args>
+The double-click-icon-box command on a node whose headline is @run <command> <args>
 will launch <command> with the given arguments. It will also mark the node. #
 Terminates the argument list. @run # <comment> is also valid.
 

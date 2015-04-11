@@ -4,14 +4,14 @@
 #@+node:dan.20090203174248.27: ** << docstring >> (mime.py)
 r''' Opens files with their default platform program.
 
-Double-clicking @mime nodes will attempt to open the named file as if opened
-from a file manager. \@path parent nodes are used to find the full filename
-path.  For example::
+The double-click-icon-box command on @mime nodes will attempt to open the
+named file as if opened from a file manager. \@path parent nodes are used
+to find the full filename path. For example::
 
     @mime foodir/document.pdf
 
-The string setting 'mime_open_cmd' allows specifying a program to handle opening
-files::
+The string setting 'mime_open_cmd' allows specifying a program to handle
+opening files::
 
     @settings
         @string mime_open_cmd = see

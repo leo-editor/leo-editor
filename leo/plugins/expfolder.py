@@ -1,17 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ajones.20070122153625: * @file expfolder.py
 #@+<< docstring >>
-#@+node:ajones.20070122153625.1: ** << docstring >>
+#@+node:ajones.20070122153625.1: ** << docstring >> (expfolder.py)
 ''' Adds @expfolder nodes that represent folders in the file system.
 
-Double clicking on the icon of an @expfolder heading reads the files in the
-directory at the path specified and creates child nodes for each file in the
-subfolder. Subdirectories are made into child @expfolder nodes so the tree can
-be easily traversed. If files have extensions specified in the expfolder.ini
-file they are made into @text nodes so the content of the files can be easily
-loaded into leo and edited. Double clicking a second time will delete all child
-nodes and refresh the directory listing. If there are any changed @text nodes
-contained inside you will be prompted about saving them.
+The double-click-icon-box command on an @expfolder node reads the files in
+the directory at the path specified and creates child nodes for each file
+in the subfolder. Subdirectories are made into child @expfolder nodes so
+the tree can be easily traversed. If files have extensions specified in the
+expfolder.ini file they are made into @text nodes so the content of the
+files can be easily loaded into leo and edited. Double clicking a second
+time will delete all child nodes and refresh the directory listing. If
+there are any changed @text nodes contained inside you will be prompted
+about saving them.
 
 The textextensions field on the expfolder Properties page contains a list of
 extensions which will be made into @text nodes, separated by spaces.

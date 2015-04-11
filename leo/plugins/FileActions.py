@@ -1,13 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040915105758.13: * @file FileActions.py
 #@+<< docstring >>
-#@+node:ekr.20050912180106: ** << docstring >>
+#@+node:ekr.20050912180106: ** << docstring >> (fileActions.py)
 r""" Defines actions taken when double-clicking on @<file> nodes and supports
 @file-ref nodes.
 
-Double-clicking any kind of @<file> node writes out the file if changes have
-been made since the last save, and then runs a script on it, which is retrieved
-from the outline.
+The double-click-icon-box command on any kind of @<file> node writes out
+the file if changes have been made since the last save, and then runs a
+script on it, which is retrieved from the outline.
 
 Scripts are located in a node whose headline is FileActions. This node can be
 anywhere in the outline. If there is more than one such node, the first one in

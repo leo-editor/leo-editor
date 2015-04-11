@@ -1,17 +1,17 @@
 #@+leo-ver=5-thin
 #@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
-#@+node:TL.20080507213950.3: ** << docstring >>
+#@+node:TL.20080507213950.3: ** << docstring >> (nodeActions.py)
 r""" Allows the definition of double-click actions.
 
-When the user double-clicks a node this plugin checks for a match of the clicked
-node's headline text with a list of patterns. If a match occurs, the plugin
-executes the associated script.
+The double-click-icon-box command causes this plugin checks for a match of
+the clicked node's headline text with a list of patterns. If a match
+occurs, the plugin executes the associated script.
 
-**nodeAction** nodes may be located anywhere in the outline. Such nodes should
-contain one or more **pattern nodes** as children. The headline of each pattern
-node contains the pattern; the body text contains the script to be executed when
-the pattern matches the double-clicked node.
+**nodeAction** nodes may be located anywhere in the outline. Such nodes
+should contain one or more **pattern nodes** as children. The headline of
+each pattern node contains the pattern; the body text contains the script
+to be executed when the pattern matches the double-clicked node.
 
 For example, the "nodeActions" node containing a "launch URL" pattern node
 and a "pre-process python code" node could be placed under an "@settings"
@@ -35,12 +35,12 @@ file:
 @bool nodeActions_save_atFile_nodes = False
 
   :True:
-     Double-click on an @file type node will save the file to disk
-     before executing the script.
+     The double-click-icon-box command on an @file type node will save the
+     file to disk before executing the script.
 
   :False:
-     Double-click on an @file type node will **not** save the file to disk
-     before executing the script. (default)
+     The double-click-icon-box command on an @file type node will **not**
+     save the file to disk before executing the script. (default)
 
 @int nodeActions_message_level = 1
 
@@ -81,9 +81,9 @@ the pattern can start with "@files" to match on any
 external file type.  For example, the pattern "@files \*.py" will
 match a node with the headline "@file abcd.py".
 
-The headline of the double-clicked node is matched against the patterns
-starting from the first sub-node under the "nodeActions" node to the last
-sub-node.
+The double-click-icon-box command matches the headline of the node against
+the patterns starting from the first sub-node under the "nodeActions" node
+to the last sub-node.
 
 Only the script associated with the first matching pattern is
 invoked unless overwritten by the "V" pattern directive.
@@ -178,10 +178,10 @@ The following global variables are available to the script::
 
 **Examples**
 
-Double-clicking on a node with a "http:\\\\www.google.com" headline
-will invoke the script associated with the
-"http:\\\\\*" pattern.  The following script in the body of the pattern's
-node displays the URL in a browser::
+The double-click-icon-box command on a node with a
+"http:\\\\www.google.com" headline will invoke the script associated with
+the "http:\\\\\*" pattern. The following script in the body of the
+pattern's node displays the URL in a browser::
 
      import webbrowser
      hClicked = pClicked.h     #Clicked node's Headline text
@@ -193,7 +193,6 @@ execute a command in the first line of the body of a double-clicked node::
      g.os.system('"Start /b ' + pClicked.bodyString() + '"')
 
 """
-
 #@-<< docstring >>
 
 # Written by TL.

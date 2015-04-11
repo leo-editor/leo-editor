@@ -1,19 +1,22 @@
 #@+leo-ver=5-thin
 #@+node:ktenney.20041211072654.1: * @file at_view.py
+#@+<< docstring >>
+#@+node:ekr.20150411161126.1: ** << docstring >> (at_view.py)
 r''' Adds support for \@clip, \@view and \@strip nodes.
 
 - Selecting a headline containing \@clip appends the contents of the clipboard to
   the end of the body pane.
 
-- Double clicking the icon box of a node whose headline contains \@view
+- The double-click-icon-box command on a node whose headline contains \@view
   *<path-to-file>* places the contents of the file in the body pane.
 
-- Double clicking the icon box of a node whose headline contains \@strip
+- The double-click-icon-box command on a node whose headline contains \@strip
   *<path-to-file>* places the contents of the file in the body pane, with all
   sentinels removed.
 
 This plugin also accumulates the effect of all \@path nodes.
 '''
+#@-<< docstring >>
 __version__ = "0.9"
 import leo.core.leoGlobals as g
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
@@ -58,8 +61,6 @@ class View:
 
         self.current = self.c.p
         hs = self.current.h
-
-        g.trace(hs)
 
         if hs.startswith('@view'):
             self.view()

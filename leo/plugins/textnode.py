@@ -1,16 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ajones.20070122160142: * @file textnode.py
 #@+<< docstring >>
-#@+node:ajones.20070122160142.1: ** << docstring >>
+#@+node:ajones.20070122160142.1: ** << docstring >> (textnode.py)
 ''' Supports @text nodes for reading and writing external files.
+
 This plugin has been superceded by @edit nodes.
 
-The @text node is for embedding text files in a leo node that won't be saved
-with the leo file, and won't contain any sentinel leo comments. Children of
-@text nodes are not saved with the derived file, though they will stay in the
-outline. When a outline is first loaded any @text nodes are filled with the
-contents of the text files on disk. To refresh the contents of an @text node,
-double click on the heading icon.
+The @text node is for embedding text files in a leo node that won't be
+saved with the leo file, and won't contain any sentinel leo comments.
+Children of @text nodes are not saved with the derived file, though they
+will stay in the outline. When a outline is first loaded any @text nodes
+are filled with the contents of the text files on disk. To refresh the
+contents of an @text node, execute the double-click-icon-box command on the
+node.
 
 '''
 #@-<< docstring >>
