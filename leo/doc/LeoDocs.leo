@@ -1224,6 +1224,14 @@
 </v>
 </v>
 </v>
+<v t="ekr.20150411062751.1"><vh>** To do</vh>
+<v t="ekr.20150411061719.1"><vh>** Add link to leo-reader page on web site</vh></v>
+<v t="ekr.20150411062514.1"><vh>** Document all items in "to-be-documented" mailbox </vh></v>
+<v t="ekr.20150411062608.2"><vh>** New page: why you should use git to get Leo.</vh></v>
+<v t="ekr.20150411062608.3"><vh>** Document all personal @command/@button nodes</vh></v>
+<v t="ekr.20150411062608.4"><vh>** Document Parnas &amp; Myers</vh></v>
+</v>
+<v t="ekr.20050903074833"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3371,8 +3379,20 @@ Event name (tag argument)     Stop?    When called                         Keys 
 14. The d argument to the open-with event handlers is a python
     dictionary whose keys are all the tags specified by the user in the body of the
     @openwith node.
+    
+The following events can *only* be called be called by minibuffer commands:
 
-15. The only way to trigger these events is with minibuffer commands::
+========================== ======== =====================
+Event name (tag argument)  Stop?    Keys in keywords dict
+========================== ======== =====================
+'iconclick1'               yes      c,p,v,event (note 15)
+'iconrclick1'              yes      c,p,v,event (note 15)
+'iconrclick2'                       c,p,v,event (note 15)
+'icondclick1'              yes      c,p,v,event (note 15)
+'icondclick2'                       c,p,v,event (note 15)
+========================== ======== =====================
+
+15. The only way to trigger these event is with the following minibuffer commands::
 
                 click-icon-box
                 ctrl-click-icon
@@ -18281,6 +18301,29 @@ Source 2:
 <t tx="ekr.20150409155930.1"></t>
 <t tx="ekr.20150409155937.1"></t>
 <t tx="ekr.20150409155957.1"></t>
+<t tx="ekr.20150411061719.1">http://leoeditor.com/load-leo.html</t>
+<t tx="ekr.20150411062514.1"></t>
+<t tx="ekr.20150411062608.2">Terry re branching:
+
+The difference between the proposed "stable master" above and just pulling "(current) master from two weeks ago", is that "two weeks ago" says nothing about issues or their absence, where the consciously synced develop-&gt;master would be a statement "here's a recent point on trunk with no known issues".
+</t>
+<t tx="ekr.20150411062608.3">Put them in Leo's core or in scripts.leo.
+</t>
+<t tx="ekr.20150411062608.4">Why Leo works: https://groups.google.com/d/msg/leo-editor/t4PC8ffJr28/GaV2jQ7HL98J
+
+- separation of concerns make Leo work.
+  David Parnas
+  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
+  
+  Glenford Myers
+  http://en.wikipedia.org/wiki/Glenford_Myers
+  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
+  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&amp;refRID=0TZ62C6J9JMXWXA0A61G
+
+ David Parnas:
+On the Criteria to be use in Decomposing Systems into Modules
+</t>
+<t tx="ekr.20150411062751.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
