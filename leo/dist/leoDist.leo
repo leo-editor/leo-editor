@@ -1745,29 +1745,25 @@ Github:    https://github.com/leo-editor/leo-editor
 Quotes:    http://leoeditor.com/testimonials.html
 Viewer:    http://leoeditor.com/load-leo.html
 </t>
-<t tx="ekr.20150409190528.1">[Leo](http://leoeditor.com/) 5.1 b2 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/)
+<t tx="ekr.20150409190528.1">[Leo](http://leoeditor.com/) 5.1 b2 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
-This release features @clean trees, one of the most important developments in Leo's history.
+b2 restores the proper operation of @nosent.  It is recommended for anyone using Leo 5.1 b1.
 
-Leo is a PIM, an IDE and an outliner.
-[Video tutorials](http://leoeditor.com/screencasts.html)
-[Text tutorials](http://leoeditor.com/tutorial.html)
+**The highlights of Leo 5.1**
 
-The highlights of Leo 5.1
---------------------------
+This release features **@clean** trees, one of the most important developments in Leo's history.
 
-@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees.
+@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible.
+
+@clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees. Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
     
 The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
 
-
-Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
-
-Some more highlights:
+**More highlights**
  
 * A new [web page](http://leoeditor.com/load-leo.html) displays .leo files in the browser.
   
-* Added command history to Leo's minibuffer.
+* Added **command history** to Leo's minibuffer.
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
@@ -1775,21 +1771,20 @@ Some more highlights:
 
 * @data nodes can be composed of their descendant nodes.
 
-* @int qt-cursor-width = 5 is great for geriatric eyes.
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. 
 
-* @shadow is now deprecated. @clean is superior to @shadow in all respects. Leo will support all flavors of @auto indefinitely.
+**Links**
 
-Links:
-------
-[Leo](http://leoeditor.com)
-[Docs](http://leoeditor.com/leo_toc.html)
+[Leo's home page](http://leoeditor.com)
+[Documentation](http://leoeditor.com/leo_toc.html)
 [Tutorials](http://leoeditor.com/tutorial.html)
-[Videos](http://leoeditor.com/screencasts.html)
+[Video tutorials](http://leoeditor.com/screencasts.html)
 [Forum](http://groups.google.com/group/leo-editor)
 [Download](http://sourceforge.net/projects/leo/files/)
-[Github](https://github.com/leo-editor/leo-editor)
-[Quotes](http://leoeditor.com/testimonials.html)
-[Viewer page](http://leoeditor.com/load-leo.html)
+[Leo on Github](https://github.com/leo-editor/leo-editor)
+[What people are saying about Leo](http://leoeditor.com/testimonials.html)
+[A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+[More links](http://leoeditor.com/leoLinks.html)
 </t>
 </tnodes>
 </leo_file>
