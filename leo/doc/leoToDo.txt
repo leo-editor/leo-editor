@@ -5,6 +5,7 @@
 .. @+all
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
+@wrap
 .. @+node:ekr.20141017150357.18271: *3* 3 Launchpad bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
@@ -823,8 +824,6 @@ as there's no next line.
 .. @+node:ekr.20031218072017.670: *4* Can't Fix: possible webbrowser bug
 (In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field.
 .. @+node:ekr.20130803125244.17077: *4* Cant' fix: web site for Leo google group is out of date
-@nocolor
-
 From: ne1uno <eltronis@gmail.com>
 
 http://groups.google.com/group/leo-editor/about
@@ -1424,9 +1423,6 @@ From: <fidelperez@gmail.com>
 .. @+node:ekr.20150302140653.4: ** To do: Leo 5.1
 @language rest
 @wrap
-@tabwidth -4
-.. @+node:ekr.20150326092537.1: *3* Fixed bug 166: Fix icon hooks in plugins, etc.
-https://github.com/leo-editor/leo-editor/issues/166
 
 .. @+node:ekr.20150227040245.11: *3* Fix bug 143: dabbrev-expand broken
 @language rest
@@ -1854,7 +1850,7 @@ Maybe have a second video showing how to make a GUI app. Maybe a 3rd showing how
 Publicize these videos, and you're going to get some journalists excited, and those are your reviews.
 
 One more thing: Start publicizing different ways people use Leo. Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412050836.1: *3* Rendering...
+.. @+node:ekr.20150412050836.1: *3* Rendering
 .. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
 Render to tex, pdf, rst, etc.
 .. @+node:ekr.20111010122531.15568: *4* @render-rest, @render-html trees
@@ -3397,7 +3393,6 @@ https://travis-ci.org/
 
 This could e.g. create debian packages for daily builds, run unit tests, check stuff with lint, try compiling with python3 so we (*cough*) wouldn't have accidental print statements in the source...
 .. @+node:ekr.20140704052551.17951: *3* Code
-All are minor.
 .. @+node:ekr.20140115052524.16699: *4* Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
@@ -4284,8 +4279,6 @@ Thanks.
 
 - ordinarius 
 .. @+node:ekr.20040216054459: *4* Won't do: @h @f @endh and @endf directives
-@nocolor
-
 http://sourceforge.net/forum/message.php?msg_id=2424151
 By: ksejlod ( Peter Barrel ) 
  I Have a (maybe) great idea!   
@@ -8499,7 +8492,7 @@ what Leo is doing, any guidance would be appreciated.
 
 ===== EKR: I think this has been solved.
 .. @+node:ekr.20131105122124.16479: *4* vim reference card (do not delete)
-@killcolor
+@killcolor # Needed in children
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
