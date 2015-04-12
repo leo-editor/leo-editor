@@ -7,36 +7,9 @@
 @language rest
 @wrap
 @tabwidth -4
-.. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
-http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
-.. @+node:ekr.20150326092537.1: *3* Fix bug 166: Fix icon hooks in plugins, etc.
-@language rest
-@wrap
-
+.. @+node:ekr.20150326092537.1: *3* Fixed bug 166: Fix icon hooks in plugins, etc.
 https://github.com/leo-editor/leo-editor/issues/166
 
-This is a minor issue, affecting mostly documentation.
-
-- Remove unused events from table of events.
-
-clone-find-all on iconclick[12] and icon[dr]click[12] shows the following plugins use these non-functional event hooks::
-
-  FileActions.py
-  active_path.py
-  at_view.py
-  expfolder.py
-  mime.py
-  mnplugins.py
-  nodeActions.py
-  run_nodes.py
-  startfile.py
-  textnode.py
-  xemacs.py
-
-​Presumably something should be done about most, if not all of them. Moreover:
-
-- leo_to_rtf.py throws a bunch of errors.
-- leo_pdf.py won't load.
 .. @+node:ekr.20150227040245.11: *3* Fix bug 143: dabbrev-expand broken
 @language rest
 @wrap
@@ -91,38 +64,10 @@ TypeError: cannot concatenate 'str' and 'int' objects
 But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
 
 @language python
-.. @+node:ekr.20150330080509.1: *3* Docs
-@language rest
-@wrap
-.. @+node:ekr.20150330084832.1: *4* Recommend git
-@language rest
-@wrap
-
-- New page: why you should use git to get Leo.
-
-Terry re branching:
-
-The difference between the proposed "stable master" above and just pulling
-"(current) master from two weeks ago", is that "two weeks ago" says nothing
-about issues or their absence, where the consciously synced develop->master
-would be a statement "here's a recent point on trunk with no known issues".
-.. @+node:ekr.20150329102805.1: *4* Document all in to-be-documented mailbox
-.. @+node:ekr.20150331111423.1: *4* Document all personal @command/@button nodes
-Put them in Leo's core or in scripts.leo.
-.. @+node:ekr.20150328195911.1: *4* Document Parnas & Myers
-- separation of concerns make Leo work.
-  David Parnas
-  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
-  
-  Glenford Myers
-  http://en.wikipedia.org/wiki/Glenford_Myers
-  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
-  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&refRID=0TZ62C6J9JMXWXA0A61G
-
- David Parnas:
-On the Criteria to be use in Decomposing Systems into Modules
 .. @+node:ekr.20130806072439.20650: *3* Fix bug 106: brew install leo (after 5.1 final)
 @language rest
+
+The homebrew docs say that beta releases are not allowed.
 
 https://github.com/leo-editor/leo-editor/issues/106
 
@@ -10943,6 +10888,10 @@ Automatic execution of commands on certain events.
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
 .. @+node:ekr.20150305084546.4: ** Can't/won't fix
+.. @+node:ekr.20150401082502.1: *3* Link github with sourceForge
+http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
+
+Will not accept leo-editor import.
 .. @+node:ekr.20150305053156.5: *3* Fix bug 147: Python 3 clipboard encoding
 @language rest
 @wrap

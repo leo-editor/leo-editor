@@ -259,7 +259,7 @@ try:
 except ImportError:
     print('leo_pdf.py: can not import reportlab.platypus')
     reportlab = None
-    raise
+    # raise
 try:
     #copyright ReportLab Inc. 2000
     #see rllicense.txt for license details
@@ -270,14 +270,13 @@ try:
 except ImportError:
     print('leo_pdf.py: can not import reportlab.lib styles info')
     stylesheet = None
-    raise
+    # raise
 if g.isPython3:
     import io
     StringIO = io.StringIO
 else:
     import StringIO
 import types
-
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions

@@ -5,8 +5,8 @@
 r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
 loaded into Microsoft Word and formatted as a proper outline.
 
-If this plug-in loads properly, you should have an "Outline to Microsoft RTF"
-option added to your File > Export... menu in Leo.
+This plug-in loads installs an "Outline to Microsoft RTF"
+menu item in your File > Export... menu in Leo.
 
 Settings such as outputting just the headlines (vs. headlines & body text) and whether
 to include or ignore the contents of @file nodes are stored in the rtf_export.ini file
@@ -46,23 +46,32 @@ def createExportMenu (tag,keywords):
 #@+node:danr7.20060902083957.3: ** export_rtf
 def export_rtf( c ):
 
-    g.es("Exporting...")
+    # g.es("Exporting...")
 
     # Get user preferences from INI file 
-    fileName = g.os_path_join(g.app.loadDir,"../","plugins","leo_to_rtf.ini")
+    fileName = g.os_path_join(g.app.loadDir,"..","plugins","leo_to_rtf.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
     flagIgnoreFiles =  config.get("Main", "flagIgnoreFiles") == "Yes"
     flagJustHeadlines = config.get("Main", "flagJustHeadlines") == "Yes"
-    filePath = config.get("Main", "exportPath").strip() # "c:\\"
-
-    myFileName = c.frame.shortFileName()    # Get current outline filename
-    myFileName = myFileName[:-4]            # Remove .leo suffix
-
-    g.es(" Leo -> RTF started...",color="turquoise4")
-
-    # Open file for output
-    f=open(filePath + myFileName + ".rtf", 'w')
+    if 1: # New code. Prompt for the file name.
+        fileName = g.app.gui.runSaveFileDialog(c,
+            initialfile = c.mFileName+'.rtf',
+            title="Export to RTF",
+            filetypes=[("RTF files", "*.rtf")],
+            defaultextension=".rtf")
+        if fileName:
+            f=open(fileName, 'w')
+        else:
+            return
+    else: # Original code.
+        filePath = config.get("Main", "exportPath").strip() # "c:\\"
+        myFileName = c.frame.shortFileName()    # Get current outline filename
+        myFileName = myFileName[:-4]            # Remove .leo suffix
+        g.es(" Leo -> RTF started...",color="turquoise4")
+        # Open file for output
+        ### g.trace('filePath',filePath,'myFileName',myFileName)
+        f=open(filePath + myFileName + ".rtf", 'w')
 
     # Write RTF header information
     f.write("{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\n\n")
