@@ -1113,6 +1113,56 @@ time, without messing with the local system's registry.
 
 Also handy for those not in portable mode, but working on different windows
 boxes and bored with having to tweak each one separately.
+.. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it curious.
+
+Create unit tests illustrating path ops
+.. @+node:ekr.20130503061707.10515: *5* @@test path computations
+@language python
+
+fj = g.os_path_finalize_join
+f  = g.os_path_finalize
+eu = g.os_path_expanduser
+
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir,'..','test')
+else:
+    loadDir = g.app.loadDir
+
+table = (
+    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
+)
+
+for func,h,expected in table:
+    p = g.findNodeAnywhere(c,h)
+    assert p,'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected,'expected "%s", got "%s"' % (
+            expected,result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20130503061707.10516: *6* @path rel-path
+.. @+node:ekr.20130503061707.10517: *7* @@file fj-test-1
 .. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file w/ virtual machine
 From: Terry Brown <terry_n_brown@yahoo.com>
 
@@ -1559,11 +1609,28 @@ class Leo < Formula
     end
   end
 end
+.. @+node:ekr.20130807203905.16650: *3* Leo in a nutshell (statistics)
+https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+
+Put this on Leo's web page.
+
+In a Nutshell, The Leo Editor...
+
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
+- has a well established, mature codebase
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
 .. @+node:ekr.20150410043718.1: *3* First
-.. @+node:ekr.20150412034943.1: *4* A gallery showing what rST & css can do in Leo
+.. @+node:ekr.20150412034943.1: *4* * A gallery showing what rST & css can do in Leo
 .. @+node:ekr.20150412032405.1: *4* Support @history-list
 Adds all commands to the history list, in order.
 .. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
@@ -1834,7 +1901,26 @@ data formats that are currently available on the clipboard. " --
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
-.. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+.. @+node:ekr.20150412135928.1: *3* Most important
+.. @+node:ekr.20130806072439.21225: *4* * Miles FidelMan: Distributed collaboration tool
+===== Miles Fidelman <mfidelman@meetinghouse.net>
+
+A big Leo fan pointed me at Leo, and this group - indicated that sharing Leo documents has been talked about over the years, but not really implemented, and suggested that I post some details about a project that I've been working on.  So....
+
+Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel.  Think of a personal Wiki (like TiddlyWiki) - linked to copies of itself, that's the general idea.  Compose a document, email copies to collaborators, everyone saves a local copy - those copies link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
+
+If you're interested, details are at:
+http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
+
+Andy Oram wrote a background piece for O'Reilly Radar:
+http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
+
+.. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors
 ===== Steve Litt
 
 I think the first step in getting this kind of review is to get more fans who can write and who are listened to. To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo. I'll give you an idea how to do this later in this email.
@@ -1850,10 +1936,8 @@ Maybe have a second video showing how to make a GUI app. Maybe a 3rd showing how
 Publicize these videos, and you're going to get some journalists excited, and those are your reviews.
 
 One more thing: Start publicizing different ways people use Leo. Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412050836.1: *3* Rendering
-.. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
-Render to tex, pdf, rst, etc.
-.. @+node:ekr.20111010122531.15568: *4* @render-rest, @render-html trees
+.. @+node:ekr.20150412050836.1: *4* Rendering (9)
+.. @+node:ekr.20111010122531.15568: *5* @render-rest, @render-html trees
 The free_layout and viewrendered plugins are a huge step forward.  But the lighter/heavier distinction suggests a new way to use them.
 
 Suppose Leo supports @render-rest or @render-html.
@@ -1867,682 +1951,9 @@ Of course, for specific purposes, say in Leo's scripting chapter, we might want 
 The point is that having *both* the original text *and* the rendered text be visible is often too heavy: the user usually does not want to know about the sources: the rendering is good enough.
 
 I suppose for sophisticated users, something like show/hide-body pane would be good commands to have, but that doesn't matter: those commands to not increase the burden on the user while she is reading the (rendered) docs.
-.. @+node:ekr.20050127110221: *4* Printing & flash
-https://sourceforge.net/forum/message.php?msg_id=2962825
-By: jasonic
-
-**pdf**
-yes I know what you mean, PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
-
-
-As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
-
-Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
-
-**xslt**
-
-Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with. Last time I looked I went from being horrified to very impressed to be being exhausted.
-
-**htmlize**
-
-thanks I'll check into that
-
-"print to web"  should definitely be on Leo's missing PRINT MENU.
-
-**swf [flash]**
-
-This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
-
-Flash has*limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
-
-FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
-
-Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
-
-To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this
-- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
-
-- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
-http://sweb.cz/oliva.david/swf/
-
-These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
-
-But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
-
-**flashpaper2**
-
-btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in. Flashpaper renders a very litteral snapshot, but as I am discovering that turns out to be extremely useful. For example you visit a page and click on some links. Flashpaper saves teh pages exactly as it looks, viisted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
-
-Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
-
-And of course the flash _players_ is free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper - letting your coleagues pan and zoom to their comfort.
-
-I've not quite figured out the place where  Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing. Leo's does not have aprint menu, so it's off the sytem's print-devices map, which Flash paper appearing just  like any phtycial printer.
-
-I imagine is possible to fix that in Leo, but I do not where to begin and woudl not be surprised to learn its a major heachche to write adn debug for multiple operating systems.
-
-An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
-
-[vnc2swf uses Ming-0.2a]
-http://www.unixuser.org/~euske/vnc2swf/
-
-http://www.multidmedia.com/software/capture/index.php
-
-But much is hidden or lost from view. 
-Still very vauable for creating dynamic narrative tutorials [aka screencasting]
-
-AS you know I am very excited about what flash can do for Leo, and vice versa.
-But I am concerned that there is not yet a 100% Leo means which supports people's
-standard print needs and habits.
-
-**Print Menu**
-
-Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
-
-Having a little library of export scripts - well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20101104191857.5820: *4* QWebView makes Leo a presentation tool
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-
-Ville:
-
-Create one QWebView window, zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20111019104425.15888: *4* Support an openGL window in Leo
-.. @+node:ekr.20150410043749.1: *3* Maybe
-.. @+node:ekr.20150120155724.4: *4* improve python importer
-- Handle properties.
-- Show base classes in headlines.
-- Put @language and @tabwidth directives at end of body.
-- Translate::
-
-    #-----------------------------------------------------------------------------
-    # Imports
-    #-----------------------------------------------------------------------------
-
-to organizer node whose headline is Imports.
-.. @+node:ekr.20141210123805.9: *4* Support rope
-.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
-.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
-- Detect changes in root node, if possible.
-- Detect changes in headlines, if possible.
-.. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
-@language rest # @language python below
-
-This post discusses discusses problems with the @g.command decorator. Later sections discuss solutions. These later sections are ENB (Engineering Note Book) discussions, which can safely be ignored by all except the usual suspects...
-
-Promises to do something "today" don't always get kept because a seemingly simple task like adding an insert-file-name command becomes unbearable. Creating a better way to define commands has become urgent.
-
-===== Background
-
-The @g.command decorator has its uses, especially in plugins. It allows any code to define a new Leo command without having any access to Leo's core code. For this reason alone, the @g.command decorator is here to stay.
-
-However, using @g.command to add Leo commands is often *way* too clumsy. There are several problems using @g.command. To see these problems clearly, let's look at a typical example, from leoVim.py::
-
-@language python
-
-    @g.command(':gt')
-    def vim_gt(event):
-        '''cycle-focus'''
-        c = event.get('c')
-        if c and c.vimCommands:
-            c.vimCommands.cycle_focus()
-            
-@language rest
-
-This code sucks, for at least the following reasons:
-
-1. It requires an outer-level function-name (vim_gt) that has no value except to the @g.command decorator itself. This is useless verbiage and just clutters the namespace. Worse, although the decorator doesn't require distinct names, disabling a pylint check for duplicate names would be way too dangerous.
-
-2. It repeats the template code for each different command. This is pure cruft. Worse, the tests for c and c.vimCommands would not be necessary in a subcommander.
-
-3. It is usually bad design to define the command at the top level. Commands should be defined in the classes that contain their code!
-
-For all these reasons, vim-mode commands clearly should *not* be defined using the @g.command decorator. The question is, how to define them cleanly?
-
-Everything from here on is an ENB entry. Feel free to ignore, unless you are Terry ;-)
-
-===== Motivation
-
-It would be possible to define vc commands in vc.finishCreate as is done by sub-commanders in leoEditCommands.py, but as I was thinking about this problem I discovered how to simplify the definition of almost *all* of Leo's commands. This is too good to ignore, for the following reasons:
-
-1. The simplifications to be described reduce order constraints during startup. Any such reduction is, all by itself, extremely valuable, because such order constraints are the main complicating factor in the startup code.
-
-2. As always, simplifications to complex code (and Leo's startup code is complex in hard-to-see ways) promise further simplifications. No further simplifications are apparent *now*, but it would be bad practice not to simplify the code when I can.
-
-===== Details
-
-At present, there are several ways (not sure how to count them ;-) to define large numbers of commands. By defining a command I mean associating a string (the command's name) with a method of some class.
-
-Although details vary, the basic idea in each case is to define a **commands dict**, a Python dict whose keys are command names (Python strings) and whose values are methods.
-
-In particular, each subcommander in leoEditCommands.py defines a getPublicCommands method that returns a commands dict.
-
-ECM.finishCreateEditCommanders then merges all the commands dicts, like this::
-
-@language python
-
-    def finishCreateEditCommanders (self):
-        '''Finish creating edit classes in the commander.
-        Return the commands dictionary for all the classes.'''
-        c,d = self.c,{}
-        for name, theClass in self.classesList:
-            theInstance = getattr(c,name)
-            theInstance.finishCreate()
-            theInstance.init()
-            d2 = theInstance.getPublicCommands()
-            if d2:
-                d.update(d2)
-        return d
-        
-@language rest
-
-But none of this should be necessary. Or rather, it should happen in a different place, and at no *particular* time.
-
-===== A much better way to define commands.
-
-The basic problem with the code above is that it must happen at the exact instant that various finishCreate methods get called. Yes, the present code works, but it depends *far* too much on code order during startup.
-
-We can remove *all* these unnecessary ordering constraints as follows:
-
-1.  Define init phase 0: create ivars.
-
-This phase is trivial, for our present purposes. Commands.__init__ will just define c.commandsDict and its inverse, as *empty* Python dictionaries.
-
-At present, the inverse of c.commandsDict is c.k.inverseCommandsDict. How stupid is that? It must be a c (Commands) ivar, not a c.k (KeyHandlerClass) ivar! Doh. Using a c.k ivar means that c.k must be inited *before* c.k.inverseCommandsDict is ever used. This is a completely unnecessary constraint.
-
-In short, the inverseCommandsDict must be a Commands ivar, not a KeyHandlerClass ivar. This will ensure that c.inverseCommandsDict will exist before any subcommander's *ctor* gets called.
-
-2. Define c.registerCommands (plural). This will call a new method, c.registerCommand, for each item in a commands dict.
-
-Important: c.k.registerCommand must remain for compatibility, but it will probably just call c.registerCommand.
-
-With just these simple changes, *any* class can call c.registerCommands at
-*any* time. In particular, any class can call c.registerCommands in its
-ctor, or its ctor's helpers. There is no need to wait until finishCreate
-gets called!
-
-Defining command names in the ctor logic may leave some finishCreate
-methods empty. If so, we can rejoice--another ordering constraint has
-disappeared forever!
-
-===== Testing
-
-I expect the changeover to the new scheme to be straightforward. It may
-happen "today" (TM).
-
-This new scheme should be safe, but just to make sure, I'll probably enable
-the new code with g.NEW_COMMANDS.
-
-It's not clear how well the present unit tests actually tests the
-association between commands and their names. A separate unit test may be
-advisable.
-.. @+node:ekr.20141105050314.24: *5* What I did
-In the end, I have opted for the bare minimum of changes. Given the
-complexity of key handling, I think this is the only sane way. Here is a
-slightly revised checkin log for rev 09ab839...:
-
-QQQ
-
-Cleaned up how command names get put into c.commandsDict and
-c.inverseCommandsDict, but only a little bit ;-)
-
-All tests pass, but use a bit more caution.
-
-- Removed @g.command nodes from leoVim.py.
-  vc.defineCommandNames now creates command names.
- - Called vc.defineCommandNames from the new c.createCommandNames, called from c.finishCreate.
-- Changed k.inverseCommandsDict to c.inverseCommandsDict.
-- Renamed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
-QQQ
-
-All this adds up to *slightly* better code.
-
-In particular, the various o.defineCommandNames methods can be called any
-time after o has been created. These methods depend on nothing else, so
-they can be called "early" in c.finishCreate, by c.createCommandNames. This
-is a real plus: there are now a few less order dependencies in the startup
-code. Replacing rst.finishCreate with rst.createCommandNames is gratifying.
-
-This is important! The various finishCreate methods must be called in
-*exactly* the right order so that various widgets are created in one
-finishCreate method before they are needed in another finishCreate method.
-So anything that either eliminates finishCreate methods entirely or reduces
-their complexity is a real improvement in Leo's startup code.
-
-Otoh, I left the code that creates c.commandsDict and c.inverseCommandsDict
-*strictly* alone, except that:
-
-1. inverseCommandsDict is now a c ivar instead of a k ivar.
-
-2. The new c.createCommandNames method encapsulates all aspects of the
-   making of the command name dicts. This should make this difficult code
-   slightly easier to understand.
-
-On balance, this was a long day of coding for minor improvements to Leo's
-startup logic. But these are steps in the right direction.
-
-In any case, the VimCommands class now defines command names in
-vc.defineCommandNames. There no need for vc.finishCreate and no need for
-all those redundant @g.command code hunks.
-
-Unless there are bugs reported, this ends this project for the foreseeable
-future.
-.. @+node:ekr.20111018104244.15933: *4* script to create documentation for commands/plugins
-Leo should have a create-plugins-doc script that creates docs for plugins based on docstrings.
-
-Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
-.. @+node:ekr.20141108064630.19: *4* Resolve clone wars based on modification dates
-From: Joon Ro <joonpyro@gmail.com>
-
-I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
-.. @+node:ekr.20101004092958.5914: *4* Write treepad scanner (contains code!)
-treepad.py is from the treepad website
-.. @+node:ekr.20101004092958.5939: *5* treepad.py
-@first #! /usr/local/bin/python
-
-# treepad.py
-
-@others
-
-if __name__ == '__main__':
-    Main().Run()
-
-@language python
-@tabwidth -4
-
-.. @+node:ekr.20101004092958.5940: *6* treepad declarations
-import sys, os, re, string
-
-# constants
-VERSION = "<Treepad version 2.7>"
-
-# regexes
-END_RE = re.compile(r'^<end node> ([^ ]+)$')
-.. @+node:ekr.20101004092958.5941: *6* class Node
-class Node:
-    @others
-.. @+node:ekr.20101004092958.5942: *7* __init__ (Node/treepad)
-def __init__(self):
-    self.title    = ""
-    self.level    = 0
-    self.article  = []
-    self.children = []
-    self.parent   = None
-    self.end      = ""
-.. @+node:ekr.20101004092958.5943: *7* __str__
-def __str__(self):
-    return "%s/%d" % (self.title, self.level)
-.. @+node:ekr.20101004092958.5944: *7* addchild
-def addchild(self, node):
-    assert self.level == node.level-1 and node.parent is None
-    node.parent = self
-    self.children.append( node )
-.. @+node:ekr.20101004092958.5945: *7* findparent
-def findparent(self, node):
-    if self.level == (node.level-1): return self
-    return self.parent.findparent(node)
-.. @+node:ekr.20101004092958.5946: *7* writenode
-def writenode(self, fp):
-    fp.write("dt=Text\n")
-    fp.write("<node>\n")
-    fp.write("%s\n" % self.title)
-    fp.write("%s\n" % self.level)
-    for line in self.article:
-        fp.write("%s\n" % line)
-    fp.write("<end node> %s\n" % self.end)
-.. @+node:ekr.20101004092958.5947: *7* writetree
-def writetree(self, fp):
-    self.writenode(fp)
-    for node in self.children:
-        node.writetree(fp)
-
-.. @+node:ekr.20101004092958.5948: *6* class NodeReader
-class NodeReader:
-    @others
-.. @+node:ekr.20101004092958.5949: *7* __init__ (NodeReader)
-def __init__(self, fname, fp):
-    self.fname    = fname
-    self.fp       = fp
-.. @+node:ekr.20101004092958.5950: *7* expect
-def expect(self, text, line=None):
-    if line is None:
-        line = self.fp.readline().strip()
-    assert line == text, "expected " + line + " == " + text
-.. @+node:ekr.20101004092958.5951: *7* readstart
-def readstart(self):
-    self.expect(VERSION)
-.. @+node:ekr.20101004092958.5952: *7* readnode
-def readnode(self):
-    line = self.fp.readline()
-    if line is None:
-        return None
-    line = line.strip()
-    if len(line) < 1:
-        return None
-    self.expect("dt=Text", line)
-    self.expect("<node>")
-    node = Node()
-    node.title = self.fp.readline().strip()
-    node.level = int(self.fp.readline().strip())
-    while 1:
-        line = self.fp.readline()
-        m = re.match(END_RE, line)
-        if m:
-            node.end = m.group(1).strip()
-            break
-        node.article.append( line.strip() )
-    return node
-
-.. @+node:ekr.20101004092958.5953: *6* class TreeReader
-class TreeReader:
-    @others
-.. @+node:ekr.20101004092958.5954: *7* __init__(TreeReader)
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'r')
-    self.nodereader = NodeReader(fname, fp)
-    self.root = None
-    self.prev = None
-.. @+node:ekr.20101004092958.5955: *7* add
-def add(self, node):
-    if self.prev is None:
-        assert node.level == 0
-        self.root = node
-    else:
-        assert node.level > 0
-        parent = self.prev.findparent(node)
-        parent.addchild( node )
-    self.prev = node
-.. @+node:ekr.20101004092958.5956: *7* read
-def read(self):
-    self.nodereader.readstart()
-    prev = None
-    while 1:
-        node = self.nodereader.readnode()
-        if node is None: break
-        self.add(node)
-
-.. @+node:ekr.20101004092958.5957: *6* class TreeWriter
-class TreeWriter:
-    @others
-.. @+node:ekr.20101004092958.5958: *7* __init__ (TreeWriter)
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'w')
-    self.fname = fname
-    self.fp    = fp
-.. @+node:ekr.20101004092958.5959: *7* write
-def write(self, root):
-    self.fp.write("%s\n" % VERSION)
-    root.writetree(self.fp)
-
-.. @+node:ekr.20101004092958.5960: *6* class Main
-class Main:
-    @others
-.. @+node:ekr.20101004092958.5961: *7* __init__ (Main)
-def __init__(self):
-    self.infile  = sys.argv[1]
-    self.outfile = sys.argv[2]
-    self.reader  = TreeReader(self.infile)
-    self.writer  = TreeWriter(self.outfile)
-.. @+node:ekr.20101004092958.5962: *7* Run
-
-def Run(self):
-    self.reader.read()
-    self.writer.write(self.reader.root)
-
-.. @+node:ekr.20031218072017.795: *4* Metatags
-@sectionname or @savedate are expanded to the appropriate text when saved.
-
--marshall-  
-
-There are quite a few of these now.  It would be good to generalize:
-- Register @node type.
-.. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
-found 27 broken links.
-
-http://leoeditor.com/images/edit_note.html
-http://leoeditor.com/images/toolbar.html
-http://leoeditor.com/images/delete.html
-http://leoeditor.com/images/editcopy.html
-http://leoeditor.com/images/duedate.html
-http://leoeditor.com/slides/external-files/index.html
-http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html
-http://leoeditor.com/images/newlist.html
-http://leoeditor.com/images/new_item.html
-http://leoeditor.com/images/owners.html
-http://leoeditor.com/images/complete.html
-http://leoeditor.com/images/openlist.html
-http://leoeditor.com/images/editcut.html
-http://leoeditor.com/images/print.html
-http://leoeditor.com/slides/installation/index.html
-http://leoeditor.com/images/refresh.html
-http://leoeditor.com/slides/using-leos-minibuffer/index.html
-http://leoeditor.com/images/editpaste.html
-http://leoeditor.com/slides/installation/_static/underscore.html
-http://leoeditor.com/images/find.html
-http://leoeditor.com/front.html
-http://leoeditor.com/slides/scripting-leo/index.html
-http://leoeditor.com/images/printprev.html
-http://leoeditor.com/slides/leo-basics-step-by-step/index.html
-http://leoeditor.com/slides/clones-and-views/index.html
-http://leoeditor.com/images/mail_item.html
-http://leoeditor.com/images/page_setup.html
-.. @+node:ekr.20150412053053.1: *4* Finish leoOPML plugin
-.. @+node:ekr.20150412052821.1: *3* Study
-.. @+node:ekr.20111017132257.15882: *4* Study xml_edit plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
-
-Provides commands (Alt-x) for importing and exporting XML from a Leo outline. These commands are to XML what ``@auto-rst`` is to reStructuredText.
-
-``xml2leo``
-    Imports an .xml file into the node following the currently selected node.
-    
-``leo2xml``
-    Exports the current subtree to an .xml file the user selects.
-
-``xml_validate``
-    If executed on the top node in the Leo xml tree, reports any errors in XML generation or DTD validation, based on the DTD referenced from the XML itself.  If there's no DTD it reports that as an error.
-
-``leo2xml2leo``
-    Takes the selected Leo subtree representing an XML file,
-converts it to XML internally, and then creates a new Leo subtree from
-that XML after the original, with 'NEW ' at the start of the top node's
-name.  This updates all the headlines, so that the convenience only
-previews (see below) are updated.  The original can be deleted if the
-new subtree seems correct.
-
-Conventions
-===========
-
-This is a valid XML file::
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE dml SYSTEM "dml.dtd">
-    <?xml-stylesheet href="common.css"?>
-    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
-      <block type='example'>Here's <other:b>some</other:b> text</block>
-    </dml>
-    <!-- This is the last line -->
-
-Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE), the trailing comment (after the closing tag), and the pernicious mixed content (three separate pieces of text in the ``<block/>`` element). These commands attempt to deal with all of this.
-
- - A top level Leo node is created to hold these top level parts.  Its
-   headline is the basename of the file.
- - The xml declaration is placed in the body of
-   this top level Leo node
- - Below that, in the same body text, appears a simple namespace map::
-
-     http://example.com/
-     other: http://other.com/
-     ...
-
-   i.e. the default namespace first, and then any prefixed name spaces.
- - Below that, in the same body text, appears the ``DOCTYPE`` declaration
- - Children are added to this top level Leo node to represent the
-   top level elements in the xml file.  Headlines have the following
-   meanings:
-
-       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
-         space, name of processing instruction target, start of processing
-         instruction content.  Only the questionmark, which indicates
-         the processing instruction, and the first word, which indicates
-         the processing instruction target, matter.  The remainder is just
-         a convenience preview of the processing instruction content, which
-         is the Leo node's body text.
-
-       - ``# This is *really* imp`` - i.e. hash,
-         space, start of comment content.  Only the hash, which indicates
-         the comment, matters.  The remainder is just
-         a convenience preview of the comment content, which
-         is the Leo node's body text.
-
-       - ``tagname name_attribute start of element text`` - i.e. the name
-         of an element followed by a convenience preview of the element's
-         text content.  If the element has a ``name`` attribute that's
-         included at the start of the text preview.  Only the first word
-         matters, it's the name of the element.
-
- - Element's text is placed in the Leo node's body.  If the element has
-   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
-   in the above example), that occurs in the Leo node's body separated
-   by the `tailing text sentinel`::
-
-       @________________________________TAIL_TEXT_______________________________
-
- - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
-   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
-   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
-   attributes it should present to the user for editing. The
-   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
-   activated (through its submenu on the Plugins menu). The attribute
-   edit panel initially appears as a tab in the log pane, although it
-   can be moved around by right clicking on the pane dividers if the
-   ``viewrendered`` and ``free_layout`` plugins are enabled. 
-.. @+node:ekr.20111027143736.16557: *4* Study leo_screen
-Ville mentioned leoremote for driving Leo from the command line. There's also leoscreen, for driving the command line from Leo, providing you use screen, which is probably unix/cygwin only.
-.. @+node:ekr.20150331053736.1: ** Waiting for answers
-- Waiting for answer re: ubuntu splashscreen
-    http://qt-project.org/forums/viewthread/30837/
-    createSplashScreen
-
-- Waiting for answer to solarized question:
-    http://qt-project.org/forums/viewthread/30838/
-    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
-.. @+node:ekr.20120516140545.9987: ** Wishlist
-@language rest
-@wrap
-.. @+node:ekr.20140521095206.16728: *3* * Important
-@language rest
-@wrap
-.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
-These would be an alternative to the Easter Egg interface.
-.. @+node:ekr.20130806072439.21225: *4* Distributed collaboration tool
-===== Miles Fidelman <mfidelman@meetinghouse.net>
-
-A big Leo fan pointed me at Leo, and this group - indicated that sharing Leo documents has been talked about over the years, but not really implemented, and suggested that I post some details about a project that I've been working on.  So....
-
-Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel.  Think of a personal Wiki (like TiddlyWiki) - linked to copies of itself, that's the general idea.  Compose a document, email copies to collaborators, everyone saves a local copy - those copies link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
-
-If you're interested, details are at: http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
-Andy Oram wrote a background piece for O'Reilly Radar: http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
-
-.. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-Zope3, with it's component based architecture, has machinery which hooks components together .. Interfaces, Adapters and ZCML, the configuration language.
-
-It sounds like the autocompleter code is able to build indexes of classes and methods. It would be cool if that capability could be extensible, allowing building indexes of the couplings between components.
-
-I think this might look like some kind of automatic hyperlinking, providing access to related code, as defined for that application.
-
-I really don't know if this makes sense, but I see you moving in the direction of making Leo capable of doing some _explaining_ of the code being written.
-.. @+node:ekr.20120520113447.9874: *4* Kent: select node from traceback
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20130806211959.17365: *4* Leo as PIM and authoring tool
-Josef <joe_da@gmx.net> 7/30/12
-		
-Recently I evaluated docear - a mind-mapping tool for collecting reference data (written in Java). It automatically extracts bookmarks and annotations from PDF files, and more, but it's support for authoring is still not up to the task. I think it would be great if Leo could do some of the tasks docear is doing.
-
-Leo is primarily a literate programming editor, but also quite good at organizing bits of information. Dragging a PDF into Leo currently just creates an url to the PDF. This could be expanded to also extract data (bookmarks, notes) from the PDF and to sync this data between Leo and the PDF. This info could be placed in child nodes: bookmarks and notes could even jump directly to the page in the PDF (although each PDF viewer seems to have a different syntax for doing that). This would be a great way to organize data sheets and specifications stemming from external sources.
-
-Combining the above with an improved LaTeX support, one would get a very powerful research and authoring tool - in my opinion with a much more convenient interface than docear.
-
-Perhaps it is too much work to duplicate all the work docear is doing. An alternative may be to sync data somehow between docear and Leo. Docear stores the data in a freeplane mind-map. Has anyone else thoughts about this? Offray Vladimir Luna Cárdenas offray@riseup.net via googlegroups.com
-	
-7/30/12
-		
-I have been using Leo to write my thesis. I didn't know about Docear, but my use was in some sense similar. I have a lot of @url links pointint to the pdfs files and in a subtree I cut and paste the text of the pdf I want to comment and made the comments inside the tree. These pdf were part of my bibliographic entries and I'm now writing a .bib file for these, so I can have in only one Leo tree all my thesis, with all the references to external files and the annotations and bibtex entries for them. For me the key point of Leo in academic writing is the tree view plus the clones and ignore nodes. My thesis can have several layers, the external ones being the actual writing and the deeper ones the references, texts, images, tools that enable me to do that writing. Using clones and @rst-no-head directives I can have the level of granularity of a paragraph, something that is not possible on traditional word processor which are the writing tool of tools like docear. This approach have some glitches:
-
-* I still need to do some fine tunning to the LaTeX export for writing the pdf as I want. I imagine that putting sphinx in the tool chain could change that.
-
-* I can not get much people of my companions using this advangages, besides of myself, because of the difficult installation process of Leo in Windows/Mac and the not so friendly interface for non-programmers. Other light markup structured text writing programs like Nested[1] are more easily used and understood despite of not having all the advantages and flexibility of Leo.
-
-So, in resume, may be the better approach is connecting Leo to Docear, so you can have the advantages of both in terms of easy multiplataform installation and friendly interface of the later and programmability, flexibility and deeper organic structure of the former.
-
-Offray
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-> Dragging a PDF into Leo currently just
-> creates an url to the PDF. This could be expanded to also extract data
-> (bookmarks, notes) from the PDF and to sync this data between Leo and the
-> PDF. This info could be placed in child nodes: bookmarks and notes could
-> even jump directly to the page in the PDF (although each PDF viewer seems
-> to have a different syntax for doing that). This would be a great way to
-> organize data sheets and specifications stemming from external sources.
-
-I'm not really sure how notes get embedded in PDFs.  As an aside, there is also capability for using Leo to manage bookmarks to web pages, with notes, tags, and snippets.  Look at the mod_http plugin.  It uses a javascript bookmark button in your browser to communicate with Leo.
-
-> Combining the above with an improved LaTeX support, one would get a very
-> powerful research and authoring tool - in my opinion with a much more
-> convenient interface than docear.
->
-> Perhaps it is too much work to duplicate all the work docear is doing. An
-> alternative may be to sync data somehow between docear and Leo. Docear
-> stores the data in a freeplane mind-map. Has anyone else thoughts about
-> this?
-
-Syncing between the two sounds a little cumbersome to me.  I wonder if the PDF stuff could be integrated with some sort of BibTeX .bib file management?
-
-Do you really need the mindmap UI of docear?  I used to use Freemind which has a very similar interface, but switched to Leo.  I like what http://cmap.ihmc.us/ does, but it only does idea organization, no authoring etc.  To me cmaptools is better at idea organizing than mindmaps.
-
-There is also the backlinks plugin for Leo, which allows arbitrary networks of links instead of just the directed tree, and graphcanvas, which allows graph layout of nodes.  There aren't comparable with the mindmap layouts, but they head in that direction.  Also note Leo's hidden UI flexibility in the context menus on the pane dividers, you can open a new window for the graphcanvas plugin, which gives it much needed screen real estate.
-
-Cheers -Terry
-
-===== Josef <joe_da@gmx.net>
-		
-no, I do not need the mindmap stuff at all. I had a look at short look at cmaptools, and I agree the generalized graph approach seems better than a standard mindmap. But I am quite happy with the tree view in Leo and as you already mentioned, this can be extended with backlinks etc. I have used Leo already to organize reference documents and write documentation (using Latex).
-
-What I do want is links to a particular page of a PDF - links to just a file are not enough when you refer to documents with 100+ pages. Unfortunately this seems to be difficult to achieve in a cross-platform way, particular when trying to support different PDF viewers. Docear is solving this (and other compatibility problems) by developing its own integrated viewer (I do not suggest to do this for Leo).
-
-On second thought, I don't think that extracting the bookmark and annotation info is really important to me - I would keep that info in the PDF, anyhow. I would write inside Leo addional notes, and the output text (in Latex).
-
-Some integration of Bibtex may be a good thing and needs to be thought out. perhaps by using JabRef for this, or by recycling some pyBibliographer code, but this is also low on my priority list.
-
-Offray seems to have a very similar use case as I - although I do not write a thesis, but specifications for scientific instruments. The point about cross-platform installation ease is also well taken, so I will look into some inter-operability here (either with docear or cmaptools). I see Leo mainly as a personal project / information manager: the leo tree is not easily shared with others, while the files Leo points to with @url, @auto,
-@file etc can be shared quite easily. In this I use Leo as *my personal*
-view on the project.
-
-Ville Vainio <vivainio@gmail.com>
-7/30/12
-		
-It seems that e.g. w/ foxit reader, you can open selected page from command line (-n 123). Abstracting this for other pdf readers that support such a thing should be no problem.
- 
-On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
-     
-    It seems that e.g. w/ foxit reader, you can open selected page from
-    command line (-n 123). Abstracting this for other pdf readers that
-    support such a thing should be no problem.
-    
-Yes, I suppose one could translate from a canonical representation inside Leo to whatever the tool needs (using @setting). Ideally, one would even have a choice between opening the new page in a different or in the same PDF viewer instance as the last page, but few viewers support that (Okular does - but I don't know any cross-platform solution).
-.. @+node:ekr.20130806072439.21301: *4* Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
+Render to tex, pdf, rst, etc.
+.. @+node:ekr.20130806072439.21301: *5* HansBKK Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 This is highly off-topic for most on the list, so feel free to ignore, but anyone using Leo for single-source documentation generation/conversion, including future googlers, please reply with comments or notes on your experiences.
@@ -2556,7 +1967,7 @@ Gitit also incorporates the Pandoc <http://johnmacfarlane.net/pandoc/>project fo
 With the increasing likelihood that I'll be using Leo as the centerpiece of my toolchain, plus the fact that Pandoc is much more actively maintained, it's starting to look worth my while to consider switching my "master source" content syntax over from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
 
 Anyone in the Leo community using Gitit, especially for use beyond simple code documentation?
-.. @+node:ekr.20130806072439.21302: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21302: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
@@ -2568,7 +1979,7 @@ On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
 No experience myself, but thanks for these interesting links.
 
 EKR
-.. @+node:ekr.20130806072439.21303: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21303: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
 
 Hi,
@@ -2594,7 +2005,7 @@ Cheers,
 
 Offray
 
-.. @+node:ekr.20130806072439.21304: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21304: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: <offray@riseup.net>
 
 El jue 19 ene 2012 21:09:26 COT, HansBKK escribi=F3:
@@ -2705,7 +2116,7 @@ Cheers,
 
 Offray
 
-.. @+node:ekr.20130806072439.21305: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21305: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: Matt Wilkie <maphew@gmail.com>
 
 > Wow I think that this is the first time I have the opportunity to
@@ -2717,7 +2128,7 @@ From: Matt Wilkie <maphew@gmail.com>
 
 I am reading, and enjoying. The clouds you've placed in my mind are
 making interesting shapes and I am intrigued. ;-)
-.. @+node:ekr.20130806072439.21306: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21306: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
 
 Hi,
@@ -2912,7 +2323,7 @@ Thanks,
 
 Offray
 
-.. @+node:ekr.20130806072439.21307: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21307: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 
@@ -3075,14 +2486,14 @@ because coders would have to put so much effort into infrastructure=20
 overhead work to be able to keep working with their preferred toolset.=20
 Anyway 'nuff said on that.
 
-.. @+node:ekr.20130806072439.21308: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21308: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: Largo84 <Largo84@gmail.com>
 
 This topic is of much interest to me as I use Leo primarily for writing 
 documentation (mostly LaTex, some html and some rST). I haven't worked w/ 
 Pandoc yet but am interested in some of the possibilities. Thanks for the 
 links, I'll check them out.
-.. @+node:ekr.20130806072439.21309: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21309: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 
@@ -3182,70 +2593,717 @@ as my plans for enabling community editing of Leo-managed content will be=
 wiki-platform agnostic.
 
 To me, the key enabler for that is "everything as a file". . .
-.. @+node:ekr.20130806072439.21323: *4* Leo reader as a web app
-From: "Ville M. Vainio" <vivainio@gmail.com>
+.. @+node:ekr.20130806211959.17365: *5* Leo as PIM and authoring tool
+Josef <joe_da@gmx.net> 7/30/12
+		
+Recently I evaluated docear - a mind-mapping tool for collecting reference data (written in Java). It automatically extracts bookmarks and annotations from PDF files, and more, but it's support for authoring is still not up to the task. I think it would be great if Leo could do some of the tasks docear is doing.
 
-I want to do some technology evaluation, so I will start doing a Leo file reader for mobile devices using:
+Leo is primarily a literate programming editor, but also quite good at organizing bits of information. Dragging a PDF into Leo currently just creates an url to the PDF. This could be expanded to also extract data (bookmarks, notes) from the PDF and to sync this data between Leo and the PDF. This info could be placed in child nodes: bookmarks and notes could even jump directly to the page in the PDF (although each PDF viewer seems to have a different syntax for doing that). This would be a great way to organize data sheets and specifications stemming from external sources.
 
-- jQuery mobile
-- CoffeeScript
+Combining the above with an improved LaTeX support, one would get a very powerful research and authoring tool - in my opinion with a much more convenient interface than docear.
 
-This can be deployed on web or locally. Interesting use cases are browsing Leo notes you composed elsewhere on your tablet, and publishing leo docs on the web (e.g. we could host fully browseable leo source outline on Leo website)
+Perhaps it is too much work to duplicate all the work docear is doing. An alternative may be to sync data somehow between docear and Leo. Docear stores the data in a freeplane mind-map. Has anyone else thoughts about this? Offray Vladimir Luna Cárdenas offray@riseup.net via googlegroups.com
+	
+7/30/12
+		
+I have been using Leo to write my thesis. I didn't know about Docear, but my use was in some sense similar. I have a lot of @url links pointint to the pdfs files and in a subtree I cut and paste the text of the pdf I want to comment and made the comments inside the tree. These pdf were part of my bibliographic entries and I'm now writing a .bib file for these, so I can have in only one Leo tree all my thesis, with all the references to external files and the annotations and bibtex entries for them. For me the key point of Leo in academic writing is the tree view plus the clones and ignore nodes. My thesis can have several layers, the external ones being the actual writing and the deeper ones the references, texts, images, tools that enable me to do that writing. Using clones and @rst-no-head directives I can have the level of granularity of a paragraph, something that is not possible on traditional word processor which are the writing tool of tools like docear. This approach have some glitches:
 
-I will notify the mailing list on the progress; it may be slow since I don't have much contiguous time slots for hobby projects at the moment. If someone wants to hop along, all the better; I'll probably start the project at github once I have something that runs on a desktop browser properly.
+* I still need to do some fine tunning to the LaTeX export for writing the pdf as I want. I imagine that putting sphinx in the tool chain could change that.
 
-===== <offray@riseup.net>
+* I can not get much people of my companions using this advangages, besides of myself, because of the difficult installation process of Leo in Windows/Mac and the not so friendly interface for non-programmers. Other light markup structured text writing programs like Nested[1] are more easily used and understood despite of not having all the advantages and flexibility of Leo.
 
-Me and some friends where just thinking (but still I can not express my thoughts in code) in having something like and Etherpad[1] + Leo real time outliner and document creator. And I thought that would be nice to learn web2py in order to create the app and may be have jstree[2] or dynatree[3][4] as a way to create the heads of the nodes and put them in the web. Every node would be an etherpad-lite document ready for collaboration. At this point I have only links and no development now or in the coming times, but may be this can be helpful for your project.
+So, in resume, may be the better approach is connecting Leo to Docear, so you can have the advantages of both in terms of easy multiplataform installation and friendly interface of the later and programmability, flexibility and deeper organic structure of the former.
 
-[1] http://etherpad.org/
-[2] http://dev.s-cubism.com/plugin_jstree
-[3] https://code.google.com/p/dynatree/
-[4] http://wwwendt.de/tech/dynatree/doc/samples.html
+Offray
 
-By the way I have been using txt2tags again for writing real-time structured docs with my students using etherpads and is really easy. Now I have found a txt2tags multiplataform editor at:
+===== Terry Brown <terry_n_brown@yahoo.com>
 
-http://nestededitor.sourceforge.net/about.html
+> Dragging a PDF into Leo currently just
+> creates an url to the PDF. This could be expanded to also extract data
+> (bookmarks, notes) from the PDF and to sync this data between Leo and the
+> PDF. This info could be placed in child nodes: bookmarks and notes could
+> even jump directly to the page in the PDF (although each PDF viewer seems
+> to have a different syntax for doing that). This would be a great way to
+> organize data sheets and specifications stemming from external sources.
 
-may that project be of some inspiration,
-.. @+node:ekr.20140921072018.17937: *4* New separate-process commands
-run-script-from-bridge
-run-script-externally
-    * Specify which version of python to use.
+I'm not really sure how notes get embedded in PDFs.  As an aside, there is also capability for using Leo to manage bookmarks to web pages, with notes, tags, and snippets.  Look at the mod_http plugin.  It uses a javascript bookmark button in your browser to communicate with Leo.
+
+> Combining the above with an improved LaTeX support, one would get a very
+> powerful research and authoring tool - in my opinion with a much more
+> convenient interface than docear.
+>
+> Perhaps it is too much work to duplicate all the work docear is doing. An
+> alternative may be to sync data somehow between docear and Leo. Docear
+> stores the data in a freeplane mind-map. Has anyone else thoughts about
+> this?
+
+Syncing between the two sounds a little cumbersome to me.  I wonder if the PDF stuff could be integrated with some sort of BibTeX .bib file management?
+
+Do you really need the mindmap UI of docear?  I used to use Freemind which has a very similar interface, but switched to Leo.  I like what http://cmap.ihmc.us/ does, but it only does idea organization, no authoring etc.  To me cmaptools is better at idea organizing than mindmaps.
+
+There is also the backlinks plugin for Leo, which allows arbitrary networks of links instead of just the directed tree, and graphcanvas, which allows graph layout of nodes.  There aren't comparable with the mindmap layouts, but they head in that direction.  Also note Leo's hidden UI flexibility in the context menus on the pane dividers, you can open a new window for the graphcanvas plugin, which gives it much needed screen real estate.
+
+Cheers -Terry
+
+===== Josef <joe_da@gmx.net>
+		
+no, I do not need the mindmap stuff at all. I had a look at short look at cmaptools, and I agree the generalized graph approach seems better than a standard mindmap. But I am quite happy with the tree view in Leo and as you already mentioned, this can be extended with backlinks etc. I have used Leo already to organize reference documents and write documentation (using Latex).
+
+What I do want is links to a particular page of a PDF - links to just a file are not enough when you refer to documents with 100+ pages. Unfortunately this seems to be difficult to achieve in a cross-platform way, particular when trying to support different PDF viewers. Docear is solving this (and other compatibility problems) by developing its own integrated viewer (I do not suggest to do this for Leo).
+
+On second thought, I don't think that extracting the bookmark and annotation info is really important to me - I would keep that info in the PDF, anyhow. I would write inside Leo addional notes, and the output text (in Latex).
+
+Some integration of Bibtex may be a good thing and needs to be thought out. perhaps by using JabRef for this, or by recycling some pyBibliographer code, but this is also low on my priority list.
+
+Offray seems to have a very similar use case as I - although I do not write a thesis, but specifications for scientific instruments. The point about cross-platform installation ease is also well taken, so I will look into some inter-operability here (either with docear or cmaptools). I see Leo mainly as a personal project / information manager: the leo tree is not easily shared with others, while the files Leo points to with @url, @auto,
+@file etc can be shared quite easily. In this I use Leo as *my personal*
+view on the project.
+
+Ville Vainio <vivainio@gmail.com>
+7/30/12
+		
+It seems that e.g. w/ foxit reader, you can open selected page from command line (-n 123). Abstracting this for other pdf readers that support such a thing should be no problem.
+ 
+On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
+     
+    It seems that e.g. w/ foxit reader, you can open selected page from
+    command line (-n 123). Abstracting this for other pdf readers that
+    support such a thing should be no problem.
     
-*** The at_produce plugin now has technology for reporting progress using
-the IdleTime class.
+Yes, I suppose one could translate from a canonical representation inside Leo to whatever the tool needs (using @setting). Ideally, one would even have a choice between opening the new page in a different or in the same PDF viewer instance as the last page, but few viewers support that (Okular does - but I don't know any cross-platform solution).
+.. @+node:ekr.20060227123536: *5* Mulder: Tiddlywiki and related comments about rendering body text
+http://sourceforge.net/forum/message.php?msg_id=3578252
+By: bwmulder
 
-This technology should become part of g.execute_shell_commands. New
-settings will control whether, and how often, to report progress.
+I have been thinking for a while that it ought to be possible to somehow  to unite Leo with wiki features (my thinking is still vague at this point).
 
-*** There will soon be two new functions for running both Leo and non-Leo
-scripts externally.
+If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will find that they already pretty much provide all the formatting features mentioned in the article.
 
-- g.run_python_script_externally would simply create an external file
-  containing the script and then run python on that file.
+MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use a graphical interface for editing in the latest version.
 
-- g.run_leo_script_externally would do something similar using the Leo
-  bridge.
+Maybe Leo can be split up into three components:
 
-Both functions would be controlled by new settings, including (Kent will be
-glad) what version of Python.
+1. A storage component is responsible for storing nodes. Currently, this is just memory, but databases like shelve, Zope or sqllite should also be possible.
 
-*** Revise http://leoeditor.com/leoBridge.html
+2. The control component is responsible for converting from the internal format to external files which can be processed by existing compilers, searching within a document, and the like.
 
-There are several ways to run code externally:
+3. A display component is responsible for interfacing with the user. If can be TK, but it can also be something like the Tiddlywiki interface, which immediately shows the formatting applied to text.
 
-- Using leo.core.leoBridgeTest.
-- (When ready) using g.run_leo_script_externally.
-- Using the full-blown method that Terry discusses in that chapter.
-.. @+node:ekr.20140921072018.17938: *5* Settings for at-produce plugin?
-* Why not just improve g.execute_shell_commands ?
-    - It could report too.
-    - And it could use settings too.
+I don't know much about javascript, so I would have to learn more about this language before doing anything in this direction.
 
-- time-between-notifications: 0 means disable notifications.
-- Decrease time between calls to idle-time handler.
-.. @+node:ekr.20130806072439.21341: *4* Node pipes
+As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
+.. @+node:ekr.20050127110221: *5* Printing & flash
+https://sourceforge.net/forum/message.php?msg_id=2962825
+By: jasonic
+
+**pdf**
+yes I know what you mean, PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
+
+
+As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
+
+Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
+
+**xslt**
+
+Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with. Last time I looked I went from being horrified to very impressed to be being exhausted.
+
+**htmlize**
+
+thanks I'll check into that
+
+"print to web"  should definitely be on Leo's missing PRINT MENU.
+
+**swf [flash]**
+
+This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
+
+Flash has*limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
+
+FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
+
+Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
+
+To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this
+- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
+
+- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
+http://sweb.cz/oliva.david/swf/
+
+These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
+
+But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
+
+**flashpaper2**
+
+btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in. Flashpaper renders a very litteral snapshot, but as I am discovering that turns out to be extremely useful. For example you visit a page and click on some links. Flashpaper saves teh pages exactly as it looks, viisted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
+
+Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
+
+And of course the flash _players_ is free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper - letting your coleagues pan and zoom to their comfort.
+
+I've not quite figured out the place where  Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing. Leo's does not have aprint menu, so it's off the sytem's print-devices map, which Flash paper appearing just  like any phtycial printer.
+
+I imagine is possible to fix that in Leo, but I do not where to begin and woudl not be surprised to learn its a major heachche to write adn debug for multiple operating systems.
+
+An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
+
+[vnc2swf uses Ming-0.2a]
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://www.multidmedia.com/software/capture/index.php
+
+But much is hidden or lost from view. 
+Still very vauable for creating dynamic narrative tutorials [aka screencasting]
+
+AS you know I am very excited about what flash can do for Leo, and vice versa.
+But I am concerned that there is not yet a 100% Leo means which supports people's
+standard print needs and habits.
+
+**Print Menu**
+
+Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
+
+Having a little library of export scripts - well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
+.. @+node:ekr.20101104191857.5820: *5* QWebView makes Leo a presentation tool
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+
+Ville:
+
+Create one QWebView window, zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+.. @+node:ekr.20111019104425.15888: *5* Support an openGL window in Leo
+.. @+node:ekr.20130806072439.21428: *5* Use github code to allow various markup types
+From: tfer <tfetherston@aol.com>
+
+Having played with Jacob Peck's markdown fork, I now get what leo is doing to provide a preview of text using a markup type. It is converting that markup, (rst: built-in, markdown: proposed).  What is being done is to run the text through a xxx2html converter and then using a Qt window widget that renders the generated html.
+
+There have been requests to extend the built in rst functionality to other markup types, (Peck has an experimental one for markdown). Rather than added them piecemeal, **we could incorporate the code github uses** to allow people to use their preferred markup language for their projects readme file. Although a number of the converters are written in ruby, some are python and one is even pearl. It is an extensible scheme. The license for the library is basically, "keep the copyright notice and have at it", so it shouldn't cause any problem.
+
+The code is here: https://github.com/github/markup
+
+The current "see the selected node's body text" in the view-render-pane should work, the only thing lacking is a way to preview an entire file. How about adding an option to preview it in the context menu for a right click on an @file node?
+
+===== From: Jacob Peck <gatesphere@gmail.com>
+
+That was actually my first thought when approaching the markdown implementation.  The major problem here is that the wrapper program, and several of the assorted converters are in ruby.  The only python one is rest2html, which we already have (via docutils).  I don't think adding ruby and perl as dependencies for one small feature of Leo would be wise...  that seems to me to be the very definition of bloatware.
+
+That being said, github-markup supports the following formats, which are supported by python libs::
+
+    markdown (markdown)
+    rst (docutils)
+    textile (textile)
+    org mode (pyorgmode)
+    creole (python-creole)
+    mediawiki (mw2html)
+    asciidoc (asciidoc)
+
+The following do not have a python equivalent (to my knowledge)::
+
+    rdoc (ruby documentation)
+    perlpod (perl documentation)
+    
+I could certainly keep hacking on viewrendered to support the first list, if interest is high.
+
+> The current "see the selected node's body text" in the 
+> view-render-pane should work, the only thing lacking is a way to 
+> preview an entire file.  How about adding an option to preview it in 
+> the context menu for a right click on an @file node?
+I could look into this suggestion too, if someone would point me in the 
+right direction with respect to 2 things (I'm really new to Leo, so I 
+have no idea where these things are in the source):
+
+1. How to add a context menu item for a node
+2. How to get a "full file" without saving it, i.e., fill in the << 
+references >>, @others, and @all directives.
+
+.. @+node:ekr.20150410043749.1: *3* Maybe
+.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
+.. @+node:ekr.20150412053053.1: *4* Finish leoOPML plugin
+.. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
+found 27 broken links.
+
+http://leoeditor.com/images/edit_note.html
+http://leoeditor.com/images/toolbar.html
+http://leoeditor.com/images/delete.html
+http://leoeditor.com/images/editcopy.html
+http://leoeditor.com/images/duedate.html
+http://leoeditor.com/slides/external-files/index.html
+http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html
+http://leoeditor.com/images/newlist.html
+http://leoeditor.com/images/new_item.html
+http://leoeditor.com/images/owners.html
+http://leoeditor.com/images/complete.html
+http://leoeditor.com/images/openlist.html
+http://leoeditor.com/images/editcut.html
+http://leoeditor.com/images/print.html
+http://leoeditor.com/slides/installation/index.html
+http://leoeditor.com/images/refresh.html
+http://leoeditor.com/slides/using-leos-minibuffer/index.html
+http://leoeditor.com/images/editpaste.html
+http://leoeditor.com/slides/installation/_static/underscore.html
+http://leoeditor.com/images/find.html
+http://leoeditor.com/front.html
+http://leoeditor.com/slides/scripting-leo/index.html
+http://leoeditor.com/images/printprev.html
+http://leoeditor.com/slides/leo-basics-step-by-step/index.html
+http://leoeditor.com/slides/clones-and-views/index.html
+http://leoeditor.com/images/mail_item.html
+http://leoeditor.com/images/page_setup.html
+.. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
+@language rest # @language python below
+
+This post discusses discusses problems with the @g.command decorator. Later sections discuss solutions. These later sections are ENB (Engineering Note Book) discussions, which can safely be ignored by all except the usual suspects...
+
+Promises to do something "today" don't always get kept because a seemingly simple task like adding an insert-file-name command becomes unbearable. Creating a better way to define commands has become urgent.
+
+===== Background
+
+The @g.command decorator has its uses, especially in plugins. It allows any code to define a new Leo command without having any access to Leo's core code. For this reason alone, the @g.command decorator is here to stay.
+
+However, using @g.command to add Leo commands is often *way* too clumsy. There are several problems using @g.command. To see these problems clearly, let's look at a typical example, from leoVim.py::
+
+@language python
+
+    @g.command(':gt')
+    def vim_gt(event):
+        '''cycle-focus'''
+        c = event.get('c')
+        if c and c.vimCommands:
+            c.vimCommands.cycle_focus()
+            
+@language rest
+
+This code sucks, for at least the following reasons:
+
+1. It requires an outer-level function-name (vim_gt) that has no value except to the @g.command decorator itself. This is useless verbiage and just clutters the namespace. Worse, although the decorator doesn't require distinct names, disabling a pylint check for duplicate names would be way too dangerous.
+
+2. It repeats the template code for each different command. This is pure cruft. Worse, the tests for c and c.vimCommands would not be necessary in a subcommander.
+
+3. It is usually bad design to define the command at the top level. Commands should be defined in the classes that contain their code!
+
+For all these reasons, vim-mode commands clearly should *not* be defined using the @g.command decorator. The question is, how to define them cleanly?
+
+Everything from here on is an ENB entry. Feel free to ignore, unless you are Terry ;-)
+
+===== Motivation
+
+It would be possible to define vc commands in vc.finishCreate as is done by sub-commanders in leoEditCommands.py, but as I was thinking about this problem I discovered how to simplify the definition of almost *all* of Leo's commands. This is too good to ignore, for the following reasons:
+
+1. The simplifications to be described reduce order constraints during startup. Any such reduction is, all by itself, extremely valuable, because such order constraints are the main complicating factor in the startup code.
+
+2. As always, simplifications to complex code (and Leo's startup code is complex in hard-to-see ways) promise further simplifications. No further simplifications are apparent *now*, but it would be bad practice not to simplify the code when I can.
+
+===== Details
+
+At present, there are several ways (not sure how to count them ;-) to define large numbers of commands. By defining a command I mean associating a string (the command's name) with a method of some class.
+
+Although details vary, the basic idea in each case is to define a **commands dict**, a Python dict whose keys are command names (Python strings) and whose values are methods.
+
+In particular, each subcommander in leoEditCommands.py defines a getPublicCommands method that returns a commands dict.
+
+ECM.finishCreateEditCommanders then merges all the commands dicts, like this::
+
+@language python
+
+    def finishCreateEditCommanders (self):
+        '''Finish creating edit classes in the commander.
+        Return the commands dictionary for all the classes.'''
+        c,d = self.c,{}
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.finishCreate()
+            theInstance.init()
+            d2 = theInstance.getPublicCommands()
+            if d2:
+                d.update(d2)
+        return d
+        
+@language rest
+
+But none of this should be necessary. Or rather, it should happen in a different place, and at no *particular* time.
+
+===== A much better way to define commands.
+
+The basic problem with the code above is that it must happen at the exact instant that various finishCreate methods get called. Yes, the present code works, but it depends *far* too much on code order during startup.
+
+We can remove *all* these unnecessary ordering constraints as follows:
+
+1.  Define init phase 0: create ivars.
+
+This phase is trivial, for our present purposes. Commands.__init__ will just define c.commandsDict and its inverse, as *empty* Python dictionaries.
+
+At present, the inverse of c.commandsDict is c.k.inverseCommandsDict. How stupid is that? It must be a c (Commands) ivar, not a c.k (KeyHandlerClass) ivar! Doh. Using a c.k ivar means that c.k must be inited *before* c.k.inverseCommandsDict is ever used. This is a completely unnecessary constraint.
+
+In short, the inverseCommandsDict must be a Commands ivar, not a KeyHandlerClass ivar. This will ensure that c.inverseCommandsDict will exist before any subcommander's *ctor* gets called.
+
+2. Define c.registerCommands (plural). This will call a new method, c.registerCommand, for each item in a commands dict.
+
+Important: c.k.registerCommand must remain for compatibility, but it will probably just call c.registerCommand.
+
+With just these simple changes, *any* class can call c.registerCommands at
+*any* time. In particular, any class can call c.registerCommands in its
+ctor, or its ctor's helpers. There is no need to wait until finishCreate
+gets called!
+
+Defining command names in the ctor logic may leave some finishCreate
+methods empty. If so, we can rejoice--another ordering constraint has
+disappeared forever!
+
+===== Testing
+
+I expect the changeover to the new scheme to be straightforward. It may
+happen "today" (TM).
+
+This new scheme should be safe, but just to make sure, I'll probably enable
+the new code with g.NEW_COMMANDS.
+
+It's not clear how well the present unit tests actually tests the
+association between commands and their names. A separate unit test may be
+advisable.
+.. @+node:ekr.20141105050314.24: *5* What I did
+In the end, I have opted for the bare minimum of changes. Given the
+complexity of key handling, I think this is the only sane way. Here is a
+slightly revised checkin log for rev 09ab839...:
+
+QQQ
+
+Cleaned up how command names get put into c.commandsDict and
+c.inverseCommandsDict, but only a little bit ;-)
+
+All tests pass, but use a bit more caution.
+
+- Removed @g.command nodes from leoVim.py.
+  vc.defineCommandNames now creates command names.
+ - Called vc.defineCommandNames from the new c.createCommandNames, called from c.finishCreate.
+- Changed k.inverseCommandsDict to c.inverseCommandsDict.
+- Renamed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
+QQQ
+
+All this adds up to *slightly* better code.
+
+In particular, the various o.defineCommandNames methods can be called any
+time after o has been created. These methods depend on nothing else, so
+they can be called "early" in c.finishCreate, by c.createCommandNames. This
+is a real plus: there are now a few less order dependencies in the startup
+code. Replacing rst.finishCreate with rst.createCommandNames is gratifying.
+
+This is important! The various finishCreate methods must be called in
+*exactly* the right order so that various widgets are created in one
+finishCreate method before they are needed in another finishCreate method.
+So anything that either eliminates finishCreate methods entirely or reduces
+their complexity is a real improvement in Leo's startup code.
+
+Otoh, I left the code that creates c.commandsDict and c.inverseCommandsDict
+*strictly* alone, except that:
+
+1. inverseCommandsDict is now a c ivar instead of a k ivar.
+
+2. The new c.createCommandNames method encapsulates all aspects of the
+   making of the command name dicts. This should make this difficult code
+   slightly easier to understand.
+
+On balance, this was a long day of coding for minor improvements to Leo's
+startup logic. But these are steps in the right direction.
+
+In any case, the VimCommands class now defines command names in
+vc.defineCommandNames. There no need for vc.finishCreate and no need for
+all those redundant @g.command code hunks.
+
+Unless there are bugs reported, this ends this project for the foreseeable
+future.
+.. @+node:ekr.20150120155724.4: *4* improve python importer
+- Handle properties.
+- Show base classes in headlines.
+- Put @language and @tabwidth directives at end of body.
+- Translate::
+
+    #-----------------------------------------------------------------------------
+    # Imports
+    #-----------------------------------------------------------------------------
+
+to organizer node whose headline is Imports.
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
+- Detect changes in root node, if possible.
+- Detect changes in headlines, if possible.
+.. @+node:ekr.20031218072017.795: *4* Metatags
+@sectionname or @savedate are expanded to the appropriate text when saved.
+
+-marshall-  
+
+There are quite a few of these now.  It would be good to generalize:
+- Register @node type.
+.. @+node:ekr.20141108064630.19: *4* Resolve clone wars based on modification dates
+From: Joon Ro <joonpyro@gmail.com>
+
+I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
+.. @+node:ekr.20111018104244.15933: *4* script to create documentation for commands/plugins
+Leo should have a create-plugins-doc script that creates docs for plugins based on docstrings.
+
+Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
+.. @+node:ekr.20141210123805.9: *4* Support rope
+.. @+node:ekr.20101004092958.5914: *4* Write treepad scanner (contains code!)
+treepad.py is from the treepad website
+.. @+node:ekr.20101004092958.5939: *5* treepad.py
+@first #! /usr/local/bin/python
+
+# treepad.py
+
+@others
+
+if __name__ == '__main__':
+    Main().Run()
+
+@language python
+@tabwidth -4
+
+.. @+node:ekr.20101004092958.5940: *6* treepad declarations
+import sys, os, re, string
+
+# constants
+VERSION = "<Treepad version 2.7>"
+
+# regexes
+END_RE = re.compile(r'^<end node> ([^ ]+)$')
+.. @+node:ekr.20101004092958.5941: *6* class Node
+class Node:
+    @others
+.. @+node:ekr.20101004092958.5942: *7* __init__ (Node/treepad)
+def __init__(self):
+    self.title    = ""
+    self.level    = 0
+    self.article  = []
+    self.children = []
+    self.parent   = None
+    self.end      = ""
+.. @+node:ekr.20101004092958.5943: *7* __str__
+def __str__(self):
+    return "%s/%d" % (self.title, self.level)
+.. @+node:ekr.20101004092958.5944: *7* addchild
+def addchild(self, node):
+    assert self.level == node.level-1 and node.parent is None
+    node.parent = self
+    self.children.append( node )
+.. @+node:ekr.20101004092958.5945: *7* findparent
+def findparent(self, node):
+    if self.level == (node.level-1): return self
+    return self.parent.findparent(node)
+.. @+node:ekr.20101004092958.5946: *7* writenode
+def writenode(self, fp):
+    fp.write("dt=Text\n")
+    fp.write("<node>\n")
+    fp.write("%s\n" % self.title)
+    fp.write("%s\n" % self.level)
+    for line in self.article:
+        fp.write("%s\n" % line)
+    fp.write("<end node> %s\n" % self.end)
+.. @+node:ekr.20101004092958.5947: *7* writetree
+def writetree(self, fp):
+    self.writenode(fp)
+    for node in self.children:
+        node.writetree(fp)
+
+.. @+node:ekr.20101004092958.5948: *6* class NodeReader
+class NodeReader:
+    @others
+.. @+node:ekr.20101004092958.5949: *7* __init__ (NodeReader)
+def __init__(self, fname, fp):
+    self.fname    = fname
+    self.fp       = fp
+.. @+node:ekr.20101004092958.5950: *7* expect
+def expect(self, text, line=None):
+    if line is None:
+        line = self.fp.readline().strip()
+    assert line == text, "expected " + line + " == " + text
+.. @+node:ekr.20101004092958.5951: *7* readstart
+def readstart(self):
+    self.expect(VERSION)
+.. @+node:ekr.20101004092958.5952: *7* readnode
+def readnode(self):
+    line = self.fp.readline()
+    if line is None:
+        return None
+    line = line.strip()
+    if len(line) < 1:
+        return None
+    self.expect("dt=Text", line)
+    self.expect("<node>")
+    node = Node()
+    node.title = self.fp.readline().strip()
+    node.level = int(self.fp.readline().strip())
+    while 1:
+        line = self.fp.readline()
+        m = re.match(END_RE, line)
+        if m:
+            node.end = m.group(1).strip()
+            break
+        node.article.append( line.strip() )
+    return node
+
+.. @+node:ekr.20101004092958.5953: *6* class TreeReader
+class TreeReader:
+    @others
+.. @+node:ekr.20101004092958.5954: *7* __init__(TreeReader)
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'r')
+    self.nodereader = NodeReader(fname, fp)
+    self.root = None
+    self.prev = None
+.. @+node:ekr.20101004092958.5955: *7* add
+def add(self, node):
+    if self.prev is None:
+        assert node.level == 0
+        self.root = node
+    else:
+        assert node.level > 0
+        parent = self.prev.findparent(node)
+        parent.addchild( node )
+    self.prev = node
+.. @+node:ekr.20101004092958.5956: *7* read
+def read(self):
+    self.nodereader.readstart()
+    prev = None
+    while 1:
+        node = self.nodereader.readnode()
+        if node is None: break
+        self.add(node)
+
+.. @+node:ekr.20101004092958.5957: *6* class TreeWriter
+class TreeWriter:
+    @others
+.. @+node:ekr.20101004092958.5958: *7* __init__ (TreeWriter)
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'w')
+    self.fname = fname
+    self.fp    = fp
+.. @+node:ekr.20101004092958.5959: *7* write
+def write(self, root):
+    self.fp.write("%s\n" % VERSION)
+    root.writetree(self.fp)
+
+.. @+node:ekr.20101004092958.5960: *6* class Main
+class Main:
+    @others
+.. @+node:ekr.20101004092958.5961: *7* __init__ (Main)
+def __init__(self):
+    self.infile  = sys.argv[1]
+    self.outfile = sys.argv[2]
+    self.reader  = TreeReader(self.infile)
+    self.writer  = TreeWriter(self.outfile)
+.. @+node:ekr.20101004092958.5962: *7* Run
+
+def Run(self):
+    self.reader.read()
+    self.writer.write(self.reader.root)
+
+.. @+node:ekr.20150412052821.1: *3* Study
+.. @+node:ekr.20111017132257.15882: *4* Study xml_edit plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
+
+Provides commands (Alt-x) for importing and exporting XML from a Leo outline. These commands are to XML what ``@auto-rst`` is to reStructuredText.
+
+``xml2leo``
+    Imports an .xml file into the node following the currently selected node.
+    
+``leo2xml``
+    Exports the current subtree to an .xml file the user selects.
+
+``xml_validate``
+    If executed on the top node in the Leo xml tree, reports any errors in XML generation or DTD validation, based on the DTD referenced from the XML itself.  If there's no DTD it reports that as an error.
+
+``leo2xml2leo``
+    Takes the selected Leo subtree representing an XML file,
+converts it to XML internally, and then creates a new Leo subtree from
+that XML after the original, with 'NEW ' at the start of the top node's
+name.  This updates all the headlines, so that the convenience only
+previews (see below) are updated.  The original can be deleted if the
+new subtree seems correct.
+
+Conventions
+===========
+
+This is a valid XML file::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE dml SYSTEM "dml.dtd">
+    <?xml-stylesheet href="common.css"?>
+    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
+      <block type='example'>Here's <other:b>some</other:b> text</block>
+    </dml>
+    <!-- This is the last line -->
+
+Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE), the trailing comment (after the closing tag), and the pernicious mixed content (three separate pieces of text in the ``<block/>`` element). These commands attempt to deal with all of this.
+
+ - A top level Leo node is created to hold these top level parts.  Its
+   headline is the basename of the file.
+ - The xml declaration is placed in the body of
+   this top level Leo node
+ - Below that, in the same body text, appears a simple namespace map::
+
+     http://example.com/
+     other: http://other.com/
+     ...
+
+   i.e. the default namespace first, and then any prefixed name spaces.
+ - Below that, in the same body text, appears the ``DOCTYPE`` declaration
+ - Children are added to this top level Leo node to represent the
+   top level elements in the xml file.  Headlines have the following
+   meanings:
+
+       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
+         space, name of processing instruction target, start of processing
+         instruction content.  Only the questionmark, which indicates
+         the processing instruction, and the first word, which indicates
+         the processing instruction target, matter.  The remainder is just
+         a convenience preview of the processing instruction content, which
+         is the Leo node's body text.
+
+       - ``# This is *really* imp`` - i.e. hash,
+         space, start of comment content.  Only the hash, which indicates
+         the comment, matters.  The remainder is just
+         a convenience preview of the comment content, which
+         is the Leo node's body text.
+
+       - ``tagname name_attribute start of element text`` - i.e. the name
+         of an element followed by a convenience preview of the element's
+         text content.  If the element has a ``name`` attribute that's
+         included at the start of the text preview.  Only the first word
+         matters, it's the name of the element.
+
+ - Element's text is placed in the Leo node's body.  If the element has
+   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
+   in the above example), that occurs in the Leo node's body separated
+   by the `tailing text sentinel`::
+
+       @________________________________TAIL_TEXT_______________________________
+
+ - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
+   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
+   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
+   attributes it should present to the user for editing. The
+   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
+   activated (through its submenu on the Plugins menu). The attribute
+   edit panel initially appears as a tab in the log pane, although it
+   can be moved around by right clicking on the pane dividers if the
+   ``viewrendered`` and ``free_layout`` plugins are enabled. 
+.. @+node:ekr.20111027143736.16557: *4* Study leo_screen
+Ville mentioned leoremote for driving Leo from the command line. There's also leoscreen, for driving the command line from Leo, providing you use screen, which is probably unix/cygwin only.
+.. @+node:ekr.20150331053736.1: ** Waiting for answers
+- Waiting for answer re: ubuntu splashscreen
+    http://qt-project.org/forums/viewthread/30837/
+    createSplashScreen
+
+- Waiting for answer to solarized question:
+    http://qt-project.org/forums/viewthread/30838/
+    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
+.. @+node:ekr.20120516140545.9987: ** Wishlist
+@language rest
+@wrap
+.. @+node:ekr.20140704052551.17951: *3* Code
+.. @+node:ekr.20130806072439.21341: *4* * Node pipes
 From: Kent Tenney <ktenney@gmail.com>
 
 The editor envy resulting from the Light Table demo has me revisiting a feature that's been percolating.
@@ -3308,18 +3366,13 @@ different colors from the "main" edges.
 
 Yes.  This is a straightforward generalization of your first question.
 
-> The edges would define handlers for the content of the sources, format the
-> results and send to the sinks.
+> The edges would define handlers for the content of the sources, format the results and send to the sinks.
 
 A new idea!  This could be revolutionary!
 
-> So, as I write code in one node, I can see a node displaying stdout, another
-> watching a log file, another showing docstrings, another showing test
-> results ...
+> So, as I write code in one node, I can see a node displaying stdout, another watching a log file, another showing docstrings, another showing test results ...
 
-To paraphrase: nodes and links are not simply ways to represent
-structure.  They may have independent identity and function.  A
-brilliant idea.
+To paraphrase: nodes and links are not simply ways to represent structure.  They may have independent identity and function.  A brilliant idea.
 
 Edward
 .. @+node:ekr.20130806072439.21344: *5* Re: Node pipes
@@ -3334,24 +3387,15 @@ On Wed, Apr 18, 2012 at 11:47 AM, Kent Tenney <ktenney@gmail.com> wrote:
 > features are appropriate to add to the 'standard library' IE: put the
 > effort into making the capability an API call instead of a bunch of code.
 
-In fact, the inadequacy of my remark that assigning to v.b was all
-that was needed lead me to consider the broadcaster/listener
-framework.
+In fact, the inadequacy of my remark that assigning to v.b was all that was needed lead me to consider the broadcaster/listener framework.
 
-The idea is that the v.b setter property would broadcast the fact that
-v.b has changed to all the listeners connected to v.  Presumably,
-those listeners will be UI elements that will update their text from
-v.b and recolor as appropriate.
+The idea is that the v.b setter property would broadcast the fact that v.b has changed to all the listeners connected to v.  Presumably, those listeners will be UI elements that will update their text from v.b and recolor as appropriate.
 
-We might generalize this concept to update outline structure in those
-UI elements that show outlines.
+We might generalize this concept to update outline structure in those UI elements that show outlines.
 
-> My impression of the Light Table demo is that the right side of the scree=
-n was reporting interesting information about what was being typed on the l=
-eft side. Seems like it could be called "simultaneous feedback"
+> My impression of the Light Table demo is that the right side of the screen was reporting interesting information about what was being typed on the left side. Seems like it could be called "simultaneous feedback"
 
-An excellent generalization.  We can use this without knowing exactly
-what the feedback is, or where it comes from.
+An excellent generalization.  We can use this without knowing exactly what the feedback is, or where it comes from.
 
 > I'm unable to keep up, unaware of the capability of free_layout,
 > tabula, rendering, but I expect most if not all of the tools are availabl=
@@ -3359,32 +3403,8 @@ e.
 
 Keeping up with ourselves these days seems like a full-time job.
 
-I believe a broadcaster/listener event framework is an essential
-ingredient.  It shouldn't be too hard to do, it will simplify existing
-code, and it will be an enabling technology that will stimulate
-further development.
-.. @+node:ekr.20060227123536: *4* Tiddlywiki and related comments about rendering body text (Mulder)
-http://sourceforge.net/forum/message.php?msg_id=3578252
-By: bwmulder
-
-I have been thinking for a while that it ought to be possible to somehow  to unite Leo with wiki features (my thinking is still vague at this point).
-
-If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will find that they already pretty much provide all the formatting features mentioned in the article.
-
-MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use a graphical interface for editing in the latest version.
-
-Maybe Leo can be split up into three components:
-
-1. A storage component is responsible for storing nodes. Currently, this is just memory, but databases like shelve, Zope or sqllite should also be possible.
-
-2. The control component is responsible for converting from the internal format to external files which can be processed by existing compilers, searching within a document, and the like.
-
-3. A display component is responsible for interfacing with the user. If can be TK, but it can also be something like the Tiddlywiki interface, which immediately shows the formatting applied to text.
-
-I don't know much about javascript, so I would have to learn more about this language before doing anything in this direction.
-
-As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20130807203905.16681: *4* travis-ci "continuous integration" for Leo
+I believe a broadcaster/listener event framework is an essential ingredient.  It shouldn't be too hard to do, it will simplify existing code, and it will be an enabling technology that will stimulate further development.
+.. @+node:ekr.20130807203905.16681: *4* * travis-ci "continuous integration" for Leo
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 Someone may be interested in investigating a free CI system for Leo:
@@ -3392,7 +3412,6 @@ Someone may be interested in investigating a free CI system for Leo:
 https://travis-ci.org/
 
 This could e.g. create debian packages for daily builds, run unit tests, check stuff with lint, try compiling with python3 so we (*cough*) wouldn't have accidental print statements in the source...
-.. @+node:ekr.20140704052551.17951: *3* Code
 .. @+node:ekr.20140115052524.16699: *4* Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
@@ -3479,56 +3498,6 @@ That is, make sure it works when called from within itself.
 http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 
 http://www.voom.net/pyqt-qtest-example
-.. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
-http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
-
-If I 'Open' a file, I get the following node header:
-
-@edit E:/Documents/index.html
-
-If I 'Import' the same file, I get the following:
-
-@file E:\Documents\index.html
-
-Just wondering why the difference between
-
-E:/ and E:\
-
-This is probably trivial and of no consequence, but I thought it curious.
-
-Create unit tests illustrating path ops
-.. @+node:ekr.20130503061707.10515: *5* @@test path computations
-@language python
-
-fj = g.os_path_finalize_join
-f  = g.os_path_finalize
-eu = g.os_path_expanduser
-
-if g.app.isExternalUnitTest:
-    loadDir = fj(g.app.loadDir,'..','test')
-else:
-    loadDir = g.app.loadDir
-
-table = (
-    (fj,'@@file fj-test-1',fj(loadDir,'rel-path')),
-)
-
-for func,h,expected in table:
-    p = g.findNodeAnywhere(c,h)
-    assert p,'not found: "%s"' % (h)
-    assert p.h.startswith('@@')
-    p.h = p.h[1:] # Remove the first @ sign.
-    
-    try:
-        d = c.scanAllDirectives(p)
-        result = d.get('path')
-        assert result == expected,'expected "%s", got "%s"' % (
-            expected,result)
-    finally:
-        p.h = '@' + p.h
-        c.redraw()
-.. @+node:ekr.20130503061707.10516: *6* @path rel-path
-.. @+node:ekr.20130503061707.10517: *7* @@file fj-test-1
 .. @+node:ekr.20130806072439.21298: *4* Treat leo tree as a flat memory structure
 Ville
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CLiiydTt8rUCFaY6MQodYAsAAA&path=%2F103097156557482112329%2Fposts%2FVp5ansTdLwq&dt=1362942818945&ub=63
@@ -3542,50 +3511,6 @@ Some ideas could be:
 - Keeping the outline structure in memory block is quite easy, since there is not a lot of data. You could have just a list of [parent, child] id's or whatever
 .. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20130806072439.21428: *4* Use github code to allow various markup types
-From: tfer <tfetherston@aol.com>
-
-Having played with Jacob Peck's markdown fork, I now get what leo is doing to provide a preview of text using a markup type. It is converting that markup, (rst: built-in, markdown: proposed).  What is being done is to run the text through a xxx2html converter and then using a Qt window widget that renders the generated html.
-
-There have been requests to extend the built in rst functionality to other markup types, (Peck has an experimental one for markdown). Rather than added them piecemeal, **we could incorporate the code github uses** to allow people to use their preferred markup language for their projects readme file. Although a number of the converters are written in ruby, some are python and one is even pearl. It is an extensible scheme. The license for the library is basically, "keep the copyright notice and have at it", so it shouldn't cause any problem.
-
-The code is here: https://github.com/github/markup
-
-The current "see the selected node's body text" in the view-render-pane should work, the only thing lacking is a way to preview an entire file. How about adding an option to preview it in the context menu for a right click on an @file node?
-
-===== From: Jacob Peck <gatesphere@gmail.com>
-
-That was actually my first thought when approaching the markdown implementation.  The major problem here is that the wrapper program, and several of the assorted converters are in ruby.  The only python one is rest2html, which we already have (via docutils).  I don't think adding ruby and perl as dependencies for one small feature of Leo would be wise...  that seems to me to be the very definition of bloatware.
-
-That being said, github-markup supports the following formats, which are supported by python libs::
-
-    markdown (markdown)
-    rst (docutils)
-    textile (textile)
-    org mode (pyorgmode)
-    creole (python-creole)
-    mediawiki (mw2html)
-    asciidoc (asciidoc)
-
-The following do not have a python equivalent (to my knowledge)::
-
-    rdoc (ruby documentation)
-    perlpod (perl documentation)
-    
-I could certainly keep hacking on viewrendered to support the first list, if interest is high.
-
-> The current "see the selected node's body text" in the 
-> view-render-pane should work, the only thing lacking is a way to 
-> preview an entire file.  How about adding an option to preview it in 
-> the context menu for a right click on an @file node?
-I could look into this suggestion too, if someone would point me in the 
-right direction with respect to 2 things (I'm really new to Leo, so I 
-have no idea where these things are in the source):
-
-1. How to add a context menu item for a node
-2. How to get a "full file" without saving it, i.e., fill in the << 
-references >>, @others, and @all directives.
-
 .. @+node:ekr.20101119030344.5838: *4* Won't do: turn all commands into @g.command nodes
 @language python
 @color
@@ -3678,8 +3603,6 @@ def adjust(f,i,p):
     pass
 .. @+node:ekr.20140704052551.17957: *3* Coloring
 .. @+node:ekr.20060824110846: *4* Add colorizing for cweb, rapidq
-.. @+node:ekr.20110605121601.18839: *4* Create color picker
-createColorPicker
 .. @+node:ekr.20110614123640.6587: *4* Add headline/color functions to Leo's core
 http://groups.google.com/group/leo-editor/browse_thread/thread/7e279fe3dedf42be/f00fde4df5b39ded
 
@@ -3921,6 +3844,17 @@ yview: 0
 - Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20150312080344.4: *4* Improve speed of spelling
 Workaround: Spell-check just desired clone (at bottom of file).
+.. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+Zope3, with it's component based architecture, has machinery which hooks components together .. Interfaces, Adapters and ZCML, the configuration language.
+
+It sounds like the autocompleter code is able to build indexes of classes and methods. It would be cool if that capability could be extensible, allowing building indexes of the couplings between components.
+
+I think this might look like some kind of automatic hyperlinking, providing access to related code, as defined for that application.
+
+I really don't know if this makes sense, but I see you moving in the direction of making Leo capable of doing some _explaining_ of the code being written.
 .. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes??
 http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
 
@@ -3956,6 +3890,43 @@ Proposal: modify the code for @url so that if you type for example just "@url" (
 This would be more convenient than manually writing @url file://a/long/path/to/the/file. @read-only nodes already allow this, it would perhaps be nice if all these types of plugins (@folder might be another one for example) and directives (@file etc) had the same behavior (and this should probably be specified in some guidelines for writing new plugins -see e.g. the jedit plugin guidelines).
 
 Davide
+.. @+node:ekr.20140921072018.17937: *4* separate-process commands
+run-script-from-bridge
+run-script-externally
+    * Specify which version of python to use.
+    
+*** The at_produce plugin now has technology for reporting progress using
+the IdleTime class.
+
+This technology should become part of g.execute_shell_commands. New
+settings will control whether, and how often, to report progress.
+
+*** There will soon be two new functions for running both Leo and non-Leo
+scripts externally.
+
+- g.run_python_script_externally would simply create an external file
+  containing the script and then run python on that file.
+
+- g.run_leo_script_externally would do something similar using the Leo
+  bridge.
+
+Both functions would be controlled by new settings, including (Kent will be
+glad) what version of Python.
+
+*** Revise http://leoeditor.com/leoBridge.html
+
+There are several ways to run code externally:
+
+- Using leo.core.leoBridgeTest.
+- (When ready) using g.run_leo_script_externally.
+- Using the full-blown method that Terry discusses in that chapter.
+.. @+node:ekr.20140921072018.17938: *5* Settings for at-produce plugin?
+* Why not just improve g.execute_shell_commands ?
+    - It could report too.
+    - And it could use settings too.
+
+- time-between-notifications: 0 means disable notifications.
+- Decrease time between calls to idle-time handler.
 .. @+node:ekr.20150215102218.4: *4* Unlikely: @ns-rst/vo/otl commands
 @language rest
 
@@ -4419,21 +4390,6 @@ Now that I've described it, I can't see how it would be done... The ${macro} pla
 
 That's also why the code from Jacob is not what I need (but I'm already thinking of other uses for it :) ): it will create a text when the button is pressed, but the generated nodes will be just static text.
 .. @+node:ekr.20140824043305.18292: *3* Docs
-.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell (statistics)
-https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
-
-In a Nutshell, The Leo Editor...
-
-- has had 15,508 commits made by 47 contributors
-  representing 1,064,650 lines of code
-- is mostly written in Python
-  with an average number of source code comments
-- has a well established, mature codebase
-  maintained by a large development team
-  with decreasing Y-O-Y commits
-- took an estimated 292 years of effort (COCOMO model)
-  starting with its first commit in February, 2002
-  ending with its most recent commit 2 days ago 
 .. @+node:ekr.20111018104244.15924: *4* Revise Leo's wiki
 .. @+node:ekr.20120515193246.10087: *3* DOM
 .. @+node:ekr.20071001052501: *4* Versioning for nodes
@@ -4441,6 +4397,8 @@ One feature I have not seen in SCS system is something which might be called "hi
 .. @+node:ekr.20080802070659.11: *4* Make node attributes visible, and supported by Leo's core
 .. @+node:ekr.20111019104425.15896: *4* Enhansed node attributes: ctime, atime, mtime (Kent)
 .. @+node:ekr.20090131200406.15: *3* File & file format
+.. @+node:ekr.20110613110911.16421: *4* * Read/write files in json format
+Leo-to-json script for IPython?
 .. @+node:ekr.20061002093442: *4* Add opml support to new, open, save commands
 .. @+node:ekr.20111019104425.15895: *4* LeoFS (Kent)
 - create a Leo implementation of pyfilesystem
@@ -4987,8 +4945,6 @@ Does Leo use UAs to store pickles?
 I'm sure pickling capability is great, but I'm not convinced it should be the _default._
 
 No big deal.
-.. @+node:ekr.20110613110911.16421: *4* Read/write files in json format
-Leo-to-json script for IPython?
 .. @+node:ekr.20130806072439.21349: *4* Should @nosent put headlines as comments?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
@@ -5110,6 +5066,10 @@ Leo's uuid-based gnxs can contain neither user ids nor timestamps.
 
 We must ensure we stick with whatever new-style gnx format we choose initially: we don't want to burden Leo with distinguishing between several different forms of uuid-based gnxs.
 .. @+node:ekr.20120515193246.10085: *3* Gui
+.. @+node:ekr.20120520055508.11873: *4* * Add split-window commands
+These would be an alternative to the Easter Egg interface.
+.. @+node:ekr.20110605121601.18839: *4* * Create color picker
+createColorPicker
 .. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
 Terry will do this, or help with it.
 .. @+node:ekr.20110929074744.15499: *4* Allow more panes to be part of the free_layout "action" buttons
@@ -5151,6 +5111,32 @@ The user might want multiple rendering panes, especially if one or more are lock
 I haven't forgotten the autocompleter docs.  I'll get to them next. It looks like autocompletion would be the way to generalize the not- very-effect commands that switch focus from one ui element to another.  A related benefit is one generalized command might be more convenient to use than the present flavors of (buggy) cycle-focus commands.
 
 In short, contemplating generalized windows leads us to generalized select/delete/show/hide commands, based on autocompletion, that work on various ui elements.
+.. @+node:ekr.20130806072439.21323: *4* Leo reader as a web app (Done)
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I want to do some technology evaluation, so I will start doing a Leo file reader for mobile devices using:
+
+- jQuery mobile
+- CoffeeScript
+
+This can be deployed on web or locally. Interesting use cases are browsing Leo notes you composed elsewhere on your tablet, and publishing leo docs on the web (e.g. we could host fully browseable leo source outline on Leo website)
+
+I will notify the mailing list on the progress; it may be slow since I don't have much contiguous time slots for hobby projects at the moment. If someone wants to hop along, all the better; I'll probably start the project at github once I have something that runs on a desktop browser properly.
+
+===== <offray@riseup.net>
+
+Me and some friends where just thinking (but still I can not express my thoughts in code) in having something like and Etherpad[1] + Leo real time outliner and document creator. And I thought that would be nice to learn web2py in order to create the app and may be have jstree[2] or dynatree[3][4] as a way to create the heads of the nodes and put them in the web. Every node would be an etherpad-lite document ready for collaboration. At this point I have only links and no development now or in the coming times, but may be this can be helpful for your project.
+
+[1] http://etherpad.org/
+[2] http://dev.s-cubism.com/plugin_jstree
+[3] https://code.google.com/p/dynatree/
+[4] http://wwwendt.de/tech/dynatree/doc/samples.html
+
+By the way I have been using txt2tags again for writing real-time structured docs with my students using etherpads and is really easy. Now I have found a txt2tags multiplataform editor at:
+
+http://nestededitor.sourceforge.net/about.html
+
+may that project be of some inspiration,
 .. @+node:ekr.20130806072439.21380: *4* QML - new window / gui / coding for Leo?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
