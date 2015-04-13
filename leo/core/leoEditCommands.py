@@ -903,11 +903,11 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):
-
-        '''dabbrev-completion
+        '''
+        dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
-        This corresponds to C-M-/ in Emacs.'''
-
+        This corresponds to C-M-/ in Emacs.
+        '''
         c,p,u = self.c,self.c.p,self.c.p.v.u
         w = self.editWidget(event)
         if not w: return
@@ -932,12 +932,12 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
     #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/
     def dynamicExpansion (self,event=None):
+        '''
+        dabbrev-expands (M-/ in Emacs).
 
-        '''dabbrev-expands (M-/ in Emacs).
         Inserts the longest common prefix of the word at the cursor. Displays
         all possible completions if the prefix is the same as the word.
         '''
-
         c = self.c
         p = c.p
         w = self.editWidget(event)
@@ -952,7 +952,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         if word in aList and len(aList) > 1: aList.remove(word)
         prefix = reduce(g.longestCommonPrefix,aList)
         prefix = prefix.strip()
-        # g.trace(word,prefix,aList)
+        g.trace(word,prefix,aList)
         if False and prefix and prefix != word and len(aList) == 1:
             s = w.getAllText()
             ypos = w.getYScrollPosition()
