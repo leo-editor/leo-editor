@@ -495,7 +495,7 @@ def jump_to_error_internal(c):
                 for p in c.all_unique_positions():
                     if p.h.startswith('@') and p.h.endswith(filename):
                         c.selectPosition(p)
-                        c.goToLineNumber(c).go(n=int(match.group(2)))
+                        c.GoToLineNumber(c).go(n=int(match.group(2)))
                         c.bodyWantsFocusNow()
                         break
                 break
