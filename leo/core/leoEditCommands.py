@@ -724,7 +724,10 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 ins = self.save_ins
                 # pylint: disable=unpacking-non-sequence
                 sel1,sel2 = self.save_sel
-                w.setSelectionRange(sel1,sel2,insert=ins)
+                if sel1 != sel2:
+                    # some abbreviations *set* the selection range
+                    # so only restore non-empty ranges
+                    w.setSelectionRange(sel1,sel2,insert=ins)
         return True
     #@+node:ekr.20131113150347.17257: *4* expand_text
     def expand_text(self,w,i,j,val,word,expand_search=False):
