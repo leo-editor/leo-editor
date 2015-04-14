@@ -1224,13 +1224,14 @@
 </v>
 </v>
 <v t="ekr.20150411062751.1"><vh>** To do</vh>
+<v t="ekr.20150413062945.1"><vh>** Update installations for MacOS</vh></v>
 <v t="ekr.20150411061719.1"><vh>** Add link to leo-reader page on web site</vh></v>
 <v t="ekr.20150411062514.1"><vh>** Document all items in "to-be-documented" mailbox </vh></v>
 <v t="ekr.20150411062608.2"><vh>** New page: why you should use git to get Leo.</vh></v>
 <v t="ekr.20150411062608.3"><vh>** Document all personal @command/@button nodes</vh></v>
 <v t="ekr.20150411062608.4"><vh>** Document Parnas &amp; Myers</vh></v>
 </v>
-<v t="ekr.20050903074833"></v>
+<v t="ekr.20150413162439.1"><vh>embedding leo-editor</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18323,6 +18324,26 @@ The difference between the proposed "stable master" above and just pulling "(cur
 On the Criteria to be use in Decomposing Systems into Modules
 </t>
 <t tx="ekr.20150411062751.1"></t>
+<t tx="ekr.20150413062945.1">When upgrading MacOS, it's probably a good idea to uninstall pyqt, sip and qt first::
+
+​
+    brew remove pyqt sip qt
+    brew install qt sip pyqt</t>
+<t tx="ekr.20150413162439.1">https://support.google.com/groups/answer/1191206?hl=en
+
+&lt;iframe id="forum_embed"
+  src="javascript:void(0)"
+  scrolling="no"
+  frameborder="0"
+  width="900"
+  height="700"&gt;
+&lt;/iframe&gt;
+&lt;script type="text/javascript"&gt;
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/leo-editor'
+     + '&amp;showsearch=true&amp;showpopout=true&amp;showtabs=false'
+     + '&amp;parenturl=' + encodeURIComponent(window.location.href);
+&lt;/script&gt; </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
