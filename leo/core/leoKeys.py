@@ -1344,9 +1344,9 @@ class GetArg:
     def do_back_space(ga,tabList,completion=True):
         '''Handle a backspace and update the completion list.'''
         trace = False and not g.unitTesting
-        # g.trace('completion',completion,tabList)
         c,k = ga.c,ga.k
         ga.tabList = tabList[:] if tabList else []
+        if trace: g.trace('len(ga.tabList)',len(ga.tabList))
         # Update the label.
         w = k.w
         i,j = w.getSelectionRange()
@@ -1380,11 +1380,14 @@ class GetArg:
         c,k = ga.c,ga.k
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
+            if trace: g.trace('len(ga.tabList)',len(ga.tabList))
             command = ga.get_label()
             common_prefix,tabList = ga.compute_tab_list(tabList)
             if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
                 ga.cycling_prefix = common_prefix
-            if trace: g.trace(len(tabList),common_prefix,ga.cycling_prefix)
+            if trace:
+                g.trace('len(tabList): %s common_prefix: %r cycling_prefix: %r' % (
+                    len(tabList),common_prefix,ga.cycling_prefix))
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1:
@@ -1542,7 +1545,7 @@ class GetArg:
             elif ga.should_end(char,stroke):
                 ga.do_end(event,char,stroke)
             elif char in('\t','Tab'):
-                if trace: g.trace('***tab***')
+                if trace: g.trace('***tab*** len(ga.tabList)',len(ga.tabList))
                 ga.do_tab(ga.tabList,ga.arg_completion)
             elif char in ('\b','BackSpace'):
                 ga.do_back_space(ga.tabList,ga.arg_completion)
@@ -1598,6 +1601,7 @@ class GetArg:
         ga.cycling_prefix = None
         ga.handler = handler
         ga.tabList = tabList[:] if tabList else []
+        if trace: g.trace('len(ga.tabList)',len(ga.tabList))
         # Set the k globals...
         k.argSelectedText = c.frame.body.wrapper.getSelectedText()
         k.functionTail = None
@@ -3878,7 +3882,7 @@ class KeyHandlerClass:
         elif trace:
             g.trace('*** no w ***')
     #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
-    def setLabelBlue (self,label):
+    def setLabelBlue (self,label,protect=True):
         '''Set the minibuffer label.'''
         trace = False and not g.unitTesting
         k = self ; w = k.w
@@ -3886,7 +3890,7 @@ class KeyHandlerClass:
         if w:
             w.setStyleClass('')  # normal state, not warning or error
             if label is not None:
-                k.setLabel(label,protect=True)
+                k.setLabel(label,protect=protect)
         elif trace:
             g.trace('*** no w ***')
     #@+node:ekr.20061031170011.11: *4* k.setLabelGrey
@@ -3926,7 +3930,7 @@ class KeyHandlerClass:
     def updateLabel (self,event):
 
         '''Mimic what would happen with the keyboard and a Text editor
-        instead of plain accumalation.'''
+        instead of plain accumulation.'''
 
         trace = False or g.trace_minibuffer and not g.app.unitTesting
         k = self ; c = k.c ; w = self.w
