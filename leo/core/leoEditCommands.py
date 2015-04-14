@@ -915,25 +915,27 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
-        ins = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
-        i,j = g.getWord(s,ins)
+        ins = ins1 = w.getInsertPoint()
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        i,j = g.getWord(s,ins1)
         word = w.get(i,j)
         aList = self.getDynamicList(w,word)
         if not aList: return
         # Bug fix: remove s itself, otherwise we can not extend beyond it.
-        if word in aList and len(aList) > 1: aList.remove(word)
+        if word in aList and len(aList) > 1:
+            aList.remove(word)
         prefix = reduce(g.longestCommonPrefix,aList)
         if prefix.strip():
             ypos = w.getYScrollPosition()
             b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
-            p.b = p.b[:i] + prefix + p.b[j:]
-            w.setAllText(p.b)
+            s = s[:i] + prefix + s[j:]
+            w.setAllText(s)
             w.setInsertPoint(i+len(prefix))
             w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
                 command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
-    #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/
+            c.recolor()
+    #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/ & helper
     def dynamicExpansion (self,event=None):
         '''
         dabbrev-expands (M-/ in Emacs).
@@ -941,36 +943,34 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         Inserts the longest common prefix of the word at the cursor. Displays
         all possible completions if the prefix is the same as the word.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         p = c.p
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            if trace: g.trace('no widget!')
+            return
         s = w.getAllText()
-        ins = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
-        i,j = g.getWord(s,ins)
+        ins = ins1 = w.getInsertPoint()
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        i,j = g.getWord(s,ins1)
+        w.setInsertPoint(j)
+            # This allows the cursor to be placed anywhere in the word.
         word = w.get(i,j)
         aList = self.getDynamicList(w,word)
-        if not aList: return
-        if word in aList and len(aList) > 1: aList.remove(word)
+        if not aList:
+            if trace: g.trace('empty completion list')
+            return
+        if word in aList and len(aList) > 1:
+            aList.remove(word)
         prefix = reduce(g.longestCommonPrefix,aList)
         prefix = prefix.strip()
-        g.trace(word,prefix,aList)
-        if False and prefix and prefix != word and len(aList) == 1:
-            s = w.getAllText()
-            ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
-            p.b = p.b[:i] + prefix + p.b[j:]
-            w.setAllText(p.b)
-            w.setInsertPoint(i+len(prefix))
-            w.setYScrollPosition(ypos)
-            c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
-        else:
-            self.dynamicExpandHelper(event,prefix,aList,w)
-    #@+node:ekr.20070605110441: *5* dynamicExpandHelper (added event arg)
+        if trace: g.trace(word,prefix,aList)
+        self.dynamicExpandHelper(event,prefix,aList,w)
+    #@+node:ekr.20070605110441: *5* dynamicExpandHelper
     def dynamicExpandHelper (self,event,prefix=None,aList=None,w=None):
-
+        '''State handler for dabbrev-expands command.'''
+        trace = False and not g.unitTesting
         c = self.c ; k = c.k ; p = c.p
         tag = 'dabbrev-expand'
         state = k.getState(tag)
@@ -979,8 +979,12 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             prefix2 = 'dabbrev-expand: '
             c.frame.log.deleteTab('Completion')
             g.es('','\n'.join(aList),tabName='Completion')
-            k.setLabelBlue(prefix2+prefix)
-            k.getArg(event,tag,1,self.dynamicExpandHelper,tabList=aList)
+            # Protect only prefix2.
+            # This is required for tab completion and backspace to work properly.
+            k.setLabelBlue(prefix2,protect=True)
+            k.setLabelBlue(prefix2+prefix,protect=False)
+            if trace: g.trace('len(aList)',len(aList))
+            k.getArg(event,tag,1,self.dynamicExpandHelper,tabList=aList,prefix=prefix)
         else:
             c.frame.log.deleteTab('Completion')
             k.clearState()
@@ -990,15 +994,18 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 s = w.getAllText()
                 ypos = w.getYScrollPosition()
                 b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
-                ins = w.getInsertPoint()
-                if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
-                i,j = g.getWord(s,ins)
-                p.b = p.b[:i] + k.arg + p.b[j:]
-                w.setAllText(p.b)
+                ins = ins1 = w.getInsertPoint()
+                if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+                i,j = g.getWord(s,ins1)
+                word = s[i:j]
+                s = s[:i] + k.arg + s[j:]
+                if trace: g.trace('ins',ins,'k.arg',repr(k.arg),'word',word)
+                w.setAllText(s)
                 w.setInsertPoint(i+len(k.arg))
                 w.setYScrollPosition(ypos)
                 c.undoer.afterChangeNodeContents(p,
-                    command=tag,bunch=b,dirtyVnodeList=[]) 
+                    command=tag,bunch=b,dirtyVnodeList=[])
+                c.recolor()
     #@+node:ekr.20050920084036.61: *4* getDynamicList (helper)
     def getDynamicList (self,w,s):
 
@@ -1429,7 +1436,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         g.trace("Can't happen",name)
         return None
-    #@+node:ekr.20050927093851: *4* getBufferName (added event arg)
+    #@+node:ekr.20050927093851: *4* getBufferName
     def getBufferName (self,event,finisher):
 
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''

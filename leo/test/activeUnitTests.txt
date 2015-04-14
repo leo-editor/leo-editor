@@ -6271,25 +6271,6 @@ leading to around 500 deaths per year and nearly $14 billion in damage.
   helps arm America's communities with the communication and safety
 skills needed to save lives and property– before and during the event.
 StormReady helps community leaders and emergency managers strengthen local safety programs.
-#@+node:ekr.20061101121602.158: *5* @test clear-selected-text
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20061101121602.159: *6* work
-first line
-line    line b
-line c
-last line
-#@+node:ekr.20061101121602.160: *6* before sel=2.4,4.4
-first line
-line 1
-    line a
-        line b
-line c
-last line
-#@+node:ekr.20061101121602.161: *6* after sel=2.4,2.4
-first line
-line    line b
-line c
-last line
 #@+node:ekr.20120525072421.3889: *5* @test clean-lines
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20120525072421.3890: *6* work
@@ -6322,6 +6303,25 @@ a = 2
 d = 5
 e = 6
 x
+#@+node:ekr.20061101121602.158: *5* @test clear-selected-text
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20061101121602.159: *6* work
+first line
+line    line b
+line c
+last line
+#@+node:ekr.20061101121602.160: *6* before sel=2.4,4.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20061101121602.161: *6* after sel=2.4,2.4
+first line
+line    line b
+line c
+last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if not g.app.isExternalUnitTest:
     
@@ -6405,6 +6405,48 @@ else:
         assert log.tabName == tab,'expected %s, got %s' % (
             tab,log.tabName)
         # print('pass',tab)
+#@+node:ekr.20150414144103.1: *5* @test dabbrev-completion
+# main after
+# mainto
+
+ac = c.abbrevCommands
+w = c.frame.body.wrapper
+s = w.getAllText()
+w.setInsertPoint(4)
+# i,j = g.getWord(s,4)
+# word = s[i:j]
+event = g.bunch(widget=w)
+ac.dynamicCompletion(event)
+try:
+    i = s.find('main')
+    assert i == 2,i
+finally:
+    if 1:
+        c.undoer.undo(event=event)
+
+#@+node:ekr.20150414144038.1: *5* @test dabbrev-expand
+# main after
+# mainto
+
+ac = c.abbrevCommands
+tag = 'dabbrev-expand'
+c.k.setState(tag,1, handler=None)
+w = c.frame.body.wrapper
+s = w.getAllText()
+w.setInsertPoint(4)
+i,j = g.getWord(s,4)
+word = s[i:j]
+aList = ac.getDynamicList(w,word)
+c.k.arg = aList[1]
+event = g.bunch(widget=w)
+ac.dynamicExpandHelper(event)
+s = w.getAllText()
+try:
+    i = s.find('main')
+    assert i == 2,i
+finally:
+    if 1:
+        c.undoer.undo(event=event)
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.167: *6* work
