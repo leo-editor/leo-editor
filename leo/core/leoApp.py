@@ -385,7 +385,7 @@ class ExternalFilesController:
     #@+node:ekr.20150403045207.1: *4* efc.has_changed
     def has_changed(efc,c,path):
         '''Return True if p's external file has changed outside of Leo.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose_init = False
         tag = 'efc.has_changed'
         if not g.os_path_exists(path):
