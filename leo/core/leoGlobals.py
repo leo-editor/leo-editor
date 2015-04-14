@@ -2131,7 +2131,7 @@ def getLanguageFromAncestorAtFileNode(p):
             # g.trace('found extension',p.h,ext,language)
             return language
     return None
-#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (new)
+#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c,p):
     '''
     Return the language in effect at position p.
