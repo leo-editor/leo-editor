@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -1223,15 +1224,20 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150411062751.1"><vh>** To do</vh>
+<v t="ekr.20150411062751.1"><vh>** Documentation to do</vh>
 <v t="ekr.20150413062945.1"><vh>** Update installations for MacOS</vh></v>
 <v t="ekr.20150411061719.1"><vh>** Add link to leo-reader page on web site</vh></v>
 <v t="ekr.20150411062514.1"><vh>** Document all items in "to-be-documented" mailbox </vh></v>
 <v t="ekr.20150411062608.2"><vh>** New page: why you should use git to get Leo.</vh></v>
 <v t="ekr.20150411062608.3"><vh>** Document all personal @command/@button nodes</vh></v>
 <v t="ekr.20150411062608.4"><vh>** Document Parnas &amp; Myers</vh></v>
+<v t="ekr.20150414152213.1"><vh>To 5.1-final release notes</vh>
+<v t="ekr.20150414152213.2"><vh>Fixed bug 166: Fix icon hooks in plugins, etc.</vh></v>
+<v t="ekr.20150414152213.3"><vh>Fixed bug 143: dabbrev-expand broken</vh></v>
 </v>
 <v t="ekr.20150413162439.1"><vh>embedding leo-editor</vh></v>
+<v t="ekr.20150414152307.1"><vh>Leo in a nutshell (statistics)</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18344,6 +18350,29 @@ On the Criteria to be use in Decomposing Systems into Modules
      + '&amp;showsearch=true&amp;showpopout=true&amp;showtabs=false'
      + '&amp;parenturl=' + encodeURIComponent(window.location.href);
 &lt;/script&gt; </t>
+<t tx="ekr.20150414152213.1"></t>
+<t tx="ekr.20150414152213.2">https://github.com/leo-editor/leo-editor/issues/166
+
+</t>
+<t tx="ekr.20150414152213.3">https://github.com/leo-editor/leo-editor/issues/143
+</t>
+<t tx="ekr.20150414152307.1">https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+
+Put this on Leo's web page.
+
+In a Nutshell, The Leo Editor...
+
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
+- has a well established, mature codebase
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
