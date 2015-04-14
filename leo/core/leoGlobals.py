@@ -2139,11 +2139,12 @@ def getLanguageAtPosition(c,p):
     '''
     aList = g.get_directives_dict_list(p)
     d = g.scanAtCommentAndAtLanguageDirectives(aList)
-    language = d and d.get('language')
-    if not d:
-        language = g.getLanguageFromAncestorAtFileNode(p)
-    if not language:
-        language = c.config.getString('target_language') or 'python'
+    language = (
+        d and d.get('language') or
+        g.getLanguageFromAncestorAtFileNode(p) or
+        c.config.getString('target_language') or
+        'python'
+    )
     return language.lower()
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
 def getOutputNewline (c=None,name=None):
